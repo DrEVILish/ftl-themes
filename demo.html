@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ftl-themes demo</title>
+<link id="ftl-theme-link" rel="stylesheet" href="dist/blue-future.css">
+<style>
+  /* Demo-page-only chrome, not part of the ftl-themes contract. */
+  .demo-shell { max-width: 60rem; margin: 0 auto; padding: 1.5rem; }
+  .demo-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin: 1rem 0; }
+  .demo-section { margin: 2rem 0; }
+  .demo-switcher { position: sticky; top: 0; z-index: 10; padding: 0.75rem 0; }
+</style>
+</head>
+<body>
+<div class="demo-shell">
+  <div class="demo-switcher">
+    <label>
+      Theme:
+      <select class="ftl-select" id="theme-picker" style="display:inline-block;width:auto;">
+        <option value="blue-future">Blue Future</option>
+        <option value="cue-lab">Cue Lab</option>
+        <option value="lcars">LCARS</option>
+        <option value="windows95">Windows 95</option>
+        <option value="matrix">The Matrix</option>
+        <option value="tron">TRON</option>
+        <option value="aqua">Aqua (Snow Leopard)</option>
+        <option value="winamp-classic">WinAmp Classic</option>
+        <option value="wmp11">Windows Media Player 11</option>
+      </select>
+    </label>
+  </div>
+
+  <nav class="ftl-nav">
+    <span class="ftl-nav-brand">ftl-themes</span>
+    <a class="ftl-nav-item is-active" href="#">Dashboard</a>
+    <a class="ftl-nav-item" href="#">Settings</a>
+    <a class="ftl-nav-item" href="#">Logs</a>
+  </nav>
+
+  <div class="demo-section">
+    <h2>Buttons</h2>
+    <div class="demo-row">
+      <button class="ftl-btn ftl-btn-primary">Primary</button>
+      <button class="ftl-btn ftl-btn-secondary">Secondary</button>
+      <button class="ftl-btn ftl-btn-danger">Danger</button>
+      <button class="ftl-btn ftl-btn-success">Success</button>
+      <button class="ftl-btn ftl-btn-ghost">Ghost</button>
+      <button class="ftl-btn ftl-btn-primary" disabled>Disabled</button>
+      <button class="ftl-btn ftl-btn-sm ftl-btn-primary">Small</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Form controls</h2>
+    <div class="demo-row">
+      <input class="ftl-input" type="text" placeholder="Text input" style="max-width:14rem;">
+      <select class="ftl-select" style="max-width:10rem;"><option>Option A</option><option>Option B</option></select>
+      <label><input class="ftl-checkbox" type="checkbox" checked> Checkbox</label>
+      <label class="ftl-switch">
+        <input type="checkbox" checked>
+        <span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span>
+      </label>
+      <input class="ftl-slider" type="range" style="max-width:10rem;">
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Surfaces</h2>
+    <div class="demo-row" style="align-items:flex-start;">
+      <div class="ftl-panel" style="width:14rem;">
+        <h3>Panel</h3>
+        <p>A generic card/pane.</p>
+      </div>
+      <div class="ftl-modal" style="width:16rem;">
+        <div class="ftl-modal-header">Modal title</div>
+        <p>Body content goes here.</p>
+        <div class="ftl-modal-footer">
+          <button class="ftl-btn ftl-btn-secondary ftl-btn-sm">Cancel</button>
+          <button class="ftl-btn ftl-btn-primary ftl-btn-sm">Save</button>
+        </div>
+      </div>
+      <div class="ftl-dropdown" style="width:10rem;">
+        <a class="ftl-dropdown-item" href="#">Item one</a>
+        <a class="ftl-dropdown-item" href="#">Item two</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Table</h2>
+    <table class="ftl-table">
+      <thead><tr><th>Name</th><th>Status</th><th>Progress</th></tr></thead>
+      <tbody>
+        <tr class="is-active"><td>Track 01</td><td><span class="ftl-status ftl-status-ok">Connected</span></td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:80%"></div></div></td></tr>
+        <tr class="is-selected"><td>Track 02</td><td><span class="ftl-status ftl-status-warn">Pending</span></td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:35%"></div></div></td></tr>
+        <tr><td>Track 03</td><td><span class="ftl-status ftl-status-error">Disconnected</span></td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:0%"></div></div></td></tr>
+        <tr><td>Track 04</td><td><span class="ftl-status ftl-status-idle">Idle</span></td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:10%"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="demo-section">
+    <h2>Badges</h2>
+    <div class="demo-row">
+      <span class="ftl-badge">Default</span>
+      <span class="ftl-badge ftl-badge-accent">Accent</span>
+      <span class="ftl-badge ftl-badge-danger">Danger</span>
+      <span class="ftl-badge ftl-badge-success">Success</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  var picker = document.getElementById("theme-picker");
+  var link = document.getElementById("ftl-theme-link");
+
+  function applyTheme(name) {
+    document.documentElement.dataset.theme = name;
+    link.href = "dist/" + name + ".css";
+    try { localStorage.setItem("ftl-demo-theme", name); } catch (e) {}
+  }
+
+  var params = new URLSearchParams(location.search);
+  var initial = params.get("theme");
+  try { initial = initial || localStorage.getItem("ftl-demo-theme"); } catch (e) {}
+  initial = initial || "blue-future";
+  picker.value = initial;
+  applyTheme(initial);
+
+  picker.addEventListener("change", function () { applyTheme(picker.value); });
+</script>
+</body>
+</html>
