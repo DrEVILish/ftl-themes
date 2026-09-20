@@ -1,0 +1,145 @@
+/* ftl-themes: LCARS decorative chrome
+ * A generic layout primitive, .ftl-lcars-chrome, that any app can wrap its
+ * existing content in to get the sweep-header + elbowed-rail frame seen on
+ * screen in TNG/DS9/Voyager — without changing the content's own markup or
+ * behavior. See docs/lcars-chrome.md for the full markup contract.
+ *
+ * Every class here is namespaced ftl-lcars-* and only active under
+ * html[data-theme="lcars"], so it can never collide with a consuming app's
+ * own classes. Decorative pieces are pointer-events:none; only the real
+ * slots (brand/nav/content) carry real content and receive events.
+ */
+
+/* Without this the chrome's font-family silently fell back to --ftl-font,
+ * so the vendored Antonio files were never actually loaded. The url() is
+ * relative to the SERVED stylesheet, so scripts/build.sh rewrites it for
+ * the dist/ bundle — see CONTRACT.md § "Serving the assets". */
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+html[data-theme="lcars"] .ftl-lcars-chrome {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background: #000;
+  font-family: "Antonio", var(--ftl-font);
+}
+
+/* Sweep header: full-width bar across the top, elbowing down into the
+ * rail on the left. Purely decorative background; .ftl-lcars-chrome-brand
+ * inside it is real content. */
+html[data-theme="lcars"] .ftl-lcars-chrome-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: var(--ftl-accent);
+  border-radius: 0 0 0 3rem;
+  min-height: 3.5rem;
+}
+html[data-theme="lcars"] .ftl-lcars-chrome-brand {
+  color: #000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 1.1rem;
+}
+
+/* Elbowed side rail: a stack of candy-colored bars, decorative, with the
+ * top and bottom bars carrying the elbow curve into the content area. */
+html[data-theme="lcars"] .ftl-lcars-chrome-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.4rem;
+  background: #000;
+  pointer-events: none;
+}
+html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar {
+  height: 1.6rem;
+  border-radius: 0.8rem 0 0 0.8rem;
+  background: var(--ftl-lcars-lavender);
+}
+html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(2) { background: var(--ftl-lcars-sky); height: 2.4rem; }
+/* The long bar carries the elbow sweep into the content area: rounded on
+ * the rail side, with an exaggerated bottom-left curve. (The comma'd
+ * border-radius that used to be here is invalid CSS and was dropped whole
+ * by every browser.) */
+html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(3) {
+  background: var(--ftl-accent);
+  flex: 1;
+  border-radius: 0.8rem 0 0 3rem;
+}
+html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(4) { background: var(--ftl-lcars-rose); height: 2rem; }
+
+/* Real nav slot inside the rail: a app supplies its own nav markup here,
+ * styled to read as part of the rail but fully interactive. */
+html[data-theme="lcars"] .ftl-lcars-chrome-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  pointer-events: auto;
+}
+html[data-theme="lcars"] .ftl-lcars-chrome-nav .ftl-nav-item {
+  border-radius: 0 1rem 1rem 0;
+  background: var(--ftl-lcars-tan);
+  color: #000;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-align: right;
+  padding: 0.35em 0.8em;
+}
+html[data-theme="lcars"] .ftl-lcars-chrome-nav .ftl-nav-item.is-active,
+html[data-theme="lcars"] .ftl-lcars-chrome-nav .ftl-nav-item:hover {
+  background: var(--ftl-accent);
+}
+
+/* Content slot: the app's real, unmodified content area. */
+html[data-theme="lcars"] .ftl-lcars-chrome-content {
+  padding: 1.5rem;
+  overflow: auto;
+  min-width: 0;
+}
+
+/* Corner block: decorative filler between rail and header, matches the
+ * reference sweep panels' rounded corner block. */
+html[data-theme="lcars"] .ftl-lcars-chrome-corner {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  background: var(--ftl-lcars-sky);
+  border-radius: 0 0 1rem 0;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  /* Rail collapses to a thin top strip on small screens rather than
+   * disappearing — decorative identity survives, real nav becomes a row. */
+  html[data-theme="lcars"] .ftl-lcars-chrome {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+  html[data-theme="lcars"] .ftl-lcars-chrome-rail {
+    flex-direction: row;
+    height: 2rem;
+  }
+  html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar { height: auto; flex: 1; border-radius: 0.6rem; }
+  html[data-theme="lcars"] .ftl-lcars-chrome-nav { flex-direction: row; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="lcars"] .ftl-lcars-chrome * { transition: none !important; animation: none !important; }
+}
