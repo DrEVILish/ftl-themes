@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build bundles and manifest
+        run: scripts/build.sh
+      - name: Lint themes against the contract
+        run: scripts/check.sh

@@ -53,6 +53,18 @@ incompatible as a single theme. Recommend two catalog entries —
 (grouped with Material/Ubuntu, sharing the flat-design shape) — pending
 the user confirming that split before either is authored.
 
+## Font vendoring (affects existing themes)
+
+`windows95` names MS Sans Serif and `tron` names Eurostile; neither is
+web-available, so both silently fall back and don't look like their
+reference on a real machine. Vendor an openly-licensed substitute into
+`assets/fonts/` with an `@font-face` block, following the pattern the LCARS
+chrome now uses (`themes/lcars/chrome.css`) — note that `scripts/build.sh`
+rewrites relative asset URLs for the `dist/` bundles, so use
+`url("assets/…")` in the theme source. Candidate substitutes: a pixel/bitmap
+sans for `windows95`, a squarish grotesque (e.g. Michroma, Saira Condensed)
+for `tron`.
+
 ## Batch 3 — suggested additions (not committed scope)
 
 - **Amiga Workbench** / **BeOS** — another skeuomorphic-OS pairing, cheap

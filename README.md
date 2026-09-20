@@ -9,10 +9,16 @@ Windows 95 to TRON.
 - **Using it in an app:** read [`CONTRACT.md`](CONTRACT.md).
 - **Building a new theme:** read [`docs/authoring-a-theme.md`](docs/authoring-a-theme.md)
   and run `scripts/new-theme.sh <slug>`.
-- **Trying themes without any app:** open [`demo.html`](demo.html) in a
-  browser, or serve the repo root and visit it — it has an in-page theme
-  switcher exercising every component.
+- **Trying themes without any app:** serve the repo root over HTTP and open
+  [`demo.html`](demo.html) — an in-page switcher (built from
+  `dist/themes.json`) exercises every component, htmx states included, plus
+  a `?chrome=1` LCARS chrome mode.
 - **What's planned next:** [`docs/theme-backlog.md`](docs/theme-backlog.md).
+- **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
+  and changed how themes override components.
+
+It also handles htmx's own swap states (`.htmx-request`, `.ftl-indicator`,
+swap/settle transitions) so consuming apps don't hand-roll pending UI.
 
 ## Layout
 
@@ -22,11 +28,16 @@ core/                     ftl-reset.css + ftl-core.css — theme-independent str
 themes/<name>/theme.css   one file per theme: tokens + look-only overrides
 themes/lcars/chrome.css   optional decorative LCARS chrome (docs/lcars-chrome.md)
 dist/<name>.css           built bundle (reset+core+theme), the file apps link
+dist/themes.json          machine-readable theme index for pickers
 assets/                   fonts and other binary assets themes reference
 scripts/build.sh          regenerates dist/ from core/ + themes/
+scripts/check.sh          contract lint (tokens, contrast, focus, variants, dist sync)
 scripts/new-theme.sh      scaffolds a new themes/<slug>/theme.css
 docs/                     authoring guide, LCARS chrome spec, theme backlog
 ```
+
+Serve `dist/` and `assets/` as siblings — bundled CSS resolves fonts as
+`../assets/…`.
 
 No app-specific integration notes live in this repo — those belong in
 each consuming app's own repository.

@@ -1,6 +1,6 @@
 /* ftl-themes: The Matrix
  * Theme-Name: The Matrix
- * Green phosphor cascade on black, monospace everywhere.
+ * Description: Green phosphor on black — monospace terminal cascade.
  */
 
 html[data-theme="matrix"] {
@@ -16,15 +16,34 @@ html[data-theme="matrix"] {
   --ftl-danger: #ff3b3b;
   --ftl-success: #00ff41;
   --ftl-warning: #d4ff00;
+  --ftl-on-accent: #001a06;
+  --ftl-on-danger: #1a0000;
+  --ftl-on-success: #001a06;
   --ftl-radius: 0.15rem;
   --ftl-font: "Courier New", "IBM Plex Mono", Consolas, monospace;
   --ftl-font-mono: "Courier New", Consolas, monospace;
   --ftl-flare: #00ff41;
+
+  /* Base buttons are outline-only; the semantic variants keep their fills
+     (set on the element by core) so a delete still reads as destructive. */
+  --ftl-btn-bg: transparent;
+  --ftl-btn-fg: var(--ftl-accent);
+  --ftl-btn-shadow-hover: 0 0 10px rgba(0, 255, 65, 0.5);
+  --ftl-input-bg: #000;
+  --ftl-focus-ring: 0 0 8px rgba(0, 255, 65, 0.4);
+  --ftl-panel-shadow: inset 0 0 16px rgba(0, 255, 65, 0.08);
+  --ftl-table-head-fg: var(--ftl-accent);
+  --ftl-table-head-rule: var(--ftl-accent);
+  --ftl-row-selected-bg: rgba(0, 255, 65, 0.12);
+  --ftl-nav-bg: #000;
+  --ftl-overlay-bg: rgba(0, 8, 0, 0.8);
+  --ftl-label-transform: uppercase;
+  --ftl-indicator-fg: var(--ftl-accent);
+  --ftl-indicator-track: var(--ftl-hairline);
 }
 
-html[data-theme="matrix"] {
-  text-shadow: 0 0 2px rgba(0, 255, 65, 0.4);
-}
+html[data-theme="matrix"] { text-shadow: 0 0 2px rgba(0, 255, 65, 0.4); }
+
 html[data-theme="matrix"] h1,
 html[data-theme="matrix"] h2,
 html[data-theme="matrix"] h3 {
@@ -33,60 +52,13 @@ html[data-theme="matrix"] h3 {
   letter-spacing: 0.08em;
 }
 
-html[data-theme="matrix"] .ftl-btn {
-  background: transparent;
-  border: 1px solid var(--ftl-border);
-  color: var(--ftl-accent);
-  border-radius: var(--ftl-radius);
-}
-html[data-theme="matrix"] .ftl-btn:hover {
-  border-color: var(--ftl-accent);
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-}
-html[data-theme="matrix"] .ftl-btn-primary {
-  background: rgba(0, 255, 65, 0.12);
-  color: var(--ftl-accent);
-  border-color: var(--ftl-accent);
-}
+html[data-theme="matrix"] .ftl-btn-primary { --ftl-btn-bg: rgba(0, 255, 65, 0.12); --ftl-btn-fg: var(--ftl-accent); }
 
-html[data-theme="matrix"] .ftl-panel,
-html[data-theme="matrix"] .ftl-modal,
-html[data-theme="matrix"] .ftl-dropdown {
-  background: #020c02;
-  border: 1px solid var(--ftl-border);
-  box-shadow: 0 0 16px rgba(0, 255, 65, 0.08) inset;
-}
-
-html[data-theme="matrix"] .ftl-input,
-html[data-theme="matrix"] .ftl-select {
-  background: #000;
-  border-color: var(--ftl-border);
-  color: var(--ftl-text);
-}
-html[data-theme="matrix"] .ftl-input:focus,
-html[data-theme="matrix"] .ftl-select:focus {
-  border-color: var(--ftl-accent);
-  box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
-}
-
-html[data-theme="matrix"] .ftl-table th {
-  color: var(--ftl-accent);
-  border-bottom: 1px solid var(--ftl-accent);
-}
-html[data-theme="matrix"] .ftl-table tr.is-selected td { background: rgba(0, 255, 65, 0.12); }
-
-html[data-theme="matrix"] .ftl-nav {
-  background: #000;
-  border-bottom: 1px solid var(--ftl-border);
-}
-html[data-theme="matrix"] .ftl-nav-brand { color: var(--ftl-accent); }
-
+/* Opt-in only: a heading flicker, never on an interactive control, and
+   never the sole carrier of any state. */
 @media (prefers-reduced-motion: no-preference) {
-  /* Optional cascade flicker on headings only — subtle, never on
-     interactive controls, and skipped entirely under reduced motion. */
-  html[data-theme="matrix"] h1, html[data-theme="matrix"] h2 {
-    animation: ftl-matrix-flicker 4s ease-in-out infinite;
-  }
+  html[data-theme="matrix"] h1,
+  html[data-theme="matrix"] h2 { animation: ftl-matrix-flicker 4s ease-in-out infinite; }
 }
 @keyframes ftl-matrix-flicker {
   0%, 92%, 100% { opacity: 1; }

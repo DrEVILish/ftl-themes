@@ -10,6 +10,23 @@
  * slots (brand/nav/content) carry real content and receive events.
  */
 
+/* Without this the chrome's font-family silently fell back to --ftl-font,
+ * so the vendored Antonio files were never actually loaded. The url() is
+ * relative to the SERVED stylesheet, so scripts/build.sh rewrites it for
+ * the dist/ bundle — see CONTRACT.md § "Serving the assets". */
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 html[data-theme="lcars"] .ftl-lcars-chrome {
   display: grid;
   grid-template-columns: 6rem 1fr;
@@ -56,7 +73,15 @@ html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar {
   background: var(--ftl-lcars-lavender);
 }
 html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(2) { background: var(--ftl-lcars-sky); height: 2.4rem; }
-html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(3) { background: var(--ftl-accent); flex: 1; border-radius: 0.8rem 0 0 0.8rem, 0 0 0 3rem; border-bottom-left-radius: 3rem; }
+/* The long bar carries the elbow sweep into the content area: rounded on
+ * the rail side, with an exaggerated bottom-left curve. (The comma'd
+ * border-radius that used to be here is invalid CSS and was dropped whole
+ * by every browser.) */
+html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(3) {
+  background: var(--ftl-accent);
+  flex: 1;
+  border-radius: 0.8rem 0 0 3rem;
+}
 html[data-theme="lcars"] .ftl-lcars-chrome-rail-bar:nth-child(4) { background: var(--ftl-lcars-rose); height: 2rem; }
 
 /* Real nav slot inside the rail: a app supplies its own nav markup here,

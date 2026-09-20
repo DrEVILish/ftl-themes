@@ -1,7 +1,11 @@
 /* ftl-themes: Cue Lab
  * Theme-Name: Cue Lab
- * A flat, functional live-console look: no glow, no gradients, hairline
- * grids, amber accent. See CONTRACT.md for the component vocabulary.
+ * Description: Flat live-show console — hairline grids, amber accent, no glow.
+ *
+ * "Flat" is expressed by leaving every --ftl-*-shadow property unset rather
+ * than by a blanket `* { box-shadow: none !important }`: that reset also
+ * erased .ftl-table tr.is-active's inset marker, silently removing the
+ * current-row indicator. Row state here is carried by background instead.
  */
 
 html[data-theme="cue-lab"] {
@@ -14,21 +18,31 @@ html[data-theme="cue-lab"] {
   --ftl-muted: #9d9d9d;
   --ftl-accent: #ff8c1a;
   --ftl-accent-2: #ffb84d;
-  --ftl-danger: #e5484d;
+  --ftl-danger: #d63a3f;
   --ftl-success: #46a758;
   --ftl-warning: #ffb84d;
+  --ftl-on-accent: #141414;
+  --ftl-on-danger: #ffffff;
+  --ftl-on-success: #0c1410;
   --ftl-radius: 0.2rem;
   --ftl-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
   --ftl-font-mono: "SFMono-Regular", Consolas, monospace;
   --ftl-flare: #ff8c1a;
-}
 
-/* Flat: no glow, no gradients, no rounded excess. */
-html[data-theme="cue-lab"] *,
-html[data-theme="cue-lab"] *::before,
-html[data-theme="cue-lab"] *::after {
-  box-shadow: none !important;
-  text-shadow: none !important;
+  --ftl-btn-border-width: 2px;
+  --ftl-btn-weight: 600;
+  --ftl-input-bg: var(--ftl-surface-2);
+  --ftl-nav-rule-width: 2px;
+  --ftl-nav-rule: var(--ftl-accent);
+  --ftl-table-head-fg: var(--ftl-accent);
+  --ftl-table-head-rule: var(--ftl-accent);
+  --ftl-row-active-bg: rgba(255, 140, 26, 0.14);
+  --ftl-row-selected-bg: rgba(255, 140, 26, 0.28);
+  --ftl-overlay-bg: rgba(0, 0, 0, 0.7);
+  --ftl-label-transform: uppercase;
+  --ftl-label-tracking: 0.06em;
+  --ftl-tab-fg-active: var(--ftl-accent);
+  --ftl-indicator-fg: var(--ftl-accent);
 }
 
 html[data-theme="cue-lab"] h1,
@@ -41,40 +55,7 @@ html[data-theme="cue-lab"] h3 {
   font-weight: 600;
 }
 
-html[data-theme="cue-lab"] .ftl-btn {
-  border-width: 2px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-html[data-theme="cue-lab"] .ftl-btn-primary {
-  background: var(--ftl-accent);
-  border-color: var(--ftl-accent);
-  color: #141414;
-  border-top: 3px solid var(--ftl-accent-2);
-}
-html[data-theme="cue-lab"] .ftl-btn-primary:hover {
-  background: var(--ftl-accent-2);
-  border-color: var(--ftl-accent-2);
-}
-
-html[data-theme="cue-lab"] .ftl-panel,
-html[data-theme="cue-lab"] .ftl-modal,
-html[data-theme="cue-lab"] .ftl-dropdown {
-  border-radius: var(--ftl-radius);
-}
-
-html[data-theme="cue-lab"] .ftl-table th {
-  color: var(--ftl-accent);
-  border-bottom: 1px solid var(--ftl-accent);
-}
 html[data-theme="cue-lab"] .ftl-table { font-variant-numeric: tabular-nums; }
 
-html[data-theme="cue-lab"] .ftl-input:focus,
-html[data-theme="cue-lab"] .ftl-select:focus {
-  outline: 2px solid var(--ftl-accent);
-  outline-offset: 0;
-}
-
-html[data-theme="cue-lab"] .ftl-nav {
-  border-bottom: 2px solid var(--ftl-accent);
-}
+/* The one intentional flourish: a primary action gets a top highlight rule. */
+html[data-theme="cue-lab"] .ftl-btn-primary { border-top: 3px solid var(--ftl-accent-2); }
