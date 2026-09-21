@@ -3,6 +3,40 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.2.1 — four theme-fidelity bugs found by design review
+
+All additive, all inside individual themes or a single component's fixed
+floor — no token or component contract changed shape.
+
+### Fixed
+
+- **`lcars` headings rendered in Trebuchet, not Antonio** (#8). Antonio is
+  already shipped for the shell bar and readouts; `h1`-`h3` now lead with
+  it too, so section titles stop reading as a second, unrelated theme next
+  to the readouts.
+- **`tron`'s cut-corner `clip-path` silently clipped the focus outline**
+  (#9). `clip-path` clips everything the box paints, including core's
+  `:focus-visible` outline — a keyboard user got no visible focus on
+  buttons or panels, undetectable by `scripts/check.py`'s `outline: none`
+  lint since nothing sets it to `none`. Added a `filter: drop-shadow(...)`
+  focus treatment, which isn't clipped because it post-processes the
+  already-cut shape. Also dropped `Eurostile, Orbitron` from the font
+  stack: neither is vendored in `assets/`, so naming them just meant every
+  real system silently rendered the generic-sans fallback while the stack
+  claimed a face the theme doesn't ship.
+- **`windows95`'s `--ftl-text` on `--ftl-bg` was 4.4:1, just under the
+  4.5:1 floor** (#10). `--ftl-bg` moves from `#008080` to `#008282` — 2/255
+  of extra green/blue, imperceptible on a decorative desktop backdrop that
+  never carries body text, and the minimal change that crosses the floor.
+  Real dialog contrast is unaffected: panels read `--ftl-surface`, not
+  this token.
+- **`.ftl-btn-go` had no minimum hit target** (#11): `--ftl-density`
+  scaling (e.g. `cue-lab`'s `0.85` for a dense cue list) could shrink the
+  one control every other element in a theme is allowed to compress
+  around. Added a fixed `min-width`/`min-height: 44px` floor
+  (`--ftl-go-min-target`) that density scaling cannot shrink — every other
+  `.ftl-btn` in a theme keeps compressing freely.
+
 ## v3.2.0 — layout-tier themes degrade gracefully; adoption levels documented
 
 Filed as ftl-themes#3 and #4 after real integrations (PI9696, CuTePi,

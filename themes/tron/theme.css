@@ -2,8 +2,10 @@
  * Theme-Name: TRON
  * Description: Electric cyan line-grid on black — glowing, angular edges.
  *
- * Note on fonts: the reference face is Eurostile, which isn't web-available;
- * the stack falls back through Orbitron (if installed) to a generic sans.
+ * Note on fonts: the reference face is Eurostile. Neither it nor Orbitron
+ * is vendored in assets/, so naming them here would silently render the
+ * generic sans fallback on every real system while claiming a face this
+ * theme doesn't ship — the stack names only what it actually has.
  */
 
 html[data-theme="tron"] {
@@ -23,7 +25,7 @@ html[data-theme="tron"] {
   --ftl-on-danger: #1a0000;
   --ftl-on-success: #001108;
   --ftl-radius: 0;
-  --ftl-font: Eurostile, Orbitron, "IBM Plex Sans", sans-serif;
+  --ftl-font: "IBM Plex Sans", sans-serif;
   --ftl-font-mono: Consolas, monospace;
   --ftl-flare: #ff8c1a;
 
@@ -63,13 +65,22 @@ html[data-theme="tron"] h3 {
   text-shadow: 0 0 8px rgba(10, 240, 255, 0.6);
 }
 
-/* Cut corners — the theme's signature shape. */
+/* Cut corners — the theme's signature shape. clip-path clips everything the
+   box paints, including core's :focus-visible outline, so a keyboard user
+   would otherwise get no visible focus here. filter isn't clipped — it
+   post-processes the already-cut shape — so it's the fallback that keeps
+   the focus indicator visible instead of silently defeating it. */
 html[data-theme="tron"] .ftl-btn {
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 html[data-theme="tron"] .ftl-panel,
 html[data-theme="tron"] .ftl-modal {
   clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+html[data-theme="tron"] .ftl-btn:focus-visible,
+html[data-theme="tron"] .ftl-panel:focus-visible,
+html[data-theme="tron"] .ftl-modal:focus-visible {
+  filter: drop-shadow(0 0 0 2px var(--ftl-focus)) drop-shadow(0 0 6px var(--ftl-focus));
 }
 
 html[data-theme="tron"] .ftl-btn-primary { --ftl-btn-bg: rgba(10, 240, 255, 0.1); }

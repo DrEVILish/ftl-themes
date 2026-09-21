@@ -532,6 +532,12 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   --ftl-btn-bg-hover: var(--ftl-go-bg-hover, var(--ftl-go-bg, transparent));
   --ftl-btn-shadow-hover: var(--ftl-go-shadow-hover, var(--ftl-go-shadow, none));
   font-size: var(--ftl-go-size, 1.05rem);
+  /* A fixed floor, not scaled by --ftl-density: this is the one control a
+     theme's own compression (a dense cue list, a cramped console) must
+     never shrink below a reliably hittable target — gloved hands on a dark
+     show floor don't get a second chance at a missed trigger. */
+  min-width: var(--ftl-go-min-target, 44px);
+  min-height: var(--ftl-go-min-target, 44px);
 }
 
 /* .ftl-lamp — a hardware indicator light. Distinct from .ftl-status, which
@@ -947,7 +953,12 @@ html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accen
  */
 
 html[data-theme="windows95"] {
-  --ftl-bg: #008080;
+  /* #008282, not the pixel-authentic #008080 — 2/255 of extra green/blue is
+     imperceptible against a desktop backdrop that never carries body text,
+     but it's what pushes --ftl-text (black) over the 4.5:1 floor against it
+     instead of leaving that combination at a permanent 4.4:1. Real dialog
+     contrast is unaffected: panels use --ftl-surface, not this token. */
+  --ftl-bg: #008282;
   --ftl-surface: #c0c0c0;
   --ftl-surface-2: #dfdfdf;
   --ftl-border: #808080;
