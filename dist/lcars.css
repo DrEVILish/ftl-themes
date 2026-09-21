@@ -748,6 +748,69 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   .htmx-settling { transition: none; }
   .ftl-indicator { animation-duration: 2s; }
 }
+
+/* --- User display options -----------------------------------------------
+ * Three switches an app can offer in its own settings UI, independent of
+ * theme choice. All are read off <html>, so an app sets one attribute (or,
+ * for density, overrides one variable) and every theme responds — no theme
+ * file needs to know these exist. See CONTRACT.md "User display options".
+ */
+
+/* Density: apps needing a coarser control than a theme's own --ftl-density
+ * default set an inline override directly — `<html style="--ftl-density:
+ * 0.85">` — which wins over any stylesheet rule regardless of specificity,
+ * so no attribute or selector is needed here at all. */
+
+/* Motion: an in-app "reduce motion" toggle, for a user who wants animation
+ * off without changing their OS-level prefers-reduced-motion setting (or
+ * whose browser can't report it, e.g. an embedded webview). Themes opt
+ * their own animations out of prefers-reduced-motion already; this forces
+ * the same outcome from an explicit attribute instead of a media query. */
+html[data-motion="reduced"] * {
+  animation-play-state: paused !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Contrast: a boost for a user who finds a theme's hairlines/muted text too
+ * quiet, without switching theme entirely. Widens the two things contrast
+ * actually depends on — visible borders and secondary text — by pulling
+ * them toward the theme's own text/border colors rather than introducing a
+ * palette of its own, so it stays in-theme instead of overriding it. */
+html[data-contrast="high"] {
+  --ftl-hairline: var(--ftl-border);
+  --ftl-muted: var(--ftl-text);
+}
+html[data-contrast="high"] :focus-visible {
+  outline-width: 3px;
+}
+
+/* --- Accent swatches (optional per-theme accent override) ---------------
+ * A theme MAY offer a curated set of alternate accents as numbered token
+ * pairs: --ftl-accent-swatch-<n> and --ftl-on-accent-swatch-<n> (n = 1-6),
+ * each pre-checked by the theme's author against the contrast floor. An
+ * app offers whichever swatches a theme actually defines (undefined ones
+ * are simply absent — nothing breaks if a theme has 3 instead of 6) and
+ * sets data-accent="<n>" on <html> to select one. This replaces "custom
+ * theme JSON" style features with something themes can vouch for: every
+ * swatch a theme ships is a color ITS author picked and verified, never an
+ * arbitrary user-supplied value that could fail contrast unnoticed. */
+html[data-accent="1"] { --ftl-accent: var(--ftl-accent-swatch-1, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-1, var(--ftl-on-accent)); }
+html[data-accent="2"] { --ftl-accent: var(--ftl-accent-swatch-2, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-2, var(--ftl-on-accent)); }
+html[data-accent="3"] { --ftl-accent: var(--ftl-accent-swatch-3, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-3, var(--ftl-on-accent)); }
+html[data-accent="4"] { --ftl-accent: var(--ftl-accent-swatch-4, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-4, var(--ftl-on-accent)); }
+html[data-accent="5"] { --ftl-accent: var(--ftl-accent-swatch-5, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-5, var(--ftl-on-accent)); }
+html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-6, var(--ftl-on-accent)); }
+
+/* --- Palette variants (optional per-theme, e.g. data-variant="grape") ----
+ * A theme may ship more than one palette under one identity — the way the
+ * references actually shipped (Luna's Blue/Olive/Silver, iMac G3's fruit
+ * colors). No core mechanism is needed: a variant is just a theme selector
+ * with an extra attribute, `html[data-theme="x"][data-variant="y"]`, which
+ * at (0,2,1) outranks the theme's own root block at (0,1,1) and so wins.
+ * See CONTRACT.md "Palette variants" and themes/imac-g3 for a worked
+ * example (Bondi/Blueberry/Grape/Tangerine).
+ */
 /* ftl-themes: the app shell.
  *
  * A theme is not only a palette — LCARS and a telemetry HUD are different

@@ -200,6 +200,57 @@ fits on screen — button, table cell and panel padding. A dense console
 theme sets `0.85`; a chunky touch-first theme sets `1.15`. A theme that
 sets an explicit `--ftl-btn-padding` opts that control out of density.
 
+## User display options
+
+Three switches an app can offer in its own settings UI, independent of
+theme choice — no theme file needs to know any of these exist:
+
+- **Density override** — set it directly: `<html style="--ftl-density: 0.85">`.
+  An inline style wins over any stylesheet rule regardless of specificity,
+  so this overrides even a theme that sets its own `--ftl-density`.
+- **Motion** — `<html data-motion="reduced">` forces every animation and
+  transition off, for a user who wants that without relying on (or unable
+  to set) the OS-level `prefers-reduced-motion` setting.
+- **Contrast** — `<html data-contrast="high">` pulls `--ftl-hairline` and
+  `--ftl-muted` up to `--ftl-border`/`--ftl-text` and thickens the focus
+  outline, for a user who finds a theme's quieter elements too quiet,
+  without leaving the theme.
+
+## Accent swatches (optional per-theme accent override)
+
+A theme may offer a curated set of alternate accents as numbered token
+pairs, each one picked and contrast-checked by the theme's own author:
+
+```css
+html[data-theme="lcars"] {
+  --ftl-accent-swatch-1: var(--ftl-lcars-sky);   --ftl-on-accent-swatch-1: #000;
+  --ftl-accent-swatch-2: var(--ftl-lcars-rose);  --ftl-on-accent-swatch-2: #000;
+}
+```
+
+An app offers whichever swatches (1–6) a theme actually defines, and sets
+`data-accent="<n>"` on `<html>` to select one. This is the supported
+replacement for a "paste your own theme JSON" feature: every swatch is a
+color the theme's author vouched for, never an arbitrary value that could
+fail the contrast floor unnoticed.
+
+## Palette variants (optional per-theme, e.g. `data-variant="grape"`)
+
+A theme can ship more than one palette under one identity — the way several
+references actually did (Windows XP's Blue/Olive/Silver, the iMac G3's
+fruit colors). No core mechanism is needed for this: a variant is just the
+theme's selector with an extra attribute,
+
+```css
+html[data-theme="imac-g3"] { /* Bondi Blue: the base palette */ }
+html[data-theme="imac-g3"][data-variant="grape"] { --ftl-accent: #6b3fa0; … }
+```
+
+`html[data-theme="x"][data-variant="y"]` sits at specificity `(0,2,1)`,
+which outranks the theme's own root block at `(0,1,1)`, so the variant
+wins. List a theme's variants in its `README.md`; `themes/imac-g3` is a
+worked example (Bondi/Blueberry/Grape/Tangerine).
+
 ## Component vocabulary (`.ftl-*`)
 
 ### Buttons
@@ -360,6 +411,23 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 | `aqua` | Aqua | macOS Snow Leopard brushed metal and gloss. |
 | `winamp-classic` | WinAmp Classic | Steel-gray skinned player. |
 | `wmp11` | Windows Media Player 11 | Black glass, blue glow. |
+| `imac-g3` | iMac G3 | Translucent Bondi Blue plastic; Blueberry/Grape/Tangerine variants. |
+| `winxp-zune` | Windows XP Zune | Matte charcoal, glowing orange accent. |
+| `msdos` | MS-DOS (Norton Commander) | Blue-and-white text mode, double-line borders. |
+| `pipboy` | Fallout Pip-Boy 3000 | Monochrome phosphor green, static scanlines. |
+| `nerv` | NERV Terminal | Black bunker chrome, hazard orange, crimson danger. |
+| `aperture` | Aperture Science | Sterile lab off-white, portal blue/orange accents. |
+| `death-star` | Death Star Terminal | True black, glowing solid indicator blocks, zero borders. |
+| `lego-classic` | LEGO Classic | Primary colours, thick outlines, pressable brick shadow. |
+| `steampunk` | Steampunk | Brass and mahogany, riveted panels. |
+| `cyber-goth` | Cyber-Goth | Black vinyl, toxic green + hot purple glow. |
+
+## Palette variants and accent swatches — worked example
+
+`imac-g3` demonstrates both optional mechanisms at once: its default is
+Bondi Blue, `data-variant="blueberry"/"grape"/"tangerine"` swap the whole
+shell to a different colorway, and `data-accent="1".."4"` on any theme
+that defines swatches recolours just the accent. See its `README.md`.
 
 Planned themes, with notes and the open iOS-era question, are in
 `docs/theme-backlog.md`.

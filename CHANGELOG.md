@@ -3,6 +3,33 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.1.0 — palette variants, accent swatches, display options, 10 new themes
+
+### Added
+
+- **Palette variants** (`data-variant`) — a theme may ship more than one
+  colorway under one identity, selected by an extra attribute on the
+  theme's own selector (`html[data-theme="x"][data-variant="y"]`, which at
+  specificity `(0,2,1)` outranks the theme's `(0,1,1)` root block, so no
+  core mechanism is needed). `imac-g3` ships Bondi Blue (default) plus
+  Blueberry/Grape/Tangerine.
+- **Accent swatches** (`data-accent="1".."6"`) — a theme may offer curated,
+  contrast-checked alternate accents as `--ftl-accent-swatch-<n>` /
+  `--ftl-on-accent-swatch-<n>` pairs; core reads whichever the theme
+  defines. This is the supported replacement for a "paste your own theme
+  JSON" feature: every swatch is a colour the theme's author vouched for.
+- **User display options**, independent of theme choice: a density
+  override via inline style (`<html style="--ftl-density: 0.85">`, which
+  wins over any stylesheet regardless of specificity); `data-motion`
+  (`"reduced"`) to force animations/transitions off from an in-app toggle,
+  not just the OS setting; `data-contrast` (`"high"`) to pull
+  `--ftl-hairline`/`--ftl-muted` up to `--ftl-border`/`--ftl-text` and
+  thicken the focus ring, without leaving the theme.
+- **Ten new themes**: `imac-g3`, `winxp-zune`, `msdos`, `pipboy`, `nerv`,
+  `aperture`, `death-star`, `lego-classic`, `steampunk`, `cyber-goth` —
+  each with a `README.md`, contrast-checked, and given a distinct
+  `--ftl-app-*` layout personality.
+
 ## v3.0.0 — themes control layout; instrument primitives; theme docs
 
 ### Added

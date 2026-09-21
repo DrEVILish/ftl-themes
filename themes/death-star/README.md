@@ -1,0 +1,31 @@
+# Death Star Terminal
+
+> Absolute black with glowing solid-colour indicator blocks, zero borders or shadows.
+
+## What this theme is trying to achieve
+
+The Imperial control terminal aesthetic: a void of true black
+punctuated only by solid-colour glowing indicator blocks — red, green,
+blue — with no frame, border or shadow drawn anywhere to soften it.
+
+## Core values
+
+1. **Zero borders, zero shadows, zero radius.** Every panel/input/button
+   border width is `0`. Structure comes only from solid fill against black.
+2. **Indicators glow; everything else doesn't.** Only lamps and the focus
+   ring carry any glow — restraint is what makes the glow read as a signal.
+3. **Colour blocks are solid, not gradients.** A filled surface is one flat
+   colour, full stop.
+4. **True black, not near-black.** `--ftl-bg: #000`. This is the one theme
+   in the catalogue that means it literally.
+
+## Layout
+
+No bar rule, no status rule — the bar and status strip are the same black
+as the page, distinguished only by the content sitting on them.
+
+## Tell-tales of an inauthentic result
+
+- Any visible border on a panel, button or input.
+- A gradient fill anywhere.
+- A near-black (`#0a0a0a`-ish) background instead of true `#000`.
