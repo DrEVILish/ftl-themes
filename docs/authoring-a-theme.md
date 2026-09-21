@@ -80,7 +80,27 @@ loads) and pick your theme. Check every component renders distinctly, Tab
 through the controls to confirm the focus ring is visible everywhere, and
 verify the semantic buttons still read as primary/danger/success.
 
-## 5. Register it
+## 5. Give it a layout
+
+A theme is a layout as much as a palette. Set the `--ftl-app-*` properties
+so that switching to your theme visibly re-arranges the shell — bar height
+and radius, whether a decorative rail appears and how it is painted, how
+the content is inset, what the status strip looks like. Compare
+`themes/lcars/theme.css` (a 6rem candy rail and an elbowed sweep bar)
+against `themes/blue-future/theme.css` (no rail, edge-to-edge content) for
+the two extremes. The lint warns if a theme sets none of these.
+
+## 6. Write its README.md
+
+Every theme has a `README.md` beside its `theme.css` saying what it is
+trying to achieve — the lint fails without one. It should cover: the
+reference being reproduced, the theme's core values as numbered rules, why
+the significant token values are what they are, what a contributor must not
+change, and the tell-tales of an inauthentic result. The point is that the
+next person extends the theme instead of gradually turning it into a
+different one.
+
+## 7. Register it
 
 Add a row to `CONTRACT.md`'s theme index. `demo.html` and `dist/themes.json`
 pick the theme up automatically — no list to edit.

@@ -6,6 +6,23 @@
  * also carries chrome.css — see docs/lcars-chrome.md.
  */
 
+/* Antonio is the LCARS display face, used by the shell's sweep bar and the
+ * numeric readouts. The url() is relative to the SERVED stylesheet, so
+ * scripts/build.sh rewrites it for the dist/ bundle — see CONTRACT.md
+ * § "Serving the assets". */
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 html[data-theme="lcars"] {
   --ftl-bg: #000000;
   --ftl-surface: #0c0c12;
@@ -72,6 +89,42 @@ html[data-theme="lcars"] {
   --ftl-label-tracking: 0.05em;
   --ftl-indicator-fg: var(--ftl-accent);
   --ftl-indicator-track: var(--ftl-surface-2);
+
+  /* On screen, LCARS is chunky: generous touch-sized blocks, candy-bar
+     colour coding, and numerals set big and blocky. Nothing here is dense —
+     the look is a wall panel, not a spreadsheet. */
+  --ftl-density: 1.15;
+  --ftl-meter-track: #000;
+  --ftl-meter-border: transparent;
+  --ftl-meter-radius: 0.6rem;
+  --ftl-meter-thickness: 0.9rem;
+  /* Candy bars, not traffic lights: LCARS codes level in its own palette. */
+  --ftl-meter-low: var(--ftl-lcars-sky);
+  --ftl-meter-mid: var(--ftl-accent);
+  --ftl-meter-high: var(--ftl-lcars-rose);
+  --ftl-meter-peak-fg: var(--ftl-lcars-tan);
+  --ftl-meter-peak-width: 3px;
+  --ftl-readout-fg: var(--ftl-accent);
+  --ftl-readout-font: "Antonio", var(--ftl-font);
+  --ftl-readout-weight: 700;
+  --ftl-readout-tracking: 0.04em;
+  --ftl-readout-size: 2rem;
+  --ftl-transport-bg: #000;
+  --ftl-transport-border-width: 0;
+  --ftl-transport-edge-width: 0.5rem;
+  --ftl-transport-edge: var(--ftl-accent);
+  --ftl-transport-radius: 0 0 0 1.4rem;
+  --ftl-go-bg: var(--ftl-accent);
+  --ftl-go-fg: #000;
+  --ftl-go-border-width: 0;
+  --ftl-go-radius: 0 1.4rem 1.4rem 0;
+  --ftl-go-padding: 0.6em 2.2em;
+  --ftl-go-bg-hover: var(--ftl-lcars-tan);
+  --ftl-lamp-radius: 0.4rem;
+  --ftl-lamp-size: 0.9rem;
+  --ftl-lamp-off: var(--ftl-surface-2);
+  --ftl-lamp-on: var(--ftl-lcars-sky);
+  --ftl-lamp-glow: none;
 }
 
 html[data-theme="lcars"] h1,
@@ -96,3 +149,72 @@ html[data-theme="lcars"] .ftl-table th:first-child { border-radius: 1rem 0 0 1re
 html[data-theme="lcars"] .ftl-table th:last-child { border-radius: 0 1rem 1rem 0; }
 
 html[data-theme="lcars"] .ftl-btn-success { --ftl-btn-bg: var(--ftl-lcars-sky); }
+
+/* --- Layout ------------------------------------------------------------ *
+ * The LCARS shell: a full-width sweep bar whose bottom-left corner elbows
+ * down into a candy-bar rail, with the content inset to the right of it.
+ * This is the layout difference between this theme and a flat HUD theme —
+ * switching to it re-arranges the shell, it does not just recolor it. */
+html[data-theme="lcars"] {
+  --ftl-app-bg: #000;
+  --ftl-app-columns: 6rem minmax(0, 1fr);
+  --ftl-app-gap: 0.5rem;
+  --ftl-app-padding: 0.5rem;
+  --ftl-app-bar-bg: var(--ftl-accent);
+  --ftl-app-bar-fg: #000;
+  --ftl-app-bar-rule-width: 0;
+  /* The elbow: bar sweeps in, curving down into the rail below it. */
+  --ftl-app-bar-radius: 1rem 1rem 0 3rem;
+  --ftl-app-bar-height: 3.5rem;
+  --ftl-app-bar-padding: 0.6rem 1.5rem;
+  --ftl-app-bar-font: "Antonio", var(--ftl-font);
+  --ftl-app-rail-display: flex;
+  --ftl-app-rail-padding: 0;
+  --ftl-app-rail-radius: 3rem 0 0 1rem;
+  --ftl-app-main-padding: 1.25rem 1.25rem 1.25rem 0.5rem;
+  --ftl-app-status-bg: #000;
+  --ftl-app-status-fg: var(--ftl-lcars-tan);
+  --ftl-app-status-rule: transparent;
+  --ftl-app-status-radius: 0 0 1rem 1rem;
+}
+
+/* The candy-bar stack, drawn entirely in CSS so the app ships no LCARS
+   markup: hard-stopped gradient bands with black gaps between them. */
+html[data-theme="lcars"] .ftl-app-rail {
+  background-image: linear-gradient(
+    180deg,
+    var(--ftl-lcars-lavender) 0 14%,
+    #000 14% 15.5%,
+    var(--ftl-lcars-sky) 15.5% 34%,
+    #000 34% 35.5%,
+    var(--ftl-accent) 35.5% 72%,
+    #000 72% 73.5%,
+    var(--ftl-lcars-rose) 73.5% 88%,
+    #000 88% 89.5%,
+    var(--ftl-lcars-tan) 89.5% 100%
+  );
+}
+
+/* On a phone the rail becomes a horizontal strip under the bar rather than
+   vanishing — the colour coding is most of the theme's identity. */
+@media (max-width: 720px) {
+  html[data-theme="lcars"] {
+    --ftl-app-areas-sm: "bar" "rail" "main" "status";
+    --ftl-app-rows-sm: auto 1.5rem minmax(0, 1fr) auto;
+    --ftl-app-rail-display-sm: block;
+    --ftl-app-rail-radius: 0.75rem;
+    --ftl-app-bar-radius: 1rem 1rem 0 1rem;
+  }
+  html[data-theme="lcars"] .ftl-app-rail {
+    background-image: linear-gradient(
+      90deg,
+      var(--ftl-lcars-lavender) 0 18%,
+      #000 18% 20%,
+      var(--ftl-lcars-sky) 20% 45%,
+      #000 45% 47%,
+      var(--ftl-accent) 47% 75%,
+      #000 75% 77%,
+      var(--ftl-lcars-rose) 77% 100%
+    );
+  }
+}

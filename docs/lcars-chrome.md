@@ -1,11 +1,18 @@
-# LCARS decorative chrome
+# LCARS decorative chrome (optional)
 
-`themes/lcars/chrome.css` adds a generic layout primitive,
-`.ftl-lcars-chrome`, that wraps an app's existing content in the
-sweep-header + elbowed-rail frame seen on screen in Star Trek TNG/DS9/
-Voyager — without requiring any change to the content's own markup or
-behavior. This is optional: the `lcars` theme's component styling
-(`themes/lcars/theme.css`) works standalone if you don't want the frame.
+**Most apps do not need this file.** Adopting the shared app shell
+(`core/ftl-layout.css` — `.ftl-app` + `.ftl-app-bar` + `.ftl-app-rail` +
+`.ftl-app-main`, see CONTRACT.md) already gives the LCARS theme its sweep
+bar and candy rail automatically, and switches the layout back when another
+theme is selected. That path costs no LCARS-specific markup.
+
+`themes/lcars/chrome.css` is the richer, opt-in alternative for an app that
+wants the fuller on-screen treatment with explicit markup: individually
+rounded rail bars and a real nav living inside the rail. It wraps an app's
+existing content in the sweep-header + elbowed-rail frame seen in TNG/DS9/
+Voyager without changing that content's own markup or behaviour — but the
+wrapper itself is LCARS-specific, so it stays in place under every other
+theme too.
 
 Reference source: the uploaded `LCARS-26` theme pack's `voyager.css` (the
 closest match to the on-screen TNG/DS9/Voyager look; `classic.css` in the

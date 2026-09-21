@@ -14,8 +14,9 @@ them in that app's own repo — they don't belong here.
 ## Loading a theme
 
 Each theme ships as a single compiled file at `dist/<theme-name>.css`
-(built by `scripts/build.sh` from `core/` + `themes/<name>/`). Link it and
-set `data-theme` on `<html>` before first paint:
+(built by `scripts/build.sh` from `core/` + `themes/<name>/`; it bundles the
+reset, the components, the app shell and the theme). Link it and set
+`data-theme` on `<html>` before first paint:
 
 ```html
 <html data-theme="blue-future">
@@ -122,6 +123,82 @@ e.g. `--ftl-btn-bg`, `--ftl-btn-fg`, `--ftl-btn-border`,
 `--ftl-row-selected-bg`, `--ftl-nav-item-fg-active`. Read
 `core/ftl-core.css` for the full set — every `var(--ftl-…, fallback)` in
 it is a documented override point.
+
+## The app shell — themes control layout, not just colour
+
+A theme is a *layout* as much as a palette: LCARS is a candy rail and a
+sweep bar, a telemetry HUD is a flat edge-to-edge panel. Switching theme
+should move the furniture.
+
+That works because there is one shell contract an app adopts **once**:
+
+```html
+<body class="ftl-app">
+  <header class="ftl-app-bar">brand, nav, actions</header>
+  <aside   class="ftl-app-rail" aria-hidden="true"></aside>
+  <main    class="ftl-app-main">…the app…</main>
+  <footer  class="ftl-app-status">status readouts</footer>
+</body>
+```
+
+Each theme re-arranges that same markup through `--ftl-app-*` properties —
+column widths, bar height and elbow radius, whether the rail exists, how
+the content is inset. The app never learns a theme's name and no theme
+needs app-specific markup.
+
+The **rail is decorative and empty**: themes that use it paint it in CSS
+(LCARS draws its candy-bar stack as a hard-stopped gradient), and themes
+that don't collapse it to nothing. Keep it `aria-hidden`.
+
+Adopting the shell is optional — an app that keeps its own layout still
+gets every component and token, it just won't re-lay-out per theme.
+
+Override points: `--ftl-app-areas`, `-columns`, `-rows`, `-gap`,
+`-padding`, `-bg`; `--ftl-app-bar-bg|-fg|-rule|-rule-width|-radius|-height|-padding|-font`;
+`--ftl-app-rail-display|-bg|-radius|-padding|-gap`;
+`--ftl-app-main-bg|-padding|-radius`; `--ftl-app-status-bg|-fg|-rule|-radius|-padding`;
+and the `-sm` variants (`--ftl-app-areas-sm`, `--ftl-app-rows-sm`,
+`--ftl-app-rail-display-sm`, `--ftl-app-main-padding-sm`) for ≤720px.
+
+## Instrument primitives
+
+These exist because the themes this library was built for are control
+surfaces, and a palette alone cannot express that:
+
+```html
+<!-- level meter: horizontal, or add .ftl-meter-v for a channel strip -->
+<div class="ftl-meter" style="--ftl-meter-level:72%; --ftl-meter-peak:84%">
+  <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+</div>
+
+<span class="ftl-readout">01:24:07<span class="ftl-readout-unit">tc</span></span>
+<span class="ftl-readout ftl-readout-lg">48<span class="ftl-readout-unit">kHz</span></span>
+
+<div class="ftl-transport">
+  <button class="ftl-btn ftl-btn-go">Go</button>
+  <span class="ftl-lamp is-on"></span>
+  <span class="ftl-lamp is-error"></span>
+</div>
+```
+
+- `.ftl-meter` — level/VU. Drive `--ftl-meter-level` and `--ftl-meter-peak`
+  as percentages from your app; band thresholds (`--ftl-meter-warn-at`,
+  `--ftl-meter-peak-at`) and colours (`--ftl-meter-low|mid|high`) are
+  tokens, so an app can move them live without the theme fighting it.
+- `.ftl-readout` — a large tabular machine value (`-lg`/`-sm` sizes, plus
+  `.ftl-readout-unit` for a trailing unit).
+- `.ftl-transport` + `.ftl-btn-go` — the bar carrying a surface's primary
+  action. `.ftl-btn-go` is a `.ftl-btn` variant, so it inherits every
+  button mechanic.
+- `.ftl-lamp` (+ `.is-on`/`.is-warn`/`.is-error`) — a hardware indicator
+  light. Unlike `.ftl-status` it reads as *off* rather than absent.
+
+## Density
+
+`--ftl-density` (default `1`) scales the paddings that decide how much data
+fits on screen — button, table cell and panel padding. A dense console
+theme sets `0.85`; a chunky touch-first theme sets `1.15`. A theme that
+sets an explicit `--ftl-btn-padding` opts that control out of density.
 
 ## Component vocabulary (`.ftl-*`)
 

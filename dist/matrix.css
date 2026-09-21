@@ -103,6 +103,10 @@ table {
      theme cannot accidentally leave a control with no focus indicator. */
   --ftl-focus: var(--ftl-accent);
   --ftl-focus-ring: none;
+  /* Density multiplier on the paddings that decide how much data fits on a
+     screen. A dense console theme sets ~0.8; a chunky touch-first theme
+     sets ~1.25. Must have a value here: it is used inside calc(). */
+  --ftl-density: 1;
 }
 
 html {
@@ -124,7 +128,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  padding: var(--ftl-btn-padding, 0.5em 1.1em);
+  padding: var(--ftl-btn-padding, calc(0.5em * var(--ftl-density)) calc(1.1em * var(--ftl-density)));
   border: var(--ftl-btn-border-width, 1px) solid var(--ftl-btn-border, var(--ftl-border));
   border-radius: var(--ftl-btn-radius, var(--ftl-radius));
   background: var(--ftl-btn-bg, var(--ftl-surface-2));
@@ -305,7 +309,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border: var(--ftl-panel-border-width, 1px) solid var(--ftl-panel-border, var(--ftl-border));
   border-radius: var(--ftl-panel-radius, var(--ftl-radius));
   box-shadow: var(--ftl-panel-shadow, none);
-  padding: 1rem;
+  padding: calc(1rem * var(--ftl-density));
 }
 .ftl-panel-header {
   margin: -1rem -1rem 1rem;
@@ -385,6 +389,180 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border-bottom: 1px solid var(--ftl-border);
 }
 
+/* --- Instrument primitives ---------------------------------------------- *
+ * These exist because the themes this library was built for are control
+ * surfaces — a recorder, a show-control console, a starship computer — and a
+ * palette alone cannot express that. Each one is a shape every such app
+ * otherwise hand-rolls, and each is a place a theme's identity actually
+ * shows: a VU meter, a big numeric readout, a transport bar, a lamp.
+ * All are app-agnostic: markup + tokens only, no app's class names.
+ */
+
+/* .ftl-meter — a signal-level meter (audio VU, load, any 0-100% level).
+ * Level and peak are supplied as percentages on the element:
+ *   <div class="ftl-meter" style="--ftl-meter-level:72%; --ftl-meter-peak:84%">
+ *     <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+ *   </div>
+ * The band thresholds are tokens so a consuming app can drive them live
+ * (e.g. from a dB scale) without the theme fighting it. */
+.ftl-meter {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: var(--ftl-meter-thickness, 0.6rem);
+  background: var(--ftl-meter-track, var(--ftl-bg));
+  border: 1px solid var(--ftl-meter-border, var(--ftl-hairline));
+  border-radius: var(--ftl-meter-radius, var(--ftl-radius));
+}
+.ftl-meter-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--ftl-meter-level, 0%);
+  /* One gradient sized to the whole track, then clipped by the fill's width,
+     so a given level always lands in the same colour band. */
+  background-image: var(--ftl-meter-fill-image, linear-gradient(
+    90deg,
+    var(--ftl-meter-low, var(--ftl-success)) 0%,
+    var(--ftl-meter-low, var(--ftl-success)) var(--ftl-meter-warn-at, 70%),
+    var(--ftl-meter-mid, var(--ftl-warning)) var(--ftl-meter-warn-at, 70%),
+    var(--ftl-meter-mid, var(--ftl-warning)) var(--ftl-meter-peak-at, 90%),
+    var(--ftl-meter-high, var(--ftl-danger)) var(--ftl-meter-peak-at, 90%)
+  ));
+  background-size: var(--ftl-meter-span, 100vw) 100%;
+  background-repeat: no-repeat;
+  transition: width 0.06s linear;
+}
+.ftl-meter-peak {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--ftl-meter-peak, 0%);
+  width: var(--ftl-meter-peak-width, 2px);
+  background: var(--ftl-meter-peak-fg, var(--ftl-text));
+  transform: translateX(-100%);
+}
+/* Vertical meters: channel strips read bottom-up. The fill and peak switch
+   axis, and --ftl-meter-span is measured down the track instead of across. */
+.ftl-meter-v {
+  width: var(--ftl-meter-thickness, 0.6rem);
+  height: 100%;
+}
+.ftl-meter-v .ftl-meter-fill {
+  inset: auto 0 0 0;
+  width: auto;
+  height: var(--ftl-meter-level, 0%);
+  background-image: var(--ftl-meter-fill-image-v, linear-gradient(
+    0deg,
+    var(--ftl-meter-low, var(--ftl-success)) 0%,
+    var(--ftl-meter-low, var(--ftl-success)) var(--ftl-meter-warn-at, 70%),
+    var(--ftl-meter-mid, var(--ftl-warning)) var(--ftl-meter-warn-at, 70%),
+    var(--ftl-meter-mid, var(--ftl-warning)) var(--ftl-meter-peak-at, 90%),
+    var(--ftl-meter-high, var(--ftl-danger)) var(--ftl-meter-peak-at, 90%)
+  ));
+  background-size: 100% var(--ftl-meter-span, 100vh);
+  background-position: bottom;
+  transition: height 0.06s linear;
+}
+.ftl-meter-v .ftl-meter-peak {
+  inset: auto 0 var(--ftl-meter-peak, 0%) 0;
+  left: auto;
+  width: auto;
+  height: var(--ftl-meter-peak-width, 2px);
+  transform: translateY(50%);
+}
+
+/* .ftl-readout — a large machine value: timecode, counter, channel count.
+ * Tabular by construction so it never reflows as it counts. */
+.ftl-readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+  padding: var(--ftl-readout-padding, 0.1em 0.35em);
+  background: var(--ftl-readout-bg, transparent);
+  color: var(--ftl-readout-fg, var(--ftl-accent));
+  border: var(--ftl-readout-border-width, 0) solid var(--ftl-readout-border, transparent);
+  border-radius: var(--ftl-readout-radius, var(--ftl-radius));
+  font-family: var(--ftl-readout-font, var(--ftl-font-mono));
+  font-variant-numeric: tabular-nums;
+  font-size: var(--ftl-readout-size, 1.5rem);
+  font-weight: var(--ftl-readout-weight, 600);
+  letter-spacing: var(--ftl-readout-tracking, 0.02em);
+  line-height: 1.1;
+  text-shadow: var(--ftl-readout-glow, none);
+}
+.ftl-readout-lg { --ftl-readout-size: 2.75rem; }
+.ftl-readout-sm { --ftl-readout-size: 1rem; }
+/* A trailing unit/label rides smaller and dimmer than the value. */
+.ftl-readout-unit {
+  font-size: 0.45em;
+  font-weight: 400;
+  color: var(--ftl-readout-unit-fg, var(--ftl-muted));
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* .ftl-transport — the bar carrying a surface's primary action(s): GO,
+ * record, arm, fire. Deliberately its own component and not a .ftl-toolbar:
+ * a transport is the one place a control surface is allowed to shout, and
+ * every theme here treats it as a signature element. */
+.ftl-transport {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: var(--ftl-transport-padding, 0.6rem 0.9rem);
+  background: var(--ftl-transport-bg, var(--ftl-surface));
+  border: var(--ftl-transport-border-width, 1px) solid var(--ftl-transport-border, var(--ftl-border));
+  border-left: var(--ftl-transport-edge-width, 1px) solid var(--ftl-transport-edge, var(--ftl-border));
+  border-radius: var(--ftl-transport-radius, var(--ftl-radius));
+  box-shadow: var(--ftl-transport-shadow, none);
+}
+/* The primary trigger. Bigger and louder than .ftl-btn-primary on purpose;
+ * it is a variant of .ftl-btn, so it inherits every button mechanic. */
+.ftl-btn-go {
+  --ftl-btn-bg: var(--ftl-go-bg, transparent);
+  --ftl-btn-fg: var(--ftl-go-fg, var(--ftl-accent));
+  --ftl-btn-border: var(--ftl-go-border, var(--ftl-accent));
+  --ftl-btn-border-width: var(--ftl-go-border-width, 2px);
+  --ftl-btn-padding: var(--ftl-go-padding, 0.6em 1.8em);
+  --ftl-btn-weight: 800;
+  --ftl-btn-tracking: 0.12em;
+  --ftl-btn-transform: uppercase;
+  --ftl-btn-radius: var(--ftl-go-radius, var(--ftl-radius));
+  --ftl-btn-shadow: var(--ftl-go-shadow, none);
+  --ftl-btn-bg-hover: var(--ftl-go-bg-hover, var(--ftl-go-bg, transparent));
+  --ftl-btn-shadow-hover: var(--ftl-go-shadow-hover, var(--ftl-go-shadow, none));
+  font-size: var(--ftl-go-size, 1.05rem);
+}
+
+/* .ftl-lamp — a hardware indicator light. Distinct from .ftl-status, which
+ * is a labelled text state: a lamp is a lit or unlit fixture, and reads as
+ * off (dim, present) rather than absent. */
+.ftl-lamp {
+  display: inline-block;
+  width: var(--ftl-lamp-size, 0.7rem);
+  height: var(--ftl-lamp-size, 0.7rem);
+  flex-shrink: 0;
+  border-radius: var(--ftl-lamp-radius, 50%);
+  border: 1px solid var(--ftl-lamp-border, var(--ftl-hairline));
+  background: var(--ftl-lamp-off, var(--ftl-surface-2));
+  box-shadow: none;
+}
+.ftl-lamp.is-on {
+  background: var(--ftl-lamp-on, var(--ftl-success));
+  border-color: var(--ftl-lamp-on, var(--ftl-success));
+  box-shadow: var(--ftl-lamp-glow, 0 0 0.4rem var(--ftl-lamp-on, var(--ftl-success)));
+}
+.ftl-lamp.is-warn {
+  background: var(--ftl-warning);
+  border-color: var(--ftl-warning);
+  box-shadow: var(--ftl-lamp-glow, 0 0 0.4rem var(--ftl-warning));
+}
+.ftl-lamp.is-error {
+  background: var(--ftl-danger);
+  border-color: var(--ftl-danger);
+  box-shadow: var(--ftl-lamp-glow, 0 0 0.4rem var(--ftl-danger));
+}
+
 /* --- .ftl-table -------------------------------------------------------- */
 .ftl-table {
   width: 100%;
@@ -393,7 +571,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 }
 .ftl-table th {
   text-align: left;
-  padding: 0.5em 0.75em;
+  padding: calc(0.5em * var(--ftl-density)) calc(0.75em * var(--ftl-density));
   background: var(--ftl-table-head-bg, transparent);
   color: var(--ftl-table-head-fg, var(--ftl-muted));
   border-bottom: var(--ftl-table-head-rule-width, 1px) solid var(--ftl-table-head-rule, var(--ftl-border));
@@ -402,7 +580,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   font-size: 0.78em;
 }
 .ftl-table td {
-  padding: 0.5em 0.75em;
+  padding: calc(0.5em * var(--ftl-density)) calc(0.75em * var(--ftl-density));
   border-bottom: 1px solid var(--ftl-table-rule, var(--ftl-hairline));
 }
 /* Row states carry BOTH a background and a left marker, so a theme that
@@ -570,6 +748,111 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   .htmx-settling { transition: none; }
   .ftl-indicator { animation-duration: 2s; }
 }
+/* ftl-themes: the app shell.
+ *
+ * A theme is not only a palette — LCARS and a telemetry HUD are different
+ * LAYOUTS, and switching theme has to move the furniture, not just recolor
+ * it. This file defines ONE shell markup contract that an app adopts once:
+ *
+ *   <body class="ftl-app">
+ *     <header class="ftl-app-bar">brand, nav, actions</header>
+ *     <aside   class="ftl-app-rail" aria-hidden="true"></aside>
+ *     <main    class="ftl-app-main">…the app…</main>
+ *     <footer  class="ftl-app-status">status readouts</footer>
+ *   </body>
+ *
+ * Every theme then re-arranges that same markup through the --ftl-app-*
+ * properties below: a theme can move the bar, open or close the rail,
+ * change the elbow radii, and inset the content. The app never learns a
+ * theme's name, and no theme needs app-specific markup.
+ *
+ * The rail is DECORATION, generated entirely in CSS (see each theme's
+ * layout block) and `aria-hidden` in the markup above, so a theme that
+ * wants a candy-bar sidebar gets one without the app shipping an empty
+ * element's worth of content. Themes with no rail collapse it to nothing.
+ *
+ * Adopting the shell is optional: an app that keeps its own layout still
+ * gets every component and token. It just won't re-lay-out per theme.
+ */
+
+.ftl-app {
+  display: grid;
+  grid-template-areas: var(--ftl-app-areas, "bar bar" "rail main" "status status");
+  grid-template-columns: var(--ftl-app-columns, 0 minmax(0, 1fr));
+  grid-template-rows: var(--ftl-app-rows, auto minmax(0, 1fr) auto);
+  gap: var(--ftl-app-gap, 0);
+  min-height: 100vh;
+  /* dvh tracks the actually-visible viewport on mobile browsers, where vh
+     is the largest possible one and hides content behind the toolbar. */
+  min-height: 100dvh;
+  padding: var(--ftl-app-padding, 0);
+  background: var(--ftl-app-bg, transparent);
+}
+
+.ftl-app-bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: var(--ftl-app-bar-padding, 0.6rem 1rem);
+  background: var(--ftl-app-bar-bg, var(--ftl-nav-bg, var(--ftl-surface)));
+  color: var(--ftl-app-bar-fg, inherit);
+  border-bottom: var(--ftl-app-bar-rule-width, 1px) solid var(--ftl-app-bar-rule, var(--ftl-border));
+  border-radius: var(--ftl-app-bar-radius, 0);
+  min-height: var(--ftl-app-bar-height, auto);
+  font-family: var(--ftl-app-bar-font, inherit);
+}
+
+/* Decorative only. Themes that use it set --ftl-app-rail-display and paint
+   it with a gradient/pseudo-elements; the default is no rail at all. */
+.ftl-app-rail {
+  grid-area: rail;
+  display: var(--ftl-app-rail-display, none);
+  flex-direction: column;
+  gap: var(--ftl-app-rail-gap, 0.4rem);
+  padding: var(--ftl-app-rail-padding, 0);
+  background: var(--ftl-app-rail-bg, transparent);
+  border-radius: var(--ftl-app-rail-radius, 0);
+  pointer-events: none;
+}
+
+.ftl-app-main {
+  grid-area: main;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--ftl-app-main-padding, 1rem);
+  background: var(--ftl-app-main-bg, transparent);
+  border-radius: var(--ftl-app-main-radius, 0);
+}
+
+.ftl-app-status {
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: var(--ftl-app-status-padding, 0.4rem 1rem);
+  background: var(--ftl-app-status-bg, var(--ftl-surface));
+  color: var(--ftl-app-status-fg, var(--ftl-muted));
+  border-top: 1px solid var(--ftl-app-status-rule, var(--ftl-hairline));
+  border-radius: var(--ftl-app-status-radius, 0);
+  font-size: 0.82em;
+}
+
+/* Below this width every theme drops to a single column: a decorative rail
+   is the first thing to go when the viewport is the constraint. Themes can
+   opt back in with --ftl-app-rail-display-sm. */
+@media (max-width: 720px) {
+  .ftl-app {
+    grid-template-areas: var(--ftl-app-areas-sm, "bar" "main" "status");
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--ftl-app-rows-sm, auto minmax(0, 1fr) auto);
+  }
+  .ftl-app-rail { display: var(--ftl-app-rail-display-sm, none); }
+  .ftl-app-main { padding: var(--ftl-app-main-padding-sm, 0.75rem); }
+}
 /* ftl-themes: The Matrix
  * Theme-Name: The Matrix
  * Description: Green phosphor on black — monospace terminal cascade.
@@ -636,4 +919,17 @@ html[data-theme="matrix"] .ftl-btn-primary { --ftl-btn-bg: rgba(0, 255, 65, 0.12
   0%, 92%, 100% { opacity: 1; }
   94% { opacity: 0.7; }
   96% { opacity: 1; }
+}
+
+/* --- Layout ------------------------------------------------------------ *
+ * A terminal: no chrome to speak of, one hairline rule under the bar, and
+ * the content filling the frame. */
+html[data-theme="matrix"] {
+  --ftl-app-bg: #000;
+  --ftl-app-bar-bg: #000;
+  --ftl-app-bar-rule: var(--ftl-border);
+  --ftl-app-bar-height: 2.4rem;
+  --ftl-app-main-padding: 1rem;
+  --ftl-app-status-bg: #000;
+  --ftl-app-status-fg: var(--ftl-muted);
 }

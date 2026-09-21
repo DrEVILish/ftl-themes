@@ -17,8 +17,16 @@ Windows 95 to TRON.
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
   and changed how themes override components.
 
-It also handles htmx's own swap states (`.htmx-request`, `.ftl-indicator`,
-swap/settle transitions) so consuming apps don't hand-roll pending UI.
+Themes control **layout**, not just colour: adopt the app shell once
+(`.ftl-app` + bar/rail/main/status) and switching theme re-arranges it —
+LCARS opens its candy rail and elbows the bar into it, a HUD theme runs
+edge-to-edge. It ships **instrument primitives** (`.ftl-meter`,
+`.ftl-readout`, `.ftl-transport`/`.ftl-btn-go`, `.ftl-lamp`) for control
+surfaces, and handles htmx's own swap states (`.htmx-request`,
+`.ftl-indicator`) so consuming apps don't hand-roll pending UI.
+
+Every theme has a `README.md` beside its CSS explaining what it is trying
+to achieve and how to extend it without drifting.
 
 ## Layout
 

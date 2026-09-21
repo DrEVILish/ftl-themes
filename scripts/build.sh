@@ -32,6 +32,7 @@ for dir in themes/*/; do
     echo " * Do not edit; edit themes/${name}/theme.css instead. */"
     cat core/ftl-reset.css
     cat core/ftl-core.css
+    cat core/ftl-layout.css
     cat "$src"
     if [ -f "themes/${name}/chrome.css" ]; then cat "themes/${name}/chrome.css"; fi
   } | rewrite_urls > "$out"

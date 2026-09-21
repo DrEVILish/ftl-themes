@@ -19,6 +19,10 @@ Every rule corresponds to a bug that actually shipped once:
              light palettes; --ftl-on-* exist to prevent it.
   dist       committed bundles must match a fresh build, since submodule
              consumers cannot run the build themselves.
+  docs       a theme without a stated intent gets "improved" into a different
+             theme by the next contributor.
+  layout     a theme is a layout as much as a palette; one that sets no
+             --ftl-app-* property renders in the default arrangement.
 """
 import glob
 import json
@@ -167,6 +171,27 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     proped = {m.group(1) for m in re.finditer(r"--ftl-(btn|panel|modal|input|nav|table|tab|badge|progress|slider|switch|dropdown)\b", body)}
     if not styled and not proped:
         warn(theme, "coverage", "styles no components at all beyond tokens")
+
+    # Every theme states its intent in prose beside its CSS: what look it is
+    # reproducing, its core values, and how to tell an inauthentic result.
+    # A palette without that context gets "improved" into something else.
+    readme = os.path.join(os.path.dirname(path), "README.md")
+    if not os.path.exists(readme):
+        fail(theme, "docs", "no README.md beside theme.css — every theme documents "
+                            "what it is trying to achieve (see any existing theme)")
+    else:
+        text = open(readme).read()
+        for heading in ("What this theme is trying to achieve", "Core values"):
+            if heading.lower() not in text.lower():
+                warn(theme, "docs", f"README.md has no '{heading}' section")
+
+    # A theme is a layout as much as a palette — switching to one should move
+    # the furniture, not only recolor it. Themes that set no --ftl-app-*
+    # property render in the shell's default arrangement, which is legitimate
+    # but usually means the layout pass was forgotten.
+    if not re.search(r"--ftl-app-[\w-]+\s*:", body):
+        warn(theme, "layout", "defines no --ftl-app-* layout personality — the app "
+                              "shell will look identical to every other such theme")
 
 # dist/ must match a fresh build.
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
