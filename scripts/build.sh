@@ -68,13 +68,20 @@ for dir in themes/*/; do
   [ -n "$label" ] || label="$name"
   chrome=false
   if [ -f "themes/${name}/chrome.css" ]; then chrome=true; fi
+  # shellAware mirrors scripts/check.py's "layout" lint: a theme that sets
+  # no --ftl-app-* property renders identically whether or not the app
+  # adopts the .ftl-app shell, so a picker can tell the user up front
+  # whether linking this theme alone gets its full intended layout (see
+  # CONTRACT.md "Adoption levels").
+  shellAware=false
+  if grep -Eq -- '--ftl-app-[A-Za-z0-9-]+\s*:' "$src"; then shellAware=true; fi
   # dataTheme is always identical to slug (CONTRACT.md guarantees this by
   # construction — themes.json's directory name IS the data-theme value) but
   # is spelled out explicitly here anyway, so an integrator never has to
   # infer it or discover the guarantee by reading source.
-  printf '  {"slug": "%s", "dataTheme": "%s", "label": "%s", "description": "%s", "hasChrome": %s, "version": "%s", "builtAt": "%s"}\n' \
+  printf '  {"slug": "%s", "dataTheme": "%s", "label": "%s", "description": "%s", "hasChrome": %s, "shellAware": %s, "version": "%s", "builtAt": "%s"}\n' \
     "$(json_escape "$name")" "$(json_escape "$name")" "$(json_escape "$label")" "$(json_escape "$desc")" \
-    "$chrome" "$(json_escape "$version")" "$built_at" >> "$manifest.tmp"
+    "$chrome" "$shellAware" "$(json_escape "$version")" "$built_at" >> "$manifest.tmp"
   echo "built $out"
 done
 

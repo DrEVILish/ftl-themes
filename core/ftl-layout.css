@@ -39,6 +39,16 @@
   background: var(--ftl-app-bg, transparent);
 }
 
+/* An app that never adds the rail element at all (not even an empty one)
+   has no box for :empty to match, so a theme's --ftl-app-columns would
+   still reserve a blank gutter next to .ftl-app-main. Collapse the column
+   track itself in that case. Browsers without :has() just keep the blank
+   gutter — a graceful degrade, not a break. */
+.ftl-app:not(:has(> .ftl-app-rail)) {
+  grid-template-areas: var(--ftl-app-areas-no-rail, "bar" "main" "status");
+  grid-template-columns: var(--ftl-app-columns-no-rail, minmax(0, 1fr));
+}
+
 .ftl-app-bar {
   grid-area: bar;
   display: flex;
@@ -65,6 +75,16 @@
   background: var(--ftl-app-rail-bg, transparent);
   border-radius: var(--ftl-app-rail-radius, 0);
   pointer-events: none;
+}
+
+/* An app that adopts the shell but never adds the (optional, decorative)
+   rail element still gets a theme's --ftl-app-rail-display/-columns, which
+   would otherwise reserve a painted, empty column. Emptiness alone is
+   sufficient to collapse it — an app that DOES add the rail markup (even
+   just `<aside class="ftl-app-rail" aria-hidden="true"></aside>`) is
+   unaffected, since :empty no longer matches once it has content. */
+.ftl-app-rail:empty {
+  display: none;
 }
 
 .ftl-app-main {

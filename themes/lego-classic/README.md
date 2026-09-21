@@ -33,3 +33,12 @@ top of it.
 - Thin or no borders — the moulding line is the entire identity.
 - A button with no press-shadow interaction.
 - Pastel or muted colours instead of flat primaries.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

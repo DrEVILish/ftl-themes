@@ -29,3 +29,12 @@ background — quiet by default, warm at the edges.
 - Any gradient on a button or panel → this isn't Luna's gloss language.
 - More than one accent hue in view at once.
 - A bright, saturated background — this palette stays near-black throughout.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

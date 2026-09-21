@@ -223,6 +223,8 @@ for entry in manifest:
              f"CONTRACT.md guarantees these are always equal")
     if "version" not in entry or "builtAt" not in entry:
         fail(entry.get("slug", "?"), "manifest", "missing version/builtAt")
+    if "shellAware" not in entry:
+        fail(entry.get("slug", "?"), "manifest", "missing shellAware")
 
 def _without_build_identity(entries):
     return [{k: v for k, v in e.items() if k not in ("version", "builtAt")} for e in entries]

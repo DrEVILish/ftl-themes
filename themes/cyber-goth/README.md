@@ -31,3 +31,12 @@ content area carrying the same vinyl-gloss panels throughout.
   green as structure) → the two-colour logic collapses.
 - Flat matte surfaces — this is glossy plastic, not a terminal.
 - A tight, thin glow instead of a soft bloom.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

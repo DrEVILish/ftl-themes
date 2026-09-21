@@ -36,7 +36,7 @@ attribute together. Themes are mutually exclusive: load exactly one
 ```json
 [{
   "slug": "lcars", "dataTheme": "lcars", "label": "LCARS",
-  "description": "…", "hasChrome": true,
+  "description": "…", "hasChrome": true, "shellAware": true,
   "version": "v3.1.0-3-gA1b2c3d", "builtAt": "2026-09-22T10:15:00Z"
 }]
 ```
@@ -58,6 +58,12 @@ hardcoding a list or scraping CSS comments.
   structure, so *every* core change touches *every* theme's file, and
   "which commit is this deployment actually serving" is otherwise
   unanswerable from the CSS alone.
+- **`shellAware` says whether this theme's full intent needs L1** (see
+  "Adoption levels" below) — `true` when the theme sets any `--ftl-app-*`
+  property, `false` when it's a pure palette. Show it in your picker (e.g.
+  "full layout requires the app shell") instead of a user discovering the
+  gap by linking the theme and wondering why LCARS looks like a recolored
+  default page.
 
 ### Serving the assets
 
@@ -237,6 +243,43 @@ Override points: `--ftl-app-areas`, `-columns`, `-rows`, `-gap`,
 `--ftl-app-main-bg|-padding|-radius`; `--ftl-app-status-bg|-fg|-rule|-radius|-padding`;
 and the `-sm` variants (`--ftl-app-areas-sm`, `--ftl-app-rows-sm`,
 `--ftl-app-rail-display-sm`, `--ftl-app-main-padding-sm`) for ≤720px.
+
+**Graceful degrade without the shell.** An app that links a theme but
+never adds this markup still gets a correct, uncluttered result: no rail
+element in the DOM means `.ftl-app-rail:empty` (or, absent that element
+entirely, `.ftl-app:not(:has(> .ftl-app-rail))`) collapses the rail's
+column instead of rendering an empty painted gutter. A theme that opens a
+rail is required to keep working — not to look identical, just not
+broken — when the app hasn't added the `<aside>` element at all.
+
+### Adoption levels
+
+Three levels, each optional and each strictly additive over the last — an
+app can stop at any level and nothing above it is required to make what
+it has correct:
+
+- **L0 — tokens only.** Link a theme's CSS (or bridge your own `--ftl-*`
+  declarations onto `dist/ftl-core.css`). You get the palette and every
+  `.ftl-*` component look. A theme whose identity is primarily a *layout*
+  (LCARS, tron, wmp11, aqua, windows95, winamp-classic — anything with a
+  `shellAware: true` manifest entry, see "Theme index") will render
+  correctly recolored but **not** in its distinguishing arrangement: this
+  is expected, not a bug, and is what the previous section's degrade
+  guarantees stays uncluttered rather than broken.
+- **L1 — the app shell.** Add the `.ftl-app`/`-bar`/`-rail`/`-main`/
+  `-status` markup above. Layout-tier themes now re-arrange for real (the
+  LCARS rail opens, the bar elbows into it). This is the level a theme's
+  README means when it says what's lost without the shell — see each
+  theme's `README.md`.
+- **L2 — theme-specific chrome / full component adoption.** Optional
+  richer primitives a theme ships beyond the shell, e.g. `themes/lcars/
+  chrome.css`'s frame elements (see `docs/lcars-chrome.md`), or replacing
+  more of an app's own markup with `.ftl-*` components than the minimum
+  the shell requires.
+
+A theme must not look *broken* one level down from what it was authored
+for — L1→L0 is guaranteed mechanically by the rail degrade above; there is
+no L1-specific markup a theme is allowed to assume exists unconditionally.
 
 ## Instrument primitives
 

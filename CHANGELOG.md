@@ -3,6 +3,44 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.2.0 — layout-tier themes degrade gracefully; adoption levels documented
+
+Filed as ftl-themes#3 and #4 after real integrations (PI9696, CuTePi,
+Playlist-Lab) all shipped as token-only: linking a layout-defining theme
+like LCARS without adopting the `.ftl-app` shell produced "an orange-tinted
+blue-future," not LCARS — technically correct, but not what "generic
+project other apps can use easily" should mean without a documented path
+to the real experience. All additive.
+
+### Added
+
+- **`.ftl-app-rail` degrades gracefully with no shell markup.**
+  `core/ftl-layout.css`: `.ftl-app-rail:empty { display: none }` collapses
+  a theme's decorative rail when the app added the element but left it
+  empty (the documented, `aria-hidden`, no-content case); `.ftl-app:not(:has(>
+  .ftl-app-rail))` collapses the column track itself when the app never
+  added the element at all. Either way, a theme that opens a rail (LCARS,
+  tron, wmp11, aqua, …) no longer paints an unexplained empty gutter in an
+  app that hasn't adopted the shell — it just quietly doesn't reserve the
+  space, per CONTRACT.md's new degrade rule: *a theme must not look broken
+  one level down from what it was authored for*.
+- **CONTRACT.md "Adoption levels"**: formalizes L0 (tokens only — today's
+  actual state for every sibling app), L1 (the `.ftl-app` shell — layout-
+  tier theming), L2 (theme-specific chrome or full `.ftl-*` component
+  adoption), replacing the previous informal "adopting the shell is
+  optional" note with an explicit, named ladder an integrator can point at.
+- **`shellAware` field on every `dist/themes.json` entry** — `true` when a
+  theme sets any `--ftl-app-*` property (the same detection
+  `scripts/check.py`'s existing `layout` warning already used), so a
+  picker can tell the user up front that a theme's full intent needs L1,
+  instead of them discovering the gap after linking it.
+- **A "Requires" note in every theme's `README.md`** naming what's lost at
+  L0 and pointing at CONTRACT.md's "Adoption levels" for the fix.
+- **`demo.html` L0/L1 toggle** — unchecking "App shell" strips the
+  `.ftl-app*` classes from the same elements live, so the fidelity gap is
+  visible in the one place a theme is meant to be evaluated, rather than
+  only discoverable after a real app integration.
+
 ## v3.1.1 — contract gaps found by the first real integration
 
 CuTePi's integration (DrEVILish/CuTePi#1) surfaced six gaps between what

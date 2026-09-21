@@ -27,6 +27,10 @@
   <a class="ftl-nav-item" href="#">Settings</a>
   <a class="ftl-nav-item" href="#">Logs</a>
   <span style="margin-left:auto"></span>
+  <label class="demo-note" style="display:flex;align-items:center;gap:0.3rem;">
+    <input type="checkbox" id="shell-toggle" checked>
+    App shell (L1)
+  </label>
   <label>
     <select class="ftl-select" id="theme-picker" style="display:inline-block;width:auto;"></select>
   </label>
@@ -226,6 +230,24 @@
     });
 
   picker.addEventListener("change", function () { applyTheme(picker.value); });
+
+  // L0/L1 toggle: demonstrates the fidelity gap ftl-themes issues #3/#4
+  // describe. Unchecking strips the .ftl-app shell classes from these exact
+  // same elements — no markup is swapped, no new page is loaded — so a
+  // layout-tier theme (LCARS, tron, wmp11, …) visibly drops back to a plain
+  // stacked page (L0: tokens only) instead of its real arrangement (L1: the
+  // app shell adopted). This is precisely what a consuming app sees before
+  // vs after adopting the shell markup documented in CONTRACT.md.
+  var shellEls = [
+    { el: document.body, cls: "ftl-app" },
+    { el: document.querySelector(".ftl-app-bar"), cls: "ftl-app-bar" },
+    { el: document.querySelector(".ftl-app-rail"), cls: "ftl-app-rail" },
+    { el: document.querySelector(".ftl-app-main"), cls: "ftl-app-main" },
+    { el: document.querySelector(".ftl-app-status"), cls: "ftl-app-status" }
+  ];
+  document.getElementById("shell-toggle").addEventListener("change", function (e) {
+    shellEls.forEach(function (s) { s.el.classList.toggle(s.cls, e.target.checked); });
+  });
 </script>
 </body>
 </html>
