@@ -20,6 +20,32 @@ header_field() { # <file> <field>
 
 json_escape() { printf '%s' "$1" | sed 's#\\#\\\\#g; s#"#\\"#g'; }
 
+# Build identity: a submodule consumer pinning a commit wants to confirm
+# which build it's actually serving. version is the git description when
+# available (falls back to the commit alone, then to "unknown" outside a
+# git checkout — a stale tarball export, say); builtAt is when build.sh ran.
+commit="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+version="$(git describe --tags --always --dirty 2>/dev/null || echo "$commit")"
+built_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+# core/ftl-reset.css + ftl-core.css alone, with no theme and no layout
+# shell — for an app that wants the --ftl-* token contract and component
+# structure but supplies its own palette (color-only adoption), or that
+# will never adopt the .ftl-app shell. See CONTRACT.md "Color-only
+# adoption". No components are USABLE until a theme (or the app itself)
+# defines the tokens they read — this file supplies structure, not look.
+{
+  echo "/* ftl-themes: core structure only (reset + components), no theme, no"
+  echo " * app shell. See CONTRACT.md \"Color-only adoption\" — components need"
+  echo " * a theme (or your own --ftl-* values) layered on top before they"
+  echo " * have a look at all. Build identity lives in dist/themes.json, not"
+  echo " * here, so this file's content stays stable across rebuilds of the"
+  echo " * same source and doesn't spuriously fail the dist-sync check. */"
+  cat core/ftl-reset.css
+  cat core/ftl-core.css
+} > dist/ftl-core.css
+echo "built dist/ftl-core.css"
+
 manifest="dist/themes.json"
 : > "$manifest.tmp"
 
@@ -42,8 +68,13 @@ for dir in themes/*/; do
   [ -n "$label" ] || label="$name"
   chrome=false
   if [ -f "themes/${name}/chrome.css" ]; then chrome=true; fi
-  printf '  {"slug": "%s", "label": "%s", "description": "%s", "hasChrome": %s}\n' \
-    "$(json_escape "$name")" "$(json_escape "$label")" "$(json_escape "$desc")" "$chrome" >> "$manifest.tmp"
+  # dataTheme is always identical to slug (CONTRACT.md guarantees this by
+  # construction — themes.json's directory name IS the data-theme value) but
+  # is spelled out explicitly here anyway, so an integrator never has to
+  # infer it or discover the guarantee by reading source.
+  printf '  {"slug": "%s", "dataTheme": "%s", "label": "%s", "description": "%s", "hasChrome": %s, "version": "%s", "builtAt": "%s"}\n' \
+    "$(json_escape "$name")" "$(json_escape "$name")" "$(json_escape "$label")" "$(json_escape "$desc")" \
+    "$chrome" "$(json_escape "$version")" "$built_at" >> "$manifest.tmp"
   echo "built $out"
 done
 

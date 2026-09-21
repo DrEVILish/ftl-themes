@@ -193,15 +193,22 @@ for path in sorted(glob.glob("themes/*/theme.css")):
         warn(theme, "layout", "defines no --ftl-app-* layout personality — the app "
                               "shell will look identical to every other such theme")
 
-# dist/ must match a fresh build.
+# dist/ must match a fresh build — except dist/themes.json, whose version/
+# builtAt fields are expected to differ on every single build by design (see
+# below) and would otherwise fail this check even when nothing meaningful
+# changed.
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
-diff = subprocess.run(["git", "diff", "--name-only", "--", "dist"],
+diff = subprocess.run(["git", "diff", "--name-only", "--", "dist", ":!dist/themes.json"],
                       capture_output=True, text=True).stdout.split()
 if diff:
     failures.append("dist: committed bundles are stale — run scripts/build.sh and commit "
                     f"({', '.join(diff)})")
 
-# The manifest must list every theme.
+# The manifest must list every theme, and each entry must carry the fields
+# integrators actually rely on: dataTheme (guaranteed equal to slug — spelled
+# out per-entry anyway, per CONTRACT.md "dataTheme"), a hasChrome flag, and
+# build identity. Content other than version/builtAt is compared against the
+# staged copy, since those two fields legitimately differ on every rebuild.
 manifest = json.load(open("dist/themes.json"))
 slugs = {e["slug"] for e in manifest}
 on_disk = {os.path.basename(os.path.dirname(p)) for p in glob.glob("themes/*/theme.css")}
@@ -210,6 +217,26 @@ if slugs != on_disk:
 for entry in manifest:
     if not entry["description"]:
         warn(entry["slug"], "manifest", "no `Description:` line in the theme header comment")
+    if entry.get("dataTheme") != entry.get("slug"):
+        fail(entry.get("slug", "?"), "manifest",
+             f"dataTheme {entry.get('dataTheme')!r} != slug {entry.get('slug')!r} — "
+             f"CONTRACT.md guarantees these are always equal")
+    if "version" not in entry or "builtAt" not in entry:
+        fail(entry.get("slug", "?"), "manifest", "missing version/builtAt")
+
+def _without_build_identity(entries):
+    return [{k: v for k, v in e.items() if k not in ("version", "builtAt")} for e in entries]
+
+staged_raw = subprocess.run(["git", "show", ":dist/themes.json"],
+                            capture_output=True, text=True)
+if staged_raw.returncode == 0:
+    try:
+        staged_manifest = json.loads(staged_raw.stdout)
+        if _without_build_identity(staged_manifest) != _without_build_identity(manifest):
+            failures.append("dist/themes.json: staged content differs from a fresh build "
+                            "(beyond version/builtAt) — run scripts/build.sh and commit")
+    except json.JSONDecodeError:
+        pass  # staged copy predates this format; first migration is exempt
 
 for w in warnings:
     print(f"warn  {w}")

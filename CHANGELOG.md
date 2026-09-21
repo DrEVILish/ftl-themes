@@ -3,6 +3,39 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.1.1 — contract gaps found by the first real integration
+
+CuTePi's integration (DrEVILish/CuTePi#1) surfaced six gaps between what
+the contract implied and what it actually guaranteed. All additive; no
+existing field changed shape.
+
+### Added
+
+- **`dataTheme` field on every `dist/themes.json` entry**, explicitly equal
+  to `slug` — CONTRACT.md already guaranteed this by construction, but an
+  integrator had to infer or verify it themselves. Use `dataTheme`, not
+  `slug`, when building a picker id.
+- **`version`/`builtAt` on every manifest entry**, from `scripts/build.sh`
+  (`git describe` + UTC timestamp). Since dist bundles inline the core
+  component structure, every core change touches every theme's file — this
+  is how an integrator confirms which build a deployment is actually
+  serving. `scripts/check.py`'s dist-sync check now diffs `themes.json`'s
+  content *excluding* these two fields (they legitimately change on every
+  rebuild) while still failing on any other drift.
+- **`dist/ftl-core.css`** — the reset + `.ftl-*` component structure alone,
+  no theme, no app shell. For an app doing colour-only adoption (a token
+  bridge onto its own existing classes, no `.ftl-*` markup) that doesn't
+  want to load a full theme bundle just to get the component CSS it will
+  never use. See CONTRACT.md "Color-only adoption".
+- **CONTRACT.md**: a "Cache-busting" section recommending `?v=<manifest
+  version>`, so family apps stop each inventing their own scheme (CuTePi's
+  binary-mtime scheme predates this and still works — this just gives the
+  next app a documented default); an "Avoiding name collisions with an
+  app's own themes" section documenting the qualified-picker-id pattern
+  (`app:lcars` / `ftl:lcars`) CuTePi had to invent from scratch; and the
+  sibling-asset-serving requirement (previously a paragraph under "Serving
+  the assets") promoted and spelled out as load-bearing, not incidental.
+
 ## v3.1.0 — palette variants, accent swatches, display options, 10 new themes
 
 ### Added

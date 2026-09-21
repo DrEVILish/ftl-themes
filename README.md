@@ -36,7 +36,8 @@ core/                     ftl-reset.css + ftl-core.css — theme-independent str
 themes/<name>/theme.css   one file per theme: tokens + look-only overrides
 themes/lcars/chrome.css   optional decorative LCARS chrome (docs/lcars-chrome.md)
 dist/<name>.css           built bundle (reset+core+theme), the file apps link
-dist/themes.json          machine-readable theme index for pickers
+dist/ftl-core.css         reset+core alone, no theme/shell (color-only adoption)
+dist/themes.json          machine-readable theme index for pickers, incl. build version
 assets/                   fonts and other binary assets themes reference
 scripts/build.sh          regenerates dist/ from core/ + themes/
 scripts/check.sh          contract lint (tokens, contrast, focus, variants, dist sync)
