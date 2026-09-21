@@ -17,8 +17,16 @@ Windows 95 to TRON.
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
   and changed how themes override components.
 
-It also handles htmx's own swap states (`.htmx-request`, `.ftl-indicator`,
-swap/settle transitions) so consuming apps don't hand-roll pending UI.
+Themes control **layout**, not just colour: adopt the app shell once
+(`.ftl-app` + bar/rail/main/status) and switching theme re-arranges it —
+LCARS opens its candy rail and elbows the bar into it, a HUD theme runs
+edge-to-edge. It ships **instrument primitives** (`.ftl-meter`,
+`.ftl-readout`, `.ftl-transport`/`.ftl-btn-go`, `.ftl-lamp`) for control
+surfaces, and handles htmx's own swap states (`.htmx-request`,
+`.ftl-indicator`) so consuming apps don't hand-roll pending UI.
+
+Every theme has a `README.md` beside its CSS explaining what it is trying
+to achieve and how to extend it without drifting.
 
 ## Layout
 
@@ -28,7 +36,8 @@ core/                     ftl-reset.css + ftl-core.css — theme-independent str
 themes/<name>/theme.css   one file per theme: tokens + look-only overrides
 themes/lcars/chrome.css   optional decorative LCARS chrome (docs/lcars-chrome.md)
 dist/<name>.css           built bundle (reset+core+theme), the file apps link
-dist/themes.json          machine-readable theme index for pickers
+dist/ftl-core.css         reset+core alone, no theme/shell (color-only adoption)
+dist/themes.json          machine-readable theme index for pickers, incl. build version
 assets/                   fonts and other binary assets themes reference
 scripts/build.sh          regenerates dist/ from core/ + themes/
 scripts/check.sh          contract lint (tokens, contrast, focus, variants, dist sync)

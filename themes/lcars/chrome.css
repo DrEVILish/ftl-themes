@@ -1,31 +1,20 @@
-/* ftl-themes: LCARS decorative chrome
- * A generic layout primitive, .ftl-lcars-chrome, that any app can wrap its
- * existing content in to get the sweep-header + elbowed-rail frame seen on
- * screen in TNG/DS9/Voyager — without changing the content's own markup or
- * behavior. See docs/lcars-chrome.md for the full markup contract.
+/* ftl-themes: LCARS chrome — the OPTIONAL, richer frame.
+ *
+ * Most apps do not need this file: adopting the shared app shell
+ * (core/ftl-layout.css, `.ftl-app` + `.ftl-app-bar` + `.ftl-app-rail` +
+ * `.ftl-app-main`) already gives this theme its sweep bar and candy rail
+ * automatically, and switches back when another theme is selected.
+ *
+ * This file is for an app that wants the fuller on-screen treatment with
+ * explicit markup: individually rounded rail bars and a real nav living
+ * inside the rail. It costs LCARS-specific markup in that app's templates,
+ * which the shell does not. See docs/lcars-chrome.md.
  *
  * Every class here is namespaced ftl-lcars-* and only active under
  * html[data-theme="lcars"], so it can never collide with a consuming app's
  * own classes. Decorative pieces are pointer-events:none; only the real
  * slots (brand/nav/content) carry real content and receive events.
  */
-
-/* Without this the chrome's font-family silently fell back to --ftl-font,
- * so the vendored Antonio files were never actually loaded. The url() is
- * relative to the SERVED stylesheet, so scripts/build.sh rewrites it for
- * the dist/ bundle — see CONTRACT.md § "Serving the assets". */
-@font-face {
-  font-family: "Antonio";
-  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Antonio";
-  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-display: swap;
-}
 
 html[data-theme="lcars"] .ftl-lcars-chrome {
   display: grid;

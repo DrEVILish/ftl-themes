@@ -1,0 +1,105 @@
+/* ftl-themes: the app shell.
+ *
+ * A theme is not only a palette — LCARS and a telemetry HUD are different
+ * LAYOUTS, and switching theme has to move the furniture, not just recolor
+ * it. This file defines ONE shell markup contract that an app adopts once:
+ *
+ *   <body class="ftl-app">
+ *     <header class="ftl-app-bar">brand, nav, actions</header>
+ *     <aside   class="ftl-app-rail" aria-hidden="true"></aside>
+ *     <main    class="ftl-app-main">…the app…</main>
+ *     <footer  class="ftl-app-status">status readouts</footer>
+ *   </body>
+ *
+ * Every theme then re-arranges that same markup through the --ftl-app-*
+ * properties below: a theme can move the bar, open or close the rail,
+ * change the elbow radii, and inset the content. The app never learns a
+ * theme's name, and no theme needs app-specific markup.
+ *
+ * The rail is DECORATION, generated entirely in CSS (see each theme's
+ * layout block) and `aria-hidden` in the markup above, so a theme that
+ * wants a candy-bar sidebar gets one without the app shipping an empty
+ * element's worth of content. Themes with no rail collapse it to nothing.
+ *
+ * Adopting the shell is optional: an app that keeps its own layout still
+ * gets every component and token. It just won't re-lay-out per theme.
+ */
+
+.ftl-app {
+  display: grid;
+  grid-template-areas: var(--ftl-app-areas, "bar bar" "rail main" "status status");
+  grid-template-columns: var(--ftl-app-columns, 0 minmax(0, 1fr));
+  grid-template-rows: var(--ftl-app-rows, auto minmax(0, 1fr) auto);
+  gap: var(--ftl-app-gap, 0);
+  min-height: 100vh;
+  /* dvh tracks the actually-visible viewport on mobile browsers, where vh
+     is the largest possible one and hides content behind the toolbar. */
+  min-height: 100dvh;
+  padding: var(--ftl-app-padding, 0);
+  background: var(--ftl-app-bg, transparent);
+}
+
+.ftl-app-bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: var(--ftl-app-bar-padding, 0.6rem 1rem);
+  background: var(--ftl-app-bar-bg, var(--ftl-nav-bg, var(--ftl-surface)));
+  color: var(--ftl-app-bar-fg, inherit);
+  border-bottom: var(--ftl-app-bar-rule-width, 1px) solid var(--ftl-app-bar-rule, var(--ftl-border));
+  border-radius: var(--ftl-app-bar-radius, 0);
+  min-height: var(--ftl-app-bar-height, auto);
+  font-family: var(--ftl-app-bar-font, inherit);
+}
+
+/* Decorative only. Themes that use it set --ftl-app-rail-display and paint
+   it with a gradient/pseudo-elements; the default is no rail at all. */
+.ftl-app-rail {
+  grid-area: rail;
+  display: var(--ftl-app-rail-display, none);
+  flex-direction: column;
+  gap: var(--ftl-app-rail-gap, 0.4rem);
+  padding: var(--ftl-app-rail-padding, 0);
+  background: var(--ftl-app-rail-bg, transparent);
+  border-radius: var(--ftl-app-rail-radius, 0);
+  pointer-events: none;
+}
+
+.ftl-app-main {
+  grid-area: main;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--ftl-app-main-padding, 1rem);
+  background: var(--ftl-app-main-bg, transparent);
+  border-radius: var(--ftl-app-main-radius, 0);
+}
+
+.ftl-app-status {
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: var(--ftl-app-status-padding, 0.4rem 1rem);
+  background: var(--ftl-app-status-bg, var(--ftl-surface));
+  color: var(--ftl-app-status-fg, var(--ftl-muted));
+  border-top: 1px solid var(--ftl-app-status-rule, var(--ftl-hairline));
+  border-radius: var(--ftl-app-status-radius, 0);
+  font-size: 0.82em;
+}
+
+/* Below this width every theme drops to a single column: a decorative rail
+   is the first thing to go when the viewport is the constraint. Themes can
+   opt back in with --ftl-app-rail-display-sm. */
+@media (max-width: 720px) {
+  .ftl-app {
+    grid-template-areas: var(--ftl-app-areas-sm, "bar" "main" "status");
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--ftl-app-rows-sm, auto minmax(0, 1fr) auto);
+  }
+  .ftl-app-rail { display: var(--ftl-app-rail-display-sm, none); }
+  .ftl-app-main { padding: var(--ftl-app-main-padding-sm, 0.75rem); }
+}

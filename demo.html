@@ -6,67 +6,78 @@
 <title>ftl-themes demo</title>
 <link id="ftl-theme-link" rel="stylesheet" href="dist/blue-future.css">
 <style>
-  /* Demo-page-only chrome, not part of the ftl-themes contract. */
-  .demo-shell { max-width: 62rem; margin: 0 auto; padding: 1.5rem; }
+  /* Demo-page-only helpers, not part of the ftl-themes contract. */
   .demo-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin: 0.75rem 0; }
   .demo-row-top { align-items: flex-start; }
-  .demo-section { margin: 2rem 0; }
-  .demo-bar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+  .demo-section { margin: 1.75rem 0; }
   .demo-note { font-size: 0.8em; opacity: 0.7; }
+  .demo-meters { display: flex; gap: 0.4rem; height: 7rem; align-items: stretch; }
+  .demo-meters .ftl-meter-v { width: 0.75rem; }
   .w-14 { width: 14rem; } .w-16 { width: 16rem; } .w-10 { width: 10rem; }
 </style>
 </head>
-<body>
+<!-- The shared app shell. Every theme re-arranges THIS markup — the bar, the
+     decorative rail, the content well, the status strip — so switching theme
+     changes the layout, not just the colors. No theme-specific markup here. -->
+<body class="ftl-app">
 
-<div class="ftl-lcars-chrome" id="chrome" hidden>
-  <header class="ftl-lcars-chrome-header">
-    <span class="ftl-lcars-chrome-brand">ftl-themes &bull; 47-alpha</span>
-  </header>
-  <div class="ftl-lcars-chrome-rail">
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <nav class="ftl-lcars-chrome-nav">
-      <a class="ftl-nav-item is-active" href="#">Ops</a>
-      <a class="ftl-nav-item" href="#">Sci</a>
-      <a class="ftl-nav-item" href="#">Eng</a>
-    </nav>
-  </div>
-  <main class="ftl-lcars-chrome-content" id="chrome-slot"></main>
-</div>
+<header class="ftl-app-bar">
+  <span class="ftl-nav-brand">ftl-themes</span>
+  <a class="ftl-nav-item is-active" href="#">Dashboard</a>
+  <a class="ftl-nav-item" href="#">Settings</a>
+  <a class="ftl-nav-item" href="#">Logs</a>
+  <span style="margin-left:auto"></span>
+  <label>
+    <select class="ftl-select" id="theme-picker" style="display:inline-block;width:auto;"></select>
+  </label>
+</header>
 
-<div id="plain">
-  <div class="demo-shell" id="plain-slot"></div>
-</div>
+<aside class="ftl-app-rail" aria-hidden="true"></aside>
 
-<!-- One copy of every component, moved between the plain and chrome-wrapped
-     containers above so both layouts are exercised by the same markup. -->
-<template id="components">
-  <div class="demo-bar">
-    <label>
-      <span class="ftl-label" style="display:inline">Theme</span>
-      <select class="ftl-select" id="theme-picker" style="display:inline-block;width:auto;"></select>
-    </label>
-    <label class="ftl-switch" title="LCARS chrome">
-      <input type="checkbox" id="chrome-toggle">
-      <span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span>
-    </label>
-    <span class="demo-note" id="chrome-note">LCARS chrome</span>
-    <span class="demo-note" id="theme-desc"></span>
-  </div>
-
-  <nav class="ftl-nav">
-    <span class="ftl-nav-brand">ftl-themes</span>
-    <a class="ftl-nav-item is-active" href="#">Dashboard</a>
-    <a class="ftl-nav-item" href="#">Settings</a>
-    <a class="ftl-nav-item" href="#">Logs</a>
-  </nav>
+<main class="ftl-app-main">
+  <p class="demo-note" id="theme-desc"></p>
 
   <div class="ftl-tabs demo-section">
     <button class="ftl-tab is-active">Overview</button>
     <button class="ftl-tab">Library</button>
     <button class="ftl-tab">Advanced</button>
+  </div>
+
+  <div class="demo-section">
+    <h2>Transport &amp; instruments</h2>
+    <div class="ftl-transport demo-row">
+      <button class="ftl-btn ftl-btn-go">Go</button>
+      <span class="ftl-readout">01:24:07<span class="ftl-readout-unit">tc</span></span>
+      <span class="ftl-lamp is-on" title="link"></span>
+      <span class="ftl-lamp is-error" title="record"></span>
+      <span class="ftl-lamp" title="idle"></span>
+      <span class="ftl-status ftl-status-ok">Armed</span>
+    </div>
+    <div class="demo-row demo-row-top">
+      <div class="demo-meters">
+        <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:62%;--ftl-meter-peak:71%">
+          <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+        </div>
+        <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:78%;--ftl-meter-peak:88%">
+          <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+        </div>
+        <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:95%;--ftl-meter-peak:97%">
+          <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+        </div>
+        <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:34%;--ftl-meter-peak:52%">
+          <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+        </div>
+      </div>
+      <div class="w-16">
+        <label class="ftl-label">Output level</label>
+        <div class="ftl-meter" style="--ftl-meter-level:72%;--ftl-meter-peak:84%">
+          <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+        </div>
+        <div style="margin-top:0.75rem">
+          <span class="ftl-readout ftl-readout-lg">48<span class="ftl-readout-unit">kHz</span></span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="demo-section">
@@ -81,7 +92,7 @@
       <button class="ftl-btn ftl-btn-sm ftl-btn-primary">Small</button>
     </div>
     <div class="demo-row">
-      <span class="demo-note">htmx pending state (.htmx-request):</span>
+      <span class="demo-note">htmx pending (.htmx-request):</span>
       <button class="ftl-btn ftl-btn-primary htmx-request">Saving<span class="ftl-indicator"></span></button>
       <span class="ftl-indicator htmx-request"></span>
     </div>
@@ -144,42 +155,40 @@
   <div class="demo-section">
     <h2>Table</h2>
     <table class="ftl-table">
-      <thead><tr><th>Name</th><th>Status</th><th>Elapsed</th><th>Progress</th></tr></thead>
+      <thead><tr><th>Name</th><th>Status</th><th>Elapsed</th><th>Level</th></tr></thead>
       <tbody>
-        <tr class="is-active"><td>Track 01</td><td><span class="ftl-status ftl-status-ok">Connected</span></td><td class="ftl-mono">00:12:04</td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:80%"></div></div></td></tr>
-        <tr class="is-selected"><td>Track 02</td><td><span class="ftl-status ftl-status-warn">Pending</span></td><td class="ftl-mono">00:03:51</td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:35%"></div></div></td></tr>
-        <tr><td>Track 03</td><td><span class="ftl-status ftl-status-error">Disconnected</span></td><td class="ftl-mono">00:00:00</td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:0%"></div></div></td></tr>
-        <tr><td>Track 04</td><td><span class="ftl-status ftl-status-idle">Idle</span></td><td class="ftl-mono">00:41:17</td><td><div class="ftl-progress"><div class="ftl-progress-bar" style="width:10%"></div></div></td></tr>
+        <tr class="is-active"><td>Track 01</td><td><span class="ftl-status ftl-status-ok">Connected</span></td><td class="ftl-mono">00:12:04</td><td><div class="ftl-meter" style="--ftl-meter-level:80%"><div class="ftl-meter-fill"></div></div></td></tr>
+        <tr class="is-selected"><td>Track 02</td><td><span class="ftl-status ftl-status-warn">Pending</span></td><td class="ftl-mono">00:03:51</td><td><div class="ftl-meter" style="--ftl-meter-level:35%"><div class="ftl-meter-fill"></div></div></td></tr>
+        <tr><td>Track 03</td><td><span class="ftl-status ftl-status-error">Disconnected</span></td><td class="ftl-mono">00:00:00</td><td><div class="ftl-meter" style="--ftl-meter-level:0%"><div class="ftl-meter-fill"></div></div></td></tr>
+        <tr><td>Track 04</td><td><span class="ftl-status ftl-status-idle">Idle</span></td><td class="ftl-mono">00:41:17</td><td><div class="ftl-meter" style="--ftl-meter-level:12%"><div class="ftl-meter-fill"></div></div></td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="demo-section">
-    <h2>Badges</h2>
+    <h2>Badges &amp; progress</h2>
     <div class="demo-row">
       <span class="ftl-badge">Default</span>
       <span class="ftl-badge ftl-badge-accent">Accent</span>
       <span class="ftl-badge ftl-badge-danger">Danger</span>
       <span class="ftl-badge ftl-badge-success">Success</span>
+      <div class="ftl-progress w-10"><div class="ftl-progress-bar" style="width:60%"></div></div>
     </div>
   </div>
-</template>
+</main>
+
+<footer class="ftl-app-status">
+  <span class="ftl-lamp is-on"></span>
+  <span class="ftl-mono">READY</span>
+  <span style="margin-left:auto" class="ftl-mono">128 ch &bull; 48 kHz &bull; 24 bit</span>
+</footer>
 
 <script>
   var link = document.getElementById("ftl-theme-link");
-  var chromeEl = document.getElementById("chrome");
-  var plainEl = document.getElementById("plain");
-  var params = new URLSearchParams(location.search);
-  var themes = [];
-
-  // Mount the single component template into whichever container is active.
-  document.getElementById("plain-slot").appendChild(
-    document.getElementById("components").content);
-
   var picker = document.getElementById("theme-picker");
   var desc = document.getElementById("theme-desc");
-  var chromeToggle = document.getElementById("chrome-toggle");
-  var chromeNote = document.getElementById("chrome-note");
+  var params = new URLSearchParams(location.search);
+  var themes = [];
 
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -190,20 +199,6 @@
     store("ftl-demo-theme", slug);
     var t = themes.find(function (x) { return x.slug === slug; });
     desc.textContent = t ? t.description : "";
-    var supported = !!(t && t.hasChrome);
-    chromeToggle.disabled = !supported;
-    chromeNote.textContent = supported ? "LCARS chrome" : "chrome (this theme has none)";
-    if (!supported && chromeToggle.checked) { chromeToggle.checked = false; setChrome(false); }
-  }
-
-  function setChrome(on) {
-    var slot = on ? document.getElementById("chrome-slot") : document.getElementById("plain-slot");
-    // Move the live nodes rather than re-rendering, so control state survives.
-    var from = on ? document.getElementById("plain-slot") : document.getElementById("chrome-slot");
-    while (from.firstChild) slot.appendChild(from.firstChild);
-    chromeEl.hidden = !on;
-    plainEl.hidden = on;
-    store("ftl-demo-chrome", on ? "1" : "0");
   }
 
   fetch("dist/themes.json")
@@ -220,14 +215,10 @@
       if (!list.some(function (t) { return t.slug === initial; })) initial = list[0].slug;
       picker.value = initial;
       applyTheme(initial);
-      if (params.get("chrome") === "1" || read("ftl-demo-chrome") === "1") {
-        chromeToggle.checked = true;
-        setChrome(true);
-      }
     })
     .catch(function () {
-      // file:// without fetch access — fall back so the page still works.
-      desc.textContent = "themes.json unavailable (serve the folder over HTTP for the theme list)";
+      // file:// without fetch access — keep the page usable.
+      desc.textContent = "themes.json unavailable (serve the folder over HTTP for the full theme list)";
       ["blue-future", "cue-lab", "lcars"].forEach(function (s) {
         var o = document.createElement("option"); o.value = o.textContent = s; picker.appendChild(o);
       });
@@ -235,7 +226,6 @@
     });
 
   picker.addEventListener("change", function () { applyTheme(picker.value); });
-  chromeToggle.addEventListener("change", function () { setChrome(chromeToggle.checked); });
 </script>
 </body>
 </html>
