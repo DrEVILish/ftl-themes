@@ -173,6 +173,33 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 .ftl-field { margin-bottom: 1rem; }
 .ftl-field-hint { margin-top: 0.3em; font-size: 0.78em; color: var(--ftl-muted); }
 
+/* .ftl-field-row — a labelled control in a bordered card: the settings-sheet
+ * row pattern from the blue-future reference implementation (a recorder's
+ * telemetry dashboard). Distinct from .ftl-field (a lone input + hint): the
+ * row is a destination reviewers scan down, so it carries a surface, a
+ * hover state, and ellipsis discipline on the label. */
+.ftl-field-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  background: var(--ftl-field-row-bg, var(--ftl-surface-2));
+  border: 1px solid var(--ftl-field-row-border, var(--ftl-border));
+  border-radius: var(--ftl-field-row-radius, var(--ftl-panel-radius, var(--ftl-radius)));
+  padding: var(--ftl-field-row-padding, 0.55em 0.8em);
+}
+.ftl-field-row:hover {
+  border-color: var(--ftl-field-row-border-hover, var(--ftl-hairline));
+}
+.ftl-field-row > .ftl-label {
+  flex: 1;
+  margin-bottom: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ftl-field-row > .ftl-field-hint { margin-top: 0; flex: none; }
+
+
 .ftl-checkbox {
   accent-color: var(--ftl-accent);
   width: 1.1em;
@@ -467,6 +494,15 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border-radius: var(--ftl-transport-radius, var(--ftl-radius));
   box-shadow: var(--ftl-transport-shadow, none);
 }
+
+/* Transport state modifiers: a transport codes its machine state in its
+ * edge accent — record red, play green, pause amber on the reference
+ * implementation. Modifiers only retarget the edge token, so themes that
+ * ignore machine state keep their uniform edge for free. */
+.ftl-transport.is-rec { --ftl-transport-edge: var(--ftl-transport-rec, var(--ftl-danger)); }
+.ftl-transport.is-play { --ftl-transport-edge: var(--ftl-transport-play, var(--ftl-success)); }
+.ftl-transport.is-pause { --ftl-transport-edge: var(--ftl-transport-pause, var(--ftl-warning)); }
+
 /* The primary trigger. Bigger and louder than .ftl-btn-primary on purpose;
  * it is a variant of .ftl-btn, so it inherits every button mechanic. */
 .ftl-btn-go {
