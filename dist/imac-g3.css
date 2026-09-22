@@ -262,6 +262,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border: 1px solid var(--ftl-field-row-border, var(--ftl-border));
   border-radius: var(--ftl-field-row-radius, var(--ftl-panel-radius, var(--ftl-radius)));
   padding: var(--ftl-field-row-padding, 0.55em 0.8em);
+  margin-bottom: var(--ftl-field-row-gap, 0.5rem);
 }
 .ftl-field-row:hover {
   border-color: var(--ftl-field-row-border-hover, var(--ftl-hairline));
@@ -707,7 +708,19 @@ dialog.ftl-modal::backdrop {
 }
 .ftl-table tr.is-active td {
   background: var(--ftl-row-active-bg, transparent);
+}
+/* The marker belongs to the row, so only its leading cell draws it — on
+   every cell it read as a column divider repeated across the row. */
+.ftl-table tr.is-active td:first-child {
   box-shadow: var(--ftl-row-active-marker, inset 0.25rem 0 0 var(--ftl-accent));
+}
+/* A theme with a solid selection fill declares --ftl-row-selected-fg for
+   it; state-colored text in that row has to follow it too, or a green
+   "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
+   highlight leave the token unset and keep the state color. */
+.ftl-table tr.is-selected .ftl-status,
+.ftl-table tr.is-selected .ftl-stat-trend {
+  color: var(--ftl-row-selected-fg, var(--ftl-state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-table tr.is-selected td {
@@ -802,10 +815,10 @@ dialog.ftl-modal::backdrop {
   font-size: 0.75em;
   font-weight: 600;
 }
-.ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent); }
-.ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger); }
-.ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success); }
-.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning); }
+.ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent-text, var(--ftl-accent)); }
+.ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger-text, var(--ftl-danger)); }
+.ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success-text, var(--ftl-success)); }
+.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning-text, var(--ftl-warning)); }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
   .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
@@ -838,10 +851,16 @@ dialog.ftl-modal::backdrop {
   border-radius: var(--ftl-status-dot-radius, 50%);
   background: currentColor;
 }
-.ftl-status-ok { color: var(--ftl-success); }
-.ftl-status-warn { color: var(--ftl-warning); }
-.ftl-status-error { color: var(--ftl-danger); }
-.ftl-status-idle { color: var(--ftl-muted); }
+/* Semantic colors used AS TEXT read --ftl-<state>-text, falling back to the
+   fill color. A fill that works for a lamp or a button background (bright
+   yellow, mint, pale pink) is often unreadable as small text on the theme's
+   own surface, so a theme sets a text-weight variant where they differ.
+   The color travels in --ftl-state-fg so a selected table row can swap it
+   for --ftl-row-selected-fg (see .ftl-table) without losing it elsewhere. */
+.ftl-status-ok { --ftl-state-fg: var(--ftl-success-text, var(--ftl-success)); color: var(--ftl-state-fg); }
+.ftl-status-warn { --ftl-state-fg: var(--ftl-warning-text, var(--ftl-warning)); color: var(--ftl-state-fg); }
+.ftl-status-error { --ftl-state-fg: var(--ftl-danger-text, var(--ftl-danger)); color: var(--ftl-state-fg); }
+.ftl-status-idle { --ftl-state-fg: var(--ftl-muted); color: var(--ftl-state-fg); }
 
 /* --- htmx state ------------------------------------------------------- *
  * htmx sets these classes around every swap. Handling them here means an
@@ -950,7 +969,7 @@ dialog.ftl-modal::backdrop {
   color: var(--ftl-context-menu-item-fg, var(--ftl-text));
   text-align: left;
 }
-.ftl-context-menu-item.is-danger { color: var(--ftl-danger); }
+.ftl-context-menu-item.is-danger { color: var(--ftl-danger-text, var(--ftl-danger)); }
 .ftl-context-menu-item:hover,
 .ftl-context-menu-item:focus-visible {
   background: var(--ftl-context-menu-item-bg-hover, var(--ftl-dropdown-item-bg-hover, var(--ftl-accent)));
@@ -1227,8 +1246,8 @@ dialog.ftl-modal::backdrop {
   text-transform: uppercase;
 }
 .ftl-stat-trend { font-size: 0.8em; }
-.ftl-stat-trend.is-up { color: var(--ftl-success); }
-.ftl-stat-trend.is-down { color: var(--ftl-danger); }
+.ftl-stat-trend.is-up { --ftl-state-fg: var(--ftl-success-text, var(--ftl-success)); color: var(--ftl-state-fg); }
+.ftl-stat-trend.is-down { --ftl-state-fg: var(--ftl-danger-text, var(--ftl-danger)); color: var(--ftl-state-fg); }
 
 /* .ftl-divider */
 .ftl-divider {
@@ -1550,6 +1569,14 @@ html[data-theme="imac-g3"] {
   --ftl-danger: #d1453b;
   --ftl-success: #4caf6a;
   --ftl-warning: #e0a52f;
+  /* Text-weight variants of the state colors, for .ftl-status, trends,
+     colored badges and danger menu items: same hue, adjusted to 4.5:1 on
+     this theme's surfaces. The fills above stay as-is for lamps/buttons. */
+  --ftl-success-text: #c3f7d2;
+  --ftl-warning-text: #ffe6a8;
+  --ftl-danger-text: #ffd9d5;
+  /* Accent as small text (accent badges) on a tint of itself. */
+  --ftl-accent-text: #bff0f7;
   --ftl-on-accent: #04262c;
   --ftl-on-danger: #ffffff;
   --ftl-on-success: #04261a;
@@ -1566,7 +1593,11 @@ html[data-theme="imac-g3"] {
   --ftl-input-fg: #0f3a44;
   --ftl-input-radius: 0.9rem;
   --ftl-focus-ring: 0 0 0 3px rgba(255,255,255,0.5);
-  --ftl-panel-bg: linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 30%, var(--ftl-surface));
+  /* Pinstripe layered OVER the gloss in one value. It used to be a separate
+     `background-image` rule, which replaced this gradient outright — the
+     gloss never rendered and panels lost their fill. */
+  --ftl-imac-g3-pinstripe: repeating-linear-gradient(180deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 4px);
+  --ftl-panel-bg: var(--ftl-imac-g3-pinstripe), linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 30%, var(--ftl-surface));
   --ftl-panel-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 6px 18px rgba(0,0,0,0.3);
   --ftl-modal-header-bg: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
   --ftl-table-head-bg: rgba(255,255,255,0.15);
@@ -1576,7 +1607,7 @@ html[data-theme="imac-g3"] {
   --ftl-indicator-fg: var(--ftl-accent-2);
 
   --ftl-app-bg: radial-gradient(ellipse at top, #1a5866, #04141a 85%);
-  --ftl-app-bar-bg: linear-gradient(180deg, rgba(255,255,255,0.35), var(--ftl-surface));
+  --ftl-app-bar-bg: var(--ftl-imac-g3-pinstripe), var(--ftl-surface);
   --ftl-app-bar-radius: 1.3rem 1.3rem 0 0;
   --ftl-app-bar-height: 3rem;
   --ftl-app-main-bg: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 20%);
@@ -1599,11 +1630,13 @@ html[data-theme="imac-g3"] h1,
 html[data-theme="imac-g3"] h2,
 html[data-theme="imac-g3"] h3 { text-shadow: 0 1px 0 rgba(255,255,255,0.4); }
 
-/* Pinstripe: alternating light stripes over the shell's own gradient. */
-html[data-theme="imac-g3"] .ftl-panel,
+/* The bar's gloss is an inset highlight rather than a translucent-white
+   gradient stop, so nav text sits on the solid surface (the cyan brand was
+   1.8:1 against the old gloss). */
 html[data-theme="imac-g3"] .ftl-app-bar {
-  background-image:
-    repeating-linear-gradient(180deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 4px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 14px 18px -12px rgba(255,255,255,0.25);
+  --ftl-nav-brand-fg: #ffffff;
+  --ftl-nav-item-fg: #e3f6f9;
 }
 
 /* --- Full-shell colorways ------------------------------------------------
@@ -1611,16 +1644,19 @@ html[data-theme="imac-g3"] .ftl-app-bar {
  * gloss/pinstripe/shape rules need no repeating. */
 html[data-theme="imac-g3"][data-variant="blueberry"] {
   --ftl-bg: #0d2a5c; --ftl-surface: #1c4fb0; --ftl-surface-2: #3a6fd6;
-  --ftl-border: #08194a; --ftl-hairline: #12275c; --ftl-accent: #5f8dff;
+  --ftl-border: #08194a; --ftl-hairline: #12275c; --ftl-accent: #8fb0ff;
   --ftl-on-accent: #04102c; --ftl-app-bg: radial-gradient(ellipse at top, #1c4fb0, #04102c 85%);
 }
 html[data-theme="imac-g3"][data-variant="grape"] {
   --ftl-bg: #3a0d5c; --ftl-surface: #6b2f9e; --ftl-surface-2: #8b4fc0;
-  --ftl-border: #240838; --ftl-hairline: #401a52; --ftl-accent: #b083e0;
+  --ftl-border: #240838; --ftl-hairline: #401a52; --ftl-accent: #c9a6ee;
   --ftl-on-accent: #1a0426; --ftl-app-bg: radial-gradient(ellipse at top, #6b2f9e, #1a0426 85%);
 }
+/* Burnt tangerine: the brighter #d1621f/#e08a4a put this theme's white text
+   at 3.8:1 / 2.7:1 — a hard-floor failure the lint never saw, because it
+   only read the default palette. */
 html[data-theme="imac-g3"][data-variant="tangerine"] {
-  --ftl-bg: #6c2a0a; --ftl-surface: #d1621f; --ftl-surface-2: #e08a4a;
+  --ftl-bg: #6c2a0a; --ftl-surface: #9e4511; --ftl-surface-2: #ad4e12;
   --ftl-border: #4a1a05; --ftl-hairline: #5c2308; --ftl-accent: #ffb066;
-  --ftl-on-accent: #2c1000; --ftl-app-bg: radial-gradient(ellipse at top, #d1621f, #2c1000 85%);
+  --ftl-on-accent: #2c1000; --ftl-app-bg: radial-gradient(ellipse at top, #9e4511, #2c1000 85%);
 }

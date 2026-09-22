@@ -3,6 +3,72 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.8.0 — example pages, and the contrast bugs they exposed
+
+Building one page per theme from library classes only (`examples/`, no
+custom CSS, no inline styles) surfaced defects the token lint couldn't see.
+Every fix below was found on a rendered page first, then measured.
+
+### Fixed
+
+- **Invisible app-bar text in 8 themes.** `.ftl-nav-brand`/`-item` read
+  `--ftl-nav-*-fg`, never `--ftl-app-bar-fg`, so themes with a colored bar
+  rendered their brand and nav at down to 1.0:1 (lcars, winxp-luna 1.0;
+  windows95 1.3; barbie 1.5; aqua, death-star, win7-aero, winamp-classic
+  3.8–4.3). Each now re-points the nav tokens in a `.ftl-app-bar` block, the
+  pattern material and vaporwave already used. vaporwave's own fix still
+  failed over its purple middle stop (3.6:1) and is corrected too. Barbie's
+  bar and status strip are a deeper pink, because no text color reached
+  4.5:1 across the old gradient.
+- **State colors as text below 4.5:1 in 21 themes**, on `--ftl-surface`
+  (16 themes) or on `--ftl-surface-2` / a translucent selection where
+  status text also sits (5 more). As low as 1.3:1: barbie's mint and
+  yellow on its own pink rows. New optional
+  `--ftl-success-text`/`-warning-text`/`-danger-text`/`-accent-text` tokens
+  keep each fill for lamps and buttons and give text a readable version of
+  the same hue. `.ftl-status`, `.ftl-stat-trend`, colored badges and danger
+  menu items read them.
+- **State text on selected rows.** A green status on a solid blue selection
+  measured 1.0:1. Status and trend text in `tr.is-selected` now follows
+  `--ftl-row-selected-fg` when the theme sets one.
+- **Row marker on every cell.** `tr.is-active`'s marker was a box-shadow on
+  every `td`, so it drew a bar at every column. Now only the first cell.
+- **`.ftl-field-row` spacing.** Consecutive rows touched, and a following
+  label sat directly on the row above. Rows now have a bottom gap
+  (`--ftl-field-row-gap`, default `0.5rem`).
+- **imac-g3 Tangerine: body text at 3.8:1.** Surfaces deepened to a burnt
+  tangerine (white text now 6.3:1). Blueberry and Grape accents lightened
+  so link and active-tab text is legible (2.4 and 2.8 → 3.5 and 4.0:1).
+- **imac-g3 gloss never rendered.** The pinstripe rule set
+  `background-image` on `.ftl-panel` and `.ftl-app-bar`, replacing the
+  gloss gradient and the panel fill. The stripe is now layered into the
+  token value instead.
+- **Smaller fixes:** winxp-luna's title-bar top stop (white text sat at
+  exactly 4.5:1) and its footer status text (1.3:1); win7-aero's primary
+  button (white on its pale glass top stop, 2.8:1); status-strip text in
+  aqua, death-star, win7-aero and winamp-classic.
+
+### Added
+
+- **`examples/`**: one page per theme, written for that theme's world and
+  built by `scripts/build_examples.py`, which refuses to emit a page with
+  inline styles or undefined classes. `examples/README.md` lists the
+  library gaps the pages exposed.
+- **`references/README.md`**: where to see the real thing each theme is
+  modelled on (links only; the originals are copyrighted).
+- **`scripts/audit_rendered.mjs`**: measures every text element on the
+  example pages against the pixels actually behind it. Fails below 3:1,
+  reports below 4.5:1. Needs Playwright.
+
+### Lint
+
+- Contrast floors now run for every `data-variant` palette, not only the
+  default one. Previously only the first value of each token was read.
+- New hard rules: success/warning/danger text on `--ftl-surface` (4.5:1),
+  app-bar brand and nav text against every stop of the bar background
+  (4.5:1), and status-strip text (4.5:1).
+- Translucent surfaces are composited over `--ftl-bg` instead of skipped.
+
 ## v3.7.0 — segmented control, sortable/sticky tables, remaining chrome gaps
 
 Closes out the backlog flagged alongside v3.6.0: a component pattern

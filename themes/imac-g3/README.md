@@ -30,6 +30,10 @@ sense that the interface is a physical object you could pick up.
 - Every gloss gradient is three stops (bright highlight → faint → the base
   surface colour), never a plain two-stop fade — that middle fade-out is
   what reads as translucent plastic rather than a painted highlight.
+- The app bar's gloss is an inset highlight rather than a gradient stop,
+  so its white nav text sits on the solid case colour.
+- Tangerine is a burnt tangerine (`#9e4511`), darker than the case it's
+  named after: white text on the brighter orange was 3.8:1.
 - The page backdrop is a radial vignette in the shell's own colour
   (`radial-gradient(ellipse at top, ...)`), so the case always appears to
   glow against a darker version of itself, never a neutral grey.

@@ -170,6 +170,16 @@ Optional, with sensible defaults: `--ftl-focus` (focus ring color),
 `--ftl-focus-ring` (an *additional* glow box-shadow), `--ftl-link`,
 `--ftl-overlay-bg`, `--ftl-overlay-blur`, `--ftl-pending-opacity`.
 
+Optional, state colors as text (v3.8.0): `--ftl-success-text`,
+`--ftl-warning-text`, `--ftl-danger-text`, `--ftl-accent-text`. Each falls
+back to its fill token. `.ftl-status`, `.ftl-stat-trend`, colored badges
+and danger menu items read these, because a color that works as a fill
+(a mint button, a yellow lamp) is often unreadable as small text on the
+theme's own surface. `scripts/check.py` fails a theme whose success,
+warning or danger text is under 4.5:1 on `--ftl-surface`; set the `-text`
+variant to the same hue at a readable lightness rather than dulling the
+fill. Several themes set these; any of them is a worked example.
+
 Optional, browser-chrome (see "Browser chrome" below for the full list):
 `--ftl-selection-bg`/`-fg`, `--ftl-scrollbar-thumb`/`-thumb-hover`/`-track`,
 `--ftl-input-placeholder`, `--ftl-input-caret`, `--ftl-kbd-*`, `--ftl-code-*`.
@@ -250,6 +260,24 @@ that don't collapse it to nothing. Keep it `aria-hidden`.
 
 Adopting the shell is optional — an app that keeps its own layout still
 gets every component and token, it just won't re-lay-out per theme.
+
+**Nav text in the bar.** `.ftl-nav-brand` and `.ftl-nav-item` read
+`--ftl-nav-brand-fg` / `--ftl-nav-item-fg`, which a theme tunes for its
+content area. `--ftl-app-bar-fg` does **not** reach them. A theme that
+paints its bar in a strong color (an accent-orange sweep, a blue title
+bar) must re-point those tokens in a scoped block, or its brand can
+render at 1:1:
+
+```css
+html[data-theme="winxp-luna"] .ftl-app-bar {
+  --ftl-nav-brand-fg: #ffffff;
+  --ftl-nav-item-fg: #ffffff;
+}
+```
+
+`scripts/check.py` measures brand and item text against every color stop
+of `--ftl-app-bar-bg`, and `--ftl-app-status-fg` against the status strip,
+and fails anything under 4.5:1.
 
 Override points: `--ftl-app-areas`, `-columns`, `-rows`, `-gap`,
 `-padding`, `-bg`; `--ftl-app-bar-bg|-fg|-rule|-rule-width|-radius|-height|-padding|-font`;
@@ -435,6 +463,19 @@ classes needed.
 The `<input>` must precede `.ftl-switch-track` — the checked state is a
 sibling selector.
 
+A labelled control in a bordered row (the settings-sheet pattern), for a
+switch, checkbox or short value:
+
+```html
+<div class="ftl-field-row">
+  <label class="ftl-label" for="autosplit">Auto-split at 2 GB</label>
+  <span class="ftl-field-hint">Avoids FAT32 limits</span>
+  <label class="ftl-switch"><input id="autosplit" type="checkbox"><span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span></label>
+</div>
+```
+Rows are spaced by `--ftl-field-row-gap` (default `0.5rem`); the label
+truncates with an ellipsis rather than wrapping.
+
 ### Surfaces
 ```html
 <div class="ftl-panel">
@@ -469,7 +510,13 @@ sibling selector.
 ```
 `.is-selected` and `.is-active` each carry *both* a background and a left
 marker, so a theme that flattens one language still communicates the state
-through the other.
+through the other. The marker is drawn once per row, on its first cell.
+
+A theme with a solid selection color should set `--ftl-row-selected-fg`.
+Inside a selected row, `.ftl-status` and `.ftl-stat-trend` then switch to
+that foreground too, so a green "Connected" never lands on a blue
+highlight. Themes with a translucent highlight leave it unset and keep
+their state colors.
 
 Sticky header and sort indicators (v3.7.0), both opt-in — a plain table
 needs neither:

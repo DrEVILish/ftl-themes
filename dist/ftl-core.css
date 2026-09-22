@@ -266,6 +266,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border: 1px solid var(--ftl-field-row-border, var(--ftl-border));
   border-radius: var(--ftl-field-row-radius, var(--ftl-panel-radius, var(--ftl-radius)));
   padding: var(--ftl-field-row-padding, 0.55em 0.8em);
+  margin-bottom: var(--ftl-field-row-gap, 0.5rem);
 }
 .ftl-field-row:hover {
   border-color: var(--ftl-field-row-border-hover, var(--ftl-hairline));
@@ -711,7 +712,19 @@ dialog.ftl-modal::backdrop {
 }
 .ftl-table tr.is-active td {
   background: var(--ftl-row-active-bg, transparent);
+}
+/* The marker belongs to the row, so only its leading cell draws it — on
+   every cell it read as a column divider repeated across the row. */
+.ftl-table tr.is-active td:first-child {
   box-shadow: var(--ftl-row-active-marker, inset 0.25rem 0 0 var(--ftl-accent));
+}
+/* A theme with a solid selection fill declares --ftl-row-selected-fg for
+   it; state-colored text in that row has to follow it too, or a green
+   "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
+   highlight leave the token unset and keep the state color. */
+.ftl-table tr.is-selected .ftl-status,
+.ftl-table tr.is-selected .ftl-stat-trend {
+  color: var(--ftl-row-selected-fg, var(--ftl-state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-table tr.is-selected td {
@@ -806,10 +819,10 @@ dialog.ftl-modal::backdrop {
   font-size: 0.75em;
   font-weight: 600;
 }
-.ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent); }
-.ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger); }
-.ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success); }
-.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning); }
+.ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent-text, var(--ftl-accent)); }
+.ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger-text, var(--ftl-danger)); }
+.ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success-text, var(--ftl-success)); }
+.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning-text, var(--ftl-warning)); }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
   .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
@@ -842,10 +855,16 @@ dialog.ftl-modal::backdrop {
   border-radius: var(--ftl-status-dot-radius, 50%);
   background: currentColor;
 }
-.ftl-status-ok { color: var(--ftl-success); }
-.ftl-status-warn { color: var(--ftl-warning); }
-.ftl-status-error { color: var(--ftl-danger); }
-.ftl-status-idle { color: var(--ftl-muted); }
+/* Semantic colors used AS TEXT read --ftl-<state>-text, falling back to the
+   fill color. A fill that works for a lamp or a button background (bright
+   yellow, mint, pale pink) is often unreadable as small text on the theme's
+   own surface, so a theme sets a text-weight variant where they differ.
+   The color travels in --ftl-state-fg so a selected table row can swap it
+   for --ftl-row-selected-fg (see .ftl-table) without losing it elsewhere. */
+.ftl-status-ok { --ftl-state-fg: var(--ftl-success-text, var(--ftl-success)); color: var(--ftl-state-fg); }
+.ftl-status-warn { --ftl-state-fg: var(--ftl-warning-text, var(--ftl-warning)); color: var(--ftl-state-fg); }
+.ftl-status-error { --ftl-state-fg: var(--ftl-danger-text, var(--ftl-danger)); color: var(--ftl-state-fg); }
+.ftl-status-idle { --ftl-state-fg: var(--ftl-muted); color: var(--ftl-state-fg); }
 
 /* --- htmx state ------------------------------------------------------- *
  * htmx sets these classes around every swap. Handling them here means an
@@ -954,7 +973,7 @@ dialog.ftl-modal::backdrop {
   color: var(--ftl-context-menu-item-fg, var(--ftl-text));
   text-align: left;
 }
-.ftl-context-menu-item.is-danger { color: var(--ftl-danger); }
+.ftl-context-menu-item.is-danger { color: var(--ftl-danger-text, var(--ftl-danger)); }
 .ftl-context-menu-item:hover,
 .ftl-context-menu-item:focus-visible {
   background: var(--ftl-context-menu-item-bg-hover, var(--ftl-dropdown-item-bg-hover, var(--ftl-accent)));
@@ -1231,8 +1250,8 @@ dialog.ftl-modal::backdrop {
   text-transform: uppercase;
 }
 .ftl-stat-trend { font-size: 0.8em; }
-.ftl-stat-trend.is-up { color: var(--ftl-success); }
-.ftl-stat-trend.is-down { color: var(--ftl-danger); }
+.ftl-stat-trend.is-up { --ftl-state-fg: var(--ftl-success-text, var(--ftl-success)); color: var(--ftl-state-fg); }
+.ftl-stat-trend.is-down { --ftl-state-fg: var(--ftl-danger-text, var(--ftl-danger)); color: var(--ftl-state-fg); }
 
 /* .ftl-divider */
 .ftl-divider {
