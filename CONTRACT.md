@@ -471,6 +471,25 @@ sibling selector.
 marker, so a theme that flattens one language still communicates the state
 through the other.
 
+Sticky header and sort indicators (v3.7.0), both opt-in — a plain table
+needs neither:
+
+```html
+<table class="ftl-table is-sticky">
+  <thead><tr>
+    <th aria-sort="descending">Name</th>
+    <th>Status</th>
+  </tr></thead>
+  …
+</table>
+```
+`.is-sticky` pins `<thead>` to the top of the table's scroll container
+(the table needs `overflow: auto` from its own layout, not core). A
+header's `aria-sort` — `"ascending"`/`"descending"`, the same attribute a
+screen reader already wants on a sortable column — gets a clickable
+cursor, a hover tint, and a themed arrow; toggle the attribute value on
+click, don't add a separate `.is-sorted` class.
+
 ### Navigation and tabs
 ```html
 <nav class="ftl-nav">
@@ -482,6 +501,17 @@ through the other.
   <button class="ftl-tab">Two</button>
 </div>
 ```
+
+### Segmented control (v3.7.0)
+```html
+<div class="ftl-segmented">
+  <button class="ftl-segmented-item is-active">List</button>
+  <button class="ftl-segmented-item">Grid</button>
+</div>
+```
+Mutually-exclusive view switches (list/grid, day/week/month). Distinct
+from `.ftl-tabs` (navigates, usually changes the URL) and
+`.ftl-badge-button` (independent, multi-select filter chips).
 
 ### Badges, progress, status
 ```html
@@ -628,11 +658,20 @@ every token has a base-token fallback so no theme file needs to change.
 | `<kbd>` | `--ftl-kbd-bg` / `-fg` / `-border` / `-radius` / `-shadow` | `--ftl-surface-2` / `--ftl-text` / `--ftl-border` / … |
 | `<code>` (inline) | `--ftl-code-bg` / `-fg` | `--ftl-surface-2` / `--ftl-text` |
 | `<pre>` (block) | `--ftl-code-block-bg` / `-border` | `--ftl-surface` / `--ftl-border` |
+| `.ftl-select` closed-box arrow (v3.7.0) | `--ftl-select-arrow-fg` | `--ftl-muted` |
+| `.ftl-input` autofill fill/text (v3.7.0) | reads `--ftl-input-bg`/`-fg` directly | — |
+| `dialog.ftl-modal::backdrop` (v3.7.0) | reads `--ftl-overlay-bg`/`-blur` directly | — |
 
 A theme with a strong signature color (a green terminal, a cyan grid) will
 usually want to set at least `--ftl-selection-bg`/`-fg` explicitly rather
 than rely on the accent fallback, if its accent and "what should highlight
 selected text" ought to differ.
+
+`.ftl-select`'s closed box gets a colorable CSS-triangle arrow; its open
+dropdown *list* stays OS-native chrome no CSS can reach (a theme that
+needs a pixel-perfect custom list has to build its own listbox widget —
+out of scope for a CSS-only library). A theme can opt back into the
+platform's own arrow with `appearance: auto` on `.ftl-select`.
 
 ## Adopting ftl-themes in an existing app
 

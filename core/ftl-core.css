@@ -161,6 +161,33 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 .ftl-select:disabled,
 .ftl-textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* .ftl-select's dropdown *list* is OS chrome no CSS can reach, but the
+   closed box's arrow was always the browser's own — a border-only
+   triangle keeps it colorable without an SVG/data-URI asset. Themes
+   that want their real native arrow back can override
+   `appearance: auto` on `.ftl-select`. */
+.ftl-select {
+  appearance: none;
+  padding-right: 2.2em;
+  background-image: var(--ftl-select-arrow, linear-gradient(45deg, transparent 50%, var(--ftl-select-arrow-fg, var(--ftl-muted)) 50%)),
+    linear-gradient(135deg, var(--ftl-select-arrow-fg, var(--ftl-muted)) 50%, transparent 50%);
+  background-position: calc(100% - 1.1em) calc(50% - 3px), calc(100% - 0.75em) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* Autofill: browsers force their own fill/text color on
+   `:-webkit-autofill`, ignoring `background`/`color` outright. The only
+   reliable override is this absurdly long transition-delay trick, which
+   defers the browser's own paint long enough for ours to stick. */
+.ftl-input:-webkit-autofill,
+.ftl-input:-webkit-autofill:hover,
+.ftl-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ftl-input-fg, var(--ftl-text));
+  box-shadow: 0 0 0 1000px var(--ftl-input-bg, var(--ftl-surface)) inset;
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
 .ftl-label {
   display: block;
   margin-bottom: 0.35em;
@@ -340,6 +367,16 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   font-weight: 600;
 }
 .ftl-modal-footer { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem; }
+
+/* Native <dialog> bridge: an app using <dialog class="ftl-modal"> instead
+   of the .ftl-modal-overlay + div pattern gets the same panel styling
+   from the rule above (a plain selector, it already matches), plus a
+   themed ::backdrop here — the one piece <dialog> paints itself that the
+   overlay div above doesn't need. */
+dialog.ftl-modal::backdrop {
+  background: var(--ftl-overlay-bg, rgba(0, 0, 0, 0.6));
+  backdrop-filter: var(--ftl-overlay-blur, none);
+}
 
 .ftl-dropdown {
   background: var(--ftl-dropdown-bg, var(--ftl-surface-2));
@@ -562,6 +599,37 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   box-shadow: var(--ftl-lamp-glow, 0 0 0.4rem var(--ftl-danger));
 }
 
+/* .ftl-segmented — a segmented control / toggle group: mutually-exclusive
+   view switches (list/grid, day/week/month). Distinct from .ftl-tabs
+   (navigates between different content, usually with a URL) and
+   .ftl-badge-button (independent, multi-select filter chips). Markup is a
+   plain button group; state lives in `.is-active`, same convention as
+   every other stateful component here. */
+.ftl-segmented {
+  display: inline-flex;
+  padding: var(--ftl-segmented-padding, 0.2rem);
+  background: var(--ftl-segmented-bg, var(--ftl-surface-2));
+  border: 1px solid var(--ftl-segmented-border, var(--ftl-border));
+  border-radius: var(--ftl-segmented-radius, var(--ftl-radius));
+  gap: 0.15rem;
+}
+.ftl-segmented-item {
+  padding: 0.35em 0.9em;
+  border: none;
+  border-radius: var(--ftl-segmented-item-radius, calc(var(--ftl-segmented-radius, var(--ftl-radius)) * 0.75));
+  background: transparent;
+  color: var(--ftl-segmented-item-fg, var(--ftl-muted));
+  font: inherit;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ftl-segmented-item:hover { color: var(--ftl-segmented-item-fg-hover, var(--ftl-text)); }
+.ftl-segmented-item.is-active {
+  background: var(--ftl-segmented-item-bg-active, var(--ftl-accent));
+  color: var(--ftl-segmented-item-fg-active, var(--ftl-on-accent));
+}
+
 /* --- .ftl-table -------------------------------------------------------- */
 .ftl-table {
   width: 100%;
@@ -597,6 +665,30 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
     background: var(--ftl-row-selected-bg, color-mix(in srgb, var(--ftl-accent) 18%, transparent));
   }
 }
+
+/* Sticky header: opt in per-table with `.ftl-table.is-sticky` — a plain
+   `<thead>` needs no extra markup, just its own opaque background so
+   scrolled rows don't show through. */
+.ftl-table.is-sticky thead th {
+  position: sticky;
+  top: 0;
+  background: var(--ftl-table-head-bg, var(--ftl-surface));
+  z-index: 1;
+}
+
+/* Sort indicator: the app sets `aria-sort="ascending"/"descending"` on the
+   active `<th>` (a native a11y attribute, not an .is-* class, since it's
+   already the correct semantic marker) and a clickable header gets a
+   cursor and hover tint for free. */
+.ftl-table th[aria-sort] { cursor: pointer; }
+.ftl-table th[aria-sort]:hover { color: var(--ftl-table-head-fg-hover, var(--ftl-text)); }
+.ftl-table th[aria-sort]::after {
+  margin-left: 0.35em;
+  font-size: 0.85em;
+  color: var(--ftl-table-sort-fg, var(--ftl-accent));
+}
+.ftl-table th[aria-sort="ascending"]::after { content: "\2191"; }
+.ftl-table th[aria-sort="descending"]::after { content: "\2193"; }
 
 /* --- Navigation and tabs ----------------------------------------------- */
 .ftl-nav {

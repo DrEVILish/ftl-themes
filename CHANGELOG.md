@@ -3,6 +3,37 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.7.0 — segmented control, sortable/sticky tables, remaining chrome gaps
+
+Closes out the backlog flagged alongside v3.6.0: a component pattern
+common enough to add speculatively (segmented control), two `.ftl-table`
+hooks a data-heavy consumer will need, and the three browser-chrome
+surfaces v3.6.0 didn't reach (native `<select>`'s closed-box arrow,
+autofill, native `<dialog>`'s `::backdrop`). All additive, all
+token-driven with base-token fallbacks.
+
+### Added
+
+- **`.ftl-segmented`** (+ `.ftl-segmented-item`, `.is-active`) — a
+  segmented control / toggle group for mutually-exclusive view switches,
+  distinct from `.ftl-tabs` (navigates) and `.ftl-badge-button`
+  (multi-select filter chips).
+- **`.ftl-table` sticky header** — `.ftl-table.is-sticky thead th` pins
+  the header within the table's own scroll container.
+- **`.ftl-table` sort indicator** — a clickable cursor, hover tint, and
+  themed arrow on any `<th aria-sort="ascending"/"descending">`, reusing
+  the attribute a screen reader already wants rather than adding a
+  parallel `.is-sorted` class.
+- **`.ftl-select` closed-box arrow** now themed via a CSS-triangle
+  (`--ftl-select-arrow-fg`, default `--ftl-muted`) instead of the
+  browser's own. The open dropdown list stays native OS chrome — no CSS
+  can reach it.
+- **Autofill** on `.ftl-input` now respects `--ftl-input-bg`/`-fg`
+  instead of the browser's forced yellow/blue fill.
+- **`dialog.ftl-modal::backdrop`** themed via `--ftl-overlay-bg`/`-blur`,
+  for apps using the native `<dialog>` element instead of the
+  `.ftl-modal-overlay` div pattern.
+
 ## v3.6.0 — browser-chrome theming
 
 Closes the gap between "every `.ftl-*` component is themed" and "the whole
