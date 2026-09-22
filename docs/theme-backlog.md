@@ -7,11 +7,10 @@ authoring workflow. Each entry names the reference to design against.
 
 ## Batch 2 — requested by name, not yet authored
 
-1. **Windows XP Luna** (blue) — the default XP look: rounded, saturated
-   blue title bars, green Start button. Once built, **Royale**, **Olive**,
-   and **Silver** are cheap palette-only follow-ons (same chrome shape,
-   different token values), plus the later **Royale Noir**/black variant
-   if wanted.
+1. ~~**Windows XP Luna** (blue)~~ — done, see `themes/winxp-luna`.
+   **Royale**, **Olive**, and **Silver** are still open as cheap
+   palette-only follow-ons (same chrome shape, different token values),
+   plus the later **Royale Noir**/black variant if wanted.
 2. **Windows 7 Aero** — glass blur, glossy taskbar, more restrained gloss
    than XP; distinct enough from Luna to warrant its own component
    overrides (blur/translucency via `backdrop-filter`, not just gradients).

@@ -500,6 +500,7 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 | `winamp-classic` | WinAmp Classic | Steel-gray skinned player. |
 | `wmp11` | Windows Media Player 11 | Black glass, blue glow. |
 | `imac-g3` | iMac G3 | Translucent Bondi Blue plastic; Blueberry/Grape/Tangerine variants. |
+| `winxp-luna` | Windows XP Luna | The default XP look — glossy blue chrome, green Start button. |
 | `winxp-zune` | Windows XP Zune | Matte charcoal, glowing orange accent. |
 | `msdos` | MS-DOS (Norton Commander) | Blue-and-white text mode, double-line borders. |
 | `pipboy` | Fallout Pip-Boy 3000 | Monochrome phosphor green, static scanlines. |

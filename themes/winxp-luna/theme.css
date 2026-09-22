@@ -1,0 +1,147 @@
+/* ftl-themes: Windows XP Luna
+ * Theme-Name: Windows XP Luna
+ * Description: The default XP look — rounded glossy blue chrome, green Start button, Tahoma.
+ *
+ * Read CONTRACT.md § "How a theme overrides a component" first. The short
+ * version: set component look through the --ftl-<component>-* properties in
+ * the root block below. Declaring background/color on a base component
+ * selector (html[data-theme="winxp-luna"] .ftl-btn) outranks core's variant
+ * rules and erases them — scripts/check.sh will fail the build if you do.
+ */
+
+html[data-theme="winxp-luna"] {
+  /* --- Required tokens --------------------------------------------------
+   * --ftl-bg is the decorative sky behind the "window" (see the page
+   * background rule below); the actual content sits on --ftl-surface, the
+   * classic XP dialog tan-grey (#ece9d8), not on the sky blue. */
+  --ftl-bg: #3a8dde;
+  --ftl-surface: #ece9d8;
+  --ftl-surface-2: #ffffff;
+  --ftl-border: #aca899;
+  --ftl-hairline: #d4d0c8;
+  --ftl-text: #000000;
+  --ftl-muted: #716f64;
+  --ftl-accent: #245edc;
+  --ftl-accent-2: #5a9cf8;
+  --ftl-danger: #c42b1c;
+  --ftl-success: #1f7a13;
+  --ftl-warning: #d98c1f;
+  --ftl-on-accent: #ffffff;
+  --ftl-on-danger: #ffffff;
+  --ftl-on-success: #ffffff;
+  --ftl-radius: 0.4rem;
+  --ftl-font: Tahoma, "Segoe UI", sans-serif;
+  --ftl-font-mono: "Courier New", Consolas, monospace;
+  --ftl-flare: #3ad936;
+
+  /* --- Buttons: glossy white-to-tan by default, gradient fills for the
+     semantic variants below. --- */
+  --ftl-btn-bg: linear-gradient(180deg, #ffffff 0%, #ece9d8 100%);
+  --ftl-btn-fg: var(--ftl-text);
+  --ftl-btn-border: #8e8c85;
+  --ftl-btn-border-hover: #3c7fb1;
+  --ftl-btn-radius: 0.35rem;
+  --ftl-btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  --ftl-btn-shadow-hover: 0 0 6px rgba(49, 106, 197, 0.5);
+
+  /* --- Form controls: white, sunken, classic XP blue-grey border. --- */
+  --ftl-input-bg: #ffffff;
+  --ftl-input-border: #7f9db9;
+  --ftl-input-radius: 0.25rem;
+  --ftl-input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+  --ftl-focus-ring: 0 0 0 2px rgba(49, 106, 197, 0.4);
+
+  /* --- Surfaces --- */
+  --ftl-panel-bg: linear-gradient(180deg, #f5f4ec, #ece9d8);
+  --ftl-panel-border: #aca899;
+  --ftl-panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 12px rgba(0, 0, 0, 0.18);
+  --ftl-modal-header-bg: linear-gradient(180deg, #3d94f6, #1c5fd6 60%, #0d3fae);
+  --ftl-modal-header-fg: #ffffff;
+  --ftl-modal-radius: 0.6rem;
+  --ftl-dropdown-bg: #ffffff;
+  --ftl-dropdown-border: #7f9db9;
+  --ftl-overlay-bg: rgba(0, 40, 110, 0.35);
+
+  /* --- Table: light listview-header gradient, classic XP selection blue. --- */
+  --ftl-table-head-bg: linear-gradient(180deg, #f4f6f8, #d8e4f5);
+  --ftl-table-head-fg: var(--ftl-text);
+  --ftl-row-selected-bg: #316ac5;
+  --ftl-row-selected-fg: #ffffff;
+
+  /* --- Nav: the taskbar's blue gloss. --- */
+  --ftl-nav-bg: linear-gradient(180deg, #3d94f6, #1c5fd6);
+  --ftl-nav-brand-fg: #ffffff;
+  --ftl-nav-item-fg: #ffffff;
+  --ftl-nav-item-bg-active: rgba(255, 255, 255, 0.25);
+
+  --ftl-indicator-fg: var(--ftl-accent);
+  --ftl-indicator-track: #d4d0c8;
+}
+
+/* Sky backdrop behind the "window" - an abstract gradient evoking the
+   classic XP desktop, not a reproduction of the Bliss wallpaper photo. */
+html[data-theme="winxp-luna"] {
+  background: linear-gradient(180deg, #3a8dde 0%, #bcdcff 55%, #e8f4ff 100%);
+  background-attachment: fixed;
+}
+
+html[data-theme="winxp-luna"] h1,
+html[data-theme="winxp-luna"] h2,
+html[data-theme="winxp-luna"] h3 {
+  color: var(--ftl-accent);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Semantic button fills: gloss gradient, darkest at the bottom, matching
+   the default button's inset highlight above. */
+html[data-theme="winxp-luna"] .ftl-btn-primary {
+  --ftl-btn-bg: linear-gradient(180deg, #5b9df9, #1953c9 55%, #123f99);
+  --ftl-btn-border: #123f99;
+  --ftl-btn-fg: var(--ftl-on-accent);
+}
+html[data-theme="winxp-luna"] .ftl-btn-danger {
+  --ftl-btn-bg: linear-gradient(180deg, #ef7b68, #c42b1c 55%, #8f1a0f);
+  --ftl-btn-border: #8f1a0f;
+}
+html[data-theme="winxp-luna"] .ftl-btn-success {
+  /* The Start button's green, reused for the "go" semantic. */
+  --ftl-btn-bg: linear-gradient(180deg, #74e06a, #2e9b1f 55%, #1c6b12);
+  --ftl-btn-border: #1c6b12;
+}
+
+/* Fully round the primary/success/go buttons the way the real Start
+   button was pill-shaped, while everyday buttons stay a gentler rounded
+   rectangle (--ftl-btn-radius above). Shape only - no background/color -
+   so it's safe on the variant selectors themselves. */
+html[data-theme="winxp-luna"] .ftl-btn-primary,
+html[data-theme="winxp-luna"] .ftl-btn-success,
+html[data-theme="winxp-luna"] .ftl-btn-go { border-radius: 999px; }
+
+html[data-theme="winxp-luna"] .ftl-table tr:nth-child(even):not(.is-selected) td {
+  background: rgba(49, 106, 197, 0.05);
+}
+
+/* --- Layout --------------------------------------------------------------
+ * A Luna window: rounded-top blue gloss title bar, a tan content well, a
+ * light blue status strip with rounded bottom corners, floating on the sky
+ * backdrop with a drop shadow - the same "boxed desktop window" shape
+ * Windows 95/Aqua use, restyled for Luna's rounder, glossier chrome. */
+html[data-theme="winxp-luna"] {
+  --ftl-app-padding: 0.6rem;
+  --ftl-app-gap: 0.5rem;
+  --ftl-app-bar-bg: linear-gradient(180deg, #3d94f6, #1c5fd6 55%, #123f99);
+  --ftl-app-bar-fg: #ffffff;
+  --ftl-app-bar-rule-width: 0;
+  --ftl-app-bar-radius: 0.6rem 0.6rem 0 0;
+  --ftl-app-bar-height: 2.6rem;
+  --ftl-app-bar-padding: 0.4rem 0.75rem;
+  --ftl-app-main-bg: linear-gradient(180deg, #f5f4ec, #ece9d8);
+  --ftl-app-main-padding: 1rem;
+  --ftl-app-status-bg: linear-gradient(180deg, #e8eefc, #c9d9f5);
+  --ftl-app-status-fg: #1c3f7a;
+  --ftl-app-status-radius: 0 0 0.6rem 0.6rem;
+}
+html[data-theme="winxp-luna"] .ftl-app {
+  border-radius: 0.6rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
