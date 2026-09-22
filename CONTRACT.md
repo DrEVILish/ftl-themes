@@ -552,6 +552,9 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 | `lego-classic` | LEGO Classic | Primary colours, thick outlines, pressable brick shadow. |
 | `steampunk` | Steampunk | Brass and mahogany, riveted panels. |
 | `cyber-goth` | Cyber-Goth | Black vinyl, toxic green + hot purple glow. |
+| `winxp-luna` | Windows XP (Luna) | The default Luna Blue desktop — glossy blue chrome, green go. |
+| `barbie` | Barbie | Hot-pink glamour, glossy pills, gold sparkle. |
+| `hot-wheels` | Hot Wheels | Blister-pack orange on track-black, flame stripes, checkered flag. |
 
 ## Palette variants and accent swatches — worked example
 

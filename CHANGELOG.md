@@ -3,7 +3,26 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
-## v3.2.1 — four theme-fidelity bugs found by design review
+## v3.3.0 — three more themes: Windows XP (Luna), Barbie, Hot Wheels
+
+### Added
+
+- **`winxp-luna`** — the default Luna Blue Windows XP desktop (glossy
+  round-cornered blue title bar, tan/white content, Tahoma), distinct from
+  the already-shipped `winxp-zune` reskin.
+- **`barbie`** — hot-pink glamour: glossy pill chrome, gold sparkle
+  headings, mint success state with dark-on-fill text.
+- **`hot-wheels`** — blister-pack orange on track-black: a diagonal flame
+  stripe across the app bar, a checkered-flag status strip, bold italic
+  uppercase type.
+
+All three ship a full `--ftl-app-*` layout personality (`shellAware:
+true`), a `README.md`, and pass `scripts/check.py` at 0 failures / 0
+warnings, including contrast: two of the three needed their accent one
+shade darker than the "true" brand color to clear 4.5:1 against white fill
+text (`winxp-luna`'s success green `#3d9f1e` → `#2e7a14`; `barbie`'s pink
+`#e0218a` → `#c81b7a`) — noted inline in each theme's source so the
+deviation from the brand reference is documented, not silent.
 
 All additive, all inside individual themes or a single component's fixed
 floor — no token or component contract changed shape.
