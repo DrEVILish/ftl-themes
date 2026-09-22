@@ -2,6 +2,8 @@
 
 > Translucent ribbed plastic in Bondi Blue, with Blueberry/Grape/Tangerine variants.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The 1998 iMac's defining trick: consumer electronics as candy. Translucent
@@ -19,6 +21,18 @@ sense that the interface is a physical object you could pick up.
 3. **Big, round, friendly.** `--ftl-radius: 1.3rem`. Nothing here is sharp.
 4. **White text on saturated colour**, always — this is a light-on-dark
    theme regardless of which fruit colour is active.
+
+## Signature details
+
+- The pinstripe (`repeating-linear-gradient` white-at-12% every 4px) sits
+  on both `.ftl-panel` and `.ftl-app-bar` — it's a case texture, not a
+  panel-only decoration.
+- Every gloss gradient is three stops (bright highlight → faint → the base
+  surface colour), never a plain two-stop fade — that middle fade-out is
+  what reads as translucent plastic rather than a painted highlight.
+- The page backdrop is a radial vignette in the shell's own colour
+  (`radial-gradient(ellipse at top, ...)`), so the case always appears to
+  glow against a darker version of itself, never a neutral grey.
 
 ## Variants
 
@@ -58,6 +72,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

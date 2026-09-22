@@ -2,6 +2,8 @@
 
 > Victorian brass, mahogany and copper, with gear-driven dials.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 Victorian-era heavy industry as furniture: mahogany-dark wood panels,
@@ -17,6 +19,17 @@ interface were machined rather than rendered.
 3. **Serif type, small-caps headings.** This is Victorian print, not a
    sans-serif dashboard.
 4. **Warm and dark.** Mahogany brown surfaces, never grey or cool-toned.
+
+## Signature details
+
+- Rivets are two `::before`/`::after` pseudo-elements per panel — 6px
+  radial-gradient circles at each top corner, zero markup, pure CSS.
+- Headings use `font-variant: small-caps`, not `text-transform:
+  uppercase` — genuine small capitals, the Victorian-print detail every
+  uppercase-heading theme elsewhere in the catalog skips.
+- Buttons carry a three-stop vertical gradient (`#d9ab4a` → `#a97a24` →
+  `#7a5416`) — brass needs the extra middle stop other themes' two-stop
+  gloss buttons don't bother with, or it reads as plastic, not metal.
 
 ## Layout
 
@@ -38,6 +51,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

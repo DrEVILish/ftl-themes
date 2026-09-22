@@ -249,18 +249,24 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 .ftl-field-row > .ftl-field-hint { margin-top: 0; flex: none; }
 
 
+/* Interactive-target sizing scales with --ftl-density (default 1, so every
+   value below computes byte-identical to its old literal at the default) —
+   a chunky touch-first theme at density 1.15+ gets bigger grab targets to
+   match its roomier padding, not just more breathing room around the same
+   16px thumb. Per-part tokens (--ftl-switch-*, --ftl-slider-thumb-*) still
+   override the computed size same as any other token. */
 .ftl-checkbox {
   accent-color: var(--ftl-accent);
-  width: 1.1em;
-  height: 1.1em;
+  width: calc(1.1em * var(--ftl-density));
+  height: calc(1.1em * var(--ftl-density));
 }
 
 .ftl-switch {
   position: relative;
   display: inline-flex;
   align-items: center;
-  width: 2.6em;
-  height: 1.4em;
+  width: calc(2.6em * var(--ftl-density));
+  height: calc(1.4em * var(--ftl-density));
   cursor: pointer;
 }
 .ftl-switch input {
@@ -281,8 +287,8 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   position: absolute;
   top: 2px;
   left: 2px;
-  width: calc(1.4em - 6px);
-  height: calc(1.4em - 6px);
+  width: calc(1.4em * var(--ftl-density) - 6px);
+  height: calc(1.4em * var(--ftl-density) - 6px);
   border-radius: var(--ftl-switch-thumb-radius, 50%);
   background: var(--ftl-switch-thumb-bg, var(--ftl-muted));
   transition: transform 0.15s ease, background 0.15s ease;
@@ -292,7 +298,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   background: var(--ftl-switch-bg-on, var(--ftl-surface-2));
 }
 .ftl-switch input:checked ~ .ftl-switch-track .ftl-switch-thumb {
-  transform: translateX(1.2em);
+  transform: translateX(calc(1.2em * var(--ftl-density)));
   background: var(--ftl-accent);
 }
 .ftl-switch input:focus-visible ~ .ftl-switch-track {
@@ -311,8 +317,8 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 }
 .ftl-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 1rem;
-  height: 1rem;
+  width: var(--ftl-slider-thumb-size, calc(1rem * var(--ftl-density)));
+  height: var(--ftl-slider-thumb-size, calc(1rem * var(--ftl-density)));
   border-radius: var(--ftl-slider-thumb-radius, 50%);
   background: var(--ftl-slider-thumb-bg, var(--ftl-accent));
   border: 2px solid var(--ftl-bg);
@@ -320,8 +326,8 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   cursor: pointer;
 }
 .ftl-slider::-moz-range-thumb {
-  width: 1rem;
-  height: 1rem;
+  width: var(--ftl-slider-thumb-size, calc(1rem * var(--ftl-density)));
+  height: var(--ftl-slider-thumb-size, calc(1rem * var(--ftl-density)));
   border-radius: var(--ftl-slider-thumb-radius, 50%);
   background: var(--ftl-slider-thumb-bg, var(--ftl-accent));
   border: 2px solid var(--ftl-bg);
@@ -707,10 +713,12 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 .ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent); }
 .ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger); }
 .ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success); }
+.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning); }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
   .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
   .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, transparent); }
+  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, transparent); }
 }
 
 .ftl-progress {
@@ -1346,7 +1354,7 @@ html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accen
 }
 /* ftl-themes: LCARS
  * Theme-Name: LCARS
- * Description: Star Trek TNG/DS9/Voyager on-screen computer — candy pills on black.
+ * Description: Star Trek's Okuda-designed on-screen computer: candy-coloured pill blocks on true black with a signature elbow-curve rail.
  *
  * Component styling only. For the decorative sweep/rail frame, the bundle
  * also carries chrome.css — see docs/lcars-chrome.md.
@@ -1370,6 +1378,7 @@ html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accen
 }
 
 html[data-theme="lcars"] {
+  color-scheme: dark;
   --ftl-bg: #000000;
   --ftl-surface: #0c0c12;
   --ftl-surface-2: #191926;
@@ -1389,11 +1398,19 @@ html[data-theme="lcars"] {
   --ftl-font: "Trebuchet MS", Verdana, system-ui, sans-serif;
   --ftl-font-mono: Consolas, monospace;
   --ftl-flare: #ffcc99;
-  /* LCARS candy bars — extra palette, namespaced so nothing collides. */
+  /* LCARS candy bars — extra palette, namespaced so nothing collides.
+     --ftl-accent (#ff9900, "atomic tangerine") and --ftl-lcars-lavender
+     (#cc99cc, "lilac") are exact matches to the documented Okuda palette
+     (Michael/Denise Okuda's TNG-era LCARS reference, per trekcolors).
+     --ftl-lcars-sky was previously a pastel periwinkle (#9999ff) with no
+     source behind it; #6699ff sits much closer to the palette's actual
+     saturated blue family ("mariner" #3366cc, "bahama-blue" #006699) while
+     staying light enough for black button text to still clear the 4.5:1
+     contrast floor — mariner itself only reaches 3.9:1. */
   --ftl-lcars-peach: #ff9966;
   --ftl-lcars-tan: #ffcc99;
   --ftl-lcars-lavender: #cc99cc;
-  --ftl-lcars-sky: #9999ff;
+  --ftl-lcars-sky: #6699ff;
   --ftl-lcars-rose: #cc6699;
 
   --ftl-link: var(--ftl-lcars-sky);

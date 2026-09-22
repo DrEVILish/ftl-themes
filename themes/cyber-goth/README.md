@@ -2,6 +2,8 @@
 
 > Pitch-black club aesthetic with toxic neon green, hot purple and vinyl gloss.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The club-kid cyber-goth look: black vinyl surfaces, UV-reactive neon green
@@ -19,6 +21,17 @@ than as a HUD's telemetry glow.
    whichever hue is glowing, not a tight HUD ring.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
    sans.
+
+## Signature details
+
+- Primary buttons' hover glow (`0 0 14px rgba(214, 31, 255, 0.6)`) is
+  purple even though the button fill is green — the bloom always reads as
+  the *structural* colour, never the signal one.
+- Table headers and rules pick up `--ftl-flare` (purple), not the accent —
+  structure stays purple everywhere, including inside components.
+- The font stack leads with Eurostile, the same unvendored-face situation
+  as `tron`/`death-star` — it silently falls back to a system sans on most
+  real machines rather than the intended geometric face.
 
 ## Layout
 
@@ -40,6 +53,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

@@ -2,6 +2,8 @@
 
 > Primary colour blocks, thick borders, and circular studs.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The brick itself as a UI: primary colours, thick black outlines on
@@ -21,6 +23,17 @@ when clicked — a physical toy, not a flat icon of one.
 4. **Bold, geometric type.** Heavy weight headings.
 5. **Studs are decoration on panel headers only** — a nod to the brick's
    top, not applied everywhere.
+
+## Signature details
+
+- The panel-header studs are a `radial-gradient` tiled every 14px, not
+  individual `<span>` elements — zero markup, purely decorative CSS.
+- `.ftl-btn:active` drops the shadow to `0 1px 0` and nudges the button
+  `translateY(2px)` — the brick visibly sinks into the plate, not just
+  darkens.
+- `--ftl-flare` (moulding blue, `#0055bf`) carries the app bar, status
+  strip, and table headers — structural chrome is always blue regardless
+  of which primary color a button uses.
 
 ## Layout
 
@@ -42,6 +55,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

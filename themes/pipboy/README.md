@@ -2,6 +2,8 @@
 
 > Post-apocalyptic monochrome phosphor green with scanlines.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A wrist-mounted CRT terminal in a ruined world: single-hue green phosphor,
@@ -19,6 +21,18 @@ the screen.
    `pointer-events: none`, never an animated flicker — nothing here should
    fight `prefers-reduced-motion` for a cosmetic effect.
 4. **Uppercase, tracked headings** — terminal readouts, not a stylized logo.
+
+## Signature details
+
+- Scanlines are a fixed `::after` overlay on `.ftl-app` at `z-index: 999`
+  with `pointer-events: none` — a 1px-on/2px-off repeating gradient, so
+  they never intercept a click and never need JavaScript.
+- All body text carries a faint `text-shadow: 0 0 3px` phosphor glow, not
+  just headings — the whole screen glows a little, not just the display
+  face.
+- `--ftl-success` and `--ftl-accent` are the *same* green — this theme has
+  no separate "success" hue at all, only the one phosphor color and the
+  two genuine hazard departures (danger amber, warning yellow).
 
 ## Layout
 
@@ -39,6 +53,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

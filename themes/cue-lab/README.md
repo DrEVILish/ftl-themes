@@ -2,6 +2,8 @@
 
 > Flat live-show console — hairline grids, amber accent, no glow.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A **show-control console** of the kind an operator sits behind during a
@@ -39,7 +41,7 @@ stress. Everything in this theme serves that moment.
 | `--ftl-density` | `0.85` | Tight rows. The single most consequential token here. |
 | `--ftl-font` | System sans | A console is read, not admired; the platform UI face is the most legible option at small sizes. |
 
-## Instruments
+## Signature details
 
 - **The transport is the theme.** A flat strip with a 0.3rem amber left
   edge, carrying GO. GO is a 2px amber outline that fills faintly and
@@ -90,6 +92,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

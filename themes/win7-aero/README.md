@@ -2,6 +2,8 @@
 
 > Frosted glass and soft blue gloss — more restrained than Luna.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 **Windows 7's Aero Glass**: translucent, blurred window chrome over the
@@ -64,6 +66,3 @@ layout at **L1**.
 `backdrop-filter` support: this theme degrades gracefully in engines
 without it — surfaces fall back to their plain translucent color with no
 blur, still legible, just not glassy.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

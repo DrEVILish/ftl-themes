@@ -2,6 +2,8 @@
 
 > Absolute black with glowing solid-colour indicator blocks, zero borders or shadows.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The Imperial control terminal aesthetic: a void of true black
@@ -18,6 +20,16 @@ blue — with no frame, border or shadow drawn anywhere to soften it.
    colour, full stop.
 4. **True black, not near-black.** `--ftl-bg: #000`. This is the one theme
    in the catalogue that means it literally.
+
+## Signature details
+
+- Lamps carry a `0 0 10px` glow matched to their own state color
+  (`.is-on` glows success-green, `.is-error` glows danger-red) — the only
+  `box-shadow` this theme sets anywhere.
+- Selected table rows fill solid accent blue with black text, not a tint —
+  a "selected" row is a solid block, same discipline as everything else.
+- Badges are square (`border-radius: 0`), overriding core's default pill —
+  even the smallest decorative curve is stripped out here.
 
 ## Layout
 
@@ -38,6 +50,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

@@ -2,6 +2,8 @@
 
 > Classic blue-and-white text-mode with double-line borders and bright cyan.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The 16-colour VGA text-mode look of Norton Commander: a solid blue field,
@@ -19,6 +21,18 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    only as `--ftl-flare` and warning) — this is a two-tier bright system,
    not a rainbow.
 5. **Zero radius.** Text-mode has no curves.
+
+## Signature details
+
+- `border-style: double` at 3px is set on every bordered component in one
+  rule (`.ftl-input`, `.ftl-select`, `.ftl-textarea`, `.ftl-btn`,
+  `.ftl-panel`, `.ftl-modal`, `.ftl-dropdown`) — one declaration carries
+  the entire visual signature.
+- `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
+  approximation — this theme's background is a real 16-color EGA/VGA value.
+- The nav bar, app bar, and status strip all fill solid cyan
+  (`--ftl-accent`) with black text — the one place a "bright" color
+  becomes a background instead of a foreground.
 
 ## Layout
 
@@ -42,6 +56,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

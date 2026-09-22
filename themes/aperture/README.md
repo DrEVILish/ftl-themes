@@ -2,6 +2,8 @@
 
 > Sterile laboratory off-whites and dark greys, accented by testing-chamber blue and orange.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A clean, sterile test-chamber control panel: off-white surfaces, quiet
@@ -23,6 +25,16 @@ otherwise clinical space.
 4. **Grey, understated headings** — a section label on a clipboard, not a
    marketing headline.
 
+## Signature details
+
+- Danger buttons fill with the portal orange (`--ftl-accent-2`), not red —
+  the one place this theme breaks from every other theme's convention on
+  purpose, with dark text since orange is too light for white to pass.
+- Headings are muted grey, `font-weight: 700`, and never uppercase — a
+  clipboard label, not a marketing headline.
+- Shadows never exceed `0 1px 3px` — this is the flattest, quietest theme
+  in the catalog; anything heavier reads as a different theme entirely.
+
 ## Layout
 
 A plain white bar and status strip on a slightly darker page backdrop —
@@ -43,6 +55,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-
-Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
-intended layout; at L0 the bundle renders recolored only.

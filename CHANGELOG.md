@@ -3,6 +3,80 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.5.2 — consumer-reported fixes: color-scheme, density-scaled targets, offline lint
+
+Addresses issues filed from real integration work in CuTePi, PI9696, and
+Playlist Lab.
+
+### Added
+
+- **`color-scheme` per theme** (#21). Every theme's root block now
+  declares `color-scheme: light;`/`dark;` matching its palette, judged
+  from `--ftl-surface` (the substrate that actually carries content, not
+  `--ftl-bg`, which can be purely decorative — windows95's teal desktop
+  is the case that mattered here). UA-owned chrome (scrollbars, native
+  date/time pickers, autofill) now matches instead of defaulting to light
+  under every dark theme. `scripts/check.py` fails a theme with zero or
+  more than one declaration. Themes still don't respond to
+  `prefers-color-scheme` — this only declares what they already are.
+- **`--ftl-density` now scales interactive targets** (#26): `.ftl-checkbox`,
+  `.ftl-switch`, and `.ftl-slider`'s thumb size with density, not just
+  padding. A touch-first theme at density 1.15+ gets bigger grab targets
+  to match its roomier spacing. Default density renders byte-identical to
+  before; per-part tokens (`--ftl-switch-*`, `--ftl-slider-thumb-size`)
+  still override.
+- **`.ftl-badge-warning`** (#19) — the fourth severity variant, matching
+  `-accent`/`-danger`/`-success`.
+- **Lint: no remote URLs** (#25). `scripts/check.py` now fails any theme
+  or core file containing a remote `url(...)` or `@import` — a
+  field-offline consumer embeds the bundles specifically so the UI works
+  with zero network access; one remote reference upstream would silently
+  break that guarantee.
+- **"Requires: L0/L1" badge rolled out to all 26 READMEs** (#18), all
+  `Requires: L1` (every current theme sets `--ftl-app-*`). The lint is
+  promoted from warn to fail now that the rollout is complete.
+
+### Verified already fixed (stale issue reports)
+
+Issues #8 (LCARS headings), #9 (TRON focus-outline clipping), #10
+(windows95 body-text contrast), and #11 (cue-lab GO min-target) were
+already resolved in an earlier pass — confirmed against current source,
+no further change needed.
+
+## v3.5.1 — compare mode, signature-detail pass, source-accuracy fixes
+
+### Added
+
+- **`example.html` compare mode.** Pick two themes and see both rendered
+  full-width side by side (each an embedded copy of the page itself), with
+  each theme's "Signature details" pulled from its README into the
+  sidebar for a read-without-scrolling comparison. Deep-linkable via
+  `?compare=1&a=<slug>&b=<slug>`.
+- **`docs/engine-improvements.md`** — a written set of recommendations
+  from this review pass: what was implemented, what's deferred and why
+  (visual regression testing, a token-diff tool, a per-theme token-usage
+  report), and what was deliberately rejected (an authenticity "score",
+  auto-generating READMEs from CSS).
+- Every theme's README now has a "Signature details" section (11 of 26
+  didn't); `scripts/check.py`'s docs rule now warns if a new theme ships
+  without one, since that's the section compare mode surfaces.
+
+### Changed
+
+- Every theme's one-line `Description:` (feeds `dist/themes.json` and
+  theme pickers) now names a concrete signature detail instead of a
+  generic palette summary. `CONTRACT.md`'s theme index rewritten
+  accordingly, with a new "Signature detail" column.
+- **`lcars`**: `--ftl-lcars-sky` corrected from an unsourced pastel
+  periwinkle (`#9999ff`) to `#6699ff`, closer to the Okuda reference
+  palette's documented blue family ("mariner"/"bahama-blue") while
+  staying inside the button-text contrast floor (the literal reference
+  blue fails at 3.9:1). `--ftl-accent` and `--ftl-lcars-lavender` were
+  verified exact matches to the reference and needed no change.
+- **`winxp-luna`**: softened an overclaiming comment about the Start-button
+  green being "the actual" color to "the commonly cited" one — no single
+  hex was ever an officially published constant.
+
 ## v3.5.0 — five more themes: Windows 7 Aero, Alienware, Vaporwave, Material, Bloomberg Terminal
 
 ### Added

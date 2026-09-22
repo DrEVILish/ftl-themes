@@ -20,6 +20,8 @@ Windows 95 to TRON.
   inauthentic result" checklist beside the render, so drift between a theme
   and its design doc is visible while you tick items off.
 - **What's planned next:** [`docs/theme-backlog.md`](docs/theme-backlog.md).
+- **Engine-level recommendations** (what's been reviewed and what's still
+  open): [`docs/engine-improvements.md`](docs/engine-improvements.md).
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
   and changed how themes override components.
 
