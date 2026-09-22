@@ -2,6 +2,8 @@
 
 > Star Trek TNG/DS9/Voyager on-screen computer — candy pills on black.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The **Library Computer Access/Retrieval System** as it appeared on screen

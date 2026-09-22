@@ -2,6 +2,8 @@
 
 > Green phosphor on black — monospace terminal cascade.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A **phosphor terminal** as filmed: monospace everything, black field,

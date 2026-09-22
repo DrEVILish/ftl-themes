@@ -31,7 +31,18 @@ Every rule corresponds to a bug that actually shipped once:
              (the matrix pattern), never behind nothing.
   requires   a theme without a Requires: L0/L1 badge leaves apps guessing
              whether it needs the app shell (the LCARS-on-a-token-only-app
-             failure) — warned, owner's call to badge.
+             failure). All 26 themes were badged in one pass (#18); new
+             themes must ship one too — promoted from warn to fail once
+             the rollout reached 100%.
+  color-scheme  without it, UA-owned chrome (scrollbars, native date/time
+             pickers, autofill) renders for the wrong palette under every
+             dark theme, even though every .ftl-* control is themed
+             correctly. Declaring it changes no behavior — themes still
+             don't respond to prefers-color-scheme, by design.
+  remote-url a theme or core file referencing a remote url()/@import makes
+             every consumer depend on connectivity; a field-offline
+             consumer (a recorder with no network) needs every bundle to
+             work fully embedded.
 """
 import glob
 import json
@@ -152,6 +163,32 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     if missing:
         fail(theme, "tokens", f"missing required token(s): {', '.join('--ftl-' + t for t in missing)}")
 
+    # UA-owned chrome (scrollbars, native pickers, autofill) stays light
+    # under a dark theme unless told otherwise — declaring color-scheme
+    # doesn't change theme behavior (themes still don't respond to
+    # prefers-color-scheme, by design), it only tells the browser what the
+    # theme already is.
+    scheme_matches = re.findall(r"color-scheme\s*:\s*(light|dark)\s*;", body)
+    if not scheme_matches:
+        fail(theme, "color-scheme", "no `color-scheme` declaration — UA-owned controls "
+                                     "(scrollbars, native pickers, autofill) render for the "
+                                     "wrong palette. Declare `color-scheme: light;` or `dark;` "
+                                     "in the theme's root block.")
+    elif len(scheme_matches) > 1:
+        fail(theme, "color-scheme", f"multiple `color-scheme` declarations "
+                                     f"({', '.join(scheme_matches)}) — exactly one expected.")
+
+    # Field-offline consumers (e.g. a recorder with no network) embed the
+    # bundles specifically so the UI never depends on connectivity. A
+    # remote url()/@import would silently break that guarantee.
+    for m in re.finditer(r"url\(\s*['\"]?(https?:)?//", body):
+        fail(theme, "remote-url", f"contains a remote `url(...)` reference "
+                                   f"(`{m.group(0)}`) — themes must be usable fully offline; "
+                                   f"vendor the asset into assets/ instead.")
+    for m in re.finditer(r"@import\s+(?:url\()?['\"]?(https?:)?//", body):
+        fail(theme, "remote-url", f"contains a remote `@import` (`{m.group(0)}`) — "
+                                   f"themes must be usable fully offline.")
+
     for sel, decls in rules_of(css):
         last = sel.split()[-1] if sel.split() else sel
         classes = set(re.findall(r"\.([\w-]+)", last))
@@ -240,8 +277,20 @@ for path in sorted(glob.glob("themes/*/theme.css")):
 
     text = open(readme).read() if os.path.exists(readme) else ""
     if "requires:" not in text.lower():
-        warn(theme, "requires", "README.md has no 'Requires: L0/L1' badge — "
+        fail(theme, "requires", "README.md has no 'Requires: L0/L1' badge — "
              "apps cannot tell whether this theme needs the app shell")
+
+# Remote URLs are also checked in core/ (themes/ is covered per-theme above)
+# — a field-offline consumer embeds dist/, so a remote reference anywhere in
+# the source it's built from breaks the same offline guarantee.
+for path in sorted(glob.glob("core/*.css")):
+    body = strip_comments(open(path).read())
+    for m in re.finditer(r"url\(\s*['\"]?(https?:)?//", body):
+        failures.append(f"core: [remote-url] {path} contains a remote `url(...)` "
+                         f"reference (`{m.group(0)}`) — vendor the asset instead.")
+    for m in re.finditer(r"@import\s+(?:url\()?['\"]?(https?:)?//", body):
+        failures.append(f"core: [remote-url] {path} contains a remote `@import` "
+                         f"(`{m.group(0)}`).")
 
 # dist/ must match a fresh build — except dist/themes.json, whose version/
 # builtAt fields are expected to differ on every single build by design (see

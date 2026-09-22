@@ -2,6 +2,8 @@
 
 > Steel-gray skinned player — tiny caps, llama-green readouts.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A **skinned desktop media player** from the late 1990s: a compact steel

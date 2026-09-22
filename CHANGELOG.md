@@ -3,6 +3,46 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.5.2 — consumer-reported fixes: color-scheme, density-scaled targets, offline lint
+
+Addresses issues filed from real integration work in CuTePi, PI9696, and
+Playlist Lab.
+
+### Added
+
+- **`color-scheme` per theme** (#21). Every theme's root block now
+  declares `color-scheme: light;`/`dark;` matching its palette, judged
+  from `--ftl-surface` (the substrate that actually carries content, not
+  `--ftl-bg`, which can be purely decorative — windows95's teal desktop
+  is the case that mattered here). UA-owned chrome (scrollbars, native
+  date/time pickers, autofill) now matches instead of defaulting to light
+  under every dark theme. `scripts/check.py` fails a theme with zero or
+  more than one declaration. Themes still don't respond to
+  `prefers-color-scheme` — this only declares what they already are.
+- **`--ftl-density` now scales interactive targets** (#26): `.ftl-checkbox`,
+  `.ftl-switch`, and `.ftl-slider`'s thumb size with density, not just
+  padding. A touch-first theme at density 1.15+ gets bigger grab targets
+  to match its roomier spacing. Default density renders byte-identical to
+  before; per-part tokens (`--ftl-switch-*`, `--ftl-slider-thumb-size`)
+  still override.
+- **`.ftl-badge-warning`** (#19) — the fourth severity variant, matching
+  `-accent`/`-danger`/`-success`.
+- **Lint: no remote URLs** (#25). `scripts/check.py` now fails any theme
+  or core file containing a remote `url(...)` or `@import` — a
+  field-offline consumer embeds the bundles specifically so the UI works
+  with zero network access; one remote reference upstream would silently
+  break that guarantee.
+- **"Requires: L0/L1" badge rolled out to all 26 READMEs** (#18), all
+  `Requires: L1` (every current theme sets `--ftl-app-*`). The lint is
+  promoted from warn to fail now that the rollout is complete.
+
+### Verified already fixed (stale issue reports)
+
+Issues #8 (LCARS headings), #9 (TRON focus-outline clipping), #10
+(windows95 body-text contrast), and #11 (cue-lab GO min-target) were
+already resolved in an earlier pass — confirmed against current source,
+no further change needed.
+
 ## v3.5.1 — compare mode, signature-detail pass, source-accuracy fixes
 
 ### Added

@@ -2,6 +2,8 @@
 
 > Industrial military-alert styling — deep black, hazard orange, dark crimson.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A command-bunker terminal under permanent alert status: black steel,

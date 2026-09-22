@@ -2,6 +2,8 @@
 
 > The default Luna Blue desktop — glossy blue chrome, green go, rounded windows.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The **Windows XP desktop as it shipped**, before anyone changed a setting:

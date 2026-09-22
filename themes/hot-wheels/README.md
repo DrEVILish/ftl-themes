@@ -2,6 +2,8 @@
 
 > Blister-pack orange on track-black — flame stripes, checkered flag, no subtlety.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The **Hot Wheels blister-pack and track aesthetic**: matte black asphalt,

@@ -2,6 +2,8 @@
 
 > Black glass with a cool blue glow — WMP11's signature skin.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 **Windows Media Player 11's black-glass skin**: a dark translucent chassis,

@@ -113,6 +113,25 @@ flicker) or turned off in a paired `reduce` block. Never let an animation
 be the only carrier of state — pair it with color and shape, the way
 `.ftl-status` and the table row states do.
 
+## Stay offline-safe: no remote URLs, and vendor fonts you actually use
+
+`scripts/check.py` fails a theme (or a core file) containing a remote
+`url(...)` or `@import` — `http://`, `https://`, or protocol-relative
+`//`. Some consuming apps embed the compiled bundles specifically so their
+UI works with zero network access (a field recorder, a kiosk); a single
+remote reference upstream would silently break that guarantee for every
+one of them.
+
+The corollary: if a theme's authentic look depends on a font, either
+vendor it into `assets/fonts/` with a local `@font-face` (see
+`themes/lcars/theme.css` for the pattern — note that `scripts/build.sh`
+rewrites the relative `url()` for the `dist/` bundle, so write paths as
+`url("assets/…")` in the theme source) or don't name it in the font stack
+at all. Naming an unvendored face (as `tron` used to do with Eurostile)
+doesn't 404 — it silently falls back to the next stack entry, so the
+theme quietly never looks like its reference on a real machine. Say so in
+a header comment instead (see `tron`'s or `alienware`'s "Note on fonts").
+
 ## A minimal runtime theme switcher
 
 `ftl-themes` ships no JavaScript; switching is swapping a `<link>` and the

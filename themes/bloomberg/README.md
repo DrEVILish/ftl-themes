@@ -2,6 +2,8 @@
 
 > Black-and-amber data density — every pixel is monospace.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 **The financial data terminal look**: amber-on-black monospace text at

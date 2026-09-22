@@ -2,6 +2,8 @@
 
 > Hot-pink glamour — glossy pill chrome, gold sparkle, all-caps confidence.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The **Barbie brand aesthetic**: hot pink as the dominant color, not an

@@ -317,9 +317,25 @@ surfaces, and a palette alone cannot express that:
 ## Density
 
 `--ftl-density` (default `1`) scales the paddings that decide how much data
-fits on screen — button, table cell and panel padding. A dense console
-theme sets `0.85`; a chunky touch-first theme sets `1.15`. A theme that
-sets an explicit `--ftl-btn-padding` opts that control out of density.
+fits on screen — button, table cell and panel padding — **and** the
+interactive-target geometry of `.ftl-checkbox`, `.ftl-switch`, and
+`.ftl-slider`'s thumb. A dense console theme sets `0.85`; a chunky
+touch-first theme sets `1.15` and gets bigger grab targets to match its
+roomier padding, not just more empty space around the same 16px thumb. A
+theme that sets an explicit per-part token (`--ftl-btn-padding`,
+`--ftl-switch-*`, `--ftl-slider-thumb-size`) opts that one control out of
+density scaling; every other control still scales.
+
+## Color scheme
+
+Every theme's root block declares `color-scheme: light;` or `dark;`
+matching its palette (`scripts/check.py` fails a theme missing this, or
+carrying more than one). This is **not** the theme responding to the OS —
+see "Accessibility" → "Fixed luminance, by design" below; themes stay
+fixed regardless of `prefers-color-scheme` — it only tells the browser
+what the theme already is, so UA-owned chrome the theme's own CSS can't
+reach (scrollbars, native date/time pickers, autofill backgrounds) matches
+instead of defaulting to light under a dark theme.
 
 ## User display options
 

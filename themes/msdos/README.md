@@ -2,6 +2,8 @@
 
 > Classic blue-and-white text-mode with double-line borders and bright cyan.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The 16-colour VGA text-mode look of Norton Commander: a solid blue field,

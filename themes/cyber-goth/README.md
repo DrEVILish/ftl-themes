@@ -2,6 +2,8 @@
 
 > Pitch-black club aesthetic with toxic neon green, hot purple and vinyl gloss.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 The club-kid cyber-goth look: black vinyl surfaces, UV-reactive neon green

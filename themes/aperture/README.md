@@ -2,6 +2,8 @@
 
 > Sterile laboratory off-whites and dark greys, accented by testing-chamber blue and orange.
 
+**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+
 ## What this theme is trying to achieve
 
 A clean, sterile test-chamber control panel: off-white surfaces, quiet
