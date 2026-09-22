@@ -7,9 +7,8 @@
 The **Windows XP desktop as it shipped**, before anyone changed a setting:
 the royal-blue glossy title bar with rounded corners, the tan/silver
 "Luna" content background, Tahoma set everywhere, and the confident green
-of the Start button. This is not `winxp-zune` — that's a later, deliberately
-dark reskin. This is the theme most people picture the instant someone
-says "Windows XP."
+of the Start button. This is the theme most people picture the instant
+someone says "Windows XP."
 
 ## Core values
 

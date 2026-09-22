@@ -3,6 +3,17 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.4.2 — remove `winxp-zune`
+
+**Breaking for any app pinning `data-theme="winxp-zune"` or serving
+`dist/winxp-zune.css`.** The theme is removed: `themes/winxp-zune/` and
+`dist/winxp-zune.css` are deleted, and its row is gone from `dist/themes.json`
+and the CONTRACT.md theme index. `winxp-luna` (the default Luna Blue XP
+desktop, added in v3.3.0) remains and is unaffected — the two were always
+visually distinct, not a swap of one for the other. An app still on
+`winxp-zune` should switch its `data-theme`/link to `winxp-luna` or another
+theme; there is no automatic redirect.
+
 ## v3.4.1 — flagship-theme fidelity pass on the v3.4.0 components
 
 Fixes the gap where all 22 themes rendered the 19 new v3.4.0 components
