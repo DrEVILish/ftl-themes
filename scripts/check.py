@@ -23,6 +23,12 @@ Every rule corresponds to a bug that actually shipped once:
              theme by the next contributor.
   layout     a theme is a layout as much as a palette; one that sets no
              --ftl-app-* property renders in the default arrangement.
+  motion     unprompted infinite animation plays for users who asked the OS
+             to stop it; gate it behind prefers-reduced-motion: no-preference
+             (the matrix pattern), never behind nothing.
+  requires   a theme without a Requires: L0/L1 badge leaves apps guessing
+             whether it needs the app shell (the LCARS-on-a-token-only-app
+             failure) — warned, owner's call to badge.
 """
 import glob
 import json
@@ -42,6 +48,11 @@ REQUIRED_TOKENS = [
 BASE_COMPONENTS = [
     "ftl-btn", "ftl-panel", "ftl-modal", "ftl-dropdown", "ftl-input",
     "ftl-select", "ftl-textarea", "ftl-badge", "ftl-nav-item", "ftl-tab",
+    # v3.4.0 additions: same base-rule-plus-custom-property-variant
+    # architecture as .ftl-btn, so the same cascade bug applies to them.
+    "ftl-toast", "ftl-context-menu", "ftl-dropzone", "ftl-card",
+    "ftl-alert", "ftl-avatar", "ftl-popover", "ftl-pagination-item",
+    "ftl-breadcrumb-item",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 
@@ -59,6 +70,27 @@ def warn(theme, rule, msg):
 
 def strip_comments(css):
     return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+
+
+def strip_gated_motion(css):
+    """Remove @media (prefers-reduced-motion: no-preference) blocks."""
+    out, i, n = [], 0, len(css)
+    gate = re.compile(r"@media\s*\(\s*prefers-reduced-motion\s*:\s*no-preference\s*\)\s*\{")
+    while i < n:
+        m = gate.search(css, i)
+        if not m:
+            out.append(css[i:])
+            break
+        out.append(css[i:m.start()])
+        depth, j = 1, m.end()
+        while j < n and depth:
+            if css[j] == "{":
+                depth += 1
+            elif css[j] == "}":
+                depth -= 1
+            j += 1
+        i = j
+    return "".join(out)
 
 
 def rules_of(css):
@@ -193,6 +225,17 @@ for path in sorted(glob.glob("themes/*/theme.css")):
         warn(theme, "layout", "defines no --ftl-app-* layout personality — the app "
                               "shell will look identical to every other such theme")
 
+    ungated = strip_gated_motion(body)
+    if re.search(r"animation\s*:[^;}]*\binfinite\b", ungated):
+        fail(theme, "motion", "infinite animation outside a "
+             "prefers-reduced-motion: no-preference gate plays for users who "
+             "asked the OS to stop it — wrap it like matrix does")
+
+    text = open(readme).read() if os.path.exists(readme) else ""
+    if "requires:" not in text.lower():
+        warn(theme, "requires", "README.md has no 'Requires: L0/L1' badge — "
+             "apps cannot tell whether this theme needs the app shell")
+
 # dist/ must match a fresh build — except dist/themes.json, whose version/
 # builtAt fields are expected to differ on every single build by design (see
 # below) and would otherwise fail this check even when nothing meaningful
@@ -223,6 +266,8 @@ for entry in manifest:
              f"CONTRACT.md guarantees these are always equal")
     if "version" not in entry or "builtAt" not in entry:
         fail(entry.get("slug", "?"), "manifest", "missing version/builtAt")
+    if "shellAware" not in entry:
+        fail(entry.get("slug", "?"), "manifest", "missing shellAware")
 
 def _without_build_identity(entries):
     return [{k: v for k, v in e.items() if k not in ("version", "builtAt")} for e in entries]

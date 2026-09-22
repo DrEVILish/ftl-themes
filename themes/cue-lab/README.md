@@ -81,3 +81,12 @@ Don't:
 - A shadowed card holding the cue list → a web dashboard, not a console.
 - Amber used as a brand accent on ordinary chrome → the state signal is
   diluted and "current cue" stops standing out.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

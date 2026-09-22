@@ -41,3 +41,12 @@ floating over the radial backdrop.
 - Warm or saturated accent colours.
 - Sharp corners.
 - Glow on everything rather than on hover and the active control.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

@@ -110,3 +110,35 @@ Don't:
 - Proportional digits in a counter → the layout twitches as it counts.
 - Bright white headings → the chrome shouts over the data.
 - A rounded, gradient-filled primary button → consumer web, not instrument.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.
+
+## Reference implementation & stays-app-side
+## Reference implementation & stays-app-side
+
+This theme is the theme-form of a rack recorder's telemetry dashboard
+(PI9696), which is the visual reference: palette, brackets, switch
+readouts, and deck metalwork values are that device's actual numbers.
+The dashboard consumes this theme opt-in; with no theme it renders its
+own identical built-in look.
+
+Deliberately NOT themed (app-owned, do not add hooks for these):
+
+- OLED bezel and mirror — a hardware representation, not chrome.
+- Reel-deck SVG geometry and tape animation — flat fills are exposed as
+  `--ftl-deck-*` for reskinning, but the drawing itself is the device.
+- The square HUD rail switch (`.sci-switch`) and its ONLINE/OFFLINE
+  readout — device identity; core's round `.ftl-switch` is a different
+  widget, do not force them together.
+- Round icon buttons and transport geometry — state *colors* are covered
+  by `.ftl-transport.is-rec/.is-play/.is-pause`, sizes stay app-side.
+- uPlot chart internals — the app reads bridge tokens via
+  `getComputedStyle` with identical fallbacks.
+- Brand logo and modal sheet layout.

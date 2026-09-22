@@ -29,3 +29,12 @@ console reads as a cabinet fitted with brass hardware.
 - A sans-serif or a cool grey palette.
 - Rivets missing from panels, or appearing somewhere they shouldn't
   (buttons, inputs) — they belong to panel corners only.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

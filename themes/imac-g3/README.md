@@ -49,3 +49,12 @@ on a radial vignette of its own colour.
 - Sharp corners.
 - A colorway that changes gloss or radius, not just palette tokens — the
   case is one shape in four colours, not four different cases.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

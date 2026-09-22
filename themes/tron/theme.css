@@ -2,8 +2,10 @@
  * Theme-Name: TRON
  * Description: Electric cyan line-grid on black — glowing, angular edges.
  *
- * Note on fonts: the reference face is Eurostile, which isn't web-available;
- * the stack falls back through Orbitron (if installed) to a generic sans.
+ * Note on fonts: the reference face is Eurostile. Neither it nor Orbitron
+ * is vendored in assets/, so naming them here would silently render the
+ * generic sans fallback on every real system while claiming a face this
+ * theme doesn't ship — the stack names only what it actually has.
  */
 
 html[data-theme="tron"] {
@@ -23,7 +25,7 @@ html[data-theme="tron"] {
   --ftl-on-danger: #1a0000;
   --ftl-on-success: #001108;
   --ftl-radius: 0;
-  --ftl-font: Eurostile, Orbitron, "IBM Plex Sans", sans-serif;
+  --ftl-font: "IBM Plex Sans", sans-serif;
   --ftl-font-mono: Consolas, monospace;
   --ftl-flare: #ff8c1a;
 
@@ -54,6 +56,36 @@ html[data-theme="tron"] {
   background-size: 2.5rem 2.5rem;
 }
 
+/* v3.4.0 components: glowing cyan-on-black extended to the newer primitives.
+   Corner clip-path is reserved for .ftl-btn/.ftl-panel/.ftl-modal (see the
+   focus-workaround note below) — these stay square with a glow instead. */
+html[data-theme="tron"] {
+  --ftl-toast-bg: #000;
+  --ftl-toast-border: var(--ftl-accent);
+  --ftl-toast-shadow: 0 0 14px rgba(10, 240, 255, 0.4);
+  --ftl-alert-bg: #000;
+  --ftl-alert-fg: var(--ftl-text);
+  --ftl-card-shadow: 0 0 16px rgba(10, 240, 255, 0.1), inset 0 0 16px rgba(10, 240, 255, 0.04);
+  --ftl-context-menu-bg: #000;
+  --ftl-context-menu-border: var(--ftl-accent);
+  --ftl-dropzone-border: var(--ftl-accent);
+  --ftl-dropzone-bg-active: rgba(10, 240, 255, 0.08);
+  --ftl-dropzone-fg-active: var(--ftl-accent);
+  --ftl-avatar-bg: var(--ftl-hairline);
+  --ftl-avatar-fg: var(--ftl-accent);
+  --ftl-pagination-item-radius: 0;
+  --ftl-pagination-item-bg-active: rgba(10, 240, 255, 0.15);
+  --ftl-pagination-item-fg-active: var(--ftl-accent);
+  --ftl-breadcrumb-current-fg: var(--ftl-accent);
+  --ftl-tooltip-bg: #000;
+  --ftl-tooltip-border: var(--ftl-accent);
+  --ftl-tooltip-radius: 0;
+  --ftl-popover-bg: #000;
+  --ftl-popover-border: var(--ftl-accent);
+  --ftl-popover-radius: 0;
+  --ftl-skeleton-bg: var(--ftl-hairline);
+}
+
 html[data-theme="tron"] h1,
 html[data-theme="tron"] h2,
 html[data-theme="tron"] h3 {
@@ -63,13 +95,22 @@ html[data-theme="tron"] h3 {
   text-shadow: 0 0 8px rgba(10, 240, 255, 0.6);
 }
 
-/* Cut corners — the theme's signature shape. */
+/* Cut corners — the theme's signature shape. clip-path clips everything the
+   box paints, including core's :focus-visible outline, so a keyboard user
+   would otherwise get no visible focus here. filter isn't clipped — it
+   post-processes the already-cut shape — so it's the fallback that keeps
+   the focus indicator visible instead of silently defeating it. */
 html[data-theme="tron"] .ftl-btn {
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 html[data-theme="tron"] .ftl-panel,
 html[data-theme="tron"] .ftl-modal {
   clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+html[data-theme="tron"] .ftl-btn:focus-visible,
+html[data-theme="tron"] .ftl-panel:focus-visible,
+html[data-theme="tron"] .ftl-modal:focus-visible {
+  filter: drop-shadow(0 0 0 2px var(--ftl-focus)) drop-shadow(0 0 6px var(--ftl-focus));
 }
 
 html[data-theme="tron"] .ftl-btn-primary { --ftl-btn-bg: rgba(10, 240, 255, 0.1); }

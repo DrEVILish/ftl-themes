@@ -34,3 +34,12 @@ the panel sits in the room rather than filling it.
 - Any glow, gradient or heavy shadow — this is the calmest theme in the
   catalogue by design.
 - Saturated colour anywhere except the two accents.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.

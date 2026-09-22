@@ -3,6 +3,191 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.5.0 — five more themes: Windows 7 Aero, Alienware, Vaporwave, Material, Bloomberg Terminal
+
+### Added
+
+- **`win7-aero`** — frosted glass via real `backdrop-filter` blur over the
+  Aero blue desktop gradient, distinct from `winxp-luna`'s opaque gloss.
+- **`alienware`** — matte black, angular `clip-path`-cut corners (reusing
+  tron's clipped-focus workaround), a single AlienFX cyan glow.
+- **`vaporwave`** — outrun synthwave: magenta/cyan gradient chrome text,
+  deep-purple void, perspective grid-floor status strip.
+- **`material`** — Google Material Design: flat color, layered elevation
+  `box-shadow` stacks instead of gloss/blur, underlined text fields.
+- **`bloomberg`** — black-and-amber monospace data density; `--ftl-density:
+  0.7` as a deliberate extreme-density stress test for `.ftl-table`.
+
+All five contrast-checked (≥4.5:1 on required pairs) before landing;
+`vaporwave`'s danger red was darkened one step past the literal reference
+(`#ff3864` fails 4.5:1 against white) for the same reason `winxp-luna`'s
+success green and `barbie`'s accent pink were.
+
+### Fixed
+
+- **`winxp-luna`**: `.ftl-btn-primary` and `.ftl-btn-go` used the chrome
+  blue, contradicting this theme's own README ("green means go, blue means
+  select"). Both now use the Start-button green; the title bar, focus
+  ring, and "this is selected" states stay blue.
+- **`material`**, **`vaporwave`**: the app bar's `.ftl-nav-brand` and
+  active `.ftl-nav-item` used the shared `--ftl-nav-*` token defaults
+  (accent-colored text), which are invisible or near-invisible against
+  these two themes' accent-colored bars. Re-pointed the tokens on
+  `.ftl-app-bar` specifically so the standalone `.ftl-nav` component
+  (different background) is unaffected.
+
+## v3.4.2 — remove `winxp-zune`
+
+**Breaking for any app pinning `data-theme="winxp-zune"` or serving
+`dist/winxp-zune.css`.** The theme is removed: `themes/winxp-zune/` and
+`dist/winxp-zune.css` are deleted, and its row is gone from `dist/themes.json`
+and the CONTRACT.md theme index. `winxp-luna` (the default Luna Blue XP
+desktop, added in v3.3.0) remains and is unaffected — the two were always
+visually distinct, not a swap of one for the other. An app still on
+`winxp-zune` should switch its `data-theme`/link to `winxp-luna` or another
+theme; there is no automatic redirect.
+
+## v3.4.1 — flagship-theme fidelity pass on the v3.4.0 components
+
+Fixes the gap where all 22 themes rendered the 19 new v3.4.0 components
+(toast, alert, card, context menu, dropzone, avatar, tooltip, popover,
+pagination, breadcrumbs, skeleton) with plain unstyled fallback tokens.
+Seven themes with the strongest visual identity now give them real
+theme-specific chrome, matching their existing idiom: `lcars` (candy-bar
+borders, elbow radii), `matrix` (green glow, phosphor shadows), `tron`
+(cyan glow, cut corners kept square on these), `windows95` (beveled
+chrome, marching-ants tooltip), `winxp-luna` (Luna gloss), `barbie`
+(pink/gold gloss), `hot-wheels` (flame glow). All new fg/bg pairs
+contrast-checked (≥5:1) before landing. The remaining 15 themes are
+unaffected — token-only theming is still a legitimate baseline.
+
+## v3.4.0 — component library expansion
+
+Non-breaking: every token and class from prior versions is unchanged. All
+additions read existing base tokens with fallbacks, so every theme picks
+them up with zero theme-file changes.
+
+### Added
+
+Sourced from real duplication found in the three consuming apps (CuTePi's
+context menu and dropzone, PI9696's icon button and settings rows,
+Playlist-Lab's toast/card/badge-button/empty-state) plus a curated set of
+generic primitives the component landscape was conspicuously missing:
+
+- `.ftl-toast` / `.ftl-toast-region` — transient dismissable notifications.
+- `.ftl-spinner` — a bare loading indicator for non-htmx async work.
+- `.ftl-context-menu` (+ `-item`, `-divider`) — cursor/anchor-positioned menu.
+- `.ftl-dropzone` — drag-and-drop file target, with `.is-dragover` state.
+- `.ftl-field-group` (+ `-title`) — a titled group of `.ftl-field` rows.
+- `.ftl-btn-icon` — a circular icon-only button modifier on `.ftl-btn`.
+- `.ftl-card` — a lighter-weight `.ftl-panel` sibling.
+- `.ftl-badge-button` — a clickable badge (filter chip).
+- `.ftl-empty-state` (+ `-icon`, `-title`, `-hint`).
+- `.ftl-tooltip` via `[data-tooltip]` — CSS-only, no JS required.
+- `.ftl-popover` — a `.ftl-dropdown`-style surface, app-toggled.
+- `.ftl-accordion-item`/`-trigger`/`-panel` — built on native `<details>`.
+- `.ftl-breadcrumbs` (+ `-item`, `.is-current`).
+- `.ftl-pagination` (+ `-item`, `.is-active`, `.is-disabled`).
+- `.ftl-alert` (+ `-info/-success/-warning/-danger`) — persistent inline banner.
+- `.ftl-skeleton` (+ `-text`, `-block`) — shimmer loading placeholder.
+- `.ftl-avatar` (+ `-sm`, `-lg`).
+- `.ftl-stat` (+ `-value`, `-label`, `-trend`) — KPI tile.
+- `.ftl-divider` / `.ftl-divider-v`.
+
+See CONTRACT.md "Component vocabulary — v3.4.0 additions" for markup
+examples of each. `demo.html` has a new "v3.4.0 additions" section.
+
+## v3.3.0 — three more themes: Windows XP (Luna), Barbie, Hot Wheels
+
+### Added
+
+- **`winxp-luna`** — the default Luna Blue Windows XP desktop (glossy
+  round-cornered blue title bar, tan/white content, Tahoma), distinct from
+  the already-shipped `winxp-zune` reskin.
+- **`barbie`** — hot-pink glamour: glossy pill chrome, gold sparkle
+  headings, mint success state with dark-on-fill text.
+- **`hot-wheels`** — blister-pack orange on track-black: a diagonal flame
+  stripe across the app bar, a checkered-flag status strip, bold italic
+  uppercase type.
+
+All three ship a full `--ftl-app-*` layout personality (`shellAware:
+true`), a `README.md`, and pass `scripts/check.py` at 0 failures / 0
+warnings, including contrast: two of the three needed their accent one
+shade darker than the "true" brand color to clear 4.5:1 against white fill
+text (`winxp-luna`'s success green `#3d9f1e` → `#2e7a14`; `barbie`'s pink
+`#e0218a` → `#c81b7a`) — noted inline in each theme's source so the
+deviation from the brand reference is documented, not silent.
+
+All additive, all inside individual themes or a single component's fixed
+floor — no token or component contract changed shape.
+
+### Fixed
+
+- **`lcars` headings rendered in Trebuchet, not Antonio** (#8). Antonio is
+  already shipped for the shell bar and readouts; `h1`-`h3` now lead with
+  it too, so section titles stop reading as a second, unrelated theme next
+  to the readouts.
+- **`tron`'s cut-corner `clip-path` silently clipped the focus outline**
+  (#9). `clip-path` clips everything the box paints, including core's
+  `:focus-visible` outline — a keyboard user got no visible focus on
+  buttons or panels, undetectable by `scripts/check.py`'s `outline: none`
+  lint since nothing sets it to `none`. Added a `filter: drop-shadow(...)`
+  focus treatment, which isn't clipped because it post-processes the
+  already-cut shape. Also dropped `Eurostile, Orbitron` from the font
+  stack: neither is vendored in `assets/`, so naming them just meant every
+  real system silently rendered the generic-sans fallback while the stack
+  claimed a face the theme doesn't ship.
+- **`windows95`'s `--ftl-text` on `--ftl-bg` was 4.4:1, just under the
+  4.5:1 floor** (#10). `--ftl-bg` moves from `#008080` to `#008282` — 2/255
+  of extra green/blue, imperceptible on a decorative desktop backdrop that
+  never carries body text, and the minimal change that crosses the floor.
+  Real dialog contrast is unaffected: panels read `--ftl-surface`, not
+  this token.
+- **`.ftl-btn-go` had no minimum hit target** (#11): `--ftl-density`
+  scaling (e.g. `cue-lab`'s `0.85` for a dense cue list) could shrink the
+  one control every other element in a theme is allowed to compress
+  around. Added a fixed `min-width`/`min-height: 44px` floor
+  (`--ftl-go-min-target`) that density scaling cannot shrink — every other
+  `.ftl-btn` in a theme keeps compressing freely.
+
+## v3.2.0 — layout-tier themes degrade gracefully; adoption levels documented
+
+Filed as ftl-themes#3 and #4 after real integrations (PI9696, CuTePi,
+Playlist-Lab) all shipped as token-only: linking a layout-defining theme
+like LCARS without adopting the `.ftl-app` shell produced "an orange-tinted
+blue-future," not LCARS — technically correct, but not what "generic
+project other apps can use easily" should mean without a documented path
+to the real experience. All additive.
+
+### Added
+
+- **`.ftl-app-rail` degrades gracefully with no shell markup.**
+  `core/ftl-layout.css`: `.ftl-app-rail:empty { display: none }` collapses
+  a theme's decorative rail when the app added the element but left it
+  empty (the documented, `aria-hidden`, no-content case); `.ftl-app:not(:has(>
+  .ftl-app-rail))` collapses the column track itself when the app never
+  added the element at all. Either way, a theme that opens a rail (LCARS,
+  tron, wmp11, aqua, …) no longer paints an unexplained empty gutter in an
+  app that hasn't adopted the shell — it just quietly doesn't reserve the
+  space, per CONTRACT.md's new degrade rule: *a theme must not look broken
+  one level down from what it was authored for*.
+- **CONTRACT.md "Adoption levels"**: formalizes L0 (tokens only — today's
+  actual state for every sibling app), L1 (the `.ftl-app` shell — layout-
+  tier theming), L2 (theme-specific chrome or full `.ftl-*` component
+  adoption), replacing the previous informal "adopting the shell is
+  optional" note with an explicit, named ladder an integrator can point at.
+- **`shellAware` field on every `dist/themes.json` entry** — `true` when a
+  theme sets any `--ftl-app-*` property (the same detection
+  `scripts/check.py`'s existing `layout` warning already used), so a
+  picker can tell the user up front that a theme's full intent needs L1,
+  instead of them discovering the gap after linking it.
+- **A "Requires" note in every theme's `README.md`** naming what's lost at
+  L0 and pointing at CONTRACT.md's "Adoption levels" for the fix.
+- **`demo.html` L0/L1 toggle** — unchecking "App shell" strips the
+  `.ftl-app*` classes from the same elements live, so the fidelity gap is
+  visible in the one place a theme is meant to be evaluated, rather than
+  only discoverable after a real app integration.
+
 ## v3.1.1 — contract gaps found by the first real integration
 
 CuTePi's integration (DrEVILish/CuTePi#1) surfaced six gaps between what

@@ -36,7 +36,7 @@ attribute together. Themes are mutually exclusive: load exactly one
 ```json
 [{
   "slug": "lcars", "dataTheme": "lcars", "label": "LCARS",
-  "description": "…", "hasChrome": true,
+  "description": "…", "hasChrome": true, "shellAware": true,
   "version": "v3.1.0-3-gA1b2c3d", "builtAt": "2026-09-22T10:15:00Z"
 }]
 ```
@@ -58,6 +58,12 @@ hardcoding a list or scraping CSS comments.
   structure, so *every* core change touches *every* theme's file, and
   "which commit is this deployment actually serving" is otherwise
   unanswerable from the CSS alone.
+- **`shellAware` says whether this theme's full intent needs L1** (see
+  "Adoption levels" below) — `true` when the theme sets any `--ftl-app-*`
+  property, `false` when it's a pure palette. Show it in your picker (e.g.
+  "full layout requires the app shell") instead of a user discovering the
+  gap by linking the theme and wondering why LCARS looks like a recolored
+  default page.
 
 ### Serving the assets
 
@@ -237,6 +243,43 @@ Override points: `--ftl-app-areas`, `-columns`, `-rows`, `-gap`,
 `--ftl-app-main-bg|-padding|-radius`; `--ftl-app-status-bg|-fg|-rule|-radius|-padding`;
 and the `-sm` variants (`--ftl-app-areas-sm`, `--ftl-app-rows-sm`,
 `--ftl-app-rail-display-sm`, `--ftl-app-main-padding-sm`) for ≤720px.
+
+**Graceful degrade without the shell.** An app that links a theme but
+never adds this markup still gets a correct, uncluttered result: no rail
+element in the DOM means `.ftl-app-rail:empty` (or, absent that element
+entirely, `.ftl-app:not(:has(> .ftl-app-rail))`) collapses the rail's
+column instead of rendering an empty painted gutter. A theme that opens a
+rail is required to keep working — not to look identical, just not
+broken — when the app hasn't added the `<aside>` element at all.
+
+### Adoption levels
+
+Three levels, each optional and each strictly additive over the last — an
+app can stop at any level and nothing above it is required to make what
+it has correct:
+
+- **L0 — tokens only.** Link a theme's CSS (or bridge your own `--ftl-*`
+  declarations onto `dist/ftl-core.css`). You get the palette and every
+  `.ftl-*` component look. A theme whose identity is primarily a *layout*
+  (LCARS, tron, wmp11, aqua, windows95, winamp-classic — anything with a
+  `shellAware: true` manifest entry, see "Theme index") will render
+  correctly recolored but **not** in its distinguishing arrangement: this
+  is expected, not a bug, and is what the previous section's degrade
+  guarantees stays uncluttered rather than broken.
+- **L1 — the app shell.** Add the `.ftl-app`/`-bar`/`-rail`/`-main`/
+  `-status` markup above. Layout-tier themes now re-arrange for real (the
+  LCARS rail opens, the bar elbows into it). This is the level a theme's
+  README means when it says what's lost without the shell — see each
+  theme's `README.md`.
+- **L2 — theme-specific chrome / full component adoption.** Optional
+  richer primitives a theme ships beyond the shell, e.g. `themes/lcars/
+  chrome.css`'s frame elements (see `docs/lcars-chrome.md`), or replacing
+  more of an app's own markup with `.ftl-*` components than the minimum
+  the shell requires.
+
+A theme must not look *broken* one level down from what it was authored
+for — L1→L0 is guaranteed mechanically by the rail degrade above; there is
+no L1-specific markup a theme is allowed to assume exists unconditionally.
 
 ## Instrument primitives
 
@@ -436,6 +479,108 @@ without writing any:
 - `.htmx-swapping` / `.htmx-added` / `.htmx-settling` fade content across
   a swap. All of it is disabled under `prefers-reduced-motion`.
 
+### v3.4.0 additions
+
+Sourced from real duplication observed in three consuming apps (a context
+menu and dropzone reinvented in CuTePi, an icon button and settings-row
+layout reinvented in PI9696, a toast system, card, filter-chip badge, and
+empty state reinvented in Playlist-Lab) plus a small set of generic
+primitives that were conspicuously missing. All additive — no existing
+class or token renamed.
+
+```html
+<!-- Toast (transient) -->
+<div class="ftl-toast-region">
+  <div class="ftl-toast ftl-toast-success">Saved.</div>
+</div>
+
+<!-- Spinner (non-htmx loading) -->
+<span class="ftl-spinner"></span>
+
+<!-- Context menu (position it at the cursor/anchor with your own JS) -->
+<div class="ftl-context-menu">
+  <button class="ftl-context-menu-item">Rename</button>
+  <div class="ftl-context-menu-divider"></div>
+  <button class="ftl-context-menu-item is-danger">Delete</button>
+</div>
+
+<!-- Dropzone -->
+<div class="ftl-dropzone">Drop a file, or click to browse.</div>
+
+<!-- Field group (a titled section of .ftl-field rows) -->
+<div class="ftl-field-group">
+  <div class="ftl-field-group-title">Notifications</div>
+  <div class="ftl-field">…</div>
+</div>
+
+<!-- Icon button -->
+<button class="ftl-btn ftl-btn-ghost ftl-btn-icon" aria-label="Close">×</button>
+
+<!-- Card (lighter-weight .ftl-panel sibling) -->
+<div class="ftl-card">…</div>
+
+<!-- Badge as a clickable filter chip -->
+<button class="ftl-badge ftl-badge-accent ftl-badge-button is-active">Active</button>
+
+<!-- Empty state -->
+<div class="ftl-empty-state">
+  <span class="ftl-empty-state-icon">∅</span>
+  <span class="ftl-empty-state-title">No results</span>
+  <span class="ftl-empty-state-hint">Try a different filter.</span>
+</div>
+
+<!-- Tooltip (CSS-only, no JS) -->
+<button class="ftl-btn" data-tooltip="Refresh the list">↻</button>
+
+<!-- Popover (surface only — your app toggles visibility) -->
+<div class="ftl-popover">…</div>
+
+<!-- Accordion (native <details>, no JS) -->
+<details class="ftl-accordion-item">
+  <summary class="ftl-accordion-trigger">Advanced options</summary>
+  <div class="ftl-accordion-panel">…</div>
+</details>
+
+<!-- Breadcrumbs -->
+<nav class="ftl-breadcrumbs">
+  <a class="ftl-breadcrumb-item" href="#">Home</a>
+  <span class="ftl-breadcrumb-item is-current">Settings</span>
+</nav>
+
+<!-- Pagination -->
+<nav class="ftl-pagination">
+  <a class="ftl-pagination-item is-disabled">‹</a>
+  <a class="ftl-pagination-item is-active">1</a>
+  <a class="ftl-pagination-item">2</a>
+  <a class="ftl-pagination-item">›</a>
+</nav>
+
+<!-- Alert (persistent, inline — unlike .ftl-toast) -->
+<div class="ftl-alert ftl-alert-warning">Disk space is low.</div>
+
+<!-- Skeleton loader -->
+<div class="ftl-skeleton ftl-skeleton-text"></div>
+<div class="ftl-skeleton ftl-skeleton-block"></div>
+
+<!-- Avatar -->
+<span class="ftl-avatar">AB</span>
+<img class="ftl-avatar ftl-avatar-lg" src="…" alt="">
+
+<!-- Stat / KPI tile -->
+<div class="ftl-stat">
+  <span class="ftl-stat-value">1,204</span>
+  <span class="ftl-stat-label">Plays today</span>
+</div>
+
+<!-- Divider -->
+<hr class="ftl-divider">
+```
+
+If your app already reinvented one of these locally (a `.card`, a `.toast`,
+a hand-rolled context menu, a settings-row layout), prefer migrating onto
+the shared class over keeping the local one — that migration is app-repo
+work, tracked in that app's own repo, not here.
+
 ## Adopting ftl-themes in an existing app
 
 If your app already has its own CSS with its own token names, add one
@@ -500,7 +645,6 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 | `winamp-classic` | WinAmp Classic | Steel-gray skinned player. |
 | `wmp11` | Windows Media Player 11 | Black glass, blue glow. |
 | `imac-g3` | iMac G3 | Translucent Bondi Blue plastic; Blueberry/Grape/Tangerine variants. |
-| `winxp-zune` | Windows XP Zune | Matte charcoal, glowing orange accent. |
 | `msdos` | MS-DOS (Norton Commander) | Blue-and-white text mode, double-line borders. |
 | `pipboy` | Fallout Pip-Boy 3000 | Monochrome phosphor green, static scanlines. |
 | `nerv` | NERV Terminal | Black bunker chrome, hazard orange, crimson danger. |
@@ -509,6 +653,14 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 | `lego-classic` | LEGO Classic | Primary colours, thick outlines, pressable brick shadow. |
 | `steampunk` | Steampunk | Brass and mahogany, riveted panels. |
 | `cyber-goth` | Cyber-Goth | Black vinyl, toxic green + hot purple glow. |
+| `winxp-luna` | Windows XP (Luna) | The default Luna Blue desktop — glossy blue chrome, green go. |
+| `barbie` | Barbie | Hot-pink glamour, glossy pills, gold sparkle. |
+| `hot-wheels` | Hot Wheels | Blister-pack orange on track-black, flame stripes, checkered flag. |
+| `win7-aero` | Windows 7 Aero | Frosted glass blur, soft blue gloss on the Aero desktop gradient. |
+| `alienware` | Alienware | Matte black, angular clip-path cuts, AlienFX cyan glow. |
+| `vaporwave` | Vaporwave | Outrun synthwave — magenta/cyan gradient chrome text on deep purple. |
+| `material` | Material | Google Material Design — flat color, layered elevation shadows. |
+| `bloomberg` | Bloomberg Terminal | Black-and-amber monospace data density, extreme-density stress test. |
 
 ## Palette variants and accent swatches — worked example
 

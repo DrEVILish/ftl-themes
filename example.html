@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ftl-themes fidelity QA harness</title>
+<link id="ftl-theme-link" rel="stylesheet" href="dist/blue-future.css">
+<style>
+  /* QA-harness-only helpers, not part of the ftl-themes contract. */
+  * { box-sizing: border-box; }
+  .qa-shell { display: grid; grid-template-columns: 20rem minmax(0, 1fr); min-height: 100vh; }
+  .qa-side {
+    border-right: 1px solid var(--ftl-hairline);
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .qa-main { padding: 1.25rem; overflow-x: hidden; }
+  .qa-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin: 0.75rem 0; }
+  .qa-row-top { align-items: flex-start; }
+  .qa-section { margin: 2rem 0; padding-top: 0.5rem; border-top: 1px dashed var(--ftl-hairline); }
+  .qa-section:first-child { border-top: none; }
+  .qa-section h2 { display: flex; align-items: center; gap: 0.5rem; }
+  .qa-note { font-size: 0.8em; opacity: 0.7; }
+  .qa-stepper { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .qa-stepper button { flex: 1; }
+  .qa-readme { font-size: 0.82em; line-height: 1.5; }
+  .qa-readme h3 { font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin: 1rem 0 0.35rem; }
+  .qa-readme ol, .qa-readme ul { margin: 0.25rem 0 0.25rem 1.1rem; padding: 0; }
+  .qa-readme li { margin: 0.35rem 0; }
+  .qa-checklist li { display: flex; gap: 0.4rem; align-items: flex-start; }
+  .qa-checklist input { margin-top: 0.2rem; }
+  .qa-progress-label { display: flex; justify-content: space-between; font-size: 0.78em; opacity: 0.75; margin-bottom: 0.2rem; }
+  .qa-meters { display: flex; gap: 0.4rem; height: 6rem; align-items: stretch; }
+  .qa-meters .ftl-meter-v { width: 0.7rem; }
+  .w-10 { width: 10rem; } .w-14 { width: 14rem; } .w-16 { width: 16rem; }
+  .qa-static-popover { position: relative; display: inline-block; }
+  .qa-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.75rem; }
+  code.qa-tag { font-size: 0.72em; opacity: 0.6; }
+  @media (max-width: 900px) {
+    .qa-shell { grid-template-columns: 1fr; }
+    .qa-side { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--ftl-hairline); }
+  }
+</style>
+</head>
+<!-- QA harness: NOT part of the demo.html "here's the shell" pitch. This page
+     exists to make theme-vs-design-doc drift visible while iterating: every
+     .ftl-* component in CONTRACT.md in one scroll, a theme stepper to move
+     through the whole catalog fast, and the current theme's own README
+     (What it's trying to achieve / Core values / Tell-tales) rendered as a
+     live checklist beside the render so a reviewer can tick each claim off
+     against what's actually on screen. No app-specific markup. -->
+<body>
+<div class="qa-shell">
+  <aside class="qa-side">
+    <div class="qa-stepper">
+      <button class="ftl-btn ftl-btn-sm ftl-btn-secondary" id="prev-theme">&larr; Prev</button>
+      <button class="ftl-btn ftl-btn-sm ftl-btn-secondary" id="next-theme">Next &rarr;</button>
+    </div>
+    <div class="ftl-field">
+      <label class="ftl-label">Theme <code class="qa-tag" id="theme-index"></code></label>
+      <select class="ftl-select" id="theme-picker"></select>
+    </div>
+    <label class="qa-row" style="margin-top:0.25rem;">
+      <input type="checkbox" id="shell-toggle" checked>
+      <span class="qa-note">App shell adopted (L1 vs L0)</span>
+    </label>
+    <p class="qa-note" id="theme-desc"></p>
+    <p class="qa-note">
+      <span id="shell-aware-badge"></span>
+    </p>
+    <div class="ftl-progress" style="margin: 0.5rem 0;">
+      <div class="ftl-progress-bar" id="checklist-progress" style="width:0%"></div>
+    </div>
+    <div class="qa-progress-label">
+      <span>Design-doc checklist</span>
+      <span id="checklist-count">0 / 0</span>
+    </div>
+    <div class="qa-readme" id="readme-panel">
+      <p class="qa-note">Loading README.md&hellip;</p>
+    </div>
+  </aside>
+
+  <main class="qa-main ftl-app">
+    <header class="ftl-app-bar">
+      <span class="ftl-nav-brand">ftl-themes QA</span>
+      <a class="ftl-nav-item is-active" href="#">Dashboard</a>
+      <a class="ftl-nav-item" href="#">Settings</a>
+      <a class="ftl-nav-item" href="#">Logs</a>
+      <span style="margin-left:auto"></span>
+      <nav class="ftl-breadcrumbs">
+        <a class="ftl-breadcrumb-item" href="#">Home</a>
+        <span class="ftl-breadcrumb-item is-current" id="crumb-theme">Theme</span>
+      </nav>
+    </header>
+
+    <aside class="ftl-app-rail" aria-hidden="true"></aside>
+
+    <div class="ftl-app-main">
+      <div class="ftl-tabs qa-section" style="margin-top:0;">
+        <button class="ftl-tab is-active">Overview</button>
+        <button class="ftl-tab">Library</button>
+        <button class="ftl-tab">Advanced</button>
+      </div>
+
+      <section class="qa-section">
+        <h2>Typography &amp; text</h2>
+        <h1>Heading one</h1>
+        <h2>Heading two</h2>
+        <h3>Heading three</h3>
+        <p>Body text — the quick brown fox jumps over the lazy dog. <a href="#">A link</a> sits inline.</p>
+        <p class="qa-row"><span class="ftl-mono">00:12:04.128</span> <span class="ftl-mono">CH04 &bull; 48kHz</span></p>
+      </section>
+
+      <section class="qa-section">
+        <h2>Transport &amp; instruments</h2>
+        <div class="ftl-transport qa-row">
+          <button class="ftl-btn ftl-btn-go">Go</button>
+          <span class="ftl-readout">01:24:07<span class="ftl-readout-unit">tc</span></span>
+          <span class="ftl-lamp is-on" title="link"></span>
+          <span class="ftl-lamp is-warn" title="warn"></span>
+          <span class="ftl-lamp is-error" title="record"></span>
+          <span class="ftl-lamp" title="idle"></span>
+          <span class="ftl-status ftl-status-ok">Armed</span>
+        </div>
+        <div class="qa-row qa-row-top">
+          <div class="qa-meters">
+            <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:62%;--ftl-meter-peak:71%"><div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div></div>
+            <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:78%;--ftl-meter-peak:88%"><div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div></div>
+            <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:95%;--ftl-meter-peak:97%"><div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div></div>
+            <div class="ftl-meter ftl-meter-v" style="--ftl-meter-level:34%;--ftl-meter-peak:52%"><div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div></div>
+          </div>
+          <div class="w-16">
+            <label class="ftl-label">Output level</label>
+            <div class="ftl-meter" style="--ftl-meter-level:72%;--ftl-meter-peak:84%"><div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div></div>
+            <div style="margin-top:0.75rem"><span class="ftl-readout ftl-readout-lg">48<span class="ftl-readout-unit">kHz</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="qa-section">
+        <h2>Buttons</h2>
+        <div class="qa-row">
+          <button class="ftl-btn ftl-btn-primary">Primary</button>
+          <button class="ftl-btn ftl-btn-secondary">Secondary</button>
+          <button class="ftl-btn ftl-btn-danger">Delete</button>
+          <button class="ftl-btn ftl-btn-success">Confirm</button>
+          <button class="ftl-btn ftl-btn-ghost">Ghost</button>
+          <button class="ftl-btn ftl-btn-primary" disabled>Disabled</button>
+          <button class="ftl-btn ftl-btn-sm ftl-btn-primary">Small</button>
+          <button class="ftl-btn ftl-btn-ghost ftl-btn-icon" aria-label="Close">&times;</button>
+          <button class="ftl-btn" data-tooltip="Refresh the list">&#8635;</button>
+        </div>
+        <div class="qa-row">
+          <span class="qa-note">htmx pending (.htmx-request):</span>
+          <button class="ftl-btn ftl-btn-primary htmx-request">Saving<span class="ftl-indicator"></span></button>
+          <span class="ftl-indicator htmx-request"></span>
+          <span class="ftl-spinner"></span>
+        </div>
+      </section>
+
+      <section class="qa-section">
+        <h2>Form controls</h2>
+        <div class="qa-row qa-row-top">
+          <div class="ftl-field w-14">
+            <label class="ftl-label">Text input</label>
+            <input class="ftl-input" type="text" placeholder="Placeholder">
+            <span class="ftl-field-hint">A hint about this field.</span>
+          </div>
+          <div class="ftl-field w-10">
+            <label class="ftl-label">Select</label>
+            <select class="ftl-select"><option>Option A</option><option>Option B</option></select>
+          </div>
+          <div class="ftl-field w-14">
+            <label class="ftl-label">Textarea</label>
+            <textarea class="ftl-textarea"></textarea>
+          </div>
+        </div>
+        <div class="qa-row">
+          <label><input class="ftl-checkbox" type="checkbox" checked> Checkbox</label>
+          <label class="ftl-switch">
+            <input type="checkbox" checked>
+            <span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span>
+          </label>
+          <input class="ftl-slider w-10" type="range" value="60">
+        </div>
+        <div class="ftl-field-group">
+          <div class="ftl-field-group-title">Notifications</div>
+          <div class="qa-grid-2">
+            <label class="qa-row" style="margin:0;"><input class="ftl-checkbox" type="checkbox" checked> Email alerts</label>
+            <label class="qa-row" style="margin:0;"><input class="ftl-checkbox" type="checkbox"> SMS alerts</label>
+          </div>
+        </div>
+        <div class="ftl-dropzone">Drop a file, or click to browse.</div>
+      </section>
+
+      <section class="qa-section">
+        <h2>Surfaces</h2>
+        <div class="qa-row qa-row-top">
+          <div class="ftl-panel w-14">
+            <div class="ftl-panel-header">Panel header</div>
+            <p>A generic pane.</p>
+          </div>
+          <div class="ftl-card w-14">
+            <p style="margin:0;">A lighter-weight card.</p>
+          </div>
+          <div class="ftl-modal w-16">
+            <div class="ftl-modal-header">Modal title</div>
+            <p>Body content goes here.</p>
+            <div class="ftl-modal-footer">
+              <button class="ftl-btn ftl-btn-secondary ftl-btn-sm">Cancel</button>
+              <button class="ftl-btn ftl-btn-primary ftl-btn-sm">Save</button>
+            </div>
+          </div>
+        </div>
+        <div class="qa-row qa-row-top">
+          <div class="ftl-dropdown w-10">
+            <a class="ftl-dropdown-item" href="#">Item one</a>
+            <a class="ftl-dropdown-item" href="#">Item two</a>
+          </div>
+          <div class="ftl-context-menu w-10" style="position:static;">
+            <button class="ftl-context-menu-item">Rename</button>
+            <button class="ftl-context-menu-item">Duplicate</button>
+            <div class="ftl-context-menu-divider"></div>
+            <button class="ftl-context-menu-item is-danger">Delete</button>
+          </div>
+          <div class="ftl-popover w-10" style="position:static;">
+            <strong>Popover title</strong>
+            <p class="qa-note" style="margin:0.35em 0 0;">Anchored, app-toggled surface.</p>
+          </div>
+        </div>
+        <div class="ftl-toolbar qa-section" style="margin-top:1rem;">
+          <button class="ftl-btn ftl-btn-sm ftl-btn-ghost">Add</button>
+          <button class="ftl-btn ftl-btn-sm ftl-btn-ghost">Import</button>
+          <span class="ftl-badge ftl-badge-accent">4 queued</span>
+        </div>
+      </section>
+
+      <section class="qa-section">
+        <h2>Table</h2>
+        <table class="ftl-table">
+          <thead><tr><th>Name</th><th>Status</th><th>Elapsed</th><th>Level</th></tr></thead>
+          <tbody>
+            <tr class="is-active"><td>Track 01</td><td><span class="ftl-status ftl-status-ok">Connected</span></td><td class="ftl-mono">00:12:04</td><td><div class="ftl-meter" style="--ftl-meter-level:80%"><div class="ftl-meter-fill"></div></div></td></tr>
+            <tr class="is-selected"><td>Track 02</td><td><span class="ftl-status ftl-status-warn">Pending</span></td><td class="ftl-mono">00:03:51</td><td><div class="ftl-meter" style="--ftl-meter-level:35%"><div class="ftl-meter-fill"></div></div></td></tr>
+            <tr><td>Track 03</td><td><span class="ftl-status ftl-status-error">Disconnected</span></td><td class="ftl-mono">00:00:00</td><td><div class="ftl-meter" style="--ftl-meter-level:0%"><div class="ftl-meter-fill"></div></div></td></tr>
+            <tr><td>Track 04</td><td><span class="ftl-status ftl-status-idle">Idle</span></td><td class="ftl-mono">00:41:17</td><td><div class="ftl-meter" style="--ftl-meter-level:12%"><div class="ftl-meter-fill"></div></div></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="qa-section">
+        <h2>Navigation</h2>
+        <nav class="ftl-pagination qa-row" style="margin-top:0;">
+          <a class="ftl-pagination-item is-disabled">&lsaquo;</a>
+          <a class="ftl-pagination-item is-active">1</a>
+          <a class="ftl-pagination-item">2</a>
+          <a class="ftl-pagination-item">3</a>
+          <a class="ftl-pagination-item">&rsaquo;</a>
+        </nav>
+      </section>
+
+      <section class="qa-section">
+        <h2>Badges, progress &amp; status</h2>
+        <div class="qa-row">
+          <span class="ftl-badge">Default</span>
+          <span class="ftl-badge ftl-badge-accent">Accent</span>
+          <span class="ftl-badge ftl-badge-danger">Danger</span>
+          <span class="ftl-badge ftl-badge-success">Success</span>
+          <button class="ftl-badge ftl-badge-accent ftl-badge-button is-active">Active filter</button>
+          <div class="ftl-progress w-10"><div class="ftl-progress-bar" style="width:60%"></div></div>
+        </div>
+        <div class="qa-row">
+          <span class="ftl-avatar">AB</span>
+          <span class="ftl-avatar ftl-avatar-lg">CD</span>
+          <span class="ftl-avatar ftl-avatar-sm">EF</span>
+        </div>
+      </section>
+
+      <section class="qa-section">
+        <h2>Feedback</h2>
+        <div class="qa-row qa-row-top">
+          <div class="ftl-alert ftl-alert-info">Heads up — this is informational.</div>
+          <div class="ftl-alert ftl-alert-success">Saved successfully.</div>
+          <div class="ftl-alert ftl-alert-warning">Disk space is low.</div>
+          <div class="ftl-alert ftl-alert-danger">Failed to connect.</div>
+        </div>
+        <div class="qa-row">
+          <div class="ftl-toast ftl-toast-success">Saved.</div>
+          <div class="ftl-toast ftl-toast-danger">Something broke.</div>
+        </div>
+        <div class="ftl-card w-16">
+          <div class="ftl-stat">
+            <span class="ftl-stat-value">1,204</span>
+            <span class="ftl-stat-label">Plays today</span>
+            <span class="ftl-stat-trend is-up">&uarr; 12%</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="qa-section">
+        <h2>Empty, loading &amp; disclosure</h2>
+        <div class="qa-row qa-row-top">
+          <div class="ftl-empty-state w-16">
+            <span class="ftl-empty-state-icon">&empty;</span>
+            <span class="ftl-empty-state-title">No results</span>
+            <span class="ftl-empty-state-hint">Try a different filter.</span>
+          </div>
+          <div class="w-16">
+            <div class="ftl-skeleton ftl-skeleton-text"></div>
+            <div class="ftl-skeleton ftl-skeleton-text" style="width:70%"></div>
+            <div class="ftl-skeleton ftl-skeleton-block" style="margin-top:0.5rem;"></div>
+          </div>
+        </div>
+        <details class="ftl-accordion-item">
+          <summary class="ftl-accordion-trigger">Advanced options</summary>
+          <div class="ftl-accordion-panel">Extra settings live here.</div>
+        </details>
+        <hr class="ftl-divider">
+        <p class="qa-note">Divider above; <span class="ftl-divider-v" style="display:inline-block;height:1em;vertical-align:middle;"></span> vertical divider inline.</p>
+      </section>
+    </div>
+
+    <footer class="ftl-app-status">
+      <span class="ftl-lamp is-on"></span>
+      <span class="ftl-mono">READY</span>
+      <span style="margin-left:auto" class="ftl-mono">128 ch &bull; 48 kHz &bull; 24 bit</span>
+    </footer>
+  </main>
+</div>
+
+<div class="ftl-toast-region" aria-hidden="true"></div>
+
+<script>
+  var link = document.getElementById("ftl-theme-link");
+  var picker = document.getElementById("theme-picker");
+  var desc = document.getElementById("theme-desc");
+  var shellBadge = document.getElementById("shell-aware-badge");
+  var themeIndexEl = document.getElementById("theme-index");
+  var crumbTheme = document.getElementById("crumb-theme");
+  var readmePanel = document.getElementById("readme-panel");
+  var checklistProgress = document.getElementById("checklist-progress");
+  var checklistCount = document.getElementById("checklist-count");
+  var params = new URLSearchParams(location.search);
+  var themes = [];
+  var currentIndex = 0;
+
+  function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+  // Pulls "## What this theme is trying to achieve", "## Core values", and
+  // "## Tell-tales of an inauthentic result" straight out of the theme's own
+  // README.md (the design doc, per CONTRACT.md's docs rule) and renders them
+  // as a checklist next to the live render — the thing this page exists for.
+  function renderReadme(md) {
+    // Split on heading boundaries rather than matching "to the next heading
+    // OR end of string" in one regex — JS has no \Z (Python-style end-of-
+    // string anchor); inside a RegExp it's just the literal letter "Z", so
+    // a lookahead using it silently truncates any section whose text
+    // happens to contain that letter (e.g. windows95's "Zero radius,
+    // everywhere."). Splitting first sidesteps the anchor entirely.
+    var sectionMap = {};
+    md.split(/\n(?=##\s+)/).forEach(function (part) {
+      var m = part.match(/^##\s+(.+?)\s*\n([\s\S]*)$/);
+      if (m) sectionMap[m[1].trim().toLowerCase()] = m[2].trim();
+    });
+    function section(heading) {
+      return sectionMap[heading.toLowerCase()] || "";
+    }
+    function mdInlineToHtml(s) {
+      return s
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    }
+    function listItemsToChecklist(block, idPrefix) {
+      // List items in these READMEs wrap onto continuation lines with no
+      // marker (see e.g. themes/aperture/README.md "Core values") — fold
+      // each continuation into the item it belongs to instead of only
+      // keeping the marker line.
+      var rawLines = block.split("\n");
+      var items = [];
+      rawLines.forEach(function (l) {
+        if (/^\s*(\d+\.|-)\s+/.test(l)) {
+          items.push(l.replace(/^\s*(\d+\.|-)\s+/, "").trim());
+        } else if (l.trim() && items.length) {
+          items[items.length - 1] += " " + l.trim();
+        }
+      });
+      if (!items.length) return "";
+      var html = items.map(function (text, i) {
+        var id = idPrefix + "-" + i;
+        return '<li><input type="checkbox" id="' + id + '"><label for="' + id + '">' + mdInlineToHtml(text) + "</label></li>";
+      });
+      return '<ul class="qa-checklist">' + html.join("") + "</ul>";
+    }
+
+    var intent = section("What this theme is trying to achieve");
+    var values = section("Core values");
+    var tells = section("Tell-tales of an inauthentic result");
+
+    var html = "";
+    if (intent) html += "<h3>Intent</h3><p>" + mdInlineToHtml(intent.split("\n\n")[0]) + "</p>";
+    if (values) html += "<h3>Core values (check each against the render)</h3>" + listItemsToChecklist(values, "cv");
+    if (tells) html += "<h3>Tell-tales of an inauthentic result</h3>" + listItemsToChecklist(tells, "tt");
+    if (!html) html = "<p class=\"qa-note\">No structured sections found — see the theme's README.md directly.</p>";
+    readmePanel.innerHTML = html;
+
+    var boxes = readmePanel.querySelectorAll('input[type="checkbox"]');
+    function updateProgress() {
+      var checked = 0;
+      boxes.forEach(function (b) { if (b.checked) checked++; });
+      checklistCount.textContent = checked + " / " + boxes.length;
+      checklistProgress.style.width = (boxes.length ? (100 * checked / boxes.length) : 0) + "%";
+    }
+    boxes.forEach(function (b) { b.addEventListener("change", updateProgress); });
+    updateProgress();
+  }
+
+  function loadReadme(slug) {
+    readmePanel.innerHTML = '<p class="qa-note">Loading README.md&hellip;</p>';
+    fetch("themes/" + slug + "/README.md")
+      .then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
+      .then(renderReadme)
+      .catch(function () {
+        readmePanel.innerHTML = '<p class="qa-note">Could not load themes/' + slug + '/README.md (serve over HTTP, not file://).</p>';
+        checklistCount.textContent = "0 / 0";
+        checklistProgress.style.width = "0%";
+      });
+  }
+
+  function applyTheme(slug) {
+    document.documentElement.dataset.theme = slug;
+    link.href = "dist/" + slug + ".css";
+    store("ftl-qa-theme", slug);
+    var t = themes.find(function (x) { return x.slug === slug; });
+    desc.textContent = t ? t.description : "";
+    crumbTheme.textContent = t ? t.label : slug;
+    shellBadge.textContent = t && t.shellAware
+      ? "shellAware: true — full intent needs the L1 app shell"
+      : "shellAware: false — pure palette theme";
+    currentIndex = themes.findIndex(function (x) { return x.slug === slug; });
+    if (currentIndex < 0) currentIndex = 0;
+    themeIndexEl.textContent = themes.length ? (currentIndex + 1) + " / " + themes.length : "";
+    loadReadme(slug);
+  }
+
+  function stepTheme(delta) {
+    if (!themes.length) return;
+    var next = (currentIndex + delta + themes.length) % themes.length;
+    picker.value = themes[next].slug;
+    applyTheme(themes[next].slug);
+  }
+
+  fetch("dist/themes.json")
+    .then(function (r) { return r.json(); })
+    .then(function (list) {
+      themes = list;
+      list.forEach(function (t) {
+        var o = document.createElement("option");
+        o.value = t.slug;
+        o.textContent = t.label;
+        picker.appendChild(o);
+      });
+      var initial = params.get("theme") || read("ftl-qa-theme") || list[0].slug;
+      if (!list.some(function (t) { return t.slug === initial; })) initial = list[0].slug;
+      picker.value = initial;
+      applyTheme(initial);
+    })
+    .catch(function () {
+      desc.textContent = "themes.json unavailable (serve the folder over HTTP for the full theme list)";
+      readmePanel.innerHTML = '<p class="qa-note">Serve this folder over HTTP for theme enumeration and README loading.</p>';
+    });
+
+  picker.addEventListener("change", function () { applyTheme(picker.value); });
+  document.getElementById("prev-theme").addEventListener("click", function () { stepTheme(-1); });
+  document.getElementById("next-theme").addEventListener("click", function () { stepTheme(1); });
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
+    if (e.key === "ArrowRight") stepTheme(1);
+    if (e.key === "ArrowLeft") stepTheme(-1);
+  });
+
+  // Same L0/L1 shell toggle as demo.html — see that file's comment for why.
+  var shellEls = [
+    { el: document.querySelector("main.qa-main"), cls: "ftl-app" },
+    { el: document.querySelector(".ftl-app-bar"), cls: "ftl-app-bar" },
+    { el: document.querySelector(".ftl-app-rail"), cls: "ftl-app-rail" },
+    { el: document.querySelector(".ftl-app-main"), cls: "ftl-app-main" },
+    { el: document.querySelector(".ftl-app-status"), cls: "ftl-app-status" }
+  ];
+  document.getElementById("shell-toggle").addEventListener("change", function (e) {
+    shellEls.forEach(function (s) { if (s.el) s.el.classList.toggle(s.cls, e.target.checked); });
+  });
+</script>
+</body>
+</html>

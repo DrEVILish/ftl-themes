@@ -53,3 +53,12 @@ openly-licensed pixel face is tracked in `docs/theme-backlog.md`.
 - Any rounded corner or drop shadow.
 - Buttons that don't invert their bevel on `:active`.
 - Anti-aliased, modern-weight type in the title bar.
+
+## Adoption
+
+This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+true`). At **L0** (link the CSS, no shell markup) it renders correctly
+recolored, but as the shell's *default* arrangement — not its intended
+layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+(CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
+layout at **L1**.
