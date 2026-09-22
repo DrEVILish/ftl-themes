@@ -633,34 +633,52 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 
 ## Theme index
 
-| Slug | Name | Reference |
-|---|---|---|
-| `blue-future` | Blue Future | Futuristic sci-fi HUD, cyan neon on navy. |
-| `cue-lab` | Cue Lab | Flat live-show console. |
-| `lcars` | LCARS | Star Trek TNG/DS9/Voyager. Ships the optional chrome primitive — see `docs/lcars-chrome.md`. |
-| `windows95` | Windows 95 | Beveled 3D gray dialog chrome. |
-| `matrix` | The Matrix | Green phosphor on black. |
-| `tron` | TRON | Cyan line-grid, glowing angular edges. |
-| `aqua` | Aqua | macOS Snow Leopard brushed metal and gloss. |
-| `winamp-classic` | WinAmp Classic | Steel-gray skinned player. |
-| `wmp11` | Windows Media Player 11 | Black glass, blue glow. |
-| `imac-g3` | iMac G3 | Translucent Bondi Blue plastic; Blueberry/Grape/Tangerine variants. |
-| `msdos` | MS-DOS (Norton Commander) | Blue-and-white text mode, double-line borders. |
-| `pipboy` | Fallout Pip-Boy 3000 | Monochrome phosphor green, static scanlines. |
-| `nerv` | NERV Terminal | Black bunker chrome, hazard orange, crimson danger. |
-| `aperture` | Aperture Science | Sterile lab off-white, portal blue/orange accents. |
-| `death-star` | Death Star Terminal | True black, glowing solid indicator blocks, zero borders. |
-| `lego-classic` | LEGO Classic | Primary colours, thick outlines, pressable brick shadow. |
-| `steampunk` | Steampunk | Brass and mahogany, riveted panels. |
-| `cyber-goth` | Cyber-Goth | Black vinyl, toxic green + hot purple glow. |
-| `winxp-luna` | Windows XP (Luna) | The default Luna Blue desktop — glossy blue chrome, green go. |
-| `barbie` | Barbie | Hot-pink glamour, glossy pills, gold sparkle. |
-| `hot-wheels` | Hot Wheels | Blister-pack orange on track-black, flame stripes, checkered flag. |
-| `win7-aero` | Windows 7 Aero | Frosted glass blur, soft blue gloss on the Aero desktop gradient. |
-| `alienware` | Alienware | Matte black, angular clip-path cuts, AlienFX cyan glow. |
-| `vaporwave` | Vaporwave | Outrun synthwave — magenta/cyan gradient chrome text on deep purple. |
-| `material` | Material | Google Material Design — flat color, layered elevation shadows. |
-| `bloomberg` | Bloomberg Terminal | Black-and-amber monospace data density, extreme-density stress test. |
+The **Signature detail** column names the one shape/effect/rule that, if
+lost, is the fastest way to tell a recreation isn't this theme — the same
+"tell-tale" concept each theme's own README expands on at length. **Src**
+marks a token verified this pass against a documented external reference
+(not merely "looks about right"); themes without a mark either have no
+single canonical source to check against (an original, a broad genre) or
+weren't re-verified this pass — see each theme's own header comment/README
+for what, if anything, it cites.
+
+| Slug | Name | Signature detail | Src |
+|---|---|---|:-:|
+| `alienware` | Alienware | Angular `clip-path`-cut corners, one AlienFX cyan light strip down the rail. | |
+| `aperture` | Aperture Science | Sterile lab off-white/grey with portal blue/orange as the *only* saturated colours. | |
+| `aqua` | Aqua | A 3px repeating pinstripe texture on every panel, under the candy-gloss buttons. | |
+| `barbie` | Barbie | 999px-radius glossy pills everywhere; mint success state uses dark, not white, text. | |
+| `bloomberg` | Bloomberg Terminal | The *whole UI*, not just numerals, set in monospace, at `--ftl-density: 0.7`. | |
+| `blue-future` | Blue Future | The catalog's baseline sci-fi HUD — cyan neon glow on deep-space navy. | |
+| `cue-lab` | Cue Lab | Zero glow, zero gradient — the deliberate flat counterpoint to `blue-future`. | |
+| `cyber-goth` | Cyber-Goth | Toxic neon green and hot purple sharing the accent role on black vinyl gloss. | |
+| `death-star` | Death Star Terminal | True `#000000`, solid glowing indicator blocks, zero borders or shadows anywhere. | |
+| `hot-wheels` | Hot Wheels | A single diagonal flame-gradient band cut across the app bar. | |
+| `imac-g3` | iMac G3 | Translucent *ribbed* plastic — four swappable fruit-colour variants via `data-variant`. | |
+| `lcars` | LCARS | The elbow: a horizontal bar curving into a vertical rail. Ships an optional chrome primitive — see `docs/lcars-chrome.md`. | ✓ |
+| `lego-classic` | LEGO Classic | A circular "stud" on every panel corner — a physical brick, not a palette. | |
+| `material` | Material | Depth from a layered `box-shadow` *elevation* stack — never a gradient or blur. | |
+| `matrix` | The Matrix | `#00FF41` phosphor green — the actual hex the reference on-screen code uses. | ✓ |
+| `msdos` | MS-DOS (Norton Commander) | Double-line (`═`/`║`) box borders; only cyan/yellow count as "bright". | |
+| `nerv` | NERV Terminal | Hazard-stripe orange chrome with crimson reserved for real danger states only. | |
+| `pipboy` | Fallout Pip-Boy 3000 | One phosphor green for every state — no danger/success color split at all. | |
+| `steampunk` | Steampunk | Riveted panel seams and gear-driven dial ornamentation on every surface. | |
+| `tron` | TRON | Angular `clip-path`-cut corners standing in for the film's beveled-edge panels. | |
+| `vaporwave` | Vaporwave | Heading text is a magenta-to-cyan gradient clipped to the glyphs, not a solid fill. | |
+| `winamp-classic` | WinAmp Classic | Tiny uppercase labels and llama-green LCD-style numeric readouts. | |
+| `windows95` | Windows 95 | Bevels invert light-to-dark on `:active` — the "is this actually pressable" cue. | |
+| `winxp-luna` | Windows XP (Luna) | Glossy round-cornered blue chrome; green is reserved for primary/"go" actions only. | |
+| `win7-aero` | Windows 7 Aero | Real `backdrop-filter` blur — translucent glass, not Luna's opaque gloss. | |
+| `wmp11` | Windows Media Player 11 | Black glass with a cool blue glow — the last WMP skin before the Zune-era flattening. | |
+
+Verified this pass (`lcars`, `matrix`): checked against `trekcolors`
+(Okuda LCARS reference palette) and the commonly-cited Matrix digital-rain
+hex respectively. `lcars`'s `--ftl-accent` (`#ff9900`) and
+`--ftl-lcars-lavender` (`#cc99cc`) matched the reference exactly;
+`--ftl-lcars-sky` did not (an unsourced pastel periwinkle) and was
+corrected — see `themes/lcars/theme.css` and its README for the full note,
+including why the *exact* reference blue ("mariner", `#3366cc`) isn't used
+outright (it fails the 4.5:1 button-text contrast floor).
 
 ## Palette variants and accent swatches — worked example
 

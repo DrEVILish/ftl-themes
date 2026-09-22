@@ -19,6 +19,16 @@ blue — with no frame, border or shadow drawn anywhere to soften it.
 4. **True black, not near-black.** `--ftl-bg: #000`. This is the one theme
    in the catalogue that means it literally.
 
+## Signature details
+
+- Lamps carry a `0 0 10px` glow matched to their own state color
+  (`.is-on` glows success-green, `.is-error` glows danger-red) — the only
+  `box-shadow` this theme sets anywhere.
+- Selected table rows fill solid accent blue with black text, not a tint —
+  a "selected" row is a solid block, same discipline as everything else.
+- Badges are square (`border-radius: 0`), overriding core's default pill —
+  even the smallest decorative curve is stripped out here.
+
 ## Layout
 
 No bar rule, no status rule — the bar and status strip are the same black

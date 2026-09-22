@@ -20,6 +20,18 @@ sense that the interface is a physical object you could pick up.
 4. **White text on saturated colour**, always — this is a light-on-dark
    theme regardless of which fruit colour is active.
 
+## Signature details
+
+- The pinstripe (`repeating-linear-gradient` white-at-12% every 4px) sits
+  on both `.ftl-panel` and `.ftl-app-bar` — it's a case texture, not a
+  panel-only decoration.
+- Every gloss gradient is three stops (bright highlight → faint → the base
+  surface colour), never a plain two-stop fade — that middle fade-out is
+  what reads as translucent plastic rather than a painted highlight.
+- The page backdrop is a radial vignette in the shell's own colour
+  (`radial-gradient(ellipse at top, ...)`), so the case always appears to
+  glow against a darker version of itself, never a neutral grey.
+
 ## Variants
 
 Bondi Blue is the default (no attribute needed). Select the others with

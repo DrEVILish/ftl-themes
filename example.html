@@ -43,6 +43,31 @@
     .qa-shell { grid-template-columns: 1fr; }
     .qa-side { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--ftl-hairline); }
   }
+
+  /* Mode tabs (Single / Compare) */
+  .qa-mode-tabs { margin-bottom: 1rem; }
+
+  /* Compare mode: two embedded copies of this same page, each rendering one
+     theme full-width with its own sidebar suppressed (?embed=1). */
+  .qa-compare-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+  .qa-compare-pane { display: flex; flex-direction: column; border-right: 1px solid var(--ftl-hairline); min-width: 0; }
+  .qa-compare-pane:last-child { border-right: none; }
+  .qa-compare-head { padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--ftl-hairline); }
+  .qa-compare-head strong { display: block; }
+  .qa-compare-iframe { flex: 1; width: 100%; border: 0; min-height: 80vh; background: transparent; }
+  .qa-sig-list { font-size: 0.78em; line-height: 1.45; margin: 0.4rem 0 0; padding-left: 1.1rem; }
+  .qa-sig-list li { margin: 0.3rem 0; }
+  @media (max-width: 900px) {
+    .qa-compare-grid { grid-template-columns: 1fr; }
+    .qa-compare-pane { border-right: none; border-bottom: 1px solid var(--ftl-hairline); }
+  }
+
+  /* embed=1: this exact page loaded inside a compare-mode iframe — strip
+     every bit of QA-harness chrome so only the theme's own render shows,
+     full width, matching what an app actually looks like at L1. */
+  .qa-embed .qa-side,
+  .qa-embed .qa-mode-tabs { display: none !important; }
+  .qa-embed .qa-shell { grid-template-columns: 1fr; }
 </style>
 </head>
 <!-- QA harness: NOT part of the demo.html "here's the shell" pitch. This page
@@ -55,35 +80,60 @@
 <body>
 <div class="qa-shell">
   <aside class="qa-side">
-    <div class="qa-stepper">
-      <button class="ftl-btn ftl-btn-sm ftl-btn-secondary" id="prev-theme">&larr; Prev</button>
-      <button class="ftl-btn ftl-btn-sm ftl-btn-secondary" id="next-theme">Next &rarr;</button>
+    <div class="ftl-tabs qa-mode-tabs" id="mode-tabs">
+      <button class="ftl-tab is-active" data-mode="single" type="button">Single theme</button>
+      <button class="ftl-tab" data-mode="compare" type="button">Compare two</button>
     </div>
-    <div class="ftl-field">
-      <label class="ftl-label">Theme <code class="qa-tag" id="theme-index"></code></label>
-      <select class="ftl-select" id="theme-picker"></select>
+
+    <div id="single-controls">
+      <div class="qa-stepper">
+        <button class="ftl-btn ftl-btn-sm ftl-btn-secondary" id="prev-theme">&larr; Prev</button>
+        <button class="ftl-btn ftl-btn-sm ftl-btn-secondary" id="next-theme">Next &rarr;</button>
+      </div>
+      <div class="ftl-field">
+        <label class="ftl-label">Theme <code class="qa-tag" id="theme-index"></code></label>
+        <select class="ftl-select" id="theme-picker"></select>
+      </div>
+      <label class="qa-row" style="margin-top:0.25rem;">
+        <input type="checkbox" id="shell-toggle" checked>
+        <span class="qa-note">App shell adopted (L1 vs L0)</span>
+      </label>
+      <p class="qa-note" id="theme-desc"></p>
+      <p class="qa-note">
+        <span id="shell-aware-badge"></span>
+      </p>
+      <div class="ftl-progress" style="margin: 0.5rem 0;">
+        <div class="ftl-progress-bar" id="checklist-progress" style="width:0%"></div>
+      </div>
+      <div class="qa-progress-label">
+        <span>Design-doc checklist</span>
+        <span id="checklist-count">0 / 0</span>
+      </div>
+      <div class="qa-readme" id="readme-panel">
+        <p class="qa-note">Loading README.md&hellip;</p>
+      </div>
     </div>
-    <label class="qa-row" style="margin-top:0.25rem;">
-      <input type="checkbox" id="shell-toggle" checked>
-      <span class="qa-note">App shell adopted (L1 vs L0)</span>
-    </label>
-    <p class="qa-note" id="theme-desc"></p>
-    <p class="qa-note">
-      <span id="shell-aware-badge"></span>
-    </p>
-    <div class="ftl-progress" style="margin: 0.5rem 0;">
-      <div class="ftl-progress-bar" id="checklist-progress" style="width:0%"></div>
-    </div>
-    <div class="qa-progress-label">
-      <span>Design-doc checklist</span>
-      <span id="checklist-count">0 / 0</span>
-    </div>
-    <div class="qa-readme" id="readme-panel">
-      <p class="qa-note">Loading README.md&hellip;</p>
+
+    <!-- Compare mode: pick two themes, each renders full-width in its own
+         embedded pane (this same page, ?embed=1) so the render itself is
+         the comparison — plus each theme's own "Signature details" pulled
+         from its README, stacked here for a read-without-scrolling check. -->
+    <div id="compare-controls" style="display:none;">
+      <div class="ftl-field">
+        <label class="ftl-label">Theme A</label>
+        <select class="ftl-select" id="compare-a"></select>
+      </div>
+      <div class="qa-readme" id="compare-a-sig"></div>
+      <hr class="ftl-divider">
+      <div class="ftl-field">
+        <label class="ftl-label">Theme B</label>
+        <select class="ftl-select" id="compare-b"></select>
+      </div>
+      <div class="qa-readme" id="compare-b-sig"></div>
     </div>
   </aside>
 
-  <main class="qa-main ftl-app">
+  <main class="qa-main ftl-app" id="single-main">
     <header class="ftl-app-bar">
       <span class="ftl-nav-brand">ftl-themes QA</span>
       <a class="ftl-nav-item is-active" href="#">Dashboard</a>
@@ -329,6 +379,23 @@
       <span style="margin-left:auto" class="ftl-mono">128 ch &bull; 48 kHz &bull; 24 bit</span>
     </footer>
   </main>
+
+  <div class="qa-compare-grid" id="compare-grid" style="display:none;">
+    <div class="qa-compare-pane">
+      <div class="qa-compare-head">
+        <strong id="compare-a-label">&nbsp;</strong>
+        <span class="qa-note" id="compare-a-shell"></span>
+      </div>
+      <iframe class="qa-compare-iframe" id="compare-a-iframe" title="Theme A render"></iframe>
+    </div>
+    <div class="qa-compare-pane">
+      <div class="qa-compare-head">
+        <strong id="compare-b-label">&nbsp;</strong>
+        <span class="qa-note" id="compare-b-shell"></span>
+      </div>
+      <iframe class="qa-compare-iframe" id="compare-b-iframe" title="Theme B render"></iframe>
+    </div>
+  </div>
 </div>
 
 <div class="ftl-toast-region" aria-hidden="true"></div>
@@ -346,15 +413,19 @@
   var params = new URLSearchParams(location.search);
   var themes = [];
   var currentIndex = 0;
+  // embed=1: this page loaded inside a compare-mode iframe. Strip all QA
+  // chrome via CSS (.qa-embed, see <style>) — everything else below still
+  // runs normally, so the theme itself renders exactly as it would at L1.
+  var isEmbed = params.get("embed") === "1";
+  if (isEmbed) document.body.classList.add("qa-embed");
 
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
-  // Pulls "## What this theme is trying to achieve", "## Core values", and
-  // "## Tell-tales of an inauthentic result" straight out of the theme's own
-  // README.md (the design doc, per CONTRACT.md's docs rule) and renders them
-  // as a checklist next to the live render — the thing this page exists for.
-  function renderReadme(md) {
+  // --- README parsing, shared by the single-theme checklist and compare
+  // mode's signature-details summaries. Pulls sections straight out of the
+  // theme's own README.md (the design doc, per CONTRACT.md's docs rule).
+  function parseReadmeSections(md) {
     // Split on heading boundaries rather than matching "to the next heading
     // OR end of string" in one regex — JS has no \Z (Python-style end-of-
     // string anchor); inside a RegExp it's just the literal letter "Z", so
@@ -366,43 +437,60 @@
       var m = part.match(/^##\s+(.+?)\s*\n([\s\S]*)$/);
       if (m) sectionMap[m[1].trim().toLowerCase()] = m[2].trim();
     });
-    function section(heading) {
+    return function section(heading) {
       return sectionMap[heading.toLowerCase()] || "";
-    }
-    function mdInlineToHtml(s) {
-      return s
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    }
-    function listItemsToChecklist(block, idPrefix) {
-      // List items in these READMEs wrap onto continuation lines with no
-      // marker (see e.g. themes/aperture/README.md "Core values") — fold
-      // each continuation into the item it belongs to instead of only
-      // keeping the marker line.
-      var rawLines = block.split("\n");
-      var items = [];
-      rawLines.forEach(function (l) {
-        if (/^\s*(\d+\.|-)\s+/.test(l)) {
-          items.push(l.replace(/^\s*(\d+\.|-)\s+/, "").trim());
-        } else if (l.trim() && items.length) {
-          items[items.length - 1] += " " + l.trim();
-        }
-      });
-      if (!items.length) return "";
-      var html = items.map(function (text, i) {
-        var id = idPrefix + "-" + i;
-        return '<li><input type="checkbox" id="' + id + '"><label for="' + id + '">' + mdInlineToHtml(text) + "</label></li>";
-      });
-      return '<ul class="qa-checklist">' + html.join("") + "</ul>";
-    }
+    };
+  }
+  function mdInlineToHtml(s) {
+    return s
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+  // List items in these READMEs wrap onto continuation lines with no marker
+  // (see e.g. themes/aperture/README.md "Core values") — fold each
+  // continuation into the item it belongs to instead of only keeping the
+  // marker line.
+  function splitListItems(block) {
+    var items = [];
+    block.split("\n").forEach(function (l) {
+      if (/^\s*(\d+\.|-)\s+/.test(l)) {
+        items.push(l.replace(/^\s*(\d+\.|-)\s+/, "").trim());
+      } else if (l.trim() && items.length) {
+        items[items.length - 1] += " " + l.trim();
+      }
+    });
+    return items;
+  }
+  function listItemsToChecklist(block, idPrefix) {
+    var items = splitListItems(block);
+    if (!items.length) return "";
+    var html = items.map(function (text, i) {
+      var id = idPrefix + "-" + i;
+      return '<li><input type="checkbox" id="' + id + '"><label for="' + id + '">' + mdInlineToHtml(text) + "</label></li>";
+    });
+    return '<ul class="qa-checklist">' + html.join("") + "</ul>";
+  }
+  function listItemsToBullets(block) {
+    var items = splitListItems(block);
+    if (!items.length) return "";
+    return '<ul class="qa-sig-list">' + items.map(function (text) {
+      return "<li>" + mdInlineToHtml(text) + "</li>";
+    }).join("") + "</ul>";
+  }
 
+  // Renders the full single-theme sidebar: intent, signature details, a
+  // core-values checklist to tick off against the render, and tell-tales.
+  function renderReadme(md) {
+    var section = parseReadmeSections(md);
     var intent = section("What this theme is trying to achieve");
+    var signature = section("Signature details");
     var values = section("Core values");
     var tells = section("Tell-tales of an inauthentic result");
 
     var html = "";
     if (intent) html += "<h3>Intent</h3><p>" + mdInlineToHtml(intent.split("\n\n")[0]) + "</p>";
+    if (signature) html += "<h3>Signature details</h3>" + listItemsToBullets(signature);
     if (values) html += "<h3>Core values (check each against the render)</h3>" + listItemsToChecklist(values, "cv");
     if (tells) html += "<h3>Tell-tales of an inauthentic result</h3>" + listItemsToChecklist(tells, "tt");
     if (!html) html = "<p class=\"qa-note\">No structured sections found — see the theme's README.md directly.</p>";
@@ -417,6 +505,17 @@
     }
     boxes.forEach(function (b) { b.addEventListener("change", updateProgress); });
     updateProgress();
+  }
+
+  // Compact version for compare mode: just signature details, so two themes
+  // can be read side by side without either panel growing past the other.
+  function renderSignatureSummary(md, targetEl) {
+    var section = parseReadmeSections(md);
+    var signature = section("Signature details");
+    var html = signature
+      ? "<h3>Signature details</h3>" + listItemsToBullets(signature)
+      : '<p class="qa-note">No "Signature details" section in this README.</p>';
+    targetEl.innerHTML = html;
   }
 
   function loadReadme(slug) {
@@ -468,6 +567,7 @@
       if (!list.some(function (t) { return t.slug === initial; })) initial = list[0].slug;
       picker.value = initial;
       applyTheme(initial);
+      if (!isEmbed) initCompareMode(list, initial);
     })
     .catch(function () {
       desc.textContent = "themes.json unavailable (serve the folder over HTTP for the full theme list)";
@@ -494,6 +594,88 @@
   document.getElementById("shell-toggle").addEventListener("change", function (e) {
     shellEls.forEach(function (s) { if (s.el) s.el.classList.toggle(s.cls, e.target.checked); });
   });
+
+  // --- Compare mode --------------------------------------------------
+  // Two themes rendered full-width side by side, each in its own embedded
+  // copy of this exact page (?embed=1 strips that copy's own chrome), plus
+  // each theme's "Signature details" pulled into the sidebar so the two
+  // can be read without scrolling either iframe. Skipped entirely when
+  // this page IS the embed (isEmbed) — an embedded pane never shows the
+  // mode tabs or nests another compare view.
+  function initCompareMode(list, defaultSlug) {
+    var modeTabs = document.getElementById("mode-tabs");
+    var singleControls = document.getElementById("single-controls");
+    var compareControls = document.getElementById("compare-controls");
+    var singleMain = document.getElementById("single-main");
+    var compareGrid = document.getElementById("compare-grid");
+    var selectA = document.getElementById("compare-a");
+    var selectB = document.getElementById("compare-b");
+    var labelA = document.getElementById("compare-a-label");
+    var labelB = document.getElementById("compare-b-label");
+    var shellA = document.getElementById("compare-a-shell");
+    var shellB = document.getElementById("compare-b-shell");
+    var sigA = document.getElementById("compare-a-sig");
+    var sigB = document.getElementById("compare-b-sig");
+    var iframeA = document.getElementById("compare-a-iframe");
+    var iframeB = document.getElementById("compare-b-iframe");
+
+    [selectA, selectB].forEach(function (sel) {
+      list.forEach(function (t) {
+        var o = document.createElement("option");
+        o.value = t.slug;
+        o.textContent = t.label;
+        sel.appendChild(o);
+      });
+    });
+
+    // Default B to a genuinely different theme (next in the catalog) so
+    // the first compare view isn't two copies of the same render.
+    var idxA = list.findIndex(function (t) { return t.slug === defaultSlug; });
+    if (idxA < 0) idxA = 0;
+    var defaultB = list[(idxA + 1) % list.length].slug;
+
+    function paneUpdate(slug, select, label, shellEl, sigEl, iframe) {
+      var t = list.find(function (x) { return x.slug === slug; });
+      label.textContent = t ? t.label : slug;
+      shellEl.textContent = t && t.shellAware ? "shellAware" : "palette-only";
+      iframe.src = "example.html?theme=" + encodeURIComponent(slug) + "&embed=1";
+      fetch("themes/" + slug + "/README.md")
+        .then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
+        .then(function (md) { renderSignatureSummary(md, sigEl); })
+        .catch(function () { sigEl.innerHTML = '<p class="qa-note">Could not load README.md.</p>'; });
+    }
+
+    function updateA() { store("ftl-qa-compare-a", selectA.value); paneUpdate(selectA.value, selectA, labelA, shellA, sigA, iframeA); }
+    function updateB() { store("ftl-qa-compare-b", selectB.value); paneUpdate(selectB.value, selectB, labelB, shellB, sigB, iframeB); }
+
+    selectA.value = params.get("a") || read("ftl-qa-compare-a") || defaultSlug;
+    selectB.value = params.get("b") || read("ftl-qa-compare-b") || defaultB;
+    if (!list.some(function (t) { return t.slug === selectA.value; })) selectA.value = defaultSlug;
+    if (!list.some(function (t) { return t.slug === selectB.value; })) selectB.value = defaultB;
+    updateA();
+    updateB();
+    selectA.addEventListener("change", updateA);
+    selectB.addEventListener("change", updateB);
+
+    function setMode(mode) {
+      var compare = mode === "compare";
+      store("ftl-qa-mode", mode);
+      modeTabs.querySelectorAll(".ftl-tab").forEach(function (btn) {
+        btn.classList.toggle("is-active", btn.dataset.mode === mode);
+      });
+      singleControls.style.display = compare ? "none" : "";
+      compareControls.style.display = compare ? "" : "none";
+      singleMain.style.display = compare ? "none" : "";
+      compareGrid.style.display = compare ? "grid" : "none";
+    }
+
+    modeTabs.querySelectorAll(".ftl-tab").forEach(function (btn) {
+      btn.addEventListener("click", function () { setMode(btn.dataset.mode); });
+    });
+
+    var initialMode = params.get("compare") === "1" ? "compare" : (read("ftl-qa-mode") || "single");
+    setMode(initialMode);
+  }
 </script>
 </body>
 </html>

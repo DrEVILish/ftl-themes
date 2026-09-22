@@ -22,6 +22,17 @@ when clicked — a physical toy, not a flat icon of one.
 5. **Studs are decoration on panel headers only** — a nod to the brick's
    top, not applied everywhere.
 
+## Signature details
+
+- The panel-header studs are a `radial-gradient` tiled every 14px, not
+  individual `<span>` elements — zero markup, purely decorative CSS.
+- `.ftl-btn:active` drops the shadow to `0 1px 0` and nudges the button
+  `translateY(2px)` — the brick visibly sinks into the plate, not just
+  darkens.
+- `--ftl-flare` (moulding blue, `#0055bf`) carries the app bar, status
+  strip, and table headers — structural chrome is always blue regardless
+  of which primary color a button uses.
+
 ## Layout
 
 A solid blue bar and status strip with a thick black rule — a base plate

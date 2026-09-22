@@ -20,7 +20,10 @@ Every rule corresponds to a bug that actually shipped once:
   dist       committed bundles must match a fresh build, since submodule
              consumers cannot run the build themselves.
   docs       a theme without a stated intent gets "improved" into a different
-             theme by the next contributor.
+             theme by the next contributor. Requires "Signature details" too,
+             not just "Core values" — that's the section example.html's
+             compare mode surfaces, and 11 themes shipped without it before
+             a v3.5.1 pass caught the gap.
   layout     a theme is a layout as much as a palette; one that sets no
              --ftl-app-* property renders in the default arrangement.
 """
@@ -186,7 +189,11 @@ for path in sorted(glob.glob("themes/*/theme.css")):
                             "what it is trying to achieve (see any existing theme)")
     else:
         text = open(readme).read()
-        for heading in ("What this theme is trying to achieve", "Core values"):
+        # "Signature details" specifically (not just Core values) is what
+        # example.html's compare mode surfaces — a theme missing it isn't
+        # broken, but it's invisible to that tool, so the same soft warning
+        # applies here as to the other structural sections.
+        for heading in ("What this theme is trying to achieve", "Core values", "Signature details"):
             if heading.lower() not in text.lower():
                 warn(theme, "docs", f"README.md has no '{heading}' section")
 

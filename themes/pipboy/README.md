@@ -20,6 +20,18 @@ the screen.
    fight `prefers-reduced-motion` for a cosmetic effect.
 4. **Uppercase, tracked headings** — terminal readouts, not a stylized logo.
 
+## Signature details
+
+- Scanlines are a fixed `::after` overlay on `.ftl-app` at `z-index: 999`
+  with `pointer-events: none` — a 1px-on/2px-off repeating gradient, so
+  they never intercept a click and never need JavaScript.
+- All body text carries a faint `text-shadow: 0 0 3px` phosphor glow, not
+  just headings — the whole screen glows a little, not just the display
+  face.
+- `--ftl-success` and `--ftl-accent` are the *same* green — this theme has
+  no separate "success" hue at all, only the one phosphor color and the
+  two genuine hazard departures (danger amber, warning yellow).
+
 ## Layout
 
 Minimal chrome, matching the terminal's own screen: a plain bar with a

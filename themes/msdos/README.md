@@ -20,6 +20,18 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    not a rainbow.
 5. **Zero radius.** Text-mode has no curves.
 
+## Signature details
+
+- `border-style: double` at 3px is set on every bordered component in one
+  rule (`.ftl-input`, `.ftl-select`, `.ftl-textarea`, `.ftl-btn`,
+  `.ftl-panel`, `.ftl-modal`, `.ftl-dropdown`) — one declaration carries
+  the entire visual signature.
+- `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
+  approximation — this theme's background is a real 16-color EGA/VGA value.
+- The nav bar, app bar, and status strip all fill solid cyan
+  (`--ftl-accent`) with black text — the one place a "bright" color
+  becomes a background instead of a foreground.
+
 ## Layout
 
 A bar and status strip both filled solid cyan with black text — the

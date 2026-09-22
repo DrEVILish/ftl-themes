@@ -36,13 +36,19 @@ caption to say which theme it is, it has failed.
 | Token | Value | Why |
 |---|---|---|
 | `--ftl-bg` | `#000000` | True black. Not near-black — the blocks must float. |
-| `--ftl-accent` | `#ff9900` | The canonical LCARS orange; the system's primary structural colour. |
-| `--ftl-lcars-lavender` / `-sky` / `-rose` / `-tan` / `-peach` | `#cc99cc` `#9999ff` `#cc6699` `#ffcc99` `#ff9966` | The candy palette, namespaced so it can never collide with another theme's tokens. |
+| `--ftl-accent` | `#ff9900` | The canonical LCARS orange; the system's primary structural colour. Matches "atomic tangerine" in the documented Okuda reference palette exactly. |
+| `--ftl-lcars-lavender` / `-sky` / `-rose` / `-tan` / `-peach` | `#cc99cc` `#6699ff` `#cc6699` `#ffcc99` `#ff9966` | The candy palette, namespaced so it can never collide with another theme's tokens. `-lavender` matches the reference palette's "lilac" exactly; `-sky` was corrected from an unsourced pastel periwinkle to sit close to the reference's saturated blue family ("mariner"/"bahama-blue") while still clearing the button-text contrast floor. |
 | `--ftl-radius` | `1.4rem` | Large by default — everything wants to be a pill. |
 | `--ftl-on-accent` | `#000000` | Black text on candy fills. LCARS never sets light text on a colour block. |
 | `--ftl-density` | `1.15` | Deliberately loose. |
 
-## Instruments
+Source: the Okuda-designed LCARS palette (Michael and Denise Okuda,
+conceived for TNG starting 1987) as documented by the `trekcolors`
+reference project — not a single "official" style sheet, since LCARS
+predates CSS by a decade, but the closest thing to a canonical hex list
+this catalog could verify against.
+
+## Signature details
 
 - **Meters** band in the *candy* palette (sky → orange → rose) rather than
   green/amber/red. A traffic-light meter instantly reads as a modern audio

@@ -23,6 +23,16 @@ otherwise clinical space.
 4. **Grey, understated headings** — a section label on a clipboard, not a
    marketing headline.
 
+## Signature details
+
+- Danger buttons fill with the portal orange (`--ftl-accent-2`), not red —
+  the one place this theme breaks from every other theme's convention on
+  purpose, with dark text since orange is too light for white to pass.
+- Headings are muted grey, `font-weight: 700`, and never uppercase — a
+  clipboard label, not a marketing headline.
+- Shadows never exceed `0 1px 3px` — this is the flattest, quietest theme
+  in the catalog; anything heavier reads as a different theme entirely.
+
 ## Layout
 
 A plain white bar and status strip on a slightly darker page backdrop —

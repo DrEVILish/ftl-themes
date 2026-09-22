@@ -39,7 +39,7 @@ stress. Everything in this theme serves that moment.
 | `--ftl-density` | `0.85` | Tight rows. The single most consequential token here. |
 | `--ftl-font` | System sans | A console is read, not admired; the platform UI face is the most legible option at small sizes. |
 
-## Instruments
+## Signature details
 
 - **The transport is the theme.** A flat strip with a 0.3rem amber left
   edge, carrying GO. GO is a 2px amber outline that fills faintly and

@@ -3,6 +3,40 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.5.1 — compare mode, signature-detail pass, source-accuracy fixes
+
+### Added
+
+- **`example.html` compare mode.** Pick two themes and see both rendered
+  full-width side by side (each an embedded copy of the page itself), with
+  each theme's "Signature details" pulled from its README into the
+  sidebar for a read-without-scrolling comparison. Deep-linkable via
+  `?compare=1&a=<slug>&b=<slug>`.
+- **`docs/engine-improvements.md`** — a written set of recommendations
+  from this review pass: what was implemented, what's deferred and why
+  (visual regression testing, a token-diff tool, a per-theme token-usage
+  report), and what was deliberately rejected (an authenticity "score",
+  auto-generating READMEs from CSS).
+- Every theme's README now has a "Signature details" section (11 of 26
+  didn't); `scripts/check.py`'s docs rule now warns if a new theme ships
+  without one, since that's the section compare mode surfaces.
+
+### Changed
+
+- Every theme's one-line `Description:` (feeds `dist/themes.json` and
+  theme pickers) now names a concrete signature detail instead of a
+  generic palette summary. `CONTRACT.md`'s theme index rewritten
+  accordingly, with a new "Signature detail" column.
+- **`lcars`**: `--ftl-lcars-sky` corrected from an unsourced pastel
+  periwinkle (`#9999ff`) to `#6699ff`, closer to the Okuda reference
+  palette's documented blue family ("mariner"/"bahama-blue") while
+  staying inside the button-text contrast floor (the literal reference
+  blue fails at 3.9:1). `--ftl-accent` and `--ftl-lcars-lavender` were
+  verified exact matches to the reference and needed no change.
+- **`winxp-luna`**: softened an overclaiming comment about the Start-button
+  green being "the actual" color to "the commonly cited" one — no single
+  hex was ever an officially published constant.
+
 ## v3.5.0 — five more themes: Windows 7 Aero, Alienware, Vaporwave, Material, Bloomberg Terminal
 
 ### Added

@@ -20,6 +20,17 @@ than as a HUD's telemetry glow.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
    sans.
 
+## Signature details
+
+- Primary buttons' hover glow (`0 0 14px rgba(214, 31, 255, 0.6)`) is
+  purple even though the button fill is green — the bloom always reads as
+  the *structural* colour, never the signal one.
+- Table headers and rules pick up `--ftl-flare` (purple), not the accent —
+  structure stays purple everywhere, including inside components.
+- The font stack leads with Eurostile, the same unvendored-face situation
+  as `tron`/`death-star` — it silently falls back to a system sans on most
+  real machines rather than the intended geometric face.
+
 ## Layout
 
 A black bar and status strip both edged in the purple rule, with the
