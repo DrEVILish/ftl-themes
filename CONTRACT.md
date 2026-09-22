@@ -656,6 +656,11 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 | `winxp-luna` | Windows XP (Luna) | The default Luna Blue desktop — glossy blue chrome, green go. |
 | `barbie` | Barbie | Hot-pink glamour, glossy pills, gold sparkle. |
 | `hot-wheels` | Hot Wheels | Blister-pack orange on track-black, flame stripes, checkered flag. |
+| `win7-aero` | Windows 7 Aero | Frosted glass blur, soft blue gloss on the Aero desktop gradient. |
+| `alienware` | Alienware | Matte black, angular clip-path cuts, AlienFX cyan glow. |
+| `vaporwave` | Vaporwave | Outrun synthwave — magenta/cyan gradient chrome text on deep purple. |
+| `material` | Material | Google Material Design — flat color, layered elevation shadows. |
+| `bloomberg` | Bloomberg Terminal | Black-and-amber monospace data density, extreme-density stress test. |
 
 ## Palette variants and accent swatches — worked example
 

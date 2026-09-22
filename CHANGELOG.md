@@ -3,6 +3,39 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.5.0 — five more themes: Windows 7 Aero, Alienware, Vaporwave, Material, Bloomberg Terminal
+
+### Added
+
+- **`win7-aero`** — frosted glass via real `backdrop-filter` blur over the
+  Aero blue desktop gradient, distinct from `winxp-luna`'s opaque gloss.
+- **`alienware`** — matte black, angular `clip-path`-cut corners (reusing
+  tron's clipped-focus workaround), a single AlienFX cyan glow.
+- **`vaporwave`** — outrun synthwave: magenta/cyan gradient chrome text,
+  deep-purple void, perspective grid-floor status strip.
+- **`material`** — Google Material Design: flat color, layered elevation
+  `box-shadow` stacks instead of gloss/blur, underlined text fields.
+- **`bloomberg`** — black-and-amber monospace data density; `--ftl-density:
+  0.7` as a deliberate extreme-density stress test for `.ftl-table`.
+
+All five contrast-checked (≥4.5:1 on required pairs) before landing;
+`vaporwave`'s danger red was darkened one step past the literal reference
+(`#ff3864` fails 4.5:1 against white) for the same reason `winxp-luna`'s
+success green and `barbie`'s accent pink were.
+
+### Fixed
+
+- **`winxp-luna`**: `.ftl-btn-primary` and `.ftl-btn-go` used the chrome
+  blue, contradicting this theme's own README ("green means go, blue means
+  select"). Both now use the Start-button green; the title bar, focus
+  ring, and "this is selected" states stay blue.
+- **`material`**, **`vaporwave`**: the app bar's `.ftl-nav-brand` and
+  active `.ftl-nav-item` used the shared `--ftl-nav-*` token defaults
+  (accent-colored text), which are invisible or near-invisible against
+  these two themes' accent-colored bars. Re-pointed the tokens on
+  `.ftl-app-bar` specifically so the standalone `.ftl-nav` component
+  (different background) is unaffected.
+
 ## v3.4.2 — remove `winxp-zune`
 
 **Breaking for any app pinning `data-theme="winxp-zune"` or serving

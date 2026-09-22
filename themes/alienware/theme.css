@@ -1,0 +1,112 @@
+/* ftl-themes: Alienware
+ * Theme-Name: Alienware
+ * Description: Matte black gaming chrome — angular cuts, AlienFX cyan glow.
+ *
+ * Note on fonts: no Alienware-specific display face is vendored, so the
+ * stack names only broadly available system fonts rather than claim one
+ * this theme doesn't ship (the same discipline as tron/hot-wheels).
+ *
+ * Angular, not rounded: this is the deliberate contrast point against
+ * aqua/barbie's gloss-and-curves. Corners are cut with clip-path (the same
+ * technique tron uses), not rounded.
+ */
+
+html[data-theme="alienware"] {
+  --ftl-bg: #0a0a0c;
+  --ftl-surface: #16161a;
+  --ftl-surface-2: #1f1f24;
+  --ftl-border: #3a3a42;
+  --ftl-hairline: #26262c;
+  --ftl-text: #e6e6ea;
+  --ftl-muted: #8a8a92;
+  --ftl-accent: #00d4ff;
+  --ftl-accent-2: #7a5cff;
+  --ftl-danger: #ff3b5c;
+  --ftl-success: #35e08a;
+  --ftl-warning: #ffb020;
+  --ftl-on-accent: #001318;
+  --ftl-on-danger: #1a0006;
+  --ftl-on-success: #00200f;
+  --ftl-radius: 0.2rem;
+  --ftl-font: "Segoe UI", Arial, sans-serif;
+  --ftl-font-mono: Consolas, monospace;
+  --ftl-flare: #7a5cff;
+
+  --ftl-btn-bg: var(--ftl-surface-2);
+  --ftl-btn-fg: var(--ftl-text);
+  --ftl-btn-border: var(--ftl-border);
+  --ftl-btn-border-hover: var(--ftl-accent);
+  --ftl-btn-shadow-hover: 0 0 12px rgba(0, 212, 255, 0.45);
+  --ftl-btn-weight: 600;
+  --ftl-btn-tracking: 0.04em;
+  --ftl-input-bg: #000000;
+  --ftl-focus: var(--ftl-accent);
+  --ftl-focus-ring: 0 0 8px rgba(0, 212, 255, 0.5);
+  --ftl-panel-bg: var(--ftl-surface);
+  --ftl-panel-shadow: inset 0 0 0 1px rgba(0, 212, 255, 0.08);
+  --ftl-modal-header-bg: #000000;
+  --ftl-modal-header-fg: var(--ftl-accent);
+  --ftl-table-head-fg: var(--ftl-accent);
+  --ftl-table-head-rule: var(--ftl-accent);
+  --ftl-row-selected-bg: rgba(0, 212, 255, 0.1);
+  --ftl-row-active-marker: inset 0.2rem 0 0 var(--ftl-accent-2);
+  --ftl-nav-bg: #000000;
+  --ftl-nav-rule: var(--ftl-accent);
+  --ftl-overlay-bg: rgba(0, 0, 0, 0.8);
+  --ftl-indicator-fg: var(--ftl-accent);
+  --ftl-indicator-track: var(--ftl-hairline);
+}
+
+html[data-theme="alienware"] h1,
+html[data-theme="alienware"] h2,
+html[data-theme="alienware"] h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ftl-accent);
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+/* Angular cuts — the signature shape. Same clip-path-plus-filter-focus
+   workaround as tron: clip-path clips the standard focus outline, so a
+   drop-shadow filter (never clipped) stands in for it instead of ever
+   setting outline: none. */
+html[data-theme="alienware"] .ftl-btn {
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+html[data-theme="alienware"] .ftl-panel,
+html[data-theme="alienware"] .ftl-modal {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+html[data-theme="alienware"] .ftl-btn:focus-visible,
+html[data-theme="alienware"] .ftl-panel:focus-visible,
+html[data-theme="alienware"] .ftl-modal:focus-visible {
+  filter: drop-shadow(0 0 0 2px var(--ftl-focus)) drop-shadow(0 0 6px var(--ftl-focus));
+}
+
+html[data-theme="alienware"] .ftl-btn-primary { --ftl-btn-bg: rgba(0, 212, 255, 0.14); --ftl-btn-border: var(--ftl-accent); }
+html[data-theme="alienware"] .ftl-btn-danger { --ftl-btn-border: var(--ftl-danger); }
+
+/* --- Layout ------------------------------------------------------------ *
+ * A matte black gaming rig: an angular bar with a lit cyan edge, a thin lit
+ * rail (the AlienFX light strip), and the content well sitting flush black. */
+html[data-theme="alienware"] {
+  --ftl-app-padding: 0.6rem;
+  --ftl-app-gap: 0.6rem;
+  --ftl-app-columns: 0.3rem minmax(0, 1fr);
+  --ftl-app-rail-display: block;
+  --ftl-app-bar-bg: #000000;
+  --ftl-app-bar-fg: var(--ftl-text);
+  --ftl-app-bar-rule: var(--ftl-accent);
+  --ftl-app-bar-rule-width: 2px;
+  --ftl-app-bar-height: 2.6rem;
+  --ftl-app-main-bg: var(--ftl-bg);
+  --ftl-app-main-padding: 1rem;
+  --ftl-app-status-bg: #000000;
+  --ftl-app-status-rule: var(--ftl-hairline);
+}
+/* The AlienFX strip: a lit cyan-to-purple rail, the RGB accent line every
+   Alienware chassis has along an edge. */
+html[data-theme="alienware"] .ftl-app-rail {
+  background-image: linear-gradient(180deg, var(--ftl-accent), var(--ftl-accent-2));
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}

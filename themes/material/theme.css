@@ -1,0 +1,121 @@
+/* ftl-themes: Material
+ * Theme-Name: Material
+ * Description: Google Material Design — flat color, layered elevation shadows.
+ *
+ * Note on fonts: Roboto isn't vendored, so the stack falls back to the
+ * platform's own UI sans rather than claim a face this theme doesn't ship.
+ *
+ * Elevation, not gloss: depth here comes from layered box-shadows at
+ * increasing "dp" levels, never a gradient fill — the deliberate contrast
+ * point against aqua/winxp-luna's gloss-gradient depth cues.
+ */
+
+html[data-theme="material"] {
+  --ftl-bg: #fafafa;
+  --ftl-surface: #ffffff;
+  --ftl-surface-2: #f0f0f0;
+  --ftl-border: #e0e0e0;
+  --ftl-hairline: #eeeeee;
+  --ftl-text: #212121;
+  --ftl-muted: #757575;
+  --ftl-accent: #6200ee;
+  --ftl-accent-2: #3700b3;
+  --ftl-danger: #b00020;
+  --ftl-success: #2e7d32;
+  --ftl-warning: #f9a825;
+  --ftl-on-accent: #ffffff;
+  --ftl-on-danger: #ffffff;
+  --ftl-on-success: #ffffff;
+  --ftl-radius: 0.25rem;
+  --ftl-font: Roboto, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --ftl-font-mono: "Roboto Mono", Consolas, monospace;
+  --ftl-flare: #bb86fc;
+
+  /* Material's elevation system: layered shadows at increasing "dp", flat
+     fills underneath. dp2 for resting buttons/cards, dp4 on hover. */
+  --ftl-btn-bg: var(--ftl-surface);
+  --ftl-btn-fg: var(--ftl-text);
+  --ftl-btn-border-width: 0;
+  --ftl-btn-radius: 0.25rem;
+  --ftl-btn-weight: 500;
+  --ftl-btn-tracking: 0.02em;
+  --ftl-btn-transform: uppercase;
+  --ftl-btn-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 2px 1px -1px rgba(0,0,0,0.12);
+  --ftl-btn-shadow-hover: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14), 0 1px 10px rgba(0,0,0,0.12);
+  --ftl-focus: var(--ftl-accent);
+  --ftl-focus-ring: 0 0 0 8px rgba(98, 0, 238, 0.12);
+  --ftl-input-bg: var(--ftl-surface-2);
+  --ftl-input-radius: 0.2rem 0.2rem 0 0;
+  --ftl-panel-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14), 0 1px 10px rgba(0,0,0,0.12);
+  --ftl-modal-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12);
+  --ftl-table-head-fg: var(--ftl-muted);
+  --ftl-table-head-transform: uppercase;
+  --ftl-row-selected-bg: rgba(98, 0, 238, 0.08);
+  --ftl-row-active-marker: inset 0.2rem 0 0 var(--ftl-accent);
+  --ftl-nav-bg: var(--ftl-surface);
+  --ftl-nav-item-bg-active: rgba(98, 0, 238, 0.08);
+  --ftl-nav-item-fg-active: var(--ftl-accent);
+  --ftl-dropdown-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14);
+  --ftl-overlay-bg: rgba(0, 0, 0, 0.5);
+  --ftl-indicator-fg: var(--ftl-accent);
+  --ftl-indicator-track: var(--ftl-hairline);
+}
+
+html[data-theme="material"] .ftl-btn:active { transform: none; box-shadow: var(--ftl-btn-shadow-hover); }
+html[data-theme="material"] .ftl-btn-primary {
+  --ftl-btn-bg: var(--ftl-accent);
+  --ftl-btn-fg: #ffffff;
+}
+html[data-theme="material"] .ftl-btn-ghost { --ftl-btn-shadow: none; --ftl-btn-shadow-hover: none; }
+html[data-theme="material"] .ftl-btn-secondary { --ftl-btn-shadow: none; --ftl-btn-shadow-hover: none; --ftl-btn-border: var(--ftl-border); --ftl-btn-border-width: 1px; }
+
+/* Underlined text fields — the Material text-field convention, distinct
+   from every other theme's boxed input. */
+html[data-theme="material"] .ftl-input,
+html[data-theme="material"] .ftl-select,
+html[data-theme="material"] .ftl-textarea {
+  border: none;
+  border-bottom: 2px solid var(--ftl-border);
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+}
+html[data-theme="material"] .ftl-input:focus-visible,
+html[data-theme="material"] .ftl-select:focus-visible,
+html[data-theme="material"] .ftl-textarea:focus-visible {
+  border-bottom-color: var(--ftl-accent);
+  box-shadow: none;
+}
+
+/* Opt-in only: a brief ripple-style expand on primary buttons, gated by
+   motion preference like every other animated flourish in this catalog. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="material"] .ftl-btn { transition: background 0.15s ease, box-shadow 0.2s ease, transform 0.1s ease; }
+}
+
+/* --- Layout ------------------------------------------------------------ *
+ * A Material app bar: flat, elevated (dp4) above the content, primary-
+ * colored, with the content sitting on the flat page background below it. */
+html[data-theme="material"] {
+  --ftl-app-bg: var(--ftl-bg);
+  --ftl-app-bar-bg: var(--ftl-accent);
+  --ftl-app-bar-fg: #ffffff;
+  --ftl-app-bar-rule-width: 0;
+  --ftl-app-bar-height: 3.5rem;
+  --ftl-app-bar-padding: 0 1.25rem;
+  --ftl-app-main-padding: 1.25rem;
+  --ftl-app-status-bg: var(--ftl-surface);
+  --ftl-app-status-rule: var(--ftl-hairline);
+}
+html[data-theme="material"] .ftl-app-bar {
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14), 0 1px 10px rgba(0,0,0,0.12);
+  /* The bar is a solid accent-purple slab — .ftl-nav-brand/-item's default
+     colors (accent text, muted text) assume a light/dark-neutral nav
+     background, not an accent-colored one, and go invisible or near-
+     invisible against this bar specifically. Re-pointing the tokens here,
+     not on the base selectors, keeps the standalone .ftl-nav component
+     (white background elsewhere on the page) unaffected. */
+  --ftl-nav-brand-fg: #ffffff;
+  --ftl-nav-item-fg: rgba(255, 255, 255, 0.75);
+  --ftl-nav-item-fg-active: #ffffff;
+  --ftl-nav-item-bg-active: rgba(255, 255, 255, 0.18);
+}
