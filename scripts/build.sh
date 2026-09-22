@@ -14,20 +14,6 @@ mkdir -p dist
 # dist/. Apps serve assets/ next to dist/, so rewrite to ../assets/.
 rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../assets/#g'; }
 
-header_field() { # <file> <field>
-  sed -n "s#^[[:space:]]*\*\{0,1\}[[:space:]]*$2:[[:space:]]*\(.*[^[:space:]]\)[[:space:]]*\$#\1#p" "$1" | head -1
-}
-
-json_escape() { printf '%s' "$1" | sed 's#\\#\\\\#g; s#"#\\"#g'; }
-
-# Build identity: a submodule consumer pinning a commit wants to confirm
-# which build it's actually serving. version is the git description when
-# available (falls back to the commit alone, then to "unknown" outside a
-# git checkout — a stale tarball export, say); builtAt is when build.sh ran.
-commit="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
-version="$(git describe --tags --always --dirty 2>/dev/null || echo "$commit")"
-built_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-
 # core/ftl-reset.css + ftl-core.css alone, with no theme and no layout
 # shell — for an app that wants the --ftl-* token contract and component
 # structure but supplies its own palette (color-only adoption), or that
@@ -46,9 +32,6 @@ built_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 } > dist/ftl-core.css
 echo "built dist/ftl-core.css"
 
-manifest="dist/themes.json"
-: > "$manifest.tmp"
-
 for dir in themes/*/; do
   name="$(basename "$dir")"
   src="themes/${name}/theme.css"
@@ -62,33 +45,10 @@ for dir in themes/*/; do
     cat "$src"
     if [ -f "themes/${name}/chrome.css" ]; then cat "themes/${name}/chrome.css"; fi
   } | rewrite_urls > "$out"
-
-  label="$(header_field "$src" "Theme-Name")"
-  desc="$(header_field "$src" "Description")"
-  [ -n "$label" ] || label="$name"
-  chrome=false
-  if [ -f "themes/${name}/chrome.css" ]; then chrome=true; fi
-  # shellAware mirrors scripts/check.py's "layout" lint: a theme that sets
-  # no --ftl-app-* property renders identically whether or not the app
-  # adopts the .ftl-app shell, so a picker can tell the user up front
-  # whether linking this theme alone gets its full intended layout (see
-  # CONTRACT.md "Adoption levels").
-  shellAware=false
-  if grep -Eq -- '--ftl-app-[A-Za-z0-9-]+\s*:' "$src"; then shellAware=true; fi
-  # dataTheme is always identical to slug (CONTRACT.md guarantees this by
-  # construction — themes.json's directory name IS the data-theme value) but
-  # is spelled out explicitly here anyway, so an integrator never has to
-  # infer it or discover the guarantee by reading source.
-  printf '  {"slug": "%s", "dataTheme": "%s", "label": "%s", "description": "%s", "hasChrome": %s, "shellAware": %s, "version": "%s", "builtAt": "%s"}\n' \
-    "$(json_escape "$name")" "$(json_escape "$name")" "$(json_escape "$label")" "$(json_escape "$desc")" \
-    "$chrome" "$shellAware" "$(json_escape "$version")" "$built_at" >> "$manifest.tmp"
   echo "built $out"
 done
 
-{
-  echo "["
-  sed '$!s/$/,/' "$manifest.tmp"
-  echo "]"
-} > "$manifest"
-rm -f "$manifest.tmp"
-echo "built $manifest"
+# Manifest (including per-theme scheme/luminance and build identity) is
+# generated in Python — its derivations must match what check.py re-derives,
+# and check.py imports them from this script rather than re-implementing.
+python3 scripts/build_manifest.py
