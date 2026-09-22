@@ -32,9 +32,6 @@ rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../ass
 } > dist/ftl-core.css
 echo "built dist/ftl-core.css"
 
-manifest="dist/themes.json"
-: > "$manifest.tmp"
-
 for dir in themes/*/; do
   name="$(basename "$dir")"
   src="themes/${name}/theme.css"
