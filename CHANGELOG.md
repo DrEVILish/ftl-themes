@@ -3,6 +3,20 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.4.1 — flagship-theme fidelity pass on the v3.4.0 components
+
+Fixes the gap where all 22 themes rendered the 19 new v3.4.0 components
+(toast, alert, card, context menu, dropzone, avatar, tooltip, popover,
+pagination, breadcrumbs, skeleton) with plain unstyled fallback tokens.
+Seven themes with the strongest visual identity now give them real
+theme-specific chrome, matching their existing idiom: `lcars` (candy-bar
+borders, elbow radii), `matrix` (green glow, phosphor shadows), `tron`
+(cyan glow, cut corners kept square on these), `windows95` (beveled
+chrome, marching-ants tooltip), `winxp-luna` (Luna gloss), `barbie`
+(pink/gold gloss), `hot-wheels` (flame glow). All new fg/bg pairs
+contrast-checked (≥5:1) before landing. The remaining 15 themes are
+unaffected — token-only theming is still a legitimate baseline.
+
 ## v3.4.0 — component library expansion
 
 Non-breaking: every token and class from prior versions is unchanged. All
