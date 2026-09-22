@@ -42,6 +42,11 @@ REQUIRED_TOKENS = [
 BASE_COMPONENTS = [
     "ftl-btn", "ftl-panel", "ftl-modal", "ftl-dropdown", "ftl-input",
     "ftl-select", "ftl-textarea", "ftl-badge", "ftl-nav-item", "ftl-tab",
+    # v3.4.0 additions: same base-rule-plus-custom-property-variant
+    # architecture as .ftl-btn, so the same cascade bug applies to them.
+    "ftl-toast", "ftl-context-menu", "ftl-dropzone", "ftl-card",
+    "ftl-alert", "ftl-avatar", "ftl-popover", "ftl-pagination-item",
+    "ftl-breadcrumb-item",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 
