@@ -3,6 +3,42 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.4.0 — component library expansion
+
+Non-breaking: every token and class from prior versions is unchanged. All
+additions read existing base tokens with fallbacks, so every theme picks
+them up with zero theme-file changes.
+
+### Added
+
+Sourced from real duplication found in the three consuming apps (CuTePi's
+context menu and dropzone, PI9696's icon button and settings rows,
+Playlist-Lab's toast/card/badge-button/empty-state) plus a curated set of
+generic primitives the component landscape was conspicuously missing:
+
+- `.ftl-toast` / `.ftl-toast-region` — transient dismissable notifications.
+- `.ftl-spinner` — a bare loading indicator for non-htmx async work.
+- `.ftl-context-menu` (+ `-item`, `-divider`) — cursor/anchor-positioned menu.
+- `.ftl-dropzone` — drag-and-drop file target, with `.is-dragover` state.
+- `.ftl-field-group` (+ `-title`) — a titled group of `.ftl-field` rows.
+- `.ftl-btn-icon` — a circular icon-only button modifier on `.ftl-btn`.
+- `.ftl-card` — a lighter-weight `.ftl-panel` sibling.
+- `.ftl-badge-button` — a clickable badge (filter chip).
+- `.ftl-empty-state` (+ `-icon`, `-title`, `-hint`).
+- `.ftl-tooltip` via `[data-tooltip]` — CSS-only, no JS required.
+- `.ftl-popover` — a `.ftl-dropdown`-style surface, app-toggled.
+- `.ftl-accordion-item`/`-trigger`/`-panel` — built on native `<details>`.
+- `.ftl-breadcrumbs` (+ `-item`, `.is-current`).
+- `.ftl-pagination` (+ `-item`, `.is-active`, `.is-disabled`).
+- `.ftl-alert` (+ `-info/-success/-warning/-danger`) — persistent inline banner.
+- `.ftl-skeleton` (+ `-text`, `-block`) — shimmer loading placeholder.
+- `.ftl-avatar` (+ `-sm`, `-lg`).
+- `.ftl-stat` (+ `-value`, `-label`, `-trend`) — KPI tile.
+- `.ftl-divider` / `.ftl-divider-v`.
+
+See CONTRACT.md "Component vocabulary — v3.4.0 additions" for markup
+examples of each. `demo.html` has a new "v3.4.0 additions" section.
+
 ## v3.3.0 — three more themes: Windows XP (Luna), Barbie, Hot Wheels
 
 ### Added

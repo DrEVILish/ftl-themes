@@ -744,6 +744,367 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 .htmx-added { opacity: 0; }
 .htmx-settling { opacity: 1; transition: opacity 0.15s ease-in; }
 
+/* --- v3.4.0 additions ---------------------------------------------------
+ * Sourced from real duplication in three consuming apps (CuTePi's context
+ * menu and dropzone, PI9696's icon button and settings rows, Playlist-Lab's
+ * toast/card/badge-button/empty-state) plus a small curated set of generic
+ * primitives the wishlist calls out as universally needed. Same rules as
+ * everything above: local custom-property API, tokens fall back to the
+ * base palette, no app-specific class names. See CONTRACT.md.
+ */
+
+/* .ftl-toast — a transient, dismissable notification. Distinct from
+   .ftl-alert (persistent, inline) and .ftl-status (single-word state). */
+.ftl-toast-region {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+}
+.ftl-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: var(--ftl-toast-bg, var(--ftl-surface-2));
+  color: var(--ftl-toast-fg, var(--ftl-text));
+  border: 1px solid var(--ftl-toast-border, var(--ftl-border));
+  border-radius: var(--ftl-toast-radius, var(--ftl-radius));
+  box-shadow: var(--ftl-toast-shadow, var(--ftl-panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.25)));
+  font-size: 0.88em;
+}
+.ftl-toast-success { --ftl-toast-border: var(--ftl-success); }
+.ftl-toast-danger { --ftl-toast-border: var(--ftl-danger); }
+.ftl-toast-warning { --ftl-toast-border: var(--ftl-warning); }
+
+/* .ftl-spinner — a bare loading indicator for non-htmx use (page-level
+   loads, async work outside a swap). .ftl-indicator stays the htmx-bound
+   one; this is the same visual with no htmx-class dependency. */
+.ftl-spinner {
+  display: inline-block;
+  width: var(--ftl-spinner-size, 1.2em);
+  height: var(--ftl-spinner-size, 1.2em);
+  flex-shrink: 0;
+  border: 2px solid var(--ftl-spinner-track, var(--ftl-border));
+  border-top-color: var(--ftl-spinner-fg, var(--ftl-accent));
+  border-radius: 50%;
+  animation: ftl-spin 0.7s linear infinite;
+}
+
+/* .ftl-context-menu — same surface language as .ftl-dropdown, meant to be
+   positioned at a cursor/anchor point by the consuming app's own JS. */
+.ftl-context-menu {
+  position: absolute;
+  background: var(--ftl-context-menu-bg, var(--ftl-dropdown-bg, var(--ftl-surface-2)));
+  border: 1px solid var(--ftl-context-menu-border, var(--ftl-dropdown-border, var(--ftl-border)));
+  border-radius: var(--ftl-context-menu-radius, var(--ftl-dropdown-radius, var(--ftl-radius)));
+  box-shadow: var(--ftl-context-menu-shadow, var(--ftl-panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
+  padding: 0.35rem;
+  min-width: 10rem;
+  z-index: 1050;
+}
+.ftl-context-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.45em 0.7em;
+  border-radius: var(--ftl-context-menu-radius, var(--ftl-radius));
+  color: var(--ftl-context-menu-item-fg, var(--ftl-text));
+  text-align: left;
+}
+.ftl-context-menu-item:hover,
+.ftl-context-menu-item:focus-visible {
+  background: var(--ftl-context-menu-item-bg-hover, var(--ftl-dropdown-item-bg-hover, var(--ftl-accent)));
+  color: var(--ftl-context-menu-item-fg-hover, var(--ftl-dropdown-item-fg-hover, var(--ftl-on-accent)));
+}
+.ftl-context-menu-item.is-danger { color: var(--ftl-danger); }
+.ftl-context-menu-divider {
+  height: 1px;
+  margin: 0.3rem 0.2rem;
+  background: var(--ftl-context-menu-border, var(--ftl-hairline));
+}
+
+/* .ftl-dropzone — a drag-and-drop file target. */
+.ftl-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: calc(2rem * var(--ftl-density));
+  border: var(--ftl-dropzone-border-width, 2px) dashed var(--ftl-dropzone-border, var(--ftl-border));
+  border-radius: var(--ftl-dropzone-radius, var(--ftl-radius));
+  background: var(--ftl-dropzone-bg, transparent);
+  color: var(--ftl-dropzone-fg, var(--ftl-muted));
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.ftl-dropzone.is-dragover {
+  border-color: var(--ftl-dropzone-border-active, var(--ftl-accent));
+  background: var(--ftl-dropzone-bg-active, var(--ftl-surface-2));
+  color: var(--ftl-dropzone-fg-active, var(--ftl-text));
+}
+
+/* .ftl-field-group — a titled group of .ftl-field rows (settings sections). */
+.ftl-field-group { margin-bottom: 1.5rem; }
+.ftl-field-group-title {
+  margin-bottom: 0.5em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--ftl-hairline);
+  color: var(--ftl-field-group-title-fg, var(--ftl-muted));
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* .ftl-btn-icon — a circular icon-only button, layered on .ftl-btn. */
+.ftl-btn-icon {
+  --ftl-btn-padding: 0;
+  --ftl-btn-radius: 50%;
+  width: var(--ftl-btn-icon-size, 2.2em);
+  height: var(--ftl-btn-icon-size, 2.2em);
+  flex-shrink: 0;
+}
+
+/* .ftl-card — a lighter-weight sibling of .ftl-panel. Defaults to the same
+   token values so a theme with no opinion renders identically; a theme
+   that wants a visually distinct card sets --ftl-card-* explicitly. */
+.ftl-card {
+  background: var(--ftl-card-bg, var(--ftl-panel-bg, var(--ftl-surface)));
+  color: var(--ftl-on-surface);
+  border: var(--ftl-card-border-width, 1px) solid var(--ftl-card-border, var(--ftl-panel-border, var(--ftl-border)));
+  border-radius: var(--ftl-card-radius, var(--ftl-panel-radius, var(--ftl-radius)));
+  box-shadow: var(--ftl-card-shadow, var(--ftl-panel-shadow, none));
+  padding: calc(1rem * var(--ftl-density));
+}
+
+/* .ftl-badge-button — a clickable badge (filter chip). */
+.ftl-badge-button {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ftl-badge-button:hover,
+.ftl-badge-button.is-active {
+  background: var(--ftl-badge-bg-active, var(--ftl-accent));
+  color: var(--ftl-badge-fg-active, var(--ftl-on-accent));
+}
+
+/* .ftl-empty-state — a placeholder for an empty list/collection/result set. */
+.ftl-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: calc(2.5rem * var(--ftl-density)) 1rem;
+  color: var(--ftl-muted);
+  text-align: center;
+}
+.ftl-empty-state-icon { font-size: 2rem; opacity: 0.6; }
+.ftl-empty-state-title { color: var(--ftl-text); font-weight: 600; }
+.ftl-empty-state-hint { font-size: 0.85em; }
+
+/* .ftl-tooltip — CSS-only, attribute-driven: <span data-tooltip="…">. No JS,
+   consistent with the rest of the library's no-JS-framework stance. */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 0.4rem);
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  padding: 0.35em 0.6em;
+  background: var(--ftl-tooltip-bg, var(--ftl-surface-2));
+  color: var(--ftl-tooltip-fg, var(--ftl-text));
+  border: 1px solid var(--ftl-tooltip-border, var(--ftl-border));
+  border-radius: var(--ftl-tooltip-radius, var(--ftl-radius));
+  font-size: 0.78em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+  z-index: 1200;
+}
+[data-tooltip]:hover::after,
+[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* .ftl-popover — same surface as .ftl-dropdown, toggled by the app via a
+   class (e.g. htmx swap or a small inline script) rather than :hover. */
+.ftl-popover {
+  position: absolute;
+  background: var(--ftl-popover-bg, var(--ftl-dropdown-bg, var(--ftl-surface-2)));
+  border: 1px solid var(--ftl-popover-border, var(--ftl-dropdown-border, var(--ftl-border)));
+  border-radius: var(--ftl-popover-radius, var(--ftl-dropdown-radius, var(--ftl-radius)));
+  box-shadow: var(--ftl-popover-shadow, var(--ftl-panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
+  padding: 0.75rem;
+  max-width: 20rem;
+  z-index: 1050;
+}
+
+/* .ftl-accordion — built on <details>/<summary> so it needs no JS. */
+.ftl-accordion-item {
+  border-bottom: 1px solid var(--ftl-hairline);
+}
+.ftl-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75em 0.25em;
+  color: var(--ftl-text);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.ftl-accordion-trigger::-webkit-details-marker { display: none; }
+.ftl-accordion-trigger::after {
+  content: "+";
+  color: var(--ftl-muted);
+  transition: transform 0.15s ease;
+}
+.ftl-accordion-item[open] > .ftl-accordion-trigger::after { transform: rotate(45deg); }
+.ftl-accordion-panel { padding: 0 0.25em 1em; color: var(--ftl-muted); }
+
+/* .ftl-breadcrumbs */
+.ftl-breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  font-size: 0.85em;
+  color: var(--ftl-muted);
+}
+.ftl-breadcrumb-item { color: inherit; }
+.ftl-breadcrumb-item:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.4em;
+  color: var(--ftl-hairline);
+}
+.ftl-breadcrumb-item.is-current { color: var(--ftl-text); font-weight: 600; }
+
+/* .ftl-pagination */
+.ftl-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.ftl-pagination-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2em;
+  height: 2em;
+  padding: 0 0.4em;
+  border: 1px solid transparent;
+  border-radius: var(--ftl-radius);
+  color: var(--ftl-muted);
+  font-size: 0.85em;
+}
+.ftl-pagination-item:hover { background: var(--ftl-surface-2); color: var(--ftl-text); }
+.ftl-pagination-item.is-active {
+  background: var(--ftl-accent);
+  color: var(--ftl-on-accent);
+  font-weight: 600;
+}
+.ftl-pagination-item.is-disabled { opacity: 0.4; pointer-events: none; }
+
+/* .ftl-alert — persistent inline banner. Distinct from the transient
+   .ftl-toast and the single-word .ftl-status. */
+.ftl-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75em 1em;
+  border: 1px solid var(--ftl-alert-border, var(--ftl-border));
+  border-radius: var(--ftl-alert-radius, var(--ftl-radius));
+  background: var(--ftl-alert-bg, var(--ftl-surface-2));
+  color: var(--ftl-alert-fg, var(--ftl-text));
+  font-size: 0.9em;
+}
+.ftl-alert-info { --ftl-alert-border: var(--ftl-accent); }
+.ftl-alert-success { --ftl-alert-border: var(--ftl-success); }
+.ftl-alert-warning { --ftl-alert-border: var(--ftl-warning); }
+.ftl-alert-danger { --ftl-alert-border: var(--ftl-danger); }
+
+/* .ftl-skeleton — loading placeholder shape. */
+.ftl-skeleton {
+  display: block;
+  background: var(--ftl-skeleton-bg, var(--ftl-surface-2));
+  border-radius: var(--ftl-skeleton-radius, var(--ftl-radius));
+  background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: ftl-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+.ftl-skeleton-text { height: 0.9em; margin: 0.25em 0; border-radius: 0.2em; }
+.ftl-skeleton-block { height: 4rem; }
+@keyframes ftl-skeleton-shimmer {
+  0% { background-position: -40% 0; }
+  100% { background-position: 140% 0; }
+}
+
+/* .ftl-avatar */
+.ftl-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ftl-avatar-size, 2.2rem);
+  height: var(--ftl-avatar-size, 2.2rem);
+  flex-shrink: 0;
+  border-radius: var(--ftl-avatar-radius, 50%);
+  background: var(--ftl-avatar-bg, var(--ftl-surface-2));
+  color: var(--ftl-avatar-fg, var(--ftl-muted));
+  font-size: 0.85em;
+  font-weight: 600;
+  overflow: hidden;
+}
+.ftl-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ftl-avatar-sm { --ftl-avatar-size: 1.6rem; font-size: 0.7em; }
+.ftl-avatar-lg { --ftl-avatar-size: 3.2rem; font-size: 1.1em; }
+
+/* .ftl-stat — a KPI tile. */
+.ftl-stat { display: flex; flex-direction: column; gap: 0.2em; }
+.ftl-stat-value {
+  font-family: var(--ftl-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ftl-text);
+}
+.ftl-stat-label {
+  font-size: 0.78em;
+  color: var(--ftl-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ftl-stat-trend { font-size: 0.8em; }
+.ftl-stat-trend.is-up { color: var(--ftl-success); }
+.ftl-stat-trend.is-down { color: var(--ftl-danger); }
+
+/* .ftl-divider */
+.ftl-divider {
+  border: none;
+  border-top: 1px solid var(--ftl-hairline);
+  margin: 1rem 0;
+}
+.ftl-divider-v {
+  border: none;
+  border-left: 1px solid var(--ftl-hairline);
+  align-self: stretch;
+  margin: 0 0.5rem;
+}
+
 /* --- Utilities -------------------------------------------------------- */
 .ftl-mono {
   font-family: var(--ftl-font-mono);
@@ -756,7 +1117,9 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   .ftl-switch-thumb,
   .htmx-swapping,
   .htmx-settling { transition: none; }
-  .ftl-indicator { animation-duration: 2s; }
+  .ftl-indicator,
+  .ftl-spinner,
+  .ftl-skeleton { animation-duration: 2s; }
 }
 
 /* --- User display options -----------------------------------------------

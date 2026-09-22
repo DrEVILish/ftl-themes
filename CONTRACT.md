@@ -479,6 +479,108 @@ without writing any:
 - `.htmx-swapping` / `.htmx-added` / `.htmx-settling` fade content across
   a swap. All of it is disabled under `prefers-reduced-motion`.
 
+### v3.4.0 additions
+
+Sourced from real duplication observed in three consuming apps (a context
+menu and dropzone reinvented in CuTePi, an icon button and settings-row
+layout reinvented in PI9696, a toast system, card, filter-chip badge, and
+empty state reinvented in Playlist-Lab) plus a small set of generic
+primitives that were conspicuously missing. All additive — no existing
+class or token renamed.
+
+```html
+<!-- Toast (transient) -->
+<div class="ftl-toast-region">
+  <div class="ftl-toast ftl-toast-success">Saved.</div>
+</div>
+
+<!-- Spinner (non-htmx loading) -->
+<span class="ftl-spinner"></span>
+
+<!-- Context menu (position it at the cursor/anchor with your own JS) -->
+<div class="ftl-context-menu">
+  <button class="ftl-context-menu-item">Rename</button>
+  <div class="ftl-context-menu-divider"></div>
+  <button class="ftl-context-menu-item is-danger">Delete</button>
+</div>
+
+<!-- Dropzone -->
+<div class="ftl-dropzone">Drop a file, or click to browse.</div>
+
+<!-- Field group (a titled section of .ftl-field rows) -->
+<div class="ftl-field-group">
+  <div class="ftl-field-group-title">Notifications</div>
+  <div class="ftl-field">…</div>
+</div>
+
+<!-- Icon button -->
+<button class="ftl-btn ftl-btn-ghost ftl-btn-icon" aria-label="Close">×</button>
+
+<!-- Card (lighter-weight .ftl-panel sibling) -->
+<div class="ftl-card">…</div>
+
+<!-- Badge as a clickable filter chip -->
+<button class="ftl-badge ftl-badge-accent ftl-badge-button is-active">Active</button>
+
+<!-- Empty state -->
+<div class="ftl-empty-state">
+  <span class="ftl-empty-state-icon">∅</span>
+  <span class="ftl-empty-state-title">No results</span>
+  <span class="ftl-empty-state-hint">Try a different filter.</span>
+</div>
+
+<!-- Tooltip (CSS-only, no JS) -->
+<button class="ftl-btn" data-tooltip="Refresh the list">↻</button>
+
+<!-- Popover (surface only — your app toggles visibility) -->
+<div class="ftl-popover">…</div>
+
+<!-- Accordion (native <details>, no JS) -->
+<details class="ftl-accordion-item">
+  <summary class="ftl-accordion-trigger">Advanced options</summary>
+  <div class="ftl-accordion-panel">…</div>
+</details>
+
+<!-- Breadcrumbs -->
+<nav class="ftl-breadcrumbs">
+  <a class="ftl-breadcrumb-item" href="#">Home</a>
+  <span class="ftl-breadcrumb-item is-current">Settings</span>
+</nav>
+
+<!-- Pagination -->
+<nav class="ftl-pagination">
+  <a class="ftl-pagination-item is-disabled">‹</a>
+  <a class="ftl-pagination-item is-active">1</a>
+  <a class="ftl-pagination-item">2</a>
+  <a class="ftl-pagination-item">›</a>
+</nav>
+
+<!-- Alert (persistent, inline — unlike .ftl-toast) -->
+<div class="ftl-alert ftl-alert-warning">Disk space is low.</div>
+
+<!-- Skeleton loader -->
+<div class="ftl-skeleton ftl-skeleton-text"></div>
+<div class="ftl-skeleton ftl-skeleton-block"></div>
+
+<!-- Avatar -->
+<span class="ftl-avatar">AB</span>
+<img class="ftl-avatar ftl-avatar-lg" src="…" alt="">
+
+<!-- Stat / KPI tile -->
+<div class="ftl-stat">
+  <span class="ftl-stat-value">1,204</span>
+  <span class="ftl-stat-label">Plays today</span>
+</div>
+
+<!-- Divider -->
+<hr class="ftl-divider">
+```
+
+If your app already reinvented one of these locally (a `.card`, a `.toast`,
+a hand-rolled context menu, a settings-row layout), prefer migrating onto
+the shared class over keeping the local one — that migration is app-repo
+work, tracked in that app's own repo, not here.
+
 ## Adopting ftl-themes in an existing app
 
 If your app already has its own CSS with its own token names, add one
