@@ -13,6 +13,12 @@ Windows 95 to TRON.
   [`demo.html`](demo.html) — an in-page switcher (built from
   `dist/themes.json`) exercises every component, htmx states included, plus
   a `?chrome=1` LCARS chrome mode.
+- **Auditing a theme against its own design doc:** serve the repo root over
+  HTTP and open [`example.html`](example.html) — every `.ftl-*` component in
+  one scroll, a theme stepper (buttons or ←/→), and the current theme's own
+  `README.md` rendered as a live "Core values" / "Tell-tales of an
+  inauthentic result" checklist beside the render, so drift between a theme
+  and its design doc is visible while you tick items off.
 - **What's planned next:** [`docs/theme-backlog.md`](docs/theme-backlog.md).
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
   and changed how themes override components.
