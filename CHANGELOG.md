@@ -3,6 +3,35 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.6.0 — browser-chrome theming
+
+Closes the gap between "every `.ftl-*` component is themed" and "the whole
+page looks themed": platform-painted surfaces (text selection, scrollbars,
+form placeholder text, the input caret, `<kbd>`/`<code>`/`<pre>`) previously
+fell back to the browser's own default appearance regardless of theme,
+which was the most visible remaining "generic browser" tell in an
+otherwise fully-themed retro/console page. All additive, all token-driven
+with base-token fallbacks — no theme file needs to change to pick these up.
+
+### Added
+
+- **`::selection`** now themed (`--ftl-selection-bg`/`-fg`, default accent /
+  on-accent).
+- **Scrollbars** themed via `scrollbar-color`/`scrollbar-width` (Firefox)
+  and the `::-webkit-scrollbar*` pseudo-elements (Chromium/Safari):
+  `--ftl-scrollbar-thumb` (default `--ftl-border`), `-thumb-hover` (default
+  `--ftl-accent`), `-track` (default transparent), `-size`, `-radius`,
+  `-width`.
+- **`::placeholder`** on `.ftl-input`/`.ftl-textarea` (`--ftl-input-placeholder`,
+  default `--ftl-muted`) — previously always the browser's own gray.
+- **Input caret color** (`--ftl-input-caret`, default `--ftl-focus`).
+- **`<kbd>`** — a themed inline keyboard-shortcut glyph
+  (`--ftl-kbd-bg`/`-fg`/`-border`/`-radius`/`-shadow`).
+- **`<code>`/`<pre>`** — themed inline and block code
+  (`--ftl-code-bg`/`-fg`, `--ftl-code-block-bg`/`-border`), distinct from
+  `.ftl-readout` (a live machine value) and `.ftl-mono` (a bare
+  font-family utility).
+
 ## v3.5.2 — consumer-reported fixes: color-scheme, density-scaled targets, offline lint
 
 Addresses issues filed from real integration work in CuTePi, PI9696, and

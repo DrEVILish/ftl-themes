@@ -1172,6 +1172,88 @@ html[data-accent="4"] { --ftl-accent: var(--ftl-accent-swatch-4, var(--ftl-accen
 html[data-accent="5"] { --ftl-accent: var(--ftl-accent-swatch-5, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-5, var(--ftl-on-accent)); }
 html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-6, var(--ftl-on-accent)); }
 
+/* --- Browser chrome ------------------------------------------------------
+ * Surfaces the platform paints itself rather than any .ftl-* markup, so a
+ * theme that nails every component still leaked an unthemed native blue
+ * selection, a default OS scrollbar, or gray browser placeholder text —
+ * the tells that break immersion fastest in a retro/console theme. All
+ * token-driven with base-token fallbacks, same as every component above:
+ * zero theme-file changes required to pick these up.
+ */
+
+/* Text selection highlight. */
+::selection {
+  background: var(--ftl-selection-bg, var(--ftl-accent));
+  color: var(--ftl-selection-fg, var(--ftl-on-accent));
+}
+
+/* Scrollbars: Firefox's two-color shorthand plus the WebKit/Blink pseudo
+   elements it has no equivalent for. Track defaults to transparent — most
+   themes read better with the page/surface showing through than a second
+   opaque fill competing with the thumb. */
+:root {
+  scrollbar-color: var(--ftl-scrollbar-thumb, var(--ftl-border)) var(--ftl-scrollbar-track, transparent);
+  scrollbar-width: var(--ftl-scrollbar-width, thin);
+}
+::-webkit-scrollbar {
+  width: var(--ftl-scrollbar-size, 0.85rem);
+  height: var(--ftl-scrollbar-size, 0.85rem);
+}
+::-webkit-scrollbar-track { background: var(--ftl-scrollbar-track, transparent); }
+::-webkit-scrollbar-thumb {
+  background: var(--ftl-scrollbar-thumb, var(--ftl-border));
+  border-radius: var(--ftl-scrollbar-radius, 999px);
+  border: var(--ftl-scrollbar-thumb-border, 2px solid transparent);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ftl-scrollbar-thumb-hover, var(--ftl-accent)); }
+
+/* Form placeholder text — browsers default this to their own gray,
+   independent of --ftl-input-fg. */
+.ftl-input::placeholder,
+.ftl-textarea::placeholder { color: var(--ftl-input-placeholder, var(--ftl-muted)); opacity: 1; }
+
+/* Text-entry caret: cheap to retarget, easy to forget — left at the
+   browser default it's whatever native color the OS picked, not the
+   theme's accent. */
+.ftl-input,
+.ftl-textarea { caret-color: var(--ftl-input-caret, var(--ftl-focus)); }
+
+/* <kbd> — an inline keyboard-shortcut glyph. Common in retro-OS and
+   console themes (tooltips, command references) and left entirely to the
+   browser's tiny-monospace-box default otherwise. */
+kbd {
+  display: inline-block;
+  padding: 0.1em 0.45em;
+  background: var(--ftl-kbd-bg, var(--ftl-surface-2));
+  color: var(--ftl-kbd-fg, var(--ftl-text));
+  border: 1px solid var(--ftl-kbd-border, var(--ftl-border));
+  border-radius: var(--ftl-kbd-radius, calc(var(--ftl-radius) * 0.6));
+  box-shadow: var(--ftl-kbd-shadow, inset 0 -1px 0 var(--ftl-kbd-border, var(--ftl-border)));
+  font-family: var(--ftl-font-mono);
+  font-size: 0.85em;
+  line-height: 1.4;
+}
+
+/* <code>/<pre> — inline and block code, distinct from .ftl-readout (a
+   live machine value) and .ftl-mono (a bare font-family utility). */
+code {
+  padding: 0.15em 0.4em;
+  background: var(--ftl-code-bg, var(--ftl-surface-2));
+  color: var(--ftl-code-fg, var(--ftl-text));
+  border-radius: calc(var(--ftl-radius) * 0.5);
+  font-family: var(--ftl-font-mono);
+  font-size: 0.9em;
+}
+pre {
+  padding: calc(1rem * var(--ftl-density));
+  background: var(--ftl-code-block-bg, var(--ftl-surface));
+  border: 1px solid var(--ftl-code-block-border, var(--ftl-border));
+  border-radius: var(--ftl-radius);
+  overflow-x: auto;
+}
+pre code { padding: 0; background: none; border-radius: 0; }
+
 /* --- Palette variants (optional per-theme, e.g. data-variant="grape") ----
  * A theme may ship more than one palette under one identity — the way the
  * references actually shipped (Luna's Blue/Olive/Silver, iMac G3's fruit

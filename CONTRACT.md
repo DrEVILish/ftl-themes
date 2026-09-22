@@ -170,6 +170,10 @@ Optional, with sensible defaults: `--ftl-focus` (focus ring color),
 `--ftl-focus-ring` (an *additional* glow box-shadow), `--ftl-link`,
 `--ftl-overlay-bg`, `--ftl-overlay-blur`, `--ftl-pending-opacity`.
 
+Optional, browser-chrome (see "Browser chrome" below for the full list):
+`--ftl-selection-bg`/`-fg`, `--ftl-scrollbar-thumb`/`-thumb-hover`/`-track`,
+`--ftl-input-placeholder`, `--ftl-input-caret`, `--ftl-kbd-*`, `--ftl-code-*`.
+
 A theme may define extra tokens for its own flourishes — namespace them
 `--ftl-<theme>-*` (LCARS's `--ftl-lcars-*` candy palette is the example).
 
@@ -606,6 +610,29 @@ If your app already reinvented one of these locally (a `.card`, a `.toast`,
 a hand-rolled context menu, a settings-row layout), prefer migrating onto
 the shared class over keeping the local one — that migration is app-repo
 work, tracked in that app's own repo, not here.
+
+### Browser chrome (v3.6.0)
+
+Surfaces the *platform* paints, not any `.ftl-*` markup — the last thing
+that reads as "unthemed" on an otherwise fully-dressed page. No markup
+changes; these apply globally the moment `core/ftl-core.css` loads, and
+every token has a base-token fallback so no theme file needs to change.
+
+| Element | Tokens | Default |
+|---|---|---|
+| Text selection | `--ftl-selection-bg` / `-fg` | `--ftl-accent` / `--ftl-on-accent` |
+| Scrollbar thumb / hover / track | `--ftl-scrollbar-thumb` / `-thumb-hover` / `-track` | `--ftl-border` / `--ftl-accent` / transparent |
+| Scrollbar size / radius / width | `--ftl-scrollbar-size` / `-radius` / `-width` | `0.85rem` / `999px` / `thin` |
+| `.ftl-input`/`.ftl-textarea` placeholder | `--ftl-input-placeholder` | `--ftl-muted` |
+| `.ftl-input`/`.ftl-textarea` caret | `--ftl-input-caret` | `--ftl-focus` |
+| `<kbd>` | `--ftl-kbd-bg` / `-fg` / `-border` / `-radius` / `-shadow` | `--ftl-surface-2` / `--ftl-text` / `--ftl-border` / … |
+| `<code>` (inline) | `--ftl-code-bg` / `-fg` | `--ftl-surface-2` / `--ftl-text` |
+| `<pre>` (block) | `--ftl-code-block-bg` / `-border` | `--ftl-surface` / `--ftl-border` |
+
+A theme with a strong signature color (a green terminal, a cyan grid) will
+usually want to set at least `--ftl-selection-bg`/`-fg` explicitly rather
+than rely on the accent fallback, if its accent and "what should highlight
+selected text" ought to differ.
 
 ## Adopting ftl-themes in an existing app
 
