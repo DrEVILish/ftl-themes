@@ -64,3 +64,6 @@ layout at **L1**.
 `backdrop-filter` support: this theme degrades gracefully in engines
 without it — surfaces fall back to their plain translucent color with no
 blur, still legible, just not glassy.
+
+Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
+intended layout; at L0 the bundle renders recolored only.

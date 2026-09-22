@@ -142,3 +142,6 @@ Deliberately NOT themed (app-owned, do not add hooks for these):
 - uPlot chart internals — the app reads bridge tokens via
   `getComputedStyle` with identical fallbacks.
 - Brand logo and modal sheet layout.
+
+Requires: L1 — the app shell (`.ftl-app-*`) markup is needed for the
+intended layout; at L0 the bundle renders recolored only.

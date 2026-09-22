@@ -37,7 +37,8 @@ attribute together. Themes are mutually exclusive: load exactly one
 [{
   "slug": "lcars", "dataTheme": "lcars", "label": "LCARS",
   "description": "…", "hasChrome": true, "shellAware": true,
-  "version": "v3.1.0-3-gA1b2c3d", "builtAt": "2026-09-22T10:15:00Z"
+  "version": "ftl-1f7c1589aa66",
+  "scheme": "dark", "luminance": 0.049
 }]
 ```
 
@@ -51,13 +52,22 @@ hardcoding a list or scraping CSS comments.
   building a picker id, use `dataTheme`, not `slug`, so the code still
   reads correctly if you ever qualify ids (see "Avoiding name collisions"
   below) without re-deriving the mapping.
-- **`version`/`builtAt` identify the build**, not the theme. Both come from
-  `scripts/build.sh` at build time (`git describe`/UTC timestamp) and are
-  identical across every entry in one manifest. Log `version` when
-  reporting a rendering bug — dist bundles inline the core component
-  structure, so *every* core change touches *every* theme's file, and
-  "which commit is this deployment actually serving" is otherwise
+- **`version` identifies the build**, not the theme — a content hash of
+  every `dist/*.css` bundle's exact bytes (plus `-dirty` when the CSS
+  sources have uncommitted edits). It changes iff any served CSS changes,
+  so a submodule-style integrator reading it gets a meaningful signal from
+  a pointer bump. It is identical across every entry in one manifest. Log
+  `version` when reporting a rendering bug — dist bundles inline the core
+  component structure, so *every* core change touches *every* theme's
+  file, and "which build is this deployment actually serving" is otherwise
   unanswerable from the CSS alone.
+- **`scheme` is `light` or `dark`**, derived at build time the same way
+  every integrator used to derive it by hand: `--ftl-surface` (composited
+  over `--ftl-app-bg`/`--ftl-app-main-bg`/`--ftl-bg` when translucent),
+  plain-weighted luminance, 0.55 threshold. `luminance` carries the raw
+  value (null when unparseable) for integrators that want their own
+  threshold. Flip your app's chrome (e.g. Bootstrap's `data-bs-theme`)
+  from this field instead of re-deriving it from the bundle's CSS.
 - **`shellAware` says whether this theme's full intent needs L1** (see
   "Adoption levels" below) — `true` when the theme sets any `--ftl-app-*`
   property, `false` when it's a pure palette. Show it in your picker (e.g.
@@ -106,8 +116,8 @@ string, the same way you'd cache-bust any other versioned asset:
 <link rel="stylesheet" href="/static/themes/lcars.css?v={{ manifestVersion }}">
 ```
 
-`version` already changes on every commit that touches `core/` or any
-theme (it's a `git describe`), so this requires no extra bookkeeping
+`version` already changes whenever bundle content changes (it's a content
+hash of the built bundles), so this requires no extra bookkeeping
 beyond reading it out of `dist/themes.json` once at app startup — don't
 invent a separate scheme (a build mtime, a manual counter) per app.
 
@@ -613,7 +623,21 @@ theme's colours pre-baked in.
 
 - **Contrast floor**: filled controls and body text meet 4.5:1, muted text
   3.0:1, verified per theme by `scripts/check.sh` against the theme's own
-  token values.
+  token values. Text against a decorative page backdrop (`--ftl-bg`), the
+  7:1 AAA target, and accent-on-surface legibility are soft warnings, and
+  are skipped for a theme whose README carries a `contrast-exempt:` line
+  with the rationale — Windows 95's teal desktop is the example: it never
+  carried text in the reference either, so brightening it would be the
+  inauthentic fix. The 4.5:1 floors on filled controls and panel text are
+  hard and never exempted.
+- **State tokens are component-scoped**: there is no global
+  `--ftl-accent-hover` vocabulary, by design — core defines each
+  component's hover/active/disabled variants with token fallbacks
+  (`--ftl-btn-bg-hover: var(--ftl-surface-2)`), and themes recolor by
+  setting those same component-scoped tokens. Apps styling their own
+  widgets get the guaranteed vocabulary from the required base tokens plus
+  `--ftl-focus`/`--ftl-focus-ring`, and copy core's variant-token pattern
+  per component they mirror.
 - **Focus is guaranteed**: core always draws an outline, and themes recolor
   it via `--ftl-focus` or add a glow via `--ftl-focus-ring`. A theme that
   sets `outline: none` on a focus state fails the lint — a keyboard user
