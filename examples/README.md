@@ -44,7 +44,5 @@ couldn't be anchored, and no radio or inline-checkbox pattern. v3.11 added
 `.ftl-anchor`, `.ftl-radio`, `.ftl-radio-group` and `.ftl-check`, and the
 pages now use them.
 
-One gap remains: `--ftl-muted` is used for small essential text (form
-labels, table headers, tabs), but the lint's floor for it is 3.0:1 where
-WCAG AA asks 4.5:1. `audit_rendered.mjs` reports 69 such elements. This
-is being raised to 4.5:1.
+Muted text (labels, table headers, tabs) now meets WCAG AA like all other
+text: `audit_rendered.mjs` reports no text below 4.5:1 on any page.

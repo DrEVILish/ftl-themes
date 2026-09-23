@@ -181,7 +181,10 @@ def check_contrast(theme, tokens, exempt):
         ("danger button", "on-danger", "danger", 4.5, True),
         ("success button", "on-success", "success", 4.5, True),
         ("body text", "text", "surface", 4.5, True),
-        ("muted text", "muted", "surface", 3.0, True),
+        # Muted is used for small essential text (form labels, table
+        # headers, tabs), so it gets the full AA floor, on both surfaces.
+        ("muted text", "muted", "surface", 4.5, True),
+        ("muted text on surface-2", "muted", "surface-2", 4.5, True),
         # State colors used as TEXT (.ftl-status, .ftl-stat-trend, colored
         # badges, danger menu items) read --ftl-<state>-text, falling back
         # to the fill color. A fill that works behind a button is often

@@ -3,6 +3,37 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.12.0 — all text meets WCAG AA
+
+**Visible change:** muted text is darker (light themes) or lighter (dark
+themes) in 8 themes, and a few buttons and badges shift slightly. No
+tokens or classes were renamed.
+
+### Changed
+
+- **Muted text floor raised from 3.0:1 to 4.5:1**, on `--ftl-surface` and
+  `--ftl-surface-2`. Muted carries labels, table headers and tabs, which are
+  essential small text. New `--ftl-muted` in aqua, aperture, barbie,
+  bloomberg, death-star, imac-g3 (near-white: its variants' inset surfaces
+  are mid-tones), material and winamp-classic. Each keeps its hue; the old
+  value and ratio are in a comment beside it.
+- **Badge tints are mixed into the surface**, not into transparent. A
+  translucent badge in a tinted table row stacked on the row color, so its
+  contrast depended on where it sat.
+- aqua: accent text (active tab, secondary button, transport trigger) uses a
+  deeper `--ftl-accent-text`; the primary gel's top stop is deeper so its
+  white label holds 4.5:1.
+- winxp-luna: the green gloss top stop is deeper for the same reason.
+- aperture, alienware, hot-wheels, lego-classic, win7-aero: state/muted text
+  nudged where it sat on a selected row or a badge tint.
+
+### Audit
+
+- `audit_rendered.mjs` skips content inside a closed `<details>` (it has a
+  box but is not painted).
+- Result: **0 text elements below 4.5:1** across all 26 example pages
+  (was 69).
+
 ## v3.11.0 — layout, levels, anchoring, radios
 
 Everything the example pages couldn't express without custom CSS. All
