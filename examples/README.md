@@ -31,9 +31,13 @@ Edit the script, not the HTML, then run `python3 scripts/build_examples.py`.
   tinted badges, text on coloured bars). Needs Playwright:
 
   ```sh
+  npm ci && npx playwright install chromium
   python3 -m http.server 8000 &
-  node scripts/audit_rendered.mjs --base http://localhost:8000
+  npm run audit            # rendered contrast, fails below 4.5:1
+  npm run audit:layers     # layered bundles render like the plain ones
   ```
+
+  CI runs both on every push.
 
 ## What building these pages found
 

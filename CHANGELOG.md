@@ -3,6 +3,16 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## Unreleased — CI runs the rendered audits
+
+- New CI job `rendered`: installs Playwright (pinned in `package.json` /
+  `package-lock.json`, dev tooling only) and fails the build if any
+  example-page text drops below 4.5:1 or a layered bundle renders
+  differently from its plain one.
+- `scripts/audit_layers.mjs`: the layered-vs-plain comparison, as a script.
+- The `check` job fails if `examples/` is stale or breaks the
+  library-classes-only rule.
+
 ## v3.12.0 — all text meets WCAG AA
 
 **Visible change:** muted text is darker (light themes) or lighter (dark
