@@ -1857,6 +1857,17 @@ html[data-theme="msdos"] kbd {
   --ftl-kbd-shadow: none;
 }
 
+/* Disabled controls: period-accurate "greyed" DOS convention (dim grey
+   text, not just a faded copy of the active state, which read as nearly
+   invisible against the saturated blue background at 45% opacity). */
+html[data-theme="msdos"] .ftl-btn:disabled,
+html[data-theme="msdos"] .ftl-btn[aria-disabled="true"] {
+  opacity: 1;
+  --ftl-btn-bg: var(--ftl-surface-2);
+  --ftl-btn-border: #8888cc;
+  --ftl-btn-fg: #8888cc;
+}
+
 html[data-theme="msdos"] h1,
 html[data-theme="msdos"] h2,
 html[data-theme="msdos"] h3 { color: var(--ftl-accent-2); text-transform: uppercase; }
@@ -1867,5 +1878,23 @@ html[data-theme="msdos"] {
   --ftl-app-bar-radius: 0;
   --ftl-app-status-bg: var(--ftl-accent);
   --ftl-app-status-fg: #000000;
+  --ftl-app-status-padding: 0.2rem 0.5rem;
   --ftl-app-main-padding: 0.75rem;
+}
+/* The Norton Commander F-key row is the single most recognizable DOS/NC
+   status-bar convention — drawn directly on the status bar via
+   generated content so it's always present, not only when a page
+   happens to render a <kbd>. */
+html[data-theme="msdos"] .ftl-app-status {
+  font-family: var(--ftl-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+html[data-theme="msdos"] .ftl-app-status::before {
+  content: "1Help 2Menu 3View 4Edit 5Copy 6Move 7Mkdir 8Delete 9PullDn 10Quit";
+  display: block;
+  background: #000000;
+  color: var(--ftl-accent-2);
+  padding: 0.15rem 0.4rem;
+  margin: -0.2rem -0.5rem 0.3rem;
 }

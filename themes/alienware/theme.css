@@ -120,8 +120,13 @@ html[data-theme="alienware"] .ftl-btn-danger { --ftl-btn-border: var(--ftl-dange
 html[data-theme="alienware"] {
   --ftl-app-padding: 0.6rem;
   --ftl-app-gap: 0.6rem;
-  --ftl-app-columns: 0.3rem minmax(0, 1fr);
+  --ftl-app-columns: 0.35rem minmax(0, 1fr);
   --ftl-app-rail-display: block;
+  /* The rail ships empty (aria-hidden) and is painted entirely by the
+     gradient below — without this override, core's empty-rail rule
+     collapses it to display:none and the one AlienFX light strip this
+     theme is built around never actually renders. */
+  --ftl-app-rail-empty-display: block;
   --ftl-app-bar-bg: #000000;
   --ftl-app-bar-fg: var(--ftl-text);
   --ftl-app-bar-rule: var(--ftl-accent);
@@ -132,9 +137,30 @@ html[data-theme="alienware"] {
   --ftl-app-status-bg: #000000;
   --ftl-app-status-rule: var(--ftl-hairline);
 }
-/* The AlienFX strip: a lit cyan-to-purple rail, the RGB accent line every
-   Alienware chassis has along an edge. */
+/* The AlienFX strip: one lit RGB zone per chassis edge in the reference
+   photos (a single cyan glow, not a multi-hue gradient) — kept to one hue
+   family instead of fading into accent-2's purple, which reads as a
+   different light zone entirely. */
 html[data-theme="alienware"] .ftl-app-rail {
-  background-image: linear-gradient(180deg, var(--ftl-accent), var(--ftl-accent-2));
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  background-image: linear-gradient(180deg, #66e7ff, var(--ftl-accent) 40%, #0090b3);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 2px rgba(0, 212, 255, 0.9);
+}
+/* Ornate corner brackets on the app-bar's lit edge — the reference chrome's
+   double-line tick marks at the frame corners, not just a flat 2px rule. */
+html[data-theme="alienware"] .ftl-app-bar {
+  position: relative;
+}
+html[data-theme="alienware"] .ftl-app-bar::after {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: -1px;
+  height: 6px;
+  background:
+    linear-gradient(90deg, var(--ftl-accent) 0 14px, transparent 14px calc(100% - 14px), var(--ftl-accent) calc(100% - 14px) 100%) bottom / 100% 2px no-repeat,
+    linear-gradient(var(--ftl-accent), var(--ftl-accent)) left / 2px 6px no-repeat,
+    linear-gradient(var(--ftl-accent), var(--ftl-accent)) right / 2px 6px no-repeat;
+  opacity: 0.85;
+  pointer-events: none;
 }

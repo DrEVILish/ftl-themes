@@ -121,10 +121,40 @@ html[data-theme="vaporwave"] .ftl-app-bar {
   --ftl-nav-item-bg-active: rgba(26, 11, 46, 0.15);
 }
 
-/* The grid floor: perspective horizon lines under the status strip. */
+/* The horizon: a striped sun disc over a real converging perspective grid —
+   the genre's single most iconic composition, previously reduced to a
+   flat repeating-line pattern that barely registered as a floor, let
+   alone a horizon. Confined to the status strip's own stacking context so
+   it never interferes with reading its text. */
 html[data-theme="vaporwave"] .ftl-app-status {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+html[data-theme="vaporwave"] .ftl-app-status::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.9rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 2px, #150822 2px 4px),
+    linear-gradient(180deg, #ff71ce, #ffcc66 55%, #01cdfe);
+  z-index: -1;
+  opacity: 0.9;
+}
+html[data-theme="vaporwave"] .ftl-app-status::after {
+  content: "";
+  position: absolute;
+  inset: 0.4rem 0 -1rem 0;
   background-image:
-    linear-gradient(90deg, transparent 49%, rgba(1, 205, 254, 0.35) 50%, transparent 51%),
-    linear-gradient(0deg, rgba(1, 205, 254, 0.25) 1px, transparent 1px);
-  background-size: 3rem 100%, 100% 0.6rem;
+    linear-gradient(90deg, rgba(1, 205, 254, 0.5) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(1, 205, 254, 0.4) 1px, transparent 1px);
+  background-size: 2rem 100%, 100% 0.7rem;
+  transform: perspective(120px) rotateX(55deg);
+  transform-origin: center top;
+  z-index: -1;
 }

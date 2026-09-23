@@ -1888,7 +1888,15 @@ html[data-theme="win7-aero"] .ftl-btn-primary {
 html[data-theme="win7-aero"] {
   --ftl-app-padding: 0.6rem;
   --ftl-app-gap: 0.6rem;
-  --ftl-app-bar-bg: rgba(210, 230, 250, 0.5);
+  /* Without this, .ftl-app has no background at all (core defaults to
+     transparent) — the glass bar/status strip had nothing detailed behind
+     them to refract, so backdrop-filter: blur() was declared but visually
+     inert. A photographic-style radial desktop gradient gives the blur
+     something to actually frost. */
+  --ftl-app-bg:
+    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.55), transparent 55%),
+    linear-gradient(160deg, #cfe4fb 0%, #8fb8e6 45%, #4a7fc4 100%);
+  --ftl-app-bar-bg: rgba(210, 230, 250, 0.45);
   --ftl-app-bar-fg: var(--ftl-text);
   --ftl-app-bar-rule-width: 0;
   --ftl-app-bar-radius: 8px 8px 0 0;

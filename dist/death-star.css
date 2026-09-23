@@ -1797,12 +1797,18 @@ html[data-theme="death-star"] {
   --ftl-text: #e6e6e6;
   /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #6a6a6a, 3.8:1. */
   --ftl-muted: #777777;
-  --ftl-accent: #2f6fff;
-  --ftl-accent-2: #ff2f2f;
-  --ftl-danger: #ff2f2f;
+  /* The reference control-room photos are black, white pinstripe linework
+     and solid red panel blocks — no blue anywhere. Accent was blue, which
+     inverted the reference's actual dominant hue relationship; red is now
+     the structural colour (buttons, focus, selected rows, table heads),
+     with --ftl-danger a step brighter so an actual alert still reads as
+     distinct from ordinary red chrome. */
+  --ftl-accent: #c81e1e;
+  --ftl-accent-2: #e6e6e6;
+  --ftl-danger: #ff3b3b;
   --ftl-success: #2fff6f;
   --ftl-warning: #ffcf2f;
-  --ftl-on-accent: #000000;
+  --ftl-on-accent: #ffffff;
   --ftl-on-danger: #000000;
   --ftl-on-success: #000000;
   --ftl-radius: 0;
@@ -1822,9 +1828,9 @@ html[data-theme="death-star"] {
   --ftl-panel-border-width: 0;
   --ftl-panel-bg: var(--ftl-surface-2);
   --ftl-table-head-bg: var(--ftl-accent);
-  --ftl-table-head-fg: #000;
+  --ftl-table-head-fg: #ffffff;
   --ftl-row-selected-bg: var(--ftl-accent);
-  --ftl-row-selected-fg: #000;
+  --ftl-row-selected-fg: #ffffff;
   --ftl-nav-bg: #000;
   --ftl-nav-rule-width: 0;
   --ftl-overlay-bg: rgba(0, 0, 0, 0.9);
@@ -1868,4 +1874,31 @@ html[data-theme="death-star"] [data-tooltip]::after {
    black bar) — still recessive next to the active item. */
 html[data-theme="death-star"] .ftl-app-bar {
   --ftl-nav-item-fg: #8a8a8a;
+  /* The root accent (#c81e1e) is only 3.7:1 on the black bar; brand text
+     needs a brighter red to clear the 4.5:1 floor. */
+  --ftl-nav-brand-fg: #ff5a5a;
+  border-bottom: 3px solid var(--ftl-accent);
+}
+
+/* The white outline grid: the reference photos' dominant construction is a
+   circuit-board lattice of hairline white segments on black, not a soft
+   panel fill. Painted as a background-image (not a box-model border) so
+   the "zero borders/shadows" component contract still holds — this is
+   texture, not chrome. */
+html[data-theme="death-star"] .ftl-panel,
+html[data-theme="death-star"] .ftl-card,
+html[data-theme="death-star"] .ftl-transport {
+  background-image:
+    linear-gradient(rgba(230,230,230,0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(230,230,230,0.35) 1px, transparent 1px);
+  background-size: 100% 2.5rem, 4rem 100%;
+  background-position: 0 0, 0 0;
+}
+/* One solid red control block per panel header — the reference's other
+   defining structural element alongside the white grid. */
+html[data-theme="death-star"] .ftl-panel-header,
+html[data-theme="death-star"] .ftl-modal-header {
+  background: var(--ftl-accent);
+  color: #ffffff;
+  background-image: none;
 }
