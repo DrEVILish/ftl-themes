@@ -14,3 +14,29 @@ jobs:
         run: scripts/build.sh
       - name: Lint themes against the contract
         run: scripts/check.sh
+      - name: Example pages use library classes only
+        run: |
+          python3 scripts/build_examples.py
+          git diff --exit-code -- examples || { echo "examples/ is stale: run scripts/build_examples.py and commit"; exit 1; }
+
+  rendered:
+    # Measures what actually renders, which the token lint can't: text on
+    # gradients, glass and tints, and layered-vs-plain bundle parity.
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Serve the repo
+        run: |
+          python3 -m http.server 8000 &
+          for i in $(seq 1 20); do curl -sf http://localhost:8000/examples/index.html >/dev/null && break; sleep 0.5; done
+      - name: Rendered contrast (fails below WCAG AA)
+        run: node scripts/audit_rendered.mjs --base http://localhost:8000 --fail-below 4.5
+      - name: Layered bundles render identically
+        run: node scripts/audit_layers.mjs --base http://localhost:8000
