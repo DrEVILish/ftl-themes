@@ -4,25 +4,6 @@ Where to look at the real thing each theme is modelled on. Use these when
 reviewing a theme in [`example.html`](../example.html): open the
 reference next to the render and compare.
 
-## Local images: not fetched yet
-
-Nobody has pulled actual reference images into this repo — the table below
-is links only, plus a per-theme capture list further down naming exactly
-what three images each theme still needs. Getting them locally needs
-broader network access than a sandboxed session gets by default (it blocks
-the actual image hosts: Wikipedia, Wikimedia Commons, Fandom wikis, NASA,
-publisher sites, etc. — widen Network access in the session's settings, or
-the equivalent for whatever's fetching, to reach them), so each capture
-target is specific enough that pulling the three files per theme is a
-mechanical fetch, not a second research pass, whenever that's done.
-
-Nearly every one of these is a copyrighted screenshot or a trademarked
-design (Microsoft, Apple, Paramount, Lucasfilm, Mattel, Bethesda, Valve,
-Bloomberg, Dell, LEGO…). Once fetched, they're for internal design
-reference and comparison, not redistribution — keep them out of anything
-published externally from this repo (a public fork, a gallery, a marketing
-page). Wikipedia and Wikimedia Commons pages list each image's licence.
-
 | Theme | Reference | What to compare |
 |---|---|---|
 | `alienware` | [Alienware Command Center — AlienFX](https://www.dell.com/support/manuals/en-us/alienware-command-center/awcc_ug_6.x/alienfx?guid=guid-1938310a-dcbb-4751-9131-ddd2d9400d4a&lang=en-us) | Matte black chrome, one AlienFX accent colour per lighting zone |
