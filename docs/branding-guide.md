@@ -219,6 +219,55 @@ reference (see their READMEs), not a photo to compare against. Move a
 theme back to `themes/` once it has a `references/<slug>/` folder and it
 re-enters the build and this scoring pass.
 
+## Root cause: why the panel scored so much lower
+
+The 18 low scores weren't 18 unrelated opinions — tracing them back
+turned up a handful of repeatable bug *patterns*, several hitting more
+than one theme, plus a real gap in how the first self-review pass worked:
+
+1. **Coded but never rendered.** `lcars` and `alienware` both style
+   `.ftl-app-rail` with real, correct gradients — but core collapses an
+   empty `<aside>` to `display: none` unless a theme sets
+   `--ftl-app-rail-empty-display`, and neither did. `bloomberg` and
+   `msdos` both style `kbd` (a real core component) as their signature
+   detail — but `example.html`, the shared QA page every theme is judged
+   against, never rendered a single `<kbd>` anywhere, in any theme. Four
+   of the eighteen low scores trace to this one shape of bug: CSS that is
+   genuinely correct but structurally unreachable from the page used to
+   review it. Fixed the two rail themes directly, and fixed the root
+   cause for `kbd` by adding a real shortcut-row (`<kbd>Ctrl</kbd>` etc.
+   plus a 5-key row) to the Typography section of `example.html` itself,
+   so any theme's `kbd` styling gets exercised from now on, not just
+   these two.
+2. **Token semantic mismatch.** `wmp11`'s "circular" play button used
+   `--ftl-go-size`, which core maps to `font-size`, not width/height — it
+   was never a circle, just an oval sized to fit its label. Checked core
+   for every other token with the same "-size maps to font-size" shape
+   (`--ftl-readout-size` is the only other one) and confirmed no theme
+   makes the same mistake with it.
+3. **Palette drift across editing passes.** `imac-g3`, `hot-wheels` and
+   `death-star` had each moved away from their documented reference hue
+   over several earlier rounds of unrelated edits (contrast fixes,
+   "lean into uniqueness" passes), with nobody re-checking the result
+   against the actual source image each time. Re-grounded each against
+   `references/<slug>/` directly this pass.
+4. **Diluted signature.** `winamp-classic`'s LCD green and
+   `lego-classic`'s studs were both *present* in the CSS but so
+   widespread (green) or so low-contrast (studs) that they read as
+   generic decoration instead of the one specific detail they were meant
+   to be. Confined/strengthened both.
+5. **Self-contradiction.** `cyber-goth` had a literal bug where the CSS
+   inverted a rule its own README documents as load-bearing (hover glow
+   color). Nothing subjective about this one — just wrong.
+
+The bigger pattern behind all of this: the first self-review pass judged
+themes by reading their CSS and design-doc comments alongside a render,
+which made it too easy to credit a theme for what its code *said* it was
+doing rather than verifying what actually painted to the screen. The
+strict panel worked from the same render but scored only what was
+visible in it — that difference alone accounts for most of the gap
+between "8.5+" and "3.4-6.9."
+
 ## Revision log
 
 - **All 18 shipping themes**: the strict independent panel (18 agents, one
