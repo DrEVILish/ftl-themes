@@ -393,7 +393,9 @@ theme choice — no theme file needs to know any of these exist:
 - **Contrast** — `<html data-contrast="high">` pulls `--ftl-hairline` and
   `--ftl-muted` up to `--ftl-border`/`--ftl-text` and thickens the focus
   outline, for a user who finds a theme's quieter elements too quiet,
-  without leaving the theme.
+  without leaving the theme. The OS setting `prefers-contrast: more` applies the
+  same boost automatically; `data-contrast="standard"` opts back out and
+  `"high"` forces it on regardless.
 
 ## Accent swatches (optional per-theme accent override)
 
@@ -719,6 +721,37 @@ dropdown *list* stays OS-native chrome no CSS can reach (a theme that
 needs a pixel-perfect custom list has to build its own listbox widget —
 out of scope for a CSS-only library). A theme can opt back into the
 platform's own arrow with `appearance: auto` on `.ftl-select`.
+
+### v3.9.0 additions
+
+```html
+<!-- Lamp for "running right now" (pulses unless reduced motion is set) -->
+<span class="ftl-lamp is-active"></span>
+
+<!-- Log console: the app appends lines and owns autoscroll -->
+<div class="ftl-log" role="log" aria-live="polite">
+  <div class="ftl-log-line" data-level="error"><span class="ftl-log-time">12:01:44</span>fifo underrun</div>
+</div>
+```
+
+- **Tables** highlight the hovered row and the row containing keyboard
+  focus (`--ftl-row-hover-bg`). Sticky headers are `.ftl-table.is-sticky`.
+- **Icon buttons** are `.ftl-btn .ftl-btn-icon` (any `.ftl-btn` variant
+  applies). Set `--ftl-btn-icon-radius` for a square button and
+  `--ftl-btn-icon-size` for its size.
+- **`.ftl-log`**: levels are `debug|info|warn|error` via `data-level`.
+  Lines wrap by default; add `.ftl-log-nowrap` to truncate instead.
+  `overflow-anchor` keeps a user who scrolled up in place as lines are
+  appended. Logs are unbounded, so keep only the last few hundred to
+  thousand lines in the DOM and drop older ones.
+- **Chart palette** for canvas/SVG drawn in JS: `--ftl-chart-text`,
+  `--ftl-chart-grid`, `--ftl-chart-series-1`…`-6`, all defaulting to base
+  tokens. Read them and re-read after a theme switch:
+
+  ```js
+  const css = getComputedStyle(document.documentElement);
+  const series = [1, 2, 3, 4, 5, 6].map(n => css.getPropertyValue(`--ftl-chart-series-${n}`).trim());
+  ```
 
 ## Adopting ftl-themes in an existing app
 

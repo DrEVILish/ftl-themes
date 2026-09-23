@@ -3,6 +3,24 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.9.0 — open issues
+
+### Added
+
+- `.ftl-lamp.is-active`: an accent lamp that pulses for work happening now
+  (#22). The pulse is gated on `prefers-reduced-motion: no-preference`.
+- `.ftl-table` row highlight on hover and `:focus-within`
+  (`--ftl-row-hover-bg`) (#30). Sticky headers already exist as
+  `.ftl-table.is-sticky`.
+- `--ftl-btn-icon-radius`, so `.ftl-btn-icon` can be square as well as
+  round (#20).
+- `prefers-contrast: more` applies the high-contrast boost automatically;
+  `data-contrast="standard"` opts out (#27).
+- Chart palette tokens `--ftl-chart-text`, `-grid`, `-series-1`…`-6` with
+  base-token defaults; pipboy overrides them as a worked example (#24).
+- `.ftl-log`, `.ftl-log-line[data-level]`, `.ftl-log-time`: a log console
+  (#28).
+
 ## v3.8.0 — example pages, and the contrast bugs they exposed
 
 Building one page per theme from library classes only (`examples/`, no
