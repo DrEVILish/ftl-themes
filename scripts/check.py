@@ -51,8 +51,6 @@ Every rule corresponds to a bug that actually shipped once:
   chrome     chrome.css is concatenated into the same bundle as theme.css,
              so every per-rule check (variants, focus, important, motion,
              remote-url) applies to it too — it used to be skipped entirely.
-  examples   examples/*.html are generated; like dist/, they must match a
-             fresh scripts/build_examples.py run.
   scheme     the manifest's scheme/luminance must match a re-derivation from
              the theme source, so hand-edited manifests can't drift. Distinct
              from the color-scheme rule above: this checks the *manifest's*
@@ -444,19 +442,6 @@ for path in sorted(glob.glob("core/*.css")):
 # deterministic now (its version is a content hash of the bundles; no
 # wall-clock field survives a rebuild).
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
-# examples/ is generated too, and nothing else regenerates it: a core or
-# theme change that renames a class used to leave the committed pages
-# silently stale (or violating the library-classes-only rule).
-ex = subprocess.run([sys.executable, "scripts/build_examples.py"],
-                    capture_output=True, text=True)
-if ex.returncode:
-    failures.append(f"examples: build_examples.py failed — {(ex.stderr or ex.stdout).strip()}")
-ex_diff = [line[3:] for line in subprocess.run(
-    ["git", "status", "--porcelain", "--", "examples"],
-    capture_output=True, text=True).stdout.splitlines()]
-if ex_diff:
-    failures.append("examples: committed pages are stale — run scripts/build_examples.py "
-                    f"and commit ({', '.join(ex_diff)})")
 # --porcelain, not `git diff`: a bundle the build creates but nobody
 # committed (a new theme, a new bundle form) is untracked, and `git diff`
 # can't see untracked files.

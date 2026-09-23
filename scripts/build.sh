@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds dist/<theme>.css bundles (reset + core + theme [+ chrome]) and
-# dist/themes.json, the machine-readable index consuming apps and demo.html
-# both read so nobody has to hardcode or scrape the theme list.
+# dist/themes.json, the machine-readable index consuming apps and
+# example.html both read so nobody has to hardcode or scrape the theme list.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-// Rendered-contrast audit for examples/*.html.
+// Rendered-contrast audit, run against example.html?theme=<slug>&embed=1 —
+// identical markup for every theme (only the linked stylesheet and
+// data-theme change), so this measures the theme's own CSS, never a
+// difference in what content a per-theme page happened to include.
 //
 // scripts/check.py reasons about token VALUES; this measures what actually
 // renders. It records every element that owns visible text, then hides all
@@ -31,7 +34,7 @@ const page = await browser.newPage({ viewport: { width: 1100, height: 900 } });
 let below = 0, broken = 0;
 
 for (const theme of names) {
-  await page.goto(`${base}/examples/${theme}.html`, { waitUntil: 'networkidle' });
+  await page.goto(`${base}/example.html?theme=${theme}&embed=1`, { waitUntil: 'networkidle' });
   await page.addStyleTag({ content: '*{transition:none!important;animation:none!important} .ftl-toast-region{position:static!important}' });
   const els = await page.evaluate(() => {
     const out = [];

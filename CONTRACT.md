@@ -104,31 +104,34 @@ while every theme's actual palette still comes from its own
 for just its `:root` token block, if you don't want the component CSS at
 all).
 
-### Token-only bundles (`dist/<slug>-tokens.css`)
+### Token-only bundle (`dist/tokens.css`)
 
 For an app that keeps its own markup and only wants a theme's palette,
-each theme also ships `dist/<slug>-tokens.css`: its `html[data-theme]`
-token blocks (palette variants included), its `@font-face` rules and its
-element-level rules (heading treatments and the like). It contains **no
-`.ftl-*` component or app-shell rules**, so it is a few KB instead of ~80.
+`dist/tokens.css` holds every theme's tokens in one file: each theme's own
+`html[data-theme="slug"]` token blocks (palette variants included), its
+`@font-face` rules and its element-level rules (heading treatments and the
+like), scoped so 26 themes' worth of rules never collide. It contains **no
+`.ftl-*` component or app-shell rules**, so the whole file is still smaller
+than a handful of full bundles.
 
-Link it exactly like a full bundle (same `data-theme`, same asset path
-rules), then map the `--ftl-*` tokens onto your own CSS with a bridge
-(see "Adopting ftl-themes in an existing app"). What you get is the theme's
-colours and type on your own components. The theme's component chrome
-(bevels, glows, pill shapes) and its layout need `.ftl-*` markup and the
-full bundle; see "Adoption levels" for which themes depend on them.
+Link it once — no per-theme swap, and no asset-path rewriting to worry
+about, since it's already at `dist/`'s own level — then map the `--ftl-*`
+tokens onto your own CSS with a bridge (see "Adopting ftl-themes in an
+existing app"). Switching palette is just changing `data-theme`. What you
+get is the theme's colours and type on your own components; the theme's
+component chrome (bevels, glows, pill shapes) and its layout need `.ftl-*`
+markup and a full `dist/<slug>.css` bundle — see "Adoption levels" for
+which themes depend on them.
 
-### Cascade layers (`dist/<slug>.layered.css`)
+### Cascade layers
 
-Each theme also ships a layered form of the full bundle. The rules are
-identical; they sit in cascade layers:
+Wrap a bundle in a layer yourself — this needs no separate file:
 
 ```css
-@layer ftl.reset, ftl.core, ftl.layout, ftl.theme;
+@import url("dist/<slug>.css") layer(ftl);
 ```
 
-Any of your CSS that is unlayered, or in a layer declared after these,
+Any of your CSS that is unlayered, or in a layer declared after `ftl`,
 beats every library rule whatever its specificity. So an app override is
 one plain rule, not a matching-specificity selector:
 
@@ -140,20 +143,31 @@ one plain rule, not a matching-specificity selector:
 To keep your own styles in layers too, declare the order once before
 anything else: `@layer ftl, app;`, then put your rules in `@layer app`.
 
-**Opt-in, because it changes existing behaviour.** Today an app override
-wins only if its selector outranks the theme's. With the layered bundle
-*every* app rule wins, including ones that are currently losing to the
-theme by accident. Before switching, load the layered bundle and look for
-places where your own CSS now shows through. Nothing else changes: all 26
-themes compute identical styles layered and unlayered (every property on
-every element and pseudo-element of `examples/`).
+**This changes existing behaviour**, so treat adding the `layer()` wrapper
+as an opt-in step, not a drop-in one. Today an app override wins only if
+its selector outranks the theme's. Layered, *every* app rule wins,
+including ones that are currently losing to the theme by accident. Before
+switching, load the bundle layered and look for places where your own CSS
+now shows through — nothing else changes; a theme computes identical
+styles layered and unlayered.
 
 Two things layers do differently:
 
-- `@font-face` is outside the layers (it can't be meaningfully layered).
+- `@font-face` inside a layered `@import` is still layered in some
+  browsers' implementations; if a theme's vendored font stops applying
+  once layered, declare that theme's `@font-face` block yourself, outside
+  the `@layer` wrapper — copy it from the theme's `theme.css` source.
 - `!important` reverses between layers: the library's own `!important`
   rules (only the `data-motion="reduced"` switch) beat yours. That's
   intended: a user's reduce-motion choice can't be overridden by app CSS.
+
+Need to override just one slice (say, `ftl.theme`) while still layering
+the rest? Split the single `ftl` layer into named ones yourself by
+`@import`-ing `dist/ftl-core.css` and a theme's `theme.css` source
+separately, each into its own `@layer` — the four-way `reset`/`core`/
+`layout`/`theme` split used to be pre-built into a second file per theme;
+it wasn't used anywhere in this repo and an app that genuinely needs it
+can still assemble it from the pieces above.
 
 ### Cache-busting
 

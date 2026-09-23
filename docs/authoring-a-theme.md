@@ -24,7 +24,7 @@ scripts/new-theme.sh <slug>
 Creates `themes/<slug>/theme.css` pre-filled with every required token and
 a commented-out list of the common component override points. Fill in the
 header's `Theme-Name:` and `Description:` too — the build reads them into
-`dist/themes.json`, which is what theme pickers and `demo.html` display.
+`dist/themes.json`, which is what theme pickers and `example.html` display.
 
 ## 2. Fill in the tokens
 
@@ -75,7 +75,7 @@ selector, a contrast floor violation, a stale `dist/`, and a manifest that
 doesn't match `themes/`. Each of those rules exists because that exact bug
 shipped once — see `CHANGELOG.md`.
 
-Then open `demo.html` (serve the folder over HTTP so `dist/themes.json`
+Then open `example.html` (serve the folder over HTTP so `dist/themes.json`
 loads) and pick your theme. Check every component renders distinctly, Tab
 through the controls to confirm the focus ring is visible everywhere, and
 verify the semantic buttons still read as primary/danger/success.
@@ -102,7 +102,7 @@ different one.
 
 ## 7. Register it
 
-Add a row to `CONTRACT.md`'s theme index. `demo.html` and `dist/themes.json`
+Add a row to `CONTRACT.md`'s theme index. `example.html` and `dist/themes.json`
 pick the theme up automatically — no list to edit.
 
 ## Motion

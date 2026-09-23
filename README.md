@@ -10,15 +10,16 @@ Windows 95 to TRON.
 - **Building a new theme:** read [`docs/authoring-a-theme.md`](docs/authoring-a-theme.md)
   and run `scripts/new-theme.sh <slug>`.
 - **Trying themes without any app:** serve the repo root over HTTP and open
-  [`demo.html`](demo.html) — an in-page switcher (built from
-  `dist/themes.json`) exercises every component, htmx states included, plus
-  a `?chrome=1` LCARS chrome mode.
-- **Auditing a theme against its own design doc:** serve the repo root over
-  HTTP and open [`example.html`](example.html) — every `.ftl-*` component in
-  one scroll, a theme stepper (buttons or ←/→), and the current theme's own
-  `README.md` rendered as a live "Core values" / "Tell-tales of an
-  inauthentic result" checklist beside the render, so drift between a theme
-  and its design doc is visible while you tick items off.
+  [`example.html`](example.html) — the one example page. A picker (built
+  from `dist/themes.json`) and a stepper (buttons or ←/→) switch the
+  applied theme; the markup never changes, so this is also the fair way to
+  compare two themes' own CSS rather than two different pages' content.
+  Every `.ftl-*` component appears once, htmx states included, an L0/L1
+  toggle shows the app-shell-adopted layout difference, and the current
+  theme's own `README.md` renders beside the render as a live "Core
+  values" / "Tell-tales of an inauthentic result" checklist, so drift
+  between a theme and its design doc is visible while you tick items off.
+  A "Compare two" mode puts two themes side by side.
 - **What's planned next:** [`docs/theme-backlog.md`](docs/theme-backlog.md).
 - **Engine-level recommendations** (what's been reviewed and what's still
   open): [`docs/engine-improvements.md`](docs/engine-improvements.md).
@@ -45,6 +46,7 @@ themes/<name>/theme.css   one file per theme: tokens + look-only overrides
 themes/lcars/chrome.css   optional decorative LCARS chrome (docs/lcars-chrome.md)
 dist/<name>.css           built bundle (reset+core+theme), the file apps link
 dist/ftl-core.css         reset+core alone, no theme/shell (color-only adoption)
+dist/tokens.css           every theme's tokens only, one file, for apps that keep their own markup
 dist/themes.json          machine-readable theme index for pickers, incl. build version
 assets/                   fonts and other binary assets themes reference
 scripts/build.sh          regenerates dist/ from core/ + themes/

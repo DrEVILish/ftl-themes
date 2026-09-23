@@ -70,10 +70,10 @@
   .qa-embed .qa-shell { grid-template-columns: 1fr; }
 </style>
 </head>
-<!-- QA harness: NOT part of the demo.html "here's the shell" pitch. This page
-     exists to make theme-vs-design-doc drift visible while iterating: every
-     .ftl-* component in CONTRACT.md in one scroll, a theme stepper to move
-     through the whole catalog fast, and the current theme's own README
+<!-- The one example page: every .ftl-* component in CONTRACT.md in one
+     scroll, a theme picker/stepper to switch the applied theme (this markup
+     never changes — the fair way to compare two themes' own CSS rather than
+     two different pages' content), and the current theme's own README
      (What it's trying to achieve / Core values / Tell-tales) rendered as a
      live checklist beside the render so a reviewer can tick each claim off
      against what's actually on screen. No app-specific markup. -->
@@ -634,7 +634,12 @@
     if (e.key === "ArrowLeft") stepTheme(-1);
   });
 
-  // Same L0/L1 shell toggle as demo.html — see that file's comment for why.
+  // L0/L1 toggle: demonstrates the fidelity gap ftl-themes issues #3/#4
+  // describe. Unchecking strips the .ftl-app shell classes from these exact
+  // same elements — no markup is swapped, no new page is loaded — so a
+  // layout-tier theme (LCARS, tron, wmp11, …) visibly drops back to a plain
+  // stacked page (L0: tokens only) instead of its real arrangement (L1: the
+  // app shell adopted).
   var shellEls = [
     { el: document.querySelector("main.qa-main"), cls: "ftl-app" },
     { el: document.querySelector(".ftl-app-bar"), cls: "ftl-app-bar" },
