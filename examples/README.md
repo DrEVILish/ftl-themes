@@ -37,31 +37,14 @@ Edit the script, not the HTML, then run `python3 scripts/build_examples.py`.
 
 ## What building these pages found
 
-Library defects found while building these pages have been fixed (see
-CHANGELOG v3.8.0). These gaps remain. Each one forced a page to leave
-something out rather than add CSS:
+The first version of these pages exposed library gaps: no layout
+primitives, levels only settable with inline styles, popovers that
+couldn't be anchored, and no radio or inline-checkbox pattern. v3.11 added
+`.ftl-stack`/`-cluster`/`-grid`, native `<meter>`/`<progress>` styling,
+`.ftl-anchor`, `.ftl-radio`, `.ftl-radio-group` and `.ftl-check`, and the
+pages now use them.
 
-1. **No layout primitives.** Components have no outer margin and the
-   library has no stack, cluster or grid class. Sibling components sit
-   flush against each other: a transport directly on a table, a segmented
-   control directly on a field-group title. Only `.ftl-toolbar` gives a
-   horizontal row, and it brings its own background and rule. Every app
-   has to write its own layout CSS.
-2. **Meters and progress bars need inline styles.** `.ftl-meter` reads
-   `--ftl-meter-level` and `.ftl-progress-bar` needs `width` on the element,
-   so neither can be used without `style=""`. Both are left out of these
-   pages. Styling native `<meter>` and `<progress>` (which carry their value
-   in an attribute) would remove the need.
-3. **Popovers and context menus can't be anchored.** They're
-   `position: absolute`, and nothing in the library gives the trigger a
-   positioned ancestor. Placed in a page they escape the layout and cover
-   whatever follows (they covered the status bar in the first draft of
-   the windows95 and tron pages, so both were removed).
-4. **No radio button or radio group.** Only `.ftl-checkbox` and
-   `.ftl-switch` exist.
-5. **Checkbox labels.** A checkbox only gets a proper label layout inside
-   `.ftl-field-row`. There is no inline "checkbox + text" pattern.
-6. **`--ftl-muted` is used for small essential text** (form labels, table
-   headers, tabs, panel headers), but the lint's floor for it is 3.0:1.
-   WCAG AA asks 4.5:1 for text that size. `audit_rendered.mjs` reports 69
-   such elements across 12 themes, all between 3.0 and 4.5:1.
+One gap remains: `--ftl-muted` is used for small essential text (form
+labels, table headers, tabs), but the lint's floor for it is 3.0:1 where
+WCAG AA asks 4.5:1. `audit_rendered.mjs` reports 69 such elements. This
+is being raised to 4.5:1.

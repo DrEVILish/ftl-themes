@@ -37,6 +37,7 @@ for (const theme of names) {
     const out = [];
     for (const e of document.querySelectorAll('body *')) {
       if (![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
+      if (e.closest('meter, progress')) continue; // fallback content, never displayed
       const cs = getComputedStyle(e);
       if (cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) continue;
       if (cs.webkitTextFillColor === 'rgba(0, 0, 0, 0)') continue; // gradient-clipped text
