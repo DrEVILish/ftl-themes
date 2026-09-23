@@ -27,33 +27,62 @@ import re
 import subprocess
 
 VAR_RE = re.compile(r"--(ftl-[a-z0-9-]+)\s*:\s*([^;]+)")
-HEX_RE = re.compile(r"^#([0-9a-fA-F]{6})$")
-RGBA_RE = re.compile(r"^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s]+([\d.]+))?\s*\)$")
+HEX_RE = re.compile(r"^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+RGBA_RE = re.compile(r"^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+)(%)?)?\s*\)$")
+RULE_RE = re.compile(r"([^{}@]+)\{([^{}]*)\}")
 
 
 def parse_color(value):
-    """(r, g, b, a) floats or None, for the syntaxes theme sources use."""
+    """(r, g, b, a) floats or None, for the syntaxes theme sources use:
+    #rgb, #rgba, #rrggbb, #rrggbbaa, rgb()/rgba() in comma or space form."""
     value = value.strip()
     m = HEX_RE.match(value)
     if m:
-        n = int(m.group(1), 16)
-        return ((n >> 16) & 255, (n >> 8) & 255, n & 255, 1.0)
+        h = m.group(1)
+        if len(h) <= 4:
+            h = "".join(c * 2 for c in h)
+        a = int(h[6:8], 16) / 255 if len(h) == 8 else 1.0
+        n = int(h[:6], 16)
+        return ((n >> 16) & 255, (n >> 8) & 255, n & 255, a)
     m = RGBA_RE.match(value)
     if m:
         alpha = float(m.group(4)) if m.group(4) else 1.0
+        if m.group(5):
+            alpha /= 100
         return (float(m.group(1)), float(m.group(2)), float(m.group(3)), alpha)
     return None
 
 
-def tokens_of(body):
-    """--ftl-name: value; last declaration wins, as in CSS."""
+def root_tokens(src, slug):
+    """--ftl-name: value from the theme's root block(s) only, merged in
+    source order as the cascade would. Palette variants
+    ([data-variant]) and element-scoped overrides (.ftl-app-status, …)
+    are not the theme's default palette and must not stand in for it —
+    reading every declaration in the file let a variant declared last
+    (imac-g3's tangerine) stamp the default theme's luminance."""
+    root = 'html[data-theme="%s"]' % slug
     out = {}
-    for m in VAR_RE.finditer(body):
-        out["--" + m.group(1)] = m.group(2).strip()
+    for m in RULE_RE.finditer(re.sub(r"/\*.*?\*/", "", src, flags=re.S)):
+        if root in (s.strip() for s in m.group(1).split(",")):
+            for t in VAR_RE.finditer(m.group(2)):
+                out["--" + t.group(1)] = t.group(2).strip()
     return out
 
 
-def scheme_of(body):
+def resolve_color(tokens, value, depth=0):
+    """parse_color, following var(--ftl-…) chains through tokens."""
+    if depth > 6:
+        return None
+    c = parse_color(value)
+    if c is not None:
+        return c
+    m = re.match(r"^\s*var\(\s*(--ftl-[a-z0-9-]+)", value)
+    if m and m.group(1) in tokens:
+        return resolve_color(tokens, tokens[m.group(1)], depth + 1)
+    return None
+
+
+def scheme_of(src, slug):
     """("light"|"dark", luminance) the way integrators used to derive it.
 
     The app's panels sit on --ftl-surface; if that is translucent or missing
@@ -62,13 +91,13 @@ def scheme_of(body):
     luminance above 0.55 reads as light. Unparseable themes read as dark —
     the historical default — and stamp luminance null.
     """
-    tokens = tokens_of(body)
-    surface = parse_color(tokens.get("--ftl-surface", ""))
+    tokens = root_tokens(src, slug)
+    surface = resolve_color(tokens, tokens.get("--ftl-surface", ""))
     if surface is None:
         return "dark", None
     if surface[3] < 1:
         for name in ("--ftl-app-bg", "--ftl-app-main-bg", "--ftl-bg"):
-            base = parse_color(tokens.get(name, ""))
+            base = resolve_color(tokens, tokens.get(name, ""))
             if base is not None:
                 a = surface[3]
                 surface = (surface[0] * a + base[0] * (1 - a),
@@ -102,14 +131,15 @@ def write_manifest():
         slug = os.path.basename(os.path.dirname(path))
         src = open(path).read()
         label = header_field(src, "Theme-Name") or slug
-        scheme, luminance = scheme_of(src)
+        scheme, luminance = scheme_of(src, slug)
         entries.append({
             "slug": slug,
             "dataTheme": slug,
             "label": label,
             "description": header_field(src, "Description"),
             "hasChrome": os.path.exists(os.path.join(os.path.dirname(path), "chrome.css")),
-            "shellAware": bool(re.search(r"--ftl-app-[A-Za-z0-9-]+\s*:", src)),
+            "shellAware": bool(re.search(r"--ftl-app-[A-Za-z0-9-]+\s*:",
+                                         re.sub(r"/\*.*?\*/", "", src, flags=re.S))),
             "version": version_,
             "scheme": scheme,
             "luminance": luminance,

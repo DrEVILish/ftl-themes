@@ -59,6 +59,9 @@ html[data-theme="$slug"] {
   --ftl-font: sans-serif;
   --ftl-font-mono: monospace;
   --ftl-flare: #ffffff;       /* the one "extra" decorative color */
+  /* Required by the lint: tells the browser which palette UA-owned chrome
+     (scrollbars, native pickers, autofill) should match. */
+  color-scheme: dark;         /* light for a light palette */
 
   /* --- Optional: component look. Delete what you don't need. ---------- *
    * Full set of override points: every var(--ftl-…, fallback) in
@@ -96,11 +99,40 @@ html[data-theme="$slug"] {
 /* html[data-theme="$slug"] .ftl-btn-danger { --ftl-btn-border: …; } */
 EOF
 
-echo "scaffolded themes/$slug/theme.css"
+# check.sh fails a theme without a README carrying a Requires: badge, and
+# warns on each missing section — scaffold them so the author fills in
+# prose instead of discovering the rules one lint run at a time.
+cat > "$dir/README.md" <<'EOF'
+# <Display Name>
+
+> <one line: the look this theme reproduces>
+
+**Requires: L0** — tokens only; change to L1 once the theme sets `--ftl-app-*`
+layout properties. See CONTRACT.md "Adoption levels".
+
+## What this theme is trying to achieve
+
+<the reference look, and what makes it recognisable>
+
+## Core values
+
+1. <a principle the next contributor must not "improve" away>
+
+## Signature details
+
+- <a concrete, checkable detail>
+
+## Tell-tales of an inauthentic result
+
+- <what a wrong rendering of this theme looks like>
+EOF
+
+echo "scaffolded themes/$slug/theme.css and themes/$slug/README.md"
 echo
 echo "next:"
-echo "  1. fill in the tokens (and a Theme-Name/Description in the header)"
+echo "  1. fill in the tokens (and a Theme-Name/Description in the header) and README.md"
 echo "  2. scripts/build.sh    # regenerates dist/$slug.css and dist/themes.json"
-echo "  3. scripts/check.sh    # token completeness, contrast, focus, variants"
-echo "  4. open demo.html and pick your theme from the switcher"
-echo "  5. add a row to CONTRACT.md's theme index"
+echo "  3. add a page for $slug to scripts/build_examples.py (check.sh requires one)"
+echo "  4. scripts/check.sh    # token completeness, contrast, focus, variants"
+echo "  5. open demo.html and pick your theme from the switcher"
+echo "  6. add a row to CONTRACT.md's theme index"

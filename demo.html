@@ -305,10 +305,17 @@
     .catch(function () {
       // file:// without fetch access — keep the page usable.
       desc.textContent = "themes.json unavailable (serve the folder over HTTP for the full theme list)";
-      ["blue-future", "cue-lab", "lcars"].forEach(function (s) {
+      var fallback = ["blue-future", "cue-lab", "lcars"];
+      fallback.forEach(function (s) {
         var o = document.createElement("option"); o.value = o.textContent = s; picker.appendChild(o);
       });
-      applyTheme(params.get("theme") || "blue-future");
+      // Validate like the success path does: an unknown ?theme= used to be
+      // applied anyway (unstyled page, and the picker showing a different
+      // theme than the one rendered).
+      var initial = params.get("theme") || read("ftl-demo-theme");
+      if (fallback.indexOf(initial) < 0) initial = fallback[0];
+      picker.value = initial;
+      applyTheme(initial);
     });
 
   picker.addEventListener("change", function () { applyTheme(picker.value); });

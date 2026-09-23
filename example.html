@@ -518,12 +518,19 @@
     targetEl.innerHTML = html;
   }
 
+  // Stepping with the arrow keys fires several fetches back to back; they
+  // can resolve out of order, so only the latest request may render —
+  // otherwise the sidebar shows one theme's checklist over another's render.
+  var readmeRequest = 0;
   function loadReadme(slug) {
+    if (isEmbed) return; // the sidebar is hidden in a compare pane
+    var request = ++readmeRequest;
     readmePanel.innerHTML = '<p class="qa-note">Loading README.md&hellip;</p>';
     fetch("themes/" + slug + "/README.md")
       .then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
-      .then(renderReadme)
+      .then(function (md) { if (request === readmeRequest) renderReadme(md); })
       .catch(function () {
+        if (request !== readmeRequest) return;
         readmePanel.innerHTML = '<p class="qa-note">Could not load themes/' + slug + '/README.md (serve over HTTP, not file://).</p>';
         checklistCount.textContent = "0 / 0";
         checklistProgress.style.width = "0%";
@@ -533,7 +540,9 @@
   function applyTheme(slug) {
     document.documentElement.dataset.theme = slug;
     link.href = "dist/" + slug + ".css";
-    store("ftl-qa-theme", slug);
+    // Compare-mode panes are copies of this page; letting them persist
+    // would make whichever pane loaded last the single-mode theme.
+    if (!isEmbed) store("ftl-qa-theme", slug);
     var t = themes.find(function (x) { return x.slug === slug; });
     desc.textContent = t ? t.description : "";
     crumbTheme.textContent = t ? t.label : slug;
@@ -639,10 +648,14 @@
       label.textContent = t ? t.label : slug;
       shellEl.textContent = t && t.shellAware ? "shellAware" : "palette-only";
       iframe.src = "example.html?theme=" + encodeURIComponent(slug) + "&embed=1";
+      // Same out-of-order guard as loadReadme, per pane.
+      var request = sigEl.dataset.request = String(+(sigEl.dataset.request || 0) + 1);
       fetch("themes/" + slug + "/README.md")
         .then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
-        .then(function (md) { renderSignatureSummary(md, sigEl); })
-        .catch(function () { sigEl.innerHTML = '<p class="qa-note">Could not load README.md.</p>'; });
+        .then(function (md) { if (sigEl.dataset.request === request) renderSignatureSummary(md, sigEl); })
+        .catch(function () {
+          if (sigEl.dataset.request === request) sigEl.innerHTML = '<p class="qa-note">Could not load README.md.</p>';
+        });
     }
 
     function updateA() { store("ftl-qa-compare-a", selectA.value); paneUpdate(selectA.value, selectA, labelA, shellA, sigA, iframeA); }

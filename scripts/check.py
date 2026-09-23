@@ -48,6 +48,11 @@ Every rule corresponds to a bug that actually shipped once:
              every consumer depend on connectivity; a field-offline
              consumer (a recorder with no network) needs every bundle to
              work fully embedded.
+  chrome     chrome.css is concatenated into the same bundle as theme.css,
+             so every per-rule check (variants, focus, important, motion,
+             remote-url) applies to it too — it used to be skipped entirely.
+  examples   examples/*.html are generated; like dist/, they must match a
+             fresh scripts/build_examples.py run.
   scheme     the manifest's scheme/luminance must match a re-derivation from
              the theme source, so hand-edited manifests can't drift. Distinct
              from the color-scheme rule above: this checks the *manifest's*
@@ -98,10 +103,10 @@ def strip_comments(css):
     return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
 
 
-def strip_gated_motion(css):
-    """Remove @media (prefers-reduced-motion: no-preference) blocks."""
+def strip_gated_motion(css, when="no-preference"):
+    """Remove @media (prefers-reduced-motion: <when>) blocks."""
     out, i, n = [], 0, len(css)
-    gate = re.compile(r"@media\s*\(\s*prefers-reduced-motion\s*:\s*no-preference\s*\)\s*\{")
+    gate = re.compile(r"@media\s*\(\s*prefers-reduced-motion\s*:\s*" + when + r"\s*\)\s*\{")
     while i < n:
         m = gate.search(css, i)
         if not m:
@@ -150,18 +155,11 @@ def resolve(tokens, value, depth=0):
     value = value.strip()
     if depth > 6:
         return None
-    if value.startswith("#"):
-        h = value.lstrip("#")
-        if len(h) == 3:
-            h = "".join(c * 2 for c in h)
-        if len(h) != 6:
-            return None
-        n = int(h, 16)
-        return ((n >> 16) & 255, (n >> 8) & 255, n & 255, 1.0)
-    m = re.match(r"^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s]+([\d.]+))?\s*\)$", value)
-    if m:
-        return (float(m.group(1)), float(m.group(2)), float(m.group(3)),
-                float(m.group(4)) if m.group(4) else 1.0)
+    # One literal parser for both scripts, so the lint and the manifest's
+    # scheme stamp agree on which colors exist (8-digit hex, space syntax).
+    c = build_manifest.parse_color(value)
+    if c is not None:
+        return c
     m = re.match(r"^var\(\s*--ftl-([a-z0-9-]+)", value)
     if m and m.group(1) in tokens:
         return resolve(tokens, tokens[m.group(1)], depth + 1)
@@ -218,7 +216,7 @@ def check_contrast(theme, tokens, exempt):
 def color_stops(tokens, value):
     """Every resolvable color in a (possibly gradient) background value."""
     stops = []
-    for m in re.finditer(r"#[0-9a-fA-F]{3,6}\b|rgba?\([^)]*\)|var\(--ftl-[a-z0-9-]+\)", value):
+    for m in re.finditer(r"#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|var\(--ftl-[a-z0-9-]+\)", value):
         c = resolve(tokens, m.group(0))
         if c is None and m.group(0).startswith("var("):
             name = m.group(0)[len("var(--ftl-"):-1]
@@ -317,7 +315,24 @@ for path in sorted(glob.glob("themes/*/theme.css")):
         fail(theme, "remote-url", f"contains a remote `@import` (`{m.group(0)}`) — "
                                    f"themes must be usable fully offline.")
 
-    for sel, decls in rules_of(css):
+    # chrome.css ships in the same bundle, so it answers to the same
+    # per-rule checks. The standard `* { animation: none !important }`
+    # reduced-motion override is the one legitimate universal !important,
+    # so rules inside a prefers-reduced-motion: reduce block are exempt
+    # from the important rule.
+    chrome_path = os.path.join(os.path.dirname(path), "chrome.css")
+    chrome = open(chrome_path).read() if os.path.exists(chrome_path) else ""
+    bundled = css + "\n" + chrome
+    bundled_body = strip_comments(bundled)
+    reduced_rules = set(rules_of(bundled)) - set(rules_of(strip_gated_motion(strip_comments(bundled), "reduce")))
+
+    for m in re.finditer(r"url\(\s*['\"]?(https?:)?//", strip_comments(chrome)):
+        fail(theme, "remote-url", f"chrome.css contains a remote `url(...)` reference "
+                                   f"(`{m.group(0)}`) — vendor the asset into assets/ instead.")
+    for m in re.finditer(r"@import\s+(?:url\()?['\"]?(https?:)?//", strip_comments(chrome)):
+        fail(theme, "remote-url", f"chrome.css contains a remote `@import` (`{m.group(0)}`).")
+
+    for sel, decls in rules_of(bundled):
         last = sel.split()[-1] if sel.split() else sel
         classes = set(re.findall(r"\.([\w-]+)", last))
         has_pseudo = bool(re.search(r":[\w-]+", last))
@@ -335,7 +350,8 @@ for path in sorted(glob.glob("themes/*/theme.css")):
             fail(theme, "focus",
                  f"`{sel}` removes the focus outline. Recolor via --ftl-focus or add a "
                  f"glow via --ftl-focus-ring instead; never remove the indicator.")
-        if last in ("*", "*::before", "*::after") and "!important" in decls:
+        if (last in ("*", "*::before", "*::after") and "!important" in decls
+                and (sel, decls) not in reduced_rules):
             fail(theme, "important",
                  f"`{sel}` uses !important on a universal selector — it also erases "
                  f"state indicators like .ftl-table tr.is-active's marker.")
@@ -399,8 +415,8 @@ for path in sorted(glob.glob("themes/*/theme.css")):
         warn(theme, "layout", "defines no --ftl-app-* layout personality — the app "
                               "shell will look identical to every other such theme")
 
-    ungated = strip_gated_motion(body)
-    if re.search(r"animation\s*:[^;}]*\binfinite\b", ungated):
+    ungated = strip_gated_motion(bundled_body)
+    if re.search(r"animation(?:-iteration-count)?\s*:[^;}]*\binfinite\b", ungated):
         fail(theme, "motion", "infinite animation outside a "
              "prefers-reduced-motion: no-preference gate plays for users who "
              "asked the OS to stop it — wrap it like matrix does")
@@ -426,6 +442,19 @@ for path in sorted(glob.glob("core/*.css")):
 # deterministic now (its version is a content hash of the bundles; no
 # wall-clock field survives a rebuild).
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
+# examples/ is generated too, and nothing else regenerates it: a core or
+# theme change that renames a class used to leave the committed pages
+# silently stale (or violating the library-classes-only rule).
+ex = subprocess.run([sys.executable, "scripts/build_examples.py"],
+                    capture_output=True, text=True)
+if ex.returncode:
+    failures.append(f"examples: build_examples.py failed — {(ex.stderr or ex.stdout).strip()}")
+ex_diff = [line[3:] for line in subprocess.run(
+    ["git", "status", "--porcelain", "--", "examples"],
+    capture_output=True, text=True).stdout.splitlines()]
+if ex_diff:
+    failures.append("examples: committed pages are stale — run scripts/build_examples.py "
+                    f"and commit ({', '.join(ex_diff)})")
 # --porcelain, not `git diff`: a bundle the build creates but nobody
 # committed (a new theme, a new bundle form) is untracked, and `git diff`
 # can't see untracked files.
@@ -459,7 +488,8 @@ for entry in manifest:
     if missing:
         fail(entry.get("slug", "?"), "manifest", f"missing field(s): {', '.join(missing)}")
         continue
-    scheme, lum = build_manifest.scheme_of(open(f"themes/{entry['slug']}/theme.css").read())
+    scheme, lum = build_manifest.scheme_of(open(f"themes/{entry['slug']}/theme.css").read(),
+                                         entry["slug"])
     if (entry["scheme"], entry["luminance"]) != (scheme, lum):
         fail(entry["slug"], "scheme",
              f"manifest says {entry['scheme']}/{entry['luminance']} but the theme "
