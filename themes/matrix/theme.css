@@ -49,6 +49,40 @@ html[data-theme="matrix"] {
 
 html[data-theme="matrix"] { text-shadow: 0 0 2px rgba(0, 255, 65, 0.4); }
 
+/* The digital rain: this theme's one namesake image, previously absent —
+   flat black plus green text is "a dark green theme," not the Matrix.
+   Thin columns of falling glyph-streaks, animated by scrolling a tall
+   repeating pattern rather than real characters (no JS in this library).
+   Kept faint (8% opacity) so it never competes with foreground text, and
+   gated like the heading flicker: a static, unscrolled version of the
+   same columns when motion is off, never nothing. */
+html[data-theme="matrix"] {
+  background-color: #000;
+  /* Five independently-phased/-paced dash columns rather than one repeating
+     pattern: a single layer tiles into a visible grid (this is what a
+     linear-gradient does — it has no per-column variation to offer), and a
+     grid reads as "graph paper," not "falling code." Different periods
+     (37-59px, no common small factor) and offsets so the dashes never lock
+     into rows. */
+  background-image:
+    radial-gradient(ellipse 1.5px 5px at 50% 50%, rgba(0, 255, 65, 0.5), transparent 70%),
+    radial-gradient(ellipse 1.5px 5px at 50% 50%, rgba(0, 255, 65, 0.5), transparent 70%),
+    radial-gradient(ellipse 1.5px 5px at 50% 50%, rgba(0, 255, 65, 0.5), transparent 70%),
+    radial-gradient(ellipse 1.5px 5px at 50% 50%, rgba(0, 255, 65, 0.5), transparent 70%),
+    radial-gradient(ellipse 1.5px 5px at 50% 50%, rgba(0, 255, 65, 0.5), transparent 70%);
+  background-size: 16px 41px, 16px 37px, 16px 47px, 16px 59px, 16px 53px;
+  background-position: 8px 0, 24px 14px, 40px 5px, 56px 22px, 72px 9px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="matrix"] {
+    animation: ftl-matrix-rain 11s linear infinite;
+  }
+}
+@keyframes ftl-matrix-rain {
+  from { background-position: 8px 0, 24px 14px, 40px 5px, 56px 22px, 72px 9px; }
+  to { background-position: 8px 984px, 24px 888px, 40px 1128px, 56px 1416px, 72px 1272px; }
+}
+
 /* v3.4.0 components: terminal-green glow extended to the newer primitives. */
 html[data-theme="matrix"] {
   --ftl-toast-bg: #020c02;
@@ -100,7 +134,10 @@ html[data-theme="matrix"] .ftl-btn-primary { --ftl-btn-bg: rgba(0, 255, 65, 0.12
  * A terminal: no chrome to speak of, one hairline rule under the bar, and
  * the content filling the frame. */
 html[data-theme="matrix"] {
-  --ftl-app-bg: #000;
+  /* transparent, not #000: the rain lives on html's own background (set
+     above), and .ftl-app-main already defaults to transparent — this token
+     used to paint solid black over the rain and hide it entirely. */
+  --ftl-app-bg: transparent;
   --ftl-app-bar-bg: #000;
   --ftl-app-bar-rule: var(--ftl-border);
   --ftl-app-bar-height: 2.4rem;
