@@ -3,6 +3,168 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.10.0 — cascade layers and token-only bundles
+
+### Added
+
+- **`dist/<slug>.layered.css`** (#29): each bundle wrapped in
+  `@layer ftl.reset, ftl.core, ftl.layout, ftl.theme`, so unlayered app CSS
+  always beats the library. Opt-in; the default bundles are unchanged. All
+  26 themes compute identical styles in both forms.
+- **`dist/<slug>-tokens.css`** (#4): a theme's tokens, fonts and
+  element-level rules without any `.ftl-*` component or shell CSS, for apps
+  that keep their own markup.
+- Both are built by `scripts/build_bundles.py`, called from `build.sh`.
+
+### Lint
+
+- The dist staleness check now sees uncommitted *new* files in `dist/`, not
+  only modified ones.
+
+## v3.9.0 — open issues
+
+### Added
+
+- `.ftl-lamp.is-active`: an accent lamp that pulses for work happening now
+  (#22). The pulse is gated on `prefers-reduced-motion: no-preference`.
+- `.ftl-table` row highlight on hover and `:focus-within`
+  (`--ftl-row-hover-bg`) (#30). Sticky headers already exist as
+  `.ftl-table.is-sticky`.
+- `--ftl-btn-icon-radius`, so `.ftl-btn-icon` can be square as well as
+  round (#20).
+- `prefers-contrast: more` applies the high-contrast boost automatically;
+  `data-contrast="standard"` opts out (#27).
+- Chart palette tokens `--ftl-chart-text`, `-grid`, `-series-1`…`-6` with
+  base-token defaults; pipboy overrides them as a worked example (#24).
+- `.ftl-log`, `.ftl-log-line[data-level]`, `.ftl-log-time`: a log console
+  (#28).
+
+## v3.8.0 — example pages, and the contrast bugs they exposed
+
+Building one page per theme from library classes only (`examples/`, no
+custom CSS, no inline styles) surfaced defects the token lint couldn't see.
+Every fix below was found on a rendered page first, then measured.
+
+### Fixed
+
+- **Invisible app-bar text in 8 themes.** `.ftl-nav-brand`/`-item` read
+  `--ftl-nav-*-fg`, never `--ftl-app-bar-fg`, so themes with a colored bar
+  rendered their brand and nav at down to 1.0:1 (lcars, winxp-luna 1.0;
+  windows95 1.3; barbie 1.5; aqua, death-star, win7-aero, winamp-classic
+  3.8–4.3). Each now re-points the nav tokens in a `.ftl-app-bar` block, the
+  pattern material and vaporwave already used. vaporwave's own fix still
+  failed over its purple middle stop (3.6:1) and is corrected too. Barbie's
+  bar and status strip are a deeper pink, because no text color reached
+  4.5:1 across the old gradient.
+- **State colors as text below 4.5:1 in 21 themes**, on `--ftl-surface`
+  (16 themes) or on `--ftl-surface-2` / a translucent selection where
+  status text also sits (5 more). As low as 1.3:1: barbie's mint and
+  yellow on its own pink rows. New optional
+  `--ftl-success-text`/`-warning-text`/`-danger-text`/`-accent-text` tokens
+  keep each fill for lamps and buttons and give text a readable version of
+  the same hue. `.ftl-status`, `.ftl-stat-trend`, colored badges and danger
+  menu items read them.
+- **State text on selected rows.** A green status on a solid blue selection
+  measured 1.0:1. Status and trend text in `tr.is-selected` now follows
+  `--ftl-row-selected-fg` when the theme sets one.
+- **Row marker on every cell.** `tr.is-active`'s marker was a box-shadow on
+  every `td`, so it drew a bar at every column. Now only the first cell.
+- **`.ftl-field-row` spacing.** Consecutive rows touched, and a following
+  label sat directly on the row above. Rows now have a bottom gap
+  (`--ftl-field-row-gap`, default `0.5rem`).
+- **imac-g3 Tangerine: body text at 3.8:1.** Surfaces deepened to a burnt
+  tangerine (white text now 6.3:1). Blueberry and Grape accents lightened
+  so link and active-tab text is legible (2.4 and 2.8 → 3.5 and 4.0:1).
+- **imac-g3 gloss never rendered.** The pinstripe rule set
+  `background-image` on `.ftl-panel` and `.ftl-app-bar`, replacing the
+  gloss gradient and the panel fill. The stripe is now layered into the
+  token value instead.
+- **Smaller fixes:** winxp-luna's title-bar top stop (white text sat at
+  exactly 4.5:1) and its footer status text (1.3:1); win7-aero's primary
+  button (white on its pale glass top stop, 2.8:1); status-strip text in
+  aqua, death-star, win7-aero and winamp-classic.
+
+### Added
+
+- **`examples/`**: one page per theme, written for that theme's world and
+  built by `scripts/build_examples.py`, which refuses to emit a page with
+  inline styles or undefined classes. `examples/README.md` lists the
+  library gaps the pages exposed.
+- **`references/README.md`**: where to see the real thing each theme is
+  modelled on (links only; the originals are copyrighted).
+- **`scripts/audit_rendered.mjs`**: measures every text element on the
+  example pages against the pixels actually behind it. Fails below 3:1,
+  reports below 4.5:1. Needs Playwright.
+
+### Lint
+
+- Contrast floors now run for every `data-variant` palette, not only the
+  default one. Previously only the first value of each token was read.
+- New hard rules: success/warning/danger text on `--ftl-surface` (4.5:1),
+  app-bar brand and nav text against every stop of the bar background
+  (4.5:1), and status-strip text (4.5:1).
+- Translucent surfaces are composited over `--ftl-bg` instead of skipped.
+
+## v3.7.0 — segmented control, sortable/sticky tables, remaining chrome gaps
+
+Closes out the backlog flagged alongside v3.6.0: a component pattern
+common enough to add speculatively (segmented control), two `.ftl-table`
+hooks a data-heavy consumer will need, and the three browser-chrome
+surfaces v3.6.0 didn't reach (native `<select>`'s closed-box arrow,
+autofill, native `<dialog>`'s `::backdrop`). All additive, all
+token-driven with base-token fallbacks.
+
+### Added
+
+- **`.ftl-segmented`** (+ `.ftl-segmented-item`, `.is-active`) — a
+  segmented control / toggle group for mutually-exclusive view switches,
+  distinct from `.ftl-tabs` (navigates) and `.ftl-badge-button`
+  (multi-select filter chips).
+- **`.ftl-table` sticky header** — `.ftl-table.is-sticky thead th` pins
+  the header within the table's own scroll container.
+- **`.ftl-table` sort indicator** — a clickable cursor, hover tint, and
+  themed arrow on any `<th aria-sort="ascending"/"descending">`, reusing
+  the attribute a screen reader already wants rather than adding a
+  parallel `.is-sorted` class.
+- **`.ftl-select` closed-box arrow** now themed via a CSS-triangle
+  (`--ftl-select-arrow-fg`, default `--ftl-muted`) instead of the
+  browser's own. The open dropdown list stays native OS chrome — no CSS
+  can reach it.
+- **Autofill** on `.ftl-input` now respects `--ftl-input-bg`/`-fg`
+  instead of the browser's forced yellow/blue fill.
+- **`dialog.ftl-modal::backdrop`** themed via `--ftl-overlay-bg`/`-blur`,
+  for apps using the native `<dialog>` element instead of the
+  `.ftl-modal-overlay` div pattern.
+
+## v3.6.0 — browser-chrome theming
+
+Closes the gap between "every `.ftl-*` component is themed" and "the whole
+page looks themed": platform-painted surfaces (text selection, scrollbars,
+form placeholder text, the input caret, `<kbd>`/`<code>`/`<pre>`) previously
+fell back to the browser's own default appearance regardless of theme,
+which was the most visible remaining "generic browser" tell in an
+otherwise fully-themed retro/console page. All additive, all token-driven
+with base-token fallbacks — no theme file needs to change to pick these up.
+
+### Added
+
+- **`::selection`** now themed (`--ftl-selection-bg`/`-fg`, default accent /
+  on-accent).
+- **Scrollbars** themed via `scrollbar-color`/`scrollbar-width` (Firefox)
+  and the `::-webkit-scrollbar*` pseudo-elements (Chromium/Safari):
+  `--ftl-scrollbar-thumb` (default `--ftl-border`), `-thumb-hover` (default
+  `--ftl-accent`), `-track` (default transparent), `-size`, `-radius`,
+  `-width`.
+- **`::placeholder`** on `.ftl-input`/`.ftl-textarea` (`--ftl-input-placeholder`,
+  default `--ftl-muted`) — previously always the browser's own gray.
+- **Input caret color** (`--ftl-input-caret`, default `--ftl-focus`).
+- **`<kbd>`** — a themed inline keyboard-shortcut glyph
+  (`--ftl-kbd-bg`/`-fg`/`-border`/`-radius`/`-shadow`).
+- **`<code>`/`<pre>`** — themed inline and block code
+  (`--ftl-code-bg`/`-fg`, `--ftl-code-block-bg`/`-border`), distinct from
+  `.ftl-readout` (a live machine value) and `.ftl-mono` (a bare
+  font-family utility).
+
 ## v3.5.2 — consumer-reported fixes: color-scheme, density-scaled targets, offline lint
 
 Addresses issues filed from real integration work in CuTePi, PI9696, and

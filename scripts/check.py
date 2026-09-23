@@ -168,14 +168,124 @@ def resolve(tokens, value, depth=0):
     return None
 
 
+def over(fg, bg):
+    """Composite a possibly translucent color over an opaque one."""
+    if fg[3] >= 1:
+        return fg
+    return tuple(fg[i] * fg[3] + bg[i] * (1 - fg[3]) for i in range(3)) + (1.0,)
+
+
+def check_contrast(theme, tokens, exempt):
+    for label, fg_tok, bg_tok, floor, hard in (
+        ("primary button", "on-accent", "accent", 4.5, True),
+        ("danger button", "on-danger", "danger", 4.5, True),
+        ("success button", "on-success", "success", 4.5, True),
+        ("body text", "text", "surface", 4.5, True),
+        ("muted text", "muted", "surface", 3.0, True),
+        # State colors used as TEXT (.ftl-status, .ftl-stat-trend, colored
+        # badges, danger menu items) read --ftl-<state>-text, falling back
+        # to the fill color. A fill that works behind a button is often
+        # unreadable as small text on the surface itself.
+        ("success text", "success-text|success", "surface", 4.5, True),
+        ("warning text", "warning-text|warning", "surface", 4.5, True),
+        ("danger text", "danger-text|danger", "surface", 4.5, True),
+        ("body text on page backdrop", "text", "bg", 4.5, False),
+        ("body text (AAA)", "text", "surface", 7.0, False),
+        ("body text on backdrop (AAA)", "text", "bg", 7.0, False),
+        ("accent legibility", "accent", "surface", 3.0, False),
+        ("accent on page backdrop", "accent", "bg", 3.0, False),
+    ):
+        if not hard and exempt:
+            continue
+        fg_tok = next((t for t in fg_tok.split("|") if t in tokens), fg_tok.split("|")[-1])
+        fg = resolve(tokens, tokens.get(fg_tok, ""))
+        bg = resolve(tokens, tokens.get(bg_tok, ""))
+        if not (fg and bg):
+            continue
+        if bg[3] < 1:
+            base = resolve(tokens, tokens.get("bg", ""))
+            if bg_tok == "bg" or not base or base[3] < 1:
+                continue  # translucent with nothing known behind it
+            bg = over(bg, base)
+        fg = over(fg, bg)
+        ratio = contrast(fg, bg)
+        if ratio < floor:
+            msg = (f"{label}: --ftl-{fg_tok} {fg[:3]} on --ftl-{bg_tok} {bg[:3]} = "
+                   f"{ratio:.1f}:1 (floor {floor}:1)")
+            (fail if hard else warn)(theme, "contrast", msg)
+
+
+def color_stops(tokens, value):
+    """Every resolvable color in a (possibly gradient) background value."""
+    stops = []
+    for m in re.finditer(r"#[0-9a-fA-F]{3,6}\b|rgba?\([^)]*\)|var\(--ftl-[a-z0-9-]+\)", value):
+        c = resolve(tokens, m.group(0))
+        if c is None and m.group(0).startswith("var("):
+            name = m.group(0)[len("var(--ftl-"):-1]
+            inner = tokens.get(name, "")
+            stops.extend(color_stops(tokens, inner) if inner and inner != value else [])
+        elif c:
+            stops.append(c)
+    return stops
+
+
+def check_app_bar(theme, tokens, css):
+    """Nav text in the app bar vs every color stop of the bar background.
+
+    .ftl-nav-brand/-item read --ftl-nav-*-fg, which themes tune for their
+    content area; a bar painted in the accent (LCARS, XP, Material) needs
+    those re-pointed in a `.ftl-app-bar` scoped block or the brand goes
+    invisible. --ftl-app-bar-fg does NOT reach them."""
+    if not any(k.startswith("app-") for k in tokens):
+        return  # not shell-aware; the bar falls back to --ftl-nav-bg
+    scoped = dict(tokens)
+    for sel, decls in rules_of(css):
+        if re.search(r"\.ftl-app-bar$", sel.strip()):
+            for t in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", decls):
+                scoped[t.group(1)] = t.group(2).strip()
+    bar_value = scoped.get("app-bar-bg") or scoped.get("nav-bg") or scoped.get("surface", "")
+    base = resolve(tokens, tokens.get("bg", "")) or (0, 0, 0, 1.0)
+    stops = [over(s, base) for s in color_stops(scoped, bar_value)]
+    if not stops:
+        return
+    for label, tok, default in (("brand", "nav-brand-fg", "accent"), ("nav item", "nav-item-fg", "muted")):
+        fg = resolve(scoped, scoped.get(tok, f"var(--ftl-{default})"))
+        if not fg:
+            continue
+        worst = min(contrast(over(fg, s), s) for s in stops)
+        if worst < 4.5:
+            fail(theme, "contrast",
+                 f"app-bar {label}: --ftl-{tok} {fg[:3]} is {worst:.1f}:1 against the "
+                 f"bar background (floor 4.5:1). --ftl-app-bar-fg does not reach nav "
+                 f"text — re-point --ftl-{tok} in a `.ftl-app-bar` scoped block.")
+
+    # The status strip's own text (--ftl-app-status-fg) on its background.
+    status_stops = [over(s, base) for s in color_stops(
+        tokens, tokens.get("app-status-bg") or tokens.get("surface", ""))]
+    fg = resolve(tokens, tokens.get("app-status-fg", "var(--ftl-muted)"))
+    if status_stops and fg:
+        worst = min(contrast(over(fg, s), s) for s in status_stops)
+        if worst < 4.5:
+            fail(theme, "contrast",
+                 f"app-status text: --ftl-app-status-fg {fg[:3]} is {worst:.1f}:1 "
+                 f"against the status strip background (floor 4.5:1)")
+
+
 for path in sorted(glob.glob("themes/*/theme.css")):
     theme = os.path.basename(os.path.dirname(path))
     css = open(path).read()
     body = strip_comments(css)
 
+    # Root-scope tokens only, merged in source order as the cascade would.
+    # Reading every declaration in the file (first one wins) let a value
+    # scoped to one element, e.g. a `.ftl-app-status` override, stand in for
+    # the theme-wide token.
+    root_sel = f'html[data-theme="{theme}"]'
     tokens = {}
-    for m in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", body):
-        tokens.setdefault(m.group(1), m.group(2).strip())
+    for sel, decls in rules_of(css):
+        if sel == root_sel:
+            for m in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", decls):
+                tokens[m.group(1)] = m.group(2).strip()
 
     missing = [t for t in REQUIRED_TOKENS if t not in tokens]
     if missing:
@@ -259,33 +369,19 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     # deliberately low-contrast decorative pair, and the README line is
     # where the rationale lives. The hard 4.5:1 floors are never exempted.
     exempt = "contrast-exempt:" in readme_text.lower()
-    for label, fg_tok, bg_tok, floor, hard in (
-        ("primary button", "on-accent", "accent", 4.5, True),
-        ("danger button", "on-danger", "danger", 4.5, True),
-        ("success button", "on-success", "success", 4.5, True),
-        ("body text", "text", "surface", 4.5, True),
-        ("muted text", "muted", "surface", 3.0, True),
-        ("body text on page backdrop", "text", "bg", 4.5, False),
-        ("body text (AAA)", "text", "surface", 7.0, False),
-        ("body text on backdrop (AAA)", "text", "bg", 7.0, False),
-        ("accent legibility", "accent", "surface", 3.0, False),
-        ("accent on page backdrop", "accent", "bg", 3.0, False),
-    ):
-        if not hard and exempt:
-            continue
-        fg = resolve(tokens, tokens.get(fg_tok, ""))
-        bg = resolve(tokens, tokens.get(bg_tok, ""))
-        if not (fg and bg):
-            continue
-        if bg[3] < 1:
-            continue  # translucent backdrop: what is behind it is unknown
-        if fg[3] < 1:
-            fg = tuple(fg[i] * fg[3] + bg[i] * (1 - fg[3]) for i in range(3)) + (1.0,)
-        ratio = contrast(fg, bg)
-        if ratio < floor:
-            msg = (f"{label}: --ftl-{fg_tok} {fg} on --ftl-{bg_tok} {bg} = "
-                   f"{ratio:.1f}:1 (floor {floor}:1)")
-            (fail if hard else warn)(theme, "contrast", msg)
+    check_contrast(theme, tokens, exempt)
+
+    # Palette variants (html[data-theme="x"][data-variant="y"]) replace
+    # tokens wholesale, so each is a palette in its own right and gets the
+    # same floors. Previously only the first value of each token was read,
+    # which silently skipped every variant.
+    for m in re.finditer(r'\[data-variant="([\w-]+)"\]\s*\{([^{}]*)\}', body):
+        vtokens = dict(tokens)
+        for t in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", m.group(2)):
+            vtokens[t.group(1)] = t.group(2).strip()
+        check_contrast(f"{theme}[{m.group(1)}]", vtokens, exempt)
+
+    check_app_bar(theme, tokens, css)
 
     # Coverage: report components the theme never touches, so an author can
     # see what they skipped. Informational, not a failure — token-only
@@ -330,8 +426,12 @@ for path in sorted(glob.glob("core/*.css")):
 # deterministic now (its version is a content hash of the bundles; no
 # wall-clock field survives a rebuild).
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
-diff = subprocess.run(["git", "diff", "--name-only", "--", "dist"],
-                      capture_output=True, text=True).stdout.split()
+# --porcelain, not `git diff`: a bundle the build creates but nobody
+# committed (a new theme, a new bundle form) is untracked, and `git diff`
+# can't see untracked files.
+diff = [line[3:] for line in subprocess.run(
+    ["git", "status", "--porcelain", "--", "dist"],
+    capture_output=True, text=True).stdout.splitlines()]
 if diff:
     failures.append("dist: committed bundles are stale — run scripts/build.sh and commit "
                     f"({', '.join(diff)})")

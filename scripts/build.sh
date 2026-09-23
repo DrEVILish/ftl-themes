@@ -51,4 +51,5 @@ done
 # Manifest (including per-theme scheme/luminance and build identity) is
 # generated in Python — its derivations must match what check.py re-derives,
 # and check.py imports them from this script rather than re-implementing.
+python3 scripts/build_bundles.py >/dev/null
 python3 scripts/build_manifest.py

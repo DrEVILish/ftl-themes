@@ -210,6 +210,33 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 .ftl-select:disabled,
 .ftl-textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* .ftl-select's dropdown *list* is OS chrome no CSS can reach, but the
+   closed box's arrow was always the browser's own — a border-only
+   triangle keeps it colorable without an SVG/data-URI asset. Themes
+   that want their real native arrow back can override
+   `appearance: auto` on `.ftl-select`. */
+.ftl-select {
+  appearance: none;
+  padding-right: 2.2em;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ftl-select-arrow-fg, var(--ftl-muted)) 50%),
+    linear-gradient(135deg, var(--ftl-select-arrow-fg, var(--ftl-muted)) 50%, transparent 50%);
+  background-position: calc(100% - 1.1em) calc(50% - 3px), calc(100% - 0.75em) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* Autofill: browsers force their own fill/text color on
+   `:-webkit-autofill`, ignoring `background`/`color` outright. The only
+   reliable override is this absurdly long transition-delay trick, which
+   defers the browser's own paint long enough for ours to stick. */
+.ftl-input:-webkit-autofill,
+.ftl-input:-webkit-autofill:hover,
+.ftl-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ftl-input-fg, var(--ftl-text));
+  box-shadow: 0 0 0 1000px var(--ftl-input-bg, var(--ftl-surface)) inset;
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
 .ftl-label {
   display: block;
   margin-bottom: 0.35em;
@@ -235,6 +262,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border: 1px solid var(--ftl-field-row-border, var(--ftl-border));
   border-radius: var(--ftl-field-row-radius, var(--ftl-panel-radius, var(--ftl-radius)));
   padding: var(--ftl-field-row-padding, 0.55em 0.8em);
+  margin-bottom: var(--ftl-field-row-gap, 0.5rem);
 }
 .ftl-field-row:hover {
   border-color: var(--ftl-field-row-border-hover, var(--ftl-hairline));
@@ -389,6 +417,16 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   font-weight: 600;
 }
 .ftl-modal-footer { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem; }
+
+/* Native <dialog> bridge: an app using <dialog class="ftl-modal"> instead
+   of the .ftl-modal-overlay + div pattern gets the same panel styling
+   from the rule above (a plain selector, it already matches), plus a
+   themed ::backdrop here — the one piece <dialog> paints itself that the
+   overlay div above doesn't need. */
+dialog.ftl-modal::backdrop {
+  background: var(--ftl-overlay-bg, rgba(0, 0, 0, 0.6));
+  backdrop-filter: var(--ftl-overlay-blur, none);
+}
 
 .ftl-dropdown {
   background: var(--ftl-dropdown-bg, var(--ftl-surface-2));
@@ -610,6 +648,49 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border-color: var(--ftl-danger);
   box-shadow: var(--ftl-lamp-glow, 0 0 0.4rem var(--ftl-danger));
 }
+/* "Happening now", as distinct from "happened and succeeded" (.is-on). The
+   pulse only runs for users who haven't asked the OS to reduce motion; for
+   everyone else the lamp is simply lit in the accent. */
+.ftl-lamp.is-active {
+  background: var(--ftl-lamp-active, var(--ftl-accent));
+  border-color: var(--ftl-lamp-active, var(--ftl-accent));
+  box-shadow: var(--ftl-lamp-glow, 0 0 0.4rem var(--ftl-lamp-active, var(--ftl-accent)));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ftl-lamp.is-active { animation: ftl-lamp-pulse var(--ftl-lamp-pulse-duration, 1.2s) ease-in-out infinite; }
+}
+@keyframes ftl-lamp-pulse { 50% { opacity: 0.4; } }
+
+/* .ftl-segmented — a segmented control / toggle group: mutually-exclusive
+   view switches (list/grid, day/week/month). Distinct from .ftl-tabs
+   (navigates between different content, usually with a URL) and
+   .ftl-badge-button (independent, multi-select filter chips). Markup is a
+   plain button group; state lives in `.is-active`, same convention as
+   every other stateful component here. */
+.ftl-segmented {
+  display: inline-flex;
+  padding: var(--ftl-segmented-padding, 0.2rem);
+  background: var(--ftl-segmented-bg, var(--ftl-surface-2));
+  border: 1px solid var(--ftl-segmented-border, var(--ftl-border));
+  border-radius: var(--ftl-segmented-radius, var(--ftl-radius));
+  gap: 0.15rem;
+}
+.ftl-segmented-item {
+  padding: 0.35em 0.9em;
+  border: none;
+  border-radius: var(--ftl-segmented-item-radius, calc(var(--ftl-segmented-radius, var(--ftl-radius)) * 0.75));
+  background: transparent;
+  color: var(--ftl-segmented-item-fg, var(--ftl-muted));
+  font: inherit;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ftl-segmented-item:hover { color: var(--ftl-segmented-item-fg-hover, var(--ftl-text)); }
+.ftl-segmented-item.is-active {
+  background: var(--ftl-segmented-item-bg-active, var(--ftl-accent));
+  color: var(--ftl-segmented-item-fg-active, var(--ftl-on-accent));
+}
 
 /* --- .ftl-table -------------------------------------------------------- */
 .ftl-table {
@@ -639,13 +720,66 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 }
 .ftl-table tr.is-active td {
   background: var(--ftl-row-active-bg, transparent);
+}
+/* The marker belongs to the row, so only its leading cell draws it — on
+   every cell it read as a column divider repeated across the row. */
+.ftl-table tr.is-active td:first-child {
   box-shadow: var(--ftl-row-active-marker, inset 0.25rem 0 0 var(--ftl-accent));
+}
+/* A theme with a solid selection fill declares --ftl-row-selected-fg for
+   it; state-colored text in that row has to follow it too, or a green
+   "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
+   highlight leave the token unset and keep the state color. */
+.ftl-table tr.is-selected .ftl-status,
+.ftl-table tr.is-selected .ftl-stat-trend {
+  color: var(--ftl-row-selected-fg, var(--ftl-state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-table tr.is-selected td {
     background: var(--ftl-row-selected-bg, color-mix(in srgb, var(--ftl-accent) 18%, transparent));
   }
 }
+
+/* Row hover/focus: the pointer's row, or the row holding keyboard focus. */
+.ftl-table tbody tr:hover td,
+.ftl-table tbody tr:focus-within td {
+  background: var(--ftl-row-hover-bg, rgba(128, 128, 128, 0.12));
+}
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  .ftl-table tbody tr:hover td,
+  .ftl-table tbody tr:focus-within td {
+    background: var(--ftl-row-hover-bg, color-mix(in srgb, var(--ftl-accent) 8%, transparent));
+  }
+}
+/* Selected rows keep their own fill under the pointer. */
+.ftl-table tbody tr.is-selected:hover td,
+.ftl-table tbody tr.is-selected:focus-within td {
+  background: var(--ftl-row-selected-bg, color-mix(in srgb, var(--ftl-accent) 18%, transparent));
+}
+
+/* Sticky header: opt in per-table with `.ftl-table.is-sticky` — a plain
+   `<thead>` needs no extra markup, just its own opaque background so
+   scrolled rows don't show through. */
+.ftl-table.is-sticky thead th {
+  position: sticky;
+  top: 0;
+  background: var(--ftl-table-head-bg, var(--ftl-surface));
+  z-index: 1;
+}
+
+/* Sort indicator: the app sets `aria-sort="ascending"/"descending"` on the
+   active `<th>` (a native a11y attribute, not an .is-* class, since it's
+   already the correct semantic marker) and a clickable header gets a
+   cursor and hover tint for free. */
+.ftl-table th[aria-sort] { cursor: pointer; }
+.ftl-table th[aria-sort]:hover { color: var(--ftl-table-head-fg-hover, var(--ftl-text)); }
+.ftl-table th[aria-sort]::after {
+  margin-left: 0.35em;
+  font-size: 0.85em;
+  color: var(--ftl-table-sort-fg, var(--ftl-accent));
+}
+.ftl-table th[aria-sort="ascending"]::after { content: "\2191"; }
+.ftl-table th[aria-sort="descending"]::after { content: "\2193"; }
 
 /* --- Navigation and tabs ----------------------------------------------- */
 .ftl-nav {
@@ -710,10 +844,10 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   font-size: 0.75em;
   font-weight: 600;
 }
-.ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent); }
-.ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger); }
-.ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success); }
-.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning); }
+.ftl-badge-accent { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-accent-text, var(--ftl-accent)); }
+.ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger-text, var(--ftl-danger)); }
+.ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success-text, var(--ftl-success)); }
+.ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning-text, var(--ftl-warning)); }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
   .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
@@ -746,10 +880,16 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   border-radius: var(--ftl-status-dot-radius, 50%);
   background: currentColor;
 }
-.ftl-status-ok { color: var(--ftl-success); }
-.ftl-status-warn { color: var(--ftl-warning); }
-.ftl-status-error { color: var(--ftl-danger); }
-.ftl-status-idle { color: var(--ftl-muted); }
+/* Semantic colors used AS TEXT read --ftl-<state>-text, falling back to the
+   fill color. A fill that works for a lamp or a button background (bright
+   yellow, mint, pale pink) is often unreadable as small text on the theme's
+   own surface, so a theme sets a text-weight variant where they differ.
+   The color travels in --ftl-state-fg so a selected table row can swap it
+   for --ftl-row-selected-fg (see .ftl-table) without losing it elsewhere. */
+.ftl-status-ok { --ftl-state-fg: var(--ftl-success-text, var(--ftl-success)); color: var(--ftl-state-fg); }
+.ftl-status-warn { --ftl-state-fg: var(--ftl-warning-text, var(--ftl-warning)); color: var(--ftl-state-fg); }
+.ftl-status-error { --ftl-state-fg: var(--ftl-danger-text, var(--ftl-danger)); color: var(--ftl-state-fg); }
+.ftl-status-idle { --ftl-state-fg: var(--ftl-muted); color: var(--ftl-state-fg); }
 
 /* --- htmx state ------------------------------------------------------- *
  * htmx sets these classes around every swap. Handling them here means an
@@ -858,7 +998,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   color: var(--ftl-context-menu-item-fg, var(--ftl-text));
   text-align: left;
 }
-.ftl-context-menu-item.is-danger { color: var(--ftl-danger); }
+.ftl-context-menu-item.is-danger { color: var(--ftl-danger-text, var(--ftl-danger)); }
 .ftl-context-menu-item:hover,
 .ftl-context-menu-item:focus-visible {
   background: var(--ftl-context-menu-item-bg-hover, var(--ftl-dropdown-item-bg-hover, var(--ftl-accent)));
@@ -907,7 +1047,7 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 /* .ftl-btn-icon — a circular icon-only button, layered on .ftl-btn. */
 .ftl-btn-icon {
   --ftl-btn-padding: 0;
-  --ftl-btn-radius: 50%;
+  --ftl-btn-radius: var(--ftl-btn-icon-radius, 50%);
   width: var(--ftl-btn-icon-size, 2.2em);
   height: var(--ftl-btn-icon-size, 2.2em);
   flex-shrink: 0;
@@ -1135,8 +1275,8 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   text-transform: uppercase;
 }
 .ftl-stat-trend { font-size: 0.8em; }
-.ftl-stat-trend.is-up { color: var(--ftl-success); }
-.ftl-stat-trend.is-down { color: var(--ftl-danger); }
+.ftl-stat-trend.is-up { --ftl-state-fg: var(--ftl-success-text, var(--ftl-success)); color: var(--ftl-state-fg); }
+.ftl-stat-trend.is-down { --ftl-state-fg: var(--ftl-danger-text, var(--ftl-danger)); color: var(--ftl-state-fg); }
 
 /* .ftl-divider */
 .ftl-divider {
@@ -1203,6 +1343,17 @@ html[data-contrast="high"] {
 html[data-contrast="high"] :focus-visible {
   outline-width: 3px;
 }
+/* The OS preference applies the same boost automatically. An app can force
+   it off with data-contrast="standard" (and on with "high", above). */
+@media (prefers-contrast: more) {
+  html:not([data-contrast="standard"]) {
+    --ftl-hairline: var(--ftl-border);
+    --ftl-muted: var(--ftl-text);
+  }
+  html:not([data-contrast="standard"]) :focus-visible {
+    outline-width: 3px;
+  }
+}
 
 /* --- Accent swatches (optional per-theme accent override) ---------------
  * A theme MAY offer a curated set of alternate accents as numbered token
@@ -1220,6 +1371,142 @@ html[data-accent="3"] { --ftl-accent: var(--ftl-accent-swatch-3, var(--ftl-accen
 html[data-accent="4"] { --ftl-accent: var(--ftl-accent-swatch-4, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-4, var(--ftl-on-accent)); }
 html[data-accent="5"] { --ftl-accent: var(--ftl-accent-swatch-5, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-5, var(--ftl-on-accent)); }
 html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-6, var(--ftl-on-accent)); }
+
+/* --- Chart palette -------------------------------------------------------
+ * For canvas/SVG charts drawn by app JS, which can't see CSS. Read them with
+ * getComputedStyle(document.documentElement).getPropertyValue(...) and read
+ * again after a theme switch. Defaults derive from base tokens, so every
+ * theme has a usable palette; themes override individual series. */
+:root {
+  --ftl-chart-text: var(--ftl-muted);
+  --ftl-chart-grid: var(--ftl-hairline);
+  --ftl-chart-series-1: var(--ftl-accent);
+  --ftl-chart-series-2: var(--ftl-success);
+  --ftl-chart-series-3: var(--ftl-warning);
+  --ftl-chart-series-4: var(--ftl-danger);
+  --ftl-chart-series-5: var(--ftl-accent-2);
+  --ftl-chart-series-6: var(--ftl-muted);
+}
+
+/* --- .ftl-log -------------------------------------------------------------
+ * A log/diagnostics console. The app appends lines and owns autoscroll;
+ * overflow-anchor keeps a user who has scrolled up where they are. */
+.ftl-log {
+  max-height: var(--ftl-log-height, 24rem);
+  overflow: auto;
+  overflow-anchor: auto;
+  padding: 0.5rem 0;
+  background: var(--ftl-log-bg, var(--ftl-surface));
+  color: var(--ftl-log-fg, var(--ftl-text));
+  border: 1px solid var(--ftl-log-border, var(--ftl-border));
+  border-radius: var(--ftl-log-radius, var(--ftl-radius));
+  font-family: var(--ftl-font-mono);
+  font-size: 0.82em;
+  line-height: 1.5;
+}
+.ftl-log-line {
+  display: flex;
+  gap: 0.75em;
+  padding: 0 0.75rem;
+  border-left: 3px solid transparent;
+  white-space: var(--ftl-log-wrap, pre-wrap);
+  overflow-wrap: anywhere;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1.5em;
+}
+.ftl-log-nowrap .ftl-log-line { white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.ftl-log-time { flex: none; color: var(--ftl-log-time-fg, var(--ftl-muted)); }
+.ftl-log-line[data-level="debug"] { color: var(--ftl-log-debug, var(--ftl-muted)); }
+.ftl-log-line[data-level="warn"] {
+  color: var(--ftl-log-warn, var(--ftl-warning-text, var(--ftl-warning)));
+  border-left-color: var(--ftl-warning);
+}
+.ftl-log-line[data-level="error"] {
+  color: var(--ftl-log-error, var(--ftl-danger-text, var(--ftl-danger)));
+  border-left-color: var(--ftl-danger);
+}
+
+/* --- Browser chrome ------------------------------------------------------
+ * Surfaces the platform paints itself rather than any .ftl-* markup, so a
+ * theme that nails every component still leaked an unthemed native blue
+ * selection, a default OS scrollbar, or gray browser placeholder text —
+ * the tells that break immersion fastest in a retro/console theme. All
+ * token-driven with base-token fallbacks, same as every component above:
+ * zero theme-file changes required to pick these up.
+ */
+
+/* Text selection highlight. */
+::selection {
+  background: var(--ftl-selection-bg, var(--ftl-accent));
+  color: var(--ftl-selection-fg, var(--ftl-on-accent));
+}
+
+/* Scrollbars: Firefox's two-color shorthand plus the WebKit/Blink pseudo
+   elements it has no equivalent for. Track defaults to transparent — most
+   themes read better with the page/surface showing through than a second
+   opaque fill competing with the thumb. */
+:root {
+  scrollbar-color: var(--ftl-scrollbar-thumb, var(--ftl-border)) var(--ftl-scrollbar-track, transparent);
+  scrollbar-width: var(--ftl-scrollbar-width, thin);
+}
+::-webkit-scrollbar {
+  width: var(--ftl-scrollbar-size, 0.85rem);
+  height: var(--ftl-scrollbar-size, 0.85rem);
+}
+::-webkit-scrollbar-track { background: var(--ftl-scrollbar-track, transparent); }
+::-webkit-scrollbar-thumb {
+  background: var(--ftl-scrollbar-thumb, var(--ftl-border));
+  border-radius: var(--ftl-scrollbar-radius, 999px);
+  border: var(--ftl-scrollbar-thumb-border, 2px solid transparent);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ftl-scrollbar-thumb-hover, var(--ftl-accent)); }
+
+/* Form placeholder text — browsers default this to their own gray,
+   independent of --ftl-input-fg. */
+.ftl-input::placeholder,
+.ftl-textarea::placeholder { color: var(--ftl-input-placeholder, var(--ftl-muted)); opacity: 1; }
+
+/* Text-entry caret: cheap to retarget, easy to forget — left at the
+   browser default it's whatever native color the OS picked, not the
+   theme's accent. */
+.ftl-input,
+.ftl-textarea { caret-color: var(--ftl-input-caret, var(--ftl-focus)); }
+
+/* <kbd> — an inline keyboard-shortcut glyph. Common in retro-OS and
+   console themes (tooltips, command references) and left entirely to the
+   browser's tiny-monospace-box default otherwise. */
+kbd {
+  display: inline-block;
+  padding: 0.1em 0.45em;
+  background: var(--ftl-kbd-bg, var(--ftl-surface-2));
+  color: var(--ftl-kbd-fg, var(--ftl-text));
+  border: 1px solid var(--ftl-kbd-border, var(--ftl-border));
+  border-radius: var(--ftl-kbd-radius, calc(var(--ftl-radius) * 0.6));
+  box-shadow: var(--ftl-kbd-shadow, inset 0 -1px 0 var(--ftl-kbd-border, var(--ftl-border)));
+  font-family: var(--ftl-font-mono);
+  font-size: 0.85em;
+  line-height: 1.4;
+}
+
+/* <code>/<pre> — inline and block code, distinct from .ftl-readout (a
+   live machine value) and .ftl-mono (a bare font-family utility). */
+code {
+  padding: 0.15em 0.4em;
+  background: var(--ftl-code-bg, var(--ftl-surface-2));
+  color: var(--ftl-code-fg, var(--ftl-text));
+  border-radius: calc(var(--ftl-radius) * 0.5);
+  font-family: var(--ftl-font-mono);
+  font-size: 0.9em;
+}
+pre {
+  padding: calc(1rem * var(--ftl-density));
+  background: var(--ftl-code-block-bg, var(--ftl-surface));
+  border: 1px solid var(--ftl-code-block-border, var(--ftl-border));
+  border-radius: var(--ftl-radius);
+  overflow-x: auto;
+}
+pre code { padding: 0; background: none; border-radius: 0; }
 
 /* --- Palette variants (optional per-theme, e.g. data-variant="grape") ----
  * A theme may ship more than one palette under one identity — the way the
@@ -1371,6 +1658,12 @@ html[data-theme="steampunk"] {
   --ftl-danger: #9e3a2b;
   --ftl-success: #3f5c26;
   --ftl-warning: #c9962c;
+  /* Text-weight variants of the state colors, for .ftl-status, trends,
+     colored badges and danger menu items: same hue, adjusted to 4.5:1 on
+     this theme's surfaces. The fills above stay as-is for lamps/buttons. */
+  --ftl-success-text: #7fb750;
+  --ftl-warning-text: #d29e32;
+  --ftl-danger-text: #df9488;
   --ftl-on-accent: #241a12;
   --ftl-on-danger: #f0e0c0;
   --ftl-on-success: #f0e0c0;
