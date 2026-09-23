@@ -66,6 +66,7 @@ import re
 import subprocess
 import sys
 
+import cssparse  # noqa: E402
 import build_manifest  # noqa: E402  (sys.path[0] is scripts/ when run as a script)
 
 REQUIRED_TOKENS = [
@@ -99,38 +100,25 @@ def warn(theme, rule, msg):
     warnings.append(f"{theme}: [{rule}] {msg}")
 
 
-def strip_comments(css):
-    return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+strip_comments = cssparse.strip_comments
+
+REDUCE_GATE = re.compile(r"prefers-reduced-motion\s*:\s*reduce", re.I)
+MOTION_GATE = re.compile(r"prefers-reduced-motion\s*:\s*no-preference", re.I)
 
 
-def strip_gated_motion(css, when="no-preference"):
-    """Remove @media (prefers-reduced-motion: <when>) blocks."""
-    out, i, n = [], 0, len(css)
-    gate = re.compile(r"@media\s*\(\s*prefers-reduced-motion\s*:\s*" + when + r"\s*\)\s*\{")
-    while i < n:
-        m = gate.search(css, i)
-        if not m:
-            out.append(css[i:])
-            break
-        out.append(css[i:m.start()])
-        depth, j = 1, m.end()
-        while j < n and depth:
-            if css[j] == "{":
-                depth += 1
-            elif css[j] == "}":
-                depth -= 1
-            j += 1
-        i = j
-    return "".join(out)
+def in_gate(context, gate):
+    return any(gate.search(p) for p in context)
 
 
-def rules_of(css):
-    """[(selector, body)] for every comma-split selector, comments removed."""
-    out = []
-    for m in re.finditer(r"([^{}@]+)\{([^{}]*)\}", strip_comments(css)):
-        for sel in m.group(1).split(","):
-            out.append((sel.strip(), m.group(2)))
-    return out
+def ftl_decls(body):
+    """{name: value} for the --ftl-* declarations in a block, name unprefixed."""
+    return {n[len("--ftl-"):]: v for n, v in cssparse.declarations(body)
+            if n.startswith("--ftl-")}
+
+
+def variant_of(selector):
+    m = re.search(r'\[data-variant="([\w-]+)"\]', selector)
+    return m.group(1) if m else None
 
 
 def luminance(rgb):
@@ -227,20 +215,29 @@ def color_stops(tokens, value):
     return stops
 
 
-def check_app_bar(theme, tokens, css):
+def check_app_bar(theme, tokens, css, variant=None):
     """Nav text in the app bar vs every color stop of the bar background.
 
     .ftl-nav-brand/-item read --ftl-nav-*-fg, which themes tune for their
     content area; a bar painted in the accent (LCARS, XP, Material) needs
     those re-pointed in a `.ftl-app-bar` scoped block or the brand goes
-    invisible. --ftl-app-bar-fg does NOT reach them."""
+    invisible. --ftl-app-bar-fg does NOT reach them.
+
+    For a palette variant, tokens are the variant-merged ones, and both the
+    theme's own `.ftl-app-bar` block and the variant's apply — the variant's
+    last, since its extra attribute selector outranks the base one. Another
+    variant's `.ftl-app-bar` block never does: the old any-selector-ending-
+    in-.ftl-app-bar match let the last variant's bar tokens stand in for the
+    default palette."""
     if not any(k.startswith("app-") for k in tokens):
         return  # not shell-aware; the bar falls back to --ftl-nav-bg
     scoped = dict(tokens)
-    for sel, decls in rules_of(css):
-        if re.search(r"\.ftl-app-bar$", sel.strip()):
-            for t in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", decls):
-                scoped[t.group(1)] = t.group(2).strip()
+    bar_rules = [r for r in cssparse.rules(css)
+                 if r.selector.endswith(".ftl-app-bar") and cssparse.unconditional(r.context)]
+    for wanted in (None, variant) if variant else (None,):
+        for r in bar_rules:
+            if variant_of(r.selector) == wanted:
+                scoped.update(ftl_decls(r.body))
     bar_value = scoped.get("app-bar-bg") or scoped.get("nav-bg") or scoped.get("surface", "")
     base = resolve(tokens, tokens.get("bg", "")) or (0, 0, 0, 1.0)
     stops = [over(s, base) for s in color_stops(scoped, bar_value)]
@@ -279,11 +276,13 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     # scoped to one element, e.g. a `.ftl-app-status` override, stand in for
     # the theme-wide token.
     root_sel = f'html[data-theme="{theme}"]'
+    # A root block inside @media/@supports applies only sometimes, so it is
+    # not the default palette either.
+    theme_rules = cssparse.rules(css)
     tokens = {}
-    for sel, decls in rules_of(css):
-        if sel == root_sel:
-            for m in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", decls):
-                tokens[m.group(1)] = m.group(2).strip()
+    for r in theme_rules:
+        if r.selector == root_sel and cssparse.unconditional(r.context):
+            tokens.update(ftl_decls(r.body))
 
     missing = [t for t in REQUIRED_TOKENS if t not in tokens]
     if missing:
@@ -323,8 +322,6 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     chrome_path = os.path.join(os.path.dirname(path), "chrome.css")
     chrome = open(chrome_path).read() if os.path.exists(chrome_path) else ""
     bundled = css + "\n" + chrome
-    bundled_body = strip_comments(bundled)
-    reduced_rules = set(rules_of(bundled)) - set(rules_of(strip_gated_motion(strip_comments(bundled), "reduce")))
 
     for m in re.finditer(r"url\(\s*['\"]?(https?:)?//", strip_comments(chrome)):
         fail(theme, "remote-url", f"chrome.css contains a remote `url(...)` reference "
@@ -332,7 +329,9 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     for m in re.finditer(r"@import\s+(?:url\()?['\"]?(https?:)?//", strip_comments(chrome)):
         fail(theme, "remote-url", f"chrome.css contains a remote `@import` (`{m.group(0)}`).")
 
-    for sel, decls in rules_of(bundled):
+    for rule in cssparse.rules(bundled):
+        sel, decls = rule.selector, rule.body
+        props = dict(cssparse.declarations(decls))
         last = sel.split()[-1] if sel.split() else sel
         classes = set(re.findall(r"\.([\w-]+)", last))
         has_pseudo = bool(re.search(r":[\w-]+", last))
@@ -341,20 +340,26 @@ for path in sorted(glob.glob("themes/*/theme.css")):
         for comp in BASE_COMPONENTS:
             if classes == {comp} and not has_pseudo:
                 for prop in FORBIDDEN_ON_BASE:
-                    if re.search(r"(?:^|;)\s*" + prop + r"\s*:", decls):
+                    if prop in props:
                         fail(theme, "variants",
                              f"`{sel}` sets `{prop}` on a base component — this outranks "
                              f"core's .{comp}-* variant rules and erases them. Set "
                              f"--{comp}-bg / --{comp}-fg at root scope instead.")
-        if re.search(r"outline\s*:\s*none", decls) and "focus" in sel:
+        if re.match(r"(none|0)\b", props.get("outline", "")) and "focus" in sel:
             fail(theme, "focus",
                  f"`{sel}` removes the focus outline. Recolor via --ftl-focus or add a "
                  f"glow via --ftl-focus-ring instead; never remove the indicator.")
         if (last in ("*", "*::before", "*::after") and "!important" in decls
-                and (sel, decls) not in reduced_rules):
+                and not in_gate(rule.context, REDUCE_GATE)):
             fail(theme, "important",
                  f"`{sel}` uses !important on a universal selector — it also erases "
                  f"state indicators like .ftl-table tr.is-active's marker.")
+        if (any(re.search(r"\binfinite\b", props.get(p, ""))
+                for p in ("animation", "animation-iteration-count"))
+                and not in_gate(rule.context, MOTION_GATE)):
+            fail(theme, "motion", f"`{sel}` runs an infinite animation outside a "
+                 "prefers-reduced-motion: no-preference gate — it plays for users who "
+                 "asked the OS to stop it; wrap it like matrix does")
 
     # Every theme states its intent in prose beside its CSS: what look it is
     # reproducing, its core values, and how to tell an inauthentic result.
@@ -391,18 +396,21 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     # tokens wholesale, so each is a palette in its own right and gets the
     # same floors. Previously only the first value of each token was read,
     # which silently skipped every variant.
-    for m in re.finditer(r'\[data-variant="([\w-]+)"\]\s*\{([^{}]*)\}', body):
-        vtokens = dict(tokens)
-        for t in re.finditer(r"--ftl-([a-z0-9-]+)\s*:\s*([^;]+);", m.group(2)):
-            vtokens[t.group(1)] = t.group(2).strip()
-        check_contrast(f"{theme}[{m.group(1)}]", vtokens, exempt)
+    variants = {}
+    for r in theme_rules:
+        v = variant_of(r.selector)
+        if v and r.selector == f'{root_sel}[data-variant="{v}"]' and cssparse.unconditional(r.context):
+            variants.setdefault(v, dict(tokens)).update(ftl_decls(r.body))
 
     check_app_bar(theme, tokens, css)
+    for v, vtokens in variants.items():
+        check_contrast(f"{theme}[{v}]", vtokens, exempt)
+        check_app_bar(f"{theme}[{v}]", vtokens, css, variant=v)
 
     # Coverage: report components the theme never touches, so an author can
     # see what they skipped. Informational, not a failure — token-only
     # theming is a legitimate and encouraged starting point.
-    styled = {c for sel, _ in rules_of(css) for c in re.findall(r"\.(ftl-[\w-]+)", sel)}
+    styled = {c for r in theme_rules for c in re.findall(r"\.(ftl-[\w-]+)", r.selector)}
     proped = {m.group(1) for m in re.finditer(r"--ftl-(btn|panel|modal|input|nav|table|tab|badge|progress|slider|switch|dropdown)\b", body)}
     if not styled and not proped:
         warn(theme, "coverage", "styles no components at all beyond tokens")
@@ -414,12 +422,6 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     if not re.search(r"--ftl-app-[\w-]+\s*:", body):
         warn(theme, "layout", "defines no --ftl-app-* layout personality — the app "
                               "shell will look identical to every other such theme")
-
-    ungated = strip_gated_motion(bundled_body)
-    if re.search(r"animation(?:-iteration-count)?\s*:[^;}]*\binfinite\b", ungated):
-        fail(theme, "motion", "infinite animation outside a "
-             "prefers-reduced-motion: no-preference gate plays for users who "
-             "asked the OS to stop it — wrap it like matrix does")
 
     if "requires:" not in readme_text.lower():
         fail(theme, "requires", "README.md has no 'Requires: L0/L1' badge — "

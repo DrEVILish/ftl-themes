@@ -15,6 +15,8 @@ dist/<slug>-tokens.css — the theme's tokens only: its html[data-theme]
 import re
 from pathlib import Path
 
+import cssparse
+
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 
@@ -25,23 +27,7 @@ def rewrite_urls(css):
 
 def statements(css):
     """Top-level statements: (prelude, body) for blocks, (text, None) otherwise."""
-    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-    out, i, n = [], 0, len(css)
-    while i < n:
-        brace, semi = css.find("{", i), css.find(";", i)
-        if brace == -1 and semi == -1:
-            break
-        if semi != -1 and (brace == -1 or semi < brace):
-            out.append((css[i:semi + 1].strip(), None))
-            i = semi + 1
-            continue
-        depth, j = 1, brace + 1
-        while depth:
-            depth += {"{": 1, "}": -1}.get(css[j], 0)
-            j += 1
-        out.append((css[i:brace].strip(), css[brace + 1:j - 1]))
-        i = j
-    return out
+    return cssparse.statements(cssparse.strip_comments(css))
 
 
 def tokens_only(css):
@@ -56,7 +42,8 @@ def tokens_only(css):
             if inner.strip():
                 kept.append(f"{prelude} {{\n{inner}\n}}")
         elif not prelude.startswith("@"):
-            sels = [s.strip() for s in prelude.split(",") if ".ftl-" not in s]
+            # split_top, not split(","): `:is(h1, h2)` is one selector.
+            sels = [s for s in cssparse.split_top(prelude) if ".ftl-" not in s]
             if sels:
                 kept.append(f"{', '.join(sels)} {{{body}}}")
     return "\n".join(kept)

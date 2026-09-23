@@ -53,8 +53,7 @@ hardcoding a list or scraping CSS comments.
   reads correctly if you ever qualify ids (see "Avoiding name collisions"
   below) without re-deriving the mapping.
 - **`version` identifies the build**, not the theme — a content hash of
-  every `dist/*.css` bundle's exact bytes (plus `-dirty` when the CSS
-  sources have uncommitted edits). It changes iff any served CSS changes,
+  every `dist/*.css` bundle's exact bytes. It changes iff any served CSS changes,
   so a submodule-style integrator reading it gets a meaningful signal from
   a pointer bump. It is identical across every entry in one manifest. Log
   `version` when reporting a rendering bug — dist bundles inline the core

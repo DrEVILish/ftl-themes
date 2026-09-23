@@ -7,10 +7,14 @@ bundles — importing this module instead of re-implementing the logic keeps
 the stamp and the cross-check from drifting apart:
 
   version    deterministic: a git hash-object over every dist/*.css bundle's
-             exact bytes, so it changes iff any served CSS changes, and a
-             -dirty suffix when the CSS sources have uncommitted edits.
+             exact bytes, so it changes iff any served CSS changes.
              (Replaces git-describe + wall-clock builtAt, which churned on
              every rebuild and made submodule-pointer diffs meaningless.)
+             It used to carry a -dirty suffix while core/ or themes/ had
+             uncommitted edits, which made every source change a two-commit
+             affair: the manifest built alongside the edit was stamped
+             -dirty, and the clean rebuild after committing differed from
+             it. The hash alone already names the exact CSS served.
   scheme     light/dark, derived exactly the way CuTePi's routes/themes.go
              derived it before this field existed (that app was the
              reference implementation): --ftl-surface, composited over the
@@ -26,10 +30,10 @@ import os
 import re
 import subprocess
 
-VAR_RE = re.compile(r"--(ftl-[a-z0-9-]+)\s*:\s*([^;]+)")
+import cssparse
+
 HEX_RE = re.compile(r"^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 RGBA_RE = re.compile(r"^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+)(%)?)?\s*\)$")
-RULE_RE = re.compile(r"([^{}@]+)\{([^{}]*)\}")
 
 
 def parse_color(value):
@@ -62,10 +66,13 @@ def root_tokens(src, slug):
     (imac-g3's tangerine) stamp the default theme's luminance."""
     root = 'html[data-theme="%s"]' % slug
     out = {}
-    for m in RULE_RE.finditer(re.sub(r"/\*.*?\*/", "", src, flags=re.S)):
-        if root in (s.strip() for s in m.group(1).split(",")):
-            for t in VAR_RE.finditer(m.group(2)):
-                out["--" + t.group(1)] = t.group(2).strip()
+    for rule in cssparse.rules(src):
+        # A root block inside @media/@supports only applies sometimes, so
+        # it is not the default palette either.
+        if rule.selector == root and cssparse.unconditional(rule.context):
+            for name, value in cssparse.declarations(rule.body):
+                if name.startswith("--ftl-"):
+                    out[name] = value
     return out
 
 
@@ -119,9 +126,7 @@ def version():
     blob = b"".join(open(f, "rb").read() for f in sorted(glob.glob("dist/*.css")))
     h = subprocess.run(["git", "hash-object", "--stdin"], input=blob,
                        capture_output=True).stdout.decode().strip()[:12]
-    dirty = subprocess.run(["git", "status", "--porcelain", "--", "core", "themes"],
-                           capture_output=True, text=True).stdout.strip()
-    return "ftl-" + h + ("-dirty" if dirty else "")
+    return "ftl-" + h
 
 
 def write_manifest():
@@ -139,7 +144,7 @@ def write_manifest():
             "description": header_field(src, "Description"),
             "hasChrome": os.path.exists(os.path.join(os.path.dirname(path), "chrome.css")),
             "shellAware": bool(re.search(r"--ftl-app-[A-Za-z0-9-]+\s*:",
-                                         re.sub(r"/\*.*?\*/", "", src, flags=re.S))),
+                                         cssparse.strip_comments(src))),
             "version": version_,
             "scheme": scheme,
             "luminance": luminance,

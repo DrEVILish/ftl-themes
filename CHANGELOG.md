@@ -3,6 +3,36 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## Unreleased
+
+### Changed
+
+- **`themes.json` `version` no longer carries a `-dirty` suffix.** It is
+  the content hash of the bundles and nothing else. The suffix described
+  the author's working tree, not the build, and forced every source change
+  into two commits. Integrators that matched on `-dirty` should stop; the
+  hash still changes iff any served CSS changes.
+
+### Fixed
+
+- `scheme`/`luminance` are derived from the theme's unconditional root
+  block only; imac-g3's luminance was read from its Tangerine variant.
+- Bundles of deleted themes are removed from `dist/` by the build.
+- The tokens bundle no longer splits `:is(a, b)`-style selectors at the
+  inner comma (which produced invalid CSS).
+
+### Lint
+
+- A shared CSS reader (`scripts/cssparse.py`) replaces regex scanning:
+  rules inside `@media`/`@supports` no longer count as root tokens, and
+  selector lists split correctly.
+- `chrome.css` is linted like `theme.css`; the app-bar contrast check runs
+  per palette variant; `examples/` must match a fresh build; the motion
+  rule catches `animation-iteration-count: infinite`; the focus rule
+  catches `outline: 0`.
+- `scripts/audit_rendered.mjs` reads text colors of any syntax (oklch,
+  lab, color-mix) instead of assuming `rgb()`.
+
 ## v3.10.0 — cascade layers and token-only bundles
 
 ### Added
