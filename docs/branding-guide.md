@@ -8,25 +8,31 @@ rendered controls (contrast, focus states, hit targets).
 
 ## Method
 
-Each theme is scored 1–10 across four factors, then combined into one
-**likeness** score (how close the render reads to the real thing) and one
-**ease-of-use** score (can someone actually use this UI):
+The first pass at this document scored every theme myself, and scored too
+generously (8.5+ across the board) — reviewing your own work rarely
+catches its own blind spots. The scores below are from a second, stricter
+pass: **one independent review agent per shipping theme (18 total)**,
+each given the identical rubric and told explicitly to score like a
+skeptical outside auditor, not a cheerleader, reserving 9-10 for
+"would fool a fan of the reference in a side-by-side comparison." Each
+agent worked from the theme's CSS, its own README, its real reference
+images in `references/<slug>/`, and a fresh render — independently, with
+no visibility into the other 17 reviews or my own earlier scores.
 
-| Factor | What it checks |
-|---|---|
-| Color | Hue, saturation and value match the reference's actual palette, not just "in the spirit of" |
-| Structure | Shapes, radii, borders, layout rhythm match the reference's real construction |
-| Signature | The one tell-tale detail (see CONTRACT.md's Theme index) is present and reads clearly |
-| Type | Font stack, weight and casing match the reference's typographic voice |
+Each factor is scored 1–10, weighted into one overall:
 
-Ease-of-use leans on what `scripts/check.py` already enforces mechanically
-(4.5:1 text contrast, visible focus rings, motion gated behind
-`prefers-reduced-motion`) plus a manual pass on hit-target size and
-whether the theme's decoration ever competes with legibility.
+| Factor | Weight | What it checks |
+|---|:-:|---|
+| Color accuracy | 25% | Hue, saturation and value match the reference's actual palette, not just "in the spirit of" |
+| Structural fidelity | 25% | Shapes, radii, borders, layout rhythm match the reference's real construction |
+| Signature detail | 20% | The one tell-tale detail is present, prominent, and would let someone guess the reference from the render alone |
+| Typography | 10% | Font stack, weight and casing match the reference's typographic voice |
+| Accessibility & usability | 20% | Legibility and clickability judged by eye against the actual render, not assumed from a lint pass |
 
-**Any theme scoring below 8/10 gets fixed and re-rendered before this
-document ships** — see "Revision log" at the bottom for what that caught
-this pass.
+**Every theme scoring below 7/10 gets a concrete fix, not just a lower
+number.** The first strict pass came back with all 18 below 7 (range
+3.4–6.9) — see the table and "What the panel found" below for exactly
+what each agent's report said and what was changed in response.
 
 ## Icon pack
 
@@ -53,137 +59,153 @@ signature style calls for it:
 See `example.html`'s "Icon pack" and "Icon buttons" sections for the full
 set rendered live in whichever theme is selected.
 
-## Shipping themes — scores
+## Shipping themes — strict panel scores
 
-| Theme | Accent | Likeness | Ease of use | Overall |
-|---|---|:-:|:-:|:-:|
-| `alienware` | `#00d4ff` | 8.5 | 9.0 | **8.8** |
-| `aqua` | `#2a74d0` | 9.0 | 9.0 | **9.0** |
-| `barbie` | `#c81b7a` | 8.5 | 9.0 | **8.8** |
-| `bloomberg` | `#ffcc00` | 9.0 | 8.5 | **8.8** |
-| `cyber-goth` | `#b6ff1a` | 8.5 | 8.5 | **8.5** |
-| `death-star` | `#2f6fff` | 8.5 | 9.0 | **8.8** |
-| `hot-wheels` | `#ff5f00` | 8.5 | 8.5 | **8.5** |
-| `imac-g3` | `#00b0d4` | 9.0 | 8.5 | **8.8** |
-| `lcars` | `#ff9900` | 8.5 | 8.5 | **8.5** |
-| `lego-classic` | `#d0111b` | 9.0 | 9.0 | **9.0** |
-| `matrix` | `#00ff41` | 9.5 | 8.5 | **9.0** |
-| `msdos` | `#00aaaa` | 9.0 | 8.5 | **8.8** |
-| `vaporwave` | `#ff71ce` | 8.5 | 8.5 | **8.5** |
-| `win7-aero` | `#1265c7` | 9.0 | 9.0 | **9.0** |
-| `winamp-classic` | `#00ff00` | 8.5 | 8.5 | **8.5** |
-| `windows95` | `#000080` | 9.5 | 9.5 | **9.5** |
-| `winxp-luna` | `#0054e3` | 9.0 | 9.0 | **9.0** |
-| `wmp11` | `#3fa9f5` | 8.5 | 8.5 | **8.5** |
+Each row is that theme's independent agent's verbatim weighted score on
+the pre-fix render, plus what was actually broken and what changed.
+Post-fix numbers aren't shown as a re-scored table — they haven't been
+re-run through a fresh independent agent yet, which is the honest
+standard this document holds everything else to; treat the fixes as
+"addresses the panel's stated finding," not as a verified new score,
+until a re-review happens.
 
-All 18 clear the 8.0 floor. Notes on the closest calls and what keeps
-each one honest, below.
+| Theme | Panel score | Biggest tell the panel found | Fixed? |
+|---|:-:|---|:-:|
+| `death-star` | 3.4 | Reference is white-linework-and-red on black; theme was blue-accented and borderless | ✅ palette + grid reworked |
+| `barbie` | 4.7 | No trace of the brand's actual cursive-script wordmark | ✅ vendored a script face for h1/brand |
+| `imac-g3` | 4.6 | Dark desaturated navy-teal, not the hardware's bright candy blue | ✅ palette brightened/resaturated |
+| `hot-wheels` | 5.6 | Totally missing Hot Wheels' actual blue-and-orange brand palette | ✅ added the blue as a structural color |
+| `alienware` | 5.6 | AlienFX rail strip was coded but never rendered (empty-rail bug) | ✅ rail now renders; added corner brackets |
+| `winxp-luna` | 5.6 | No window-control chrome (min/max/close) anywhere | ✅ added the control cluster |
+| `lcars` | 5.5 | The elbow (candy rail) never rendered — same empty-rail bug as alienware | ✅ rail now renders |
+| `cyber-goth` | 5.2 | Primary button's hover glow contradicted the theme's own documented color rule | ✅ bug fixed |
+| `win7-aero` | 5.2 | `--ftl-app-bg` was never set, so `backdrop-filter: blur()` had nothing to blur | ✅ textured desktop gradient added |
+| `winamp-classic` | 5.2 | LCD green flooded headings/nav/buttons instead of staying confined to readouts | ✅ confined to readouts/meters |
+| `wmp11` | 5.4 | "Round" play button was actually an oval sized to its label text | ✅ true fixed-diameter circle |
+| `aqua` | 5.9 | No traffic-light window controls anywhere — Aqua's #1 tell | ✅ added; pinstripe contrast raised |
+| `windows95` | 5.9 | Page-hero-scale headings and a single-layer press bevel gave it away as a recolored webpage | ✅ dialog-scale headings, full bevel |
+| `bloomberg` | 6.2 | Function-key color row was coded (`<kbd>`) but never rendered anywhere | ✅ added to the status bar |
+| `lego-classic` | 6.2 | Studs (the #1 LEGO tell) were a barely-visible 12–15% opacity smudge | ✅ real highlight+shadow ring |
+| `msdos` | 6.4 | No visible F-key status bar; disabled buttons nearly invisible | ✅ added F-key strip + greyed disabled state |
+| `matrix` | 6.5 | "Rain" was flat-opacity dashes with no glyph brightness falloff | ✅ bright head + dim tail per column |
+| `vaporwave` | 6.9 | No sun disc or perspective grid — the genre's single most iconic image | ✅ added both to the status strip |
 
-### `alienware` — 8.8
-Reference: `references/alienware/` (Alienware Invader icon pack, AlienFX
-Eclipse Rainmeter skin). Color and the angular `clip-path`-cut corners
-match the reference chrome closely; the real thing wraps a light strip
-around all four corners where this theme runs one down the rail — a
-deliberate simplification for a reusable app-bar, not a miss.
+Every one of these was independently scored below the 7.0 floor on the
+strict rubric, and every one has a real, committed CSS fix addressing the
+specific defect the panel named — see the commit that introduced this
+table for the full diff and per-theme rationale.
 
-### `aqua` — 9.0
-Reference: `references/aqua/` (Mac OS X 10.6 UI kit, Leopard icon pack).
-The 3px pinstripe-over-gloss texture and candy-pill buttons match the kit
-almost exactly, including the blue accent on the scrollbar-thumb
-equivalent (`.ftl-btn-primary`).
+## What the panel found — detail
 
-### `barbie` — 8.8
-Reference: `references/barbie/` (brand logo, packaging pink). Hot-pink/
-mint palette and 999px pill radius match; the logo's specific magenta is
-slightly warmer than `--ftl-accent`, kept as-is because it's still inside
-the "Barbie pink" family and holds AA contrast where the exact logo hex
-does not.
+### `alienware`
+Cyan and matte black were right, but the AlienFX light-strip rail —
+coded in `.ftl-app-rail`'s gradient — never actually rendered: core
+collapses an empty `<aside>` to `display: none` unless a theme sets
+`--ftl-app-rail-empty-display`, and this theme never did. Fixed, and
+added corner tick-mark brackets to the app-bar for the "ornate chrome"
+the reference photos show that a flat 2px rule didn't capture.
 
-### `bloomberg` — 8.8
-Reference: `references/bloomberg/` (terminal photos, function-key row).
-Amber-on-black monospace density matches; ease-of-use is capped by the
-theme's own intentional `--ftl-density: 0.7` extreme-density design,
-which trades comfort for the authentic "wall of data" read.
+### `aqua`
+Pinstripe and candy-gloss buttons were present in the CSS but nearly
+invisible at render scale, and the theme had no traffic-light window
+controls at all — the single detail every reference image leads with.
+Added a three-light cluster via `.ftl-app-bar::before` and doubled the
+pinstripe's contrast.
 
-### `cyber-goth` — 8.5
-No single photographic reference (a genre, not a product) — scored
-against the described convention (toxic green + hot purple on black
-vinyl gloss) rather than one image.
+### `barbie`
+The accent pink and pill radius were fine, but the panel's sharpest
+complaint was typographic: uppercase blocky Baloo 2 is the *opposite*
+of the brand's actual cursive wordmark. Vendored Pacifico (SIL OFL) for
+`h1`/`.ftl-nav-brand` only — body and buttons keep Baloo 2.
 
-### `death-star` — 8.5
-Reference: `references/death-star/`. True `#000000` background and
-hard-edged blue readouts match the Imperial-terminal aesthetic; no
-gradients or soft shadows anywhere, which is the point.
+### `bloomberg`
+The amber/cyan function-key color coding was real, correctly cycling
+through `<kbd>` elements — but no page in the showcase renders a `<kbd>`,
+so the one truly diagnostic Bloomberg tell was invisible. Added the same
+five-color strip directly to `.ftl-app-status` via a pseudo-element.
 
-### `hot-wheels` — 8.5
-Reference: `references/hot-wheels/` (box art, game screenshots). Orange
-flame-gradient band and black chrome match; box art's flame is more
-red-hot at the core than the CSS gradient's midpoint, a minor departure.
+### `cyber-goth`
+The theme's own README documents "purple structure, green signal, the
+hover bloom is always purple" as its signature rule — and the CSS
+directly inverted it on `.ftl-btn-primary`'s hover shadow. Removed the
+contradicting override.
 
-### `imac-g3` — 8.8
-Reference: `references/imac-g3/` (Bondi Blue hardware photos, Mac OS 9
-screenshots). Translucent ribbed-plastic gloss and the verified Bondi
-Blue-family accent (`#00b0d4`, see `themes/imac-g3/theme.css` header for
-the contrast-floor tradeoff) match well.
+### `death-star`
+The biggest miss in the catalog: the reference is a black/white-pinstripe-
+linework/red-panel control room, and the theme had gone all-in on an
+invented blue accent with zero borders anywhere. Reworked the palette so
+red is structural (buttons, focus ring, table heads), and added a painted
+(not box-model) white grid texture on panels — texture, not chrome, so
+the theme's own "zero borders/shadows" component contract still holds.
 
-### `lcars` — 8.5
-Reference: `references/lcars/` (LCARS console art). The elbow curve
-(horizontal bar into vertical rail) is present and correct; real LCARS
-leans on a wider palette (tan, lilac, salmon blocks) than this theme's
-orange/black/blue, which stays deliberately narrower for legibility as a
-general-purpose UI kit rather than a screen-accurate recreation.
+### `hot-wheels`
+Every reference image is blue-and-orange; the theme was black-and-orange
+only. Added a real Hot Wheels blue (`--ftl-hw-blue: #0033a0`) to the
+table head and app-bar rule.
 
-### `lego-classic` — 9.0
-Reference: `references/lego-classic/`. Primary-color blocking, thick
-black borders and corner studs read as a physical brick immediately.
+### `imac-g3`
+The palette had drifted dark and desaturated (a "moody aquarium
+dashboard" per the panel) instead of the hardware's actual bright candy
+blue. Brightened and resaturated `--ftl-bg`/`-surface`/`-surface-2`,
+re-verifying every contrast floor by hand afterward (the brighter surface
+broke the accent and muted-text floors on the first attempt).
 
-### `matrix` — 9.0
-Reference: `references/matrix/` (film stills, code-rain shots). `#00FF41`
-is the actual on-screen hex; the staggered digital-rain background
-(5 layered `radial-gradient`s at prime-ish periods) avoids the grid
-artifact a single repeating gradient produces. Ease-of-use docked slightly
-for the deliberately low-contrast monospace body text against black,
-which is the reference's own convention.
+### `lcars`
+The exact same empty-rail bug as alienware — the candy-bar elbow, this
+theme's whole reason for existing, silently never rendered. One-line fix.
 
-### `msdos` — 8.8
-Reference: `references/msdos/` (Norton Commander screenshots). Blue
-background, cyan/yellow "bright" palette and double-line box borders all
-present.
+### `lego-classic`
+The studs (LEGO's #1 tell) were a 12–15%-opacity dot, invisible at normal
+size. Rebuilt as a real two-tone highlight+shadow ring, large enough to
+actually read as a raised bump.
 
-### `vaporwave` — 8.5
-Reference: `references/vaporwave/` (aesthetic mood images). Magenta-to-
-cyan gradient clipped to heading glyphs is the strongest tell; genre-based
-so no single photographic ground truth.
+### `matrix`
+The rain was five layers of flat-opacity dashes with no per-column
+brightness falloff — real footage has a bright leading glyph fading to
+dark green. Added a second, brighter "head" layer per column over the
+original dim "tail" layer.
 
-### `win7-aero` — 9.0
-Reference: `references/win7-aero/` (Aero screenshots, Segoe UI specimen).
-Real `backdrop-filter` blur on the app-bar/status strip is the
-distinguishing detail versus Luna's opaque gloss, and it's present and
-correct.
+### `msdos`
+No F-key status bar was visible anywhere (same "coded but never
+rendered" pattern as bloomberg), and disabled buttons at 45% opacity
+nearly vanished against the saturated blue background. Added the F-key
+strip and a period-accurate greyed disabled state.
 
-### `winamp-classic` — 8.5
-Reference: `references/winamp-classic/`. LCARS-green LCD-style readouts,
-tiny uppercase labels and the grip-texture drag handle all match; the
-UI's small type sizes throughout are period-accurate but the reason
-ease-of-use sits below likeness.
+### `vaporwave`
+Color was already excellent (the panel rated it 9/10) but structure was
+weak: no sun disc, no actual perspective grid, just a flat repeating-line
+pattern. Added both to the status strip via pseudo-elements.
 
-### `windows95` — 9.5
-Reference: `references/windows95/` (desktop, IE, Freecell screenshots).
-The strongest match in the catalog: the bevel-inverts-on-press language,
-zero border-radius, and the exact 16-color VGA palette (`#c0c0c0` /
-`#000080` / `#008080`) all check out directly against the screenshots.
+### `win7-aero`
+`--ftl-app-bg` was never set, so `.ftl-app`'s background fell back to
+transparent — the glass bar/status strip had nothing detailed behind them
+to blur, so `backdrop-filter` was declared but visually inert. Added a
+textured radial-gradient desktop background.
 
-### `winxp-luna` — 9.0
-Reference: `references/winxp-luna/` (Luna theme screenshots). Glossy
-round-cornered blue chrome, the tan/beige content well, and green
-reserved for the primary "go" action all match the reference dialogs
-directly.
+### `winamp-classic`
+The LCD green was meant to be a rare, confined signature but had been
+wired into headings, nav links and the primary button — diluting it into
+a generic accent color. Reserved it for readouts/meters/sliders only;
+headings and the primary button now use steel tones.
 
-### `wmp11` — 8.5
-Reference: `references/wmp11/` (WMP11 screenshots, mini-mode). Black
-glass with a cool blue glow on the primary transport control matches; the
-theme keeps the rest of the chrome flatter than WMP11's own more elaborate
-visualizer chrome, a legibility tradeoff for a general-purpose kit.
+### `windows95`
+Page-hero-scale bold headings and a single flat inset shadow on
+`:active` gave it away as a modern webpage wearing Win95 colors. Shrank
+headings to dialog-caption scale and completed the pressed bevel to a
+full double concentric inset (matching the resting state's own
+two-layer bevel).
+
+### `winxp-luna`
+No window-chrome controls (minimize/maximize/close) anywhere — the panel
+called this the single biggest miss. Added the control cluster via a
+generated pseudo-element cluster in the title bar.
+
+### `wmp11`
+The "round" play button wasn't actually round: `--ftl-go-size` maps to
+`font-size` in core, which sizes an oval to fit the label text rather
+than producing a fixed-diameter circle. Set explicit equal width/height
+and a downward transform so it protrudes past the transport bar, plus a
+play glyph, matching the reference's floating circular control.
 
 ## Parked — no reference yet
 
@@ -199,10 +221,22 @@ re-enters the build and this scoring pass.
 
 ## Revision log
 
+- **All 18 shipping themes**: the strict independent panel (18 agents, one
+  per theme) came back below the 7.0 floor on every single one — a real
+  calibration gap against an earlier, more lenient self-review pass, not
+  just harsher wording. Every theme's specific "biggest tell" was fixed;
+  see the tables above. Three of those fixes introduced their own lint
+  regressions (imac-g3 accent/muted contrast, death-star nav-brand
+  contrast, an msdos disabled-state rule that set `background`/`color`
+  directly on a base component instead of through `--ftl-btn-*` tokens) —
+  all caught and fixed by `scripts/check.py` before commit, which is back
+  to 0 failures.
+- **Not yet done**: a fresh independent re-review of the fixed renders.
+  The fixes above address each panel's literal finding and were spot-
+  checked visually in Chromium, but they have not been re-scored by a new
+  agent panel — do that before trusting a specific new number for any of
+  these 18.
 - **`pipboy`** (now parked, was shipping): a muted/surface-2 contrast gap
   (4.2:1 vs the 4.5:1 AA floor) was caught while rebuilding after the
   reference-image merge and fixed (`--ftl-muted: #1f9c3f` → `#1fa43f`)
-  before this pass; kept for whenever it re-ships.
-- No shipping theme in the table above required a second pass to clear
-  8.0 — the color-research work from the prior grounding pass (documented
-  in each theme's own header comment) already covered every hard case.
+  before it was parked; kept for whenever it re-ships.
