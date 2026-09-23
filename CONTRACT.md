@@ -207,7 +207,7 @@ wrong rather than plausibly invisible.
 | `--ftl-border` | Default visible border color. |
 | `--ftl-hairline` | A quieter divider than `--ftl-border` — table row rules, subtle separators. |
 | `--ftl-text` | Primary text color. |
-| `--ftl-muted` | Secondary text: labels, captions, hints. |
+| `--ftl-muted` | Secondary text: labels, captions, hints, table headers. It carries essential text, so it must reach 4.5:1 on both surfaces. |
 | `--ftl-accent` | Primary interactive color: links, primary fills, focus, active state. |
 | `--ftl-accent-2` | Secondary accent: hover, a second series, complementary highlight. |
 | `--ftl-danger` / `--ftl-success` / `--ftl-warning` | Semantic state colors. |
@@ -886,8 +886,9 @@ theme's colours pre-baked in.
 
 ## Accessibility
 
-- **Contrast floor**: filled controls and body text meet 4.5:1, muted text
-  3.0:1, verified per theme by `scripts/check.sh` against the theme's own
+- **Contrast floor**: filled controls, body text, muted text (on both
+  `--ftl-surface` and `--ftl-surface-2`) and state-colored text meet 4.5:1
+  (WCAG AA), verified per theme by `scripts/check.sh` against the theme's own
   token values. Text against a decorative page backdrop (`--ftl-bg`), the
   7:1 AAA target, and accent-on-surface legibility are soft warnings, and
   are skipped for a theme whose README carries a `contrast-exempt:` line

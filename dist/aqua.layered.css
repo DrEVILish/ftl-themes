@@ -888,11 +888,14 @@ dialog.ftl-modal::backdrop {
 .ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger-text, var(--ftl-danger)); }
 .ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success-text, var(--ftl-success)); }
 .ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning-text, var(--ftl-warning)); }
+/* The tint is mixed into the opaque surface, not into transparent: a
+   translucent badge inside a tinted row stacked on the row color, so its
+   text contrast depended on where the badge happened to sit. */
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
-  .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
-  .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, transparent); }
-  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, transparent); }
+  .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, var(--ftl-surface)); }
+  .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, var(--ftl-surface)); }
+  .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, var(--ftl-surface)); }
+  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, var(--ftl-surface)); }
 }
 
 .ftl-progress {
@@ -1785,7 +1788,8 @@ html[data-theme="aqua"] {
   --ftl-border: #a9adb2;
   --ftl-hairline: #c7cbd0;
   --ftl-text: #1c1c1e;
-  --ftl-muted: #6e7075;
+  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #6e7075, 4.2:1; checked against the darker panel gradient too. */
+  --ftl-muted: #58595e;
   --ftl-accent: #2a74d0;
   --ftl-accent-2: #5aa6ff;
   --ftl-danger: #c8321f;
@@ -1839,7 +1843,7 @@ html[data-theme="aqua"] .ftl-panel {
 html[data-theme="aqua"] .ftl-modal-header { text-align: center; border-bottom: 1px solid var(--ftl-border); }
 
 /* Glossy candy fills for the semantic variants. */
-html[data-theme="aqua"] .ftl-btn-primary { --ftl-btn-bg: linear-gradient(180deg, #6fb2ff, #2a74d0 55%, #1f66c2); --ftl-btn-border: #1f66c2; }
+html[data-theme="aqua"] .ftl-btn-primary { --ftl-btn-bg: linear-gradient(180deg, #006fee, #2a74d0 55%, #1f66c2); --ftl-btn-border: #1f66c2; }
 html[data-theme="aqua"] .ftl-btn-danger { --ftl-btn-bg: linear-gradient(180deg, #ef7b68, #c8321f 55%, #97200f); --ftl-btn-border: #97200f; }
 html[data-theme="aqua"] .ftl-btn-success { --ftl-btn-bg: linear-gradient(180deg, #74c266, #3a7d2f 55%, #2a5f22); --ftl-btn-border: #2a5f22; }
 
@@ -1872,5 +1876,15 @@ html[data-theme="aqua"] .ftl-app-bar {
   --ftl-nav-brand-fg: #174f9c;
   --ftl-nav-item-fg: #3a3c40;
 }
+
+/* Accent as text (active tab, secondary button, transport trigger) sits on
+   the brushed gradients, darker than --ftl-surface; the primary gel's top
+   stop is deepened so its white label holds 4.5:1 across the button. */
+html[data-theme="aqua"] {
+  --ftl-accent-text: #20589d;
+  --ftl-tab-fg-active: var(--ftl-accent-text);
+  --ftl-go-fg: var(--ftl-accent-text);
+}
+html[data-theme="aqua"] .ftl-btn-secondary { --ftl-btn-fg: var(--ftl-accent-text); }
 
 }

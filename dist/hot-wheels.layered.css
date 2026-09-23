@@ -888,11 +888,14 @@ dialog.ftl-modal::backdrop {
 .ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger-text, var(--ftl-danger)); }
 .ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success-text, var(--ftl-success)); }
 .ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning-text, var(--ftl-warning)); }
+/* The tint is mixed into the opaque surface, not into transparent: a
+   translucent badge inside a tinted row stacked on the row color, so its
+   text contrast depended on where the badge happened to sit. */
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
-  .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
-  .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, transparent); }
-  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, transparent); }
+  .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, var(--ftl-surface)); }
+  .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, var(--ftl-surface)); }
+  .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, var(--ftl-surface)); }
+  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, var(--ftl-surface)); }
 }
 
 .ftl-progress {
@@ -1795,7 +1798,7 @@ html[data-theme="hot-wheels"] {
   /* Text-weight variants of the state colors, for .ftl-status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --ftl-danger-text: #ff4747;
+  --ftl-danger-text: #ff6e6e;
   --ftl-on-accent: #1a0900;
   --ftl-on-danger: #1a0000;
   --ftl-on-success: #04220f;
