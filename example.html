@@ -217,6 +217,23 @@
       </section>
 
       <section class="qa-section">
+        <h2>Icon pack</h2>
+        <p class="qa-note">assets/icons/icons.svg — one outline set, reskinned per theme through <code>--ftl-icon-stroke-width</code> / <code>--ftl-icon-fill</code>, colored by inheriting <code>currentColor</code>. See <a href="docs/branding-guide.md">docs/branding-guide.md</a>.</p>
+        <div class="qa-row" id="icon-pack-swatches" style="flex-wrap:wrap; gap:1rem;">
+          <!-- populated by JS below from the icon sprite's symbol ids -->
+        </div>
+        <h3>Icon buttons</h3>
+        <div class="qa-row">
+          <button class="ftl-btn ftl-btn-primary ftl-btn-icon" aria-label="Settings"><svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-settings"/></svg></button>
+          <button class="ftl-btn ftl-btn-secondary ftl-btn-icon" aria-label="Search"><svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-search"/></svg></button>
+          <button class="ftl-btn ftl-btn-ghost ftl-btn-icon" aria-label="Close"><svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-close"/></svg></button>
+          <button class="ftl-btn ftl-btn-danger ftl-btn-icon" aria-label="Delete"><svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-trash"/></svg></button>
+          <button class="ftl-btn ftl-btn-primary"><svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-download"/></svg> Download</button>
+          <button class="ftl-btn ftl-btn-secondary"><svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-refresh"/></svg> Refresh</button>
+        </div>
+      </section>
+
+      <section class="qa-section">
         <h2>Form controls</h2>
         <div class="qa-row qa-row-top">
           <div class="ftl-field w-14">
@@ -443,6 +460,19 @@
 <div class="ftl-toast-region" aria-hidden="true"></div>
 
 <script>
+  (function () {
+    var grid = document.getElementById("icon-pack-swatches");
+    if (!grid) return;
+    fetch("assets/icons/icons.svg").then(function (r) { return r.text(); }).then(function (svgText) {
+      var ids = Array.from(svgText.matchAll(/id="(icon-[a-z-]+)"/g)).map(function (m) { return m[1]; });
+      grid.innerHTML = ids.map(function (id) {
+        return '<div style="display:flex;flex-direction:column;align-items:center;gap:0.35rem;width:4.5rem;">' +
+          '<svg class="ftl-icon" style="--ftl-icon-size:1.6rem;"><use href="assets/icons/icons.svg#' + id + '"/></svg>' +
+          '<span class="qa-note" style="font-size:0.65rem;text-align:center;">' + id.replace("icon-", "") + '</span></div>';
+      }).join("");
+    }).catch(function () { grid.textContent = "assets/icons/icons.svg unavailable (serve over HTTP)."; });
+  })();
+
   var link = document.getElementById("ftl-theme-link");
   var picker = document.getElementById("theme-picker");
   var desc = document.getElementById("theme-desc");

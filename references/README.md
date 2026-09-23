@@ -4,6 +4,12 @@ Where to look at the real thing each theme is modelled on. Use these when
 reviewing a theme in [`example.html`](../example.html): open the
 reference next to the render and compare.
 
+Themes below with no local images captured yet (`aperture`, `blue-future`,
+`cue-lab`, `material`, `nerv`, `pipboy`, `steampunk`, `tron`) are parked in
+`archive/themes-pending-reference/` and don't ship — see
+[`branding-guide.md`](../docs/branding-guide.md) for the scored, shipping
+set.
+
 | Theme | Reference | What to compare |
 |---|---|---|
 | `alienware` | [Alienware Command Center — AlienFX](https://www.dell.com/support/manuals/en-us/alienware-command-center/awcc_ug_6.x/alienfx?guid=guid-1938310a-dcbb-4751-9131-ddd2d9400d4a&lang=en-us) | Matte black chrome, one AlienFX accent colour per lighting zone |

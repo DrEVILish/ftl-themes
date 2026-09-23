@@ -936,6 +936,12 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 
 ## Theme index
 
+18 themes currently ship (have a `themes/<slug>/` folder built by
+`scripts/build.sh`). `aperture`, `blue-future`, `cue-lab`, `material`,
+`nerv`, `pipboy`, `steampunk` and `tron` are parked in
+`archive/themes-pending-reference/` until each has real reference
+screenshots in `references/<slug>/` — see that folder's README.
+
 The **Signature detail** column names the one shape/effect/rule that, if
 lost, is the fastest way to tell a recreation isn't this theme — the same
 "tell-tale" concept each theme's own README expands on at length. **Src**
@@ -948,25 +954,17 @@ for what, if anything, it cites.
 | Slug | Name | Signature detail | Src |
 |---|---|---|:-:|
 | `alienware` | Alienware | Angular `clip-path`-cut corners, one AlienFX cyan light strip down the rail. | |
-| `aperture` | Aperture Science | Sterile lab off-white/grey with portal blue/orange as the *only* saturated colours. | |
 | `aqua` | Aqua | A 3px repeating pinstripe texture on every panel, under the candy-gloss buttons. | |
 | `barbie` | Barbie | 999px-radius glossy pills everywhere; mint success state uses dark, not white, text. | |
 | `bloomberg` | Bloomberg Terminal | The *whole UI*, not just numerals, set in monospace, at `--ftl-density: 0.7`. | |
-| `blue-future` | Blue Future | The catalog's baseline sci-fi HUD — cyan neon glow on deep-space navy. | |
-| `cue-lab` | Cue Lab | Zero glow, zero gradient — the deliberate flat counterpoint to `blue-future`. | |
 | `cyber-goth` | Cyber-Goth | Toxic neon green and hot purple sharing the accent role on black vinyl gloss. | |
 | `death-star` | Death Star Terminal | True `#000000`, solid glowing indicator blocks, zero borders or shadows anywhere. | |
 | `hot-wheels` | Hot Wheels | A single diagonal flame-gradient band cut across the app bar. | |
 | `imac-g3` | iMac G3 | Translucent *ribbed* plastic — four swappable fruit-colour variants via `data-variant`. | |
 | `lcars` | LCARS | The elbow: a horizontal bar curving into a vertical rail. Ships an optional chrome primitive — see `docs/lcars-chrome.md`. | ✓ |
 | `lego-classic` | LEGO Classic | A circular "stud" on every panel corner — a physical brick, not a palette. | |
-| `material` | Material | Depth from a layered `box-shadow` *elevation* stack — never a gradient or blur. | |
 | `matrix` | The Matrix | `#00FF41` phosphor green — the actual hex the reference on-screen code uses. | ✓ |
 | `msdos` | MS-DOS (Norton Commander) | Double-line (`═`/`║`) box borders; only cyan/yellow count as "bright". | |
-| `nerv` | NERV Terminal | Hazard-stripe orange chrome with crimson reserved for real danger states only. | |
-| `pipboy` | Fallout Pip-Boy 3000 | One phosphor green for every state — no danger/success color split at all. | |
-| `steampunk` | Steampunk | Riveted panel seams and gear-driven dial ornamentation on every surface. | |
-| `tron` | TRON | Angular `clip-path`-cut corners standing in for the film's beveled-edge panels. | |
 | `vaporwave` | Vaporwave | Heading text is a magenta-to-cyan gradient clipped to the glyphs, not a solid fill. | |
 | `winamp-classic` | WinAmp Classic | Tiny uppercase labels and llama-green LCD-style numeric readouts. | |
 | `windows95` | Windows 95 | Bevels invert light-to-dark on `:active` — the "is this actually pressable" cue. | |
