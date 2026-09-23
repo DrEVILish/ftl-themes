@@ -426,8 +426,12 @@ for path in sorted(glob.glob("core/*.css")):
 # deterministic now (its version is a content hash of the bundles; no
 # wall-clock field survives a rebuild).
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
-diff = subprocess.run(["git", "diff", "--name-only", "--", "dist"],
-                      capture_output=True, text=True).stdout.split()
+# --porcelain, not `git diff`: a bundle the build creates but nobody
+# committed (a new theme, a new bundle form) is untracked, and `git diff`
+# can't see untracked files.
+diff = [line[3:] for line in subprocess.run(
+    ["git", "status", "--porcelain", "--", "dist"],
+    capture_output=True, text=True).stdout.splitlines()]
 if diff:
     failures.append("dist: committed bundles are stale — run scripts/build.sh and commit "
                     f"({', '.join(diff)})")

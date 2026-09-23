@@ -105,6 +105,57 @@ while every theme's actual palette still comes from its own
 for just its `:root` token block, if you don't want the component CSS at
 all).
 
+### Token-only bundles (`dist/<slug>-tokens.css`)
+
+For an app that keeps its own markup and only wants a theme's palette,
+each theme also ships `dist/<slug>-tokens.css`: its `html[data-theme]`
+token blocks (palette variants included), its `@font-face` rules and its
+element-level rules (heading treatments and the like). It contains **no
+`.ftl-*` component or app-shell rules**, so it is a few KB instead of ~80.
+
+Link it exactly like a full bundle (same `data-theme`, same asset path
+rules), then map the `--ftl-*` tokens onto your own CSS with a bridge
+(see "Adopting ftl-themes in an existing app"). What you get is the theme's
+colours and type on your own components. The theme's component chrome
+(bevels, glows, pill shapes) and its layout need `.ftl-*` markup and the
+full bundle; see "Adoption levels" for which themes depend on them.
+
+### Cascade layers (`dist/<slug>.layered.css`)
+
+Each theme also ships a layered form of the full bundle. The rules are
+identical; they sit in cascade layers:
+
+```css
+@layer ftl.reset, ftl.core, ftl.layout, ftl.theme;
+```
+
+Any of your CSS that is unlayered, or in a layer declared after these,
+beats every library rule whatever its specificity. So an app override is
+one plain rule, not a matching-specificity selector:
+
+```css
+/* your stylesheet, loaded after the theme */
+.ftl-btn-primary { --ftl-btn-bg: rebeccapurple; }
+```
+
+To keep your own styles in layers too, declare the order once before
+anything else: `@layer ftl, app;`, then put your rules in `@layer app`.
+
+**Opt-in, because it changes existing behaviour.** Today an app override
+wins only if its selector outranks the theme's. With the layered bundle
+*every* app rule wins, including ones that are currently losing to the
+theme by accident. Before switching, load the layered bundle and look for
+places where your own CSS now shows through. Nothing else changes: all 26
+themes compute identical styles layered and unlayered (every property on
+every element and pseudo-element of `examples/`).
+
+Two things layers do differently:
+
+- `@font-face` is outside the layers (it can't be meaningfully layered).
+- `!important` reverses between layers: the library's own `!important`
+  rules (only the `data-motion="reduced"` switch) beat yours. That's
+  intended: a user's reduce-motion choice can't be overridden by app CSS.
+
 ### Cache-busting
 
 Theme CSS is app-critical, not decorative — a stale cached copy after an

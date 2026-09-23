@@ -3,6 +3,24 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.10.0 — cascade layers and token-only bundles
+
+### Added
+
+- **`dist/<slug>.layered.css`** (#29): each bundle wrapped in
+  `@layer ftl.reset, ftl.core, ftl.layout, ftl.theme`, so unlayered app CSS
+  always beats the library. Opt-in; the default bundles are unchanged. All
+  26 themes compute identical styles in both forms.
+- **`dist/<slug>-tokens.css`** (#4): a theme's tokens, fonts and
+  element-level rules without any `.ftl-*` component or shell CSS, for apps
+  that keep their own markup.
+- Both are built by `scripts/build_bundles.py`, called from `build.sh`.
+
+### Lint
+
+- The dist staleness check now sees uncommitted *new* files in `dist/`, not
+  only modified ones.
+
 ## v3.9.0 — open issues
 
 ### Added
