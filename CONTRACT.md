@@ -773,6 +773,58 @@ needs a pixel-perfect custom list has to build its own listbox widget —
 out of scope for a CSS-only library). A theme can opt back into the
 platform's own arrow with `appearance: auto` on `.ftl-select`.
 
+### Layout, levels, anchoring and radios (v3.11.0)
+
+Components carry no outer margin. Lay a page out with these instead of
+app CSS; every gap scales with `--ftl-density`.
+
+```html
+<main class="ftl-app-main">
+  <div class="ftl-stack">                       <!-- vertical flow -->
+    <div class="ftl-cluster">…buttons…</div>    <!-- wrapping row -->
+    <div class="ftl-grid">…cards…</div>         <!-- responsive columns -->
+  </div>
+</main>
+```
+`-sm`/`-lg` tighten or loosen the gap (`.ftl-stack-sm`, `.ftl-cluster-lg`,
+`.ftl-grid-sm`); `--ftl-grid-min` sets the minimum column width
+(default 16rem). Inline-sized components (buttons, badges, segmented
+controls) keep their own width inside a stack.
+
+**Levels without inline styles.** Use the native elements; the value is in
+attributes:
+
+```html
+<progress class="ftl-progress" max="100" value="58">58%</progress>
+<meter class="ftl-meter" min="0" max="100" low="70" high="90" optimum="0" value="64">64%</meter>
+```
+A meter's band follows the browser's `low`/`high`/`optimum` logic and is
+colored with `--ftl-meter-low`/`-mid`/`-high`. The div-based `.ftl-meter`
+(driven by `--ftl-meter-level`) still works for live-updating meters.
+
+**Anchoring.** Wrap a trigger and its surface in `.ftl-anchor`; the
+surface positions against it. Your app toggles visibility.
+
+```html
+<span class="ftl-anchor">
+  <button class="ftl-btn">File</button>
+  <div class="ftl-context-menu is-below">…</div>
+</span>
+```
+Placement: `.is-below`, `.is-above`, `.is-end` (align to the trigger's end
+edge). Works for `.ftl-popover`, `.ftl-context-menu` and `.ftl-dropdown`.
+
+**Radios and inline checks.**
+
+```html
+<fieldset class="ftl-radio-group is-inline">
+  <legend>Font size</legend>
+  <label class="ftl-check"><input class="ftl-radio" type="radio" name="fs" checked> Small</label>
+  <label class="ftl-check"><input class="ftl-radio" type="radio" name="fs"> Large</label>
+</fieldset>
+<label class="ftl-check"><input class="ftl-checkbox" type="checkbox"> Remember me</label>
+```
+
 ### v3.9.0 additions
 
 ```html

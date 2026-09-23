@@ -3,6 +3,30 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v3.11.0 — layout, levels, anchoring, radios
+
+Everything the example pages couldn't express without custom CSS. All
+additive.
+
+### Added
+
+- **Layout primitives**: `.ftl-stack`, `.ftl-cluster`, `.ftl-grid` (+ `-sm`/
+  `-lg`), density-scaled gaps. Components still carry no outer margin.
+- **Native levels**: `<progress class="ftl-progress">` and
+  `<meter class="ftl-meter">` are styled, so levels need no inline style.
+  Meter bands use `--ftl-meter-low`/`-mid`/`-high`. The div forms still work.
+- **`.ftl-anchor`** with `.is-below`/`.is-above`/`.is-end`: a positioned
+  parent for popovers, context menus and dropdowns.
+- **`.ftl-radio`, `.ftl-radio-group`** (fieldset + legend, `.is-inline`),
+  **`.ftl-check`** (inline control + label).
+
+### Fixed
+
+- imac-g3 secondary buttons: accent text was 2.6:1 on the lighter part of
+  the card gloss.
+- `audit_rendered.mjs` no longer measures `<meter>`/`<progress>` fallback
+  text, which browsers never display.
+
 ## v3.10.0 — cascade layers and token-only bundles
 
 ### Added
