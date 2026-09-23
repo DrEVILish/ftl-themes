@@ -1,6 +1,13 @@
 /* ftl-themes: Steampunk
  * Theme-Name: Steampunk
- * Description: Victorian brass, mahogany and riveted copper panels with gear-driven dial ornamentation.
+ * Description: Polished brass and stitched leather, riveted copper panels, and functioning-instrument ornamentation — sight-glass meters, needled gauge readouts.
+ *
+ * Two materials carry the whole theme and nothing else pretends to be
+ * either: leather (a woven cross-hatch grain, warm and matte, no shine)
+ * for anything you'd rest a hand on — panels, cards, the page itself —
+ * and brass (a hard vertical gradient with one sharp polish streak, never
+ * matte) for anything mechanical — buttons, gauges, rivets, meter
+ * end-caps. Mixing them on the same surface is the one thing to avoid.
  */
 
 html[data-theme="steampunk"] {
@@ -31,17 +38,42 @@ html[data-theme="steampunk"] {
   --ftl-font-mono: Consolas, monospace;
   --ftl-flare: #7a8c93;
 
-  --ftl-btn-bg: linear-gradient(180deg, #d9ab4a, #a97a24 55%, #7a5416);
+  /* Polished brass: a hard vertical gradient plus one sharp diagonal
+     polish streak — the highlight a curved metal surface throws under a
+     single light source, not a soft all-over sheen. */
+  --ftl-steampunk-brass:
+    linear-gradient(115deg, transparent 40%, rgba(255, 245, 220, 0.55) 46%, transparent 52%),
+    linear-gradient(180deg, #e8c06a, #a97a24 55%, #6e4c14);
+  --ftl-steampunk-leather:
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px),
+    linear-gradient(180deg, #3c2a1c, #241a12);
+  /* Four brass rivet domes, one at each corner — background layers, not
+     ::before/::after, because a plate only has two pseudo-elements to
+     spend and this needs four. Stacks on top of --ftl-steampunk-leather
+     for anything riveted (panel/card/modal/transport), not the page/bar/
+     status strips, which have no "corners" to rivet. */
+  --ftl-steampunk-rivet: radial-gradient(circle at 35% 30%, #f0d9a0, #a97a24 55%, #5c3d15);
+  --ftl-steampunk-riveted-leather:
+    var(--ftl-steampunk-rivet) 7px 7px / 7px 7px no-repeat,
+    var(--ftl-steampunk-rivet) calc(100% - 7px) 7px / 7px 7px no-repeat,
+    var(--ftl-steampunk-rivet) 7px calc(100% - 7px) / 7px 7px no-repeat,
+    var(--ftl-steampunk-rivet) calc(100% - 7px) calc(100% - 7px) / 7px 7px no-repeat,
+    var(--ftl-steampunk-leather);
+
+  --ftl-btn-bg: var(--ftl-steampunk-brass);
   --ftl-btn-fg: #241a12;
   --ftl-btn-border: #5c3d15;
   --ftl-btn-shadow: 0 1px 0 rgba(255,230,180,0.4) inset, 0 2px 4px rgba(0,0,0,0.4);
   --ftl-input-bg: #1c130c;
   --ftl-input-fg: var(--ftl-text);
   --ftl-focus-ring: 0 0 0 3px rgba(201, 150, 44, 0.35);
-  --ftl-panel-bg: linear-gradient(180deg, #3c2a1c, #2a1d13);
+  --ftl-panel-bg: var(--ftl-steampunk-riveted-leather);
+  --ftl-card-bg: var(--ftl-steampunk-riveted-leather);
   --ftl-panel-border-width: 2px;
   --ftl-panel-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  --ftl-modal-header-bg: linear-gradient(180deg, #46301f, #33241a);
+  --ftl-modal-header-bg: var(--ftl-steampunk-brass);
+  --ftl-modal-header-fg: #241a12;
   --ftl-table-head-bg: #46301f;
   --ftl-table-head-fg: var(--ftl-accent-2);
   --ftl-row-selected-bg: rgba(201, 150, 44, 0.18);
@@ -50,23 +82,29 @@ html[data-theme="steampunk"] {
   --ftl-overlay-bg: rgba(20, 14, 9, 0.75);
   --ftl-indicator-fg: var(--ftl-accent);
 
-  --ftl-app-bar-bg: linear-gradient(180deg, #46301f, #241a12);
+  /* The sight glass: a copper-liquid level in a glass tube, not a flat
+     progress bar. Bands stay the semantic success/warning/danger ramp —
+     unlike blue-future's meters, this isn't a broadcast VU standard, it's
+     "how full the tank is," so application state is the right read. */
+  --ftl-meter-low: #c9962c;
+  --ftl-meter-mid: #d9ab4a;
+  --ftl-meter-high: #9e3a2b;
+  --ftl-meter-peak-fg: #f0e0c0;
+
+  --ftl-app-bar-bg: var(--ftl-steampunk-leather);
   --ftl-app-bar-rule: var(--ftl-border);
-  --ftl-app-status-bg: linear-gradient(180deg, #33241a, #241a12);
+  --ftl-app-status-bg: var(--ftl-steampunk-leather);
+  --ftl-app-bg: var(--ftl-steampunk-leather);
+  --ftl-transport-bg: var(--ftl-steampunk-riveted-leather);
 }
+
+/* The page backdrop at L0 (no app shell adopted): same leather the shell
+   uses at L1, so recoloring alone doesn't lose the material. */
+html[data-theme="steampunk"] { background: var(--ftl-steampunk-leather); }
 
 html[data-theme="steampunk"] h1,
 html[data-theme="steampunk"] h2,
 html[data-theme="steampunk"] h3 { color: var(--ftl-accent-2); font-variant: small-caps; }
-/* Rivets: corner dots on panels, evoking riveted brass plating. */
-html[data-theme="steampunk"] .ftl-panel { position: relative; }
-html[data-theme="steampunk"] .ftl-panel::before,
-html[data-theme="steampunk"] .ftl-panel::after {
-  content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%;
-  background: radial-gradient(circle, #e0b04a, #7a5416); top: 6px; pointer-events: none;
-}
-html[data-theme="steampunk"] .ftl-panel::before { left: 6px; }
-html[data-theme="steampunk"] .ftl-panel::after { right: 6px; }
 
 /* "Gauges rather than numbers" — a brass dial face behind every readout,
    not a bare LCD-style digit, with engraved-looking dark numerals (a
@@ -96,12 +134,42 @@ html[data-theme="steampunk"] .ftl-readout::before {
   background: repeating-conic-gradient(from 0deg, #7a5416 0deg 3deg, transparent 3deg 30deg);
   opacity: 0.7;
 }
-/* Same brass-plate material behind the meter track, so a level bar reads
-   as a gauge face rather than a flat progress bar. */
+/* A fixed needle, canted off-center: decorative (this readout still shows
+   real digits, the needle doesn't track a value), but it's what makes the
+   brass disc read as a dial rather than a coin. */
+html[data-theme="steampunk"] .ftl-readout::after {
+  content: "";
+  position: absolute;
+  bottom: 50%;
+  left: 12%;
+  width: 1.6em;
+  height: 2px;
+  background: linear-gradient(90deg, #2a1c10, transparent);
+  transform-origin: right center;
+  transform: rotate(20deg);
+  pointer-events: none;
+}
+
+/* The sight glass: brass end-caps bolted onto a glass tube, a curved
+   highlight down the glass, and the copper "liquid" (--ftl-meter-*) fill
+   set above — a level bar drawn as plumbing, not a progress indicator. */
 html[data-theme="steampunk"] .ftl-meter {
+  border: 2px solid #5c3d15;
+  border-radius: 999px;
   background:
-    repeating-conic-gradient(from 0deg, rgba(20, 14, 9, 0.4) 0deg 2deg, transparent 2deg 18deg),
-    linear-gradient(180deg, #3c2a1c, #1c130c);
-  border-color: #5c3d15;
-  box-shadow: 0 1px 0 rgba(255, 230, 180, 0.25) inset;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.3), transparent 12%, transparent 88%, rgba(255, 255, 255, 0.2)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 45%),
+    linear-gradient(180deg, #241a12, #140d08);
+  box-shadow: 0 1px 0 rgba(255, 230, 180, 0.3) inset, 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+html[data-theme="steampunk"] .ftl-meter-v {
+  border-radius: 999px;
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.25), transparent 12%, transparent 88%, rgba(255, 255, 255, 0.15)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.15), transparent 45%),
+    linear-gradient(0deg, #241a12, #140d08);
+}
+html[data-theme="steampunk"] .ftl-meter-fill,
+html[data-theme="steampunk"] .ftl-meter-v .ftl-meter-fill {
+  box-shadow: 0 0 6px rgba(201, 150, 44, 0.6) inset;
 }

@@ -4,12 +4,31 @@ Where to look at the real thing each theme is modelled on. Use these when
 reviewing a theme or its page in [`examples/`](../examples/): open the
 reference next to the example and compare.
 
-These are **links, not copies**. Nearly every reference here is a
-copyrighted screenshot or a trademarked design (Microsoft, Apple, Paramount,
-Lucasfilm, Mattel, Bethesda, Valve, Bloomberg, Dell, LEGO…). Committing the
-images would mean redistributing them, so this file points to where they are
-published instead. Wikipedia and Wikimedia Commons pages list each image's
-licence.
+## Local copies (`references/<slug>/`)
+
+Each theme also has its own subfolder here with up to three local
+reference images, named `01-*`, `02-*`, `03-*`. Where a folder holds only a
+`SOURCES.md` instead of images, the images haven't been fetched yet — that
+file names exactly what each of the three should show and a search hint to
+find it, so filling the folder in is a mechanical fetch, not a second
+research pass. This most often happens because the environment doing the
+fetching has restricted network access (Settings → Network access in the
+session, or the equivalent for whatever's running the fetch) that blocks
+the actual image hosts (Wikipedia, Wikimedia Commons, Fandom wikis, NASA,
+publisher sites, etc.) — widen it to reach them.
+
+Nearly every one of these is a copyrighted screenshot or a trademarked
+design (Microsoft, Apple, Paramount, Lucasfilm, Mattel, Bethesda, Valve,
+Bloomberg, Dell, LEGO…), stored here for internal design reference and
+comparison, not redistribution — keep them out of anything published
+externally from this repo (a public fork, a gallery, a marketing page).
+
+## Table below: the same references as links
+
+Kept alongside the local copies as the canonical source for each one
+(where the image actually came from) and as the fallback when a local
+copy isn't there yet. Wikipedia and Wikimedia Commons pages list each
+image's licence.
 
 | Theme | Reference | What to compare |
 |---|---|---|
