@@ -283,11 +283,47 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
    match its roomier padding, not just more breathing room around the same
    16px thumb. Per-part tokens (--ftl-switch-*, --ftl-slider-thumb-*) still
    override the computed size same as any other token. */
-.ftl-checkbox {
+.ftl-checkbox,
+.ftl-radio {
   accent-color: var(--ftl-accent);
   width: calc(1.1em * var(--ftl-density));
   height: calc(1.1em * var(--ftl-density));
+  margin: 0;
+  flex: none;
 }
+
+/* .ftl-check — a checkbox or radio with its text beside it:
+   <label class="ftl-check"><input class="ftl-radio" type="radio" name="x"> Label</label> */
+.ftl-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ftl-check-fg, var(--ftl-text));
+  cursor: pointer;
+}
+.ftl-check:has(:disabled) { opacity: 0.5; cursor: not-allowed; }
+
+/* .ftl-radio-group — a <fieldset> of .ftl-check rows with a <legend>. */
+.ftl-radio-group {
+  display: flex;
+  flex-direction: var(--ftl-radio-group-direction, column);
+  flex-wrap: wrap;
+  gap: 0.5em 1.25em;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.ftl-radio-group > legend {
+  padding: 0;
+  margin-bottom: 0.4em;
+  color: var(--ftl-label-fg, var(--ftl-muted));
+  font-size: 0.82em;
+  font-weight: 500;
+  letter-spacing: var(--ftl-label-tracking, normal);
+  text-transform: var(--ftl-label-transform, none);
+}
+.ftl-radio-group.is-inline { --ftl-radio-group-direction: row; }
 
 .ftl-switch {
   position: relative;
@@ -848,11 +884,14 @@ dialog.ftl-modal::backdrop {
 .ftl-badge-danger { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-danger-text, var(--ftl-danger)); }
 .ftl-badge-success { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-success-text, var(--ftl-success)); }
 .ftl-badge-warning { --ftl-badge-bg: var(--ftl-surface-2); --ftl-badge-fg: var(--ftl-warning-text, var(--ftl-warning)); }
+/* The tint is mixed into the opaque surface, not into transparent: a
+   translucent badge inside a tinted row stacked on the row color, so its
+   text contrast depended on where the badge happened to sit. */
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, transparent); }
-  .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, transparent); }
-  .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, transparent); }
-  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, transparent); }
+  .ftl-badge-accent { --ftl-badge-bg: color-mix(in srgb, var(--ftl-accent) 20%, var(--ftl-surface)); }
+  .ftl-badge-danger { --ftl-badge-bg: color-mix(in srgb, var(--ftl-danger) 20%, var(--ftl-surface)); }
+  .ftl-badge-success { --ftl-badge-bg: color-mix(in srgb, var(--ftl-success) 20%, var(--ftl-surface)); }
+  .ftl-badge-warning { --ftl-badge-bg: color-mix(in srgb, var(--ftl-warning) 20%, var(--ftl-surface)); }
 }
 
 .ftl-progress {
@@ -866,6 +905,41 @@ dialog.ftl-modal::backdrop {
   height: 100%;
   background: var(--ftl-progress-fill, var(--ftl-accent));
 }
+
+/* Native <progress class="ftl-progress" value="60" max="100">: the value
+   lives in attributes, so no inline style is needed. */
+progress.ftl-progress {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  color: var(--ftl-progress-fill, var(--ftl-accent));
+}
+progress.ftl-progress::-webkit-progress-bar { background: var(--ftl-progress-bg, var(--ftl-surface-2)); }
+progress.ftl-progress::-webkit-progress-value { background: var(--ftl-progress-fill, var(--ftl-accent)); }
+progress.ftl-progress::-moz-progress-bar { background: var(--ftl-progress-fill, var(--ftl-accent)); }
+
+/* Native <meter class="ftl-meter" min max low high optimum value>: the
+   browser picks the band from the attributes; each band gets the theme's
+   meter colors. The div-based .ftl-meter keeps working unchanged. */
+meter.ftl-meter {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  background: var(--ftl-meter-track, var(--ftl-bg));
+}
+meter.ftl-meter::-webkit-meter-bar {
+  background: var(--ftl-meter-track, var(--ftl-bg));
+  border: 0;
+  border-radius: var(--ftl-meter-radius, var(--ftl-radius));
+  height: 100%;
+}
+meter.ftl-meter::-webkit-meter-optimum-value { background: var(--ftl-meter-low, var(--ftl-success)); }
+meter.ftl-meter::-webkit-meter-suboptimum-value { background: var(--ftl-meter-mid, var(--ftl-warning)); }
+meter.ftl-meter::-webkit-meter-even-less-good-value { background: var(--ftl-meter-high, var(--ftl-danger)); }
+meter.ftl-meter:-moz-meter-optimum::-moz-meter-bar { background: var(--ftl-meter-low, var(--ftl-success)); }
+meter.ftl-meter:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--ftl-meter-mid, var(--ftl-warning)); }
+meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--ftl-meter-high, var(--ftl-danger)); }
 
 .ftl-status {
   display: inline-flex;
@@ -1372,6 +1446,54 @@ html[data-accent="4"] { --ftl-accent: var(--ftl-accent-swatch-4, var(--ftl-accen
 html[data-accent="5"] { --ftl-accent: var(--ftl-accent-swatch-5, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-5, var(--ftl-on-accent)); }
 html[data-accent="6"] { --ftl-accent: var(--ftl-accent-swatch-6, var(--ftl-accent)); --ftl-on-accent: var(--ftl-on-accent-swatch-6, var(--ftl-on-accent)); }
 
+/* --- Layout primitives -----------------------------------------------------
+ * Components carry no outer margin; these give a page its rhythm without
+ * app CSS. Gaps scale with --ftl-density.
+ *   .ftl-stack    vertical flow        .ftl-cluster  wrapping row
+ *   .ftl-grid     responsive columns   -sm / -lg     tighter / looser gap */
+.ftl-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ftl-stack-gap, calc(1rem * var(--ftl-density)));
+}
+.ftl-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ftl-cluster-gap, calc(0.6rem * var(--ftl-density)));
+}
+.ftl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--ftl-grid-min, 16rem)), 1fr));
+  gap: var(--ftl-grid-gap, calc(1rem * var(--ftl-density)));
+  align-items: start;
+}
+.ftl-stack-sm { --ftl-stack-gap: calc(0.5rem * var(--ftl-density)); }
+.ftl-stack-lg { --ftl-stack-gap: calc(2rem * var(--ftl-density)); }
+.ftl-cluster-sm { --ftl-cluster-gap: calc(0.3rem * var(--ftl-density)); }
+.ftl-cluster-lg { --ftl-cluster-gap: calc(1.2rem * var(--ftl-density)); }
+.ftl-grid-sm { --ftl-grid-min: 11rem; }
+.ftl-grid-lg { --ftl-grid-min: 22rem; }
+/* Children of a stack/cluster/grid own no margins of their own. */
+:is(.ftl-stack, .ftl-cluster, .ftl-grid) > * { margin-block: 0; }
+/* Inline-sized components keep their own width in a stack instead of
+   stretching across it. */
+.ftl-stack > :is(.ftl-segmented, .ftl-btn, .ftl-badge, .ftl-anchor, .ftl-readout,
+  .ftl-lamp, .ftl-avatar, .ftl-spinner, .ftl-check, .ftl-status) { align-self: flex-start; }
+
+/* .ftl-anchor — the positioned parent a popover, context menu or dropdown
+ * hangs from. Wrap trigger + surface; the app toggles visibility.
+ *   <span class="ftl-anchor"><button …>Menu</button><div class="ftl-context-menu is-below">…</div></span> */
+.ftl-anchor { position: relative; display: inline-block; }
+.ftl-anchor > :is(.ftl-popover, .ftl-context-menu, .ftl-dropdown) {
+  position: absolute;
+  z-index: 1050;
+  inset-inline-start: 0;
+}
+.ftl-anchor > .is-below { top: calc(100% + 0.25rem); }
+.ftl-anchor > .is-above { bottom: calc(100% + 0.25rem); }
+.ftl-anchor > .is-end { inset-inline-start: auto; inset-inline-end: 0; }
+
 /* --- Chart palette -------------------------------------------------------
  * For canvas/SVG charts drawn by app JS, which can't see CSS. Read them with
  * getComputedStyle(document.documentElement).getPropertyValue(...) and read
@@ -1659,7 +1781,8 @@ html[data-theme="material"] {
   --ftl-border: #e0e0e0;
   --ftl-hairline: #eeeeee;
   --ftl-text: #212121;
-  --ftl-muted: #757575;
+  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #757575, 4.0:1. */
+  --ftl-muted: #6d6d6d;
   --ftl-accent: #6200ee;
   --ftl-accent-2: #3700b3;
   --ftl-danger: #b00020;
