@@ -18,6 +18,11 @@ HEAD to point at.
 
 ### Added
 
+- **Vertical `.ftl-tabs` variant** (`aria-orientation="vertical"`): the left
+  hand tab rail a settings sheet reaches for — column stack, selection
+  marker on the inline edge, lead-aligned labels, inline-end hairline;
+  same `--ftl-tab-*` tokens as the horizontal strip.
+
 - **4 new themes: Teletext, Nokia 3310, XMB, XBMC.** All four ship a
   `README.md`, `theme.css` and `icons.svg`, and pass `scripts/check.py`.
   Unlike the rest of the catalog, none of the four has a

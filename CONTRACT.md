@@ -670,6 +670,19 @@ existing component.
 </div>
 ```
 
+Vertical variant (the left-hand settings rail): `aria-orientation="vertical"`
+stacks the tabs column, moves the selection marker from the block edge
+(bottom underline) to the inline edge of the rail, lead-aligns the labels,
+and draws an inline-end hairline instead of the bottom rule. Same token set
+as the horizontal strip (`--ftl-tab-*`), so a theme that already colours its
+tabs needs no changes.
+```html
+<div class="ftl-tabs" aria-orientation="vertical">
+  <button class="ftl-tab is-active">Look</button>
+  <button class="ftl-tab">Sound</button>
+</div>
+```
+
 ### Segmented control (v3.7.0)
 ```html
 <div class="ftl-segmented">
