@@ -5,6 +5,17 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+Nothing yet — see `v3.13.0` below for the last cut.
+
+## v3.13.0 — four new themes, an extensible icon+logo system, layout primitives (2026-09-24)
+
+**First git-tagged release.** Every version above this one shipped and is
+recorded here, but was never tagged in git — there's no `v3.12.0` (etc.)
+tag to check out. Going forward, a version heading in this file gets a
+matching git tag at the commit that closes it, so consuming apps that
+pin `ftl-themes` as a submodule have something more specific than `main`
+HEAD to point at.
+
 ### Added
 
 - **4 new themes: Teletext, Nokia 3310, XMB, XBMC.** All four ship a

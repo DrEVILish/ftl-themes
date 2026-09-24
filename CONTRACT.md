@@ -603,7 +603,7 @@ screen reader already wants on a sortable column — gets a clickable
 cursor, a hover tint, and a themed arrow; toggle the attribute value on
 click, don't add a separate `.is-sorted` class.
 
-Zebra striping (v3.8.0), opt-in — a plain table needs neither:
+Zebra striping (v3.13.0), opt-in — a plain table needs neither:
 ```html
 <table class="ftl-table is-striped">…</table>
 ```
@@ -620,7 +620,7 @@ theme's surface-2 isn't opaque.
   <button class="ftl-btn-close" aria-label="Close"></button>
 </div>
 ```
-`.ftl-btn-close` (v3.8.0) draws the "×" itself via `::before` — no icon
+`.ftl-btn-close` (v3.13.0) draws the "×" itself via `::before` — no icon
 markup needed, though it'll get out of the way (`content: none` on the
 pseudo-element) if you put an `.ftl-icon` inside instead. Always add
 `aria-label` yourself; the glyph alone isn't accessible. Size variants
@@ -636,7 +636,7 @@ A `<dialog class="ftl-modal">` bridge's native `::backdrop` already reads
 `.ftl-modal-overlay` div pattern uses — so switching between the two
 markup patterns re-themes for free.
 
-### Layout utilities (v3.8.0)
+### Layout utilities (v3.13.0)
 A small, deliberately tiny flex-layout layer — the one thing this library
 otherwise pushes an app toward a separate utility framework for. Token-driven
 spacing (`--ftl-space-3xs` … `--ftl-space-2xl`) so a theme can widen or
