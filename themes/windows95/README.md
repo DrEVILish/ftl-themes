@@ -36,6 +36,19 @@ poster.
 - Tables draw a full 1px grid — Explorer's details view, not a modern
   borderless list.
 
+### Icons
+
+`themes/windows95/icons.svg` redraws six of the most-used icons (home,
+settings, search, close, user, bell) in the chunky, low-detail pixel-art
+style of the real 95 icon set: large flat rectangular shapes, hard
+corners (`stroke-linecap: square` / `stroke-linejoin: miter` on every
+path, overriding the generic sprite's rounded default), and no curves
+where a straight edge will do — the settings glyph is a plus of tabs
+around a square rather than a circular gear, the same low-res
+simplification the real icon set used at 16×16/32×32. Every other icon
+falls back to the generic outline set, thickened by
+`--ftl-icon-stroke-width: 2.6` like the rest of the theme.
+
 ## Layout
 
 The app shell becomes a **desktop window**: the teal backdrop shows at the

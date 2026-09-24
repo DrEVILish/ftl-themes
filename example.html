@@ -219,7 +219,7 @@
 
       <section class="qa-section">
         <h2>Icon pack</h2>
-        <p class="qa-note">assets/icons/icons.svg — one outline set, reskinned per theme through <code>--ftl-icon-stroke-width</code> / <code>--ftl-icon-fill</code>, colored by inheriting <code>currentColor</code>. See <a href="docs/branding-guide.md">docs/branding-guide.md</a>.</p>
+        <p class="qa-note">assets/icons/icons.svg — one generic outline set, colored by inheriting <code>currentColor</code>. Most themes reskin it through <code>--ftl-icon-stroke-width</code> / <code>--ftl-icon-fill</code>; a few (windows95, teletext, matrix, winxp-luna, lcars, nokia-3310) also ship real per-icon overrides in <code>themes/&lt;slug&gt;/icons.svg</code>, merged at build time into <code>dist/icons/&lt;slug&gt;.svg</code> — any icon a theme doesn't override still falls back to the generic shape. JS swaps this page's icons to the selected theme's merged sprite; the hrefs below are the pre-JS fallback. See <a href="docs/branding-guide.md">docs/branding-guide.md</a> and CONTRACT.md "Icon system".</p>
         <div class="qa-row" id="icon-pack-swatches" style="flex-wrap:wrap; gap:1rem;">
           <!-- populated by JS below from the icon sprite's symbol ids -->
         </div>
@@ -471,8 +471,29 @@
           '<svg class="ftl-icon" style="--ftl-icon-size:1.6rem;"><use href="assets/icons/icons.svg#' + id + '"/></svg>' +
           '<span class="qa-note" style="font-size:0.65rem;text-align:center;">' + id.replace("icon-", "") + '</span></div>';
       }).join("");
+      applyIconTheme(document.documentElement.dataset.theme);
     }).catch(function () { grid.textContent = "assets/icons/icons.svg unavailable (serve over HTTP)."; });
   })();
+
+  // Keeps every .ftl-icon's <use> pointed at the current theme's merged
+  // icon sprite (dist/icons/<slug>.svg — generic icons plus that theme's
+  // own overrides; see CONTRACT.md "Icon system" and
+  // assets/js/theme-loader.js, which does the same thing for the other
+  // example pages). The hardcoded assets/icons/icons.svg href in the
+  // markup is only the pre-JS fallback.
+  function applyIconTheme(slug) {
+    if (!slug) return;
+    var uses = document.querySelectorAll(".ftl-icon use");
+    for (var i = 0; i < uses.length; i++) {
+      var use = uses[i];
+      var href = use.getAttribute("href") || use.getAttribute("xlink:href") || "";
+      var hash = href.indexOf("#");
+      if (hash < 0) continue;
+      var target = "dist/icons/" + slug + ".svg" + href.slice(hash);
+      use.setAttribute("href", target);
+      if (use.hasAttribute("xlink:href")) use.setAttribute("xlink:href", target);
+    }
+  }
 
   var link = document.getElementById("ftl-theme-link");
   var picker = document.getElementById("theme-picker");
@@ -613,6 +634,7 @@
   function applyTheme(slug) {
     document.documentElement.dataset.theme = slug;
     link.href = "dist/" + slug + ".css";
+    applyIconTheme(slug);
     // Compare-mode panes are copies of this page; letting them persist
     // would make whichever pane loaded last the single-mode theme.
     if (!isEmbed) store("ftl-qa-theme", slug);

@@ -37,6 +37,15 @@ background, never from introducing a new colour.
 - Bold, chunky text with no smoothing — this is a low-resolution segment
   display, not a modern hinted font.
 
+### Icons
+
+`themes/nokia-3310/icons.svg` redraws six icons (home, settings, search,
+close, user, bell) as coarse, low-resolution monochrome LCD segment
+shapes: big flat `currentColor` polygons and rects with minimal internal
+detail, no anti-aliasing and almost no curves — the kind of menu glyph a
+real feature-phone screen could actually render at its native
+resolution. Every other icon falls back to the generic outline set.
+
 ## Tell-tales of an inauthentic result
 
 - Any rounded corner or drop shadow.

@@ -36,17 +36,18 @@ what each agent's report said and what was changed in response.
 
 ## Icon pack
 
-`assets/icons/icons.svg` — one 24×24 outline SVG sprite (26 icons: nav,
-state, transport and CRUD glyphs), used everywhere as:
+`assets/icons/icons.svg` — one 24×24 outline SVG sprite (~55 icons: nav,
+state, transport, CRUD and dashboard/marketing glyphs), used everywhere
+as:
 
 ```html
 <svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
 ```
 
 `.ftl-icon` in `core/ftl-core.css` sets `stroke: currentColor`, so every
-icon inherits whatever text/foreground color surrounds it — no per-theme
-icon variants to maintain. A theme only overrides two tokens when its
-signature style calls for it:
+icon inherits whatever text/foreground color surrounds it. Most themes
+reskin the generic set through two tokens when their signature style
+calls for it:
 
 - `--ftl-icon-stroke-width` — bolder for chunky/physical themes
   (`windows95`: 2.6, `lego-classic`: 3), thinner for dense/technical ones
@@ -55,6 +56,20 @@ signature style calls for it:
 - `--ftl-icon-fill` — solid-fill glyphs instead of outline, for themes
   whose reference icon packs (e.g. Alienware Invader, `references/alienware/`)
   are filled rather than outlined. Unset by default.
+
+Six themes go further and ship **real per-icon overrides**:
+`themes/<slug>/icons.svg` redraws a subset of icon ids (home, settings,
+search, close, user, bell) in the theme's own visual language — chunky
+pixel-art for `windows95`, a coarse block/cell grid for `teletext`, thin
+monospace line marks for `matrix`, glossy two-tone icons for
+`winxp-luna`, LCARS' pill/elbow geometry for `lcars`, coarse LCD segment
+shapes for `nokia-3310`. `scripts/build_icons.py` merges each theme's
+overrides with the generic sprite into `dist/icons/<slug>.svg`; any icon
+a theme doesn't override falls back to the generic shape, which is also
+what every other theme uses for 100% of its icons. See CONTRACT.md "Icon
+system" for the full mechanism and `assets/js/theme-loader.js` for how
+the example pages swap `.ftl-icon` hrefs to the current theme's merged
+sprite.
 
 See `example.html`'s "Icon pack" and "Icon buttons" sections for the full
 set rendered live in whichever theme is selected.

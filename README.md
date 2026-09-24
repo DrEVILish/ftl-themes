@@ -39,6 +39,20 @@ surfaces, and handles htmx's own swap states (`.htmx-request`,
 Every theme has a `README.md` beside its CSS explaining what it is trying
 to achieve and how to extend it without drifting.
 
+## Icons
+
+One generic SVG sprite (`assets/icons/icons.svg`, ~55 outline icons) backs
+every `.ftl-icon`, with a per-theme override mechanism on top:
+`themes/<slug>/icons.svg` (optional) redraws a subset of icon ids in that
+theme's own visual language, and `scripts/build.sh` merges it with the
+generic set into `dist/icons/<slug>.svg` — any icon a theme doesn't
+override still falls back to the generic shape, which is also what a
+theme with no `icons.svg` at all uses for everything. Six themes
+currently ship real custom icon sets this way — `windows95`, `teletext`,
+`matrix`, `winxp-luna`, `lcars` and `nokia-3310` — and any other theme can
+add its own the same way, by dropping a `themes/<slug>/icons.svg` beside
+its `theme.css`. See CONTRACT.md "Icon system" for the full mechanism.
+
 ## Layout
 
 ```

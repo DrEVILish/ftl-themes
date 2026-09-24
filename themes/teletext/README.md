@@ -41,6 +41,18 @@ a limitation to soften.
   (`--ftl-row-selected-bg`), not a tint or outline — real teletext has no
   concept of a translucent highlight.
 
+### Icons
+
+`themes/teletext/icons.svg` redraws six icons (home, settings, search,
+close, user, bell) as solid colour-cell block graphics on a coarse pixel
+grid, exactly like the real service's character-cell display: every
+shape is a union of filled rectangles snapped to a 4-unit grid, with zero
+strokes, zero curves and zero anti-aliasing — a hollow square-and-handle
+stands in for the search icon's usual circle, and settings is abstracted
+to a plus of blocks rather than a naturalistic gear, since real teletext
+graphics were never skeuomorphic. Every other icon falls back to the
+generic outline set.
+
 ## Tell-tales of an inauthentic result
 
 - Any rounded corner, drop shadow, or gradient fill.

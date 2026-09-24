@@ -61,6 +61,18 @@ this catalog could verify against.
   the primary action is a *block*, consistent with everything else.
 - **Lamps** are rounded rectangles, not circles: LCARS has few true circles.
 
+### Icons
+
+`themes/lcars/icons.svg` redraws six icons (home, settings, search,
+close, user, bell) entirely out of LCARS' own geometric vocabulary —
+pill-ended rounded rects, sharp elbow curves and solid `currentColor`
+block fills — never naturalistic iconography. Settings becomes a plus of
+pill segments around a dot (a targeting-reticle abstraction, not a gear),
+and close is two pill bars crossed at 45°, matching the on-screen UI's
+habit of representing every control as an abstract colour block rather
+than a picture of the thing it does. Every other icon falls back to the
+generic outline set.
+
 ## Layout — this theme moves the furniture
 
 Selecting LCARS re-arranges the app shell, it does not merely recolour it:

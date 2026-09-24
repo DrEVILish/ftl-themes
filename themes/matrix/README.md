@@ -32,6 +32,18 @@ directly rather than an interface built for you.
 - Panels glow faintly *inward* (`inset` shadow) as though lit from behind.
 - Selected rows wash green at 12%; the active-row marker stays a hard bar.
 
+### Icons
+
+`themes/matrix/icons.svg` redraws six icons (home, settings, search,
+close, user, bell) as thin monospace/glyph-like line marks — a 1px
+stroke with square terminal caps in place of the generic sprite's 2px
+rounded default, so they read as hairline character strokes rather than
+a UI icon set. Settings becomes an eight-point asterisk glyph instead of
+a naturalistic gear, matching a terminal's habit of representing controls
+as punctuation rather than pictures. Every other icon falls back to the
+generic outline set, already thinned to 1.5 by
+`--ftl-icon-stroke-width`.
+
 ## Layout
 
 A **terminal**: black bar, one hairline rule, no rail, content filling the

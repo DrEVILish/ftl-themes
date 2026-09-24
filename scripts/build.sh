@@ -60,3 +60,10 @@ done
 # and check.py imports them from this script rather than re-implementing.
 python3 scripts/build_bundles.py >/dev/null
 python3 scripts/build_manifest.py
+
+# Per-theme icon sprites: dist/icons/<slug>.svg merges the generic sprite
+# (assets/icons/icons.svg) with that theme's own themes/<slug>/icons.svg
+# overrides, if any — see scripts/build_icons.py and CONTRACT.md "Icon
+# system". Every theme gets a merged sprite generated for it, even one
+# with no overrides, so the reference path is always valid.
+python3 scripts/build_icons.py

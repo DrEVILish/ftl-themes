@@ -10,9 +10,32 @@
   var link = document.getElementById("ftl-theme-link");
   var picker = document.getElementById("ftl-theme-picker");
 
+  // Keeps every .ftl-icon's <use> pointed at the current theme's merged
+  // icon sprite (dist/icons/<slug>.svg — generic icons plus that theme's
+  // own overrides, see CONTRACT.md "Icon system"). The markup's own
+  // assets/icons/icons.svg href is only the pre-JS fallback; this is what
+  // actually swaps in a theme's custom icon shapes. Exposed on window so
+  // a page that builds .ftl-icon markup after the fact (e.g. a demo that
+  // populates an icon-pack grid from a fetch) can re-run it once its own
+  // markup exists.
+  function applyIcons(slug) {
+    var uses = document.querySelectorAll(".ftl-icon use");
+    for (var i = 0; i < uses.length; i++) {
+      var use = uses[i];
+      var href = use.getAttribute("href") || use.getAttribute("xlink:href") || "";
+      var hash = href.indexOf("#");
+      if (hash < 0) continue;
+      var target = "dist/icons/" + slug + ".svg" + href.slice(hash);
+      use.setAttribute("href", target);
+      if (use.hasAttribute("xlink:href")) use.setAttribute("xlink:href", target);
+    }
+  }
+  window.ftlApplyIconTheme = applyIcons;
+
   function apply(slug) {
     document.documentElement.dataset.theme = slug;
     link.href = "dist/" + slug + ".css";
+    applyIcons(slug);
     try { localStorage.setItem("ftl-example-theme", slug); } catch (e) {}
     if (picker) picker.value = slug;
   }

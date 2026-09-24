@@ -869,6 +869,67 @@ edge). Works for `.ftl-popover`, `.ftl-context-menu` and `.ftl-dropdown`.
   const series = [1, 2, 3, 4, 5, 6].map(n => css.getPropertyValue(`--ftl-chart-series-${n}`).trim());
   ```
 
+## Icon system
+
+Icons are one shared SVG sprite, `assets/icons/icons.svg`, used everywhere
+as:
+
+```html
+<svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
+```
+
+`.ftl-icon` (in `core/ftl-core.css`) sets `stroke: currentColor`, so every
+icon inherits whatever text/foreground color surrounds it. The generic
+sprite currently ships these ids (all 24×24, stroke-based, no fill by
+default):
+
+`home`, `settings`, `search`, `close`, `menu`, `check`, `warning`, `info`,
+`chevron-down`, `chevron-up`, `chevron-left`, `chevron-right`, `play`,
+`pause`, `stop`, `refresh`, `download`, `upload`, `user`, `bell`, `star`,
+`trash`, `edit`, `plus`, `minus`, `arrow-right`, `arrow-left`, `arrow-up`,
+`arrow-down`, `external-link`, `calendar`, `clock`, `mail`, `filter`,
+`folder`, `file`, `image`, `cloud`, `tag`, `link`, `copy`,
+`more-horizontal`, `help-circle`, `logout`, `clipboard`, `lock`, `unlock`,
+`phone`, `shopping-cart`, `sort`, `grid`, `list`, `print`, `share`, `save`
+(id `icon-<name>`).
+
+### Per-theme icon overrides and the generic fallback
+
+A theme MAY ship `themes/<slug>/icons.svg`, containing only the
+`<symbol id="icon-name">` entries it wants to draw in its own visual
+language (a subset of the ids above) — e.g. chunky pixel-art for
+`windows95`, coarse block-grid glyphs for `teletext`, thin monospace line
+marks for `matrix`, glossy two-tone icons for `winxp-luna`, LCARS' own
+pill/elbow geometry for `lcars`, coarse LCD segment shapes for
+`nokia-3310`. A theme with no `icons.svg` file — the large majority — uses
+100% generic icons; this is the default and needs zero per-theme changes.
+
+At build time, `scripts/build_icons.py` (called from `scripts/build.sh`)
+writes `dist/icons/<slug>.svg` for every theme: a full copy of the generic
+sprite's symbols, with any id the theme's own `icons.svg` also defines
+*replaced* by the theme's version (same id, so no markup ever needs to
+change). Any icon id a theme doesn't override keeps the generic shape —
+that's the fallback, not a special case. `dist/icons/generic.svg` is the
+plain generic sprite, for an app that wants the fallback set with no
+theme applied yet. A theme's `icons.svg` may only override an id that
+exists in `assets/icons/icons.svg`; overriding an unknown id fails
+`scripts/check.py`'s `icons` rule, since it would silently never apply.
+
+`assets/js/theme-loader.js` (the example pages' theme switcher) keeps
+every `.ftl-icon`'s `<use>` pointed at the right sprite: on both initial
+load and the picker's `change` handler, it rewrites each `<use>`'s
+`href`/`xlink:href` to `dist/icons/<slug>.svg` while keeping the
+`#icon-name` fragment intact, via the exported `window.ftlApplyIconTheme(slug)`
+helper. A real app wires this however it wants — a server-rendered
+`data-theme` attribute plus the same href-rewrite, or by resolving the
+sprite path server-side — the mechanism only requires that `<use>`
+elements end up pointing at that request's chosen theme's
+`dist/icons/<slug>.svg`. Markup that hardcodes
+`assets/icons/icons.svg#icon-name` still renders correctly with no JS at
+all — it's the generic sprite, i.e. exactly the fallback every theme
+without overrides already uses — so this is progressive enhancement, not
+a hard requirement.
+
 ## Adopting ftl-themes in an existing app
 
 If your app already has its own CSS with its own token names, add one

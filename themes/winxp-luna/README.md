@@ -38,6 +38,16 @@ someone says "Windows XP."
 - The primary button variant brightens toward `#3f9eff` at the top of its
   gradient, distinguishing it from a plain gloss button at a glance.
 
+### Icons
+
+`themes/winxp-luna/icons.svg` redraws six icons (home, settings, search,
+close, user, bell) as glossy, two-tone glyphs: a `currentColor` fill for
+the base shape, a soft white highlight band across the top for the gloss
+line Luna put on every filled surface, and a thin `currentColor` outline
+to keep edges crisp — the same three-layer recipe as the title bar and
+buttons, just applied at icon scale. Every other icon falls back to the
+plain outline sprite.
+
 ## Layout
 
 The app shell becomes an **XP window**: a glossy round-cornered blue title
