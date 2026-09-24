@@ -44,13 +44,16 @@ html[data-theme="win7-aero"] {
 
   /* Glass, not plastic: translucent fills over a blurred backdrop, not an
      opaque gradient. backdrop-filter is the load-bearing difference from
-     winxp-luna's flat gloss — but a flat translucent fill with only a 1px
-     highlight line still reads as "plain pale blue," not glass, on the
-     ordinary buttons/panels/inputs that never get backdrop-filter (only
-     the app-bar/status shell components do). A real vertical gloss
-     gradient — bright top third fading into the translucent base — gives
-     every button and panel its own highlight even without blur behind it. */
-  --ftl-btn-bg: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.45) 45%, rgba(255,255,255,0.35) 100%);
+     winxp-luna's flat gloss — but a strict fidelity review confirmed the
+     first pass at this (a flat translucent fill, a 1px highlight line and
+     an 8px blur) still read as "plain pale blue," not glass: the fills
+     were too opaque for any backdrop color to actually show through, and
+     the blur radius was too shallow to visibly soften anything behind it.
+     This pass lowers every glass surface's opacity substantially (more of
+     the colorful backdrop — see --ftl-app-bg below — reads through) and
+     keeps the vertical gloss band only as a highlight accent, not the
+     dominant opaque fill it was. */
+  --ftl-btn-bg: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.22) 45%, rgba(255,255,255,0.16) 100%);
   --ftl-btn-fg: var(--ftl-text);
   --ftl-btn-border: rgba(127, 168, 217, 0.8);
   --ftl-btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -6px 10px -6px rgba(28, 111, 209, 0.25);
@@ -58,19 +61,19 @@ html[data-theme="win7-aero"] {
   --ftl-focus: #1c6fd1;
   --ftl-focus-ring: 0 0 0 3px rgba(28, 111, 209, 0.35);
   --ftl-input-bg: rgba(255, 255, 255, 0.85);
-  --ftl-panel-bg: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.5) 100%);
+  --ftl-panel-bg: linear-gradient(180deg, rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.16) 30%, rgba(255,255,255,0.24) 100%);
   --ftl-panel-border: rgba(127, 168, 217, 0.6);
   --ftl-panel-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 8px 24px rgba(20, 50, 90, 0.25);
-  --ftl-modal-header-bg: rgba(190, 220, 250, 0.55);
+  --ftl-modal-header-bg: rgba(190, 220, 250, 0.5);
   --ftl-modal-radius: 8px;
-  --ftl-table-head-bg: rgba(255, 255, 255, 0.5);
+  --ftl-table-head-bg: rgba(255, 255, 255, 0.32);
   --ftl-table-head-transform: none;
   --ftl-table-head-tracking: normal;
   --ftl-row-selected-bg: rgba(28, 111, 209, 0.18);
-  --ftl-nav-bg: rgba(255, 255, 255, 0.5);
+  --ftl-nav-bg: rgba(255, 255, 255, 0.32);
   --ftl-nav-item-bg-active: rgba(28, 111, 209, 0.16);
   --ftl-nav-item-fg-active: var(--ftl-accent);
-  --ftl-dropdown-bg: rgba(245, 249, 253, 0.92);
+  --ftl-dropdown-bg: rgba(245, 249, 253, 0.88);
   --ftl-overlay-bg: rgba(30, 50, 80, 0.35);
   --ftl-overlay-blur: blur(2px);
   --ftl-indicator-fg: var(--ftl-accent);
@@ -84,15 +87,22 @@ html[data-theme="win7-aero"] h2,
 html[data-theme="win7-aero"] h3 { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
 
 /* Glass surfaces get an actual blur, not just transparency — the one CSS
-   feature that separates "glass" from "washed-out plastic". */
+   feature that separates "glass" from "washed-out plastic". A strict
+   fidelity review confirmed 8px was too shallow to visibly soften
+   anything behind it (paired with the old near-opaque fills, the effect
+   never registered at all) — 20px is a real frosted-glass blur, strong
+   enough that the colorful backdrop blobs behind a panel (see
+   --ftl-app-bg below) read as clearly out-of-focus color, not a crisp
+   background peeking through a tint. */
 html[data-theme="win7-aero"] .ftl-btn,
 html[data-theme="win7-aero"] .ftl-panel,
 html[data-theme="win7-aero"] .ftl-modal,
 html[data-theme="win7-aero"] .ftl-dropdown,
 html[data-theme="win7-aero"] .ftl-nav,
-html[data-theme="win7-aero"] .ftl-toolbar {
-  backdrop-filter: blur(8px) saturate(1.4);
-  -webkit-backdrop-filter: blur(8px) saturate(1.4);
+html[data-theme="win7-aero"] .ftl-toolbar,
+html[data-theme="win7-aero"] .ftl-app-main {
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
 }
 
 html[data-theme="win7-aero"] .ftl-btn-primary {
@@ -150,27 +160,43 @@ html[data-theme="win7-aero"] {
   /* Without this, .ftl-app has no background at all (core defaults to
      transparent) — the glass bar/status strip had nothing detailed behind
      them to refract, so backdrop-filter: blur() was declared but visually
-     inert. A photographic-style radial desktop gradient gives the blur
-     something to actually frost. */
+     inert. A single soft radial highlight over a smooth linear gradient
+     (the earlier version of this value) was STILL visually inert once
+     blurred — blur only reveals itself against real edges and color
+     contrast, and a smooth gradient looks nearly identical blurred or
+     not. Several saturated, sharp-edged color blobs give the blur behind
+     every glass panel something unmistakable to soften: a panel sitting
+     over one now visibly shows soft out-of-focus color bleeding through
+     the frost, not just a flat tint. */
+  /* Fixed pixel Y offsets, not percentages, for the blobs: this background
+     paints across the FULL .ftl-app grid box, which is often much taller
+     than one viewport once real content scrolls — percentage Y positions
+     pushed most blobs far below the fold, where a first pass never showed
+     them at all. Anchoring near the top keeps them inside the visible
+     area regardless of how tall the page's content ends up being. */
   --ftl-app-bg:
+    radial-gradient(circle at 12% 90px, rgba(255,214,120,0.9), transparent 30%),
+    radial-gradient(circle at 85% 130px, rgba(255,120,190,0.75), transparent 32%),
+    radial-gradient(circle at 30% 480px, rgba(120,255,210,0.7), transparent 34%),
+    radial-gradient(circle at 92% 560px, rgba(150,110,255,0.75), transparent 32%),
     radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.55), transparent 55%),
     linear-gradient(160deg, #cfe4fb 0%, #8fb8e6 45%, #4a7fc4 100%);
-  --ftl-app-bar-bg: rgba(210, 230, 250, 0.45);
+  --ftl-app-bar-bg: rgba(210, 230, 250, 0.3);
   --ftl-app-bar-fg: var(--ftl-text);
   --ftl-app-bar-rule-width: 0;
   --ftl-app-bar-radius: 8px 8px 0 0;
   --ftl-app-bar-height: 2.4rem;
-  --ftl-app-main-bg: rgba(255, 255, 255, 0.4);
+  --ftl-app-main-bg: rgba(255, 255, 255, 0.38);
   --ftl-app-main-padding: 1rem;
-  --ftl-app-status-bg: rgba(180, 210, 240, 0.55);
+  --ftl-app-status-bg: rgba(180, 210, 240, 0.38);
   --ftl-app-status-fg: #3f4852;
   --ftl-app-status-radius: 0 0 8px 8px;
   --ftl-app-status-rule: transparent;
 }
 html[data-theme="win7-aero"] .ftl-app-bar,
 html[data-theme="win7-aero"] .ftl-app-status {
-  backdrop-filter: blur(10px) saturate(1.5);
-  -webkit-backdrop-filter: blur(10px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
