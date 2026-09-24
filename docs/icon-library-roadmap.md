@@ -216,16 +216,55 @@ in consuming apps.
   platform's actual logo.
 - **The project owner's own app logos are out of scope for a different
   reason: they're the owner's own product IP, not this library's to
-  ship.** `cutepi`'s `public/img/cutepi-logo.svg` and
+  ship as a generic icon.** `cutepi`'s `public/img/cutepi-logo.svg` and
   `LOGOs/cutepi-logo-80s-corporate.svg`, and `playlist-lab`'s
   `static/logo.svg`, were reviewed only for visual-weight/line-style
   inspiration (how much detail a mark carries at icon size, corner
-  treatment, stroke weight) — none of their artwork was copied. A future,
-  separate piece of documentation could show *how a consuming app's own
-  brand mark sits alongside ftl-themes icons* (sizing, spacing, contrast
-  against the theme's chrome) using those logos as worked examples — that
-  integration guide is not built now, just noted here as a idea for
-  later.
+  treatment, stroke weight) when Phase 1 was drawn — none of their
+  artwork was copied into `assets/icons/icons.svg`. Those same files (and
+  any future real third-party brand marks a consuming app needs to
+  display) now have a home: see "Icon packs vs. logo packs" below.
+
+## Icon packs vs. logo packs
+
+This roadmap is entirely about **icon packs** — `assets/icons/icons.svg`
+plus the per-theme overrides in `themes/<slug>/icons.svg`, merged by
+`scripts/build_icons.py`. Everything in that system is a **generic UI
+icon** (folder, arrow, play button, wifi glyph, ...): original artwork or
+verifiably permissively-licensed third-party artwork (per
+`docs/icon-license-research.md`), covered by this repo's own MIT-style
+license, and safe to reskin per theme with zero legal complication
+because nothing in it depicts a specific real-world brand.
+
+**Logo packs are a separate system, on purpose: `assets/logos/`.** A
+company logo or product wordmark is a **trademark**, not just a
+copyrighted graphic — freely downloadable does not mean freely
+redistributable, and it doesn't become "generic" just because a
+consuming app wants to show it next to a generic icon (e.g. a "Connect
+your Spotify account" button needing Spotify's actual mark). Key
+differences from the icon-pack system, spelled out here so future
+contributors never conflate the two:
+
+| | Icon packs (`assets/icons/`) | Logo packs (`assets/logos/`) |
+|---|---|---|
+| What it contains | Generic, non-branded UI icons | Real third-party trademarks + consuming apps' own product logos |
+| License model | This repo's own MIT-style license (or verified permissive upstream, tracked in `docs/icon-license-research.md`) | Each mark stays the property of its own owner; not covered by this repo's license at all |
+| Per-theme variants | Yes — `themes/<slug>/icons.svg` overrides, merged by `scripts/build_icons.py` | No — a brand's logo must stay visually unmodified per that brand's own guidelines; there is no themed reskinning |
+| Build integration | Bundled into every theme's `dist/icons/<slug>.svg` automatically | **Not** wired into `scripts/build.sh` at all — opt-in, explicitly imported per consuming app via `assets/logos/logos.css` |
+| CSS helper | `.ftl-icon` (`core/ftl-core.css`) | `.ftl-logo` (`assets/logos/logos.css`) — separate namespace, no shared tokens |
+| Governance | This roadmap + `docs/icon-license-research.md` | `assets/logos/README.md` + `assets/logos/manifest.json` |
+
+See `assets/logos/README.md` for the full rules (never fabricate a
+brand's logo; always record the official brand-guidelines URL; a real
+third-party mark needs either that brand's own verified official SVG or
+the project owner's explicit rights-confirmed file). `assets/logos/`
+currently holds the project owner's own `cutepi` and `playlist-lab`
+logos, plus documented `pending` placeholders in `manifest.json` for
+real third-party marks (Spotify, Apple Music, Amazon Music) that are
+referenced by `playlist-lab`'s `service-logos/` folder but were
+deliberately **not** vendored into this shared library — that folder's
+existing files are `playlist-lab`'s own concern, not something this repo
+has redistribution rights over.
 
 ## Worked example: the folder-icon pattern
 
