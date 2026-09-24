@@ -113,14 +113,27 @@ html[data-theme="death-star"] .ftl-transport {
   background-size: 100% 2.5rem;
   background-position: 0 0;
 }
-/* .ftl-card is used for small, short-text tiles (stat tiles, feature
-   cards) where a 4rem-pitch vertical grid line reliably lands mid-word —
-   confirmed by rendering: "REVENUE" and "CONVERSION RATE" both got a
-   line straight through a letter. Cards get a plain dark fill instead;
-   the grid stays reserved for larger panel surfaces where it reads as
-   console segmentation, not text collision. */
+/* .ftl-card previously got a plain dark fill while .ftl-panel got the
+   white grid: same --ftl-surface-2 fill underneath, so the color read as
+   identical, but the missing texture made cards read as a different
+   material next to a gridded panel in the same layout (the panel-style
+   inconsistency flagged against the dashboard). A full repeating grid at
+   panel's 2.5rem pitch isn't safe here — cards hold short, large-type
+   text (stat tiles, feature headings) and a repeating line reliably lands
+   mid-word ("REVENUE", "CONVERSION RATE" both got a line through a
+   letter). So cards get the same hairline construction and color, but as
+   two non-repeating lines pinned to the card's own top and bottom edges
+   instead of a repeating field — inside the padding, never crossing
+   content, while still reading as the same console-grid material as the
+   panel. */
 html[data-theme="death-star"] .ftl-card {
   --ftl-card-bg: var(--ftl-surface-2);
+  background-image:
+    linear-gradient(rgba(230, 230, 230, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(230, 230, 230, 0.12) 1px, transparent 1px);
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%;
+  background-position: 0 0, 0 100%;
 }
 /* One solid red control block per panel header — the reference's other
    defining structural element alongside the white grid. */

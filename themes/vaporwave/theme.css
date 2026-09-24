@@ -164,3 +164,56 @@ html[data-theme="vaporwave"] .ftl-app-status::after {
   transform-origin: center top;
   z-index: -1;
 }
+
+/* Page-level signature chrome: the sun-disc + grid horizon above only ever
+   painted inside .ftl-app-status, so a shell-less page (a marketing/landing
+   layout with no .ftl-app-status bar at all, e.g. example-3) shipped none
+   of the theme's one identifying image and read as "a purple-and-pink
+   theme," not vaporwave. Restated here as fixed, viewport-anchored
+   body::before/::after so every page gets it — including one built from
+   the app shell, where it simply sits behind that shell's own opaque
+   surfaces. Kept low-opacity, z-index: -1 (stacked under the page, never
+   the app shell's own -1 chrome since this attaches to body/html, a lower
+   painting context) and pointer-events: none so it never intercepts clicks
+   or competes with foreground legibility. */
+html[data-theme="vaporwave"] body {
+  position: relative;
+}
+html[data-theme="vaporwave"] body::before,
+html[data-theme="vaporwave"] body::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+html[data-theme="vaporwave"] body::before {
+  /* The sun disc, low on the page like a horizon sun rather than the
+     status-bar version's small badge. */
+  top: 58vh;
+  left: 50%;
+  right: auto;
+  width: min(40vw, 22rem);
+  height: min(40vw, 22rem);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 6%, rgba(21, 8, 34, 0.9) 6% 12%),
+    linear-gradient(180deg, #ff71ce, #ffcc66 55%, #01cdfe);
+  opacity: 0.35;
+}
+html[data-theme="vaporwave"] body::after {
+  /* The converging perspective floor, filling the lower half of the
+     viewport behind the content well. */
+  top: 58vh;
+  bottom: 0;
+  background-color: var(--ftl-bg);
+  background-image:
+    linear-gradient(90deg, rgba(1, 205, 254, 0.35) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(1, 205, 254, 0.28) 1px, transparent 1px);
+  background-size: 4rem 100%, 100% 2rem;
+  transform: perspective(400px) rotateX(60deg);
+  transform-origin: center top;
+  opacity: 0.5;
+}

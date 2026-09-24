@@ -2026,6 +2026,7 @@ html[data-theme="lcars"] {
 /* The candy-bar stack, drawn entirely in CSS so the app ships no LCARS
    markup: hard-stopped gradient bands with black gaps between them. */
 html[data-theme="lcars"] .ftl-app-rail {
+  position: relative;
   background-image: linear-gradient(
     180deg,
     var(--ftl-lcars-lavender) 0 14%,
@@ -2038,6 +2039,60 @@ html[data-theme="lcars"] .ftl-app-rail {
     #000 88% 89.5%,
     var(--ftl-lcars-tan) 89.5% 100%
   );
+}
+
+/* The rail is aria-hidden decoration (no real nav items live here — see the
+   markup comment above), which is exactly why it read as inert color bars
+   in review rather than an LCARS "elbow": on screen every candy block in a
+   real LCARS panel carries a short all-caps callout. A single element only
+   has two pseudo-slots, so these label the two blocks that most read as
+   functional "elbow" corners — the block curling into the bar's sweep at
+   the top, and the block anchoring the transport edge at the bottom —
+   rather than leaving the whole stack unlabeled. Black text matches the
+   on-screen LCARS convention of dark labels set directly on the candy
+   fill, and clears 4.5:1 on both the lavender and tan bands they sit on. */
+html[data-theme="lcars"] .ftl-app-rail::before,
+html[data-theme="lcars"] .ftl-app-rail::after {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: "Antonio", var(--ftl-font);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #000;
+  pointer-events: none;
+}
+html[data-theme="lcars"] .ftl-app-rail::before {
+  content: "NAV";
+  top: 0;
+  height: 14%;
+}
+html[data-theme="lcars"] .ftl-app-rail::after {
+  content: "AUX";
+  bottom: 0;
+  height: 10.5%;
+}
+
+/* On the phone strip the bands run left-to-right, so their corner labels
+   sit at the strip's own left/right ends and read horizontally. */
+@media (max-width: 720px) {
+  html[data-theme="lcars"] .ftl-app-rail::before,
+  html[data-theme="lcars"] .ftl-app-rail::after {
+    writing-mode: horizontal-tb;
+    transform: none;
+    top: 0;
+    height: 100%;
+    width: auto;
+  }
+  html[data-theme="lcars"] .ftl-app-rail::before { left: 0; right: auto; width: 18%; }
+  html[data-theme="lcars"] .ftl-app-rail::after { left: auto; right: 0; width: 23%; }
 }
 
 /* On a phone the rail becomes a horizontal strip under the bar rather than

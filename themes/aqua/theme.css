@@ -73,6 +73,37 @@ html[data-theme="aqua"] .ftl-card {
 }
 html[data-theme="aqua"] .ftl-modal-header { text-align: center; border-bottom: 1px solid var(--ftl-border); }
 
+/* The traffic lights are Aqua's single most recognizable window-chrome
+   cue, but until now they only ever drew on .ftl-app-bar — so any layout
+   that doesn't adopt the full app shell (e.g. a marketing page built from
+   bare .ftl-panel/.ftl-card, or a dialog), never shows a single window
+   affordance anywhere on the page. Every framed header now gets its own
+   (smaller) set, exactly as a real Mac window/sheet titlebar would. */
+html[data-theme="aqua"] .ftl-panel-header,
+html[data-theme="aqua"] .ftl-modal-header {
+  position: relative;
+  padding-left: 3rem;
+}
+html[data-theme="aqua"] .ftl-panel-header::before,
+html[data-theme="aqua"] .ftl-modal-header::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.25rem;
+  height: 0.6rem;
+  background-image:
+    radial-gradient(circle at 30% 30%, #ff8a7a, #ef5350 55%, #c0392b),
+    radial-gradient(circle at 30% 30%, #ffe08a, #f4bd3a 55%, #c78a12),
+    radial-gradient(circle at 30% 30%, #92e6a0, #61c454 55%, #3d8b2c);
+  background-size: 0.6rem 0.6rem;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0.8rem 0, 1.6rem 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
 /* Glossy candy fills for the semantic variants. */
 html[data-theme="aqua"] .ftl-btn-primary { --ftl-btn-bg: linear-gradient(180deg, #006fee, #2a74d0 55%, #1f66c2); --ftl-btn-border: #1f66c2; }
 /* The pulsing default button — Aqua's own signature affordance for "the
@@ -89,7 +120,18 @@ html[data-theme="aqua"] .ftl-btn-primary { --ftl-btn-bg: linear-gradient(180deg,
 html[data-theme="aqua"] .ftl-btn-danger { --ftl-btn-bg: linear-gradient(180deg, #ef7b68, #c8321f 55%, #97200f); --ftl-btn-border: #97200f; }
 html[data-theme="aqua"] .ftl-btn-success { --ftl-btn-bg: linear-gradient(180deg, #74c266, #3a7d2f 55%, #2a5f22); --ftl-btn-border: #2a5f22; }
 
-html[data-theme="aqua"] .ftl-table tr:nth-child(even):not(.is-selected) td { background: rgba(0, 0, 0, 0.02); }
+/* Tables inside a pinstriped panel/card sit on their own opaque surface
+   rather than showing the 3px pinstripe through every row: the tight
+   repeating lines behind dense tabular text read as noise, and fighting
+   the zebra stripe below made both patterns harder to read. A flat
+   surface-2 backdrop is itself period-accurate (Mac list views were
+   plain white insets, not pinstriped), and it's what the alternating
+   row tint below is meant to sit on. */
+html[data-theme="aqua"] .ftl-panel .ftl-table,
+html[data-theme="aqua"] .ftl-card .ftl-table {
+  background: var(--ftl-surface-2);
+}
+html[data-theme="aqua"] .ftl-table tr:nth-child(even):not(.is-selected) td { background: rgba(0, 0, 0, 0.035); }
 
 /* --- Layout ------------------------------------------------------------ *
  * A Mac window: brushed-metal titlebar with rounded top corners, floating

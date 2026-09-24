@@ -98,6 +98,19 @@ html[data-theme="bloomberg"] .ftl-table td { border-right: 1px solid var(--ftl-h
 html[data-theme="bloomberg"] .ftl-table th:last-child,
 html[data-theme="bloomberg"] .ftl-table td:last-child { border-right: none; }
 
+/* The function-key row was only ever drawn on <kbd> and the status strip —
+   two surfaces a dense dashboard barely shows. Table headers are the
+   surface a data-wall theme actually spends most of its pixels on, so the
+   same cycling function-key palette (HELP red, MENU yellow, <GO> green,
+   cyan, grey) now bands the head row too, by column position exactly like
+   the <kbd> rule above. */
+html[data-theme="bloomberg"] .ftl-table thead th { border-top: 2px solid var(--ftl-accent); }
+html[data-theme="bloomberg"] .ftl-table thead th:nth-child(5n+1) { border-top-color: #ff4136; }
+html[data-theme="bloomberg"] .ftl-table thead th:nth-child(5n+2) { border-top-color: #ffcc00; }
+html[data-theme="bloomberg"] .ftl-table thead th:nth-child(5n+3) { border-top-color: #2ecc40; }
+html[data-theme="bloomberg"] .ftl-table thead th:nth-child(5n+4) { border-top-color: #00ccff; }
+html[data-theme="bloomberg"] .ftl-table thead th:nth-child(5n+5) { border-top-color: #e8e8e8; }
+
 /* --- Layout ------------------------------------------------------------ *
  * A data wall: a thin function-key bar up top, no decorative rail (density
  * over chrome), and a status strip that reads as another data row, not a
@@ -137,6 +150,37 @@ html[data-theme="bloomberg"] .ftl-app-status::before {
   width: 3.6rem;
   height: 0.6rem;
   background-image: linear-gradient(90deg,
+    #ff4136 0 18%, #0a0a0a 18% 20%,
+    #ffcc00 20% 38%, #0a0a0a 38% 40%,
+    #2ecc40 40% 58%, #0a0a0a 58% 60%,
+    #00ccff 60% 78%, #0a0a0a 78% 80%,
+    #e8e8e8 80% 98%, #0a0a0a 98% 100%
+  );
+}
+
+/* The rail was never given a display or column width, so an app that
+   ships the (aria-hidden, empty) <aside> per the shell contract just
+   collapsed it to a zero-width gutter — dead, unbranded black next to the
+   dashboard's densest content. A data wall has no use for a *navigation*
+   rail, but it can still turn that strip into the same function-key band
+   already used on the status bar, rotated vertical, so the theme's
+   signature motif fills what used to be empty space instead of leaving
+   it. --ftl-app-rail-empty-display keeps it visible even though the rail
+   element itself carries no content. */
+html[data-theme="bloomberg"] {
+  --ftl-app-columns: 0.6rem minmax(0, 1fr);
+  --ftl-app-rail-display: flex;
+  --ftl-app-rail-empty-display: flex;
+  --ftl-app-rail-bg: #0a0a0a;
+}
+html[data-theme="bloomberg"] .ftl-app-rail {
+  position: relative;
+}
+html[data-theme="bloomberg"] .ftl-app-rail::before {
+  content: "";
+  position: absolute;
+  inset: 0.4rem 0.15rem;
+  background-image: linear-gradient(180deg,
     #ff4136 0 18%, #0a0a0a 18% 20%,
     #ffcc00 20% 38%, #0a0a0a 38% 40%,
     #2ecc40 40% 58%, #0a0a0a 58% 60%,

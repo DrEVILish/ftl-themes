@@ -102,6 +102,44 @@ html[data-theme="win7-aero"] .ftl-btn-primary {
   --ftl-btn-border: #1c6fd1;
 }
 
+/* Aero's second signature, beyond the glass gloss: the "glow" focus ring.
+   Real Aero focus/hover feedback is a soft blue bloom radiating outward from
+   the control, not a hard-edged outline — a diffuse multi-stop glow, wider
+   and softer than the thin accent ring other themes use. The outline itself
+   is kept (never removed, per the focus-visible contract); the glow layers
+   outside it. */
+html[data-theme="win7-aero"] :focus-visible {
+  outline-color: var(--ftl-focus);
+  box-shadow: 0 0 0 3px rgba(127, 216, 255, 0.55), 0 0 14px 4px rgba(28, 111, 209, 0.45);
+}
+
+/* Aero window-chrome: a glassy title bar on panel/modal headers, distinct
+   from the plain content below — the Aero blue-gradient caption strip with
+   its characteristic light reflection band running across the top. This is
+   the "rounded window chrome" signature the gloss-gradient buttons alone
+   don't give you; it reads as an actual Aero window, not just a tinted box. */
+html[data-theme="win7-aero"] .ftl-panel-header,
+html[data-theme="win7-aero"] .ftl-modal-header {
+  --ftl-panel-header-bg: linear-gradient(180deg, rgba(216, 236, 255, 0.95) 0%, rgba(150, 200, 245, 0.85) 45%, rgba(90, 155, 215, 0.85) 100%);
+  --ftl-panel-header-fg: #0b3a6e;
+  --ftl-modal-header-bg: linear-gradient(180deg, rgba(216, 236, 255, 0.95) 0%, rgba(150, 200, 245, 0.85) 45%, rgba(90, 155, 215, 0.85) 100%);
+  --ftl-modal-header-fg: #0b3a6e;
+  position: relative;
+  border-radius: var(--ftl-modal-radius, 8px) var(--ftl-modal-radius, 8px) 0 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(20, 60, 100, 0.25);
+  overflow: hidden;
+}
+/* The reflection strip: a bright diagonal band of light across the glass,
+   the single most recognizable Aero window-chrome detail. */
+html[data-theme="win7-aero"] .ftl-panel-header::before,
+html[data-theme="win7-aero"] .ftl-modal-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 55% 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
 /* --- Layout ------------------------------------------------------------ *
  * A floating glass window: a translucent blurred title bar with rounded
  * corners, a frosted taskbar-style status strip, and the Aero blue desktop

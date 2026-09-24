@@ -84,9 +84,51 @@ html[data-theme="msdos"] .ftl-btn[aria-disabled="true"] {
   --ftl-btn-fg: #8888cc;
 }
 
-html[data-theme="msdos"] h1,
-html[data-theme="msdos"] h2,
-html[data-theme="msdos"] h3 { color: var(--ftl-accent-2); text-transform: uppercase; }
+/* Hierarchy: flat before this — h1/h2/h3 differed only in font-size, all
+   the same bright-cyan text-mode color, which reads as "plain terminal
+   text" at every level. Norton Commander's own convention for emphasis is
+   reverse video (the two panels' title bars, the F-key bar), not weight or
+   size, since a 16-color VGA text-mode font has no true bold glyphs to
+   fall back on — so each level below gets progressively less of that
+   reverse-video treatment rather than a synthetic "font-weight: bold". */
+html[data-theme="msdos"] h1 {
+  /* Strongest: a full reverse-video title bar, the same accent-fill +
+     on-accent-black pairing already used (and lint-verified) on table
+     heads and kbd — never a new, unverified color pair. Block, not
+     inline-block: a full-width bar is the actual NC title-bar convention
+     and wraps cleanly for a long marketing headline. */
+  background: var(--ftl-accent);
+  color: var(--ftl-on-accent);
+  text-transform: uppercase;
+  padding: 0.15em 0.4em;
+}
+html[data-theme="msdos"] h2 {
+  /* Medium: bright text plus a double-line rule underneath, echoing the
+     theme's double-line box borders instead of introducing a new motif. */
+  color: var(--ftl-accent-2);
+  text-transform: uppercase;
+  border-bottom: 3px double var(--ftl-accent-2);
+  padding-bottom: 0.15em;
+}
+html[data-theme="msdos"] h3 {
+  /* Mildest: accent color only, no rule and no fill — still a step above
+     plain body text, a step below h2. */
+  color: var(--ftl-accent-2);
+  text-transform: uppercase;
+}
+
+/* .ftl-panel-header previously fell back to transparent/muted-grey — dimmer
+   than the panel's own white body text, the opposite of a header reading
+   as more prominent than its content. Reverse video (same accent-fill +
+   on-accent pairing as the table head and h1) makes it unmistakably a
+   title bar. Not a base component in BASE_COMPONENTS, so a literal
+   background/color here doesn't trip the cascade-safety lint. */
+html[data-theme="msdos"] .ftl-panel-header {
+  background: var(--ftl-accent);
+  color: var(--ftl-on-accent);
+  text-transform: uppercase;
+  font-weight: bold;
+}
 
 html[data-theme="msdos"] {
   --ftl-app-bar-bg: var(--ftl-accent);

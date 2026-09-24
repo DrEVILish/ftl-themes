@@ -1940,15 +1940,40 @@ html[data-theme="matrix"] .ftl-btn-primary { --ftl-btn-bg: rgba(0, 255, 65, 0.12
  * the content filling the frame. */
 html[data-theme="matrix"] {
   /* transparent, not #000: the rain lives on html's own background (set
-     above), and .ftl-app-main already defaults to transparent — this token
+     above), and .ftl-app is behind .ftl-app-main — this token
      used to paint solid black over the rain and hide it entirely. */
   --ftl-app-bg: transparent;
   --ftl-app-bar-bg: #000;
   --ftl-app-bar-rule: var(--ftl-border);
   --ftl-app-bar-height: 2.4rem;
   --ftl-app-main-padding: 1rem;
+  /* Near-opaque, not transparent: .ftl-app-main is where dense, unpanelled
+     text actually lives (a support-desk ticket list, a plain table body
+     dropped straight into the content well) and it inherited the fully
+     transparent fallback, so the rain's 10 head+tail layers rendered
+     directly behind that text with nothing occluding them. A translucent
+     wash over the rain still fails the same way a low-alpha panel would —
+     it has to be opaque enough that the glyph streaks read as a faint
+     backdrop glow, not a pattern competing with foreground glyphs for
+     contrast. 92% black keeps a hint of the rain visible (so the well
+     doesn't just look like a flat black panel) while fully occluding it
+     for reading. */
+  --ftl-app-main-bg: rgba(0, 4, 0, 0.92);
   --ftl-app-status-bg: #000;
   --ftl-app-status-fg: var(--ftl-muted);
+}
+
+/* Belt-and-suspenders for the same bleed-through: .ftl-panel already
+   resolves to the opaque --ftl-surface (no low-alpha rgba in that chain),
+   but .ftl-table itself paints no background of its own in core — a table
+   used outside a .ftl-panel wrapper would otherwise sit directly on the
+   rain. Not a base component (not in BASE_COMPONENTS), so a literal
+   background here doesn't trip the cascade-safety lint. */
+html[data-theme="matrix"] .ftl-table {
+  background: var(--ftl-surface);
+}
+html[data-theme="matrix"] .ftl-table th {
+  background: var(--ftl-surface-2);
 }
 
 /* Thin phosphor-line icon strokes, consistent with the rain's hairline glyphs. */
