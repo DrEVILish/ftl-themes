@@ -129,14 +129,27 @@ def version():
     return "ftl-" + h
 
 
+def load_categories():
+    """slug -> {category, era} from themes/categories.json. This is a
+    curated classification (taxonomy documented in CONTRACT.md's Theme
+    index section), not something derivable from the CSS itself, so it
+    lives in its own small data file rather than 22 header-comment edits."""
+    with open("themes/categories.json") as f:
+        data = json.load(f)
+    data.pop("_comment", None)
+    return data
+
+
 def write_manifest():
     version_ = version()
+    categories = load_categories()
     entries = []
     for path in sorted(glob.glob("themes/*/theme.css")):
         slug = os.path.basename(os.path.dirname(path))
         src = open(path).read()
         label = header_field(src, "Theme-Name") or slug
         scheme, luminance = scheme_of(src, slug)
+        meta = categories.get(slug, {})
         entries.append({
             "slug": slug,
             "dataTheme": slug,
@@ -148,6 +161,8 @@ def write_manifest():
             "version": version_,
             "scheme": scheme,
             "luminance": luminance,
+            "category": meta.get("category"),
+            "era": meta.get("era"),
         })
     lines = ",\n".join("  " + json.dumps(e, ensure_ascii=False) for e in entries)
     with open("dist/themes.json", "w") as f:

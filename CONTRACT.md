@@ -1108,5 +1108,13 @@ Bondi Blue, `data-variant="blueberry"/"grape"/"tangerine"` swap the whole
 shell to a different colorway, and `data-accent="1".."4"` on any theme
 that defines swatches recolours just the accent. See its `README.md`.
 
+`dist/themes.json` also carries `category` and `era` per theme (a small
+fixed taxonomy — `os-shell`, `media-player`, `handheld-device`,
+`broadcast`, `sci-fi`, `toy-brand`, `finance-terminal` — plus the
+approximate real-world decade the theme's source material is from, e.g.
+`"1990s"`, omitted when a theme has no single clean era). This is curated
+in `themes/categories.json`, not derived from the CSS; `gallery.html`'s
+category dropdown reads it to filter the grid.
+
 Planned themes, with notes and the open iOS-era question, are in
 `docs/theme-backlog.md`.

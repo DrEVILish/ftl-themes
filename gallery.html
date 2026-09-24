@@ -79,6 +79,16 @@
   }
   #search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 
+  .category-filter {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+  }
+
   .scheme-filter { display: flex; gap: 0.35rem; }
   .scheme-filter button {
     font: inherit;
@@ -219,13 +229,16 @@
   <p>
     Every shipping theme at a glance, rendered live in an embedded
     <code>example.html</code> (or another demo page — pick one per card).
-    Filter as you type; click a card's preview or "View full page" to open
-    it full-size.
+    Filter by name, category, and light/dark scheme — the three combine.
+    Click a card's preview or "View full page" to open it full-size.
   </p>
 </header>
 
 <div class="controls">
   <input id="search" type="search" placeholder="Filter by name or slug&hellip;" aria-label="Filter themes">
+  <select class="category-filter" id="category-filter" aria-label="Filter by category">
+    <option value="all">All categories</option>
+  </select>
   <div class="scheme-filter" id="scheme-filter" role="group" aria-label="Filter by light/dark scheme">
     <button type="button" class="is-active" data-scheme="all">All</button>
     <button type="button" data-scheme="light">Light</button>
@@ -260,9 +273,24 @@
   var emptyQuery = document.getElementById("empty-query");
   var schemeFilterEl = document.getElementById("scheme-filter");
   var globalPageSelect = document.getElementById("global-page-select");
+  var categoryFilterEl = document.getElementById("category-filter");
+
+  // Human-readable labels for the fixed category taxonomy stamped into
+  // themes/categories.json (see CONTRACT.md's Theme index section). A
+  // category value with no entry here just gets shown as-is.
+  var CATEGORY_LABELS = {
+    "os-shell": "OS shell",
+    "media-player": "Media player",
+    "handheld-device": "Handheld device",
+    "broadcast": "Broadcast",
+    "sci-fi": "Sci-fi",
+    "toy-brand": "Toy brand",
+    "finance-terminal": "Finance terminal"
+  };
 
   var schemeFilter = "all";
-  var cards = []; // { el, slug, label, scheme, pageSelect, iframeHost }
+  var categoryFilter = "all";
+  var cards = []; // { el, slug, label, scheme, category, pageSelect, iframeHost }
 
   function buildCard(theme) {
     var card = document.createElement("div");
@@ -270,6 +298,7 @@
     card.dataset.slug = theme.slug.toLowerCase();
     card.dataset.label = theme.label.toLowerCase();
     card.dataset.scheme = theme.scheme || "";
+    card.dataset.category = theme.category || "";
 
     var preview = document.createElement("div");
     preview.className = "preview";
@@ -304,6 +333,18 @@
       chromeChip.className = "chip";
       chromeChip.textContent = "chrome";
       chips.appendChild(chromeChip);
+    }
+    if (theme.category) {
+      var categoryChip = document.createElement("span");
+      categoryChip.className = "chip";
+      categoryChip.textContent = CATEGORY_LABELS[theme.category] || theme.category;
+      chips.appendChild(categoryChip);
+    }
+    if (theme.era) {
+      var eraChip = document.createElement("span");
+      eraChip.className = "chip";
+      eraChip.textContent = theme.era;
+      chips.appendChild(eraChip);
     }
 
     var actions = document.createElement("div");
@@ -351,6 +392,7 @@
       slug: theme.slug,
       label: theme.label,
       scheme: theme.scheme || "",
+      category: theme.category || "",
       preview: preview,
       targetUrl: targetUrl,
       loaded: false
@@ -410,7 +452,8 @@
     cards.forEach(function (c) {
       var matchesText = !q || c.slug.toLowerCase().indexOf(q) !== -1 || c.label.toLowerCase().indexOf(q) !== -1;
       var matchesScheme = schemeFilter === "all" || c.scheme === schemeFilter;
-      var visible = matchesText && matchesScheme;
+      var matchesCategory = categoryFilter === "all" || c.category === categoryFilter;
+      var visible = matchesText && matchesScheme && matchesCategory;
       c.el.classList.toggle("is-hidden", !visible);
       if (visible) visibleCount++;
     });
@@ -431,6 +474,11 @@
     applyFilter();
   });
 
+  categoryFilterEl.addEventListener("change", function () {
+    categoryFilter = categoryFilterEl.value;
+    applyFilter();
+  });
+
   globalPageSelect.addEventListener("change", function () {
     cards.forEach(function (c) {
       if (c.loaded) loadIframe(c.preview, c.targetUrl());
@@ -447,6 +495,7 @@
   fetch("dist/themes.json")
     .then(function (r) { return r.json(); })
     .then(function (list) {
+      var seenCategories = [];
       list.forEach(function (theme) {
         var c = buildCard(theme);
         c.el.__ftlCard = c;
@@ -454,6 +503,18 @@
         cards.push(c);
         if (io) io.observe(c.el);
         else loadIframe(c.preview, c.targetUrl());
+        if (theme.category && seenCategories.indexOf(theme.category) === -1) {
+          seenCategories.push(theme.category);
+        }
+      });
+      seenCategories.sort(function (a, b) {
+        return (CATEGORY_LABELS[a] || a).localeCompare(CATEGORY_LABELS[b] || b);
+      });
+      seenCategories.forEach(function (cat) {
+        var o = document.createElement("option");
+        o.value = cat;
+        o.textContent = CATEGORY_LABELS[cat] || cat;
+        categoryFilterEl.appendChild(o);
       });
       applyFilter();
     })
