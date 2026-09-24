@@ -101,16 +101,31 @@ html[data-theme="death-star"] .ftl-app-bar {
    panel fill. Painted as a background-image (not a box-model border) so
    the "zero borders/shadows" component contract still holds — this is
    texture, not chrome.
-   Horizontal lines only, at low opacity: the original two-axis grid at
-   0.35 alpha read as an unstyled/broken HTML table wherever a panel held
-   real paragraph text or nested boxes (testimonial quotes, log lines, a
-   reply textarea) — confirmed by two independent rendering reviews. A
-   single faint horizontal scanline is still legible as "console readout"
-   without competing with foreground text. */
+   Two-axis lattice at a much higher opacity than the original 0.12 (a
+   prior "horizontal lines only at low opacity" pass over-corrected for a
+   mid-word-line risk and, in an actual render, was essentially invisible
+   against black — the critic-confirmed failure mode this pass fixes).
+   0.35 alpha, both axes, reads clearly as a circuit-grid wall behind
+   panel/transport content, which is opaque foreground text and controls
+   sitting well above the grid, not text with a line drawn through it. */
 html[data-theme="death-star"] .ftl-panel,
 html[data-theme="death-star"] .ftl-transport {
-  background-image: linear-gradient(rgba(230,230,230,0.12) 1px, transparent 1px);
-  background-size: 100% 2.5rem;
+  background-image:
+    linear-gradient(rgba(230,230,230,0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(230,230,230,0.35) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  background-position: 0 0;
+}
+/* A Death Star interior is walls-of-grid everywhere, not just individual
+   panels — the same lattice, fainter, spread across the whole app shell
+   so the background and main content well read as gridded bulkhead too.
+   Kept dimmer than panel/card so foreground panels still pop forward. */
+html[data-theme="death-star"] .ftl-app,
+html[data-theme="death-star"] .ftl-app-main {
+  background-image:
+    linear-gradient(rgba(230,230,230,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(230,230,230,0.18) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
   background-position: 0 0;
 }
 /* .ftl-card previously got a plain dark fill while .ftl-panel got the
@@ -129,8 +144,8 @@ html[data-theme="death-star"] .ftl-transport {
 html[data-theme="death-star"] .ftl-card {
   --ftl-card-bg: var(--ftl-surface-2);
   background-image:
-    linear-gradient(rgba(230, 230, 230, 0.12) 1px, transparent 1px),
-    linear-gradient(rgba(230, 230, 230, 0.12) 1px, transparent 1px);
+    linear-gradient(rgba(230, 230, 230, 0.35) 1px, transparent 1px),
+    linear-gradient(rgba(230, 230, 230, 0.35) 1px, transparent 1px);
   background-repeat: no-repeat;
   background-size: 100% 100%, 100% 100%;
   background-position: 0 0, 0 100%;

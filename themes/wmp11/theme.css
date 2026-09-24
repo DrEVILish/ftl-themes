@@ -25,9 +25,9 @@ html[data-theme="wmp11"] {
   --ftl-font-mono: Consolas, monospace;
   --ftl-flare: #7fd1ff;
 
-  --ftl-btn-bg: linear-gradient(180deg, #2a2a34, #14141a);
-  --ftl-btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  --ftl-btn-shadow-hover: 0 0 10px rgba(63, 169, 245, 0.45), 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  --ftl-btn-bg: linear-gradient(180deg, #3a3a48, #14141a 55%);
+  --ftl-btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.16) inset, 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  --ftl-btn-shadow-hover: 0 0 20px rgba(63, 169, 245, 0.75), 0 1px 0 rgba(255, 255, 255, 0.22) inset;
   /* Dark glossy chrome, not a default light input: WMP11's real search/
      address fields were recessed panes cut into the black-glass frame —
      a dark gradient fill with a subtle inset bevel (dark top edge, faint
@@ -37,8 +37,8 @@ html[data-theme="wmp11"] {
   --ftl-input-fg: var(--ftl-text);
   --ftl-input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   --ftl-focus-ring: 0 0 10px rgba(63, 169, 245, 0.4);
-  --ftl-panel-bg: linear-gradient(180deg, rgba(30, 30, 38, 0.9), rgba(10, 10, 13, 0.9));
-  --ftl-panel-shadow: 0 0 24px rgba(63, 169, 245, 0.12), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  --ftl-panel-bg: linear-gradient(180deg, rgba(38, 38, 48, 0.92), rgba(10, 10, 13, 0.9));
+  --ftl-panel-shadow: 0 0 40px rgba(63, 169, 245, 0.3), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
   --ftl-row-selected-bg: rgba(63, 169, 245, 0.18);
   --ftl-nav-bg: linear-gradient(180deg, #1a1a22, #0a0a0d);
   --ftl-slider-bg: linear-gradient(180deg, #1e1e26, #0a0a0d);
@@ -61,6 +61,43 @@ html[data-theme="wmp11"] h3 {
 html[data-theme="wmp11"] .ftl-panel,
 html[data-theme="wmp11"] .ftl-modal { backdrop-filter: blur(6px); }
 
+/* The signature under-lit glossy bloom — a genuine specular highlight
+ * band across the upper third of every glass surface, not just a faint
+ * ambient box-shadow. Vista-era glass reads as glass because of this
+ * bright sheen catching the (implied) light from above; without it the
+ * theme is just a dark UI with a blue accent colour. A pseudo-element
+ * keeps it independent of the panel's own background/border tokens (see
+ * "variants" contract — no background/color literal on the base
+ * component), painted above the content, never intercepting clicks. */
+html[data-theme="wmp11"] .ftl-panel,
+html[data-theme="wmp11"] .ftl-modal {
+  position: relative;
+  overflow: hidden;
+}
+html[data-theme="wmp11"] .ftl-panel::before,
+html[data-theme="wmp11"] .ftl-modal::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 55%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 60%, transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+html[data-theme="wmp11"] .ftl-panel > *,
+html[data-theme="wmp11"] .ftl-modal > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Blue backlighting along the bar/status edges: the chassis is lit from
+ * inside, so the seam between bar and content well glows cool blue
+ * rather than sitting on a plain 1px border. */
+html[data-theme="wmp11"] .ftl-app-bar,
+html[data-theme="wmp11"] .ftl-app-status {
+  box-shadow: 0 0 24px rgba(63, 169, 245, 0.35), 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+}
+
 /* The round play button — WMP11's most identifiable single control: a
    fixed-diameter circle protruding past the transport bar, not the
    library's square/pill buttons. --ftl-go-size only maps to font-size in
@@ -69,9 +106,9 @@ html[data-theme="wmp11"] .ftl-modal { backdrop-filter: blur(6px); }
    here instead, plus a highlight and a downward overlap to protrude. */
 html[data-theme="wmp11"] .ftl-btn-go {
   --ftl-go-radius: 999px;
-  --ftl-btn-bg: radial-gradient(circle at 35% 30%, #7fd4ff, #2f8fd8 55%, #1a5f96);
+  --ftl-btn-bg: radial-gradient(circle at 35% 25%, #bfeaff, #4bb6ff 45%, #2f8fd8 70%, #164a75);
   --ftl-btn-border: #1a5f96;
-  --ftl-btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset, 0 0 18px rgba(63, 169, 245, 0.6);
+  --ftl-btn-shadow: 0 2px 0 rgba(255, 255, 255, 0.7) inset, 0 -6px 10px rgba(0, 0, 0, 0.25) inset, 0 0 34px rgba(63, 169, 245, 0.85), 0 0 8px rgba(191, 234, 255, 0.9);
   width: 3.2rem;
   height: 3.2rem;
   padding: 0;
@@ -79,6 +116,17 @@ html[data-theme="wmp11"] .ftl-btn-go {
   position: relative;
   transform: translateY(0.6rem);
   z-index: 1;
+}
+/* A bright glossy cap over the top half — the specular highlight that
+   makes the button read as convex glass, not a flat blue disc. */
+html[data-theme="wmp11"] .ftl-btn-go::before {
+  content: "";
+  position: absolute;
+  inset: 8% 14% auto 14%;
+  height: 38%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+  pointer-events: none;
 }
 html[data-theme="wmp11"] .ftl-btn-go::after {
   content: "\25b6";

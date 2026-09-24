@@ -1912,3 +1912,85 @@ html[data-theme="nokia-3310"] .ftl-app-bar {
   --ftl-nav-item-fg-active: var(--ftl-text);
   --ftl-nav-item-bg-active: var(--ftl-bg);
 }
+
+/* --- Phone framing ------------------------------------------------------
+ * Without physical framing this rendered as an ordinary full-width
+ * dashboard that merely happened to be yellow-green — the LCD hue alone
+ * doesn't read as "a small monochrome phone screen." A thick dark plastic
+ * bezel around the whole app shell, plus a keypad-style softkey row along
+ * the bottom, are the two cheapest, most legible cues that this is a
+ * compact handset display rather than a desktop app. */
+html[data-theme="nokia-3310"] body {
+  background: #14180d;
+  padding: 1.5rem;
+}
+html[data-theme="nokia-3310"] .ftl-app {
+  position: relative;
+  border: 14px solid #14180d;
+  border-radius: 1.6rem;
+  box-shadow:
+    0 0 0 2px #050603,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 24px 48px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  min-height: calc(100vh - 3rem);
+  min-height: calc(100dvh - 3rem);
+}
+/* Earpiece speaker slit, centered above the title bar. */
+html[data-theme="nokia-3310"] .ftl-app::before {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.4rem;
+  height: 0.3rem;
+  border-radius: 0.2rem;
+  background: #050603;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
+}
+/* D-pad hint, centered in the softkey row along the bottom edge. */
+html[data-theme="nokia-3310"] .ftl-app::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.5rem;
+  transform: translateX(-50%);
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  border: 2px solid var(--ftl-bg);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 1;
+}
+/* The softkey row: two labeled zones (the physical [Menu]/[Names] keys
+   below every 3310-era screen) flanking the D-pad hint above. */
+html[data-theme="nokia-3310"] {
+  --ftl-app-status-padding: 0.4rem 4.6rem;
+}
+html[data-theme="nokia-3310"] .ftl-app-status {
+  position: relative;
+  min-height: 2.1rem;
+}
+html[data-theme="nokia-3310"] .ftl-app-status::before,
+html[data-theme="nokia-3310"] .ftl-app-status::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 700 0.68rem var(--ftl-font);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ftl-bg);
+  pointer-events: none;
+}
+html[data-theme="nokia-3310"] .ftl-app-status::before {
+  content: "Menu";
+  left: 1rem;
+}
+html[data-theme="nokia-3310"] .ftl-app-status::after {
+  content: "Names";
+  right: 1rem;
+}

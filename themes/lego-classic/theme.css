@@ -71,12 +71,17 @@ html[data-theme="lego-classic"] h1,
 html[data-theme="lego-classic"] h2,
 html[data-theme="lego-classic"] h3 { font-weight: 800; }
 
-/* Studs: a row of circular bumps, purely decorative, evoking the two
-   raised nubs on top of every real brick. Panel headers already carried
-   this; a real brick has studs on every top face, so it now runs across
-   the top edge of every panel-scale surface (panel, card, modal header),
-   not just the one with a header row. */
-/* Studs sit as a slim strip ABOVE the header text, not painted as the
+/* Studs: a row of big circular bumps — LEGO's single most identifiable
+   visual signature, evoking the two raised nubs on top of every real
+   brick. A real stud reads at a glance because it's a genuinely large,
+   two-tone disc (a bright highlight offset inside a darker rim), not a
+   faint pinprick; earlier passes tiled a slim, ~5px-radius dot strip
+   that only showed up on close inspection. Studs are now ~18px discs —
+   large enough to read in a normal screenshot — and run across every
+   panel-scale surface (panel, card, modal header) AND the app bar,
+   matching a real brick's top face having studs everywhere, not just a
+   thin accent line above a header. */
+/* Studs sit as a strip ABOVE the header text, not painted as the
    header's own fill — filling the whole header's background put the
    stud row directly behind/through the title text itself (confirmed by
    rendering: "Recent orders" and "Signal" both had studs overlapping the
@@ -84,19 +89,19 @@ html[data-theme="lego-classic"] h3 { font-weight: 800; }
 html[data-theme="lego-classic"] .ftl-panel-header,
 html[data-theme="lego-classic"] .ftl-modal-header {
   position: relative;
-  padding-top: calc(0.6em + 10px);
+  padding-top: calc(0.6em + 22px);
 }
 html[data-theme="lego-classic"] .ftl-panel-header::before,
 html[data-theme="lego-classic"] .ftl-modal-header::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 10px;
+  height: 22px;
   background-image:
-    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9) 0 1.5px, transparent 1.5px),
-    radial-gradient(circle, rgba(0,0,0,0.4) 5px, transparent 5.5px);
-  background-size: 18px 100%;
-  background-position: 9px center;
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95) 0 3px, rgba(255,255,255,0.35) 3px 5px, transparent 5px),
+    radial-gradient(circle, rgba(0,0,0,0.45) 9px, transparent 9.5px);
+  background-size: 32px 100%;
+  background-position: 16px center;
   pointer-events: none;
 }
 html[data-theme="lego-classic"] .ftl-panel,
@@ -112,15 +117,35 @@ html[data-theme="lego-classic"] .ftl-card::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 16px;
+  height: 26px;
   background-image:
-    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.85) 0 1.5px, transparent 1.5px),
-    radial-gradient(circle, rgba(0,0,0,0.35) 5px, transparent 5.5px);
-  background-size: 20px 100%;
-  background-position: 10px center;
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9) 0 3.5px, rgba(255,255,255,0.32) 3.5px 5.5px, transparent 5.5px),
+    radial-gradient(circle, rgba(0,0,0,0.4) 10px, transparent 10.5px);
+  background-size: 36px 100%;
+  background-position: 18px center;
   pointer-events: none;
 }
 html[data-theme="lego-classic"] .ftl-panel-header {
   position: relative;
   z-index: 1;
+}
+/* The app bar is the brick's own top plate, so it carries the same big
+   studs along its bottom edge — the header/card treatment alone left the
+   single largest, most-visible surface on the page (the top bar) with no
+   stud at all. */
+html[data-theme="lego-classic"] .ftl-app-bar {
+  position: relative;
+  padding-bottom: calc(var(--ftl-app-bar-padding-y, 0.6rem) + 16px);
+}
+html[data-theme="lego-classic"] .ftl-app-bar::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22px;
+  background-image:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.55) 0 3px, rgba(255,255,255,0.2) 3px 5px, transparent 5px),
+    radial-gradient(circle, rgba(0,0,0,0.5) 9px, transparent 9.5px);
+  background-size: 32px 100%;
+  background-position: 16px center;
+  pointer-events: none;
 }

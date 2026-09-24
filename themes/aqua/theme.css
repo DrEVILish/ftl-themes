@@ -82,7 +82,7 @@ html[data-theme="aqua"] .ftl-modal-header { text-align: center; border-bottom: 1
 html[data-theme="aqua"] .ftl-panel-header,
 html[data-theme="aqua"] .ftl-modal-header {
   position: relative;
-  padding-left: 3rem;
+  padding-left: 3.4rem;
 }
 html[data-theme="aqua"] .ftl-panel-header::before,
 html[data-theme="aqua"] .ftl-modal-header::before {
@@ -91,17 +91,21 @@ html[data-theme="aqua"] .ftl-modal-header::before {
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 2.25rem;
+  width: 2.1rem;
   height: 0.6rem;
+  /* Each tile must fade to transparent WELL BEFORE its own edge — a plain
+     radial-gradient with no closing transparent stop instead paints its
+     final color out to the full square tile, so three adjacent tiles read
+     as one continuous smear rather than three dots (a hard-won lesson:
+     the border-radius below only rounds the OUTER box of all three tiles
+     combined into a single pill, it can never round each tile on its own). */
   background-image:
-    radial-gradient(circle at 30% 30%, #ff8a7a, #ef5350 55%, #c0392b),
-    radial-gradient(circle at 30% 30%, #ffe08a, #f4bd3a 55%, #c78a12),
-    radial-gradient(circle at 30% 30%, #92e6a0, #61c454 55%, #3d8b2c);
+    radial-gradient(circle 0.27rem at 38% 38%, #ff8a7a, #ef5350 55%, #c0392b 88%, transparent 100%),
+    radial-gradient(circle 0.27rem at 38% 38%, #ffe08a, #f4bd3a 55%, #c78a12 88%, transparent 100%),
+    radial-gradient(circle 0.27rem at 38% 38%, #92e6a0, #61c454 55%, #3d8b2c 88%, transparent 100%);
   background-size: 0.6rem 0.6rem;
   background-repeat: no-repeat;
-  background-position: 0 0, 0.8rem 0, 1.6rem 0;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  background-position: 0 0, 0.75rem 0, 1.5rem 0;
 }
 
 /* Glossy candy fills for the semantic variants. */
@@ -161,28 +165,34 @@ html[data-theme="aqua"] .ftl-app-bar {
   --ftl-nav-item-fg: #3a3c40;
   position: relative;
   /* Room for the traffic lights on the left, same as a real Mac window. */
-  padding-left: 3.75rem;
+  padding-left: 4.5rem;
 }
 /* The traffic lights: THE single most recognizable Aqua/OS X window-chrome
    detail, drawn as three gloss buttons via layered radial-gradients so no
-   extra markup is needed in the app shell. */
+   extra markup is needed in the app shell.
+   Each tile fades to transparent before its own edge — a radial-gradient
+   with no closing transparent stop instead paints its final color out to
+   the full square tile, so three adjacent tiles fuse into one continuous
+   smeared pill instead of reading as three distinct dots. The 50%
+   border-radius on this box only rounds the OUTER box of all three tiles
+   as a single shape; it cannot round each tile individually. Sized larger
+   than the panel-header version since it has to read clearly in the one
+   spot on the page that's guaranteed above the fold. */
 html[data-theme="aqua"] .ftl-app-bar::before {
   content: "";
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 3rem;
-  height: 0.85rem;
+  width: 2.9rem;
+  height: 0.8rem;
   background-image:
-    radial-gradient(circle at 30% 30%, #ff8a7a, #ef5350 55%, #c0392b),
-    radial-gradient(circle at 30% 30%, #ffe08a, #f4bd3a 55%, #c78a12),
-    radial-gradient(circle at 30% 30%, #92e6a0, #61c454 55%, #3d8b2c);
-  background-size: 0.85rem 0.85rem;
+    radial-gradient(circle 0.36rem at 38% 38%, #ff8a7a, #ef5350 55%, #c0392b 88%, transparent 100%),
+    radial-gradient(circle 0.36rem at 38% 38%, #ffe08a, #f4bd3a 55%, #c78a12 88%, transparent 100%),
+    radial-gradient(circle 0.36rem at 38% 38%, #92e6a0, #61c454 55%, #3d8b2c 88%, transparent 100%);
+  background-size: 0.8rem 0.8rem;
   background-repeat: no-repeat;
-  background-position: 0 0, 1.15rem 0, 2.3rem 0;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+  background-position: 0 0, 1.05rem 0, 2.1rem 0;
 }
 
 /* Accent as text (active tab, secondary button, transport trigger) sits on

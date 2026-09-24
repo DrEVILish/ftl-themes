@@ -21,6 +21,11 @@ than as a HUD's telemetry glow.
    whichever hue is glowing, not a tight HUD ring.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
    sans.
+5. **Spiked, studded-leather chrome, not just neon-on-black.** Colour
+   alone doesn't distinguish this from any other neon cyberpunk theme in
+   the catalog — a jagged sawtooth trim on every structural bar and a
+   hard-edged, riveted drop-shadow on buttons/panels are the theme's own
+   silhouette, legible even in a colourless crop.
 
 ## Signature details
 
@@ -29,6 +34,17 @@ than as a HUD's telemetry glow.
   the *structural* colour, never the signal one.
 - Table headers and rules pick up `--ftl-flare` (purple), not the accent —
   structure stays purple everywhere, including inside components.
+- A jagged sawtooth trim (a repeating 45°/-45° gradient pair, the classic
+  "torn ticket edge" CSS technique) runs along the app bar, nav, and
+  panel/modal headers — a studded-collar silhouette, not a smooth bevel
+  like `alienware`'s clip-path corners and not `matrix`'s monospace rain.
+  It's a decorative pseudo-element strip, so it never clips a focus ring,
+  click target or label.
+- Buttons carry a single asymmetric fang cut on the top-right corner only
+  (`clip-path`) plus a hard black offset shadow underneath the neon
+  bloom — riveted vinyl, not a soft glow alone. `alienware` cuts both
+  opposing corners at matching size; this cuts one corner, deliberately
+  uneven.
 - The font stack leads with Eurostile, the same unvendored-face situation
   as `tron`/`death-star` — it silently falls back to a system sans on most
   real machines rather than the intended geometric face.
@@ -44,6 +60,9 @@ content area carrying the same vinyl-gloss panels throughout.
   green as structure) → the two-colour logic collapses.
 - Flat matte surfaces — this is glossy plastic, not a terminal.
 - A tight, thin glow instead of a soft bloom.
+- No sawtooth trim / no hard-edged studded shadow — without it this is
+  just another neon-on-black palette, indistinguishable from any other
+  cyberpunk theme in the catalog.
 
 ## Adoption
 

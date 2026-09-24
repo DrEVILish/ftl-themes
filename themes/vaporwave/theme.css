@@ -165,17 +165,20 @@ html[data-theme="vaporwave"] .ftl-app-status::after {
   z-index: -1;
 }
 
-/* Page-level signature chrome: the sun-disc + grid horizon above only ever
-   painted inside .ftl-app-status, so a shell-less page (a marketing/landing
-   layout with no .ftl-app-status bar at all, e.g. example-3) shipped none
-   of the theme's one identifying image and read as "a purple-and-pink
-   theme," not vaporwave. Restated here as fixed, viewport-anchored
-   body::before/::after so every page gets it — including one built from
-   the app shell, where it simply sits behind that shell's own opaque
-   surfaces. Kept low-opacity, z-index: -1 (stacked under the page, never
-   the app shell's own -1 chrome since this attaches to body/html, a lower
-   painting context) and pointer-events: none so it never intercepts clicks
-   or competes with foreground legibility. */
+/* Page-level signature chrome: the sun-disc + grid horizon is the genre's
+   single most iconic composition (per this file's own header comment), but
+   a version merely painted BEHIND the page (negative z-index) is invisible
+   wherever the app shell puts any opaque surface in front of it — which is
+   everywhere, since .ftl-app-main and every panel/card fill their whole
+   box with a solid --ftl-surface/--ftl-bg color. That left only a thin
+   sliver visible in the status strip. Fixed here by anchoring the motif to
+   a genuinely visible zone instead: a fixed corner badge that paints ABOVE
+   the page content (positive z-index, but well under any real overlay —
+   modals/toasts start at z-index 1000+). Every fill stays a translucent
+   rgba/gradient rather than a flat opaque color, so whatever sits under the
+   corner — page background, a card edge, nav — still shows through and
+   stays legible; pointer-events: none keeps it from ever intercepting a
+   click. */
 html[data-theme="vaporwave"] body {
   position: relative;
 }
@@ -183,37 +186,38 @@ html[data-theme="vaporwave"] body::before,
 html[data-theme="vaporwave"] body::after {
   content: "";
   position: fixed;
-  left: 0;
+  top: 0;
   right: 0;
   pointer-events: none;
-  z-index: -1;
+  z-index: 5;
 }
 html[data-theme="vaporwave"] body::before {
-  /* The sun disc, low on the page like a horizon sun rather than the
-     status-bar version's small badge. */
-  top: 58vh;
-  left: 50%;
-  right: auto;
-  width: min(40vw, 22rem);
-  height: min(40vw, 22rem);
-  transform: translateX(-50%);
+  /* The sun disc, a fixed emblem in the top-right corner of the viewport —
+     always on screen regardless of scroll position or page length. */
+  top: 1rem;
+  right: 1rem;
+  width: 8rem;
+  height: 8rem;
   border-radius: 50%;
   background:
-    repeating-linear-gradient(180deg, transparent 0 6%, rgba(21, 8, 34, 0.9) 6% 12%),
-    linear-gradient(180deg, #ff71ce, #ffcc66 55%, #01cdfe);
-  opacity: 0.35;
+    repeating-linear-gradient(180deg, transparent 0 10%, rgba(21, 8, 34, 0.55) 10% 20%),
+    linear-gradient(180deg, rgba(255, 113, 206, 0.9), rgba(255, 204, 102, 0.85) 55%, rgba(1, 205, 254, 0.9));
+  opacity: 0.65;
 }
 html[data-theme="vaporwave"] body::after {
-  /* The converging perspective floor, filling the lower half of the
-     viewport behind the content well. */
-  top: 58vh;
-  bottom: 0;
-  background-color: var(--ftl-bg);
+  /* The converging perspective grid, fanning out beneath the sun corner
+     like a horizon glimpsed from the side. */
+  top: 3.6rem;
+  right: 0;
+  width: 15rem;
+  height: 9rem;
   background-image:
-    linear-gradient(90deg, rgba(1, 205, 254, 0.35) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(1, 205, 254, 0.28) 1px, transparent 1px);
-  background-size: 4rem 100%, 100% 2rem;
-  transform: perspective(400px) rotateX(60deg);
-  transform-origin: center top;
-  opacity: 0.5;
+    linear-gradient(90deg, rgba(1, 205, 254, 0.6) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(1, 205, 254, 0.5) 1px, transparent 1px);
+  background-size: 1.6rem 100%, 100% 1rem;
+  transform: perspective(220px) rotateX(58deg);
+  transform-origin: top right;
+  opacity: 0.55;
+  mask-image: linear-gradient(200deg, black 0 55%, transparent 85%);
+  -webkit-mask-image: linear-gradient(200deg, black 0 55%, transparent 85%);
 }

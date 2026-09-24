@@ -1856,3 +1856,72 @@ html[data-theme="cyber-goth"] .ftl-tab {
    fill — see README "Signature details": the glow always reads as
    structure, never as the signal colour it happens to be lighting up. */
 html[data-theme="cyber-goth"] .ftl-btn-primary { --ftl-btn-fg: #0a0f00; --ftl-btn-bg: var(--ftl-accent); --ftl-btn-border: var(--ftl-accent); }
+
+/* --- Gothic-industrial signature -----------------------------------------
+ * Neon-on-black alone reads as "generic cyberpunk" (indistinguishable from
+ * tron/matrix at a glance). This theme's own identity is a spiked,
+ * studded-leather/vinyl silhouette: a jagged sawtooth trim (not a smooth
+ * clip-path bevel like alienware's, and not matrix's monospace rain) on
+ * every structural bar, plus a harsh two-layer drop-shadow (a hard black
+ * offset under the neon bloom) standing in for rivets/studs on buttons and
+ * panels. The sawtooth is a decorative pseudo-element strip, never applied
+ * to the interactive element's own clip-path, so it never clips focus
+ * rings, click targets or label text. */
+html[data-theme="cyber-goth"] .ftl-app-bar,
+html[data-theme="cyber-goth"] .ftl-nav,
+html[data-theme="cyber-goth"] .ftl-panel-header,
+html[data-theme="cyber-goth"] .ftl-modal-header {
+  position: relative;
+}
+html[data-theme="cyber-goth"] .ftl-app-bar::after,
+html[data-theme="cyber-goth"] .ftl-nav::after,
+html[data-theme="cyber-goth"] .ftl-panel-header::after,
+html[data-theme="cyber-goth"] .ftl-modal-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -9px 0;
+  height: 9px;
+  background:
+    linear-gradient(-45deg, var(--ftl-flare) 6px, transparent 0),
+    linear-gradient(45deg, var(--ftl-flare) 6px, transparent 0);
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  background-size: 12px 12px;
+  filter: drop-shadow(0 0 5px rgba(214, 31, 255, 0.7));
+  pointer-events: none;
+}
+html[data-theme="cyber-goth"] .ftl-panel-header,
+html[data-theme="cyber-goth"] .ftl-modal-header {
+  overflow: visible;
+}
+
+/* Asymmetric single-corner chrome cut — one sharp diagonal fang on the
+   top-right only, unlike alienware's symmetric two-corner bevel (cut on
+   both opposing corners at matching size). clip-path clips the standard
+   focus outline, so drop-shadow (never clipped) stands in for it instead
+   of ever setting outline: none, same technique as alienware/tron. */
+html[data-theme="cyber-goth"] .ftl-btn {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  padding-inline-end: calc(1.5em * var(--ftl-density));
+}
+html[data-theme="cyber-goth"] .ftl-btn-sm {
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+}
+html[data-theme="cyber-goth"] .ftl-btn:focus-visible {
+  filter: drop-shadow(0 0 0 2px var(--ftl-focus, var(--ftl-accent))) drop-shadow(0 0 8px var(--ftl-accent));
+}
+
+/* Harsh, high-contrast studded look: a hard black offset shadow underneath
+   the existing neon inset highlight — riveted leather, not a soft glow
+   alone. Panels get the same hard black edge plus their bloom. */
+html[data-theme="cyber-goth"] .ftl-btn {
+  box-shadow: 3px 3px 0 #000, var(--ftl-btn-shadow);
+}
+html[data-theme="cyber-goth"] .ftl-btn:hover {
+  box-shadow: 3px 3px 0 #000, var(--ftl-btn-shadow-hover);
+}
+html[data-theme="cyber-goth"] .ftl-panel,
+html[data-theme="cyber-goth"] .ftl-modal,
+html[data-theme="cyber-goth"] .ftl-card {
+  box-shadow: 4px 4px 0 #000, var(--ftl-panel-shadow);
+}

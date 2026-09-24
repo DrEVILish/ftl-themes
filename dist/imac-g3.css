@@ -1797,22 +1797,31 @@ pre code { padding: 0; background: none; border-radius: 0; }
  * floor; #00b0d4 is the least departure from it that clears 3.0:1 while
  * staying unmistakably the same shade family.
  *
- * --ftl-bg/-surface/-surface-2 are brighter and more saturated than an
- * earlier pass, which had drifted toward a desaturated navy-teal that read
- * as "dark aquarium dashboard" rather than the hardware's actual candy-
- * bright translucent plastic — the whole point of Bondi Blue was that it
- * was vivid, not moody.
+ * --ftl-bg/-surface/-surface-2 are brighter and more saturated than TWO
+ * earlier passes: the first drifted toward a desaturated navy-teal that
+ * read as "dark aquarium dashboard"; a second brightening pass (comment
+ * above, still describing #0a3d48/#10556a/#15687d) was itself confirmed
+ * too dark/desaturated by a strict fidelity review — still reading as a
+ * moody dashboard, not the sunlit, candy-bright, semi-transparent plastic
+ * the hardware is famous for. This pass goes meaningfully brighter and
+ * more saturated again (verified against the 4.5:1 AA floor below with a
+ * WCAG relative-luminance calc, not by eye).
  */
 
 html[data-theme="imac-g3"] {
   color-scheme: dark;
-  --ftl-bg: #0a3d48;
-  --ftl-surface: #10556a;
-  --ftl-surface-2: #15687d;
-  --ftl-border: #062b33;
-  --ftl-hairline: #0a4553;
+  --ftl-bg: #0a545f;
+  --ftl-surface: #0c6478;
+  --ftl-surface-2: #0f7d92;
+  --ftl-border: #073e4a;
+  --ftl-hairline: #0a4f5c;
   --ftl-text: #ffffff;
-  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #cdeef2, 3.9:1. Near-white because the variants' inset surfaces are mid-tones. */
+  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both
+     surfaces; near-white because --ftl-surface-2, the brightest of the
+     three, is still a saturated mid-tone (white measures ~3.9:1 against
+     surface-2 alone, so places that paint text directly on solid
+     surface-2 use --ftl-accent-text or --ftl-on-accent instead — see
+     their contrast notes below). */
   --ftl-muted: #f5fcfd;
   --ftl-accent: #00b0d4;
   --ftl-accent-2: #5cc6dd;
@@ -1856,7 +1865,10 @@ html[data-theme="imac-g3"] {
   --ftl-overlay-bg: rgba(4, 20, 24, 0.55);
   --ftl-indicator-fg: var(--ftl-accent-2);
 
-  --ftl-app-bg: radial-gradient(ellipse at top, #1a5866, #04141a 85%);
+  /* Brighter, more saturated backdrop than the earlier #1a5866 → #04141a
+     radial — that pairing crushed to near-black at the edges and read as
+     a dim aquarium, not a sunlit candy-plastic desktop. */
+  --ftl-app-bg: radial-gradient(ellipse at top, #2fb8d6, #073e4a 85%);
   --ftl-app-bar-bg: var(--ftl-imac-g3-pinstripe), var(--ftl-surface);
   --ftl-app-bar-radius: 1.3rem 1.3rem 0 0;
   --ftl-app-bar-height: 3rem;
@@ -1864,8 +1876,8 @@ html[data-theme="imac-g3"] {
   --ftl-app-main-padding: 1.1rem;
   --ftl-app-status-bg: linear-gradient(180deg, var(--ftl-surface), rgba(255,255,255,0.1));
   /* Explicit rather than relying on the core default's implicit fallback to
-     --ftl-muted: on the brightened bg/surface/surface-2 (#0a3d48/#10556a/
-     #15687d) --ftl-muted (#f5fcfd) measures ~8.0:1 against --ftl-surface,
+     --ftl-muted: on the current bg/surface/surface-2 (#0a545f/#0c6478/
+     #0f7d92) --ftl-muted (#f5fcfd) measures ~7.1:1 against --ftl-surface,
      the darker of the two gradient stops above, clearing the 4.5:1 AA
      floor with room to spare (verified via WCAG relative-luminance math).
      Pinned here so a future change to --ftl-muted can't silently drop the
@@ -1895,6 +1907,44 @@ html[data-theme="imac-g3"] .ftl-app-bar {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 14px 18px -12px rgba(255,255,255,0.25);
   --ftl-nav-brand-fg: #ffffff;
   --ftl-nav-item-fg: #e3f6f9;
+}
+
+/* A strong diagonal sheen band — the single most recognizable "translucent
+   candy plastic" cue (the diagonal light streak molded into the actual
+   iMac G3 case) — layered as a pseudo-element so it never fights the
+   panel/card's own vertical gloss-gradient fill or repaints the base
+   colour. Diagonal, bright and un-missable rather than the earlier flat
+   vertical highlight alone, which read as ordinary UI gloss rather than
+   thick curved plastic. Kept to panel/card/modal — the shapes with real
+   surface area for the streak to travel across. */
+html[data-theme="imac-g3"] .ftl-panel,
+html[data-theme="imac-g3"] .ftl-card,
+html[data-theme="imac-g3"] .ftl-modal {
+  position: relative;
+  overflow: hidden;
+}
+html[data-theme="imac-g3"] .ftl-panel::before,
+html[data-theme="imac-g3"] .ftl-card::before,
+html[data-theme="imac-g3"] .ftl-modal::before {
+  content: "";
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 42%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 62%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+/* Content needs to sit above the sheen layer, not under it. */
+html[data-theme="imac-g3"] .ftl-panel > *,
+html[data-theme="imac-g3"] .ftl-card > *,
+html[data-theme="imac-g3"] .ftl-modal > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* --- Full-shell colorways ------------------------------------------------
