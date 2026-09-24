@@ -51,6 +51,16 @@ which doesn't translate to a general-purpose page background.
   modestly rounded rectangles, not pills; only buttons/nav items/badges
   are pills.
 
+### Reference status
+
+This theme was built from well-documented real-world facts about the
+PS3/PSP Cross Media Bar (its single horizontal icon row, its
+float-and-glow visual language, its centred layout) rather than from
+captured reference images, so there's no `references/xmb/` folder the
+way other themes have one. That's an accepted, permanent-for-now state,
+not a to-do — but if someone wants to add a `references/xmb/` folder
+later using the same pattern other themes use, that's welcome.
+
 ## Known harness limitation: the app-bar doesn't render centred everywhere
 
 `html[data-theme="xmb"] .ftl-nav { justify-content: center }` (and the

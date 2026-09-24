@@ -5,6 +5,53 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+### Added
+
+- **4 new themes: Teletext, Nokia 3310, XMB, XBMC.** All four ship a
+  `README.md`, `theme.css` and `icons.svg`, and pass `scripts/check.py`.
+  Unlike the rest of the catalog, none of the four has a
+  `references/<slug>/` folder of captured real-world reference images yet
+  — each was built from well-documented real-world facts about its
+  reference platform instead. That's a deliberate, accepted,
+  permanent-for-now state for these four (not a TODO to archive them
+  over): they're fully built, documented, and already have icon
+  overrides and fixes riding on them, so pulling them into
+  `archive/themes-pending-reference/` the way the material/nerv/etc.
+  batch was would undo real shipped work over a missing screenshot
+  folder. Each theme's README now says so under a "Reference status"
+  heading.
+- **3 generic example layout pages**, plus a strict multi-category
+  independent review-panel pass across the full theme set and the fixes
+  it surfaced (signature-detail visibility, fidelity scores raised past
+  8.0 for a dozen themes, `alienware`/`win7-aero` polish, `imac-g3`
+  tangerine-variant AAA contrast).
+- **Icon system built out further**: the generic set grew to 100 icons;
+  every one of the 22 shipping themes now has a `themes/<slug>/icons.svg`
+  override file (falling back to the generic set for any id it doesn't
+  redraw); `docs/icon-library-roadmap.md` documents the scaling approach
+  and a packs-vs-logos comparison; `docs/icon-license-research.md`
+  records the licensing diligence behind the generic set's sourcing.
+- **`assets/logos/`**: a separate, opt-in third-party brand-mark pack
+  (not part of the MIT-style-licensed icon library — see
+  `assets/logos/README.md` for the licensing rationale and rules).
+- **`assets/fonts/NOTICE.md`**: license/designer/source audit for every
+  vendored font family (Antonio, Audiowide, Baloo 2, Orbitron, Pacifico —
+  all verified SIL OFL 1.1, checked per family rather than assumed
+  uniform).
+- **`scripts/new-theme.sh`** now also scaffolds a starter
+  `themes/<slug>/icons.svg` (with commented-out example `<symbol>`
+  stubs), so a new theme's author sees the icon-override option instead
+  of discovering it later.
+- **Core: layout utilities, `.ftl-btn-close`, table zebra striping, and
+  modal sizes** — the feature set CONTRACT.md's own prose labels
+  "v3.8.0" in its component-vocabulary section. Note: that label collides
+  with this file's own already-used `v3.8.0` heading below (example
+  pages / contrast fixes); the two are different, unrelated pieces of
+  work that ended up sharing a version number in CONTRACT.md's inline
+  notes. Recorded here under Unreleased rather than re-numbered, since
+  this project hasn't cut a formal tag for either and reusing a number
+  a second time would only compound the confusion.
+
 ### Removed — breaking for integrators that reference these paths
 
 - **No GitHub Actions CI.** `.github/workflows/ci.yml`, `package.json`,

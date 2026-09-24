@@ -43,3 +43,14 @@ toward the edges.
   edges going darker than the centre.
 - Rounded, glossy buttons — this UI's affordances are flat rectangles with
   a border, not skeuomorphic buttons.
+
+### Reference status
+
+This theme was built from well-documented real-world facts about
+original-Xbox-era XBMC (its horizontal top-level menu, its
+underline-glow selection state, its vignetted near-black home-theatre
+backdrop) rather than from captured reference images, so there's no
+`references/xbmc/` folder the way other themes have one. That's an
+accepted, permanent-for-now state, not a to-do — but if someone wants to
+add a `references/xbmc/` folder later using the same pattern other
+themes use, that's welcome.

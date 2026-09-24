@@ -61,3 +61,13 @@ generic outline set.
 - Smooth/anti-aliased type — the real thing is aliased bitmap type; a
   system sans with subpixel rendering will never fully sell this, but at
   minimum stay monospace and avoid font smoothing tricks that fight it.
+
+### Reference status
+
+This theme was built from well-documented real-world facts about
+Ceefax-era teletext (its fixed 8-colour palette, its character-cell
+grid, its double-height headline trick) rather than from captured
+reference images, so there's no `references/teletext/` folder the way
+other themes have one. That's an accepted, permanent-for-now state, not
+a to-do — but if someone wants to add a `references/teletext/` folder
+later using the same pattern other themes use, that's welcome.

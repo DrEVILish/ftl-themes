@@ -127,11 +127,42 @@ layout properties. See CONTRACT.md "Adoption levels".
 - <what a wrong rendering of this theme looks like>
 EOF
 
-echo "scaffolded themes/$slug/theme.css and themes/$slug/README.md"
+cat > "$dir/icons.svg" <<EOF
+<!-- $slug icon overrides.
+     Optional: every theme falls back to the generic 100-icon set at
+     assets/icons/icons.svg for any id it doesn't redraw here. Only add a
+     <symbol> below when this theme's signature look genuinely calls for a
+     different silhouette (e.g. block-graphics, brand-specific glyphs) —
+     most themes don't need to override anything.
+     Pattern and full id list: docs/icon-library-roadmap.md. Ids must match
+     the generic set's icon-<name> convention exactly, or the override is
+     silently ignored (the generic icon still renders). See
+     themes/aqua/icons.svg or themes/lego-classic/icons.svg for worked
+     examples of the convention: viewBox="0 0 24 24", stroke-based paths
+     using currentColor, fill/stroke-width driven by the ftl-icon-* tokens
+     unless a specific stroke-width is being set deliberately. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+    <!-- <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="M3 11.5 12 4l9 7.5"/>
+    </symbol> -->
+    <!-- <symbol id="icon-settings" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8"/>
+    </symbol> -->
+    <!-- <symbol id="icon-close" viewBox="0 0 24 24">
+      <path d="M17 7 7 17"/>
+      <path d="M7 7l10 10"/>
+    </symbol> -->
+  </defs>
+</svg>
+EOF
+
+echo "scaffolded themes/$slug/theme.css, themes/$slug/README.md and themes/$slug/icons.svg"
 echo
 echo "next:"
 echo "  1. fill in the tokens (and a Theme-Name/Description in the header) and README.md"
-echo "  2. scripts/build.sh    # regenerates dist/$slug.css and dist/themes.json"
-echo "  3. scripts/check.sh    # token completeness, contrast, focus, variants"
-echo "  4. open example.html and pick your theme from the switcher"
-echo "  5. add a row to CONTRACT.md's theme index"
+echo "  2. (optional) uncomment/add <symbol> overrides in icons.svg for this theme's signature icons"
+echo "  3. scripts/build.sh    # regenerates dist/$slug.css and dist/themes.json"
+echo "  4. scripts/check.sh    # token completeness, contrast, focus, variants"
+echo "  5. open example.html and pick your theme from the switcher"
+echo "  6. add a row to CONTRACT.md's theme index"

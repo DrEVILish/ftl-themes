@@ -52,3 +52,14 @@ resolution. Every other icon falls back to the generic outline set.
 - A saturated, clearly-differently-hued "accent" color — anything beyond
   the yellow-green/dark-olive family breaks the one-colour-screen premise.
 - A soft/tinted selection highlight instead of a hard full invert.
+
+### Reference status
+
+This theme was built from well-documented real-world facts about the
+3310/3210's reflective monochrome LCD (its single-hue screen, its
+inversion-only selection model, its candybar-phone status chrome) rather
+than from captured reference images, so there's no
+`references/nokia-3310/` folder the way other themes have one. That's an
+accepted, permanent-for-now state, not a to-do — but if someone wants to
+add a `references/nokia-3310/` folder later using the same pattern other
+themes use, that's welcome.
