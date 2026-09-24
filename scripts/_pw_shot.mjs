@@ -40,14 +40,23 @@ const FREEZE_CSS = '*{animation:none!important;transition:none!important;caret-c
 // e.g. the LEGO wordmark) even after networkidle. Verify the stylesheet
 // actually applied and fonts are done, retrying the navigation a few times
 // before giving up, so a screenshot never silently captures an unstyled page.
-async function themeReady(pw, slug) {
-  return pw.evaluate((slug) => {
-    if (document.documentElement.dataset.theme !== slug) return false;
-    const link = document.getElementById('ftl-theme-link');
-    if (!link || !link.sheet) return false;
-    try { if (link.sheet.cssRules.length < 3) return false; } catch (e) { return false; }
-    return document.fonts.status === 'loaded';
-  }, slug).catch(() => false);
+// Polls (rather than a single snapshot check) so a page that's still
+// loading its webfont -- normal right after a cold navigation, especially
+// the very first one of a run -- gets real time to finish instead of
+// being retried (and reloaded) for no reason.
+async function waitForThemeReady(pw, slug, timeout = 5000) {
+  try {
+    await pw.waitForFunction((slug) => {
+      if (document.documentElement.dataset.theme !== slug) return false;
+      const link = document.getElementById('ftl-theme-link');
+      if (!link || !link.sheet) return false;
+      try { if (link.sheet.cssRules.length < 3) return false; } catch (e) { return false; }
+      return document.fonts.status === 'loaded';
+    }, slug, { timeout, polling: 100 });
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 let shots = 0;
@@ -61,12 +70,11 @@ for (const slug of themes) {
       let ready = false;
       for (let attempt = 0; attempt < 3 && !ready; attempt++) {
         await page.goto(url, { waitUntil: 'networkidle' });
-        await page.evaluate(() => document.fonts.ready).catch(() => {});
-        await page.addStyleTag({ content: FREEZE_CSS });
-        await page.waitForTimeout(30);
-        ready = await themeReady(page, slug);
-        if (!ready) await page.waitForTimeout(150);
+        ready = await waitForThemeReady(page, slug);
+        if (!ready && process.env.FTL_SHOT_DEBUG) console.error(`retrying ${slug} ${pageName} (attempt ${attempt + 1})`);
       }
+      await page.addStyleTag({ content: FREEZE_CSS });
+      await page.waitForTimeout(30);
       const dest = path.join(dir, pageName.replace(/\.html$/, '') + '.png');
       await page.screenshot({ path: dest });
       shots++;
