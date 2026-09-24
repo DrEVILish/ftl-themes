@@ -33,11 +33,42 @@ which doesn't translate to a general-purpose page background.
   upper-left over the deep navy-to-blue base.
 - Icon buttons scale up (`transform: scale(1.15)`) on hover/focus — the
   one unmistakable XMB interaction.
-- `999px` radius everywhere (pill-shaped), thin/glass borders, no hard
-  rectangular chrome.
+- `999px` (pill) radius on buttons, nav items and badges only — real XMB
+  info panels were modestly rounded rectangles, not stadium shapes, so
+  `--ftl-radius` (panels, cards, inputs, alerts, the dropdown, the log)
+  is a generous `0.85rem`/`0.9rem` rounded rectangle instead. A base
+  radius of 999px produced odd stadium-shaped alert banners and selects
+  on large surfaces; interactive pill-shaped chrome keeps its own
+  explicit `--ftl-btn-radius`/`--ftl-nav-item-radius: 999px` regardless.
+- Thin/glass borders, no hard rectangular chrome.
 
 ## Tell-tales of an inauthentic result
 
 - Any opaque panel or card background.
 - A left-aligned or edge-anchored navigation bar instead of a centred one.
 - Sharp rectangular corners on interactive elements.
+- A stadium/pill-shaped info panel, alert or dropdown — those are
+  modestly rounded rectangles, not pills; only buttons/nav items/badges
+  are pills.
+
+## Known harness limitation: the app-bar doesn't render centred everywhere
+
+`html[data-theme="xmb"] .ftl-nav { justify-content: center }` (and the
+same rule on `.ftl-app-bar`) is real, is the highest-specificity rule
+either QA page applies, and does win — it centres the standalone
+`.ftl-nav` demo in example.html's "Navigation" section correctly. It has
+no visible effect on the QA harness's own *topbar* markup, though:
+example.html's `.ftl-app-bar` header puts an inline
+`<span style="margin-left:auto">` before its breadcrumbs, and
+example-2/3.html's `.demo-topbar-spacer` sets `flex: 1`. Either one
+absorbs 100% of the row's free space by itself, so `justify-content` has
+nothing left to distribute and the brand/items stay pinned flush left.
+That's a property of those harness pages' fixed nav markup (which this
+theme must not edit to "fix"), not a bug in the theme's centering rule —
+an app that lays out its own `.ftl-app-bar` without such a spacer gets
+the real centred cross-bar. In the meantime the bar leans harder on the
+float-and-glow language it's actually judged on: it now renders as its
+own floating, blurred, pill-shaped glass capsule with a soft drop shadow
+above the wave, and the active nav item's selection glow is stronger —
+so the bar still reads unmistakably as XMB even where it can't be
+centred.
