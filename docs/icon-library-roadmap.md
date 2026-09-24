@@ -2,13 +2,18 @@
 
 ## Current state (as of this doc)
 
-- `assets/icons/icons.svg` — **100 generic icons**, stroke-based outline
+- `assets/icons/icons.svg` — **1,017 generic icons**, stroke-based outline
   style: 24x24 `viewBox`, `stroke="currentColor"`, `fill="none"` by
   default, sized/weighted entirely through `--ftl-icon-fill` and
   `--ftl-icon-stroke-width` (`core/ftl-core.css`, `.ftl-icon`). No per-icon
   color or stroke-width is ever baked into a symbol — that's what lets one
   sprite reskin across 22 very different themes with zero per-theme icon
-  variants required.
+  variants required. The original 100 are in-house line drawings; the
+  other 917 are bulk-vendored, unmodified-artwork icons from **Tabler
+  Icons** (MIT license, v3.48.0) — see `assets/icons/NOTICE.md` for the
+  full attribution, exact commit/version, and exactly what was
+  mechanically normalized (symbol wrapper, stripped presentation
+  attributes) versus left untouched (all path data).
 - Per-theme overrides exist for **6 of 22 themes** (`windows95`,
   `teletext`, `matrix`, `winxp-luna`, `lcars`, `nokia-3310`), each
   redefining **6 icon ids** in `themes/<slug>/icons.svg`.
@@ -53,11 +58,35 @@ hash). Selection was informed by grepping the sibling consumer apps
 reach for (transport controls, remote/hardware glyphs, dashboard chrome),
 not picked abstractly.
 
-### Phase 2 — Generic set: 100 -> 2,000, in batches of ~200
+### Phase 2 — Generic set: 100 -> 2,000
 
-Grow by category, each batch shippable and checkable independently (same
-`assets/icons/icons.svg` file, same `check.py` well-formedness gate).
-Proposed batch order, roughly most- to least-broadly-needed:
+**Status: 100 -> 1,017, DONE for this session's 1,000-icon target.**
+Rather than hand-drawing ~15 batches of ~200 originals, the project
+owner opted to bulk-vendor a large batch verbatim from Tabler Icons
+(MIT-licensed, confirmed safe for bulk redistribution in
+`docs/icon-license-research.md`) — see `assets/icons/NOTICE.md` for the
+full sourcing, license text, exact version/commit, and normalization
+details. 917 icons were added in one pass, selected by keyword-matching
+against the category list below (with company-logo and national-flag
+icons hard-excluded per this doc's sourcing policy), bringing the
+generic set from 100 to 1,017. The category list below remains the
+reference for what got prioritized in that pass and what a future
+hand-drawn or further-vendored pass should still fill in (the vendored
+batch covers broad ground per category but is not exhaustive — Tabler's
+full outline set has ~5,900 icons, of which only a curated ~900 were
+pulled in this batch).
+
+The remaining path toward the longer-term 2,000-icon target is: either
+vendor a second batch from Tabler (or a second permissive source, e.g.
+Lucide, for icons Tabler doesn't have a good match for) using the same
+process, or fill gaps with original hand-drawn icons where a needed
+concept doesn't exist in any permissive source. Each batch remains
+additive-only and independently `check.py`-verified, per the original
+plan below.
+
+Original proposed batch order, roughly most- to least-broadly-needed
+(now used as the category checklist for the vendored batch above, not
+as a sequence of separate hand-drawn PRs):
 
 1. File types & documents (pdf, doc, spreadsheet, archive/zip, code file,
    font file, font, config, log, database file, ...)
