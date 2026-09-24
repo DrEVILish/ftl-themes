@@ -1884,15 +1884,27 @@ html[data-theme="death-star"] .ftl-app-bar {
    circuit-board lattice of hairline white segments on black, not a soft
    panel fill. Painted as a background-image (not a box-model border) so
    the "zero borders/shadows" component contract still holds — this is
-   texture, not chrome. */
+   texture, not chrome.
+   Horizontal lines only, at low opacity: the original two-axis grid at
+   0.35 alpha read as an unstyled/broken HTML table wherever a panel held
+   real paragraph text or nested boxes (testimonial quotes, log lines, a
+   reply textarea) — confirmed by two independent rendering reviews. A
+   single faint horizontal scanline is still legible as "console readout"
+   without competing with foreground text. */
 html[data-theme="death-star"] .ftl-panel,
-html[data-theme="death-star"] .ftl-card,
 html[data-theme="death-star"] .ftl-transport {
-  background-image:
-    linear-gradient(rgba(230,230,230,0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(230,230,230,0.35) 1px, transparent 1px);
-  background-size: 100% 2.5rem, 4rem 100%;
-  background-position: 0 0, 0 0;
+  background-image: linear-gradient(rgba(230,230,230,0.12) 1px, transparent 1px);
+  background-size: 100% 2.5rem;
+  background-position: 0 0;
+}
+/* .ftl-card is used for small, short-text tiles (stat tiles, feature
+   cards) where a 4rem-pitch vertical grid line reliably lands mid-word —
+   confirmed by rendering: "REVENUE" and "CONVERSION RATE" both got a
+   line straight through a letter. Cards get a plain dark fill instead;
+   the grid stays reserved for larger panel surfaces where it reads as
+   console segmentation, not text collision. */
+html[data-theme="death-star"] .ftl-card {
+  --ftl-card-bg: var(--ftl-surface-2);
 }
 /* One solid red control block per panel header — the reference's other
    defining structural element alongside the white grid. */

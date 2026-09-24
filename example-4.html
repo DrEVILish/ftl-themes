@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html data-theme="aqua">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Desk — ftl-themes master-detail demo</title>
+<link id="ftl-theme-link" rel="stylesheet" href="dist/aqua.css">
+<style>
+  * { box-sizing: border-box; }
+  .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .demo-topbar-spacer { flex: 1; }
+  .demo-topbar .ftl-nav-brand { white-space: nowrap; }
+  .demo-topbar .ftl-btn { flex-shrink: 0; }
+  .demo-split { display: grid; grid-template-columns: 18rem minmax(0, 1fr) 16rem; gap: 1.25rem; align-items: start; }
+  @media (max-width: 1100px) { .demo-split { grid-template-columns: 18rem minmax(0, 1fr); } .demo-split > aside.ftl-stack { grid-column: 1 / -1; } }
+  @media (max-width: 860px) { .demo-split { grid-template-columns: 1fr; } .demo-split > aside.ftl-stack { grid-column: auto; } }
+  .demo-ticket-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .demo-ticket { display: block; padding: 0.75rem 0.9rem; border-radius: var(--ftl-radius); border: 1px solid var(--ftl-hairline); cursor: pointer; }
+  .demo-ticket.is-active { border-color: var(--ftl-accent); background: var(--ftl-surface-2); }
+  .demo-ticket-title { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+  .demo-ticket-meta { display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.75; }
+  .demo-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+</style>
+</head>
+<body class="ftl-app">
+  <header class="ftl-app-bar">
+    <nav class="ftl-nav demo-topbar">
+      <span class="ftl-nav-brand">Support Desk</span>
+      <a class="ftl-nav-item is-active" href="#">Tickets</a>
+      <a class="ftl-nav-item" href="#">Customers</a>
+      <a class="ftl-nav-item" href="#">Settings</a>
+      <span class="demo-topbar-spacer"></span>
+      <select class="ftl-select" id="ftl-theme-picker" aria-label="Theme" style="width:auto; flex:none;"></select>
+      <span class="ftl-avatar">SM</span>
+    </nav>
+  </header>
+
+  <aside class="ftl-app-rail" aria-hidden="true"></aside>
+
+  <main class="ftl-app-main">
+    <div class="demo-split">
+      <section>
+        <div class="ftl-field" style="margin-bottom: 0.75rem;">
+          <input class="ftl-input" type="search" placeholder="Search tickets&hellip;">
+        </div>
+        <div class="ftl-segmented" style="margin-bottom: 0.75rem;">
+          <button class="ftl-segmented-item is-active" type="button">Open</button>
+          <button class="ftl-segmented-item" type="button">Pending</button>
+          <button class="ftl-segmented-item" type="button">Closed</button>
+        </div>
+        <div class="demo-ticket-list">
+          <a class="demo-ticket is-active">
+            <span class="demo-ticket-title">Can't export invoices as CSV</span>
+            <span class="demo-ticket-meta"><span>#4821 &middot; Ava Thompson</span><span class="ftl-status ftl-status-warn">Pending</span></span>
+          </a>
+          <a class="demo-ticket">
+            <span class="demo-ticket-title">Billing charged twice this month</span>
+            <span class="demo-ticket-meta"><span>#4819 &middot; Marcus Lee</span><span class="ftl-status ftl-status-error">Urgent</span></span>
+          </a>
+          <a class="demo-ticket">
+            <span class="demo-ticket-title">Feature request: dark mode</span>
+            <span class="demo-ticket-meta"><span>#4810 &middot; Priya Nair</span><span class="ftl-status ftl-status-idle">Low</span></span>
+          </a>
+          <a class="demo-ticket">
+            <span class="demo-ticket-title">Login loop on mobile app</span>
+            <span class="demo-ticket-meta"><span>#4802 &middot; Sam O'Reilly</span><span class="ftl-status ftl-status-ok">Answered</span></span>
+          </a>
+        </div>
+      </section>
+
+      <section class="ftl-panel">
+        <header class="ftl-panel-header demo-detail-head">
+          <div>
+            <strong>#4821 &middot; Can't export invoices as CSV</strong>
+            <div class="ftl-field-hint">Opened by Ava Thompson &middot; 2 hours ago</div>
+          </div>
+          <span class="ftl-badge ftl-badge-warning">Pending</span>
+        </header>
+
+        <div class="ftl-tabs" style="padding: 0 0.9rem; margin-top: 0.75rem;">
+          <button class="ftl-tab is-active">Conversation</button>
+          <button class="ftl-tab">Ticket details</button>
+          <button class="ftl-tab">Activity</button>
+        </div>
+
+        <div style="padding: 0.9rem;">
+          <div class="ftl-alert ftl-alert-info">Customer is on the Company plan, renews in 12 days.</div>
+
+          <div class="ftl-field-group" style="margin-top: 1rem;">
+            <div class="ftl-field-group-title">Reply</div>
+            <div class="ftl-field">
+              <label class="ftl-label" for="demo-reply">Message</label>
+              <textarea class="ftl-textarea" id="demo-reply" rows="4">Hi Ava, thanks for flagging this — could you tell us which browser you're using when the export button doesn't respond?</textarea>
+            </div>
+            <div class="ftl-field-row">
+              <label class="ftl-label">Notify customer by email</label>
+              <label class="ftl-switch">
+                <input type="checkbox" checked>
+                <span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span>
+              </label>
+            </div>
+            <fieldset class="ftl-radio-group" style="--ftl-radio-group-direction: row;">
+              <legend class="ftl-label">Priority</legend>
+              <label class="ftl-check"><input class="ftl-radio" type="radio" name="demo-priority">Low</label>
+              <label class="ftl-check"><input class="ftl-radio" type="radio" name="demo-priority" checked>Normal</label>
+              <label class="ftl-check"><input class="ftl-radio" type="radio" name="demo-priority">Urgent</label>
+            </fieldset>
+            <div class="ftl-dropzone">Drop a screenshot, or click to attach.</div>
+          </div>
+
+          <div class="qa-row" style="display:flex; gap:0.5rem; margin-top: 1rem;">
+            <button class="ftl-btn ftl-btn-primary">Send reply</button>
+            <button class="ftl-btn ftl-btn-secondary">Close ticket</button>
+            <button class="ftl-btn ftl-btn-ghost">Snooze</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="ftl-stack">
+        <section class="ftl-panel">
+          <header class="ftl-panel-header"><strong>Customer</strong></header>
+          <div style="padding: 0.9rem; text-align: center;">
+            <span class="ftl-avatar ftl-avatar-lg">AT</span>
+            <p style="margin: 0.5rem 0 0; font-weight: 600;">Ava Thompson</p>
+            <p class="ftl-field-hint">ava@northwind.example</p>
+            <span class="ftl-badge ftl-badge-accent">Company plan</span>
+          </div>
+          <div class="ftl-divider"></div>
+          <div style="padding: 0 0.9rem 0.9rem;">
+            <p class="ftl-field-hint">Customer since Mar 2023</p>
+            <p class="ftl-field-hint">Renews in 12 days</p>
+            <p class="ftl-field-hint">3 open tickets, 14 resolved</p>
+          </div>
+        </section>
+        <section class="ftl-panel">
+          <header class="ftl-panel-header"><strong>Activity</strong></header>
+          <div class="ftl-log">
+            <div class="ftl-log-line"><span class="ftl-log-time ftl-mono">09:02</span><span>Ticket opened</span></div>
+            <div class="ftl-log-line"><span class="ftl-log-time ftl-mono">09:14</span><span>Assigned to Sam</span></div>
+            <div class="ftl-log-line" data-level="warn"><span class="ftl-log-time ftl-mono">10:40</span><span>SLA due in 2 hours</span></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="ftl-app-status">
+    <span>4 open &middot; 1 urgent</span>
+    <span class="ftl-status ftl-status-ok">Synced</span>
+  </footer>
+
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

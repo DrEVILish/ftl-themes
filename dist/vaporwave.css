@@ -1892,17 +1892,23 @@ html[data-theme="vaporwave"] {
   --ftl-app-status-rule: var(--ftl-border);
 }
 /* The bar is a bright magenta-purple-cyan gradient — .ftl-nav-brand/-item's
-   default colors (accent magenta text, muted lavender text) were tuned for
-   the dark page background and go near-invisible against this gradient.
-   Re-pointing the tokens here, not on the base selectors, keeps them
-   correct for any standalone .ftl-nav elsewhere on the page. Dark text
-   clears the floor against every stop in the gradient (magenta through
-   cyan), unlike white, which fails against the magenta end. */
+   default colors were tuned for the dark page background and go
+   near-invisible against this gradient. Dark text (#1a0b2e) clears the
+   WCAG floor against every stop (5.7:1 minimum, at the mid-purple stop),
+   but at that ratio it's still perceptually hard to pick out against a
+   busy multi-hue gradient — same hue family, low apparent contrast even
+   though the math passes. A light halo (text-shadow, not a background
+   box, so it can't fail the base-component-background lint rule) fixes
+   the perceptual issue without touching the lint-verified fill color. */
 html[data-theme="vaporwave"] .ftl-app-bar {
   --ftl-nav-brand-fg: #1a0b2e;
   --ftl-nav-item-fg: #1a0b2e;
   --ftl-nav-item-fg-active: #1a0b2e;
   --ftl-nav-item-bg-active: rgba(26, 11, 46, 0.15);
+}
+html[data-theme="vaporwave"] .ftl-app-bar .ftl-nav-brand,
+html[data-theme="vaporwave"] .ftl-app-bar .ftl-nav-item {
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9), 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
 /* The horizon: a striped sun disc over a real converging perspective grid —

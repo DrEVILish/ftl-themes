@@ -76,19 +76,38 @@ html[data-theme="lego-classic"] h3 { font-weight: 800; }
    this; a real brick has studs on every top face, so it now runs across
    the top edge of every panel-scale surface (panel, card, modal header),
    not just the one with a header row. */
+/* Studs sit as a slim strip ABOVE the header text, not painted as the
+   header's own fill — filling the whole header's background put the
+   stud row directly behind/through the title text itself (confirmed by
+   rendering: "Recent orders" and "Signal" both had studs overlapping the
+   label), which is illegible, not decorative. */
 html[data-theme="lego-classic"] .ftl-panel-header,
 html[data-theme="lego-classic"] .ftl-modal-header {
+  position: relative;
+  padding-top: calc(0.6em + 10px);
+}
+html[data-theme="lego-classic"] .ftl-panel-header::before,
+html[data-theme="lego-classic"] .ftl-modal-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 10px;
   background-image:
     radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9) 0 1.5px, transparent 1.5px),
     radial-gradient(circle, rgba(0,0,0,0.4) 5px, transparent 5.5px);
   background-size: 18px 100%;
   background-position: 9px center;
+  pointer-events: none;
 }
 html[data-theme="lego-classic"] .ftl-panel,
 html[data-theme="lego-classic"] .ftl-card {
   position: relative;
 }
-html[data-theme="lego-classic"] .ftl-panel::before,
+/* :not(:has(> .ftl-panel-header)) — a panel WITH a header already gets its
+   own top stud strip from the header rule above; adding this one too
+   would double the dots at the same spot, misaligned since the two
+   strips use different pitches. */
+html[data-theme="lego-classic"] .ftl-panel:not(:has(> .ftl-panel-header))::before,
 html[data-theme="lego-classic"] .ftl-card::before {
   content: "";
   position: absolute;
