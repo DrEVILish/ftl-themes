@@ -89,7 +89,14 @@ html[data-theme="alienware"] h3 {
    from a plain rounded-corner box with slightly-off antialiasing — the
    signature shape this theme is named for wasn't legible. Cut size now
    scales with the element (larger surfaces get a proportionally larger
-   cut), and every card-like surface gets it, not just panel/modal. */
+   cut), and every card-like surface gets it, not just panel/modal.
+   A follow-up fidelity review confirmed even the "proportionally larger"
+   18px panel/card cut still read as barely-there at normal render size —
+   only the color carried the identity, not the shape. Panels/cards/modals
+   go to 34px here, a cut large enough to be unmistakable at a glance
+   without a close-up crop; buttons stay at the earlier 6px (a small
+   control has much less corner to spare before the cut reads as clipped
+   text instead of an angular corner). */
 html[data-theme="alienware"] .ftl-btn {
   /* A shallower cut than panels/cards get: buttons are small enough that a
      10px corner cut with the core's default 1.1em padding was overlapping
@@ -106,7 +113,7 @@ html[data-theme="alienware"] .ftl-card,
 html[data-theme="alienware"] .ftl-dropdown,
 html[data-theme="alienware"] .ftl-context-menu,
 html[data-theme="alienware"] .ftl-popover {
-  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+  clip-path: polygon(34px 0, 100% 0, 100% calc(100% - 34px), calc(100% - 34px) 100%, 0 100%, 0 34px);
 }
 html[data-theme="alienware"] .ftl-btn-sm {
   clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
@@ -118,6 +125,18 @@ html[data-theme="alienware"] .ftl-card:focus-visible {
   filter: drop-shadow(0 0 0 2px var(--ftl-focus)) drop-shadow(0 0 6px var(--ftl-focus));
 }
 
+/* The larger 34px panel/modal cut reaches further into the header's
+   flush-to-the-edge corner than the old 18px cut did — the header's own
+   default 1rem inline padding put "REVENUE" / "×" close buttons right in
+   the clipped triangle. Extra inline padding, on the header only (the
+   header's negative margin still cancels the panel's own padding exactly,
+   so it keeps spanning edge-to-edge), pulls header content clear of the
+   diagonal without touching the panel's own padding or the header's fill. */
+html[data-theme="alienware"] .ftl-panel-header,
+html[data-theme="alienware"] .ftl-modal-header {
+  padding-inline: 1.75rem;
+}
+
 html[data-theme="alienware"] .ftl-btn-primary { --ftl-btn-bg: rgba(0, 212, 255, 0.14); --ftl-btn-border: var(--ftl-accent); }
 html[data-theme="alienware"] .ftl-btn-danger { --ftl-btn-border: var(--ftl-danger); }
 
@@ -127,7 +146,11 @@ html[data-theme="alienware"] .ftl-btn-danger { --ftl-btn-border: var(--ftl-dange
 html[data-theme="alienware"] {
   --ftl-app-padding: 0.6rem;
   --ftl-app-gap: 0.6rem;
-  --ftl-app-columns: 0.35rem minmax(0, 1fr);
+  /* Widened from 0.35rem: at hairline width the AlienFX strip read as a
+     thin colored rule, not a physical light bar — a strict fidelity
+     review flagged it alongside the corner cuts as too faint to register
+     as the chassis's signature lighting zone. */
+  --ftl-app-columns: 0.65rem minmax(0, 1fr);
   --ftl-app-rail-display: block;
   /* The rail ships empty (aria-hidden) and is painted entirely by the
      gradient below — without this override, core's empty-rail rule
@@ -147,10 +170,20 @@ html[data-theme="alienware"] {
 /* The AlienFX strip: one lit RGB zone per chassis edge in the reference
    photos (a single cyan glow, not a multi-hue gradient) — kept to one hue
    family instead of fading into accent-2's purple, which reads as a
-   different light zone entirely. */
+   different light zone entirely. The glow itself is pushed much further
+   out and brighter than the original 10px/0.6-alpha bloom, which barely
+   extended past the rail's own hairline width and read as a thin colored
+   line rather than a lit physical bar throwing light onto the chassis
+   beside it. A bright near-white core (the strip's own fill, above) plus
+   this wide, saturated, multi-layer bloom is what actually reads as an
+   illuminated light strip in a screenshot. */
 html[data-theme="alienware"] .ftl-app-rail {
-  background-image: linear-gradient(180deg, #66e7ff, var(--ftl-accent) 40%, #0090b3);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 2px rgba(0, 212, 255, 0.9);
+  background-image: linear-gradient(180deg, #b6f5ff, #66e7ff 20%, var(--ftl-accent) 55%, #0090b3);
+  box-shadow:
+    0 0 4px rgba(180, 245, 255, 0.95),
+    0 0 16px rgba(0, 212, 255, 0.85),
+    0 0 36px rgba(0, 212, 255, 0.65),
+    0 0 64px rgba(0, 212, 255, 0.4);
 }
 /* Ornate corner brackets on the app-bar's lit edge — the reference chrome's
    double-line tick marks at the frame corners, not just a flat 2px rule. */
