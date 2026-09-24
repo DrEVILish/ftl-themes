@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ftl-themes gallery</title>
+<style>
+  /* This page is deliberately NOT skinned by any of the 22 shipping
+     themes — it's a meta/documentation page for browsing the library, so
+     it gets its own small neutral design instead of loading a dist/<slug>.css.
+     Light/dark follows the OS preference only. */
+  :root {
+    --bg: #f5f5f7;
+    --bg-elevated: #ffffff;
+    --text: #1a1a1e;
+    --text-muted: #5a5a63;
+    --border: #dcdce2;
+    --accent: #3b5bfd;
+    --accent-text: #ffffff;
+    --shadow: 0 1px 2px rgba(20, 20, 30, 0.06), 0 4px 14px rgba(20, 20, 30, 0.06);
+    --chip-bg: #eceef4;
+    --code-bg: #ececf1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17171b;
+      --bg-elevated: #1f1f24;
+      --text: #eeeef2;
+      --text-muted: #9a9aa4;
+      --border: #303038;
+      --accent: #7f9bff;
+      --accent-text: #10121c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 18px rgba(0, 0, 0, 0.35);
+      --chip-bg: #26262e;
+      --code-bg: #26262e;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  body { padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 3rem; }
+
+  header.page-head { max-width: 74rem; margin: 0 auto 1.5rem; }
+  header.page-head h1 { font-size: 1.6rem; margin: 0 0 0.35rem; }
+  header.page-head p { margin: 0.25rem 0; color: var(--text-muted); max-width: 60ch; line-height: 1.5; }
+  header.page-head code {
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+    font-size: 0.9em;
+  }
+
+  .controls {
+    max-width: 74rem;
+    margin: 0 auto 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 0.75rem 0;
+    z-index: 5;
+  }
+  #search {
+    flex: 1 1 16rem;
+    min-width: 12rem;
+    font-size: 1rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+  }
+  #search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .scheme-filter { display: flex; gap: 0.35rem; }
+  .scheme-filter button {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .scheme-filter button.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+
+  .page-select {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+  }
+
+  #count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .grid {
+    max-width: 74rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .card.is-hidden { display: none; }
+
+  .preview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--chip-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  /* The iframe is rendered at its natural desktop size, then scaled down
+     with a CSS transform so it fits the card — this gives a real,
+     always-accurate live preview of the theme instead of a maintained
+     screenshot that goes stale the moment a theme's CSS changes. */
+  .preview iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1400px;
+    height: 875px;
+    border: 0;
+    transform-origin: top left;
+    /* scale = card width / 1400px, recomputed per card in JS since card
+       width is fluid (auto-fill grid) */
+    background: #fff;
+  }
+  .preview .preview-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  .card-body { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+  .card-title { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+  .card-title h2 { font-size: 1.02rem; margin: 0; }
+  .card-slug { font-size: 0.72rem; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin: 0; flex: 1; }
+
+  .card-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .chip {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    color: var(--text-muted);
+  }
+
+  .card-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+  .card-actions select {
+    font: inherit;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+  }
+  .card-actions a.view-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .card-actions a.view-link:hover { text-decoration: underline; }
+
+  #empty-state {
+    max-width: 74rem;
+    margin: 3rem auto;
+    text-align: center;
+    color: var(--text-muted);
+    display: none;
+  }
+  #empty-state.is-visible { display: block; }
+</style>
+</head>
+<body>
+<header class="page-head">
+  <h1>ftl-themes gallery</h1>
+  <p>
+    Every shipping theme at a glance, rendered live in an embedded
+    <code>example.html</code> (or another demo page — pick one per card).
+    Filter as you type; click a card's preview or "View full page" to open
+    it full-size.
+  </p>
+</header>
+
+<div class="controls">
+  <input id="search" type="search" placeholder="Filter by name or slug&hellip;" aria-label="Filter themes">
+  <div class="scheme-filter" id="scheme-filter" role="group" aria-label="Filter by light/dark scheme">
+    <button type="button" class="is-active" data-scheme="all">All</button>
+    <button type="button" data-scheme="light">Light</button>
+    <button type="button" data-scheme="dark">Dark</button>
+  </div>
+  <select class="page-select" id="global-page-select" aria-label="Preview page for every card">
+    <option value="">Preview: per-card</option>
+    <option value="example.html">Preview: example.html (components)</option>
+    <option value="example-2.html">Preview: example-2.html (dashboard)</option>
+    <option value="example-3.html">Preview: example-3.html (marketing)</option>
+    <option value="example-4.html">Preview: example-4.html (support desk)</option>
+  </select>
+  <span id="count"></span>
+</div>
+
+<div class="grid" id="grid"></div>
+<p id="empty-state">No themes match "<span id="empty-query"></span>".</p>
+
+<script>
+(function () {
+  var EXAMPLE_PAGES = [
+    { value: "example.html", label: "Components" },
+    { value: "example-2.html", label: "Dashboard" },
+    { value: "example-3.html", label: "Marketing" },
+    { value: "example-4.html", label: "Support desk" }
+  ];
+
+  var grid = document.getElementById("grid");
+  var search = document.getElementById("search");
+  var countEl = document.getElementById("count");
+  var emptyState = document.getElementById("empty-state");
+  var emptyQuery = document.getElementById("empty-query");
+  var schemeFilterEl = document.getElementById("scheme-filter");
+  var globalPageSelect = document.getElementById("global-page-select");
+
+  var schemeFilter = "all";
+  var cards = []; // { el, slug, label, scheme, pageSelect, iframeHost }
+
+  function buildCard(theme) {
+    var card = document.createElement("div");
+    card.className = "card";
+    card.dataset.slug = theme.slug.toLowerCase();
+    card.dataset.label = theme.label.toLowerCase();
+    card.dataset.scheme = theme.scheme || "";
+
+    var preview = document.createElement("div");
+    preview.className = "preview";
+
+    var body = document.createElement("div");
+    body.className = "card-body";
+
+    var titleRow = document.createElement("div");
+    titleRow.className = "card-title";
+    var h2 = document.createElement("h2");
+    h2.textContent = theme.label;
+    var slugEl = document.createElement("span");
+    slugEl.className = "card-slug";
+    slugEl.textContent = theme.slug;
+    titleRow.appendChild(h2);
+    titleRow.appendChild(slugEl);
+
+    var desc = document.createElement("p");
+    desc.className = "card-desc";
+    desc.textContent = theme.description || "";
+
+    var chips = document.createElement("div");
+    chips.className = "card-chips";
+    if (theme.scheme) {
+      var schemeChip = document.createElement("span");
+      schemeChip.className = "chip";
+      schemeChip.textContent = theme.scheme;
+      chips.appendChild(schemeChip);
+    }
+    if (theme.hasChrome) {
+      var chromeChip = document.createElement("span");
+      chromeChip.className = "chip";
+      chromeChip.textContent = "chrome";
+      chips.appendChild(chromeChip);
+    }
+
+    var actions = document.createElement("div");
+    actions.className = "card-actions";
+    var pageSelect = document.createElement("select");
+    pageSelect.setAttribute("aria-label", "Preview page for " + theme.label);
+    EXAMPLE_PAGES.forEach(function (p) {
+      var o = document.createElement("option");
+      o.value = p.value;
+      o.textContent = p.label;
+      pageSelect.appendChild(o);
+    });
+    var link = document.createElement("a");
+    link.className = "view-link";
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "View full page →";
+
+    function currentPage() {
+      return globalPageSelect.value || pageSelect.value;
+    }
+    function targetUrl() {
+      return currentPage() + "?theme=" + encodeURIComponent(theme.slug);
+    }
+    function updateLink() { link.href = targetUrl(); }
+    pageSelect.addEventListener("change", function () {
+      updateLink();
+      loadIframe(preview, targetUrl());
+    });
+    updateLink();
+
+    actions.appendChild(pageSelect);
+    actions.appendChild(link);
+
+    body.appendChild(titleRow);
+    body.appendChild(desc);
+    if (chips.children.length) body.appendChild(chips);
+    body.appendChild(actions);
+
+    card.appendChild(preview);
+    card.appendChild(body);
+
+    return {
+      el: card,
+      slug: theme.slug,
+      label: theme.label,
+      scheme: theme.scheme || "",
+      preview: preview,
+      targetUrl: targetUrl,
+      loaded: false
+    };
+  }
+
+  // Loads (or replaces) the iframe inside a card's .preview container, and
+  // scales it to fit via a CSS transform so a full-size render always
+  // shows, rather than a cramped viewport-narrow one.
+  function loadIframe(preview, url) {
+    preview.innerHTML = "";
+    var iframe = document.createElement("iframe");
+    iframe.loading = "lazy";
+    iframe.title = url;
+    iframe.src = url;
+    iframe.addEventListener("error", function () {
+      showFallback(preview, url);
+    });
+    preview.appendChild(iframe);
+    scaleIframe(preview, iframe);
+  }
+
+  function showFallback(preview, url) {
+    preview.innerHTML = "";
+    var fallback = document.createElement("div");
+    fallback.className = "preview-fallback";
+    fallback.textContent = "Preview unavailable — open " + url + " directly.";
+    preview.appendChild(fallback);
+  }
+
+  function scaleIframe(preview, iframe) {
+    var width = preview.clientWidth || 1;
+    var scale = width / 1400;
+    iframe.style.transform = "scale(" + scale + ")";
+    iframe.style.height = (875) + "px";
+  }
+
+  // Only load the iframe once a card is actually visible, so 22+ live
+  // previews on one page don't all fetch/render at once.
+  var io = ("IntersectionObserver" in window)
+    ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var c = entry.target.__ftlCard;
+          if (c && !c.loaded) {
+            c.loaded = true;
+            loadIframe(c.preview, c.targetUrl());
+          }
+          io.unobserve(entry.target);
+        });
+      }, { rootMargin: "200px 0px" })
+    : null;
+
+  function applyFilter() {
+    var q = search.value.trim().toLowerCase();
+    var visibleCount = 0;
+    cards.forEach(function (c) {
+      var matchesText = !q || c.slug.toLowerCase().indexOf(q) !== -1 || c.label.toLowerCase().indexOf(q) !== -1;
+      var matchesScheme = schemeFilter === "all" || c.scheme === schemeFilter;
+      var visible = matchesText && matchesScheme;
+      c.el.classList.toggle("is-hidden", !visible);
+      if (visible) visibleCount++;
+    });
+    countEl.textContent = visibleCount + " / " + cards.length + " themes";
+    emptyState.classList.toggle("is-visible", visibleCount === 0);
+    emptyQuery.textContent = q;
+  }
+
+  search.addEventListener("input", applyFilter);
+
+  schemeFilterEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-scheme]");
+    if (!btn) return;
+    schemeFilter = btn.dataset.scheme;
+    schemeFilterEl.querySelectorAll("button").forEach(function (b) {
+      b.classList.toggle("is-active", b === btn);
+    });
+    applyFilter();
+  });
+
+  globalPageSelect.addEventListener("change", function () {
+    cards.forEach(function (c) {
+      if (c.loaded) loadIframe(c.preview, c.targetUrl());
+    });
+  });
+
+  window.addEventListener("resize", function () {
+    cards.forEach(function (c) {
+      var iframe = c.preview.querySelector("iframe");
+      if (iframe) scaleIframe(c.preview, iframe);
+    });
+  });
+
+  fetch("dist/themes.json")
+    .then(function (r) { return r.json(); })
+    .then(function (list) {
+      list.forEach(function (theme) {
+        var c = buildCard(theme);
+        c.el.__ftlCard = c;
+        grid.appendChild(c.el);
+        cards.push(c);
+        if (io) io.observe(c.el);
+        else loadIframe(c.preview, c.targetUrl());
+      });
+      applyFilter();
+    })
+    .catch(function () {
+      grid.innerHTML = '<p style="color:var(--text-muted);">Could not load dist/themes.json &mdash; serve this folder over HTTP (e.g. <code>python3 -m http.server</code>), not file://.</p>';
+    });
+})();
+</script>
+</body>
+</html>
