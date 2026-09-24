@@ -1044,6 +1044,40 @@ theme's colours pre-baked in.
 - **Fixed luminance, by design**: each theme is a specific look with its
   own intended light or dark palette, so themes deliberately do not respond
   to `prefers-color-scheme` — the user's theme choice is the preference.
+- **Logical properties over physical ones** in core, where the two aren't
+  behaviorally identical for the current LTR-only default: `margin-left`/
+  `-right`, `padding-left`/`-right`, `text-align: left`/`right` and similar
+  are written as `margin-inline-start`/`-end` etc. wherever a consuming app
+  setting `dir="rtl"` should see the layout mirror correctly. This is a
+  behavior-preserving convention (a logical property computes to the exact
+  same physical value under the current `dir="ltr"` default), not a new
+  feature — decorative positioning that's tied to a specific visual corner
+  regardless of text direction (a signal-bar icon, a fixed emblem) stays
+  physical on purpose. Per-theme `theme.css` files aren't held to this yet;
+  it's a core-only convention for now.
+
+## Print
+
+Core supplies a universal `@media print` floor (see `core/ftl-core.css`,
+"Print baseline") that every theme gets for free: animations/shadows off,
+backgrounds stripped and text forced to black on white (themes are
+designed for screens — a dark palette printed as-is either wastes ink or,
+worse, renders illegible when the browser drops the background but keeps
+light-on-dark text), and the decorative `.ftl-app-rail` plus any
+interactive-only control in the app-bar/app-status hidden (nothing on
+paper is clickable). Component surfaces and body chrome the reader
+actually needs to read (the app-bar's title, the status footer's
+readouts, table/card content) stay visible, just recolored to plain
+black-on-white.
+
+A theme with its own print-hostile decoration beyond the ordinary
+surface/background case — an animated background, a glowing emblem, a
+glass gradient — adds a small theme-scoped `@media print` block of its own
+in its `theme.css` that neutralizes just that effect, without touching its
+screen-only rendering. See `themes/matrix/theme.css` for a worked example
+(the digital-rain background layers) alongside `alienware`, `death-star`,
+`vaporwave`, `win7-aero`, and `xmb`, each disabling their own heaviest
+print-hostile chrome the same way.
 
 ## Adding a new theme
 

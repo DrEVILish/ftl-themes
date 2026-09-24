@@ -206,3 +206,34 @@ html[data-theme="win7-aero"] .ftl-app-bar {
   --ftl-nav-brand-fg: #0b4a94;
   --ftl-nav-item-fg: #3f4852;
 }
+
+/* --- Print ----------------------------------------------------------------
+ * backdrop-filter blur is inert on paper (nothing behind an element to
+ * blur once core has stripped every background), but printing it anyway
+ * risks a slow/garbled render in engines that still attempt the filter
+ * against whatever's underneath — same story for the panel/modal-header's
+ * own gloss gradient and its reflection-band pseudo-element, neither of
+ * which core's generic component list reaches. */
+@media print {
+  html[data-theme="win7-aero"] .ftl-btn,
+  html[data-theme="win7-aero"] .ftl-panel,
+  html[data-theme="win7-aero"] .ftl-modal,
+  html[data-theme="win7-aero"] .ftl-dropdown,
+  html[data-theme="win7-aero"] .ftl-nav,
+  html[data-theme="win7-aero"] .ftl-toolbar,
+  html[data-theme="win7-aero"] .ftl-app-main,
+  html[data-theme="win7-aero"] .ftl-app-bar,
+  html[data-theme="win7-aero"] .ftl-app-status {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  html[data-theme="win7-aero"] .ftl-panel-header,
+  html[data-theme="win7-aero"] .ftl-modal-header {
+    background: none !important;
+    color: #000 !important;
+  }
+  html[data-theme="win7-aero"] .ftl-panel-header::before,
+  html[data-theme="win7-aero"] .ftl-modal-header::before {
+    display: none !important;
+  }
+}
