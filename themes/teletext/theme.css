@@ -1,0 +1,135 @@
+/* ftl-themes: Teletext (Ceefax)
+ * Theme-Name: Teletext
+ * Description: BBC Ceefax-era teletext: the fixed 8-colour broadcast palette on solid black, zero gradients, zero anti-aliasing, flat colour-block headers.
+ *
+ * The real hardware's font (a fixed 40x25 character grid, "Bedstead"-style
+ * block font) isn't vendored — not a niche display face so much as a
+ * genuine bitmap terminal font with no faithful web equivalent. The stack
+ * falls back to a plain monospace, which loses the blocky glyph shapes but
+ * keeps the one thing that matters more: the palette is exact.
+ */
+
+html[data-theme="teletext"] {
+  color-scheme: dark;
+  --ftl-bg: #000000;
+  --ftl-surface: #000000;
+  --ftl-surface-2: #000000;
+  --ftl-border: #ffffff;
+  --ftl-hairline: #4d4d4d;
+  --ftl-text: #ffffff;
+  /* Not part of the real 8-colour set — teletext had no "muted" register,
+     every character cell was full-brightness or black. A mid-grey is the
+     least departure that lets this design system's secondary-text role
+     exist at all, and it clears 4.5:1 easily on pure black. */
+  --ftl-muted: #b3b3b3;
+  /* The real broadcast palette, exactly: black/red/green/yellow/blue/
+     magenta/cyan/white — no intermediate shades exist on real teletext
+     hardware, so none exist here either. */
+  --ftl-accent: #00ffff;
+  --ftl-accent-2: #ff00ff;
+  --ftl-danger: #ff0000;
+  --ftl-success: #00ff00;
+  --ftl-warning: #ffff00;
+  --ftl-on-accent: #000000;
+  /* Real teletext ran white text on red — at 4.0:1 that's under the 4.5:1
+     AA floor. Black clears 5.25:1 and stays inside the same 8-colour set. */
+  --ftl-on-danger: #000000;
+  --ftl-on-success: #000000;
+  --ftl-radius: 0;
+  --ftl-font: "Consolas", "Courier New", monospace;
+  --ftl-font-mono: "Consolas", "Courier New", monospace;
+  --ftl-flare: #ffff00;
+
+  /* Flat colour blocks: no gradient, no shadow, no border-radius anywhere.
+     A teletext "button" is a solid colour cell with black text, full stop. */
+  --ftl-btn-bg: var(--ftl-accent);
+  --ftl-btn-fg: var(--ftl-on-accent);
+  --ftl-btn-border-width: 0;
+  --ftl-btn-radius: 0;
+  --ftl-btn-weight: 700;
+  --ftl-btn-transform: uppercase;
+  --ftl-btn-shadow: none;
+  --ftl-btn-shadow-hover: none;
+  --ftl-focus: #ffffff;
+  --ftl-focus-ring: 0 0 0 2px #ffffff;
+  --ftl-input-bg: #000000;
+  --ftl-input-border-width: 2px;
+  --ftl-input-border: #ffffff;
+  --ftl-input-radius: 0;
+  --ftl-panel-border-width: 0;
+  --ftl-panel-bg: #000000;
+  --ftl-panel-shadow: none;
+  --ftl-modal-header-bg: var(--ftl-accent-2);
+  --ftl-modal-header-fg: #000000;
+  --ftl-table-head-bg: var(--ftl-accent);
+  --ftl-table-head-fg: #000000;
+  --ftl-table-head-transform: uppercase;
+  --ftl-row-selected-bg: var(--ftl-accent);
+  --ftl-row-selected-fg: #000000;
+  --ftl-nav-bg: #000000;
+  --ftl-nav-rule-width: 0;
+  --ftl-badge-radius: 0;
+  --ftl-overlay-bg: rgba(0, 0, 0, 0.85);
+  --ftl-indicator-fg: var(--ftl-accent);
+  --ftl-indicator-track: #333333;
+}
+
+/* Headline double-height: real teletext hardware could stretch a text row
+   to twice its normal height, reserved for page headlines. h1 is the one
+   heading that gets it — h2/h3 stay single-height so the effect still
+   reads as "the headline," not a uniform size bump. */
+html[data-theme="teletext"] h1 {
+  color: var(--ftl-warning);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transform: scaleY(1.9);
+  transform-origin: left top;
+  margin-bottom: 0.6em;
+}
+html[data-theme="teletext"] h2,
+html[data-theme="teletext"] h3 {
+  color: var(--ftl-accent);
+  text-transform: uppercase;
+}
+
+/* The page-number header: every real teletext page opens with a cyan
+   "Pnnn" index in the top-left corner of the frame. */
+html[data-theme="teletext"] .ftl-app-bar {
+  position: relative;
+  padding-left: 4.5rem;
+}
+html[data-theme="teletext"] .ftl-app-bar::before {
+  content: "P100";
+  position: absolute;
+  left: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ftl-danger);
+  color: var(--ftl-on-danger);
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* --- Layout ------------------------------------------------------------ *
+ * A broadcast frame: solid colour-block bar and status strip, zero
+ * rounding, zero blur — the whole language is opaque flat colour cells. */
+html[data-theme="teletext"] {
+  --ftl-app-bg: #000000;
+  --ftl-app-bar-bg: #000066;
+  --ftl-app-bar-fg: #ffffff;
+  --ftl-app-bar-rule-width: 0;
+  --ftl-app-bar-radius: 0;
+  --ftl-app-bar-height: 2.6rem;
+  --ftl-app-status-bg: var(--ftl-accent);
+  --ftl-app-status-fg: #000000;
+  --ftl-app-status-radius: 0;
+  --ftl-app-status-rule: transparent;
+}
+html[data-theme="teletext"] .ftl-app-bar {
+  --ftl-nav-brand-fg: #ffffff;
+  --ftl-nav-item-fg: var(--ftl-accent);
+  --ftl-nav-item-fg-active: #ffffff;
+  --ftl-nav-item-bg-active: var(--ftl-danger);
+}

@@ -936,7 +936,7 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 
 ## Theme index
 
-18 themes currently ship (have a `themes/<slug>/` folder built by
+22 themes currently ship (have a `themes/<slug>/` folder built by
 `scripts/build.sh`). `aperture`, `blue-future`, `cue-lab`, `material`,
 `nerv`, `pipboy`, `steampunk` and `tron` are parked in
 `archive/themes-pending-reference/` until each has real reference
@@ -965,12 +965,16 @@ for what, if anything, it cites.
 | `lego-classic` | LEGO Classic | A circular "stud" on every panel corner — a physical brick, not a palette. | |
 | `matrix` | The Matrix | `#00FF41` phosphor green — the actual hex the reference on-screen code uses. | ✓ |
 | `msdos` | MS-DOS (Norton Commander) | Double-line (`═`/`║`) box borders; only cyan/yellow count as "bright". | |
+| `nokia-3310` | Nokia 3310 | Selection is a hard colour invert, not a highlight — the phone had no second hue to spend. | |
+| `teletext` | Teletext | The exact 8-colour broadcast palette, flat, on solid black — zero gradients or rounding. | ✓ |
 | `vaporwave` | Vaporwave | Heading text is a magenta-to-cyan gradient clipped to the glyphs, not a solid fill. | |
 | `winamp-classic` | WinAmp Classic | Tiny uppercase labels and llama-green LCD-style numeric readouts. | |
 | `windows95` | Windows 95 | Bevels invert light-to-dark on `:active` — the "is this actually pressable" cue. | |
 | `winxp-luna` | Windows XP (Luna) | Glossy round-cornered blue chrome; green is reserved for primary/"go" actions only. | |
 | `win7-aero` | Windows 7 Aero | Real `backdrop-filter` blur — translucent glass, not Luna's opaque gloss. | |
 | `wmp11` | Windows Media Player 11 | Black glass with a cool blue glow — the last WMP skin before the Zune-era flattening. | |
+| `xbmc` | XBMC | A glowing blue underline marks selection — never a filled highlight block. | |
+| `xmb` | XMB (PS3/PSP) | Nothing is an opaque fill; every surface is a translucent tint over the wave gradient. | |
 
 Verified this pass (`lcars`, `matrix`): checked against `trekcolors`
 (Okuda LCARS reference palette) and the commonly-cited Matrix digital-rain
