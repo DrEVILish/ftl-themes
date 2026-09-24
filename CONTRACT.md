@@ -603,6 +603,61 @@ screen reader already wants on a sortable column — gets a clickable
 cursor, a hover tint, and a themed arrow; toggle the attribute value on
 click, don't add a separate `.is-sorted` class.
 
+Zebra striping (v3.8.0), opt-in — a plain table needs neither:
+```html
+<table class="ftl-table is-striped">…</table>
+```
+Even rows get `--ftl-row-alt-bg` (falls back to `--ftl-surface-2`). It's
+a dedicated token rather than reusing `--ftl-surface-2` directly, because
+a theme with a translucent surface-2 (glass/gloss themes) can band wrong
+stacked over a table row — set `--ftl-row-alt-bg` explicitly if your
+theme's surface-2 isn't opaque.
+
+### Dismissing a modal
+```html
+<div class="ftl-modal-header">
+  Title
+  <button class="ftl-btn-close" aria-label="Close"></button>
+</div>
+```
+`.ftl-btn-close` (v3.8.0) draws the "×" itself via `::before` — no icon
+markup needed, though it'll get out of the way (`content: none` on the
+pseudo-element) if you put an `.ftl-icon` inside instead. Always add
+`aria-label` yourself; the glyph alone isn't accessible. Size variants
+sit next to the default `.ftl-modal` sizing:
+```html
+<div class="ftl-modal ftl-modal-sm">…</div>   <!-- min(22rem, …) -->
+<div class="ftl-modal">…</div>                <!-- min(32rem, …), default -->
+<div class="ftl-modal ftl-modal-lg">…</div>   <!-- min(48rem, …) -->
+<div class="ftl-modal ftl-modal-xl">…</div>   <!-- min(64rem, …) -->
+```
+A `<dialog class="ftl-modal">` bridge's native `::backdrop` already reads
+`--ftl-overlay-bg`/`--ftl-overlay-blur` — the same tokens the
+`.ftl-modal-overlay` div pattern uses — so switching between the two
+markup patterns re-themes for free.
+
+### Layout utilities (v3.8.0)
+A small, deliberately tiny flex-layout layer — the one thing this library
+otherwise pushes an app toward a separate utility framework for. Token-driven
+spacing (`--ftl-space-3xs` … `--ftl-space-2xl`) so a theme can widen or
+tighten the whole app's rhythm from one place.
+```html
+<div class="ftl-row is-items-center is-gap-s">…</div>   <!-- flex row -->
+<div class="ftl-stack is-gap-l">…</div>                 <!-- flex column -->
+<div class="ftl-flex is-wrap is-justify-between">…</div>
+<p class="ftl-text-muted ftl-mt-m">Muted, spaced.</p>
+<span class="ftl-visually-hidden">Screen-reader-only text</span>
+<div class="ftl-scroll">…</div>                         <!-- themed scrollbar -->
+```
+`.ftl-row`/`.ftl-stack`/`.ftl-flex` all read `--ftl-gap` (default
+`--ftl-space-m`); `.is-gap-none`/`-2xs`/`-xs`/`-s`/`-l`/`-xl` override it.
+`.is-items-*` and `.is-justify-*` cover the alignment cases that come up
+constantly; anything more bespoke is still just flexbox, so reach for
+inline styles or your own class. `.ftl-mt-*`/`.ftl-mb-*` are the margin
+steps that show up most often in practice — not a full spacing utility
+grid. This layer is additive only; it doesn't replace or restyle any
+existing component.
+
 ### Navigation and tabs
 ```html
 <nav class="ftl-nav">

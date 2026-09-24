@@ -468,6 +468,47 @@ dialog.ftl-modal::backdrop {
   backdrop-filter: var(--ftl-overlay-blur, none);
 }
 
+/* Size variants — the default max-width above is the "medium" case. */
+.ftl-modal-sm { max-width: min(22rem, calc(100vw - 2rem)); }
+.ftl-modal-lg { max-width: min(48rem, calc(100vw - 2rem)); }
+.ftl-modal-xl { max-width: min(64rem, calc(100vw - 2rem)); }
+
+/* The dismiss ("x") button every modal header needs. Ghost by default so
+   it recedes into the header; hover/focus lift it to full text color.
+   Pair with aria-label="Close" (or similar) in markup — the glyph alone
+   isn't accessible. */
+.ftl-btn-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8em;
+  height: 1.8em;
+  padding: 0;
+  border: var(--ftl-btn-close-border-width, 0px) solid var(--ftl-btn-close-border, transparent);
+  border-radius: var(--ftl-btn-close-radius, var(--ftl-radius));
+  background: var(--ftl-btn-close-bg, transparent);
+  color: var(--ftl-btn-close-fg, var(--ftl-muted));
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.ftl-btn-close:hover {
+  background: var(--ftl-btn-close-bg-hover, var(--ftl-surface-2));
+  color: var(--ftl-btn-close-fg-hover, var(--ftl-text));
+}
+.ftl-btn-close:focus-visible {
+  outline: 2px solid var(--ftl-focus, var(--ftl-accent));
+  outline-offset: 2px;
+}
+.ftl-btn-close .ftl-icon { width: 1em; height: 1em; }
+.ftl-btn-close::before {
+  content: var(--ftl-btn-close-glyph, "\00d7");
+  font-size: 1.3em;
+  line-height: 1;
+}
+/* If the markup puts an .ftl-icon inside instead of relying on the
+   generated glyph, hide the glyph so the two don't double up. */
+.ftl-btn-close:has(.ftl-icon)::before { content: none; }
+
 .ftl-dropdown {
   background: var(--ftl-dropdown-bg, var(--ftl-surface-2));
   border: var(--ftl-dropdown-border-width, 1px) solid var(--ftl-dropdown-border, var(--ftl-border));
@@ -805,6 +846,19 @@ dialog.ftl-modal::backdrop {
   top: 0;
   background: var(--ftl-table-head-bg, var(--ftl-surface));
   z-index: 1;
+}
+
+/* Zebra striping: opt in with `.ftl-table.is-striped`. A dedicated token
+   rather than reaching for --ftl-surface-2 directly — a theme with a
+   translucent surface-2 (glass/gloss themes) can band wrong stacked over
+   a table row, so it gets its own knob instead of inheriting one shared
+   with card/panel surfaces. */
+.ftl-table.is-striped tbody tr:nth-child(even) td {
+  background: var(--ftl-row-alt-bg, var(--ftl-surface-2));
+}
+.ftl-table.is-striped tbody tr.is-selected:nth-child(even) td,
+.ftl-table.is-striped tbody tr.is-active:nth-child(even) td {
+  background: var(--ftl-row-selected-bg, var(--ftl-row-alt-bg, var(--ftl-surface-2)));
 }
 
 /* Sort indicator: the app sets `aria-sort="ascending"/"descending"` on the
@@ -1664,3 +1718,94 @@ pre code { padding: 0; background: none; border-radius: 0; }
  * See CONTRACT.md "Palette variants" and themes/imac-g3 for a worked
  * example (Bondi/Blueberry/Grape/Tangerine).
  */
+
+/* --- Layout/flow utilities ----------------------------------------------
+ * Deliberately tiny: the one layer this library doesn't otherwise offer,
+ * for the "arrange two children in a row / gap them" sentences every app
+ * template needs and would otherwise reach for a separate utility
+ * framework (Bootstrap's d-flex/gap-*/row-col/mt-mb/text-muted, etc) to
+ * write. Token-driven spacing scale so a theme can widen or tighten the
+ * whole app's rhythm from one place — see CONTRACT.md "Layout utilities".
+ */
+:root {
+  --ftl-space-3xs: 0.125rem;
+  --ftl-space-2xs: 0.25rem;
+  --ftl-space-xs: 0.5rem;
+  --ftl-space-s: 0.75rem;
+  --ftl-space-m: 1rem;
+  --ftl-space-l: 1.5rem;
+  --ftl-space-xl: 2rem;
+  --ftl-space-2xl: 3rem;
+}
+
+.ftl-row, .ftl-stack, .ftl-flex { display: flex; gap: var(--ftl-gap, var(--ftl-space-m)); }
+.ftl-row { flex-direction: row; }
+.ftl-stack { flex-direction: column; }
+.ftl-flex.is-column { flex-direction: column; }
+
+.ftl-row.is-items-start, .ftl-stack.is-items-start, .ftl-flex.is-items-start { align-items: flex-start; }
+.ftl-row.is-items-center, .ftl-stack.is-items-center, .ftl-flex.is-items-center { align-items: center; }
+.ftl-row.is-items-end, .ftl-stack.is-items-end, .ftl-flex.is-items-end { align-items: flex-end; }
+.ftl-row.is-items-stretch, .ftl-stack.is-items-stretch, .ftl-flex.is-items-stretch { align-items: stretch; }
+
+.ftl-row.is-justify-between, .ftl-stack.is-justify-between, .ftl-flex.is-justify-between { justify-content: space-between; }
+.ftl-row.is-justify-center, .ftl-stack.is-justify-center, .ftl-flex.is-justify-center { justify-content: center; }
+.ftl-row.is-justify-end, .ftl-stack.is-justify-end, .ftl-flex.is-justify-end { justify-content: flex-end; }
+
+.ftl-row.is-wrap, .ftl-flex.is-wrap { flex-wrap: wrap; }
+
+/* Gap size modifiers — override the default var(--ftl-gap, --ftl-space-m). */
+.is-gap-none { --ftl-gap: 0; }
+.is-gap-2xs { --ftl-gap: var(--ftl-space-2xs); }
+.is-gap-xs { --ftl-gap: var(--ftl-space-xs); }
+.is-gap-s { --ftl-gap: var(--ftl-space-s); }
+.is-gap-l { --ftl-gap: var(--ftl-space-l); }
+.is-gap-xl { --ftl-gap: var(--ftl-space-xl); }
+
+/* Margin-step utilities — the mt-*/mb-* sentences a template reaches for
+   most often. Deliberately not a full margin/padding utility grid (that's
+   what a real utility framework is for); this is the ~6-name subset that
+   shows up constantly in practice. */
+.ftl-mt-xs { margin-top: var(--ftl-space-xs); }
+.ftl-mt-s { margin-top: var(--ftl-space-s); }
+.ftl-mt-m { margin-top: var(--ftl-space-m); }
+.ftl-mt-l { margin-top: var(--ftl-space-l); }
+.ftl-mt-xl { margin-top: var(--ftl-space-xl); }
+.ftl-mb-xs { margin-bottom: var(--ftl-space-xs); }
+.ftl-mb-s { margin-bottom: var(--ftl-space-s); }
+.ftl-mb-m { margin-bottom: var(--ftl-space-m); }
+.ftl-mb-l { margin-bottom: var(--ftl-space-l); }
+.ftl-mb-xl { margin-bottom: var(--ftl-space-xl); }
+
+/* Muted text — an alias onto the same --ftl-muted token .ftl-field-hint
+   already uses, for body copy that isn't a field hint. */
+.ftl-text-muted { color: var(--ftl-muted); }
+
+/* Screen-reader-only content — the standard visually-hidden-but-announced
+   clip-rect pattern, not display:none (which screen readers also skip). */
+.ftl-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A themed scrollbar for any overflow container that wants one — opt-in
+   via class rather than applied globally, since not every app wants its
+   native scrollbar restyled. */
+.ftl-scroll {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ftl-border) transparent;
+}
+.ftl-scroll::-webkit-scrollbar { width: 0.6rem; height: 0.6rem; }
+.ftl-scroll::-webkit-scrollbar-track { background: transparent; }
+.ftl-scroll::-webkit-scrollbar-thumb {
+  background: var(--ftl-border);
+  border-radius: var(--ftl-radius);
+}
