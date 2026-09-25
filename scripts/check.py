@@ -90,6 +90,13 @@ BASE_COMPONENTS = [
     "ftl-toast", "ftl-context-menu", "ftl-dropzone", "ftl-card",
     "ftl-alert", "ftl-avatar", "ftl-popover", "ftl-pagination-item",
     "ftl-breadcrumb-item",
+    # v3.14.0 additions: same reasoning — a theme must reach these through
+    # --ftl-<comp>-* tokens at root scope, never background/color on the
+    # base selector, or variants (.is-active, attached states) lose.
+    "ftl-drawer", "ftl-input-group", "ftl-list",
+    # v3.14.0 additions, continued: same reasoning (carousel dots/arrows,
+    # scrollspy .is-active, nav-collapse open state).
+    "ftl-carousel", "ftl-scrollspy-link", "ftl-nav-collapse",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 

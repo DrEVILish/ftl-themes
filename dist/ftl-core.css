@@ -280,6 +280,34 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
 }
 .ftl-field-row > .ftl-field-hint { margin-block-start: 0; flex: none; }
 
+/* .ftl-input-group — an input with joined addons: a unit label, a static
+   prefix, or an attached button. Children share one border; only the
+   outer ends keep their radius. */
+.ftl-input-group { display: flex; align-items: stretch; width: 100%; }
+.ftl-input-group > * { position: relative; }
+.ftl-input-group > .ftl-input,
+.ftl-input-group > .ftl-select { flex: 1; min-width: 0; width: auto; }
+.ftl-input-group > :not(:first-child) {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  margin-inline-start: calc(-1 * var(--ftl-input-border-width, 1px));
+}
+.ftl-input-group > :not(:last-child) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.ftl-input-group > :focus-visible { z-index: 1; }
+.ftl-input-addon {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--ftl-input-padding, 0.5em 0.75em);
+  background: var(--ftl-input-addon-bg, var(--ftl-surface-2));
+  color: var(--ftl-input-addon-fg, var(--ftl-muted));
+  border: var(--ftl-input-border-width, 1px) solid var(--ftl-input-border, var(--ftl-border));
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
 
 /* Interactive-target sizing scales with --ftl-density (default 1, so every
    value below computes byte-identical to its old literal at the default) —
@@ -1299,6 +1327,40 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
   transform: translateX(-50%) scale(1);
 }
 
+/* .ftl-drawer — a slide-in side panel (settings sheet, filters, channel
+   list). Docks to the inline-end edge; `.is-start` docks to the
+   inline-start edge instead. Your app toggles `.is-open` (htmx swap,
+   `:target`, or a line of JS) — the same contract as `.ftl-popover`.
+   The closed state is `visibility: hidden` rather than `display: none`
+   so the slide transition can run; a `hidden` attribute still removes it
+   from the tree entirely for apps that want that. */
+.ftl-drawer {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--ftl-drawer-width, min(24rem, 92vw));
+  max-width: 100%;
+  overflow-y: auto;
+  background: var(--ftl-drawer-bg, var(--ftl-surface));
+  color: var(--ftl-on-surface);
+  border-inline-start: var(--ftl-drawer-border-width, 1px) solid var(--ftl-drawer-border, var(--ftl-border));
+  box-shadow: var(--ftl-drawer-shadow, var(--ftl-panel-shadow, 0 0 24px rgba(0, 0, 0, 0.35)));
+  z-index: 1040;
+  transform: translateX(105%);
+  visibility: hidden;
+  transition: transform 0.2s ease, visibility 0.2s;
+}
+html[dir="rtl"] .ftl-drawer { transform: translateX(-105%); }
+.ftl-drawer.is-start {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+  border-inline-start: 0;
+  border-inline-end: var(--ftl-drawer-border-width, 1px) solid var(--ftl-drawer-border, var(--ftl-border));
+  transform: translateX(-105%);
+}
+html[dir="rtl"] .ftl-drawer.is-start { transform: translateX(105%); }
+.ftl-drawer.is-open { transform: none; visibility: visible; }
+
 /* .ftl-popover — same surface as .ftl-dropdown, toggled by the app via a
    class (e.g. htmx swap or a small inline script) rather than :hover. */
 .ftl-popover {
@@ -1334,6 +1396,171 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
 }
 .ftl-accordion-item[open] > .ftl-accordion-trigger::after { transform: rotate(45deg); }
 .ftl-accordion-panel { padding: 0 0.25em 1em; color: var(--ftl-muted); }
+
+/* .ftl-list — a bordered stack of rows (queues, menus, activity): the
+   thing between a table (columns) and a menu (overlay). Items can be
+   plain rows or links/buttons; the active row carries a background and
+   a leading marker, the same two-language state tables use. */
+.ftl-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--ftl-list-bg, var(--ftl-surface));
+  border: var(--ftl-list-border-width, 1px) solid var(--ftl-list-border, var(--ftl-border));
+  border-radius: var(--ftl-list-radius, var(--ftl-radius));
+  overflow: hidden;
+}
+.ftl-list > :not(:first-child) { border-block-start: 1px solid var(--ftl-list-rule, var(--ftl-hairline)); }
+.ftl-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  width: 100%;
+  padding: var(--ftl-list-item-padding, 0.55em 0.9em);
+  border: 0;
+  background: transparent;
+  color: var(--ftl-list-item-fg, var(--ftl-text));
+  font: inherit;
+  text-align: start;
+}
+a.ftl-list-item,
+button.ftl-list-item { cursor: pointer; }
+a.ftl-list-item:hover,
+button.ftl-list-item:hover { background: var(--ftl-row-hover-bg, rgba(128, 128, 128, 0.12)); }
+.ftl-list-item.is-active {
+  background: var(--ftl-row-selected-bg, rgba(128, 128, 128, 0.25));
+  color: var(--ftl-row-selected-fg, inherit);
+  box-shadow: var(--ftl-list-active-marker, var(--ftl-row-active-marker, inset 0.25rem 0 0 var(--ftl-accent)));
+}
+
+/* .ftl-carousel — a no-JS slide strip: a scroll-snap track plus plain
+   anchor links, so swipe, keyboard, dots and prev/next all work with zero
+   script. Dots/arrows are just <a href="#slide-id">; the browser does the
+   rest. Smooth scrolling is gated on reduced-motion (both the OS setting
+   and html[data-motion]). */
+.ftl-carousel {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--ftl-carousel-radius, var(--ftl-radius));
+}
+.ftl-carousel::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .ftl-carousel { scroll-behavior: smooth; }
+}
+html[data-motion="reduced"] .ftl-carousel { scroll-behavior: auto; }
+.ftl-carousel-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.ftl-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin-block-start: 0.6rem;
+}
+.ftl-carousel-nav > a {
+  display: inline-block;
+  min-width: 0.7em;
+  height: 0.7em;
+  padding: 0 0.35em;
+  border-radius: 999px;
+  background: var(--ftl-carousel-dot, var(--ftl-muted));
+  color: transparent;
+  font-size: 0.7em;
+  line-height: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ftl-carousel-nav > a:hover { background: var(--ftl-carousel-dot-active, var(--ftl-accent)); }
+/* Prev/next keep the dot-row's shape language but read as buttons. */
+.ftl-carousel-nav > .ftl-carousel-prev,
+.ftl-carousel-nav > .ftl-carousel-next {
+  min-width: 1.6em;
+  height: 1.6em;
+  line-height: 1.6em;
+  padding: 0;
+  color: var(--ftl-carousel-arrow-fg, var(--ftl-text));
+  background: var(--ftl-carousel-arrow-bg, var(--ftl-surface-2));
+  text-align: center;
+  font-size: 0.85em;
+}
+
+/* .ftl-scrollspy — a sticky section nav beside long content (docs,
+   settings reference). The nav, the smooth scroll and the scroll offset
+   are core; the active-link mapping is one `:target` rule per section in
+   the app's own CSS (see CONTRACT.md), or an `.is-active` class if the
+   app runs a scroll observer. Core cannot map links to sections by
+   itself: CSS has no way to correlate an href with an id without
+   enumerating them, and enumerating them is app knowledge. */
+.ftl-scrollspy-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.9rem;
+  padding-block: 0.5rem;
+  background: var(--ftl-scrollspy-nav-bg, var(--ftl-surface));
+  border-block-end: 1px solid var(--ftl-scrollspy-nav-rule, var(--ftl-hairline));
+}
+.ftl-scrollspy-link {
+  padding: 0.25em 0.1em;
+  color: var(--ftl-scrollspy-link-fg, var(--ftl-muted));
+  font-size: 0.85em;
+  text-decoration: none;
+}
+.ftl-scrollspy-link:hover { color: var(--ftl-text); }
+.ftl-scrollspy-link.is-active {
+  color: var(--ftl-scrollspy-link-active-fg, var(--ftl-accent));
+  box-shadow: var(--ftl-scrollspy-link-active-marker, inset 0 -2px 0 var(--ftl-accent));
+}
+.ftl-scrollspy-body > * { scroll-margin-top: var(--ftl-scrollspy-offset, 1rem); }
+@media (prefers-reduced-motion: no-preference) {
+  .ftl-scrollspy-body { scroll-behavior: smooth; }
+}
+html[data-motion="reduced"] .ftl-scrollspy-body { scroll-behavior: auto; }
+
+/* .ftl-nav-collapse — a responsive nav toggler with no JS: a native
+   <details>/<summary> (keyboard- and screen-reader-handled by the
+   browser, like .ftl-accordion). Below 720px — the same breakpoint the
+   app shell collapses at — the summary renders as a hamburger and the
+   nav stacks only while open; above it the toggle hides and the nav is
+   always laid out, open or not. */
+.ftl-nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2em;
+  height: 2.2em;
+  border: var(--ftl-input-border-width, 1px) solid var(--ftl-border);
+  border-radius: var(--ftl-radius);
+  color: var(--ftl-text);
+  font-size: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+.ftl-nav-toggle::-webkit-details-marker { display: none; }
+.ftl-nav-toggle::before { content: "\2630"; }
+.ftl-nav-collapse[open] > .ftl-nav-toggle::before { content: "\d7"; }
+.ftl-nav-collapse:not([open]) > .ftl-nav { display: none; }
+.ftl-nav-collapse[open] > .ftl-nav {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  margin-block-start: 0.5rem;
+}
+@media (min-width: 721px) {
+  .ftl-nav-collapse > .ftl-nav-toggle { display: none; }
+  /* Outranks the UA's `details:not([open]) > :not(summary)` hide, so the
+     nav lays out on desktop whether or not the details is open. */
+  .ftl-nav-collapse:not([open]) > .ftl-nav { display: flex; }
+}
 
 /* .ftl-breadcrumbs */
 .ftl-breadcrumbs {
@@ -1478,6 +1705,7 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
 
 @media (prefers-reduced-motion: reduce) {
   .ftl-btn,
+  .ftl-drawer,
   .ftl-switch-track,
   .ftl-switch-thumb,
   .htmx-swapping,
@@ -1841,6 +2069,58 @@ pre code { padding: 0; background: none; border-radius: 0; }
 }
 .ftl-scroll::-webkit-scrollbar-thumb:hover { background: var(--ftl-scrollbar-thumb-hover, var(--ftl-accent)); }
 
+/* .ftl-container — a centered max-width column for sheets and readers. */
+.ftl-container {
+  width: min(100% - 2rem, var(--ftl-container-max, 64rem));
+  margin-inline: auto;
+}
+
+/* .ftl-divide-y — hairlines between stacked children (lists, menus). */
+.ftl-divide-y > * + * { border-block-start: 1px solid var(--ftl-hairline); }
+
+/* .ftl-ratio — an aspect-ratio box for video/embeds; children fill it.
+   Set `--ftl-ratio` directly or use a modifier (default 16/9). */
+.ftl-ratio {
+  position: relative;
+  aspect-ratio: var(--ftl-ratio, 16 / 9);
+  overflow: hidden;
+}
+.ftl-ratio > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ftl-ratio-1x1 { --ftl-ratio: 1 / 1; }
+.ftl-ratio-4x3 { --ftl-ratio: 4 / 3; }
+.ftl-ratio-16x9 { --ftl-ratio: 16 / 9; }
+.ftl-ratio-21x9 { --ftl-ratio: 21 / 9; }
+
+/* Single- and multi-line truncation for cells, titles and log lines. */
+.ftl-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ftl-clamp-2,
+.ftl-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ftl-clamp-2 { -webkit-line-clamp: 2; }
+.ftl-clamp-3 { -webkit-line-clamp: 3; }
+
+/* .ftl-stretched-link — makes a whole card clickable through one of its
+   links. The card itself needs `position: relative` (or any positioned
+   ancestor above the link) for the stretched area to anchor to. */
+.ftl-stretched-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
 /* --- Print baseline ------------------------------------------------------
  *
  * No theme opts into this — it's the universal floor every theme gets for
@@ -1913,8 +2193,11 @@ pre code { padding: 0; background: none; border-radius: 0; }
   }
 
   /* The app-rail is decorative-only chrome (see ftl-layout.css) with no
-     readable content of its own — it never belongs on a printed page. */
-  .ftl-app-rail { display: none !important; }
+     readable content of its own — it never belongs on a printed page.
+     Neither does a drawer: its content duplicates a settings surface the
+     reader can't interact with on paper. */
+  .ftl-app-rail,
+  .ftl-drawer { display: none !important; }
 
   /* Interactive-only controls inside the app-bar/app-status make no sense
      on paper (nothing to click), but the bar's brand/title text and the

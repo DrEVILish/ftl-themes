@@ -5,6 +5,28 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **New components (v3.14.0): `.ftl-drawer`, `.ftl-input-group`,
+  `.ftl-list`** — slide-in side panel (app-toggled `.is-open`,
+  `.is-start` edge, print-hidden, reduced-motion aware), joined
+  input addons (unit/prefix/attached button sharing one border), and a
+  bordered row stack with `.is-active` background + marker. All
+  token-driven (`--ftl-drawer-*`, `--ftl-input-addon-*`,
+  `--ftl-list-*`, reusing `--ftl-row-*` state tokens); all three join
+  `scripts/check.py`'s base-component lint.
+- **New utilities (v3.14.0): `.ftl-ratio`** (`--ftl-ratio`, default
+  16/9, plus `-1x1`/`-4x3`/`-16x9`/`-21x9`), **`.ftl-text-truncate`**,
+  **`.ftl-clamp-2`/`-3`**, **`.ftl-stretched-link`**,
+  **`.ftl-divide-y`**, **`.ftl-container`**
+  (`--ftl-container-max`, default 64rem). See CONTRACT.md
+  "v3.14.0 additions" and `example.html` for live demos.
+- **No-JS carousel, scrollspy, nav toggler (v3.14.0): `.ftl-carousel`**
+  (scroll-snap track + anchor dots/arrows, smooth scroll
+  reduced-motion gated), **`.ftl-scrollspy`** (sticky nav, smooth
+  scroll, `--ftl-scrollspy-offset`; active-link mapping is one
+  app-side `:target` rule per section — see CONTRACT.md — or
+  `.is-active` from a scroll observer), **`.ftl-nav-collapse`**
+  (native `<details>` toggler, hamburger below 720px, always laid out
+  above). All three join the base-component lint.
 - **`.ftl-meter` band fix:** `--ftl-meter-span` now defaults to `100%`
   (the element's own track) instead of `100vw`/`100vh`, so the default
   warn/peak bands land on-track. Apps that set the token explicitly are

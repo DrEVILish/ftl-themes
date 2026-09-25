@@ -944,6 +944,137 @@ edge). Works for `.ftl-popover`, `.ftl-context-menu` and `.ftl-dropdown`.
   const series = [1, 2, 3, 4, 5, 6].map(n => css.getPropertyValue(`--ftl-chart-series-${n}`).trim());
   ```
 
+### v3.14.0 additions
+
+```html
+<!-- Drawer (slide-in side panel — settings, filters, channel list) -->
+<button id="settings-open">Settings</button>
+<aside class="ftl-drawer" id="settings-drawer" aria-label="Settings">
+  <div class="ftl-panel-header">Settings</div>
+  …
+</aside>
+<script>settings-open.onclick = () => settings-drawer.classList.toggle('is-open')</script>
+
+<!-- Input group (joined addons: unit, prefix, attached button) -->
+<div class="ftl-input-group">
+  <span class="ftl-input-addon">48</span>
+  <input class="ftl-input" type="text" aria-label="Sample rate">
+  <span class="ftl-input-addon">kHz</span>
+</div>
+
+<!-- List (bordered row stack — queues, menus, activity) -->
+<ul class="ftl-list">
+  <li><a class="ftl-list-item is-active" href="#">Take 04 — selected</a></li>
+  <li><button class="ftl-list-item">Take 05</button></li>
+</ul>
+
+<!-- Ratio box, truncation, stretched card link, divided stack, container -->
+<div class="ftl-ratio ftl-ratio-16x9"><video src="…"></video></div>
+<p class="ftl-text-truncate">A single-line title that never wraps.</p>
+<p class="ftl-clamp-2">A summary that never runs past two lines.</p>
+<div class="ftl-card" style="position:relative">
+  <a class="ftl-stretched-link" href="#">Open session</a>
+</div>
+<div class="ftl-divide-y"><span>Row one</span><span>Row two</span></div>
+<div class="ftl-container">Centered, max-width content.</div>
+```
+
+- **`.ftl-drawer`** — fixed side panel, inline-end edge by default,
+  `.is-start` for the inline-start edge. Your app toggles `.is-open`
+  (htmx swap, `:target`, or a line of JS); a `hidden` attribute removes
+  it from the tree entirely. Themed via `--ftl-drawer-bg/-border/
+  -width/-shadow`; hidden from print. Respects reduced motion.
+- **`.ftl-input-group`** — flex-joined `.ftl-input`/`.ftl-select`/
+  `.ftl-btn` with `.ftl-input-addon` labels; inner edges lose their
+  radius and share one border, the focused child rises above it.
+- **`.ftl-list` / `.ftl-list-item`** — items may be plain rows or
+  links/buttons; `.is-active` carries a background *and* a leading
+  marker (same two-language state as table rows), hover reuses
+  `--ftl-row-hover-bg`.
+- **Utilities** — `.ftl-ratio` (`--ftl-ratio`, default 16/9, plus
+  `-1x1`/`-4x3`/`-16x9`/`-21x9` modifiers; children fill and cover),
+  `.ftl-text-truncate`, `.ftl-clamp-2`/`-3`, `.ftl-stretched-link`
+  (the card needs `position: relative`), `.ftl-divide-y`,
+  `.ftl-container` (`--ftl-container-max`, default 64rem).
+
+All three of the usual JS-driven patterns below are implemented with
+native primitives only — no script, no checkbox hacks:
+
+```html
+<!-- Carousel: a scroll-snap track; dots/arrows are plain anchors -->
+<div class="ftl-carousel">
+  <section class="ftl-carousel-slide" id="hero-1">…</section>
+  <section class="ftl-carousel-slide" id="hero-2">…</section>
+  <section class="ftl-carousel-slide" id="hero-3">…</section>
+</div>
+<nav class="ftl-carousel-nav" aria-label="Slides">
+  <a class="ftl-carousel-prev" href="#hero-3" aria-label="Previous">‹</a>
+  <a href="#hero-1" aria-label="Slide 1">1</a>
+  <a href="#hero-2" aria-label="Slide 2">2</a>
+  <a href="#hero-3" aria-label="Slide 3">3</a>
+  <a class="ftl-carousel-next" href="#hero-2" aria-label="Next">›</a>
+</nav>
+```
+
+- **`.ftl-carousel`** — `overflow-x: auto` + `scroll-snap-type:
+  x mandatory`, so swipe, keyboard, dots and prev/next all work with
+  zero script (smooth scroll gated on reduced-motion, both OS and
+  `data-motion`). Scrollbars hidden, as with any carousel; the dots
+  and arrows are the controls. Tokens: `--ftl-carousel-radius`,
+  `--ftl-carousel-dot/-dot-active`, `--ftl-carousel-arrow-bg/-fg`.
+
+```html
+<!-- Scrollspy: sticky nav + smooth scroll are core; the active-link
+     mapping is one :target rule per section in YOUR css (or .is-active
+     from a scroll observer) -->
+<div class="ftl-scrollspy">
+  <nav class="ftl-scrollspy-nav" aria-label="Sections">
+    <a class="ftl-scrollspy-link" href="#sp-install">Install</a>
+    <a class="ftl-scrollspy-link" href="#sp-config">Config</a>
+  </nav>
+  <div class="ftl-scrollspy-body">
+    <section id="sp-install" tabindex="-1">…</section>
+    <section id="sp-config" tabindex="-1">…</section>
+  </div>
+</div>
+```
+
+```css
+/* your stylesheet: the no-JS active-link mapping */
+.docs:has(#sp-install:target) a[href="#sp-install"],
+.docs:has(#sp-config:target) a[href="#sp-config"] {
+  color: var(--ftl-scrollspy-link-active-fg, var(--ftl-accent));
+  box-shadow: var(--ftl-scrollspy-link-active-marker, inset 0 -2px 0 var(--ftl-accent));
+}
+```
+
+- **`.ftl-scrollspy`** — why the mapping lives app-side: CSS cannot
+  correlate an href with an id without enumerating them, and the ids
+  are app knowledge. Core ships everything around it (sticky nav,
+  `.is-active` styling identical to the recipe above,
+  `scroll-margin-top` via `--ftl-scrollspy-offset`, smooth scroll
+  gated on reduced-motion). Position-driven auto-highlight while
+  free-scrolling is the one thing that inherently needs a scroll
+  observer — the `:target` recipe covers click/keyboard navigation
+  with no JS at all.
+
+```html
+<!-- Responsive nav toggler: native <details>, no JS, browser-handled a11y -->
+<details class="ftl-nav-collapse">
+  <summary class="ftl-nav-toggle" aria-label="Menu"></summary>
+  <nav class="ftl-nav">
+    <span class="ftl-nav-brand">App</span>
+    <a class="ftl-nav-item" href="#">Home</a>
+  </nav>
+</details>
+```
+
+- **`.ftl-nav-collapse`** — below 720px (the same breakpoint the app
+  shell collapses at) the summary renders as a ☰/× toggle and the nav
+  stacks only while open; above it the toggle hides and the nav always
+  lays out. No checkbox hack: `<details>` disclosure is
+  keyboard-operable and announced correctly with zero ARIA upkeep.
+
 ## Icon system
 
 Icons are one shared SVG sprite, `assets/icons/icons.svg`, used everywhere
