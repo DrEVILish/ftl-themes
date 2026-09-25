@@ -325,6 +325,21 @@ that don't collapse it to nothing. Keep it `aria-hidden`.
 Adopting the shell is optional — an app that keeps its own layout still
 gets every component and token, it just won't re-lay-out per theme.
 
+### Do layouts change per theme? (Yes — that's the point, and it's cheap)
+
+Switching from `windows95` to `lcars` moves the furniture, not just the
+paint: rail on/off, bar height and elbow radius, content insets, footer
+treatment. It stays cheap for the front-end developer because the app
+writes the five-class shell markup **once** and never touches it again —
+every arrangement is a `--ftl-app-*` token value the theme sets, and
+`shellAware` in `dist/themes.json` tells the picker which themes
+re-arrange vs recolor. There is no per-theme template fork, no
+`if theme == x` in app code, and L0 (no shell markup) still renders
+correctly by the degrade rule above. The practical limit: a theme can
+only arrange what tokens expose — a genuinely new arrangement (a new
+region, a new breakpoint behavior) needs a new core-owned token, not
+app-side branching. Propose it here; don't fork it there.
+
 **Nav text in the bar.** `.ftl-nav-brand` and `.ftl-nav-item` read
 `--ftl-nav-brand-fg` / `--ftl-nav-item-fg`, which a theme tunes for its
 content area. `--ftl-app-bar-fg` does **not** reach them. A theme that
@@ -1074,6 +1089,30 @@ native primitives only — no script, no checkbox hacks:
   stacks only while open; above it the toggle hides and the nav always
   lays out. No checkbox hack: `<details>` disclosure is
   keyboard-operable and announced correctly with zero ARIA upkeep.
+
+```html
+<!-- Taskbar (OS task strip — Start, window tasks, tray well) -->
+<footer class="ftl-app-status ftl-taskbar">
+  <button class="ftl-taskbar-start">Start</button>
+  <button class="ftl-taskbar-task is-active"><span>Untitled — Notepad</span></button>
+  <button class="ftl-taskbar-task"><span>Inbox</span></button>
+  <span class="ftl-taskbar-tray">1:27 AM</span>
+</footer>
+```
+
+- **`.ftl-taskbar` / `-start` / `-task` / `-tray`** — windows95 paints
+  raised bevels, a pressed + dotted active task and a sunken tray;
+  winxp-luna paints the green Start pill and lighter-blue tasks;
+  win7-aero paints the glowing orb and glassy tasks with an accent
+  light-bar on the running one. Every other theme leaves the plain
+  fallback (the same strip, unpainted). Tokens: `--ftl-taskbar-bg`,
+  `-border-width`, `-start-bg/-fg/-border/-radius/-shadow/
+  -text-shadow/-style/-size/-padding`, `-task-bg/-fg/-border/
+  -radius/-shadow/-max` plus `-bg-active/-border-active/
+  -shadow-active/-outline-active`, `-tray-bg/-fg/-border/-radius`.
+  A 4-sided bevel fits in one token (`border-color` takes 1–4
+  values). Drop your own mark inside `-start` (logo svg, orb glyph) —
+  core draws no brand artwork.
 
 ## Icon system
 

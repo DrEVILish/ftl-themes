@@ -1246,6 +1246,13 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
 .ftl-icon {
   width: var(--ftl-icon-size, 1.2em);
   height: var(--ftl-icon-size, 1.2em);
+  /* Floor against the reset's `max-width: 100%`: inside a shrink-to-fit
+     button the content width depends on the svg while max-width resolves
+     against that same width (a circular percentage), and engines may
+     collapse the icon to 0 wide. min-width outranks max-width, so this
+     pins the floor at the icon's own declared size — a no-op everywhere
+     the width already resolves. */
+  min-width: var(--ftl-icon-size, 1.2em);
   fill: var(--ftl-icon-fill, none);
   stroke: currentColor;
   stroke-width: var(--ftl-icon-stroke-width, 2);
@@ -1254,7 +1261,7 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
   vertical-align: -0.2em;
   flex-shrink: 0;
 }
-.ftl-btn-icon .ftl-icon { width: 1.1em; height: 1.1em; vertical-align: middle; }
+.ftl-btn-icon .ftl-icon { width: 1.1em; height: 1.1em; min-width: 1.1em; vertical-align: middle; }
 
 /* .ftl-card — a lighter-weight sibling of .ftl-panel. Defaults to the same
    token values so a theme with no opinion renders identically; a theme
@@ -1556,6 +1563,81 @@ html[data-motion="reduced"] .ftl-scrollspy-body { scroll-behavior: auto; }
   /* Outranks the UA's `details:not([open]) > :not(summary)` hide, so the
      nav lays out on desktop whether or not the details is open. */
   .ftl-nav-collapse:not([open]) > .ftl-nav { display: flex; }
+}
+
+/* .ftl-taskbar — an OS-style task strip: a Start button, window task
+   buttons, and a tray well. Pair it with .ftl-app-status (or use it
+   standalone); desktop-OS themes paint it in their taskbar language
+   through --ftl-taskbar-* tokens, every other theme leaves the plain
+   fallback. Apps can drop their own mark inside .ftl-taskbar-start
+   (logo svg, orb glyph) — core draws no brand artwork. */
+.ftl-taskbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--ftl-taskbar-bg, transparent);
+}
+.ftl-taskbar-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  flex: none;
+  width: var(--ftl-taskbar-start-size, auto);
+  height: var(--ftl-taskbar-start-size, auto);
+  padding: var(--ftl-taskbar-start-padding, 0.3em 0.9em);
+  border: var(--ftl-taskbar-border-width, 1px) solid var(--ftl-taskbar-start-border, transparent);
+  border-radius: var(--ftl-taskbar-start-radius, var(--ftl-radius));
+  background: var(--ftl-taskbar-start-bg, transparent);
+  color: var(--ftl-taskbar-start-fg, inherit);
+  font-weight: 700;
+  font-style: var(--ftl-taskbar-start-style, normal);
+  text-shadow: var(--ftl-taskbar-start-text-shadow, none);
+  box-shadow: var(--ftl-taskbar-start-shadow, none);
+  cursor: pointer;
+}
+.ftl-taskbar-start:active { transform: translateY(1px); }
+.ftl-taskbar-task {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+  max-width: var(--ftl-taskbar-task-max, 14rem);
+  padding: 0.3em 0.8em;
+  border: var(--ftl-taskbar-border-width, 1px) solid var(--ftl-taskbar-task-border, transparent);
+  border-radius: var(--ftl-taskbar-task-radius, var(--ftl-radius));
+  background: var(--ftl-taskbar-task-bg, transparent);
+  color: var(--ftl-taskbar-task-fg, inherit);
+  box-shadow: var(--ftl-taskbar-task-shadow, none);
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ftl-taskbar-task > :not(svg):not(.ftl-icon) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ftl-taskbar-task.is-active {
+  background: var(--ftl-taskbar-task-bg-active, var(--ftl-taskbar-task-bg, transparent));
+  border-color: var(--ftl-taskbar-task-border-active, var(--ftl-taskbar-task-border, transparent));
+  box-shadow: var(--ftl-taskbar-task-shadow-active, var(--ftl-taskbar-task-shadow, none));
+  outline: var(--ftl-taskbar-task-outline-active, none);
+  outline-offset: -4px;
+}
+.ftl-taskbar-tray {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: none;
+  margin-inline-start: auto;
+  padding: 0.3em 0.8em;
+  border: var(--ftl-taskbar-border-width, 1px) solid var(--ftl-taskbar-tray-border, transparent);
+  border-radius: var(--ftl-taskbar-tray-radius, var(--ftl-radius));
+  background: var(--ftl-taskbar-tray-bg, transparent);
+  color: var(--ftl-taskbar-tray-fg, inherit);
+  font-variant-numeric: tabular-nums;
 }
 
 /* .ftl-breadcrumbs */
@@ -2378,10 +2460,11 @@ html[data-theme="winxp-luna"] {
 
   /* Glossy pill buttons: a light highlight band over the fill, the same
      device Luna used everywhere from the Start button to the address bar
-     "Go" arrow. */
+     "Go" arrow. Radius 3px, not 4 — Luna's dialog buttons are barely
+     rounded next to the 8px window chrome. */
   --ftl-btn-bg: linear-gradient(180deg, #fefefe, #ece9d8);
   --ftl-btn-fg: var(--ftl-text);
-  --ftl-btn-radius: 4px;
+  --ftl-btn-radius: 3px;
   --ftl-btn-shadow: inset 0 1px 0 #ffffff;
   --ftl-btn-shadow-hover: 0 0 0 2px rgba(0, 84, 227, 0.35);
   --ftl-btn-primary-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -2414,6 +2497,23 @@ html[data-theme="winxp-luna"] {
   --ftl-overlay-bg: rgba(0, 0, 0, 0.35);
   --ftl-indicator-fg: var(--ftl-accent);
   --ftl-indicator-track: var(--ftl-border);
+  /* Taskbar: the green Start pill, lighter-blue task buttons, white tray
+     text straight off the blue status strip. */
+  --ftl-taskbar-start-bg: linear-gradient(180deg, #3a861d, var(--ftl-success) 60%, #1f5c0a);
+  --ftl-taskbar-start-fg: #ffffff;
+  --ftl-taskbar-start-border: #1f5c0a;
+  --ftl-taskbar-start-radius: 0 12px 12px 0;
+  --ftl-taskbar-start-style: italic;
+  --ftl-taskbar-start-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 8px rgba(255, 255, 255, 0.35);
+  --ftl-taskbar-start-text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  --ftl-taskbar-task-bg: linear-gradient(180deg, #4a8ff7, #2b68f2);
+  --ftl-taskbar-task-fg: #ffffff;
+  --ftl-taskbar-task-border: rgba(255, 255, 255, 0.45);
+  --ftl-taskbar-task-radius: 4px;
+  --ftl-taskbar-task-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  --ftl-taskbar-task-bg-active: linear-gradient(180deg, #2f6fe0, #2456d6);
+  --ftl-taskbar-task-shadow-active: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 0 8px rgba(255, 255, 255, 0.3);
+  --ftl-taskbar-tray-fg: #ffffff;
 }
 
 /* Bliss: XP's default desktop is inseparable from this wallpaper. It only

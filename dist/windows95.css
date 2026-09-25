@@ -1246,6 +1246,13 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
 .ftl-icon {
   width: var(--ftl-icon-size, 1.2em);
   height: var(--ftl-icon-size, 1.2em);
+  /* Floor against the reset's `max-width: 100%`: inside a shrink-to-fit
+     button the content width depends on the svg while max-width resolves
+     against that same width (a circular percentage), and engines may
+     collapse the icon to 0 wide. min-width outranks max-width, so this
+     pins the floor at the icon's own declared size — a no-op everywhere
+     the width already resolves. */
+  min-width: var(--ftl-icon-size, 1.2em);
   fill: var(--ftl-icon-fill, none);
   stroke: currentColor;
   stroke-width: var(--ftl-icon-stroke-width, 2);
@@ -1254,7 +1261,7 @@ meter.ftl-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--f
   vertical-align: -0.2em;
   flex-shrink: 0;
 }
-.ftl-btn-icon .ftl-icon { width: 1.1em; height: 1.1em; vertical-align: middle; }
+.ftl-btn-icon .ftl-icon { width: 1.1em; height: 1.1em; min-width: 1.1em; vertical-align: middle; }
 
 /* .ftl-card — a lighter-weight sibling of .ftl-panel. Defaults to the same
    token values so a theme with no opinion renders identically; a theme
@@ -1556,6 +1563,81 @@ html[data-motion="reduced"] .ftl-scrollspy-body { scroll-behavior: auto; }
   /* Outranks the UA's `details:not([open]) > :not(summary)` hide, so the
      nav lays out on desktop whether or not the details is open. */
   .ftl-nav-collapse:not([open]) > .ftl-nav { display: flex; }
+}
+
+/* .ftl-taskbar — an OS-style task strip: a Start button, window task
+   buttons, and a tray well. Pair it with .ftl-app-status (or use it
+   standalone); desktop-OS themes paint it in their taskbar language
+   through --ftl-taskbar-* tokens, every other theme leaves the plain
+   fallback. Apps can drop their own mark inside .ftl-taskbar-start
+   (logo svg, orb glyph) — core draws no brand artwork. */
+.ftl-taskbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--ftl-taskbar-bg, transparent);
+}
+.ftl-taskbar-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  flex: none;
+  width: var(--ftl-taskbar-start-size, auto);
+  height: var(--ftl-taskbar-start-size, auto);
+  padding: var(--ftl-taskbar-start-padding, 0.3em 0.9em);
+  border: var(--ftl-taskbar-border-width, 1px) solid var(--ftl-taskbar-start-border, transparent);
+  border-radius: var(--ftl-taskbar-start-radius, var(--ftl-radius));
+  background: var(--ftl-taskbar-start-bg, transparent);
+  color: var(--ftl-taskbar-start-fg, inherit);
+  font-weight: 700;
+  font-style: var(--ftl-taskbar-start-style, normal);
+  text-shadow: var(--ftl-taskbar-start-text-shadow, none);
+  box-shadow: var(--ftl-taskbar-start-shadow, none);
+  cursor: pointer;
+}
+.ftl-taskbar-start:active { transform: translateY(1px); }
+.ftl-taskbar-task {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+  max-width: var(--ftl-taskbar-task-max, 14rem);
+  padding: 0.3em 0.8em;
+  border: var(--ftl-taskbar-border-width, 1px) solid var(--ftl-taskbar-task-border, transparent);
+  border-radius: var(--ftl-taskbar-task-radius, var(--ftl-radius));
+  background: var(--ftl-taskbar-task-bg, transparent);
+  color: var(--ftl-taskbar-task-fg, inherit);
+  box-shadow: var(--ftl-taskbar-task-shadow, none);
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ftl-taskbar-task > :not(svg):not(.ftl-icon) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ftl-taskbar-task.is-active {
+  background: var(--ftl-taskbar-task-bg-active, var(--ftl-taskbar-task-bg, transparent));
+  border-color: var(--ftl-taskbar-task-border-active, var(--ftl-taskbar-task-border, transparent));
+  box-shadow: var(--ftl-taskbar-task-shadow-active, var(--ftl-taskbar-task-shadow, none));
+  outline: var(--ftl-taskbar-task-outline-active, none);
+  outline-offset: -4px;
+}
+.ftl-taskbar-tray {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: none;
+  margin-inline-start: auto;
+  padding: 0.3em 0.8em;
+  border: var(--ftl-taskbar-border-width, 1px) solid var(--ftl-taskbar-tray-border, transparent);
+  border-radius: var(--ftl-taskbar-tray-radius, var(--ftl-radius));
+  background: var(--ftl-taskbar-tray-bg, transparent);
+  color: var(--ftl-taskbar-tray-fg, inherit);
+  font-variant-numeric: tabular-nums;
 }
 
 /* .ftl-breadcrumbs */
@@ -2454,6 +2536,31 @@ html[data-theme="windows95"] {
   --ftl-popover-bg: var(--ftl-surface);
   --ftl-popover-radius: 0;
   --ftl-skeleton-bg: #dfdfdf;
+  /* Tighter dialog-scale buttons: real 95 buttons are compact (~23px),
+     not the roomy core default. */
+  --ftl-btn-padding: 0.35em 1em;
+  /* Taskbar (see the strip below): raised bevels everywhere, pressed
+     bevel + dotted rect on the active task, sunken tray. A single token
+     carries the whole 4-sided bevel — border-color takes 1-4 values. */
+  --ftl-taskbar-border-width: 2px;
+  --ftl-taskbar-start-bg: var(--ftl-surface);
+  --ftl-taskbar-start-fg: var(--ftl-text);
+  --ftl-taskbar-start-border: #ffffff #000000 #000000 #ffffff;
+  --ftl-taskbar-start-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  --ftl-taskbar-start-radius: 0;
+  --ftl-taskbar-task-bg: var(--ftl-surface);
+  --ftl-taskbar-task-fg: var(--ftl-text);
+  --ftl-taskbar-task-border: #ffffff #000000 #000000 #ffffff;
+  --ftl-taskbar-task-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  --ftl-taskbar-task-radius: 0;
+  --ftl-taskbar-task-bg-active: var(--ftl-surface);
+  --ftl-taskbar-task-border-active: #000000 #ffffff #ffffff #000000;
+  --ftl-taskbar-task-shadow-active: inset 1px 1px 0 #000000, inset -1px -1px 0 #dfdfdf;
+  --ftl-taskbar-task-outline-active: 1px dotted #000000;
+  --ftl-taskbar-tray-bg: var(--ftl-surface);
+  --ftl-taskbar-tray-fg: var(--ftl-text);
+  --ftl-taskbar-tray-border: #808080 #ffffff #ffffff #808080;
+  --ftl-taskbar-tray-radius: 0;
 }
 html[data-theme="windows95"] .ftl-toast,
 html[data-theme="windows95"] .ftl-alert,
@@ -2475,6 +2582,14 @@ html[data-theme="windows95"] .ftl-btn:active {
   transform: none;
 }
 html[data-theme="windows95"] .ftl-btn-primary { font-weight: 700; }
+/* The default push button gets 95's extra 1px black frame — the tell that
+   separates "the dialog's default" from an ordinary button. */
+html[data-theme="windows95"] .ftl-btn-primary {
+  box-shadow: 0 0 0 1px #000000, inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+}
+html[data-theme="windows95"] .ftl-btn-primary:active {
+  box-shadow: 0 0 0 1px #000000, inset 1px 1px 0 #000000, inset -1px -1px 0 #dfdfdf;
+}
 
 html[data-theme="windows95"] .ftl-input,
 html[data-theme="windows95"] .ftl-select,

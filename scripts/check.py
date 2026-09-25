@@ -95,8 +95,9 @@ BASE_COMPONENTS = [
     # base selector, or variants (.is-active, attached states) lose.
     "ftl-drawer", "ftl-input-group", "ftl-list",
     # v3.14.0 additions, continued: same reasoning (carousel dots/arrows,
-    # scrollspy .is-active, nav-collapse open state).
+    # scrollspy .is-active, nav-collapse open state, taskbar start/task).
     "ftl-carousel", "ftl-scrollspy-link", "ftl-nav-collapse",
+    "ftl-taskbar", "ftl-taskbar-start", "ftl-taskbar-task", "ftl-taskbar-tray",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 

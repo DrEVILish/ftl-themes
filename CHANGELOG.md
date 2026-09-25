@@ -5,6 +5,27 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Taskbars for the desktop-OS themes (v3.14.0): new `.ftl-taskbar` /
+  `-start` / `-task` / `-tray` family** — pair with `.ftl-app-status`
+  for an OS task strip. windows95 paints raised bevels, a pressed +
+  dotted active task and a sunken tray; winxp-luna paints the green
+  Start pill and lighter-blue tasks (all white-text pairs ≥4.5:1);
+  win7-aero paints the glowing orb and glassy tasks with an accent
+  light-bar on the running one. All other themes keep the plain
+  fallback. Token-driven (`--ftl-taskbar-*`, 4-sided bevels fit one
+  token); all four classes join the base-component lint.
+- **Tighter buttons on the same three themes:** windows95 gets compact
+  dialog-scale padding plus the authentic extra black frame on the
+  default (primary) button, pressed state included; winxp-luna radius
+  4px → 3px; win7-aero command buttons break out of the 6px window
+  radius to their own 3px.
+
+- **Icon-only buttons no longer collapse:** `.ftl-icon` carries
+  `min-width: var(--ftl-icon-size, 1.2em)` so the reset's
+  `max-width: 100%` can't resolve circularly to 0 inside shrink-to-fit
+  buttons (`.ftl-btn-icon .ftl-icon` floors at its own 1.1em). No-op
+  everywhere the width already resolves.
+
 - **New components (v3.14.0): `.ftl-drawer`, `.ftl-input-group`,
   `.ftl-list`** — slide-in side panel (app-toggled `.is-open`,
   `.is-start` edge, print-hidden, reduced-motion aware), joined
