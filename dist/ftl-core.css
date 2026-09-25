@@ -362,12 +362,12 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   transition: transform 0.15s ease, background 0.15s ease;
 }
 .ftl-switch input:checked ~ .ftl-switch-track {
-  border-color: var(--ftl-accent);
+  border-color: var(--ftl-switch-border-on, var(--ftl-accent));
   background: var(--ftl-switch-bg-on, var(--ftl-surface-2));
 }
 .ftl-switch input:checked ~ .ftl-switch-track .ftl-switch-thumb {
   transform: translateX(calc(1.2em * var(--ftl-density)));
-  background: var(--ftl-accent);
+  background: var(--ftl-switch-thumb-bg-on, var(--ftl-accent));
 }
 .ftl-switch input:focus-visible ~ .ftl-switch-track {
   outline: 2px solid var(--ftl-focus);
@@ -580,7 +580,7 @@ dialog.ftl-modal::backdrop {
     var(--ftl-meter-mid, var(--ftl-warning)) var(--ftl-meter-peak-at, 90%),
     var(--ftl-meter-high, var(--ftl-danger)) var(--ftl-meter-peak-at, 90%)
   ));
-  background-size: var(--ftl-meter-span, 100vw) 100%;
+  background-size: var(--ftl-meter-span, 100%) 100%;
   background-repeat: no-repeat;
   transition: width 0.06s linear;
 }
@@ -611,7 +611,7 @@ dialog.ftl-modal::backdrop {
     var(--ftl-meter-mid, var(--ftl-warning)) var(--ftl-meter-peak-at, 90%),
     var(--ftl-meter-high, var(--ftl-danger)) var(--ftl-meter-peak-at, 90%)
   ));
-  background-size: 100% var(--ftl-meter-span, 100vh);
+  background-size: 100% var(--ftl-meter-span, 100%);
   background-position: bottom;
   transition: height 0.06s linear;
 }
@@ -943,7 +943,7 @@ dialog.ftl-modal::backdrop {
 .ftl-tabs[aria-orientation="vertical"] > .ftl-tab {
   display: block;
   width: 100%;
-  text-align: left;
+  text-align: start;
   border-bottom-color: transparent;
   border-radius: var(--ftl-tab-radius, var(--ftl-radius));
 }
@@ -1823,18 +1823,23 @@ pre code { padding: 0; background: none; border-radius: 0; }
 
 /* A themed scrollbar for any overflow container that wants one — opt-in
    via class rather than applied globally, since not every app wants its
-   native scrollbar restyled. */
+   native scrollbar restyled. Reads the same browser-chrome tokens as the
+   page scrollbar above, so one tuning point drives both; the size/radius
+   fallbacks stay smaller than the page defaults, which is what an inner
+   box wants. (Inner boxes can't inherit the page's ::-webkit-scrollbar
+   rules — those pseudo-elements never inherit — so they opt in here.) */
 .ftl-scroll {
   overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ftl-border) transparent;
+  scrollbar-width: var(--ftl-scrollbar-width, thin);
+  scrollbar-color: var(--ftl-scrollbar-thumb, var(--ftl-border)) var(--ftl-scrollbar-track, transparent);
 }
-.ftl-scroll::-webkit-scrollbar { width: 0.6rem; height: 0.6rem; }
-.ftl-scroll::-webkit-scrollbar-track { background: transparent; }
+.ftl-scroll::-webkit-scrollbar { width: var(--ftl-scrollbar-size, 0.6rem); height: var(--ftl-scrollbar-size, 0.6rem); }
+.ftl-scroll::-webkit-scrollbar-track { background: var(--ftl-scrollbar-track, transparent); }
 .ftl-scroll::-webkit-scrollbar-thumb {
-  background: var(--ftl-border);
-  border-radius: var(--ftl-radius);
+  background: var(--ftl-scrollbar-thumb, var(--ftl-border));
+  border-radius: var(--ftl-scrollbar-radius, var(--ftl-radius));
 }
+.ftl-scroll::-webkit-scrollbar-thumb:hover { background: var(--ftl-scrollbar-thumb-hover, var(--ftl-accent)); }
 
 /* --- Print baseline ------------------------------------------------------
  *

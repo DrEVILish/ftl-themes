@@ -5,7 +5,27 @@ changes are called out explicitly here.
 
 ## Unreleased
 
-Nothing yet — see `v3.13.0` below for the last cut.
+- **`.ftl-meter` band fix:** `--ftl-meter-span` now defaults to `100%`
+  (the element's own track) instead of `100vw`/`100vh`, so the default
+  warn/peak bands land on-track. Apps that set the token explicitly are
+  unaffected.
+- **`.ftl-scroll` reads the browser-chrome tokens** (`--ftl-scrollbar-*`),
+  so one tuning point drives both the page scrollbar and opted-in inner
+  boxes; inner scroll containers are documented as opt-in via
+  `.ftl-scroll` in CONTRACT.md.
+- **New switch tokens** `--ftl-switch-border-on` / `--ftl-switch-thumb-bg-on`
+  (both fall back to `--ftl-accent`); `nokia-3310` uses them for a
+  hard-invert on-state instead of an accent-vs-muted thumb change.
+- **`vaporwave` `--ftl-border` lightened** to `#8a5fc0` (3.6:1 on the
+  panel) so secondary-button/input outlines are perceptible.
+- **`windows95` tables get an opaque canvas** so badge fills can't bleed
+  into whatever sits behind the rows.
+- **3 new generic icons** (`icon-qr-code`, `icon-hourglass`,
+  `icon-timer`, same Tabler source/version as the bulk batch);
+  CONTRACT.md no longer hardcodes the 55-id list — grep the sprite.
+- **`youtube` added as a `pending` logo** with its brand-resources URL,
+  plus a "Self-hosting a third-party mark" path in
+  `assets/logos/README.md`.
 
 ## v3.13.0 — four new themes, an extensible icon+logo system, layout primitives (2026-09-24)
 

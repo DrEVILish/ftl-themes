@@ -2,14 +2,14 @@
 
 ## Current state (as of this doc)
 
-- `assets/icons/icons.svg` — **1,017 generic icons**, stroke-based outline
+- `assets/icons/icons.svg` — **1,020 generic icons**, stroke-based outline
   style: 24x24 `viewBox`, `stroke="currentColor"`, `fill="none"` by
   default, sized/weighted entirely through `--ftl-icon-fill` and
   `--ftl-icon-stroke-width` (`core/ftl-core.css`, `.ftl-icon`). No per-icon
   color or stroke-width is ever baked into a symbol — that's what lets one
   sprite reskin across 22 very different themes with zero per-theme icon
   variants required. The original 100 are in-house line drawings; the
-  other 917 are bulk-vendored, unmodified-artwork icons from **Tabler
+  other 920 are bulk-vendored, unmodified-artwork icons from **Tabler
   Icons** (MIT license, v3.48.0) — see `assets/icons/NOTICE.md` for the
   full attribution, exact commit/version, and exactly what was
   mechanically normalized (symbol wrapper, stripped presentation
@@ -60,16 +60,16 @@ not picked abstractly.
 
 ### Phase 2 — Generic set: 100 -> 2,000
 
-**Status: 100 -> 1,017, DONE for this session's 1,000-icon target.**
+**Status: 100 -> 1,020, DONE for this session's 1,000-icon target.**
 Rather than hand-drawing ~15 batches of ~200 originals, the project
 owner opted to bulk-vendor a large batch verbatim from Tabler Icons
 (MIT-licensed, confirmed safe for bulk redistribution in
 `docs/icon-license-research.md`) — see `assets/icons/NOTICE.md` for the
 full sourcing, license text, exact version/commit, and normalization
-details. 917 icons were added in one pass, selected by keyword-matching
-against the category list below (with company-logo and national-flag
-icons hard-excluded per this doc's sourcing policy), bringing the
-generic set from 100 to 1,017. The category list below remains the
+details. 917 icons were added in one pass, plus 3 follow-ups from the
+same Tabler source (`qr-code`, `hourglass`, `timer`) requested by a
+consuming app, bringing the
+generic set from 100 to 1,020. The category list below remains the
 reference for what got prioritized in that pass and what a future
 hand-drawn or further-vendored pass should still fill in (the vendored
 batch covers broad ground per category but is not exhaustive — Tabler's

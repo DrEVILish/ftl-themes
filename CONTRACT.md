@@ -848,6 +848,13 @@ usually want to set at least `--ftl-selection-bg`/`-fg` explicitly rather
 than rely on the accent fallback, if its accent and "what should highlight
 selected text" ought to differ.
 
+Inner scroll containers opt in with `.ftl-scroll`: the page-level
+`::-webkit-scrollbar` rules above cannot reach `overflow: auto` boxes
+(WebKit scrollbar pseudo-elements never inherit), so a scrollable panel,
+modal body or table wrapper gets the same themed scrollbar by adding
+`class="ftl-scroll"`. It reads the same `--ftl-scrollbar-*` tokens, so
+one tuning point drives both the page edge and every opted-in box.
+
 `.ftl-select`'s closed box gets a colorable CSS-triangle arrow; its open
 dropdown *list* stays OS-native chrome no CSS can reach (a theme that
 needs a pixel-perfect custom list has to build its own listbox widget —
@@ -948,18 +955,24 @@ as:
 
 `.ftl-icon` (in `core/ftl-core.css`) sets `stroke: currentColor`, so every
 icon inherits whatever text/foreground color surrounds it. The generic
-sprite currently ships these ids (all 24×24, stroke-based, no fill by
-default):
+sprite ships 1,000+ ids (all 24×24, stroke-based, no fill by default):
+the original hand-drawn set (nav, state, transport, CRUD) plus a
+bulk-vendored Tabler batch — see `assets/icons/NOTICE.md` for sourcing
+and `docs/icon-library-roadmap.md` for the full category list. Don't
+pick ids from a hardcoded list here; grep the sprite itself:
 
-`home`, `settings`, `search`, `close`, `menu`, `check`, `warning`, `info`,
-`chevron-down`, `chevron-up`, `chevron-left`, `chevron-right`, `play`,
-`pause`, `stop`, `refresh`, `download`, `upload`, `user`, `bell`, `star`,
-`trash`, `edit`, `plus`, `minus`, `arrow-right`, `arrow-left`, `arrow-up`,
-`arrow-down`, `external-link`, `calendar`, `clock`, `mail`, `filter`,
-`folder`, `file`, `image`, `cloud`, `tag`, `link`, `copy`,
-`more-horizontal`, `help-circle`, `logout`, `clipboard`, `lock`, `unlock`,
-`phone`, `shopping-cart`, `sort`, `grid`, `list`, `print`, `share`, `save`
-(id `icon-<name>`).
+```sh
+grep -o 'id="icon-[a-z-]*"' assets/icons/icons.svg | sort -u
+```
+
+Ids are `icon-<tabler-name>` for the vendored batch (e.g.
+`icon-player-record`, `icon-player-stop`, `icon-player-play`,
+`icon-player-pause`, `icon-broadcast`, `icon-qr-code`,
+`icon-hourglass`, `icon-timer`, `icon-chevron-left`,
+`icon-chevron-right`) plus the original hand-drawn names (`icon-home`,
+`icon-settings`, `icon-search`, `icon-trash`, …). `example.html`'s
+"Icon pack" section renders the whole sprite live, which is the fastest
+way to browse what's available.
 
 ### Per-theme icon overrides and the generic fallback
 
