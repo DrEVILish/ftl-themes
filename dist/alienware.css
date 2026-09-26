@@ -497,11 +497,57 @@ dialog.ftl-modal::backdrop {
 .ftl-modal-lg { max-width: min(48rem, calc(100vw - 2rem)); }
 .ftl-modal-xl { max-width: min(64rem, calc(100vw - 2rem)); }
 
+/* Window states: maximized, minimized, resizable, focus stacking — the
+   window behaviors that decompose into CSS (see CONTRACT.md "Window
+   pattern"). Dragging is the one that cannot; it lives in the ~10-line
+   assets/js/window.js reference snippet instead. */
+.ftl-modal { position: relative; }
+/* Maximized fills the overlay inset with square corners. One
+   declaration, two triggers — the .is-maximized class toggle and the
+   checkbox-hack input (which must immediately precede the modal) stay
+   in lockstep by construction. */
+.ftl-modal.is-maximized,
+.ftl-window-max:checked + .ftl-modal {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+}
+/* Minimized removes the window; the app's tray restores it (a label for
+   the same checkbox, flipped visible via a sibling rule — see the
+   CONTRACT recipe). Class and checkbox stay paired like maximize. */
+.ftl-modal.is-minimized,
+.ftl-window-min:checked + .ftl-modal { display: none; }
+/* Checkbox-hack state inputs: out of flow and invisible either way, so
+   the markup needs no extra hiding (the `hidden` attribute works too). */
+.ftl-window-max,
+.ftl-window-min {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* Opt-in resizing (overflow is already non-visible above, which resize
+   requires) and click-to-focus stacking for sibling windows sharing one
+   overlay container. Modals carry buttons by definition, so there is
+   always something to take focus; otherwise add tabindex="-1". */
+.ftl-modal.is-resizable {
+  resize: both;
+  min-width: min(22rem, calc(100vw - 2rem));
+  min-height: 12rem;
+}
+.ftl-modal:focus-within { z-index: var(--ftl-window-focus-z, 1500); }
+
 /* The dismiss ("x") button every modal header needs. Ghost by default so
    it recedes into the header; hover/focus lift it to full text color.
    Pair with aria-label="Close" (or similar) in markup — the glyph alone
    isn't accessible. */
-.ftl-btn-close {
+.ftl-btn-close,
+.ftl-btn-min,
+.ftl-btn-max {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -515,23 +561,37 @@ dialog.ftl-modal::backdrop {
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
-.ftl-btn-close:hover {
+.ftl-btn-close:hover,
+.ftl-btn-min:hover,
+.ftl-btn-max:hover {
   background: var(--ftl-btn-close-bg-hover, var(--ftl-surface-2));
   color: var(--ftl-btn-close-fg-hover, var(--ftl-text));
 }
-.ftl-btn-close:focus-visible {
+.ftl-btn-close:focus-visible,
+.ftl-btn-min:focus-visible,
+.ftl-btn-max:focus-visible {
   outline: 2px solid var(--ftl-focus, var(--ftl-accent));
   outline-offset: 2px;
 }
-.ftl-btn-close .ftl-icon { width: 1em; height: 1em; }
-.ftl-btn-close::before {
-  content: var(--ftl-btn-close-glyph, "\00d7");
+.ftl-btn-close .ftl-icon,
+.ftl-btn-min .ftl-icon,
+.ftl-btn-max .ftl-icon { width: 1em; height: 1em; }
+.ftl-btn-close::before,
+.ftl-btn-min::before,
+.ftl-btn-max::before {
   font-size: 1.3em;
   line-height: 1;
 }
+.ftl-btn-close::before { content: var(--ftl-btn-close-glyph, "\00d7"); }
+/* Min/max double as <label> controls for the checkbox-hack window states
+   below as well as plain <button>s — same box, either wiring. */
+.ftl-btn-min::before { content: var(--ftl-btn-min-glyph, "_"); }
+.ftl-btn-max::before { content: var(--ftl-btn-max-glyph, "\25a1"); }
 /* If the markup puts an .ftl-icon inside instead of relying on the
    generated glyph, hide the glyph so the two don't double up. */
-.ftl-btn-close:has(.ftl-icon)::before { content: none; }
+.ftl-btn-close:has(.ftl-icon)::before,
+.ftl-btn-min:has(.ftl-icon)::before,
+.ftl-btn-max:has(.ftl-icon)::before { content: none; }
 
 .ftl-dropdown {
   background: var(--ftl-dropdown-bg, var(--ftl-surface-2));

@@ -5,6 +5,17 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Window pattern (v3.14.0): `.ftl-btn-min` / `.ftl-btn-max`** mirroring
+  `.ftl-btn-close` (glyph tokens `--ftl-btn-min-glyph` /
+  `--ftl-btn-max-glyph`, usable as buttons or checkbox-hack labels);
+  **maximize** (`.is-maximized` ≡ `.ftl-window-max:checked + .ftl-modal`),
+  **minimize** (`.is-minimized` ≡ `.ftl-window-min:checked + .ftl-modal`,
+  tray restore via app sibling rule), **focus stacking**
+  (`:focus-within` → `--ftl-window-focus-z`), **`.is-resizable`**;
+  **drag** stays a ~10-line `assets/js/window.js` reference snippet
+  (non-contract). See CONTRACT.md "Window pattern" and the live
+  `example.html` demo.
+
 - **Taskbars for the desktop-OS themes (v3.14.0): new `.ftl-taskbar` /
   `-start` / `-task` / `-tray` family** — pair with `.ftl-app-status`
   for an OS task strip. windows95 paints raised bevels, a pressed +

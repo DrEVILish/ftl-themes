@@ -651,6 +651,58 @@ A `<dialog class="ftl-modal">` bridge's native `::backdrop` already reads
 `.ftl-modal-overlay` div pattern uses — so switching between the two
 markup patterns re-themes for free.
 
+### Window pattern (v3.14.0): min/max, maximize, minimize, focus, resize
+
+Everything below is CSS the library owns, except dragging (the one
+behavior CSS cannot do — a ~10-line `assets/js/window.js` reference
+snippet, non-contract like `theme-loader.js`). The trio mirrors
+`.ftl-btn-close` exactly (same box, hover/focus, glyph-token-or-icon
+pairing: `--ftl-btn-min-glyph` / `--ftl-btn-max-glyph`), so a themed
+close skins all three coherently; each doubles as a `<button>` or as a
+`<label>` driving its checkbox-hack input.
+
+```html
+<!-- Full window: minimize + maximize without JS, close natively -->
+<input type="checkbox" class="ftl-window-max" id="w1max" hidden>
+<input type="checkbox" class="ftl-window-min" id="w1min" hidden>
+<div class="ftl-modal" role="dialog" aria-labelledby="w1title" tabindex="-1">
+  <div class="ftl-modal-header">
+    <span id="w1title">Uploads</span>
+    <label for="w1min" class="ftl-btn-min" aria-label="Minimize"></label>
+    <label for="w1max" class="ftl-btn-max" aria-label="Maximize"></label>
+    <button class="ftl-btn-close" aria-label="Close"></button>
+  </div>
+  …
+</div>
+<!-- tray restore, elsewhere in your DOM: visible only while minimized -->
+```
+
+- **Maximize/restore** — the labels flip `.ftl-window-max`, and
+  `.ftl-window-max:checked + .ftl-modal` shares its declaration with
+  `.ftl-modal.is-maximized`, so the checkbox path and a class toggle
+  stay in lockstep. The input must immediately precede the modal.
+  (Class path for app-driven state; checkbox path for no-JS.)
+- **Minimize/restore** — same pairing (`.ftl-window-min` /
+  `.is-minimized` hides the window); the tray restores it with a label
+  for the same input, flipped visible via a sibling rule in your CSS:
+  `.ftl-window-min:checked ~ .my-tray-restore { display: inline-flex }`
+  (tray chrome itself stays app-owned).
+- **Focus stacking** — `.ftl-modal:focus-within` raises to
+  `--ftl-window-focus-z` (default 1500) for sibling windows sharing one
+  overlay container; modals carry buttons by definition, otherwise add
+  `tabindex="-1"` as above.
+- **Resize** — `.ftl-modal.is-resizable` opts into `resize: both`.
+- **Close** — with `<dialog>`, `<form method="dialog"><button>…` closes
+  natively with zero script; with the div pattern the close button is
+  app-dismissed as before.
+- **Drag** — add `data-ftl-drag` to the modal and load
+  `assets/js/window.js`; the header becomes the handle, header controls
+  stay clickable. Positions are inline styles (correctly unthemeable).
+
+Caveat: the checkbox-hack states compose with the div-overlay pattern,
+not with native `<dialog>` (top-layer) — dialogs keep native close +
+`::backdrop`; divs get the full window treatment.
+
 ### Layout utilities (v3.13.0)
 A small, deliberately tiny flex-layout layer — the one thing this library
 otherwise pushes an app toward a separate utility framework for. Token-driven

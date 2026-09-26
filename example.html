@@ -8,6 +8,10 @@
 <style>
   /* QA-harness-only helpers, not part of the ftl-themes contract. */
   * { box-sizing: border-box; }
+  /* Window-pattern demo: the restore control shows only while its
+     window is minimized (same sibling technique apps use for trays). */
+  .qa-restore { display: none; }
+  #qa-wmin:checked ~ .qa-restore { display: inline-flex; }
   .qa-shell { display: grid; grid-template-columns: 20rem minmax(0, 1fr); min-height: 100vh; }
   .qa-side {
     border-right: 1px solid var(--ftl-hairline);
@@ -524,6 +528,26 @@
         </details>
         <p class="qa-note">Collapsing nav: hamburger below 720px, full bar above — native <code>&lt;details&gt;</code>, no script.</p>
       </section>
+
+      <section class="qa-section">
+        <h2>Window pattern — min/max, maximize, minimize, drag</h2>
+        <input type="checkbox" class="ftl-window-max" id="qa-wmax" hidden>
+        <input type="checkbox" class="ftl-window-min" id="qa-wmin" hidden>
+        <div class="ftl-modal is-resizable" data-ftl-drag role="dialog" aria-labelledby="qa-wtitle" tabindex="-1" style="max-width:26rem;">
+          <div class="ftl-modal-header" style="display:flex;align-items:center;gap:0.5rem;">
+            <span id="qa-wtitle">Uploads</span>
+            <span style="margin-left:auto;display:flex;gap:0.25rem;">
+              <label for="qa-wmin" class="ftl-btn-min" aria-label="Minimize"></label>
+              <label for="qa-wmax" class="ftl-btn-max" aria-label="Maximize"></label>
+              <button class="ftl-btn-close" aria-label="Close" onclick="this.closest('.ftl-modal').style.display='none'"></button>
+            </span>
+          </div>
+          <p class="qa-note">Drag by the header (assets/js/window.js is loaded on this page). Min/max labels need no script; resize from the corner; reload to bring back a closed window.</p>
+        </div>
+        <div class="qa-row">
+          <label for="qa-wmin" class="ftl-btn ftl-btn-secondary qa-restore">Restore Uploads</label>
+        </div>
+      </section>
     </div>
 
     <footer class="ftl-app-status ftl-taskbar">
@@ -554,6 +578,7 @@
 
 <div class="ftl-toast-region" aria-hidden="true"></div>
 
+<script src="assets/js/window.js"></script>
 <script>
   (function () {
     var grid = document.getElementById("icon-pack-swatches");
