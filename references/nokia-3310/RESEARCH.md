@@ -1,0 +1,9 @@
+# nokia-3310 — visual reference notes
+
+Outsider read: 2000 candybar: 84x48 monochrome blue-green LCD 5 lines, pixel font, Navi-key + Menu/Names softkeys, dark-blue casing, signal/battery bars.
+
+Capture targets: LCD close-up; front casing w/ Navi-key; Menu screen.
+
+Sources: Wikipedia Nokia 3310; Adafruit LCD guide.
+
+Use side-by-side with example.html; local captures are copyrighted originals — this file is the textual checklist.
