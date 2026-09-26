@@ -6,4 +6,4 @@ Capture targets: TNG bridge panel; elbow close-up; full screen.
 
 Sources: Wikipedia LCARS; Memory Alpha.
 
-Use side-by-side with example.html; local captures are copyrighted originals — this file is the textual checklist.
+Audit 2026-09-26: all 10 files inspected — pure LCARS UI diagrams/schematics (pill blocks, elbows, master-systems displays), zero people. Tuvok-LCARS.webp is a tactical/schematic diagram despite the name, no character depicted. KEPT all 10.
