@@ -73,9 +73,9 @@ Three images each; see "Local images" above for why they're not here yet.
 <details>
 <summary><code>barbie</code></summary>
 
-- **`01-dreamhouse-box.jpg`** — Barbie Dreamhouse packaging — the exact brand pink, gold accents _(search: Barbie Dreamhouse box packaging photo)_
+- **`01-dreamhouse-box.jpg`** — Barbie Dreamhouse packaging detail (pink/gold surfaces only, no doll in frame) — the exact brand pink, gold accents _(search: Barbie Dreamhouse box packaging detail)_
 - **`02-logo.png`** — The Barbie wordmark/logo (rounded, hot pink, gold sparkle treatment) _(search: Barbie logo pink gold)_
-- **`03-app-ui.jpg`** — An official Barbie app or website UI screen, for pill-chrome/rounded-button reference _(search: Barbie official app screenshot UI)_
+- **`03-app-ui.jpg`** — An official Barbie app or website UI screen with no characters in frame, for pill-chrome/rounded-button reference _(search: Barbie official app screenshot UI)_ — note: app-store captures were rejected (all show Barbie characters); wordmark lockups currently stand in.
 
 </details>
 
@@ -109,9 +109,11 @@ Three images each; see "Local images" above for why they're not here yet.
 <details>
 <summary><code>cyber-goth</code></summary>
 
-- **`01-outfit.jpg`** — A cybergoth outfit: black PVC/vinyl with a UV-reactive neon accent _(search: cybergoth fashion PVC neon photo)_
-- **`02-uv-lighting.jpg`** — A club/event under UV blacklight for the neon-on-black glow reference _(search: cybergoth club UV blacklight neon photo)_
-- **`03-hair-falls.jpg`** — Cybergoth accessories (neon dreadlock falls, goggles) for the accent-color pairing _(search: cybergoth neon dreadlocks goggles photo)_
+- **`01-el-wire.jpg`** — An electroluminescent-wire close-up on black: the single UV-reactive neon, its glow halo and wire weight _(search: EL wire close up black background)_
+- **`02-vinyl-texture.jpg`** — A black vinyl/PVC macro: the base-material grain and specular response _(search: black vinyl leather texture macro)_
+- **`03-neon-type.jpg`** — Neon-tube signage lettering on a dark wall: tube construction, mounts and glow on matte ground _(search: neon sign typography dark)_
+
+> Policy: no people in any form (cybergoth is NOT cyberpunk — no game UI; no outfits, clubs, or accessories worn by people).
 
 </details>
 
@@ -173,7 +175,7 @@ Three images each; see "Local images" above for why they're not here yet.
 <summary><code>matrix</code></summary>
 
 - **`01-digital-rain.jpg`** — The Matrix digital-rain effect itself: green glyphs cascading on black _(search: Matrix digital rain screenshot green)_
-- **`02-operator-console.jpg`** — An Operator's console from the films (Tank/Link at the monitors) _(search: Matrix operator console screenshot green terminal)_
+- **`02-operator-console.jpg`** — An Operator's monitor wall from the films, monitors only with no actors in frame _(search: Matrix Nebuchadnezzar core monitors green terminal)_ — note: the actor-at-console still was removed under the no-people rule.
 - **`03-code-closeup.jpg`** — A close crop of the falling code for the phosphor-glow color reference _(search: Matrix code close up green phosphor)_
 
 </details>

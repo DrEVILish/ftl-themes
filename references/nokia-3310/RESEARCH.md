@@ -9,3 +9,5 @@ Sources: Wikipedia Nokia 3310; Adafruit LCD guide.
 Use side-by-side with example.html; local captures are copyrighted originals — this file is the textual checklist.
 
 Canonical UI (v2, hunted): original Series-20 menu demonstrations on YouTube — nokia-3310-menu-d_LTJYh7biQ (Secrets Of The Nokia 3310), nokia-3310-menu-EAAUuy0n4r8 (3310/3330 Connects to Internet). Shows Menu/Names softkeys, pixel font, selection behavior. Device photos cover casing/bezel/Navi-key chrome.
+
+Canonical UI (v3): LCD-screen gap STILL OPEN. YouTube menu-demo thumbs removed (hands/presenter); helpdoc.net manual diagrams hotlink-blocked (400-byte placeholders deleted). Device photos cover casing/bezel/Navi-key only. Best remaining leads: GSMArena review screen macros (unverifiable for hands — skipped per rule) or a user-supplied 84x48 screen capture.
