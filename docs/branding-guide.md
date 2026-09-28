@@ -36,8 +36,10 @@ what each agent's report said and what was changed in response.
 
 ## Icon pack
 
-`assets/icons/icons.svg` — one 24×24 outline SVG sprite (~55 icons: nav,
-state, transport, CRUD and dashboard/marketing glyphs), used everywhere
+`assets/icons/icons.svg` — one 24×24 outline SVG sprite (1,020 icons:
+the original hand-drawn nav/state/transport/CRUD/dashboard set plus a
+bulk-vendored Tabler batch — see `assets/icons/NOTICE.md` for sourcing
+and the exact count), used everywhere
 as:
 
 ```html

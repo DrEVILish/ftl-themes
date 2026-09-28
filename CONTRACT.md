@@ -325,6 +325,21 @@ that don't collapse it to nothing. Keep it `aria-hidden`.
 Adopting the shell is optional — an app that keeps its own layout still
 gets every component and token, it just won't re-lay-out per theme.
 
+### Do layouts change per theme? (Yes — that's the point, and it's cheap)
+
+Switching from `windows95` to `lcars` moves the furniture, not just the
+paint: rail on/off, bar height and elbow radius, content insets, footer
+treatment. It stays cheap for the front-end developer because the app
+writes the five-class shell markup **once** and never touches it again —
+every arrangement is a `--ftl-app-*` token value the theme sets, and
+`shellAware` in `dist/themes.json` tells the picker which themes
+re-arrange vs recolor. There is no per-theme template fork, no
+`if theme == x` in app code, and L0 (no shell markup) still renders
+correctly by the degrade rule above. The practical limit: a theme can
+only arrange what tokens expose — a genuinely new arrangement (a new
+region, a new breakpoint behavior) needs a new core-owned token, not
+app-side branching. Propose it here; don't fork it there.
+
 **Nav text in the bar.** `.ftl-nav-brand` and `.ftl-nav-item` read
 `--ftl-nav-brand-fg` / `--ftl-nav-item-fg`, which a theme tunes for its
 content area. `--ftl-app-bar-fg` does **not** reach them. A theme that
@@ -636,6 +651,58 @@ A `<dialog class="ftl-modal">` bridge's native `::backdrop` already reads
 `.ftl-modal-overlay` div pattern uses — so switching between the two
 markup patterns re-themes for free.
 
+### Window pattern (v3.14.0): min/max, maximize, minimize, focus, resize
+
+Everything below is CSS the library owns, except dragging (the one
+behavior CSS cannot do — a ~10-line `assets/js/window.js` reference
+snippet, non-contract like `theme-loader.js`). The trio mirrors
+`.ftl-btn-close` exactly (same box, hover/focus, glyph-token-or-icon
+pairing: `--ftl-btn-min-glyph` / `--ftl-btn-max-glyph`), so a themed
+close skins all three coherently; each doubles as a `<button>` or as a
+`<label>` driving its checkbox-hack input.
+
+```html
+<!-- Full window: minimize + maximize without JS, close natively -->
+<input type="checkbox" class="ftl-window-max" id="w1max" hidden>
+<input type="checkbox" class="ftl-window-min" id="w1min" hidden>
+<div class="ftl-modal" role="dialog" aria-labelledby="w1title" tabindex="-1">
+  <div class="ftl-modal-header">
+    <span id="w1title">Uploads</span>
+    <label for="w1min" class="ftl-btn-min" aria-label="Minimize"></label>
+    <label for="w1max" class="ftl-btn-max" aria-label="Maximize"></label>
+    <button class="ftl-btn-close" aria-label="Close"></button>
+  </div>
+  …
+</div>
+<!-- tray restore, elsewhere in your DOM: visible only while minimized -->
+```
+
+- **Maximize/restore** — the labels flip `.ftl-window-max`, and
+  `.ftl-window-max:checked + .ftl-modal` shares its declaration with
+  `.ftl-modal.is-maximized`, so the checkbox path and a class toggle
+  stay in lockstep. The input must immediately precede the modal.
+  (Class path for app-driven state; checkbox path for no-JS.)
+- **Minimize/restore** — same pairing (`.ftl-window-min` /
+  `.is-minimized` hides the window); the tray restores it with a label
+  for the same input, flipped visible via a sibling rule in your CSS:
+  `.ftl-window-min:checked ~ .my-tray-restore { display: inline-flex }`
+  (tray chrome itself stays app-owned).
+- **Focus stacking** — `.ftl-modal:focus-within` raises to
+  `--ftl-window-focus-z` (default 1500) for sibling windows sharing one
+  overlay container; modals carry buttons by definition, otherwise add
+  `tabindex="-1"` as above.
+- **Resize** — `.ftl-modal.is-resizable` opts into `resize: both`.
+- **Close** — with `<dialog>`, `<form method="dialog"><button>…` closes
+  natively with zero script; with the div pattern the close button is
+  app-dismissed as before.
+- **Drag** — add `data-ftl-drag` to the modal and load
+  `assets/js/window.js`; the header becomes the handle, header controls
+  stay clickable. Positions are inline styles (correctly unthemeable).
+
+Caveat: the checkbox-hack states compose with the div-overlay pattern,
+not with native `<dialog>` (top-layer) — dialogs keep native close +
+`::backdrop`; divs get the full window treatment.
+
 ### Layout utilities (v3.13.0)
 A small, deliberately tiny flex-layout layer — the one thing this library
 otherwise pushes an app toward a separate utility framework for. Token-driven
@@ -667,6 +734,19 @@ existing component.
 <div class="ftl-tabs">
   <button class="ftl-tab is-active">One</button>
   <button class="ftl-tab">Two</button>
+</div>
+```
+
+Vertical variant (the left-hand settings rail): `aria-orientation="vertical"`
+stacks the tabs column, moves the selection marker from the block edge
+(bottom underline) to the inline edge of the rail, lead-aligns the labels,
+and draws an inline-end hairline instead of the bottom rule. Same token set
+as the horizontal strip (`--ftl-tab-*`), so a theme that already colours its
+tabs needs no changes.
+```html
+<div class="ftl-tabs" aria-orientation="vertical">
+  <button class="ftl-tab is-active">Look</button>
+  <button class="ftl-tab">Sound</button>
 </div>
 ```
 
@@ -835,6 +915,13 @@ usually want to set at least `--ftl-selection-bg`/`-fg` explicitly rather
 than rely on the accent fallback, if its accent and "what should highlight
 selected text" ought to differ.
 
+Inner scroll containers opt in with `.ftl-scroll`: the page-level
+`::-webkit-scrollbar` rules above cannot reach `overflow: auto` boxes
+(WebKit scrollbar pseudo-elements never inherit), so a scrollable panel,
+modal body or table wrapper gets the same themed scrollbar by adding
+`class="ftl-scroll"`. It reads the same `--ftl-scrollbar-*` tokens, so
+one tuning point drives both the page edge and every opted-in box.
+
 `.ftl-select`'s closed box gets a colorable CSS-triangle arrow; its open
 dropdown *list* stays OS-native chrome no CSS can reach (a theme that
 needs a pixel-perfect custom list has to build its own listbox widget —
@@ -924,6 +1011,161 @@ edge). Works for `.ftl-popover`, `.ftl-context-menu` and `.ftl-dropdown`.
   const series = [1, 2, 3, 4, 5, 6].map(n => css.getPropertyValue(`--ftl-chart-series-${n}`).trim());
   ```
 
+### v3.14.0 additions
+
+```html
+<!-- Drawer (slide-in side panel — settings, filters, channel list) -->
+<button id="settings-open">Settings</button>
+<aside class="ftl-drawer" id="settings-drawer" aria-label="Settings">
+  <div class="ftl-panel-header">Settings</div>
+  …
+</aside>
+<script>settings-open.onclick = () => settings-drawer.classList.toggle('is-open')</script>
+
+<!-- Input group (joined addons: unit, prefix, attached button) -->
+<div class="ftl-input-group">
+  <span class="ftl-input-addon">48</span>
+  <input class="ftl-input" type="text" aria-label="Sample rate">
+  <span class="ftl-input-addon">kHz</span>
+</div>
+
+<!-- List (bordered row stack — queues, menus, activity) -->
+<ul class="ftl-list">
+  <li><a class="ftl-list-item is-active" href="#">Take 04 — selected</a></li>
+  <li><button class="ftl-list-item">Take 05</button></li>
+</ul>
+
+<!-- Ratio box, truncation, stretched card link, divided stack, container -->
+<div class="ftl-ratio ftl-ratio-16x9"><video src="…"></video></div>
+<p class="ftl-text-truncate">A single-line title that never wraps.</p>
+<p class="ftl-clamp-2">A summary that never runs past two lines.</p>
+<div class="ftl-card" style="position:relative">
+  <a class="ftl-stretched-link" href="#">Open session</a>
+</div>
+<div class="ftl-divide-y"><span>Row one</span><span>Row two</span></div>
+<div class="ftl-container">Centered, max-width content.</div>
+```
+
+- **`.ftl-drawer`** — fixed side panel, inline-end edge by default,
+  `.is-start` for the inline-start edge. Your app toggles `.is-open`
+  (htmx swap, `:target`, or a line of JS); a `hidden` attribute removes
+  it from the tree entirely. Themed via `--ftl-drawer-bg/-border/
+  -width/-shadow`; hidden from print. Respects reduced motion.
+- **`.ftl-input-group`** — flex-joined `.ftl-input`/`.ftl-select`/
+  `.ftl-btn` with `.ftl-input-addon` labels; inner edges lose their
+  radius and share one border, the focused child rises above it.
+- **`.ftl-list` / `.ftl-list-item`** — items may be plain rows or
+  links/buttons; `.is-active` carries a background *and* a leading
+  marker (same two-language state as table rows), hover reuses
+  `--ftl-row-hover-bg`.
+- **Utilities** — `.ftl-ratio` (`--ftl-ratio`, default 16/9, plus
+  `-1x1`/`-4x3`/`-16x9`/`-21x9` modifiers; children fill and cover),
+  `.ftl-text-truncate`, `.ftl-clamp-2`/`-3`, `.ftl-stretched-link`
+  (the card needs `position: relative`), `.ftl-divide-y`,
+  `.ftl-container` (`--ftl-container-max`, default 64rem).
+
+All three of the usual JS-driven patterns below are implemented with
+native primitives only — no script, no checkbox hacks:
+
+```html
+<!-- Carousel: a scroll-snap track; dots/arrows are plain anchors -->
+<div class="ftl-carousel">
+  <section class="ftl-carousel-slide" id="hero-1">…</section>
+  <section class="ftl-carousel-slide" id="hero-2">…</section>
+  <section class="ftl-carousel-slide" id="hero-3">…</section>
+</div>
+<nav class="ftl-carousel-nav" aria-label="Slides">
+  <a class="ftl-carousel-prev" href="#hero-3" aria-label="Previous">‹</a>
+  <a href="#hero-1" aria-label="Slide 1">1</a>
+  <a href="#hero-2" aria-label="Slide 2">2</a>
+  <a href="#hero-3" aria-label="Slide 3">3</a>
+  <a class="ftl-carousel-next" href="#hero-2" aria-label="Next">›</a>
+</nav>
+```
+
+- **`.ftl-carousel`** — `overflow-x: auto` + `scroll-snap-type:
+  x mandatory`, so swipe, keyboard, dots and prev/next all work with
+  zero script (smooth scroll gated on reduced-motion, both OS and
+  `data-motion`). Scrollbars hidden, as with any carousel; the dots
+  and arrows are the controls. Tokens: `--ftl-carousel-radius`,
+  `--ftl-carousel-dot/-dot-active`, `--ftl-carousel-arrow-bg/-fg`.
+
+```html
+<!-- Scrollspy: sticky nav + smooth scroll are core; the active-link
+     mapping is one :target rule per section in YOUR css (or .is-active
+     from a scroll observer) -->
+<div class="ftl-scrollspy">
+  <nav class="ftl-scrollspy-nav" aria-label="Sections">
+    <a class="ftl-scrollspy-link" href="#sp-install">Install</a>
+    <a class="ftl-scrollspy-link" href="#sp-config">Config</a>
+  </nav>
+  <div class="ftl-scrollspy-body">
+    <section id="sp-install" tabindex="-1">…</section>
+    <section id="sp-config" tabindex="-1">…</section>
+  </div>
+</div>
+```
+
+```css
+/* your stylesheet: the no-JS active-link mapping */
+.docs:has(#sp-install:target) a[href="#sp-install"],
+.docs:has(#sp-config:target) a[href="#sp-config"] {
+  color: var(--ftl-scrollspy-link-active-fg, var(--ftl-accent));
+  box-shadow: var(--ftl-scrollspy-link-active-marker, inset 0 -2px 0 var(--ftl-accent));
+}
+```
+
+- **`.ftl-scrollspy`** — why the mapping lives app-side: CSS cannot
+  correlate an href with an id without enumerating them, and the ids
+  are app knowledge. Core ships everything around it (sticky nav,
+  `.is-active` styling identical to the recipe above,
+  `scroll-margin-top` via `--ftl-scrollspy-offset`, smooth scroll
+  gated on reduced-motion). Position-driven auto-highlight while
+  free-scrolling is the one thing that inherently needs a scroll
+  observer — the `:target` recipe covers click/keyboard navigation
+  with no JS at all.
+
+```html
+<!-- Responsive nav toggler: native <details>, no JS, browser-handled a11y -->
+<details class="ftl-nav-collapse">
+  <summary class="ftl-nav-toggle" aria-label="Menu"></summary>
+  <nav class="ftl-nav">
+    <span class="ftl-nav-brand">App</span>
+    <a class="ftl-nav-item" href="#">Home</a>
+  </nav>
+</details>
+```
+
+- **`.ftl-nav-collapse`** — below 720px (the same breakpoint the app
+  shell collapses at) the summary renders as a ☰/× toggle and the nav
+  stacks only while open; above it the toggle hides and the nav always
+  lays out. No checkbox hack: `<details>` disclosure is
+  keyboard-operable and announced correctly with zero ARIA upkeep.
+
+```html
+<!-- Taskbar (OS task strip — Start, window tasks, tray well) -->
+<footer class="ftl-app-status ftl-taskbar">
+  <button class="ftl-taskbar-start">Start</button>
+  <button class="ftl-taskbar-task is-active"><span>Untitled — Notepad</span></button>
+  <button class="ftl-taskbar-task"><span>Inbox</span></button>
+  <span class="ftl-taskbar-tray">1:27 AM</span>
+</footer>
+```
+
+- **`.ftl-taskbar` / `-start` / `-task` / `-tray`** — windows95 paints
+  raised bevels, a pressed + dotted active task and a sunken tray;
+  winxp-luna paints the green Start pill and lighter-blue tasks;
+  win7-aero paints the glowing orb and glassy tasks with an accent
+  light-bar on the running one. Every other theme leaves the plain
+  fallback (the same strip, unpainted). Tokens: `--ftl-taskbar-bg`,
+  `-border-width`, `-start-bg/-fg/-border/-radius/-shadow/
+  -text-shadow/-style/-size/-padding`, `-task-bg/-fg/-border/
+  -radius/-shadow/-max` plus `-bg-active/-border-active/
+  -shadow-active/-outline-active`, `-tray-bg/-fg/-border/-radius`.
+  A 4-sided bevel fits in one token (`border-color` takes 1–4
+  values). Drop your own mark inside `-start` (logo svg, orb glyph) —
+  core draws no brand artwork.
+
 ## Icon system
 
 Icons are one shared SVG sprite, `assets/icons/icons.svg`, used everywhere
@@ -935,18 +1177,24 @@ as:
 
 `.ftl-icon` (in `core/ftl-core.css`) sets `stroke: currentColor`, so every
 icon inherits whatever text/foreground color surrounds it. The generic
-sprite currently ships these ids (all 24×24, stroke-based, no fill by
-default):
+sprite ships 1,000+ ids (all 24×24, stroke-based, no fill by default):
+the original hand-drawn set (nav, state, transport, CRUD) plus a
+bulk-vendored Tabler batch — see `assets/icons/NOTICE.md` for sourcing
+and `docs/icon-library-roadmap.md` for the full category list. Don't
+pick ids from a hardcoded list here; grep the sprite itself:
 
-`home`, `settings`, `search`, `close`, `menu`, `check`, `warning`, `info`,
-`chevron-down`, `chevron-up`, `chevron-left`, `chevron-right`, `play`,
-`pause`, `stop`, `refresh`, `download`, `upload`, `user`, `bell`, `star`,
-`trash`, `edit`, `plus`, `minus`, `arrow-right`, `arrow-left`, `arrow-up`,
-`arrow-down`, `external-link`, `calendar`, `clock`, `mail`, `filter`,
-`folder`, `file`, `image`, `cloud`, `tag`, `link`, `copy`,
-`more-horizontal`, `help-circle`, `logout`, `clipboard`, `lock`, `unlock`,
-`phone`, `shopping-cart`, `sort`, `grid`, `list`, `print`, `share`, `save`
-(id `icon-<name>`).
+```sh
+grep -o 'id="icon-[a-z-]*"' assets/icons/icons.svg | sort -u
+```
+
+Ids are `icon-<tabler-name>` for the vendored batch (e.g.
+`icon-player-record`, `icon-player-stop`, `icon-player-play`,
+`icon-player-pause`, `icon-broadcast`, `icon-qr-code`,
+`icon-hourglass`, `icon-timer`, `icon-chevron-left`,
+`icon-chevron-right`) plus the original hand-drawn names (`icon-home`,
+`icon-settings`, `icon-search`, `icon-trash`, …). `example.html`'s
+"Icon pack" section renders the whole sprite live, which is the fastest
+way to browse what's available.
 
 ### Per-theme icon overrides and the generic fallback
 

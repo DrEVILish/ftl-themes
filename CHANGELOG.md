@@ -5,7 +5,81 @@ changes are called out explicitly here.
 
 ## Unreleased
 
-Nothing yet — see `v3.13.0` below for the last cut.
+- **Window pattern (v3.14.0): `.ftl-btn-min` / `.ftl-btn-max`** mirroring
+  `.ftl-btn-close` (glyph tokens `--ftl-btn-min-glyph` /
+  `--ftl-btn-max-glyph`, usable as buttons or checkbox-hack labels);
+  **maximize** (`.is-maximized` ≡ `.ftl-window-max:checked + .ftl-modal`),
+  **minimize** (`.is-minimized` ≡ `.ftl-window-min:checked + .ftl-modal`,
+  tray restore via app sibling rule), **focus stacking**
+  (`:focus-within` → `--ftl-window-focus-z`), **`.is-resizable`**;
+  **drag** stays a ~10-line `assets/js/window.js` reference snippet
+  (non-contract). See CONTRACT.md "Window pattern" and the live
+  `example.html` demo.
+
+- **Taskbars for the desktop-OS themes (v3.14.0): new `.ftl-taskbar` /
+  `-start` / `-task` / `-tray` family** — pair with `.ftl-app-status`
+  for an OS task strip. windows95 paints raised bevels, a pressed +
+  dotted active task and a sunken tray; winxp-luna paints the green
+  Start pill and lighter-blue tasks (all white-text pairs ≥4.5:1);
+  win7-aero paints the glowing orb and glassy tasks with an accent
+  light-bar on the running one. All other themes keep the plain
+  fallback. Token-driven (`--ftl-taskbar-*`, 4-sided bevels fit one
+  token); all four classes join the base-component lint.
+- **Tighter buttons on the same three themes:** windows95 gets compact
+  dialog-scale padding plus the authentic extra black frame on the
+  default (primary) button, pressed state included; winxp-luna radius
+  4px → 3px; win7-aero command buttons break out of the 6px window
+  radius to their own 3px.
+
+- **Icon-only buttons no longer collapse:** `.ftl-icon` carries
+  `min-width: var(--ftl-icon-size, 1.2em)` so the reset's
+  `max-width: 100%` can't resolve circularly to 0 inside shrink-to-fit
+  buttons (`.ftl-btn-icon .ftl-icon` floors at its own 1.1em). No-op
+  everywhere the width already resolves.
+
+- **New components (v3.14.0): `.ftl-drawer`, `.ftl-input-group`,
+  `.ftl-list`** — slide-in side panel (app-toggled `.is-open`,
+  `.is-start` edge, print-hidden, reduced-motion aware), joined
+  input addons (unit/prefix/attached button sharing one border), and a
+  bordered row stack with `.is-active` background + marker. All
+  token-driven (`--ftl-drawer-*`, `--ftl-input-addon-*`,
+  `--ftl-list-*`, reusing `--ftl-row-*` state tokens); all three join
+  `scripts/check.py`'s base-component lint.
+- **New utilities (v3.14.0): `.ftl-ratio`** (`--ftl-ratio`, default
+  16/9, plus `-1x1`/`-4x3`/`-16x9`/`-21x9`), **`.ftl-text-truncate`**,
+  **`.ftl-clamp-2`/`-3`**, **`.ftl-stretched-link`**,
+  **`.ftl-divide-y`**, **`.ftl-container`**
+  (`--ftl-container-max`, default 64rem). See CONTRACT.md
+  "v3.14.0 additions" and `example.html` for live demos.
+- **No-JS carousel, scrollspy, nav toggler (v3.14.0): `.ftl-carousel`**
+  (scroll-snap track + anchor dots/arrows, smooth scroll
+  reduced-motion gated), **`.ftl-scrollspy`** (sticky nav, smooth
+  scroll, `--ftl-scrollspy-offset`; active-link mapping is one
+  app-side `:target` rule per section — see CONTRACT.md — or
+  `.is-active` from a scroll observer), **`.ftl-nav-collapse`**
+  (native `<details>` toggler, hamburger below 720px, always laid out
+  above). All three join the base-component lint.
+- **`.ftl-meter` band fix:** `--ftl-meter-span` now defaults to `100%`
+  (the element's own track) instead of `100vw`/`100vh`, so the default
+  warn/peak bands land on-track. Apps that set the token explicitly are
+  unaffected.
+- **`.ftl-scroll` reads the browser-chrome tokens** (`--ftl-scrollbar-*`),
+  so one tuning point drives both the page scrollbar and opted-in inner
+  boxes; inner scroll containers are documented as opt-in via
+  `.ftl-scroll` in CONTRACT.md.
+- **New switch tokens** `--ftl-switch-border-on` / `--ftl-switch-thumb-bg-on`
+  (both fall back to `--ftl-accent`); `nokia-3310` uses them for a
+  hard-invert on-state instead of an accent-vs-muted thumb change.
+- **`vaporwave` `--ftl-border` lightened** to `#8a5fc0` (3.6:1 on the
+  panel) so secondary-button/input outlines are perceptible.
+- **`windows95` tables get an opaque canvas** so badge fills can't bleed
+  into whatever sits behind the rows.
+- **3 new generic icons** (`icon-qr-code`, `icon-hourglass`,
+  `icon-timer`, same Tabler source/version as the bulk batch);
+  CONTRACT.md no longer hardcodes the 55-id list — grep the sprite.
+- **`youtube` added as a `pending` logo** with its brand-resources URL,
+  plus a "Self-hosting a third-party mark" path in
+  `assets/logos/README.md`.
 
 ## v3.13.0 — four new themes, an extensible icon+logo system, layout primitives (2026-09-24)
 
@@ -17,6 +91,11 @@ pin `ftl-themes` as a submodule have something more specific than `main`
 HEAD to point at.
 
 ### Added
+
+- **Vertical `.ftl-tabs` variant** (`aria-orientation="vertical"`): the left
+  hand tab rail a settings sheet reaches for — column stack, selection
+  marker on the inline edge, lead-aligned labels, inline-end hairline;
+  same `--ftl-tab-*` tokens as the horizontal strip.
 
 - **4 new themes: Teletext, Nokia 3310, XMB, XBMC.** All four ship a
   `README.md`, `theme.css` and `icons.svg`, and pass `scripts/check.py`.

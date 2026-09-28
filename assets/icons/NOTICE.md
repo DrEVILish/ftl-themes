@@ -2,9 +2,9 @@
 
 `assets/icons/icons.svg`'s generic icon set is a mix of original,
 in-house line drawings (the initial ~100 icons — see
-`docs/icon-library-roadmap.md` Phase 1) and a bulk-vendored batch of
-icons from **Tabler Icons**, added in this batch to grow the set toward
-the 1,000-icon Phase 2 target.
+`docs/icon-library-roadmap.md` Phase 1) and bulk-vendored icons from
+**Tabler Icons**, added to grow the set toward the 1,000-icon Phase 2
+target (1,020 symbols total as of the follow-up additions noted below).
 
 ## Source
 
@@ -19,7 +19,11 @@ the 1,000-icon Phase 2 target.
   stroke-based, `currentColor`-friendly — matches this project's existing
   icon convention)
 - **Icon count vendored:** 917 symbols (900 from the general category
-  sweep below, plus 17 currency symbols added afterward)
+  sweep below, plus 17 currency symbols added afterward), plus 3
+  follow-up additions from the same Tabler source/version
+  (`icon-qr-code` ← `qrcode`, `icon-hourglass` ← `hourglass`,
+  `icon-timer` ← `stopwatch` artwork for the timer concept) requested by
+  a consuming app — 920 vendored symbols total.
 
 Verbatim license text, as retained in the upstream repository's `LICENSE`
 file at the commit above:

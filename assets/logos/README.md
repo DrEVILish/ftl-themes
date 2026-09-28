@@ -93,3 +93,19 @@ the per-theme icon merge/fallback mechanism (that mechanism exists
 specifically for the generic MIT-style icon set in `assets/icons/`).
 A consuming app that wants a logo imports `logos.css` and the specific
 SVG file(s) it needs, directly and explicitly.
+
+## Self-hosting a third-party mark (without waiting on this repo)
+
+A `pending` entry in `manifest.json` means "documented gap, not a usable
+asset." An integrator that needs the mark now self-hosts it in their own
+repo — no change here required:
+
+1. Fetch the brand's official SVG from the brand owner's own verified
+   domain (same rule 1 as above — never an aggregator or search result),
+   save it as `<app>/service-logos/<brand>.svg` beside your own static
+   assets, and follow that brand's guidelines page for clear space,
+   minimum size, and no-endorse-implication rules.
+2. Reference it directly (`<img src="…/service-logos/youtube.svg">`);
+   don't add it to `assets/icons/` (rule: no third-party marks in the
+   generic pack) and don't add a `file` field to this repo's
+   `manifest.json` until rule 1's verified-source condition is met here.
