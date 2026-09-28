@@ -129,14 +129,14 @@ EOF
 
 cat > "$dir/icons.svg" <<EOF
 <!-- $slug icon overrides.
-     Optional: every theme falls back to the generic 100-icon set at
+     Optional: every theme falls back to the generic icon set (1,000+ icons) at
      assets/icons/icons.svg for any id it doesn't redraw here. Only add a
      <symbol> below when this theme's signature look genuinely calls for a
      different silhouette (e.g. block-graphics, brand-specific glyphs) —
      most themes don't need to override anything.
      Pattern and full id list: docs/icon-library-roadmap.md. Ids must match
-     the generic set's icon-<name> convention exactly, or the override is
-     silently ignored (the generic icon still renders). See
+     the generic set's icon-<name> convention exactly, or the build fails
+     (an override must replace an id that exists in the generic set). See
      themes/aqua/icons.svg or themes/lego-classic/icons.svg for worked
      examples of the convention: viewBox="0 0 24 24", stroke-based paths
      using currentColor, fill/stroke-width driven by the ftl-icon-* tokens

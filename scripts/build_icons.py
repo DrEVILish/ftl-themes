@@ -20,11 +20,13 @@ import glob
 import os
 import re
 
+COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 SYMBOL_RE = re.compile(r'<symbol\s+id="([\w-]+)"[^>]*>.*?</symbol>', re.DOTALL)
 
 
 def parse_symbols(text):
     """{id: full "<symbol ...>...</symbol>" markup} in source order."""
+    text = COMMENT_RE.sub("", text)  # commented-out stubs are not overrides
     return {m.group(1): m.group(0) for m in SYMBOL_RE.finditer(text)}
 
 

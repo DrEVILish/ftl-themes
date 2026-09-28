@@ -5,6 +5,39 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+Nothing yet — v4 work lands on `main`; this is the last v3 line (branch `v3`).
+
+## v3.14.0 — window pattern, taskbars, carousel/scrollspy, and v3.13 regression fixes (2026-09-28)
+
+**Last v3 release.** v4.0.0 (next) removes the `ftl-` prefix from every
+class name, custom property, keyframe and id; see the v4 section once it
+lands. Pin the `v3` branch to stay on this contract.
+
+### Fixed (regressions from v3.13.0 — upgrade if you are on it)
+
+- **Spacing utilities were dead and `.ftl-stack` lost its gap.** A stray
+  `*/` inside a comment in `core/ftl-core.css` closed it early, so the
+  `:root { --ftl-space-* }` block was parsed as part of an invalid selector
+  and dropped; the utility layer also redefined the existing `.ftl-stack`
+  component, overriding its density-scaled gap and the `-sm`/`-lg`
+  modifiers. `.ftl-stack` is left alone again, `.is-gap-*` set `gap`
+  directly (they no longer inherit into nested containers), and the
+  `--ftl-space-*` scale works.
+- **`scripts/build_icons.py` read commented-out `<symbol>` stubs as live
+  overrides**, so a freshly scaffolded theme shipped three placeholder icons.
+- **Print:** the universal reset no longer erases meter/progress fills, chart
+  bars or the selected-row marker (background and box-shadow are reset on
+  named surfaces only); text is forced black on every element, not just
+  `html, body` (a heading's own colour used to survive).
+- **RTL:** `.ftl-select`'s arrow now mirrors with the padding.
+- **`.ftl-table.is-striped`:** even rows keep their hover/focus highlight.
+- **`assets/js/theme-loader.js`:** `?theme=` and the stored value are
+  validated against `dist/themes.json`; it no longer overwrites the stored
+  preference for a theme chosen by URL, guards a missing `#ftl-theme-link`,
+  and builds the picker with DOM calls instead of `innerHTML`.
+
+### Added / changed in this release
+
 - **Window pattern (v3.14.0): `.ftl-btn-min` / `.ftl-btn-max`** mirroring
   `.ftl-btn-close` (glyph tokens `--ftl-btn-min-glyph` /
   `--ftl-btn-max-glyph`, usable as buttons or checkbox-hack labels);

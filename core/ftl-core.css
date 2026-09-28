@@ -175,6 +175,9 @@ a { color: var(--ftl-link, var(--ftl-accent)); }
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
 }
+.ftl-select:dir(rtl) {
+  background-position: 1.1em calc(50% - 3px), 0.75em calc(50% - 3px);
+}
 
 /* Autofill: browsers force their own fill/text color on
    `:-webkit-autofill`, ignoring `background`/`color` outright. The only
@@ -890,6 +893,10 @@ dialog.ftl-modal::backdrop {
    with card/panel surfaces. */
 .ftl-table.is-striped tbody tr:nth-child(even) td {
   background: var(--ftl-row-alt-bg, var(--ftl-surface-2));
+}
+.ftl-table.is-striped tbody tr:nth-child(even):hover td,
+.ftl-table.is-striped tbody tr:nth-child(even):focus-within td {
+  background: var(--ftl-row-hover-bg, color-mix(in srgb, var(--ftl-accent) 8%, transparent));
 }
 .ftl-table.is-striped tbody tr.is-selected:nth-child(even) td,
 .ftl-table.is-striped tbody tr.is-active:nth-child(even) td {
@@ -2066,7 +2073,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
  * Deliberately tiny: the one layer this library doesn't otherwise offer,
  * for the "arrange two children in a row / gap them" sentences every app
  * template needs and would otherwise reach for a separate utility
- * framework (Bootstrap's d-flex/gap-*/row-col/mt-mb/text-muted, etc) to
+ * framework (Bootstrap's d-flex, gap-N, row/col, mt/mb, text-muted, etc) to
  * write. Token-driven spacing scale so a theme can widen or tighten the
  * whole app's rhythm from one place — see CONTRACT.md "Layout utilities".
  */
@@ -2081,9 +2088,8 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --ftl-space-2xl: 3rem;
 }
 
-.ftl-row, .ftl-stack, .ftl-flex { display: flex; gap: var(--ftl-gap, var(--ftl-space-m)); }
+.ftl-row, .ftl-flex { display: flex; gap: var(--ftl-space-m); }
 .ftl-row { flex-direction: row; }
-.ftl-stack { flex-direction: column; }
 .ftl-flex.is-column { flex-direction: column; }
 
 .ftl-row.is-items-start, .ftl-stack.is-items-start, .ftl-flex.is-items-start { align-items: flex-start; }
@@ -2097,13 +2103,14 @@ pre code { padding: 0; background: none; border-radius: 0; }
 
 .ftl-row.is-wrap, .ftl-flex.is-wrap { flex-wrap: wrap; }
 
-/* Gap size modifiers — override the default var(--ftl-gap, --ftl-space-m). */
-.is-gap-none { --ftl-gap: 0; }
-.is-gap-2xs { --ftl-gap: var(--ftl-space-2xs); }
-.is-gap-xs { --ftl-gap: var(--ftl-space-xs); }
-.is-gap-s { --ftl-gap: var(--ftl-space-s); }
-.is-gap-l { --ftl-gap: var(--ftl-space-l); }
-.is-gap-xl { --ftl-gap: var(--ftl-space-xl); }
+/* Gap size modifiers — set `gap` itself, not a custom property: a custom
+   property would inherit into nested .ftl-row/.ftl-flex/.ftl-stack children. */
+.is-gap-none { gap: 0; }
+.is-gap-2xs { gap: var(--ftl-space-2xs); }
+.is-gap-xs { gap: var(--ftl-space-xs); }
+.is-gap-s { gap: var(--ftl-space-s); }
+.is-gap-l { gap: var(--ftl-space-l); }
+.is-gap-xl { gap: var(--ftl-space-xl); }
 
 /* Margin-step utilities — the mt-*/mb-* sentences a template reaches for
    most often. Deliberately not a full margin/padding utility grid (that's
@@ -2241,10 +2248,8 @@ pre code { padding: 0; background: none; border-radius: 0; }
   *::after {
     animation: none !important;
     transition: none !important;
-    box-shadow: none !important;
     text-shadow: none !important;
     color: #000 !important;
-    background: none !important;
   }
 
   html, body {

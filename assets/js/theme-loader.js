@@ -9,6 +9,7 @@
   var params = new URLSearchParams(location.search);
   var link = document.getElementById("ftl-theme-link");
   var picker = document.getElementById("ftl-theme-picker");
+  var known = null; // slugs from dist/themes.json; null until it loads
 
   // Keeps every .ftl-icon's <use> pointed at the current theme's merged
   // icon sprite (dist/icons/<slug>.svg — generic icons plus that theme's
@@ -32,27 +33,49 @@
   }
   window.ftlApplyIconTheme = applyIcons;
 
-  function apply(slug) {
+  // A slug is only ever spliced into a path, so accept nothing but a
+  // known theme name: ?theme=../x or a stale localStorage value must not
+  // become a stylesheet URL.
+  function valid(slug) {
+    if (typeof slug !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) return false;
+    return known === null || known.indexOf(slug) !== -1;
+  }
+
+  // `persist` is true only for a choice the user made in the picker. A
+  // theme that came from ?theme= (the gallery's iframes, screenshot
+  // automation) must not overwrite the stored preference.
+  function apply(slug, persist) {
     document.documentElement.dataset.theme = slug;
-    link.href = "dist/" + slug + ".css";
+    if (link) link.href = "dist/" + slug + ".css";
     applyIcons(slug);
-    try { localStorage.setItem("ftl-example-theme", slug); } catch (e) {}
+    if (persist) {
+      try { localStorage.setItem("ftl-example-theme", slug); } catch (e) {}
+    }
     if (picker) picker.value = slug;
   }
 
-  fetch("dist/themes.json").then(function (r) { return r.json(); }).then(function (list) {
+  fetch("dist/themes.json").then(function (r) {
+    if (!r.ok) throw new Error("themes.json " + r.status);
+    return r.json();
+  }).then(function (list) {
+    if (!list.length) throw new Error("themes.json is empty");
+    known = list.map(function (t) { return t.slug; });
     var stored;
     try { stored = localStorage.getItem("ftl-example-theme"); } catch (e) {}
-    var initial = params.get("theme") || stored || list[0].slug;
+    var initial = [params.get("theme"), stored, known[0]].filter(valid)[0];
     if (picker) {
-      picker.innerHTML = list.map(function (t) {
-        return '<option value="' + t.slug + '">' + t.label + "</option>";
-      }).join("");
-      picker.value = initial;
-      picker.addEventListener("change", function () { apply(picker.value); });
+      picker.textContent = "";
+      list.forEach(function (t) {
+        var o = document.createElement("option");
+        o.value = t.slug;
+        o.textContent = t.label;
+        picker.appendChild(o);
+      });
+      picker.addEventListener("change", function () { apply(picker.value, true); });
     }
-    apply(initial);
+    apply(initial, false);
   }).catch(function () {
-    apply(params.get("theme") || "aqua");
+    var wanted = params.get("theme");
+    apply(valid(wanted) ? wanted : "aqua", false);
   });
 })();
