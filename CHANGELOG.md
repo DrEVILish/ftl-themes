@@ -22,6 +22,13 @@ changes are called out explicitly here.
   tab with its ▼, and round back/forward orbs; a blue-silk visualization
   behind the content; and the transport bar with its blue seek line and
   centred stop / prev / play-orb / next / volume capsule.
+- **win7-aero: authentic chrome on the existing glass.** Harmony-blue
+  desktop instead of pastel blobs; one glass window with diagonal glare
+  streaks, glowing black caption text and the joined min/max/red-close
+  caption group; a near-white client area; Win7 grey-gloss buttons and
+  tabs with the pale-blue hover (primary is the default-button glow, no
+  longer a blue fill); Explorer selection and the green glossy progress
+  bar. The nav no longer paints a frosted box inside the title bar.
 
 - **lcars: fidelity pass against the on-screen references.** The shell is
   now a real elbow frame — a thick orange leg curving into a thin bar with

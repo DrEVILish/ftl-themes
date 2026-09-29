@@ -25,26 +25,34 @@ than XP's opaque plastic. The generation that replaced "shiny" with
    the desktop, not an opaque card floating on it.
 4. **Rounded, not sharp.** `--radius: 6px` — softer than Luna's 8px
    pill-adjacent buttons, closer to a subtle window-corner round.
-5. **Light theme discipline.** Filled primary buttons need explicit white
-   text (`--on-accent`), same reasoning as every light theme in this
-   catalog.
+5. **Glass is chrome, controls are not.** Title bar, frame and status
+   strip are glass; buttons and tabs are Win7's opaque grey gloss
+   (`#f2f2f2 → #ebebeb | #dddddd → #cfcfcf`, hard split at 50%, `#707070`
+   frame), turning pale Aero blue with a `#3c7fb1` frame on hover. The
+   primary (default) button wears that blue state plus a cyan glow.
 
 ## Signature details
 
-- Buttons, panels, modals, the nav bar, and the toolbar all carry a real
-  `backdrop-filter: blur(8px) saturate(1.4)` — this is the one CSS
-  property that makes "glass" read as glass instead of "translucent gray."
-- The app bar and status strip blur even harder (10px) and get an inset
-  top highlight, the glass-edge catch-light.
-- The page backdrop is the Aero blue gradient, not a flat color — glass
-  needs something behind it worth seeing through.
+- Panels, modals, dropdowns, the toolbar and the content well carry a real
+  `backdrop-filter: blur(20px) saturate(1.6)`; the title bar and status
+  strip 24px — the property that makes glass read as glass.
+- The title bar carries Aero's faint diagonal **glare streaks**, a 1px
+  dark outer frame, black caption text with a soft **white glow** behind
+  it, and the joined **caption-button group** (min / max / red close)
+  tucked under the top edge, drawn as one inline SVG.
+- The desktop is the Windows 7 **"Harmony"** wallpaper: deep-to-bright
+  blue, glowing light swooshes and a bloom where the logo sits — sharp
+  enough shapes that the frost visibly softens them.
+- Selection is Explorer's pale-blue fill in a `#99d1ff` frame; tabs are
+  raised gloss tabs, the selected one white; progress is the glossy
+  green bar.
 
 ## Layout
 
-The shell becomes a **floating glass window**: a blurred, rounded title
-bar, a near-transparent content well, and a frosted taskbar-style status
-strip, with the Aero blue desktop gradient visible behind and through all
-of it.
+The shell becomes **one glass window**: title bar, a near-white frosted
+client area (`rgba(255,255,255,0.72)`, so only a hint of desktop colour
+comes through, as in a real Win7 window) and a frosted status strip,
+joined inside one dark hairline frame over the Harmony desktop.
 
 ## Tell-tales of an inauthentic result
 
@@ -70,8 +78,8 @@ of it.
 ## Contrast honesty
 
 - **Accent lifted from the reference:** the Aero blue `#1c6fd1` is 2.69:1 against the desktop backdrop `--bg` `#a6c2e0` (a fail for text on the backdrop). Shipped `--accent` is `#1265c7`: 3.08:1 on `--bg` (the 3.0:1 soft floor), 5.21:1 on `--surface`, 5.66:1 under white text.
-- **Primary button:** the white label was 2.8:1 on the old pale glass top stop; the glass is deepened (rgba(40,110,200) to rgba(14,74,150)).
-- **App bar:** the accent measured 4.3:1 on the frosted bar over the desktop gradient, so the brand uses `#0b4a94` (8.67:1 on the backdrop) and nav items `#3f4852`.
+- **Primary button:** dark `#1a1a1a` text on the pale-blue gloss.
+- **App bar:** brand `#000000` and nav items `#1a1a1a` on the frosted bar, with a white glow behind them.
 - **`--muted`** `#55606b` is 5.91:1 on `--surface` but 3.49:1 directly on `--bg`; do not set muted text on the bare backdrop.
 - `--danger`, `--success`, `--warning` on `--bg` are 2.96 / 2.79 / 1.77:1: fills only; use the `-text` variants for copy.
 
