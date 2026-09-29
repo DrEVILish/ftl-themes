@@ -58,7 +58,7 @@ DOS blue.
 
 ## Typography
 
-`--font` and `--font-mono` are both `"Perfect DOS VGA 437", "Courier New", monospace`. Perfect DOS VGA 437 is a community recreation of the IBM VGA 8x16 bitmap font. **It is not vendored** (nothing under `assets/fonts/` for it), so unless the user has it installed, **Courier New** is what renders; the crisp 9x16 cell look is lost. The captures are DOS setup screens that show the real bitmap face.
+`--font` and `--font-mono` are **Px437 IBM VGA 9x16**, vendored (`assets/fonts/Web437_IBM_VGA_9x16.woff2`): VileR's pixel-exact reproduction of the IBM VGA ROM font in the 9x16 cell that 720x400 text mode actually drew, from the Ultimate Oldschool PC Font Pack. Licensed **CC BY-SA 4.0** (not OFL like most of `assets/fonts/`) — attribution in `assets/fonts/NOTICE.md`. It renders crisply at 16px and its multiples.
 
 ## Contrast honesty
 
@@ -98,6 +98,5 @@ layout at **L1**.
 - **F-key bar:** the status strip opens with Norton's `1Help … 10Quit`
   row — grey key numbers on black, black labels on cyan blocks, drawn as
   two overlaid monospaced pseudo-element strings.
-- **Font:** `"Perfect DOS VGA 437"` is not vendored, so most readers get
-  Courier New. See the open question in the changelog.
+- **Font:** the real IBM VGA 9x16 text-mode glyphs (Px437, CC BY-SA 4.0).
 

@@ -40,9 +40,9 @@ changes are called out explicitly here.
 - **msdos: Norton/EDIT chrome.** Grey menu bar with inverted open item;
   cyan double-line boxes with the title set into the frame; yellow
   headings and column heads; shadowed block buttons; grey dialogs with a
-  hard drop shadow; the two-tone `1Help … 10Quit` F-key bar. Open
-  question: the VGA face is still not vendored (the authentic Px437 IBM
-  VGA font is CC BY-SA 4.0, not OFL like the rest of `assets/fonts/`).
+  hard drop shadow; the two-tone `1Help … 10Quit` F-key bar; and the
+  real IBM VGA 9x16 text-mode font, vendored (Px437 by VileR, CC BY-SA
+  4.0 — see `assets/fonts/NOTICE.md`).
 - **steampunk: steam-age furniture.** Vendored IM Fell English SC (OFL)
   for display text with engraved headings; brass nameplates with screws
   for panel titles; copper steam pipes with bolted flanges along the bar

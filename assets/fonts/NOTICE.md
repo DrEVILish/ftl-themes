@@ -10,7 +10,7 @@ directory placement — Google Fonts sorts fonts into `ofl/`, `apache/` or
 `ufl/` by license, so the directory itself is a second confirmation
 alongside the specimen page's license line).
 
-All files vendored here except Bedstead (CC0, below) turned out to be **SIL Open Font License,
+All files vendored here except Bedstead (CC0) and Px437 IBM VGA 9x16 (CC BY-SA 4.0), both below, turned out to be **SIL Open Font License,
 version 1.1** — but that was verified per family below, not assumed.
 OFL 1.1 permits embedding, bundling and redistributing the font (including
 as a webfont, including verbatim, including at whatever scale this
@@ -74,6 +74,22 @@ files are vendored unmodified.
 - **Source:** https://fonts.google.com/specimen/IM+Fell+English+SC
 - **Used by:** `steampunk` (display face: headings, panel nameplates,
   buttons, the app bar)
+
+## Px437 IBM VGA 9x16
+
+- **Family:** Px437 IBM VGA 9x16 (web cut `Web437_IBM_VGA_9x16`, converted
+  from the pack's WOFF to WOFF2 with fontTools, glyphs unmodified —
+  `Web437_IBM_VGA_9x16.woff2`)
+- **Designer:** VileR (int10h.org), reproducing the IBM VGA ROM font
+- **License:** Creative Commons Attribution-ShareAlike 4.0 International
+  (CC BY-SA 4.0), per the pack's own `LICENSE.TXT` —
+  https://creativecommons.org/licenses/by-sa/4.0/. Attribution: "Ultimate
+  Oldschool PC Font Pack" by VileR, https://int10h.org/oldschool-pc-fonts/.
+  ShareAlike applies to the font file itself (any modified version must
+  carry the same license), not to the CSS or apps that load it.
+- **Source:** https://int10h.org/oldschool-pc-fonts/ (pack v2.2, web
+  edition)
+- **Used by:** `msdos` (every glyph on the page)
 
 ## Orbitron
 
