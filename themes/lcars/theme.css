@@ -26,12 +26,16 @@
 html[data-theme="lcars"] {
   color-scheme: dark;
   --bg: #000000;
-  --surface: #0c0c12;
-  --surface-2: #191926;
-  --border: #6c79a8;
-  --hairline: #2c2c44;
-  --text: #dde4ff;
-  --muted: #8f96c2;
+  /* No grey cards: surfaces are black, so every panel is candy framing on
+     the black substrate. --surface-2 survives only for "off" tracks. */
+  --surface: #000000;
+  --surface-2: #1c1c2c;
+  --border: #9999ff;
+  --hairline: #2a2a40;
+  /* On screen, LCARS text is coloured, never white: body copy in tan,
+     secondary text in periwinkle. */
+  --text: #ffcc99;
+  --muted: #9999ff;
   --accent: #ff9900;
   --accent-2: #9999cc;
   --danger: #d15a5a;
@@ -45,7 +49,9 @@ html[data-theme="lcars"] {
   --on-danger: #000000;
   --on-success: #000000;
   --radius: 1.4rem;
-  --font: "Trebuchet MS", Verdana, system-ui, sans-serif;
+  /* Everything is set in the condensed display face, body copy included:
+     a Trebuchet paragraph under Antonio headings reads as a web page. */
+  --font: "Antonio", "Arial Narrow", sans-serif-condensed, sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #ffcc99;
   /* LCARS candy bars — extra palette, namespaced so nothing collides.
@@ -62,15 +68,19 @@ html[data-theme="lcars"] {
   --lcars-lavender: #cc99cc;
   --lcars-sky: #6699ff;
   --lcars-rose: #cc6699;
+  --lcars-periwinkle: #9999ff;
+  --lcars-gold: #ffcc66;
 
   --link: var(--lcars-sky);
   /* Elbow buttons: pill with one flat end. */
-  --btn-radius: 0 1.2rem 1.2rem 0;
+  /* Stand-alone buttons are full pills with the label pushed to the
+     right-hand end, as on the on-screen control blocks. */
+  --btn-radius: 999px;
   --btn-border-width: 0;
-  --btn-padding: 0.45rem 1.4rem 0.45rem 1.1rem;
-  --btn-padding-sm: 0.2rem 1rem 0.2rem 0.8rem;
-  --btn-weight: 700;
-  --btn-tracking: 0.08em;
+  --btn-padding: 0.5rem 1rem 0.35rem 2rem;
+  --btn-padding-sm: 0.25rem 0.8rem 0.15rem 1.4rem;
+  --btn-weight: 400;
+  --btn-tracking: 0.06em;
   --btn-transform: uppercase;
   --btn-bg: var(--lcars-lavender);
   --btn-fg: #000;
@@ -88,18 +98,26 @@ html[data-theme="lcars"] {
   --row-selected-fg: #000;
   --progress-radius: 1rem;
   --progress-fill: var(--lcars-sky);
-  --nav-bg: #000;
-  --nav-rule-width: 0.35rem;
-  --nav-rule: var(--accent);
-  --nav-radius: 0 0 0 2.2rem;
-  --nav-item-radius: 0 1rem 1rem 0;
+  --nav-bg: transparent;
+  --nav-rule-width: 0;
+  --nav-rule: transparent;
+  --nav-radius: 0;
+  --nav-item-radius: 999px;
+  --nav-item-bg: var(--lcars-lavender);
+  --nav-item-fg: #000;
+  --nav-item-bg-active: var(--accent);
+  --nav-item-fg-active: #000;
   --badge-radius: 1rem;
-  --tab-radius: 1rem 1rem 0 0;
+  /* Tabs are a row of touching candy blocks, not underlined labels. */
+  --tab-radius: 0;
+  --tab-bg: var(--lcars-lavender);
+  --tab-fg: #000;
   --tab-bg-active: var(--accent);
   --tab-fg-active: #000;
+  --tab-underline-active: transparent;
   --overlay-bg: rgba(0, 0, 0, 0.75);
   --label-transform: uppercase;
-  --label-tracking: 0.05em;
+  --label-tracking: 0.08em;
   --indicator-fg: var(--accent);
   --indicator-track: var(--surface-2);
 
@@ -146,10 +164,10 @@ html[data-theme="lcars"] {
   --toast-bg: #000;
   --toast-fg: var(--text);
   --toast-border: var(--accent);
-  --toast-radius: 0 1rem 1rem 0;
+  --toast-radius: 0.7rem 0 0 0.7rem;
   --alert-bg: #000;
   --alert-fg: var(--text);
-  --alert-radius: 0 1rem 1rem 0;
+  --alert-radius: 0.7rem 0 0 0.7rem;
   --context-menu-bg: #000;
   --context-menu-border: var(--accent);
   --context-menu-radius: 1rem;
@@ -169,176 +187,259 @@ html[data-theme="lcars"] {
   --popover-bg: #000;
   --popover-border: var(--accent);
   --popover-radius: 1rem;
-}
-html[data-theme="lcars"] .toast,
-html[data-theme="lcars"] .alert,
-html[data-theme="lcars"] .card {
-  border: none;
-  border-left: 0.4rem solid var(--accent);
+  --card-bg: transparent;
+  --panel-bg: transparent;
+  --modal-bg: #000;
+  letter-spacing: 0.02em;
 }
 html[data-theme="lcars"] .badge-button.is-active { color: #000; }
 
 html[data-theme="lcars"] h1,
 html[data-theme="lcars"] h2,
 html[data-theme="lcars"] h3 {
-  /* Antonio is the signature display face — it's already shipped for the
-     shell bar and readouts, so headings lead with it too. Section titles
-     are the most-seen text after meters; Trebuchet headings next to
-     Antonio readouts read as two different themes. */
-  font-family: "Antonio", var(--font);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 400;
+}
+html[data-theme="lcars"] h1 { font-size: 2.6rem; line-height: 1; color: var(--lcars-gold); }
+html[data-theme="lcars"] .stat-value { font-family: var(--font); color: var(--accent); font-weight: 400; font-size: 2rem; }
+
+/* --- Elbow frames ------------------------------------------------------ *
+ * The LCARS panel is not a box: it is a thick candy leg down the left that
+ * sweeps round a curved elbow into a bar across the top, with the section
+ * title set black on that bar at its right-hand end. Built from two
+ * borders so the inner curve comes free: the outer radius minus the border
+ * widths is the inner radius. Colours rotate through the candy palette by
+ * position (--lc) — LCARS codes by colour, not by meaning. */
+html[data-theme="lcars"] .panel,
+html[data-theme="lcars"] .card,
+html[data-theme="lcars"] .modal {
+  --lc: var(--accent);
+  --lc-leg: 0.9rem;
+  --lc-top: 1.5rem;
+  border: 0;
+  border-left: var(--lc-leg) solid var(--lc);
+  border-top: var(--lc-top) solid var(--lc);
+  border-radius: 2.6rem 0.75rem 0 0.9rem / 2.1rem 0.75rem 0 0.9rem;
+  box-shadow: none;
+}
+/* A card has no title to carry, so its top bar is a thin rule. */
+html[data-theme="lcars"] .card {
+  --lc-leg: 0.7rem;
+  --lc-top: 0.45rem;
+  border-radius: 1.8rem 0.3rem 0 0.7rem / 1.2rem 0.3rem 0 0.7rem;
+}
+html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+2) { --lc: var(--lcars-lavender); }
+html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+3) { --lc: var(--lcars-peach); }
+html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+4) { --lc: var(--lcars-periwinkle); }
+html[data-theme="lcars"] .modal { --lc: var(--lcars-lavender); }
+
+/* The title sits in the top border itself: pulled up out of the content
+   box, black on the candy bar, flush right. */
+html[data-theme="lcars"] .panel-header,
+html[data-theme="lcars"] .modal-header {
+  margin: calc(-1rem * var(--density) - var(--lc-top)) calc(-1rem * var(--density)) calc(1rem * var(--density)) 0;
+  padding: 0 0.7rem;
+  height: var(--lc-top);
+  line-height: var(--lc-top);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+}
+html[data-theme="lcars"] .panel-header :is(strong, b, h2, h3) { font-weight: 400; color: #000; font-size: inherit; margin: 0; }
+
+html[data-theme="lcars"] .toast,
+html[data-theme="lcars"] .alert {
+  border: none;
+  border-left: 1.4rem solid var(--accent);
 }
 
-/* Panels: black slabs with a candy side-rail and one elbow corner. */
-html[data-theme="lcars"] .panel,
-html[data-theme="lcars"] .modal {
-  border: none;
-  border-left: 0.5rem solid var(--accent);
-  border-top-right-radius: 1.6rem;
-}
-html[data-theme="lcars"] .modal { border-top: 0.35rem solid var(--lcars-lavender); }
+/* Buttons: pill blocks, label at the right-hand end. */
+html[data-theme="lcars"] .btn:not(.btn-icon) { justify-content: flex-end; text-align: right; min-width: 5.5rem; }
+html[data-theme="lcars"] .btn-primary { --btn-bg: var(--accent); --btn-bg-hover: var(--lcars-gold); }
+html[data-theme="lcars"] .btn-secondary { --btn-bg: var(--lcars-periwinkle); --btn-fg: #000; }
+html[data-theme="lcars"] .btn-success { --btn-bg: var(--lcars-sky); }
+html[data-theme="lcars"] .btn-ghost { min-width: 0; }
+
+/* Tabs: touching blocks, pill-capped at the two ends of the row. */
+html[data-theme="lcars"] .tabs { border-bottom: 0; gap: 0.25rem; }
+html[data-theme="lcars"] .tab { border: 0; padding: 0.45em 1.2em 0.3em; font-size: 0.95em; }
+html[data-theme="lcars"] .tab.is-active { border-bottom: 0; }
+html[data-theme="lcars"] .tab:hover:not(.is-active) { background: var(--lcars-tan); color: #000; }
+html[data-theme="lcars"] .tab:first-child { border-radius: 999px 0 0 999px; padding-left: 1.6em; }
+html[data-theme="lcars"] .tab:last-child { border-radius: 0 999px 999px 0; padding-right: 1.6em; }
 
 html[data-theme="lcars"] .table th:first-child { border-radius: 1rem 0 0 1rem; }
 html[data-theme="lcars"] .table th:last-child { border-radius: 0 1rem 1rem 0; }
 
-html[data-theme="lcars"] .btn-success { --btn-bg: var(--lcars-sky); }
-
 /* --- Layout ------------------------------------------------------------ *
- * The LCARS shell: a full-width sweep bar whose bottom-left corner elbows
- * down into a candy-bar rail, with the content inset to the right of it.
- * This is the layout difference between this theme and a flat HUD theme —
- * switching to it re-arranges the shell, it does not just recolor it. */
+ * The LCARS shell: a top frame whose thick left leg sweeps round an elbow
+ * into a thin bar running right, a stack of labelled candy blocks down the
+ * rail beneath it, and a mirrored elbow closing the frame at the bottom.
+ * Switching to this theme re-arranges the shell, it does not just recolor it. */
 html[data-theme="lcars"] {
+  --lcars-rail: 7rem;
   --app-bg: #000;
-  --app-columns: 6rem minmax(0, 1fr);
-  --app-gap: 0.5rem;
+  --app-columns: var(--lcars-rail) minmax(0, 1fr);
+  --app-gap: 0.3rem 1.25rem;
   --app-padding: 0.5rem;
-  --app-bar-bg: var(--accent);
-  --app-bar-fg: #000;
+  --app-bar-bg: #000;
+  --app-bar-fg: var(--text);
   --app-bar-rule-width: 0;
-  /* The elbow: bar sweeps in, curving down into the rail below it. */
-  --app-bar-radius: 1rem 1rem 0 3rem;
-  --app-bar-height: 3.5rem;
-  --app-bar-padding: 0.6rem 1.5rem;
-  --app-bar-font: "Antonio", var(--font);
-  --app-rail-display: flex;
+  --app-bar-radius: 0;
+  --app-bar-height: 5.5rem;
+  --app-bar-padding: 0.4rem 0 0.6rem 1.25rem;
+  --app-bar-font: var(--font);
+  --app-rail-display: block;
   /* The rail ships empty (aria-hidden, no content) — it's painted entirely
-     by the gradient below. Without this, core's empty-rail rule collapses
-     it to display:none and the elbow (this theme's whole signature) never
-     renders, no matter what --app-rail-display says. */
-  --app-rail-empty-display: flex;
+     by the gradients below. Without this, core's empty-rail rule collapses
+     it to display:none and the frame never renders. */
+  --app-rail-empty-display: block;
   --app-rail-padding: 0;
-  --app-rail-radius: 3rem 0 0 1rem;
-  --app-main-padding: 1.25rem 1.25rem 1.25rem 0.5rem;
+  --app-rail-radius: 0;
+  --app-main-padding: 0.75rem 0.75rem 1.5rem 0;
   --app-status-bg: #000;
-  --app-status-fg: var(--lcars-tan);
+  --app-status-fg: var(--text);
   --app-status-rule: transparent;
-  --app-status-radius: 0 0 1rem 1rem;
+  --app-status-radius: 0;
+  --app-status-padding: 0.9rem 0 0.2rem 1.25rem;
 }
 
-/* The candy-bar stack, drawn entirely in CSS so the app ships no LCARS
-   markup: hard-stopped gradient bands with black gaps between them. */
+/* Top elbow: thick leg + thin bar, outer radius larger than both borders
+   so the inside of the bend is a real curve. */
+html[data-theme="lcars"] .app-bar {
+  position: relative;
+  align-items: flex-end;
+  border-left: var(--lcars-rail) solid var(--accent);
+  border-bottom: 1.1rem solid var(--accent);
+  border-bottom-left-radius: calc(var(--lcars-rail) + 2.5rem) 3.4rem;
+}
+/* The leg carries a block code in black at its lower right, and the bar
+   ends in a separate pill-capped segment, cut off by a black gap. */
+html[data-theme="lcars"] .app-bar::before {
+  content: "LCARS 47";
+  position: absolute;
+  top: 0.4rem;
+  right: calc(100% + 0.6rem);
+  color: #000;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+html[data-theme="lcars"] .app-bar::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1.1rem;
+  width: 22%;
+  height: 1.1rem;
+  background: linear-gradient(90deg, #000 0 0.3rem, var(--lcars-lavender) 0.3rem 55%, #000 55% calc(55% + 0.3rem), var(--lcars-tan) 0);
+  border-radius: 0 999px 999px 0;
+  pointer-events: none;
+}
+
+/* Inside the frame the nav is bare: no box of its own, pill items on
+   black, and the brand as the big right-aligned LCARS screen title. */
+html[data-theme="lcars"] .app-bar .nav { padding: 0; flex: 1; min-width: 0; align-items: flex-end; }
+html[data-theme="lcars"] .app-bar .nav-item { text-transform: uppercase; letter-spacing: 0.08em; padding: 0.35em 0.9em 0.2em 1.6em; text-align: right; }
+html[data-theme="lcars"] .app-bar .nav-brand {
+  order: 99;
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 2.4rem;
+  line-height: 1;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Rail: fixed-height candy blocks with black gaps, the last one running
+   on down to the bottom elbow. Fixed rem stops, not percentages, so a long
+   page doesn't stretch the blocks into slabs. */
 html[data-theme="lcars"] .app-rail {
   position: relative;
-  background-image: linear-gradient(
-    180deg,
-    var(--lcars-lavender) 0 14%,
-    #000 14% 15.5%,
-    var(--lcars-sky) 15.5% 34%,
-    #000 34% 35.5%,
-    var(--accent) 35.5% 72%,
-    #000 72% 73.5%,
-    var(--lcars-rose) 73.5% 88%,
-    #000 88% 89.5%,
-    var(--lcars-tan) 89.5% 100%
-  );
+  background:
+    linear-gradient(
+      180deg,
+      var(--lcars-lavender) 0 5rem,
+      #000 5rem 5.3rem,
+      var(--lcars-sky) 5.3rem 11rem,
+      #000 11rem 11.3rem,
+      var(--accent) 11.3rem 13rem,
+      #000 13rem 13.3rem,
+      var(--lcars-peach) 13.3rem 20rem,
+      #000 20rem 20.3rem
+    ) top / 100% 20.3rem no-repeat,
+    var(--lcars-tan);
 }
-
-/* The rail is aria-hidden decoration (no real nav items live here — see the
-   markup comment above), which is exactly why it read as inert color bars
-   in review rather than an LCARS "elbow": on screen every candy block in a
-   real LCARS panel carries a short all-caps callout. A single element only
-   has two pseudo-slots, so these label the two blocks that most read as
-   functional "elbow" corners — the block curling into the bar's sweep at
-   the top, and the block anchoring the transport edge at the bottom —
-   rather than leaving the whole stack unlabeled. Black text matches the
-   on-screen LCARS convention of dark labels set directly on the candy
-   fill, and clears 4.5:1 on both the lavender and tan bands they sit on. */
+/* Each labelled block carries a black code at its lower right, as on the
+   on-screen panels. Two pseudo-slots, so the top two blocks. */
 html[data-theme="lcars"] .app-rail::before,
 html[data-theme="lcars"] .app-rail::after {
   position: absolute;
-  left: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: "Antonio", var(--font);
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  right: 0.5rem;
   color: #000;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
   pointer-events: none;
 }
-html[data-theme="lcars"] .app-rail::before {
-  content: "NAV";
-  top: 0;
-  height: 14%;
-}
-html[data-theme="lcars"] .app-rail::after {
-  content: "AUX";
-  bottom: 0;
-  height: 10.5%;
+html[data-theme="lcars"] .app-rail::before { content: "02-6117"; top: 3.7rem; }
+html[data-theme="lcars"] .app-rail::after { content: "03-1138"; top: 9.7rem; }
+
+/* Bottom elbow, mirrored: the leg rises into the rail above, the bar runs
+   right along the top of the status strip. */
+html[data-theme="lcars"] .app-status {
+  border-left: var(--lcars-rail) solid var(--lcars-tan);
+  border-top: 0.7rem solid var(--lcars-tan);
+  border-top-left-radius: calc(var(--lcars-rail) + 2.5rem) 2.6rem;
+  min-height: 3rem;
 }
 
-/* On the phone strip the bands run left-to-right, so their corner labels
-   sit at the strip's own left/right ends and read horizontally. */
-@media (max-width: 720px) {
-  html[data-theme="lcars"] .app-rail::before,
-  html[data-theme="lcars"] .app-rail::after {
-    writing-mode: horizontal-tb;
-    transform: none;
-    top: 0;
-    height: 100%;
-    width: auto;
-  }
-  html[data-theme="lcars"] .app-rail::before { left: 0; right: auto; width: 18%; }
-  html[data-theme="lcars"] .app-rail::after { left: auto; right: 0; width: 23%; }
-}
-
-/* On a phone the rail becomes a horizontal strip under the bar rather than
-   vanishing — the colour coding is most of the theme's identity. */
+/* On a phone the rail becomes a horizontal colour strip under the bar
+   rather than vanishing — the colour coding is most of the identity. */
 @media (max-width: 720px) {
   html[data-theme="lcars"] {
+    --lcars-rail: 2.5rem;
     --app-areas-sm: "bar" "rail" "main" "status";
-    --app-rows-sm: auto 1.5rem minmax(0, 1fr) auto;
+    --app-rows-sm: auto 1.1rem minmax(0, 1fr) auto;
     --app-rail-display-sm: block;
-    --app-rail-radius: 0.75rem;
-    --app-bar-radius: 1rem 1rem 0 1rem;
+    --app-bar-height: 4rem;
+    --app-bar-padding: 0.3rem 0 0.5rem 0.75rem;
   }
+  html[data-theme="lcars"] .app-bar .nav-brand { font-size: 1.6rem; }
+  html[data-theme="lcars"] .app-bar::before,
+  html[data-theme="lcars"] .app-rail::before,
+  html[data-theme="lcars"] .app-rail::after { content: none; }
   html[data-theme="lcars"] .app-rail {
-    background-image: linear-gradient(
+    border-radius: 999px;
+    background: linear-gradient(
       90deg,
       var(--lcars-lavender) 0 18%,
-      #000 18% 20%,
-      var(--lcars-sky) 20% 45%,
-      #000 45% 47%,
-      var(--accent) 47% 75%,
-      #000 75% 77%,
-      var(--lcars-rose) 77% 100%
+      #000 18% 19%,
+      var(--lcars-sky) 19% 45%,
+      #000 45% 46%,
+      var(--accent) 46% 60%,
+      #000 60% 61%,
+      var(--lcars-peach) 61% 100%
     );
   }
 }
 
-/* App-bar nav text. Black on the orange sweep bar, as on screen. The root nav tokens
-   (orange brand, lavender items) were tuned for black panels and measured
-   1.0:1 and 1.3:1 here. */
+/* App-bar nav text. Brand is orange on black now, items black on pills. */
 html[data-theme="lcars"] .app-bar {
-  --nav-brand-fg: #000000;
-  --nav-item-fg: #000000;
+  --nav-brand-fg: var(--accent);
 }

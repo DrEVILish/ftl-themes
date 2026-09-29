@@ -263,7 +263,11 @@ def check_app_bar(theme, tokens, css, variant=None):
         fg = resolve(scoped, scoped.get(tok, f"var(--{default})"))
         if not fg:
             continue
-        worst = min(contrast(over(fg, s), s) for s in stops)
+        # A nav item with its own fill (pill items) is read against that
+        # fill, not the bar behind it.
+        item_bg = resolve(scoped, scoped.get("nav-item-bg", "")) if tok == "nav-item-fg" else None
+        item_stops = [over(item_bg, s) for s in stops] if item_bg and item_bg[3] > 0 else stops
+        worst = min(contrast(over(fg, s), s) for s in item_stops)
         if worst < 4.5:
             fail(theme, "contrast",
                  f"app-bar {label}: --{tok} {fg[:3]} is {worst:.1f}:1 against the "

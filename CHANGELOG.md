@@ -5,6 +5,19 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **lcars: fidelity pass against the on-screen references.** The shell is
+  now a real elbow frame — a thick orange leg curving into a thin bar with
+  pill-capped end segments, fixed-height labelled rail blocks, and a
+  mirrored tan bottom elbow on the status strip. Panels, cards and modals
+  are candy elbow frames on black (no grey cards) with the panel title set
+  black in the top bar, flush right; colours rotate by position. Antonio
+  now sets all text, body copy is tan and secondary text periwinkle,
+  buttons are right-labelled pills, tabs are touching blocks, and the
+  brand is the large right-aligned screen title.
+- **check: pill nav items are measured against their own fill.** The
+  app-bar nav-item contrast lint now reads `--nav-item-bg` when a theme
+  sets one, instead of always measuring against the bar behind it.
+
 ## v4.0.0 — the `ftl-` prefix is gone (2026-09-29)
 
 > ### ⚠ BREAKING — read [`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md) before upgrading

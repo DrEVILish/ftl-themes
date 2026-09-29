@@ -26,12 +26,16 @@ caption to say which theme it is, it has failed.
    rose/tan palette is decorative structure. Resist making every lavender
    block mean one semantic thing — that's a modern dashboard habit.
 4. **Rounded ends, flat joins.** A block is a pill where it terminates and
-   square where it meets its neighbour. That asymmetry is why buttons here
-   are `0 1.2rem 1.2rem 0`, not fully rounded.
+   square where it meets its neighbour. Stand-alone buttons are full pills
+   with the label pushed to the right-hand end; a row of tabs is touching
+   square blocks, pill-capped only at the two ends of the row.
 5. **Chunky, never dense.** This is a wall panel operated by hand, so
    `--density: 1.15`. A cramped LCARS is a wrong LCARS.
 6. **Type is tall, condensed, uppercase.** Antonio stands in for the
-   original's Swiss 911/Helvetica Compressed.
+   original's Swiss 911/Helvetica Compressed, and sets *everything*, body
+   copy included.
+7. **Text is coloured, never white.** Body copy is tan (`#ffcc99`),
+   secondary text periwinkle (`#9999ff`), titles orange/gold.
 
 ## How the tokens carry that
 
@@ -40,6 +44,8 @@ caption to say which theme it is, it has failed.
 | `--bg` | `#000000` | True black. Not near-black — the blocks must float. |
 | `--accent` | `#ff9900` | The canonical LCARS orange; the system's primary structural colour. Matches "atomic tangerine" in the documented Okuda reference palette exactly. |
 | `--lcars-lavender` / `-sky` / `-rose` / `-tan` / `-peach` | `#cc99cc` `#6699ff` `#cc6699` `#ffcc99` `#ff9966` | The candy palette, namespaced so it can never collide with another theme's tokens. `-lavender` matches the reference palette's "lilac" exactly; `-sky` was corrected from an unsourced pastel periwinkle to sit close to the reference's saturated blue family ("mariner"/"bahama-blue") while still clearing the button-text contrast floor. |
+| `--surface` | `#000000` | Panels have no fill; they are candy elbow frames on the black substrate. |
+| `--text` / `--muted` | `#ffcc99` / `#9999ff` | Coloured text, as on screen. |
 | `--radius` | `1.4rem` | Large by default — everything wants to be a pill. |
 | `--on-accent` | `#000000` | Black text on candy fills. LCARS never sets light text on a colour block. |
 | `--density` | `1.15` | Deliberately loose. |
@@ -51,6 +57,14 @@ predates CSS by a decade, but the closest thing to a canonical hex list
 this catalog could verify against.
 
 ## Signature details
+
+- **Panels are elbow frames.** `.panel`, `.card` and `.modal` get a thick
+  candy leg down the left that sweeps round a curved elbow into a bar
+  across the top (two borders; the inner curve falls out of the outer
+  radius minus the border widths). A panel's `.panel-header` is pulled up
+  into that bar and set black, flush right — the on-screen section-title
+  position. Frame colours rotate orange → lavender → peach → periwinkle by
+  position.
 
 - **Meters** band in the *candy* palette (sky → orange → rose) rather than
   green/amber/red. A traffic-light meter instantly reads as a modern audio
@@ -76,13 +90,17 @@ than a picture of the thing it does. The sprite ships 136 `<symbol>`s in total (
 
 Selecting LCARS re-arranges the app shell, it does not merely recolour it:
 
-- a **6rem candy rail** appears down the left (`--app-columns`), drawn
-  entirely in CSS as a hard-stopped gradient stack so no app ships
-  LCARS-specific markup;
-- the **top bar becomes a solid orange sweep** whose bottom-left corner
-  elbows into that rail (`1rem 1rem 0 3rem`);
-- content insets to the right of the rail, and the status strip rounds off
-  the bottom of the frame.
+- a **7rem candy rail** appears down the left (`--app-columns`), drawn
+  entirely in CSS as fixed-height blocks (rem stops, so a long page doesn't
+  stretch them into slabs) separated by black gaps, the top two carrying
+  black block codes at their lower right, the last running on to the
+  bottom;
+- the **top bar becomes an orange elbow**: a thick leg over the rail that
+  curves into a thin bar running right, ending in separate pill-capped
+  segments; the brand becomes the large right-aligned screen title and nav
+  items become pills on the black above the bar;
+- the **status strip is the mirrored bottom elbow**, in tan, closing the
+  frame.
 
 On phones the rail becomes a horizontal colour strip under the bar rather
 than disappearing — the colour coding is most of the identity.
@@ -116,7 +134,7 @@ Don't:
 ## Typography
 
 - **Display:** Antonio (Regular 400 and Bold 700), **vendored** in `assets/fonts/` (SIL OFL 1.1, see `assets/fonts/NOTICE.md`). It drives the sweep bar (`--app-bar-font`), the big numeric readouts (`--readout-font`) and the other all-caps display spots in `theme.css`. It is a stand-in: the on-screen originals are usually described as Swiss 911 / Helvetica Compressed, but nothing in `references/lcars/` names a face, so that attribution is unverified.
-- **Body:** `--font` is `"Trebuchet MS", Verdana, system-ui, sans-serif` — **system fonts, not vendored**, so body copy differs per OS. It is a neutral readable fallback, not a canon LCARS face.
+- **Body:** `--font` is Antonio too (falling back to `"Arial Narrow"`/condensed system faces). A proportional humanist body face under Antonio headings read as a web page, not a panel.
 - Labels are uppercase with `0.05em` tracking (`--label-transform`, `--label-tracking`). Lowercase Antonio at display size undoes the look.
 
 ## Contrast honesty
@@ -134,7 +152,7 @@ The palette follows the trekcolors/Okuda hexes, so almost nothing was lifted to 
 
 - **Deviations from the reference:** `--lcars-sky` was moved *away* from an unsourced `#9999ff` (8.35:1) toward the palette's saturated blue family. The reference's own "mariner" `#3366cc` is only 3.91:1 under black text, so it cannot carry black button text; `#6699ff` is the compromise. `--danger` `#d15a5a` (5.32:1 under black) and the success/warning fills are not attested LCARS hexes — LCARS has no canonical red/green semantics, so these are catalogue additions.
 - **Nav on the sweep bar:** the root nav tokens (orange brand, lavender items) measured 1.0:1 and 1.3:1 on the orange bar, so the bar overrides both to black (9.81:1).
-- `--muted` `#8f96c2` is 6.79:1 on `--surface`; `--text` is 15.43:1.
+- `--muted` `#9999ff` is 8.35:1 on the black `--surface`; `--text` `#ffcc99` is 14.35:1.
 
 ## Reference status
 
