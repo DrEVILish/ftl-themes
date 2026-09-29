@@ -270,6 +270,47 @@
             <label class="qa-row" style="margin:0;"><input class="checkbox" type="checkbox"> SMS alerts</label>
           </div>
         </div>
+        <div class="qa-row qa-row-top">
+          <div class="field w-14">
+            <label class="label" for="qa-inv">Invalid input</label>
+            <input class="input is-invalid" id="qa-inv" type="text" value="abc" aria-describedby="qa-inv-err">
+            <span class="field-error" id="qa-inv-err">Enter a number between 1 and 99.</span>
+          </div>
+          <div class="field w-10">
+            <label class="label" for="qa-inv2">aria-invalid select</label>
+            <select class="select" id="qa-inv2" aria-invalid="true"><option>Pick one</option></select>
+          </div>
+          <div class="field w-14">
+            <label class="label">Sizes</label>
+            <input class="input input-sm" type="text" placeholder="Small">
+            <input class="input input-lg" type="text" placeholder="Large" style="margin-block-start:0.4rem">
+          </div>
+          <div class="field w-14">
+            <label class="label">Readonly / mirror</label>
+            <input class="input" type="text" value="Readonly value" readonly>
+            <input class="input is-mirror" id="qa-mirror" type="text" value="Mirrors the slider" readonly tabindex="-1" style="margin-block-start:0.4rem">
+          </div>
+        </div>
+        <div class="qa-row">
+          <button class="switch" role="switch" aria-checked="true"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">Pill on</span></button>
+          <button class="switch" role="switch" aria-checked="false"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">Pill off</span></button>
+          <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Arm</span><span class="toggle-btn-on">Armed</span></label>
+          <label class="toggle-btn is-danger"><input type="checkbox" checked><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Unmute</span></label>
+          <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Unmute</span></label>
+          <time class="schedule" datetime="00:00"><svg class="icon"><use href="#icon-clock"/></svg><span>00:00</span></time>
+          <time class="schedule" datetime="14:30"><svg class="icon"><use href="#icon-clock"/></svg><span>14:30</span></time>
+          <span class="btn-group"><button class="btn btn-sm">A</button><button class="btn btn-sm">B</button><button class="btn btn-sm">C</button></span>
+          <span class="btn-toolbar"><button class="btn btn-sm btn-primary">Play</button><button class="btn btn-sm btn-secondary">Stop</button></span>
+        </div>
+        <div class="qa-row">
+          <input class="slider is-vertical" id="qa-vslider" type="range" min="-60" max="12" step="1" value="-6" aria-label="Level (dB)">
+          <span class="readout readout-sm" id="qa-vreadout">-6<span class="readout-unit">dB</span></span>
+          <div style="display:flex;flex-direction:column;width:16rem;height:8rem;border:1px solid var(--border)">
+            <table class="table is-striped"><thead><tr><th>Name</th><th>Len</th></tr></thead>
+              <tbody><tr><td>Take 1</td><td class="mono">00:12</td></tr><tr><td>Take 2</td><td class="mono">00:31</td></tr></tbody></table>
+            <div class="table-blank-rows"></div>
+          </div>
+        </div>
         <div class="dropzone">Drop a file, or click to browse.</div>
         <div class="field-row">
           <label class="label">Auto-split at 2&nbsp;GB</label>
@@ -908,6 +949,16 @@
     var initialMode = params.get("compare") === "1" ? "compare" : (read("qa-mode") || "single");
     setMode(initialMode);
   }
+</script>
+<script>
+(function () {
+  var v = document.getElementById("qa-vslider"), r = document.getElementById("qa-vreadout"), m = document.getElementById("qa-mirror");
+  if (v && r) v.addEventListener("input", function () { r.firstChild.nodeValue = v.value; if (m) m.value = v.value + " dB"; });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("button.switch[role=switch]");
+    if (b) b.setAttribute("aria-checked", b.getAttribute("aria-checked") !== "true");
+  });
+})();
 </script>
 </body>
 </html>

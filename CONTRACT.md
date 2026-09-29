@@ -548,6 +548,160 @@ switch, checkbox or short value:
 Rows are spaced by `--field-row-gap` (default `0.5rem`); the label
 truncates with an ellipsis rather than wrapping.
 
+#### Form validation, sizes and composition
+```html
+<div class="field">
+  <label class="label" for="port">Port</label>
+  <input class="input is-invalid" id="port" aria-describedby="port-hint port-err">
+  <span class="field-hint" id="port-hint">1-65535</span>
+  <span class="field-error" id="port-err" role="alert">Must be a number.</span>
+</div>
+<div class="input-group"><input class="input"><span class="input-addon">MHz</span></div>
+```
+- Error state: `.is-invalid` **or** `aria-invalid="true"` on `.input`, `.select`
+  or `.textarea` (prefer the attribute when script sets it; it is what
+  assistive tech reads). Border is `--danger`, background is
+  `--input-error-bg` (default: danger mixed into the control background,
+  inside `@supports`), focus ring is recoloured (`--input-error-ring` for a
+  glow). `.field-error` is the message, coloured `--danger-text` falling
+  back to `--danger`; link it with `aria-describedby`, and use `role="alert"`
+  or `aria-live="polite"` when it is injected after load. An empty
+  `.field-error` is hidden.
+- Sizes: `.input-sm` / `.input-lg` on any of the three controls
+  (`--input-padding-sm/-lg`, `--input-font-size-sm/-lg`).
+- Readonly: `[readonly]` on `.input`/`.textarea` (`--input-readonly-bg/-fg`).
+- `.input-group` + `.input-addon` join a control to a unit, prefix or button
+  with one shared border (logical radii, so RTL mirrors).
+- Layout uses logical properties throughout, so the form section is RTL-safe.
+
+#### Mirror input (`.input.is-mirror`)
+A display-only echo of another control: `--surface-2` background, `--muted`
+text, no focus look (`--input-mirror-bg/-fg`). Mark it `readonly tabindex="-1"`.
+CSS cannot read another element's value, so sync it with `data-*` and a few
+lines of script:
+```html
+<input class="slider" type="range" data-mirror="#gain-echo">
+<input class="input is-mirror" id="gain-echo" readonly tabindex="-1">
+```
+```js
+document.addEventListener("input", e => {
+  const t = e.target.dataset && e.target.dataset.mirror;
+  if (t) document.querySelector(t).value = e.target.value;
+});
+```
+
+#### Pill switch (`button.switch`)
+`.switch` also works on a button driven by `aria-checked`, with an optional
+visible `.switch-label` beside the track:
+```html
+<button class="switch" role="switch" aria-checked="false">
+  <span class="switch-track"><span class="switch-thumb"></span></span>
+  <span class="switch-label">Monitor</span>
+</button>
+```
+Toggle it by flipping the attribute
+(`b.setAttribute("aria-checked", b.getAttribute("aria-checked") !== "true")`).
+Same `--switch-*` tokens as the checkbox form (plus `--switch-label-fg`,
+`--switch-label-gap`); on/off stay distinguishable by border and thumb
+colour even when `--muted` is close to `--accent`. Transitions are off under
+`prefers-reduced-motion`.
+
+#### Vertical slider (`.slider.is-vertical`)
+```html
+<input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-6" id="gain">
+<output class="readout readout-sm" for="gain">-6<span class="readout-unit">dB</span></output>
+```
+Up is larger. Length is `--slider-length` (default `4.5rem`); thickness and
+thumb use the existing `--slider-*` tokens. `min`/`max`/`step` are HTML
+attributes, not CSS tokens (an `<input>` cannot read them from CSS). Syncing
+slider and readout is app-side script:
+```js
+slider.addEventListener("input", () => {
+  readout.firstChild.nodeValue = slider.value;   // keep the .readout-unit child
+});
+```
+
+#### Toggle button (`.toggle-btn`)
+```html
+<label class="toggle-btn is-danger">
+  <input type="checkbox">
+  <span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Unmute</span>
+</label>
+```
+A label around a visually hidden checkbox; the pressed state is
+`:has(input:checked)`, the focus ring is `:has(input:focus-visible)`.
+`.is-danger` uses `--danger` fill and `--on-danger` text when checked (contrast
+is linted, never hardcode white). Tokens: `--toggle-btn-bg/-fg/-border`,
+their `-on` variants, `-border-hover`, `-padding`, `-radius`. The
+`.toggle-btn-off`/`-on` spans swap the text; use a single plain label if you
+do not want a swap.
+
+#### Schedule badge (`.schedule`)
+```html
+<time class="schedule" datetime="00:00"><svg class="icon"><use href="#icon-clock"/></svg><span>00:00</span></time>
+```
+Inline-flex, colour `--schedule-color` (default `--accent-2`, falling back to
+`--accent`), `--schedule-gap`, `--schedule-font-size`. App-side: midnight
+(`00:00`) is a valid time and must render; test the time with `!== null`, not
+truthiness.
+
+#### Button composition (`.btn-group`, `.btn-toolbar`)
+`.btn-group` is an inline, non-wrapping row of buttons; `.btn-toolbar` is the
+same but wraps (`--btn-group-gap`). `.modal-footer` end-aligns its buttons
+(logical, so it flips in RTL) and wraps on narrow widths. These are not
+Bootstrap's `.btn-group`/`.btn-toolbar` (different components).
+
+### Using v4 next to Bootstrap
+Every bundle is wrapped in `@layer ui`. Layering makes the library **lose**
+to unlayered CSS, never win: an unlayered Bootstrap beats ui. Put Bootstrap
+in a lower layer instead:
+```css
+@layer bootstrap, ui, app;
+@import url("bootstrap.css") layer(bootstrap);
+```
+With that order ui beats Bootstrap and `app` beats both. Dual classes such as
+`.btn.btn-primary` need no bridge: Bootstrap's `.btn` and ours are now the same
+class name, and the layers decide who wins per property. Bootstrap's
+`.btn-group`/`.btn-toolbar` are different components from ours.
+
+### Recipes
+Not components: no CSS is shipped for these.
+
+**Canvas overlays read theme colours** from the live custom properties, and
+re-read them on theme change:
+```js
+const css = getComputedStyle(document.documentElement);
+const accent = css.getPropertyValue("--accent").trim();
+const series = [1, 2, 3, 4].map(i => css.getPropertyValue("--chart-series-" + i).trim());
+```
+
+**Fade envelope** (e.g. a timeline clip fade drawn on a canvas). `t` runs
+0..1 along the fade; the result is gain 0..1:
+```js
+function fadeShape(curve, t) {
+  t = Math.min(1, Math.max(0, t));
+  switch (curve) {
+    case "smooth": return t * t * (3 - 2 * t);            // smoothstep
+    case "log":    return Math.log1p(9 * t) / Math.log(10);
+    case "exp":    return (Math.pow(10, t) - 1) / 9;
+    default:       return t;                               // "linear"
+  }
+}
+```
+
+#### Blank table rows (`.table-blank-rows`)
+```html
+<div class="pane" style="display:flex;flex-direction:column;height:12rem">
+  <table class="table is-striped">…</table>
+  <div class="table-blank-rows"></div>
+</div>
+```
+Continues the stripe below the last row (`flex: 1 1 auto`). Reuses
+`--row-alt-bg` and `--hairline`; `--stripe-height` (default `22px`, match your
+row height) and optional `--stripe-a`/`--stripe-b` override. Where
+`color-mix()` is supported the default second tone is slightly fainter than a
+data row; otherwise it is `--row-alt-bg` exactly.
+
 ### Surfaces
 ```html
 <div class="panel">
