@@ -13,6 +13,12 @@
   .demo-strips { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.75rem; }
   .demo-strip { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding-bottom: 0.9rem; }
   .demo-strip-body { display: flex; align-items: stretch; justify-content: center; gap: 0.75rem; height: 10rem; }
+  .demo-eq { display: grid; grid-template-columns: 6rem minmax(0, 1fr) 4rem; gap: 0.6rem; align-items: center; margin: 0.5rem 0; }
+  .demo-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
+  @media (max-width: 960px) { .demo-three { grid-template-columns: 1fr; } }
+  .demo-stage { position: relative; min-height: 13rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; }
+  .demo-route td, .demo-route th { text-align: center; }
+  .demo-route td:first-child, .demo-route th:first-child { text-align: left; }
 </style>
 </head>
 <body class="app">
@@ -31,6 +37,7 @@
   <aside class="app-rail" aria-hidden="true"></aside>
 
   <main class="app-main">
+    <div class="tabs" role="tablist"><button class="tab is-active" role="tab" aria-selected="true">Faders</button><button class="tab" role="tab">EQ</button><button class="tab" role="tab">Routing</button><button class="tab" role="tab">Scenes</button></div>
     <h1>Front of house</h1>
     <div class="transport" style="margin: 0.5rem 0 1rem;">
       <button class="btn btn-go">Play</button>
@@ -40,6 +47,9 @@
       <span class="readout">48<span class="readout-unit">kHz</span></span>
       <span class="lamp is-on" title="clock locked"></span>
       <span class="lamp is-error" title="clip"></span>
+      <span class="btn-group" role="group" aria-label="Monitor"><button class="btn btn-sm btn-primary">Main</button><button class="btn btn-sm">Cue</button><button class="btn btn-sm">Solo</button></span>
+      <select class="select input-sm" aria-label="Scene" style="width:auto;"><option>Scene 3 &mdash; Act one</option><option>Scene 4 &mdash; Interval</option></select>
+      <time class="schedule" datetime="19:30"><svg class="icon"><use href="#icon-clock"/></svg><span>Doors 19:30</span></time>
     </div>
     <div class="demo-strips">
       <section class="panel demo-strip">
@@ -114,6 +124,89 @@
           <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
         </div>
       </section>
+    </div>
+
+    <div class="demo-three">
+      <section class="panel">
+        <header class="panel-header"><strong>Channel EQ &mdash; Vocal</strong><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></header>
+        <div style="padding:0.9rem;">
+          <div class="demo-eq"><label class="label" for="eq1">High</label><input class="slider" id="eq1" type="range" min="-12" max="12" value="3"><span class="readout readout-sm">+3<span class="readout-unit">dB</span></span></div>
+          <div class="demo-eq"><label class="label" for="eq2">Mid</label><input class="slider" id="eq2" type="range" min="-12" max="12" value="-2"><span class="readout readout-sm">-2<span class="readout-unit">dB</span></span></div>
+          <div class="demo-eq"><label class="label" for="eq3">Low</label><input class="slider" id="eq3" type="range" min="-12" max="12" value="0"><span class="readout readout-sm">0<span class="readout-unit">dB</span></span></div>
+          <div class="demo-eq"><label class="label" for="pan">Pan</label><input class="slider" id="pan" type="range" min="-50" max="50" value="0"><span class="readout readout-sm">C</span></div>
+          <div class="row" style="gap:0.6rem;flex-wrap:wrap;margin-top:0.5rem;">
+            <button class="switch" role="switch" aria-checked="true"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">+48V</span></button>
+            <button class="switch" role="switch" aria-checked="false"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">Polarity</span></button>
+            <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Pad</span><span class="toggle-btn-on">Pad on</span></label>
+          </div>
+          <div class="field" style="margin-top:0.75rem;"><label class="label" for="src">Input source</label><select class="select" id="src"><option>Stage box A &middot; 5</option><option>Stage box A &middot; 6</option><option>Local &middot; 1</option></select></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Routing</strong></header>
+        <table class="table demo-route">
+          <thead><tr><th>Source</th><th>Main</th><th>Mon A</th><th>Mon B</th></tr></thead>
+          <tbody>
+            <tr><td>Kick</td><td><input class="checkbox" type="checkbox" checked aria-label="Kick to main"></td><td><input class="checkbox" type="checkbox" aria-label="Kick to Mon A"></td><td><input class="checkbox" type="checkbox" checked aria-label="Kick to Mon B"></td></tr>
+            <tr><td>Vocal</td><td><input class="checkbox" type="checkbox" checked aria-label="Vocal to main"></td><td><input class="checkbox" type="checkbox" checked aria-label="Vocal to Mon A"></td><td><input class="checkbox" type="checkbox" checked aria-label="Vocal to Mon B"></td></tr>
+            <tr class="is-selected"><td>Keys</td><td><input class="checkbox" type="checkbox" checked aria-label="Keys to main"></td><td><input class="checkbox" type="checkbox" aria-label="Keys to Mon A"></td><td><input class="checkbox" type="checkbox" aria-label="Keys to Mon B"></td></tr>
+          </tbody>
+        </table>
+        <div class="input-group" style="padding:0.9rem;"><span class="input-addon">Scene</span><input class="input" type="text" value="Act one &mdash; final" aria-label="Scene name"><button class="btn btn-secondary">Save</button></div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Scenes</strong><span class="badge">6</span></header>
+        <ul class="list">
+          <li><a class="list-item is-active" href="#">1 &middot; Line check</a></li>
+          <li><a class="list-item" href="#">2 &middot; Overture</a></li>
+          <li><a class="list-item" href="#">3 &middot; Act one</a></li>
+          <li><button class="list-item">4 &middot; Interval walk-in</button></li>
+          <li><span class="list-item text-truncate">5 &middot; Act two with the extended orchestral cue list <span class="badge" style="margin-left:auto;">draft</span></span></li>
+        </ul>
+        <div class="dropzone" style="margin:0.9rem;">Drop a scene file to import.</div>
+      </section>
+    </div>
+
+    <div class="demo-three">
+      <section class="panel">
+        <header class="panel-header"><strong>Recording</strong><span class="badge badge-danger">REC</span></header>
+        <div style="padding:0.9rem;">
+          <span class="readout">00:41:17<span class="readout-unit">elapsed</span></span>
+          <div class="progress" style="margin-top:0.75rem;"><div class="progress-bar" style="width:38%"></div></div>
+          <p class="field-hint">Disk: 38% used &middot; 6h 12m remaining</p>
+          <div class="alert alert-warning">Take 7 has a dropped-sample warning.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Event log</strong></header>
+        <div class="log">
+          <div class="log-line"><span class="log-time mono">19:41:02</span><span>Scene 3 recalled</span></div>
+          <div class="log-line" data-level="debug"><span class="log-time mono">19:41:03</span><span>Stage box A link ok</span></div>
+          <div class="log-line" data-level="warn"><span class="log-time mono">19:44:20</span><span>Vocal peaked at -0.3 dBFS</span></div>
+          <div class="log-line" data-level="error"><span class="log-time mono">19:52:07</span><span>Word clock lost, recovered</span></div>
+        </div>
+        <details class="accordion-item" style="margin:0.5rem 0.9rem 0.9rem;"><summary class="accordion-trigger">FX rack</summary><div class="accordion-panel">Hall reverb &middot; plate &middot; 1/4 note delay</div></details>
+      </section>
+
+      <div class="stack">
+        <div class="context-menu" style="position:static;width:12rem;"><button class="context-menu-item">Copy channel</button><button class="context-menu-item">Paste settings</button><div class="context-menu-divider"></div><button class="context-menu-item is-danger">Reset strip</button></div>
+        <div class="dropdown" style="position:static;width:12rem;"><a class="dropdown-item" href="#">Preset: Male vocal</a><a class="dropdown-item" href="#">Preset: Kick</a><a class="dropdown-item" href="#">Preset: Keys</a></div>
+        <div class="toast toast-success">Scene 3 saved.</div>
+        <div class="toast toast-danger">Clip on Vocal.</div>
+      </div>
+    </div>
+
+    <div class="demo-stage" style="margin-top:1.25rem;">
+      <div class="modal-overlay" style="position:absolute;">
+        <div class="modal">
+          <div class="modal-header">Overwrite scene 3?</div>
+          <p class="field-hint" style="margin:0;">The current fader, EQ and routing state will replace the stored scene.</p>
+          <div class="modal-footer"><button class="btn btn-secondary btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Overwrite</button></div>
+        </div>
+      </div>
     </div>
   </main>
 

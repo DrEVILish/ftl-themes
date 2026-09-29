@@ -12,6 +12,13 @@
   .demo-topbar .nav-brand { white-space: nowrap; }
   .demo-two-col { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
   @media (max-width: 860px) { .demo-two-col { grid-template-columns: 1fr; } }
+  .demo-tanks { display: flex; gap: 1rem; justify-content: space-around; align-items: flex-end; padding: 0.9rem; height: 11rem; }
+  .demo-tank { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; height: 100%; }
+  .demo-tank .meter { flex: 1; }
+  .demo-stage { position: relative; min-height: 13rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; }
+  .demo-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
+  @media (max-width: 960px) { .demo-three { grid-template-columns: 1fr; } }
+  .demo-setpoint { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 5rem; gap: 0.75rem; align-items: center; margin: 0.6rem 0; }
 </style>
 </head>
 <body class="app">
@@ -30,9 +37,11 @@
   <aside class="app-rail" aria-hidden="true"></aside>
 
   <main class="app-main">
+    <nav class="breadcrumbs"><a class="breadcrumb-item" href="#">Plant</a><a class="breadcrumb-item" href="#">Unit 2</a><span class="breadcrumb-item is-current">Reactor hall</span></nav>
     <h1>Reactor hall</h1>
     <p>Unit 2 &middot; shift B <span class="badge badge-accent">Nominal</span></p>
 
+    <div class="tabs" role="tablist"><button class="tab is-active" role="tab" aria-selected="true">Reactor</button><button class="tab" role="tab">Turbines</button><button class="tab" role="tab">Grid</button><button class="tab" role="tab">Maintenance</button></div>
     <div class="grid" style="margin: 1rem 0;">
       <div class="card">
         <span class="stat-label">Output</span>
@@ -86,6 +95,103 @@
           <div class="log-line"><span class="log-time mono">13:58:02</span><span>Rod bank D withdrawn 2 steps</span></div>
         </div>
       </aside>
+    </div>
+
+    <div class="demo-three">
+      <section class="panel">
+        <header class="panel-header"><strong>Tank levels</strong><span class="badge badge-success">Normal</span></header>
+        <div class="demo-tanks">
+          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:78%;--meter-peak:85%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Coolant</span></div>
+          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:52%;--meter-peak:60%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Feedwater</span></div>
+          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:91%;--meter-peak:93%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Boric acid</span></div>
+          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:24%;--meter-peak:30%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Diesel</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Setpoints</strong></header>
+        <div style="padding: 0.9rem;">
+          <div class="demo-setpoint"><label class="label" for="sp1">Rod bank D</label><input class="slider" id="sp1" type="range" value="62"><span class="readout readout-sm">62<span class="readout-unit">%</span></span></div>
+          <div class="demo-setpoint"><label class="label" for="sp2">Pump speed</label><input class="slider" id="sp2" type="range" value="80"><span class="readout readout-sm">80<span class="readout-unit">%</span></span></div>
+          <div class="demo-setpoint"><label class="label" for="sp3">Boron</label><input class="slider" id="sp3" type="range" value="35"><span class="readout readout-sm">35<span class="readout-unit">ppm</span></span></div>
+          <div class="input-group" style="margin-top:0.75rem;"><span class="input-addon">Target</span><input class="input" type="text" value="412" aria-label="Output target"><span class="input-addon">MW</span><button class="btn btn-secondary">Apply</button></div>
+          <div class="field-row" style="margin-top:0.75rem;"><label class="label">Auto load-follow</label><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Fuel burnup</strong></header>
+        <div style="padding: 0.9rem;">
+          <div class="progress"><div class="progress-bar" style="width:71%"></div></div>
+          <p class="field-hint">71% of cycle &middot; refuel in 118 days</p>
+          <time class="schedule" datetime="2026-11-04"><svg class="icon"><use href="#icon-clock"/></svg><span>Outage 4 Nov 06:00</span></time>
+          <div class="divider"></div>
+          <div class="row is-items-center" style="gap:0.5rem;"><span class="avatar">RK</span><div><strong>R. Kaplan</strong><div class="field-hint">Shift supervisor &middot; on since 06:00</div></div></div>
+          <div class="row is-items-center" style="gap:0.5rem;margin-top:0.5rem;"><span class="avatar avatar-sm">MT</span><span class="field-hint">M. Tan &middot; reactor operator</span></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="demo-three">
+      <section class="panel">
+        <header class="panel-header"><strong>Alarms</strong><span class="badge badge-danger">2</span></header>
+        <table class="table">
+          <thead><tr><th>Time</th><th>Point</th><th>Level</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">14:12</td><td>SG-B outlet temp</td><td><span class="status status-warn">High</span></td></tr>
+            <tr class="is-selected"><td class="mono">13:58</td><td>Pump 3 vibration</td><td><span class="status status-error">Trip</span></td></tr>
+            <tr><td class="mono">12:20</td><td>Cooling tower level</td><td><span class="status status-ok">Cleared</span></td></tr>
+          </tbody>
+        </table>
+        <nav class="pagination" style="padding:0.5rem 0.9rem;"><a class="pagination-item is-disabled">&lsaquo;</a><a class="pagination-item is-active">1</a><a class="pagination-item">2</a><a class="pagination-item">&rsaquo;</a></nav>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Start-up checklist</strong></header>
+        <div style="padding: 0.5rem 0.9rem 0.9rem;">
+          <details class="accordion-item" open><summary class="accordion-trigger">Pre-start</summary><div class="accordion-panel">
+            <label class="check"><input class="checkbox" type="checkbox" checked> Coolant loops filled</label>
+            <label class="check"><input class="checkbox" type="checkbox" checked> Protection system armed</label>
+            <label class="check"><input class="checkbox" type="checkbox"> Grid operator notified</label>
+          </div></details>
+          <details class="accordion-item"><summary class="accordion-trigger">Criticality</summary><div class="accordion-panel">Withdraw bank D in 2-step increments and hold at each step.</div></details>
+          <details class="accordion-item"><summary class="accordion-trigger">Sync to grid</summary><div class="accordion-panel">Match frequency to 50.00 Hz &plusmn; 0.05 before closing the breaker.</div></details>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header"><strong>Interlocks</strong></header>
+        <div class="empty-state">
+          <span class="empty-state-icon">&empty;</span>
+          <span class="empty-state-title">No interlocks tripped</span>
+          <span class="empty-state-hint">Protection system healthy.</span>
+        </div>
+        <div style="padding: 0 0.9rem 0.9rem;"><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:60%"></div></div>
+      </section>
+    </div>
+
+    <div class="demo-three">
+      <div class="demo-stage">
+        <div class="modal-overlay" style="position:absolute;">
+          <div class="modal">
+            <div class="modal-header">Confirm SCRAM</div>
+            <p class="field-hint" style="margin:0;">All control rods will insert. This cannot be undone from this screen.</p>
+            <div class="field-error" style="margin-top:0.5rem;">Type SCRAM to confirm.</div>
+            <div class="modal-footer"><button class="btn btn-secondary btn-sm">Cancel</button><button class="btn btn-danger btn-sm">SCRAM</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="alert alert-success">Turbine trip test passed.</div>
+        <div class="alert alert-danger">Pump 3 tripped on vibration.</div>
+        <div class="toast toast-warning">Grid operator has not acknowledged.</div>
+        <div class="toast toast-success">Setpoint applied.</div>
+      </div>
+      <div class="stack">
+        <div class="transport"><button class="btn btn-go">Sync</button><label class="toggle-btn"><input type="checkbox" checked><span class="toggle-btn-off">Auto</span><span class="toggle-btn-on">Auto on</span></label><button class="btn btn-secondary">Hold</button></div>
+        <div class="row is-items-center" style="gap:0.6rem;"><span class="lamp is-on"></span><span class="lamp is-on"></span><span class="lamp is-warn"></span><span class="lamp is-error"></span><span class="lamp"></span><span class="spinner" aria-label="Syncing"></span></div>
+        <div class="context-menu" style="position:static;width:11rem;"><button class="context-menu-item">Acknowledge</button><button class="context-menu-item">Silence horn</button><div class="context-menu-divider"></div><button class="context-menu-item is-danger">Isolate loop</button></div>
+      </div>
     </div>
   </main>
 

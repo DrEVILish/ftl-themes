@@ -10,13 +10,21 @@
   .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
   .demo-topbar-spacer { flex: 1; }
   .demo-topbar .nav-brand { white-space: nowrap; }
-  .demo-chat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 1.25rem; align-items: start; }
+  .demo-chat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1.2fr); gap: 1.25rem; align-items: start; }
+  @media (max-width: 1100px) { .demo-chat { grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); } .demo-side-col { grid-column: 1 / -1; } }
   @media (max-width: 860px) { .demo-chat { grid-template-columns: 1fr; } }
   .demo-messages { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.9rem; min-height: 18rem; }
   .demo-msg { display: flex; gap: 0.6rem; align-items: flex-start; }
   .demo-msg.is-me { flex-direction: row-reverse; }
   .demo-bubble { max-width: 32rem; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius, 6px); }
   .demo-bubble p { margin: 0.25rem 0 0; }
+  .demo-presence { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .demo-stage { position: relative; min-height: 13rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; margin-top: 1rem; }
+  .demo-reactions { display: flex; gap: 0.35rem; margin-top: 0.4rem; flex-wrap: wrap; }
+  .demo-day { display: flex; align-items: center; gap: 0.75rem; color: var(--muted, inherit); font-size: 0.8em; }
+  .demo-day hr { flex: 1; }
+  .demo-side { display: flex; flex-direction: column; gap: 1rem; }
+  .demo-toasts { position: static; }
 </style>
 </head>
 <body class="app">
@@ -37,16 +45,24 @@
     <div class="demo-chat">
       <section class="panel demo-rooms">
         <header class="panel-header"><strong>Rooms</strong></header>
-        <nav class="nav" style="flex-direction:column; align-items:stretch;">
-          <a class="nav-item is-active" href="#"># general <span class="badge badge-accent">3</span></a>
-          <a class="nav-item" href="#"># support</a>
-          <a class="nav-item" href="#"># releases</a>
-          <a class="nav-item" href="#">Priya Nair <span class="status status-ok">online</span></a>
-        </nav>
+        <ul class="list">
+          <li><a class="list-item is-active" href="#"># general <span class="badge badge-accent" style="margin-left:auto;">3</span></a></li>
+          <li><a class="list-item" href="#"># support</a></li>
+          <li><a class="list-item" href="#"># releases <span class="badge" style="margin-left:auto;">12</span></a></li>
+          <li><a class="list-item text-truncate" href="#"># the-very-long-channel-name-for-cross-team-planning</a></li>
+        </ul>
+        <div class="divider"></div>
+        <ul class="list">
+          <li><a class="list-item" href="#"><span class="avatar avatar-sm">PN</span> Priya Nair <span class="status status-ok" style="margin-left:auto;">online</span></a></li>
+          <li><a class="list-item" href="#"><span class="avatar avatar-sm">AT</span> Ava Thompson <span class="status status-warn" style="margin-left:auto;">away</span></a></li>
+          <li><a class="list-item" href="#"><span class="avatar avatar-sm">LK</span> Leo Kim <span class="status status-idle" style="margin-left:auto;">offline</span></a></li>
+        </ul>
       </section>
       <section class="panel demo-thread">
         <header class="panel-header"><strong># general</strong><span class="status status-ok">12 online</span></header>
+        <div class="alert alert-warning" style="margin:0.75rem 0.9rem 0;">Reconnecting&hellip; messages will send when the connection returns.</div>
         <div class="demo-messages">
+          <div class="demo-day"><hr class="divider"><span>Today</span><hr class="divider"></div>
         <div class="demo-msg">
           <span class="avatar">AT</span>
           <div class="demo-bubble"><strong>Ava Thompson</strong> <span class="field-hint">09:41</span><p>Morning all &mdash; is the export fix live yet?</p></div>
@@ -57,18 +73,68 @@
         </div>
         <div class="demo-msg">
           <span class="avatar">PN</span>
-          <div class="demo-bubble"><strong>Priya Nair</strong> <span class="field-hint">09:43</span><p>Confirmed on staging. Looks good.</p></div>
+          <div class="demo-bubble"><strong>Priya Nair</strong> <span class="field-hint">09:43</span><p>Confirmed on staging. Looks good.</p>
+            <div class="demo-reactions"><button class="badge badge-button is-active">&#128077; 3</button><button class="badge badge-button">&#127881; 1</button><button class="badge badge-button">+</button></div>
+          </div>
         </div>
         <div class="demo-msg is-me">
           <span class="avatar">SM</span>
-          <div class="demo-bubble"><strong>Sam Morgan</strong> <span class="field-hint">09:45</span><p>Live. Refresh and try again.</p></div>
+          <div class="demo-bubble"><strong>Sam Morgan</strong> <span class="field-hint">09:45</span><p>Live. Refresh and try again.</p>
+            <div class="card" style="margin-top:0.5rem;padding:0.5rem 0.75rem;"><span class="mono">release-notes.pdf</span> <span class="field-hint">88 KB</span><div class="progress" style="margin-top:0.35rem;"><div class="progress-bar" style="width:100%"></div></div></div>
+          </div>
         </div>
+        <div class="demo-msg"><span class="avatar">LK</span><div class="demo-bubble"><span class="skeleton skeleton-text" style="display:block;width:12rem;"></span><span class="skeleton skeleton-text" style="display:block;width:7rem;"></span></div></div>
+        <div class="demo-presence" style="padding:0 0.9rem;"><span class="spinner" aria-label="Typing"></span><span class="field-hint">Leo is typing&hellip;</span></div>
         </div>
-        <form class="input-group" onsubmit="return false">
+        <form class="input-group" onsubmit="return false" style="margin:0.9rem;">
+          <button class="btn btn-secondary btn-icon" type="button" aria-label="Attach"><svg class="icon"><use href="assets/icons/icons.svg#icon-download"/></svg></button>
           <input class="input" type="text" placeholder="Message #general&hellip;" aria-label="Message">
+          <span class="input-addon">/500</span>
           <button class="btn btn-go" type="submit">Send</button>
         </form>
+        <div style="padding:0 0.9rem 0.9rem;" class="row is-items-center"><span class="btn-group"><button class="btn btn-sm" aria-label="Bold"><b>B</b></button><button class="btn btn-sm" aria-label="Italic"><i>I</i></button><button class="btn btn-sm" aria-label="Code">&lt;/&gt;</button></span><span class="field-error" style="margin-left:auto;">Message is too long.</span></div>
       </section>
+
+      <aside class="demo-side-col demo-side">
+        <section class="panel">
+          <div class="tabs" role="tablist" style="padding:0 0.9rem;"><button class="tab is-active" role="tab" aria-selected="true">Members</button><button class="tab" role="tab">Files</button><button class="tab" role="tab">Pins</button></div>
+          <ul class="list">
+            <li><span class="list-item"><span class="avatar avatar-sm">SM</span> Sam Morgan <span class="badge" style="margin-left:auto;">you</span></span></li>
+            <li><span class="list-item"><span class="avatar avatar-sm">PN</span> Priya Nair</span></li>
+            <li><span class="list-item"><span class="avatar avatar-sm">AT</span> Ava Thompson</span></li>
+          </ul>
+        </section>
+        <section class="panel">
+          <header class="panel-header"><strong>Pinned</strong></header>
+          <div class="empty-state"><span class="empty-state-icon">&empty;</span><span class="empty-state-title">Nothing pinned</span><span class="empty-state-hint">Pin a message to keep it here.</span></div>
+        </section>
+        <section class="panel">
+          <header class="panel-header"><strong>Channel settings</strong></header>
+          <div style="padding:0.9rem;">
+            <div class="field-row"><label class="label">Mute #general</label><label class="switch"><input type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+            <div class="field-row"><label class="label">Desktop alerts</label><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+            <label class="check" style="margin-top:0.5rem;"><input class="checkbox" type="checkbox" checked> Show join messages</label>
+          </div>
+        </section>
+        <div class="popover" style="position:static;"><strong>Priya Nair</strong><p class="field-hint" style="margin:0.35em 0 0;">QA &middot; local time 10:44 &middot; <span class="status status-ok">online</span></p></div>
+        <div class="context-menu" style="position:static;"><button class="context-menu-item">Reply in thread</button><button class="context-menu-item">Copy text</button><div class="context-menu-divider"></div><button class="context-menu-item is-danger">Delete message</button></div>
+      </aside>
+    </div>
+
+
+    <div class="demo-stage">
+      <div class="modal-overlay" style="position:absolute;">
+        <div class="modal">
+          <div class="modal-header">Invite people to #general</div>
+          <div class="field"><label class="label" for="lc-inv">Email</label><input class="input is-invalid" id="lc-inv" type="email" value="leo@" aria-describedby="lc-inv-err"><span class="field-error" id="lc-inv-err">Enter a complete email address.</span></div>
+          <div class="modal-footer"><button class="btn btn-secondary btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Send invite</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="toast-region demo-toasts" style="max-width:22rem;margin-top:1rem;">
+      <div class="toast toast-success">Priya joined #general.</div>
+      <div class="toast toast-warning">Notifications are muted for #releases.</div>
+      <div class="toast toast-danger">Failed to send: offline.</div>
     </div>
   </main>
 
