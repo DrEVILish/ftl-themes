@@ -20,7 +20,7 @@ html[data-theme="wmp11"] {
   --on-accent: #05050a;
   --on-danger: #1a0000;
   --on-success: #03140a;
-  --radius: 0.8rem;
+  --radius: 0.4rem;
   --font: "Segoe UI", Tahoma, sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #7fd1ff;
@@ -37,8 +37,8 @@ html[data-theme="wmp11"] {
   --input-fg: var(--text);
   --input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   --focus-ring: 0 0 10px rgba(63, 169, 245, 0.4);
-  --panel-bg: linear-gradient(180deg, rgba(38, 38, 48, 0.92), rgba(10, 10, 13, 0.9));
-  --panel-shadow: 0 0 40px rgba(63, 169, 245, 0.3), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  --panel-bg: linear-gradient(180deg, rgba(38, 38, 48, 0.85), rgba(10, 10, 13, 0.82));
+  --panel-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 6px 18px rgba(0, 0, 0, 0.45);
   --row-selected-bg: rgba(63, 169, 245, 0.18);
   --nav-bg: linear-gradient(180deg, #1a1a22, #0a0a0d);
   --slider-bg: linear-gradient(180deg, #1e1e26, #0a0a0d);
@@ -150,21 +150,104 @@ html[data-theme="wmp11"] .btn-danger { --btn-bg: linear-gradient(180deg, #ff7b7b
 html[data-theme="wmp11"] .btn-success { --btn-bg: linear-gradient(180deg, #8bf0a3, #4cc46a 70%); }
 
 /* --- Layout ------------------------------------------------------------ *
- * Black glass: a translucent blurred bar over the radial backdrop, rounded
- * content well, and a glassy status strip. */
+ * One player window, not floating islands: the black glossy tab strip on
+ * top (Now Playing / Library / Rip / Burn / Sync), the blue-silk
+ * visualization behind the content, and the transport bar along the
+ * bottom with its centred capsule and round blue play orb. */
 html[data-theme="wmp11"] {
-  --app-padding: 0.6rem;
-  --app-gap: 0.5rem;
-  --app-bar-bg: linear-gradient(180deg, rgba(30, 30, 38, 0.85), rgba(10, 10, 13, 0.85));
-  --app-bar-rule: var(--border);
-  --app-bar-radius: 0.8rem;
-  --app-bar-height: 3rem;
-  --app-main-bg: rgba(10, 10, 13, 0.5);
-  --app-main-radius: 0.8rem;
+  --app-padding: 0.5rem;
+  --app-gap: 0;
+  --app-bar-bg: linear-gradient(180deg, #4a4a54 0, #262630 8%, #16161c 48%, #000000 52%, #0b0b10 100%);
+  --app-bar-rule: #000000;
+  --app-bar-radius: 6px 6px 0 0;
+  --app-bar-height: 2.6rem;
+  --app-bar-padding: 0.25rem 0.9rem 0.25rem 4.4rem;
+  /* Blue silk: the default WMP11 visualization, as soft light ribbons
+     over deep navy. */
+  --app-main-bg:
+    linear-gradient(118deg, transparent 38%, rgba(140, 210, 255, 0.16) 46%, transparent 54%),
+    linear-gradient(128deg, transparent 52%, rgba(90, 170, 240, 0.14) 60%, transparent 70%),
+    radial-gradient(ellipse 70% 45% at 28% 30%, rgba(40, 125, 210, 0.55), transparent 62%),
+    radial-gradient(ellipse 60% 40% at 78% 70%, rgba(20, 90, 170, 0.5), transparent 66%),
+    linear-gradient(160deg, #021426, #063a66 40%, #021a33 72%, #000000);
+  --app-main-radius: 0;
   --app-main-padding: 1.1rem;
-  --app-status-bg: rgba(20, 20, 26, 0.7);
-  --app-status-radius: 0.8rem;
+  --app-status-bg: linear-gradient(180deg, #2e2e36 0, #16161c 45%, #000000 52%, #121218 100%);
+  --app-status-fg: #c8c8d4;
+  --app-status-radius: 0 0 6px 6px;
   --app-status-rule: transparent;
+  --app-status-padding: 0.9rem 1rem;
 }
-html[data-theme="wmp11"] .app-bar,
-html[data-theme="wmp11"] .app-status { backdrop-filter: blur(8px); }
+html[data-theme="wmp11"] .app-bar {
+  position: relative;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.25);
+  --nav-bg: transparent;
+  --nav-rule-width: 0;
+  --nav-item-fg: #e6e6ee;
+  --nav-item-bg-active: linear-gradient(180deg, #7cc4f5 0, #3b8fd6 48%, #1a64b4 52%, #2c7ccc 100%);
+  --nav-item-fg-active: #ffffff;
+  --nav-brand-fg: #ffffff;
+}
+html[data-theme="wmp11"] .app-bar .nav { padding: 0; gap: 0; }
+html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 1rem; }
+/* Tabs: evenly spaced labels split by hairline dividers; the current one
+   is a blue glossy box with the small ▼ that drops its menu. */
+html[data-theme="wmp11"] .app-bar .nav-item {
+  position: relative;
+  min-width: 7rem;
+  text-align: center;
+  padding: 0.3em 1em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  text-shadow: 0 1px 1px #000;
+  box-shadow: -1px 0 rgba(255, 255, 255, 0.12);
+}
+html[data-theme="wmp11"] .app-bar .nav-item.is-active {
+  box-shadow: inset 0 0 0 1px rgba(191, 234, 255, 0.55), 0 0 10px rgba(63, 169, 245, 0.5);
+}
+html[data-theme="wmp11"] .app-bar .nav-item.is-active::after {
+  content: "\25bc";
+  position: absolute;
+  left: 50%;
+  bottom: -0.15em;
+  transform: translateX(-50%);
+  font-size: 0.5em;
+  color: #ffffff;
+}
+/* Back / forward: the round glossy orbs at the strip's left end. */
+html[data-theme="wmp11"] .app-bar::before {
+  content: "";
+  position: absolute;
+  left: 0.6rem;
+  top: 50%;
+  width: 52px;
+  height: 26px;
+  transform: translateY(-50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='26'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.4' cy='.3' r='.8'%3E%3Cstop offset='0' stop-color='%23bfeaff'/%3E%3Cstop offset='.45' stop-color='%233fa9f5'/%3E%3Cstop offset='1' stop-color='%230d3f70'/%3E%3C/radialGradient%3E%3CradialGradient id='g' cx='.4' cy='.3' r='.8'%3E%3Cstop offset='0' stop-color='%239a9aa4'/%3E%3Cstop offset='.5' stop-color='%234a4a54'/%3E%3Cstop offset='1' stop-color='%2315151a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='13' cy='13' r='12' fill='url(%23b)' stroke='%230a2b4d'/%3E%3Ccircle cx='38' cy='13' r='10' fill='url(%23g)' stroke='%23000'/%3E%3Cpath d='M7 13l6-5v3h6v4h-6v3z' fill='%23fff'/%3E%3Cpath d='M44 13l-5-4v2.5h-5v3h5v2.5z' fill='%23c8c8d0'/%3E%3C/svg%3E") no-repeat;
+  pointer-events: none;
+}
+html[data-theme="wmp11"] .app-status {
+  position: relative;
+  box-shadow: inset 0 2px 0 #1d6fb8, inset 0 3px 0 rgba(127, 209, 255, 0.5), 0 0 24px rgba(63, 169, 245, 0.25);
+}
+/* The transport capsule, centred on the bar: stop, prev | play | next,
+   volume. Decoration only — the app's own status text stays at the ends —
+   so it is dropped where the strip gets too narrow to hold both. */
+html[data-theme="wmp11"] .app-status::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 236px;
+  height: 46px;
+  transform: translate(-50%, -50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='236' height='46'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233a3a44'/%3E%3Cstop offset='.5' stop-color='%2315151b'/%3E%3Cstop offset='.51' stop-color='%23050507'/%3E%3Cstop offset='1' stop-color='%231a1a22'/%3E%3C/linearGradient%3E%3CradialGradient id='p' cx='.4' cy='.28' r='.8'%3E%3Cstop offset='0' stop-color='%23d6f2ff'/%3E%3Cstop offset='.4' stop-color='%234bb6ff'/%3E%3Cstop offset='.75' stop-color='%231d6fb8'/%3E%3Cstop offset='1' stop-color='%230b3560'/%3E%3C/radialGradient%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='1.5' y='8.5' width='233' height='29' rx='14.5' fill='url(%23c)' stroke='%2356565f'/%3E%3Crect x='18' y='18' width='9' height='9' fill='%23d0d0d8'/%3E%3Crect x='70.5' y='12.5' width='95' height='21' rx='10.5' fill='url(%23c)' stroke='%236a6a74'/%3E%3Cpath d='M80 23l7-5v10zM87 23l7-5v10z' fill='%23d0d0d8'/%3E%3Cpath d='M156 23l-7-5v10zM149 23l-7-5v10z' fill='%23d0d0d8'/%3E%3Ccircle cx='118' cy='23' r='21' fill='url(%23p)' stroke='%230a2b4d' stroke-width='1.2'/%3E%3Cellipse cx='118' cy='12' rx='13' ry='7' fill='url(%23s)'/%3E%3Cpath d='M112 13v20l17-10z' fill='%23fff'/%3E%3Cpath d='M190 19h4l5-4v16l-5-4h-4z' fill='%23d0d0d8'/%3E%3Crect x='205' y='22' width='22' height='2' rx='1' fill='%233fa9f5'/%3E%3C/svg%3E") no-repeat;
+  pointer-events: none;
+}
+@media (max-width: 1000px) {
+  html[data-theme="wmp11"] .app-status::before { content: none; }
+}
+@media (max-width: 720px) {
+  html[data-theme="wmp11"] { --app-bar-padding: 0.25rem 0.6rem 0.25rem 4.2rem; }
+  html[data-theme="wmp11"] .app-bar .nav-item { min-width: 0; }
+}

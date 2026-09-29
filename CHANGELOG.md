@@ -17,6 +17,11 @@ changes are called out explicitly here.
   (orange hover glow, blue default-button glow — primary is no longer
   green), Luna checkboxes/radios and the segmented green progress bar. The
   brand no longer vanishes into a white nav box in the title bar.
+- **wmp11: more of the actual player.** The shell is one player window:
+  the black glossy tab strip with evenly spaced tabs, a blue glossy active
+  tab with its ▼, and round back/forward orbs; a blue-silk visualization
+  behind the content; and the transport bar with its blue seek line and
+  centred stop / prev / play-orb / next / volume capsule.
 
 - **lcars: fidelity pass against the on-screen references.** The shell is
   now a real elbow frame — a thick orange leg curving into a thin bar with

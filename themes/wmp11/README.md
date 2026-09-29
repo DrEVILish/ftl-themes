@@ -25,9 +25,18 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
 
 ## Signature details
 
-- The top bar and status strip both carry a real `backdrop-filter` blur,
-  plus a visible cool-blue backlight glow along their edge — the chassis
-  is lit from inside, not just tinted.
+- **The tab strip.** The app bar is WMP11's black glossy strip (a hard
+  gloss break at 50%): nav items become evenly spaced tabs split by
+  hairline dividers, the current one a blue glossy box with the small ▼
+  under it, and the round back/forward orbs sit at its left end (inline
+  SVG, no markup).
+- **The transport bar.** The status strip is the black glossy player bar
+  with a blue seek line along its top edge and, centred, the transport
+  capsule — stop, prev | round blue play orb | next, volume — drawn as one
+  inline SVG. Decorative only; it is dropped under 1000px so it never
+  covers the app's own status text.
+- **Blue silk** — WMP11's default visualization — fills the content well
+  as soft light ribbons over deep navy; the glass panels float on it.
 - Panels and the modal carry a genuine specular highlight band across
   their upper half (a bright-to-transparent gradient layer), the actual
   glossy-glass reflection, not just a faint ambient shadow — that band is
@@ -44,9 +53,9 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
 
 ## Layout
 
-The shell becomes a **glass stack**: 0.6rem padding, a rounded blurred bar,
-a translucent rounded content well, and a rounded glass status strip,
-floating over the radial backdrop.
+The shell becomes **one player window**: tab strip on top, blue-silk
+content well, transport bar along the bottom, joined with no gaps and
+6px outer corners.
 
 ## Tell-tales of an inauthentic result
 
@@ -61,7 +70,7 @@ floating over the radial backdrop.
 - **No flat blue discs for the play button**; it needs the glass cap highlight and glow.
 - **No warm accent**; the glow is cool blue.
 - **No opaque grey chrome**; it is black glass with a cool backlit seam.
-- **No square, hard-edged controls**; radius is `0.8rem`.
+- **No square, hard-edged controls**; radius is `0.4rem`.
 
 ## Typography
 
