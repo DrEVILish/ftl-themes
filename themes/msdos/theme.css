@@ -29,22 +29,37 @@ html[data-theme="msdos"] {
   --font-mono: "Perfect DOS VGA 437", "Courier New", monospace;
   --flare: #ffff55;
 
+  /* Text-mode buttons: a solid block with a hard black shadow one cell
+     down-right, the way Norton and EDIT drew them; pressing drops the
+     shadow. */
   --btn-bg: var(--accent);
+  --btn-bg-hover: var(--accent-2);
   --btn-fg: #000000;
   --btn-border-width: 0;
   --btn-transform: uppercase;
+  --btn-shadow: 0.6ch 0.4em 0 #000000;
+  --btn-shadow-hover: 0.6ch 0.4em 0 #000000;
+  /* Dialogs: grey box, black text, hard black drop shadow. */
+  --modal-bg: #aaaaaa;
+  --modal-border: #ffffff;
+  --modal-shadow: 2ch 1em 0 #000000;
+  --modal-header-bg: transparent;
+  --modal-header-fg: #000000;
   --input-bg: #0000aa;
   --input-border: #ffffff;
   --focus: #ffff55;
   --panel-bg: #0000aa;
   --panel-border-width: 3px;
-  --panel-border: #ffffff;
-  --table-head-bg: var(--accent);
-  --table-head-fg: #000000;
+  --panel-border: #55ffff;
+  --card-border: #55ffff;
+  /* Norton's column heads: bright yellow on the panel blue, no fill. */
+  --table-head-bg: transparent;
+  --table-head-fg: #ffff55;
+  --table-head-rule: #55ffff;
   --table-head-transform: uppercase;
   --row-selected-bg: var(--accent);
   --row-selected-fg: #000000;
-  --nav-bg: var(--accent);
+  --nav-bg: #aaaaaa;
   --nav-brand-fg: #000000;
   --nav-item-fg: #000000;
   --overlay-bg: rgba(0, 0, 0, 0.6);
@@ -61,6 +76,23 @@ html[data-theme="msdos"] .dropdown,
 html[data-theme="msdos"] .app-main,
 html[data-theme="msdos"] .transport,
 html[data-theme="msdos"] .card { border-style: double; border-width: 3px; border-color: #ffffff; }
+/* Panels and the main well are Norton's cyan double-line boxes. */
+html[data-theme="msdos"] :is(.panel, .card, .app-main) { border-color: #55ffff; }
+html[data-theme="msdos"] .btn:active { box-shadow: none; transform: translate(0.6ch, 0.4em); }
+html[data-theme="msdos"] .btn-primary { --btn-bg: #ffff55; --btn-bg-hover: #ffffff; --btn-fg: #000000; }
+html[data-theme="msdos"] .btn-ghost { box-shadow: none; }
+/* Inside a dialog everything is black on grey, and the dialog carries a
+   second, inset white double line as EDIT's did. */
+html[data-theme="msdos"] .modal {
+  --on-surface: #000000;
+  --text: #000000;
+  --muted: #000000;
+  /* VGA red #aa0000 is 3.3:1 on the grey; one step darker clears 4.5:1. */
+  --danger-text: #800000;
+  outline: 3px double #ffffff;
+  outline-offset: -0.6em;
+}
+html[data-theme="msdos"] .modal .btn:not(.btn-primary):not(.btn-danger) { --btn-bg: #ffffff; --btn-fg: #000000; }
 
 /* The F-key bar: <kbd> is how a status footer would mark up "1Help 2Menu
    3View …" — Norton Commander's most recognizable single element after
@@ -92,15 +124,11 @@ html[data-theme="msdos"] .btn[aria-disabled="true"] {
    fall back on — so each level below gets progressively less of that
    reverse-video treatment rather than a synthetic "font-weight: bold". */
 html[data-theme="msdos"] h1 {
-  /* Strongest: a full reverse-video title bar, the same accent-fill +
-     on-accent-black pairing already used (and lint-verified) on table
-     heads and kbd — never a new, unverified color pair. Block, not
-     inline-block: a full-width bar is the actual NC title-bar convention
-     and wraps cleanly for a long marketing headline. */
-  background: var(--accent);
-  color: var(--on-accent);
+  /* Strongest: bright yellow, the one "important" colour text mode had —
+     the colour Norton used for its own headings. Reverse video is kept
+     for titles set into a box's frame (panel headers, below). */
+  color: #ffff55;
   text-transform: uppercase;
-  padding: 0.15em 0.4em;
 }
 html[data-theme="msdos"] h2 {
   /* Medium: bright text plus a double-line rule underneath, echoing the
@@ -123,19 +151,42 @@ html[data-theme="msdos"] h3 {
    on-accent pairing as the table head and h1) makes it unmistakably a
    title bar. Not a base component in BASE_COMPONENTS, so a literal
    background/color here doesn't trip the cascade-safety lint. */
+/* The title sits in the box's top double line, centred, reverse video —
+   Norton's "C:\" drive tab. */
 html[data-theme="msdos"] .panel-header {
+  width: fit-content;
+  max-width: calc(100% - 2ch);
+  margin: calc(-1rem * var(--density) - 0.5em - 1.5px) auto calc(0.75rem * var(--density));
+  padding: 0 1ch;
   background: var(--accent);
   color: var(--on-accent);
+  border: 0;
+  border-radius: 0;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 400;
+  line-height: 1;
+  display: flex;
+  gap: 1ch;
+  align-items: center;
+}
+html[data-theme="msdos"] .modal-header {
+  width: fit-content;
+  margin-inline: auto;
+  background: transparent;
+  border: 0;
+  text-transform: uppercase;
 }
 
+/* The shell: EDIT/QBasic's grey menu bar on top (black text, the open
+   menu inverted), the blue work area, the F-key bar along the bottom. */
 html[data-theme="msdos"] {
-  --app-bar-bg: var(--accent);
+  --app-bar-bg: #aaaaaa;
   --app-bar-fg: #000000;
   --app-bar-radius: 0;
-  --app-status-bg: var(--accent);
-  --app-status-fg: #000000;
+  --app-bar-rule-width: 0;
+  --app-bar-padding: 0.15rem 1ch;
+  --app-status-bg: #000000;
+  --app-status-fg: #aaaaaa;
   --app-status-padding: 0.2rem 0.5rem;
   --app-main-padding: 0.75rem;
 }
@@ -145,15 +196,43 @@ html[data-theme="msdos"] {
    happens to render a <kbd>. */
 html[data-theme="msdos"] .app-status {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   letter-spacing: 0;
 }
-html[data-theme="msdos"] .app-status::before {
-  content: "1Help 2Menu 3View 4Edit 5Copy 6Move 7Mkdir 8Delete 9PullDn 10Quit";
-  display: block;
-  background: #000000;
-  color: var(--accent-2);
-  padding: 0.15rem 0.4rem;
-  margin: -0.2rem -0.5rem 0.3rem;
+html[data-theme="msdos"] .app-bar {
+  --nav-brand-fg: #000000;
+  --nav-item-fg: #000000;
+  --nav-item-bg-active: #000000;
+  --nav-item-fg-active: #aaaaaa;
+  --nav-item-radius: 0;
 }
-
+html[data-theme="msdos"] .app-bar .nav { padding: 0; }
+html[data-theme="msdos"] .app-bar .nav-item { padding: 0.1em 1ch; }
+/* The Norton F-key bar: key numbers light on black, labels black on cyan
+   blocks, 8 cells each. Two layers of the same monospaced string: ::before
+   paints the cyan blocks and the black labels, ::after only the numbers
+   (labels blanked with spaces) in grey on top, cell for cell. */
+html[data-theme="msdos"] .app-status { position: relative; padding-top: 1.6rem; }
+html[data-theme="msdos"] .app-status::before,
+html[data-theme="msdos"] .app-status::after {
+  position: absolute;
+  top: 0.1rem;
+  left: 0.5rem;
+  white-space: pre;
+  line-height: 1.3;
+  font-family: var(--font-mono);
+  pointer-events: none;
+  overflow: hidden;
+  max-width: calc(100% - 1rem);
+}
+html[data-theme="msdos"] .app-status::before {
+  content: "1Help   2Menu   3View   4Edit   5Copy   6RenMov 7Mkdir  8Delete 9PullDn 10Quit ";
+  color: #000000;
+  background:
+    linear-gradient(90deg, #000 0 2ch, #00aaaa 2ch 7.5ch, #000 7.5ch) 72ch 0 / 8ch 100% no-repeat,
+    repeating-linear-gradient(90deg, #000 0 1ch, #00aaaa 1ch 7.5ch, #000 7.5ch 8ch) 0 0 / 72ch 100% no-repeat;
+}
+html[data-theme="msdos"] .app-status::after {
+  content: "1       2       3       4       5       6       7       8       9       10     ";
+  color: #aaaaaa;
+}

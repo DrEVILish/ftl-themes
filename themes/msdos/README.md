@@ -81,3 +81,23 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Shell and chrome (2026-09 pass)
+
+- **Menu bar:** the app bar is EDIT/QBasic's grey `#aaaaaa` menu bar with
+  black items; the open item is inverted (black, grey text).
+- **Boxes:** panels, cards and the work area are cyan `#55ffff`
+  double-line boxes, with the panel title set *into* the top line,
+  centred, reverse video — Norton's drive tab.
+- **Headings and column heads** are bright yellow `#ffff55`, no fills.
+- **Buttons** are solid blocks with a hard black shadow one cell
+  down-right, dropped when pressed; primary is yellow.
+- **Dialogs** are grey with black text, an inset white double line and a
+  hard black drop shadow; red text inside them is `#800000` (VGA
+  `#aa0000` is only 3.3:1 on the grey).
+- **F-key bar:** the status strip opens with Norton's `1Help … 10Quit`
+  row — grey key numbers on black, black labels on cyan blocks, drawn as
+  two overlaid monospaced pseudo-element strings.
+- **Font:** `"Perfect DOS VGA 437"` is not vendored, so most readers get
+  Courier New. See the open question in the changelog.
+

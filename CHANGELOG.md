@@ -37,6 +37,12 @@ changes are called out explicitly here.
   so this is what it assumed. A theme that wants the strip opts in with
   `--app-bar-nav-bg` (+ `-rule-width`, `-radius`); windows95 and
   hot-wheels do, and render unchanged.
+- **msdos: Norton/EDIT chrome.** Grey menu bar with inverted open item;
+  cyan double-line boxes with the title set into the frame; yellow
+  headings and column heads; shadowed block buttons; grey dialogs with a
+  hard drop shadow; the two-tone `1Help … 10Quit` F-key bar. Open
+  question: the VGA face is still not vendored (the authentic Px437 IBM
+  VGA font is CC BY-SA 4.0, not OFL like the rest of `assets/fonts/`).
 - **barbie:** numerals and readouts set in Baloo instead of Consolas;
   pale state-text tints on the magenta status strip.
 
