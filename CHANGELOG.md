@@ -48,6 +48,11 @@ changes are called out explicitly here.
   for panel titles; copper steam pipes with bolted flanges along the bar
   and status strip; a meshing brass/copper gear train at the bar's end,
   turning only when reduced motion isn't requested.
+- **teletext: the real character generator and page furniture.** Vendored
+  Bedstead (CC0 SAA5050 recreation) for every glyph; a white P100 header
+  row with rainbow index links; a double-height yellow-on-blue section
+  banner; full-width colour-band panel titles; no rules anywhere; and a
+  real Fastext row (red/green/yellow/cyan key words) replacing the stripe.
 - **barbie:** numerals and readouts set in Baloo instead of Consolas;
   pale state-text tints on the magenta status strip.
 

@@ -33,10 +33,22 @@ a limitation to soften.
 
 ## Signature details
 
-- The page-number badge ("P100") in the top-left of the app-bar, in white
-  on a solid red block — every real teletext page opens with exactly this.
-- `h1` renders at double height (`transform: scaleY(1.9)`), the one
-  hardware trick reserved for headlines on real teletext frames.
+- The page number ("P100") opens the header row in plain white, as on
+  every real page; the nav links that follow each take a different
+  broadcast colour (cyan / green / yellow / magenta), like a page's index
+  lines.
+- `h1` is the section banner: a full-width blue band with the headline
+  in yellow at true double height (`transform: scaleY(2)`, the band
+  stretching with it as the hardware row did).
+- Panel titles are full-width colour bands (blue / green / magenta /
+  yellow by position, each with the text colour it needs); cards carry a
+  thick band of the same colour on top. Nothing draws a line: table rules
+  and hairlines are gone, as on the real service.
+- Tabs are coloured words; the selected one is white on a blue band.
+- **Fastext:** the status strip ends with the four key words — red
+  *Headlines*, green *Sport*, yellow *Weather*, cyan *TV Guide* — one
+  monospaced string coloured cell-for-cell by a gradient clipped to the
+  text.
 - Selected/active rows invert to a solid colour fill with black text
   (`--row-selected-bg`), not a tint or outline — real teletext has no
   concept of a translucent highlight.
@@ -71,7 +83,7 @@ graphics were never skeuomorphic. The sprite ships 123 `<symbol>`s in total (`gr
 
 ## Typography
 
-`--font` and `--font-mono` are both `"Consolas", "Courier New", monospace`. **Nothing is vendored.** The real face is the teletext character-generator bitmap font on a 40x24/25 grid (Bedstead is the usual web recreation); it is not shipped because it has no faithful system equivalent, so the block-shaped glyphs are lost and only the monospace grid remains. All three captures show that blocky face; the fallback does not match it.
+`--font` and `--font-mono` are **Bedstead**, vendored (`assets/fonts/Bedstead.woff2`, CC0 — see `assets/fonts/NOTICE.md`): Ben Harris's outline recreation of the SAA5050 character generator, so the blocky, stepped glyphs in all three captures are the real shapes. The subset keeps the teletext sextant mosaics (U+1FB00–1FBAF) for block graphics.
 
 ## Contrast honesty
 
@@ -88,4 +100,4 @@ graphics were never skeuomorphic. The sprite ships 123 `<symbol>`s in total (`gr
 - `teletext-ceefax-football-index.jpg` — a BBC Ceefax football index: cyan headline list with page numbers, white double-height lead lines and a blue title band. Backs the cyan index look, double-height headlines and the 8-colour palette.
 - `teletext-screen-teletexnews.png` — a teletext news page (300): double-height headlines, an index list and a blue footer strip. Backs the double-height and newsflash frame.
 
-Uncertain: `RESEARCH.md` describes a red/green/yellow/blue Fastext bar, but I could not see a four-colour Fastext key bar in any of the three files at their resolution (only blue/yellow footer bands); the theme's double-height `h1` is `transform: scaleY(1.9)`, an approximation of the hardware trick.
+Uncertain: `RESEARCH.md` describes a red/green/yellow/blue Fastext bar, but I could not see a four-colour Fastext key bar in any of the three files at their resolution (only blue/yellow footer bands); the Fastext row follows the service's own four-colour key convention rather than any one capture.

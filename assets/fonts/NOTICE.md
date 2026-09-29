@@ -10,7 +10,7 @@ directory placement — Google Fonts sorts fonts into `ofl/`, `apache/` or
 `ufl/` by license, so the directory itself is a second confirmation
 alongside the specimen page's license line).
 
-All seven files vendored here turned out to be **SIL Open Font License,
+All files vendored here except Bedstead (CC0, below) turned out to be **SIL Open Font License,
 version 1.1** — but that was verified per family below, not assumed.
 OFL 1.1 permits embedding, bundling and redistributing the font (including
 as a webfont, including verbatim, including at whatever scale this
@@ -39,6 +39,19 @@ files are vendored unmodified.
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Audiowide
 - **Used by:** `vaporwave` (headings-only full-width display face)
+
+## Bedstead
+
+- **Family:** Bedstead (Regular, subset to Latin, arrows, box drawing and
+  the teletext sextant mosaics U+1FB00–1FBAF — `Bedstead.woff2`)
+- **Designer:** Ben Harris — an outline recreation of the Mullard SAA5050
+  teletext character generator
+- **License:** CC0 1.0 (public domain dedication), per the author's page
+  and the font's `SPDX-License-Identifier: CC0-1.0`. Not OFL — more
+  permissive: no conditions at all.
+- **Source:** https://bjh21.me.uk/bedstead/ (`bedstead.otf` 3.261,
+  converted to WOFF2 with fontTools)
+- **Used by:** `teletext` (every glyph on the page)
 
 ## Baloo 2
 

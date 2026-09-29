@@ -2,12 +2,16 @@
  * Theme-Name: Teletext
  * Description: BBC Ceefax-era teletext: the fixed 8-colour broadcast palette on solid black, zero gradients, zero anti-aliasing, flat colour-block headers.
  *
- * The real hardware's font (a fixed 40x25 character grid, "Bedstead"-style
- * block font) isn't vendored — not a niche display face so much as a
- * genuine bitmap terminal font with no faithful web equivalent. The stack
- * falls back to a plain monospace, which loses the blocky glyph shapes but
- * keeps the one thing that matters more: the palette is exact.
+ * The font is Bedstead, a CC0 outline recreation of the SAA5050
+ * character generator every UK teletext set used (assets/fonts/NOTICE.md).
  */
+
+@font-face {
+  font-family: "Bedstead";
+  src: url("assets/fonts/Bedstead.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
 
 html[data-theme="teletext"] {
   color-scheme: dark;
@@ -36,8 +40,8 @@ html[data-theme="teletext"] {
   --on-danger: #000000;
   --on-success: #000000;
   --radius: 0;
-  --font: "Consolas", "Courier New", monospace;
-  --font-mono: "Consolas", "Courier New", monospace;
+  --font: "Bedstead", "Consolas", "Courier New", monospace;
+  --font-mono: "Bedstead", "Consolas", "Courier New", monospace;
   --flare: #ffff00;
 
   /* Flat colour blocks: no gradient, no shadow, no border-radius anywhere.
@@ -46,7 +50,7 @@ html[data-theme="teletext"] {
   --btn-fg: var(--on-accent);
   --btn-border-width: 0;
   --btn-radius: 0;
-  --btn-weight: 700;
+  --btn-weight: 400;
   --btn-transform: uppercase;
   --btn-shadow: none;
   --btn-shadow-hover: none;
@@ -64,6 +68,15 @@ html[data-theme="teletext"] {
   --table-head-bg: var(--accent);
   --table-head-fg: #000000;
   --table-head-transform: uppercase;
+  --table-head-rule: transparent;
+  /* Teletext drew no lines: rows are separated by nothing but colour. */
+  --table-rule: transparent;
+  --hairline: #000000;
+  --tab-radius: 0;
+  --tab-fg: var(--accent);
+  --tab-bg-active: #0000ff;
+  --tab-fg-active: #ffffff;
+  --tab-underline-active: transparent;
   --row-selected-bg: var(--accent);
   --row-selected-fg: #000000;
   --nav-bg: #000000;
@@ -79,14 +92,41 @@ html[data-theme="teletext"] {
    heading that gets it — h2/h3 stay single-height so the effect still
    reads as "the headline," not a uniform size bump. */
 html[data-theme="teletext"] h1 {
+  /* A full-width blue band with the headline double-height in yellow —
+     the Ceefax section banner. The band stretches with the text, as the
+     hardware's double-height row did. */
+  background: #0000ff;
   color: var(--warning);
   text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  transform: scaleY(1.9);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  padding: 0 0.5ch;
+  transform: scaleY(2);
   transform-origin: left top;
-  margin-bottom: 0.6em;
+  margin-bottom: calc(1.2em + 0.4rem);
 }
+html[data-theme="teletext"] :is(h1, h2, h3, .panel-header, .stat-value) { font-weight: 400; }
+html[data-theme="teletext"] .stat-value { color: var(--warning); }
+/* Section titles are colour bands across the whole panel, rotating
+   through the broadcast set with the text colour each needs. */
+html[data-theme="teletext"] .panel { --tt-band: #0000ff; --tt-band-fg: #ffffff; }
+html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+2) { --tt-band: #00ff00; --tt-band-fg: #000000; }
+html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+3) { --tt-band: #ff00ff; --tt-band-fg: #000000; }
+html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+4) { --tt-band: #ffff00; --tt-band-fg: #000000; }
+html[data-theme="teletext"] .panel-header {
+  background: var(--tt-band);
+  color: var(--tt-band-fg);
+  border: 0;
+  text-transform: uppercase;
+  font-size: 1em;
+}
+html[data-theme="teletext"] .card { border: 0; border-top: 0.35rem solid var(--tt-band, #0000ff); }
+html[data-theme="teletext"] .tabs { border-bottom: 0; }
+html[data-theme="teletext"] .tab.is-active { border-bottom: 0; }
+html[data-theme="teletext"] .tab:nth-child(4n+2):not(.is-active) { color: #00ff00; }
+html[data-theme="teletext"] .tab:nth-child(4n+3):not(.is-active) { color: #ffff00; }
+html[data-theme="teletext"] .tab:nth-child(4n+4):not(.is-active) { color: #ff00ff; }
 html[data-theme="teletext"] h2,
 html[data-theme="teletext"] h3 {
   color: var(--accent);
@@ -105,12 +145,13 @@ html[data-theme="teletext"] .app-bar::before {
   left: 0.6rem;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--danger);
-  color: var(--on-danger);
-  font-weight: 700;
-  padding: 0.15rem 0.5rem;
-  letter-spacing: 0.05em;
+  color: #ffffff;
 }
+/* The header row's nav: every link a different broadcast colour, as a
+   page's index lines were. */
+html[data-theme="teletext"] .app-bar .nav-item:nth-of-type(4n+2) { --nav-item-fg: #00ff00; }
+html[data-theme="teletext"] .app-bar .nav-item:nth-of-type(4n+3) { --nav-item-fg: #ffff00; }
+html[data-theme="teletext"] .app-bar .nav-item:nth-of-type(4n+4) { --nav-item-fg: #ff00ff; }
 
 /* --- Layout ------------------------------------------------------------ *
  * A broadcast frame: solid colour-block bar and status strip, zero
@@ -133,12 +174,21 @@ html[data-theme="teletext"] .app-bar {
   --nav-item-fg-active: #ffffff;
   --nav-item-bg-active: var(--danger);
 }
-/* Fastext bar: the red/green/yellow/blue strip along the bottom of a
-   Ceefax page. A ::after block under the status text, so no text ever
-   sits on the stripes (which no single fg could pass contrast on). */
+/* Fastext: the bottom row of a Ceefax page — four words in red, green,
+   yellow and cyan, one per remote-control key. One monospaced string,
+   each word padded to 12 cells, coloured cell-for-cell by a hard-stopped
+   gradient clipped to the text. */
 html[data-theme="teletext"] .app-status::after {
-  content: "";
+  content: "Headlines   Sport       Weather     TV Guide";
   display: block;
-  height: 0.4rem;
-  background: linear-gradient(90deg, #ff0000 0 25%, #00ff00 25% 50%, #ffff00 50% 75%, #0000ff 75% 100%);
+  white-space: pre;
+  margin-top: 0.3rem;
+  font-family: var(--font-mono);
+  background: linear-gradient(90deg, #ff0000 0 12ch, #00ff00 12ch 24ch, #ffff00 24ch 36ch, #00ffff 36ch 48ch) 0 0 / 48ch 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: 48ch;
+  max-width: 100%;
+  overflow: hidden;
 }
