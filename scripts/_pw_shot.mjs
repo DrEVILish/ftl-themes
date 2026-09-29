@@ -28,7 +28,7 @@ const themes = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'themes.json')
   .filter(s => !only || only.split(',').includes(s))
   .sort();
 
-const browser = await chromium.launch();
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 const page = await browser.newPage({ viewport: VIEWPORT });
 
 // Freeze anything time-based (CSS animations/transitions, blinking carets)
