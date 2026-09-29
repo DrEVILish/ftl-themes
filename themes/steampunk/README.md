@@ -51,3 +51,18 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Steam-age furniture
+
+- **Type:** IM Fell English SC (vendored, OFL — see `assets/fonts/NOTICE.md`)
+  sets headings, panel nameplates, buttons, tabs, the brand and stat
+  figures; headings are engraved (dark cut below, faint polish above).
+  Body copy stays a book serif.
+- **Brass nameplates:** every `.panel-header` is a pale polished-brass
+  plate with engraved dark lettering and a slotted screw at each end.
+- **Steam pipes:** a copper pipe with bolted flanges every 220px runs
+  along the foot of the app bar and the head of the status strip.
+- **Gear train:** a brass and a copper cog mesh at the bar's right end
+  and turn slowly in opposite directions (only under
+  `prefers-reduced-motion: no-preference`); hidden on phones.
+

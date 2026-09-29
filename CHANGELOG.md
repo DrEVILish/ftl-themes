@@ -43,6 +43,11 @@ changes are called out explicitly here.
   hard drop shadow; the two-tone `1Help … 10Quit` F-key bar. Open
   question: the VGA face is still not vendored (the authentic Px437 IBM
   VGA font is CC BY-SA 4.0, not OFL like the rest of `assets/fonts/`).
+- **steampunk: steam-age furniture.** Vendored IM Fell English SC (OFL)
+  for display text with engraved headings; brass nameplates with screws
+  for panel titles; copper steam pipes with bolted flanges along the bar
+  and status strip; a meshing brass/copper gear train at the bar's end,
+  turning only when reduced motion isn't requested.
 - **barbie:** numerals and readouts set in Baloo instead of Consolas;
   pale state-text tints on the magenta status strip.
 

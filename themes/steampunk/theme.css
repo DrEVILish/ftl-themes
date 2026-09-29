@@ -10,6 +10,16 @@
  * end-caps. Mixing them on the same surface is the one thing to avoid.
  */
 
+/* IM Fell English SC: the 17th-century Fell types, the letterpress voice
+   of a Victorian instrument maker's plate. Display only — body copy stays
+   a book serif. url() rewritten for dist/ by scripts/build.sh. */
+@font-face {
+  font-family: "IM Fell English SC";
+  src: url("assets/fonts/IMFellEnglishSC-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
 html[data-theme="steampunk"] {
   color-scheme: dark;
   --bg: #241a12;
@@ -36,6 +46,12 @@ html[data-theme="steampunk"] {
   --radius: 0.3rem;
   --font: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-mono: Consolas, monospace;
+  --steampunk-display: "IM Fell English SC", Georgia, serif;
+  /* A copper steam pipe: a lit cylinder, and bolted flanges every 220px.
+     Two separate layers, positioned where they're used (bar foot, status
+     head). */
+  --steampunk-pipe-flanges: repeating-linear-gradient(90deg, transparent 0 200px, #3a2008 200px 202px, #d99a5a 202px 208px, #8a4a1c 208px 214px, #3a2008 214px 216px, transparent 216px 220px);
+  --steampunk-pipe: linear-gradient(180deg, #4a2810, #f2b98a 30%, #c07038 55%, #7a3e16 80%, #3a2008);
   --flare: #7a8c93;
 
   /* Polished brass: a hard vertical gradient plus one sharp diagonal
@@ -172,4 +188,91 @@ html[data-theme="steampunk"] .meter-v {
 html[data-theme="steampunk"] .meter-fill,
 html[data-theme="steampunk"] .meter-v .meter-fill {
   box-shadow: 0 0 6px rgba(201, 150, 44, 0.6) inset;
+}
+
+/* --- Steam-age furniture ----------------------------------------------- */
+
+html[data-theme="steampunk"] :is(h1, h2, h3, .nav-brand, .btn, .tab, .panel-header, .modal-header, .stat-value) {
+  font-family: var(--steampunk-display);
+  font-variant: normal;
+}
+/* Engraved: a dark cut below, a faint polish above. */
+html[data-theme="steampunk"] :is(h1, h2, h3) {
+  text-shadow: 0 1px 0 #000, 0 -1px 0 rgba(255, 230, 180, 0.2);
+  letter-spacing: 0.03em;
+}
+html[data-theme="steampunk"] h1 { font-size: 2.4rem; }
+
+/* Panel titles are brass nameplates screwed onto the leather: pale
+   polished brass, engraved dark lettering, a slotted screw at each end. */
+html[data-theme="steampunk"] .panel-header {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 calc(1rem * var(--density));
+  padding: 0.2rem 1.6rem;
+  background:
+    radial-gradient(circle, #f0d9a0 0 2px, #5c3d15 2.5px 3px, #a97a24 3.5px 4px, transparent 4.5px) 0.55rem 50% / 9px 9px no-repeat,
+    radial-gradient(circle, #f0d9a0 0 2px, #5c3d15 2.5px 3px, #a97a24 3.5px 4px, transparent 4.5px) calc(100% - 0.55rem) 50% / 9px 9px no-repeat,
+    linear-gradient(115deg, transparent 35%, rgba(255, 250, 230, 0.5) 42%, transparent 50%),
+    linear-gradient(180deg, #f5e2b0, #d9ab4a 55%, #b8892f);
+  color: #241a12;
+  border: 1px solid #5c3d15;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 245, 220, 0.7);
+  text-shadow: 0 1px 0 rgba(255, 240, 200, 0.6);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* The shell: copper steam pipes run along the foot of the bar and the
+   head of the status strip, and a brass-and-copper gear train turns at
+   the bar's right end. */
+html[data-theme="steampunk"] .app-bar {
+  position: relative;
+  overflow: hidden;
+  padding-right: 8rem;
+  padding-bottom: calc(0.6rem + 14px);
+  background: var(--steampunk-pipe-flanges) bottom / 100% 14px no-repeat, var(--steampunk-pipe) bottom / 100% 14px no-repeat, var(--steampunk-leather);
+  border-bottom: 0;
+}
+html[data-theme="steampunk"] .app-status {
+  padding-top: calc(0.4rem + 14px);
+  background: var(--steampunk-pipe-flanges) top / 100% 14px no-repeat, var(--steampunk-pipe) top / 100% 14px no-repeat, var(--steampunk-leather);
+  border-top: 0;
+}
+html[data-theme="steampunk"] .app-bar::before,
+html[data-theme="steampunk"] .app-bar::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+html[data-theme="steampunk"] .app-bar::before {
+  width: 72px;
+  height: 72px;
+  right: 1.2rem;
+  top: -8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.35' cy='.3' r='.8'%3E%3Cstop offset='0' stop-color='%23f0d9a0'/%3E%3Cstop offset='.55' stop-color='%23a97a24'/%3E%3Cstop offset='1' stop-color='%235c3d15'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='36.0' cy='36.0' r='28.80' fill='none' stroke='url(%23b)' stroke-width='10.08' stroke-dasharray='6.463 6.463'/%3E%3Ccircle cx='36.0' cy='36.0' r='24.48' fill='url(%23b)' stroke='%233a2610'/%3E%3Cg fill='%23241a12'%3E%3Ccircle cx='50.40' cy='36.00' r='5.04'/%3E%3Ccircle cx='21.60' cy='36.00' r='5.04'/%3E%3Ccircle cx='36.00' cy='50.40' r='5.04'/%3E%3Ccircle cx='36.00' cy='21.60' r='5.04'/%3E%3Ccircle cx='36.0' cy='36.0' r='6.48'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
+}
+html[data-theme="steampunk"] .app-bar::after {
+  width: 46px;
+  height: 46px;
+  right: calc(1.2rem + 64px);
+  top: 32px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.35' cy='.3' r='.8'%3E%3Cstop offset='0' stop-color='%23f2b98a'/%3E%3Cstop offset='.55' stop-color='%23b0642c'/%3E%3Cstop offset='1' stop-color='%234a2810'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='23.0' cy='23.0' r='18.40' fill='none' stroke='url(%23b)' stroke-width='6.44' stroke-dasharray='5.781 5.781'/%3E%3Ccircle cx='23.0' cy='23.0' r='15.64' fill='url(%23b)' stroke='%233a2610'/%3E%3Cg fill='%23241a12'%3E%3Ccircle cx='32.20' cy='23.00' r='3.22'/%3E%3Ccircle cx='13.80' cy='23.00' r='3.22'/%3E%3Ccircle cx='23.00' cy='32.20' r='3.22'/%3E%3Ccircle cx='23.00' cy='13.80' r='3.22'/%3E%3Ccircle cx='23.0' cy='23.0' r='4.14'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
+}
+/* The gears turn — slowly, and only for readers who haven't asked for
+   less motion. Meshed, so they turn opposite ways. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="steampunk"] .app-bar::before { animation: steampunk-cog 24s linear infinite; }
+  html[data-theme="steampunk"] .app-bar::after { animation: steampunk-cog 15.3s linear infinite reverse; }
+}
+@keyframes steampunk-cog { to { transform: rotate(360deg); } }
+@media (max-width: 720px) {
+  html[data-theme="steampunk"] .app-bar { padding-right: 1rem; }
+  html[data-theme="steampunk"] .app-bar::before,
+  html[data-theme="steampunk"] .app-bar::after { content: none; }
 }

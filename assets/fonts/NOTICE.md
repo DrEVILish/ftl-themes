@@ -10,7 +10,7 @@ directory placement — Google Fonts sorts fonts into `ofl/`, `apache/` or
 `ufl/` by license, so the directory itself is a second confirmation
 alongside the specimen page's license line).
 
-All six files vendored here turned out to be **SIL Open Font License,
+All seven files vendored here turned out to be **SIL Open Font License,
 version 1.1** — but that was verified per family below, not assumed.
 OFL 1.1 permits embedding, bundling and redistributing the font (including
 as a webfont, including verbatim, including at whatever scale this
@@ -49,6 +49,18 @@ files are vendored unmodified.
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Baloo+2
 - **Used by:** `barbie` (rounded-display voice for headings and buttons)
+
+## IM Fell English SC
+
+- **Family:** IM Fell English SC (weight vendored: Regular 400 —
+  `IMFellEnglishSC-Regular.woff2`)
+- **Designer:** Igino Marini (digitisation of the 17th-century Fell types)
+- **License:** SIL Open Font License, version 1.1 — confirmed by its
+  placement at `google/fonts` `ofl/imfellenglishsc/` (with `OFL.txt`)
+  and `license: "OFL"` in that directory's `METADATA.pb`
+- **Source:** https://fonts.google.com/specimen/IM+Fell+English+SC
+- **Used by:** `steampunk` (display face: headings, panel nameplates,
+  buttons, the app bar)
 
 ## Orbitron
 
