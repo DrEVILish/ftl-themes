@@ -128,8 +128,11 @@ def header_field(src, field):
 def version():
     """Build identity from the bundles themselves: changes iff they change."""
     blob = b"".join(open(f, "rb").read() for f in sorted(glob.glob("dist/*.css")))
-    h = subprocess.run(["git", "hash-object", "--stdin"], input=blob,
-                       capture_output=True).stdout.decode().strip()[:12]
+    r = subprocess.run(["git", "hash-object", "--stdin"], input=blob,
+                       capture_output=True)
+    h = r.stdout.decode().strip()[:12]
+    if r.returncode != 0 or not h:
+        raise SystemExit("build_manifest: git hash-object failed: " + r.stderr.decode().strip())
     return h
 
 
