@@ -157,6 +157,10 @@ def write_manifest():
         label = header_field(src, "Theme-Name") or slug
         scheme, luminance = scheme_of(src, slug)
         meta = categories.get(slug, {})
+        # Palette variants (CONTRACT.md "Palette variants") are listed in the
+        # header as `Variants: id=Label, id=Label` so pickers can offer them.
+        variants = [dict(zip(("id", "label"), (x.strip() for x in v.split("=", 1))))
+                    for v in header_field(src, "Variants").split(",") if "=" in v]
         entries.append({
             "slug": slug,
             "dataTheme": slug,
@@ -171,6 +175,7 @@ def write_manifest():
             "luminance": luminance,
             "category": meta.get("category"),
             "era": meta.get("era"),
+            **({"variants": variants} if variants else {}),
         })
     lines = ",\n".join("  " + json.dumps(e, ensure_ascii=False) for e in entries)
     with open("dist/themes.json", "w") as f:

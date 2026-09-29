@@ -15,6 +15,20 @@ The target is *recognisable at a glance from across a room* — someone
 should identify it before reading a single word. If a screenshot needs a
 caption to say which theme it is, it has failed.
 
+## Variants
+
+The frame is the same across the shows; the paint changed. The default is
+TNG (1987–94). Select the others with `data-variant` on `<html>` (CONTRACT.md
+"Palette variants"):
+
+| `data-variant` | Era | Palette |
+|---|---|---|
+| *(none)* | TNG | Orange-led candy: orange, lavender, peach, tan. |
+| `voyager` | Voyager / DS9 | Gold-tan `#cc9966` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
+| `picard` | Picard (2399) | Cold blue `#5588ee` structure, ice-blue text `#ddeeff`, red `#ee5555`/orange `#ff8844` accents. |
+
+Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
+
 ## Core values
 
 1. **Black is the substrate, not a colour choice.** LCARS is colour blocks

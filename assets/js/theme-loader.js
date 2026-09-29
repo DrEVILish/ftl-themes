@@ -44,14 +44,21 @@
   // `persist` is true only for a choice the user made in the picker. A
   // theme that came from ?theme= (the gallery's iframes, screenshot
   // automation) must not overwrite the stored preference.
-  function apply(slug, persist) {
+  // A picker value is "slug" or "slug:variant" (CONTRACT.md "Palette
+  // variants"); the variant only ever lands in a data attribute, but is
+  // held to the same charset as a slug anyway.
+  function apply(value, persist) {
+    var parts = String(value).split(":");
+    var slug = parts[0], variant = parts[1];
     document.documentElement.dataset.theme = slug;
+    if (variant && /^[a-z0-9-]+$/.test(variant)) document.documentElement.dataset.variant = variant;
+    else delete document.documentElement.dataset.variant;
     if (link) link.href = "dist/" + slug + ".css";
     applyIcons(slug);
     if (persist) {
-      try { localStorage.setItem("example-theme", slug); } catch (e) {}
+      try { localStorage.setItem("example-theme", value); } catch (e) {}
     }
-    if (picker) picker.value = slug;
+    if (picker) picker.value = value;
   }
 
   fetch("dist/themes.json").then(function (r) {
@@ -62,7 +69,8 @@
     known = list.map(function (t) { return t.slug; });
     var stored;
     try { stored = localStorage.getItem("example-theme"); } catch (e) {}
-    var initial = [params.get("theme"), stored, known[0]].filter(valid)[0];
+    var wanted = params.get("theme") && params.get("variant") ? params.get("theme") + ":" + params.get("variant") : params.get("theme");
+    var initial = [wanted, stored, known[0]].filter(function (v) { return v && valid(String(v).split(":")[0]); })[0];
     if (picker) {
       picker.textContent = "";
       list.forEach(function (t) {
@@ -70,6 +78,12 @@
         o.value = t.slug;
         o.textContent = t.label;
         picker.appendChild(o);
+        (t.variants || []).forEach(function (v) {
+          var vo = document.createElement("option");
+          vo.value = t.slug + ":" + v.id;
+          vo.textContent = t.label + " — " + v.label;
+          picker.appendChild(vo);
+        });
       });
       picker.addEventListener("change", function () { apply(picker.value, true); });
     }

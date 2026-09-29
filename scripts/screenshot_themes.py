@@ -132,7 +132,9 @@ def run_screenshots(base_url: str, outdir: Path, themes=None) -> dict:
 def load_theme_slugs() -> list[str]:
     with open(THEMES_JSON) as f:
         data = json.load(f)
-    return sorted(t["slug"] for t in data)
+    # Palette variants are baselined as their own <slug>~<variant> entry,
+    # matching _pw_shot.mjs's output directories.
+    return sorted(e for t in data for e in [t["slug"], *(f'{t["slug"]}~{v["id"]}' for v in t.get("variants", []))])
 
 
 def _changed_mask(baseline, actual):
@@ -227,7 +229,7 @@ def main():
 
         themes = load_theme_slugs()
         if args.theme:
-            themes = [t for t in themes if t in set(args.theme)]
+            themes = [t for t in themes if t.split("~")[0] in set(args.theme)]
 
         rows = []
         any_fail = False

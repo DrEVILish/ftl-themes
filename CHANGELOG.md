@@ -5,6 +5,12 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Palette variants are now discoverable.** A theme lists its variants in
+  its header (`Variants: id=Label, …`); `dist/themes.json` carries them as
+  `variants: [{id, label}]`, the demo picker offers each one, pages accept
+  `?variant=`, and the visual baseline shoots each as `<slug>~<variant>`.
+- **lcars: `voyager` and `picard` era variants** alongside the TNG default.
+
 - **lcars: fidelity pass against the on-screen references.** The shell is
   now a real elbow frame — a thick orange leg curving into a thin bar with
   pill-capped end segments, fixed-height labelled rail blocks, and a
