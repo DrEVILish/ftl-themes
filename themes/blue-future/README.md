@@ -69,7 +69,7 @@ primitives carry its identity more than the buttons do:
 - **Readouts** glow cyan and track slightly wide. A counter is the thing
   you read across the room.
 - **Lamps** are round, dark-navy when off, cyan and blooming when on.
-- **The transport** repeats the panel's corner-bracket language, and GO
+- **The transport** (GO bar) repeats the panel's corner-bracket language, and GO
   blooms rather than filling — an energized outline, not a painted button.
 
 ## Layout
@@ -82,14 +82,65 @@ the two should visibly move the furniture.
 
 ## Signature details
 
-- **Grid-lined backdrop.** A 2rem cyan grid at 4% opacity over a radial
-  vignette — the panel sits in a space, rather than floating on flat color.
-- **Corner brackets** on panels and modals (`::before`/`::after`, 14px, 55%
-  opacity): a HUD reticle framing content. Purely decorative and
-  `pointer-events: none`.
-- **Focus glows.** `--focus-ring` adds a cyan bloom on top of the
-  always-present outline — focus is a live state, so it glows.
-- **Square slider thumbs** with a glow: a physical fader cap, not a dot.
+1. **Backdrop.** A fixed radial vignette (ellipse at top, `#0a1a2e` to
+   `#020509` at 70%) under a faint cyan 2rem grid (`rgba(47,214,255,0.04)`
+   1px lines): the interface reads as a panel in a space, not wallpaper.
+2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
+   14px L-marks, 2px stroke, 0.55 opacity, top-left and bottom-right. They
+   are painted as background layers (`--brackets` inside `--panel-bg`,
+   `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
+   surface gains a `position` and popovers, dropdowns and context menus
+   keep anchoring to their true offset parent; they also stay put when a
+   modal scrolls.
+3. **Buttons** are dark cells with 0.05em tracking. Primary carries
+   `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
+   border to the glow and adds `0 0 8px`; `:disabled` is flat at 0.35
+   opacity with no shadow. All via `--btn-*` tokens.
+4. **Inputs** are `#08192b` cells; focus recolours the border, keeps the
+   outline and adds `0 0 8px rgba(0,217,255,0.35)`.
+5. **Tables**: dim, 0.08em-tracked uppercase headers, hairline row rules,
+   and an accent select bar (`inset 0.35rem`) on active and selected rows.
+6. **Headings** are 0.8em, 0.2em-tracked, uppercase and `--muted`.
+7. **Glow range inputs**: 4px `#0e3a5c` to cyan gradient track, 14px
+   near-square `#02050a` thumb with a glow border and glow shadow
+   (`--slider-*`).
+8. **`.sci-switch`** (theme-scoped: `html[data-theme="blue-future"]
+   .sci-switch`, invisible to every other theme): a 4.4em x 1.9em dark
+   track, a sliding square thumb carrying a status LED (dim white off,
+   glowing cyan on), and a readout drawn from `data-off` / `data-on`
+   (dim and recessed off, glowing on). Markup:
+   `<label class="sci-switch" data-on="ONLINE" data-off="OFFLINE"><input type="checkbox"><span></span></label>`.
+   Slides only under `prefers-reduced-motion: no-preference`.
+9. **Status helpers**: `.status-ok` (success), `.status-error` (danger),
+   `.status-rec` or `.status-error.is-rec` (bold danger plus glow),
+   `.status-idle` (success, a ready recorder is green).
+10. **Type** is monospace-first (see Typography).
+11. **Flare `#d85cff`** magenta is declared and held in reserve: nothing in
+    this theme uses it.
+
+Also: the meters, readouts, lamps and transport described under
+"Instruments" above.
+
+## Typography
+
+`Consolas, "IBM Plex Mono", "SFMono-Regular", monospace`. Consolas is the
+reference face but ships only with Windows and Microsoft Office; nothing is
+vendored. IBM Plex Mono and SFMono are used only if installed locally, so on
+most Linux/Android devices the final generic `monospace` (DejaVu Sans Mono,
+Roboto Mono, ...) renders. Metrics are close but not identical.
+
+## Contrast note
+
+`--text` and filled controls clear 4.5:1 (enforced by `scripts/check.py`).
+`--muted` (`#5b8aa8`) carries the dim headings, table headers and switch
+readout at roughly AA, not AAA: deliberately, because "chrome recedes,
+content is bright" is the theme's point. Do not brighten it.
+
+## Reference status
+
+Restored from the original CuTePi default ("Future SciFi") spec, with the
+reconciled telemetry-dashboard palette. There are no `references/blue-future/`
+captures yet.
 
 ## Extending it
 
@@ -98,13 +149,18 @@ Do:
 - Add glow via `--*-shadow` properties so it stays tunable.
 - Keep new readouts monospaced and tabular.
 
-Don't:
-- Add a gradient to any control.
-- Brighten `--muted` to "improve readability" — the contrast floor is
-  already verified by `scripts/check.sh`; if a label seems too dim, it's
-  probably a label that shouldn't be competing with data.
+## Don'ts
+
+- Add a gradient to an interactive control (the slider track is a meter,
+  not a button).
+- Brighten `--muted` to "improve readability": the contrast floor is
+  already verified by `scripts/check.py`; a label that seems too dim is
+  probably one that shouldn't compete with data.
 - Round the corners.
 - Use `--flare` more than once on a screen.
+- Put `position` on `.panel`/`.modal` to add decoration: it moves the
+  anchor for popovers and context menus.
+- Set `background`/`color` directly on `.btn`; use `--btn-*` tokens.
 
 ## Tell-tales of an inauthentic result
 
@@ -123,24 +179,18 @@ layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 layout at **L1**.
 
 ## Reference implementation & stays-app-side
-## Reference implementation & stays-app-side
 
-This theme is the theme-form of a rack recorder's telemetry dashboard
-(PI9696), which is the visual reference: palette, brackets, switch
-readouts, and deck metalwork values are that device's actual numbers.
-The dashboard consumes this theme opt-in; with no theme it renders its
-own identical built-in look.
+The palette, deck-metalwork values and `.sci-switch` readout come from a
+rack recorder's telemetry dashboard (PI9696). That dashboard consumes this
+theme opt-in; with no theme it renders its own identical built-in look.
 
 Deliberately NOT themed (app-owned, do not add hooks for these):
 
-- OLED bezel and mirror — a hardware representation, not chrome.
-- Reel-deck SVG geometry and tape animation — flat fills are exposed as
+- OLED bezel and mirror: a hardware representation, not chrome.
+- Reel-deck SVG geometry and tape animation: flat fills are exposed as
   `--deck-*` for reskinning, but the drawing itself is the device.
-- The square HUD rail switch (`.sci-switch`) and its ONLINE/OFFLINE
-  readout — device identity; core's round `.switch` is a different
-  widget, do not force them together.
-- Round icon buttons and transport geometry — state *colors* are covered
-  by `.transport.is-rec/.is-play/.is-pause`, sizes stay app-side.
-- uPlot chart internals — the app reads bridge tokens via
+- Round icon buttons and transport geometry: state colors are covered by
+  `.transport.is-rec/.is-play/.is-pause`, sizes stay app-side.
+- uPlot chart internals: the app reads bridge tokens via
   `getComputedStyle` with identical fallbacks.
 - Brand logo and modal sheet layout.
