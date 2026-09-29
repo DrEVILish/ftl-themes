@@ -791,13 +791,17 @@
       });
   }
 
-  function applyTheme(slug) {
+  // `value` is "slug" or "slug:variant" (CONTRACT.md "Palette variants").
+  function applyTheme(value) {
+    var slug = String(value).split(":")[0], variant = String(value).split(":")[1];
     document.documentElement.dataset.theme = slug;
+    if (variant && /^[a-z0-9-]+$/.test(variant)) document.documentElement.dataset.variant = variant;
+    else delete document.documentElement.dataset.variant;
     link.href = "dist/" + slug + ".css";
     applyIconTheme(slug);
     // Compare-mode panes are copies of this page; letting them persist
     // would make whichever pane loaded last the single-mode theme.
-    if (!isEmbed) store("qa-theme", slug);
+    if (!isEmbed) store("qa-theme", value);
     var t = themes.find(function (x) { return x.slug === slug; });
     desc.textContent = t ? t.description : "";
     crumbTheme.textContent = t ? t.label : slug;
@@ -826,9 +830,16 @@
         o.value = t.slug;
         o.textContent = t.label;
         picker.appendChild(o);
+        (t.variants || []).forEach(function (v) {
+          var vo = document.createElement("option");
+          vo.value = t.slug + ":" + v.id;
+          vo.textContent = t.label + " — " + v.label;
+          picker.appendChild(vo);
+        });
       });
-      var initial = params.get("theme") || read("qa-theme") || list[0].slug;
-      if (!list.some(function (t) { return t.slug === initial; })) initial = list[0].slug;
+      var wanted = params.get("theme") && params.get("variant") ? params.get("theme") + ":" + params.get("variant") : params.get("theme");
+      var initial = wanted || read("qa-theme") || list[0].slug;
+      if (!list.some(function (t) { return t.slug === String(initial).split(":")[0]; })) initial = list[0].slug;
       picker.value = initial;
       applyTheme(initial);
       if (!isEmbed) initCompareMode(list, initial);

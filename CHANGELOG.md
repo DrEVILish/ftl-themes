@@ -10,6 +10,13 @@ changes are called out explicitly here.
   `variants: [{id, label}]`, the demo picker offers each one, pages accept
   `?variant=`, and the visual baseline shoots each as `<slug>~<variant>`.
 - **lcars: `voyager` and `picard` era variants** alongside the TNG default.
+- **winxp-luna: fidelity pass + `royale` / `royale-noir` variants.** Real
+  Luna title-bar and taskbar gradients, separate 21px caption buttons, a
+  thick blue window frame, group-box panels with the caption on the frame
+  line, raised tabs with the orange hot-track line, Luna push buttons
+  (orange hover glow, blue default-button glow — primary is no longer
+  green), Luna checkboxes/radios and the segmented green progress bar. The
+  brand no longer vanishes into a white nav box in the title bar.
 
 - **lcars: fidelity pass against the on-screen references.** The shell is
   now a real elbow frame — a thick orange leg curving into a thin bar with

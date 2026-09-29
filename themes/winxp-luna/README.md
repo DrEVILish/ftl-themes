@@ -24,19 +24,34 @@ someone says "Windows XP."
    royal blue (`#0054e3`); the actual working area is the calmer
    `#ece9d8` tan, with white cards for real content. Don't paint the
    content area blue — that's the chrome's color, not the page's.
-4. **Green means go, blue means select.** The Start-button green is
-   reserved for primary/affirmative actions; the selection blue
-   (`#316ac5`) is for "this row is chosen," not "click me."
+4. **Green is Start, blue is selection.** The Start-button green is kept
+   for the Start pill and the transport's GO (`.btn-go`); dialog buttons,
+   including the primary one, are the white-to-beige Luna push button —
+   the primary one marked, as XP marked its default button, by a blue
+   inner glow. `.btn-success` stays green. The selection blue (`#316ac5`)
+   is for "this row is chosen," not "click me."
 5. **Tahoma, not a modern system font.** Segoe UI is the *next* Windows —
    swapping it in undoes the one typographic signal that says "XP."
 
 ## Signature details
 
 - Modal headers repeat the title bar's exact three-stop gloss gradient.
-- Buttons carry a 1px `#7f9db9` border and an inset top highlight — the
-  "is this actually pressable" cue XP relied on before flat design existed.
-- The primary button variant brightens toward `#3f9eff` at the top of its
-  gradient, distinguishing it from a plain gloss button at a glance.
+- The title bar is Luna's own multi-stop gradient (bright `#0997ff` lip,
+  `#0050ee` body, lighter `#0066ff` lower band, `#003dd7` bottom edge),
+  with white bold Trebuchet MS text carrying a 1px `#0f1089` drop shadow,
+  and three separate 21px caption buttons (blue minimize/maximize,
+  red-orange close) drawn as one inline SVG.
+- Push buttons: `#ffffff → #ecebe6 → #d6d0c5` face, 1px `#003c74` border,
+  3px corners; hover lights XP's orange inner glow, the primary/default
+  button wears the blue one.
+- Panels and cards are **group boxes**: a `#d0d0bf` hairline frame with
+  3px corners and the caption in `#0046d5`, sitting on the frame line.
+- Tabs are raised, round-topped, the selected one white with the orange
+  `#ffc83c`/`#e68b2c` hot-track line on top.
+- Checkboxes and radios are the Luna glyphs: beige-to-white wells in a
+  `#1c5180` frame, green tick / green dot, orange glow on hover.
+- Progress is XP's segmented green block bar; the status strip is the
+  taskbar's own gradient.
 
 ### Icons
 
@@ -46,6 +61,17 @@ the base shape, a soft white highlight band across the top for the gloss
 line Luna put on every filled surface, and a thin `currentColor` outline
 to keep edges crisp — the same three-layer recipe as the title bar and
 buttons, just applied at icon scale. The sprite ships 135 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+
+## Variants
+
+Select with `data-variant` on `<html>` (CONTRACT.md "Palette variants");
+the window shape is shared, only the paint changes.
+
+| `data-variant` | Look |
+|---|---|
+| *(none)* | Luna Blue: royal-blue gloss, beige `#ece9d8` dialog face. |
+| `royale` | Royale / Media Center "Energy Blue": a glassier title bar with a strong upper highlight, cool grey-lilac `#ebe9ed` face, deep navy taskbar. |
+| `royale-noir` | Royale Noir: glossy black chrome and caption buttons, neutral grey `#ececec` face, graphite `#4a4a4a` selection. The orange hot-track and green Start survive. |
 
 ## Layout
 
@@ -65,7 +91,7 @@ Luna background filling the well between them.
 - **No flat, single-colour title bar** — the gloss highlight line at the top is the theme.
 - **No square window corners**, and no pill/stadium shapes either: XP is `8px` rounding, not Barbie.
 - **No blue content area.** Blue is chrome; the well is tan `#ece9d8` and white.
-- **No green on selection and no blue on "go".** Green is the affirmative action, `#316ac5` blue is selection.
+- **No green on selection.** Green is Start/GO, `#316ac5` blue is selection.
 - **No Segoe UI or system-ui swapped in for Tahoma** where Tahoma exists.
 
 ## Typography

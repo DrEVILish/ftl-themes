@@ -2677,6 +2677,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
 /* ftl-themes: Windows XP (Luna)
  * Theme-Name: Windows XP (Luna)
  * Description: The default Luna Blue XP desktop: glossy round-cornered blue chrome, with the Start-button green reserved for primary actions.
+ * Variants: royale=Royale, royale-noir=Royale Noir
  *
  * The theme everyone actually pictures when they say "Windows XP": the
  * royal-blue glossy title bar, the round window corners, the tan/silver
@@ -2713,36 +2714,89 @@ html[data-theme="winxp-luna"] {
   --on-success: #ffffff;
   --radius: 8px;
   --font: Tahoma, "Segoe UI", Verdana, sans-serif;
-  --font-mono: "Courier New", Consolas, monospace;
+  /* Lucida Console was XP's console face; Courier New only its fallback. */
+  --font-mono: "Lucida Console", "Courier New", monospace;
   --flare: #ffd700;
 
   /* Glossy pill buttons: a light highlight band over the fill, the same
      device Luna used everywhere from the Start button to the address bar
      "Go" arrow. Radius 3px, not 4 — Luna's dialog buttons are barely
      rounded next to the 8px window chrome. */
-  --btn-bg: linear-gradient(180deg, #fefefe, #ece9d8);
+  /* The Luna push button: white-to-beige face, dark navy 1px border, 3px
+     corners. Hover is XP's orange "hot" inner glow; the default button
+     (.btn-primary) wears the blue inner glow XP drew round the button
+     Enter would press. */
+  --btn-bg: linear-gradient(180deg, #ffffff, #ecebe6 86%, #d6d0c5);
+  --btn-bg-hover: linear-gradient(180deg, #ffffff, #ecebe6 86%, #d6d0c5);
   --btn-fg: var(--text);
+  --btn-border: #003c74;
+  --btn-border-hover: #003c74;
+  --btn-border-width: 1px;
   --btn-radius: 3px;
-  --btn-shadow: inset 0 1px 0 #ffffff;
-  --btn-shadow-hover: 0 0 0 2px rgba(0, 84, 227, 0.35);
-  --btn-primary-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --btn-padding: 0.25rem 1rem;
+  --btn-shadow: none;
+  --btn-shadow-hover: inset -1px 1px #fff0cf, inset 1px 2px #fdd889, inset -2px 2px #fbc761, inset 2px -2px #e5a01a;
+  --btn-primary-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4, inset 2px -2px #89ade4;
   --focus: #0054e3;
   --focus-ring: 0 0 0 2px rgba(0, 84, 227, 0.45);
   --input-bg: #ffffff;
   --input-border: #7f9db9;
-  --panel-bg: #ffffff;
-  --panel-radius: 8px;
-  --panel-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --modal-header-bg: linear-gradient(180deg, #2b68f2, #0054e3 50%, #0040c0);
+  /* Panels are XP group boxes: a hairline #d0d0bf frame with 3px corners
+     on the dialog's own face, the caption in blue on the frame line. */
+  --panel-bg: #fcfcfe;
+  --panel-border: #d0d0bf;
+  --panel-radius: 3px;
+  --panel-shadow: none;
+  --panel-header-fg: #0046d5;
+  --modal-header-bg: var(--luna-titlebar);
   --modal-header-fg: #ffffff;
   --modal-radius: 8px;
-  --table-head-bg: linear-gradient(180deg, #fefefe, #ece9d8);
+  /* List-view column header: flat pale beige with the three-step
+     shaded bottom edge. */
+  --table-head-bg: #ebeadb;
+  --table-head-rule: #d6d2c2;
+  --table-head-rule-width: 3px;
   --table-head-transform: none;
   --table-head-tracking: normal;
   --row-selected-bg: #316ac5;
   --row-selected-fg: #ffffff;
   --row-active-marker: inset 0.25rem 0 0 var(--accent);
-  --nav-bg: linear-gradient(180deg, #fefefe, #ece9d8);
+  --nav-bg: transparent;
+  --nav-rule-width: 0;
+  /* Tabs: raised, round-topped, the selected one white with Luna's orange
+     hot-track line across its top. */
+  --tab-radius: 3px 3px 0 0;
+  --tab-bg: linear-gradient(180deg, #ffffff, #ecebe6);
+  --tab-fg: #000000;
+  --tab-bg-active: #fcfcfe;
+  --tab-fg-active: #000000;
+  --tab-border-active: #919b9c;
+  --tab-underline-active: #fcfcfe;
+  /* XP's segmented green progress blocks. */
+  --progress-bg: #ffffff;
+  --progress-border: #686868;
+  --progress-border-width: 1px;
+  --progress-radius: 3px;
+  --progress-fill: repeating-linear-gradient(90deg, #37c42f 0 8px, transparent 8px 10px), linear-gradient(180deg, #acedad, #7be47d 14%, #4cda50 28%, #2ed330 42%, #42d845 57%, #76e275 71%, #8fe791 85%, #ffffff);
+  --scrollbar-thumb: #c1d3fb;
+  --scrollbar-thumb-hover: #d2defc;
+  --scrollbar-track: #f4f3ee;
+  --scrollbar-radius: 3px;
+  --scrollbar-thumb-border: 1px solid #fff;
+  --scrollbar-width: auto;
+  /* The real Luna Blue title bar, stop for stop: deep royal body, lighter
+     lower band, dark bottom edge. Its bright #0997ff top lip (3.1:1 under
+     white text) is an inset shadow instead (--luna-lip): it is 2px tall
+     and no text sits on it, but a gradient stop would count against the
+     text-contrast floor. */
+  --luna-titlebar: linear-gradient(180deg, #0053ee 0%, #0050ee 40%, #0066ff 88%, #0066ff 93%, #005bff 95%, #003dd7 96%, #003dd7 100%);
+  --luna-lip: inset 0 1px #3d95ff, inset 0 2px #0997ff;
+  /* Same for the taskbar's bright upper band. */
+  --luna-taskbar-lip: inset 0 1px #1f2f86, inset 0 4px #4490e6;
+  --luna-frame: #0831d9;
+  --luna-heading: #0058c8;
+  /* Minimize / maximize / close caption buttons, one inline SVG. */
+  --luna-caption: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='67' height='21'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236d9bfb'/%3E%3Cstop offset='.45' stop-color='%232f6cf3'/%3E%3Cstop offset='1' stop-color='%23104bd9'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f0a080'/%3E%3Cstop offset='.45' stop-color='%23e0582c'/%3E%3Cstop offset='1' stop-color='%23c1370f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke='%23fff'%3E%3Crect x='.5' y='.5' width='20' height='20' rx='3' fill='url(%23b)'/%3E%3Crect x='23.5' y='.5' width='20' height='20' rx='3' fill='url(%23b)'/%3E%3Crect x='46.5' y='.5' width='20' height='20' rx='3' fill='url(%23r)'/%3E%3C/g%3E%3Crect x='5' y='13' width='7' height='3' fill='%23fff'/%3E%3Crect x='28.5' y='5.5' width='10' height='10' fill='none' stroke='%23fff'/%3E%3Crect x='28' y='5' width='11' height='3' fill='%23fff'/%3E%3Cpath d='M51.5 5.5l10 10M61.5 5.5l-10 10' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E");
   --nav-item-bg-active: var(--accent);
   --nav-item-fg-active: #ffffff;
   /* The transport/"Go" trigger is this theme's Start button, so it gets
@@ -2786,7 +2840,7 @@ html[data-theme="winxp-luna"] {
 html[data-theme="winxp-luna"] h1,
 html[data-theme="winxp-luna"] h2,
 html[data-theme="winxp-luna"] h3 {
-  color: #0058c8;
+  color: var(--luna-heading);
   font-weight: 700;
 }
 
@@ -2797,9 +2851,10 @@ html[data-theme="winxp-luna"] {
   --toast-shadow: inset 0 1px 0 #ffffff, 0 2px 8px rgba(0, 0, 0, 0.2);
   --alert-bg: #ffffff;
   --alert-fg: var(--text);
-  --card-bg: #ffffff;
-  --card-radius: 8px;
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --card-bg: #fcfcfe;
+  --card-border: #d0d0bf;
+  --card-radius: 3px;
+  --card-shadow: none;
   --context-menu-bg: #ffffff;
   --context-menu-border: #7f9db9;
   --dropzone-border: #7f9db9;
@@ -2818,80 +2873,141 @@ html[data-theme="winxp-luna"] {
   --skeleton-bg: #ece9d8;
 }
 
-/* Rounded, beveled — never sharp, never flat. */
-html[data-theme="winxp-luna"] .btn { border: 1px solid #7f9db9; }
-/* Primary actions get the Start-button green, not the chrome blue — per
-   this theme's own "green means go, blue means select" rule (see README):
-   blue is reserved for the title bar and "this is selected," green is the
-   one color XP used for "click this to proceed." A blue primary button
-   was this theme's own doc going unenforced by its CSS. */
+/* Buttons: the border colour comes from --btn-border; core paints the
+   hover glow via --btn-shadow-hover. */
 html[data-theme="winxp-luna"] .btn-primary {
-  --btn-bg: linear-gradient(180deg, #3a861d, var(--success) 60%, #1f5c0a);
-  --btn-fg: #ffffff;
-  border-color: #1f5c0a;
+  --btn-bg: linear-gradient(180deg, #ffffff, #ecebe6 86%, #d6d0c5);
+  --btn-fg: #000000;
+  --btn-shadow: var(--btn-primary-shadow);
+}
+html[data-theme="winxp-luna"] .stat-value { font-family: "Trebuchet MS", var(--font); }
+
+/* Group boxes: the caption sits ON the frame line, its background split
+   between the outside (--bg) and the box face so the line passes behind
+   it without showing through. */
+html[data-theme="winxp-luna"] .panel { margin-top: 0.6rem; }
+html[data-theme="winxp-luna"] .panel-header {
+  width: fit-content;
+  max-width: calc(100% - 1rem);
+  margin: calc(-1rem * var(--density) - 0.7em) 0 calc(0.6rem * var(--density)) -0.35rem;
+  padding: 0 0.3rem;
+  background: linear-gradient(180deg, transparent 50%, var(--panel-bg) 50%);
+  border: 0;
+  font-size: 0.9em;
+  font-weight: 400;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
 }
 
-html[data-theme="winxp-luna"] .panel,
-html[data-theme="winxp-luna"] .modal { border: 1px solid var(--border); }
+/* Tabs: selected tab rises 2px, sits over the strip's rule, and carries
+   the orange top line; hovering an unselected tab lights the same line. */
+html[data-theme="winxp-luna"] .tabs { border-bottom-color: #919b9c; gap: 0; align-items: flex-end; }
+html[data-theme="winxp-luna"] .tab {
+  border: 1px solid #919b9c;
+  border-bottom: 0;
+  margin-right: -1px;
+  padding: 0.2em 0.8em;
+}
+html[data-theme="winxp-luna"] .tab:hover { box-shadow: inset 0 2px #ffc83c, inset 0 3px #e68b2c; }
+html[data-theme="winxp-luna"] .tab.is-active {
+  position: relative;
+  bottom: -1px;
+  padding-top: 0.35em;
+  padding-bottom: calc(0.2em + 1px);
+  border-bottom: 0;
+  box-shadow: inset 0 2px #ffc83c, inset 0 3px #e68b2c;
+}
+
+/* Checkboxes and radios: the Luna glyphs — white-to-beige wells in a
+   navy #1c5180 frame, green tick / green dot. */
+html[data-theme="winxp-luna"] :is(.checkbox, .radio) {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 1px solid #1c5180;
+  background: linear-gradient(135deg, #dcdcd7, #ffffff);
+  display: inline-grid;
+  place-content: center;
+}
+html[data-theme="winxp-luna"] .radio { border-radius: 50%; }
+html[data-theme="winxp-luna"] :is(.checkbox, .radio):hover { box-shadow: inset -1px -1px #f8b636, inset 1px 1px #fedf9c; }
+html[data-theme="winxp-luna"] .checkbox:checked::before {
+  content: "";
+  width: 7px;
+  height: 4px;
+  border: solid #21a121;
+  border-width: 0 0 2px 2px;
+  transform: translate(0, -1px) rotate(-45deg);
+}
+html[data-theme="winxp-luna"] .radio:checked::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #7ce27a, #21a121);
+}
 
 /* --- Layout -------------------------------------------------------------
- * A Luna window: a glossy round-cornered blue title bar on top, a matching
- * darker-blue taskbar-style status strip on the bottom, tan content well
- * between them. */
+ * A Luna window: the glossy round-cornered title bar with its three
+ * caption buttons, a thick royal-blue frame down both sides, the tan
+ * dialog face inside, and the XP taskbar along the bottom. */
 html[data-theme="winxp-luna"] {
   --app-padding: 0.4rem;
-  --app-gap: 0.4rem;
-  --app-bar-bg: linear-gradient(180deg, #2b68f2 0%, #0054e3 55%, #0040c0 100%);
+  --app-gap: 0;
+  --app-bar-bg: var(--luna-titlebar);
   --app-bar-fg: #ffffff;
   --app-bar-rule-width: 0;
   --app-bar-radius: 8px 8px 0 0;
   --app-bar-height: 2rem;
-  --app-bar-padding: 0.3rem 0.8rem;
+  --app-bar-padding: 0.2rem 5.4rem 0.2rem 0.6rem;
   --app-main-bg: var(--bg);
   --app-main-padding: 0.9rem;
-  --app-status-bg: linear-gradient(180deg, #245edc, #1941a5);
+  --app-status-bg: linear-gradient(180deg, #2b71e0 15%, #2663da 18%, #235bd6 20%, #2258d5 23%, #2157d6 38%, #245ddb 54%, #2562df 86%, #245fdc 89%, #2158d4 92%, #1d4ec0 95%, #1941a5 98%);
   --app-status-fg: #ffffff;
-  --app-status-radius: 0 0 8px 8px;
+  --app-status-radius: 0;
   --app-status-rule: transparent;
 }
-/* The gloss line: a thin brighter highlight along the top edge of the
-   title bar, the one detail that reads "Luna" at a glance. */
 html[data-theme="winxp-luna"] .app-bar {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  position: relative;
+  box-shadow: var(--luna-lip);
+  border: 1px solid var(--luna-frame);
+  border-bottom: 0;
+  font-family: "Trebuchet MS", var(--font);
   /* White title-bar text, as on every Luna window. The root nav tokens are
      black for the tan content area and measured 1.0:1 on this blue. */
   --nav-brand-fg: #ffffff;
   --nav-item-fg: #ffffff;
   --nav-item-fg-active: #ffffff;
   --nav-item-bg-active: rgba(255, 255, 255, 0.2);
-  position: relative;
-  padding-right: 5rem;
 }
-/* Minimize / maximize / close: the single most recognizable Luna window-
-   chrome detail, drawn entirely in CSS (gradient "buttons" + a generated
-   glyph each) so no window-chrome markup is needed in the app shell. */
+html[data-theme="winxp-luna"] .app-bar .nav { padding: 0; }
+html[data-theme="winxp-luna"] .app-bar .nav-brand {
+  font-size: 1rem;
+  text-shadow: 1px 1px #0f1089;
+}
+html[data-theme="winxp-luna"] .app-bar .nav-item { text-shadow: 1px 1px #0f1089; }
+html[data-theme="winxp-luna"] .app-bar .btn-ghost { color: #ffffff; }
+html[data-theme="winxp-luna"] .app-bar .breadcrumbs { --muted: #ffffff; --breadcrumb-current-fg: #ffffff; color: #ffffff; text-shadow: 1px 1px #0f1089; }
+/* Minimize / maximize / close: three separate 21px caption buttons, the
+   single most recognizable Luna detail — blue glossy squares in a white
+   frame, the close button red-orange. One inline SVG, so no markup. */
 html[data-theme="winxp-luna"] .app-bar::after {
-  content: "\2013  \25a1  \00d7";
+  content: "";
   position: absolute;
-  right: 0.5rem;
+  right: 0.35rem;
   top: 50%;
+  width: 67px;
+  height: 21px;
   transform: translateY(-50%);
-  display: flex;
-  gap: 0.2rem;
-  font-family: Tahoma, "Segoe UI", sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  line-height: 1.35rem;
-  color: #ffffff;
-  letter-spacing: 0.6rem;
-  background: linear-gradient(180deg, #4a90f5 0%, #1a5fd9 50%, #0040c0 100%);
-  border-radius: 4px;
-  padding: 0 0.5rem;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 0 0 1px #0040c0;
+  pointer-events: none;
+  background: var(--luna-caption) no-repeat;
 }
+/* The window frame: thick royal-blue sides and bottom, as the title bar's
+   own colour carried down round the dialog face. */
 html[data-theme="winxp-luna"] .app-main {
-  border-left: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  border: 3px solid var(--luna-frame);
+  border-top: 0;
 }
 
 /* State text on the blue status strip: the content-area greens/oranges
@@ -2900,5 +3016,71 @@ html[data-theme="winxp-luna"] .app-status {
   --success-text: #c9f7b5;
   --warning-text: #ffe0a8;
   --danger-text: #ffd0d0;
+  margin-top: 0.4rem;
+  box-shadow: var(--luna-taskbar-lip);
+}
+
+/* --- Variants (CONTRACT.md "Palette variants") ------------------------ *
+ * Same window shape, different msstyles paint. */
+
+/* Royale (Media Center / "Energy Blue"): a brighter, glassier title bar
+   with a strong highlight across its upper half, a cool grey-lilac dialog
+   face instead of Luna's beige, and a deep navy taskbar. */
+html[data-theme="winxp-luna"][data-variant="royale"] {
+  --bg: #ebe9ed;
+  --surface-2: #ebe9ed;
+  --border: #a5a5b5;
+  --hairline: #d6d5dc;
+  --panel-border: #c5c5d2;
+  --card-border: #c5c5d2;
+  --table-head-bg: #ecebf0;
+  --table-head-rule: #cfcedb;
+  --tab-bg: linear-gradient(180deg, #ffffff, #ebeaf0);
+  /* The glass split: a lighter upper half breaking sharply to a deep
+     lower half at 50%, with a pale #a7c2f5 lip. The upper half is held
+     at #3d6fd6, the lightest blue white title text still clears 4.5:1 on. */
+  --luna-titlebar: linear-gradient(180deg, #3d6fd6 0%, #3d6fd6 48%, #1a53cf 50%, #1d57d2 80%, #3060d8 94%, #133fa6 100%);
+  --luna-lip: inset 0 1px #a7c2f5, inset 0 4px rgba(167, 194, 245, 0.45);
+  --luna-taskbar-lip: inset 0 1px #152b66, inset 0 4px #5b7fcf;
+  --luna-frame: #1845b8;
+  --luna-heading: #1845b8;
+  --modal-header-bg: var(--luna-titlebar);
+  --app-status-bg: linear-gradient(180deg, #3a5fb5 6%, #29489b 45%, #1c3a88 50%, #1f3f8f 90%, #152b66 100%);
+}
+
+/* Royale Noir: the unreleased black build — glossy black chrome, a
+   neutral grey dialog face, graphite selection. The orange hot-track and
+   the green Start button survive; the blue does not. */
+html[data-theme="winxp-luna"][data-variant="royale-noir"] {
+  --bg: #ececec;
+  --surface-2: #ececec;
+  --border: #9a9a9a;
+  --hairline: #d4d4d4;
+  --accent: #3c3c3c;
+  --accent-2: #5a5a5a;
+  --focus: #3c3c3c;
+  --focus-ring: 0 0 0 2px rgba(0, 0, 0, 0.35);
+  --link: #1f1f1f;
+  --input-border: #8a8a8a;
+  --panel-border: #c4c4c4;
+  --card-border: #c4c4c4;
+  --panel-header-fg: #2a2a2a;
+  --table-head-bg: #ebebeb;
+  --table-head-rule: #cccccc;
+  --tab-bg: linear-gradient(180deg, #ffffff, #ebebeb);
+  --row-selected-bg: #4a4a4a;
+  --row-active-marker: inset 0.25rem 0 0 #3c3c3c;
+  --breadcrumb-current-fg: #1f1f1f;
+  --pagination-item-bg-active: #3c3c3c;
+  --scrollbar-thumb: #c8c8c8;
+  --scrollbar-thumb-hover: #d8d8d8;
+  --luna-titlebar: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 20%, #1c1c1c 48%, #000000 52%, #111111 88%, #2a2a2a 94%, #000000 100%);
+  --luna-lip: inset 0 1px #9a9a9a, inset 0 3px #6a6a6a;
+  --luna-taskbar-lip: inset 0 1px #000, inset 0 4px #6a6a6a;
+  --luna-frame: #1a1a1a;
+  --luna-heading: #1f1f1f;
+  --luna-caption: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='67' height='21'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238a8a8a'/%3E%3Cstop offset='.45' stop-color='%23404040'/%3E%3Cstop offset='1' stop-color='%23101010'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f0a080'/%3E%3Cstop offset='.45' stop-color='%23e0582c'/%3E%3Cstop offset='1' stop-color='%23c1370f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke='%23fff'%3E%3Crect x='.5' y='.5' width='20' height='20' rx='3' fill='url(%23b)'/%3E%3Crect x='23.5' y='.5' width='20' height='20' rx='3' fill='url(%23b)'/%3E%3Crect x='46.5' y='.5' width='20' height='20' rx='3' fill='url(%23r)'/%3E%3C/g%3E%3Crect x='5' y='13' width='7' height='3' fill='%23fff'/%3E%3Crect x='28.5' y='5.5' width='10' height='10' fill='none' stroke='%23fff'/%3E%3Crect x='28' y='5' width='11' height='3' fill='%23fff'/%3E%3Cpath d='M51.5 5.5l10 10M61.5 5.5l-10 10' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E");
+  --modal-header-bg: var(--luna-titlebar);
+  --app-status-bg: linear-gradient(180deg, #3a3a3a 6%, #222222 45%, #0c0c0c 50%, #151515 90%, #000000 100%);
 }
 }
