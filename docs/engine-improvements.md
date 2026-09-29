@@ -6,7 +6,7 @@ Written so a future contributor doesn't have to re-derive the reasoning.
 
 ## Implemented this pass
 
-1. **`example.html` compare mode.** Two themes rendered full-width side by
+1. **`components.html` compare mode.** Two themes rendered full-width side by
    side (each an embedded copy of the page itself, `?embed=1` stripping
    its own chrome), with both themes' "Signature details" pulled from
    their READMEs into the sidebar. This is now the fastest way to catch

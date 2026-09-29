@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html data-theme="aqua">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power Station — ftl-themes layout demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/aqua.css">
+<style>
+  * { box-sizing: border-box; }
+  .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .demo-topbar-spacer { flex: 1; }
+  .demo-topbar .nav-brand { white-space: nowrap; }
+  .demo-two-col { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+  @media (max-width: 860px) { .demo-two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar">
+    <nav class="nav demo-topbar">
+      <span class="nav-brand">Unit 2 Control</span>
+      <a class="nav-item is-active" href="#">Overview</a>
+      <a class="nav-item" href="#">Turbines</a>
+      <a class="nav-item" href="#">Cooling</a>
+      <a class="nav-item" href="#">Alarms</a>
+      <span class="demo-topbar-spacer"></span>
+      <select class="select" id="theme-picker" aria-label="Theme" style="width:auto; flex:none;"></select>
+    </nav>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+    <h1>Reactor hall</h1>
+    <p>Unit 2 &middot; shift B <span class="badge badge-accent">Nominal</span></p>
+
+    <div class="grid" style="margin: 1rem 0;">
+      <div class="card">
+        <span class="stat-label">Output</span>
+        <span class="readout readout-lg">412<span class="readout-unit">MW</span></span>
+        <div class="meter" style="--meter-level:72%;--meter-peak:84%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+      </div>
+      <div class="card">
+        <span class="stat-label">Grid frequency</span>
+        <span class="readout readout-lg">50.01<span class="readout-unit">Hz</span></span>
+        <div class="meter" style="--meter-level:50%;--meter-peak:55%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+      </div>
+      <div class="card">
+        <span class="stat-label">Turbine speed</span>
+        <span class="readout readout-lg">3,002<span class="readout-unit">rpm</span></span>
+        <div class="meter" style="--meter-level:88%;--meter-peak:93%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+      </div>
+      <div class="card">
+        <span class="stat-label">Coolant temp</span>
+        <span class="readout readout-lg">291<span class="readout-unit">&deg;C</span></span>
+        <div class="meter" style="--meter-level:64%;--meter-peak:70%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+      </div>
+    </div>
+
+    <div class="demo-two-col">
+      <section class="panel">
+        <header class="panel-header"><strong>Subsystems</strong></header>
+        <table class="table">
+          <thead><tr><th>Loop</th><th>Status</th><th>Load</th><th>Auto</th></tr></thead>
+          <tbody>
+            <tr><td>Primary coolant</td><td><span class="lamp is-on"></span></td><td class="mono">72%</td><td><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></td></tr>
+            <tr><td>Steam generator A</td><td><span class="lamp is-on"></span></td><td class="mono">81%</td><td><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></td></tr>
+            <tr><td>Steam generator B</td><td><span class="lamp is-warn"></span></td><td class="mono">94%</td><td><label class="switch"><input type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></label></td></tr>
+            <tr><td>Emergency diesel</td><td><span class="lamp"></span></td><td class="mono">0%</td><td><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <aside class="stack">
+        <section class="panel">
+          <header class="panel-header"><strong>Controls</strong></header>
+          <div class="transport" style="padding: 0.9rem;">
+            <button class="btn btn-go">Sync</button>
+            <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">SCRAM</span><span class="toggle-btn-on">SCRAMMED</span></label>
+            <span class="readout">14:22:07<span class="readout-unit">utc</span></span>
+          </div>
+        </section>
+        <div class="alert alert-warning">Steam generator B above 90% load.</div>
+        <div class="log">
+          <div class="log-line"><span class="log-time mono">14:20:11</span><span>Turbine trip test passed</span></div>
+          <div class="log-line" data-level="warn"><span class="log-time mono">14:12:40</span><span>SG-B outlet temperature high</span></div>
+          <div class="log-line"><span class="log-time mono">13:58:02</span><span>Rod bank D withdrawn 2 steps</span></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Unit 2 Control</span>
+    <span class="status status-ok">Grid synchronised</span>
+  </footer>
+
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

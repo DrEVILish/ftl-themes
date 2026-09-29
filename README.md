@@ -20,7 +20,7 @@ terminal.
 - **Building a new theme:** read [`docs/authoring-a-theme.md`](docs/authoring-a-theme.md)
   and run `scripts/new-theme.sh <slug>`.
 - **Trying themes without any app:** serve the repo root over HTTP and open
-  [`example.html`](example.html) — the one example page. A picker (built
+  [`components.html`](components.html) — the component QA page. A picker (built
   from `dist/themes.json`) and a stepper (buttons or ←/→) switch the
   applied theme; the markup never changes, so this is also the fair way to
   compare two themes' own CSS rather than two different pages' content.

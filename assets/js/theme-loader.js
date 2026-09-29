@@ -1,4 +1,4 @@
-/* ftl-themes: shared theme-loader for the example-*.html pages.
+/* ftl-themes: shared theme-loader for the demo pages.
  *
  * Not part of the library contract — a real app wires this however it
  * wants (server-rendered data-theme attribute, a cookie, whatever). This

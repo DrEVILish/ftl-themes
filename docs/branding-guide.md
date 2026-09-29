@@ -2,7 +2,7 @@
 
 Scores and design rationale for every theme that ships (has both a
 `themes/<slug>/theme.css` and captured reference images in
-`references/<slug>/`). Reviewed by comparing a fresh `example.html`
+`references/<slug>/`). Reviewed by comparing a fresh `components.html`
 render against the images in `references/<slug>/`, and by exercising the
 rendered controls (contrast, focus states, hit targets).
 
@@ -73,7 +73,7 @@ system" for the full mechanism and `assets/js/theme-loader.js` for how
 the example pages swap `.icon` hrefs to the current theme's merged
 sprite.
 
-See `example.html`'s "Icon pack" and "Icon buttons" sections for the full
+See `components.html`'s "Icon pack" and "Icon buttons" sections for the full
 set rendered live in whichever theme is selected.
 
 ## Shipping themes — strict panel scores
@@ -244,13 +244,13 @@ than one theme, plus a real gap in how the first self-review pass worked:
    empty `<aside>` to `display: none` unless a theme sets
    `--app-rail-empty-display`, and neither did. `bloomberg` and
    `msdos` both style `kbd` (a real core component) as their signature
-   detail — but `example.html`, the shared QA page every theme is judged
+   detail — but `components.html`, the shared QA page every theme is judged
    against, never rendered a single `<kbd>` anywhere, in any theme. Four
    of the eighteen low scores trace to this one shape of bug: CSS that is
    genuinely correct but structurally unreachable from the page used to
    review it. Fixed the two rail themes directly, and fixed the root
    cause for `kbd` by adding a real shortcut-row (`<kbd>Ctrl</kbd>` etc.
-   plus a 5-key row) to the Typography section of `example.html` itself,
+   plus a 5-key row) to the Typography section of `components.html` itself,
    so any theme's `kbd` styling gets exercised from now on, not just
    these two.
 2. **Token semantic mismatch.** `wmp11`'s "circular" play button used

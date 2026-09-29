@@ -164,5 +164,5 @@ echo "  1. fill in the tokens (and a Theme-Name/Description in the header) and R
 echo "  2. (optional) uncomment/add <symbol> overrides in icons.svg for this theme's signature icons"
 echo "  3. scripts/build.sh    # regenerates dist/$slug.css and dist/themes.json"
 echo "  4. scripts/check.sh    # token completeness, contrast, focus, variants"
-echo "  5. open example.html and pick your theme from the switcher"
+echo "  5. open components.html and pick your theme from the switcher"
 echo "  6. add a row to CONTRACT.md's theme index"
