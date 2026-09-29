@@ -39,6 +39,10 @@ changes are called out explicitly here.
 
 ### Added
 
+- Restored seven themes from `archive/themes-pending-reference/`: `aperture`, `cue-lab`, `material`, `nerv`, `pipboy`, `steampunk`, `tron` (32 themes now ship). The archive folder is gone.
+- `screenshot_themes.py --theme X` now limits capture in `--baseline` mode too, so re-baselining one theme no longer rewrites the rest.
+- Fixed: `.btn-primary` text was dark-on-dark in `tron`, `pipboy` and `alienware`; `build_manifest.py` now fails loudly if `git hash-object` fails.
+
 - **Three themes**: `blue-future` (restored from the archive with the full
   original CuTePi default spec — #49, #60), `weyland-yutani` (Alien-franchise
   industrial: bone-beige equipment plates, amber phosphor readouts, hazard

@@ -224,17 +224,14 @@ than producing a fixed-diameter circle. Set explicit equal width/height
 and a downward transform so it protrudes past the transport bar, plus a
 play glyph, matching the reference's floating circular control.
 
-## Parked — no reference yet
+## Restored in v4 — no reference images yet
 
-`aperture`, `blue-future`, `cue-lab`, `material`, `nerv`, `pipboy`,
-`steampunk`, `tron` are in `archive/themes-pending-reference/` and don't
-build. They're not un-scoreable because they're bad — several (`material`,
+`aperture`, `cue-lab`, `material`, `nerv`, `pipboy`, `steampunk` and `tron`
+were restored from the old pending-reference archive and ship again. They
+have not been scored against source imagery: several (`material`,
 `aperture`, `pipboy`, `tron`, `nerv`) have well-documented real-world
-references that just haven't had images pulled into `references/` yet;
-`blue-future` and `cue-lab` are original designs with their own internal
-reference (see their READMEs), not a photo to compare against. Move a
-theme back to `themes/` once it has a `references/<slug>/` folder and it
-re-enters the build and this scoring pass.
+references that still need images pulled into `references/<slug>/`;
+`cue-lab` is an original design with its own internal reference.
 
 ## Root cause: why the panel scored so much lower
 

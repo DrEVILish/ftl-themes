@@ -4,11 +4,10 @@ Where to look at the real thing each theme is modelled on. Use these when
 reviewing a theme in [`example.html`](../example.html): open the
 reference next to the render and compare.
 
-Themes below with no local images captured yet (`aperture`, `blue-future`,
-`cue-lab`, `material`, `nerv`, `pipboy`, `steampunk`, `tron`) are parked in
-`archive/themes-pending-reference/` and don't ship — see
-[`branding-guide.md`](../docs/branding-guide.md) for the scored, shipping
-set.
+Themes with no local images captured yet (`aperture`, `cue-lab`, `material`,
+`nerv`, `pipboy`, `steampunk`, `tron`) ship anyway (restored in v4); their
+fidelity is not yet scored against source imagery — see
+[`branding-guide.md`](../docs/branding-guide.md).
 
 | Theme | Reference | What to compare |
 |---|---|---|

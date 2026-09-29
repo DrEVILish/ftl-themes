@@ -101,12 +101,13 @@ def ensure_playwright_symlink():
     os.symlink(PLAYWRIGHT_SRC, link)
 
 
-def run_screenshots(base_url: str, outdir: Path) -> dict:
+def run_screenshots(base_url: str, outdir: Path, themes=None) -> dict:
     env = dict(os.environ)
     env.setdefault("PLAYWRIGHT_BROWSERS_PATH", "/opt/pw-browsers")
     env.setdefault("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1")
     proc = subprocess.run(
-        ["node", str(SHOT_HELPER), "--base", base_url, "--outdir", str(outdir)],
+        ["node", str(SHOT_HELPER), "--base", base_url, "--outdir", str(outdir)]
+        + (["--themes", ",".join(themes)] if themes else []),
         cwd=str(ROOT),
         env=env,
         capture_output=True,
@@ -207,7 +208,7 @@ def main():
         if args.baseline:
             BASELINE_DIR.mkdir(parents=True, exist_ok=True)
             print(f"Writing baseline screenshots to {BASELINE_DIR} ...")
-            result = run_screenshots(base_url, BASELINE_DIR)
+            result = run_screenshots(base_url, BASELINE_DIR, args.theme)
             print(f"Wrote {result['shots']} screenshot(s) across {result['themes']} theme(s) x {result['pages']} page(s).")
             if result.get("failures"):
                 sys.exit(f"{len(result['failures'])} page(s) failed to load -- see stderr above.")
@@ -221,7 +222,7 @@ def main():
 
         tmp_root = Path(tempfile.mkdtemp(prefix="visual-"))
         print("Taking screenshots for comparison ...")
-        result = run_screenshots(base_url, tmp_root)
+        result = run_screenshots(base_url, tmp_root, args.theme)
         print(f"Captured {result['shots']} screenshot(s). Diffing against baseline ...\n")
 
         themes = load_theme_slugs()

@@ -1479,11 +1479,11 @@ scaffold, `scripts/build.sh`, `scripts/check.sh`.
 
 ## Theme index
 
-25 themes currently ship (have a `themes/<slug>/` folder built by
-`scripts/build.sh`). `aperture`, `cue-lab`, `material`,
-`nerv`, `pipboy`, `steampunk` and `tron` are parked in
-`archive/themes-pending-reference/` until each has real reference
-screenshots in `references/<slug>/` — see that folder's README.
+32 themes currently ship (have a `themes/<slug>/` folder built by
+`scripts/build.sh`). `aperture`, `cue-lab`, `material`, `nerv`, `pipboy`,
+`steampunk` and `tron` were restored from the old pending-reference archive
+in v4; they have no `references/<slug>/` screenshots yet, so their fidelity
+is unverified against source imagery.
 
 The **Signature detail** column names the one shape/effect/rule that, if
 lost, is the fastest way to tell a recreation isn't this theme — the same
@@ -1497,10 +1497,12 @@ for what, if anything, it cites.
 | Slug | Name | Signature detail | Src |
 |---|---|---|:-:|
 | `alienware` | Alienware | Angular `clip-path`-cut corners, one AlienFX cyan light strip down the rail. | |
+| `aperture` | Aperture (Portal) | Sterile off-white test-chamber panels with portal blue and orange as the only saturated colours. | |
 | `aqua` | Aqua | A 3px repeating pinstripe texture on every panel, under the candy-gloss buttons. | |
 | `barbie` | Barbie | 999px-radius glossy pills everywhere; mint success state uses dark, not white, text. | |
 | `bloomberg` | Bloomberg Terminal | The *whole UI*, not just numerals, set in monospace, at `--density: 0.7`. | |
 | `blue-future` | Blue Future | Cyan neon on deep-space navy under a faint 2rem grid, with 14px L-brackets on panels and modals — the HUD look CuTePi shipped as its default. | |
+| `cue-lab` | Cue Lab | A flat, glow-free show-control console: hairline grids and a single amber accent. | |
 | `cyber-goth` | Cyber-Goth | Toxic neon green and hot purple sharing the accent role on black vinyl gloss. | |
 | `death-star` | Death Star Terminal | True `#000000`, solid glowing indicator blocks, zero borders or shadows anywhere. | |
 | `hot-wheels` | Hot Wheels | A single diagonal flame-gradient band cut across the app bar. | |
@@ -1508,16 +1510,21 @@ for what, if anything, it cites.
 | `international-rescue` | International Rescue (Thunderbirds) | A cream 1960s control-room console: keycap buttons with hard navy drops and a heavy-italic gold `.btn-go` launch key. | |
 | `lcars` | LCARS | The elbow: a horizontal bar curving into a vertical rail. Ships an optional chrome primitive — see `docs/lcars-chrome.md`. | ✓ |
 | `lego-classic` | LEGO Classic | A circular "stud" on every panel corner — a physical brick, not a palette. | |
+| `material` | Material | Layered elevation shadows instead of gloss, and underlined (not boxed) text fields. | |
 | `matrix` | The Matrix | `#00FF41` phosphor green — the actual hex the reference on-screen code uses. | ✓ |
 | `msdos` | MS-DOS (Norton Commander) | Double-line (`═`/`║`) box borders; only cyan/yellow count as "bright". | |
+| `nerv` | NERV (Evangelion) | Hazard-stripe orange on bunker black; crimson reserved for real alerts. | |
 | `nokia-3310` | Nokia 3310 | Selection is a hard colour invert, not a highlight — the phone had no second hue to spend. | |
+| `pipboy` | Pip-Boy (Fallout) | Monochrome phosphor green under a scanline overlay — every state is the same green. | |
+| `steampunk` | Steampunk | Brass and stitched leather with riveted copper panels and needle-gauge readouts. | |
 | `teletext` | Teletext | The exact 8-colour broadcast palette, flat, on solid black — zero gradients or rounding. | ✓ |
+| `tron` | Tron | Electric cyan line-grid on black with `clip-path`-cut angular corners. | |
 | `vaporwave` | Vaporwave | Heading text is a magenta-to-cyan gradient clipped to the glyphs, not a solid fill. | |
 | `weyland-yutani` | Weyland-Yutani | Bone-beige equipment-plate bars on warm black, amber phosphor readouts, and yellow/black hazard striping on danger states only. | |
+| `win7-aero` | Windows 7 Aero | Real `backdrop-filter` blur — translucent glass, not Luna's opaque gloss. | |
 | `winamp-classic` | WinAmp Classic | Tiny uppercase labels and llama-green LCD-style numeric readouts. | |
 | `windows95` | Windows 95 | Bevels invert light-to-dark on `:active` — the "is this actually pressable" cue. | |
 | `winxp-luna` | Windows XP (Luna) | Glossy round-cornered blue chrome; green is reserved for primary/"go" actions only. | |
-| `win7-aero` | Windows 7 Aero | Real `backdrop-filter` blur — translucent glass, not Luna's opaque gloss. | |
 | `wmp11` | Windows Media Player 11 | Black glass with a cool blue glow — the last WMP skin before the Zune-era flattening. | |
 | `xbmc` | XBMC | A glowing blue underline marks selection — never a filled highlight block. | |
 | `xmb` | XMB (PS3/PSP) | Nothing is an opaque fill; every surface is a translucent tint over the wave gradient. | |

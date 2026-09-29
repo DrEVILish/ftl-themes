@@ -17,6 +17,7 @@ const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args.splice(i, 2)[1] : dflt; };
 const base = opt('--base', 'http://localhost:8000');
 const outdir = opt('--outdir');
+const only = opt('--themes', '');
 if (!outdir) { console.error('--outdir is required'); process.exit(2); }
 
 const EXAMPLE_PAGES = ['example.html', 'example-2.html', 'example-3.html', 'example-4.html'];
@@ -24,6 +25,7 @@ const VIEWPORT = { width: 1280, height: 900 };
 
 const themes = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'themes.json'), 'utf8'))
   .map(t => t.slug)
+  .filter(s => !only || only.split(',').includes(s))
   .sort();
 
 const browser = await chromium.launch();

@@ -88,3 +88,4 @@ for `tron`.
 
 - **International Rescue (Thunderbirds)** — `international-rescue`: a light 1960s control-room theme (cream console, navy and gold, keycap buttons, launch-key `.btn-go`).
 - **Blue Future** — `blue-future`, restored from `archive/themes-pending-reference/` with the full original CuTePi default spec.
+- **Restored from the pending-reference archive** — `aperture`, `cue-lab`, `material`, `nerv`, `pipboy`, `steampunk`, `tron` (32 themes ship). Reference images are still outstanding for the scoring pass.
