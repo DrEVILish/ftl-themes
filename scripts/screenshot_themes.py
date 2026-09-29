@@ -219,7 +219,7 @@ def main():
                 "(only after confirming any current rendering differences are intentional)."
             )
 
-        tmp_root = Path(tempfile.mkdtemp(prefix="ftl-visual-"))
+        tmp_root = Path(tempfile.mkdtemp(prefix="visual-"))
         print("Taking screenshots for comparison ...")
         result = run_screenshots(base_url, tmp_root)
         print(f"Captured {result['shots']} screenshot(s). Diffing against baseline ...\n")

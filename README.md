@@ -1,8 +1,16 @@
 # ftl-themes
 
+> **v4.0.0 — BREAKING.** The `ftl-` prefix is gone from every class name,
+> custom property, keyframe and id (`.ftl-btn` → `.btn`, `--ftl-text` →
+> `--text`), every bundle now sits in `@layer ui`, and there is **no
+> backward-compatibility layer**. Migrate with `scripts/migrate-v4.py` — see
+> [`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md) (including the class names that
+> now collide with Bootstrap and Tailwind). The last v3 release lives on the
+> `v3` branch; `main` always follows the latest version.
+
 An app-agnostic design system and theme library for Go + HTMX (or any
-server-rendered, htmx-swapped) applications: a small `.ftl-*` component
-class vocabulary, a `--ftl-*` design-token contract, and a growing catalog
+server-rendered, htmx-swapped) applications: a small component
+class vocabulary, a `--*` design-token contract, and a growing catalog
 of fully switchable themes — from LCARS to Windows 95 to a Matrix
 terminal.
 
@@ -16,7 +24,7 @@ terminal.
   from `dist/themes.json`) and a stepper (buttons or ←/→) switch the
   applied theme; the markup never changes, so this is also the fair way to
   compare two themes' own CSS rather than two different pages' content.
-  Every `.ftl-*` component appears once, htmx states included, an L0/L1
+  Every component appears once, htmx states included, an L0/L1
   toggle shows the app-shell-adopted layout difference, and the current
   theme's own `README.md` renders beside the render as a live "Core
   values" / "Tell-tales of an inauthentic result" checklist, so drift
@@ -32,12 +40,12 @@ terminal.
   and changed how themes override components.
 
 Themes control **layout**, not just colour: adopt the app shell once
-(`.ftl-app` + bar/rail/main/status) and switching theme re-arranges it —
+(`.app` + bar/rail/main/status) and switching theme re-arranges it —
 LCARS opens its candy rail and elbows the bar into it, a HUD theme runs
-edge-to-edge. It ships **instrument primitives** (`.ftl-meter`,
-`.ftl-readout`, `.ftl-transport`/`.ftl-btn-go`, `.ftl-lamp`) for control
+edge-to-edge. It ships **instrument primitives** (`.meter`,
+`.readout`, `.transport`/`.btn-go`, `.lamp`) for control
 surfaces, and handles htmx's own swap states (`.htmx-request`,
-`.ftl-indicator`) so consuming apps don't hand-roll pending UI.
+`.indicator`) so consuming apps don't hand-roll pending UI.
 
 Every theme has a `README.md` beside its CSS explaining what it is trying
 to achieve and how to extend it without drifting.
@@ -45,7 +53,7 @@ to achieve and how to extend it without drifting.
 ## Icons
 
 One generic SVG sprite (`assets/icons/icons.svg`, ~55 outline icons) backs
-every `.ftl-icon`, with a per-theme override mechanism on top:
+every `.icon`, with a per-theme override mechanism on top:
 `themes/<slug>/icons.svg` (optional) redraws a subset of icon ids in that
 theme's own visual language, and `scripts/build.sh` merges it with the
 generic set into `dist/icons/<slug>.svg` — any icon a theme doesn't
@@ -60,11 +68,11 @@ its `theme.css`. See CONTRACT.md "Icon system" for the full mechanism.
 
 ```
 CONTRACT.md              token + component contract, the thing to read first
-core/                     ftl-reset.css + ftl-core.css — theme-independent structure
+core/                     reset.css + core.css — theme-independent structure
 themes/<name>/theme.css   one file per theme: tokens + look-only overrides
 themes/lcars/chrome.css   optional decorative LCARS chrome (docs/lcars-chrome.md)
 dist/<name>.css           built bundle (reset+core+theme), the file apps link
-dist/ftl-core.css         reset+core alone, no theme/shell (color-only adoption)
+dist/core.css         reset+core alone, no theme/shell (color-only adoption)
 dist/tokens.css           every theme's tokens only, one file, for apps that keep their own markup
 dist/themes.json          machine-readable theme index for pickers, incl. build version
 assets/                   fonts and other binary assets themes reference

@@ -37,7 +37,7 @@ attribute together. Themes are mutually exclusive: load exactly one
 [{
   "slug": "lcars", "dataTheme": "lcars", "label": "LCARS",
   "description": "…", "hasChrome": true, "shellAware": true,
-  "version": "ftl-1f7c1589aa66",
+  "version": "1f7c1589aa66",
   "scheme": "dark", "luminance": 0.049
 }]
 ```
@@ -61,14 +61,14 @@ hardcoding a list or scraping CSS comments.
   file, and "which build is this deployment actually serving" is otherwise
   unanswerable from the CSS alone.
 - **`scheme` is `light` or `dark`**, derived at build time the same way
-  every integrator used to derive it by hand: `--ftl-surface` (composited
-  over `--ftl-app-bg`/`--ftl-app-main-bg`/`--ftl-bg` when translucent),
+  every integrator used to derive it by hand: `--surface` (composited
+  over `--app-bg`/`--app-main-bg`/`--bg` when translucent),
   plain-weighted luminance, 0.55 threshold. `luminance` carries the raw
   value (null when unparseable) for integrators that want their own
   threshold. Flip your app's chrome (e.g. Bootstrap's `data-bs-theme`)
   from this field instead of re-deriving it from the bundle's CSS.
 - **`shellAware` says whether this theme's full intent needs L1** (see
-  "Adoption levels" below) — `true` when the theme sets any `--ftl-app-*`
+  "Adoption levels" below) — `true` when the theme sets any `--app-*`
   property, `false` when it's a pure palette. Show it in your picker (e.g.
   "full layout requires the app shell") instead of a user discovering the
   gap by linking the theme and wondering why LCARS looks like a recolored
@@ -89,14 +89,14 @@ adjust the served paths so the relative `../assets/…` still resolves —
 the requirement is the *relative* relationship, not the specific
 `/static/themes` + `/static/assets` names used above.
 
-### Color-only adoption (no `.ftl-*` markup, no app shell)
+### Color-only adoption (no component markup, no app shell)
 
-An app that has no `.ftl-*` component markup and only wants the `--ftl-*`
+An app that has no component markup and only wants the `--*`
 token *values* — to drive its own existing CSS via a bridge (see
 "Adopting ftl-themes in an existing app" below) — can load
-`dist/ftl-core.css` instead of a full theme bundle. It is the reset +
+`dist/core.css` instead of a full theme bundle. It is the reset +
 component structure only: no theme, no app shell, and (crucially) **no
-`--ftl-*` values** — components read nothing until a theme, or the app's
+`--*` values** — components read nothing until a theme, or the app's
 own bridge, actually defines them. This avoids paying for the app-shell
 CSS and component rules when you'll never emit the markup that uses them,
 while every theme's actual palette still comes from its own
@@ -111,63 +111,54 @@ For an app that keeps its own markup and only wants a theme's palette,
 `html[data-theme="slug"]` token blocks (palette variants included), its
 `@font-face` rules and its element-level rules (heading treatments and the
 like), scoped so 26 themes' worth of rules never collide. It contains **no
-`.ftl-*` component or app-shell rules**, so the whole file is still smaller
+component or app-shell rules**, so the whole file is still smaller
 than a handful of full bundles.
 
 Link it once — no per-theme swap, and no asset-path rewriting to worry
-about, since it's already at `dist/`'s own level — then map the `--ftl-*`
+about, since it's already at `dist/`'s own level — then map the `--*`
 tokens onto your own CSS with a bridge (see "Adopting ftl-themes in an
 existing app"). Switching palette is just changing `data-theme`. What you
 get is the theme's colours and type on your own components; the theme's
-component chrome (bevels, glows, pill shapes) and its layout need `.ftl-*`
+component chrome (bevels, glows, pill shapes) and its layout need component
 markup and a full `dist/<slug>.css` bundle — see "Adoption levels" for
 which themes depend on them.
 
 ### Cascade layers
 
-Wrap a bundle in a layer yourself — this needs no separate file:
+**v4: every bundle is already wrapped in a single cascade layer, `ui`.**
+There is nothing to opt into and no `@import … layer()` line to add. With the
+`ftl-` prefix gone (v4 has no prefix on classes or custom properties), the layer
+is what keeps *your* CSS in charge of a name collision:
 
-```css
-@import url("dist/<slug>.css") layer(ftl);
-```
-
-Any of your CSS that is unlayered, or in a layer declared after `ftl`,
-beats every library rule whatever its specificity. So an app override is
-one plain rule, not a matching-specificity selector:
+- Any of your CSS that is unlayered, or in a layer declared after `ui`,
+  beats every library rule whatever its specificity. An app override is one
+  plain rule, not a matching-specificity selector:
 
 ```css
 /* your stylesheet, loaded after the theme */
-.ftl-btn-primary { --ftl-btn-bg: rebeccapurple; }
+.btn-primary { --btn-bg: rebeccapurple; }
 ```
 
-To keep your own styles in layers too, declare the order once before
-anything else: `@layer ftl, app;`, then put your rules in `@layer app`.
-
-**This changes existing behaviour**, so treat adding the `layer()` wrapper
-as an opt-in step, not a drop-in one. Today an app override wins only if
-its selector outranks the theme's. Layered, *every* app rule wins,
-including ones that are currently losing to the theme by accident. Before
-switching, load the bundle layered and look for places where your own CSS
-now shows through — nothing else changes; a theme computes identical
-styles layered and unlayered.
+- To keep your own styles in layers too, declare the order once, before
+  anything else: `@layer reset, ui, app;`, then put your rules in `@layer app`.
+- **A framework loaded unlayered beats the library.** If you still load
+  Bootstrap (or any stylesheet that defines `.btn`, `.card`, `.table`, …),
+  put it in a lower layer than `ui`:
+  `@layer bootstrap, ui, app; @import url("bootstrap.css") layer(bootstrap);`.
+  `docs/MIGRATING-v4.md` lists the names that collide.
 
 Two things layers do differently:
 
-- `@font-face` inside a layered `@import` is still layered in some
-  browsers' implementations; if a theme's vendored font stops applying
-  once layered, declare that theme's `@font-face` block yourself, outside
-  the `@layer` wrapper — copy it from the theme's `theme.css` source.
-- `!important` reverses between layers: the library's own `!important`
-  rules (only the `data-motion="reduced"` switch) beat yours. That's
-  intended: a user's reduce-motion choice can't be overridden by app CSS.
+- `!important` reverses between layers: the library's own `!important` rules
+  (the `data-motion="reduced"` switch and the `@media print` baseline) beat
+  yours. That is intended — a user's reduce-motion choice, and paper output,
+  can't be overridden by app CSS.
+- Custom properties (`--text`, `--accent`, …) declared on `:root` by the theme
+  live in `ui`, so an unlayered `:root { --accent: … }` of yours wins.
 
-Need to override just one slice (say, `ftl.theme`) while still layering
-the rest? Split the single `ftl` layer into named ones yourself by
-`@import`-ing `dist/ftl-core.css` and a theme's `theme.css` source
-separately, each into its own `@layer` — the four-way `reset`/`core`/
-`layout`/`theme` split used to be pre-built into a second file per theme;
-it wasn't used anywhere in this repo and an app that genuinely needs it
-can still assemble it from the pieces above.
+Need to split the layer (say, to override only the theme slice)? Build your own
+bundle from `core/reset.css`, `core/core.css`, `core/layout.css` and a theme's
+`theme.css`, each imported into its own `@layer`.
 
 ### Cache-busting
 
@@ -197,7 +188,7 @@ your **picker** needs a way to name "the app's own lcars" separately from
 "the library's lcars" when both are offered in one list.
 
 Namespace your picker's ids, not the `data-theme` value: e.g. `app:lcars`
-for the app's own file and `ftl:lcars` for this library's bundle, both
+for the app's own file and `lib:lcars` for this library's bundle, both
 still setting the same `data-theme="lcars"` when linked. Resolve an id to
 `{name: dataTheme, href}` before linking, and keep exactly one stylesheet
 linked at a time regardless of which side it came from — this is
@@ -205,51 +196,51 @@ unrelated to, and composes fine with, the general "exactly one `dist/*.css`
 at a time" rule above. An app with no theme files of its own doesn't need
 any of this: use `slug`/`dataTheme` directly as the picker id.
 
-## Design tokens (`--ftl-*`)
+## Design tokens (`--*`)
 
 Every theme must define all of these under `html[data-theme="<name>"]`;
-`scripts/check.sh` fails on any omission. `core/ftl-core.css` carries
+`scripts/check.sh` fails on any omission. `core/core.css` carries
 deliberately achromatic gray fallbacks so a missing token looks obviously
 wrong rather than plausibly invisible.
 
 | Token | Meaning |
 |---|---|
-| `--ftl-bg` | Page background, the deepest layer. May be purely decorative (a desktop backdrop) — body text is not assumed to sit directly on it. |
-| `--ftl-surface` | Cards, panels, modals — the substrate body text actually sits on. |
-| `--ftl-surface-2` | Nested/recessed surfaces: inputs, dropdown menus, table stripes. |
-| `--ftl-border` | Default visible border color. |
-| `--ftl-hairline` | A quieter divider than `--ftl-border` — table row rules, subtle separators. |
-| `--ftl-text` | Primary text color. |
-| `--ftl-muted` | Secondary text: labels, captions, hints, table headers. It carries essential text, so it must reach 4.5:1 on both surfaces. |
-| `--ftl-accent` | Primary interactive color: links, primary fills, focus, active state. |
-| `--ftl-accent-2` | Secondary accent: hover, a second series, complementary highlight. |
-| `--ftl-danger` / `--ftl-success` / `--ftl-warning` | Semantic state colors. |
-| `--ftl-on-accent` / `--ftl-on-danger` / `--ftl-on-success` | **Foreground colors for those fills.** Never paint text on an accent fill with `--ftl-bg`: it only reads on dark themes and fails silently on light ones. |
-| `--ftl-on-surface` | Foreground for panel/modal surfaces. Defaults to `--ftl-text`. |
-| `--ftl-radius` | Base corner radius. Sharp-cornered themes set `0`. |
-| `--ftl-font` / `--ftl-font-mono` | UI and monospace font stacks. |
-| `--ftl-flare` | The theme's single "extra" decorative color, used sparingly. |
+| `--bg` | Page background, the deepest layer. May be purely decorative (a desktop backdrop) — body text is not assumed to sit directly on it. |
+| `--surface` | Cards, panels, modals — the substrate body text actually sits on. |
+| `--surface-2` | Nested/recessed surfaces: inputs, dropdown menus, table stripes. |
+| `--border` | Default visible border color. |
+| `--hairline` | A quieter divider than `--border` — table row rules, subtle separators. |
+| `--text` | Primary text color. |
+| `--muted` | Secondary text: labels, captions, hints, table headers. It carries essential text, so it must reach 4.5:1 on both surfaces. |
+| `--accent` | Primary interactive color: links, primary fills, focus, active state. |
+| `--accent-2` | Secondary accent: hover, a second series, complementary highlight. |
+| `--danger` / `--success` / `--warning` | Semantic state colors. |
+| `--on-accent` / `--on-danger` / `--on-success` | **Foreground colors for those fills.** Never paint text on an accent fill with `--bg`: it only reads on dark themes and fails silently on light ones. |
+| `--on-surface` | Foreground for panel/modal surfaces. Defaults to `--text`. |
+| `--radius` | Base corner radius. Sharp-cornered themes set `0`. |
+| `--font` / `--font-mono` | UI and monospace font stacks. |
+| `--flare` | The theme's single "extra" decorative color, used sparingly. |
 
-Optional, with sensible defaults: `--ftl-focus` (focus ring color),
-`--ftl-focus-ring` (an *additional* glow box-shadow), `--ftl-link`,
-`--ftl-overlay-bg`, `--ftl-overlay-blur`, `--ftl-pending-opacity`.
+Optional, with sensible defaults: `--focus` (focus ring color),
+`--focus-ring` (an *additional* glow box-shadow), `--link`,
+`--overlay-bg`, `--overlay-blur`, `--pending-opacity`.
 
-Optional, state colors as text (v3.8.0): `--ftl-success-text`,
-`--ftl-warning-text`, `--ftl-danger-text`, `--ftl-accent-text`. Each falls
-back to its fill token. `.ftl-status`, `.ftl-stat-trend`, colored badges
+Optional, state colors as text (v3.8.0): `--success-text`,
+`--warning-text`, `--danger-text`, `--accent-text`. Each falls
+back to its fill token. `.status`, `.stat-trend`, colored badges
 and danger menu items read these, because a color that works as a fill
 (a mint button, a yellow lamp) is often unreadable as small text on the
 theme's own surface. `scripts/check.py` fails a theme whose success,
-warning or danger text is under 4.5:1 on `--ftl-surface`; set the `-text`
+warning or danger text is under 4.5:1 on `--surface`; set the `-text`
 variant to the same hue at a readable lightness rather than dulling the
 fill. Several themes set these; any of them is a worked example.
 
 Optional, browser-chrome (see "Browser chrome" below for the full list):
-`--ftl-selection-bg`/`-fg`, `--ftl-scrollbar-thumb`/`-thumb-hover`/`-track`,
-`--ftl-input-placeholder`, `--ftl-input-caret`, `--ftl-kbd-*`, `--ftl-code-*`.
+`--selection-bg`/`-fg`, `--scrollbar-thumb`/`-thumb-hover`/`-track`,
+`--input-placeholder`, `--input-caret`, `--kbd-*`, `--code-*`.
 
 A theme may define extra tokens for its own flourishes — namespace them
-`--ftl-<theme>-*` (LCARS's `--ftl-lcars-*` candy palette is the example).
+`--<theme>-*` (LCARS's `--lcars-*` candy palette is the example).
 
 ## How a theme overrides a component
 
@@ -257,8 +248,8 @@ A theme may define extra tokens for its own flourishes — namespace them
 local custom properties with inline fallbacks:
 
 ```css
-.ftl-btn { background: var(--ftl-btn-bg, var(--ftl-surface-2)); }
-.ftl-btn-danger { --ftl-btn-bg: var(--ftl-danger); }   /* on the element */
+.btn { background: var(--btn-bg, var(--surface-2)); }
+.btn-danger { --btn-bg: var(--danger); }   /* on the element */
 ```
 
 A theme sets component defaults **at root scope**, never on the base
@@ -266,12 +257,12 @@ component selector:
 
 ```css
 /* correct — inherited, so variants still win */
-html[data-theme="tron"] { --ftl-btn-bg: transparent; }
+html[data-theme="tron"] { --btn-bg: transparent; }
 
-/* WRONG — outranks .ftl-btn-danger (0,2,1 vs 0,1,0), so every
+/* WRONG — outranks .btn-danger (0,2,1 vs 0,1,0), so every
    danger/success button silently loses its fill and a delete button
    becomes indistinguishable from a normal one */
-html[data-theme="tron"] .ftl-btn { background: transparent; }
+html[data-theme="tron"] .btn { background: transparent; }
 ```
 
 Why root scope works: a declaration on the element itself always beats an
@@ -280,7 +271,7 @@ theme's inherited default. Use an element selector **only** when you mean
 to target one specific variant:
 
 ```css
-html[data-theme="tron"] .ftl-btn-danger { --ftl-btn-border: var(--ftl-accent-2); }
+html[data-theme="tron"] .btn-danger { --btn-border: var(--accent-2); }
 ```
 
 `scripts/check.sh` fails the build if a theme sets `background`,
@@ -288,12 +279,12 @@ html[data-theme="tron"] .ftl-btn-danger { --ftl-btn-border: var(--ftl-accent-2);
 that aren't part of a variant's identity — `border-radius`, `clip-path`,
 `letter-spacing`, bevel `border-color` — are fine on the base selector.
 
-Per-component properties follow the pattern `--ftl-<component>-<role>`:
-e.g. `--ftl-btn-bg`, `--ftl-btn-fg`, `--ftl-btn-border`,
-`--ftl-btn-bg-hover`, `--ftl-btn-shadow`, `--ftl-btn-radius`,
-`--ftl-panel-bg`, `--ftl-input-bg`, `--ftl-table-head-bg`,
-`--ftl-row-selected-bg`, `--ftl-nav-item-fg-active`. Read
-`core/ftl-core.css` for the full set — every `var(--ftl-…, fallback)` in
+Per-component properties follow the pattern `--<component>-<role>`:
+e.g. `--btn-bg`, `--btn-fg`, `--btn-border`,
+`--btn-bg-hover`, `--btn-shadow`, `--btn-radius`,
+`--panel-bg`, `--input-bg`, `--table-head-bg`,
+`--row-selected-bg`, `--nav-item-fg-active`. Read
+`core/core.css` for the full set — every `var(--…, fallback)` in
 it is a documented override point.
 
 ## The app shell — themes control layout, not just colour
@@ -305,15 +296,15 @@ should move the furniture.
 That works because there is one shell contract an app adopts **once**:
 
 ```html
-<body class="ftl-app">
-  <header class="ftl-app-bar">brand, nav, actions</header>
-  <aside   class="ftl-app-rail" aria-hidden="true"></aside>
-  <main    class="ftl-app-main">…the app…</main>
-  <footer  class="ftl-app-status">status readouts</footer>
+<body class="app">
+  <header class="app-bar">brand, nav, actions</header>
+  <aside   class="app-rail" aria-hidden="true"></aside>
+  <main    class="app-main">…the app…</main>
+  <footer  class="app-status">status readouts</footer>
 </body>
 ```
 
-Each theme re-arranges that same markup through `--ftl-app-*` properties —
+Each theme re-arranges that same markup through `--app-*` properties —
 column widths, bar height and elbow radius, whether the rail exists, how
 the content is inset. The app never learns a theme's name and no theme
 needs app-specific markup.
@@ -331,7 +322,7 @@ Switching from `windows95` to `lcars` moves the furniture, not just the
 paint: rail on/off, bar height and elbow radius, content insets, footer
 treatment. It stays cheap for the front-end developer because the app
 writes the five-class shell markup **once** and never touches it again —
-every arrangement is a `--ftl-app-*` token value the theme sets, and
+every arrangement is a `--app-*` token value the theme sets, and
 `shellAware` in `dist/themes.json` tells the picker which themes
 re-arrange vs recolor. There is no per-theme template fork, no
 `if theme == x` in app code, and L0 (no shell markup) still renders
@@ -340,35 +331,35 @@ only arrange what tokens expose — a genuinely new arrangement (a new
 region, a new breakpoint behavior) needs a new core-owned token, not
 app-side branching. Propose it here; don't fork it there.
 
-**Nav text in the bar.** `.ftl-nav-brand` and `.ftl-nav-item` read
-`--ftl-nav-brand-fg` / `--ftl-nav-item-fg`, which a theme tunes for its
-content area. `--ftl-app-bar-fg` does **not** reach them. A theme that
+**Nav text in the bar.** `.nav-brand` and `.nav-item` read
+`--nav-brand-fg` / `--nav-item-fg`, which a theme tunes for its
+content area. `--app-bar-fg` does **not** reach them. A theme that
 paints its bar in a strong color (an accent-orange sweep, a blue title
 bar) must re-point those tokens in a scoped block, or its brand can
 render at 1:1:
 
 ```css
-html[data-theme="winxp-luna"] .ftl-app-bar {
-  --ftl-nav-brand-fg: #ffffff;
-  --ftl-nav-item-fg: #ffffff;
+html[data-theme="winxp-luna"] .app-bar {
+  --nav-brand-fg: #ffffff;
+  --nav-item-fg: #ffffff;
 }
 ```
 
 `scripts/check.py` measures brand and item text against every color stop
-of `--ftl-app-bar-bg`, and `--ftl-app-status-fg` against the status strip,
+of `--app-bar-bg`, and `--app-status-fg` against the status strip,
 and fails anything under 4.5:1.
 
-Override points: `--ftl-app-areas`, `-columns`, `-rows`, `-gap`,
-`-padding`, `-bg`; `--ftl-app-bar-bg|-fg|-rule|-rule-width|-radius|-height|-padding|-font`;
-`--ftl-app-rail-display|-bg|-radius|-padding|-gap`;
-`--ftl-app-main-bg|-padding|-radius`; `--ftl-app-status-bg|-fg|-rule|-radius|-padding`;
-and the `-sm` variants (`--ftl-app-areas-sm`, `--ftl-app-rows-sm`,
-`--ftl-app-rail-display-sm`, `--ftl-app-main-padding-sm`) for ≤720px.
+Override points: `--app-areas`, `-columns`, `-rows`, `-gap`,
+`-padding`, `-bg`; `--app-bar-bg|-fg|-rule|-rule-width|-radius|-height|-padding|-font`;
+`--app-rail-display|-bg|-radius|-padding|-gap`;
+`--app-main-bg|-padding|-radius`; `--app-status-bg|-fg|-rule|-radius|-padding`;
+and the `-sm` variants (`--app-areas-sm`, `--app-rows-sm`,
+`--app-rail-display-sm`, `--app-main-padding-sm`) for ≤720px.
 
 **Graceful degrade without the shell.** An app that links a theme but
 never adds this markup still gets a correct, uncluttered result: no rail
-element in the DOM means `.ftl-app-rail:empty` (or, absent that element
-entirely, `.ftl-app:not(:has(> .ftl-app-rail))`) collapses the rail's
+element in the DOM means `.app-rail:empty` (or, absent that element
+entirely, `.app:not(:has(> .app-rail))`) collapses the rail's
 column instead of rendering an empty painted gutter. A theme that opens a
 rail is required to keep working — not to look identical, just not
 broken — when the app hasn't added the `<aside>` element at all.
@@ -379,15 +370,15 @@ Three levels, each optional and each strictly additive over the last — an
 app can stop at any level and nothing above it is required to make what
 it has correct:
 
-- **L0 — tokens only.** Link a theme's CSS (or bridge your own `--ftl-*`
-  declarations onto `dist/ftl-core.css`). You get the palette and every
-  `.ftl-*` component look. A theme whose identity is primarily a *layout*
+- **L0 — tokens only.** Link a theme's CSS (or bridge your own `--*`
+  declarations onto `dist/core.css`). You get the palette and every
+  component look. A theme whose identity is primarily a *layout*
   (LCARS, tron, wmp11, aqua, windows95, winamp-classic — anything with a
   `shellAware: true` manifest entry, see "Theme index") will render
   correctly recolored but **not** in its distinguishing arrangement: this
   is expected, not a bug, and is what the previous section's degrade
   guarantees stays uncluttered rather than broken.
-- **L1 — the app shell.** Add the `.ftl-app`/`-bar`/`-rail`/`-main`/
+- **L1 — the app shell.** Add the `.app`/`-bar`/`-rail`/`-main`/
   `-status` markup above. Layout-tier themes now re-arrange for real (the
   LCARS rail opens, the bar elbows into it). This is the level a theme's
   README means when it says what's lost without the shell — see each
@@ -395,7 +386,7 @@ it has correct:
 - **L2 — theme-specific chrome / full component adoption.** Optional
   richer primitives a theme ships beyond the shell, e.g. `themes/lcars/
   chrome.css`'s frame elements (see `docs/lcars-chrome.md`), or replacing
-  more of an app's own markup with `.ftl-*` components than the minimum
+  more of an app's own markup with components than the minimum
   the shell requires.
 
 A theme must not look *broken* one level down from what it was authored
@@ -408,43 +399,43 @@ These exist because the themes this library was built for are control
 surfaces, and a palette alone cannot express that:
 
 ```html
-<!-- level meter: horizontal, or add .ftl-meter-v for a channel strip -->
-<div class="ftl-meter" style="--ftl-meter-level:72%; --ftl-meter-peak:84%">
-  <div class="ftl-meter-fill"></div><div class="ftl-meter-peak"></div>
+<!-- level meter: horizontal, or add .meter-v for a channel strip -->
+<div class="meter" style="--meter-level:72%; --meter-peak:84%">
+  <div class="meter-fill"></div><div class="meter-peak"></div>
 </div>
 
-<span class="ftl-readout">01:24:07<span class="ftl-readout-unit">tc</span></span>
-<span class="ftl-readout ftl-readout-lg">48<span class="ftl-readout-unit">kHz</span></span>
+<span class="readout">01:24:07<span class="readout-unit">tc</span></span>
+<span class="readout readout-lg">48<span class="readout-unit">kHz</span></span>
 
-<div class="ftl-transport">
-  <button class="ftl-btn ftl-btn-go">Go</button>
-  <span class="ftl-lamp is-on"></span>
-  <span class="ftl-lamp is-error"></span>
+<div class="transport">
+  <button class="btn btn-go">Go</button>
+  <span class="lamp is-on"></span>
+  <span class="lamp is-error"></span>
 </div>
 ```
 
-- `.ftl-meter` — level/VU. Drive `--ftl-meter-level` and `--ftl-meter-peak`
-  as percentages from your app; band thresholds (`--ftl-meter-warn-at`,
-  `--ftl-meter-peak-at`) and colours (`--ftl-meter-low|mid|high`) are
+- `.meter` — level/VU. Drive `--meter-level` and `--meter-peak`
+  as percentages from your app; band thresholds (`--meter-warn-at`,
+  `--meter-peak-at`) and colours (`--meter-low|mid|high`) are
   tokens, so an app can move them live without the theme fighting it.
-- `.ftl-readout` — a large tabular machine value (`-lg`/`-sm` sizes, plus
-  `.ftl-readout-unit` for a trailing unit).
-- `.ftl-transport` + `.ftl-btn-go` — the bar carrying a surface's primary
-  action. `.ftl-btn-go` is a `.ftl-btn` variant, so it inherits every
+- `.readout` — a large tabular machine value (`-lg`/`-sm` sizes, plus
+  `.readout-unit` for a trailing unit).
+- `.transport` + `.btn-go` — the bar carrying a surface's primary
+  action. `.btn-go` is a `.btn` variant, so it inherits every
   button mechanic.
-- `.ftl-lamp` (+ `.is-on`/`.is-warn`/`.is-error`) — a hardware indicator
-  light. Unlike `.ftl-status` it reads as *off* rather than absent.
+- `.lamp` (+ `.is-on`/`.is-warn`/`.is-error`) — a hardware indicator
+  light. Unlike `.status` it reads as *off* rather than absent.
 
 ## Density
 
-`--ftl-density` (default `1`) scales the paddings that decide how much data
+`--density` (default `1`) scales the paddings that decide how much data
 fits on screen — button, table cell and panel padding — **and** the
-interactive-target geometry of `.ftl-checkbox`, `.ftl-switch`, and
-`.ftl-slider`'s thumb. A dense console theme sets `0.85`; a chunky
+interactive-target geometry of `.checkbox`, `.switch`, and
+`.slider`'s thumb. A dense console theme sets `0.85`; a chunky
 touch-first theme sets `1.15` and gets bigger grab targets to match its
 roomier padding, not just more empty space around the same 16px thumb. A
-theme that sets an explicit per-part token (`--ftl-btn-padding`,
-`--ftl-switch-*`, `--ftl-slider-thumb-size`) opts that one control out of
+theme that sets an explicit per-part token (`--btn-padding`,
+`--switch-*`, `--slider-thumb-size`) opts that one control out of
 density scaling; every other control still scales.
 
 ## Color scheme
@@ -463,14 +454,14 @@ instead of defaulting to light under a dark theme.
 Three switches an app can offer in its own settings UI, independent of
 theme choice — no theme file needs to know any of these exist:
 
-- **Density override** — set it directly: `<html style="--ftl-density: 0.85">`.
+- **Density override** — set it directly: `<html style="--density: 0.85">`.
   An inline style wins over any stylesheet rule regardless of specificity,
-  so this overrides even a theme that sets its own `--ftl-density`.
+  so this overrides even a theme that sets its own `--density`.
 - **Motion** — `<html data-motion="reduced">` forces every animation and
   transition off, for a user who wants that without relying on (or unable
   to set) the OS-level `prefers-reduced-motion` setting.
-- **Contrast** — `<html data-contrast="high">` pulls `--ftl-hairline` and
-  `--ftl-muted` up to `--ftl-border`/`--ftl-text` and thickens the focus
+- **Contrast** — `<html data-contrast="high">` pulls `--hairline` and
+  `--muted` up to `--border`/`--text` and thickens the focus
   outline, for a user who finds a theme's quieter elements too quiet,
   without leaving the theme. The OS setting `prefers-contrast: more` applies the
   same boost automatically; `data-contrast="standard"` opts back out and
@@ -483,8 +474,8 @@ pairs, each one picked and contrast-checked by the theme's own author:
 
 ```css
 html[data-theme="lcars"] {
-  --ftl-accent-swatch-1: var(--ftl-lcars-sky);   --ftl-on-accent-swatch-1: #000;
-  --ftl-accent-swatch-2: var(--ftl-lcars-rose);  --ftl-on-accent-swatch-2: #000;
+  --accent-swatch-1: var(--lcars-sky);   --on-accent-swatch-1: #000;
+  --accent-swatch-2: var(--lcars-rose);  --on-accent-swatch-2: #000;
 }
 ```
 
@@ -503,7 +494,7 @@ theme's selector with an extra attribute,
 
 ```css
 html[data-theme="imac-g3"] { /* Bondi Blue: the base palette */ }
-html[data-theme="imac-g3"][data-variant="grape"] { --ftl-accent: #6b3fa0; … }
+html[data-theme="imac-g3"][data-variant="grape"] { --accent: #6b3fa0; … }
 ```
 
 `html[data-theme="x"][data-variant="y"]` sits at specificity `(0,2,1)`,
@@ -511,77 +502,77 @@ which outranks the theme's own root block at `(0,1,1)`, so the variant
 wins. List a theme's variants in its `README.md`; `themes/imac-g3` is a
 worked example (Bondi/Blueberry/Grape/Tangerine).
 
-## Component vocabulary (`.ftl-*`)
+## Component vocabulary
 
 ### Buttons
 ```html
-<button class="ftl-btn ftl-btn-primary">Primary</button>
-<button class="ftl-btn ftl-btn-secondary">Secondary</button>
-<button class="ftl-btn ftl-btn-danger">Delete</button>
-<button class="ftl-btn ftl-btn-success">Confirm</button>
-<button class="ftl-btn ftl-btn-ghost">Ghost</button>
-<button class="ftl-btn ftl-btn-sm ftl-btn-primary">Small</button>
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-secondary">Secondary</button>
+<button class="btn btn-danger">Delete</button>
+<button class="btn btn-success">Confirm</button>
+<button class="btn btn-ghost">Ghost</button>
+<button class="btn btn-sm btn-primary">Small</button>
 ```
 `:disabled`, `:hover`, `:active`, `:focus-visible` are handled — no extra
 classes needed.
 
 ### Form controls
 ```html
-<div class="ftl-field">
-  <label class="ftl-label">Name</label>
-  <input class="ftl-input" type="text">
-  <span class="ftl-field-hint">Optional hint.</span>
+<div class="field">
+  <label class="label">Name</label>
+  <input class="input" type="text">
+  <span class="field-hint">Optional hint.</span>
 </div>
-<select class="ftl-select">…</select>
-<textarea class="ftl-textarea"></textarea>
-<input class="ftl-checkbox" type="checkbox">
-<label class="ftl-switch">
+<select class="select">…</select>
+<textarea class="textarea"></textarea>
+<input class="checkbox" type="checkbox">
+<label class="switch">
   <input type="checkbox">
-  <span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span>
+  <span class="switch-track"><span class="switch-thumb"></span></span>
 </label>
-<input class="ftl-slider" type="range">
+<input class="slider" type="range">
 ```
-The `<input>` must precede `.ftl-switch-track` — the checked state is a
+The `<input>` must precede `.switch-track` — the checked state is a
 sibling selector.
 
 A labelled control in a bordered row (the settings-sheet pattern), for a
 switch, checkbox or short value:
 
 ```html
-<div class="ftl-field-row">
-  <label class="ftl-label" for="autosplit">Auto-split at 2 GB</label>
-  <span class="ftl-field-hint">Avoids FAT32 limits</span>
-  <label class="ftl-switch"><input id="autosplit" type="checkbox"><span class="ftl-switch-track"><span class="ftl-switch-thumb"></span></span></label>
+<div class="field-row">
+  <label class="label" for="autosplit">Auto-split at 2 GB</label>
+  <span class="field-hint">Avoids FAT32 limits</span>
+  <label class="switch"><input id="autosplit" type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></label>
 </div>
 ```
-Rows are spaced by `--ftl-field-row-gap` (default `0.5rem`); the label
+Rows are spaced by `--field-row-gap` (default `0.5rem`); the label
 truncates with an ellipsis rather than wrapping.
 
 ### Surfaces
 ```html
-<div class="ftl-panel">
-  <div class="ftl-panel-header">Title</div>
+<div class="panel">
+  <div class="panel-header">Title</div>
   …
 </div>
 
-<div class="ftl-modal-overlay">
-  <div class="ftl-modal">
-    <div class="ftl-modal-header">Title</div>
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">Title</div>
     <p>Body.</p>
-    <div class="ftl-modal-footer">
-      <button class="ftl-btn ftl-btn-secondary">Cancel</button>
-      <button class="ftl-btn ftl-btn-primary">Save</button>
+    <div class="modal-footer">
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-primary">Save</button>
     </div>
   </div>
 </div>
 
-<div class="ftl-dropdown"><a class="ftl-dropdown-item" href="#">Item</a></div>
-<div class="ftl-toolbar">…</div>
+<div class="dropdown"><a class="dropdown-item" href="#">Item</a></div>
+<div class="toolbar">…</div>
 ```
 
 ### Tables
 ```html
-<table class="ftl-table">
+<table class="table">
   <thead><tr><th>Name</th><th>Status</th></tr></thead>
   <tbody>
     <tr class="is-selected">…</tr>
@@ -593,8 +584,8 @@ truncates with an ellipsis rather than wrapping.
 marker, so a theme that flattens one language still communicates the state
 through the other. The marker is drawn once per row, on its first cell.
 
-A theme with a solid selection color should set `--ftl-row-selected-fg`.
-Inside a selected row, `.ftl-status` and `.ftl-stat-trend` then switch to
+A theme with a solid selection color should set `--row-selected-fg`.
+Inside a selected row, `.status` and `.stat-trend` then switch to
 that foreground too, so a green "Connected" never lands on a blue
 highlight. Themes with a translucent highlight leave it unset and keep
 their state colors.
@@ -603,7 +594,7 @@ Sticky header and sort indicators (v3.7.0), both opt-in — a plain table
 needs neither:
 
 ```html
-<table class="ftl-table is-sticky">
+<table class="table is-sticky">
   <thead><tr>
     <th aria-sort="descending">Name</th>
     <th>Status</th>
@@ -620,35 +611,35 @@ click, don't add a separate `.is-sorted` class.
 
 Zebra striping (v3.13.0), opt-in — a plain table needs neither:
 ```html
-<table class="ftl-table is-striped">…</table>
+<table class="table is-striped">…</table>
 ```
-Even rows get `--ftl-row-alt-bg` (falls back to `--ftl-surface-2`). It's
-a dedicated token rather than reusing `--ftl-surface-2` directly, because
+Even rows get `--row-alt-bg` (falls back to `--surface-2`). It's
+a dedicated token rather than reusing `--surface-2` directly, because
 a theme with a translucent surface-2 (glass/gloss themes) can band wrong
-stacked over a table row — set `--ftl-row-alt-bg` explicitly if your
+stacked over a table row — set `--row-alt-bg` explicitly if your
 theme's surface-2 isn't opaque.
 
 ### Dismissing a modal
 ```html
-<div class="ftl-modal-header">
+<div class="modal-header">
   Title
-  <button class="ftl-btn-close" aria-label="Close"></button>
+  <button class="btn-close" aria-label="Close"></button>
 </div>
 ```
-`.ftl-btn-close` (v3.13.0) draws the "×" itself via `::before` — no icon
+`.btn-close` (v3.13.0) draws the "×" itself via `::before` — no icon
 markup needed, though it'll get out of the way (`content: none` on the
-pseudo-element) if you put an `.ftl-icon` inside instead. Always add
+pseudo-element) if you put an `.icon` inside instead. Always add
 `aria-label` yourself; the glyph alone isn't accessible. Size variants
-sit next to the default `.ftl-modal` sizing:
+sit next to the default `.modal` sizing:
 ```html
-<div class="ftl-modal ftl-modal-sm">…</div>   <!-- min(22rem, …) -->
-<div class="ftl-modal">…</div>                <!-- min(32rem, …), default -->
-<div class="ftl-modal ftl-modal-lg">…</div>   <!-- min(48rem, …) -->
-<div class="ftl-modal ftl-modal-xl">…</div>   <!-- min(64rem, …) -->
+<div class="modal modal-sm">…</div>   <!-- min(22rem, …) -->
+<div class="modal">…</div>                <!-- min(32rem, …), default -->
+<div class="modal modal-lg">…</div>   <!-- min(48rem, …) -->
+<div class="modal modal-xl">…</div>   <!-- min(64rem, …) -->
 ```
-A `<dialog class="ftl-modal">` bridge's native `::backdrop` already reads
-`--ftl-overlay-bg`/`--ftl-overlay-blur` — the same tokens the
-`.ftl-modal-overlay` div pattern uses — so switching between the two
+A `<dialog class="modal">` bridge's native `::backdrop` already reads
+`--overlay-bg`/`--overlay-blur` — the same tokens the
+`.modal-overlay` div pattern uses — so switching between the two
 markup patterns re-themes for free.
 
 ### Window pattern (v3.14.0): min/max, maximize, minimize, focus, resize
@@ -656,46 +647,46 @@ markup patterns re-themes for free.
 Everything below is CSS the library owns, except dragging (the one
 behavior CSS cannot do — a ~10-line `assets/js/window.js` reference
 snippet, non-contract like `theme-loader.js`). The trio mirrors
-`.ftl-btn-close` exactly (same box, hover/focus, glyph-token-or-icon
-pairing: `--ftl-btn-min-glyph` / `--ftl-btn-max-glyph`), so a themed
+`.btn-close` exactly (same box, hover/focus, glyph-token-or-icon
+pairing: `--btn-min-glyph` / `--btn-max-glyph`), so a themed
 close skins all three coherently; each doubles as a `<button>` or as a
 `<label>` driving its checkbox-hack input.
 
 ```html
 <!-- Full window: minimize + maximize without JS, close natively -->
-<input type="checkbox" class="ftl-window-max" id="w1max" hidden>
-<input type="checkbox" class="ftl-window-min" id="w1min" hidden>
-<div class="ftl-modal" role="dialog" aria-labelledby="w1title" tabindex="-1">
-  <div class="ftl-modal-header">
+<input type="checkbox" class="window-max" id="w1max" hidden>
+<input type="checkbox" class="window-min" id="w1min" hidden>
+<div class="modal" role="dialog" aria-labelledby="w1title" tabindex="-1">
+  <div class="modal-header">
     <span id="w1title">Uploads</span>
-    <label for="w1min" class="ftl-btn-min" aria-label="Minimize"></label>
-    <label for="w1max" class="ftl-btn-max" aria-label="Maximize"></label>
-    <button class="ftl-btn-close" aria-label="Close"></button>
+    <label for="w1min" class="btn-min" aria-label="Minimize"></label>
+    <label for="w1max" class="btn-max" aria-label="Maximize"></label>
+    <button class="btn-close" aria-label="Close"></button>
   </div>
   …
 </div>
 <!-- tray restore, elsewhere in your DOM: visible only while minimized -->
 ```
 
-- **Maximize/restore** — the labels flip `.ftl-window-max`, and
-  `.ftl-window-max:checked + .ftl-modal` shares its declaration with
-  `.ftl-modal.is-maximized`, so the checkbox path and a class toggle
+- **Maximize/restore** — the labels flip `.window-max`, and
+  `.window-max:checked + .modal` shares its declaration with
+  `.modal.is-maximized`, so the checkbox path and a class toggle
   stay in lockstep. The input must immediately precede the modal.
   (Class path for app-driven state; checkbox path for no-JS.)
-- **Minimize/restore** — same pairing (`.ftl-window-min` /
+- **Minimize/restore** — same pairing (`.window-min` /
   `.is-minimized` hides the window); the tray restores it with a label
   for the same input, flipped visible via a sibling rule in your CSS:
-  `.ftl-window-min:checked ~ .my-tray-restore { display: inline-flex }`
+  `.window-min:checked ~ .my-tray-restore { display: inline-flex }`
   (tray chrome itself stays app-owned).
-- **Focus stacking** — `.ftl-modal:focus-within` raises to
-  `--ftl-window-focus-z` (default 1500) for sibling windows sharing one
+- **Focus stacking** — `.modal:focus-within` raises to
+  `--window-focus-z` (default 1500) for sibling windows sharing one
   overlay container; modals carry buttons by definition, otherwise add
   `tabindex="-1"` as above.
-- **Resize** — `.ftl-modal.is-resizable` opts into `resize: both`.
+- **Resize** — `.modal.is-resizable` opts into `resize: both`.
 - **Close** — with `<dialog>`, `<form method="dialog"><button>…` closes
   natively with zero script; with the div pattern the close button is
   app-dismissed as before.
-- **Drag** — add `data-ftl-drag` to the modal and load
+- **Drag** — add `data-drag` to the modal and load
   `assets/js/window.js`; the header becomes the handle, header controls
   stay clickable. Positions are inline styles (correctly unthemeable).
 
@@ -706,34 +697,34 @@ not with native `<dialog>` (top-layer) — dialogs keep native close +
 ### Layout utilities (v3.13.0)
 A small, deliberately tiny flex-layout layer — the one thing this library
 otherwise pushes an app toward a separate utility framework for. Token-driven
-spacing (`--ftl-space-3xs` … `--ftl-space-2xl`) so a theme can widen or
+spacing (`--space-3xs` … `--space-2xl`) so a theme can widen or
 tighten the whole app's rhythm from one place.
 ```html
-<div class="ftl-row is-items-center is-gap-s">…</div>   <!-- flex row -->
-<div class="ftl-stack is-gap-l">…</div>                 <!-- flex column -->
-<div class="ftl-flex is-wrap is-justify-between">…</div>
-<p class="ftl-text-muted ftl-mt-m">Muted, spaced.</p>
-<span class="ftl-visually-hidden">Screen-reader-only text</span>
-<div class="ftl-scroll">…</div>                         <!-- themed scrollbar -->
+<div class="row is-items-center is-gap-s">…</div>   <!-- flex row -->
+<div class="stack is-gap-l">…</div>                 <!-- flex column -->
+<div class="flex is-wrap is-justify-between">…</div>
+<p class="text-muted mt-m">Muted, spaced.</p>
+<span class="visually-hidden">Screen-reader-only text</span>
+<div class="scroll">…</div>                         <!-- themed scrollbar -->
 ```
-`.ftl-row`/`.ftl-stack`/`.ftl-flex` all read `--ftl-gap` (default
-`--ftl-space-m`); `.is-gap-none`/`-2xs`/`-xs`/`-s`/`-l`/`-xl` override it.
+`.row`/`.stack`/`.flex` all read `--gap` (default
+`--space-m`); `.is-gap-none`/`-2xs`/`-xs`/`-s`/`-l`/`-xl` override it.
 `.is-items-*` and `.is-justify-*` cover the alignment cases that come up
 constantly; anything more bespoke is still just flexbox, so reach for
-inline styles or your own class. `.ftl-mt-*`/`.ftl-mb-*` are the margin
+inline styles or your own class. `.mt-*`/`.mb-*` are the margin
 steps that show up most often in practice — not a full spacing utility
 grid. This layer is additive only; it doesn't replace or restyle any
 existing component.
 
 ### Navigation and tabs
 ```html
-<nav class="ftl-nav">
-  <span class="ftl-nav-brand">App</span>
-  <a class="ftl-nav-item is-active" href="#">Home</a>
+<nav class="nav">
+  <span class="nav-brand">App</span>
+  <a class="nav-item is-active" href="#">Home</a>
 </nav>
-<div class="ftl-tabs">
-  <button class="ftl-tab is-active">One</button>
-  <button class="ftl-tab">Two</button>
+<div class="tabs">
+  <button class="tab is-active">One</button>
+  <button class="tab">Two</button>
 </div>
 ```
 
@@ -741,32 +732,32 @@ Vertical variant (the left-hand settings rail): `aria-orientation="vertical"`
 stacks the tabs column, moves the selection marker from the block edge
 (bottom underline) to the inline edge of the rail, lead-aligns the labels,
 and draws an inline-end hairline instead of the bottom rule. Same token set
-as the horizontal strip (`--ftl-tab-*`), so a theme that already colours its
+as the horizontal strip (`--tab-*`), so a theme that already colours its
 tabs needs no changes.
 ```html
-<div class="ftl-tabs" aria-orientation="vertical">
-  <button class="ftl-tab is-active">Look</button>
-  <button class="ftl-tab">Sound</button>
+<div class="tabs" aria-orientation="vertical">
+  <button class="tab is-active">Look</button>
+  <button class="tab">Sound</button>
 </div>
 ```
 
 ### Segmented control (v3.7.0)
 ```html
-<div class="ftl-segmented">
-  <button class="ftl-segmented-item is-active">List</button>
-  <button class="ftl-segmented-item">Grid</button>
+<div class="segmented">
+  <button class="segmented-item is-active">List</button>
+  <button class="segmented-item">Grid</button>
 </div>
 ```
 Mutually-exclusive view switches (list/grid, day/week/month). Distinct
-from `.ftl-tabs` (navigates, usually changes the URL) and
-`.ftl-badge-button` (independent, multi-select filter chips).
+from `.tabs` (navigates, usually changes the URL) and
+`.badge-button` (independent, multi-select filter chips).
 
 ### Badges, progress, status
 ```html
-<span class="ftl-badge ftl-badge-accent">New</span>
-<div class="ftl-progress"><div class="ftl-progress-bar" style="width:60%"></div></div>
-<span class="ftl-status ftl-status-ok">Connected</span>
-<span class="ftl-mono">00:12:04</span>
+<span class="badge badge-accent">New</span>
+<div class="progress"><div class="progress-bar" style="width:60%"></div></div>
+<span class="status status-ok">Connected</span>
+<span class="mono">00:12:04</span>
 ```
 
 ### htmx state
@@ -775,15 +766,15 @@ Core styles htmx's own classes, so an app gets themed request feedback
 without writing any:
 
 ```html
-<button class="ftl-btn ftl-btn-primary" hx-post="/save">
-  Save <span class="ftl-indicator"></span>
+<button class="btn btn-primary" hx-post="/save">
+  Save <span class="indicator"></span>
 </button>
 ```
-- `.ftl-indicator` — a spinner, hidden until an enclosing element (or it
-  itself) carries `.htmx-request`. Themeable via `--ftl-indicator-fg` /
+- `.indicator` — a spinner, hidden until an enclosing element (or it
+  itself) carries `.htmx-request`. Themeable via `--indicator-fg` /
   `-track` / `-size`.
 - `.htmx-request` on a control or container dims it to
-  `--ftl-pending-opacity` and blocks further clicks.
+  `--pending-opacity` and blocks further clicks.
 - `.htmx-swapping` / `.htmx-added` / `.htmx-settling` fade content across
   a swap. All of it is disabled under `prefers-reduced-motion`.
 
@@ -798,90 +789,90 @@ class or token renamed.
 
 ```html
 <!-- Toast (transient) -->
-<div class="ftl-toast-region">
-  <div class="ftl-toast ftl-toast-success">Saved.</div>
+<div class="toast-region">
+  <div class="toast toast-success">Saved.</div>
 </div>
 
 <!-- Spinner (non-htmx loading) -->
-<span class="ftl-spinner"></span>
+<span class="spinner"></span>
 
 <!-- Context menu (position it at the cursor/anchor with your own JS) -->
-<div class="ftl-context-menu">
-  <button class="ftl-context-menu-item">Rename</button>
-  <div class="ftl-context-menu-divider"></div>
-  <button class="ftl-context-menu-item is-danger">Delete</button>
+<div class="context-menu">
+  <button class="context-menu-item">Rename</button>
+  <div class="context-menu-divider"></div>
+  <button class="context-menu-item is-danger">Delete</button>
 </div>
 
 <!-- Dropzone -->
-<div class="ftl-dropzone">Drop a file, or click to browse.</div>
+<div class="dropzone">Drop a file, or click to browse.</div>
 
-<!-- Field group (a titled section of .ftl-field rows) -->
-<div class="ftl-field-group">
-  <div class="ftl-field-group-title">Notifications</div>
-  <div class="ftl-field">…</div>
+<!-- Field group (a titled section of .field rows) -->
+<div class="field-group">
+  <div class="field-group-title">Notifications</div>
+  <div class="field">…</div>
 </div>
 
 <!-- Icon button -->
-<button class="ftl-btn ftl-btn-ghost ftl-btn-icon" aria-label="Close">×</button>
+<button class="btn btn-ghost btn-icon" aria-label="Close">×</button>
 
-<!-- Card (lighter-weight .ftl-panel sibling) -->
-<div class="ftl-card">…</div>
+<!-- Card (lighter-weight .panel sibling) -->
+<div class="card">…</div>
 
 <!-- Badge as a clickable filter chip -->
-<button class="ftl-badge ftl-badge-accent ftl-badge-button is-active">Active</button>
+<button class="badge badge-accent badge-button is-active">Active</button>
 
 <!-- Empty state -->
-<div class="ftl-empty-state">
-  <span class="ftl-empty-state-icon">∅</span>
-  <span class="ftl-empty-state-title">No results</span>
-  <span class="ftl-empty-state-hint">Try a different filter.</span>
+<div class="empty-state">
+  <span class="empty-state-icon">∅</span>
+  <span class="empty-state-title">No results</span>
+  <span class="empty-state-hint">Try a different filter.</span>
 </div>
 
 <!-- Tooltip (CSS-only, no JS) -->
-<button class="ftl-btn" data-tooltip="Refresh the list">↻</button>
+<button class="btn" data-tooltip="Refresh the list">↻</button>
 
 <!-- Popover (surface only — your app toggles visibility) -->
-<div class="ftl-popover">…</div>
+<div class="popover">…</div>
 
 <!-- Accordion (native <details>, no JS) -->
-<details class="ftl-accordion-item">
-  <summary class="ftl-accordion-trigger">Advanced options</summary>
-  <div class="ftl-accordion-panel">…</div>
+<details class="accordion-item">
+  <summary class="accordion-trigger">Advanced options</summary>
+  <div class="accordion-panel">…</div>
 </details>
 
 <!-- Breadcrumbs -->
-<nav class="ftl-breadcrumbs">
-  <a class="ftl-breadcrumb-item" href="#">Home</a>
-  <span class="ftl-breadcrumb-item is-current">Settings</span>
+<nav class="breadcrumbs">
+  <a class="breadcrumb-item" href="#">Home</a>
+  <span class="breadcrumb-item is-current">Settings</span>
 </nav>
 
 <!-- Pagination -->
-<nav class="ftl-pagination">
-  <a class="ftl-pagination-item is-disabled">‹</a>
-  <a class="ftl-pagination-item is-active">1</a>
-  <a class="ftl-pagination-item">2</a>
-  <a class="ftl-pagination-item">›</a>
+<nav class="pagination">
+  <a class="pagination-item is-disabled">‹</a>
+  <a class="pagination-item is-active">1</a>
+  <a class="pagination-item">2</a>
+  <a class="pagination-item">›</a>
 </nav>
 
-<!-- Alert (persistent, inline — unlike .ftl-toast) -->
-<div class="ftl-alert ftl-alert-warning">Disk space is low.</div>
+<!-- Alert (persistent, inline — unlike .toast) -->
+<div class="alert alert-warning">Disk space is low.</div>
 
 <!-- Skeleton loader -->
-<div class="ftl-skeleton ftl-skeleton-text"></div>
-<div class="ftl-skeleton ftl-skeleton-block"></div>
+<div class="skeleton skeleton-text"></div>
+<div class="skeleton skeleton-block"></div>
 
 <!-- Avatar -->
-<span class="ftl-avatar">AB</span>
-<img class="ftl-avatar ftl-avatar-lg" src="…" alt="">
+<span class="avatar">AB</span>
+<img class="avatar avatar-lg" src="…" alt="">
 
 <!-- Stat / KPI tile -->
-<div class="ftl-stat">
-  <span class="ftl-stat-value">1,204</span>
-  <span class="ftl-stat-label">Plays today</span>
+<div class="stat">
+  <span class="stat-value">1,204</span>
+  <span class="stat-label">Plays today</span>
 </div>
 
 <!-- Divider -->
-<hr class="ftl-divider">
+<hr class="divider">
 ```
 
 If your app already reinvented one of these locally (a `.card`, a `.toast`,
@@ -891,58 +882,58 @@ work, tracked in that app's own repo, not here.
 
 ### Browser chrome (v3.6.0)
 
-Surfaces the *platform* paints, not any `.ftl-*` markup — the last thing
+Surfaces the *platform* paints, not any component markup — the last thing
 that reads as "unthemed" on an otherwise fully-dressed page. No markup
-changes; these apply globally the moment `core/ftl-core.css` loads, and
+changes; these apply globally the moment `core/core.css` loads, and
 every token has a base-token fallback so no theme file needs to change.
 
 | Element | Tokens | Default |
 |---|---|---|
-| Text selection | `--ftl-selection-bg` / `-fg` | `--ftl-accent` / `--ftl-on-accent` |
-| Scrollbar thumb / hover / track | `--ftl-scrollbar-thumb` / `-thumb-hover` / `-track` | `--ftl-border` / `--ftl-accent` / transparent |
-| Scrollbar size / radius / width | `--ftl-scrollbar-size` / `-radius` / `-width` | `0.85rem` / `999px` / `thin` |
-| `.ftl-input`/`.ftl-textarea` placeholder | `--ftl-input-placeholder` | `--ftl-muted` |
-| `.ftl-input`/`.ftl-textarea` caret | `--ftl-input-caret` | `--ftl-focus` |
-| `<kbd>` | `--ftl-kbd-bg` / `-fg` / `-border` / `-radius` / `-shadow` | `--ftl-surface-2` / `--ftl-text` / `--ftl-border` / … |
-| `<code>` (inline) | `--ftl-code-bg` / `-fg` | `--ftl-surface-2` / `--ftl-text` |
-| `<pre>` (block) | `--ftl-code-block-bg` / `-border` | `--ftl-surface` / `--ftl-border` |
-| `.ftl-select` closed-box arrow (v3.7.0) | `--ftl-select-arrow-fg` | `--ftl-muted` |
-| `.ftl-input` autofill fill/text (v3.7.0) | reads `--ftl-input-bg`/`-fg` directly | — |
-| `dialog.ftl-modal::backdrop` (v3.7.0) | reads `--ftl-overlay-bg`/`-blur` directly | — |
+| Text selection | `--selection-bg` / `-fg` | `--accent` / `--on-accent` |
+| Scrollbar thumb / hover / track | `--scrollbar-thumb` / `-thumb-hover` / `-track` | `--border` / `--accent` / transparent |
+| Scrollbar size / radius / width | `--scrollbar-size` / `-radius` / `-width` | `0.85rem` / `999px` / `thin` |
+| `.input`/`.textarea` placeholder | `--input-placeholder` | `--muted` |
+| `.input`/`.textarea` caret | `--input-caret` | `--focus` |
+| `<kbd>` | `--kbd-bg` / `-fg` / `-border` / `-radius` / `-shadow` | `--surface-2` / `--text` / `--border` / … |
+| `<code>` (inline) | `--code-bg` / `-fg` | `--surface-2` / `--text` |
+| `<pre>` (block) | `--code-block-bg` / `-border` | `--surface` / `--border` |
+| `.select` closed-box arrow (v3.7.0) | `--select-arrow-fg` | `--muted` |
+| `.input` autofill fill/text (v3.7.0) | reads `--input-bg`/`-fg` directly | — |
+| `dialog.modal::backdrop` (v3.7.0) | reads `--overlay-bg`/`-blur` directly | — |
 
 A theme with a strong signature color (a green terminal, a cyan grid) will
-usually want to set at least `--ftl-selection-bg`/`-fg` explicitly rather
+usually want to set at least `--selection-bg`/`-fg` explicitly rather
 than rely on the accent fallback, if its accent and "what should highlight
 selected text" ought to differ.
 
-Inner scroll containers opt in with `.ftl-scroll`: the page-level
+Inner scroll containers opt in with `.scroll`: the page-level
 `::-webkit-scrollbar` rules above cannot reach `overflow: auto` boxes
 (WebKit scrollbar pseudo-elements never inherit), so a scrollable panel,
 modal body or table wrapper gets the same themed scrollbar by adding
-`class="ftl-scroll"`. It reads the same `--ftl-scrollbar-*` tokens, so
+`class="scroll"`. It reads the same `--scrollbar-*` tokens, so
 one tuning point drives both the page edge and every opted-in box.
 
-`.ftl-select`'s closed box gets a colorable CSS-triangle arrow; its open
+`.select`'s closed box gets a colorable CSS-triangle arrow; its open
 dropdown *list* stays OS-native chrome no CSS can reach (a theme that
 needs a pixel-perfect custom list has to build its own listbox widget —
 out of scope for a CSS-only library). A theme can opt back into the
-platform's own arrow with `appearance: auto` on `.ftl-select`.
+platform's own arrow with `appearance: auto` on `.select`.
 
 ### Layout, levels, anchoring and radios (v3.11.0)
 
 Components carry no outer margin. Lay a page out with these instead of
-app CSS; every gap scales with `--ftl-density`.
+app CSS; every gap scales with `--density`.
 
 ```html
-<main class="ftl-app-main">
-  <div class="ftl-stack">                       <!-- vertical flow -->
-    <div class="ftl-cluster">…buttons…</div>    <!-- wrapping row -->
-    <div class="ftl-grid">…cards…</div>         <!-- responsive columns -->
+<main class="app-main">
+  <div class="stack">                       <!-- vertical flow -->
+    <div class="cluster">…buttons…</div>    <!-- wrapping row -->
+    <div class="grid">…cards…</div>         <!-- responsive columns -->
   </div>
 </main>
 ```
-`-sm`/`-lg` tighten or loosen the gap (`.ftl-stack-sm`, `.ftl-cluster-lg`,
-`.ftl-grid-sm`); `--ftl-grid-min` sets the minimum column width
+`-sm`/`-lg` tighten or loosen the gap (`.stack-sm`, `.cluster-lg`,
+`.grid-sm`); `--grid-min` sets the minimum column width
 (default 16rem). Inline-sized components (buttons, badges, segmented
 controls) keep their own width inside a stack.
 
@@ -950,65 +941,65 @@ controls) keep their own width inside a stack.
 attributes:
 
 ```html
-<progress class="ftl-progress" max="100" value="58">58%</progress>
-<meter class="ftl-meter" min="0" max="100" low="70" high="90" optimum="0" value="64">64%</meter>
+<progress class="progress" max="100" value="58">58%</progress>
+<meter class="meter" min="0" max="100" low="70" high="90" optimum="0" value="64">64%</meter>
 ```
 A meter's band follows the browser's `low`/`high`/`optimum` logic and is
-colored with `--ftl-meter-low`/`-mid`/`-high`. The div-based `.ftl-meter`
-(driven by `--ftl-meter-level`) still works for live-updating meters.
+colored with `--meter-low`/`-mid`/`-high`. The div-based `.meter`
+(driven by `--meter-level`) still works for live-updating meters.
 
-**Anchoring.** Wrap a trigger and its surface in `.ftl-anchor`; the
+**Anchoring.** Wrap a trigger and its surface in `.anchor`; the
 surface positions against it. Your app toggles visibility.
 
 ```html
-<span class="ftl-anchor">
-  <button class="ftl-btn">File</button>
-  <div class="ftl-context-menu is-below">…</div>
+<span class="anchor">
+  <button class="btn">File</button>
+  <div class="context-menu is-below">…</div>
 </span>
 ```
 Placement: `.is-below`, `.is-above`, `.is-end` (align to the trigger's end
-edge). Works for `.ftl-popover`, `.ftl-context-menu` and `.ftl-dropdown`.
+edge). Works for `.popover`, `.context-menu` and `.dropdown`.
 
 **Radios and inline checks.**
 
 ```html
-<fieldset class="ftl-radio-group is-inline">
+<fieldset class="radio-group is-inline">
   <legend>Font size</legend>
-  <label class="ftl-check"><input class="ftl-radio" type="radio" name="fs" checked> Small</label>
-  <label class="ftl-check"><input class="ftl-radio" type="radio" name="fs"> Large</label>
+  <label class="check"><input class="radio" type="radio" name="fs" checked> Small</label>
+  <label class="check"><input class="radio" type="radio" name="fs"> Large</label>
 </fieldset>
-<label class="ftl-check"><input class="ftl-checkbox" type="checkbox"> Remember me</label>
+<label class="check"><input class="checkbox" type="checkbox"> Remember me</label>
 ```
 
 ### v3.9.0 additions
 
 ```html
 <!-- Lamp for "running right now" (pulses unless reduced motion is set) -->
-<span class="ftl-lamp is-active"></span>
+<span class="lamp is-active"></span>
 
 <!-- Log console: the app appends lines and owns autoscroll -->
-<div class="ftl-log" role="log" aria-live="polite">
-  <div class="ftl-log-line" data-level="error"><span class="ftl-log-time">12:01:44</span>fifo underrun</div>
+<div class="log" role="log" aria-live="polite">
+  <div class="log-line" data-level="error"><span class="log-time">12:01:44</span>fifo underrun</div>
 </div>
 ```
 
 - **Tables** highlight the hovered row and the row containing keyboard
-  focus (`--ftl-row-hover-bg`). Sticky headers are `.ftl-table.is-sticky`.
-- **Icon buttons** are `.ftl-btn .ftl-btn-icon` (any `.ftl-btn` variant
-  applies). Set `--ftl-btn-icon-radius` for a square button and
-  `--ftl-btn-icon-size` for its size.
-- **`.ftl-log`**: levels are `debug|info|warn|error` via `data-level`.
-  Lines wrap by default; add `.ftl-log-nowrap` to truncate instead.
+  focus (`--row-hover-bg`). Sticky headers are `.table.is-sticky`.
+- **Icon buttons** are `.btn .btn-icon` (any `.btn` variant
+  applies). Set `--btn-icon-radius` for a square button and
+  `--btn-icon-size` for its size.
+- **`.log`**: levels are `debug|info|warn|error` via `data-level`.
+  Lines wrap by default; add `.log-nowrap` to truncate instead.
   `overflow-anchor` keeps a user who scrolled up in place as lines are
   appended. Logs are unbounded, so keep only the last few hundred to
   thousand lines in the DOM and drop older ones.
-- **Chart palette** for canvas/SVG drawn in JS: `--ftl-chart-text`,
-  `--ftl-chart-grid`, `--ftl-chart-series-1`…`-6`, all defaulting to base
+- **Chart palette** for canvas/SVG drawn in JS: `--chart-text`,
+  `--chart-grid`, `--chart-series-1`…`-6`, all defaulting to base
   tokens. Read them and re-read after a theme switch:
 
   ```js
   const css = getComputedStyle(document.documentElement);
-  const series = [1, 2, 3, 4, 5, 6].map(n => css.getPropertyValue(`--ftl-chart-series-${n}`).trim());
+  const series = [1, 2, 3, 4, 5, 6].map(n => css.getPropertyValue(`--chart-series-${n}`).trim());
   ```
 
 ### v3.14.0 additions
@@ -1016,90 +1007,90 @@ edge). Works for `.ftl-popover`, `.ftl-context-menu` and `.ftl-dropdown`.
 ```html
 <!-- Drawer (slide-in side panel — settings, filters, channel list) -->
 <button id="settings-open">Settings</button>
-<aside class="ftl-drawer" id="settings-drawer" aria-label="Settings">
-  <div class="ftl-panel-header">Settings</div>
+<aside class="drawer" id="settings-drawer" aria-label="Settings">
+  <div class="panel-header">Settings</div>
   …
 </aside>
 <script>settings-open.onclick = () => settings-drawer.classList.toggle('is-open')</script>
 
 <!-- Input group (joined addons: unit, prefix, attached button) -->
-<div class="ftl-input-group">
-  <span class="ftl-input-addon">48</span>
-  <input class="ftl-input" type="text" aria-label="Sample rate">
-  <span class="ftl-input-addon">kHz</span>
+<div class="input-group">
+  <span class="input-addon">48</span>
+  <input class="input" type="text" aria-label="Sample rate">
+  <span class="input-addon">kHz</span>
 </div>
 
 <!-- List (bordered row stack — queues, menus, activity) -->
-<ul class="ftl-list">
-  <li><a class="ftl-list-item is-active" href="#">Take 04 — selected</a></li>
-  <li><button class="ftl-list-item">Take 05</button></li>
+<ul class="list">
+  <li><a class="list-item is-active" href="#">Take 04 — selected</a></li>
+  <li><button class="list-item">Take 05</button></li>
 </ul>
 
 <!-- Ratio box, truncation, stretched card link, divided stack, container -->
-<div class="ftl-ratio ftl-ratio-16x9"><video src="…"></video></div>
-<p class="ftl-text-truncate">A single-line title that never wraps.</p>
-<p class="ftl-clamp-2">A summary that never runs past two lines.</p>
-<div class="ftl-card" style="position:relative">
-  <a class="ftl-stretched-link" href="#">Open session</a>
+<div class="ratio ratio-16x9"><video src="…"></video></div>
+<p class="text-truncate">A single-line title that never wraps.</p>
+<p class="clamp-2">A summary that never runs past two lines.</p>
+<div class="card" style="position:relative">
+  <a class="stretched-link" href="#">Open session</a>
 </div>
-<div class="ftl-divide-y"><span>Row one</span><span>Row two</span></div>
-<div class="ftl-container">Centered, max-width content.</div>
+<div class="divide-y"><span>Row one</span><span>Row two</span></div>
+<div class="container">Centered, max-width content.</div>
 ```
 
-- **`.ftl-drawer`** — fixed side panel, inline-end edge by default,
+- **`.drawer`** — fixed side panel, inline-end edge by default,
   `.is-start` for the inline-start edge. Your app toggles `.is-open`
   (htmx swap, `:target`, or a line of JS); a `hidden` attribute removes
-  it from the tree entirely. Themed via `--ftl-drawer-bg/-border/
+  it from the tree entirely. Themed via `--drawer-bg/-border/
   -width/-shadow`; hidden from print. Respects reduced motion.
-- **`.ftl-input-group`** — flex-joined `.ftl-input`/`.ftl-select`/
-  `.ftl-btn` with `.ftl-input-addon` labels; inner edges lose their
+- **`.input-group`** — flex-joined `.input`/`.select`/
+  `.btn` with `.input-addon` labels; inner edges lose their
   radius and share one border, the focused child rises above it.
-- **`.ftl-list` / `.ftl-list-item`** — items may be plain rows or
+- **`.list` / `.list-item`** — items may be plain rows or
   links/buttons; `.is-active` carries a background *and* a leading
   marker (same two-language state as table rows), hover reuses
-  `--ftl-row-hover-bg`.
-- **Utilities** — `.ftl-ratio` (`--ftl-ratio`, default 16/9, plus
+  `--row-hover-bg`.
+- **Utilities** — `.ratio` (`--ratio`, default 16/9, plus
   `-1x1`/`-4x3`/`-16x9`/`-21x9` modifiers; children fill and cover),
-  `.ftl-text-truncate`, `.ftl-clamp-2`/`-3`, `.ftl-stretched-link`
-  (the card needs `position: relative`), `.ftl-divide-y`,
-  `.ftl-container` (`--ftl-container-max`, default 64rem).
+  `.text-truncate`, `.clamp-2`/`-3`, `.stretched-link`
+  (the card needs `position: relative`), `.divide-y`,
+  `.container` (`--container-max`, default 64rem).
 
 All three of the usual JS-driven patterns below are implemented with
 native primitives only — no script, no checkbox hacks:
 
 ```html
 <!-- Carousel: a scroll-snap track; dots/arrows are plain anchors -->
-<div class="ftl-carousel">
-  <section class="ftl-carousel-slide" id="hero-1">…</section>
-  <section class="ftl-carousel-slide" id="hero-2">…</section>
-  <section class="ftl-carousel-slide" id="hero-3">…</section>
+<div class="carousel">
+  <section class="carousel-slide" id="hero-1">…</section>
+  <section class="carousel-slide" id="hero-2">…</section>
+  <section class="carousel-slide" id="hero-3">…</section>
 </div>
-<nav class="ftl-carousel-nav" aria-label="Slides">
-  <a class="ftl-carousel-prev" href="#hero-3" aria-label="Previous">‹</a>
+<nav class="carousel-nav" aria-label="Slides">
+  <a class="carousel-prev" href="#hero-3" aria-label="Previous">‹</a>
   <a href="#hero-1" aria-label="Slide 1">1</a>
   <a href="#hero-2" aria-label="Slide 2">2</a>
   <a href="#hero-3" aria-label="Slide 3">3</a>
-  <a class="ftl-carousel-next" href="#hero-2" aria-label="Next">›</a>
+  <a class="carousel-next" href="#hero-2" aria-label="Next">›</a>
 </nav>
 ```
 
-- **`.ftl-carousel`** — `overflow-x: auto` + `scroll-snap-type:
+- **`.carousel`** — `overflow-x: auto` + `scroll-snap-type:
   x mandatory`, so swipe, keyboard, dots and prev/next all work with
   zero script (smooth scroll gated on reduced-motion, both OS and
   `data-motion`). Scrollbars hidden, as with any carousel; the dots
-  and arrows are the controls. Tokens: `--ftl-carousel-radius`,
-  `--ftl-carousel-dot/-dot-active`, `--ftl-carousel-arrow-bg/-fg`.
+  and arrows are the controls. Tokens: `--carousel-radius`,
+  `--carousel-dot/-dot-active`, `--carousel-arrow-bg/-fg`.
 
 ```html
 <!-- Scrollspy: sticky nav + smooth scroll are core; the active-link
      mapping is one :target rule per section in YOUR css (or .is-active
      from a scroll observer) -->
-<div class="ftl-scrollspy">
-  <nav class="ftl-scrollspy-nav" aria-label="Sections">
-    <a class="ftl-scrollspy-link" href="#sp-install">Install</a>
-    <a class="ftl-scrollspy-link" href="#sp-config">Config</a>
+<div class="scrollspy">
+  <nav class="scrollspy-nav" aria-label="Sections">
+    <a class="scrollspy-link" href="#sp-install">Install</a>
+    <a class="scrollspy-link" href="#sp-config">Config</a>
   </nav>
-  <div class="ftl-scrollspy-body">
+  <div class="scrollspy-body">
     <section id="sp-install" tabindex="-1">…</section>
     <section id="sp-config" tabindex="-1">…</section>
   </div>
@@ -1110,16 +1101,16 @@ native primitives only — no script, no checkbox hacks:
 /* your stylesheet: the no-JS active-link mapping */
 .docs:has(#sp-install:target) a[href="#sp-install"],
 .docs:has(#sp-config:target) a[href="#sp-config"] {
-  color: var(--ftl-scrollspy-link-active-fg, var(--ftl-accent));
-  box-shadow: var(--ftl-scrollspy-link-active-marker, inset 0 -2px 0 var(--ftl-accent));
+  color: var(--scrollspy-link-active-fg, var(--accent));
+  box-shadow: var(--scrollspy-link-active-marker, inset 0 -2px 0 var(--accent));
 }
 ```
 
-- **`.ftl-scrollspy`** — why the mapping lives app-side: CSS cannot
+- **`.scrollspy`** — why the mapping lives app-side: CSS cannot
   correlate an href with an id without enumerating them, and the ids
   are app knowledge. Core ships everything around it (sticky nav,
   `.is-active` styling identical to the recipe above,
-  `scroll-margin-top` via `--ftl-scrollspy-offset`, smooth scroll
+  `scroll-margin-top` via `--scrollspy-offset`, smooth scroll
   gated on reduced-motion). Position-driven auto-highlight while
   free-scrolling is the one thing that inherently needs a scroll
   observer — the `:target` recipe covers click/keyboard navigation
@@ -1127,16 +1118,16 @@ native primitives only — no script, no checkbox hacks:
 
 ```html
 <!-- Responsive nav toggler: native <details>, no JS, browser-handled a11y -->
-<details class="ftl-nav-collapse">
-  <summary class="ftl-nav-toggle" aria-label="Menu"></summary>
-  <nav class="ftl-nav">
-    <span class="ftl-nav-brand">App</span>
-    <a class="ftl-nav-item" href="#">Home</a>
+<details class="nav-collapse">
+  <summary class="nav-toggle" aria-label="Menu"></summary>
+  <nav class="nav">
+    <span class="nav-brand">App</span>
+    <a class="nav-item" href="#">Home</a>
   </nav>
 </details>
 ```
 
-- **`.ftl-nav-collapse`** — below 720px (the same breakpoint the app
+- **`.nav-collapse`** — below 720px (the same breakpoint the app
   shell collapses at) the summary renders as a ☰/× toggle and the nav
   stacks only while open; above it the toggle hides and the nav always
   lays out. No checkbox hack: `<details>` disclosure is
@@ -1144,20 +1135,20 @@ native primitives only — no script, no checkbox hacks:
 
 ```html
 <!-- Taskbar (OS task strip — Start, window tasks, tray well) -->
-<footer class="ftl-app-status ftl-taskbar">
-  <button class="ftl-taskbar-start">Start</button>
-  <button class="ftl-taskbar-task is-active"><span>Untitled — Notepad</span></button>
-  <button class="ftl-taskbar-task"><span>Inbox</span></button>
-  <span class="ftl-taskbar-tray">1:27 AM</span>
+<footer class="app-status taskbar">
+  <button class="taskbar-start">Start</button>
+  <button class="taskbar-task is-active"><span>Untitled — Notepad</span></button>
+  <button class="taskbar-task"><span>Inbox</span></button>
+  <span class="taskbar-tray">1:27 AM</span>
 </footer>
 ```
 
-- **`.ftl-taskbar` / `-start` / `-task` / `-tray`** — windows95 paints
+- **`.taskbar` / `-start` / `-task` / `-tray`** — windows95 paints
   raised bevels, a pressed + dotted active task and a sunken tray;
   winxp-luna paints the green Start pill and lighter-blue tasks;
   win7-aero paints the glowing orb and glassy tasks with an accent
   light-bar on the running one. Every other theme leaves the plain
-  fallback (the same strip, unpainted). Tokens: `--ftl-taskbar-bg`,
+  fallback (the same strip, unpainted). Tokens: `--taskbar-bg`,
   `-border-width`, `-start-bg/-fg/-border/-radius/-shadow/
   -text-shadow/-style/-size/-padding`, `-task-bg/-fg/-border/
   -radius/-shadow/-max` plus `-bg-active/-border-active/
@@ -1172,10 +1163,10 @@ Icons are one shared SVG sprite, `assets/icons/icons.svg`, used everywhere
 as:
 
 ```html
-<svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
+<svg class="icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
 ```
 
-`.ftl-icon` (in `core/ftl-core.css`) sets `stroke: currentColor`, so every
+`.icon` (in `core/core.css`) sets `stroke: currentColor`, so every
 icon inherits whatever text/foreground color surrounds it. The generic
 sprite ships 1,000+ ids (all 24×24, stroke-based, no fill by default):
 the original hand-drawn set (nav, state, transport, CRUD) plus a
@@ -1219,10 +1210,10 @@ exists in `assets/icons/icons.svg`; overriding an unknown id fails
 `scripts/check.py`'s `icons` rule, since it would silently never apply.
 
 `assets/js/theme-loader.js` (the example pages' theme switcher) keeps
-every `.ftl-icon`'s `<use>` pointed at the right sprite: on both initial
+every `.icon`'s `<use>` pointed at the right sprite: on both initial
 load and the picker's `change` handler, it rewrites each `<use>`'s
 `href`/`xlink:href` to `dist/icons/<slug>.svg` while keeping the
-`#icon-name` fragment intact, via the exported `window.ftlApplyIconTheme(slug)`
+`#icon-name` fragment intact, via the exported `window.applyIconTheme(slug)`
 helper. A real app wires this however it wants — a server-rendered
 `data-theme` attribute plus the same href-rewrite, or by resolving the
 sprite path server-side — the mechanism only requires that `<use>`
@@ -1236,37 +1227,37 @@ a hard requirement.
 ## Adopting ftl-themes in an existing app
 
 If your app already has its own CSS with its own token names, add one
-bridge stylesheet — kept in your own repo — that aliases the `--ftl-*`
+bridge stylesheet — kept in your own repo — that aliases the `--*`
 tokens onto yours, loaded before the theme file:
 
 ```css
 :root {
-  --ftl-bg: var(--your-background-token);
-  --ftl-surface: var(--your-surface-token);
-  --ftl-accent: var(--your-primary-token);
-  /* …map each --ftl-* token you already have an equivalent for */
+  --bg: var(--your-background-token);
+  --surface: var(--your-surface-token);
+  --accent: var(--your-primary-token);
+  /* …map each --* token you already have an equivalent for */
 }
 ```
 
-Then move templates onto the `.ftl-*` classes incrementally — each one you
+Then move templates onto the classes incrementally — each one you
 switch immediately themes correctly under every theme.
 
 If you're recolouring your *own* existing classes rather than adopting
-`.ftl-*` markup at all (the direction CuTePi's bridge went — its own
-`--ctp-*` tokens read `var(--ftl-*, <original value>)`), you don't need
+component markup at all (the direction CuTePi's bridge went — its own
+`--ctp-*` tokens read `var(--*, <original value>)`), you don't need
 this library's component CSS or app shell at all: skip loading anything
 from `dist/` and just read each theme's `:root` token block for the
-values your bridge maps onto. `dist/ftl-core.css` (see "Color-only
+values your bridge maps onto. `dist/core.css` (see "Color-only
 adoption" above) is for the middle case — you want the reset and the
-`.ftl-*` component structure, just not the app shell or a specific
+component structure, just not the app shell or a specific
 theme's colours pre-baked in.
 
 ## Accessibility
 
 - **Contrast floor**: filled controls, body text, muted text (on both
-  `--ftl-surface` and `--ftl-surface-2`) and state-colored text meet 4.5:1
+  `--surface` and `--surface-2`) and state-colored text meet 4.5:1
   (WCAG AA), verified per theme by `scripts/check.sh` against the theme's own
-  token values. Text against a decorative page backdrop (`--ftl-bg`), the
+  token values. Text against a decorative page backdrop (`--bg`), the
   7:1 AAA target, and accent-on-surface legibility are soft warnings, and
   are skipped for a theme whose README carries a `contrast-exempt:` line
   with the rationale — Windows 95's teal desktop is the example: it never
@@ -1274,15 +1265,15 @@ theme's colours pre-baked in.
   inauthentic fix. The 4.5:1 floors on filled controls and panel text are
   hard and never exempted.
 - **State tokens are component-scoped**: there is no global
-  `--ftl-accent-hover` vocabulary, by design — core defines each
+  `--accent-hover` vocabulary, by design — core defines each
   component's hover/active/disabled variants with token fallbacks
-  (`--ftl-btn-bg-hover: var(--ftl-surface-2)`), and themes recolor by
+  (`--btn-bg-hover: var(--surface-2)`), and themes recolor by
   setting those same component-scoped tokens. Apps styling their own
   widgets get the guaranteed vocabulary from the required base tokens plus
-  `--ftl-focus`/`--ftl-focus-ring`, and copy core's variant-token pattern
+  `--focus`/`--focus-ring`, and copy core's variant-token pattern
   per component they mirror.
 - **Focus is guaranteed**: core always draws an outline, and themes recolor
-  it via `--ftl-focus` or add a glow via `--ftl-focus-ring`. A theme that
+  it via `--focus` or add a glow via `--focus-ring`. A theme that
   sets `outline: none` on a focus state fails the lint — a keyboard user
   must never be left without an indicator.
 - **State is never color-alone** where a shape can carry it too (row states
@@ -1306,12 +1297,12 @@ theme's colours pre-baked in.
 
 ## Print
 
-Core supplies a universal `@media print` floor (see `core/ftl-core.css`,
+Core supplies a universal `@media print` floor (see `core/core.css`,
 "Print baseline") that every theme gets for free: animations/shadows off,
 backgrounds stripped and text forced to black on white (themes are
 designed for screens — a dark palette printed as-is either wastes ink or,
 worse, renders illegible when the browser drops the background but keeps
-light-on-dark text), and the decorative `.ftl-app-rail` plus any
+light-on-dark text), and the decorative `.app-rail` plus any
 interactive-only control in the app-bar/app-status hidden (nothing on
 paper is clickable). Component surfaces and body chrome the reader
 actually needs to read (the app-bar's title, the status footer's
@@ -1354,7 +1345,7 @@ for what, if anything, it cites.
 | `alienware` | Alienware | Angular `clip-path`-cut corners, one AlienFX cyan light strip down the rail. | |
 | `aqua` | Aqua | A 3px repeating pinstripe texture on every panel, under the candy-gloss buttons. | |
 | `barbie` | Barbie | 999px-radius glossy pills everywhere; mint success state uses dark, not white, text. | |
-| `bloomberg` | Bloomberg Terminal | The *whole UI*, not just numerals, set in monospace, at `--ftl-density: 0.7`. | |
+| `bloomberg` | Bloomberg Terminal | The *whole UI*, not just numerals, set in monospace, at `--density: 0.7`. | |
 | `cyber-goth` | Cyber-Goth | Toxic neon green and hot purple sharing the accent role on black vinyl gloss. | |
 | `death-star` | Death Star Terminal | True `#000000`, solid glowing indicator blocks, zero borders or shadows anywhere. | |
 | `hot-wheels` | Hot Wheels | A single diagonal flame-gradient band cut across the app bar. | |
@@ -1376,9 +1367,9 @@ for what, if anything, it cites.
 
 Verified this pass (`lcars`, `matrix`): checked against `trekcolors`
 (Okuda LCARS reference palette) and the commonly-cited Matrix digital-rain
-hex respectively. `lcars`'s `--ftl-accent` (`#ff9900`) and
-`--ftl-lcars-lavender` (`#cc99cc`) matched the reference exactly;
-`--ftl-lcars-sky` did not (an unsourced pastel periwinkle) and was
+hex respectively. `lcars`'s `--accent` (`#ff9900`) and
+`--lcars-lavender` (`#cc99cc`) matched the reference exactly;
+`--lcars-sky` did not (an unsourced pastel periwinkle) and was
 corrected — see `themes/lcars/theme.css` and its README for the full note,
 including why the *exact* reference blue ("mariner", `#3366cc`) isn't used
 outright (it fails the 4.5:1 button-text contrast floor).

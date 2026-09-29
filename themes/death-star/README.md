@@ -2,7 +2,7 @@
 
 > Absolute black with glowing solid-colour indicator blocks, zero borders or shadows.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -18,7 +18,7 @@ blue — with no frame, border or shadow drawn anywhere to soften it.
    ring carry any glow — restraint is what makes the glow read as a signal.
 3. **Colour blocks are solid, not gradients.** A filled surface is one flat
    colour, full stop.
-4. **True black, not near-black.** `--ftl-bg: #000`. This is the one theme
+4. **True black, not near-black.** `--bg: #000`. This is the one theme
    in the catalogue that means it literally.
 
 ## Signature details
@@ -44,9 +44,9 @@ as the page, distinguished only by the content sitting on them.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

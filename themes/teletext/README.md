@@ -19,7 +19,7 @@ a limitation to soften.
 
 1. **Exactly 8 colours, used flat.** Black, red, green, yellow, blue,
    magenta, cyan, white — anything else (even a tint or shade of one of
-   these) breaks the premise. `--ftl-muted` is the one deliberate
+   these) breaks the premise. `--muted` is the one deliberate
    exception, documented in the token comment.
 2. **Zero roundness, zero softness.** No border-radius, no box-shadow, no
    gradient, anywhere. A teletext frame is drawn from flat rectangular
@@ -38,7 +38,7 @@ a limitation to soften.
 - `h1` renders at double height (`transform: scaleY(1.9)`), the one
   hardware trick reserved for headlines on real teletext frames.
 - Selected/active rows invert to a solid colour fill with black text
-  (`--ftl-row-selected-bg`), not a tint or outline — real teletext has no
+  (`--row-selected-bg`), not a tint or outline — real teletext has no
   concept of a translucent highlight.
 
 ### Icons

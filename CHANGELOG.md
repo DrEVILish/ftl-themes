@@ -5,7 +5,59 @@ changes are called out explicitly here.
 
 ## Unreleased
 
-Nothing yet — v4 work lands on `main`; this is the last v3 line (branch `v3`).
+## v4.0.0 — the `ftl-` prefix is gone (2026-09-29)
+
+> ### ⚠ BREAKING — read [`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md) before upgrading
+>
+> v4 has **no backward-compatibility layer**. Nothing from v3 keeps working
+> under its old name, and an un-migrated app renders **unstyled** — there is no
+> warning at runtime because the library is CSS. Pin the `v3` branch
+> (v3.14.0) if you are not ready.
+>
+> 1. **Every class name lost its prefix**: `.ftl-btn` → `.btn`, `.ftl-card` →
+>    `.card`, `.ftl-app` → `.app`, … (all 190+ of them).
+> 2. **Every custom property lost its prefix**: `--ftl-text` → `--text`,
+>    `--ftl-btn-bg` → `--btn-bg`, … (500+). Bare names such as `--text`,
+>    `--bg`, `--border`, `--accent` and `--radius` will collide with an app
+>    that already defines them.
+> 3. **Keyframes, ids, storage keys and files were renamed too**
+>    (`ftl-spin` → `spinner-rotate`, `dist/ftl-core.css` → `dist/core.css`,
+>    `core/ftl-*.css` → `core/*.css`, `window.ftlApplyIconTheme` →
+>    `window.applyIconTheme`, `data-ftl-drag` → `data-drag`).
+> 4. **Every bundle is wrapped in `@layer ui`.** Your unlayered CSS now always
+>    beats the library, and an unlayered framework (Bootstrap, …) now beats it
+>    wherever both define the same class — see the collision list in the
+>    migration guide.
+> 5. **`dist/themes.json`**: `version` is the bare content hash (it was
+>    `ftl-<hash>`), and every entry has `"contract": 4`.
+>
+> **Names that now collide with popular frameworks** (documented, not aliased):
+> 35 class names match Bootstrap 5 (`.btn`, `.card`, `.table`, `.modal`, `.nav`,
+> `.badge`, `.alert`, `.row`, `.text-muted`, …) and `.flex`, `.grid`,
+> `.container`, `.table`, `.divide-y` match Tailwind utilities with different
+> meanings.
+
+### Changed
+
+- **A theme can no longer out-rank the app's own CSS.** With bundles in
+  `@layer ui`, theme rules that target the *app's* classes (rather than
+  library classes) lose to the app's unlayered rules. The example pages
+  showed it: xbmc/xmb's nav-centring no longer overrides the pages' own
+  `.demo-topbar`, and the msdos "twin-pane divider" that styled the example
+  pages' private `.demo-two-col`/`.demo-split` classes was **removed** — it
+  could never work for a real consumer.
+- `dist/tokens.css` no longer carries theme rules that target any class
+  (previously it leaked two page-specific msdos rules).
+- `scripts/_pw_shot.mjs` counts nested rules when waiting for a bundle (a
+  layered bundle has one top-level rule).
+
+### Migration tooling
+
+- `scripts/migrate-v4.py` rewrites your templates/CSS/JS from the v3 names to
+  v4 (`--dry-run`, `--check`), driven by `scripts/v4-rename-map.json` (725
+  names). It is exact-name, not a blind regex.
+- `scripts/check.py` gained a `prefix` rule: any `ftl-` class/property/id
+  in `core/`, `themes/`, `assets/js/` or the example pages fails the build.
 
 ## v3.14.0 — window pattern, taskbars, carousel/scrollspy, and v3.13 regression fixes (2026-09-28)
 

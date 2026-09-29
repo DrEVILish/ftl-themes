@@ -17,7 +17,7 @@ the stamp and the cross-check from drifting apart:
              it. The hash alone already names the exact CSS served.
   scheme     light/dark, derived exactly the way CuTePi's routes/themes.go
              derived it before this field existed (that app was the
-             reference implementation): --ftl-surface, composited over the
+             reference implementation): --surface, composited over the
              theme's first solid page/shell background when translucent,
              plain-weighted luminance, 0.55 threshold.
 
@@ -31,6 +31,10 @@ import re
 import subprocess
 
 import cssparse
+
+# Major version of the class/token contract the bundles implement. Bumped
+# when a rename or removal would break a consumer's markup or CSS.
+CONTRACT = 4
 
 HEX_RE = re.compile(r"^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 RGBA_RE = re.compile(r"^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+)(%)?)?\s*\)$")
@@ -58,9 +62,9 @@ def parse_color(value):
 
 
 def root_tokens(src, slug):
-    """--ftl-name: value from the theme's root block(s) only, merged in
+    """--name: value from the theme's root block(s) only, merged in
     source order as the cascade would. Palette variants
-    ([data-variant]) and element-scoped overrides (.ftl-app-status, …)
+    ([data-variant]) and element-scoped overrides (.app-status, …)
     are not the theme's default palette and must not stand in for it —
     reading every declaration in the file let a variant declared last
     (imac-g3's tangerine) stamp the default theme's luminance."""
@@ -71,19 +75,19 @@ def root_tokens(src, slug):
         # it is not the default palette either.
         if rule.selector == root and cssparse.unconditional(rule.context):
             for name, value in cssparse.declarations(rule.body):
-                if name.startswith("--ftl-"):
+                if name.startswith("--"):
                     out[name] = value
     return out
 
 
 def resolve_color(tokens, value, depth=0):
-    """parse_color, following var(--ftl-…) chains through tokens."""
+    """parse_color, following var(--…) chains through tokens."""
     if depth > 6:
         return None
     c = parse_color(value)
     if c is not None:
         return c
-    m = re.match(r"^\s*var\(\s*(--ftl-[a-z0-9-]+)", value)
+    m = re.match(r"^\s*var\(\s*(--[a-z0-9-]+)", value)
     if m and m.group(1) in tokens:
         return resolve_color(tokens, tokens[m.group(1)], depth + 1)
     return None
@@ -92,18 +96,18 @@ def resolve_color(tokens, value, depth=0):
 def scheme_of(src, slug):
     """("light"|"dark", luminance) the way integrators used to derive it.
 
-    The app's panels sit on --ftl-surface; if that is translucent or missing
-    it is composited over the theme's shell/page background (--ftl-app-bg /
-    --ftl-app-main-bg / --ftl-bg, first that exists) and plain-weighted
+    The app's panels sit on --surface; if that is translucent or missing
+    it is composited over the theme's shell/page background (--app-bg /
+    --app-main-bg / --bg, first that exists) and plain-weighted
     luminance above 0.55 reads as light. Unparseable themes read as dark —
     the historical default — and stamp luminance null.
     """
     tokens = root_tokens(src, slug)
-    surface = resolve_color(tokens, tokens.get("--ftl-surface", ""))
+    surface = resolve_color(tokens, tokens.get("--surface", ""))
     if surface is None:
         return "dark", None
     if surface[3] < 1:
-        for name in ("--ftl-app-bg", "--ftl-app-main-bg", "--ftl-bg"):
+        for name in ("--app-bg", "--app-main-bg", "--bg"):
             base = resolve_color(tokens, tokens.get(name, ""))
             if base is not None:
                 a = surface[3]
@@ -126,7 +130,7 @@ def version():
     blob = b"".join(open(f, "rb").read() for f in sorted(glob.glob("dist/*.css")))
     h = subprocess.run(["git", "hash-object", "--stdin"], input=blob,
                        capture_output=True).stdout.decode().strip()[:12]
-    return "ftl-" + h
+    return h
 
 
 def load_categories():
@@ -156,9 +160,10 @@ def write_manifest():
             "label": label,
             "description": header_field(src, "Description"),
             "hasChrome": os.path.exists(os.path.join(os.path.dirname(path), "chrome.css")),
-            "shellAware": bool(re.search(r"--ftl-app-[A-Za-z0-9-]+\s*:",
+            "shellAware": bool(re.search(r"--app-[A-Za-z0-9-]+\s*:",
                                          cssparse.strip_comments(src))),
             "version": version_,
+            "contract": CONTRACT,
             "scheme": scheme,
             "luminance": luminance,
             "category": meta.get("category"),

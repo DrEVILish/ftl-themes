@@ -2,7 +2,7 @@
 
 > Star Trek TNG/DS9/Voyager on-screen computer — candy pills on black.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -21,7 +21,7 @@ caption to say which theme it is, it has failed.
    floating on true black. Any grey "card" background is wrong.
 2. **The elbow is the signature.** A horizontal bar that curves down into a
    vertical rail is the single most identifying shape in the whole system.
-   The app shell's bar does exactly this (`--ftl-app-bar-radius`).
+   The app shell's bar does exactly this (`--app-bar-radius`).
 3. **Candy bars code by colour, not by meaning.** The orange/lavender/sky/
    rose/tan palette is decorative structure. Resist making every lavender
    block mean one semantic thing — that's a modern dashboard habit.
@@ -29,7 +29,7 @@ caption to say which theme it is, it has failed.
    square where it meets its neighbour. That asymmetry is why buttons here
    are `0 1.2rem 1.2rem 0`, not fully rounded.
 5. **Chunky, never dense.** This is a wall panel operated by hand, so
-   `--ftl-density: 1.15`. A cramped LCARS is a wrong LCARS.
+   `--density: 1.15`. A cramped LCARS is a wrong LCARS.
 6. **Type is tall, condensed, uppercase.** Antonio stands in for the
    original's Swiss 911/Helvetica Compressed.
 
@@ -37,12 +37,12 @@ caption to say which theme it is, it has failed.
 
 | Token | Value | Why |
 |---|---|---|
-| `--ftl-bg` | `#000000` | True black. Not near-black — the blocks must float. |
-| `--ftl-accent` | `#ff9900` | The canonical LCARS orange; the system's primary structural colour. Matches "atomic tangerine" in the documented Okuda reference palette exactly. |
-| `--ftl-lcars-lavender` / `-sky` / `-rose` / `-tan` / `-peach` | `#cc99cc` `#6699ff` `#cc6699` `#ffcc99` `#ff9966` | The candy palette, namespaced so it can never collide with another theme's tokens. `-lavender` matches the reference palette's "lilac" exactly; `-sky` was corrected from an unsourced pastel periwinkle to sit close to the reference's saturated blue family ("mariner"/"bahama-blue") while still clearing the button-text contrast floor. |
-| `--ftl-radius` | `1.4rem` | Large by default — everything wants to be a pill. |
-| `--ftl-on-accent` | `#000000` | Black text on candy fills. LCARS never sets light text on a colour block. |
-| `--ftl-density` | `1.15` | Deliberately loose. |
+| `--bg` | `#000000` | True black. Not near-black — the blocks must float. |
+| `--accent` | `#ff9900` | The canonical LCARS orange; the system's primary structural colour. Matches "atomic tangerine" in the documented Okuda reference palette exactly. |
+| `--lcars-lavender` / `-sky` / `-rose` / `-tan` / `-peach` | `#cc99cc` `#6699ff` `#cc6699` `#ffcc99` `#ff9966` | The candy palette, namespaced so it can never collide with another theme's tokens. `-lavender` matches the reference palette's "lilac" exactly; `-sky` was corrected from an unsourced pastel periwinkle to sit close to the reference's saturated blue family ("mariner"/"bahama-blue") while still clearing the button-text contrast floor. |
+| `--radius` | `1.4rem` | Large by default — everything wants to be a pill. |
+| `--on-accent` | `#000000` | Black text on candy fills. LCARS never sets light text on a colour block. |
+| `--density` | `1.15` | Deliberately loose. |
 
 Source: the Okuda-designed LCARS palette (Michael and Denise Okuda,
 conceived for TNG starting 1987) as documented by the `trekcolors`
@@ -77,7 +77,7 @@ generic outline set.
 
 Selecting LCARS re-arranges the app shell, it does not merely recolour it:
 
-- a **6rem candy rail** appears down the left (`--ftl-app-columns`), drawn
+- a **6rem candy rail** appears down the left (`--app-columns`), drawn
   entirely in CSS as a hard-stopped gradient stack so no app ships
   LCARS-specific markup;
 - the **top bar becomes a solid orange sweep** whose bottom-left corner
@@ -95,7 +95,7 @@ willing to add markup. Most apps should use the shell instead.
 ## Extending it
 
 Do:
-- Add new colours from the candy palette, namespaced `--ftl-lcars-*`.
+- Add new colours from the candy palette, namespaced `--lcars-*`.
 - Keep black text on every coloured block.
 - Let blocks touch with flat joins and terminate with pills.
 
@@ -116,9 +116,9 @@ Don't:
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

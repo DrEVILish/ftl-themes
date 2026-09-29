@@ -2,7 +2,7 @@
 
 > A futuristic sci-fi HUD: deep-space navy with cyan neon glow.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -21,11 +21,11 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
    selected, or focused. If everything glows, nothing is live. This is the
    rule most often broken when extending the theme.
 2. **Telemetry is monospaced.** Any raw machine value — timecode, counts,
-   IDs, sample rates, file sizes — sets in `--ftl-font-mono` with tabular
-   figures (`.ftl-mono`). Proportional digits that jitter as they count
+   IDs, sample rates, file sizes — sets in `--font-mono` with tabular
+   figures (`.mono`). Proportional digits that jitter as they count
    break the instrument illusion.
-3. **Cyan means live data; blue means interactive.** `--ftl-accent` (cyan)
-   carries live/active/telemetry. `--ftl-accent-2` (blue) carries
+3. **Cyan means live data; blue means interactive.** `--accent` (cyan)
+   carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
 4. **Structure over ornament.** Headings are tracked, uppercase, *dim* —
    they are labels on a panel, not titles on a page. The content is the
@@ -46,15 +46,15 @@ Changing them is a change to the reference, not a matter of taste.
 
 | Token | Value | Why this value |
 |---|---|---|
-| `--ftl-bg` | `#020509` | Near-black, faintly blue: a panel in a dark rack room. |
-| `--ftl-surface` / `-2` | `#0a1526` / `#08192b` | Two steps up, both still very dark. The surface ladder is shallow on purpose — depth comes from hairlines and glow, not from lightening slabs. |
-| `--ftl-border` / `--ftl-hairline` | `#0f3a5c` / `#0a2942` | Visible rules are blue-cast, and the hairline is dimmer: dense data needs separators that don't add up to a cage. |
-| `--ftl-accent` | `#00d9ff` | Electric cyan. The live/telemetry color. |
-| `--ftl-accent-2` | `#4d7dff` | Electric blue. Interactive/selected. |
-| `--ftl-text` / `--ftl-muted` | `#cfeeff` / `#5b8aa8` | Text is blue-white, never pure white — reserve pure white for a genuinely critical value. Muted is a real step down so labels recede below data. |
-| `--ftl-font` | Consolas | Monospace as the *primary* UI font, not just for values. This single choice does more for the "spacecraft computer" feel than any color. |
-| `--ftl-radius` | `0.25rem` | Almost square. Rounded corners read as consumer software. |
-| `--ftl-flare` | `#d85cff` | Magenta, used almost nowhere. Held in reserve for a single rare emphasis so it keeps its force. |
+| `--bg` | `#020509` | Near-black, faintly blue: a panel in a dark rack room. |
+| `--surface` / `-2` | `#0a1526` / `#08192b` | Two steps up, both still very dark. The surface ladder is shallow on purpose — depth comes from hairlines and glow, not from lightening slabs. |
+| `--border` / `--hairline` | `#0f3a5c` / `#0a2942` | Visible rules are blue-cast, and the hairline is dimmer: dense data needs separators that don't add up to a cage. |
+| `--accent` | `#00d9ff` | Electric cyan. The live/telemetry color. |
+| `--accent-2` | `#4d7dff` | Electric blue. Interactive/selected. |
+| `--text` / `--muted` | `#cfeeff` / `#5b8aa8` | Text is blue-white, never pure white — reserve pure white for a genuinely critical value. Muted is a real step down so labels recede below data. |
+| `--font` | Consolas | Monospace as the *primary* UI font, not just for values. This single choice does more for the "spacecraft computer" feel than any color. |
+| `--radius` | `0.25rem` | Almost square. Rounded corners read as consumer software. |
+| `--flare` | `#d85cff` | Magenta, used almost nowhere. Held in reserve for a single rare emphasis so it keeps its force. |
 
 ## Instruments
 
@@ -63,7 +63,7 @@ primitives carry its identity more than the buttons do:
 
 - **Meters** use true VU banding — `#0aff9d` green, `#ffe400` amber,
   `#ff2a2a` red, white peak-hold. These are deliberately *not* the theme's
-  semantic `--ftl-success`/`-warning`/`-danger`: a meter is reporting signal
+  semantic `--success`/`-warning`/`-danger`: a meter is reporting signal
   level, not application state, and the eye reads the classic broadcast
   ramp faster than a palette-matched one.
 - **Readouts** glow cyan and track slightly wide. A counter is the thing
@@ -87,24 +87,24 @@ the two should visibly move the furniture.
 - **Corner brackets** on panels and modals (`::before`/`::after`, 14px, 55%
   opacity): a HUD reticle framing content. Purely decorative and
   `pointer-events: none`.
-- **Focus glows.** `--ftl-focus-ring` adds a cyan bloom on top of the
+- **Focus glows.** `--focus-ring` adds a cyan bloom on top of the
   always-present outline — focus is a live state, so it glows.
 - **Square slider thumbs** with a glow: a physical fader cap, not a dot.
 
 ## Extending it
 
 Do:
-- Reach for `--ftl-accent` only when the thing is genuinely live.
-- Add glow via `--ftl-*-shadow` properties so it stays tunable.
+- Reach for `--accent` only when the thing is genuinely live.
+- Add glow via `--*-shadow` properties so it stays tunable.
 - Keep new readouts monospaced and tabular.
 
 Don't:
 - Add a gradient to any control.
-- Brighten `--ftl-muted` to "improve readability" — the contrast floor is
+- Brighten `--muted` to "improve readability" — the contrast floor is
   already verified by `scripts/check.sh`; if a label seems too dim, it's
   probably a label that shouldn't be competing with data.
 - Round the corners.
-- Use `--ftl-flare` more than once on a screen.
+- Use `--flare` more than once on a screen.
 
 ## Tell-tales of an inauthentic result
 
@@ -115,10 +115,10 @@ Don't:
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
 
@@ -135,12 +135,12 @@ Deliberately NOT themed (app-owned, do not add hooks for these):
 
 - OLED bezel and mirror — a hardware representation, not chrome.
 - Reel-deck SVG geometry and tape animation — flat fills are exposed as
-  `--ftl-deck-*` for reskinning, but the drawing itself is the device.
+  `--deck-*` for reskinning, but the drawing itself is the device.
 - The square HUD rail switch (`.sci-switch`) and its ONLINE/OFFLINE
-  readout — device identity; core's round `.ftl-switch` is a different
+  readout — device identity; core's round `.switch` is a different
   widget, do not force them together.
 - Round icon buttons and transport geometry — state *colors* are covered
-  by `.ftl-transport.is-rec/.is-play/.is-pause`, sizes stay app-side.
+  by `.transport.is-rec/.is-play/.is-pause`, sizes stay app-side.
 - uPlot chart internals — the app reads bridge tokens via
   `getComputedStyle` with identical fallbacks.
 - Brand logo and modal sheet layout.

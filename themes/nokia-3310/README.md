@@ -2,7 +2,7 @@
 
 > The reflective yellow-green monochrome LCD of the 3310/3210 era: no backlight colour, no anti-aliasing, and selection reads as a hard colour invert rather than a highlight.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties (the inverted title strip); recolours correctly at L0 but the phone-screen composition needs the app shell.
+**Requires: L1** — sets `--app-*` layout properties (the inverted title strip); recolours correctly at L0 but the phone-screen composition needs the app shell.
 
 ## What this theme is trying to achieve
 
@@ -15,8 +15,8 @@ background, never from introducing a new colour.
 
 ## Core values
 
-1. **Selection is inversion, not colour.** `--ftl-row-selected-bg` /
-   `--ftl-row-selected-fg` swap the two LCD tones outright — light-on-dark
+1. **Selection is inversion, not colour.** `--row-selected-bg` /
+   `--row-selected-fg` swap the two LCD tones outright — light-on-dark
    instead of dark-on-light — the only way this hardware could highlight
    anything.
 2. **Zero radius, zero gradient, zero shadow.** A reflective LCD segment
@@ -32,7 +32,7 @@ background, never from introducing a new colour.
 
 - The signal-bars and battery-bars pseudo-elements in the corners of the
   app-bar — the one piece of chrome every candybar phone screen had.
-- The inverted dark title strip across the top (`--ftl-app-bar-bg` set to
+- The inverted dark title strip across the top (`--app-bar-bg` set to
   the text colour, not the background) — the carrier-name bar convention.
 - Bold, chunky text with no smoothing — this is a low-resolution segment
   display, not a modern hinted font.

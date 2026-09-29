@@ -2,7 +2,7 @@
 
 > Electric cyan line-grid on black — glowing, angular edges.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -14,10 +14,10 @@ looks *drawn in light* rather than painted.
 
 1. **Light is the material.** Edges glow; surfaces stay near-black. A
    filled, non-glowing surface reads as off.
-2. **Cut corners, never rounded ones.** `--ftl-radius: 0` plus `clip-path`
+2. **Cut corners, never rounded ones.** `--radius: 0` plus `clip-path`
    corner cuts on buttons and panels. The chamfer is the signature.
-3. **Cyan builds, orange opposes.** `--ftl-accent` cyan is the system;
-   `--ftl-accent-2` orange is the adversary — reserved for danger and
+3. **Cyan builds, orange opposes.** `--accent` cyan is the system;
+   `--accent-2` orange is the adversary — reserved for danger and
    warning. Never use orange decoratively.
 4. **The grid is always present.** A 2.5rem cyan line-grid at 6% underlies
    everything.
@@ -52,9 +52,9 @@ through Orbitron to a generic sans. Vendoring a substitute is tracked in
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

@@ -3,8 +3,7 @@
 
 dist/tokens.css — every theme's tokens only, concatenated into one file:
   each theme's html[data-theme] blocks (palette variants included),
-  @font-face, and element-level rules (headings etc.), with no .ftl-*
-  component or shell rules. For apps that keep their own markup and only
+  @font-face, and element-level rules (headings etc.), with no   component or shell rules. For apps that keep their own markup and only
   want the palette (CONTRACT.md "Adoption levels") — one link, then switch
   palettes by changing data-theme, no stylesheet swap needed, since every
   theme's rules already live behind its own html[data-theme="slug"] scope
@@ -12,9 +11,10 @@ dist/tokens.css — every theme's tokens only, concatenated into one file:
 
 Cascade-layer bundles (formerly a second dist/<slug>.layered.css file per
 theme) are gone: layering a bundle is one line an app adds itself —
-@import url("dist/<slug>.css") layer(ftl); — so pre-building 26 near-
+@import url("dist/<slug>.css") layer(ui); — so pre-building 26 near-
 identical wrapped copies bought nothing. See CONTRACT.md "Cascade layers".
 """
+import re
 from pathlib import Path
 
 import cssparse
@@ -25,6 +25,12 @@ DIST = ROOT / "dist"
 
 def rewrite_urls(css):
     return css.replace('url("assets/', 'url("../assets/').replace("url(assets/", "url(../assets/")
+
+
+def has_class(selector):
+    """True if the selector targets a class (component/utility rule). Class
+    dots inside [attr="..."] don't count."""
+    return re.search(r"\.[A-Za-z_]", re.sub(r"\[[^\]]*\]", "", selector)) is not None
 
 
 def tokens_only(css):
@@ -40,7 +46,7 @@ def tokens_only(css):
                 kept.append(f"{prelude} {{\n{inner}\n}}")
         elif not prelude.startswith("@"):
             # split_top, not split(","): `:is(h1, h2)` is one selector.
-            sels = [s for s in cssparse.split_top(prelude) if ".ftl-" not in s]
+            sels = [s for s in cssparse.split_top(prelude) if not has_class(s)]
             if sels:
                 kept.append(f"{', '.join(sels)} {{{body}}}")
     return "\n".join(kept)

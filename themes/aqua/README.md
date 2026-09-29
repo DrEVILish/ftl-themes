@@ -2,7 +2,7 @@
 
 > macOS Snow Leopard — brushed metal, pinstripes, candy gloss.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -23,8 +23,8 @@ tactile, unmistakably pre-flat-design.
    desktop gradient with a real shadow beneath it.
 5. **Light theme discipline.** This is the catalogue's first light theme,
    so filled controls need explicit white foregrounds — the dark-theme
-   habit of painting them `--ftl-bg` fails here. That's exactly what
-   `--ftl-on-accent`/`-danger`/`-success` are for.
+   habit of painting them `--bg` fails here. That's exactly what
+   `--on-accent`/`-danger`/`-success` are for.
 
 ## Signature details
 
@@ -55,9 +55,9 @@ fill without checking the contrast floor.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

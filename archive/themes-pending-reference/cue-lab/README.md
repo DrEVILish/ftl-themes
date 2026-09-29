@@ -2,7 +2,7 @@
 
 > Flat live-show console — hairline grids, amber accent, no glow.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -21,7 +21,7 @@ stress. Everything in this theme serves that moment.
    element competes with it, the theme has failed at its one job.
 2. **Flat everywhere else.** No gradients, no elevation, no decorative
    shadow. Depth cues cost scanning time and add nothing to a list.
-3. **Density is a feature.** `--ftl-density: 0.85`. Fitting more of the cue
+3. **Density is a feature.** `--density: 0.85`. Fitting more of the cue
    list on screen is worth more than breathing room.
 4. **Amber is state, not decoration.** `#ff8c1a` marks the active cue, the
    armed transport, the thing that is about to happen.
@@ -34,12 +34,12 @@ stress. Everything in this theme serves that moment.
 
 | Token | Value | Why |
 |---|---|---|
-| `--ftl-bg` / `--ftl-surface` / `-2` | `#141414` / `#1d1d1d` / `#262626` | A near-neutral grey ladder. Warm-free so amber stays the only colour with a job. |
-| `--ftl-accent` | `#ff8c1a` | Amber: active, armed, current. |
-| `--ftl-danger` | `#d63a3f` | Darkened from a brighter red so white text on a destructive button clears 4.5:1. |
-| `--ftl-radius` | `0.2rem` | Nearly square — hardware, not app. |
-| `--ftl-density` | `0.85` | Tight rows. The single most consequential token here. |
-| `--ftl-font` | System sans | A console is read, not admired; the platform UI face is the most legible option at small sizes. |
+| `--bg` / `--surface` / `-2` | `#141414` / `#1d1d1d` / `#262626` | A near-neutral grey ladder. Warm-free so amber stays the only colour with a job. |
+| `--accent` | `#ff8c1a` | Amber: active, armed, current. |
+| `--danger` | `#d63a3f` | Darkened from a brighter red so white text on a destructive button clears 4.5:1. |
+| `--radius` | `0.2rem` | Nearly square — hardware, not app. |
+| `--density` | `0.85` | Tight rows. The single most consequential token here. |
+| `--font` | System sans | A console is read, not admired; the platform UI face is the most legible option at small sizes. |
 
 ## Signature details
 
@@ -48,7 +48,7 @@ stress. Everything in this theme serves that moment.
   blooms on hover — a deliberate, and the *only*, exception to the
   no-glow rule.
 - **Meters** use conventional green/amber/red banding, squared off
-  (`--ftl-meter-radius: 0`).
+  (`--meter-radius: 0`).
 - **Lamps** are square and unlit-dark with no bloom: panel LEDs, not
   indicators on a web page.
 - **Readouts** are plain, heavy, amber — a cue number, not a spectacle.
@@ -74,7 +74,7 @@ Don't:
 - Round corners to soften the look.
 - Use a universal `!important` reset to enforce flatness — that erases
   state indicators like the active-row marker. Express flatness by leaving
-  the `--ftl-*-shadow` properties unset.
+  the `--*-shadow` properties unset.
 
 ## Tell-tales of an inauthentic result
 
@@ -86,9 +86,9 @@ Don't:
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

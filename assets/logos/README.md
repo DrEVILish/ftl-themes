@@ -83,7 +83,7 @@ system.
 
 ```html
 <link rel="stylesheet" href="assets/logos/logos.css">
-<img class="ftl-logo" src="assets/logos/cutepi/cutepi-logo.svg" alt="cutepi">
+<img class="logo" src="assets/logos/cutepi/cutepi-logo.svg" alt="cutepi">
 ```
 
 `logos.css` is a tiny, separate, opt-in stylesheet — it is **not**

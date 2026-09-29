@@ -2,7 +2,7 @@
 
 > Beveled 3D gray — classic system dialog chrome on teal.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -17,12 +17,12 @@ poster.
    bottom-right, inverted while pressed. Every raised thing uses it; every
    sunken thing (inputs, the content well) uses it reversed. Get this wrong
    and nothing else matters.
-2. **Zero radius, everywhere.** `--ftl-radius: 0`. There were no rounded
+2. **Zero radius, everywhere.** `--radius: 0`. There were no rounded
    corners.
 3. **A strictly limited palette.** Grey `#c0c0c0`, navy `#000080`, teal
    `#008080`, plus the 16-colour VGA set. No intermediate tints.
 4. **Text is black on grey.** Filled controls use white on navy — never the
-   page background as a foreground, which is what `--ftl-on-*` exists to
+   page background as a foreground, which is what `--on-*` exists to
    prevent here.
 5. **Focus is a dotted rectangle.** Marching-ants, not a glow. Era-accurate
    *and* accessible.
@@ -47,7 +47,7 @@ where a straight edge will do — the settings glyph is a plus of tabs
 around a square rather than a circular gear, the same low-res
 simplification the real icon set used at 16×16/32×32. Every other icon
 falls back to the generic outline set, thickened by
-`--ftl-icon-stroke-width: 2.6` like the rest of the theme.
+`--icon-stroke-width: 2.6` like the rest of the theme.
 
 ## Layout
 
@@ -71,15 +71,15 @@ openly-licensed pixel face is tracked in `docs/theme-backlog.md`.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-Contrast-exempt: --ftl-text on --ftl-bg (the teal desktop) sits at ~4.5:1,
+Contrast-exempt: --text on --bg (the teal desktop) sits at ~4.5:1,
 below the 7:1 AAA target. Deliberate: the teal desktop never carried body
 text in Windows 95 — every readable surface was the grey dialog
-(--ftl-surface #c0c0c0, where black text is ~17:1) — so the desktop pair is
+(--surface #c0c0c0, where black text is ~17:1) — so the desktop pair is
 decorative by construction, and brightening teal would be the inauthentic
 fix. (Closes the intent documented in the theme.css header comment.)

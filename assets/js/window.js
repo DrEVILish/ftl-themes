@@ -5,15 +5,15 @@
  * theme-loader.js, this is an example a real app wires however it wants,
  * not part of the library contract.
  *
- * Opt in per window: <div class="ftl-modal" data-ftl-drag> with a
- * .ftl-modal-header drag handle. Interactive elements inside the header
+ * Opt in per window: <div class="modal" data-drag> with a
+ * .modal-header drag handle. Interactive elements inside the header
  * (buttons, links, inputs, the min/max labels) stay clickable: the drag
  * only starts from bare header surface.
  */
 document.addEventListener('pointerdown', (e) => {
-  const win = e.target.closest('[data-ftl-drag]');
+  const win = e.target.closest('[data-drag]');
   if (!win || e.button !== 0) return;
-  if (!e.target.closest('.ftl-modal-header')) return;
+  if (!e.target.closest('.modal-header')) return;
   if (e.target.closest('button, a, input, select, textarea, summary, label')) return;
   const r = win.getBoundingClientRect();
   Object.assign(win.style, {

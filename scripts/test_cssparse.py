@@ -36,22 +36,22 @@ def test_strings_and_comments():
 
 
 def test_declarations_keep_parenthesised_semicolons_and_custom_case():
-    decls = cssparse.declarations("--ftl-Bg: url(a;b.png); COLOR: red; broken")
-    assert decls == [("--ftl-Bg", "url(a;b.png)"), ("color", "red")]
+    decls = cssparse.declarations("--Bg: url(a;b.png); COLOR: red; broken")
+    assert decls == [("--Bg", "url(a;b.png)"), ("color", "red")]
 
 
 def test_root_tokens_ignore_conditional_and_variant_blocks():
     src = '''
-      html[data-theme="t"] { --ftl-surface: #102030; }
-      @media (min-width: 1px) { html[data-theme="t"] { --ftl-surface: #ffffff; } }
-      html[data-theme="t"][data-variant="v"] { --ftl-surface: #eeeeee; }
+      html[data-theme="t"] { --surface: #102030; }
+      @media (min-width: 1px) { html[data-theme="t"] { --surface: #ffffff; } }
+      html[data-theme="t"][data-variant="v"] { --surface: #eeeeee; }
     '''
-    assert build_manifest.root_tokens(src, "t") == {"--ftl-surface": "#102030"}
+    assert build_manifest.root_tokens(src, "t") == {"--surface": "#102030"}
     assert build_manifest.scheme_of(src, "t")[0] == "dark"
 
 
 def test_tokens_bundle_keeps_whole_selectors():
-    out = build_bundles.tokens_only('html[data-theme="t"] :is(h1, h2), .ftl-x { a: b; }')
+    out = build_bundles.tokens_only('html[data-theme="t"] :is(h1, h2), .x { a: b; }')
     assert out == 'html[data-theme="t"] :is(h1, h2) { a: b; }'
 
 

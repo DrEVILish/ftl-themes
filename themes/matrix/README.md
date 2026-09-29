@@ -2,7 +2,7 @@
 
 > Green phosphor on black — monospace terminal cascade.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -42,7 +42,7 @@ a UI icon set. Settings becomes an eight-point asterisk glyph instead of
 a naturalistic gear, matching a terminal's habit of representing controls
 as punctuation rather than pictures. Every other icon falls back to the
 generic outline set, already thinned to 1.5 by
-`--ftl-icon-stroke-width`.
+`--icon-stroke-width`.
 
 ## Layout
 
@@ -65,9 +65,9 @@ flicker animation communicate anything.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

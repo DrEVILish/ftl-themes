@@ -68,7 +68,7 @@ changes**, to fit this project's existing symbol convention:
 - The outer `<svg>` element's `width`, `height`, `stroke="currentColor"`,
   `stroke-width="2"`, `stroke-linecap`, `stroke-linejoin`, and
   `fill="none"` attributes were stripped, since this project's
-  `.ftl-icon` class (`core/ftl-core.css`) supplies all of those via CSS
+  `.icon` class (`core/core.css`) supplies all of those via CSS
   on every symbol uniformly. This matches the convention of the
   original 100 icons.
 - The per-file leading XML comment block (Tabler's tag/category/unicode
@@ -78,7 +78,7 @@ changes**, to fit this project's existing symbol convention:
   `fill="currentColor"` on small filled-dot details inside an otherwise
   stroke-only glyph (e.g. `icon-discount`, `icon-accessible`). That
   attribute was **kept as-is** — it already uses the same `currentColor`
-  token as this project's `.ftl-icon` stroke color, so it is not a
+  token as this project's `.icon` stroke color, so it is not a
   hardcoded color and needs no normalization.
 - No path data, shapes, or geometry were altered.
 

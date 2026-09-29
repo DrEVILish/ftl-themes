@@ -2,7 +2,7 @@
 
 > Google Material Design — flat color, layered elevation shadows.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -18,7 +18,7 @@ not plastic or glass.
    gradient fill. This is the deliberate contrast point against
    `aqua`/`winxp-luna`'s gloss and `win7-aero`'s blur: three different
    answers to "how does this surface show depth."
-2. **Flat fills, bold color.** `--ftl-accent` is a saturated flat purple,
+2. **Flat fills, bold color.** `--accent` is a saturated flat purple,
    painted solid — no gradient, no gloss highlight.
 3. **Underlined text fields.** Inputs have no box border, only a 2px
    underline that goes solid accent on focus — the Material text-field
@@ -33,7 +33,7 @@ not plastic or glass.
 
 - Three elevation levels are visible: resting buttons/cards (dp2), hover
   (dp4), and the modal (dp16-ish, the heaviest shadow in the catalog).
-- Primary buttons fill solid `--ftl-accent` with white text; secondary and
+- Primary buttons fill solid `--accent` with white text; secondary and
   ghost buttons drop the shadow entirely — Material's "text button" and
   "outlined button" variants have no elevation.
 - Selected/active table rows tint with a translucent accent wash rather
@@ -54,9 +54,9 @@ no border, no gradient, just color and shadow.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

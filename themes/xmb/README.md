@@ -2,7 +2,7 @@
 
 > The PlayStation 3 / PSP dashboard: the Cross Media Bar itself — a horizontal row of glowing category icons over a deep-blue wave, with sub-items dropping straight down from whichever one is selected.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties (a centred, transparent app-bar over the wave); recolours correctly at L0 but the actual cross-shaped layout only appears once the app shell is adopted.
+**Requires: L1** — sets `--app-*` layout properties (a centred, transparent app-bar over the wave); recolours correctly at L0 but the actual cross-shaped layout only appears once the app shell is adopted.
 
 ## What this theme is trying to achieve
 
@@ -22,7 +22,7 @@ which doesn't translate to a general-purpose page background.
    dashboard instead of XMB.
 2. **Selection is a glow, not a fill.** The active icon/row gets a soft
    blue glow and a scale-up, not a solid highlight block — see
-   `--ftl-btn-shadow-hover` and the icon-button hover rule.
+   `--btn-shadow-hover` and the icon-button hover rule.
 3. **The bar is centred, not left-aligned.** Real XMB's icon row runs
    through the horizontal centre of the screen; a left-anchored nav bar
    reads as a generic app, not XMB.
@@ -35,11 +35,11 @@ which doesn't translate to a general-purpose page background.
   one unmistakable XMB interaction.
 - `999px` (pill) radius on buttons, nav items and badges only — real XMB
   info panels were modestly rounded rectangles, not stadium shapes, so
-  `--ftl-radius` (panels, cards, inputs, alerts, the dropdown, the log)
+  `--radius` (panels, cards, inputs, alerts, the dropdown, the log)
   is a generous `0.85rem`/`0.9rem` rounded rectangle instead. A base
   radius of 999px produced odd stadium-shaped alert banners and selects
   on large surfaces; interactive pill-shaped chrome keeps its own
-  explicit `--ftl-btn-radius`/`--ftl-nav-item-radius: 999px` regardless.
+  explicit `--btn-radius`/`--nav-item-radius: 999px` regardless.
 - Thin/glass borders, no hard rectangular chrome.
 
 ## Tell-tales of an inauthentic result
@@ -63,19 +63,19 @@ later using the same pattern other themes use, that's welcome.
 
 ## Known harness limitation: the app-bar doesn't render centred everywhere
 
-`html[data-theme="xmb"] .ftl-nav { justify-content: center }` (and the
-same rule on `.ftl-app-bar`) is real, is the highest-specificity rule
+`html[data-theme="xmb"] .nav { justify-content: center }` (and the
+same rule on `.app-bar`) is real, is the highest-specificity rule
 either QA page applies, and does win — it centres the standalone
-`.ftl-nav` demo in example.html's "Navigation" section correctly. It has
+`.nav` demo in example.html's "Navigation" section correctly. It has
 no visible effect on the QA harness's own *topbar* markup, though:
-example.html's `.ftl-app-bar` header puts an inline
+example.html's `.app-bar` header puts an inline
 `<span style="margin-left:auto">` before its breadcrumbs, and
 example-2/3.html's `.demo-topbar-spacer` sets `flex: 1`. Either one
 absorbs 100% of the row's free space by itself, so `justify-content` has
 nothing left to distribute and the brand/items stay pinned flush left.
 That's a property of those harness pages' fixed nav markup (which this
 theme must not edit to "fix"), not a bug in the theme's centering rule —
-an app that lays out its own `.ftl-app-bar` without such a spacer gets
+an app that lays out its own `.app-bar` without such a spacer gets
 the real centred cross-bar. In the meantime the bar leans harder on the
 float-and-glow language it's actually judged on: it now renders as its
 own floating, blurred, pill-shaped glass capsule with a soft drop shadow

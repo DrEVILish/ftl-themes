@@ -2,7 +2,7 @@
 
 > Classic blue-and-white text-mode with double-line borders and bright cyan.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -18,20 +18,20 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    buttons, panels, modals — the defining Norton Commander visual.
 3. **Uppercase, always.** Text-mode software shouted in caps.
 4. **Cyan is the bright accent; yellow is reserved further still** (used
-   only as `--ftl-flare` and warning) — this is a two-tier bright system,
+   only as `--flare` and warning) — this is a two-tier bright system,
    not a rainbow.
 5. **Zero radius.** Text-mode has no curves.
 
 ## Signature details
 
 - `border-style: double` at 3px is set on every bordered component in one
-  rule (`.ftl-input`, `.ftl-select`, `.ftl-textarea`, `.ftl-btn`,
-  `.ftl-panel`, `.ftl-modal`, `.ftl-dropdown`) — one declaration carries
+  rule (`.input`, `.select`, `.textarea`, `.btn`,
+  `.panel`, `.modal`, `.dropdown`) — one declaration carries
   the entire visual signature.
 - `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
   approximation — this theme's background is a real 16-color EGA/VGA value.
 - The nav bar, app bar, and status strip all fill solid cyan
-  (`--ftl-accent`) with black text — the one place a "bright" color
+  (`--accent`) with black text — the one place a "bright" color
   becomes a background instead of a foreground.
 
 ## Layout
@@ -50,9 +50,9 @@ DOS blue.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

@@ -43,19 +43,19 @@ and the exact count), used everywhere
 as:
 
 ```html
-<svg class="ftl-icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
+<svg class="icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
 ```
 
-`.ftl-icon` in `core/ftl-core.css` sets `stroke: currentColor`, so every
+`.icon` in `core/core.css` sets `stroke: currentColor`, so every
 icon inherits whatever text/foreground color surrounds it. Most themes
 reskin the generic set through two tokens when their signature style
 calls for it:
 
-- `--ftl-icon-stroke-width` — bolder for chunky/physical themes
+- `--icon-stroke-width` — bolder for chunky/physical themes
   (`windows95`: 2.6, `lego-classic`: 3), thinner for dense/technical ones
   (`bloomberg`: 1.4, `matrix`/`winamp-classic`: 1.5). Everything else uses
   the 2.0 default.
-- `--ftl-icon-fill` — solid-fill glyphs instead of outline, for themes
+- `--icon-fill` — solid-fill glyphs instead of outline, for themes
   whose reference icon packs (e.g. Alienware Invader, `references/alienware/`)
   are filled rather than outlined. Unset by default.
 
@@ -70,7 +70,7 @@ overrides with the generic sprite into `dist/icons/<slug>.svg`; any icon
 a theme doesn't override falls back to the generic shape, which is also
 what every other theme uses for 100% of its icons. See CONTRACT.md "Icon
 system" for the full mechanism and `assets/js/theme-loader.js` for how
-the example pages swap `.ftl-icon` hrefs to the current theme's merged
+the example pages swap `.icon` hrefs to the current theme's merged
 sprite.
 
 See `example.html`'s "Icon pack" and "Icon buttons" sections for the full
@@ -96,7 +96,7 @@ until a re-review happens.
 | `winxp-luna` | 5.6 | No window-control chrome (min/max/close) anywhere | ✅ added the control cluster |
 | `lcars` | 5.5 | The elbow (candy rail) never rendered — same empty-rail bug as alienware | ✅ rail now renders |
 | `cyber-goth` | 5.2 | Primary button's hover glow contradicted the theme's own documented color rule | ✅ bug fixed |
-| `win7-aero` | 5.2 | `--ftl-app-bg` was never set, so `backdrop-filter: blur()` had nothing to blur | ✅ textured desktop gradient added |
+| `win7-aero` | 5.2 | `--app-bg` was never set, so `backdrop-filter: blur()` had nothing to blur | ✅ textured desktop gradient added |
 | `winamp-classic` | 5.2 | LCD green flooded headings/nav/buttons instead of staying confined to readouts | ✅ confined to readouts/meters |
 | `wmp11` | 5.4 | "Round" play button was actually an oval sized to its label text | ✅ true fixed-diameter circle |
 | `aqua` | 5.9 | No traffic-light window controls anywhere — Aqua's #1 tell | ✅ added; pinstripe contrast raised |
@@ -116,9 +116,9 @@ table for the full diff and per-theme rationale.
 
 ### `alienware`
 Cyan and matte black were right, but the AlienFX light-strip rail —
-coded in `.ftl-app-rail`'s gradient — never actually rendered: core
+coded in `.app-rail`'s gradient — never actually rendered: core
 collapses an empty `<aside>` to `display: none` unless a theme sets
-`--ftl-app-rail-empty-display`, and this theme never did. Fixed, and
+`--app-rail-empty-display`, and this theme never did. Fixed, and
 added corner tick-mark brackets to the app-bar for the "ornate chrome"
 the reference photos show that a flat 2px rule didn't capture.
 
@@ -126,25 +126,25 @@ the reference photos show that a flat 2px rule didn't capture.
 Pinstripe and candy-gloss buttons were present in the CSS but nearly
 invisible at render scale, and the theme had no traffic-light window
 controls at all — the single detail every reference image leads with.
-Added a three-light cluster via `.ftl-app-bar::before` and doubled the
+Added a three-light cluster via `.app-bar::before` and doubled the
 pinstripe's contrast.
 
 ### `barbie`
 The accent pink and pill radius were fine, but the panel's sharpest
 complaint was typographic: uppercase blocky Baloo 2 is the *opposite*
 of the brand's actual cursive wordmark. Vendored Pacifico (SIL OFL) for
-`h1`/`.ftl-nav-brand` only — body and buttons keep Baloo 2.
+`h1`/`.nav-brand` only — body and buttons keep Baloo 2.
 
 ### `bloomberg`
 The amber/cyan function-key color coding was real, correctly cycling
 through `<kbd>` elements — but no page in the showcase renders a `<kbd>`,
 so the one truly diagnostic Bloomberg tell was invisible. Added the same
-five-color strip directly to `.ftl-app-status` via a pseudo-element.
+five-color strip directly to `.app-status` via a pseudo-element.
 
 ### `cyber-goth`
 The theme's own README documents "purple structure, green signal, the
 hover bloom is always purple" as its signature rule — and the CSS
-directly inverted it on `.ftl-btn-primary`'s hover shadow. Removed the
+directly inverted it on `.btn-primary`'s hover shadow. Removed the
 contradicting override.
 
 ### `death-star`
@@ -157,13 +157,13 @@ the theme's own "zero borders/shadows" component contract still holds.
 
 ### `hot-wheels`
 Every reference image is blue-and-orange; the theme was black-and-orange
-only. Added a real Hot Wheels blue (`--ftl-hw-blue: #0033a0`) to the
+only. Added a real Hot Wheels blue (`--hw-blue: #0033a0`) to the
 table head and app-bar rule.
 
 ### `imac-g3`
 The palette had drifted dark and desaturated (a "moody aquarium
 dashboard" per the panel) instead of the hardware's actual bright candy
-blue. Brightened and resaturated `--ftl-bg`/`-surface`/`-surface-2`,
+blue. Brightened and resaturated `--bg`/`-surface`/`-surface-2`,
 re-verifying every contrast floor by hand afterward (the brighter surface
 broke the accent and muted-text floors on the first attempt).
 
@@ -194,7 +194,7 @@ weak: no sun disc, no actual perspective grid, just a flat repeating-line
 pattern. Added both to the status strip via pseudo-elements.
 
 ### `win7-aero`
-`--ftl-app-bg` was never set, so `.ftl-app`'s background fell back to
+`--app-bg` was never set, so `.app`'s background fell back to
 transparent — the glass bar/status strip had nothing detailed behind them
 to blur, so `backdrop-filter` was declared but visually inert. Added a
 textured radial-gradient desktop background.
@@ -218,7 +218,7 @@ called this the single biggest miss. Added the control cluster via a
 generated pseudo-element cluster in the title bar.
 
 ### `wmp11`
-The "round" play button wasn't actually round: `--ftl-go-size` maps to
+The "round" play button wasn't actually round: `--go-size` maps to
 `font-size` in core, which sizes an oval to fit the label text rather
 than producing a fixed-diameter circle. Set explicit equal width/height
 and a downward transform so it protrudes past the transport bar, plus a
@@ -243,9 +243,9 @@ turned up a handful of repeatable bug *patterns*, several hitting more
 than one theme, plus a real gap in how the first self-review pass worked:
 
 1. **Coded but never rendered.** `lcars` and `alienware` both style
-   `.ftl-app-rail` with real, correct gradients — but core collapses an
+   `.app-rail` with real, correct gradients — but core collapses an
    empty `<aside>` to `display: none` unless a theme sets
-   `--ftl-app-rail-empty-display`, and neither did. `bloomberg` and
+   `--app-rail-empty-display`, and neither did. `bloomberg` and
    `msdos` both style `kbd` (a real core component) as their signature
    detail — but `example.html`, the shared QA page every theme is judged
    against, never rendered a single `<kbd>` anywhere, in any theme. Four
@@ -257,10 +257,10 @@ than one theme, plus a real gap in how the first self-review pass worked:
    so any theme's `kbd` styling gets exercised from now on, not just
    these two.
 2. **Token semantic mismatch.** `wmp11`'s "circular" play button used
-   `--ftl-go-size`, which core maps to `font-size`, not width/height — it
+   `--go-size`, which core maps to `font-size`, not width/height — it
    was never a circle, just an oval sized to fit its label. Checked core
    for every other token with the same "-size maps to font-size" shape
-   (`--ftl-readout-size` is the only other one) and confirmed no theme
+   (`--readout-size` is the only other one) and confirmed no theme
    makes the same mistake with it.
 3. **Palette drift across editing passes.** `imac-g3`, `hot-wheels` and
    `death-star` had each moved away from their documented reference hue
@@ -294,7 +294,7 @@ between "8.5+" and "3.4-6.9."
   see the tables above. Three of those fixes introduced their own lint
   regressions (imac-g3 accent/muted contrast, death-star nav-brand
   contrast, an msdos disabled-state rule that set `background`/`color`
-  directly on a base component instead of through `--ftl-btn-*` tokens) —
+  directly on a base component instead of through `--btn-*` tokens) —
   all caught and fixed by `scripts/check.py` before commit, which is back
   to 0 failures.
 - **Not yet done**: a fresh independent re-review of the fixed renders.
@@ -304,5 +304,5 @@ between "8.5+" and "3.4-6.9."
   these 18.
 - **`pipboy`** (now parked, was shipping): a muted/surface-2 contrast gap
   (4.2:1 vs the 4.5:1 AA floor) was caught while rebuilding after the
-  reference-image merge and fixed (`--ftl-muted: #1f9c3f` → `#1fa43f`)
+  reference-image merge and fixed (`--muted: #1f9c3f` → `#1fa43f`)
   before it was parked; kept for whenever it re-ships.

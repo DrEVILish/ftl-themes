@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Scaffolds themes/<slug>/theme.css from a template listing every required
-# --ftl-* token and the component override points most themes reach for, so
+# --* token and the component override points most themes reach for, so
 # authoring a theme is "fill in the blanks".
 # Usage: scripts/new-theme.sh <theme-slug>
 set -euo pipefail
@@ -31,55 +31,55 @@ cat > "$dir/theme.css" <<EOF
  * Description: <one line — this becomes the theme's entry in dist/themes.json>
  *
  * Read CONTRACT.md § "How a theme overrides a component" first. The short
- * version: set component look through the --ftl-<component>-* properties in
+ * version: set component look through the --<component>-* properties in
  * the root block below. Declaring background/color on a base component
- * selector (html[data-theme="$slug"] .ftl-btn) outranks core's variant rules
+ * selector (html[data-theme="$slug"] .btn) outranks core's variant rules
  * and erases them — scripts/check.sh will fail the build if you do.
  */
 
 html[data-theme="$slug"] {
   /* --- Required tokens (all of them; the lint fails on omissions) ------ */
-  --ftl-bg: #000000;          /* page backdrop */
-  --ftl-surface: #111111;     /* panels/cards — where body text sits */
-  --ftl-surface-2: #1a1a1a;   /* inputs, menus, recessed areas */
-  --ftl-border: #333333;
-  --ftl-hairline: #222222;    /* quieter than border: row rules */
-  --ftl-text: #ffffff;
-  --ftl-muted: #999999;
-  --ftl-accent: #ffffff;      /* primary interactive color */
-  --ftl-accent-2: #cccccc;
-  --ftl-danger: #ff4d4d;
-  --ftl-success: #4dff88;
-  --ftl-warning: #ffcc4d;
+  --bg: #000000;          /* page backdrop */
+  --surface: #111111;     /* panels/cards — where body text sits */
+  --surface-2: #1a1a1a;   /* inputs, menus, recessed areas */
+  --border: #333333;
+  --hairline: #222222;    /* quieter than border: row rules */
+  --text: #ffffff;
+  --muted: #999999;
+  --accent: #ffffff;      /* primary interactive color */
+  --accent-2: #cccccc;
+  --danger: #ff4d4d;
+  --success: #4dff88;
+  --warning: #ffcc4d;
   /* Foregrounds for the fills above. Must hit 4.5:1 against them. */
-  --ftl-on-accent: #000000;
-  --ftl-on-danger: #000000;
-  --ftl-on-success: #000000;
-  --ftl-radius: 0.25rem;      /* 0 for a sharp-cornered theme */
-  --ftl-font: sans-serif;
-  --ftl-font-mono: monospace;
-  --ftl-flare: #ffffff;       /* the one "extra" decorative color */
+  --on-accent: #000000;
+  --on-danger: #000000;
+  --on-success: #000000;
+  --radius: 0.25rem;      /* 0 for a sharp-cornered theme */
+  --font: sans-serif;
+  --font-mono: monospace;
+  --flare: #ffffff;       /* the one "extra" decorative color */
   /* Required by the lint: tells the browser which palette UA-owned chrome
      (scrollbars, native pickers, autofill) should match. */
   color-scheme: dark;         /* light for a light palette */
 
   /* --- Optional: component look. Delete what you don't need. ---------- *
-   * Full set of override points: every var(--ftl-…, fallback) in
-   * core/ftl-core.css. Common ones: */
-  /* --ftl-btn-bg: transparent; */
-  /* --ftl-btn-fg: var(--ftl-accent); */
-  /* --ftl-btn-radius: 0; */
-  /* --ftl-btn-transform: uppercase; */
-  /* --ftl-btn-shadow-hover: 0 0 10px var(--ftl-accent); */
-  /* --ftl-input-bg: #000; */
-  /* --ftl-focus-ring: 0 0 8px var(--ftl-accent); */
-  /* --ftl-panel-bg: linear-gradient(180deg, #1a1a1a, #111); */
-  /* --ftl-panel-shadow: 0 4px 14px rgba(0,0,0,0.4); */
-  /* --ftl-table-head-bg: var(--ftl-surface-2); */
-  /* --ftl-row-selected-bg: rgba(255,255,255,0.12); */
-  /* --ftl-nav-bg: #000; */
-  /* --ftl-overlay-bg: rgba(0,0,0,0.7); */
-  /* --ftl-indicator-fg: var(--ftl-accent); */
+   * Full set of override points: every var(--…, fallback) in
+   * core/core.css. Common ones: */
+  /* --btn-bg: transparent; */
+  /* --btn-fg: var(--accent); */
+  /* --btn-radius: 0; */
+  /* --btn-transform: uppercase; */
+  /* --btn-shadow-hover: 0 0 10px var(--accent); */
+  /* --input-bg: #000; */
+  /* --focus-ring: 0 0 8px var(--accent); */
+  /* --panel-bg: linear-gradient(180deg, #1a1a1a, #111); */
+  /* --panel-shadow: 0 4px 14px rgba(0,0,0,0.4); */
+  /* --table-head-bg: var(--surface-2); */
+  /* --row-selected-bg: rgba(255,255,255,0.12); */
+  /* --nav-bg: #000; */
+  /* --overlay-bg: rgba(0,0,0,0.7); */
+  /* --indicator-fg: var(--accent); */
 }
 
 /* Optional: page background treatment (gradient, grid, texture). */
@@ -93,10 +93,10 @@ html[data-theme="$slug"] {
 /* Optional: shape-only overrides are safe on base selectors — radius,
    clip-path, bevel border-color, letter-spacing. Only background/color are
    forbidden there (they'd erase the variants). */
-/* html[data-theme="$slug"] .ftl-btn { clip-path: …; } */
+/* html[data-theme="$slug"] .btn { clip-path: …; } */
 
 /* Optional: per-variant tweaks belong on the variant selector. */
-/* html[data-theme="$slug"] .ftl-btn-danger { --ftl-btn-border: …; } */
+/* html[data-theme="$slug"] .btn-danger { --btn-border: …; } */
 EOF
 
 # check.sh fails a theme without a README carrying a Requires: badge, and
@@ -107,7 +107,7 @@ cat > "$dir/README.md" <<'EOF'
 
 > <one line: the look this theme reproduces>
 
-**Requires: L0** — tokens only; change to L1 once the theme sets `--ftl-app-*`
+**Requires: L0** — tokens only; change to L1 once the theme sets `--app-*`
 layout properties. See CONTRACT.md "Adoption levels".
 
 ## What this theme is trying to achieve
@@ -139,7 +139,7 @@ cat > "$dir/icons.svg" <<EOF
      (an override must replace an id that exists in the generic set). See
      themes/aqua/icons.svg or themes/lego-classic/icons.svg for worked
      examples of the convention: viewBox="0 0 24 24", stroke-based paths
-     using currentColor, fill/stroke-width driven by the ftl-icon-* tokens
+     using currentColor, fill/stroke-width driven by the icon-* tokens
      unless a specific stroke-width is being set deliberately. -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <defs>

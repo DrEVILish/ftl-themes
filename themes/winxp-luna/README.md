@@ -2,7 +2,7 @@
 
 > The default Luna Blue desktop — glossy blue chrome, green go, rounded windows.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -18,7 +18,7 @@ someone says "Windows XP."
    filled surface — the title bar, buttons, the nav bar — is what separates
    Luna from the flat Windows 95 look it replaced. Losing the highlight
    line at the top of the title bar is the single biggest tell.
-2. **Round, never sharp.** `--ftl-radius: 8px`, and windows themselves get
+2. **Round, never sharp.** `--radius: 8px`, and windows themselves get
    rounded top corners. XP retired square dialogs on purpose.
 3. **Blue chrome, tan content.** The title bar and taskbar are the vivid
    royal blue (`#0054e3`); the actual working area is the calmer
@@ -63,9 +63,9 @@ Luna background filling the well between them.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

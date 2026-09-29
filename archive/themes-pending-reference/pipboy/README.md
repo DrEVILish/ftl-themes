@@ -2,7 +2,7 @@
 
 > Post-apocalyptic monochrome phosphor green with scanlines.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -14,7 +14,7 @@ the screen.
 
 1. **One hue, many brightnesses.** Every colour role (text, accent, success,
    even danger where possible) is a shade of the same phosphor green;
-   `--ftl-danger`/`--ftl-warning` are the only deliberate departures,
+   `--danger`/`--warning` are the only deliberate departures,
    reserved for genuine hazard states.
 2. **Outline buttons, not fills.** A Pip-Boy button is drawn, not painted.
 3. **Scanlines are decoration, not motion.** A static repeating gradient,
@@ -24,13 +24,13 @@ the screen.
 
 ## Signature details
 
-- Scanlines are a fixed `::after` overlay on `.ftl-app` at `z-index: 999`
+- Scanlines are a fixed `::after` overlay on `.app` at `z-index: 999`
   with `pointer-events: none` — a 1px-on/2px-off repeating gradient, so
   they never intercept a click and never need JavaScript.
 - All body text carries a faint `text-shadow: 0 0 3px` phosphor glow, not
   just headings — the whole screen glows a little, not just the display
   face.
-- `--ftl-success` and `--ftl-accent` are the *same* green — this theme has
+- `--success` and `--accent` are the *same* green — this theme has
   no separate "success" hue at all, only the one phosphor color and the
   two genuine hazard departures (danger amber, warning yellow).
 
@@ -47,9 +47,9 @@ green rule, content filling the frame, scanlines over the whole shell.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

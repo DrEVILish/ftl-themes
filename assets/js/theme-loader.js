@@ -7,20 +7,20 @@
  */
 (function () {
   var params = new URLSearchParams(location.search);
-  var link = document.getElementById("ftl-theme-link");
-  var picker = document.getElementById("ftl-theme-picker");
+  var link = document.getElementById("theme-link");
+  var picker = document.getElementById("theme-picker");
   var known = null; // slugs from dist/themes.json; null until it loads
 
-  // Keeps every .ftl-icon's <use> pointed at the current theme's merged
+  // Keeps every .icon's <use> pointed at the current theme's merged
   // icon sprite (dist/icons/<slug>.svg — generic icons plus that theme's
   // own overrides, see CONTRACT.md "Icon system"). The markup's own
   // assets/icons/icons.svg href is only the pre-JS fallback; this is what
   // actually swaps in a theme's custom icon shapes. Exposed on window so
-  // a page that builds .ftl-icon markup after the fact (e.g. a demo that
+  // a page that builds .icon markup after the fact (e.g. a demo that
   // populates an icon-pack grid from a fetch) can re-run it once its own
   // markup exists.
   function applyIcons(slug) {
-    var uses = document.querySelectorAll(".ftl-icon use");
+    var uses = document.querySelectorAll(".icon use");
     for (var i = 0; i < uses.length; i++) {
       var use = uses[i];
       var href = use.getAttribute("href") || use.getAttribute("xlink:href") || "";
@@ -31,7 +31,7 @@
       if (use.hasAttribute("xlink:href")) use.setAttribute("xlink:href", target);
     }
   }
-  window.ftlApplyIconTheme = applyIcons;
+  window.applyIconTheme = applyIcons;
 
   // A slug is only ever spliced into a path, so accept nothing but a
   // known theme name: ?theme=../x or a stale localStorage value must not
@@ -49,7 +49,7 @@
     if (link) link.href = "dist/" + slug + ".css";
     applyIcons(slug);
     if (persist) {
-      try { localStorage.setItem("ftl-example-theme", slug); } catch (e) {}
+      try { localStorage.setItem("example-theme", slug); } catch (e) {}
     }
     if (picker) picker.value = slug;
   }
@@ -61,7 +61,7 @@
     if (!list.length) throw new Error("themes.json is empty");
     known = list.map(function (t) { return t.slug; });
     var stored;
-    try { stored = localStorage.getItem("ftl-example-theme"); } catch (e) {}
+    try { stored = localStorage.getItem("example-theme"); } catch (e) {}
     var initial = [params.get("theme"), stored, known[0]].filter(valid)[0];
     if (picker) {
       picker.textContent = "";

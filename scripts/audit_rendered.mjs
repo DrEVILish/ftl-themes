@@ -35,7 +35,7 @@ let below = 0, broken = 0;
 
 for (const theme of names) {
   await page.goto(`${base}/example.html?theme=${theme}&embed=1`, { waitUntil: 'networkidle' });
-  await page.addStyleTag({ content: '*{transition:none!important;animation:none!important} .ftl-toast-region{position:static!important}' });
+  await page.addStyleTag({ content: '*{transition:none!important;animation:none!important} .toast-region{position:static!important}' });
   const els = await page.evaluate(() => {
     const out = [];
     for (const e of document.querySelectorAll('body *')) {

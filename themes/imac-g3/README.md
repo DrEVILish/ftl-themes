@@ -2,7 +2,7 @@
 
 > Translucent ribbed plastic in Bondi Blue, with Blueberry/Grape/Tangerine variants.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -18,14 +18,14 @@ sense that the interface is a physical object you could pick up.
 2. **Every colorway is the same shape.** The plastic case comes in four
    colours; the case itself never changes. Only tokens change between
    variants — gloss, radius and pinstripe rules are shared once.
-3. **Big, round, friendly.** `--ftl-radius: 1.3rem`. Nothing here is sharp.
+3. **Big, round, friendly.** `--radius: 1.3rem`. Nothing here is sharp.
 4. **White text on saturated colour**, always — this is a light-on-dark
    theme regardless of which fruit colour is active.
 
 ## Signature details
 
 - The pinstripe (`repeating-linear-gradient` white-at-12% every 4px) sits
-  on both `.ftl-panel` and `.ftl-app-bar` — it's a case texture, not a
+  on both `.panel` and `.app-bar` — it's a case texture, not a
   panel-only decoration.
 - Every gloss gradient is three stops (bright highlight → faint → the base
   surface colour), never a plain two-stop fade — that middle fade-out is
@@ -70,9 +70,9 @@ on a radial vignette of its own colour.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

@@ -8,10 +8,10 @@ in the repo needs to change.
 ## 0. Read the one rule first
 
 `CONTRACT.md` § "How a theme overrides a component". Set component look via
-`--ftl-<component>-*` properties **at root scope**; never declare
+`--<component>-*` properties **at root scope**; never declare
 `background`/`color` on a base component selector like
-`html[data-theme="x"] .ftl-btn`, because that outranks core's
-`.ftl-btn-danger`/`-success` rules and silently erases them — a delete
+`html[data-theme="x"] .btn`, because that outranks core's
+`.btn-danger`/`-success` rules and silently erases them — a delete
 button ends up looking identical to a normal one. `scripts/check.sh`
 enforces this, but knowing why saves a confusing detour.
 
@@ -28,12 +28,12 @@ header's `Theme-Name:` and `Description:` too — the build reads them into
 
 ## 2. Fill in the tokens
 
-Set all the required `--ftl-*` tokens. A theme that sets *only* tokens and
+Set all the required `--*` tokens. A theme that sets *only* tokens and
 overrides nothing else already looks coherent, because core's structural
 rules read every token — component overrides are for when that isn't enough
 to capture the reference look.
 
-Pay attention to `--ftl-on-accent` / `-on-danger` / `-on-success`: these are
+Pay attention to `--on-accent` / `-on-danger` / `-on-success`: these are
 the text colors on top of those fills, and they must hit 4.5:1 against
 them. If your accent is mid-tone you'll usually need white or near-black,
 not the page background. The lint computes this for you.
@@ -50,16 +50,16 @@ Pick a worked reference close to what you're building:
 Roughly in the order themes tend to need them:
 1. Page background (gradient, grid, texture) — on `html[data-theme="…"]`.
 2. Heading voice (case, tracking, glow).
-3. Button look — via `--ftl-btn-*` at root; shape properties
+3. Button look — via `--btn-*` at root; shape properties
    (`border-radius`, `clip-path`, bevel `border-color`) are fine directly
-   on `.ftl-btn`.
-4. Surfaces — `--ftl-panel-bg`, `--ftl-panel-shadow`, `--ftl-modal-*`.
-5. Table header/rows — `--ftl-table-head-*`, `--ftl-row-*`.
-6. Nav/tabs — `--ftl-nav-*`, `--ftl-tab-*`.
-7. The htmx indicator — `--ftl-indicator-fg` / `-track`, so pending states
+   on `.btn`.
+4. Surfaces — `--panel-bg`, `--panel-shadow`, `--modal-*`.
+5. Table header/rows — `--table-head-*`, `--row-*`.
+6. Nav/tabs — `--nav-*`, `--tab-*`.
+7. The htmx indicator — `--indicator-fg` / `-track`, so pending states
    look like they belong to the theme.
 
-Never edit `core/ftl-core.css` or another theme's file; authoring is
+Never edit `core/core.css` or another theme's file; authoring is
 strictly additive.
 
 ## 4. Build and check
@@ -82,7 +82,7 @@ verify the semantic buttons still read as primary/danger/success.
 
 ## 5. Give it a layout
 
-A theme is a layout as much as a palette. Set the `--ftl-app-*` properties
+A theme is a layout as much as a palette. Set the `--app-*` properties
 so that switching to your theme visibly re-arranges the shell — bar height
 and radius, whether a decorative rail appears and how it is painted, how
 the content is inset, what the status strip looks like. Compare
@@ -111,7 +111,7 @@ Any animation must either be opted in under
 `@media (prefers-reduced-motion: no-preference)` (see the Matrix heading
 flicker) or turned off in a paired `reduce` block. Never let an animation
 be the only carrier of state — pair it with color and shape, the way
-`.ftl-status` and the table row states do.
+`.status` and the table row states do.
 
 ## Stay offline-safe: no remote URLs, and vendor fonts you actually use
 
@@ -142,9 +142,9 @@ fallback for first visits:
 ```html
 <script>
   (function () {
-    var t = localStorage.getItem("ftl-theme") || "blue-future";
+    var t = localStorage.getItem("theme") || "blue-future";
     document.documentElement.dataset.theme = t;
-    document.getElementById("ftl-theme-link").href = "/static/themes/" + t + ".css";
+    document.getElementById("theme-link").href = "/static/themes/" + t + ".css";
   })();
 </script>
 ```

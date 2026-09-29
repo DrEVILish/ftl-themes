@@ -2,7 +2,7 @@
 
 > Black-and-amber data density — every pixel is monospace.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -13,19 +13,19 @@ is the catalog's extreme-density stress test as much as a period theme.
 
 ## Core values
 
-1. **Everything is monospace.** `--ftl-font` and `--ftl-font-mono` are the
+1. **Everything is monospace.** `--font` and `--font-mono` are the
    same stack — headings, labels, buttons, body text, not just numeric
    readouts. A proportional-font heading next to monospace data is the
    single biggest tell this isn't authentic.
-2. **Amber is the workhorse, yellow is the function key.** `--ftl-text` is
-   amber; `--ftl-accent` is a brighter function-key yellow reserved for
+2. **Amber is the workhorse, yellow is the function key.** `--text` is
+   amber; `--accent` is a brighter function-key yellow reserved for
    interactive elements. Losing that split makes everything read as one
    flat color.
-3. **Cyan is the second data category.** `--ftl-accent-2` exists so a
+3. **Cyan is the second data category.** `--accent-2` exists so a
    second kind of information (a different data feed, an idle state) can
    be color-coded distinctly from the primary amber — real terminals code
    meaning into color, never decoration.
-4. **Density over chrome.** `--ftl-density: 0.7` — the tightest theme in
+4. **Density over chrome.** `--density: 0.7` — the tightest theme in
    the catalog on purpose. No decorative rail, minimal padding, a data
    wall rather than a spacious dashboard.
 5. **Zero radius, zero gloss.** Every corner is square; every fill is
@@ -56,9 +56,9 @@ reads as another data row rather than a conventional status bar.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

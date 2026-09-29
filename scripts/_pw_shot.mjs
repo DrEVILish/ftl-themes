@@ -33,7 +33,7 @@ const page = await browser.newPage({ viewport: VIEWPORT });
 // so repeated runs of the same markup produce byte-identical screenshots.
 const FREEZE_CSS = '*{animation:none!important;transition:none!important;caret-color:transparent!important;scroll-behavior:auto!important}';
 
-// theme-loader.js sets html[data-theme] and the #ftl-theme-link href
+// theme-loader.js sets html[data-theme] and the #theme-link href
 // synchronously, but the stylesheet itself loads async — and under the
 // dev-only ThreadingHTTPServer, occasional connection hiccups can leave a
 // page rendered with no theme CSS at all (or a still-loading custom font,
@@ -48,9 +48,12 @@ async function waitForThemeReady(pw, slug, timeout = 5000) {
   try {
     await pw.waitForFunction((slug) => {
       if (document.documentElement.dataset.theme !== slug) return false;
-      const link = document.getElementById('ftl-theme-link');
+      const link = document.getElementById('theme-link');
       if (!link || !link.sheet) return false;
-      try { if (link.sheet.cssRules.length < 3) return false; } catch (e) { return false; }
+      // Count nested rules too: a bundle is one `@layer ui { ... }` block, so the
+      // top-level list has a single entry however much CSS it holds.
+      const count = (rules) => Array.from(rules).reduce((n, r) => n + 1 + (r.cssRules ? count(r.cssRules) : 0), 0);
+      try { if (count(link.sheet.cssRules) < 3) return false; } catch (e) { return false; }
       return document.fonts.status === 'loaded';
     }, slug, { timeout, polling: 100 });
     return true;
@@ -71,7 +74,7 @@ for (const slug of themes) {
       for (let attempt = 0; attempt < 3 && !ready; attempt++) {
         await page.goto(url, { waitUntil: 'networkidle' });
         ready = await waitForThemeReady(page, slug);
-        if (!ready && process.env.FTL_SHOT_DEBUG) console.error(`retrying ${slug} ${pageName} (attempt ${attempt + 1})`);
+        if (!ready && process.env.SHOT_DEBUG) console.error(`retrying ${slug} ${pageName} (attempt ${attempt + 1})`);
       }
       await page.addStyleTag({ content: FREEZE_CSS });
       await page.waitForTimeout(30);

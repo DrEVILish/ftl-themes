@@ -32,16 +32,16 @@ authoring workflow. Each entry names the reference to design against.
     headings only (never body text — legibility), glass-bottle curve
     motif on panel corners.
 12. **Cassette Futurism** — 2001/Alien-console retro-futurism: beige
-    plastic, LED-segment numeric displays (`--ftl-font-mono` + a
+    plastic, LED-segment numeric displays (`--font-mono` + a
     seven-segment-style font if available), chunky physical-switch
-    skeuomorphism reusing the `.ftl-switch` component with a toggle-switch
+    skeuomorphism reusing the `.switch` component with a toggle-switch
     look instead of a pill.
 13. ~~**Vaporwave / Outrun Synthwave**~~ (promoted from Batch 3) — shipped
     as `vaporwave` (magenta/cyan gradient chrome text on deep purple,
     distinct from `tron`'s clean grid by leaning glow/gradient).
 14. ~~**Bloomberg Terminal**~~ (promoted from Batch 3) — shipped as
-    `bloomberg` (black/amber monospace, `--ftl-density: 0.7` as an
-    intentional extreme-density stress test for `.ftl-table`).
+    `bloomberg` (black/amber monospace, `--density: 0.7` as an
+    intentional extreme-density stress test for `.table`).
 
 ### Open question: iOS era
 

@@ -2,7 +2,7 @@
 
 > Pitch-black club aesthetic with toxic neon green, hot purple and vinyl gloss.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -12,8 +12,8 @@ than as a HUD's telemetry glow.
 
 ## Core values
 
-1. **Purple structures, green signals.** `--ftl-flare` (purple) is the
-   theme's borders, rules and headings; `--ftl-accent` (toxic green) is
+1. **Purple structures, green signals.** `--flare` (purple) is the
+   theme's borders, rules and headings; `--accent` (toxic green) is
    reserved for primary/interactive/success — the two must not swap roles.
 2. **Black vinyl gloss, not matte.** Panels and buttons carry a subtle
    top-lit gradient — plastic under a club light, not flat paint.
@@ -32,7 +32,7 @@ than as a HUD's telemetry glow.
 - Primary buttons' hover glow (`0 0 14px rgba(214, 31, 255, 0.6)`) is
   purple even though the button fill is green — the bloom always reads as
   the *structural* colour, never the signal one.
-- Table headers and rules pick up `--ftl-flare` (purple), not the accent —
+- Table headers and rules pick up `--flare` (purple), not the accent —
   structure stays purple everywhere, including inside components.
 - A jagged sawtooth trim (a repeating 45°/-45° gradient pair, the classic
   "torn ticket edge" CSS technique) runs along the app bar, nav, and
@@ -66,9 +66,9 @@ content area carrying the same vinyl-gloss panels throughout.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

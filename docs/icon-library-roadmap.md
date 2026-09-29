@@ -4,8 +4,8 @@
 
 - `assets/icons/icons.svg` — **1,020 generic icons**, stroke-based outline
   style: 24x24 `viewBox`, `stroke="currentColor"`, `fill="none"` by
-  default, sized/weighted entirely through `--ftl-icon-fill` and
-  `--ftl-icon-stroke-width` (`core/ftl-core.css`, `.ftl-icon`). No per-icon
+  default, sized/weighted entirely through `--icon-fill` and
+  `--icon-stroke-width` (`core/core.css`, `.icon`). No per-icon
   color or stroke-width is ever baked into a symbol — that's what lets one
   sprite reskin across 22 very different themes with zero per-theme icon
   variants required. The original 100 are in-house line drawings; the
@@ -280,7 +280,7 @@ contributors never conflate the two:
 | License model | This repo's own MIT-style license (or verified permissive upstream, tracked in `docs/icon-license-research.md`) | Each mark stays the property of its own owner; not covered by this repo's license at all |
 | Per-theme variants | Yes — `themes/<slug>/icons.svg` overrides, merged by `scripts/build_icons.py` | No — a brand's logo must stay visually unmodified per that brand's own guidelines; there is no themed reskinning |
 | Build integration | Bundled into every theme's `dist/icons/<slug>.svg` automatically | **Not** wired into `scripts/build.sh` at all — opt-in, explicitly imported per consuming app via `assets/logos/logos.css` |
-| CSS helper | `.ftl-icon` (`core/ftl-core.css`) | `.ftl-logo` (`assets/logos/logos.css`) — separate namespace, no shared tokens |
+| CSS helper | `.icon` (`core/core.css`) | `.logo` (`assets/logos/logos.css`) — separate namespace, no shared tokens |
 | Governance | This roadmap + `docs/icon-license-research.md` | `assets/logos/README.md` + `assets/logos/manifest.json` |
 
 See `assets/logos/README.md` for the full rules (never fabricate a

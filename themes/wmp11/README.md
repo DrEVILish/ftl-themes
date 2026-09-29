@@ -2,7 +2,7 @@
 
 > Black glass with a cool blue glow — WMP11's signature skin.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -18,7 +18,7 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
    bar — the player is lit from inside.
 3. **Cool blue only.** `#3fa9f5`/`#7fd1ff`. Warmth anywhere reads as a
    different era.
-4. **Generously rounded.** `--ftl-radius: 0.8rem` — glass panes have soft
+4. **Generously rounded.** `--radius: 0.8rem` — glass panes have soft
    edges, unlike WinAmp's hard chassis.
 5. **Restraint.** Vista glass is easy to overdo; the bloom should be
    noticeable only in motion and on hover.
@@ -57,9 +57,9 @@ floating over the radial backdrop.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

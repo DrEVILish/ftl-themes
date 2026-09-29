@@ -2,7 +2,7 @@
 
 > Sterile laboratory off-whites and dark greys, accented by testing-chamber blue and orange.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -14,7 +14,7 @@ otherwise clinical space.
 ## Core values
 
 1. **The first light theme in this batch of clinical calm.** Off-white,
-   not stark white — `--ftl-bg`/`--ftl-surface` sit a shade apart so
+   not stark white — `--bg`/`--surface` sit a shade apart so
    surfaces read as physical panels, not a blank page.
 2. **Blue is primary/interactive; orange is the second portal, reserved
    for destructive actions** — a direct, deliberate swap of the usual
@@ -27,7 +27,7 @@ otherwise clinical space.
 
 ## Signature details
 
-- Danger buttons fill with the portal orange (`--ftl-accent-2`), not red —
+- Danger buttons fill with the portal orange (`--accent-2`), not red —
   the one place this theme breaks from every other theme's convention on
   purpose, with dark text since orange is too light for white to pass.
 - Headings are muted grey, `font-weight: 700`, and never uppercase — a
@@ -49,9 +49,9 @@ the panel sits in the room rather than filling it.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

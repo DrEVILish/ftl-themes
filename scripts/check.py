@@ -6,17 +6,17 @@ Every rule corresponds to a bug that actually shipped once:
   tokens     a theme omitting a token silently inherited core's fallback,
              which looked plausible on dark themes and invisible on light.
   variants   a theme declaring background/color on a BASE component selector
-             outranks core's unscoped variant rules (html[data-theme] .ftl-btn
-             is 0,2,1 vs .ftl-btn-danger at 0,1,0), so danger/success buttons
-             silently lost their fill. Themes must set --ftl-<comp>-* at root
+             outranks core's unscoped variant rules (html[data-theme] .btn
+             is 0,2,1 vs .btn-danger at 0,1,0), so danger/success buttons
+             silently lost their fill. Themes must set --<comp>-* at root
              scope instead: a declaration on the element always beats an
              inherited one, so variants keep winning.
   focus      a theme setting `outline: none` left controls with no visible
              keyboard focus indicator.
   important  `* { box-shadow: none !important }` also erased the table's
              is-active row marker.
-  contrast   filled controls painted with --ftl-bg as the foreground fail on
-             light palettes; --ftl-on-* exist to prevent it. Soft checks
+  contrast   filled controls painted with --bg as the foreground fail on
+             light palettes; --on-* exist to prevent it. Soft checks
              (page-backdrop text, AAA target, accent legibility) are skipped
              for themes whose README documents a `contrast-exempt:` rationale;
              the hard 4.5:1 floor never is.
@@ -30,7 +30,7 @@ Every rule corresponds to a bug that actually shipped once:
              compare mode surfaces, and 11 themes shipped without it before
              a v3.5.1 pass caught the gap.
   layout     a theme is a layout as much as a palette; one that sets no
-             --ftl-app-* property renders in the default arrangement.
+             --app-* property renders in the default arrangement.
   motion     unprompted infinite animation plays for users who asked the OS
              to stop it; gate it behind prefers-reduced-motion: no-preference
              (the matrix pattern), never behind nothing.
@@ -47,7 +47,7 @@ Every rule corresponds to a bug that actually shipped once:
              merges by id.
   color-scheme  without it, UA-owned chrome (scrollbars, native date/time
              pickers, autofill) renders for the wrong palette under every
-             dark theme, even though every .ftl-* control is themed
+             dark theme, even though every control is themed
              correctly. Declaring it changes no behavior — themes still
              don't respond to prefers-color-scheme, by design.
   remote-url a theme or core file referencing a remote url()/@import makes
@@ -83,21 +83,21 @@ REQUIRED_TOKENS = [
 
 # Base component selectors: a theme must not set these properties on them.
 BASE_COMPONENTS = [
-    "ftl-btn", "ftl-panel", "ftl-modal", "ftl-dropdown", "ftl-input",
-    "ftl-select", "ftl-textarea", "ftl-badge", "ftl-nav-item", "ftl-tab",
+    "btn", "panel", "modal", "dropdown", "input",
+    "select", "textarea", "badge", "nav-item", "tab",
     # v3.4.0 additions: same base-rule-plus-custom-property-variant
-    # architecture as .ftl-btn, so the same cascade bug applies to them.
-    "ftl-toast", "ftl-context-menu", "ftl-dropzone", "ftl-card",
-    "ftl-alert", "ftl-avatar", "ftl-popover", "ftl-pagination-item",
-    "ftl-breadcrumb-item",
+    # architecture as .btn, so the same cascade bug applies to them.
+    "toast", "context-menu", "dropzone", "card",
+    "alert", "avatar", "popover", "pagination-item",
+    "breadcrumb-item",
     # v3.14.0 additions: same reasoning — a theme must reach these through
-    # --ftl-<comp>-* tokens at root scope, never background/color on the
+    # --<comp>-* tokens at root scope, never background/color on the
     # base selector, or variants (.is-active, attached states) lose.
-    "ftl-drawer", "ftl-input-group", "ftl-list",
+    "drawer", "input-group", "list",
     # v3.14.0 additions, continued: same reasoning (carousel dots/arrows,
     # scrollspy .is-active, nav-collapse open state, taskbar start/task).
-    "ftl-carousel", "ftl-scrollspy-link", "ftl-nav-collapse",
-    "ftl-taskbar", "ftl-taskbar-start", "ftl-taskbar-task", "ftl-taskbar-tray",
+    "carousel", "scrollspy-link", "nav-collapse",
+    "taskbar", "taskbar-start", "taskbar-task", "taskbar-tray",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 
@@ -123,10 +123,10 @@ def in_gate(context, gate):
     return any(gate.search(p) for p in context)
 
 
-def ftl_decls(body):
-    """{name: value} for the --ftl-* declarations in a block, name unprefixed."""
-    return {n[len("--ftl-"):]: v for n, v in cssparse.declarations(body)
-            if n.startswith("--ftl-")}
+def token_decls(body):
+    """{name: value} for the --* declarations in a block, name unprefixed."""
+    return {n[len("--"):]: v for n, v in cssparse.declarations(body)
+            if n.startswith("--")}
 
 
 def variant_of(selector):
@@ -161,7 +161,7 @@ def resolve(tokens, value, depth=0):
     c = build_manifest.parse_color(value)
     if c is not None:
         return c
-    m = re.match(r"^var\(\s*--ftl-([a-z0-9-]+)", value)
+    m = re.match(r"^var\(\s*--([a-z0-9-]+)", value)
     if m and m.group(1) in tokens:
         return resolve(tokens, tokens[m.group(1)], depth + 1)
     return None
@@ -184,8 +184,8 @@ def check_contrast(theme, tokens, exempt):
         # headers, tabs), so it gets the full AA floor, on both surfaces.
         ("muted text", "muted", "surface", 4.5, True),
         ("muted text on surface-2", "muted", "surface-2", 4.5, True),
-        # State colors used as TEXT (.ftl-status, .ftl-stat-trend, colored
-        # badges, danger menu items) read --ftl-<state>-text, falling back
+        # State colors used as TEXT (.status, .stat-trend, colored
+        # badges, danger menu items) read --<state>-text, falling back
         # to the fill color. A fill that works behind a button is often
         # unreadable as small text on the surface itself.
         ("success text", "success-text|success", "surface", 4.5, True),
@@ -212,7 +212,7 @@ def check_contrast(theme, tokens, exempt):
         fg = over(fg, bg)
         ratio = contrast(fg, bg)
         if ratio < floor:
-            msg = (f"{label}: --ftl-{fg_tok} {fg[:3]} on --ftl-{bg_tok} {bg[:3]} = "
+            msg = (f"{label}: --{fg_tok} {fg[:3]} on --{bg_tok} {bg[:3]} = "
                    f"{ratio:.1f}:1 (floor {floor}:1)")
             (fail if hard else warn)(theme, "contrast", msg)
 
@@ -220,10 +220,10 @@ def check_contrast(theme, tokens, exempt):
 def color_stops(tokens, value):
     """Every resolvable color in a (possibly gradient) background value."""
     stops = []
-    for m in re.finditer(r"#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|var\(--ftl-[a-z0-9-]+\)", value):
+    for m in re.finditer(r"#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|var\(--[a-z0-9-]+\)", value):
         c = resolve(tokens, m.group(0))
         if c is None and m.group(0).startswith("var("):
-            name = m.group(0)[len("var(--ftl-"):-1]
+            name = m.group(0)[len("var(--"):-1]
             inner = tokens.get(name, "")
             stops.extend(color_stops(tokens, inner) if inner and inner != value else [])
         elif c:
@@ -234,51 +234,51 @@ def color_stops(tokens, value):
 def check_app_bar(theme, tokens, css, variant=None):
     """Nav text in the app bar vs every color stop of the bar background.
 
-    .ftl-nav-brand/-item read --ftl-nav-*-fg, which themes tune for their
+    .nav-brand/-item read --nav-*-fg, which themes tune for their
     content area; a bar painted in the accent (LCARS, XP, Material) needs
-    those re-pointed in a `.ftl-app-bar` scoped block or the brand goes
-    invisible. --ftl-app-bar-fg does NOT reach them.
+    those re-pointed in a `.app-bar` scoped block or the brand goes
+    invisible. --app-bar-fg does NOT reach them.
 
     For a palette variant, tokens are the variant-merged ones, and both the
-    theme's own `.ftl-app-bar` block and the variant's apply — the variant's
+    theme's own `.app-bar` block and the variant's apply — the variant's
     last, since its extra attribute selector outranks the base one. Another
-    variant's `.ftl-app-bar` block never does: the old any-selector-ending-
-    in-.ftl-app-bar match let the last variant's bar tokens stand in for the
+    variant's `.app-bar` block never does: the old any-selector-ending-
+    in-.app-bar match let the last variant's bar tokens stand in for the
     default palette."""
     if not any(k.startswith("app-") for k in tokens):
-        return  # not shell-aware; the bar falls back to --ftl-nav-bg
+        return  # not shell-aware; the bar falls back to --nav-bg
     scoped = dict(tokens)
     bar_rules = [r for r in cssparse.rules(css)
-                 if r.selector.endswith(".ftl-app-bar") and cssparse.unconditional(r.context)]
+                 if r.selector.endswith(".app-bar") and cssparse.unconditional(r.context)]
     for wanted in (None, variant) if variant else (None,):
         for r in bar_rules:
             if variant_of(r.selector) == wanted:
-                scoped.update(ftl_decls(r.body))
+                scoped.update(token_decls(r.body))
     bar_value = scoped.get("app-bar-bg") or scoped.get("nav-bg") or scoped.get("surface", "")
     base = resolve(tokens, tokens.get("bg", "")) or (0, 0, 0, 1.0)
     stops = [over(s, base) for s in color_stops(scoped, bar_value)]
     if not stops:
         return
     for label, tok, default in (("brand", "nav-brand-fg", "accent"), ("nav item", "nav-item-fg", "muted")):
-        fg = resolve(scoped, scoped.get(tok, f"var(--ftl-{default})"))
+        fg = resolve(scoped, scoped.get(tok, f"var(--{default})"))
         if not fg:
             continue
         worst = min(contrast(over(fg, s), s) for s in stops)
         if worst < 4.5:
             fail(theme, "contrast",
-                 f"app-bar {label}: --ftl-{tok} {fg[:3]} is {worst:.1f}:1 against the "
-                 f"bar background (floor 4.5:1). --ftl-app-bar-fg does not reach nav "
-                 f"text — re-point --ftl-{tok} in a `.ftl-app-bar` scoped block.")
+                 f"app-bar {label}: --{tok} {fg[:3]} is {worst:.1f}:1 against the "
+                 f"bar background (floor 4.5:1). --app-bar-fg does not reach nav "
+                 f"text — re-point --{tok} in a `.app-bar` scoped block.")
 
-    # The status strip's own text (--ftl-app-status-fg) on its background.
+    # The status strip's own text (--app-status-fg) on its background.
     status_stops = [over(s, base) for s in color_stops(
         tokens, tokens.get("app-status-bg") or tokens.get("surface", ""))]
-    fg = resolve(tokens, tokens.get("app-status-fg", "var(--ftl-muted)"))
+    fg = resolve(tokens, tokens.get("app-status-fg", "var(--muted)"))
     if status_stops and fg:
         worst = min(contrast(over(fg, s), s) for s in status_stops)
         if worst < 4.5:
             fail(theme, "contrast",
-                 f"app-status text: --ftl-app-status-fg {fg[:3]} is {worst:.1f}:1 "
+                 f"app-status text: --app-status-fg {fg[:3]} is {worst:.1f}:1 "
                  f"against the status strip background (floor 4.5:1)")
 
 
@@ -289,7 +289,7 @@ for path in sorted(glob.glob("themes/*/theme.css")):
 
     # Root-scope tokens only, merged in source order as the cascade would.
     # Reading every declaration in the file (first one wins) let a value
-    # scoped to one element, e.g. a `.ftl-app-status` override, stand in for
+    # scoped to one element, e.g. a `.app-status` override, stand in for
     # the theme-wide token.
     root_sel = f'html[data-theme="{theme}"]'
     # A root block inside @media/@supports applies only sometimes, so it is
@@ -298,11 +298,11 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     tokens = {}
     for r in theme_rules:
         if r.selector == root_sel and cssparse.unconditional(r.context):
-            tokens.update(ftl_decls(r.body))
+            tokens.update(token_decls(r.body))
 
     missing = [t for t in REQUIRED_TOKENS if t not in tokens]
     if missing:
-        fail(theme, "tokens", f"missing required token(s): {', '.join('--ftl-' + t for t in missing)}")
+        fail(theme, "tokens", f"missing required token(s): {', '.join('--' + t for t in missing)}")
 
     # UA-owned chrome (scrollbars, native pickers, autofill) stays light
     # under a dark theme unless told otherwise — declaring color-scheme
@@ -363,13 +363,13 @@ for path in sorted(glob.glob("themes/*/theme.css")):
                              f"--{comp}-bg / --{comp}-fg at root scope instead.")
         if re.match(r"(none|0)\b", props.get("outline", "")) and "focus" in sel:
             fail(theme, "focus",
-                 f"`{sel}` removes the focus outline. Recolor via --ftl-focus or add a "
-                 f"glow via --ftl-focus-ring instead; never remove the indicator.")
+                 f"`{sel}` removes the focus outline. Recolor via --focus or add a "
+                 f"glow via --focus-ring instead; never remove the indicator.")
         if (last in ("*", "*::before", "*::after") and "!important" in decls
                 and not in_gate(rule.context, REDUCE_GATE)):
             fail(theme, "important",
                  f"`{sel}` uses !important on a universal selector — it also erases "
-                 f"state indicators like .ftl-table tr.is-active's marker.")
+                 f"state indicators like .table tr.is-active's marker.")
         if (any(re.search(r"\binfinite\b", props.get(p, ""))
                 for p in ("animation", "animation-iteration-count"))
                 and not in_gate(rule.context, MOTION_GATE)):
@@ -395,8 +395,8 @@ for path in sorted(glob.glob("themes/*/theme.css")):
                 warn(theme, "docs", f"README.md has no '{heading}' section")
 
     # Contrast floor for filled controls, using the theme's own token values.
-    # Text is checked against --ftl-surface, the substrate it actually sits
-    # on (panels, cards, modals). --ftl-bg can legitimately be a decorative
+    # Text is checked against --surface, the substrate it actually sits
+    # on (panels, cards, modals). --bg can legitimately be a decorative
     # backdrop that never carries body text — Windows 95's teal desktop is
     # the canonical case — so failing text against it would be wrong; it's
     # reported as a warning instead. The soft rows (warn-level floors: the
@@ -416,7 +416,7 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     for r in theme_rules:
         v = variant_of(r.selector)
         if v and r.selector == f'{root_sel}[data-variant="{v}"]' and cssparse.unconditional(r.context):
-            variants.setdefault(v, dict(tokens)).update(ftl_decls(r.body))
+            variants.setdefault(v, dict(tokens)).update(token_decls(r.body))
 
     check_app_bar(theme, tokens, css)
     for v, vtokens in variants.items():
@@ -426,17 +426,18 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     # Coverage: report components the theme never touches, so an author can
     # see what they skipped. Informational, not a failure — token-only
     # theming is a legitimate and encouraged starting point.
-    styled = {c for r in theme_rules for c in re.findall(r"\.(ftl-[\w-]+)", r.selector)}
-    proped = {m.group(1) for m in re.finditer(r"--ftl-(btn|panel|modal|input|nav|table|tab|badge|progress|slider|switch|dropdown)\b", body)}
+    styled = {c for r in theme_rules
+              for c in re.findall(r"\.([A-Za-z][\w-]*)", re.sub(r"\[[^\]]*\]", "", r.selector))}
+    proped = {m.group(1) for m in re.finditer(r"--(btn|panel|modal|input|nav|table|tab|badge|progress|slider|switch|dropdown)\b", body)}
     if not styled and not proped:
         warn(theme, "coverage", "styles no components at all beyond tokens")
 
     # A theme is a layout as much as a palette — switching to one should move
-    # the furniture, not only recolor it. Themes that set no --ftl-app-*
+    # the furniture, not only recolor it. Themes that set no --app-*
     # property render in the shell's default arrangement, which is legitimate
     # but usually means the layout pass was forgotten.
-    if not re.search(r"--ftl-app-[\w-]+\s*:", body):
-        warn(theme, "layout", "defines no --ftl-app-* layout personality — the app "
+    if not re.search(r"--app-[\w-]+\s*:", body):
+        warn(theme, "layout", "defines no --app-* layout personality — the app "
                               "shell will look identical to every other such theme")
 
     if "requires:" not in readme_text.lower():
@@ -474,6 +475,19 @@ for path in sorted(glob.glob("themes/*/theme.css")):
                      f"exists in assets/icons/icons.svg")
         except ET.ParseError as e:
             fail(theme, "icons", f"{icon_override_path} is not well-formed XML: {e}")
+
+# v4 dropped the `ftl-` prefix from class names, custom properties, keyframes
+# and ids. Nothing that ships may reintroduce it (`ftl-themes`, the product
+# name, is the one legitimate occurrence).
+LEGACY_RE = re.compile(r"(?<![A-Za-z0-9_])(?:--)?ftl-(?!themes)[A-Za-z0-9]")
+for path in sorted(glob.glob("core/*.css") + glob.glob("themes/*/*.css")
+                   + glob.glob("themes/*/icons.svg") + glob.glob("assets/js/*.js")
+                   + glob.glob("*.html")):
+    for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
+        if LEGACY_RE.search(line):
+            failures.append(f"prefix: [legacy-name] {path}:{n} uses a pre-v4 `ftl-` name "
+                             f"(`{LEGACY_RE.search(line).group(0)}`) — v4 has no prefix; "
+                             f"run scripts/migrate-v4.py.")
 
 # Remote URLs are also checked in core/ (themes/ is covered per-theme above)
 # — a field-offline consumer embeds dist/, so a remote reference anywhere in
@@ -519,7 +533,7 @@ for entry in manifest:
         fail(entry.get("slug", "?"), "manifest",
              f"dataTheme {entry.get('dataTheme')!r} != slug {entry.get('slug')!r} — "
              f"CONTRACT.md guarantees these are always equal")
-    missing = [k for k in ("version", "scheme", "luminance", "hasChrome", "shellAware")
+    missing = [k for k in ("version", "scheme", "luminance", "hasChrome", "shellAware", "contract")
                if k not in entry]
     if missing:
         fail(entry.get("slug", "?"), "manifest", f"missing field(s): {', '.join(missing)}")

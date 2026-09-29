@@ -1,0 +1,122 @@
+/* ftl-themes: the app shell.
+ *
+ * A theme is not only a palette — LCARS and a telemetry HUD are different
+ * LAYOUTS, and switching theme has to move the furniture, not just recolor
+ * it. This file defines ONE shell markup contract that an app adopts once:
+ *
+ *   <body class="app">
+ *     <header class="app-bar">brand, nav, actions</header>
+ *     <aside   class="app-rail" aria-hidden="true"></aside>
+ *     <main    class="app-main">…the app…</main>
+ *     <footer  class="app-status">status readouts</footer>
+ *   </body>
+ *
+ * Every theme then re-arranges that same markup through the --app-*
+ * properties below: a theme can move the bar, open or close the rail,
+ * change the elbow radii, and inset the content. The app never learns a
+ * theme's name, and no theme needs app-specific markup.
+ *
+ * The rail is DECORATION, generated entirely in CSS (see each theme's
+ * layout block) and `aria-hidden` in the markup above, so a theme that
+ * wants a candy-bar sidebar gets one without the app shipping an empty
+ * element's worth of content. Themes with no rail collapse it to nothing.
+ *
+ * Adopting the shell is optional: an app that keeps its own layout still
+ * gets every component and token. It just won't re-lay-out per theme.
+ */
+
+.app {
+  display: grid;
+  grid-template-areas: var(--app-areas, "bar bar" "rail main" "status status");
+  grid-template-columns: var(--app-columns, 0 minmax(0, 1fr));
+  grid-template-rows: var(--app-rows, auto minmax(0, 1fr) auto);
+  gap: var(--app-gap, 0);
+  min-height: 100vh;
+  /* dvh tracks the actually-visible viewport on mobile browsers, where vh
+     is the largest possible one and hides content behind the toolbar. */
+  min-height: 100dvh;
+  padding: var(--app-padding, 0);
+  background: var(--app-bg, transparent);
+}
+
+/* An app that never adds the rail element at all (not even an empty one)
+   has no box for :empty to match, so a theme's --app-columns would
+   still reserve a blank gutter next to .app-main. Collapse the column
+   track itself in that case. Browsers without :has() just keep the blank
+   gutter — a graceful degrade, not a break. */
+.app:not(:has(> .app-rail)) {
+  grid-template-areas: var(--app-areas-no-rail, "bar" "main" "status");
+  grid-template-columns: var(--app-columns-no-rail, minmax(0, 1fr));
+}
+
+.app-bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: var(--app-bar-padding, 0.6rem 1rem);
+  background: var(--app-bar-bg, var(--nav-bg, var(--surface)));
+  color: var(--app-bar-fg, inherit);
+  border-bottom: var(--app-bar-rule-width, 1px) solid var(--app-bar-rule, var(--border));
+  border-radius: var(--app-bar-radius, 0);
+  min-height: var(--app-bar-height, auto);
+  font-family: var(--app-bar-font, inherit);
+}
+
+/* Decorative only. Themes that use it set --app-rail-display and paint
+   it with a gradient/pseudo-elements; the default is no rail at all. */
+/* An empty rail is always hidden: decorative rails are painted by themes
+   that opt in, but no theme may leave a stray gutter for apps that ship an
+   empty slot (the L0 graceful-degradation rule). A theme that paints its
+   rail purely decoratively opts back in with --app-rail-empty-display. */
+.app-rail:empty {
+  display: var(--app-rail-empty-display, none);
+}
+.app-rail {
+  grid-area: rail;
+  display: var(--app-rail-display, none);
+  flex-direction: column;
+  gap: var(--app-rail-gap, 0.4rem);
+  padding: var(--app-rail-padding, 0);
+  background: var(--app-rail-bg, transparent);
+  border-radius: var(--app-rail-radius, 0);
+  pointer-events: none;
+}
+
+.app-main {
+  grid-area: main;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--app-main-padding, 1rem);
+  background: var(--app-main-bg, transparent);
+  border-radius: var(--app-main-radius, 0);
+}
+
+.app-status {
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: var(--app-status-padding, 0.4rem 1rem);
+  background: var(--app-status-bg, var(--surface));
+  color: var(--app-status-fg, var(--muted));
+  border-top: 1px solid var(--app-status-rule, var(--hairline));
+  border-radius: var(--app-status-radius, 0);
+  font-size: 0.82em;
+}
+
+/* Below this width every theme drops to a single column: a decorative rail
+   is the first thing to go when the viewport is the constraint. Themes can
+   opt back in with --app-rail-display-sm. */
+@media (max-width: 720px) {
+  .app {
+    grid-template-areas: var(--app-areas-sm, "bar" "main" "status");
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--app-rows-sm, auto minmax(0, 1fr) auto);
+  }
+  .app-rail { display: var(--app-rail-display-sm, none); }
+  .app-main { padding: var(--app-main-padding-sm, 0.75rem); }
+}

@@ -2,7 +2,7 @@
 
 > Matte black gaming chrome — angular cuts, AlienFX cyan glow.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -13,11 +13,11 @@ controlled, not a rainbow of RGB.
 
 ## Core values
 
-1. **Angles, never curves.** `--ftl-radius: 0.2rem` and every major
+1. **Angles, never curves.** `--radius: 0.2rem` and every major
    surface has its corners cut with `clip-path`, not rounded. This is the
    catalog's deliberate contrast point against `aqua`/`barbie`'s gloss and
    curves — a rounded Alienware is a contradiction.
-2. **One glow, not many.** The AlienFX cyan (`--ftl-accent`) is the only
+2. **One glow, not many.** The AlienFX cyan (`--accent`) is the only
    thing allowed to glow. A version of this theme with every element
    lit up in a different color has missed the "one light strip" idea.
 3. **Matte black, not gloss.** Flat fills, no gradients on the base chrome
@@ -54,9 +54,9 @@ well — hardware, not a HUD.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

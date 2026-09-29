@@ -2,7 +2,7 @@
 
 > Blister-pack orange on track-black — flame stripes, checkered flag, no subtlety.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -13,21 +13,21 @@ calm productivity tool.
 
 ## Core values
 
-1. **Black is the track, orange is the flame.** `--ftl-bg`/`--ftl-surface`
-   stay near-black; `--ftl-accent` orange is the only thing allowed to be
+1. **Black is the track, orange is the flame.** `--bg`/`--surface`
+   stay near-black; `--accent` orange is the only thing allowed to be
    loud. A washed-out or pastel orange has missed the point entirely.
 2. **Bold, italic, uppercase.** Headings lean into the logo's aggressive
    italic wordmark — `text-transform: uppercase`, `font-style: italic`,
    wide letter-spacing. Anything set in regular-weight title case reads
    as the wrong theme.
-3. **Angles, not curves.** `--ftl-radius: 0.35rem` — enough to avoid razor
+3. **Angles, not curves.** `--radius: 0.35rem` — enough to avoid razor
    edges, not enough to look soft. Buttons use an angled (`135deg`) flame
    gradient, not a vertical one.
 4. **The flame stripe and the checkered flag are the signature shapes.**
    The app bar's diagonal orange-to-yellow band and the status bar's
    small black/white checker pattern are what read "Hot Wheels" before a
    single word does — losing either is losing the theme.
-5. **Dark text on the bright fills.** `--ftl-on-accent`/`-danger`/`-success`
+5. **Dark text on the bright fills.** `--on-accent`/`-danger`/`-success`
    are all near-black, not white — bright orange/red/green with white text
    reads as a generic dark dashboard instead of packaging.
 
@@ -55,9 +55,9 @@ well, and a checkered-flag status strip along the bottom.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.

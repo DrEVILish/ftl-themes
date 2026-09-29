@@ -1,8 +1,8 @@
 # LCARS decorative chrome (optional)
 
 **Most apps do not need this file.** Adopting the shared app shell
-(`core/ftl-layout.css` — `.ftl-app` + `.ftl-app-bar` + `.ftl-app-rail` +
-`.ftl-app-main`, see CONTRACT.md) already gives the LCARS theme its sweep
+(`core/layout.css` — `.app` + `.app-bar` + `.app-rail` +
+`.app-main`, see CONTRACT.md) already gives the LCARS theme its sweep
 bar and candy rail automatically, and switches the layout back when another
 theme is selected. That path costs no LCARS-specific markup.
 
@@ -24,23 +24,23 @@ motion/audio here is opt-in and respects `prefers-reduced-motion`.
 ## Markup contract
 
 ```html
-<div class="ftl-lcars-chrome">
-  <header class="ftl-lcars-chrome-header">
-    <span class="ftl-lcars-chrome-brand">Ship Name</span>
+<div class="lcars-chrome">
+  <header class="lcars-chrome-header">
+    <span class="lcars-chrome-brand">Ship Name</span>
   </header>
 
-  <div class="ftl-lcars-chrome-rail">
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <div class="ftl-lcars-chrome-rail-bar"></div>
-    <nav class="ftl-lcars-chrome-nav">
-      <a class="ftl-nav-item is-active" href="#">Ops</a>
-      <a class="ftl-nav-item" href="#">Science</a>
+  <div class="lcars-chrome-rail">
+    <div class="lcars-chrome-rail-bar"></div>
+    <div class="lcars-chrome-rail-bar"></div>
+    <div class="lcars-chrome-rail-bar"></div>
+    <div class="lcars-chrome-rail-bar"></div>
+    <nav class="lcars-chrome-nav">
+      <a class="nav-item is-active" href="#">Ops</a>
+      <a class="nav-item" href="#">Science</a>
     </nav>
   </div>
 
-  <main class="ftl-lcars-chrome-content">
+  <main class="lcars-chrome-content">
     <!-- your app's real content, unmodified -->
   </main>
 </div>
@@ -50,29 +50,29 @@ motion/audio here is opt-in and respects `prefers-reduced-motion`.
 
 | Class | Real or decorative | Notes |
 |---|---|---|
-| `.ftl-lcars-chrome` | Structural | The grid container. Wrap your whole page body in this. |
-| `.ftl-lcars-chrome-header` | Structural + real content | The sweep bar; `.ftl-lcars-chrome-brand` inside it is real text. |
-| `.ftl-lcars-chrome-rail` | Decorative | The candy-bar stack. `pointer-events: none` — never put real controls directly in it. |
-| `.ftl-lcars-chrome-rail-bar` | Decorative | Individual bars; the template ships four, add/remove for taste. |
-| `.ftl-lcars-chrome-nav` | Real content | Your actual nav, placed inside the rail visually via `pointer-events: auto`; use ordinary `.ftl-nav-item` links inside it. |
-| `.ftl-lcars-chrome-content` | Real content | Your app's existing content region, unmodified. |
-| `.ftl-lcars-chrome-corner` | Decorative | Optional filler block; position it yourself per layout (`position: absolute` with your own top/left). |
+| `.lcars-chrome` | Structural | The grid container. Wrap your whole page body in this. |
+| `.lcars-chrome-header` | Structural + real content | The sweep bar; `.lcars-chrome-brand` inside it is real text. |
+| `.lcars-chrome-rail` | Decorative | The candy-bar stack. `pointer-events: none` — never put real controls directly in it. |
+| `.lcars-chrome-rail-bar` | Decorative | Individual bars; the template ships four, add/remove for taste. |
+| `.lcars-chrome-nav` | Real content | Your actual nav, placed inside the rail visually via `pointer-events: auto`; use ordinary `.nav-item` links inside it. |
+| `.lcars-chrome-content` | Real content | Your app's existing content region, unmodified. |
+| `.lcars-chrome-corner` | Decorative | Optional filler block; position it yourself per layout (`position: absolute` with your own top/left). |
 
 ## Design rules for this primitive
 
 - **Never intercept clicks on decorative pieces.** Every purely decorative
-  element here is `pointer-events: none`; only `.ftl-lcars-chrome-nav` and
-  `.ftl-lcars-chrome-content` (both real content) receive pointer events.
+  element here is `pointer-events: none`; only `.lcars-chrome-nav` and
+  `.lcars-chrome-content` (both real content) receive pointer events.
 - **Frame, don't cover.** The chrome is sized via CSS grid so it takes up
   real layout space around the content, never `position: absolute` on top
   of it.
-- **Namespace everything** `ftl-lcars-*` so it can't collide with any
+- **Namespace everything** `lcars-*` so it can't collide with any
   consuming app's own class names — this primitive is meant to wrap
   arbitrary existing markup.
 - **Antonio for chrome text only.** The chrome's own labels
-  (`.ftl-lcars-chrome-brand`) use the Antonio display font
+  (`.lcars-chrome-brand`) use the Antonio display font
   (`assets/fonts/Antonio-{Regular,Bold}.woff2`); real app content inside
-  `.ftl-lcars-chrome-content` keeps using `--ftl-font` so it stays legible
+  `.lcars-chrome-content` keeps using `--font` so it stays legible
   and consistent with the rest of the `lcars` theme's component styling.
 - **Responsive collapse, not disappearance.** Below 720px the rail
   collapses to a horizontal strip rather than vanishing — see the

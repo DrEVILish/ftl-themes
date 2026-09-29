@@ -2,7 +2,7 @@
 
 > Frosted glass and soft blue gloss — more restrained than Luna.
 
-**Requires: L1** — sets `--ftl-app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
+**Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
@@ -23,10 +23,10 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 3. **The desktop shows through.** Content areas are semi-transparent over
    the Aero blue gradient backdrop — the window is a pane of glass over
    the desktop, not an opaque card floating on it.
-4. **Rounded, not sharp.** `--ftl-radius: 6px` — softer than Luna's 8px
+4. **Rounded, not sharp.** `--radius: 6px` — softer than Luna's 8px
    pill-adjacent buttons, closer to a subtle window-corner round.
 5. **Light theme discipline.** Filled primary buttons need explicit white
-   text (`--ftl-on-accent`), same reasoning as every light theme in this
+   text (`--on-accent`), same reasoning as every light theme in this
    catalog.
 
 ## Signature details
@@ -56,10 +56,10 @@ of it.
 
 ## Adoption
 
-This theme sets `--ftl-app-*` layout properties (manifest `shellAware:
+This theme sets `--app-*` layout properties (manifest `shellAware:
 true`). At **L0** (link the CSS, no shell markup) it renders correctly
 recolored, but as the shell's *default* arrangement — not its intended
-layout. Adopt the `.ftl-app`/`-bar`/`-rail`/`-main`/`-status` shell
+layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
 
