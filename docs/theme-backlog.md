@@ -16,7 +16,7 @@ authoring workflow. Each entry names the reference to design against.
 3. ~~**Barbie**~~ — shipped as `barbie`.
 4. ~~**Alienware**~~ — shipped as `alienware` (matte black, angular
    `clip-path` cuts, AlienFX cyan glow).
-5. **Weyland-Yutani** — Alien-franchise corporate/industrial: utilitarian
+5. ~~**Weyland-Yutani**~~ — shipped as `weyland-yutani` (v4). Alien-franchise corporate/industrial: utilitarian
    stencil type, amber CRT readouts, hazard yellow/black striping on
    danger states specifically (not the whole palette).
 6. ~~**Material**~~ — shipped as `material` (elevation shadow stack,
@@ -83,3 +83,8 @@ for `tron`.
 - **Cyberpunk Netrunner** — magenta/cyan on black with glitch-line
   accents; distinct from TRON/Matrix/`vaporwave` by leaning glitch/noise
   rather than clean grid or gradient glow.
+
+## Shipped in v4
+
+- **International Rescue (Thunderbirds)** — `international-rescue`: a light 1960s control-room theme (cream console, navy and gold, keycap buttons, launch-key `.btn-go`).
+- **Blue Future** — `blue-future`, restored from `archive/themes-pending-reference/` with the full original CuTePi default spec.

@@ -37,6 +37,25 @@ changes are called out explicitly here.
 > `.container`, `.table`, `.divide-y` match Tailwind utilities with different
 > meanings.
 
+### Added
+
+- **Three themes**: `blue-future` (restored from the archive with the full
+  original CuTePi default spec — #49, #60), `weyland-yutani` (Alien-franchise
+  industrial: bone-beige equipment plates, amber phosphor readouts, hazard
+  striping confined to danger states) and `international-rescue`
+  (*Thunderbirds*, a light 1960s control-room theme). 25 themes now ship.
+- **Components** (#51–#59): `.table-blank-rows`, `.switch` as
+  `<button role="switch" aria-checked>`, `.slider.is-vertical`,
+  `.toggle-btn` / `.is-danger`, `.schedule`, `.input.is-mirror`, form states and
+  sizes (`.is-invalid`, `[aria-invalid]`, `.field-error`, `.input-sm`/`-lg`,
+  readonly), `.btn-group`, `.btn-toolbar`. CONTRACT.md gains "Using v4 next to
+  Bootstrap" (layer order) and a Recipes section (the canvas fade envelope,
+  #55, is documented rather than shipped as a component).
+- **Design docs** (#50): every theme README has Typography, Contrast honesty
+  and Reference status sections with recomputed ratios; stale "no references
+  folder" claims replaced with real citations.
+- `docs/MIGRATING-v4.md`, `scripts/migrate-v4.py`, a `prefix` lint rule.
+
 ### Changed
 
 - **A theme can no longer out-rank the app's own CSS.** With bundles in

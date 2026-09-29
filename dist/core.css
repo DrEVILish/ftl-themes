@@ -215,6 +215,55 @@ a { color: var(--link, var(--accent)); }
 .select:disabled,
 .textarea:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Readonly: a value the user can select and copy but not edit. Flatter and
+   quieter than an editable field; no not-allowed cursor (it is not
+   disabled). --input-readonly-bg / -fg override. */
+.input[readonly],
+.textarea[readonly] {
+  background: var(--input-readonly-bg, var(--surface-2));
+  color: var(--input-readonly-fg, var(--input-fg, var(--text)));
+}
+/* .input.is-mirror — a display-only mirror of another control's value
+   (see CONTRACT.md "Mirror input"). Pair with readonly + tabindex="-1". */
+.input.is-mirror {
+  background: var(--input-mirror-bg, var(--surface-2));
+  color: var(--input-mirror-fg, var(--muted));
+  cursor: default;
+  box-shadow: none;
+}
+.input.is-mirror:focus-visible { border-color: var(--input-border, var(--border)); box-shadow: none; }
+
+/* Error state: `.is-invalid` or `aria-invalid="true"` on the control. The
+   tint mixes danger into the control's own background, never into
+   transparent, so it reads the same wherever the field sits. */
+:is(.input, .select, .textarea):is(.is-invalid, [aria-invalid="true"]) {
+  border-color: var(--danger);
+  background-color: var(--input-error-bg, var(--input-bg, var(--surface)));
+}
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  :is(.input, .select, .textarea):is(.is-invalid, [aria-invalid="true"]) {
+    background-color: var(--input-error-bg, color-mix(in srgb, var(--danger) 12%, var(--input-bg, var(--surface))));
+  }
+}
+:is(.input, .select, .textarea):is(.is-invalid, [aria-invalid="true"]):focus-visible {
+  border-color: var(--danger);
+  outline-color: var(--danger);
+  box-shadow: var(--input-error-ring, var(--input-shadow, none));
+}
+.input-group > :is(.is-invalid, [aria-invalid="true"]) { z-index: 1; }
+
+/* Sizes: on .input, .select or .textarea. */
+.input-sm {
+  padding: var(--input-padding-sm, 0.3em 0.6em);
+  font-size: var(--input-font-size-sm, 0.78em);
+}
+.input-lg {
+  padding: var(--input-padding-lg, 0.75em 1em);
+  font-size: var(--input-font-size-lg, 1.05em);
+}
+.select.input-sm,
+.select.input-lg { padding-inline-end: 2.2em; }
+
 /* .select's dropdown *list* is OS chrome no CSS can reach, but the
    closed box's arrow was always the browser's own — a border-only
    triangle keeps it colorable without an SVG/data-URI asset. Themes
@@ -256,6 +305,11 @@ a { color: var(--link, var(--accent)); }
 }
 .field { margin-block-end: 1rem; }
 .field-hint { margin-block-start: 0.3em; font-size: 0.78em; color: var(--muted); }
+/* .field-error — the validation message under a control. Give it an id,
+   point the control's aria-describedby at it, and (for messages injected
+   after load) put role="alert" or aria-live="polite" on it. */
+.field-error { margin-block-start: 0.3em; font-size: 0.78em; color: var(--danger-text, var(--danger)); }
+.field-error:empty { display: none; }
 
 /* .field-row — a labelled control in a bordered card: the settings-sheet
  * row pattern from the blue-future reference implementation (a recorder's
@@ -368,7 +422,9 @@ a { color: var(--link, var(--accent)); }
   width: calc(2.6em * var(--density));
   height: calc(1.4em * var(--density));
   cursor: pointer;
+  --switch-shift: calc(1.2em * var(--density));
 }
+.switch:dir(rtl) { --switch-shift: calc(-1.2em * var(--density)); }
 .switch input {
   position: absolute;
   opacity: 0;
@@ -386,25 +442,60 @@ a { color: var(--link, var(--accent)); }
 .switch-thumb {
   position: absolute;
   top: 2px;
-  left: 2px;
+  inset-inline-start: 2px;
   width: calc(1.4em * var(--density) - 6px);
   height: calc(1.4em * var(--density) - 6px);
   border-radius: var(--switch-thumb-radius, 50%);
   background: var(--switch-thumb-bg, var(--muted));
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.switch input:checked ~ .switch-track {
+.switch input:checked ~ .switch-track,
+.switch[aria-checked="true"] .switch-track {
   border-color: var(--switch-border-on, var(--accent));
   background: var(--switch-bg-on, var(--surface-2));
 }
-.switch input:checked ~ .switch-track .switch-thumb {
-  transform: translateX(calc(1.2em * var(--density)));
+.switch input:checked ~ .switch-track .switch-thumb,
+.switch[aria-checked="true"] .switch-thumb {
+  transform: translateX(var(--switch-shift));
   background: var(--switch-thumb-bg-on, var(--accent));
 }
 .switch input:focus-visible ~ .switch-track {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
+
+/* <button class="switch" role="switch" aria-checked="false"> — the same
+   switch driven by aria-checked, for a control the app toggles in script
+   (the attribute is also what assistive tech reads). The button sizes to
+   its content: the track becomes a normal flex child and an optional
+   .switch-label sits beside it. */
+button.switch {
+  appearance: none;
+  width: auto;
+  height: auto;
+  gap: var(--switch-label-gap, 0.6em);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--switch-label-fg, var(--text));
+  font: inherit;
+  text-align: start;
+}
+button.switch .switch-track {
+  position: relative;
+  inset: auto;
+  flex: none;
+  width: calc(2.6em * var(--density));
+  height: calc(1.4em * var(--density));
+}
+button.switch:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--switch-radius, 999px);
+}
+button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
+.switch-label { font-size: 0.9em; line-height: 1.2; }
 
 .slider {
   -webkit-appearance: none;
@@ -433,6 +524,17 @@ a { color: var(--link, var(--accent)); }
   border: 2px solid var(--bg);
   box-shadow: var(--slider-thumb-shadow, none);
   cursor: pointer;
+}
+
+/* .slider.is-vertical — a fader-style range input, up = larger. Length via
+   --slider-length; min/max/step stay HTML attributes. Thickness reuses
+   --slider-height. */
+.slider.is-vertical {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: var(--slider-height, 0.35rem);
+  height: var(--slider-length, 4.5rem);
+  vertical-align: middle;
 }
 
 /* --- Surfaces ---------------------------------------------------------- */
@@ -488,7 +590,7 @@ a { color: var(--link, var(--accent)); }
   color: var(--modal-header-fg, inherit);
   font-weight: 600;
 }
-.modal-footer { margin-block-start: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem; }
+.modal-footer { margin-block-start: 1.5rem; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
 
 /* Native <dialog> bridge: an app using <dialog class="modal"> instead
    of the .modal-overlay + div pattern gets the same panel styling
@@ -955,6 +1057,29 @@ dialog.modal::backdrop {
 .table.is-striped tbody tr.is-selected:nth-child(even) td,
 .table.is-striped tbody tr.is-active:nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
+}
+
+/* .table-blank-rows — continues the zebra stripe below the last row so a
+   short table in a tall pane still reads as a ruled sheet. A flex child
+   placed after the table in a column container:
+     <div class="pane"><table class="table is-striped">…</table>
+     <div class="table-blank-rows"></div></div>
+   --stripe-height is the row pitch; --stripe-a/--stripe-b override tones. */
+.table-blank-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+  border-top: 1px solid var(--table-rule, var(--hairline));
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--stripe-a, transparent) 0,
+    var(--stripe-a, transparent) var(--stripe-height, 22px),
+    var(--stripe-b, var(--stripe-b-default, var(--row-alt-bg, var(--surface-2)))) var(--stripe-height, 22px),
+    var(--stripe-b, var(--stripe-b-default, var(--row-alt-bg, var(--surface-2)))) calc(2 * var(--stripe-height, 22px))
+  );
+}
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  /* Fainter than a data row, so blank rows read as placeholders. */
+  .table-blank-rows { --stripe-b-default: color-mix(in srgb, var(--row-alt-bg, var(--surface-2)) 70%, var(--surface)); }
 }
 
 /* Sort indicator: the app sets `aria-sort="ascending"/"descending"` on the
@@ -1853,11 +1978,78 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   font-variant-numeric: tabular-nums;
 }
 
+.btn-group,
+.btn-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--btn-group-gap, 0.4rem);
+}
+.btn-group { flex-wrap: nowrap; }
+.btn-toolbar { flex-wrap: wrap; }
+
+/* .toggle-btn — a button-looking checkbox: <label class="toggle-btn">
+   <input type="checkbox"><span class="toggle-btn-off">Mute</span>
+   <span class="toggle-btn-on">Unmute</span></label>. State is pure CSS. */
+.toggle-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: var(--toggle-btn-padding, calc(0.5em * var(--density)) calc(1.1em * var(--density)));
+  border: var(--toggle-btn-border-width, 1px) solid var(--toggle-btn-border, var(--btn-border, var(--border)));
+  border-radius: var(--toggle-btn-radius, var(--btn-radius, var(--radius)));
+  background: var(--toggle-btn-bg, var(--btn-bg, var(--surface-2)));
+  color: var(--toggle-btn-fg, var(--btn-fg, var(--text)));
+  font-size: 0.9em;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.toggle-btn input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+.toggle-btn:hover { border-color: var(--toggle-btn-border-hover, var(--accent)); }
+.toggle-btn:has(input:checked) {
+  background: var(--toggle-btn-bg-on, var(--accent));
+  color: var(--toggle-btn-fg-on, var(--on-accent));
+  border-color: var(--toggle-btn-border-on, var(--accent));
+}
+.toggle-btn.is-danger {
+  --toggle-btn-bg-on: var(--danger);
+  --toggle-btn-fg-on: var(--on-danger);
+  --toggle-btn-border-on: var(--danger);
+}
+.toggle-btn:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.toggle-btn:has(input:disabled) { opacity: 0.45; cursor: not-allowed; }
+.toggle-btn-on { display: none; }
+.toggle-btn:has(input:checked) .toggle-btn-on { display: inline; }
+.toggle-btn:has(input:checked) .toggle-btn-off { display: none; }
+
+/* .schedule — a small time badge: <time class="schedule" datetime="14:30">
+   <svg class="icon"><use href="#icon-clock"/></svg><span>14:30</span></time> */
+.schedule {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--schedule-gap, 0.3em);
+  color: var(--schedule-color, var(--accent-2, var(--accent)));
+  font-size: var(--schedule-font-size, 0.8em);
+  font-variant-numeric: tabular-nums;
+}
+.schedule .icon { width: 1em; height: 1em; flex: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .btn,
   .drawer,
   .switch-track,
   .switch-thumb,
+  .toggle-btn,
   .htmx-swapping,
   .htmx-settling { transition: none; }
   .indicator,
