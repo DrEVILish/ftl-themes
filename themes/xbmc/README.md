@@ -44,13 +44,30 @@ toward the edges.
 - Rounded, glossy buttons — this UI's affordances are flat rectangles with
   a border, not skeuomorphic buttons.
 
-### Reference status
+## Don'ts
 
-This theme was built from well-documented real-world facts about
-original-Xbox-era XBMC (its horizontal top-level menu, its
-underline-glow selection state, its vignetted near-black home-theatre
-backdrop) rather than from captured reference images, so there's no
-`references/xbmc/` folder the way other themes have one. That's an
-accepted, permanent-for-now state, not a to-do — but if someone wants to
-add a `references/xbmc/` folder later using the same pattern other
-themes use, that's welcome.
+- **No filled highlight block on the active menu item**; the selection is a glowing underline.
+- **No flat, unvignetted backdrop.**
+- **No gloss, gradient buttons or large radii.** Flat rectangles with a border.
+- **No second brand colour.** One blue, used as light.
+- **No saturated pure black**; the shell is a blue-tinted near-black.
+
+## Typography
+
+`--font` is `"Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** The captures show wide-tracked bold/condensed caps on the menu (`xbmc-confluence-14.jpg`: grey all-caps blade labels; the 2007 skins: bold sans labels) (the theme sets some menu text at weight 300 instead). No face was identified from the captures, so the stack is a neutral sans, not a match.
+
+## Contrast honesty
+
+- **Blue on near-black is comfortable:** `--accent` `#1e90ff` is 5.98:1 on `--bg` `#0a0e14` and 5.61:1 on `--surface`; `--on-accent` `#04101f` is 5.90:1 on it. No lift was needed.
+- **Muted** `#93a7c7` is 7.43:1 on `--surface`; text `#dbe6f5` is 14.4:1.
+- **Reference vs shipped colour (uncertain).** `RESEARCH.md` says "dark blue-grey" blades; the two 2007-skin captures show neutral charcoal/black brushed panels with a lime-green selection LED, and only `xbmc-confluence-14.jpg` shows the blue (a blue bokeh backdrop with a black horizontal strip). So `#1e90ff` follows the Kodi/Confluence-era brand blue for the selection glow, not the 2007 blade colours, and the blue-tinted `#0a0e14` is a compromise between them. The hexes were not sampled.
+
+## Reference status
+
+`references/xbmc/` holds 3 captures plus `RESEARCH.md`:
+
+- `xbmc-main-screen-era.png` — an XBMC 2007 home screen: a stack of dark angled blade menu items (Programs/Pictures/Videos/Music/Weather), a clock and date, a green LED marking the selection. Backs the menu-item language and home-theatre darkness.
+- `xbmc-musik.jpg` — a German 2007 skin variant with the same blades plus system-information and now-playing widgets. Backs the widget layout and dark glass panels.
+- `xbmc-confluence-14.jpg` — Kodi 14 Confluence: a horizontal caps menu strip with a sub-menu drop under a blue bokeh backdrop. Backs the horizontal top menu, on which the theme's layout is based.
+
+Not backed: the theme's glowing underline itself (none of the captures shows one — selection is a green LED or a lighter blade) and the specific hexes. (An earlier note here saying no `references/xbmc/` folder exists was wrong.)

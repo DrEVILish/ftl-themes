@@ -55,6 +55,31 @@ floating over the radial backdrop.
 - Sharp corners.
 - Glow on everything rather than on hover and the active control.
 
+## Don'ts
+
+- **No light or white fields.** Inputs are recessed dark panes.
+- **No flat blue discs for the play button**; it needs the glass cap highlight and glow.
+- **No warm accent**; the glow is cool blue.
+- **No opaque grey chrome**; it is black glass with a cool backlit seam.
+- **No square, hard-edged controls**; radius is `0.8rem`.
+
+## Typography
+
+`--font` is `"Segoe UI", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** `RESEARCH.md` does not name a face; WMP 11 on Vista used Segoe UI and on XP used Tahoma, which is what the stack encodes (unverified against the MiniMode XP/Vista capture). On non-Windows systems the generic sans renders.
+
+## Contrast honesty
+
+No AA lift is recorded in `theme.css` for this theme, and none is needed: the colours are dark-on-light-accent by design.
+
+- `--accent` `#3fa9f5` is 7.73:1 on `--bg` and 7.17:1 on `--surface`; `--on-accent` `#05050a` is 7.95:1 on it. `--accent-2` `#7fd1ff` (headings) is 10.89:1 on `--surface`.
+- **The blue glow is decoration, not contrast.** The focus ring, slider-thumb bloom and heading `text-shadow` use `rgba(63,169,245,…)` halos; text always sits on its own solid colour, so nothing depends on the glow for legibility.
+- `--muted` `#8888a0` is 5.31:1 on `--surface` and 4.79:1 on `--surface-2`.
+- `RESEARCH.md` records no hex, so `#3fa9f5` and the black-glass greys are the theme's own numbers.
+
+## Reference status
+
+`references/wmp11/` has 4 captures plus `RESEARCH.md`: `Windows_Media_Player_11_in_MiniMode_-_XP,_Vista.png` and `images.jpg` (MiniMode chrome), a Now-Playing visualization webp and `wmp11.jpg` (blue-silk visualization). They back the black glass, the blue glow and the round play button. `RESEARCH.md` names the gap: no clean Library-view capture remains, so the tab strip and breadcrumbs are not evidenced by a file.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

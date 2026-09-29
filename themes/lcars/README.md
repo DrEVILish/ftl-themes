@@ -70,8 +70,7 @@ block fills — never naturalistic iconography. Settings becomes a plus of
 pill segments around a dot (a targeting-reticle abstraction, not a gear),
 and close is two pill bars crossed at 45°, matching the on-screen UI's
 habit of representing every control as an abstract colour block rather
-than a picture of the thing it does. Every other icon falls back to the
-generic outline set.
+than a picture of the thing it does. The sprite ships 136 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
 
 ## Layout — this theme moves the furniture
 
@@ -113,6 +112,33 @@ Don't:
 - Uniformly rounded pills everywhere → the elbow language is gone.
 - Green/amber/red meters → an audio app in costume.
 - Tight rows and small type → a spreadsheet wearing LCARS colours.
+
+## Typography
+
+- **Display:** Antonio (Regular 400 and Bold 700), **vendored** in `assets/fonts/` (SIL OFL 1.1, see `assets/fonts/NOTICE.md`). It drives the sweep bar (`--app-bar-font`), the big numeric readouts (`--readout-font`) and the other all-caps display spots in `theme.css`. It is a stand-in: the on-screen originals are usually described as Swiss 911 / Helvetica Compressed, but nothing in `references/lcars/` names a face, so that attribution is unverified.
+- **Body:** `--font` is `"Trebuchet MS", Verdana, system-ui, sans-serif` — **system fonts, not vendored**, so body copy differs per OS. It is a neutral readable fallback, not a canon LCARS face.
+- Labels are uppercase with `0.05em` tracking (`--label-transform`, `--label-tracking`). Lowercase Antonio at display size undoes the look.
+
+## Contrast honesty
+
+The palette follows the trekcolors/Okuda hexes, so almost nothing was lifted to reach AA; black-on-candy clears the 4.5:1 floor on its own. Measured ratios of the black `--on-*` text on each fill:
+
+| Fill | Hex | Black text |
+|---|---|---|
+| orange (`--accent`) | `#ff9900` | 9.81:1 |
+| peach | `#ff9966` | 10.0:1 |
+| tan | `#ffcc99` | 14.35:1 |
+| lavender | `#cc99cc` | 9.0:1 |
+| rose | `#cc6699` | 5.93:1 (the tightest candy block) |
+| sky | `#6699ff` | 7.57:1 |
+
+- **Deviations from the reference:** `--lcars-sky` was moved *away* from an unsourced `#9999ff` (8.35:1) toward the palette's saturated blue family. The reference's own "mariner" `#3366cc` is only 3.91:1 under black text, so it cannot carry black button text; `#6699ff` is the compromise. `--danger` `#d15a5a` (5.32:1 under black) and the success/warning fills are not attested LCARS hexes — LCARS has no canonical red/green semantics, so these are catalogue additions.
+- **Nav on the sweep bar:** the root nav tokens (orange brand, lavender items) measured 1.0:1 and 1.3:1 on the orange bar, so the bar overrides both to black (9.81:1).
+- `--muted` `#8f96c2` is 6.79:1 on `--surface`; `--text` is 15.43:1.
+
+## Reference status
+
+`references/lcars/` holds 10 captures (`475c60fc…jpg`, `Lcars_wallpaper.svg.webp`, `README-banner.png`, `README-sweep.png`, `Starship_LCARS_Interface_E_900_for_Site.webp`, `Tuvok-LCARS.webp`, `images.jpg`, `images-1.jpg`, `images-2.jpg`, `screenshot-1-500x300.png`) plus `RESEARCH.md`. The 2026-09-26 audit there calls them pure LCARS diagrams and schematics (pill blocks, elbows, master-systems displays), no people. `RESEARCH.md` records no hex values and no per-file mapping, so the candy hexes rest on the trekcolors palette (cited above), not on sampling these images. The two `README-*.png` files are not described in `RESEARCH.md`; their provenance is unverified.
 
 ## Adoption
 

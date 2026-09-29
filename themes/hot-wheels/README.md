@@ -53,6 +53,30 @@ well, and a checkered-flag status strip along the bottom.
 - Rounded pill shapes anywhere — this is angles, not Barbie's curves.
 - White text on the bright accent/danger/success fills.
 
+## Don'ts
+
+- **No white text on the orange, red or green fills.** Use the near-black `--on-*` tokens.
+- **No pastel or muted orange.**
+- **No rounded pills**; radius is `0.35rem`.
+- **No upright, regular-weight, title-case headings.** Bold italic uppercase only.
+- **No vertical gradients on buttons;** the flame runs at `135deg`.
+- **No second brand colour beyond orange/yellow** (with blue only where the blister pack calls for it).
+
+## Typography
+
+`--font` is `"Arial Black", Impact, Arial, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. All **system fonts, none vendored** — Arial Black and Impact are near-universal on Windows/macOS but missing on many Linux installs, where plain Arial renders and loses the heavy weight. The reference is an italic chrome-style wordmark (the game menu capture); the theme approximates it with heavy weight plus `font-style: italic` and uppercase, not the real logo lettering.
+
+## Contrast honesty
+
+- **The orange was not lifted; the text colour was flipped.** `--accent` `#ff5f00` is unchanged, but white on it is only 3.05:1. Instead of darkening the orange until white passed (which would turn it brown), `--on-accent` is near-black `#1a0900` (6.36:1). The same choice applies to `--danger` `#ff2d2d` (`#1a0000`, 5.43:1) and `--success` `#29d17a` (`#04220f`, 8.46:1). There is no before/after hex pair for the fills themselves.
+- **The orange hex is not measured from a capture:** `RESEARCH.md` records no hex ("track orange"), so `#ff5f00` is the theme's number.
+- **On dark surfaces** `--accent` is 6.49:1 on `--bg`, 5.94:1 on `--surface`; `--muted` `#9a9a9a` is 6.43:1 on `--surface` and 5.59:1 on `--surface-2`.
+- **Red as text:** `--danger` is 5.34:1 on `--bg`; `--danger-text` `#ff6e6e` is the lighter variant for small copy.
+
+## Reference status
+
+`references/hot-wheels/` has 3 captures plus `RESEARCH.md`: `Hot-Wheels-Unleashed05282022-…jpg` (game menu: flame logo, orange track, italic chrome type), `aa470424….jpg` (flame-logo wallpaper) and the 1999 PC set webp (blue/yellow flame hardware). They back the orange track, flame motif and italic type. `RESEARCH.md` states there is no blister-pack card capture, so the blister-pack colours are not backed by a file, and although the outsider read in `RESEARCH.md` names a checkered-flag finish, no capture is described as showing one (unverified).
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -40,9 +40,7 @@ stroke with square terminal caps in place of the generic sprite's 2px
 rounded default, so they read as hairline character strokes rather than
 a UI icon set. Settings becomes an eight-point asterisk glyph instead of
 a naturalistic gear, matching a terminal's habit of representing controls
-as punctuation rather than pictures. Every other icon falls back to the
-generic outline set, already thinned to 1.5 by
-`--icon-stroke-width`.
+as punctuation rather than pictures. The sprite ships 136 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
 
 ## Layout
 
@@ -62,6 +60,21 @@ flicker animation communicate anything.
 - A proportional font anywhere → the illusion collapses immediately.
 - Multiple accent hues → a "hacker" theme, not a phosphor terminal.
 - Heavy neon glow → cyberpunk, not CRT.
+
+## Typography
+
+`--font` is `"Courier New", "IBM Plex Mono", Consolas, monospace`; `--font-mono` is `"Courier New", Consolas, monospace`. Everything is monospace. **Nothing is vendored** — Courier New is a system font (Windows/macOS; availability on Linux varies), IBM Plex Mono only renders if installed. The film's rain glyphs are mirrored katakana and numerals from a custom set; the theme ships no glyph face for them, so any katakana on the page is system-font fallback.
+
+## Contrast honesty
+
+- **Phosphor green `#00ff41` is unlifted.** The `theme.css` header says it matches the reference on-screen code's hex; `RESEARCH.md` records no hex, so that claim could not be verified from the folder. It is 15.38:1 on black and 14.56:1 on `--surface` `#020c02`, so no AA adjustment was needed, and black `--on-accent` `#001a06` is 13.37:1 on it.
+- **Body text** `#b6ffb6` is a pale green (17.97:1 on black) so long copy is not pure accent.
+- **`--muted` `#4caf50`** is 7.15:1 on `--surface` and 6.54:1 on `--surface-2`: AA, below AAA on the darkest panel.
+- **Red is the only non-green hue.** `--danger` `#ff3b3b` is 5.94:1 on black.
+
+## Reference status
+
+`references/matrix/` has 4 captures plus `RESEARCH.md`: digital-rain crops, a "SYSTEM FAILURE" code wall and a green terminal screencap (all people-free per the audit). They back the phosphor palette and the monospace look. `RESEARCH.md` states the operator-console (monitor wall) target remains uncovered, and records no hex values.
 
 ## Adoption
 

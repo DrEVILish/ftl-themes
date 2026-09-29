@@ -53,6 +53,30 @@ top of it.
 - A button with no press-shadow interaction.
 - Pastel or muted colours instead of flat primaries.
 
+## Don'ts
+
+- **No pills or fully round buttons**; bricks are square-cornered (`--radius: 0.4rem`).
+- **No thin or soft borders.** Borders are thick and near-black.
+- **No yellow as text or white on yellow.** Yellow is a fill only.
+- **No gradients, gloss or blur.** Flat moulded plastic.
+- **No pastel or tinted primaries**; keep red, yellow, blue, green as flat primaries.
+- **No modern booklet-promo styling**; the reference is the 1979 Classic Space instruction booklet.
+
+## Typography
+
+`--font` is `"Futura", "Century Gothic", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. Futura and Century Gothic are **system fonts, not vendored**: Futura is on macOS, Century Gothic on Windows/Office, and most Linux installs fall to Arial. `RESEARCH.md` names no face, and the booklet captures show a geometric sans that Futura only approximates. Buttons use weight 800.
+
+## Contrast honesty
+
+- **Filled primaries carry white text:** red `--accent`/`--danger` `#d0111b` is 5.56:1 under white; green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
+- **Yellow `#f5c400`** is only 1.47:1 on `--bg` and 1.64:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#6e5700` (6.94:1 on white).
+- **Red as small text** uses `--danger-text` `#b80f18` / `--accent-text` `#a50d15`.
+- `--muted` `#5a5a5a` is 6.90:1 on white, 6.16:1 on `--bg`.
+
+## Reference status
+
+`references/lego-classic/` has 3 captures plus `RESEARCH.md`: `lego-928-booklet-steps.jpg` (numbered build steps with parts callouts) and `lego-928-booklet-interior.jpg` (steps 4–7 crop) from the 1979 set 928 booklet, and `original-*.webp`, modern printed control-panel tiles that `RESEARCH.md` itself calls a weak era match. The booklet cover and a build video frame mentioned in older notes are not in the folder. Studs macro and Classic Space set photos are absent (minifig-heavy pages were rejected), so the corner studs are backed by the brick/booklet idea rather than a capture.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

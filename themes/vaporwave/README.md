@@ -55,6 +55,32 @@ deep-purple void filling the content well between them.
 - Black instead of deep purple as the base color.
 - Crisp, straight grid-lines everywhere (that's `tron`, not this).
 
+## Don'ts
+
+- **No flat single-colour headings.** The magenta-to-cyan gradient clipped to the glyphs is the signature; a solid pink `h1` reads as a generic dark theme.
+- **No warm neutrals.** Greys and blacks lean purple (`#1a0b2e`, `#241242`); pure `#000` or neutral grey breaks the void.
+- **No lowercase, tight-tracked display type.** Headings are uppercase with `0.14em` tracking.
+- **No more than the pink/cyan pair** doing the loud work; extra hues dilute it.
+- **No dense, corporate layout.** Space and horizon matter more than information density.
+
+## Typography
+
+- **Display (h1–h3):** Audiowide, **vendored** (`assets/fonts/Audiowide-Regular.woff2`, SIL OFL, `assets/fonts/NOTICE.md`), uppercase, `0.14em` tracking, under the gradient-text fill. It is the "wide, chunky geometric" stand-in for vaporwave's extended display type; it is not a true full-width face.
+- **Body:** `--font` is `"Segoe UI", Verdana, sans-serif` — system fonts, **not vendored**. `--font-mono` is `Consolas, monospace`.
+- **Full-width Latin and katakana:** the aesthetic leans on full-width text (ＶＡＰＯＲ) and Japanese katakana, but the theme ships no face for either. Audiowide is a Latin display face; whether the vendored file covers full-width forms or katakana was not checked, so treat both as system-font fallback (`--font`, then the OS's CJK font). Put katakana in body-weight text or set an explicit CJK `font-family` in the app; do not expect Audiowide to render it. `RESEARCH.md` lists the mall/katakana-text target as still uncovered by the captures.
+
+## Contrast honesty
+
+- **Danger lifted:** the reference "hot" red-pink `#ff3864` is 3.5:1 under white; shipped `--danger` is `#d81c48` (5.02:1 with white text, 3.69:1 as text on `--bg`, so text uses `--danger-text`).
+- **Border:** `--border` `#8a5fc0` is picked to be ~3.6:1 against `--surface` (the least that keeps a 1px outline perceptible while staying purple).
+- **Accent pair:** `--accent` `#ff71ce` is 7.52:1 on `--bg` (6.86:1 on `--surface`); `--accent-2` `#01cdfe` is 9.87:1 / 9.0:1. The gradient headings therefore pass on every stop; the neon values themselves are not lifted.
+- **Nav bar:** the bright pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a light text-shadow halo is added (math passes; the halo is for perceived contrast).
+- `--muted` `#b79ee0` is 7.24:1 on `--surface`.
+
+## Reference status
+
+`references/vaporwave/` has 4 captures plus `RESEARCH.md`: all grid-horizon/sunset scenes (wireframe mountains, palms, cityscape); `Vaporwave.webp` is a sun over wireframe mountains, not a statue. They back the perspective grid floor, the sunset bar and the pink/cyan-on-purple palette. `RESEARCH.md` names two uncovered targets: the statue-glitch motif and the mall/katakana-text scenes, so nothing in the folder backs the theme's typography choices. No hex values are recorded; only the `#ff3864` "hot" red-pink is cited in `theme.css`.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -44,7 +44,7 @@ close, user, bell) as coarse, low-resolution monochrome LCD segment
 shapes: big flat `currentColor` polygons and rects with minimal internal
 detail, no anti-aliasing and almost no curves — the kind of menu glyph a
 real feature-phone screen could actually render at its native
-resolution. Every other icon falls back to the generic outline set.
+resolution. The sprite ships 123 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
 
 ## Tell-tales of an inauthentic result
 
@@ -53,13 +53,33 @@ resolution. Every other icon falls back to the generic outline set.
   the yellow-green/dark-olive family breaks the one-colour-screen premise.
 - A soft/tinted selection highlight instead of a hard full invert.
 
-### Reference status
+## Don'ts
 
-This theme was built from well-documented real-world facts about the
-3310/3210's reflective monochrome LCD (its single-hue screen, its
-inversion-only selection model, its candybar-phone status chrome) rather
-than from captured reference images, so there's no
-`references/nokia-3310/` folder the way other themes have one. That's an
-accepted, permanent-for-now state, not a to-do — but if someone wants to
-add a `references/nokia-3310/` folder later using the same pattern other
-themes use, that's welcome.
+- **No second hue.** Everything is the yellow-green LCD tone or dark olive ink.
+- **No radius, gloss, gradient or shadow.**
+- **No soft or tinted selection**; selection is a hard two-tone invert.
+- **No anti-aliased or thin type.** Bold, chunky.
+- **No backlight glow.** The 3310's screen is reflective and unlit.
+- **No colour-coded state beyond ink density**; danger/success/warning are barely different dark olives on purpose.
+
+## Typography
+
+`--font` and `--font-mono` are both `"Consolas", "Courier New", monospace`, bold at small sizes. **Nothing is vendored.** The real device uses a 5x7-ish pixel font on an 84x48 screen (`nokia-3310-blue.png` shows it in "Menü" and the clock); no faithful web copy is shipped, so the pixel shapes are lost and only the monospace feel remains. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
+
+## Contrast honesty
+
+- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The shipped tones (`--bg` `#9ead86`, `--surface` `#a3b58c`, `--surface-2` `#94a17c`, ink `#2b3320`) are hand-picked olives, **not sampled from that photo** (unverified).
+- **AAA warnings (`scripts/check.py`):** `--text` on `--surface` is 6.0:1 and on `--bg` 5.5:1 (floor 7.0:1). It clears AA everywhere but not AAA; that is the real LCD's low contrast, and darkening the ink further would look unlike the device.
+- **`--muted` lifted:** `#363e24` (4.1:1 on `--surface-2`) to `#2d341e` (5.89:1 on `--surface`, 4.72:1 on `--surface-2`). It is not really a second shade.
+- **State inks are a departure.** `--danger` `#4a2a1f` (5.34:1 on `--bg`), `--success` `#1f3a28` (5.18:1) and `--warning` `#4a3d1a` (4.45:1 on `--bg`, just under 4.5:1 if used as text there) are dark olive-family tones. The real phone had no such colours.
+- `--on-accent` `#9ead86` on `--accent` `#2b3320` is the same 5.49:1 invert used for selection.
+
+## Reference status
+
+`references/nokia-3310/` holds 3 device photos plus `RESEARCH.md`:
+
+- `nokia-3310-blue.png` — front view of the blue-cased phone with a lit screen (clock, signal and battery bars on the sides, "Menü" softkey label). The only file that shows LCD tone, pixel font and status chrome.
+- `nokia-3310-front.png` — an angled front view with an unlit grey screen; backs the casing, bezel and Navi-key.
+- `nokia-3310-grey-front.jpg` — an Orange-branded grey 3310e front view (`RESEARCH.md`); backs casing and keypad only.
+
+`RESEARCH.md` is explicit that the **LCD-screen gap is still open**: no original Series-20 menu screen capture exists in the folder. The inverted title strip, softkey layout and selection behaviour are therefore from documented behaviour, not from a screenshot. (An earlier note here claiming no reference folder was wrong.)

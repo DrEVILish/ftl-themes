@@ -48,6 +48,31 @@ DOS blue.
 - Any softness — gradients, shadows, rounded corners — none of it existed
   in text mode.
 
+## Don'ts
+
+- **No radius, no shadow, no gradient, no transitions.** Text-mode cells only.
+- **No colour outside the 16-colour VGA set.** Blue, cyan, white, yellow, light greys, light red/green.
+- **No single-line borders** where the double-line box characters belong.
+- **No proportional font.** No smooth weights.
+- **No white cursor bar:** the selection is cyan with black text.
+
+## Typography
+
+`--font` and `--font-mono` are both `"Perfect DOS VGA 437", "Courier New", monospace`. Perfect DOS VGA 437 is a community recreation of the IBM VGA 8x16 bitmap font. **It is not vendored** (nothing under `assets/fonts/` for it), so unless the user has it installed, **Courier New** is what renders; the crisp 9x16 cell look is lost. The captures are DOS setup screens that show the real bitmap face.
+
+## Contrast honesty
+
+The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#00aaaa`, light grey `#aaaaaa`, light yellow `#ffff55`, light red `#ff5555`, light green `#55ff55`, light cyan `#55ffff`). These are the well-known VGA values, not sampled from the captures (`RESEARCH.md` records no hex).
+
+- **Cyan on blue:** `--accent` `#00aaaa` on `#0000aa` is 4.64:1 (passes AA by a hair). The Norton cursor bar puts black on cyan, 7.33:1.
+- **Yellow on blue:** `#ffff55` is 12.46:1; light cyan `#55ffff` is 10.84:1.
+- **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa`, 4.83:1 on `--surface-2` `#0000cc`.
+- **The one deviation:** real light red `#ff5555` is only 4.23:1 on the blue, so text uses `--danger-text` `#ff7e7e` (5.40:1) and the raw hex is fill-only.
+
+## Reference status
+
+`references/msdos/` has 6 captures plus `RESEARCH.md`: an icon-library grid, MS-DOS 6.22 VirtualBox setup and welcome screens, a `moricons.dll` picker dialog, an MS-DOS 2.0 floppy photo and a DOS 5.0 setup screen. They back the blue text-mode field and box chrome. `RESEARCH.md` states there is **no Norton Commander two-panel capture**, so the twin-panel layout, cyan cursor bar and F-key bar are described in RESEARCH text, not shown in any file.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

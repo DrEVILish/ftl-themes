@@ -51,15 +51,34 @@ which doesn't translate to a general-purpose page background.
   modestly rounded rectangles, not pills; only buttons/nav items/badges
   are pills.
 
-### Reference status
 
-This theme was built from well-documented real-world facts about the
-PS3/PSP Cross Media Bar (its single horizontal icon row, its
-float-and-glow visual language, its centred layout) rather than from
-captured reference images, so there's no `references/xmb/` folder the
-way other themes have one. That's an accepted, permanent-for-now state,
-not a to-do — but if someone wants to add a `references/xmb/` folder
-later using the same pattern other themes use, that's welcome.
+## Don'ts
+
+- **No opaque panels or cards**; everything is a translucent tint over the wave.
+- **No filled selection block**; selection is a glow plus scale.
+- **No left-anchored primary nav** where the layout allows a centred bar.
+- **No stadium/pill info panels**; only buttons, nav items and badges are pills.
+- **No warm or neutral grey backdrop**; the wave is a deep blue gradient.
+
+## Typography
+
+`--font` is `"Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** Some text is set at weight 300 (see `theme.css`). The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation), which the stack approximates with a light weight; the actual PS3 system face is not identified and not vendored.
+
+## Contrast honesty
+
+- **Text on the deep-blue base is very high:** `--text` `#eaf2ff` is 15.82:1 on `--bg` `#0a1730`; `--muted` `#b9cbe8` is 10.84:1; `--accent` `#7ec8ff` is 9.84:1 (no lift needed).
+- **Translucent surfaces:** `--surface`/`--surface-2` are white at 8%/14% alpha over the wave, so ratios depend on what is behind; I measured on `--bg` only. The `theme.css` comment asserts `--muted` clears AA on both surfaces; the tint raises luminance only slightly, but I did not composite them.
+- **Glow lifted for legibility:** the selection glow is a bright light-blue halo (`--accent`/`--flare` `#bfe4ff`); the strengthened active-item glow and the blurred, floating bar were added so the bar still reads on the wave, not to meet a text ratio. `--on-accent` `#04162e` on `--accent` is 10.0:1.
+- **Hue is a choice.** The PS3 capture (`xmb-ps3-screenshot.jpg`) shows a green wave, the RetroArch capture blue. The XMB wave colour changes by month/setting, so blue is the theme's selection, not the only reference; hexes not sampled.
+
+## Reference status
+
+`references/xmb/` holds 2 captures plus `RESEARCH.md`:
+
+- `xmb-ps3-screenshot.jpg` — a PS3 XMB (green wave variant) with the horizontal icon row and the vertical list dropping from Music. Backs the cross layout, the wave and the thin-type look.
+- `xmb-retroarch-main-menu.jpg` — RetroArch's XMB recreation on a blue gradient: rounded-square category icons in a row, a highlighted first icon, a vertical menu list below and a wave. Backs the blue palette, the wave and the cross.
+
+Gap (from `RESEARCH.md`): no people-free game-thumbnail example remains. Not backed by either file: the pill-shaped nav, the blurred floating app-bar capsule and the exact glow values. (An earlier note here claiming no `references/xmb/` folder exists was wrong.)
 
 ## Known harness limitation: the app-bar doesn't render centred everywhere
 

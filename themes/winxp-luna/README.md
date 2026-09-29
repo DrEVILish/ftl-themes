@@ -45,8 +45,7 @@ close, user, bell) as glossy, two-tone glyphs: a `currentColor` fill for
 the base shape, a soft white highlight band across the top for the gloss
 line Luna put on every filled surface, and a thin `currentColor` outline
 to keep edges crisp — the same three-layer recipe as the title bar and
-buttons, just applied at icon scale. Every other icon falls back to the
-plain outline sprite.
+buttons, just applied at icon scale. The sprite ships 135 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
 
 ## Layout
 
@@ -60,6 +59,33 @@ Luna background filling the well between them.
 - Square corners anywhere on the window frame.
 - Segoe UI or a modern system font in place of Tahoma.
 - Blue used for the content background instead of the tan/white pairing.
+
+## Don'ts
+
+- **No flat, single-colour title bar** — the gloss highlight line at the top is the theme.
+- **No square window corners**, and no pill/stadium shapes either: XP is `8px` rounding, not Barbie.
+- **No blue content area.** Blue is chrome; the well is tan `#ece9d8` and white.
+- **No green on selection and no blue on "go".** Green is the affirmative action, `#316ac5` blue is selection.
+- **No Segoe UI or system-ui swapped in for Tahoma** where Tahoma exists.
+
+## Typography
+
+`--font` is `Tahoma, "Segoe UI", Verdana, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Segoe UI/Verdana or the generic sans render instead.
+
+## Contrast honesty
+
+Luna's greens and blues sit on tan/white, and several needed adjustment:
+
+- **Start green lifted.** The community-recreation green `#3d9f1e` is 3.4:1 under white text; shipped `--success` is `#2e7a14` (5.37:1). No official hex exists (`luna.msstyles` is a compiled resource), so this is a documented departure from folk consensus, not from a published value.
+- **Success text on tan:** `--success` itself is only 4.40:1 on the `#ece9d8` background, so text uses `--success-text` `#2c7613` (4.64:1 on tan, 5.66:1 on white).
+- **Blue on tan:** `--accent` `#0054e3` is 5.10:1 on tan and 6.22:1 on white/under white text. The selection blue `--accent-2` `#316ac5` is 4.31:1 on tan, so use it as a fill with white text (5.25:1), not as text on the tan well.
+- **Warning:** `--warning` `#ff8c00` is 1.91:1 on tan and is a lamp/fill only; text uses `--warning-text` `#9e5700` (4.51:1 on tan, a narrow pass).
+- `--danger` `#cc0000` is 4.83:1 on tan, 5.89:1 under white text. `--muted` `#5a5a5a` is 5.65:1 on tan.
+- The app-bar nav text uses pale tints because the black tokens tuned for the tan area measured 1.0:1 on the blue bar.
+
+## Reference status
+
+`references/winxp-luna/` has 5 captures plus `RESEARCH.md`: a Luna Start-button crop (`RESEARCH.md` does not map which filename is which), a March Mountain XP icon promo, a tall XP icon grid, a Luna Sample dialog and a Bliss desktop with a real Start menu. They back the royal-blue gloss title bar, the tan content colour, the green Start pill and the red-orange Close button. `RESEARCH.md` lists no hex values, so `#0054e3`, `#ece9d8`, `#316ac5` and `#7f9db9` are the theme's own numbers, not sampled from these files (unverified against them).
 
 ## Adoption
 

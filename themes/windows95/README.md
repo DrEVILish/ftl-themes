@@ -45,9 +45,7 @@ corners (`stroke-linecap: square` / `stroke-linejoin: miter` on every
 path, overriding the generic sprite's rounded default), and no curves
 where a straight edge will do — the settings glyph is a plus of tabs
 around a square rather than a circular gear, the same low-res
-simplification the real icon set used at 16×16/32×32. Every other icon
-falls back to the generic outline set, thickened by
-`--icon-stroke-width: 2.6` like the rest of the theme.
+simplification the real icon set used at 16×16/32×32. The sprite ships 135 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
 
 ## Layout
 
@@ -69,6 +67,31 @@ openly-licensed pixel face is tracked in `docs/theme-backlog.md`.
 - Buttons that don't invert their bevel on `:active`.
 - Anti-aliased, modern-weight type in the title bar.
 
+## Don'ts
+
+- **No radius.** `--radius: 0`, `--badge-radius: 0`, `--progress-radius: 0`. Not "just 2px".
+- **No drop shadow, no blur, no glow.** Depth is the two-tone bevel only.
+- **No tints or in-between greys.** Stay on `#c0c0c0` / `#dfdfdf` / `#808080` / white / black plus navy and teal.
+- **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`.
+- **No transitions or fades.** Windows 95 repainted instantly.
+- **No modern-weight, anti-aliased title-bar type**, and no Segoe UI in place of Tahoma/MS Sans Serif when a system copy is available.
+
+## Typography
+
+`--font` is `Tahoma, "MS Sans Serif", "Segoe UI", sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on most machines Tahoma is what renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. Vendoring a pixel face is tracked in `docs/theme-backlog.md`.
+
+## Contrast honesty
+
+- **`--bg` teal is lifted from the reference.** `references/windows95/RESEARCH.md` records the desktop as `#008080`. Shipped is `#008282` (2/255 more green and blue). Black text on `#008080` is 4.40:1; on `#008282` it is 4.52:1, just over the 4.5:1 floor. The desktop never carried body text on the real system, so the shift is invisible in practice, but it is a deviation.
+- **AAA is not met on the teal pair, on purpose.** `--text` on `--bg` is ~4.5:1, below the 7:1 AAA target. Every readable surface in the real OS was the grey dialog (`--surface` `#c0c0c0`, black text 11.54:1), so the teal pair is decorative by construction. Brightening the teal further would be the inauthentic fix.
+- Navy `#000080` under white is 16.01:1; navy on the teal desktop is 3.44:1 (chrome only, no text).
+- `--muted` `#444444` is 5.35:1 on grey but only 2.09:1 on teal: never put muted text on the desktop.
+- `--success` `#008000` and `--warning` `#808000` are lamp/fill colours only; text uses `--success-text` `#005c00` and `--warning-text` `#4d4d00`.
+
+## Reference status
+
+`references/windows95/` has 9 captures plus `RESEARCH.md`: desktop/Notepad, My Computer/Paint/WordPad/Calc windows, a German Explorer/Media Player shot, a DLL icon grid, an icon/cursor sheet, FreeCell (`freecell_windows_95.avif`), a Start-menu shot (`htg_windows_95.avif`), the Internet icon close-up (`win95_the_internet_icon.avif`) and the splash screen (`windows_95_splash_screen.avif`) — per the audit in `RESEARCH.md`. They back the grey/navy/teal palette, the two-tone bevel and the dotted focus rectangle. `RESEARCH.md` notes the hexes as `#c0c0c0`, `#000080`, `#008080`.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:
@@ -77,9 +100,3 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
-Contrast-exempt: --text on --bg (the teal desktop) sits at ~4.5:1,
-below the 7:1 AAA target. Deliberate: the teal desktop never carried body
-text in Windows 95 — every readable surface was the grey dialog
-(--surface #c0c0c0, where black text is ~17:1) — so the desktop pair is
-decorative by construction, and brightening teal would be the inauthentic
-fix. (Closes the intent documented in the theme.css header comment.)

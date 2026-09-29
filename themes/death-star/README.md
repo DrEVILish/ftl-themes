@@ -42,6 +42,30 @@ as the page, distinguished only by the content sitting on them.
 - A gradient fill anywhere.
 - A near-black (`#0a0a0a`-ish) background instead of true `#000`.
 
+## Don'ts
+
+- **No borders or shadows** beyond the hairline lattice; panels are black on black.
+- **No colour beyond the red indicator and the white segments,** other than state colours.
+- **No decorative typefaces or "Star Wars" lettering** (see Typography).
+- **No filled red panels**; red is a lamp, a rule or a brand word.
+- **No red as body text** — `--accent` fails as text on black.
+
+## Typography
+
+`--font` is `"Eurostile", "Michroma", sans-serif`; `--font-mono` is `Consolas, monospace`. Neither Eurostile (commercial) nor Michroma is vendored, so on most machines the generic sans-serif renders. **The stance is deliberate: this theme has no signature face.** `references/death-star/` shows control-room panels, indicator lamps and console details, but no on-screen lettering that pins down a typeface, and the film UI type is not something to fake with a Star Wars display font. The identity is carried by black, hairline white segments and red lamps; type stays neutral and small.
+
+## Contrast honesty
+
+- **Accent red fails as text.** `--accent` `#c81e1e` is 3.66:1 on black; white on it is 5.74:1, so red is safe only as a fill/lamp/rule. The app-bar brand text is lifted to `#ff5a5a` (6.86:1 on black).
+- **Muted lifted:** `#6a6a6a` (3.8:1) to `#777777` (4.69:1 on black, 4.55:1 on `--surface-2` `#050505`).
+- **Nav items** `#8a8a8a` (6.08:1 on black) sit a step above `--muted`; the `theme.css` comment says muted measured 3.9:1 on the bar, which does not match the 4.69:1 I compute on pure black (the bar may not be pure black; unverified).
+- `--text` `#e6e6e6` is 16.83:1. Semantic fills (`#ff3b3b`, `#2fff6f`, `#ffcf2f`) are 5.9–15.7:1 on black with black `--on-*` text.
+- The reference red in the photo is a lamp; `RESEARCH.md` records no hex, so `#c81e1e` is the theme's.
+
+## Reference status
+
+`references/death-star/` has 4 captures plus `RESEARCH.md`: `death-star-superlaser-still.jpeg` and `death-star-station-still.jpeg` (film stills), `death-star-executor-still.jpeg` (a further still, not described in `RESEARCH.md`) and `il_fullxfull.7108820316_cpn8.webp` (a builder's isolated console diorama with red/black panels, indicator dots and a green readout, which `RESEARCH.md` credits as the console reference). No isolated Imperial console-screen capture exists; the outsider read ("no borders, sparse tiny lamps") is what the layout follows.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:
