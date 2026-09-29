@@ -349,8 +349,13 @@ html[data-theme="winxp-luna"] .app-bar {
 of `--app-bar-bg`, and `--app-status-fg` against the status strip,
 and fails anything under 4.5:1.
 
+A `.nav` inside the bar does not paint `--nav-bg`: it sits on the bar. A
+theme that wants a distinct strip inside its bar sets `--app-bar-nav-bg`
+(and `--app-bar-nav-rule-width`, `--app-bar-nav-radius`).
+
 Override points: `--app-areas`, `-columns`, `-rows`, `-gap`,
 `-padding`, `-bg`; `--app-bar-bg|-fg|-rule|-rule-width|-radius|-height|-padding|-font`;
+`--app-bar-nav-bg|-nav-rule-width|-nav-radius`;
 `--app-rail-display|-bg|-radius|-padding|-gap`;
 `--app-main-bg|-padding|-radius`; `--app-status-bg|-fg|-rule|-radius|-padding`;
 and the `-sm` variants (`--app-areas-sm`, `--app-rows-sm`,

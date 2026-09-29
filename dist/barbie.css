@@ -2617,6 +2617,16 @@ pre code { padding: 0; background: none; border-radius: 0; }
   min-height: var(--app-bar-height, auto);
   font-family: var(--app-bar-font, inherit);
 }
+/* A nav inside the bar sits on the bar: it does not paint --nav-bg (tuned
+   for a free-standing nav) as a second box inside it. Nav text tokens are
+   already checked against the bar background, not --nav-bg, so this is
+   what the contrast lint assumes. A theme that does want a distinct strip
+   inside its bar sets --app-bar-nav-bg. */
+.app-bar .nav {
+  background: var(--app-bar-nav-bg, transparent);
+  border-bottom-width: var(--app-bar-nav-rule-width, 0);
+  border-radius: var(--app-bar-nav-radius, 0);
+}
 
 /* Decorative only. Themes that use it set --app-rail-display and paint
    it with a gradient/pseudo-elements; the default is no rail at all. */
@@ -2733,6 +2743,7 @@ html[data-theme="barbie"] {
   --radius: 1.4rem;
   --font: "Baloo 2", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: Consolas, monospace;
+  --readout-font: var(--font);
   --flare: #ffd700;
 
   /* Glossy pill buttons — a light highlight band over the fill, same
@@ -2865,4 +2876,14 @@ html[data-theme="barbie"] .app-bar {
   --nav-item-fg-active: #ffffff;
   --nav-item-bg-active: #8f1458;
 }
+/* State text on the magenta status strip: the content-area greens/ambers
+   are tuned for white and vanish on magenta, so the strip gets pale tints. */
+html[data-theme="barbie"] .app-status {
+  --success-text: #c8ffe6;
+  --warning-text: #ffe9a8;
+  --danger-text: #ffe0ea;
+}
+/* Numerals in the rounded face, not Consolas: a square monospace figure
+   next to Baloo reads as a different product. Code stays monospace. */
+html[data-theme="barbie"] .stat-value { font-family: var(--font); }
 }

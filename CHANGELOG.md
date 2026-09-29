@@ -29,6 +29,16 @@ changes are called out explicitly here.
   tabs with the pale-blue hover (primary is the default-button glow, no
   longer a blue fill); Explorer selection and the green glossy progress
   bar. The nav no longer paints a frosted box inside the title bar.
+- **core: a `.nav` inside `.app-bar` no longer paints its own box.** It
+  drew `--nav-bg` (tuned for a free-standing nav) as a second strip
+  inside the bar, which hid the brand and nav items outright on barbie,
+  material and vaporwave and left stray white boxes on aqua, aperture and
+  imac-g3. The contrast lint already measured nav text against the bar,
+  so this is what it assumed. A theme that wants the strip opts in with
+  `--app-bar-nav-bg` (+ `-rule-width`, `-radius`); windows95 and
+  hot-wheels do, and render unchanged.
+- **barbie:** numerals and readouts set in Baloo instead of Consolas;
+  pale state-text tints on the magenta status strip.
 
 - **lcars: fidelity pass against the on-screen references.** The shell is
   now a real elbow frame — a thick orange leg curving into a thin bar with
