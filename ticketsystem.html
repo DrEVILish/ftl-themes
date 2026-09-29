@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html data-theme="aqua">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Desk — ftl-themes master-detail demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/aqua.css">
+<style>
+  * { box-sizing: border-box; }
+  .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .demo-topbar-spacer { flex: 1; }
+  .demo-topbar .nav-brand { white-space: nowrap; }
+  .demo-topbar .btn { flex-shrink: 0; }
+  .demo-split { display: grid; grid-template-columns: 18rem minmax(0, 1fr) 16rem; gap: 1.25rem; align-items: start; }
+  @media (max-width: 1100px) { .demo-split { grid-template-columns: 18rem minmax(0, 1fr); } .demo-split > aside.stack { grid-column: 1 / -1; } }
+  @media (max-width: 860px) { .demo-split { grid-template-columns: 1fr; } .demo-split > aside.stack { grid-column: auto; } }
+  .demo-ticket-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .demo-ticket { display: block; padding: 0.75rem 0.9rem; border-radius: var(--radius); border: 1px solid var(--hairline); cursor: pointer; }
+  .demo-ticket.is-active { border-color: var(--accent); background: var(--surface-2); }
+  .demo-ticket-title { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+  .demo-ticket-meta { display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.75; }
+  .demo-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .demo-thread { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+  .demo-msg { display: flex; gap: 0.6rem; align-items: flex-start; }
+  .demo-msg.is-agent { flex-direction: row-reverse; }
+  .demo-msg .card { max-width: 32rem; }
+  .demo-msg-actions { position: relative; }
+  .demo-stage { position: relative; min-height: 14rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; margin-top: 1rem; }
+  .demo-bulk { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar">
+    <nav class="nav demo-topbar">
+      <span class="nav-brand">Support Desk</span>
+      <a class="nav-item is-active" href="#">Tickets</a>
+      <a class="nav-item" href="#">Customers</a>
+      <a class="nav-item" href="#">Settings</a>
+      <span class="demo-topbar-spacer"></span>
+      <select class="select" id="theme-picker" aria-label="Theme" style="width:auto; flex:none;"></select>
+      <span class="avatar">SM</span>
+    </nav>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+    <div class="demo-split">
+      <section>
+        <nav class="breadcrumbs" style="margin-bottom:0.5rem;"><a class="breadcrumb-item" href="#">Inbox</a><span class="breadcrumb-item is-current">Support</span></nav>
+        <div class="input-group" style="margin-bottom: 0.75rem;">
+          <span class="input-addon"><svg class="icon"><use href="assets/icons/icons.svg#icon-search"/></svg></span>
+          <input class="input" type="search" placeholder="Search tickets&hellip;" aria-label="Search tickets">
+        </div>
+        <div class="demo-bulk">
+          <input class="checkbox" type="checkbox" aria-label="Select all tickets">
+          <button class="badge badge-accent badge-button is-active">Mine</button>
+          <button class="badge badge-button">Unassigned</button>
+          <button class="badge badge-button">Urgent</button>
+          <select class="select input-sm" aria-label="Sort" style="width:auto;margin-left:auto;"><option>Newest</option><option>SLA due</option></select>
+        </div>
+        <div class="segmented" style="margin-bottom: 0.75rem;">
+          <button class="segmented-item is-active" type="button">Open</button>
+          <button class="segmented-item" type="button">Pending</button>
+          <button class="segmented-item" type="button">Closed</button>
+        </div>
+        <div class="demo-ticket-list">
+          <a class="demo-ticket is-active">
+            <span class="demo-ticket-title">Can't export invoices as CSV</span>
+            <span class="demo-ticket-meta"><span>#4821 &middot; Ava Thompson</span><span class="status status-warn">Pending</span></span>
+          </a>
+          <a class="demo-ticket">
+            <span class="demo-ticket-title">Billing charged twice this month</span>
+            <span class="demo-ticket-meta"><span>#4819 &middot; Marcus Lee</span><span class="status status-error">Urgent</span></span>
+          </a>
+          <a class="demo-ticket">
+            <span class="demo-ticket-title">Feature request: dark mode</span>
+            <span class="demo-ticket-meta"><span>#4810 &middot; Priya Nair</span><span class="status status-idle">Low</span></span>
+          </a>
+          <a class="demo-ticket">
+            <span class="demo-ticket-title">Login loop on mobile app</span>
+            <span class="demo-ticket-meta"><span>#4802 &middot; Sam O'Reilly</span><span class="status status-ok">Answered</span></span>
+          </a>
+        </div>
+        <nav class="pagination" style="margin-top:0.75rem;"><a class="pagination-item is-disabled">&lsaquo;</a><a class="pagination-item is-active">1</a><a class="pagination-item">2</a><a class="pagination-item">&rsaquo;</a></nav>
+        <div class="skeleton skeleton-text" style="margin-top:0.75rem;"></div>
+        <div class="skeleton skeleton-text" style="width:60%;"></div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header demo-detail-head">
+          <div>
+            <strong>#4821 &middot; Can't export invoices as CSV</strong>
+            <div class="field-hint">Opened by Ava Thompson &middot; 2 hours ago</div>
+          </div>
+          <span class="btn-toolbar"><span class="badge badge-warning">Pending</span><span class="btn-group"><button class="btn btn-sm" data-tooltip="Previous ticket">&lsaquo;</button><button class="btn btn-sm" data-tooltip="Next ticket">&rsaquo;</button></span></span>
+        </header>
+
+        <div class="tabs" style="padding: 0 0.9rem; margin-top: 0.75rem;">
+          <button class="tab is-active">Conversation</button>
+          <button class="tab">Ticket details</button>
+          <button class="tab">Activity</button>
+        </div>
+
+        <div style="padding: 0.9rem;">
+          <div class="alert alert-info">Customer is on the Company plan, renews in 12 days.</div>
+
+          <div class="demo-thread">
+            <div class="demo-msg">
+              <span class="avatar">AT</span>
+              <div class="card"><strong>Ava Thompson</strong> <span class="field-hint">09:02</span><p style="margin:0.25rem 0 0;">When I click Export on the invoices page nothing happens. It worked last month.</p>
+                <div class="card" style="margin-top:0.5rem;padding:0.5rem 0.75rem;"><span class="mono">invoices-export.png</span> <span class="field-hint">142 KB</span></div>
+              </div>
+            </div>
+            <div class="demo-msg is-agent">
+              <span class="avatar">SM</span>
+              <div class="card"><strong>Sam Morgan</strong> <span class="badge">Agent</span> <span class="field-hint">09:14</span><p style="margin:0.25rem 0 0;">Thanks Ava &mdash; looking into it now.</p></div>
+              <div class="demo-msg-actions">
+                <div class="context-menu" style="position:static; width:9rem;">
+                  <button class="context-menu-item">Quote reply</button>
+                  <button class="context-menu-item">Copy link</button>
+                  <div class="context-menu-divider"></div>
+                  <button class="context-menu-item is-danger">Delete note</button>
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-warning">SLA due in 2 hours &mdash; first reply sent, resolution pending.</div>
+            <div class="row is-items-center" style="gap:0.5rem;"><span class="spinner" aria-label="Customer typing"></span><span class="field-hint">Ava is typing&hellip;</span></div>
+          </div>
+
+
+          <div class="field-group" style="margin-top: 1rem;">
+            <div class="field-group-title">Reply</div>
+            <div class="field">
+              <label class="label" for="demo-reply">Message</label>
+              <textarea class="textarea is-invalid" id="demo-reply" rows="4" aria-describedby="demo-reply-err">Hi Ava, thanks for flagging this — could you tell us which browser you're using when the export button doesn't respond?</textarea>
+              <span class="field-error" id="demo-reply-err">Replies over 2,000 characters are truncated in email.</span>
+            </div>
+            <div class="row" style="gap:0.75rem;flex-wrap:wrap;">
+              <div class="field w-14"><label class="label" for="demo-assignee">Assignee</label><select class="select" id="demo-assignee"><option>Sam Morgan</option><option>Priya Nair</option><option>Unassigned</option></select></div>
+              <div class="field w-14"><label class="label" for="demo-due">Snooze until</label><div class="input-group"><input class="input" id="demo-due" type="text" value="Tomorrow 09:00"><span class="input-addon">local</span></div></div>
+            </div>
+            <div class="field-row">
+              <label class="label">Notify customer by email</label>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </label>
+            </div>
+            <fieldset class="radio-group" style="--radio-group-direction: row;">
+              <legend class="label">Priority</legend>
+              <label class="check"><input class="radio" type="radio" name="demo-priority">Low</label>
+              <label class="check"><input class="radio" type="radio" name="demo-priority" checked>Normal</label>
+              <label class="check"><input class="radio" type="radio" name="demo-priority">Urgent</label>
+            </fieldset>
+            <div class="dropzone">Drop a screenshot, or click to attach.</div>
+          </div>
+
+          <div class="qa-row" style="display:flex; gap:0.5rem; margin-top: 1rem;">
+            <button class="btn btn-primary">Send reply</button>
+            <button class="btn btn-success">Resolve</button>
+            <button class="btn btn-secondary">Close ticket</button>
+            <button class="btn btn-danger btn-sm">Mark spam</button>
+            <button class="btn btn-ghost">Snooze</button>
+          </div>
+        </div>
+
+        <div style="padding: 0 0.9rem 0.9rem;">
+          <details class="accordion-item">
+            <summary class="accordion-trigger">Custom fields</summary>
+            <div class="accordion-panel">
+              <div class="field-row"><label class="label">Browser</label><span class="mono">Chrome 128</span></div>
+              <div class="field-row"><label class="label">Plan</label><span class="badge badge-accent">Company</span></div>
+            </div>
+          </details>
+          <details class="accordion-item">
+            <summary class="accordion-trigger">Related tickets</summary>
+            <ul class="list accordion-panel">
+              <li><a class="list-item" href="#">#4790 &middot; Export timeout on large accounts</a></li>
+              <li><a class="list-item" href="#">#4733 &middot; CSV encoding</a></li>
+            </ul>
+          </details>
+          <div class="demo-stage">
+            <div class="modal-overlay" style="position:absolute;">
+              <div class="modal">
+                <div class="modal-header">Merge into #4790?</div>
+                <p class="field-hint" style="margin:0;">Replies and attachments from both tickets will be combined.</p>
+                <div class="modal-footer"><button class="btn btn-secondary btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Merge</button></div>
+              </div>
+            </div>
+          </div>
+          <div class="toast toast-success" style="margin-top:0.75rem;">Reply sent to Ava.</div>
+          <div class="toast toast-danger" style="margin-top:0.5rem;">Could not attach file: over 10 MB.</div>
+        </div>
+      </section>
+
+      <aside class="stack">
+        <section class="panel">
+          <header class="panel-header"><strong>Customer</strong></header>
+          <div style="padding: 0.9rem; text-align: center;">
+            <span class="avatar avatar-lg">AT</span>
+            <p style="margin: 0.5rem 0 0; font-weight: 600;">Ava Thompson</p>
+            <p class="field-hint">ava@northwind.example</p>
+            <span class="badge badge-accent">Company plan</span>
+          </div>
+          <div class="divider"></div>
+          <div style="padding: 0 0.9rem 0.9rem;">
+            <p class="field-hint">Customer since Mar 2023</p>
+            <p class="field-hint">Renews in 12 days</p>
+            <p class="field-hint">3 open tickets, 14 resolved</p>
+          </div>
+        </section>
+        <section class="panel">
+          <header class="panel-header"><strong>Satisfaction</strong></header>
+          <div style="padding: 0.9rem;">
+            <div class="stat"><span class="stat-value">94%</span><span class="stat-label">CSAT this month</span><span class="stat-trend is-up">&uarr; 2 pts</span></div>
+            <div class="progress" style="margin-top:0.75rem;"><div class="progress-bar" style="width:94%"></div></div>
+          </div>
+        </section>
+        <section class="panel">
+          <header class="panel-header"><strong>Attachments</strong><span class="badge">1</span></header>
+          <div class="empty-state">
+            <span class="empty-state-icon">&empty;</span>
+            <span class="empty-state-title">No other files</span>
+            <span class="empty-state-hint">Drop files into the reply box.</span>
+          </div>
+        </section>
+        <div class="popover" style="position:static;">
+          <strong>Macro: CSV export</strong>
+          <p class="field-hint" style="margin:0.35em 0 0;">Inserts the standard browser troubleshooting steps.</p>
+        </div>
+        <section class="panel">
+          <header class="panel-header"><strong>Activity</strong></header>
+          <div class="log">
+            <div class="log-line"><span class="log-time mono">09:02</span><span>Ticket opened</span></div>
+            <div class="log-line"><span class="log-time mono">09:14</span><span>Assigned to Sam</span></div>
+            <div class="log-line" data-level="warn"><span class="log-time mono">10:40</span><span>SLA due in 2 hours</span></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="app-status">
+    <span>4 open &middot; 1 urgent</span>
+    <span class="status status-ok">Synced</span>
+  </footer>
+
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

@@ -1337,7 +1337,7 @@ Ids are `icon-<tabler-name>` for the vendored batch (e.g.
 `icon-player-pause`, `icon-broadcast`, `icon-qr-code`,
 `icon-hourglass`, `icon-timer`, `icon-chevron-left`,
 `icon-chevron-right`) plus the original hand-drawn names (`icon-home`,
-`icon-settings`, `icon-search`, `icon-trash`, …). `example.html`'s
+`icon-settings`, `icon-search`, `icon-trash`, …). `components.html`'s
 "Icon pack" section renders the whole sprite live, which is the fastest
 way to browse what's available.
 

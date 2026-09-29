@@ -149,21 +149,15 @@
     background: var(--chip-bg);
     border-bottom: 1px solid var(--border);
   }
-  /* The iframe is rendered at its natural desktop size, then scaled down
-     with a CSS transform so it fits the card — this gives a real,
-     always-accurate live preview of the theme instead of a maintained
-     screenshot that goes stale the moment a theme's CSS changes. */
-  .preview iframe {
+  /* Static screenshot from test/visual-baseline/, regenerated with
+     scripts/screenshot_themes.py --baseline. */
+  .preview img {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 1400px;
-    height: 875px;
-    border: 0;
-    transform-origin: top left;
-    /* scale = card width / 1400px, recomputed per card in JS since card
-       width is fluid (auto-fill grid) */
-    background: #fff;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
   }
   .preview .preview-fallback {
     position: absolute;
@@ -227,8 +221,8 @@
 <header class="page-head">
   <h1>ftl-themes gallery</h1>
   <p>
-    Every shipping theme at a glance, rendered live in an embedded
-    <code>example.html</code> (or another demo page — pick one per card).
+    Every shipping theme at a glance, shown as a screenshot of
+    <code>components.html</code> (or another demo page — pick one per card).
     Filter by name, category, and light/dark scheme — the three combine.
     Click a card's preview or "View full page" to open it full-size.
   </p>
@@ -246,10 +240,13 @@
   </div>
   <select class="page-select" id="global-page-select" aria-label="Preview page for every card">
     <option value="">Preview: per-card</option>
-    <option value="example.html">Preview: example.html (components)</option>
-    <option value="example-2.html">Preview: example-2.html (dashboard)</option>
-    <option value="example-3.html">Preview: example-3.html (marketing)</option>
-    <option value="example-4.html">Preview: example-4.html (support desk)</option>
+    <option value="components.html">Preview: components.html (components)</option>
+    <option value="dashboard.html">Preview: dashboard.html (dashboard)</option>
+    <option value="marketing.html">Preview: marketing.html (marketing)</option>
+    <option value="ticketsystem.html">Preview: ticketsystem.html (support desk)</option>
+    <option value="powerstation.html">Preview: powerstation.html (power station)</option>
+    <option value="soundmixer.html">Preview: soundmixer.html (sound mixer)</option>
+    <option value="livechat.html">Preview: livechat.html (live chat)</option>
   </select>
   <span id="count"></span>
 </div>
@@ -260,10 +257,13 @@
 <script>
 (function () {
   var EXAMPLE_PAGES = [
-    { value: "example.html", label: "Components" },
-    { value: "example-2.html", label: "Dashboard" },
-    { value: "example-3.html", label: "Marketing" },
-    { value: "example-4.html", label: "Support desk" }
+    { value: "components.html", label: "Components" },
+    { value: "dashboard.html", label: "Dashboard" },
+    { value: "marketing.html", label: "Marketing" },
+    { value: "ticketsystem.html", label: "Support desk" },
+    { value: "powerstation.html", label: "Power station" },
+    { value: "soundmixer.html", label: "Sound mixer" },
+    { value: "livechat.html", label: "Live chat" }
   ];
 
   var grid = document.getElementById("grid");
@@ -290,7 +290,7 @@
 
   var schemeFilter = "all";
   var categoryFilter = "all";
-  var cards = []; // { el, slug, label, scheme, category, pageSelect, iframeHost }
+  var cards = []; // { el, slug, label, scheme, category, pageSelect }
 
   function buildCard(theme) {
     var card = document.createElement("div");
@@ -372,7 +372,7 @@
     function updateLink() { link.href = targetUrl(); }
     pageSelect.addEventListener("change", function () {
       updateLink();
-      loadIframe(preview, targetUrl());
+      loadShot(preview, targetUrl());
     });
     updateLink();
 
@@ -399,20 +399,16 @@
     };
   }
 
-  // Loads (or replaces) the iframe inside a card's .preview container, and
-  // scales it to fit via a CSS transform so a full-size render always
-  // shows, rather than a cramped viewport-narrow one.
-  function loadIframe(preview, url) {
+  // Swaps in the page's baseline screenshot: test/visual-baseline/<slug>/<page>.png
+  function loadShot(preview, url) {
+    var m = url.match(/^([^?]+)\.html\?theme=(.+)$/);
     preview.innerHTML = "";
-    var iframe = document.createElement("iframe");
-    iframe.loading = "lazy";
-    iframe.title = url;
-    iframe.src = url;
-    iframe.addEventListener("error", function () {
-      showFallback(preview, url);
-    });
-    preview.appendChild(iframe);
-    scaleIframe(preview, iframe);
+    var img = document.createElement("img");
+    img.loading = "lazy";
+    img.alt = url;
+    img.src = "test/visual-baseline/" + m[2] + "/" + m[1] + ".png";
+    img.addEventListener("error", function () { showFallback(preview, url); });
+    preview.appendChild(img);
   }
 
   function showFallback(preview, url) {
@@ -423,15 +419,7 @@
     preview.appendChild(fallback);
   }
 
-  function scaleIframe(preview, iframe) {
-    var width = preview.clientWidth || 1;
-    var scale = width / 1400;
-    iframe.style.transform = "scale(" + scale + ")";
-    iframe.style.height = (875) + "px";
-  }
-
-  // Only load the iframe once a card is actually visible, so 22+ live
-  // previews on one page don't all fetch/render at once.
+  // Only load the image once a card is actually visible.
   var io = ("IntersectionObserver" in window)
     ? new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -439,7 +427,7 @@
           var c = entry.target.__card;
           if (c && !c.loaded) {
             c.loaded = true;
-            loadIframe(c.preview, c.targetUrl());
+            loadShot(c.preview, c.targetUrl());
           }
           io.unobserve(entry.target);
         });
@@ -481,14 +469,7 @@
 
   globalPageSelect.addEventListener("change", function () {
     cards.forEach(function (c) {
-      if (c.loaded) loadIframe(c.preview, c.targetUrl());
-    });
-  });
-
-  window.addEventListener("resize", function () {
-    cards.forEach(function (c) {
-      var iframe = c.preview.querySelector("iframe");
-      if (iframe) scaleIframe(c.preview, iframe);
+      if (c.loaded) loadShot(c.preview, c.targetUrl());
     });
   });
 
@@ -502,7 +483,7 @@
         grid.appendChild(c.el);
         cards.push(c);
         if (io) io.observe(c.el);
-        else loadIframe(c.preview, c.targetUrl());
+        else loadShot(c.preview, c.targetUrl());
         if (theme.category && seenCategories.indexOf(theme.category) === -1) {
           seenCategories.push(theme.category);
         }

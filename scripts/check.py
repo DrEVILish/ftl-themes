@@ -26,7 +26,7 @@ Every rule corresponds to a bug that actually shipped once:
              it is checked like every other dist file.
   docs       a theme without a stated intent gets "improved" into a different
              theme by the next contributor. Requires "Signature details" too,
-             not just "Core values" — that's the section example.html's
+             not just "Core values" — that's the section components.html's
              compare mode surfaces, and 11 themes shipped without it before
              a v3.5.1 pass caught the gap.
   layout     a theme is a layout as much as a palette; one that sets no
@@ -387,7 +387,7 @@ for path in sorted(glob.glob("themes/*/theme.css")):
                             "what it is trying to achieve (see any existing theme)")
     else:
         # "Signature details" specifically (not just Core values) is what
-        # example.html's compare mode surfaces — a theme missing it isn't
+        # components.html's compare mode surfaces — a theme missing it isn't
         # broken, but it's invisible to that tool, so the same soft warning
         # applies here as to the other structural sections.
         for heading in ("What this theme is trying to achieve", "Core values", "Signature details"):

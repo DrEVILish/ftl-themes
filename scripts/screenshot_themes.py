@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Visual-regression tool for ftl-themes.
 
-Screenshots every theme in dist/themes.json against every example*.html QA
+Screenshots every theme in dist/themes.json against every demo-page QA
 page at a fixed 1280x900 viewport, and either writes those screenshots as
 the committed baseline (--baseline) or diffs them against the existing
 baseline and reports what changed (default).
@@ -38,7 +38,7 @@ DIFF_DIR = ROOT / "test" / "visual-diffs"
 THEMES_JSON = ROOT / "dist" / "themes.json"
 SHOT_HELPER = ROOT / "scripts" / "_pw_shot.mjs"
 PLAYWRIGHT_SRC = "/opt/node22/lib/node_modules/playwright"
-EXAMPLE_PAGES = ["example", "example-2", "example-3", "example-4"]
+EXAMPLE_PAGES = ["components", "dashboard", "marketing", "ticketsystem", "powerstation", "soundmixer", "livechat"]
 
 # Percentage of pixels (0-100) that must differ, beyond DIFF_PIXEL_TOLERANCE
 # per-channel noise, before a page is reported as changed. Anti-aliasing and

@@ -20,7 +20,7 @@ const outdir = opt('--outdir');
 const only = opt('--themes', '');
 if (!outdir) { console.error('--outdir is required'); process.exit(2); }
 
-const EXAMPLE_PAGES = ['example.html', 'example-2.html', 'example-3.html', 'example-4.html'];
+const EXAMPLE_PAGES = ['components.html', 'dashboard.html', 'marketing.html', 'ticketsystem.html', 'powerstation.html', 'soundmixer.html', 'livechat.html'];
 const VIEWPORT = { width: 1280, height: 900 };
 
 const themes = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'themes.json'), 'utf8'))
@@ -28,7 +28,7 @@ const themes = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'themes.json')
   .filter(s => !only || only.split(',').includes(s))
   .sort();
 
-const browser = await chromium.launch();
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 const page = await browser.newPage({ viewport: VIEWPORT });
 
 // Freeze anything time-based (CSS animations/transitions, blinking carets)
