@@ -18,12 +18,12 @@ caption to say which theme it is, it has failed.
 ## Variants
 
 The frame is the same across the shows; the paint changed. The default is
-TNG (1987–94). Select the others with `data-variant` on `<html>` (CONTRACT.md
+plain **LCARS** — the orange-led palette. Select the others with `data-variant` on `<html>` (CONTRACT.md
 "Palette variants"):
 
 | `data-variant` | Era | Palette |
 |---|---|---|
-| *(none)* | TNG | Orange-led candy: orange, lavender, peach, tan. |
+| *(none)* | LCARS | Orange-led candy: orange, lavender, peach, tan. |
 | `voyager` | Voyager / DS9 | Gold-tan `#cc9966` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
 | `picard` | Picard (2399) | Cold blue `#5588ee` structure, ice-blue text `#ddeeff`, red `#ee5555`/orange `#ff8844` accents. |
 

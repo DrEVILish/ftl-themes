@@ -9,7 +9,7 @@ changes are called out explicitly here.
   its header (`Variants: id=Label, …`); `dist/themes.json` carries them as
   `variants: [{id, label}]`, the demo picker offers each one, pages accept
   `?variant=`, and the visual baseline shoots each as `<slug>~<variant>`.
-- **lcars: `voyager` and `picard` era variants** alongside the TNG default.
+- **lcars: `voyager` and `picard` era variants** alongside the default LCARS palette.
 - **winxp-luna: fidelity pass + `royale` / `royale-noir` variants.** Real
   Luna title-bar and taskbar gradients, separate 21px caption buttons, a
   thick blue window frame, group-box panels with the caption on the frame
