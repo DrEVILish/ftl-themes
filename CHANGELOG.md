@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **lcars: reference rules pass.** `references/lcars/RESEARCH.md` now
+  summarises the LCARS guideline and manifesto (Bracer Jack, via
+  lcars-terminal.de) plus four new captures. Every demo page was reviewed
+  against it: thick-leg/thin-bar frames; three type sizes and two text
+  colours; five structural colours with assigned meanings (sky/rose/gold
+  now alias into them); flat knobs, fader caps and keys; no outlines on
+  overlays, dropzones or keycaps; two spacing constants; 3:1 buttons;
+  modal titles no longer clipped; gauge-style meters and a bracketed
+  signal-trace EQ curve.
+
 - **lcars: frames follow the originals.** Audited against the TNG and
   Sovereign-class references: the shell is now the split double frame
   (a second, upward elbow from the rail into a bar over the content);

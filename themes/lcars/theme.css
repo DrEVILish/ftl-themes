@@ -34,10 +34,11 @@ html[data-theme="lcars"] {
   /* Hairlines and outlines don't exist in LCARS; structure is bars. */
   --border: #000000;
   --hairline: #000000;
-  /* On screen, LCARS text is coloured, never white: body copy in tan,
-     secondary text in periwinkle. */
+  /* Two text colours only (reference §7): tan for normal display, the
+     orange highlight (--accent) for what is being processed/selected.
+     Secondary text is the same tan — hierarchy comes from size and case. */
   --text: #ffcc99;
-  --muted: #9999ff;
+  --muted: #ffcc99;
   --accent: #ff9900;
   --accent-2: #9999cc;
   --danger: #d15a5a;
@@ -56,24 +57,29 @@ html[data-theme="lcars"] {
   --font: "Antonio", "Arial Narrow", sans-serif-condensed, sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #ffcc99;
-  /* LCARS candy bars — extra palette, namespaced so nothing collides.
-     --accent (#ff9900, "atomic tangerine") and --lcars-lavender
-     (#cc99cc, "lilac") are exact matches to the documented Okuda palette
-     (Michael/Denise Okuda's TNG-era LCARS reference, per trekcolors).
-     --lcars-sky was previously a pastel periwinkle (#9999ff) with no
-     source behind it; #6699ff sits much closer to the palette's actual
-     saturated blue family ("mariner" #3366cc, "bahama-blue" #006699) while
-     staying light enough for black button text to still clear the 4.5:1
-     contrast floor — mariner itself only reaches 3.9:1. */
+  /* LCARS candy bars — namespaced so nothing collides. --accent (#ff9900,
+     "atomic tangerine"), --lcars-lavender (#cc99cc, "lilac") and
+     --lcars-periwinkle (#9999ff) match the documented Okuda palette
+     (per trekcolors). */
+  /* Five structural colours, no more (reference §8), each with a job:
+     orange = active / real-time, lavender = idle controls, periwinkle =
+     information, peach and tan = frame structure (tan doubles as text).
+     The older names (sky, rose, gold) now alias into those five, so
+     nothing reaches for a sixth hue; --danger stays as the one alert
+     colour, which has a meaning. */
   --lcars-peach: #ff9966;
   --lcars-tan: #ffcc99;
   --lcars-lavender: #cc99cc;
-  --lcars-sky: #6699ff;
-  --lcars-rose: #cc6699;
   --lcars-periwinkle: #9999ff;
-  --lcars-gold: #ffcc66;
+  --lcars-sky: var(--lcars-periwinkle);
+  --lcars-rose: var(--lcars-peach);
+  --lcars-gold: var(--lcars-tan);
+  /* Three type sizes (reference §7): main title, sub header, normal data. */
+  --lcars-size-title: 2.4rem;
+  --lcars-size-sub: 1.25rem;
+  --lcars-size-data: 0.95rem;
 
-  --link: var(--lcars-sky);
+  --link: var(--accent);
   /* Elbow buttons: pill with one flat end. */
   /* Stand-alone buttons are full pills with the label pushed to the
      right-hand end, as on the on-screen control blocks. */
@@ -104,7 +110,15 @@ html[data-theme="lcars"] {
   --toggle-btn-border: transparent;
   --table-rule: transparent;
   --focus-ring: 0 0 0 0.2rem rgba(255, 153, 0, 0.25);
-  --dropdown-border: var(--accent);
+  --dropdown-border: transparent;
+  --dropdown-bg: #14141f;
+  --kbd-bg: var(--lcars-lavender);
+  --kbd-fg: #000;
+  --kbd-border: transparent;
+  --kbd-radius: 999px;
+  --kbd-shadow: none;
+  --dropzone-bg: #14141f;
+  --dropzone-border: transparent;
   --dropdown-radius: 1rem;
   --table-head-bg: var(--accent);
   --table-head-fg: #000;
@@ -183,12 +197,11 @@ html[data-theme="lcars"] {
   --alert-bg: #000;
   --alert-fg: var(--text);
   --alert-radius: 0.7rem 0 0 0.7rem;
-  --context-menu-bg: #000;
-  --context-menu-border: var(--accent);
+  --context-menu-border: transparent;
+  --context-menu-bg: #14141f;
   --context-menu-radius: 1rem;
   --context-menu-item-fg-hover: #000;
-  --dropzone-border: var(--lcars-sky);
-  --dropzone-radius: 1.2rem;
+    --dropzone-radius: 1.2rem;
   --dropzone-fg-active: var(--lcars-sky);
   --avatar-bg: var(--lcars-lavender);
   --avatar-fg: #000;
@@ -197,10 +210,10 @@ html[data-theme="lcars"] {
   --pagination-item-fg-active: #000;
   --breadcrumb-current-fg: var(--accent);
   --tooltip-bg: #000;
-  --tooltip-border: var(--accent);
+  --tooltip-border: transparent;
   --tooltip-radius: 0.6rem;
-  --popover-bg: #000;
-  --popover-border: var(--accent);
+  --popover-border: transparent;
+  --popover-bg: #14141f;
   --popover-radius: 1rem;
   --card-bg: transparent;
   --panel-bg: transparent;
@@ -217,8 +230,8 @@ html[data-theme="lcars"] h3 {
   color: var(--accent);
   font-weight: 400;
 }
-html[data-theme="lcars"] h1 { font-size: 2.6rem; line-height: 1; color: var(--lcars-gold); }
-html[data-theme="lcars"] .stat-value { font-family: var(--font); color: var(--accent); font-weight: 400; font-size: 2rem; }
+html[data-theme="lcars"] h1 { font-size: var(--lcars-size-title); line-height: 1; color: var(--accent); }
+html[data-theme="lcars"] .stat-value { font-family: var(--font); color: var(--accent); font-weight: 400; font-size: var(--lcars-size-title); }
 
 /* --- Bracket frames ---------------------------------------------------- *
  * The LCARS panel is not a box: it is a bracket — a thick candy leg down
@@ -232,27 +245,30 @@ html[data-theme="lcars"] .panel,
 html[data-theme="lcars"] .card,
 html[data-theme="lcars"] .modal {
   --lc: var(--accent);
-  --lc-leg: 0.9rem;
-  --lc-top: 1.5rem;
-  --lc-foot: 0.55rem;
+  /* Thick leg, thin bars: a frame never keeps its thickness round a turn
+     (reference §3). */
+  --lc-leg: 1.6rem;
+  --lc-top: 0.8rem;
+  --lc-foot: 0.5rem;
+  --lc-pad: calc(1rem * var(--density));
   border: 0;
   border-left: var(--lc-leg) solid var(--lc);
   border-top: var(--lc-top) solid var(--lc);
   border-bottom: var(--lc-foot) solid var(--lc);
-  border-radius: 2.6rem 0.75rem 0.3rem 2rem / 2.1rem 0.75rem 0.3rem 1.3rem;
+  border-radius: 3.2rem 0.4rem 0.25rem 2.6rem / 1.9rem 0.4rem 0.25rem 1.3rem;
   box-shadow: none;
 }
 /* A card has no title to carry, so its top bar is a thin rule. */
 html[data-theme="lcars"] .card {
-  --lc-leg: 0.7rem;
-  --lc-top: 0.45rem;
+  --lc-leg: 1rem;
+  --lc-top: 0.4rem;
   --lc-foot: 0.3rem;
-  border-radius: 1.8rem 0.3rem 0.2rem 1.4rem / 1.2rem 0.3rem 0.2rem 0.9rem;
+  border-radius: 2rem 0.2rem 0.15rem 1.6rem / 1.1rem 0.2rem 0.15rem 0.8rem;
 }
 html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+2) { --lc: var(--lcars-lavender); }
 html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+3) { --lc: var(--lcars-peach); }
 html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+4) { --lc: var(--lcars-periwinkle); }
-html[data-theme="lcars"] .modal { --lc: var(--lcars-lavender); }
+html[data-theme="lcars"] .modal { --lc: var(--lcars-lavender); --lc-pad: 1.5rem; }
 
 /* The title sits in a break in the top bar, as on the ship displays:
    pulled up into the border, a black gap cut out of the bar round it, the
@@ -261,10 +277,10 @@ html[data-theme="lcars"] .panel-header,
 html[data-theme="lcars"] .modal-header {
   width: fit-content;
   max-width: calc(100% - 2rem);
-  margin: calc(-1rem * var(--density) - var(--lc-top) - 0.2rem) 0 calc(1rem * var(--density)) 1.5rem;
+  margin: calc(-1 * var(--lc-pad) - var(--lc-top) - (1.6rem - var(--lc-top)) / 2) 0 calc(1rem * var(--density)) 1.5rem;
   padding: 0 0.55rem;
-  height: calc(var(--lc-top) + 0.4rem);
-  line-height: calc(var(--lc-top) + 0.4rem);
+  height: 1.6rem;
+  line-height: 1.6rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -272,7 +288,7 @@ html[data-theme="lcars"] .modal-header {
   border: 0;
   border-radius: 0;
   color: var(--lc);
-  font-size: 1.45rem;
+  font-size: var(--lcars-size-sub);
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -289,15 +305,15 @@ html[data-theme="lcars"] .alert {
 
 /* Buttons: pill blocks, label at the right-hand end. */
 /* Labels sit at the bottom right of the block, as on every LCARS key. */
-html[data-theme="lcars"] .btn:not(.btn-icon):not(.btn-sm) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 5.5rem; min-height: 2.3rem; }
-html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; }
+html[data-theme="lcars"] .btn:not(.btn-icon):not(.btn-sm) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 6.9rem; min-height: 2.3rem; }
+html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; min-width: 4.8rem; }
 html[data-theme="lcars"] .btn-primary { --btn-bg: var(--accent); --btn-bg-hover: var(--lcars-gold); }
 html[data-theme="lcars"] .btn-secondary { --btn-bg: var(--lcars-periwinkle); --btn-fg: #000; }
 html[data-theme="lcars"] .btn-success { --btn-bg: var(--lcars-sky); }
 html[data-theme="lcars"] .btn-ghost { min-width: 0; }
 
 /* Tabs: touching blocks, pill-capped at the two ends of the row. */
-html[data-theme="lcars"] .tabs { border-bottom: 0; gap: 0.25rem; }
+html[data-theme="lcars"] .tabs { border-bottom: 0; gap: 0.3rem; }
 html[data-theme="lcars"] .tab { border: 0; padding: 0.45em 1.2em 0.3em; font-size: 0.95em; }
 html[data-theme="lcars"] .tab.is-active { border-bottom: 0; }
 html[data-theme="lcars"] .tab:hover:not(.is-active) { background: var(--lcars-tan); color: #000; }
@@ -318,7 +334,7 @@ html[data-theme="lcars"] {
   --app-columns: var(--lcars-rail) minmax(0, 1fr);
   /* No column gap: the lower frame's bar has to run flush out of the
      rail; the content inset is padding instead. */
-  --app-gap: 0.3rem 0;
+  --app-gap: 0.6rem 0;
   --app-padding: 0.5rem;
   --app-bar-bg: #000;
   --app-bar-fg: var(--text);
@@ -526,12 +542,9 @@ html[data-theme="lcars"][data-variant="voyager"] {
   --lcars-peach: #ff9966;
   --lcars-tan: #ffcc99;
   --lcars-lavender: #9999cc;
-  --lcars-sky: #99ccff;
-  --lcars-rose: #cc6666;
   --lcars-periwinkle: #6688cc;
-  --lcars-gold: #ffcc66;
   --text: #ffcc99;
-  --muted: #99ccff;
+  --muted: #ffcc99;
   --flare: #99ccff;
   --focus-ring: 0 0 0 0.2rem rgba(204, 153, 102, 0.3);
 }
@@ -543,24 +556,17 @@ html[data-theme="lcars"][data-variant="picard"] {
   --lcars-peach: #ff8844;
   --lcars-tan: #aabbdd;
   --lcars-lavender: #88aaee;
-  --lcars-sky: #99ccff;
-  --lcars-rose: #ee5555;
   --lcars-periwinkle: #4477dd;
-  --lcars-gold: #ddeeff;
   --text: #ddeeff;
-  --muted: #99bbff;
+  --muted: #ddeeff;
   --flare: #ee5555;
-  --link: #99ccff;
+  --link: var(--accent);
   --focus-ring: 0 0 0 0.2rem rgba(85, 136, 238, 0.35);
 }
 
 /* Mixing-console primitives in LCARS paint: candy knob caps, pill keys
    lit in the palette (black legends), black strips on the black field. */
 html[data-theme="lcars"] {
-  --knob-hf: var(--lcars-rose);
-  --knob-hmf: var(--accent);
-  --knob-lmf: var(--lcars-sky);
-  --knob-lf: var(--lcars-tan);
   --knob-band-pointer: #000000;
   --knob-arc: var(--accent);
   --key-bg: #000000;
@@ -570,9 +576,7 @@ html[data-theme="lcars"] {
   --key-shadow: none;
   --key-on: var(--lcars-sky);
   --key-on-fg: #000000;
-  --key-mute: var(--lcars-rose);
   --key-mute-fg: #000000;
-  --key-solo: var(--lcars-gold);
   --key-sel: var(--accent);
   --key-sel-fg: #000000;
   /* Strips are dark filled blocks (no outlines), the bay pure black. */
@@ -580,7 +584,78 @@ html[data-theme="lcars"] {
   --strip-selected: var(--accent);
   --mixer-border: transparent;
   --scribble-bg: #000000;
-  --fader-cap: var(--lcars-lavender);
-  --fader-cap-line: #000000;
   --eq-line: var(--accent);
 }
+
+/* --- Reference rules pass (references/lcars/RESEARCH.md) --------------- */
+
+/* Three type sizes only (§7): title, sub header, normal data. Everything
+   that isn't a title or a sub header is set at the data size; only the
+   printed ruler numerals on scales keep their own size, as on screen. */
+html[data-theme="lcars"] body { font-size: var(--lcars-size-data); }
+html[data-theme="lcars"] :is(h1, .app-bar .nav-brand, .stat-value, .readout, .readout-lg) { font-size: var(--lcars-size-title); }
+html[data-theme="lcars"] .readout-sm { font-size: var(--lcars-size-sub); }
+html[data-theme="lcars"] .transport { flex-wrap: wrap; }
+html[data-theme="lcars"] .toggle-btn { white-space: nowrap; }
+html[data-theme="lcars"] :is(h2, h3, h4, .panel-header, .modal-header, .app-bar .nav-item) { font-size: var(--lcars-size-sub); }
+html[data-theme="lcars"] :is(p, .btn, .btn-sm, .label, .field-hint, .field-error, .stat-label, .stat-trend, .badge, .status,
+  .table th, .table td, .list-item, .breadcrumb-item, .segmented-item, .pagination-item, .context-menu-item, .dropdown-item,
+  .toast, .alert, .input, .select, .textarea, .input-addon, kbd, .log, .readout-unit, .switch-label, .toggle-btn,
+  .strip-label, .knob-label, .key, .scribble-name, .scribble-num, .nav-item, .tab, small) { font-size: var(--lcars-size-data); }
+html[data-theme="lcars"] .btn { white-space: nowrap; }
+html[data-theme="lcars"] .readout-unit { font-size: var(--lcars-size-data); }
+
+/* Modal titles: a modal scrolls (overflow clips anything pulled into its
+   border), so its title sits on black directly under the bar, left. */
+html[data-theme="lcars"] .modal-header { margin: 0 0 1rem; height: auto; line-height: 1.2; padding: 0; white-space: normal; }
+
+/* Vector look (§2): no gradients, glows or emboss on controls. Knobs are
+   flat candy discs with a black pointer; fader caps flat lavender blocks
+   with a black centre line; lit keys are simply lit. */
+html[data-theme="lcars"] .knob-dial::after {
+  background:
+    linear-gradient(#000, #000) 50% 8% / 2px 38% no-repeat,
+    var(--knob-color);
+  border: 0;
+  box-shadow: none;
+}
+html[data-theme="lcars"] {
+  --knob-hf: var(--lcars-peach);
+  --knob-hmf: var(--accent);
+  --knob-lmf: var(--lcars-periwinkle);
+  --knob-lf: var(--lcars-lavender);
+  --knob-color: var(--lcars-lavender);
+  --fader-cap-bg: linear-gradient(#000, #000) 50% 50% / 100% 2px no-repeat, var(--lcars-lavender);
+  --fader-cap-border: transparent;
+  --fader-cap-radius: 0.3rem;
+  --fader-cap-shadow: none;
+  --key-glow: none;
+  --key-solo: var(--lcars-tan);
+  --key-mute: var(--danger);
+  /* Gauges (§10, MSD panel): black tubes with a lavender tick ruler down
+     both sides, filled from the bottom — continuous, not LED segments. */
+  --meter-track:
+    linear-gradient(90deg, transparent 3px, #000 3px calc(100% - 3px), transparent 0),
+    repeating-linear-gradient(0deg, #000 0 7px, var(--lcars-lavender) 7px 8px);
+  --meter-low: var(--lcars-periwinkle);
+  --meter-mid: var(--accent);
+  --meter-high: var(--danger);
+  --meter-gap: transparent;
+  --meter-unlit: 0;
+  --meter-gr: var(--lcars-peach);
+  /* Signal displays (§10, Picard comms / Lower Decks ECG): a black field,
+     faint periwinkle grid, a glowing trace, framed by a [ ] bracket. */
+  --eq-bg: #000;
+  --eq-grid: rgba(153, 153, 255, 0.22);
+  --eq-zero: rgba(153, 153, 255, 0.5);
+  --eq-line: var(--lcars-periwinkle);
+  --eq-fill: transparent;
+  --eq-border: transparent;
+}
+html[data-theme="lcars"] .eq-curve {
+  border: 0;
+  border-left: 0.35rem solid var(--lcars-lavender);
+  border-right: 0.35rem solid var(--lcars-lavender);
+  border-radius: 0.35rem;
+}
+html[data-theme="lcars"] .eq-curve path { filter: drop-shadow(0 0 2px var(--eq-line)); }

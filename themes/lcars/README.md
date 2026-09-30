@@ -36,7 +36,7 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
 2. **The elbow is the signature.** A horizontal bar that curves down into a
    vertical rail is the single most identifying shape in the whole system.
    The app shell's bar does exactly this (`--app-bar-radius`).
-3. **Candy bars code by colour, not by meaning.** The orange/lavender/sky/
+3. **Five colours, each with a job** (see `references/lcars/RESEARCH.md` §8). The orange/lavender/periwinkle/
    rose/tan palette is decorative structure. Resist making every lavender
    block mean one semantic thing — that's a modern dashboard habit.
 4. **Rounded ends, flat joins.** A block is a pill where it terminates and
@@ -48,8 +48,10 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
 6. **Type is tall, condensed, uppercase.** Antonio stands in for the
    original's Swiss 911/Helvetica Compressed, and sets *everything*, body
    copy included.
-7. **Text is coloured, never white.** Body copy is tan (`#ffcc99`),
-   secondary text periwinkle (`#9999ff`), titles orange/gold.
+7. **Two text colours, three sizes.** Normal text is tan (`#ffcc99`), the
+   highlight orange (`--accent`) — nothing else, never white. Type comes
+   in three sizes only: main title (2.4rem), sub header (1.25rem), normal
+   data (0.95rem); only printed ruler numerals on scales are exempt.
 
 ## How the tokens carry that
 
@@ -57,9 +59,9 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
 |---|---|---|
 | `--bg` | `#000000` | True black. Not near-black — the blocks must float. |
 | `--accent` | `#ff9900` | The canonical LCARS orange; the system's primary structural colour. Matches "atomic tangerine" in the documented Okuda reference palette exactly. |
-| `--lcars-lavender` / `-sky` / `-rose` / `-tan` / `-peach` | `#cc99cc` `#6699ff` `#cc6699` `#ffcc99` `#ff9966` | The candy palette, namespaced so it can never collide with another theme's tokens. `-lavender` matches the reference palette's "lilac" exactly; `-sky` was corrected from an unsourced pastel periwinkle to sit close to the reference's saturated blue family ("mariner"/"bahama-blue") while still clearing the button-text contrast floor. |
+| `--lcars-lavender` / `-periwinkle` / `-peach` / `-tan` | `#cc99cc` `#9999ff` `#ff9966` `#ffcc99` | With `--accent` `#ff9900`, the five structural colours: orange = active/real-time, lavender = idle controls, periwinkle = information, peach and tan = frame (tan is also the text colour). `--lcars-sky`, `-rose` and `-gold` survive only as aliases into these five, so no sixth hue appears. `--danger` is the one alert colour. |
 | `--surface` | `#000000` | Panels have no fill; they are candy elbow frames on the black substrate. |
-| `--text` / `--muted` | `#ffcc99` / `#9999ff` | Coloured text, as on screen. |
+| `--text` / `--muted` | `#ffcc99` / `#ffcc99` | One normal text colour; the highlight is `--accent`. |
 | `--radius` | `1.4rem` | Large by default — everything wants to be a pill. |
 | `--on-accent` | `#000000` | Black text on candy fills. LCARS never sets light text on a colour block. |
 | `--density` | `1.15` | Deliberately loose. |
@@ -80,7 +82,7 @@ this catalog could verify against.
   position. Frame colours rotate orange → lavender → peach → periwinkle by
   position.
 
-- **Meters** band in the *candy* palette (sky → orange → rose) rather than
+- **Meters** are MSD-panel gauges — black tubes with a lavender tick ruler, filled from the bottom — banded periwinkle → orange → alert red rather than
   green/amber/red. A traffic-light meter instantly reads as a modern audio
   app wearing an LCARS costume.
 - **Readouts** set in Antonio, large and blocky — the on-screen numerals.
@@ -162,11 +164,11 @@ The palette follows the trekcolors/Okuda hexes, so almost nothing was lifted to 
 | tan | `#ffcc99` | 14.35:1 |
 | lavender | `#cc99cc` | 9.0:1 |
 | rose | `#cc6699` | 5.93:1 (the tightest candy block) |
-| sky | `#6699ff` | 7.57:1 |
+| periwinkle | `#9999ff` | 8.35:1 |
 
-- **Deviations from the reference:** `--lcars-sky` was moved *away* from an unsourced `#9999ff` (8.35:1) toward the palette's saturated blue family. The reference's own "mariner" `#3366cc` is only 3.91:1 under black text, so it cannot carry black button text; `#6699ff` is the compromise. `--danger` `#d15a5a` (5.32:1 under black) and the success/warning fills are not attested LCARS hexes — LCARS has no canonical red/green semantics, so these are catalogue additions.
+- **Deviations from the reference:** none in the structural palette — all five fills are documented Okuda hexes. `--danger` `#d15a5a` (5.32:1 under black) and the success/warning fills are catalogue additions for state; LCARS has no canonical red/green semantics.
 - **Nav on the sweep bar:** the root nav tokens (orange brand, lavender items) measured 1.0:1 and 1.3:1 on the orange bar, so the bar overrides both to black (9.81:1).
-- `--muted` `#9999ff` is 8.35:1 on the black `--surface`; `--text` `#ffcc99` is 14.35:1.
+- `--text` / `--muted` `#ffcc99` is 14.35:1 on black; the `--accent` highlight `#ff9900` is 9.81:1.
 
 ## Reference status
 
@@ -211,4 +213,25 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
 Known remaining difference: original rails label *every* block with a
 code; the shell rail is one empty element with two pseudo-elements, so
 only its top two blocks carry codes.
+
+## Reference rules pass (against `references/lcars/RESEARCH.md`)
+
+Reviewed every demo page against the guideline and manifesto rules:
+
+- **Frame thickness** — panels now run a thick leg (1.6rem) into thin
+  bars (0.8rem top, 0.5rem foot); cards 1rem into 0.4/0.3rem.
+- **Three sizes / two text colours / five colours** — enforced as above.
+- **Vector look** — knobs are flat discs with a black pointer, fader caps
+  flat lavender blocks with a black centre line, lit keys no longer glow.
+- **No strokes** — dropdowns, context menus, popovers, tooltips,
+  dropzones and keycaps lost their outlines (dark wells / lavender pills).
+- **Two spacing constants** — 0.3rem inside a frame (segments, rail
+  blocks, tabs), 0.6rem between frames (the upper and lower frame).
+- **3:1 buttons** — 6.9rem × 2.3rem minimum, labels bottom-right, never
+  wrapped. Long labels still stretch the pill: CSS can't see label
+  length, so choosing the flat-ended variant for them is the app's call.
+- **Modal titles** sit on black under the bar (a modal scrolls, so a
+  title pulled into its border would be clipped).
+- **Data displays** — meters are gauges; the EQ curve is a glowing
+  periwinkle trace on a black grid inside a `[ ]` bracket.
 
