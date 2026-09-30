@@ -180,3 +180,35 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Frame fidelity against the originals (2026-09 audit)
+
+Checked against the TNG wallpaper frame and the Sovereign-class display in
+`references/lcars/`. Differences found, and what changed:
+
+1. **Split double frame.** The originals stack two frames: the header's
+   elbow opens *down*, and below a black gap a second elbow opens *up*
+   out of the rail's first block into a bar over the content. The shell
+   had only the first. Now `.app-main` carries the lower bar and the
+   inner curve, the rail's top block rounds into it, and the column gap
+   is gone so the bar runs flush out of the rail.
+2. **Segmented bars.** Original bars break along their whole run — long
+   runs, short blocks, thin strips riding one edge, black gaps. Both the
+   header bar and the new lower bar now do.
+3. **Titles in a break in the bar.** Original titles are coloured text
+   on black set into a gap in the bar, taller than the bar — not black
+   text printed on it. Panel titles now are, in the frame's colour.
+4. **Bracket frames.** Original frames are brackets: leg, top bar *and*
+   a bottom bar with its own elbow. Panels, cards and modals now close
+   along the bottom too.
+5. **No strokes.** LCARS has no outlines or hairlines, only fills. Inputs
+   are dark wells with a candy pill cap, the log/switches/toggles lose
+   their outlines, table rules and hairlines are gone, strips are filled
+   blocks.
+6. **Labels bottom-right.** Button labels now sit in the bottom-right
+   corner of taller blocks, as on every LCARS key.
+
+Known remaining difference: original rails label *every* block with a
+code; the shell rail is one empty element with two pseudo-elements, so
+only its top two blocks carry codes.
+

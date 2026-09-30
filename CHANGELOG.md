@@ -5,6 +5,14 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **lcars: frames follow the originals.** Audited against the TNG and
+  Sovereign-class references: the shell is now the split double frame
+  (a second, upward elbow from the rail into a bar over the content);
+  bars are segmented along their whole run; panel titles are coloured
+  text in a break in the bar; panels/cards/modals are closed brackets
+  with a bottom elbow; every outline and hairline is gone (fills only);
+  button labels sit bottom-right. Findings in the theme README.
+
 - **steampunk: valves and sight glasses.** Knobs become valve handwheels,
   faders sight glasses filled to their level (brass T-handle), progress
   and sliders glass tubes, keys glowing brass push-buttons, scribble

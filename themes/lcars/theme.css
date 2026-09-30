@@ -31,8 +31,9 @@ html[data-theme="lcars"] {
      the black substrate. --surface-2 survives only for "off" tracks. */
   --surface: #000000;
   --surface-2: #1c1c2c;
-  --border: #9999ff;
-  --hairline: #2a2a40;
+  /* Hairlines and outlines don't exist in LCARS; structure is bars. */
+  --border: #000000;
+  --hairline: #000000;
   /* On screen, LCARS text is coloured, never white: body copy in tan,
      secondary text in periwinkle. */
   --text: #ffcc99;
@@ -86,9 +87,22 @@ html[data-theme="lcars"] {
   --btn-bg: var(--lcars-lavender);
   --btn-fg: #000;
   --btn-bg-hover: var(--lcars-tan);
-  --input-bg: #000;
-  --input-border: var(--accent);
-  --input-radius: 1.2rem;
+  /* No strokes anywhere in LCARS — only solid fills. A text field is a
+     dark well with a candy pill cap on its left end. */
+  --input-bg: #14141f;
+  --input-border: transparent;
+  --input-radius: 999px 0.3rem 0.3rem 999px;
+  --input-addon-bg: var(--lcars-lavender);
+  --input-addon-fg: #000;
+  --log-bg: #0b0b12;
+  --log-border: transparent;
+  --switch-border: transparent;
+  --switch-bg: #2c2c44;
+  --switch-bg-on: var(--accent);
+  --switch-thumb-bg: var(--lcars-lavender);
+  --switch-thumb-bg-on: #000;
+  --toggle-btn-border: transparent;
+  --table-rule: transparent;
   --focus-ring: 0 0 0 0.2rem rgba(255, 153, 0, 0.25);
   --dropdown-border: var(--accent);
   --dropdown-radius: 1rem;
@@ -206,60 +220,66 @@ html[data-theme="lcars"] h3 {
 html[data-theme="lcars"] h1 { font-size: 2.6rem; line-height: 1; color: var(--lcars-gold); }
 html[data-theme="lcars"] .stat-value { font-family: var(--font); color: var(--accent); font-weight: 400; font-size: 2rem; }
 
-/* --- Elbow frames ------------------------------------------------------ *
- * The LCARS panel is not a box: it is a thick candy leg down the left that
- * sweeps round a curved elbow into a bar across the top, with the section
- * title set black on that bar at its right-hand end. Built from two
- * borders so the inner curve comes free: the outer radius minus the border
- * widths is the inner radius. Colours rotate through the candy palette by
- * position (--lc) — LCARS codes by colour, not by meaning. */
+/* --- Bracket frames ---------------------------------------------------- *
+ * The LCARS panel is not a box: it is a bracket — a thick candy leg down
+ * the left that sweeps round a curved elbow into a bar across the top and
+ * round a second elbow into a thinner bar along the bottom, open on the
+ * right. The section title is coloured text in a break in the top bar.
+ * Built from borders so the inner curves come free: the outer radius
+ * minus the border widths is the inner radius. Colours rotate through the
+ * candy palette by position (--lc) — LCARS codes by colour, not meaning. */
 html[data-theme="lcars"] .panel,
 html[data-theme="lcars"] .card,
 html[data-theme="lcars"] .modal {
   --lc: var(--accent);
   --lc-leg: 0.9rem;
   --lc-top: 1.5rem;
+  --lc-foot: 0.55rem;
   border: 0;
   border-left: var(--lc-leg) solid var(--lc);
   border-top: var(--lc-top) solid var(--lc);
-  border-radius: 2.6rem 0.75rem 0 0.9rem / 2.1rem 0.75rem 0 0.9rem;
+  border-bottom: var(--lc-foot) solid var(--lc);
+  border-radius: 2.6rem 0.75rem 0.3rem 2rem / 2.1rem 0.75rem 0.3rem 1.3rem;
   box-shadow: none;
 }
 /* A card has no title to carry, so its top bar is a thin rule. */
 html[data-theme="lcars"] .card {
   --lc-leg: 0.7rem;
   --lc-top: 0.45rem;
-  border-radius: 1.8rem 0.3rem 0 0.7rem / 1.2rem 0.3rem 0 0.7rem;
+  --lc-foot: 0.3rem;
+  border-radius: 1.8rem 0.3rem 0.2rem 1.4rem / 1.2rem 0.3rem 0.2rem 0.9rem;
 }
 html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+2) { --lc: var(--lcars-lavender); }
 html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+3) { --lc: var(--lcars-peach); }
 html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+4) { --lc: var(--lcars-periwinkle); }
 html[data-theme="lcars"] .modal { --lc: var(--lcars-lavender); }
 
-/* The title sits in the top border itself: pulled up out of the content
-   box, black on the candy bar, flush right. */
+/* The title sits in a break in the top bar, as on the ship displays:
+   pulled up into the border, a black gap cut out of the bar round it, the
+   text in the frame's own colour and taller than the bar. */
 html[data-theme="lcars"] .panel-header,
 html[data-theme="lcars"] .modal-header {
-  margin: calc(-1rem * var(--density) - var(--lc-top)) calc(-1rem * var(--density)) calc(1rem * var(--density)) 0;
-  padding: 0 0.7rem;
-  height: var(--lc-top);
-  line-height: var(--lc-top);
+  width: fit-content;
+  max-width: calc(100% - 2rem);
+  margin: calc(-1rem * var(--density) - var(--lc-top) - 0.2rem) 0 calc(1rem * var(--density)) 1.5rem;
+  padding: 0 0.55rem;
+  height: calc(var(--lc-top) + 0.4rem);
+  line-height: calc(var(--lc-top) + 0.4rem);
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   gap: 0.5rem;
-  background: transparent;
+  background: #000;
   border: 0;
   border-radius: 0;
-  color: #000;
-  font-size: 1rem;
+  color: var(--lc);
+  font-size: 1.45rem;
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
 }
-html[data-theme="lcars"] .panel-header :is(strong, b, h2, h3) { font-weight: 400; color: #000; font-size: inherit; margin: 0; }
+html[data-theme="lcars"] .panel-header :is(strong, b, h2, h3) { font-weight: 400; color: inherit; font-size: inherit; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 
 html[data-theme="lcars"] .toast,
 html[data-theme="lcars"] .alert {
@@ -268,7 +288,9 @@ html[data-theme="lcars"] .alert {
 }
 
 /* Buttons: pill blocks, label at the right-hand end. */
-html[data-theme="lcars"] .btn:not(.btn-icon) { justify-content: flex-end; text-align: right; min-width: 5.5rem; }
+/* Labels sit at the bottom right of the block, as on every LCARS key. */
+html[data-theme="lcars"] .btn:not(.btn-icon):not(.btn-sm) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 5.5rem; min-height: 2.3rem; }
+html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; }
 html[data-theme="lcars"] .btn-primary { --btn-bg: var(--accent); --btn-bg-hover: var(--lcars-gold); }
 html[data-theme="lcars"] .btn-secondary { --btn-bg: var(--lcars-periwinkle); --btn-fg: #000; }
 html[data-theme="lcars"] .btn-success { --btn-bg: var(--lcars-sky); }
@@ -294,7 +316,9 @@ html[data-theme="lcars"] {
   --lcars-rail: 7rem;
   --app-bg: #000;
   --app-columns: var(--lcars-rail) minmax(0, 1fr);
-  --app-gap: 0.3rem 1.25rem;
+  /* No column gap: the lower frame's bar has to run flush out of the
+     rail; the content inset is padding instead. */
+  --app-gap: 0.3rem 0;
   --app-padding: 0.5rem;
   --app-bar-bg: #000;
   --app-bar-fg: var(--text);
@@ -310,7 +334,7 @@ html[data-theme="lcars"] {
   --app-rail-empty-display: block;
   --app-rail-padding: 0;
   --app-rail-radius: 0;
-  --app-main-padding: 0.75rem 0.75rem 1.5rem 0;
+  --app-main-padding: 0.75rem 0.75rem 1.5rem 1.25rem;
   --app-status-bg: #000;
   --app-status-fg: var(--text);
   --app-status-rule: transparent;
@@ -345,9 +369,14 @@ html[data-theme="lcars"] .app-bar::after {
   position: absolute;
   right: 0;
   bottom: -1.1rem;
-  width: 22%;
+  width: 62%;
   height: 1.1rem;
-  background: linear-gradient(90deg, #000 0 0.3rem, var(--lcars-lavender) 0.3rem 55%, #000 55% calc(55% + 0.3rem), var(--lcars-tan) 0);
+  /* The bar breaks into segments along its run, as on the TNG frames:
+     a short gold block, a long lavender run, a thin tan strip riding the
+     bar's top edge, a peach run, and the tan end cap. */
+  background:
+    linear-gradient(var(--lcars-tan), var(--lcars-tan)) 58% 0 / 12% 35% no-repeat,
+    linear-gradient(90deg, #000 0 0.3rem, var(--lcars-gold) 0.3rem 5%, #000 5% calc(5% + 0.3rem), var(--lcars-lavender) calc(5% + 0.3rem) 50%, #000 50% calc(50% + 0.3rem), #000 calc(50% + 0.3rem) 66%, #000 66% calc(66% + 0.3rem), var(--lcars-peach) calc(66% + 0.3rem) 86%, #000 86% calc(86% + 0.3rem), var(--lcars-tan) 0);
   border-radius: 0 999px 999px 0;
   pointer-events: none;
 }
@@ -400,6 +429,46 @@ html[data-theme="lcars"] .app-rail::after {
 }
 html[data-theme="lcars"] .app-rail::before { content: "02-6117"; top: 3.7rem; }
 html[data-theme="lcars"] .app-rail::after { content: "03-1138"; top: 9.7rem; }
+
+/* The split frame. Below the header's elbow, after a black gap, a second
+   frame opens upward: the rail's first block rounds its top-left corner
+   and runs right as a bar along the top of the content well — the two
+   bars facing each other across the gap is the TNG layout. The bar is
+   drawn on .app-main (reaching back across the column gap to the rail),
+   and ::after fills the inside of the elbow with its curve. */
+html[data-theme="lcars"] .app-rail { border-top-left-radius: 3.2rem 2.2rem; }
+html[data-theme="lcars"] .app-main {
+  position: relative;
+  padding-top: calc(0.9rem + 1.1rem);
+}
+html[data-theme="lcars"] .app-main::before,
+html[data-theme="lcars"] .app-main::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+html[data-theme="lcars"] .app-main::before {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.1rem;
+  border-radius: 0 999px 999px 0;
+  background:
+    linear-gradient(var(--lcars-tan), var(--lcars-tan)) 47% 100% / 14% 35% no-repeat,
+    linear-gradient(90deg, var(--lcars-lavender) 0 34%, #000 34% calc(34% + 0.3rem), var(--lcars-peach) calc(34% + 0.3rem) 38%, #000 38% calc(38% + 0.3rem), #000 calc(38% + 0.3rem) 56%, #000 56% calc(56% + 0.3rem), var(--lcars-lavender) calc(56% + 0.3rem) 90%, #000 90% calc(90% + 0.3rem), var(--accent) 0);
+}
+html[data-theme="lcars"] .app-main::after {
+  top: 1.1rem;
+  left: 0;
+  width: 1.8rem;
+  height: 1.8rem;
+  background: radial-gradient(circle at 100% 100%, transparent 1.25rem, var(--lcars-lavender) calc(1.25rem + 0.5px));
+}
+@media (max-width: 720px) {
+  html[data-theme="lcars"] .app-main { padding-top: 0.75rem; }
+  html[data-theme="lcars"] .app-main::before,
+  html[data-theme="lcars"] .app-main::after { content: none; }
+}
 
 /* Bottom elbow, mirrored: the leg rises into the rail above, the bar runs
    right along the top of the status strip. */
@@ -463,7 +532,6 @@ html[data-theme="lcars"][data-variant="voyager"] {
   --lcars-gold: #ffcc66;
   --text: #ffcc99;
   --muted: #99ccff;
-  --border: #9999cc;
   --flare: #99ccff;
   --focus-ring: 0 0 0 0.2rem rgba(204, 153, 102, 0.3);
 }
@@ -481,7 +549,6 @@ html[data-theme="lcars"][data-variant="picard"] {
   --lcars-gold: #ddeeff;
   --text: #ddeeff;
   --muted: #99bbff;
-  --border: #5588ee;
   --flare: #ee5555;
   --link: #99ccff;
   --focus-ring: 0 0 0 0.2rem rgba(85, 136, 238, 0.35);
@@ -508,7 +575,10 @@ html[data-theme="lcars"] {
   --key-solo: var(--lcars-gold);
   --key-sel: var(--accent);
   --key-sel-fg: #000000;
-  --strip-bg: #000000;
+  /* Strips are dark filled blocks (no outlines), the bay pure black. */
+  --strip-bg: #11111c;
+  --strip-selected: var(--accent);
+  --mixer-border: transparent;
   --scribble-bg: #000000;
   --fader-cap: var(--lcars-lavender);
   --fader-cap-line: #000000;
