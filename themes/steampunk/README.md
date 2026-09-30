@@ -65,4 +65,12 @@ layout at **L1**.
 - **Gear train:** a brass and a copper cog mesh at the bar's right end
   and turn slowly in opposite directions (only under
   `prefers-reduced-motion: no-preference`); hidden on phones.
+- **Controls are plant, not widgets:** knobs are valve handwheels (enamel
+  rim and five spokes in the band colours — oxblood, racing green, navy,
+  walnut — round a brass hub, turning with the value); faders are sight
+  glasses whose copper liquid stands at the fader's level, worked by a
+  brass T-handle; progress bars and sliders are horizontal sight glasses;
+  console keys are brass-bezelled push-buttons that glow like a filament
+  lamp when lit; scribble strips are brass nameplates; the EQ curve is
+  inked on a chart recorder's parchment roll.
 

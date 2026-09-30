@@ -495,7 +495,7 @@ instead of hand-rolling one. Signal flow reads top to bottom in each strip:
 Tokens: `--mixer-bg|border|gap|padding|radius`,
 `--strip-bg|border|width|width-master|radius|selected|rule|label-fg`,
 `--knob-size|color|arc|arc-width|track|pointer|band-pointer|border|shadow|label-fg`,
-`--fader-length|cap|cap-bg|cap-line|cap-width|cap-height|cap-radius|cap-border|cap-shadow|slot|slot-width`,
+`--fader-length|track|cap|cap-bg|cap-line|cap-width|cap-height|cap-radius|cap-border|cap-shadow|slot|slot-width`,
 `--scale-width|fg|unity-fg`, `--meter-seg|seg-gap|gap|unlit|gr`,
 `--key-bg|fg|border|radius|shadow|glow|width` and `--key-on|mute|solo|sel`
 (+ `-fg`), `--scribble-bg|fg|num-fg|radius|bar-width`,

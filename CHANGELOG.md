@@ -5,6 +5,14 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **steampunk: valves and sight glasses.** Knobs become valve handwheels,
+  faders sight glasses filled to their level (brass T-handle), progress
+  and sliders glass tubes, keys glowing brass push-buttons, scribble
+  strips nameplates, the EQ curve a parchment chart-recorder trace.
+- **core:** `--fader-track` replaces a fader's whole groove, and
+  `assets/js/controls.js` now also keeps each `.fader`'s `--value` (0–1)
+  in step, so a theme can draw a track that fills to the fader.
+
 - **Mixing-console primitives** (new core components), from the channel
   strips of the Yamaha CL/QL StageMix, Midas Heritage 3000 / HD96 and SSL
   4000: `.mixer` bay and `.strip` channel strip; `.knob` rotary control
