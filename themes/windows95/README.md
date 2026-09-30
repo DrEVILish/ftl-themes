@@ -100,3 +100,19 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Window chrome and the newer components (2026-09 pass)
+
+- **Title bar:** navy with a bold white caption and the three bevelled
+  caption buttons (minimize and maximize together, close set apart), one
+  inline SVG; the active nav item is a grey raised block.
+- **Panels are child windows:** every `.panel-header` is a navy caption
+  bar (with light tints for muted and state text on it).
+- **Tabs** are raised 95 tabs; the selected one lifts and joins its page.
+- **Progress** is the segmented navy block bar in a sunken well.
+- **Status bar** items sit in sunken fields.
+- **Mixing console:** sunken bay, raised strips, keys that sink and light
+  when on, a sunken trackbar groove with a raised grey thumb, and sunken
+  white scribble and EQ fields.
+- Icon buttons are square bevels, not circles.
+

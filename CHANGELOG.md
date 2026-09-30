@@ -14,6 +14,12 @@ changes are called out explicitly here.
   segments, pagination, rows, lists); a glowing seek-line progress bar and
   orb slider thumbs; white headings; brighter silk, now also behind pages
   that don't use the app shell.
+- **windows95: the newer demo pages in 95 chrome.** A real title bar with
+  caption buttons (the nav's grey strip is gone); panels as navy
+  child-window caption bars; raised 95 tabs; segmented navy progress;
+  sunken status-bar fields; square icon buttons; and the mixing console in
+  95 bevels (sunken bay, raised strips, sinking lit keys, trackbar thumb,
+  sunken scribble and EQ fields).
 - **core:** `--fader-track` replaces a fader's whole groove, and
   `assets/js/controls.js` now also keeps each `.fader`'s `--value` (0–1)
   in step, so a theme can draw a track that fills to the fader.

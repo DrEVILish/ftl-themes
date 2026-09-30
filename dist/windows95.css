@@ -3054,11 +3054,6 @@ pre code { padding: 0; background: none; border-radius: 0; }
  */
 
 html[data-theme="windows95"] {
-  /* Keep the nav's own strip inside the app bar (core drops it there by
-     default): this theme's bar layout is built around it. */
-  --app-bar-nav-bg: var(--nav-bg);
-  --app-bar-nav-rule-width: var(--nav-rule-width, 1px);
-  --app-bar-nav-radius: var(--nav-radius, 0);
   color-scheme: light;
   /* #008282, not the pixel-authentic #008080 — 2/255 of extra green/blue is
      imperceptible against a desktop backdrop that never carries body text,
@@ -3091,6 +3086,51 @@ html[data-theme="windows95"] {
   --radius: 0;
   --font: Tahoma, "MS Sans Serif", "Segoe UI", sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
+  /* Panels are child windows: each gets the active navy caption bar. */
+  --panel-header-bg: #000080;
+  --panel-header-fg: #ffffff;
+  /* Tabs: raised, the selected one taller and joined to its page. */
+  --tab-radius: 3px 3px 0 0;
+  --tab-bg: var(--surface);
+  --tab-fg: var(--text);
+  --tab-bg-active: var(--surface);
+  --tab-fg-active: var(--text);
+  --tab-underline-active: var(--surface);
+  /* The 95 progress bar: navy blocks with gaps, in a sunken well. */
+  --progress-bg: var(--surface);
+  --progress-border: #808080;
+  --progress-fill: repeating-linear-gradient(90deg, #000080 0 8px, transparent 8px 10px);
+  /* Console primitives in 95 bevels. */
+  --mixer-bg: #808080;
+  --strip-bg: var(--surface);
+  --strip-radius: 0;
+  --strip-selected: #000080;
+  --key-bg: var(--surface);
+  --key-fg: var(--text);
+  --key-radius: 0;
+  --key-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  --key-glow: inset 1px 1px 0 #000000;
+  --key-solo: #ffff00;
+  --key-sel: #000080;
+  --knob-arc: #000080;
+  --knob-track: #ffffff;
+  --knob-border: #000000;
+  --knob-shadow: 1px 1px 0 #000000;
+  --fader-track: linear-gradient(90deg, transparent calc(50% - 3px), #808080 0 calc(50% - 2px), #000000 0 calc(50% - 1px), #ffffff 0 calc(50% + 2px), transparent 0);
+  --fader-cap: #c0c0c0;
+  --fader-cap-bg: linear-gradient(#000000, #000000) 50% 50% / 70% 1px no-repeat, var(--surface);
+  --fader-cap-border: #000000;
+  --fader-cap-radius: 0;
+  --fader-cap-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+  --btn-icon-radius: 0;
+  --scribble-bg: #ffffff;
+  --scribble-radius: 0;
+  --eq-bg: #ffffff;
+  --eq-grid: #c0c0c0;
+  --eq-zero: #808080;
+  --eq-line: #000080;
+  --eq-radius: 0;
+  --meter-track: #000000;
   --flare: #ffff00;
 
   --btn-bg: var(--surface);
@@ -3238,9 +3278,53 @@ html[data-theme="windows95"] .dropdown { border-color: #ffffff #000000 #000000 #
    a white highlight, the same light/dark pairing as every other bevel in
    this theme. */
 html[data-theme="windows95"] .panel-header {
-  border-bottom: 1px solid #808080;
-  box-shadow: 0 1px 0 #ffffff;
+  margin: calc(-1rem * var(--density) + 1px) calc(-1rem * var(--density) + 1px) calc(0.8rem * var(--density));
+  padding: 0.15rem 0.35rem;
+  border-bottom: 0;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
 }
+/* Text inside a navy caption bar: the grey-dialog muted and state colours
+   vanish on navy, so the caption gets light tints of them. */
+html[data-theme="windows95"] .panel-header {
+  --muted: #dfdfdf;
+  --success-text: #7cff7c;
+  --warning-text: #ffff7c;
+  --danger-text: #ffb0b0;
+}
+html[data-theme="windows95"] .stat-value { font-family: var(--font); }
+
+/* Tabs: raised with light top-left, dark right; the selected one lifts
+   2px and sits on the page, hiding the line under it. */
+html[data-theme="windows95"] .tabs { gap: 0; align-items: flex-end; border-bottom: 1px solid #ffffff; box-shadow: 0 1px 0 #dfdfdf; }
+html[data-theme="windows95"] .tab {
+  border: 2px solid;
+  border-color: #ffffff #000000 transparent #ffffff;
+  border-bottom: 0;
+  box-shadow: inset -1px 0 0 #808080, inset 1px 1px 0 #dfdfdf;
+  padding: 0.15em 0.7em;
+  margin-right: -2px;
+}
+html[data-theme="windows95"] .tab.is-active { position: relative; bottom: -1px; padding-top: 0.3em; padding-bottom: calc(0.15em + 1px); z-index: 1; }
+
+/* Status bar: sunken fields, one per item. */
+html[data-theme="windows95"] .app-status > * {
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  padding: 0 0.4rem;
+}
+
+/* Console primitives: sunken bay, raised strips, keys that sink and light
+   when on, sunken scribble/EQ fields. */
+html[data-theme="windows95"] .mixer { border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] .strip { border: 2px solid; border-color: #ffffff #000000 #000000 #ffffff; }
+html[data-theme="windows95"] .strip.is-selected { border-color: #000080; box-shadow: 0 0 0 1px #000080; }
+html[data-theme="windows95"] .key { border: 2px solid; border-color: #ffffff #000000 #000000 #ffffff; }
+html[data-theme="windows95"] :is(.key:has(input:checked), .key[aria-pressed="true"]) { border-color: #000000 #ffffff #ffffff #000000; }
+html[data-theme="windows95"] :is(.scribble, .eq-curve) { border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] .scribble { border-top-width: 0.35rem; border-top-color: var(--strip-color); }
 
 html[data-theme="windows95"] :focus-visible {
   outline-style: dotted;
@@ -3286,11 +3370,18 @@ html[data-theme="windows95"] .app-status {
   border-color: #ffffff #808080 #808080 #ffffff;
 }
 
-/* App-bar nav text. White title-bar text on the navy caption gradient. The root nav
-   tokens are black for the gray dialog chrome and measured 1.3:1 here. */
+/* The title bar: white bold caption, and the three caption buttons —
+   minimize and maximize together, close set 2px apart — drawn as one
+   inline SVG at the right. The root nav tokens are black for the gray
+   dialog chrome and measured 1.3:1 here. */
 html[data-theme="windows95"] .app-bar {
   --nav-brand-fg: #ffffff;
   --nav-item-fg: #ffffff;
+  --nav-item-bg-active: #c0c0c0;
+  --nav-item-fg-active: #000000;
+  --nav-item-radius: 0;
+  position: relative;
+  padding-right: calc(52px + 0.8rem);
 
   /* Chunky, blocky icon strokes — the pixel-art look of the real 95 icon set. */
   --icon-stroke-width: 2.6;
@@ -3302,4 +3393,20 @@ html[data-theme="windows95"] .app-bar {
 html[data-theme="windows95"] h1 { font-size: 1.05rem; font-weight: 700; }
 html[data-theme="windows95"] h2 { font-size: 0.95rem; font-weight: 700; }
 html[data-theme="windows95"] h3 { font-size: 0.85rem; font-weight: 700; }
+
+html[data-theme="windows95"] .app-bar .nav { padding: 0; }
+html[data-theme="windows95"] .app-bar .nav-brand { font-weight: 700; }
+html[data-theme="windows95"] .app-bar .nav-item { padding: 0.1em 0.6em; }
+html[data-theme="windows95"] .app-bar::after {
+  content: "";
+  position: absolute;
+  right: 0.3rem;
+  top: 50%;
+  width: 52px;
+  height: 14px;
+  transform: translateY(-50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='14'%3E%3Cg transform='translate(0 0)'%3E%3Crect width='16' height='14' fill='%23c0c0c0'/%3E%3Cpath d='M0 13.5h15.5V0' fill='none' stroke='%23000'/%3E%3Cpath d='M.5 13V.5H15' fill='none' stroke='%23fff'/%3E%3Cpath d='M1.5 12.5h13v-11' fill='none' stroke='%23808080'/%3E%3C/g%3E%3Cg transform='translate(16 0)'%3E%3Crect width='16' height='14' fill='%23c0c0c0'/%3E%3Cpath d='M0 13.5h15.5V0' fill='none' stroke='%23000'/%3E%3Cpath d='M.5 13V.5H15' fill='none' stroke='%23fff'/%3E%3Cpath d='M1.5 12.5h13v-11' fill='none' stroke='%23808080'/%3E%3C/g%3E%3Cg transform='translate(36 0)'%3E%3Crect width='16' height='14' fill='%23c0c0c0'/%3E%3Cpath d='M0 13.5h15.5V0' fill='none' stroke='%23000'/%3E%3Cpath d='M.5 13V.5H15' fill='none' stroke='%23fff'/%3E%3Cpath d='M1.5 12.5h13v-11' fill='none' stroke='%23808080'/%3E%3C/g%3E%3Crect x='4' y='9' width='6' height='2' fill='%23000'/%3E%3Crect x='19.5' y='2.5' width='8' height='7' fill='none' stroke='%23000'/%3E%3Crect x='19' y='2' width='9' height='2' fill='%23000'/%3E%3Cpath d='M40 3l7 7M47 3l-7 7' stroke='%23000' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat;
+  pointer-events: none;
+}
+html[data-theme="windows95"] :is(.app-bar, .panel-header) .btn-ghost { color: #ffffff; }
 }
