@@ -932,6 +932,362 @@ dialog.modal::backdrop {
 }
 @keyframes lamp-pulse { 50% { opacity: 0.4; } }
 
+/* --- Mixing-console primitives ------------------------------------------ *
+ * The shapes every mixing surface shares — Yamaha CL/StageMix, Midas
+ * Heritage 3000 / HD96, SSL 4000 — so an audio app doesn't hand-roll them
+ * and a theme can restyle them: a channel strip in a scrolling bay, rotary
+ * knobs with band-coloured caps, a long-throw fader with a printed dB
+ * scale, an LED-ladder meter, a gain-reduction meter, backlit keys, a
+ * scribble strip and an EQ-curve thumbnail. Markup + tokens only; the one
+ * thing CSS cannot do (read an input's value into a rotation) is
+ * assets/js/controls.js, eight lines an app can replace with its own. */
+
+/* .mixer — the console bay: channel strips side by side, scrolling
+   sideways like a fader bank rather than wrapping. */
+.mixer {
+  display: flex;
+  align-items: stretch;
+  gap: var(--mixer-gap, 2px);
+  overflow-x: auto;
+  padding: var(--mixer-padding, 0.35rem);
+  background: var(--mixer-bg, var(--bg));
+  border: var(--mixer-border-width, 1px) solid var(--mixer-border, var(--border));
+  border-radius: var(--mixer-radius, var(--radius));
+}
+/* .strip — one channel, signal flow top to bottom: input, EQ, dynamics,
+   pan, keys, fader + meter, scribble strip. */
+.strip {
+  flex: 0 0 var(--strip-width, 5.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.35rem * var(--density));
+  min-width: 0;
+  padding: calc(0.4rem * var(--density)) 0.3rem;
+  background: var(--strip-bg, var(--surface));
+  border: 1px solid var(--strip-border, var(--hairline));
+  border-radius: var(--strip-radius, calc(var(--radius) * 0.5));
+}
+.strip.is-master { flex-basis: var(--strip-width-master, 7.5rem); }
+.strip.is-selected { border-color: var(--strip-selected, var(--accent)); box-shadow: inset 0 0 0 1px var(--strip-selected, var(--accent)); }
+.strip-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  padding-bottom: calc(0.35rem * var(--density));
+  border-bottom: 1px solid var(--strip-rule, var(--hairline));
+}
+.strip-label {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--strip-label-fg, var(--muted));
+}
+/* Fader area: printed scale | fader | meter(s), all the same height. */
+.strip-fader {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.25rem;
+  height: var(--fader-length, 14rem);
+  margin-top: auto;
+}
+.strip-fader .meter-v { height: auto; }
+
+/* .knob — a rotary control. A real range input sits invisibly over the
+   dial (drag, arrow keys, screen readers all work); --value (0-1) turns
+   the pointer through a 270-degree sweep and fills the value arc.
+     <label class="knob knob-hf" style="--value:.62">
+       <input type="range" min="-15" max="15" value="3" aria-label="HF gain">
+       <span class="knob-dial"></span><span class="knob-label">HF</span>
+     </label>
+   .is-bipolar fills the arc from 12 o'clock (pan, EQ gain: centre
+   detent). Cap colours follow the console convention SSL made standard —
+   HF red, HMF green, LMF blue, LF brown — as tokens a theme can repaint. */
+.knob {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  --knob-angle: calc(-135deg + var(--value, 0.5) * 270deg);
+}
+.knob input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+.knob-dial {
+  position: relative;
+  width: var(--knob-size, calc(2.1rem * var(--density)));
+  height: var(--knob-size, calc(2.1rem * var(--density)));
+  border-radius: 50%;
+}
+.knob-sm { --knob-size: calc(1.6rem * var(--density)); }
+.knob-lg { --knob-size: calc(3rem * var(--density)); }
+/* Value arc: a ring around the cap, track first, filled sweep on top. */
+.knob-dial::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 225deg, var(--knob-arc, var(--accent)) 0 calc(var(--value, 0.5) * 270deg), transparent 0),
+    conic-gradient(from 225deg, var(--knob-track, var(--surface-2)) 0 270deg, transparent 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width, 3px)), #000 calc(100% - var(--knob-arc-width, 3px) + 0.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width, 3px)), #000 calc(100% - var(--knob-arc-width, 3px) + 0.5px));
+}
+.knob.is-bipolar .knob-dial::before {
+  background:
+    conic-gradient(from min(0deg, calc((var(--value, 0.5) - 0.5) * 270deg)), var(--knob-arc, var(--accent)) 0 max(calc((var(--value, 0.5) - 0.5) * 270deg), calc((0.5 - var(--value, 0.5)) * 270deg)), transparent 0),
+    conic-gradient(from 225deg, var(--knob-track, var(--surface-2)) 0 270deg, transparent 0);
+}
+/* The cap and its pointer line, turned as one. */
+.knob-dial::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--knob-arc-width, 3px) + 2px);
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--knob-pointer, var(--text)), var(--knob-pointer, var(--text))) 50% 8% / 2px 38% no-repeat,
+    radial-gradient(circle, color-mix(in srgb, var(--knob-color, var(--surface-2)) 80%, #fff) 0, var(--knob-color, var(--surface-2)) 55%, color-mix(in srgb, var(--knob-color, var(--surface-2)) 70%, #000) 100%);
+  border: 1px solid var(--knob-border, var(--border));
+  box-shadow: var(--knob-shadow, 0 1px 2px rgba(0, 0, 0, 0.45));
+  transform: rotate(var(--knob-angle));
+}
+.knob:has(input:focus-visible) .knob-dial { outline: 2px solid var(--focus); outline-offset: 2px; }
+.knob-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--knob-label-fg, var(--muted));
+  line-height: 1;
+}
+.knob-hf { --knob-color: var(--knob-hf, #c4302b); --knob-pointer: var(--knob-band-pointer, #ffffff); }
+.knob-hmf { --knob-color: var(--knob-hmf, #2e8b45); --knob-pointer: var(--knob-band-pointer, #ffffff); }
+.knob-lmf { --knob-color: var(--knob-lmf, #2d5cb0); --knob-pointer: var(--knob-band-pointer, #ffffff); }
+.knob-lf { --knob-color: var(--knob-lf, #6b4a2e); --knob-pointer: var(--knob-band-pointer, #ffffff); }
+
+/* .fader — the long-throw console fader: a native vertical range input
+   drawn as a groove with a ridged cap. The app owns the fader law (which
+   position is which dB); .scale prints the legend beside it. */
+.fader {
+  -webkit-appearance: none;
+  appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: var(--fader-cap-width, 2.2rem);
+  height: 100%;
+  min-height: 6rem;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent calc(50% - var(--fader-slot-width, 4px) / 2),
+    var(--fader-slot, var(--bg)) 0 calc(50% + var(--fader-slot-width, 4px) / 2),
+    transparent 0);
+  border-radius: 2px;
+  cursor: ns-resize;
+}
+.fader::-webkit-slider-runnable-track { background: transparent; }
+.fader::-moz-range-track { background: transparent; }
+.fader::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--fader-cap-width, 2.2rem);
+  height: var(--fader-cap-height, 1.2rem);
+  border: 1px solid var(--fader-cap-border, var(--border));
+  border-radius: var(--fader-cap-radius, 2px);
+  background: var(--fader-cap-bg,
+    linear-gradient(var(--fader-cap-line, var(--text)), var(--fader-cap-line, var(--text))) 50% 50% / 100% 2px no-repeat,
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0, 0, 0, 0.18) 2px 3px),
+    linear-gradient(180deg, color-mix(in srgb, var(--fader-cap, var(--muted)) 70%, #fff), var(--fader-cap, var(--muted)) 50%, color-mix(in srgb, var(--fader-cap, var(--muted)) 70%, #000)));
+  box-shadow: var(--fader-cap-shadow, 0 3px 5px rgba(0, 0, 0, 0.5));
+}
+.fader::-moz-range-thumb {
+  width: var(--fader-cap-width, 2.2rem);
+  height: var(--fader-cap-height, 1.2rem);
+  border: 1px solid var(--fader-cap-border, var(--border));
+  border-radius: var(--fader-cap-radius, 2px);
+  background: var(--fader-cap-bg,
+    linear-gradient(var(--fader-cap-line, var(--text)), var(--fader-cap-line, var(--text))) 50% 50% / 100% 2px no-repeat,
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0, 0, 0, 0.18) 2px 3px),
+    linear-gradient(180deg, color-mix(in srgb, var(--fader-cap, var(--muted)) 70%, #fff), var(--fader-cap, var(--muted)) 50%, color-mix(in srgb, var(--fader-cap, var(--muted)) 70%, #000)));
+  box-shadow: var(--fader-cap-shadow, 0 3px 5px rgba(0, 0, 0, 0.5));
+}
+.fader:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* .scale — a printed legend beside a fader or meter. Each mark sits at a
+   0-1 position (--at) along the travel; the inset keeps the ends aligned
+   with a fader cap's centre at the top and bottom of its throw.
+     <div class="scale"><span style="--at:.8" class="is-unity">0</span>…</div> */
+.scale {
+  position: relative;
+  width: var(--scale-width, 1.5rem);
+  flex: none;
+  font-size: 0.55rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--scale-fg, var(--muted));
+  --scale-inset: calc(var(--fader-cap-height, 1.2rem) / 2);
+}
+.scale.is-meter { --scale-inset: 0px; }
+.scale > span {
+  position: absolute;
+  right: 0.3rem;
+  bottom: calc(var(--scale-inset) + var(--at, 0) * (100% - 2 * var(--scale-inset)));
+  transform: translateY(50%);
+  line-height: 1;
+  white-space: nowrap;
+}
+.scale > span::after {
+  content: "";
+  position: absolute;
+  left: calc(100% + 0.1rem);
+  top: 50%;
+  width: 0.2rem;
+  height: 1px;
+  background: currentColor;
+}
+.scale > .is-unity { color: var(--scale-unity-fg, var(--text)); font-weight: 700; }
+
+/* .meter.is-segmented — the LED ladder: the same level/peak contract as
+   .meter, cut into segments, with the unlit segments faintly visible the
+   way unlit LEDs are. */
+.meter.is-segmented::before,
+.meter.is-segmented::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.meter.is-segmented::before {
+  opacity: var(--meter-unlit, 0.18);
+  background-image: var(--meter-fill-image, linear-gradient(90deg,
+    var(--meter-low, var(--success)) 0%, var(--meter-low, var(--success)) var(--meter-warn-at, 70%),
+    var(--meter-mid, var(--warning)) var(--meter-warn-at, 70%), var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%),
+    var(--meter-high, var(--danger)) var(--meter-peak-at, 90%)));
+}
+.meter-v.is-segmented::before {
+  background-image: var(--meter-fill-image-v, linear-gradient(0deg,
+    var(--meter-low, var(--success)) 0%, var(--meter-low, var(--success)) var(--meter-warn-at, 70%),
+    var(--meter-mid, var(--warning)) var(--meter-warn-at, 70%), var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%),
+    var(--meter-high, var(--danger)) var(--meter-peak-at, 90%)));
+}
+.meter.is-segmented::after {
+  background: repeating-linear-gradient(90deg, transparent 0 var(--meter-seg, 3px), var(--meter-gap, var(--meter-track, var(--bg))) 0 calc(var(--meter-seg, 3px) + var(--meter-seg-gap, 1px)));
+}
+.meter-v.is-segmented::after {
+  background: repeating-linear-gradient(0deg, transparent 0 var(--meter-seg, 3px), var(--meter-gap, var(--meter-track, var(--bg))) 0 calc(var(--meter-seg, 3px) + var(--meter-seg-gap, 1px)));
+}
+/* .meter.is-gr — gain reduction: fills from the top (or the right) down
+   as the compressor pulls level, in its own single colour. */
+.meter.is-gr .meter-fill {
+  inset: 0 0 0 auto;
+  background: var(--meter-gr, var(--warning));
+}
+.meter-v.is-gr .meter-fill { inset: 0 0 auto 0; }
+.meter.is-gr.is-segmented::before { background: var(--meter-gr, var(--warning)); }
+
+/* .key — a backlit console key: dark when off, lit in its function's
+   colour when on. Console conventions, as tokens: ON green (Yamaha),
+   MUTE red, SOLO/CUE yellow, SEL the accent.
+     <label class="key key-mute"><input type="checkbox">Mute</label>
+     <button class="key key-sel" aria-pressed="true">Sel</button> */
+.key {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--key-width, 2.3rem);
+  height: calc(1.55rem * var(--density));
+  padding: 0 0.45em;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  background: var(--key-bg, var(--surface-2));
+  color: var(--key-fg, var(--muted));
+  border: 1px solid var(--key-border, var(--border));
+  border-radius: var(--key-radius, 3px);
+  box-shadow: var(--key-shadow, inset 0 -2px 0 rgba(0, 0, 0, 0.25));
+  cursor: pointer;
+  user-select: none;
+}
+.key input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.key:has(input:checked),
+.key[aria-pressed="true"],
+.key.is-on {
+  background: var(--key-lit, var(--accent));
+  color: var(--key-lit-fg, var(--on-accent));
+  border-color: var(--key-lit, var(--accent));
+  box-shadow: var(--key-glow, 0 0 0.55rem color-mix(in srgb, var(--key-lit, var(--accent)) 65%, transparent));
+}
+.key:has(input:focus-visible),
+.key:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.key-on { --key-lit: var(--key-on, var(--success)); --key-lit-fg: var(--key-on-fg, var(--on-success)); }
+.key-mute { --key-lit: var(--key-mute, var(--danger)); --key-lit-fg: var(--key-mute-fg, var(--on-danger)); }
+.key-solo { --key-lit: var(--key-solo, var(--warning)); --key-lit-fg: var(--key-solo-fg, #000000); }
+.key-sel { --key-lit: var(--key-sel, var(--accent)); --key-lit-fg: var(--key-sel-fg, var(--on-accent)); }
+
+/* .scribble — the scribble strip: channel number and name under a bar of
+   the channel's colour (--strip-color, set per channel by the app). */
+.scribble {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.2rem 0.35rem;
+  background: var(--scribble-bg, var(--surface-2));
+  color: var(--scribble-fg, var(--text));
+  border-top: var(--scribble-bar-width, 0.3rem) solid var(--strip-color, var(--accent));
+  border-radius: var(--scribble-radius, 3px);
+  line-height: 1.15;
+}
+.scribble-num { font-size: 0.58rem; color: var(--scribble-num-fg, var(--muted)); font-variant-numeric: tabular-nums; }
+.scribble-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* .eq-curve — the EQ thumbnail StageMix and HD96 show on every strip: a
+   frequency grid with the 0 dB line, and the app's own SVG curve on it.
+     <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="…"/></svg></div> */
+.eq-curve {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--eq-aspect, 2 / 1);
+  background:
+    linear-gradient(0deg, transparent calc(50% - 0.5px), var(--eq-zero, var(--border)) 0 calc(50% + 0.5px), transparent 0),
+    repeating-linear-gradient(90deg, transparent 0 calc(33.333% - 1px), var(--eq-grid, var(--hairline)) 0 33.333%),
+    var(--eq-bg, var(--bg));
+  border: 1px solid var(--eq-border, var(--hairline));
+  border-radius: var(--eq-radius, 3px);
+  overflow: hidden;
+}
+.eq-curve svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.eq-curve path {
+  fill: var(--eq-fill, color-mix(in srgb, var(--eq-line, var(--accent)) 22%, transparent));
+  stroke: var(--eq-line, var(--accent));
+  stroke-width: var(--eq-line-width, 1.5px);
+  vector-effect: non-scaling-stroke;
+}
+.eq-curve.is-off path { fill: none; stroke: var(--muted); }
+
 /* .segmented — a segmented control / toggle group: mutually-exclusive
    view switches (list/grid, day/week/month). Distinct from .tabs
    (navigates between different content, usually with a URL) and
@@ -2933,5 +3289,32 @@ html[data-theme="msdos"] .app-status::before {
 html[data-theme="msdos"] .app-status::after {
   content: "1       2       3       4       5       6       7       8       9       10     ";
   color: #aaaaaa;
+}
+
+/* Mixing-console primitives in the VGA 16: knob caps in bright red, green
+   and blue with VGA brown for LF (the SSL order, in text-mode colours),
+   square keys, a grey fader cap. */
+html[data-theme="msdos"] {
+  --knob-hf: #ff5555;
+  --knob-hmf: #55ff55;
+  --knob-lmf: #5555ff;
+  --knob-lf: #aa5500;
+  --knob-band-pointer: #000000;
+  --knob-arc: #55ffff;
+  --key-radius: 0;
+  --key-shadow: none;
+  --key-mute: #ff5555;
+  --key-mute-fg: #000000;
+  --key-solo: #ffff55;
+  --key-sel: #55ffff;
+  --key-sel-fg: #000000;
+  --key-on: #55ff55;
+  --key-on-fg: #000000;
+  --strip-radius: 0;
+  --scribble-radius: 0;
+  --fader-cap: #aaaaaa;
+  --fader-cap-line: #000000;
+  --fader-cap-radius: 0;
+  --eq-line: #55ffff;
 }
 }

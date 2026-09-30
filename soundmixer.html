@@ -10,10 +10,10 @@
   .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
   .demo-topbar-spacer { flex: 1; }
   .demo-topbar .nav-brand { white-space: nowrap; }
-  .demo-strips { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.75rem; }
-  .demo-strip { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding-bottom: 0.9rem; }
-  .demo-strip-body { display: flex; align-items: stretch; justify-content: center; gap: 0.75rem; height: 10rem; }
-  .demo-eq { display: grid; grid-template-columns: 6rem minmax(0, 1fr) 4rem; gap: 0.6rem; align-items: center; margin: 0.5rem 0; }
+  .demo-selected { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.8fr); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
+  @media (max-width: 1100px) { .demo-selected { grid-template-columns: 1fr; } }
+  .demo-eq-bands { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.75rem; }
+  .demo-knob-grid { display: grid; grid-template-columns: repeat(3, auto); gap: 0.6rem 0.9rem; justify-content: start; }
   .demo-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
   @media (max-width: 960px) { .demo-three { grid-template-columns: 1fr; } }
   .demo-stage { position: relative; min-height: 13rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; }
@@ -51,98 +51,286 @@
       <select class="select input-sm" aria-label="Scene" style="width:auto;"><option>Scene 3 &mdash; Act one</option><option>Scene 4 &mdash; Interval</option></select>
       <time class="schedule" datetime="19:30"><svg class="icon"><use href="#icon-clock"/></svg><span>Doors 19:30</span></time>
     </div>
-    <div class="demo-strips">
-      <section class="panel demo-strip">
-        <header class="panel-header"><strong>Kick</strong></header>
-        <div class="demo-strip-body">
-          <div class="meter meter-v" style="--meter-level:62%;--meter-peak:71%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
-          <input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-6" aria-label="Kick level (dB)">
+    <div class="mixer" role="group" aria-label="Input channels">
+      <section class="strip" style="--strip-color:#e5484d" aria-label="Channel 1, Kick">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.500"><input type="range" min="0" max="60" step="0.5" value="30" aria-label="Kick gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox">48V</label><label class="key"><input type="checkbox">&Oslash;</label>
         </div>
-        <span class="readout readout-sm">-6<span class="readout-unit">dB</span></span>
-        <div class="stack" style="width:100%">
-          <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Muted</span></label>
-          <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
+        <div class="strip-section"><span class="strip-label">EQ &middot; HPF</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,47.2 L4,42.2 L8,37.1 L12,31.9 L16,27.1 L20,22.7 L24,19.6 L28,20.2 L32,20.9 L36,21.4 L40,21.7 L44,22.2 L48,23.0 L52,23.9 L56,24.9 L60,25.9 L64,26.7 L68,27.0 L72,26.4 L76,25.1 L80,23.4 L84,22.0 L88,21.1 L92,20.9 L96,21.3 L100,22.1 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.600"><input type="range" min="-15" max="15" step="0.5" value="3" aria-label="Kick HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.433"><input type="range" min="-15" max="15" step="0.5" value="-2" aria-label="Kick HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.550"><input type="range" min="-15" max="15" step="0.5" value="1.5" aria-label="Kick LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.633"><input type="range" min="-15" max="15" step="0.5" value="4" aria-label="Kick LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp"></span><span class="lamp is-warn"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:24%" title="Gain reduction 4 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.550"><input type="range" min="-1" max="1" step="0.5" value="0.1" aria-label="Kick pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-6<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="668" aria-label="Kick fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:62%;--meter-peak:71%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 1</span><span class="scribble-name">Kick</span></div>
+      </section>
+      <section class="strip" style="--strip-color:#f5a524" aria-label="Channel 2, Snare">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.567"><input type="range" min="0" max="60" step="0.5" value="34" aria-label="Snare gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox">48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ &middot; HPF</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,47.8 L4,43.3 L8,38.7 L12,34.2 L16,29.7 L20,25.5 L24,22.4 L28,22.8 L32,23.3 L36,23.9 L40,24.3 L44,24.6 L48,24.8 L52,24.8 L56,24.6 L60,24.2 L64,23.7 L68,23.1 L72,22.8 L76,22.5 L80,22.4 L84,22.2 L88,22.1 L92,22.2 L96,22.5 L100,23.0 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="Snare HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.533"><input type="range" min="-15" max="15" step="0.5" value="1" aria-label="Snare HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.500"><input type="range" min="-15" max="15" step="0.5" value="0" aria-label="Snare LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="Snare LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp is-on"></span><span class="lamp"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:12%" title="Gain reduction 2 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.500"><input type="range" min="-1" max="1" step="0.5" value="0.0" aria-label="Snare pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-9<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="602" aria-label="Snare fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:55%;--meter-peak:80%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 2</span><span class="scribble-name">Snare</span></div>
+      </section>
+      <section class="strip" style="--strip-color:#f5d90a" aria-label="Channel 3, Hi-hat">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.433"><input type="range" min="0" max="60" step="0.5" value="26" aria-label="Hi-hat gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox">48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ &middot; HPF</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,48.0 L4,47.8 L8,45.4 L12,43.1 L16,40.3 L20,36.8 L24,33.2 L28,32.4 L32,31.6 L36,31.2 L40,30.9 L44,30.2 L48,29.1 L52,27.6 L56,26.3 L60,25.3 L64,24.7 L68,24.1 L72,23.3 L76,22.2 L80,21.1 L84,20.1 L88,19.5 L92,19.5 L96,20.1 L100,21.1 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.633"><input type="range" min="-15" max="15" step="0.5" value="4" aria-label="Hi-hat HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.500"><input type="range" min="-15" max="15" step="0.5" value="0" aria-label="Hi-hat HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.400"><input type="range" min="-15" max="15" step="0.5" value="-3" aria-label="Hi-hat LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.300"><input type="range" min="-15" max="15" step="0.5" value="-6" aria-label="Hi-hat LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp is-on"></span><span class="lamp"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:0%" title="Gain reduction 0 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.350"><input type="range" min="-1" max="1" step="0.5" value="-0.3" aria-label="Hi-hat pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-14<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="516" aria-label="Hi-hat fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:38%;--meter-peak:48%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 3</span><span class="scribble-name">Hi-hat</span></div>
+      </section>
+      <section class="strip" style="--strip-color:#30a46c" aria-label="Channel 4, Bass">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.633"><input type="range" min="0" max="60" step="0.5" value="38" aria-label="Bass gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox">48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,24.0 L4,23.3 L8,22.5 L12,21.7 L16,21.0 L20,20.7 L24,20.9 L28,21.2 L32,21.4 L36,21.4 L40,21.4 L44,21.7 L48,22.4 L52,23.3 L56,24.1 L60,24.7 L64,25.1 L68,25.5 L72,25.9 L76,26.4 L80,27.0 L84,27.5 L88,27.8 L92,27.8 L96,27.5 L100,26.9 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.433"><input type="range" min="-15" max="15" step="0.5" value="-2" aria-label="Bass HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.500"><input type="range" min="-15" max="15" step="0.5" value="0" aria-label="Bass HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="Bass LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.600"><input type="range" min="-15" max="15" step="0.5" value="3" aria-label="Bass LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp"></span><span class="lamp is-warn"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:36%" title="Gain reduction 6 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.500"><input type="range" min="-1" max="1" step="0.5" value="0.0" aria-label="Bass pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-4<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="712" aria-label="Bass fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:70%;--meter-peak:74%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 4</span><span class="scribble-name">Bass</span></div>
+      </section>
+      <section class="strip" style="--strip-color:#12a594" aria-label="Channel 5, Guitar">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.533"><input type="range" min="0" max="60" step="0.5" value="32" aria-label="Guitar gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox">48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ &middot; HPF</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,48.0 L4,46.7 L8,43.8 L12,40.8 L16,37.7 L20,34.0 L24,30.5 L28,29.9 L32,29.4 L36,29.1 L40,28.9 L44,28.5 L48,27.6 L52,26.3 L56,24.9 L60,23.3 L64,21.8 L68,20.7 L72,20.5 L76,21.1 L80,22.0 L84,22.8 L88,23.2 L92,23.5 L96,23.7 L100,24.0 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.533"><input type="range" min="-15" max="15" step="0.5" value="1" aria-label="Guitar HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.600"><input type="range" min="-15" max="15" step="0.5" value="3" aria-label="Guitar HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.433"><input type="range" min="-15" max="15" step="0.5" value="-2" aria-label="Guitar LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.367"><input type="range" min="-15" max="15" step="0.5" value="-4" aria-label="Guitar LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp is-on"></span><span class="lamp"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:0%" title="Gain reduction 0 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.700"><input type="range" min="-1" max="1" step="0.5" value="0.4" aria-label="Guitar pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-11<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="564" aria-label="Guitar fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:48%;--meter-peak:60%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 5</span><span class="scribble-name">Guitar</span></div>
+      </section>
+      <section class="strip" style="--strip-color:#3e63dd" aria-label="Channel 6, Keys">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.367"><input type="range" min="0" max="60" step="0.5" value="22" aria-label="Keys gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox">48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,25.0 L4,25.0 L8,25.0 L12,25.0 L16,25.0 L20,25.0 L24,25.1 L28,25.3 L32,25.5 L36,25.9 L40,26.3 L44,26.4 L48,26.2 L52,25.8 L56,25.4 L60,25.1 L64,24.8 L68,24.5 L72,24.1 L76,23.6 L80,23.0 L84,22.5 L88,22.2 L92,22.2 L96,22.5 L100,23.1 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="Keys HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.500"><input type="range" min="-15" max="15" step="0.5" value="0" aria-label="Keys HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.467"><input type="range" min="-15" max="15" step="0.5" value="-1" aria-label="Keys LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.500"><input type="range" min="-15" max="15" step="0.5" value="0" aria-label="Keys LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp is-on"></span><span class="lamp"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:0%" title="Gain reduction 0 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.300"><input type="range" min="-1" max="1" step="0.5" value="-0.4" aria-label="Keys pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" checked>Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-12<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="548" aria-label="Keys fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:40%;--meter-peak:52%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 6</span><span class="scribble-name">Keys</span></div>
+      </section>
+      <section class="strip is-selected" style="--strip-color:#8e4ec6" aria-label="Channel 7, Lead vox">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.733"><input type="range" min="0" max="60" step="0.5" value="44" aria-label="Lead vox gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox" checked>48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ &middot; HPF</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,48.0 L4,47.2 L8,44.6 L12,42.0 L16,39.0 L20,35.4 L24,31.9 L28,31.3 L32,30.8 L36,30.6 L40,30.5 L44,30.0 L48,28.9 L52,27.3 L56,25.6 L60,24.0 L64,22.7 L68,21.6 L72,21.0 L76,20.8 L80,20.7 L84,20.6 L88,20.6 L92,20.8 L96,21.3 L100,22.1 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.600"><input type="range" min="-15" max="15" step="0.5" value="3" aria-label="Lead vox HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="Lead vox HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.400"><input type="range" min="-15" max="15" step="0.5" value="-3" aria-label="Lead vox LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.333"><input type="range" min="-15" max="15" step="0.5" value="-5" aria-label="Lead vox LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp"></span><span class="lamp"></span><span class="lamp is-error"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:48%" title="Gain reduction 8 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.500"><input type="range" min="-1" max="1" step="0.5" value="0.0" aria-label="Lead vox pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" checked>Solo</label>
+          <button class="key key-sel" aria-pressed="true">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-3<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="734" aria-label="Lead vox fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:78%;--meter-peak:90%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 7</span><span class="scribble-name">Lead vox</span></div>
+      </section>
+      <section class="strip" style="--strip-color:#d6409f" aria-label="Channel 8, BV">
+        <div class="strip-section"><span class="strip-label">Input</span>
+          <label class="knob knob-sm" style="--value:0.600"><input type="range" min="0" max="60" step="0.5" value="36" aria-label="BV gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          <label class="key"><input type="checkbox" checked>48V</label><label class="key"><input type="checkbox">&Oslash;</label>
+        </div>
+        <div class="strip-section"><span class="strip-label">EQ &middot; HPF</span>
+          <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25.0 L0,48.0 L4,46.7 L8,43.8 L12,40.8 L16,37.7 L20,34.0 L24,30.5 L28,29.9 L32,29.4 L36,29.1 L40,28.9 L44,28.5 L48,27.7 L52,26.6 L56,25.5 L60,24.6 L64,23.8 L68,23.2 L72,22.8 L76,22.5 L80,22.4 L84,22.2 L88,22.1 L92,22.2 L96,22.5 L100,23.0 L100,25.0 Z"/></svg></div>
+          <label class="knob knob-sm knob-hf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="BV HF gain"><span class="knob-dial"></span><span class="knob-label">HF</span></label><label class="knob knob-sm knob-hmf is-bipolar" style="--value:0.533"><input type="range" min="-15" max="15" step="0.5" value="1" aria-label="BV HMF gain"><span class="knob-dial"></span><span class="knob-label">HMF</span></label>
+          <label class="knob knob-sm knob-lmf is-bipolar" style="--value:0.433"><input type="range" min="-15" max="15" step="0.5" value="-2" aria-label="BV LMF gain"><span class="knob-dial"></span><span class="knob-label">LMF</span></label><label class="knob knob-sm knob-lf is-bipolar" style="--value:0.367"><input type="range" min="-15" max="15" step="0.5" value="-4" aria-label="BV LF gain"><span class="knob-dial"></span><span class="knob-label">LF</span></label>
+        </div>
+        <div class="strip-section"><span class="strip-label">Gate &middot; Comp</span>
+          <span class="lamp"></span><span class="lamp is-warn"></span><span class="lamp"></span>
+          <div class="meter is-gr is-segmented" style="--meter-level:18%" title="Gain reduction 3 dB"><div class="meter-fill"></div></div>
+        </div>
+        <div class="strip-section"><label class="knob knob-sm is-bipolar" style="--value:0.620"><input type="range" min="-1" max="1" step="0.5" value="0.24" aria-label="BV pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label></div>
+        <div class="strip-section">
+          <label class="key key-mute"><input type="checkbox" >Mute</label><label class="key key-solo"><input type="checkbox" >Solo</label>
+          <button class="key key-sel" aria-pressed="false">Sel</button>
+        </div>
+        <span class="readout readout-sm" data-fader-readout>-8<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="624" aria-label="BV fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:58%;--meter-peak:66%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">CH 8</span><span class="scribble-name">BV</span></div>
+      </section>
+      <section class="strip is-master" style="--strip-color:#ffffff" aria-label="Master">
+        <div class="strip-section"><span class="strip-label">Master</span>
+          <div class="eq-curve is-off"><svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0,25 L100,25"/></svg></div>
+          <label class="knob knob-sm is-bipolar" style="--value:0.500"><input type="range" min="-1" max="1" step="0.5" value="0" aria-label="Master balance"><span class="knob-dial"></span><span class="knob-label">Bal</span></label>
+        </div>
+        <div class="strip-section"><label class="key key-on"><input type="checkbox" checked>On</label><label class="key key-solo"><input type="checkbox">Cue</label></div>
+        <span class="readout readout-sm" data-fader-readout>0<span class="readout-unit">dB</span></span>
+        <div class="strip-fader">
+          <div class="scale" aria-hidden="true"><span style="--at:1.00">+10</span><span style="--at:0.92">+5</span><span style="--at:0.80" class="is-unity">0</span><span style="--at:0.69">-5</span><span style="--at:0.58">-10</span><span style="--at:0.42">-20</span><span style="--at:0.30">-30</span><span style="--at:0.20">-40</span><span style="--at:0.08">-60</span><span style="--at:0">&minus;&infin;</span></div>
+          <input class="fader" type="range" min="0" max="1000" value="800" aria-label="Master fader">
+          <div class="meter meter-v is-segmented" style="--meter-level:72%;--meter-peak:81%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+          <div class="meter meter-v is-segmented" style="--meter-level:69%;--meter-peak:79%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+          <div class="scale is-meter" aria-hidden="true"><span style="--at:.97">0</span><span style="--at:.85">6</span><span style="--at:.72">12</span><span style="--at:.6">18</span><span style="--at:.48">24</span><span style="--at:.3">36</span><span style="--at:.15">48</span><span style="--at:.02">60</span></div>
+        </div>
+        <div class="scribble"><span class="scribble-num">ST L/R</span><span class="scribble-name">Master</span></div>
+      </section>
+    </div>
+
+    <div class="demo-selected">
+      <section class="panel">
+        <header class="panel-header"><strong>Ch 7 &middot; Lead vox &mdash; EQ</strong><label class="key key-on"><input type="checkbox" checked>EQ</label></header>
+        <div class="eq-curve" style="--eq-aspect:10 / 3"><svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0,30.0 L0,54.0 L8,50.7 L16,47.9 L24,45.5 L32,43.2 L40,40.2 L48,36.9 L56,36.0 L64,35.0 L72,34.7 L80,34.8 L88,34.6 L96,33.5 L104,32.0 L112,30.6 L120,29.6 L128,28.5 L136,27.2 L144,25.9 L152,25.3 L160,25.3 L168,25.4 L176,25.5 L184,25.8 L192,26.3 L200,27.1 L200,30.0 Z"/></svg></div>
+        <div class="demo-eq-bands"><div class="stack" style="align-items:center;gap:0.4rem">
+              <label class="knob knob-lg knob-hf is-bipolar" style="--value:0.600"><input type="range" min="-15" max="15" step="0.5" value="3" aria-label="Lead vox HF gain"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+              <label class="knob knob-sm knob-hf" style="--value:0.600"><input type="range" min="0" max="100" step="0.5" value="60" aria-label="Lead vox HF frequency"><span class="knob-dial"></span><span class="knob-label">Freq</span></label>
+              <label class="knob knob-sm knob-hf" style="--value:0.061"><input type="range" min="0.1" max="10" step="0.5" value="0.7" aria-label="Lead vox HF Q"><span class="knob-dial"></span><span class="knob-label">Q</span></label>
+              <span class="readout readout-sm">HF 8.0k</span></div><div class="stack" style="align-items:center;gap:0.4rem">
+              <label class="knob knob-lg knob-hmf is-bipolar" style="--value:0.567"><input type="range" min="-15" max="15" step="0.5" value="2" aria-label="Lead vox HMF gain"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+              <label class="knob knob-sm knob-hmf" style="--value:0.500"><input type="range" min="0" max="100" step="0.5" value="50" aria-label="Lead vox HMF frequency"><span class="knob-dial"></span><span class="knob-label">Freq</span></label>
+              <label class="knob knob-sm knob-hmf" style="--value:0.111"><input type="range" min="0.1" max="10" step="0.5" value="1.2" aria-label="Lead vox HMF Q"><span class="knob-dial"></span><span class="knob-label">Q</span></label>
+              <span class="readout readout-sm">HMF 3.2k</span></div><div class="stack" style="align-items:center;gap:0.4rem">
+              <label class="knob knob-lg knob-lmf is-bipolar" style="--value:0.400"><input type="range" min="-15" max="15" step="0.5" value="-3" aria-label="Lead vox LMF gain"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+              <label class="knob knob-sm knob-lmf" style="--value:0.500"><input type="range" min="0" max="100" step="0.5" value="50" aria-label="Lead vox LMF frequency"><span class="knob-dial"></span><span class="knob-label">Freq</span></label>
+              <label class="knob knob-sm knob-lmf" style="--value:0.172"><input type="range" min="0.1" max="10" step="0.5" value="1.8" aria-label="Lead vox LMF Q"><span class="knob-dial"></span><span class="knob-label">Q</span></label>
+              <span class="readout readout-sm">LMF 400</span></div><div class="stack" style="align-items:center;gap:0.4rem">
+              <label class="knob knob-lg knob-lf is-bipolar" style="--value:0.333"><input type="range" min="-15" max="15" step="0.5" value="-5" aria-label="Lead vox LF gain"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+              <label class="knob knob-sm knob-lf" style="--value:0.500"><input type="range" min="0" max="100" step="0.5" value="50" aria-label="Lead vox LF frequency"><span class="knob-dial"></span><span class="knob-label">Freq</span></label>
+              <label class="knob knob-sm knob-lf" style="--value:0.061"><input type="range" min="0.1" max="10" step="0.5" value="0.7" aria-label="Lead vox LF Q"><span class="knob-dial"></span><span class="knob-label">Q</span></label>
+              <span class="readout readout-sm">LF 90</span></div></div>
+      </section>
+      <section class="panel">
+        <header class="panel-header"><strong>Dynamics</strong><label class="key key-on"><input type="checkbox" checked>Comp</label></header>
+        <div class="row" style="gap:0.9rem;align-items:stretch;">
+          <div class="demo-knob-grid">
+            <label class="knob " style="--value:0.700"><input type="range" min="-60" max="0" step="0.5" value="-18" aria-label="Threshold (dB)"><span class="knob-dial"></span><span class="knob-label">Thresh</span></label><label class="knob " style="--value:0.158"><input type="range" min="1" max="20" step="0.5" value="4" aria-label="Ratio"><span class="knob-dial"></span><span class="knob-label">Ratio</span></label>
+            <label class="knob " style="--value:0.200"><input type="range" min="0" max="100" step="0.5" value="20" aria-label="Attack"><span class="knob-dial"></span><span class="knob-label">Attack</span></label><label class="knob " style="--value:0.450"><input type="range" min="0" max="100" step="0.5" value="45" aria-label="Release"><span class="knob-dial"></span><span class="knob-label">Release</span></label>
+            <label class="knob " style="--value:0.300"><input type="range" min="0" max="10" step="0.5" value="3" aria-label="Knee"><span class="knob-dial"></span><span class="knob-label">Knee</span></label><label class="knob " style="--value:0.250"><input type="range" min="0" max="24" step="0.5" value="6" aria-label="Make-up gain (dB)"><span class="knob-dial"></span><span class="knob-label">Gain</span></label>
+          </div>
+          <div class="stack" style="align-items:center;gap:0.3rem"><span class="strip-label">GR</span><div class="meter meter-v is-gr is-segmented" style="--meter-level:40%;height:9rem"><div class="meter-fill"></div></div></div>
+          <div class="stack" style="align-items:center;gap:0.3rem"><span class="strip-label">Gate</span><span class="lamp is-on"></span><span class="lamp"></span><span class="lamp"></span></div>
         </div>
       </section>
-      <section class="panel demo-strip">
-        <header class="panel-header"><strong>Snare</strong></header>
-        <div class="demo-strip-body">
-          <div class="meter meter-v" style="--meter-level:55%;--meter-peak:80%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
-          <input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-9" aria-label="Snare level (dB)">
+      <section class="panel">
+        <header class="panel-header"><strong>Aux sends</strong><span class="badge">post</span></header>
+        <div class="demo-knob-grid">
+          <label class="knob " style="--value:0.720"><input type="range" min="0" max="100" step="0.5" value="72" aria-label="Send to monitor 1"><span class="knob-dial"></span><span class="knob-label">Mon 1</span></label><label class="knob " style="--value:0.550"><input type="range" min="0" max="100" step="0.5" value="55" aria-label="Send to monitor 2"><span class="knob-dial"></span><span class="knob-label">Mon 2</span></label><label class="knob " style="--value:0.000"><input type="range" min="0" max="100" step="0.5" value="0" aria-label="Send to monitor 3"><span class="knob-dial"></span><span class="knob-label">Mon 3</span></label><label class="knob " style="--value:0.400"><input type="range" min="0" max="100" step="0.5" value="40" aria-label="Send to monitor 4"><span class="knob-dial"></span><span class="knob-label">Mon 4</span></label>
+          <label class="knob " style="--value:0.350"><input type="range" min="0" max="100" step="0.5" value="35" aria-label="Send to reverb"><span class="knob-dial"></span><span class="knob-label">Verb</span></label><label class="knob " style="--value:0.180"><input type="range" min="0" max="100" step="0.5" value="18" aria-label="Send to delay"><span class="knob-dial"></span><span class="knob-label">Delay</span></label>
         </div>
-        <span class="readout readout-sm">-9<span class="readout-unit">dB</span></span>
-        <div class="stack" style="width:100%">
-          <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Muted</span></label>
-          <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
-        </div>
-      </section>
-      <section class="panel demo-strip">
-        <header class="panel-header"><strong>Bass</strong></header>
-        <div class="demo-strip-body">
-          <div class="meter meter-v" style="--meter-level:70%;--meter-peak:74%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
-          <input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-4" aria-label="Bass level (dB)">
-        </div>
-        <span class="readout readout-sm">-4<span class="readout-unit">dB</span></span>
-        <div class="stack" style="width:100%">
-          <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Muted</span></label>
-          <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
-        </div>
-      </section>
-      <section class="panel demo-strip">
-        <header class="panel-header"><strong>Keys</strong></header>
-        <div class="demo-strip-body">
-          <div class="meter meter-v" style="--meter-level:40%;--meter-peak:52%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
-          <input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-12" aria-label="Keys level (dB)">
-        </div>
-        <span class="readout readout-sm">-12<span class="readout-unit">dB</span></span>
-        <div class="stack" style="width:100%">
-          <label class="toggle-btn is-danger"><input type="checkbox" checked><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Muted</span></label>
-          <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
-        </div>
-      </section>
-      <section class="panel demo-strip">
-        <header class="panel-header"><strong>Vocal</strong></header>
-        <div class="demo-strip-body">
-          <div class="meter meter-v" style="--meter-level:78%;--meter-peak:90%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
-          <input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-3" aria-label="Vocal level (dB)">
-        </div>
-        <span class="readout readout-sm">-3<span class="readout-unit">dB</span></span>
-        <div class="stack" style="width:100%">
-          <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Muted</span></label>
-          <label class="toggle-btn"><input type="checkbox" checked><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
-        </div>
-      </section>
-      <section class="panel demo-strip">
-        <header class="panel-header"><strong>Master</strong></header>
-        <div class="demo-strip-body">
-          <div class="meter meter-v" style="--meter-level:68%;--meter-peak:76%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
-          <input class="slider is-vertical" type="range" min="-60" max="12" step="1" value="-2" aria-label="Master level (dB)">
-        </div>
-        <span class="readout readout-sm">-2<span class="readout-unit">dB</span></span>
-        <div class="stack" style="width:100%">
-          <label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Mute</span><span class="toggle-btn-on">Muted</span></label>
-          <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Solo</span><span class="toggle-btn-on">Solo</span></label>
-        </div>
+        <div class="row" style="gap:0.3rem;margin-top:0.75rem;flex-wrap:wrap;"><label class="key key-sel"><input type="checkbox" checked>Pre</label><label class="key"><input type="checkbox">Post</label><label class="key key-mute"><input type="checkbox">Mute sends</label></div>
       </section>
     </div>
 
     <div class="demo-three">
-      <section class="panel">
-        <header class="panel-header"><strong>Channel EQ &mdash; Vocal</strong><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></header>
-        <div style="padding:0.9rem;">
-          <div class="demo-eq"><label class="label" for="eq1">High</label><input class="slider" id="eq1" type="range" min="-12" max="12" value="3"><span class="readout readout-sm">+3<span class="readout-unit">dB</span></span></div>
-          <div class="demo-eq"><label class="label" for="eq2">Mid</label><input class="slider" id="eq2" type="range" min="-12" max="12" value="-2"><span class="readout readout-sm">-2<span class="readout-unit">dB</span></span></div>
-          <div class="demo-eq"><label class="label" for="eq3">Low</label><input class="slider" id="eq3" type="range" min="-12" max="12" value="0"><span class="readout readout-sm">0<span class="readout-unit">dB</span></span></div>
-          <div class="demo-eq"><label class="label" for="pan">Pan</label><input class="slider" id="pan" type="range" min="-50" max="50" value="0"><span class="readout readout-sm">C</span></div>
-          <div class="row" style="gap:0.6rem;flex-wrap:wrap;margin-top:0.5rem;">
-            <button class="switch" role="switch" aria-checked="true"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">+48V</span></button>
-            <button class="switch" role="switch" aria-checked="false"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">Polarity</span></button>
-            <label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Pad</span><span class="toggle-btn-on">Pad on</span></label>
-          </div>
-          <div class="field" style="margin-top:0.75rem;"><label class="label" for="src">Input source</label><select class="select" id="src"><option>Stage box A &middot; 5</option><option>Stage box A &middot; 6</option><option>Local &middot; 1</option></select></div>
-        </div>
-      </section>
-
       <section class="panel">
         <header class="panel-header"><strong>Routing</strong></header>
         <table class="table demo-route">
@@ -216,5 +404,23 @@
   </footer>
 
 <script src="assets/js/theme-loader.js"></script>
+<script src="assets/js/controls.js"></script>
+<script>
+  /* Demo fader law: position (0-1000) to dB, the same breakpoints the
+     printed .scale marks sit at. A real app owns this mapping. */
+  var LAW = [[1000, 10], [920, 5], [800, 0], [690, -5], [580, -10], [420, -20], [300, -30], [200, -40], [80, -60], [0, -Infinity]];
+  function faderDb(p) {
+    for (var i = 0; i < LAW.length - 1; i++) {
+      var a = LAW[i], b = LAW[i + 1];
+      if (p <= a[0] && p >= b[0]) return b[1] === -Infinity ? (p === 0 ? -Infinity : -60 - (80 - p) / 2) : b[1] + (p - b[0]) * (a[1] - b[1]) / (a[0] - b[0]);
+    }
+  }
+  document.addEventListener("input", function (e) {
+    if (!e.target.matches(".fader")) return;
+    var db = faderDb(+e.target.value);
+    var out = e.target.closest(".strip").querySelector("[data-fader-readout]");
+    out.firstChild.nodeValue = db === -Infinity ? "\u2212\u221e" : (db > 0 ? "+" : "") + db.toFixed(1);
+  });
+</script>
 </body>
 </html>

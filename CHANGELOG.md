@@ -5,6 +5,21 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Mixing-console primitives** (new core components), from the channel
+  strips of the Yamaha CL/QL StageMix, Midas Heritage 3000 / HD96 and SSL
+  4000: `.mixer` bay and `.strip` channel strip; `.knob` rotary control
+  (value arc, centre-detent `.is-bipolar`, SSL band caps
+  `.knob-hf|hmf|lmf|lf`); `.fader` long-throw fader with `.scale` dB
+  legend and unity mark; `.meter.is-segmented` LED ladder and
+  `.meter.is-gr` gain reduction; `.key` backlit keys (`.key-on|mute|solo|sel`);
+  `.scribble` strip; `.eq-curve` thumbnail. `assets/js/controls.js` keeps
+  knob rotation in step with its input. lcars, msdos and teletext paint
+  them in their own palettes. See CONTRACT.md "Mixing-console primitives".
+- **soundmixer demo rebuilt as a console:** eight input strips and a
+  master in a bay (gain/48V/Ø, EQ curve + band knobs, gate lamps + GR,
+  pan, mute/solo/sel, dB readout, scale + fader + LED meter, scribble
+  strip), plus a selected-channel EQ / dynamics / aux-sends section.
+
 - **Palette variants are now discoverable.** A theme lists its variants in
   its header (`Variants: id=Label, …`); `dist/themes.json` carries them as
   `variants: [{id, label}]`, the demo picker offers each one, pages accept

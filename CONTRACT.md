@@ -431,6 +431,76 @@ surfaces, and a palette alone cannot express that:
 - `.lamp` (+ `.is-on`/`.is-warn`/`.is-error`) — a hardware indicator
   light. Unlike `.status` it reads as *off* rather than absent.
 
+## Mixing-console primitives
+
+The shapes every mixing surface shares — Yamaha CL/QL StageMix, Midas
+Heritage 3000 and HD96, SSL 4000 — so an audio app gets a real console
+instead of hand-rolling one. Signal flow reads top to bottom in each strip:
+
+```html
+<div class="mixer">
+  <section class="strip is-selected" style="--strip-color:#8e4ec6">
+    <div class="strip-section"><span class="strip-label">EQ</span>
+      <div class="eq-curve"><svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="…"/></svg></div>
+      <label class="knob knob-sm knob-hf is-bipolar" style="--value:.6">
+        <input type="range" min="-15" max="15" value="3" aria-label="HF gain">
+        <span class="knob-dial"></span><span class="knob-label">HF</span>
+      </label>
+    </div>
+    <div class="strip-section">
+      <label class="key key-mute"><input type="checkbox">Mute</label>
+      <label class="key key-solo"><input type="checkbox">Solo</label>
+      <button class="key key-sel" aria-pressed="true">Sel</button>
+    </div>
+    <div class="strip-fader">
+      <div class="scale"><span style="--at:.8" class="is-unity">0</span>…</div>
+      <input class="fader" type="range" min="0" max="1000" value="800" aria-label="Fader">
+      <div class="meter meter-v is-segmented" style="--meter-level:62%;--meter-peak:71%">
+        <div class="meter-fill"></div><div class="meter-peak"></div></div>
+    </div>
+    <div class="scribble"><span class="scribble-num">CH 7</span><span class="scribble-name">Lead vox</span></div>
+  </section>
+</div>
+```
+
+- `.mixer` — the bay: strips side by side, scrolling sideways like a
+  fader bank. `.strip` (+ `.is-master`, `.is-selected`) is one channel;
+  `.strip-section` groups a stage (with an optional `.strip-label`);
+  `.strip-fader` holds scale, fader and meters at one height
+  (`--fader-length`). `--strip-color` is the channel colour.
+- `.knob` — a rotary control over a real, invisible range input (drag,
+  arrow keys and screen readers work). `--value` (0–1) turns the pointer
+  through 270° and fills the value arc; `.is-bipolar` fills from 12
+  o'clock for centre-detent controls (pan, EQ gain). Sizes `.knob-sm`,
+  `.knob-lg`. Band caps follow the SSL convention — `.knob-hf` red,
+  `.knob-hmf` green, `.knob-lmf` blue, `.knob-lf` brown — as tokens
+  (`--knob-hf|hmf|lmf|lf`). `assets/js/controls.js` keeps `--value` in
+  step with the input; an app rendering `--value` itself can skip it.
+- `.fader` — a long-throw console fader (a vertical native range input
+  drawn as a groove and a ridged cap). The app owns the fader law;
+  `.scale` prints the legend: each mark at a 0–1 `--at`, `.is-unity` for
+  0 dB, `.scale.is-meter` for a meter's dBFS legend.
+- `.meter.is-segmented` — the LED ladder: the `.meter` contract cut into
+  segments, unlit segments faintly visible (`--meter-unlit`).
+  `.meter.is-gr` — gain reduction, filling from the top (or right) in
+  `--meter-gr`.
+- `.key` — a backlit console key: a checkbox label, or a button with
+  `aria-pressed`. Lit colours by function: `.key-on` green (Yamaha ON),
+  `.key-mute` red, `.key-solo` yellow (solo/cue), `.key-sel` accent.
+- `.scribble` — the scribble strip: `.scribble-num` and `.scribble-name`
+  under a bar of `--strip-color`.
+- `.eq-curve` — an EQ thumbnail: frequency grid and 0 dB line; the app
+  supplies the SVG path. `.is-off` greys it (EQ bypassed).
+
+Tokens: `--mixer-bg|border|gap|padding|radius`,
+`--strip-bg|border|width|width-master|radius|selected|rule|label-fg`,
+`--knob-size|color|arc|arc-width|track|pointer|band-pointer|border|shadow|label-fg`,
+`--fader-length|cap|cap-bg|cap-line|cap-width|cap-height|cap-radius|cap-border|cap-shadow|slot|slot-width`,
+`--scale-width|fg|unity-fg`, `--meter-seg|seg-gap|gap|unlit|gr`,
+`--key-bg|fg|border|radius|shadow|glow|width` and `--key-on|mute|solo|sel`
+(+ `-fg`), `--scribble-bg|fg|num-fg|radius|bar-width`,
+`--eq-bg|grid|zero|line|fill|line-width|border|radius|aspect`.
+
 ## Density
 
 `--density` (default `1`) scales the paddings that decide how much data

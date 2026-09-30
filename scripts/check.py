@@ -98,6 +98,9 @@ BASE_COMPONENTS = [
     # scrollspy .is-active, nav-collapse open state, taskbar start/task).
     "carousel", "scrollspy-link", "nav-collapse",
     "taskbar", "taskbar-start", "taskbar-task", "taskbar-tray",
+    # Mixing-console primitives: same token-variant architecture (.key-mute,
+    # .knob-hf, .strip.is-selected, …), so the same cascade rule applies.
+    "mixer", "strip", "knob", "fader", "key", "scribble", "eq-curve",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 
