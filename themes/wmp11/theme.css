@@ -37,7 +37,7 @@ html[data-theme="wmp11"] {
   --input-fg: var(--text);
   --input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   --focus-ring: 0 0 10px rgba(63, 169, 245, 0.4);
-  --panel-bg: linear-gradient(180deg, rgba(38, 38, 48, 0.85), rgba(10, 10, 13, 0.82));
+  --panel-bg: linear-gradient(180deg, rgba(22, 24, 30, 0.9), rgba(0, 0, 0, 0.86));
   --panel-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 6px 18px rgba(0, 0, 0, 0.45);
   --row-selected-bg: rgba(63, 169, 245, 0.18);
   --nav-bg: linear-gradient(180deg, #1a1a22, #0a0a0d);
@@ -47,9 +47,43 @@ html[data-theme="wmp11"] {
   --overlay-blur: blur(4px);
   --indicator-fg: var(--accent);
   --indicator-track: var(--border);
+  /* Blue silk, WMP11's default visualization: bright light ribbons swept
+     over deep navy. Shared by the content well and the bare page, so a
+     page without the app shell still sits on the player's backdrop. */
+  --wmp-silk:
+    linear-gradient(116deg, transparent 34%, rgba(170, 225, 255, 0.28) 42%, rgba(120, 200, 255, 0.1) 47%, transparent 55%),
+    linear-gradient(124deg, transparent 48%, rgba(90, 170, 240, 0.24) 56%, transparent 66%),
+    linear-gradient(104deg, transparent 58%, rgba(60, 150, 230, 0.18) 66%, transparent 76%),
+    radial-gradient(ellipse 70% 45% at 25% 28%, rgba(40, 130, 215, 0.7), transparent 62%),
+    radial-gradient(ellipse 60% 40% at 80% 72%, rgba(20, 100, 185, 0.6), transparent 66%),
+    linear-gradient(160deg, #031a33, #06427a 40%, #03213f 72%, #000000);
+  /* The blue glossy capsule: WMP11's active tab, reused for every
+     "selected" state — tabs, segments, pages, list and row selection. */
+  --wmp-capsule: linear-gradient(180deg, #7cc4f5 0, #3b8fd6 48%, #1a64b4 52%, #2c7ccc 100%);
+  --panel-header-bg: linear-gradient(180deg, #34373f 0, #1b1d22 48%, #07080a 52%, #121318 100%);
+  --panel-header-fg: #e8e8f0;
+  --tab-radius: 3px;
+  --tab-bg-active: var(--wmp-capsule);
+  --tab-fg-active: #ffffff;
+  --tab-underline-active: transparent;
+  --segmented-item-bg-active: var(--wmp-capsule);
+  --segmented-item-fg-active: #ffffff;
+  --pagination-item-bg-active: var(--wmp-capsule);
+  --pagination-item-fg-active: #ffffff;
+  --row-selected-bg: var(--wmp-capsule);
+  --row-selected-fg: #ffffff;
+  --list-active-marker: none;
+  /* The seek bar: a thin glowing blue line in a black groove, and the
+     slider thumb a small glossy blue orb. */
+  --progress-bg: #000000;
+  --progress-border: #2a2a33;
+  --progress-fill: linear-gradient(180deg, #bfeaff 0, #3fa9f5 45%, #1a64b4 100%);
+  --progress-radius: 999px;
+  --slider-thumb-bg: radial-gradient(circle at 35% 30%, #d6f2ff, #4bb6ff 45%, #1d6fb8 80%, #0b3560);
+  --key-sel: #3b8fd6;
 }
 
-html[data-theme="wmp11"] { background: radial-gradient(ellipse at top, #1a1a24, #05050a 75%); }
+html[data-theme="wmp11"] { background: var(--wmp-silk) fixed; }
 
 html[data-theme="wmp11"] h1,
 html[data-theme="wmp11"] h2,
@@ -80,7 +114,7 @@ html[data-theme="wmp11"] .modal::before {
   position: absolute;
   inset: 0 0 auto 0;
   height: 55%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 60%, transparent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02) 50%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -164,12 +198,7 @@ html[data-theme="wmp11"] {
   --app-bar-padding: 0.25rem 0.9rem 0.25rem 4.4rem;
   /* Blue silk: the default WMP11 visualization, as soft light ribbons
      over deep navy. */
-  --app-main-bg:
-    linear-gradient(118deg, transparent 38%, rgba(140, 210, 255, 0.16) 46%, transparent 54%),
-    linear-gradient(128deg, transparent 52%, rgba(90, 170, 240, 0.14) 60%, transparent 70%),
-    radial-gradient(ellipse 70% 45% at 28% 30%, rgba(40, 125, 210, 0.55), transparent 62%),
-    radial-gradient(ellipse 60% 40% at 78% 70%, rgba(20, 90, 170, 0.5), transparent 66%),
-    linear-gradient(160deg, #021426, #063a66 40%, #021a33 72%, #000000);
+  --app-main-bg: var(--wmp-silk);
   --app-main-radius: 0;
   --app-main-padding: 1.1rem;
   --app-status-bg: linear-gradient(180deg, #2e2e36 0, #16161c 45%, #000000 52%, #121218 100%);
@@ -251,3 +280,18 @@ html[data-theme="wmp11"] .app-status::before {
   html[data-theme="wmp11"] { --app-bar-padding: 0.25rem 0.6rem 0.25rem 4.2rem; }
   html[data-theme="wmp11"] .app-bar .nav-item { min-width: 0; }
 }
+
+/* Panel headers are the player's list-pane header bars: dark gloss split
+   at the middle, white text, a hairline highlight on top. */
+html[data-theme="wmp11"] .panel-header {
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid #000000;
+  text-shadow: 0 1px 1px #000;
+  letter-spacing: 0.01em;
+}
+html[data-theme="wmp11"] h1,
+html[data-theme="wmp11"] h2,
+html[data-theme="wmp11"] h3 { color: #ffffff; text-shadow: 0 0 10px rgba(63, 169, 245, 0.55); }
+html[data-theme="wmp11"] .tabs { border-bottom-color: #000; gap: 2px; }
+html[data-theme="wmp11"] .tab.is-active { border-bottom: 0; box-shadow: inset 0 0 0 1px rgba(191, 234, 255, 0.5), 0 0 8px rgba(63, 169, 245, 0.45); }
+html[data-theme="wmp11"] .progress-bar { box-shadow: 0 0 8px rgba(63, 169, 245, 0.8); }

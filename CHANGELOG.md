@@ -9,6 +9,11 @@ changes are called out explicitly here.
   faders sight glasses filled to their level (brass T-handle), progress
   and sliders glass tubes, keys glowing brass push-buttons, scribble
   strips nameplates, the EQ curve a parchment chart-recorder trace.
+- **wmp11: closer to the player.** Black-glass panels with dark gloss
+  header bars; the blue glossy tab capsule for every selected state (tabs,
+  segments, pagination, rows, lists); a glowing seek-line progress bar and
+  orb slider thumbs; white headings; brighter silk, now also behind pages
+  that don't use the app shell.
 - **core:** `--fader-track` replaces a fader's whole groove, and
   `assets/js/controls.js` now also keeps each `.fader`'s `--value` (0–1)
   in step, so a theme can draw a track that fills to the fader.

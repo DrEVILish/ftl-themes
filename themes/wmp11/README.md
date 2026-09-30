@@ -36,7 +36,15 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
   inline SVG. Decorative only; it is dropped under 1000px so it never
   covers the app's own status text.
 - **Blue silk** — WMP11's default visualization — fills the content well
-  as soft light ribbons over deep navy; the glass panels float on it.
+  (and the bare page, for apps without the shell) as bright light ribbons
+  over deep navy; the black-glass panels float on it.
+- **Panel headers** are the player's list-pane header bars: dark gloss
+  split at the middle, white text, a hairline highlight.
+- **One "selected" look:** the blue glossy capsule of the active tab
+  (`--wmp-capsule`) marks every selection — page tabs, segmented
+  controls, pagination, selected rows and list items.
+- **Seek bar:** progress is a thin glowing blue line in a black groove;
+  slider thumbs are small glossy blue orbs.
 - Panels and the modal carry a genuine specular highlight band across
   their upper half (a bright-to-transparent gradient layer), the actual
   glossy-glass reflection, not just a faint ambient shadow — that band is
