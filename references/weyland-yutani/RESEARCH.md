@@ -41,3 +41,39 @@ everything below rests on **search-result summaries, not full pages**.
   Segoe UI / Arial fallbacks apply.
 - **Isolation UI details** (button shapes, exact palette) were not
   verifiable from snippets.
+
+## Screen references (supplied October 2026)
+
+Frames supplied by the project owner, filed beside this file. They show
+the terminals themselves rather than the hardware around them, and they
+are what the three palette variants follow. Some are fan-made recreations
+of the film screens, marked as such below.
+
+| File | Source | What it shows |
+|---|---|---|
+| `mother-6000-query-green.jpg` | MU/TH/UR 6000 web interface (Alien: Covenant promo, 2017) | Green phosphor text on black inside a single thin green frame; tracked caps header; underlined query links. |
+| `terminal-green-home-control.jpg` | Fan recreation | Green MU/TH/UR-style dashboard: label/value rows, big readout ("74°"), outlined button cells. |
+| `terminal-green-logo-boot.webp` | Fan recreation | Green boot screen with the wordmark: phosphor on black, nothing else. |
+| `terminal-green-scan.jpg` | Fan recreation | Green grid scope and radar ring over a row of small square soft keys. |
+| `nostromo-cyan-targeting.jpg` | Alien (1979) | Cyan wireframe targeting display on the Nostromo bridge. |
+| `alien-vs-bladerunner-environ-purge.webp` | Alien (1979) / Blade Runner (1982) | The same "ENVIRON CTR PURGE" red screen in both films: inverse-video red block with large tracked caps. |
+| `terminal-red-hyperdyne-boot.jpg`, `terminal-red-inventory.jpg`, `terminal-red-logo-boot.jpg` | Fan recreations | Red phosphor terminals: a red title band across the top, thin red outlines, and a bottom row of outlined function keys ("F1 F2 F3 F4 F5 SELECT"). |
+| `terminal-amber-destination.jpg` | Fan recreation | Amber/yellow terminal: header rows of label/value pairs over double horizontal rules. |
+| `terminal-cyan-two-screens.webp` | Fan recreation | Cyan terminal pair: text column, side key column, bar chart. |
+| `earth-kirsh-specimen-monitor.jpg`, `earth-kirsh-monitor-in-set.jpg` | Alien: Earth (2025) | Cyan specimen monitors: header rows of label/value pairs, a large outlined image box and an outlined DESCRIPTION box, condensed tracked caps throughout. |
+| `romulus-colony-work-contract.webp` | Alien: Romulus (2024) | Colony work contract display: amber-beige segmented counters ("12 032 HRS / 17 354 HRS") in outlined boxes. |
+| `login-amber-glow.jpg` | Fan wallpaper | Glowing orange wordmark and LOG IN / PASSWORD fields. |
+| `phone-app-amber.webp`, `corp-mobile-register.png`, `corp-website-romulus.webp` | Romulus marketing | Corporate yellow-on-navy app and website mock-ups. Not used: they are 2024 marketing, not in-universe screens. |
+| `building-better-worlds-emblem.webp` | Romulus marketing | "Building Better Worlds" globe emblem. Not reproduced. |
+
+### What the variants take from them
+
+- **One phosphor per screen.** Every terminal uses a single colour on
+  black. Status colours are the only other hues.
+- **Thin outlines in that phosphor**, not filled panels.
+- **Inverse-video bands** for titles ("PRIVATE TERMINAL", "PURGE"): solid
+  phosphor with black text. The variants use this for the modal title and
+  tooltips in place of the beige plate.
+- **A soft-key row** of outlined boxes along the bottom of the screen.
+  All four palettes render the status strip this way.
+- **Glow** on large text only.

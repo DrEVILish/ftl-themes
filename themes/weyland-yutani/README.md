@@ -42,7 +42,25 @@ reproduced.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
   scanline overlay; amber mono readouts on glass-black.
 - Inputs are recessed with a heavy amber underline and amber caret.
-- Status strip in tracked micro-caps.
+- Status strip in tracked micro-caps, its items drawn as a row of
+  outlined soft keys like the terminals' function-key row; the first one
+  is lit in the accent.
+
+### Variants
+
+The default is the hardware. The variants are the screens, one phosphor
+each, from the frames in `references/weyland-yutani/` (see RESEARCH.md).
+In every variant the beige plate becomes an inverse-video phosphor band
+(modal title, tooltips), the top bar becomes the screen's header row
+(phosphor text on black over a phosphor rule), panels get thin phosphor
+outlines, and headings and readouts glow.
+
+| Variant | Label | Source |
+|---|---|---|
+| (default) | Weyland-Yutani | Nostromo / Isolation hardware: beige plates, amber CRT. |
+| `mother` | MU/TH/UR (green) | The MU/TH/UR 6000 interface: green phosphor `#4dff7c`. |
+| `emergency` | Emergency (red) | The red "ENVIRON CTR / PURGE" and Hyperdyne terminals: red `#ff5640`. Danger moves to hazard yellow `#ffd21f` so it stays distinct from the accent. |
+| `earth` | Alien: Earth (cyan) | Kirsh's specimen monitors (2025): cyan `#4fe0ff`. |
 
 ### Icons
 
@@ -98,8 +116,9 @@ core's default.
   yellow as a background or accent.
 - Don't add rounded corners, shadows (beyond the button lip), gradients or
   glass.
-- Don't set green as the main accent: that is `matrix`. Don't use blue,
-  DOS-style boxes (`msdos`) or a dense all-orange terminal (`bloomberg`).
+- Don't make green or cyan the default accent; they belong to the
+  `mother` and `earth` screen variants. Don't use DOS-style boxes
+  (`msdos`) or a dense all-orange terminal (`bloomberg`).
 - Don't animate the scanlines or add flicker; keep them static so
   `prefers-reduced-motion` needs no special case.
 - Don't put text on the striped strap, and don't add the corporate logo.

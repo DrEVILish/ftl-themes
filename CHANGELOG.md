@@ -5,6 +5,24 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **New theme: `prometheus`** — the USCSS Prometheus's holographic ship
+  displays (2012): cyan holo-glass on deep navy, every panel opened by a
+  rounded left bracket and named on a filled pill tab, outlined pill
+  controls, dark value-box readouts, a dash-and-cross grid behind the
+  shell and orange edge codes up the rail. `suit` variant: the suit
+  room's amber over blue glass. Vendors Michroma, Share Tech and Share
+  Tech Mono (SIL OFL). Seven reference frames.
+- **weyland-yutani: screen variants `mother` (MU/TH/UR green),
+  `emergency` (red) and `earth` (Alien: Earth cyan).** One phosphor each,
+  with an inverse-video phosphor band replacing the beige plate and the
+  top bar as the screen's header row. All palettes now draw the status
+  strip as a row of outlined soft keys. The theme's hard-coded line and
+  glass colours became `--wy-*` hooks; the default renders as before.
+  19 new reference frames.
+- **Demo pages:** the ticket inbox column is a panel, the chat's side
+  columns are a fixed 17rem so names don't wrap, and marketing's dialog
+  stage is larger so framed modals fit.
+
 - **winxp-luna: real XP dialogs and taskbar.** Modals get the full Luna
   window frame (title bar with red close, blue side/bottom frame, beige
   face, Luna buttons, square fields); the status strip becomes the

@@ -1660,6 +1660,7 @@ for what, if anything, it cites.
 | `nerv` | NERV (Evangelion) | Hazard-stripe orange on bunker black; crimson reserved for real alerts. | |
 | `nokia-3310` | Nokia 3310 | Selection is a hard colour invert, not a highlight — the phone had no second hue to spend. | |
 | `pipboy` | Pip-Boy (Fallout) | Monochrome phosphor green under a scanline overlay — every state is the same green. | |
+| `prometheus` | Prometheus | Cyan holo-glass panels opened by a rounded left bracket, each named on a filled pill tab. | |
 | `steampunk` | Steampunk | Brass and stitched leather with riveted copper panels and needle-gauge readouts. | |
 | `teletext` | Teletext | The exact 8-colour broadcast palette, flat, on solid black — zero gradients or rounding. | ✓ |
 | `tron` | Tron | Electric cyan line-grid on black with `clip-path`-cut angular corners. | |

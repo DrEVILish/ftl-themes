@@ -91,6 +91,15 @@ files are vendored unmodified.
   edition)
 - **Used by:** `msdos` (every glyph on the page)
 
+## Michroma
+
+- **Family:** Michroma (weight vendored: Regular 400 —
+  `Michroma-Regular.woff2`)
+- **Designer:** Vernon Adams
+- **License:** SIL Open Font License, version 1.1
+- **Source:** https://fonts.google.com/specimen/Michroma
+- **Used by:** `prometheus` (wide squared label and heading face)
+
 ## Orbitron
 
 - **Family:** Orbitron (weight vendored: Bold 700/800 range —
@@ -110,10 +119,21 @@ files are vendored unmodified.
 - **Used by:** `barbie` (scoped narrowly to the brand mark and `h1` only,
   as the cursive script signature — never body/button text)
 
+## Share Tech and Share Tech Mono
+
+- **Family:** Share Tech (Regular 400 — `ShareTech-Regular.woff2`) and
+  Share Tech Mono (Regular 400 — `ShareTechMono-Regular.woff2`)
+- **Designer:** Carrois Type Design
+- **License:** SIL Open Font License, version 1.1
+- **Source:** https://fonts.google.com/specimen/Share+Tech and
+  https://fonts.google.com/specimen/Share+Tech+Mono
+- **Used by:** `prometheus` (body text and data readouts)
+
 ## Bottom line
 
-Six files, five families, all SIL OFL 1.1, all verified per family rather
-than assumed from "it's on Google Fonts." Attribution is optional under
+Twelve files, eleven families: nine SIL OFL 1.1, Bedstead CC0 and Px437
+CC BY-SA 4.0, all verified per family rather than assumed from "it's on
+Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
 diligence reasons `docs/icon-license-research.md` and
 `assets/logos/README.md` document their sources: so "we checked" isn't
