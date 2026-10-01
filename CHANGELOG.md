@@ -5,6 +5,18 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **win7-aero: Window Color.** One `--aero-tint` token tints every glass
+  surface; Win7's fifteen other presets ship as variants (`twilight` …
+  `frost`).
+- **check: `color-mix()` is evaluated** (premultiplied, CSS Color 5) when
+  measuring gradient stops, instead of reading the raw colour inside it.
+- **Visual baseline: variants are shot on `dashboard` only** — a variant
+  only repaints, and seven pages per variant bloated the baseline.
+- **References:** 512 lcars.org.uk panels captured and component-tagged
+  (`references/lcars/lcars-org-uk/INDEX.md`); five WMP11 captures; written
+  reference notes for steampunk (new), teletext (CRT grid, Bedstead vs
+  edit.tf's GPL TeletextKit), Windows 95 dialogs and Win7 Explorer/colour.
+
 - **lcars: per-page review fixes.** Compact modals (no longer clipped in
   fixed-height boxes), panel titles that stop before the cap and keep
   their controls, wrapping two-line keys instead of overflowing rows,

@@ -3046,6 +3046,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
 /* ftl-themes: Windows 7 Aero
  * Theme-Name: Windows 7 Aero
  * Description: Real backdrop-filter glass blur over the Aero desktop gradient — translucent, not just a lighter opaque fill like Luna's gloss.
+ * Variants: twilight=Twilight, sea=Sea, leaf=Leaf, lime=Lime, sun=Sun, pumpkin=Pumpkin, ruby=Ruby, fuchsia=Fuchsia, blush=Blush, violet=Violet, lavender=Lavender, taupe=Taupe, chocolate=Chocolate, slate=Slate, frost=Frost
  *
  * Distinct from `winxp-luna`: Aero's gloss is glass (translucent, blurred),
  * Luna's is plastic (opaque, hard-edged gradient). Where Luna's title bar is
@@ -3085,6 +3086,11 @@ html[data-theme="win7-aero"] {
   --radius: 6px;
   --font: "Segoe UI", Tahoma, sans-serif;
   --font-mono: Consolas, monospace;
+  /* Window Color (Personalize): the glass tint. Win7's default "Sky";
+     the other fifteen presets are the variants at the end of this file.
+     Every glass surface mixes it into translucent white (or dark, for the
+     taskbar), so text contrast holds whatever the tint. */
+  --aero-tint: #74b8fc;
   --flare: #7fd8ff;
 
   /* Glass, not plastic: translucent fills over a blurred backdrop, not an
@@ -3146,7 +3152,7 @@ html[data-theme="win7-aero"] {
   --overlay-blur: blur(2px);
   /* Taskbar: the glowing orb Start button, glassy task buttons with a
      top highlight, running tasks brighter with an accent light-bar. */
-  --taskbar-bg: rgba(25, 45, 75, 0.55);
+  --taskbar-bg: color-mix(in srgb, var(--aero-tint) 35%, rgb(20 30 45 / 0.6));
   --taskbar-start-size: 2.4em;
   --taskbar-start-padding: 0;
   --taskbar-start-bg: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), rgba(160, 210, 255, 0.55) 45%, rgba(40, 110, 190, 0.75));
@@ -3221,9 +3227,9 @@ html[data-theme="win7-aero"] :focus-visible {
    don't give you; it reads as an actual Aero window, not just a tinted box. */
 html[data-theme="win7-aero"] .panel-header,
 html[data-theme="win7-aero"] .modal-header {
-  --panel-header-bg: linear-gradient(180deg, rgba(216, 236, 255, 0.95) 0%, rgba(150, 200, 245, 0.85) 45%, rgba(90, 155, 215, 0.85) 100%);
-  --panel-header-fg: #0b3a6e;
-  --modal-header-bg: linear-gradient(180deg, rgba(216, 236, 255, 0.95) 0%, rgba(150, 200, 245, 0.85) 45%, rgba(90, 155, 215, 0.85) 100%);
+  --panel-header-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 18%, rgb(255 255 255 / 0.95)) 0%, color-mix(in srgb, var(--aero-tint) 28%, rgb(255 255 255 / 0.9)) 45%, color-mix(in srgb, var(--aero-tint) 40%, rgb(255 255 255 / 0.85)) 100%);
+  --panel-header-fg: #000000;
+  --modal-header-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 18%, rgb(255 255 255 / 0.95)) 0%, color-mix(in srgb, var(--aero-tint) 28%, rgb(255 255 255 / 0.9)) 45%, color-mix(in srgb, var(--aero-tint) 40%, rgb(255 255 255 / 0.85)) 100%);
   --modal-header-fg: #0b3a6e;
   position: relative;
   border-radius: var(--modal-radius, 8px) var(--modal-radius, 8px) 0 0;
@@ -3281,7 +3287,7 @@ html[data-theme="win7-aero"] {
   /* Title-bar glass with Aero's faint diagonal glare streaks. */
   --app-bar-bg:
     repeating-linear-gradient(115deg, transparent 0 60px, rgba(255, 255, 255, 0.1) 60px 95px, transparent 95px 190px),
-    linear-gradient(180deg, rgba(225, 240, 255, 0.55), rgba(160, 200, 240, 0.4));
+    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 22%, rgb(255 255 255 / 0.55)), color-mix(in srgb, var(--aero-tint) 38%, rgb(255 255 255 / 0.45)));
   --app-bar-fg: var(--text);
   --app-bar-rule-width: 0;
   --app-bar-radius: 8px 8px 0 0;
@@ -3290,8 +3296,8 @@ html[data-theme="win7-aero"] {
      little desktop colour survives the frost. */
   --app-main-bg: rgba(255, 255, 255, 0.72);
   --app-main-padding: 1rem;
-  --app-status-bg: linear-gradient(180deg, rgba(200, 225, 250, 0.55), rgba(150, 190, 235, 0.45));
-  --app-status-fg: #3f4852;
+  --app-status-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 30%, rgb(255 255 255 / 0.55)), color-mix(in srgb, var(--aero-tint) 40%, rgb(255 255 255 / 0.5)));
+  --app-status-fg: #1a1a1a;
   --app-status-radius: 0 0 8px 8px;
   --app-status-rule: transparent;
 }
@@ -3369,4 +3375,23 @@ html[data-theme="win7-aero"] .app-status { border-top: 0; }
     display: none !important;
   }
 }
+
+/* --- Window Color variants (Personalize → Window Color) --------------- *
+ * Win7's sixteen glass tints (approximate ColorizationColor values; see
+ * references/win7-aero/RESEARCH.md). Only the tint changes. */
+html[data-theme="win7-aero"][data-variant="twilight"] { --aero-tint: #0046ad; }
+html[data-theme="win7-aero"][data-variant="sea"] { --aero-tint: #32cdcd; }
+html[data-theme="win7-aero"][data-variant="leaf"] { --aero-tint: #14a600; }
+html[data-theme="win7-aero"][data-variant="lime"] { --aero-tint: #97d937; }
+html[data-theme="win7-aero"][data-variant="sun"] { --aero-tint: #fadc0e; }
+html[data-theme="win7-aero"][data-variant="pumpkin"] { --aero-tint: #ff9c00; }
+html[data-theme="win7-aero"][data-variant="ruby"] { --aero-tint: #ce0f0f; }
+html[data-theme="win7-aero"][data-variant="fuchsia"] { --aero-tint: #ff0099; }
+html[data-theme="win7-aero"][data-variant="blush"] { --aero-tint: #fcc7f8; }
+html[data-theme="win7-aero"][data-variant="violet"] { --aero-tint: #6e3ba1; }
+html[data-theme="win7-aero"][data-variant="lavender"] { --aero-tint: #b0a5d8; }
+html[data-theme="win7-aero"][data-variant="taupe"] { --aero-tint: #d1c79f; }
+html[data-theme="win7-aero"][data-variant="chocolate"] { --aero-tint: #4e0000; }
+html[data-theme="win7-aero"][data-variant="slate"] { --aero-tint: #555555; }
+html[data-theme="win7-aero"][data-variant="frost"] { --aero-tint: #fcfcfc; }
 }

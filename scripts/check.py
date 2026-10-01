@@ -220,9 +220,56 @@ def check_contrast(theme, tokens, exempt):
             (fail if hard else warn)(theme, "contrast", msg)
 
 
+def _split_top(text):
+    """Split on commas that are not inside parentheses."""
+    parts, depth, cur = [], 0, ""
+    for ch in text:
+        depth += ch == "("
+        depth -= ch == ")"
+        if ch == "," and depth == 0:
+            parts.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    return parts + [cur.strip()]
+
+
+def mix_colors(tokens, value):
+    """Evaluate each `color-mix(in srgb, A p%, B [q%])` in value to a
+    literal rgba(), so gradient stops built from a theme tint are measured
+    as the color they render as, not as the raw tint inside the mix."""
+    out, i = "", 0
+    while True:
+        j = value.find("color-mix(", i)
+        if j < 0:
+            return out + value[i:]
+        k, depth = j + len("color-mix("), 1
+        while depth and k < len(value):
+            depth += value[k] == "("
+            depth -= value[k] == ")"
+            k += 1
+        parts = _split_top(value[j + len("color-mix("):k - 1])
+        mixed = None
+        if len(parts) == 3 and parts[0].replace(" ", "") == "insrgb":
+            def side(p):
+                m = re.match(r"(.*?)\s+(\d+(?:\.\d+)?)%$", p)
+                return (m.group(1), float(m.group(2)) / 100) if m else (p, None)
+            (ca, pa), (cb, pb) = side(parts[1]), side(parts[2])
+            pa = pa if pa is not None else (1 - pb if pb is not None else 0.5)
+            a_, b_ = resolve(tokens, mix_colors(tokens, ca)), resolve(tokens, mix_colors(tokens, cb))
+            if a_ and b_:
+                # Premultiplied-alpha interpolation, as CSS Color 5 specifies.
+                al = a_[3] * pa + b_[3] * (1 - pa)
+                ch = [round((a_[n] * a_[3] * pa + b_[n] * b_[3] * (1 - pa)) / al) if al else 0 for n in range(3)]
+                mixed = f"rgba({ch[0]}, {ch[1]}, {ch[2]}, {al:.3f})"
+        out += value[i:j] + (mixed or value[j:k])
+        i = k
+
+
 def color_stops(tokens, value):
     """Every resolvable color in a (possibly gradient) background value."""
     stops = []
+    value = mix_colors(tokens, value)
     for m in re.finditer(r"#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|var\(--[a-z0-9-]+\)", value):
         c = resolve(tokens, m.group(0))
         if c is None and m.group(0).startswith("var("):

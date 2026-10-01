@@ -172,6 +172,25 @@ kept, so the theme can be checked against it rule by rule.
 - **Keypads/dials** (Picard, Study): circular direction pads built from
   arcs and wedges, still flat fills.
 
+## 11. Patterns across the lcars.org.uk panel collection
+
+512 screen-used panels captured and tagged in `lcars-org-uk/INDEX.md`.
+What recurs, and therefore belongs in the theme:
+
+- **Elbow + segmented bars** frame almost every full screen (≈70%); the
+  header is an elbow with a title at the right end of a bar, a second
+  elbow opens up beneath it (split frame).
+- **Columns of small numeric codes** sit in the upper frame of most
+  screens (≈60%) — decoration that reads as data.
+- The **content well** usually holds one data display: a schematic or
+  cutaway (MSD), a map/star chart on a grid, or a waveform/graph, very
+  often inside a `[ ]` bracket.
+- **Pill buttons** cluster at the top-right of the header in 2–3 rows.
+- Era palettes: TNG orange/lavender/peach; DS9 more blue/tan with grey
+  elbows; alert screens switch the whole frame to red.
+- PADD and wall-console captures show LCARS inside physical bezels —
+  not relevant to the theme beyond colour.
+
 ## Sources
 
 - Bracer Jack, *Creating a Coherent LCARS Interface* (LCARS GuideLine),
@@ -191,5 +210,7 @@ kept, so the theme can be checked against it rule by rule.
   captures (`Lcars_wallpaper.svg.webp` — the TNG split frame;
   `Starship_LCARS_Interface_E_900_for_Site.webp` — Sovereign-class
   bracket frames and titles in bar breaks).
+- lcars.org.uk panel galleries (TNG, TNG films, DS9) and lcars.htm,
+  captured into `lcars-org-uk/` with a component index.
 - Other working examples: https://www.thelcars.com/ ,
   https://github.com/MichalSvatos/pi-hole-lcars-next-gen

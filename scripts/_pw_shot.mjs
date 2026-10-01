@@ -21,6 +21,7 @@ const only = opt('--themes', '');
 if (!outdir) { console.error('--outdir is required'); process.exit(2); }
 
 const EXAMPLE_PAGES = ['components.html', 'dashboard.html', 'marketing.html', 'ticketsystem.html', 'powerstation.html', 'soundmixer.html', 'livechat.html'];
+const VARIANT_PAGES = ['dashboard.html'];
 const VIEWPORT = { width: 1280, height: 900 };
 
 // Each palette variant is shot as its own "theme": <slug>~<variant>.
@@ -71,7 +72,9 @@ for (const entry of themes) {
   const [slug, variant] = entry.split('~');
   const dir = path.join(outdir, entry);
   fs.mkdirSync(dir, { recursive: true });
-  for (const pageName of EXAMPLE_PAGES) {
+  // A palette variant only repaints; one page is enough to catch a
+  // regression, and shooting all seven per variant bloats the baseline.
+  for (const pageName of variant ? VARIANT_PAGES : EXAMPLE_PAGES) {
     const url = `${base}/${pageName}?theme=${slug}` + (variant ? `&variant=${variant}` : '');
     try {
       let ready = false;

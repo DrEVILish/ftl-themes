@@ -237,7 +237,8 @@ def main():
             shutil.rmtree(DIFF_DIR)
 
         for slug in themes:
-            for page in EXAMPLE_PAGES:
+            # Variants are shot on dashboard only (see _pw_shot.mjs).
+            for page in (["dashboard"] if "~" in slug else EXAMPLE_PAGES):
                 baseline_path = BASELINE_DIR / slug / f"{page}.png"
                 actual_path = tmp_root / slug / f"{page}.png"
                 if not actual_path.exists():

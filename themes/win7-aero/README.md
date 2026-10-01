@@ -99,3 +99,16 @@ layout at **L1**.
 `backdrop-filter` support: this theme degrades gracefully in engines
 without it — surfaces fall back to their plain translucent color with no
 blur, still legible, just not glassy.
+
+## Window Color variants
+
+Windows 7's *Personalize → Window Color* tinted all the glass. The theme
+does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
+mixed into translucent white on the title bar, status strip and panel
+captions (into dark on the taskbar), so the black caption text with its
+white glow stays readable at every tint. The other fifteen presets are
+variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
+`fuchsia`, `blush`, `violet`, `lavender`, `taupe`, `chocolate`, `slate`,
+`frost` (values in `references/win7-aero/RESEARCH.md`; approximate,
+community-collected colorization values).
+
