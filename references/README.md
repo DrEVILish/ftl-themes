@@ -1,13 +1,34 @@
 # Theme references
 
 Where to look at the real thing each theme is modelled on. Use these when
-reviewing a theme in [`example.html`](../example.html): open the
+reviewing a theme in [`components.html`](../components.html): open the
 reference next to the render and compare.
 
 Themes with no local images captured yet (`aperture`, `cue-lab`, `material`,
-`nerv`, `pipboy`, `steampunk`, `tron`) ship anyway (restored in v4); their
+`nerv`, `pipboy`, `tron`) ship anyway (restored in v4); their
 fidelity is not yet scored against source imagery — see
 [`branding-guide.md`](../docs/branding-guide.md).
+
+## Folder layout
+
+Every image lives in the folder of the theme it backs: `references/<theme>/`.
+Images that back one palette variant only go one level down, in a folder
+named for the variant id from `dist/themes.json`
+(`references/<theme>/<variant>/`). Each theme folder has a `RESEARCH.md`
+describing its files. Today's variant folders:
+
+- `lcars/voyager/` (DS9 panels), `lcars/picard/`. `lcars/tng/` and
+  `lcars/tng-films/` split the default look by source gallery, and
+  `lcars/INDEX.md` scores every LCARS image.
+- `weyland-yutani/mother/`, `weyland-yutani/emergency/`, `weyland-yutani/earth/`
+- `winxp-luna/royale/`, `winxp-luna/royale-noir/`, `winxp-luna/zune/`, `winxp-luna/embedded/`
+- `prometheus/suit/`
+
+Four folders back no theme yet. They are the non-LCARS Star Trek interface
+languages from lcars.org.uk, kept for a future theme, each with its own
+`INDEX.md`: `star-trek-alien/` (Klingon, Romulan, Cardassian, Ferengi,
+Bajoran and others), `star-trek-enterprise/` (NX-01), `star-trek-tos/` (TOS
+and TOS films) and `star-trek-kelvin/` (Star Trek 2009 and Into Darkness).
 
 | Theme | Reference | What to compare |
 |---|---|---|
@@ -17,21 +38,29 @@ fidelity is not yet scored against source imagery — see
 | `barbie` | [Shades of pink — Barbie pink (Pantone 219C)](https://en.wikipedia.org/wiki/Shades_of_pink) | The brand pink, and how close hot pink can sit to white text |
 | `bloomberg` | [Bloomberg Terminal](https://en.wikipedia.org/wiki/Bloomberg_Terminal), [An evolving icon](https://www.bloomberg.com/professional/blog/the-bloomberg-terminal-an-evolving-icon) | Amber-on-black data density, function-key mnemonics, `<GO>` |
 | `blue-future` | [Apollo Mission Control Center restoration (NASA)](https://www.nasa.gov/johnson/history/apollo-mcc-restoration/) | Real telemetry consoles: precise, uncluttered, instrument-first |
+| `cassette-futurism` | [Commodore PET](https://en.wikipedia.org/wiki/Commodore_PET), [Roland TR-808](https://en.wikipedia.org/wiki/Roland_TR-808), [Vacuum fluorescent display](https://en.wikipedia.org/wiki/Vacuum_fluorescent_display), [Dymo label tape](https://en.wikipedia.org/wiki/Dymo_Corporation) | Keycap colours and sculpt vs the 808/HP-35; readout digits vs the VFD/LED photos; `.switch` vs the bat-handle toggles; beige housing vs the PET; badges vs Dymo tape |
 | `cue-lab` | [QLab](https://en.wikipedia.org/wiki/QLab), [QLab 5 docs — Cues](https://qlab.app/docs/v5/fundamentals/cues/) | Cue-list columns, the standing-by playhead, one loud GO |
 | `cyber-goth` | [Cybergoth](https://en.wikipedia.org/wiki/Cybergoth) | Black PVC/vinyl with a single UV-reactive neon |
 | `death-star` | [DS-1 Orbital Battle Station — Wookieepedia](https://starwars.fandom.com/wiki/DS-1_Orbital_Battle_Station/Legends) | Black panels, no borders, sparse blue/white indicators |
 | `hot-wheels` | [Hot Wheels orange track (Mattel)](https://corporate.mattel.com/news/hot-wheels-takes-iconic-orange-track-to-the-next-level-with-new-snap-feature-its-most-significant-innovation-in-50-years), [Hot Wheels logo history](https://logos.fandom.com/wiki/Hot_Wheels) | Track orange, flame logo, chequered-flag finish |
 | `imac-g3` | [iMac G3](https://en.wikipedia.org/wiki/IMac_G3) | Translucent Bondi Blue, and the fruit colourways behind the palette variants |
+| `ios-flat` | [RESEARCH.md](ios-flat/RESEARCH.md), [Apple HIG (iOS 13–17, archived)](https://web.archive.org/web/2020/https://developer.apple.com/design/human-interface-guidelines/ios/) | Section headers above white rounded groups on #f2f2f7; inset hairlines; green switch; grey segmented track with white pill; centred alert with hairline-divided buttons; frosted bars over content |
+| `ios-skeuomorphic` | [iOS 6](https://en.wikipedia.org/wiki/IOS_6), [iOS 6 Revisited (screenshots)](https://www.martinnobel.com/techresearch/ios-6-screenshots) | Nav bar gloss and title emboss, the pinstripe behind rounded cells, ON/OFF switch, tab bar glow, alert view navy, Notification Center linen |
 | `lcars` | [LCARS](https://en.wikipedia.org/wiki/LCARS), [Memory Alpha — LCARS](https://memory-alpha.fandom.com/wiki/Library_Computer_Access_and_Retrieval_System) | Elbow sweeps, pill buttons, black text on candy colours |
 | `lego-classic` | [LEGO Space history (LEGO.com)](https://www.lego.com/en-us/history/articles/f-lego-space), [Classic Space — Brickipedia](https://brickipedia.fandom.com/wiki/Classic_Space) | Primary brick colours, instruction-booklet layout |
+| `liquid-glass` | [Apple — Liquid Glass (Newsroom, WWDC25)](https://www.apple.com/newsroom/2025/06/apple-introduces-a-delightful-and-elegant-new-software-design/), [RESEARCH.md](liquid-glass/RESEARCH.md) | Floating capsule tab bar with a grey highlight under the selected item; inset rounded sidebar with traffic lights; capsule switches and sliders; glass menus; rim highlights on controls but not on content cards |
 | `material` | [Material Design](https://en.wikipedia.org/wiki/Material_Design), [Material 2 introduction](https://m2.material.io/design/introduction/) | Elevation, the primary app bar, chips, snackbars |
 | `matrix` | [Digital rain](https://en.wikipedia.org/wiki/Digital_rain), [Commons: Matrix digital rain](https://commons.wikimedia.org/wiki/Category:Matrix_digital_rain) | Phosphor green on black, monospace, the operator console |
 | `msdos` | [Norton Commander](https://en.wikipedia.org/wiki/Norton_Commander), [UI Museum: Norton Commander 5.0](https://ilyabirman.net/meanwhile/all/ui-museum-norton-commander-5-0/) | Two blue panels, double-line borders, cyan cursor bar, F-key bar |
 | `nerv` | [Neon Genesis Evangelion — Fonts In Use](https://fontsinuse.com/uses/28760/neon-genesis-evangelion), [Neon Genesis Evangelion](https://en.wikipedia.org/wiki/Neon_Genesis_Evangelion) | Heavy serif titling with Helvetica, orange-on-black warnings, the MAGI vote |
 | `pipboy` | [Pip-Boy](https://en.wikipedia.org/wiki/Pip-Boy), [Fallout Wiki — Pip-Boy](https://fallout.fandom.com/wiki/Pip-Boy) | Monochrome green phosphor, STAT/INV/DATA tabs, scanlines |
+| `silo` | [HUDS+GUIS — Silo Dystopian UI](https://www.hudsandguis.com/home/2025/silo-ui), [Territory Studio — Silo](https://territorystudio.com/project/silo/) | Teal-on-glass boxed field cells with tiny labels, pale-teal header/status plates, yellow-outline selection, yellow-green "authorised" band; `legacy/` for the gold S2 tablet |
+| `skyrim` | [UESP Skyrim menu images](https://en.uesp.net/wiki/Category:Skyrim-Menu_Images), [SkyUI - Features Overview (Steam guide)](https://steamcommunity.com/sharedfiles/filedetails/?id=426512192), [SkyUI repo](https://github.com/schlangster/skyui) | Condensed white type, SkyUI column heads and selected-row band, chevron title bar, diamond-capped health/magicka/stamina bars, MCM diamond toggles |
 | `steampunk` | [Steampunk](https://en.wikipedia.org/wiki/Steampunk) | Brass, mahogany and copper; gauges rather than numbers |
+| `tokie` | [Commons: black leather](https://commons.wikimedia.org/wiki/File:Black_Leather.jpg), [gold-embossed briefcase](https://commons.wikimedia.org/wiki/File:Briefcase_of_a_bank_director_of_Midland_Bank_Ltd._made_of_black_cowhide_leather_around_1925_-_Font_in_gold_letter_embossing_-_Picture_001.jpg), [brushed brass](https://commons.wikimedia.org/wiki/File:Brushed_brass_paint_(Apollo_11)_interior.png), [gilt binding](https://commons.wikimedia.org/wiki/File:Gruel_and_Engelmann_-_Binding_for_a_Book_of_Hours_-_Walters_572167_-_Front_Closed.jpg) | Grain fineness, stitch-in-groove spacing, foil-struck tracked serif caps, satin brushed vs mirror polished gold |
 | `tron` | [TRON: Legacy — GMUNK](https://gmunk.com/TRON-Legacy), [TRON Legacy UI — HUDS+GUIS](https://www.hudsandguis.com/home/2011/04/19/tron-legacy-ui) | Cyan line work on black, cut corners, the orange villain accent |
 | `vaporwave` | [Vaporwave](https://en.wikipedia.org/wiki/Vaporwave), [Aesthetics Wiki — Vaporwave](https://aesthetics.fandom.com/wiki/Vaporwave) | Pink/cyan gradients, mall nostalgia, full-width type |
+| `westworld` | [Behind the scenes of the Westworld UI (DESK, Chris Kieffer interview)](https://vanschneider.com/blog/behind-the-scenes-of-the-westworld-ui/), [Westworld wiki: Tablet](https://westworld.fandom.com/wiki/Tablet) | Slate e-paper with cyan line-work, the attribute matrix's segmented sliders and [bracketed] labels, chip tabs, and the DELOS pill |
 | `win7-aero` | [Windows Aero](https://en.wikipedia.org/wiki/Windows_Aero) | Blurred glass frames over the desktop, the glass taskbar |
 | `winamp-classic` | [Winamp](https://en.wikipedia.org/wiki/Winamp), [Creating Classic Skins](http://wiki.winamp.com/wiki/Creating_Classic_Skins) | Green LCD readout, bevelled grey buttons, EQ sliders, playlist |
 | `windows95` | [Windows 95](https://en.wikipedia.org/wiki/Windows_95), [Commons: Windows 95 screenshots](https://commons.wikimedia.org/wiki/Category:Windows_95_screenshots) | Grey bevels, navy title bar, teal desktop, dotted focus |

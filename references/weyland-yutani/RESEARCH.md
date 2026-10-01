@@ -51,16 +51,16 @@ of the film screens, marked as such below.
 
 | File | Source | What it shows |
 |---|---|---|
-| `mother-6000-query-green.jpg` | MU/TH/UR 6000 web interface (Alien: Covenant promo, 2017) | Green phosphor text on black inside a single thin green frame; tracked caps header; underlined query links. |
-| `terminal-green-home-control.jpg` | Fan recreation | Green MU/TH/UR-style dashboard: label/value rows, big readout ("74°"), outlined button cells. |
-| `terminal-green-logo-boot.webp` | Fan recreation | Green boot screen with the wordmark: phosphor on black, nothing else. |
-| `terminal-green-scan.jpg` | Fan recreation | Green grid scope and radar ring over a row of small square soft keys. |
+| `mother/mother-6000-query-green.jpg` | MU/TH/UR 6000 web interface (Alien: Covenant promo, 2017) | Green phosphor text on black inside a single thin green frame; tracked caps header; underlined query links. |
+| `mother/terminal-green-home-control.jpg` | Fan recreation | Green MU/TH/UR-style dashboard: label/value rows, big readout ("74°"), outlined button cells. |
+| `mother/terminal-green-logo-boot.webp` | Fan recreation | Green boot screen with the wordmark: phosphor on black, nothing else. |
+| `mother/terminal-green-scan.jpg` | Fan recreation | Green grid scope and radar ring over a row of small square soft keys. |
 | `nostromo-cyan-targeting.jpg` | Alien (1979) | Cyan wireframe targeting display on the Nostromo bridge. |
-| `alien-vs-bladerunner-environ-purge.webp` | Alien (1979) / Blade Runner (1982) | The same "ENVIRON CTR PURGE" red screen in both films: inverse-video red block with large tracked caps. |
-| `terminal-red-hyperdyne-boot.jpg`, `terminal-red-inventory.jpg`, `terminal-red-logo-boot.jpg` | Fan recreations | Red phosphor terminals: a red title band across the top, thin red outlines, and a bottom row of outlined function keys ("F1 F2 F3 F4 F5 SELECT"). |
+| `emergency/alien-vs-bladerunner-environ-purge.webp` | Alien (1979) / Blade Runner (1982) | The same "ENVIRON CTR PURGE" red screen in both films: inverse-video red block with large tracked caps. |
+| `emergency/terminal-red-hyperdyne-boot.jpg`, `emergency/terminal-red-inventory.jpg`, `emergency/terminal-red-logo-boot.jpg` | Fan recreations | Red phosphor terminals: a red title band across the top, thin red outlines, and a bottom row of outlined function keys ("F1 F2 F3 F4 F5 SELECT"). |
 | `terminal-amber-destination.jpg` | Fan recreation | Amber/yellow terminal: header rows of label/value pairs over double horizontal rules. |
 | `terminal-cyan-two-screens.webp` | Fan recreation | Cyan terminal pair: text column, side key column, bar chart. |
-| `earth-kirsh-specimen-monitor.jpg`, `earth-kirsh-monitor-in-set.jpg` | Alien: Earth (2025) | Cyan specimen monitors: header rows of label/value pairs, a large outlined image box and an outlined DESCRIPTION box, condensed tracked caps throughout. |
+| `earth/earth-kirsh-specimen-monitor.jpg`, `earth/earth-kirsh-monitor-in-set.jpg` | Alien: Earth (2025) | Cyan specimen monitors: header rows of label/value pairs, a large outlined image box and an outlined DESCRIPTION box, condensed tracked caps throughout. |
 | `romulus-colony-work-contract.webp` | Alien: Romulus (2024) | Colony work contract display: amber-beige segmented counters ("12 032 HRS / 17 354 HRS") in outlined boxes. |
 | `login-amber-glow.jpg` | Fan wallpaper | Glowing orange wordmark and LOG IN / PASSWORD fields. |
 | `phone-app-amber.webp`, `corp-mobile-register.png`, `corp-website-romulus.webp` | Romulus marketing | Corporate yellow-on-navy app and website mock-ups. Not used: they are 2024 marketing, not in-universe screens. |

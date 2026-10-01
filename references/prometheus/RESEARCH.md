@@ -11,7 +11,7 @@ match the sets and screens they come from.
 | `medipod_walldiag_02_sy.webp` | Medipod wall | Every panel has a rounded left bracket and a pill title tab ("MSCN_51/2", "GL_OV3R", "SUM EVA"); small dark value boxes; outlined pill toggles ("ENG HUL FRA"); waveform strips. |
 | `sci_wall_02_sy.webp` | Science wall | Radial data burst; same brackets, tabs and value boxes; magenta and violet appear only inside data plots. |
 | `airlock_roverdiag_sy.webp` | Airlock, rover diagnostic | Amber and orange call-outs over blue; the "RC 01" tag. |
-| `suitroom_ravel_sy.webp` | Suit room | Amber UI on teal-blue glass: pill tabs ("TAG.NM", "PRP_SPT"), huge wide-squared "RAVEL", cyan values in dark boxes, orange codes running vertically up the left edge, vertical side tabs. |
+| `suit/suitroom_ravel_sy.webp` | Suit room | Amber UI on teal-blue glass: pill tabs ("TAG.NM", "PRP_SPT"), huge wide-squared "RAVEL", cyan values in dark boxes, orange codes running vertically up the left edge, vertical side tabs. |
 
 ## Rules taken from the frames
 

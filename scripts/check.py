@@ -375,7 +375,11 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     # doesn't change theme behavior (themes still don't respond to
     # prefers-color-scheme, by design), it only tells the browser what the
     # theme already is.
-    scheme_matches = re.findall(r"color-scheme\s*:\s*(light|dark)\s*;", body)
+    # Only the root block counts: a palette variant (e.g. a `dark` one) may
+    # declare its own color-scheme for the scheme it switches to.
+    scheme_matches = [m for r in theme_rules
+                      if r.selector == root_sel and cssparse.unconditional(r.context)
+                      for m in re.findall(r"color-scheme\s*:\s*(light|dark)\s*;", r.body)]
     if not scheme_matches:
         fail(theme, "color-scheme", "no `color-scheme` declaration — UA-owned controls "
                                      "(scrollbars, native pickers, autofill) render for the "

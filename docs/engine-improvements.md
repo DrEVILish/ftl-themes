@@ -68,8 +68,7 @@ aligned by row, with a `unique to A` / `unique to B` / `identical` marker
 — would answer a different question the render alone can't: "what would
 I actually change to make theme B look like theme A." Useful for
 authoring a palette-only variant of an existing theme (the way
-`winxp-luna`'s Royale/Olive/Silver follow-ons are scoped in
-`docs/theme-backlog.md`) without re-deriving every token by eye.
+`winxp-luna`'s Royale/Olive/Silver variants were) without re-deriving every token by eye.
 
 ### 4. `--*` token usage report
 

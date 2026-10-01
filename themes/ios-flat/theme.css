@@ -1,0 +1,859 @@
+/* ftl-themes: iOS (Flat)
+ * Theme-Name: iOS (Flat)
+ * Description: Apple iOS 7 to iOS 18, the flat era: system colours on grouped grey, inset grouped lists with chevrons, a frosted large-title nav bar and tab bar, the green toggle and centred alerts.
+ * Variants: dark=Dark Mode
+ *
+ * The flat era, between iOS 6's leather (ios-skeuomorphic) and iOS 26's
+ * Liquid Glass (liquid-glass). Three materials and nothing else:
+ *   1. grouped grey (#f2f2f7), the page every screen sits on;
+ *   2. white inset-grouped cells, radius 10px, no border, no shadow,
+ *      separated by hairlines that start 16px in;
+ *   3. the bar material: a translucent, saturated blur (backdrop-filter)
+ *      for the nav bar, tab bar, alerts and menus, and only for those.
+ * No gradients, no gloss, no bevels, no drop shadows on resting surfaces.
+ * The only shadows are on things that float (switch thumb, segmented
+ * pill, slider knob, alerts, menus).
+ *
+ * Note on fonts: SF Pro is not vendored and must not be (Apple's licence
+ * forbids redistribution). -apple-system / BlinkMacSystemFont reach it on
+ * Apple platforms; elsewhere Helvetica Neue (the iOS 7-8 system face),
+ * then the platform's own UI sans.
+ *
+ * Colour deviations (all for the contrast floors, all documented in the
+ * README): systemBlue #007aff with white text is 4.0:1, so the accent is
+ * #0071e3 (Apple's own web button blue, 4.7:1). Red and green fills use
+ * the HIG's "Increase Contrast" values; secondaryLabel is darkened to
+ * systemGray's accessible value. The pure HIG values survive where no
+ * text sits on them: the switch green, badge red, meter bands.
+ */
+
+html[data-theme="ios-flat"] {
+  color-scheme: light;
+  /* --- Required tokens ---------------------------------------------- */
+  --bg: #f2f2f7;          /* systemGroupedBackground */
+  --surface: #ffffff;     /* secondarySystemGroupedBackground: the cell */
+  --surface-2: #eeeeef;   /* tertiarySystemFill over white: search field */
+  --border: #c6c6c8;      /* opaqueSeparator */
+  --hairline: #d8d8dc;
+  --text: #000000;        /* label */
+  --muted: #6c6c70;       /* systemGray, accessible (secondaryLabel 60% is 3.3:1) */
+  --accent: #0071e3;      /* systemBlue nudged to 4.7:1 with white */
+  --accent-2: #5856d6;    /* systemIndigo */
+  --danger: #d70015;      /* systemRed, Increase Contrast */
+  --success: #1e7e34;     /* systemGreen, darkened for white text */
+  --warning: #ff9500;     /* systemOrange */
+  --success-text: #1e7e34;
+  --warning-text: #c93400; /* systemOrange, Increase Contrast */
+  --danger-text: #d70015;
+  --accent-text: #0062c4;  /* tint as small text on a tinted wash: 5:1 */
+  --on-accent: #ffffff;
+  --on-danger: #ffffff;
+  --on-success: #ffffff;
+  --on-surface: var(--text);
+  --radius: 10px;         /* the inset-grouped cell corner */
+  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --flare: #34c759;       /* systemGreen: the toggle, the one colour iOS 7 made famous */
+  --link: #0071e3;
+  --focus: #0071e3;
+  --focus-ring: 0 0 0 4px rgba(0, 113, 227, 0.25);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
+  --overlay-blur: none;
+  --selection-bg: rgba(0, 113, 227, 0.25);
+  --input-caret: #0071e3;
+  --input-placeholder: #8e8e93;
+
+  /* --- iOS palette (own namespace) ------------------------------------ */
+  --ios-blue: #007aff;
+  --ios-green: #34c759;
+  --ios-red: #ff3b30;
+  --ios-orange: #ff9500;
+  --ios-teal: #5ac8fa;
+  --ios-pink: #ff2d55;
+  --ios-gray: #8e8e93;
+  --ios-gray4: #d1d1d6;
+  --ios-gray5: #e5e5ea;
+  --ios-fill: rgba(118, 118, 128, 0.12);   /* tertiarySystemFill */
+  --ios-cell-highlight: #d1d1d6;           /* the grey a tapped cell flashes */
+  --ios-separator: rgba(60, 60, 67, 0.29);
+  /* The bar material: chrome's frosted translucency. Opaque enough that
+     the contrast lint (which can't see blur) still measures true. */
+  --ios-bar: rgba(249, 249, 249, 0.94);
+  --ios-bar-blur: saturate(180%) blur(20px);
+  --ios-alert: rgba(242, 242, 242, 0.96);
+  --ios-thumb-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 3px 1px rgba(0, 0, 0, 0.06), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+
+  /* --- Buttons: iOS 15 "filled" / "tinted" / "plain" ---------------- */
+  --btn-bg: var(--ios-fill);              /* "gray" style */
+  --btn-fg: var(--accent);
+  --btn-border: transparent;
+  --btn-border-width: 0;
+  --btn-border-hover: transparent;
+  --btn-radius: 10px;
+  --btn-weight: 600;
+  --btn-padding: calc(0.55em * var(--density)) calc(1.15em * var(--density));
+  --btn-shadow: none;
+  --btn-icon-radius: 50%;
+
+  /* --- Inputs: the search-field fill, no border ----------------------- */
+  --input-bg: var(--surface-2);
+  --input-fg: var(--text);
+  --input-border: transparent;
+  --input-radius: 10px;
+  --input-shadow: none;
+  --select-arrow-fg: var(--accent);
+  --input-addon-bg: var(--surface-2);
+  --input-addon-fg: var(--muted);
+  --input-readonly-bg: transparent;
+  --input-mirror-bg: transparent;
+
+  /* --- Surfaces: inset grouped cells ---------------------------------- */
+  --panel-bg: var(--surface);
+  --panel-border: transparent;
+  --panel-border-width: 0;
+  --panel-radius: 10px;
+  --panel-shadow: none;
+  --panel-header-fg: var(--muted);
+  --card-bg: var(--surface);
+  --card-border: transparent;
+  --card-border-width: 0;
+  --card-radius: 10px;
+  --card-shadow: none;
+  --field-row-bg: var(--surface);
+  --field-row-border: transparent;
+  --field-row-border-hover: transparent;
+  --field-row-radius: 10px;
+  --field-row-padding: calc(0.62em * var(--density)) 1em;
+  --list-bg: var(--surface);
+  --list-border: transparent;
+  --list-border-width: 0;
+  --list-radius: 10px;
+  --list-rule: var(--hairline);
+  --list-item-padding: calc(0.7em * var(--density)) 1em;
+  --list-item-title-weight: 400;
+  --list-active-marker: none;
+
+  /* Alerts are centred, frosted, 14px, buttons edge to edge. */
+  --modal-bg: var(--ios-alert);
+  --modal-border: transparent;
+  --modal-radius: 14px;
+  --modal-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  --modal-header-fg: var(--text);
+  --btn-close-bg: var(--ios-gray5);
+  --btn-close-bg-hover: var(--ios-gray4);
+  --btn-close-fg: #6c6c70;
+  --btn-close-fg-hover: #3c3c43;
+  --btn-close-border: transparent;
+  --btn-close-radius: 50%;
+  --btn-close-glyph: "\2715";
+
+  /* Context menus (iOS 13) and dropdowns: frosted, 13px. */
+  --dropdown-bg: var(--ios-alert);
+  --dropdown-border: transparent;
+  --dropdown-border-width: 0;
+  --dropdown-radius: 13px;
+  --dropdown-item-bg-hover: var(--ios-cell-highlight);
+  --dropdown-item-fg-hover: var(--text);
+  --context-menu-bg: var(--ios-alert);
+  --context-menu-border: transparent;
+  --context-menu-border-width: 0;
+  --context-menu-radius: 13px;
+  --context-menu-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  --context-menu-item-bg-hover: var(--ios-cell-highlight);
+  --context-menu-item-fg-hover: var(--text);
+  --popover-bg: var(--surface);
+  --popover-border: transparent;
+  --popover-border-width: 0;
+  --popover-radius: 13px;
+  --popover-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+  --tooltip-bg: #1c1c1e;
+  --tooltip-fg: #ffffff;
+  --tooltip-border: transparent;
+  --tooltip-radius: 8px;
+  --toast-bg: var(--ios-alert);
+  --toast-border: transparent;
+  --toast-border-width: 0;
+  --toast-radius: 14px;
+  --toast-shadow: 0 8px 30px rgba(0, 0, 0, 0.16);
+  --drawer-bg: var(--bg);
+  --drawer-border: transparent;
+  --drawer-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+  --alert-border: transparent;
+  --alert-border-width: 0;
+  --alert-radius: 10px;
+  --alert-bg: var(--surface);
+
+  /* Tables read as plain lists: no head fill, uppercase footnote heads,
+     the grey cell-highlight for selection. */
+  --table-head-bg: transparent;
+  --table-head-fg: var(--muted);
+  --table-head-rule: var(--hairline);
+  --table-head-tracking: 0;
+  --table-rule: var(--hairline);
+  --row-hover-bg: rgba(118, 118, 128, 0.08);
+  --row-selected-bg: var(--ios-cell-highlight);
+  --row-alt-bg: #f7f7f9;
+  --row-active-bg: transparent;
+  --row-active-marker: inset 3px 0 0 var(--accent);
+
+  /* Navigation */
+  --nav-bg: var(--ios-bar);
+  --nav-rule: var(--ios-separator);
+  --nav-rule-width: 0.5px;
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--accent);
+  --nav-item-bg-active: transparent;
+  --nav-item-fg-active: var(--text);
+  --nav-item-radius: 8px;
+  --tab-fg: var(--muted);
+  --tab-fg-active: var(--accent);
+  --tab-underline-active: transparent;
+  --tab-radius: 10px;
+  --breadcrumb-separator: "\203A";
+  --breadcrumb-current-fg: var(--text);
+  --pagination-item-fg: var(--accent);
+  --pagination-item-bg-hover: var(--ios-fill);
+  --pagination-item-bg-active: var(--accent);
+  --pagination-item-fg-active: #ffffff;
+  --pagination-item-radius: 50%;
+  --scrollspy-link-active-fg: var(--accent);
+
+  /* Segmented control, iOS 13+: grey track, a white sliding pill. */
+  --segmented-bg: var(--surface-2);
+  --segmented-border: transparent;
+  --segmented-border-width: 0;
+  --segmented-radius: 9px;
+  --segmented-padding: 2px;
+  --segmented-item-radius: 7px;
+  --segmented-item-fg: var(--text);
+  --segmented-item-fg-hover: var(--text);
+  --segmented-item-bg-active: #ffffff;
+  --segmented-item-fg-active: var(--text);
+
+  /* The switch: 51 x 31 pt, green when on, white thumb, no border. */
+  --switch-bg: #e9e9ea;
+  --switch-bg-on: var(--ios-green);
+  --switch-border: transparent;
+  --switch-border-on: var(--ios-green);
+  --switch-border-width: 0;
+  --switch-thumb-bg: #ffffff;
+  --switch-thumb-bg-on: #ffffff;
+
+  /* Slider: 4pt track, 28pt white knob. Progress: 4pt bar. */
+  --slider-bg: var(--ios-gray5);
+  --slider-border: transparent;
+  --slider-border-width: 0;
+  --slider-height: 4px;
+  --slider-radius: 2px;
+  --slider-thumb-size: 28px;
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.12), 0 6px 13px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  --progress-bg: var(--ios-gray5);
+  --progress-border: transparent;
+  --progress-border-width: 0;
+  --progress-height: 4px;
+  --progress-radius: 2px;
+  --progress-fill: var(--accent);
+  --spinner-fg: #8e8e93;
+  --spinner-track: transparent;
+  --indicator-fg: #8e8e93;
+  --indicator-track: transparent;
+  --skeleton-bg: var(--ios-gray5);
+
+  /* Badges: capsules; the notification badge is systemRed. */
+  --badge-bg: var(--ios-fill);
+  --badge-fg: var(--muted);
+  --badge-radius: 999px;
+
+  /* Contacts monogram: grey gradient disc, white initials. */
+  --avatar-bg: linear-gradient(180deg, #a5abb8, #858994);
+  --avatar-fg: #ffffff;
+
+  --kbd-bg: #ffffff;
+  --kbd-fg: var(--text);
+  --kbd-border: transparent;
+  --kbd-radius: 5px;
+  --kbd-shadow: 0 1px 0 #898a8d;
+  --code-bg: var(--ios-fill);
+  --code-block-bg: var(--surface);
+  --code-block-border: transparent;
+  --log-bg: var(--bg);
+  --log-border: transparent;
+  --log-border-width: 0;
+  --log-radius: 8px;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.35);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);
+  --scrollbar-track: transparent;
+  --scrollbar-radius: 999px;
+
+  --label-fg: var(--text);
+  --field-group-title-fg: var(--muted);
+  --hero-bg: transparent;
+
+  /* --- Instruments: Settings > Storage, Clock, Voice Memos ------------ */
+  --readout-bg: transparent;
+  --readout-border: transparent;
+  --readout-border-width: 0;
+  --readout-fg: var(--text);
+  --readout-font: var(--font);
+  --readout-weight: 300;      /* the Stopwatch's thin tabular digits */
+  --readout-tracking: 0;
+  --readout-unit-fg: var(--muted);
+  --meter-track: var(--ios-gray5);
+  --meter-border: transparent;
+  --meter-border-width: 0;
+  --meter-radius: 3px;
+  --meter-low: var(--ios-green);
+  --meter-mid: var(--ios-orange);
+  --meter-high: var(--ios-red);
+  --meter-peak-fg: #000000;
+  --meter-unlit: var(--ios-gray5);
+  --lamp-off: var(--ios-gray5);
+  --lamp-on: var(--ios-green);
+  --lamp-border: transparent;
+  --lamp-glow: none;
+  --transport-bg: var(--surface);
+  --transport-border: transparent;
+  --transport-border-width: 0;
+  --transport-radius: 14px;
+  --transport-shadow: none;
+  --go-bg: var(--ios-red);
+  --go-bg-hover: #e0352b;
+  --go-fg: #ffffff;
+  --go-border: transparent;
+  --go-radius: 999px;
+  --go-shadow: 0 0 0 3px #ffffff, 0 0 0 4.5px var(--ios-gray4);
+  --chart-series-1: var(--ios-blue);
+  --chart-series-2: var(--ios-green);
+  --chart-grid: var(--hairline);
+
+  /* Mixer pieces as Control Center slabs and keyboard keys. */
+  --mixer-bg: var(--bg);
+  --mixer-border: transparent;
+  --mixer-radius: 14px;
+  --strip-bg: var(--surface);
+  --strip-border: transparent;
+  --strip-radius: 10px;
+  --strip-label-fg: var(--muted);
+  --knob-color: #ffffff;
+  --knob-arc: var(--accent);
+  --knob-track: var(--ios-gray5);
+  --knob-border: transparent;
+  --knob-shadow: var(--ios-thumb-shadow);
+  --knob-pointer: #8e8e93;
+  --fader-track: linear-gradient(0deg, #ffffff calc(var(--value, 0.5) * 100%), transparent 0) center / 2.2rem 100% no-repeat, linear-gradient(#c7c7cc, #c7c7cc) center / 2.2rem 100% no-repeat;
+  --fader-cap-bg: transparent;
+  --fader-cap-border: transparent;
+  --fader-cap-shadow: none;
+  --fader-cap-width: 2.2rem;
+  --fader-cap-height: 0.5rem;
+  --fader-cap-line: transparent;
+  --key-bg: #ffffff;
+  --key-fg: var(--text);
+  --key-border: transparent;
+  --key-radius: 5px;
+  --key-shadow: 0 1px 0 #898a8d;
+  --key-glow: none;
+  --key-on: var(--ios-green);
+  --key-on-fg: #000000;
+  --key-mute: var(--danger);
+  --key-mute-fg: #ffffff;
+  --key-solo: #ffcc00;
+  --key-solo-fg: #000000;
+  --key-sel: var(--accent);
+  --key-sel-fg: #ffffff;
+  --scribble-bg: var(--surface-2);
+  --scribble-fg: var(--text);
+  --scribble-num-fg: var(--muted);
+  --scribble-radius: 8px;
+  --eq-bg: var(--surface);
+  --eq-grid: var(--ios-gray5);
+  --eq-zero: var(--ios-gray4);
+  --eq-line: var(--accent);
+  --eq-fill: rgba(0, 113, 227, 0.12);
+  --eq-border: transparent;
+  --eq-radius: 10px;
+
+  /* iMessage bubbles, Screen Time bars. */
+  --message-bg: #e9e9eb;
+  --message-fg: #000000;
+  --message-border: transparent;
+  --message-radius: 18px;
+  --message-tail-radius: 4px;
+  --message-own-bg: var(--accent);
+  --message-own-fg: #ffffff;
+  --message-own-meta-fg: rgba(255, 255, 255, 0.85);
+  --message-own-border: transparent;
+  --message-meta-fg: var(--muted);
+  --attachment-bg: var(--surface);
+  --attachment-border: transparent;
+  --attachment-radius: 10px;
+  --bar-chart-bar: var(--ios-blue);
+  --bar-chart-bar-alt: var(--ios-teal);
+  --bar-chart-radius: 3px 3px 0 0;
+  --bar-chart-axis: var(--hairline);
+  --bar-chart-axis-width: 1px;
+
+  /* iPadOS dock for the taskbar. */
+  --taskbar-bg: rgba(255, 255, 255, 0.55);
+  --taskbar-task-bg: transparent;
+  --taskbar-task-bg-active: #ffffff;
+  --taskbar-task-radius: 12px;
+  --taskbar-start-bg: var(--accent);
+  --taskbar-start-fg: #ffffff;
+  --taskbar-start-radius: 12px;
+  --taskbar-tray-fg: var(--text);
+
+  /* --- Layout: nav bar on top, tab bar at the foot ------------------- *
+   * Both bars are sticky so content scrolls *under* the blur, which is
+   * the whole point of the material. No rail: the flat era's iPhone
+   * shell has none (an iPad sidebar would need real content). */
+  --app-bg: var(--bg);
+  --app-bar-bg: var(--ios-bar);
+  --app-bar-fg: var(--text);
+  --app-bar-rule: var(--ios-separator);
+  --app-bar-rule-width: 0.5px;
+  --app-bar-padding: 0.35rem 1.25rem 0.5rem;
+  --app-rail-display: none;
+  --app-main-bg: transparent;
+  --app-main-padding: 1.25rem 1.25rem 2rem;
+  --app-main-padding-sm: 1rem;
+  --app-status-bg: var(--ios-bar);
+  --app-status-fg: var(--muted);
+  --app-status-rule: var(--ios-separator);
+  --app-status-padding: 0.45rem 1.25rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* --- Dark Mode (iOS 13+) -------------------------------------------- *
+ * The iOS dark system colours: true black page, elevated #1c1c1e cells,
+ * #2c2c2e fills. Tinted text uses the dark systemBlue #0a84ff; fills
+ * keep the darker blue so white button text still reads. */
+html[data-theme="ios-flat"][data-variant="dark"] {
+  color-scheme: dark;
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --border: #38383a;
+  --hairline: #38383a;
+  --text: #ffffff;
+  --muted: #98989f;
+  --accent: #0071e3;
+  --accent-2: #5e5ce6;
+  --danger: #d70015;
+  --success: #1e7e34;
+  --warning: #ff9f0a;
+  --success-text: #30d158;
+  --warning-text: #ff9f0a;
+  --danger-text: #ff6961;
+  --accent-text: #409cff;
+  --link: #0a84ff;
+  --focus: #0a84ff;
+  --focus-ring: 0 0 0 4px rgba(10, 132, 255, 0.35);
+  --flare: #30d158;
+  --input-caret: #0a84ff;
+  --input-placeholder: #8d8d93;
+  --overlay-bg: rgba(0, 0, 0, 0.55);
+
+  --ios-blue: #0a84ff;
+  --ios-green: #30d158;
+  --ios-red: #ff453a;
+  --ios-orange: #ff9f0a;
+  --ios-teal: #64d2ff;
+  --ios-gray: #8e8e93;
+  --ios-gray4: #3a3a3c;
+  --ios-gray5: #2c2c2e;
+  --ios-fill: rgba(118, 118, 128, 0.24);
+  --ios-cell-highlight: #3a3a3c;
+  --ios-separator: rgba(84, 84, 88, 0.65);
+  --ios-bar: rgba(22, 22, 23, 0.92);
+  --ios-alert: rgba(37, 37, 39, 0.96);
+
+  --btn-fg: var(--ios-blue);
+  --select-arrow-fg: var(--ios-blue);
+  --nav-item-fg: var(--ios-blue);
+  --tab-fg-active: var(--ios-blue);
+  --pagination-item-fg: var(--ios-blue);
+  --scrollspy-link-active-fg: var(--ios-blue);
+  --segmented-item-bg-active: #636366;
+  --switch-bg: #39393d;
+  --btn-close-fg: #aeaeb2;
+  --btn-close-fg-hover: #ffffff;
+  --tooltip-bg: #3a3a3c;
+  --row-alt-bg: #232325;
+  --row-hover-bg: rgba(118, 118, 128, 0.16);
+  --avatar-bg: linear-gradient(180deg, #6e7380, #4e525c);
+  --kbd-bg: #6b6b6b;
+  --kbd-fg: #ffffff;
+  --kbd-shadow: 0 1px 0 #000000;
+  --key-bg: #6b6b6b;
+  --key-fg: #ffffff;
+  --key-shadow: 0 1px 0 #000000;
+  --eq-fill: rgba(10, 132, 255, 0.18);
+  --eq-line: #0a84ff;
+  --knob-color: #636366;
+  --message-bg: #26252a;
+  --message-fg: #ffffff;
+  --taskbar-bg: rgba(40, 40, 42, 0.6);
+  --taskbar-task-bg-active: #3a3a3c;
+  --fader-track: linear-gradient(0deg, #ffffff calc(var(--value, 0.5) * 100%), transparent 0) center / 2.2rem 100% no-repeat, linear-gradient(#3a3a3c, #3a3a3c) center / 2.2rem 100% no-repeat;
+  --go-shadow: 0 0 0 3px #1c1c1e, 0 0 0 4.5px #48484a;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.35);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.5);
+  --meter-peak-fg: #ffffff;
+}
+
+/* --- Type: the SF Pro text styles ------------------------------------ *
+ * Body 17, Large Title 34 bold, Title 1 28, Title 2 22, Headline 17
+ * semibold, Footnote 13. */
+html[data-theme="ios-flat"] {
+  font-size: 17px;
+  line-height: 1.29;
+  -webkit-font-smoothing: antialiased;
+}
+html[data-theme="ios-flat"] h1 { font-size: 34px; font-weight: 700; letter-spacing: 0.011em; line-height: 1.2; }
+html[data-theme="ios-flat"] h2 { font-size: 22px; font-weight: 700; letter-spacing: 0.016em; }
+html[data-theme="ios-flat"] h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.024em; }
+html[data-theme="ios-flat"] :is(h1, h2, h3) { color: var(--text); }
+
+/* --- Buttons --------------------------------------------------------- *
+ * Flat: no lift, no outline on hover. A tap dims to 0.55 as UIButton's
+ * highlighted state does. Secondary is iOS 15's "tinted" (accent wash),
+ * ghost is "plain" (tint-coloured text only). */
+html[data-theme="ios-flat"] .btn:hover { filter: brightness(0.96); }
+html[data-theme="ios-flat"] .btn:active { transform: none; opacity: 0.55; }
+html[data-theme="ios-flat"] .btn-secondary {
+  --btn-bg: color-mix(in srgb, var(--accent-text) 14%, var(--surface));
+  --btn-fg: var(--accent-text);
+  --btn-border: transparent;
+}
+html[data-theme="ios-flat"] .btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--link);
+  --btn-bg-hover: var(--ios-fill);
+  --btn-weight: 400;
+}
+html[data-theme="ios-flat"] .btn-sm { border-radius: 999px; }
+html[data-theme="ios-flat"] .btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; box-shadow: var(--focus-ring); }
+
+/* --- Inputs ---------------------------------------------------------- */
+html[data-theme="ios-flat"] :is(.input, .select, .textarea):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 0;
+  box-shadow: var(--focus-ring);
+}
+/* No checkboxes on iOS: the round Mail/Reminders edit-mode check. */
+html[data-theme="ios-flat"] :is(.checkbox, .radio) {
+  appearance: none;
+  -webkit-appearance: none;
+  width: calc(1.3em * var(--density));
+  height: calc(1.3em * var(--density));
+  border: 1.5px solid #c7c7cc;
+  border-radius: 50%;
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+}
+html[data-theme="ios-flat"] :is(.checkbox, .radio):checked {
+  border-color: var(--accent);
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.4l2.6 2.6L12 5.4' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
+}
+html[data-theme="ios-flat"] :is(.checkbox, .radio):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+html[data-theme="ios-flat"] :is(.checkbox, .radio):disabled { opacity: 0.4; }
+
+/* The switch: 51 x 31, thumb 27, shift 20. */
+html[data-theme="ios-flat"] :is(.switch:not(button), button.switch .switch-track) {
+  width: calc(1.65em * var(--density));
+  height: calc(1em * var(--density));
+  font-size: 31px;
+}
+html[data-theme="ios-flat"] .switch { --switch-shift: calc(0.645em * var(--density)); }
+html[data-theme="ios-flat"] .switch:dir(rtl) { --switch-shift: calc(-0.645em * var(--density)); }
+html[data-theme="ios-flat"] .switch-thumb {
+  top: 2px;
+  inset-inline-start: 2px;
+  width: calc(1em * var(--density) - 4px);
+  height: calc(1em * var(--density) - 4px);
+  box-shadow: var(--ios-thumb-shadow);
+  transition: transform 0.25s cubic-bezier(0.3, 1.3, 0.6, 1), background 0.2s ease;
+}
+html[data-theme="ios-flat"] button.switch .switch-thumb { font-size: 31px; }
+html[data-theme="ios-flat"] .switch-label { font-size: 17px; }
+
+html[data-theme="ios-flat"] .slider::-webkit-slider-thumb { border: 0; }
+html[data-theme="ios-flat"] .slider::-moz-range-thumb { border: 0; }
+html[data-theme="ios-flat"] .slider:focus-visible { outline-offset: 8px; }
+
+/* --- Segmented control ----------------------------------------------- */
+html[data-theme="ios-flat"] .segmented { gap: 0; }
+html[data-theme="ios-flat"] .segmented-item {
+  position: relative;
+  padding: 0.3em 1.1em;
+  font-size: 13px;
+  font-weight: 500;
+}
+html[data-theme="ios-flat"] .segmented-item.is-active {
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+}
+/* The short hairline divider between two unselected segments. */
+html[data-theme="ios-flat"] .segmented-item:not(.is-active) + .segmented-item:not(.is-active)::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 25%;
+  height: 50%;
+  border-inline-start: 1px solid var(--ios-separator);
+}
+html[data-theme="ios-flat"] .segmented-item:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* --- Inset grouped sections ------------------------------------------ *
+ * A panel's header is the section header: uppercase footnote text that
+ * sits ABOVE the white cell on the grey page, not inside it. */
+html[data-theme="ios-flat"] .panel { position: relative; }
+html[data-theme="ios-flat"] .panel:has(> .panel-header) { margin-top: 1.9rem; }
+html[data-theme="ios-flat"] .panel-header {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  margin: 0;
+  padding: 0 1rem 0.4rem;
+  border: 0;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.006em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+/* Inside a modal or on a dark surface the header has no grey page to sit on. */
+html[data-theme="ios-flat"] .card { box-shadow: none; }
+
+/* Consecutive field rows merge into one inset group: corners only at the
+   ends, hairlines that start 16px in (the cell's text inset). */
+html[data-theme="ios-flat"] .field-row { margin-block-end: 0; border-radius: 0; min-height: 44px; box-sizing: border-box; }
+html[data-theme="ios-flat"] .field-row:not(.field-row + .field-row) { border-start-start-radius: 10px; border-start-end-radius: 10px; }
+html[data-theme="ios-flat"] .field-row:not(:has(+ .field-row)) { border-end-start-radius: 10px; border-end-end-radius: 10px; margin-block-end: 1.25rem; }
+html[data-theme="ios-flat"] .field-row + .field-row {
+  --field-row-bg: linear-gradient(var(--hairline), var(--hairline)) 1rem 0 / calc(100% - 1rem) 1px no-repeat, var(--surface);
+}
+html[data-theme="ios-flat"] .panel .field-row,
+html[data-theme="ios-flat"] .card .field-row { padding-inline: 0; --field-row-bg: transparent; }
+html[data-theme="ios-flat"] .panel .field-row + .field-row,
+html[data-theme="ios-flat"] .card .field-row + .field-row {
+  --field-row-bg: linear-gradient(var(--hairline), var(--hairline)) 0 0 / 100% 1px no-repeat;
+}
+html[data-theme="ios-flat"] .field-row > .label { font-size: 17px; font-weight: 400; }
+
+/* Lists: inset grouped rows, a disclosure chevron on every tappable one,
+   the grey highlight (never a coloured bar) for the selected row. */
+html[data-theme="ios-flat"] .list > :not(:first-child) { border-block-start: 0; box-shadow: inset 1rem 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
+html[data-theme="ios-flat"] .list-item { min-height: 44px; box-sizing: border-box; }
+html[data-theme="ios-flat"] :is(a, button).list-item:not(:has(> .list-item-title))::after {
+  content: "";
+  flex: none;
+  margin-inline-start: auto;
+  width: 8px;
+  height: 13px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 13'%3E%3Cpath d='M1.5 1.5L6.5 6.5L1.5 11.5' fill='none' stroke='%23c4c4c7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="ios-flat"] :is(a, button).list-item:not(:has(> .list-item-title)):dir(rtl)::after { transform: scaleX(-1); }
+html[data-theme="ios-flat"] .list-item.is-active { color: inherit; }
+html[data-theme="ios-flat"] .list-item:focus-visible { outline-offset: -2px; }
+
+/* Tables as plain lists. Headers in footnote caps; the active row gets
+   the trailing blue checkmark a selected cell carries. */
+html[data-theme="ios-flat"] .table th { font-size: 13px; font-weight: 400; border-bottom-width: 0.5px; }
+html[data-theme="ios-flat"] .table tr.is-active td:last-child {
+  padding-inline-end: 2.2em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='%230071e3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 0.6em center / 1em no-repeat;
+}
+
+/* --- Alerts (modal) -------------------------------------------------- *
+ * Title centred, 17 semibold; body 13 centred; buttons span the bottom
+ * edge, divided by hairlines, tint-coloured, the preferred one bold. */
+html[data-theme="ios-flat"] .modal {
+  -webkit-backdrop-filter: var(--ios-bar-blur);
+  backdrop-filter: var(--ios-bar-blur);
+  text-align: center;
+  font-size: 13px;
+  padding: 1.25rem 1rem 0;
+  min-width: min(270px, calc(100vw - 2rem));
+}
+html[data-theme="ios-flat"] .modal-header {
+  margin: 0 0 0.3rem;
+  padding: 0;
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+}
+/* With window controls the header becomes an iPad sheet's bar: title
+   leading, round grey buttons trailing. */
+html[data-theme="ios-flat"] .modal-header:has(> :is(.btn-close, .btn-min, .btn-max)) { justify-content: flex-end; }
+html[data-theme="ios-flat"] .modal-header:has(> :is(.btn-close, .btn-min, .btn-max)) > :first-child:not(.btn-close, .btn-min, .btn-max) { margin-inline-end: auto; }
+html[data-theme="ios-flat"] .modal:not(:has(> .modal-footer)) { padding-bottom: 1.25rem; }
+html[data-theme="ios-flat"] .modal :is(.field, .label, .input, .select, .textarea, .input-group) { text-align: start; }
+html[data-theme="ios-flat"] .modal .input { --input-bg: var(--surface); }
+html[data-theme="ios-flat"] .modal-footer {
+  margin: 1.1rem -1rem 0;
+  gap: 0;
+  flex-wrap: nowrap;
+  border-top: 0.5px solid var(--ios-separator);
+}
+html[data-theme="ios-flat"] .modal-footer .btn {
+  --btn-bg: transparent;
+  --btn-bg-hover: rgba(118, 118, 128, 0.12);
+  --btn-fg: var(--accent-text);
+  --btn-weight: 400;
+  flex: 1 1 0;
+  min-height: 44px;
+  border-radius: 0;
+  font-size: 17px;
+}
+html[data-theme="ios-flat"] .modal-footer .btn + .btn { box-shadow: inset 0.5px 0 0 var(--ios-separator); }
+html[data-theme="ios-flat"] .modal-footer .btn:last-child { border-end-end-radius: 14px; }
+html[data-theme="ios-flat"] .modal-footer .btn:first-child { border-end-start-radius: 14px; }
+html[data-theme="ios-flat"] .modal-footer .btn-primary { --btn-weight: 600; }
+html[data-theme="ios-flat"] .modal-footer .btn-danger { --btn-fg: var(--danger-text); }
+html[data-theme="ios-flat"] .modal-footer .btn:focus-visible { outline-offset: -3px; }
+html[data-theme="ios-flat"] :is(.btn-close, .btn-min, .btn-max) { width: 30px; height: 30px; font-size: 13px; font-weight: 700; }
+
+/* Context menu / dropdown rows: 17pt, hairline between. */
+html[data-theme="ios-flat"] :is(.dropdown, .context-menu) {
+  padding: 0;
+  overflow: hidden;
+  -webkit-backdrop-filter: var(--ios-bar-blur);
+  backdrop-filter: var(--ios-bar-blur);
+  min-width: 14rem;
+}
+html[data-theme="ios-flat"] .dropdown { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+html[data-theme="ios-flat"] :is(.dropdown-item, .context-menu-item) { border-radius: 0; padding: 0.6em 1em; }
+html[data-theme="ios-flat"] :is(.dropdown-item, .context-menu-item) + :is(.dropdown-item, .context-menu-item) { box-shadow: inset 0 0.5px 0 var(--ios-separator); }
+html[data-theme="ios-flat"] .context-menu-divider { height: 8px; margin: 0; border: 0; background: rgba(0, 0, 0, 0.08); }
+html[data-theme="ios-flat"] :is(.toast, .popover, .tooltip) {
+  -webkit-backdrop-filter: var(--ios-bar-blur);
+  backdrop-filter: var(--ios-bar-blur);
+}
+/* Notification banner: state shown as a small coloured app-icon tile. */
+html[data-theme="ios-flat"] .toast::before {
+  content: "";
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 5px;
+  background: var(--toast-icon, var(--accent));
+}
+html[data-theme="ios-flat"] .toast-success { --toast-icon: var(--ios-green); }
+html[data-theme="ios-flat"] .toast-danger { --toast-icon: var(--ios-red); }
+html[data-theme="ios-flat"] .toast-warning { --toast-icon: var(--ios-orange); }
+html[data-theme="ios-flat"] .alert { box-shadow: inset 4px 0 0 var(--alert-mark, var(--ios-gray)); }
+html[data-theme="ios-flat"] .alert-info { --alert-mark: var(--accent); }
+html[data-theme="ios-flat"] .alert-success { --alert-mark: var(--ios-green); }
+html[data-theme="ios-flat"] .alert-warning { --alert-mark: var(--ios-orange); }
+html[data-theme="ios-flat"] .alert-danger { --alert-mark: var(--ios-red); }
+
+/* Badges: tinted capsules; the danger one is the red notification badge. */
+html[data-theme="ios-flat"] .badge { font-weight: 600; }
+html[data-theme="ios-flat"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #ffffff; }
+
+/* --- Navigation ------------------------------------------------------ */
+html[data-theme="ios-flat"] .nav {
+  -webkit-backdrop-filter: var(--ios-bar-blur);
+  backdrop-filter: var(--ios-bar-blur);
+  min-height: 44px;
+  box-sizing: border-box;
+}
+html[data-theme="ios-flat"] .nav-brand { font-size: 17px; font-weight: 600; }
+html[data-theme="ios-flat"] .nav-item:hover:not(.is-active) { --nav-item-bg-active: var(--ios-fill); --nav-item-fg-active: var(--nav-item-fg); }
+html[data-theme="ios-flat"] .nav-item.is-active { font-weight: 600; }
+
+/* Tabs are a tab bar: tint for the selected item, grey for the rest, a
+   hairline above, no underline. Vertical tabs are the iPadOS sidebar. */
+html[data-theme="ios-flat"] .tabs { border-bottom: 0; border-top: 0.5px solid var(--ios-separator); gap: 0; }
+html[data-theme="ios-flat"] .tab { flex: 1 1 0; border: 0; font-size: 12px; font-weight: 500; padding: 0.6em 0.8em; }
+html[data-theme="ios-flat"] .tab.is-active { border-bottom: 0; }
+html[data-theme="ios-flat"] .tab:focus-visible { outline-offset: -2px; }
+html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] { border-top: 0; border-inline-end: 0; gap: 2px; padding: 0; }
+html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] > .tab { flex: none; font-size: 17px; font-weight: 400; padding: 0.5em 0.8em; }
+html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] > .tab.is-active { --tab-bg-active: var(--accent); --tab-fg-active: #ffffff; border-inline-end: 0; font-weight: 600; }
+
+html[data-theme="ios-flat"] .breadcrumb-item:not(.is-current) { color: var(--link); }
+
+/* Readouts: Stopwatch digits. Stats: widget numbers in SF Rounded. */
+html[data-theme="ios-flat"] .readout { font-variant-numeric: tabular-nums; }
+html[data-theme="ios-flat"] .stat-value { font-family: ui-rounded, var(--font); font-weight: 700; letter-spacing: 0; }
+html[data-theme="ios-flat"] .stat-label { text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 600; }
+html[data-theme="ios-flat"] .lamp { box-shadow: none; }
+html[data-theme="ios-flat"] .btn-go { font-weight: 600; }
+html[data-theme="ios-flat"] .fader::-webkit-slider-thumb { opacity: 0; }
+
+/* --- The shell ------------------------------------------------------- *
+ * The bar is a large-title navigation bar: controls on the top row, the
+ * brand as a 34pt bold large title beneath. The page nav becomes a
+ * segmented control in that top row. The status strip is a tab bar. */
+html[data-theme="ios-flat"] :is(.app-bar, .app-status) {
+  position: sticky;
+  z-index: 50;
+  -webkit-backdrop-filter: var(--ios-bar-blur);
+  backdrop-filter: var(--ios-bar-blur);
+}
+html[data-theme="ios-flat"] .app-bar { top: 0; flex-wrap: wrap; }
+html[data-theme="ios-flat"] .app-status { bottom: 0; justify-content: space-around; min-height: 49px; box-sizing: border-box; font-size: 12px; font-weight: 500; }
+html[data-theme="ios-flat"] .app-bar .nav { flex: 1 1 100%; flex-wrap: wrap; padding: 0; min-height: 0; gap: 0.5rem 0.75rem; -webkit-backdrop-filter: none; backdrop-filter: none; }
+html[data-theme="ios-flat"] .app-bar .nav-brand {
+  order: 99;
+  flex: 1 0 100%;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.011em;
+  line-height: 1.2;
+}
+/* The run of nav items reads as one segmented control: each item
+   carries the grey track (and a 2px spread of it), so adjacent items
+   merge into a single strip with the active one as the white pill. */
+html[data-theme="ios-flat"] .app-bar {
+  --nav-item-bg: var(--surface-2);
+  --nav-item-fg: var(--text);
+  --nav-item-bg-active: var(--segmented-item-bg-active);
+  --nav-item-fg-active: var(--text);
+  --nav-brand-fg: var(--text);
+}
+html[data-theme="ios-flat"] .app-bar .nav-item {
+  margin-inline: -0.375rem;
+  padding: 0.3em 0.95em;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  outline-offset: 0;
+  box-shadow: 0 0 0 2px var(--surface-2);
+}
+html[data-theme="ios-flat"] .app-bar .nav-item:first-of-type { margin-inline-start: 2px; }
+html[data-theme="ios-flat"] .app-bar .nav-item:hover:not(.is-active) { --nav-item-bg-active: var(--ios-gray5); }
+html[data-theme="ios-flat"] .app-bar .nav-item.is-active {
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--surface-2), 0 3px 8px 2px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="ios-flat"] .app-bar .select { width: auto; }
+
+@media (max-width: 720px) {
+  html[data-theme="ios-flat"] .app-bar .nav-brand { font-size: 28px; }
+  html[data-theme="ios-flat"] .app-bar .nav { overflow-x: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="ios-flat"] .switch-thumb { transition: none; }
+}
+
+/* Paper has no blur and no translucency. */
+@media print {
+  html[data-theme="ios-flat"] :is(.app-bar, .app-status) { position: static; backdrop-filter: none; }
+}

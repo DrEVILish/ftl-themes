@@ -40,8 +40,7 @@ gradient with a bloom rather than as a panel), and a glowing bar above.
 ## Known compromise
 
 Eurostile, the reference face, is not web-available; the stack falls
-through Orbitron to a generic sans. Vendoring a substitute is tracked in
-`docs/theme-backlog.md`.
+through Orbitron to a generic sans. No substitute is vendored yet.
 
 ## Tell-tales of an inauthentic result
 

@@ -33,7 +33,6 @@ terminal.
 - **Browsing every theme at once:** [`gallery.html`](gallery.html) — a
   filterable grid with a live, scaled-down preview of each theme (pick
   which example page renders in each card).
-- **What's planned next:** [`docs/theme-backlog.md`](docs/theme-backlog.md).
 - **Engine-level recommendations** (what's been reviewed and what's still
   open): [`docs/engine-improvements.md`](docs/engine-improvements.md).
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens

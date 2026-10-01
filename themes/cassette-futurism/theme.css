@@ -1,0 +1,623 @@
+/* ftl-themes: Cassette Futurism
+ * Theme-Name: Cassette Futurism
+ * Description: The 1970s-80s imagined future as chunky hardware: beige moulded-plastic housings, dark recessed windows with seven-segment and vacuum-fluorescent numerals, colour-coded square keycaps, bat-handle toggle switches, yellow/orange/red/brown racing stripes, ribbed vents and Dymo-tape labels.
+ *
+ * Fonts: the readout numerals use DSEG7 Classic Bold Italic (keshikan, SIL
+ * OFL 1.1, vendored in assets/fonts/ with its licence),
+ * restricted by unicode-range to digits and clock punctuation so letters in
+ * a readout fall through to the mono stack instead of rendering as
+ * garbled segments. The mono stack uses the repo's already-vendored Share
+ * Tech Mono (assets/fonts/, OFL). The UI face is the Helvetica/Univers
+ * silk-screen voice from the system: nothing vendored, so on Linux it is
+ * Nimbus Sans / Liberation Sans / Arial.
+ *
+ * Signature rules: beige is the housing, dark glass is only ever a
+ * recessed window (readouts, inputs, meters, status strip). The four-colour
+ * stripe (yellow, orange, red, brown) is trim on the shell and h1 only.
+ * .switch is a chrome bat-handle toggle on a slotted plate, never a pill.
+ */
+
+@font-face {
+  font-family: "CF Seg7";
+  src: url("assets/fonts/DSEG7Classic-BoldItalic.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002D, U+002E, U+003A, U+0020;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+html[data-theme="cassette-futurism"] {
+  color-scheme: light;
+  --bg: #d3c9b3;           /* beige ABS housing (PET 2001 / TEAC side panels) */
+  --surface: #efe9dc;      /* off-white front panel */
+  --surface-2: #e3dbc9;    /* moulded recess */
+  --border: #7d725e;
+  --hairline: #c8bea9;
+  --text: #221c15;
+  --muted: #574d3f;
+  --accent: #cc5a0a;       /* TR-808 orange keycap, one step darker so it reads as a line on beige */
+  --accent-2: #7a3f1d;     /* chocolate brown trim */
+  --danger: #c0200d;       /* TR-808 red keycap, darkened for white legend */
+  --success: #2c7a30;      /* green "power" LED */
+  --warning: #e8b500;      /* TR-808 yellow keycap */
+  --accent-text: #9a4100;
+  --danger-text: #a51a0a;
+  --success-text: #24652a;
+  --warning-text: #775300;
+  --link: #8f3b00;
+  --on-accent: #000000;
+  --on-danger: #ffffff;
+  --on-success: #ffffff;
+  --radius: 3px;
+  --font: "Helvetica Neue", Helvetica, "Nimbus Sans", Univers, "Liberation Sans", Arial, sans-serif;
+  --font-mono: "Share Tech Mono", "IBM Plex Mono", "DejaVu Sans Mono", Consolas, monospace;
+  --flare: #6fe8d6;        /* vacuum-fluorescent cyan: only inside dark windows */
+  --focus: #1f6fd1;        /* a cool blue ring reads on beige, orange and the dark glass */
+  --focus-ring: 0 0 0 4px rgba(31, 111, 209, 0.25);
+
+  /* Hardware palette hooks */
+  --cf-window: #17140f;    /* smoked acrylic / CRT glass */
+  --cf-window-edge: #4a4034;
+  --cf-vfd: #6fe8d6;
+  --cf-vfd-glow: rgba(111, 232, 214, 0.55);
+  --cf-led: #ff3b24;
+  --cf-led-green: #62e05a;
+  --cf-led-amber: #ffb21a;
+  --cf-yellow: #e8b500;
+  --cf-orange: #e2670f;
+  --cf-red: #c0200d;
+  --cf-brown: #6b3a1e;
+  --cf-choc: #2a221c;      /* dark top deck (TR-808, Atari 2600) */
+  --cf-tape: #1c1a19;      /* black Dymo tape */
+  --cf-chrome: radial-gradient(circle at 35% 30%, #ffffff 0, #d7d7d2 30%, #8a8a84 70%, #4c4c48 100%);
+  --cf-stripes: linear-gradient(90deg,
+      var(--cf-yellow) 0 25%, var(--cf-orange) 25% 50%,
+      var(--cf-red) 50% 75%, var(--cf-brown) 75% 100%);
+  --cf-stripes-h: linear-gradient(180deg,
+      var(--cf-yellow) 0 25%, var(--cf-orange) 25% 50%,
+      var(--cf-red) 50% 75%, var(--cf-brown) 75% 100%);
+  --cf-vent: repeating-linear-gradient(90deg, var(--cf-choc) 0 3px, transparent 3px 7px);
+
+  --density: 1.05;
+  --icon-stroke-width: 2.1;
+  --label-transform: uppercase;
+  --label-tracking: 0.09em;
+
+  /* Buttons: sculpted square keycaps with a moulded skirt. */
+  --btn-bg: linear-gradient(180deg, #f8f4ea 0%, #e9e1d0 60%, #d9d0bc 100%);
+  --btn-bg-hover: linear-gradient(180deg, #fffaf0 0%, #efe7d6 60%, #e0d7c3 100%);
+  --btn-fg: var(--text);
+  --btn-border: #4f4538;
+  --btn-border-hover: #2a221c;
+  --btn-border-width: 1px;
+  --btn-radius: 3px;
+  --btn-weight: 700;
+  --btn-transform: uppercase;
+  --btn-tracking: 0.08em;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -4px 0 rgba(0, 0, 0, 0.16), 0 2px 0 #4f4538;
+  --btn-shadow-hover: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -4px 0 rgba(0, 0, 0, 0.16), 0 2px 0 #2a221c;
+  --btn-padding: calc(0.55em * var(--density)) calc(1.15em * var(--density));
+
+  /* GO: the big yellow START/STOP key. */
+  --go-bg: var(--cf-yellow);
+  --go-bg-hover: #f2c418;
+  --go-fg: #1a1408;
+  --go-border: #4f4538;
+  --go-border-width: 2px;
+  --go-radius: 4px;
+  --go-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45), inset 0 -6px 0 rgba(0, 0, 0, 0.16), 0 3px 0 #4f4538;
+  --go-shadow-hover: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -6px 0 rgba(0, 0, 0, 0.16), 0 3px 0 #2a221c;
+
+  /* Inputs: recessed dark windows with VFD-cyan entry. */
+  --input-bg: var(--cf-window);
+  --input-fg: #bff6ec;
+  --input-border: var(--cf-window-edge);
+  --input-border-width: 2px;
+  --input-radius: 2px;
+  --input-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7);
+  --input-placeholder: #7fa8a1;
+  --input-caret: var(--cf-vfd);
+  --input-readonly-bg: #2a2620;
+  --input-readonly-fg: #c9c1b1;
+  --input-addon-bg: var(--surface-2);
+  --input-addon-fg: var(--muted);
+  --input-error-bg: #2a110c;
+  --select-arrow-fg: var(--cf-vfd);
+  --input-mirror-bg: var(--cf-window);
+  --input-mirror-fg: var(--cf-vfd);
+
+  /* Panels: moulded plastic, top highlight, bottom ledge. */
+  --panel-bg: var(--surface);
+  --panel-border: #a99d86;
+  --panel-border-width: 1px;
+  --panel-radius: 6px;
+  --panel-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93, 0 4px 8px rgba(60, 45, 25, 0.18);
+  --panel-header-bg: var(--surface-2);
+  --panel-header-fg: var(--text);
+  --card-bg: var(--surface);
+  --card-border: #a99d86;
+  --card-radius: 6px;
+  --card-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
+
+  --modal-bg: var(--surface);
+  --modal-border: #4f4538;
+  --modal-header-bg: var(--cf-choc);
+  --modal-header-fg: #f3ecdc;
+  --modal-radius: 6px;
+  --modal-shadow: 0 4px 0 #4f4538, 0 18px 40px rgba(30, 20, 10, 0.45);
+  --overlay-bg: rgba(42, 34, 28, 0.6);
+  --drawer-bg: var(--surface);
+  --dropdown-bg: var(--surface);
+  --dropdown-border: #4f4538;
+  --dropdown-radius: 3px;
+  --dropdown-item-bg-hover: var(--accent);
+  --dropdown-item-fg-hover: var(--on-accent);
+  --context-menu-bg: var(--surface);
+  --context-menu-border: #4f4538;
+  --context-menu-radius: 3px;
+  --context-menu-item-bg-hover: var(--accent);
+  --context-menu-item-fg-hover: var(--on-accent);
+  --popover-bg: var(--surface);
+  --popover-border: #4f4538;
+  --popover-radius: 4px;
+
+  /* Tables: dark top-deck head band over an orange rule, beige zebra. */
+  --table-head-bg: var(--cf-choc);
+  --table-head-fg: #efe6d2;
+  --table-head-fg-hover: #ffffff;
+  --table-head-transform: uppercase;
+  --table-head-tracking: 0.1em;
+  --table-head-rule: var(--cf-orange);
+  --table-head-rule-width: 3px;
+  --table-sort-fg: var(--cf-yellow);
+  --table-rule: var(--hairline);
+  --row-alt-bg: rgba(122, 98, 62, 0.07);
+  --row-hover-bg: rgba(226, 103, 15, 0.1);
+  --row-selected-bg: #f6d9bd;
+  --row-selected-fg: var(--text);
+  --row-active-marker: inset 0.3rem 0 0 var(--accent);
+
+  --nav-bg: var(--surface-2);
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--muted);
+  --nav-item-fg-active: var(--on-accent);
+  --nav-item-bg-active: var(--accent);
+  --nav-item-radius: 2px;
+  --nav-radius: 4px;
+  --tab-bg: var(--surface-2);
+  --tab-fg: var(--muted);
+  --tab-bg-active: var(--surface);
+  --tab-fg-active: var(--text);
+  --tab-underline-active: var(--accent);
+  --tab-radius: 3px 3px 0 0;
+  --segmented-bg: var(--cf-choc);
+  --segmented-border: var(--cf-choc);
+  --segmented-radius: 3px;
+  --segmented-padding: 3px;
+  --segmented-item-radius: 2px;
+  --segmented-item-fg: #e8dfcc;
+  --segmented-item-fg-hover: #ffffff;
+  --segmented-item-bg-active: var(--surface);
+  --segmented-item-fg-active: var(--text);
+  --pagination-item-radius: 2px;
+  --pagination-item-bg-active: var(--accent);
+  --pagination-item-fg-active: var(--on-accent);
+  --breadcrumb-separator: "\25B8";
+
+  /* Toggle buttons: latching keys, pressed in and lit. */
+  --toggle-btn-bg: var(--btn-bg);
+  --toggle-btn-bg-on: var(--accent);
+  --toggle-btn-fg-on: var(--on-accent);
+  --toggle-btn-border: #4f4538;
+  --toggle-btn-border-on: #4f4538;
+  --toggle-btn-radius: 3px;
+
+  /* Badges and tooltips: Dymo embossed tape. */
+  --badge-bg: var(--cf-tape);
+  --badge-fg: #f7f3ea;
+  --badge-border: transparent;
+  --badge-radius: 2px;
+  --tooltip-bg: var(--cf-tape);
+  --tooltip-fg: #f7f3ea;
+  --tooltip-border: #000000;
+  --tooltip-radius: 2px;
+
+  /* Lamps: round LEDs in a chrome bezel. */
+  --lamp-size: 0.8rem;
+  --lamp-radius: 50%;
+  --lamp-border: #8a8a84;
+  --lamp-border-width: 2px;
+  --lamp-off: radial-gradient(circle at 40% 35%, #6b5f50, #2a2520);
+  --lamp-on: var(--cf-led-green);
+  --lamp-active: var(--cf-orange);
+  --lamp-glow: 0 0 0.45rem currentColor;
+  --status-dot-radius: 50%;
+
+  /* Bat-handle toggle: see the switch block below for the geometry. */
+  --switch-radius: 3px;
+  --switch-border-width: 2px;
+  --switch-border: #5d5344;
+  --switch-border-on: #5d5344;
+  --switch-thumb-radius: 0;
+  --switch-bg:
+    linear-gradient(#1c1813, #1c1813) center / calc(100% - 0.7em) 0.3em no-repeat,
+    linear-gradient(180deg, #e2dccd, #b8ae9b);
+  --switch-bg-on:
+    linear-gradient(var(--cf-orange), var(--cf-orange)) center / calc(100% - 0.7em) 0.3em no-repeat,
+    linear-gradient(180deg, #e2dccd, #b8ae9b);
+  --switch-thumb-bg:
+    radial-gradient(circle at 0.45em 50%, #ffffff 0, #d9d9d3 0.1em, #8c8c86 0.25em, #4a4a46 0.32em, transparent 0.34em),
+    radial-gradient(circle at calc(100% - 0.48em) 50%, #2d2721 0 0.17em, #a9a196 0.19em, #e6e1d6 0.3em, #6a6156 0.42em, transparent 0.44em),
+    linear-gradient(180deg, #ffffff, #b5b5af 45%, #5d5d58) center / calc(100% - 1em) 0.3em no-repeat;
+  --switch-thumb-bg-on:
+    radial-gradient(circle at calc(100% - 0.45em) 50%, #ffffff 0, #d9d9d3 0.1em, #8c8c86 0.25em, #4a4a46 0.32em, transparent 0.34em),
+    radial-gradient(circle at 0.48em 50%, #2d2721 0 0.17em, #a9a196 0.19em, #e6e1d6 0.3em, #6a6156 0.42em, transparent 0.44em),
+    linear-gradient(180deg, #ffffff, #b5b5af 45%, #5d5d58) center / calc(100% - 1em) 0.3em no-repeat;
+
+  /* Sliders: slotted rail, square chrome-capped knob. */
+  --slider-bg: var(--cf-window);
+  --slider-border: var(--cf-window-edge);
+  --slider-radius: 2px;
+  --slider-thumb-bg: linear-gradient(180deg, #f4efe4 0 45%, var(--cf-choc) 45% 55%, #d6ccb8 55%);
+  --slider-thumb-radius: 2px;
+  --slider-thumb-shadow: 0 0 0 1px #4f4538, 0 2px 0 #4f4538;
+
+  --progress-bg: var(--cf-window);
+  --progress-border: var(--cf-window-edge);
+  --progress-radius: 2px;
+  --progress-fill: repeating-linear-gradient(90deg, var(--cf-orange) 0 0.55rem, transparent 0.55rem 0.7rem);
+  --indicator-fg: var(--cf-orange);
+  --indicator-track: #c8bea9;
+  --spinner-fg: var(--cf-orange);
+  --avatar-radius: 3px;
+  --avatar-bg: var(--cf-choc);
+  --avatar-fg: #f3ecdc;
+  --skeleton-bg: var(--surface-2);
+  --dropzone-bg: var(--surface-2);
+  --dropzone-border: var(--border);
+  --dropzone-radius: 4px;
+
+  --kbd-bg: linear-gradient(180deg, #f8f4ea, #ddd4c2);
+  --kbd-fg: var(--text);
+  --kbd-border: #4f4538;
+  --kbd-radius: 2px;
+  --kbd-shadow: 0 2px 0 #4f4538;
+  --code-bg: var(--surface-2);
+  --code-fg: #6b2f00;
+  --code-block-bg: var(--cf-window);
+  --code-block-border: var(--cf-window-edge);
+  --selection-bg: var(--cf-orange);
+  --selection-fg: #120c06;
+  --scrollbar-thumb: #9a8e78;
+  --scrollbar-thumb-hover: var(--cf-brown);
+  --scrollbar-track: var(--surface-2);
+
+  --toast-bg: var(--surface);
+  --toast-fg: var(--text);
+  --toast-border: #4f4538;
+  --toast-radius: 4px;
+  --toast-shadow: 0 3px 0 #4f4538, 0 10px 24px rgba(30, 20, 10, 0.3);
+  --alert-bg: var(--surface);
+  --alert-fg: var(--text);
+  --alert-radius: 4px;
+  --alert-border-width: 2px;
+
+  /* Instruments: seven-segment numerals in a dark window. */
+  --readout-bg: var(--cf-window);
+  --readout-fg: var(--cf-vfd);
+  --readout-font: "CF Seg7", var(--font-mono);
+  --readout-weight: 400;
+  --readout-tracking: 0.04em;
+  --readout-border: var(--cf-window-edge);
+  --readout-border-width: 2px;
+  --readout-radius: 2px;
+  --readout-padding: 0.3em 0.55em 0.25em;
+  --readout-unit-fg: #8fb8b0;
+  --readout-glow: 0 0 0.35rem var(--cf-vfd-glow);
+  --meter-track: var(--cf-window);
+  --meter-border: var(--cf-window-edge);
+  --meter-border-width: 2px;
+  --meter-radius: 2px;
+  --meter-thickness: 0.8rem;
+  --meter-low: var(--cf-led-green);
+  --meter-mid: var(--cf-led-amber);
+  --meter-high: var(--cf-led);
+  --meter-peak-fg: #fff6e0;
+  --meter-peak-width: 3px;
+  --meter-unlit: #2f2a22;
+  --transport-bg: var(--cf-choc);
+  --transport-border: #4f4538;
+  --transport-radius: 4px;
+
+  /* Console primitives: colour-coded caps, chrome knobs. */
+  --key-bg: linear-gradient(180deg, #f8f4ea, #ddd4c2);
+  --key-fg: var(--text);
+  --key-border: #4f4538;
+  --key-radius: 2px;
+  --key-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 2px 0 #4f4538;
+  --key-on: var(--cf-led-green);
+  --key-mute: var(--cf-red);
+  --key-solo: var(--cf-yellow);
+  --key-sel: var(--cf-orange);
+  --knob-color: #2a221c;
+  --knob-pointer: #f3ecdc;
+  --knob-arc: var(--cf-orange);
+  --knob-track: #c8bea9;
+  --knob-border: #14100c;
+  --knob-shadow: 0 2px 0 #4f4538;
+  --knob-label-fg: var(--muted);
+  --fader-cap-bg: linear-gradient(180deg, #f4efe4 0 45%, var(--cf-choc) 45% 55%, #d6ccb8 55%);
+  --fader-cap-border: #4f4538;
+  --fader-cap-radius: 2px;
+  --fader-slot: var(--cf-window);
+  --mixer-bg: var(--bg);
+  --mixer-border: #a99d86;
+  --mixer-radius: 6px;
+  --strip-bg: var(--surface);
+  --strip-border: #a99d86;
+  --strip-radius: 4px;
+  --scribble-bg: var(--cf-window);
+  --scribble-fg: var(--cf-vfd);
+  --scribble-num-fg: #f3ecdc;
+  --scribble-radius: 2px;
+  --eq-bg: var(--cf-window);
+  --eq-grid: #3a332a;
+  --eq-zero: #6a5f4f;
+  --eq-line: var(--cf-vfd);
+  --eq-fill: rgba(111, 232, 214, 0.18);
+  --eq-radius: 2px;
+
+  /* Conversation, file chips, charts (v4.1) */
+  --message-bg: var(--surface-2);
+  --message-border: #a99d86;
+  --message-radius: 4px;
+  --message-own-bg: #f6d9bd;
+  --message-own-border: var(--cf-orange);
+  --attachment-bg: var(--surface-2);
+  --attachment-border: #a99d86;
+  --attachment-radius: 3px;
+  --bar-chart-bar: linear-gradient(180deg, var(--cf-orange), #b9520a);
+  --bar-chart-bar-alt: linear-gradient(180deg, var(--cf-brown), #4b2814);
+  --bar-chart-radius: 2px 2px 0 0;
+  --bar-chart-axis: var(--cf-choc);
+  --bar-chart-axis-width: 3px;
+  --chart-series-1: var(--cf-orange);
+  --chart-series-2: var(--cf-brown);
+  --hero-bg: var(--cf-choc);
+  --hero-fg: #f3ecdc;
+  --hero-lede-fg: #d9cfba;
+
+  --log-bg: var(--cf-window);
+  --log-fg: #bff6ec;
+  --log-time-fg: #8fb8b0;
+  --log-warn: var(--cf-led-amber);
+  --log-error: #ff6a55;
+  --log-debug: #9b9384;
+  --log-border: var(--cf-window-edge);
+  --log-radius: 2px;
+
+  /* Accent swatches: the other keycap colours. */
+  --accent-swatch-1: var(--cf-orange);  --on-accent-swatch-1: #120c06;
+  --accent-swatch-2: var(--cf-yellow);  --on-accent-swatch-2: #1a1408;
+  --accent-swatch-3: var(--cf-red);     --on-accent-swatch-3: #ffffff;
+  --accent-swatch-4: var(--cf-brown);   --on-accent-swatch-4: #ffffff;
+}
+
+/* --- Housing texture ------------------------------------------------------ *
+ * A faint moulded-plastic stipple on the backdrop, nothing more. */
+html[data-theme="cassette-futurism"] body {
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(80, 60, 30, 0.07) 1px, transparent 1.2px);
+  background-size: 5px 5px;
+}
+
+/* --- Voice: silk-screened panel lettering --------------------------------- */
+html[data-theme="cassette-futurism"] :is(h1, h2, h3, h4) {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+html[data-theme="cassette-futurism"] h1 { letter-spacing: 0.06em; }
+/* The four-colour stripe under h1: the one piece of trim inside content. */
+html[data-theme="cassette-futurism"] h1::after {
+  content: "";
+  display: block;
+  width: 5.5rem;
+  height: 0.55rem;
+  margin-top: 0.35rem;
+  background: var(--cf-stripes-h);
+}
+html[data-theme="cassette-futurism"] :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* --- Keycaps --------------------------------------------------------------- */
+html[data-theme="cassette-futurism"] .btn:active:not(:disabled),
+html[data-theme="cassette-futurism"] .toggle-btn:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -2px 0 rgba(0, 0, 0, 0.16), 0 0 0 #4f4538;
+}
+html[data-theme="cassette-futurism"] .btn-go:active:not(:disabled) { transform: translateY(3px); }
+html[data-theme="cassette-futurism"] .toggle-btn[aria-pressed="true"] {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3), 0 1px 0 #4f4538;
+}
+
+/* The transport deck is dark: re-point text tokens so labels stay legible. */
+html[data-theme="cassette-futurism"] .transport {
+  --text: #f3ecdc;
+  --muted: #cfc4ad;
+  --link: #ffb36b;
+  --accent-text: #ffb36b;
+  --success-text: #8be37f;
+  --warning-text: #ffcf4d;
+  --danger-text: #ff8a75;
+  color: #f3ecdc;
+}
+
+/* --- Panels: ribbed vent slots ahead of the title -------------------------- */
+html[data-theme="cassette-futurism"] .panel-header {
+  border-bottom: 2px solid #a99d86;
+  letter-spacing: 0.12em;
+}
+html[data-theme="cassette-futurism"] .panel-header::before {
+  content: "";
+  display: inline-block;
+  vertical-align: -0.1em;
+  width: 1.5rem;
+  height: 0.85em;
+  margin-right: 0.7em;
+  background: var(--cf-vent);
+}
+
+/* --- Dymo tape: badges and tooltips are embossed labels -------------------- */
+html[data-theme="cassette-futurism"] :is(.badge, .tooltip) {
+  font-family: var(--font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6), 0 -1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+html[data-theme="cassette-futurism"] .badge { font-size: 0.7rem; }
+html[data-theme="cassette-futurism"] .badge-accent { --badge-bg: #a84400; --badge-fg: #ffffff; }
+html[data-theme="cassette-futurism"] .badge-danger { --badge-bg: #b01b0b; --badge-fg: #ffffff; }
+html[data-theme="cassette-futurism"] .badge-success { --badge-bg: #1f6326; --badge-fg: #ffffff; }
+html[data-theme="cassette-futurism"] .badge-warning { --badge-bg: var(--cf-yellow); --badge-fg: #1a1408; }
+html[data-theme="cassette-futurism"] .badge-warning { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4); }
+
+/* --- Windows: inputs, readouts, logs are smoked glass ---------------------- */
+html[data-theme="cassette-futurism"] :is(.input, .select, .textarea) { font-family: var(--font-mono); }
+html[data-theme="cassette-futurism"] .readout { text-shadow: var(--readout-glow); font-style: normal; }
+html[data-theme="cassette-futurism"] .readout-unit {
+  font-family: var(--font-mono);
+  text-shadow: none;
+  text-transform: uppercase;
+}
+
+/* --- The switch: a chrome bat-handle toggle ------------------------------- *
+ * One element draws the lever: the chrome ball at one end, the knurled
+ * pivot nut at the other and the shaft between them, as three background
+ * layers (--switch-thumb-bg / -on mirror them). The thumb is sized so
+ * that in either position its nut sits at the track's centre:
+ * the pivot stays put while the ball throws left (off) or right (on). The
+ * slot under it lights orange when on, so the state is carried by lever
+ * position AND colour. */
+html[data-theme="cassette-futurism"] .switch:not(button) { width: calc(3.4em * var(--density)); }
+html[data-theme="cassette-futurism"] .switch {
+  --switch-shift: calc(1.22em * var(--density) - 4px);
+}
+html[data-theme="cassette-futurism"] button.switch .switch-track { width: calc(3.4em * var(--density)); }
+html[data-theme="cassette-futurism"] .switch-track {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 0 #5d5344;
+}
+html[data-theme="cassette-futurism"] .switch-thumb {
+  width: calc(2.18em * var(--density) - 4px);
+  top: 1px;
+  height: calc(1.4em * var(--density) - 6px);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+/* --- Layout: a deck housing ------------------------------------------------ *
+ * Beige housing with a moulded seam around everything: a dark top deck
+ * (TR-808 / Atari) with a four-colour stripe under it, the content as an
+ * inset off-white front panel, a ribbed vent grille down the RIGHT side
+ * (the speaker / heat-sink side of a deck), and a dark LED window for the
+ * status strip. */
+html[data-theme="cassette-futurism"] {
+  --app-bg: transparent;
+  --app-areas: "bar bar" "main rail" "status status";
+  --app-columns: minmax(0, 1fr) 3.25rem;
+  --app-columns-no-rail: minmax(0, 1fr);
+  --app-gap: 0.85rem 0.6rem;
+  --app-padding: 0.6rem;
+  --app-bar-bg: var(--cf-choc);
+  --app-bar-fg: #f3ecdc;
+  --app-bar-rule: transparent;
+  --app-bar-rule-width: 0;
+  --app-bar-radius: 6px 6px 0 0;
+  --app-bar-height: 3.25rem;
+  --app-bar-padding: 0.5rem 1rem;
+  --app-bar-font: var(--font);
+  --app-rail-display: flex;
+  --app-rail-empty-display: flex;
+  --app-rail-radius: 6px;
+  --app-rail-padding: 0;
+  --app-rail-bg:
+    var(--cf-stripes) center 0.8rem / 1.6rem 0.5rem no-repeat,
+    repeating-linear-gradient(180deg, #3a3129 0 4px, #c4b9a2 4px 6px, var(--bg) 6px 10px) center 2rem / 1.6rem calc(100% - 3rem) no-repeat,
+    var(--surface-2);
+  --app-main-bg: var(--surface);
+  --app-main-padding: 1.4rem;
+  --app-main-radius: 6px;
+  --app-status-bg: var(--cf-window);
+  --app-status-fg: var(--cf-vfd);
+  --app-status-rule: var(--cf-window-edge);
+  --app-status-radius: 4px;
+  --app-status-padding: 0.4rem 1rem;
+}
+html[data-theme="cassette-futurism"] .app-bar {
+  --nav-brand-fg: #f3ecdc;
+  --nav-item-fg: #e3d9c4;
+  --nav-item-fg-active: #120c06;
+  --nav-item-bg-active: var(--cf-orange);
+  --nav-bg: transparent;
+  --text: #f3ecdc;
+  --muted: #cfc4ad;
+  --link: #ffb36b;
+  --breadcrumb-current-fg: #f3ecdc;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  font-size: 0.92rem;
+  /* the four-colour stripe, stacked as hard shadows under the deck */
+  box-shadow: 0 3px 0 var(--cf-yellow), 0 6px 0 var(--cf-orange), 0 9px 0 var(--cf-red), 0 12px 0 var(--cf-brown);
+  position: relative;
+  z-index: 1;
+}
+/* Brand on red Dymo tape. */
+html[data-theme="cassette-futurism"] .app-bar .nav-brand {
+  background: #b01b0b;
+  color: #ffffff;
+  padding: 0.15em 0.6em;
+  border-radius: 2px;
+  letter-spacing: 0.18em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.45);
+}
+html[data-theme="cassette-futurism"] .app-main {
+  border: 1px solid #a99d86;
+  box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
+}
+html[data-theme="cassette-futurism"] .app-rail {
+  border: 1px solid #a99d86;
+  box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
+}
+html[data-theme="cassette-futurism"] .app-status {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  border: 2px solid var(--cf-window-edge);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 0 0.3rem var(--cf-vfd-glow);
+}
+
+@media print {
+  html[data-theme="cassette-futurism"] body { background-image: none; }
+  html[data-theme="cassette-futurism"] {
+    --readout-glow: none;
+    --readout-bg: #ffffff;
+    --readout-fg: #000000;
+    --input-bg: #ffffff;
+    --input-fg: #000000;
+    --meter-track: #ffffff;
+  }
+  html[data-theme="cassette-futurism"] .app-bar { box-shadow: none; }
+}

@@ -1,0 +1,435 @@
+/* ftl-themes: Skyrim
+ * Theme-Name: Skyrim
+ * Description: The Elder Scrolls V: Skyrim menus with SkyUI's column tables: smoke-black translucent panels in thin silver rules with knotwork corners, condensed white type, chevron-capped title bars, and health/magicka/stamina bars with diamond end caps.
+ *
+ * Primary direction: vanilla Skyrim menu chrome (character-creation and
+ * skills bars, journal tab bar, attribute bars, key-hint strip) with SkyUI
+ * for everything tabular (column heads, right-aligned numbers, the
+ * fading selected-row band with an arrow tip). See
+ * references/skyrim/RESEARCH.md for the frames each rule follows.
+ *
+ * Note on fonts: the game sets every menu in a condensed Futura (Futura
+ * Condensed / Futura Std Condensed Light-Medium, per the SkyUI and modding
+ * community; not verified from the game files). Futura is not free, so this
+ * theme reuses the repo's already-vendored Antonio (Vernon Adams, SIL OFL
+ * 1.1, assets/fonts/, see NOTICE.md) as the condensed face. Futura PT Cond /
+ * Futura Condensed are still named first so a machine that has them uses
+ * them.
+ */
+
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+html[data-theme="skyrim"] {
+  color-scheme: dark;
+  /* Sampled from references/skyrim (see RESEARCH.md "Palette"). */
+  --bg: #101213;          /* cold slate night behind the menus */
+  --surface: #161512;     /* SkyUI list smoke, sampled #161512-#24231f */
+  --surface-2: #0d0d0c;   /* recessed: filter box, tracks */
+  --border: #6f6f6c;      /* the thin silver frame rule */
+  --hairline: #2c2b27;
+  --text: #ecebe6;        /* menu white, a touch warm */
+  --muted: #a7a7a5;       /* column heads, inactive tabs: sampled #a7a7a7 */
+  --accent: #aec0d5;      /* the level / XP bar's frost blue, sampled */
+  --accent-2: #8f9fe6;    /* magicka highlight */
+  --danger: #b33e3f;      /* health bar, sampled */
+  --success: #2a7a4b;     /* stamina bar, sampled #1f6636-#338d5c, tuned for white text */
+  --warning: #e3c35a;     /* SkyUI's legendary star */
+  --danger-text: #e8787a;
+  --success-text: #74c795;
+  --warning-text: #e3c35a;
+  --accent-text: #aec0d5;
+  --on-accent: #111110;
+  --on-danger: #ffffff;
+  --on-success: #ffffff;
+  --radius: 0;
+  --font: "Futura PT Cond", "Futura Condensed", "Futura Std Condensed", "Antonio", "Roboto Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
+  --font-mono: "Consolas", "DejaVu Sans Mono", "Liberation Mono", monospace;
+  --flare: #e3c35a;       /* legendary gold: stars, the one warm note */
+
+  --sky-smoke: linear-gradient(90deg, rgba(8, 8, 7, 0.94), rgba(24, 23, 20, 0.9) 55%, rgba(14, 14, 12, 0.94));
+  --sky-line: #6f6f6c;
+  --sky-line-hi: #b9b9b5;
+  --sky-diamond: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='%230b0b0a' stroke='%23b9b9b5' stroke-width='1.2'%3E%3Cpath d='M6 1 11 6 6 11 1 6Z'/%3E%3C/svg%3E");
+  --sky-select: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.2) 35%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.07));
+  /* Knotwork corner: a small interlaced square, drawn once as SVG. */
+  --sky-knot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%23b9b9b5' stroke-width='1.2'%3E%3Crect x='1' y='1' width='12' height='12'/%3E%3Cpath d='M7 1v4M1 7h4M7 13V9M13 7H9M4 4l6 6M10 4 4 10'/%3E%3C/svg%3E");
+
+  --label-transform: none;
+  --label-tracking: 0.02em;
+  --density: 1;
+  --focus: #ffffff;
+  --focus-ring: 0 0 0.6rem rgba(255, 255, 255, 0.45);
+  --link: #c9d6e5;
+
+  /* Buttons: smoke plates in a silver rule; hover lights them like a
+     selected menu entry. Primary is the frost-blue XP fill. */
+  --btn-bg: rgba(12, 12, 11, 0.85);
+  --btn-fg: var(--text);
+  --btn-border: var(--sky-line);
+  --btn-border-hover: var(--sky-line-hi);
+  --btn-bg-hover: rgba(70, 68, 62, 0.9);
+  --btn-radius: 0;
+  --btn-tracking: 0.04em;
+  --btn-transform: uppercase;
+  --btn-padding: calc(0.4em * var(--density)) calc(1.2em * var(--density));
+  --btn-shadow-hover: 0 0 0.6rem rgba(255, 255, 255, 0.12);
+
+  /* Inputs: SkyUI's black filter box. */
+  --input-bg: #0b0b0a;
+  --input-border: var(--sky-line);
+  --input-radius: 0.15rem;
+  --input-placeholder: #8c8c89;
+  --input-caret: #ffffff;
+  --select-arrow-fg: var(--text);
+
+  /* Panels: smoke behind a thin silver frame, knotwork in the corners. */
+  --panel-bg:
+    var(--sky-knot) top 3px left 3px / 14px 14px no-repeat,
+    var(--sky-knot) top 3px right 3px / 14px 14px no-repeat,
+    var(--sky-knot) bottom 3px left 3px / 14px 14px no-repeat,
+    var(--sky-knot) bottom 3px right 3px / 14px 14px no-repeat,
+    var(--sky-smoke),
+    var(--surface);
+  --panel-border: var(--sky-line);
+  --panel-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.55), inset 0 0 0 4px rgba(111, 111, 108, 0.35), 0 10px 30px rgba(0, 0, 0, 0.55);
+  --panel-header-bg: transparent;
+  --panel-header-fg: var(--text);
+  --card-bg: var(--sky-smoke), var(--surface);
+  --card-border: var(--sky-line);
+  --card-radius: 0;
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  /* Modal: the spell/item info card from SkyUI. */
+  --modal-bg: var(--panel-bg);
+  --modal-border: var(--sky-line);
+  --modal-header-bg: transparent;
+  --modal-header-fg: var(--text);
+  --modal-radius: 0;
+  --modal-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.55), inset 0 0 0 4px rgba(111, 111, 108, 0.35), 0 16px 48px rgba(0, 0, 0, 0.75);
+  --overlay-bg: rgba(5, 6, 7, 0.72);
+  --overlay-blur: blur(2px);
+  --dropdown-bg: #121210;
+  --dropdown-border: var(--sky-line);
+  --dropdown-radius: 0;
+  --dropdown-item-bg-hover: rgba(255, 255, 255, 0.14);
+  --dropdown-item-fg-hover: #ffffff;
+  --context-menu-bg: #121210;
+  --context-menu-radius: 0;
+  --context-menu-item-bg-hover: rgba(255, 255, 255, 0.14);
+  --popover-bg: #121210;
+  --popover-radius: 0;
+
+  /* Tables: SkyUI's columns. Tiny gray heads over a thin rule, no row
+     rules, the selected row a fading white band. */
+  --table-head-bg: transparent;
+  --table-head-fg: var(--muted);
+  --table-head-transform: uppercase;
+  --table-head-tracking: 0.08em;
+  --table-head-rule: var(--sky-line);
+  --table-head-rule-width: 1px;
+  --table-head-fg-hover: #ffffff;
+  --table-rule: transparent;
+  --row-hover-bg: rgba(255, 255, 255, 0.07);
+  --row-selected-bg: var(--sky-select);
+  --row-selected-fg: #ffffff;
+  --row-alt-bg: transparent;
+  --row-active-marker: inset 3px 0 0 var(--sky-line-hi);
+
+  /* Nav and tabs: the journal / creation-menu title bar. */
+  --nav-bg: transparent;
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--muted);
+  --nav-item-fg-active: #ffffff;
+  --nav-item-bg: transparent;
+  --nav-item-bg-active: transparent;
+  --nav-item-radius: 0;
+  --tab-fg: var(--muted);
+  --tab-fg-active: #ffffff;
+  --tab-bg-active: transparent;
+  --tab-underline-active: transparent;
+  --tab-radius: 0;
+  --segmented-bg: #0b0b0a;
+  --segmented-border: var(--sky-line);
+  --segmented-radius: 0;
+  --segmented-item-radius: 0;
+  --segmented-item-bg-active: rgba(255, 255, 255, 0.18);
+  --segmented-item-fg-active: #ffffff;
+  --pagination-item-radius: 0;
+  --pagination-item-bg-active: rgba(255, 255, 255, 0.18);
+  --pagination-item-fg-active: #ffffff;
+  --breadcrumb-separator: "\25C7";
+
+  --badge-radius: 0.15rem;
+  --badge-border: var(--sky-line);
+  --badge-bg: #0b0b0a;
+  --badge-fg: var(--text);
+  --status-dot-radius: 0;
+  --avatar-radius: 0;
+
+  /* Attribute bars: health / magicka / stamina, diamond end caps. */
+  --progress-height: 0.7rem;
+  --progress-radius: 0;
+  --progress-bg: #0b0b0a;
+  --progress-border: var(--sky-line);
+  --progress-fill: linear-gradient(180deg, #5d6c7c, #dfe8f2 45%, #aec0d5 55%, #5d6c7c);
+  --meter-track: #0b0b0a;
+  --meter-border: var(--sky-line);
+  --meter-radius: 0;
+  --meter-thickness: 0.7rem;
+  --meter-low: #2a7a4b;
+  --meter-mid: #c9a640;
+  --meter-high: #b33e3f;
+  --meter-peak-fg: #ffffff;
+  --indicator-fg: #ffffff;
+  --indicator-track: var(--hairline);
+  --spinner-fg: #ffffff;
+  --spinner-track: var(--hairline);
+  --skeleton-bg: rgba(255, 255, 255, 0.06);
+
+  /* Switches: MCM's diamond toggles, so the thumb is a square turned 45deg. */
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --switch-bg: #0b0b0a;
+  --switch-border: var(--sky-line);
+  --switch-thumb-bg: var(--muted);
+  --switch-bg-on: rgba(174, 192, 213, 0.18);
+  --switch-border-on: var(--sky-line-hi);
+  --switch-thumb-bg-on: #ffffff;
+  --slider-radius: 0;
+  --slider-height: 0.3rem;
+  --slider-bg: #0b0b0a;
+  --slider-border: var(--sky-line);
+  --slider-thumb-radius: 0;
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-size: 0.8rem;
+
+  /* Key hints: "[E] Select  [Tab] Back". */
+  --kbd-bg: #0b0b0a;
+  --kbd-fg: #ffffff;
+  --kbd-border: #cfcfcb;
+  --kbd-radius: 0.2rem;
+  --kbd-shadow: none;
+  --code-bg: #0b0b0a;
+  --code-block-bg: #0b0b0a;
+  --code-block-border: var(--sky-line);
+
+  --tooltip-bg: #0b0b0a;
+  --tooltip-fg: var(--text);
+  --tooltip-border: var(--sky-line);
+  --tooltip-radius: 0;
+  --toast-bg: var(--sky-smoke), var(--surface);
+  --toast-fg: var(--text);
+  --toast-border: var(--sky-line);
+  --toast-radius: 0;
+  --toast-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --alert-bg: var(--surface);
+  --alert-fg: var(--text);
+  --alert-radius: 0;
+  --drawer-bg: var(--sky-smoke), var(--surface);
+  --drawer-border: var(--sky-line);
+  --dropzone-radius: 0;
+  --dropzone-border: var(--sky-line);
+  --list-bg: transparent;
+  --list-border: var(--sky-line);
+  --list-radius: 0;
+  --list-rule: transparent;
+  --list-active-marker: inset 3px 0 0 var(--sky-line-hi);
+
+  --selection-bg: rgba(255, 255, 255, 0.85);
+  --selection-fg: #111110;
+  --scrollbar-thumb: var(--sky-line);
+  --scrollbar-thumb-hover: var(--sky-line-hi);
+  --scrollbar-track: #0b0b0a;
+  --scrollbar-size: 6px;
+
+  --readout-bg: #0b0b0a;
+  --readout-fg: #ffffff;
+  --readout-border: var(--sky-line);
+  --readout-unit-fg: var(--muted);
+  --readout-font: var(--font);
+  --lamp-radius: 0;
+  --lamp-off: #0b0b0a;
+  --lamp-border: var(--sky-line);
+  --lamp-glow: 0 0 0.5rem currentColor;
+
+  --message-bg: rgba(12, 12, 11, 0.9);
+  --message-border: var(--hairline);
+  --message-radius: 0;
+  --message-own-bg: #24231f;
+  --message-own-border: var(--sky-line);
+  --attachment-bg: #0b0b0a;
+  --attachment-border: var(--sky-line);
+  --attachment-radius: 0;
+  --bar-chart-bar: linear-gradient(90deg, #5d6c7c, #dfe8f2 50%, #5d6c7c);
+  --bar-chart-bar-alt: linear-gradient(90deg, #121a5a, #8f9fe6 50%, #121a5a);
+  --bar-chart-radius: 0;
+  --bar-chart-axis: var(--sky-line);
+  --chart-series-1: #aec0d5;
+  --chart-series-2: #8f9fe6;
+}
+
+/* --- Page: cold mist behind the menu ------------------------------------- */
+html[data-theme="skyrim"] {
+  background:
+    radial-gradient(ellipse 70% 50% at 25% 0%, rgba(120, 132, 140, 0.22), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 85% 100%, rgba(80, 92, 100, 0.2), transparent 70%),
+    linear-gradient(180deg, #1a1d1f, var(--bg) 60%);
+  background-color: var(--bg);
+  font-family: var(--font);
+}
+html[data-theme="skyrim"] body { font-size: 1.04rem; letter-spacing: 0.02em; }
+
+/* --- Voice: condensed, white, uppercase titles with no tracking ---------- */
+html[data-theme="skyrim"] :is(h1, h2, h3) {
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+html[data-theme="skyrim"] .stat-value { font-family: var(--font); font-weight: 400; }
+html[data-theme="skyrim"] h4 { font-weight: 400; color: #ffffff; }
+html[data-theme="skyrim"] :focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+/* Panel title: white caps with the MCM section rule running out to the
+   right, ending in a small open diamond. */
+html[data-theme="skyrim"] .panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.05em;
+  font-weight: 400;
+  text-transform: uppercase;
+  border-bottom: 0;
+}
+html[data-theme="skyrim"] .panel-header::after {
+  content: "";
+  flex: 1;
+  height: 0.6em;
+  background:
+    linear-gradient(var(--sky-line), var(--sky-line)) left center / calc(100% - 0.7em) 1px no-repeat,
+    var(--sky-diamond) right center / 0.6em 0.6em no-repeat;
+}
+html[data-theme="skyrim"] .modal-header {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1.2em;
+  font-weight: 400;
+  border-bottom: 1px solid var(--sky-line);
+  margin-inline: 0;
+}
+
+/* --- Tabs: the chevron-flanked title bar ---------------------------------- *
+ * The active tab is framed by small open chevrons, the rest sit dimmed. */
+html[data-theme="skyrim"] .tabs { border-bottom-color: var(--sky-line); gap: 0.25rem; }
+html[data-theme="skyrim"] .tab { font-size: 1em; text-transform: uppercase; }
+html[data-theme="skyrim"] .tab.is-active::before { content: "\25C1\00a0"; font-size: 0.7em; vertical-align: 0.12em; }
+html[data-theme="skyrim"] .tab.is-active::after { content: "\00a0\25B7"; font-size: 0.7em; vertical-align: 0.12em; }
+html[data-theme="skyrim"] .tabs[aria-orientation="vertical"] > .tab { text-align: end; }
+html[data-theme="skyrim"] .tabs[aria-orientation="vertical"] > .tab.is-active { border-inline-end-color: var(--sky-line-hi); }
+html[data-theme="skyrim"] .nav-item.is-active { text-shadow: 0 0 0.5rem rgba(255, 255, 255, 0.5); }
+
+/* --- Selected row: the band ends in an arrow tip (SkyUI) ------------------ */
+html[data-theme="skyrim"] .table td { font-size: 1.05em; }
+html[data-theme="skyrim"] .table tr.is-selected td:last-child {
+  clip-path: polygon(0 0, calc(100% - 0.7em) 0, 100% 50%, calc(100% - 0.7em) 100%, 0 100%);
+  padding-inline-end: 1.4em;
+}
+html[data-theme="skyrim"] .table td:is([data-num], .num, .is-num),
+html[data-theme="skyrim"] .table th:is([data-num], .num, .is-num) { text-align: end; }
+
+/* --- Bars: diamond end caps on progress, meters and sliders --------------- */
+html[data-theme="skyrim"] :is(.progress, .meter:not(.meter-v)) {
+  clip-path: polygon(0.45rem 0, calc(100% - 0.45rem) 0, 100% 50%, calc(100% - 0.45rem) 100%, 0.45rem 100%, 0 50%);
+  padding-inline: 0.45rem;
+}
+html[data-theme="skyrim"] .meter-fill { box-shadow: inset 0 0.18rem 0 rgba(255, 255, 255, 0.28), inset 0 -0.15rem 0 rgba(0, 0, 0, 0.35); }
+
+/* --- Buttons --------------------------------------------------------------- */
+html[data-theme="skyrim"] .btn:hover { text-shadow: 0 0 0.4rem rgba(255, 255, 255, 0.6); }
+
+/* --- Diamond checkboxes (MCM) ---------------------------------------------- */
+html[data-theme="skyrim"] .checkbox {
+  appearance: none;
+  border: 1px solid var(--sky-line-hi);
+  transform: rotate(45deg) scale(0.78);
+  cursor: pointer;
+}
+html[data-theme="skyrim"] .checkbox:checked {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 3px #0b0b0a;
+}
+html[data-theme="skyrim"] .switch-thumb { transform-origin: center; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+
+/* --- Badges: SkyUI's boxed favourites-group numbers ----------------------- */
+html[data-theme="skyrim"] .badge { font-weight: 400; letter-spacing: 0.04em; }
+
+/* --- Layout ----------------------------------------------------------------- *
+ * The menu screen: a chevron-capped title bar inset across the top, a slim
+ * smoke column on the left with the vanilla category divider (a vertical
+ * silver rule with a diamond on it), the list in the middle, and the
+ * key-hint strip along the bottom edge. */
+html[data-theme="skyrim"] {
+  --app-bg: transparent;
+  --app-columns: 3.25rem minmax(0, 1fr);
+  --app-gap: 0;
+  --app-padding: 0;
+  --app-bar-bg: linear-gradient(90deg, rgba(10, 10, 9, 0.95), rgba(30, 30, 27, 0.92) 50%, rgba(10, 10, 9, 0.95));
+  --app-bar-fg: var(--text);
+  --app-bar-rule: transparent;
+  --app-bar-rule-width: 0;
+  --app-bar-height: 2.8rem;
+  --app-bar-padding: 0.3rem 2.5rem;
+  --app-rail-display: flex;
+  --app-rail-empty-display: flex;
+  --app-rail-bg:
+    var(--sky-diamond) right 0 top 6rem / 0.75rem 0.75rem no-repeat,
+    linear-gradient(var(--sky-line), var(--sky-line)) right 0.37rem top 0 / 1px 100% no-repeat,
+    linear-gradient(90deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.25));
+  --app-main-bg: transparent;
+  --app-main-padding: 1.5rem 2rem;
+  --app-status-bg: linear-gradient(90deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.85));
+  --app-status-fg: var(--muted);
+  --app-status-rule: var(--sky-line);
+  --app-status-padding: 0.45rem 1.25rem;
+}
+html[data-theme="skyrim"] .app-bar {
+  margin: 0.6rem 1rem 0;
+  box-shadow: inset 0 1px 0 var(--sky-line), inset 0 -1px 0 var(--sky-line);
+  clip-path: polygon(1.4rem 0, calc(100% - 1.4rem) 0, 100% 50%, calc(100% - 1.4rem) 100%, 1.4rem 100%, 0 50%);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 1.05rem;
+}
+html[data-theme="skyrim"] .app-bar { --nav-item-fg: #c4c4c1; }
+html[data-theme="skyrim"] .app-rail { overflow: visible; }
+html[data-theme="skyrim"] .app-status kbd { font-family: var(--font); }
+
+/* --- Print ------------------------------------------------------------------ */
+@media print {
+  html[data-theme="skyrim"] { background: #ffffff; }
+  html[data-theme="skyrim"] {
+    --panel-bg: #ffffff;
+    --panel-shadow: none;
+    --app-bar-bg: #ffffff;
+    --app-rail-bg: none;
+    --app-status-bg: #ffffff;
+  }
+  html[data-theme="skyrim"] .app-bar,
+  html[data-theme="skyrim"] :is(.progress, .meter) { clip-path: none; }
+}

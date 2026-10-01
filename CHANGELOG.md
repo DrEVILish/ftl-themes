@@ -5,6 +5,55 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **New theme: `westworld`.** The Delos tablet and Mesa control-room UI (by Chris Kieffer): cyan line-work on slate e-paper, condensed caps in the vendored Antonio, `[bracketed]` values. The shell becomes a tri-fold tablet of rounded panes with a right-hand rail of segmented attribute sliders, under a red cove-light status strip. Meters and progress bars are segmented ladders. 14 stills plus RESEARCH.md in `references/westworld/`. Self-scored fidelity 7/10.
+
+- **New theme: `silo`** (Apple TV+'s Silo). Teal phosphor on CRT glass inside a steel monitor bezel; PACT-style bar with auto-numbered nav between pale-yellow double rules, pale-teal title/status plates, yellow-outline selection. Ships a `legacy` variant (Territory Studio's gold S2 tablet); 15 reference stills in `references/silo/` (`legacy/` for the variant). Self-scored fidelity 7.5/10.
+
+- **New theme: `tokie`.** Black full-grain leather with saddle-stitched panel edges and gold-foil debossed Didone headings, textures CSS-only. Brushed gold for structure (spine rail, bar hinge rail, status nameplate), polished mirror gold for buttons, thumbs, the knob's watch crown and the focus ring. Watch-box layout: inset leather tray on a gold spine rail. 13 Commons references in `references/tokie/`. Self-scored fidelity 7/10.
+
+- **xmb: readable modals.** Modals, toasts and tooltips are near-opaque navy smoked glass (`--modal-bg`/`--toast-bg`/`--tooltip-bg`) over a heavier, blurred `--overlay-bg`, as on real PS3 system dialogs; page content no longer shows through an open dialog. Modal title now 12.5:1 (was as low as 4.1), `.field-error` 6.2:1 (was 2.8). Four PS3 user's-guide captures added to `references/xmb/`.
+
+- **New theme: `skyrim`** (The Elder Scrolls V: Skyrim + SkyUI). Smoke-black panels in thin silver rules with knotwork corners, a chevron-capped title bar, SkyUI column tables with an arrow-tipped selected band, diamond-capped health/magicka/stamina bars and MCM diamond toggles. 15 references in `references/skyrim/`. Self-scored fidelity 7/10.
+
+- **New theme: `cassette-futurism`** (light). 1970s-80s retro-future hardware: beige housing, dark recessed VFD/LED windows, sculpted TR-808-coloured keycaps, Dymo-tape badges, a yellow/orange/red/brown stripe and a right-hand ribbed vent rail. `.switch` is a chrome bat-handle toggle, not a pill. Readouts use the newly vendored DSEG7 (OFL, `assets/fonts/`). 16 Commons references. Self-scored fidelity 7/10.
+
+- **New theme: `liquid-glass`** (iOS 26 / macOS Tahoe 26), with a `dark` variant. Translucent capsule controls (blur + saturate, four-layer specular rim) over a CSS Tahoe-style wallpaper; content cards are frosted with no rim. Inset full-height glass sidebar, a frosted window, and sticky capsule toolbar and tab bar that content scrolls under. Honours `prefers-reduced-transparency`. 14 Apple Newsroom references (`dark/` for the variant). Self-scored fidelity 7/10.
+
+- **check: palette variants may declare their own `color-scheme`.** The one-`color-scheme` rule now counts only the theme's root block, so a `dark` variant can say `color-scheme: dark;` instead of working around the lint.
+
+- **New theme: `ios-flat`** (iOS 7 to 18, the flat era between `ios-skeuomorphic` and `liquid-glass`), with a `dark` variant on the iOS 13+ dark system colours. A frosted large-title nav bar (page nav as a segmented control) over grouped grey, inset grouped cards under uppercase section headers, a frosted tab-bar status strip, the green 51x31 switch, round checkmarks, centred alerts and iMessage bubbles. systemBlue is deepened to `#0071E3` for 4.5:1 under white text. 14 archived Apple HIG references. Self-scored fidelity 7/10.
+
+- **New theme: `ios-skeuomorphic`** (iPhone OS 1 to iOS 6). Glossy blue nav bar with an embossed title over a black status strip, the Settings pinstripe behind rounded grouped cells, the black glossy tab bar, ON/OFF lettered switches, the navy alert view, iPad popover frame, red SpringBoard badge and iOS 5 banner toasts. CSS-only linen, legal pad, felt and stitched leather. The nav bar gradient is darker than the real `#bdcbdc` so the white title holds 4.5:1. 15 references. Self-scored fidelity 8/10.
+
+- **`game-ui` category** in `themes/categories.json` (for `skyrim`); `gallery.html` now labels `game-ui`, `design-system` and `app-shell`.
+
+- **References: Star Trek set culled and renamed (972 → 391 images).** Every
+  capture in `references/lcars/` was tagged with the 1-3 UI components it
+  uniquely shows and scored 0-10. Deleted: score < 5 (132), near-duplicates
+  (28, the larger file kept), and images whose components a better image
+  in the same gallery already shows (421). Files are now named by their
+  components in camelCase, `-` between them (`elbowFrame-pillButton.webp`);
+  `INDEX.md` lists each one's score and original lcars.org.uk number.
+
+- **References: one folder per theme, one subfolder per variant.**
+  `references/lcars/lcars-org-uk/` is gone. Its LCARS galleries moved into
+  `lcars/` (default look), `lcars/tng/`, `lcars/tng-films/` and
+  `lcars/voyager/` (DS9 panels). The Picard capture is in `lcars/picard/`.
+  The non-LCARS Trek galleries now have their own folders:
+  `references/star-trek-{alien,enterprise,tos,kelvin}/`. Variant-only images
+  moved into variant folders for `weyland-yutani` (`mother`, `emergency`,
+  `earth`), `winxp-luna` (`royale`, `royale-noir`, `zune`, `embedded`;
+  filename prefixes dropped) and `prometheus` (`suit`). Every doc that names
+  these files is updated.
+
+- **`docs/theme-backlog.md` deleted.** Docs that pointed to it now say
+  plainly what is not done yet.
+
+- **GitHub Pages serves `main` again.** Pages was set to deploy from a
+  workflow, and there have been no workflows since CI was removed. It now
+  deploys straight from the branch root. `index.html` redirects to
+  `gallery.html`, and `.nojekyll` makes Pages skip Jekyll.
+
 - **References: the rest of lcars.org.uk.** The Alien-species, Enterprise
   (NX-01), TOS/TOS-films and Star Trek (2009) galleries are captured and
   component-tagged in `references/lcars/lcars-org-uk/` (446 screens,

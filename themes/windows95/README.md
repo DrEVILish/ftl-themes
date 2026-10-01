@@ -57,8 +57,8 @@ the app up.
 ## Known compromise
 
 MS Sans Serif is not a web font and is absent from modern systems, so the
-stack falls back to Tahoma — its closest ubiquitous relative. Vendoring an
-openly-licensed pixel face is tracked in `docs/theme-backlog.md`.
+stack falls back to Tahoma — its closest ubiquitous relative. No
+openly-licensed pixel face is vendored yet.
 
 ## Tell-tales of an inauthentic result
 
@@ -78,7 +78,7 @@ openly-licensed pixel face is tracked in `docs/theme-backlog.md`.
 
 ## Typography
 
-`--font` is `Tahoma, "MS Sans Serif", "Segoe UI", sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on most machines Tahoma is what renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. Vendoring a pixel face is tracked in `docs/theme-backlog.md`.
+`--font` is `Tahoma, "MS Sans Serif", "Segoe UI", sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on most machines Tahoma is what renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
 
 ## Contrast honesty
 

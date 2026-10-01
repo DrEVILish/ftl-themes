@@ -174,7 +174,7 @@ kept, so the theme can be checked against it rule by rule.
 
 ## 11. Patterns across the lcars.org.uk panel collection
 
-512 screen-used LCARS panels captured and tagged in `lcars-org-uk/INDEX.md` (#1–#512); the same index also holds 446 non-LCARS Trek screens (alien species, Enterprise NX-01, TOS, Star Trek 2009) as #513–#958, which the patterns below do not draw on.
+Drawn from the 512 screen-used LCARS panels captured from lcars.org.uk (#1–#512). After the 2026-10-01 cull, the 237 kept are in `tng/`, `tng-films/`, `voyager/` (DS9) and this folder, listed with scores in `INDEX.md`. The 446 non-LCARS Trek screens (#513–#958) now live in `references/star-trek-alien/`, `star-trek-enterprise/`, `star-trek-tos/` and `star-trek-kelvin/`, and the patterns below do not draw on them.
 What recurs, and therefore belongs in the theme:
 
 - **Elbow + segmented bars** frame almost every full screen (≈70%); the
@@ -200,18 +200,18 @@ What recurs, and therefore belongs in the theme:
   http://www.lcars-terminal.de/tutorial/manifesto.htm — sections 1, 3, 5,
   9 above (its "LCARS programming language" part is out of scope here).
 - *LCARS Design Evolution and Principles* (study, Scribd 907412350) —
-  "Appearance" page captured as `lcars-study-appearance.webp`; the full
+  "Appearance" page captured as `buttonGrid-pillButton-dial.webp`; the full
   document is behind Scribd's wall and was not read.
-- Captures in this folder: `picard-communications-tourangeau.jpg`
-  (waveforms, Picard palette), `tng-msd-panel-meters.jpg` (frames,
-  pills, data rows, vertical gauges), `lower-decks-sickbay-biobed.webp`
-  (Lower Decks palette, ECG bracket, readout pills),
-  `lcars-study-appearance.webp` (TNG panels 1987–2000), plus the earlier
-  captures (`Lcars_wallpaper.svg.webp` — the TNG split frame;
-  `Starship_LCARS_Interface_E_900_for_Site.webp` — Sovereign-class
-  bracket frames and titles in bar breaks).
-- lcars.org.uk panel galleries (TNG, TNG films, DS9, plus the Alien,
-  Enterprise, TOS and Star Trek 2009 galleries) and lcars.htm, captured
-  into `lcars-org-uk/` with a component index.
+- Captures in this folder are named by the components they show (see
+  `INDEX.md`, which also maps every old filename):
+  `picard/graph-dial-dataTable.jpg` (waveforms, Picard palette),
+  `buttonGrid-numberColumns-pillButton.jpg` (frames, pills, data rows),
+  `graph-gauge-alertState.webp` (Lower Decks palette, ECG bracket),
+  `elbowFrame-gauge-bracketFrame.webp` (the TNG split frame),
+  `shipCutaway-textBlock.webp` (Sovereign-class bracket frames and titles
+  in bar breaks).
+- lcars.org.uk panel galleries (TNG, TNG films, DS9) and lcars.htm, captured
+  into `tng/`, `tng-films/`, `voyager/` and this folder, with a component
+  index in `INDEX.md`.
 - Other working examples: https://www.thelcars.com/ ,
   https://github.com/MichalSvatos/pi-hole-lcars-next-gen

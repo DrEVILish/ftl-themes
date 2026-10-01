@@ -1,0 +1,382 @@
+/* ftl-themes: Westworld
+ * Theme-Name: Westworld
+ * Description: The Delos tablet and Mesa control-room UI from HBO's Westworld: cyan line-work on slate e-paper, condensed bracketed labels, segmented attribute sliders, and a tri-fold tablet shell under the control room's red cove light.
+ *
+ * Reference: Chris Kieffer's on-screen graphics for Westworld (S1-S2),
+ * interviewed by Tobias van Schneider on DESK, plus wiki stills. See
+ * references/westworld/RESEARCH.md for every frame and the sampled hexes.
+ *
+ * Fonts: labels use Antonio (OFL, already vendored in assets/fonts for
+ * lcars) as the closest free match to the tablets' condensed DIN-like caps;
+ * readouts use Share Tech Mono (OFL, vendored for prometheus). Body copy
+ * stays a system sans, because the tablets never set paragraphs and a
+ * condensed face at body size is hard to read.
+ */
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+html[data-theme="westworld"] {
+  color-scheme: dark;
+  --bg: #0f191d;           /* the tablet's dark e-paper behind content */
+  --surface: #17252b;      /* sampled slate #1e2e33 under set lighting */
+  --surface-2: #1f323a;
+  --border: #3a5c66;
+  --hairline: #24383f;
+  --text: #d6e6ea;
+  --muted: #8eaab2;
+  --accent: #4fc8dc;       /* the tablet cyan (sampled #3f96a6-#5c9ba4, lifted to emitted brightness) */
+  --accent-2: #a5d65a;     /* vitals lime: HR 111, the radial dial's outer bars */
+  --danger: #ff5a4f;       /* the S2 corrupted-tablet red */
+  --success: #8fd65a;
+  --warning: #f2b632;      /* node-graph amber on the diagnostic tablet */
+  --on-accent: #071014;
+  --on-danger: #071014;
+  --on-success: #071014;
+  --danger-text: #ff7a70;
+  --success-text: #9fe06a;
+  --warning-text: #f2b632;
+  --radius: 0.3rem;
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --font-mono: "Share Tech Mono", "DejaVu Sans Mono", Consolas, monospace;
+  --flare: #c8102e;        /* the Mesa control room's red cove light; status rule only */
+
+  --ww-label: Antonio, "Bahnschrift SemiCondensed", "DIN Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
+  --ww-deep: #070b0d;      /* the dark room around the tablet */
+  --ww-well: #0b1417;      /* recessed fields and tracks */
+  --ww-tint: rgba(79, 200, 220, 0.12);
+  --ww-tint-hi: rgba(79, 200, 220, 0.22);
+  --ww-glow: rgba(79, 200, 220, 0.45);
+  --ww-line-hi: #4f7c87;
+  --density: 0.95;
+  --icon-stroke-width: 1.6;
+
+  --label-transform: uppercase;
+  --label-tracking: 0.08em;
+
+  --focus: var(--accent);
+  --focus-ring: 0 0 0.6rem var(--ww-glow);
+
+  /* Buttons: the END / HOLD / UPLOAD caps: 1px cyan outline over a cyan tint. */
+  --btn-bg: var(--ww-tint);
+  --btn-fg: var(--text);
+  --btn-border: var(--ww-line-hi);
+  --btn-border-hover: var(--accent);
+  --btn-bg-hover: var(--ww-tint-hi);
+  --btn-shadow: none;
+  --btn-shadow-hover: 0 0 0.55rem var(--ww-glow);
+  --btn-transform: uppercase;
+  --btn-tracking: 0.09em;
+  --btn-weight: 700;
+  --btn-radius: 0.3rem;
+  --btn-padding: calc(0.4em * var(--density)) calc(1.1em * var(--density));
+
+  --input-bg: var(--ww-well);
+  --input-fg: var(--text);
+  --input-border: var(--border);
+  --input-radius: 0.2rem;
+  --input-placeholder: #6f8c95;
+  --input-caret: var(--accent);
+  --input-addon-bg: var(--surface-2);
+  --input-addon-fg: var(--muted);
+
+  /* Panels: thin slate line-work with the matrix window's cyan corner tab. */
+  --panel-bg:
+    linear-gradient(225deg, var(--accent) 0 50%, transparent 50%) top right / 0.7rem 0.7rem no-repeat,
+    var(--surface);
+  --panel-border: var(--border);
+  --panel-radius: 0.4rem;
+  --panel-shadow: none;
+  --panel-header-bg: transparent;
+  --panel-header-fg: var(--accent);
+  --card-bg: var(--surface);
+  --card-border: var(--border);
+  --card-radius: 0.4rem;
+  --card-shadow: none;
+
+  --modal-bg: var(--surface);
+  --modal-border: var(--accent);
+  --modal-header-bg: var(--surface-2);
+  --modal-header-fg: var(--accent);
+  --modal-radius: 0.5rem;
+  --modal-shadow: 0 0 0 1px #000, 0 0 2rem rgba(79, 200, 220, 0.18), 0 16px 40px rgba(0, 0, 0, 0.7);
+  --overlay-bg: rgba(5, 9, 11, 0.78);
+  --overlay-blur: blur(2px);
+  --dropdown-bg: var(--surface-2);
+  --dropdown-radius: 0.3rem;
+
+  --table-head-bg: transparent;
+  --table-head-fg: var(--accent);
+  --table-head-transform: uppercase;
+  --table-head-tracking: 0.08em;
+  --table-head-rule: var(--accent);
+  --table-head-rule-width: 1px;
+  --table-rule: var(--hairline);
+  --row-hover-bg: var(--ww-tint);
+  --row-selected-bg: var(--ww-tint-hi);
+  --row-selected-fg: var(--text);
+  --row-active-marker: inset 3px 0 0 var(--accent);
+
+  /* Nav and tabs: the CODE / HOSTS / SATELLITE chip row. */
+  --nav-bg: var(--surface);
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--muted);
+  --nav-item-fg-active: var(--accent);
+  --nav-item-bg-active: var(--ww-tint-hi);
+  --nav-item-radius: 0.25rem;
+  --tab-fg: var(--muted);
+  --tab-fg-active: var(--accent);
+  --tab-bg-active: var(--ww-tint-hi);
+  --tab-border-active: var(--accent);
+  --tab-underline-active: var(--accent);
+  --tab-radius: 0.25rem;
+  --segmented-bg: var(--ww-well);
+  --segmented-border: var(--border);
+  --segmented-radius: 0.3rem;
+  --segmented-item-radius: 0.2rem;
+  --segmented-item-bg-active: var(--accent);
+  --segmented-item-fg-active: var(--on-accent);
+
+  --badge-radius: 0.2rem;
+  --badge-border: var(--ww-line-hi);
+  --badge-bg: var(--surface-2);
+  --badge-fg: var(--text);
+  --lamp-radius: 50%;
+  --lamp-glow: 0 0 0.4rem currentColor;
+  --lamp-off: var(--ww-well);
+  --lamp-border: var(--ww-line-hi);
+
+  --switch-radius: 0.3rem;
+  --switch-thumb-radius: 0.2rem;
+  --switch-bg: var(--ww-well);
+  --switch-border: var(--ww-line-hi);
+  --switch-thumb-bg: var(--muted);
+  --switch-bg-on: var(--ww-tint-hi);
+  --switch-border-on: var(--accent);
+  --switch-thumb-bg-on: var(--accent);
+  --slider-bg: var(--ww-well);
+  --slider-border: var(--border);
+  --slider-radius: 0;
+  --slider-thumb-radius: 0.15rem;
+  --slider-thumb-bg: var(--accent);
+  --slider-thumb-shadow: 0 0 0.45rem var(--ww-glow);
+
+  /* Progress and meters: the attribute matrix's stacked-square sliders. */
+  --progress-bg: var(--ww-well);
+  --progress-border: var(--border);
+  --progress-radius: 0;
+  --progress-fill: repeating-linear-gradient(90deg, var(--accent) 0 0.5rem, transparent 0.5rem 0.65rem);
+  --indicator-fg: var(--accent);
+  --indicator-track: var(--hairline);
+  --meter-track: var(--ww-well);
+  --meter-border: var(--border);
+  --meter-radius: 0;
+  --meter-thickness: 0.8rem;
+  --meter-low: var(--accent);
+  --meter-mid: var(--accent-2);
+  --meter-high: var(--danger);
+  --meter-peak-fg: var(--text);
+  --meter-seg: 0.5rem;
+  --meter-seg-gap: 0.18rem;
+  --meter-unlit: 0.2;
+
+  /* Readouts: the HR 111 / SpO2 92 vitals: mono numerals, faint glow. */
+  --readout-bg: transparent;
+  --readout-fg: var(--accent);
+  --readout-font: var(--font-mono);
+  --readout-weight: 400;
+  --readout-tracking: 0.02em;
+  --readout-border-width: 0;
+  --readout-unit-fg: var(--muted);
+  --readout-glow: 0 0 0.5rem var(--ww-glow);
+
+  --tooltip-bg: var(--ww-deep);
+  --tooltip-fg: var(--accent);
+  --tooltip-border: var(--accent);
+  --tooltip-radius: 0.2rem;
+  --toast-bg: var(--surface-2);
+  --toast-fg: var(--text);
+  --toast-radius: 0.4rem;
+  --toast-shadow: 0 0 0 1px var(--border), 0 10px 26px rgba(0, 0, 0, 0.6);
+  --alert-bg: var(--surface);
+  --alert-fg: var(--text);
+  --alert-radius: 0.3rem;
+  --alert-border-width: 1px;
+  --kbd-bg: var(--ww-well);
+  --kbd-border: var(--ww-line-hi);
+  --kbd-radius: 0.25rem;
+  --code-bg: var(--ww-well);
+  --code-fg: var(--accent-2);
+  --selection-bg: var(--accent);
+  --selection-fg: #071014;
+  --scrollbar-thumb: var(--border);
+  --scrollbar-thumb-hover: var(--accent);
+  --scrollbar-track: var(--ww-deep);
+  --avatar-radius: 50%;
+  --pagination-item-radius: 0.25rem;
+  --pagination-item-bg-active: var(--accent);
+  --pagination-item-fg-active: var(--on-accent);
+  --skeleton-bg: var(--surface-2);
+
+  --message-bg: var(--surface-2);
+  --message-border: var(--border);
+  --message-radius: 0.4rem;
+  --message-own-bg: var(--ww-tint);
+  --message-own-border: var(--accent);
+  --attachment-bg: var(--ww-well);
+  --attachment-border: var(--border);
+  --attachment-radius: 0.3rem;
+  --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 0.45rem, transparent 0.45rem 0.6rem);
+  --bar-chart-bar-alt: repeating-linear-gradient(0deg, var(--accent-2) 0 0.45rem, transparent 0.45rem 0.6rem);
+  --bar-chart-radius: 0;
+  --bar-chart-axis: var(--accent);
+  --bar-chart-axis-width: 1px;
+}
+
+/* --- Voice: condensed caps for every label ------------------------------- */
+html[data-theme="westworld"] :is(h1, h2, h3, h4, .btn, .nav-brand, .nav-item, .tab, .segmented > *,
+  .panel-header, .modal-header, th, .badge, .label, .app-status) {
+  font-family: var(--ww-label);
+}
+html[data-theme="westworld"] :is(.nav-item, .tab, .segmented > *, .modal-header) {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+html[data-theme="westworld"] :is(h1, h2, h3, h4) {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 400;
+  color: var(--text);
+}
+html[data-theme="westworld"] h1 { font-size: 2rem; }
+html[data-theme="westworld"] h2 { font-size: 1.45rem; }
+html[data-theme="westworld"] h3 { font-size: 1.1rem; letter-spacing: 0.1em; }
+html[data-theme="westworld"] .panel-header {
+  font-size: 0.95em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-bottom-color: var(--hairline);
+}
+/* A short cyan rule leads each panel title, like the matrix window's tab. */
+html[data-theme="westworld"] .panel-header::before {
+  content: "";
+  display: inline-block;
+  width: 1.1em;
+  height: 2px;
+  margin-right: 0.6em;
+  vertical-align: middle;
+  background: var(--accent);
+}
+html[data-theme="westworld"] .badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Bracketed values: "[14] BULK APPERCEPTION", "SECTOR [17]". */
+html[data-theme="westworld"] .badge::before { content: "["; margin-right: 0.15em; opacity: 0.75; }
+html[data-theme="westworld"] .badge::after { content: "]"; margin-left: 0.15em; opacity: 0.75; }
+html[data-theme="westworld"] :is(.input, .select, .textarea) { font-family: var(--font-mono); }
+html[data-theme="westworld"] .readout { font-family: var(--font-mono); }
+html[data-theme="westworld"] :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+html[data-theme="westworld"] .btn-primary { --btn-shadow: 0 0 0.5rem var(--ww-glow); }
+
+/* --- Layout: the tri-fold tablet ----------------------------------------- *
+ * The shell is a Delos tri-fold tablet lying in the dark control room:
+ * bar, main and rail are separate slate leaves with dark folds between
+ * them. The rail sits on the RIGHT leaf, as on the attribute-matrix
+ * tablet, painted as three segmented attribute sliders. The main leaf
+ * carries a faint centre crease. The status strip is the room itself,
+ * under the red cove light. */
+html[data-theme="westworld"] {
+  --app-bg: var(--ww-deep);
+  --app-areas: "bar bar" "main rail" "status status";
+  --app-columns: minmax(0, 1fr) 5.1rem;
+  --app-gap: 0.45rem;
+  --app-padding: 0.45rem;
+  --app-bar-bg: var(--surface);
+  --app-bar-fg: var(--text);
+  --app-bar-rule: var(--accent);
+  --app-bar-rule-width: 1px;
+  --app-bar-radius: 0.6rem 0.6rem 0.2rem 0.2rem;
+  --app-bar-height: 3.25rem;
+  --app-bar-padding: 0.4rem 1rem;
+  --app-bar-font: var(--ww-label);
+  --app-rail-display: block;
+  --app-rail-empty-display: block;
+  --app-rail-radius: 0.2rem 0.6rem 0.2rem 0.2rem;
+  /* Three attribute sliders in a fixed 26rem stack at the top of the
+   * leaf (rem-sized, so the lit share does not depend on page height). */
+  --app-rail-bg:
+    linear-gradient(45deg, transparent 50%, var(--accent-2) 50%) 0.45rem 10.5rem / 0.5rem 0.5rem no-repeat,
+    linear-gradient(45deg, transparent 50%, var(--accent) 50%) 1.95rem 15.5rem / 0.5rem 0.5rem no-repeat,
+    linear-gradient(45deg, transparent 50%, var(--accent) 50%) 3.45rem 6.5rem / 0.5rem 0.5rem no-repeat,
+    repeating-linear-gradient(0deg, var(--accent-2) 0 0.55rem, transparent 0.55rem 0.8rem) 1rem 11rem / 0.6rem 16rem no-repeat,
+    repeating-linear-gradient(0deg, var(--accent) 0 0.55rem, transparent 0.55rem 0.8rem) 2.5rem 16rem / 0.6rem 11rem no-repeat,
+    repeating-linear-gradient(0deg, var(--accent) 0 0.55rem, transparent 0.55rem 0.8rem) 4rem 7rem / 0.6rem 20rem no-repeat,
+    repeating-linear-gradient(0deg, #24404a 0 0.55rem, transparent 0.55rem 0.8rem) 1rem 1rem / 0.6rem 26rem no-repeat,
+    repeating-linear-gradient(0deg, #24404a 0 0.55rem, transparent 0.55rem 0.8rem) 2.5rem 1rem / 0.6rem 26rem no-repeat,
+    repeating-linear-gradient(0deg, #24404a 0 0.55rem, transparent 0.55rem 0.8rem) 4rem 1rem / 0.6rem 26rem no-repeat,
+    var(--surface);
+  --app-main-bg:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(0, 0, 0, 0.35) calc(50% - 1px) 50%, rgba(214, 230, 234, 0.05) 50% calc(50% + 1px), transparent calc(50% + 1px)),
+    var(--bg);
+  --app-main-radius: 0.2rem;
+  --app-main-padding: 1.5rem;
+  --app-status-bg: var(--ww-deep);
+  --app-status-fg: var(--muted);
+  --app-status-rule: var(--flare);
+  --app-status-radius: 0;
+  --app-status-padding: 0.35rem 1rem;
+}
+html[data-theme="westworld"] .app-rail { border: 1px solid var(--hairline); margin-block: 0; }
+html[data-theme="westworld"] .app-main { border: 1px solid var(--hairline); }
+html[data-theme="westworld"] .app-bar {
+  --nav-bg: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+/* The DELOS wordmark plate: an outlined pill. */
+html[data-theme="westworld"] .app-bar .nav-brand {
+  border: 2px solid var(--text);
+  border-radius: 999px;
+  padding: 0.05em 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+/* The red cove light: a 2px glowing line, nothing else is red. */
+html[data-theme="westworld"] .app-status {
+  border-top-width: 2px;
+  box-shadow: 0 -0.35rem 0.8rem -0.35rem rgba(200, 16, 46, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+}
+
+@media print {
+  html[data-theme="westworld"] {
+    --readout-glow: none;
+    --focus-ring: none;
+    --panel-bg: #ffffff;
+    --app-main-bg: #ffffff;
+  }
+  html[data-theme="westworld"] .app-status { box-shadow: none; }
+}

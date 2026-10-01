@@ -172,7 +172,7 @@ The palette follows the trekcolors/Okuda hexes, so almost nothing was lifted to 
 
 ## Reference status
 
-`references/lcars/` holds 10 captures (`475c60fc…jpg`, `Lcars_wallpaper.svg.webp`, `README-banner.png`, `README-sweep.png`, `Starship_LCARS_Interface_E_900_for_Site.webp`, `Tuvok-LCARS.webp`, `images.jpg`, `images-1.jpg`, `images-2.jpg`, `screenshot-1-500x300.png`) plus `RESEARCH.md`. The 2026-09-26 audit there calls them pure LCARS diagrams and schematics (pill blocks, elbows, master-systems displays), no people. `RESEARCH.md` records no hex values and no per-file mapping, so the candy hexes rest on the trekcolors palette (cited above), not on sampling these images. The two `README-*.png` files are not described in `RESEARCH.md`; their provenance is unverified.
+`references/lcars/` holds 237 captures plus `RESEARCH.md`: the default (TNG) look at the top level and in `tng/` and `tng-films/`, the `voyager` variant's DS9 panels in `voyager/`, and the `picard` variant's capture in `picard/`. Every file is named by the UI components it shows (`elbowFrame-pillButton.webp`) and scored in `INDEX.md`, which also maps each old filename. No people in any of them. No hex values were sampled from these images, so the candy hexes rest on the trekcolors palette (cited above).
 
 ## Adoption
 

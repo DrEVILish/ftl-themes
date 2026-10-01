@@ -1,0 +1,485 @@
+/* ftl-themes: Silo
+ * Theme-Name: Silo
+ * Description: Apple TV+'s Silo: teal phosphor on a cramped CRT set in a chunky steel monitor bezel, pale-teal header plates, and yellow-green fills that mean "authorised / selected".
+ * Variants: legacy=The Legacy (gold tablet)
+ *
+ * Sources: references/silo/RESEARCH.md (HUDS+GUIS frame grabs of the IT
+ * hard-drive browser, the Relic Database, the PACT reproduction-clearance
+ * terminal and SiloMail; Territory Studio's Season 2 Legacy tablet for the
+ * `legacy` variant).
+ *
+ * Fonts: the on-screen face is a squared, rounded-corner techno sans (caps
+ * only) for the hard-drive/relic screens and a DIN-like grotesque for PACT.
+ * Neither is identified. Share Tech / Share Tech Mono (SIL OFL, already
+ * vendored in assets/fonts/, see NOTICE.md) are the closest open faces: the
+ * same squared counters and narrow caps.
+ *
+ * Colour rule: teal is the phosphor (all text and lines). Yellow-green is
+ * the only fill and means "granted / selected / primary". A pale yellow
+ * outline box is selection and focus. Amber is reserved for numerals in
+ * the countdown readouts and for warnings.
+ */
+@font-face {
+  font-family: "Share Tech";
+  src: url("assets/fonts/ShareTech-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+html[data-theme="silo"] {
+  color-scheme: dark;
+  --bg: #010d0a;           /* the CRT glass, a green-black (sampled #011d15, darkened) */
+  --surface: #03160f;
+  --surface-2: #062219;
+  --border: #1c8a72;       /* teal rule lines (sampled #0a6950..#268f6c) */
+  --hairline: #0c3a2e;
+  --text: #6fe8cc;         /* phosphor teal (sampled #28c6aa core, lifted for bloom) */
+  --muted: #3fb69a;
+  --accent: #b9dc78;       /* yellow-green "JUDICIAL: SIMS" band / capacity bar (sampled #95c26f) */
+  --accent-2: #e6dc8c;     /* pale yellow: selection outline, the PACT double rules */
+  --danger: #ff6b55;
+  --success: #43e08f;
+  --warning: #e5a93c;      /* amber of the SiloMail VIEW key */
+  --danger-text: #ff8a76;
+  --success-text: #5ce89f;
+  --warning-text: #f0b74e;
+  --on-accent: #06201a;
+  --on-danger: #1a0602;
+  --on-success: #021a0e;
+  --radius: 3px;
+  --font: "Share Tech", "Eurostile", "DIN Alternate", "Bahnschrift", "Arial Narrow", sans-serif;
+  --font-mono: "Share Tech Mono", "Lucida Console", "DejaVu Sans Mono", Consolas, monospace;
+  --flare: #e5a93c;
+  --link: #8ff5dc;
+  --focus: var(--accent-2);
+  --focus-ring: 0 0 0.5rem rgba(230, 220, 140, 0.45);
+
+  /* Theme hooks; the legacy variant redefines these. */
+  --silo-plate: #8fd3cc;    /* pale teal header plate (sampled #88cfcb / #83aba9) */
+  --silo-plate-fg: #052019;
+  --silo-bezel: #2b302b;    /* painted steel monitor housing */
+  --silo-bezel-hi: #3d433c;
+  --silo-glow: rgba(40, 198, 170, 0.45);
+  --silo-tint: rgba(185, 220, 120, 0.12);
+  --silo-num: #f0c060;      /* amber countdown numerals */
+  --silo-field: #2f6b55;    /* field-box outline, olive-teal */
+  --silo-haze: rgba(40, 198, 170, 0.07);
+
+  --density: 0.9;
+  --icon-stroke-width: 1.8;
+  --label-transform: uppercase;
+  --label-tracking: 0.12em;
+
+  /* Buttons: outlined keys with tracked caps (CLEAR ALL / EDIT / SEARCH). */
+  --btn-bg: transparent;
+  --btn-fg: var(--text);
+  --btn-border: var(--border);
+  --btn-border-width: 1px;
+  --btn-border-hover: var(--accent-2);
+  --btn-bg-hover: var(--silo-tint);
+  --btn-transform: uppercase;
+  --btn-tracking: 0.16em;
+  --btn-weight: 400;
+  --btn-shadow: none;
+  --btn-shadow-hover: 0 0 0.5rem var(--silo-glow);
+  --btn-radius: 2px;
+
+  /* Inputs: the relic database's outlined field cells. */
+  --input-bg: transparent;
+  --input-fg: var(--text);
+  --input-border: var(--silo-field);
+  --input-radius: 0;
+  --input-shadow: none;
+  --input-placeholder: var(--muted);
+  --input-caret: var(--accent-2);
+  --input-addon-bg: var(--surface-2);
+  --input-addon-fg: var(--muted);
+  --select-arrow-fg: var(--text);
+
+  /* Panels: thin teal box on the glass. */
+  --panel-bg: var(--surface);
+  --panel-border: var(--border);
+  --panel-radius: 2px;
+  --panel-shadow: none;
+  --panel-header-bg: transparent;
+  --panel-header-fg: var(--text);
+  --card-bg: var(--surface);
+  --card-border: var(--border);
+  --card-radius: 2px;
+  --card-shadow: none;
+
+  /* Modal: SiloMail. A pale plate for a title, a bright heavy rounded frame. */
+  --modal-bg: var(--bg);
+  --modal-border: #bdeee4;
+  --modal-header-bg: var(--silo-plate);
+  --modal-header-fg: var(--silo-plate-fg);
+  --modal-radius: 6px;
+  --modal-shadow: 0 0 1.5rem var(--silo-glow), 0 0 0 1rem rgba(0, 0, 0, 0.35);
+  --overlay-bg: rgba(0, 6, 4, 0.82);
+  --dropdown-bg: var(--bg);
+  --dropdown-border: var(--border);
+  --dropdown-radius: 0;
+  --dropdown-item-bg-hover: var(--silo-tint);
+  --dropdown-item-fg-hover: var(--accent-2);
+  --context-menu-radius: 0;
+  --popover-radius: 0;
+  --popover-bg: var(--bg);
+  --popover-border: var(--border);
+
+  /* Tables: file listing. Selected row = the yellow outline box. */
+  --table-head-bg: transparent;
+  --table-head-fg: var(--muted);
+  --table-head-transform: uppercase;
+  --table-head-tracking: 0.14em;
+  --table-head-rule: var(--border);
+  --table-head-rule-width: 3px;
+  --table-rule: var(--hairline);
+  --row-hover-bg: rgba(111, 232, 204, 0.06);
+  --row-selected-bg: var(--silo-tint);
+  --row-selected-fg: var(--accent-2);
+  --row-active-marker: inset 3px 0 0 var(--accent-2);
+
+  --nav-bg: var(--surface);
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--muted);
+  --nav-item-fg-active: var(--accent-2);
+  --nav-item-bg-active: transparent;
+  --nav-item-radius: 2px;
+  --nav-radius: 0;
+
+  /* Tabs: the PACT soft-key row; the active key is outlined in yellow. */
+  --tab-fg: var(--muted);
+  --tab-fg-active: var(--accent-2);
+  --tab-bg-active: transparent;
+  --tab-border-active: var(--accent-2);
+  --tab-underline-active: var(--accent-2);
+  --tab-radius: 2px;
+  --segmented-radius: 2px;
+  --segmented-item-radius: 0;
+  --segmented-border: var(--border);
+  --segmented-item-bg-active: var(--accent);
+  --segmented-item-fg-active: var(--on-accent);
+
+  --badge-radius: 2px;
+  --badge-border: var(--border);
+  --badge-bg: transparent;
+  --badge-fg: var(--text);
+  --status-dot-radius: 0;
+  --lamp-radius: 2px;
+  --lamp-glow: 0 0 0.4rem currentColor;
+  --lamp-off: var(--surface-2);
+  --lamp-border: var(--silo-field);
+
+  --switch-radius: 2px;
+  --switch-thumb-radius: 1px;
+  --switch-bg: transparent;
+  --switch-border: var(--border);
+  --switch-thumb-bg: var(--muted);
+  --switch-bg-on: var(--accent);
+  --switch-border-on: var(--accent);
+  --switch-thumb-bg-on: var(--on-accent);
+  --slider-radius: 0;
+  --slider-thumb-radius: 1px;
+  --slider-thumb-bg: var(--accent-2);
+  --slider-bg: var(--surface-2);
+  --slider-border: var(--border);
+
+  /* Progress: the hatched yellow-green CAPACITY bar inside a teal box. */
+  --progress-radius: 0;
+  --progress-bg: transparent;
+  --progress-border: var(--border);
+  --progress-border-width: 1px;
+  --progress-fill: repeating-linear-gradient(90deg, var(--accent) 0 3px, rgba(185, 220, 120, 0.55) 3px 4px);
+  --indicator-fg: var(--accent);
+  --indicator-track: var(--hairline);
+  --spinner-fg: var(--accent);
+  --spinner-track: var(--hairline);
+  --avatar-radius: 2px;
+  --pagination-item-radius: 2px;
+  --pagination-item-bg-active: var(--accent);
+  --pagination-item-fg-active: var(--on-accent);
+  --skeleton-bg: var(--surface-2);
+  --dropzone-radius: 0;
+  --dropzone-border: var(--silo-field);
+
+  --tooltip-bg: var(--silo-plate);
+  --tooltip-fg: var(--silo-plate-fg);
+  --tooltip-border: var(--silo-plate);
+  --tooltip-radius: 0;
+  --kbd-bg: #d9d4c4;        /* the beige keycaps of the pull-out keyboards */
+  --kbd-fg: #1d1d18;
+  --kbd-border: #8f8a7a;
+  --kbd-radius: 3px;
+  --kbd-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+  --code-bg: var(--surface-2);
+  --code-fg: var(--accent-2);
+  --selection-bg: var(--accent);
+  --selection-fg: var(--on-accent);
+  --scrollbar-thumb: var(--border);
+  --scrollbar-thumb-hover: var(--text);
+  --scrollbar-track: var(--bg);
+
+  --toast-bg: var(--bg);
+  --toast-fg: var(--text);
+  --toast-border: var(--border);
+  --toast-radius: 2px;
+  --toast-shadow: 0 0 1rem rgba(0, 0, 0, 0.7);
+  --alert-bg: var(--surface);
+  --alert-fg: var(--text);
+  --alert-radius: 2px;
+  --alert-border-width: 1px;
+
+  /* Readouts: PACT's countdown pills: rounded outline, amber numerals. */
+  --readout-bg: transparent;
+  --readout-fg: var(--silo-num);
+  --readout-font: var(--font-mono);
+  --readout-weight: 400;
+  --readout-tracking: 0.04em;
+  --readout-border-width: 2px;
+  --readout-border: var(--border);
+  --readout-radius: 0.55rem;
+  --readout-padding: 0.15em 0.7em;
+  --readout-unit-fg: var(--muted);
+  --readout-glow: 0 0 0.4rem rgba(240, 192, 96, 0.5);
+  --meter-track: transparent;
+  --meter-border: var(--border);
+  --meter-radius: 0;
+  --meter-thickness: 0.8rem;
+  --meter-low: var(--accent);
+  --meter-mid: var(--warning);
+  --meter-high: var(--danger);
+  --meter-peak-fg: var(--accent-2);
+
+  --list-active-marker: inset 0 0 0 2px var(--accent-2);
+  --message-bg: var(--surface);
+  --message-border: var(--border);
+  --message-radius: 2px;
+  --message-own-bg: var(--surface-2);
+  --message-own-border: var(--accent);
+  --attachment-bg: transparent;
+  --attachment-border: var(--border);
+  --attachment-radius: 0;
+  --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 3px, rgba(185, 220, 120, 0.55) 3px 4px);
+  --bar-chart-bar-alt: var(--text);
+  --bar-chart-radius: 0;
+  --bar-chart-axis: var(--border);
+  --bar-chart-axis-width: 2px;
+  --chart-grid: var(--hairline);
+}
+
+/* --- Phosphor voice ------------------------------------------------------ *
+ * Everything is caps, the way the screens are; body copy keeps its case so
+ * long text stays readable. A faint bloom on all text, stronger on titles. */
+html[data-theme="silo"] body { text-shadow: 0 0 0.3em var(--silo-glow); }
+html[data-theme="silo"] :is(h1, h2, h3, h4) {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 400;
+  text-shadow: 0 0 0.45em var(--silo-glow);
+}
+html[data-theme="silo"] h1 { font-size: 1.6rem; }
+html[data-theme="silo"] h2 { font-size: 1.2rem; }
+html[data-theme="silo"] h3 { font-size: 0.95rem; letter-spacing: 0.18em; }
+html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th) { letter-spacing: 0.14em; text-transform: uppercase; }
+html[data-theme="silo"] .badge { font-size: 0.7rem; }
+html[data-theme="silo"] :is(.input, .select, .textarea) { font-family: var(--font-mono); text-transform: uppercase; }
+html[data-theme="silo"] :is(.input, .select, .textarea)::placeholder { text-transform: uppercase; }
+
+/* Selection and focus are the same yellow box the hard-drive browser draws
+ * around the highlighted file. */
+html[data-theme="silo"] :focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* Section titles sit between double rules ("RELIC/SEIZED OBJECTS INVENTORY"). */
+html[data-theme="silo"] .panel-header {
+  border-block: 3px double var(--border);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+html[data-theme="silo"] .panel-header::after {
+  content: "\00d7";
+  float: right;
+  color: var(--muted);
+}
+html[data-theme="silo"] .modal-header {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+html[data-theme="silo"] .modal { border-width: 3px; }
+html[data-theme="silo"] .modal-header {
+  --btn-close-fg: var(--silo-plate-fg);
+  --btn-close-fg-hover: var(--silo-plate-fg);
+  --btn-fg: var(--silo-plate-fg);
+  --btn-border: var(--silo-plate-fg);
+  --text: var(--silo-plate-fg);
+  text-shadow: none;
+}
+
+/* Primary: the SEARCH key's heavier pale-yellow frame around the filled band. */
+html[data-theme="silo"] .btn-primary { box-shadow: 0 0 0 1px var(--bg), 0 0 0 3px var(--accent-2); }
+html[data-theme="silo"] .btn:active { transform: translateY(1px); }
+
+/* Tabs as a row of outlined soft keys with a ">" cue. */
+html[data-theme="silo"] .tab { border: 1px solid var(--border); margin-inline-end: 0.35rem; }
+html[data-theme="silo"] .tab::after { content: " \203a"; opacity: 0.7; }
+html[data-theme="silo"] .tab[aria-selected="true"],
+html[data-theme="silo"] .tab.is-active { border-color: var(--accent-2); }
+
+/* --- CRT: static scanlines on the glass, inner vignette ------------------- *
+ * Static only, so prefers-reduced-motion needs nothing. */
+html[data-theme="silo"] {
+  --silo-scan: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 3px);
+}
+html[data-theme="silo"] :is(.readout, .meter) { position: relative; }
+html[data-theme="silo"] .meter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, transparent 0 3px, rgba(1, 13, 10, 0.75) 3px 4px);
+}
+html[data-theme="silo"] .meter-v::after {
+  background-image: repeating-linear-gradient(0deg, transparent 0 3px, rgba(1, 13, 10, 0.75) 3px 4px);
+}
+
+/* --- Layout: the monitor -------------------------------------------------- *
+ * The whole shell is one CRT set in a chunky steel bezel. The top bar is
+ * PACT's header between pale-yellow double rules, numbered nav entries
+ * ("01 STATUS"); the right rail is the screen's scroll track; the status
+ * strip is the pale teal plate ("DISK 10% RAM 40% 33911 BYTES FREE"). */
+html[data-theme="silo"] {
+  --app-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 30%, rgba(0, 0, 0, 0.25)),
+    var(--silo-bezel);
+  --app-padding: 1.4rem 1.6rem 1.8rem;
+  --app-gap: 0;
+  --app-areas: "bar bar" "main rail" "status status";
+  --app-columns: minmax(0, 1fr) 1.4rem;
+  --app-bar-bg: var(--bg);
+  --app-bar-fg: var(--text);
+  --app-bar-rule: var(--accent-2);
+  --app-bar-rule-width: 4px;
+  --app-bar-height: 3.2rem;
+  --app-bar-padding: 0.35rem 1.25rem;
+  --app-bar-font: var(--font);
+  --app-rail-display: flex;
+  --app-rail-empty-display: flex;
+  --app-rail-bg:
+    linear-gradient(var(--border), var(--border)) center 0.6rem / 0.55rem 9rem no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 0.9rem, var(--hairline) 0.9rem calc(0.9rem + 1px)) center / 0.9rem 100% no-repeat,
+    var(--bg);
+  --app-main-bg:
+    var(--silo-scan),
+    radial-gradient(ellipse at 50% 40%, var(--silo-haze), transparent 70%),
+    var(--bg);
+  --app-main-padding: 1.5rem 1.75rem;
+  --app-status-bg: var(--silo-plate);
+  --app-status-fg: var(--silo-plate-fg);
+  --app-status-rule: var(--bg);
+  --app-status-padding: 0.25rem 1.25rem;
+  --app-main-padding-sm: 0.75rem;
+}
+html[data-theme="silo"] .app {
+  border-radius: 0.6rem;
+  box-shadow: inset 0 2px 0 var(--silo-bezel-hi), inset 0 -3px 0 rgba(0, 0, 0, 0.4);
+}
+html[data-theme="silo"] .app-bar {
+  border-top: 4px double var(--accent-2);
+  border-bottom-style: double;
+  border-radius: 0.9rem 0.9rem 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.9rem;
+  counter-reset: silo-nav;
+  --nav-bg: transparent;
+}
+/* The brand is a pale plate, like the "RELIC DATABASE" title block. */
+html[data-theme="silo"] .app-bar .nav-brand {
+  --nav-brand-fg: var(--silo-plate-fg);
+  background: var(--silo-plate);
+  padding: 0.2rem 0.8rem;
+  border-radius: 2px;
+  letter-spacing: 0.18em;
+  text-shadow: none;
+}
+html[data-theme="silo"] .app-bar .nav-item { letter-spacing: 0.06em; }
+html[data-theme="silo"] .app-bar .nav-item::before {
+  counter-increment: silo-nav;
+  content: counter(silo-nav, decimal-leading-zero) " ";
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+}
+html[data-theme="silo"] .app-bar .nav-item.is-active,
+html[data-theme="silo"] .app-bar .nav-item[aria-current] { box-shadow: inset 0 0 0 1px var(--accent-2); }
+html[data-theme="silo"] .app-main { box-shadow: inset 0 0 3rem rgba(0, 0, 0, 0.75); }
+html[data-theme="silo"] .app-rail { border-left: 1px solid var(--border); }
+html[data-theme="silo"] .app-status {
+  border-radius: 0 0 0.9rem 0.9rem;
+  border-top-width: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  text-shadow: none;
+  /* Status text on the pale plate: re-point state text to dark inks. */
+  --success-text: #0b4a28;
+  --warning-text: #5a3a00;
+  --danger-text: #7a1406;
+  --muted: #1d4a40;
+}
+@media (max-width: 720px) {
+  html[data-theme="silo"] { --app-padding: 0.5rem; }
+}
+
+/* --- The Legacy (Season 2): Territory Studio's gold tablet ---------------- *
+ * The one "advanced" interface in the silo: gold light on black glass in a
+ * brushed-metal frame. Same structure, warm palette. */
+html[data-theme="silo"][data-variant="legacy"] {
+  --bg: #0a0705;
+  --surface: #120d08;
+  --surface-2: #1b140c;
+  --border: #9a7a3e;
+  --hairline: #3a2c17;
+  --text: #f1dcae;
+  --muted: #c4a46a;
+  --accent: #f2b84b;
+  --accent-2: #ffe6a8;
+  --success: #b8d36a;
+  --success-text: #c6dc7e;
+  --on-accent: #1a1004;
+  --on-success: #141a04;
+  --link: #ffd27a;
+  --silo-plate: #e6c98d;
+  --silo-plate-fg: #1c1206;
+  --silo-bezel: #6b6862;
+  --silo-bezel-hi: #a3a09a;
+  --silo-glow: rgba(242, 184, 75, 0.45);
+  --silo-tint: rgba(242, 184, 75, 0.12);
+  --silo-num: #ffd27a;
+  --silo-field: #6e5630;
+  --silo-haze: rgba(242, 184, 75, 0.06);
+  --modal-border: #f1dcae;
+  --row-hover-bg: rgba(241, 220, 174, 0.06);
+  --progress-fill: repeating-linear-gradient(90deg, var(--accent) 0 3px, rgba(242, 184, 75, 0.55) 3px 4px);
+  --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 3px, rgba(242, 184, 75, 0.55) 3px 4px);
+  --readout-glow: 0 0 0.4rem rgba(255, 210, 122, 0.5);
+}
+html[data-theme="silo"][data-variant="legacy"] .app-status {
+  --muted: #4a3410;
+}
+
+@media print {
+  html[data-theme="silo"] body { text-shadow: none; }
+  html[data-theme="silo"] .meter::after { content: none; }
+  html[data-theme="silo"] {
+    --app-main-bg: #ffffff;
+    --app-bg: #ffffff;
+    --readout-glow: none;
+  }
+}

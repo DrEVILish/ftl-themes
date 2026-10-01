@@ -129,9 +129,17 @@ files are vendored unmodified.
   https://fonts.google.com/specimen/Share+Tech+Mono
 - **Used by:** `prometheus` (body text and data readouts)
 
+## DSEG7 Classic
+
+- **Family:** DSEG7 Classic (Bold Italic — `DSEG7Classic-BoldItalic.woff2`)
+- **Designer:** keshikan
+- **License:** SIL Open Font License, version 1.1 (full text in `DSEG-LICENSE.txt`)
+- **Source:** https://github.com/keshikan/DSEG
+- **Used by:** `cassette-futurism` (seven-segment readout digits)
+
 ## Bottom line
 
-Twelve files, eleven families: nine SIL OFL 1.1, Bedstead CC0 and Px437
+Thirteen files, twelve families: ten SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same

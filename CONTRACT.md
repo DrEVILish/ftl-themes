@@ -1726,14 +1726,18 @@ for what, if anything, it cites.
 | `barbie` | Barbie | 999px-radius glossy pills everywhere; mint success state uses dark, not white, text. | |
 | `bloomberg` | Bloomberg Terminal | The *whole UI*, not just numerals, set in monospace, at `--density: 0.7`. | |
 | `blue-future` | Blue Future | Cyan neon on deep-space navy under a faint 2rem grid, with 14px L-brackets on panels and modals — the HUD look CuTePi shipped as its default. | |
+| `cassette-futurism` | Cassette Futurism | Beige moulded-plastic housing with dark recessed seven-segment/VFD windows, sculpted colour-coded keycaps, and a chrome bat-handle toggle for `.switch`. | |
 | `cue-lab` | Cue Lab | A flat, glow-free show-control console: hairline grids and a single amber accent. | |
 | `cyber-goth` | Cyber-Goth | Toxic neon green and hot purple sharing the accent role on black vinyl gloss. | |
 | `death-star` | Death Star Terminal | True `#000000`, solid glowing indicator blocks, zero borders or shadows anywhere. | |
 | `hot-wheels` | Hot Wheels | A single diagonal flame-gradient band cut across the app bar. | |
 | `imac-g3` | iMac G3 | Translucent *ribbed* plastic — four swappable fruit-colour variants via `data-variant`. | |
 | `international-rescue` | International Rescue (Thunderbirds) | A cream 1960s control-room console: keycap buttons with hard navy drops and a heavy-italic gold `.btn-go` launch key. | |
+| `ios-flat` | iOS (Flat) | Apple iOS 7–18 flat era: system colours on grouped grey, inset grouped lists with chevrons, frosted large-title nav bar and tab bar, green toggle, centred alerts; `dark` variant. | |
+| `ios-skeuomorphic` | iOS (Skeuomorphic) | iPhone OS 1 to iOS 6: a glossy blue nav bar with an embossed title, pinstriped grouped tables, ON/OFF switches, the black tab bar, the navy alert view, and CSS linen, paper, felt and leather. | |
 | `lcars` | LCARS | The elbow: a horizontal bar curving into a vertical rail. Ships an optional chrome primitive — see `docs/lcars-chrome.md`. | ✓ |
 | `lego-classic` | LEGO Classic | A circular "stud" on every panel corner — a physical brick, not a palette. | |
+| `liquid-glass` | Liquid Glass | Translucent capsule controls with a bright specular rim floating inset over a vivid wallpaper — never docked to an edge, content scrolls under the glass. | |
 | `material` | Material | Layered elevation shadows instead of gloss, and underlined (not boxed) text fields. | |
 | `matrix` | The Matrix | `#00FF41` phosphor green — the actual hex the reference on-screen code uses. | ✓ |
 | `msdos` | MS-DOS (Norton Commander) | Double-line (`═`/`║`) box borders; only cyan/yellow count as "bright". | |
@@ -1741,10 +1745,14 @@ for what, if anything, it cites.
 | `nokia-3310` | Nokia 3310 | Selection is a hard colour invert, not a highlight — the phone had no second hue to spend. | |
 | `pipboy` | Pip-Boy (Fallout) | Monochrome phosphor green under a scanline overlay — every state is the same green. | |
 | `prometheus` | Prometheus | Cyan holo-glass panels opened by a rounded left bracket, each named on a filled pill tab. | |
+| `silo` | Silo | Teal phosphor inside a steel CRT bezel, PACT-style numbered nav between pale-yellow double rules, pale-teal title plates, and a yellow-green fill reserved for "granted/selected". | |
+| `skyrim` | Skyrim | Smoke-black menus in thin silver rules with knotwork corners; SkyUI tables whose selected row is a fading white band ending in an arrow tip. | |
 | `steampunk` | Steampunk | Brass and stitched leather with riveted copper panels and needle-gauge readouts. | |
 | `teletext` | Teletext | The exact 8-colour broadcast palette, flat, on solid black — zero gradients or rounding. | ✓ |
+| `tokie` | Tokie | Black pebble-grain leather with a saddle stitch inside every panel edge; brushed gold for rails, polished mirror gold only for what you press or focus. | |
 | `tron` | Tron | Electric cyan line-grid on black with `clip-path`-cut angular corners. | |
 | `vaporwave` | Vaporwave | Heading text is a magenta-to-cyan gradient clipped to the glyphs, not a solid fill. | |
+| `westworld` | Westworld | A tri-fold slate tablet shell (rounded panes split by dark folds) with a right-hand rail of segmented attribute sliders, and every value in condensed caps inside [brackets]. | |
 | `weyland-yutani` | Weyland-Yutani | Bone-beige equipment-plate bars on warm black, amber phosphor readouts, and yellow/black hazard striping on danger states only. | |
 | `win7-aero` | Windows 7 Aero | Real `backdrop-filter` blur — translucent glass, not Luna's opaque gloss. | |
 | `winamp-classic` | WinAmp Classic | Tiny uppercase labels and llama-green LCD-style numeric readouts. | |
@@ -1773,11 +1781,10 @@ that defines swatches recolours just the accent. See its `README.md`.
 
 `dist/themes.json` also carries `category` and `era` per theme (a small
 fixed taxonomy — `os-shell`, `media-player`, `handheld-device`,
-`broadcast`, `sci-fi`, `toy-brand`, `finance-terminal` — plus the
+`broadcast`, `sci-fi`, `toy-brand`, `finance-terminal`, `design-system`,
+`app-shell`, `game-ui` — plus the
 approximate real-world decade the theme's source material is from, e.g.
 `"1990s"`, omitted when a theme has no single clean era). This is curated
 in `themes/categories.json`, not derived from the CSS; `gallery.html`'s
 category dropdown reads it to filter the grid.
 
-Planned themes, with notes and the open iOS-era question, are in
-`docs/theme-backlog.md`.

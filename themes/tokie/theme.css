@@ -1,0 +1,486 @@
+/* ftl-themes: Tokie
+ * Theme-Name: Tokie
+ * Description: Black full-grain leather with saddle-stitched panel edges and gold-foil debossing, fitted with brushed-gold rails and polished mirror-gold buttons, like a bespoke watch box.
+ *
+ * Two materials, each with one job, and a third used only as a finish:
+ *   - Leather (black, matte, pebble grain): everything you would rest a
+ *     hand on — the page, panels, cards, inputs. Grain is an SVG
+ *     feTurbulence + feDiffuseLighting tile in a data-URI, no bitmap.
+ *     Panel edges carry a saddle stitch: a dashed champagne thread laid
+ *     in a creased groove, drawn as background layers (no pseudo-elements).
+ *   - Brushed gold (satin, horizontal hairlines, low contrast): structure —
+ *     the app bar's rail, the spine rail, the status nameplate, table-head
+ *     rules, meter and progress channels.
+ *   - Polished gold (mirror, a hard dark horizon band mid-height): only
+ *     what you press or what is focused — primary buttons, switch and
+ *     slider thumbs, the knob crown, the focus ring, active tab/nav marks.
+ * Gold foil (flat gold text with a debossed shadow) is how type is
+ * applied to leather: headings, panel titles, the brand.
+ *
+ * Note on fonts: nothing is vendored. Display type names Didot / Bodoni
+ * (macOS, Windows with Office) before Georgia; UI type names Optima (macOS)
+ * and Candara (Windows). Elsewhere the serif/sans fallbacks apply; tracked
+ * uppercase carries the luxury-goods voice either way.
+ */
+
+html[data-theme="tokie"] {
+  color-scheme: dark;
+  --bg: #0b0a09;
+  --surface: #151311;
+  --surface-2: #1d1a17;
+  --border: #4a3f2c;
+  --hairline: #2b2620;
+  --text: #ede4d1;
+  --muted: #b0a184;
+  --accent: #d6b25e;
+  --accent-2: #ecd492;
+  --danger: #9c2f27;
+  --success: #2f6a45;
+  --warning: #d6a23e;
+  --success-text: #7cc394;
+  --warning-text: #e0b25a;
+  --danger-text: #e58b7d;
+  --accent-text: #e2c06e;
+  --on-accent: #1b1408;
+  --on-danger: #fbefe6;
+  --on-success: #f2f7ef;
+  --radius: 6px;
+  --font: Optima, "Optima nova", Candara, "Segoe UI", "Noto Sans", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --tokie-display: Didot, "Bodoni 72", "Bodoni MT", "Libre Bodoni", Georgia, "Times New Roman", serif;
+  --flare: #f6e3a8;
+  --focus: #f3d47e;
+  --focus-ring: 0 0 0 4px rgba(243, 212, 126, 0.22);
+  --link: #e2c06e;
+  --label-tracking: 0.14em;
+  --label-transform: uppercase;
+  --selection-bg: rgba(214, 178, 94, 0.4);
+  --selection-fg: #fff8e6;
+  --scrollbar-thumb: #6e5a33;
+  --scrollbar-thumb-hover: #a8853f;
+  --scrollbar-track: #0e0d0b;
+  --input-caret: #f3d47e;
+  --input-placeholder: #8a7d66;
+
+  /* --- Materials ------------------------------------------------------- */
+  /* Pebble grain: low-frequency bumps for the pebbles, a finer octave for
+     the pores, lit from the top-left and laid at low opacity so it reads
+     as a surface, not a pattern. Tile is 240px; stitchTiles hides seams. */
+  --tokie-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.26' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23fff' surfaceScale='2.4' diffuseConstant='1'%3E%3CfeDistantLight azimuth='225' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+  --tokie-leather:
+    linear-gradient(rgba(11, 10, 9, 0.93), rgba(11, 10, 9, 0.93)),
+    var(--tokie-grain);
+  --tokie-leather-raised:
+    radial-gradient(120% 90% at 30% 0%, rgba(255, 240, 210, 0.05), transparent 60%),
+    linear-gradient(rgba(21, 19, 17, 0.92), rgba(21, 19, 17, 0.92)),
+    var(--tokie-grain);
+  --tokie-leather-recessed:
+    linear-gradient(rgba(8, 7, 6, 0.95), rgba(8, 7, 6, 0.95)),
+    var(--tokie-grain);
+
+  /* Saddle stitch, 7px in from the edge: a creased groove (dark) with a
+     champagne thread over it, dashes 5px with 3px holes. Four strips laid
+     as background layers so any element can wear it under its content. */
+  --tokie-thread: rgba(214, 186, 128, 0.5);
+  --tokie-groove: rgba(0, 0, 0, 0.55);
+  --tokie-stitch:
+    repeating-linear-gradient(90deg, var(--tokie-thread) 0 5px, transparent 5px 8px) 10px 7px / calc(100% - 20px) 1.5px no-repeat,
+    repeating-linear-gradient(90deg, var(--tokie-thread) 0 5px, transparent 5px 8px) 10px calc(100% - 7px) / calc(100% - 20px) 1.5px no-repeat,
+    repeating-linear-gradient(180deg, var(--tokie-thread) 0 5px, transparent 5px 8px) 7px 10px / 1.5px calc(100% - 20px) no-repeat,
+    repeating-linear-gradient(180deg, var(--tokie-thread) 0 5px, transparent 5px 8px) calc(100% - 7px) 10px / 1.5px calc(100% - 20px) no-repeat,
+    linear-gradient(var(--tokie-groove), var(--tokie-groove)) 9px 6px / calc(100% - 18px) 3.5px no-repeat,
+    linear-gradient(var(--tokie-groove), var(--tokie-groove)) 9px calc(100% - 6px) / calc(100% - 18px) 3.5px no-repeat,
+    linear-gradient(var(--tokie-groove), var(--tokie-groove)) 6px 9px / 3.5px calc(100% - 18px) no-repeat,
+    linear-gradient(var(--tokie-groove), var(--tokie-groove)) calc(100% - 6px) 9px / 3.5px calc(100% - 18px) no-repeat;
+
+  /* Brushed gold: satin, low-contrast vertical shading with anisotropic
+     noise stretched into horizontal hairlines. */
+  --tokie-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='120'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.002 0.9' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 -0.1'/%3E%3C/filter%3E%3Crect width='400' height='120' filter='url(%23b)'/%3E%3C/svg%3E");
+  --tokie-brushed:
+    var(--tokie-brush),
+    linear-gradient(180deg, #d8bc78 0%, #bf9d55 38%, #a9873f 62%, #c3a361 100%);
+  /* Polished mirror gold: bright sky, a hard dark horizon a little above
+     the middle, a warm floor reflection. */
+  --tokie-polished: linear-gradient(180deg, #fff4cf 0%, #f3d98f 16%, #d9b45c 40%, #7a5718 49%, #a77b29 56%, #e2bd66 80%, #fbe7a8 100%);
+  --tokie-polished-hover: linear-gradient(180deg, #fffaf0 0%, #f8e3a5 16%, #e4c16c 40%, #8a641f 49%, #b88a33 56%, #ecca74 80%, #fff0bd 100%);
+  --tokie-polished-ring: conic-gradient(from 210deg, #fff4cf, #a77b29, #6b4b14, #e2bd66, #fff4cf, #a77b29, #fff4cf);
+  /* Gold foil on leather: flat gold, struck into the surface. */
+  --tokie-foil: #dcbc6d;
+  --tokie-deboss: 0 -1px 0 rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 235, 190, 0.12);
+
+  /* --- Components ------------------------------------------------------ */
+  --btn-bg: var(--tokie-leather-raised);
+  --btn-bg-hover: radial-gradient(120% 120% at 50% 0%, rgba(243, 212, 126, 0.12), transparent 70%), var(--tokie-leather-raised);
+  --btn-fg: #ecd492;
+  --btn-border: #a8853f;
+  --btn-border-hover: #f3d47e;
+  --btn-radius: 4px;
+  --btn-tracking: 0.12em;
+  --btn-transform: uppercase;
+  --btn-weight: 600;
+  --btn-shadow: inset 0 1px 0 rgba(255, 240, 200, 0.08), 0 1px 0 rgba(0, 0, 0, 0.8), 0 2px 5px rgba(0, 0, 0, 0.5);
+  --btn-shadow-hover: inset 0 1px 0 rgba(255, 240, 200, 0.12), 0 0 0 1px rgba(243, 212, 126, 0.25), 0 2px 6px rgba(0, 0, 0, 0.6);
+
+  --input-bg: var(--tokie-leather-recessed);
+  --input-fg: var(--text);
+  --input-border: #3a3226;
+  --input-radius: 4px;
+  --input-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 235, 190, 0.06);
+
+  --panel-bg: var(--tokie-stitch), var(--tokie-leather-raised);
+  --panel-border: #050404;
+  --panel-border-width: 1px;
+  --panel-radius: 10px;
+  --panel-shadow: inset 0 1px 0 rgba(255, 240, 210, 0.06), 0 2px 0 rgba(0, 0, 0, 0.6), 0 10px 24px rgba(0, 0, 0, 0.55);
+  --panel-header-fg: var(--tokie-foil);
+  --card-bg: var(--tokie-stitch), var(--tokie-leather-raised);
+  --card-border: #050404;
+  --card-radius: 10px;
+  --card-shadow: var(--panel-shadow);
+  --modal-bg: var(--tokie-stitch), var(--tokie-leather-raised);
+  --modal-border: #a8853f;
+  --modal-radius: 10px;
+  --modal-header-bg: transparent;
+  --modal-header-fg: var(--tokie-foil);
+  --modal-shadow: 0 0 0 1px #000, 0 24px 60px rgba(0, 0, 0, 0.8);
+  --overlay-bg: rgba(5, 4, 3, 0.78);
+
+  --table-head-bg: transparent;
+  --table-head-fg: var(--tokie-foil);
+  --table-head-rule: #a8853f;
+  --table-head-rule-width: 2px;
+  --table-head-tracking: 0.14em;
+  --table-head-transform: uppercase;
+  --table-rule: #2b2620;
+  --row-alt-bg: rgba(255, 240, 210, 0.025);
+  --row-hover-bg: rgba(214, 178, 94, 0.07);
+  --row-selected-bg: rgba(214, 178, 94, 0.16);
+  --row-selected-fg: #fff3d6;
+  --row-active-marker: #f3d47e;
+
+  --nav-bg: var(--tokie-leather);
+  --nav-rule: #a8853f;
+  --nav-brand-fg: var(--tokie-foil);
+  --nav-item-fg: #cbbd9f;
+  --nav-item-fg-active: #f3d47e;
+  --nav-item-bg-active: rgba(214, 178, 94, 0.1);
+  --tab-fg: #b8a98b;
+  --tab-fg-active: #f3d47e;
+  --tab-underline-active: #e2c06e;
+  --tab-bg-active: rgba(214, 178, 94, 0.07);
+
+  --badge-bg: transparent;
+  --badge-fg: #e2c06e;
+  --badge-border: #8c6d2f;
+  --badge-radius: 3px;
+  --badge-bg-active: var(--tokie-polished);
+  --badge-fg-active: #1b1408;
+
+  --alert-bg: var(--tokie-leather-raised);
+  --alert-border: #8c6d2f;
+  --toast-bg: var(--tokie-leather-raised);
+  --toast-border: #a8853f;
+  --toast-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+  --tooltip-bg: var(--tokie-brushed);
+  --tooltip-fg: #1b1408;
+  --tooltip-border: #6b4b14;
+  --dropdown-bg: var(--tokie-leather-raised);
+  --dropdown-border: #8c6d2f;
+  --dropdown-item-bg-hover: rgba(214, 178, 94, 0.14);
+  --dropdown-item-fg-hover: #fff3d6;
+  --context-menu-bg: var(--tokie-leather-raised);
+  --context-menu-border: #8c6d2f;
+  --popover-bg: var(--tokie-leather-raised);
+  --popover-border: #8c6d2f;
+  --drawer-bg: var(--tokie-stitch), var(--tokie-leather-raised);
+  --drawer-border: #a8853f;
+  --segmented-bg: var(--tokie-leather-recessed);
+  --segmented-border: #3a3226;
+  --segmented-item-bg-active: var(--tokie-polished);
+  --segmented-item-fg-active: #1b1408;
+  --segmented-item-fg: #cbbd9f;
+  --pagination-item-bg-active: var(--tokie-polished);
+  --pagination-item-fg-active: #1b1408;
+  --kbd-bg: var(--tokie-leather-raised);
+  --kbd-border: #8c6d2f;
+  --kbd-fg: #ecd492;
+  --log-bg: var(--tokie-leather-recessed);
+  --log-border: #3a3226;
+  --code-bg: #0e0d0b;
+  --code-fg: #ecd492;
+
+  /* Instruments: a watch's vocabulary. Readouts are black lacquer dials
+     with applied gold numerals; meters and progress run in a recessed
+     leather channel framed in brushed gold; the fill is polished gold. */
+  --readout-bg: radial-gradient(circle at 50% 30%, #1d1a16, #070605 80%);
+  --readout-fg: #e9c977;
+  --readout-border: #a8853f;
+  --readout-border-width: 1px;
+  --readout-radius: 4px;
+  --readout-padding: 0.12em 0.5em;
+  --readout-font: var(--tokie-display);
+  --readout-weight: 400;
+  --readout-tracking: 0.06em;
+  --readout-glow: 0 1px 0 #000;
+  --readout-unit-fg: #a8946a;
+  --meter-track: var(--tokie-leather-recessed);
+  --meter-border: #8c6d2f;
+  --meter-low: #c9a65a;
+  --meter-mid: #e6c97b;
+  --meter-high: #b8432f;
+  --meter-peak-fg: #fff1c6;
+  --progress-bg: var(--tokie-leather-recessed);
+  --progress-fill: var(--tokie-polished);
+  --progress-border: #8c6d2f;
+  --progress-border-width: 1px;
+  --progress-radius: 999px;
+  --slider-bg: var(--tokie-leather-recessed);
+  --slider-border: #8c6d2f;
+  --slider-radius: 999px;
+  --slider-thumb-bg: radial-gradient(circle at 38% 30%, #fffaf0 0, #f3d98f 22%, #b8892f 55%, #6b4b14 80%, #c9a14a 100%);
+  --slider-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  --switch-bg: var(--tokie-leather-recessed);
+  --switch-bg-on: linear-gradient(rgba(214, 178, 94, 0.22), rgba(214, 178, 94, 0.22)), var(--tokie-leather-recessed);
+  --switch-border: #4a3f2c;
+  --switch-border-on: #d6b25e;
+  --switch-thumb-bg: radial-gradient(circle at 38% 30%, #d8cdb6, #8a8170 60%, #4d473d);
+  --switch-thumb-bg-on: radial-gradient(circle at 38% 30%, #fffaf0 0, #f3d98f 22%, #b8892f 55%, #6b4b14 80%, #c9a14a 100%);
+  --lamp-off: #1d1a17;
+  --lamp-border: #8c6d2f;
+  --indicator-fg: #e2c06e;
+  --indicator-track: #2b2620;
+  --spinner-fg: #e2c06e;
+  --spinner-track: #2b2620;
+  --skeleton-bg: linear-gradient(90deg, #1a1714, #262119, #1a1714);
+  --chart-series-1: #d6b25e;
+  --chart-series-2: #8f8676;
+  --bar-chart-bar: linear-gradient(90deg, #a77b29, #f3d98f 35%, #d9b45c 60%, #7a5718);
+  --bar-chart-bar-alt: linear-gradient(90deg, #4d473d, #a39a88 40%, #6a6355);
+  --bar-chart-axis: #a8853f;
+  --bar-chart-radius: 2px 2px 0 0;
+  --message-bg: var(--tokie-leather-raised);
+  --message-border: #3a3226;
+  --message-own-bg: var(--tokie-brushed);
+  --message-own-fg: #1b1408;
+  --message-own-meta-fg: #3d2d10;
+  --message-own-border: #6b4b14;
+  --attachment-bg: var(--tokie-leather-raised);
+  --attachment-border: #8c6d2f;
+
+  /* Mixing console: a watchmaker's bench. Knobs are polished crowns,
+     keys are leather buttons with gold bezels, scribble strips are
+     brushed-gold nameplates. */
+  --knob-color: #c9a14a;
+  --knob-arc: #f3d47e;
+  --knob-track: #2b2620;
+  --knob-border: #6b4b14;
+  --knob-pointer: #1b1408;
+  --key-bg: var(--tokie-leather-raised);
+  --key-fg: #e2c06e;
+  --key-border: #a8853f;
+  --key-sel: #d6b25e;
+  --key-sel-fg: #1b1408;
+  --strip-bg: var(--tokie-leather-raised);
+  --strip-border: #2b2620;
+  --mixer-bg: var(--tokie-leather);
+  --scribble-bg: var(--tokie-brushed);
+  --scribble-fg: #1b1408;
+  --scribble-num-fg: #3d2d10;
+  --fader-cap-bg: var(--tokie-polished);
+  --fader-cap-border: #6b4b14;
+  --eq-bg: #0a0908;
+  --eq-grid: rgba(168, 133, 63, 0.18);
+  --eq-line: #e2c06e;
+  --eq-fill: rgba(214, 178, 94, 0.12);
+  --eq-border: #8c6d2f;
+  --transport-bg: var(--tokie-leather-raised);
+  --transport-border: #050404;
+  --transport-radius: 10px;
+  --go-bg: var(--tokie-polished);
+  --go-fg: #1b1408;
+  --go-border: #6b4b14;
+
+  /* --- The shell: a watch box ----------------------------------------- *
+   * The page is the box's outer leather; a brushed-gold spine rail runs
+   * down the left; the bar is a stitched leather lid strip sitting on a
+   * brushed-gold rail; content sits in a recessed, lined tray; the status
+   * strip is a brushed-gold nameplate with engraved lettering. */
+  --app-padding: 14px;
+  --app-gap: 12px;
+  --app-columns: 1.5rem minmax(0, 1fr);
+  --app-bg: transparent;
+  --app-bar-bg: var(--tokie-leather-raised);
+  --app-bar-rule: #a8853f;
+  --app-bar-rule-width: 0;
+  --app-bar-radius: 10px;
+  --app-bar-padding: 0.9rem 1.4rem 1.05rem;
+  --app-rail-display: flex;
+  --app-rail-empty-display: flex;
+  --app-rail-radius: 3px;
+  --app-rail-bg:
+    radial-gradient(circle, #fff4cf 0 1px, #a77b29 1.5px 3px, #4d3610 3.5px 4px, transparent 4.5px) 50% 18px / 10px 10px no-repeat,
+    radial-gradient(circle, #fff4cf 0 1px, #a77b29 1.5px 3px, #4d3610 3.5px 4px, transparent 4.5px) 50% calc(100% - 18px) / 10px 10px no-repeat,
+    linear-gradient(90deg, rgba(0, 0, 0, 0.35), transparent 30%, transparent 70%, rgba(0, 0, 0, 0.35)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='400'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.002' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 -0.1'/%3E%3C/filter%3E%3Crect width='120' height='400' filter='url(%23b)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, #a9873f, #d8bc78 45%, #bf9d55 70%, #a9873f);
+  --app-main-bg: var(--tokie-leather-recessed);
+  --app-main-radius: 10px;
+  --app-main-padding: 1.5rem;
+  --app-main-padding-sm: 0.9rem;
+  --app-status-bg: var(--tokie-brushed);
+  --app-status-fg: #1b1408;
+  --app-status-rule: #6b4b14;
+  --app-status-radius: 4px;
+  --app-status-padding: 0.45rem 1.2rem;
+}
+
+/* L0 backdrop: the same outer leather the shell sits on. */
+html[data-theme="tokie"] { background: var(--tokie-leather); background-color: var(--bg); }
+
+/* --- Type: gold foil struck into leather -------------------------------- */
+html[data-theme="tokie"] :is(h1, h2, h3, .nav-brand, .panel-header, .modal-header, .stat-value, .price) {
+  font-family: var(--tokie-display);
+  font-weight: 400;
+}
+html[data-theme="tokie"] :is(h1, h2, h3) {
+  color: var(--tokie-foil);
+  letter-spacing: 0.08em;
+  text-shadow: var(--tokie-deboss);
+}
+html[data-theme="tokie"] :is(h1, h2) { text-transform: uppercase; letter-spacing: 0.16em; }
+html[data-theme="tokie"] .nav-brand {
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  text-shadow: var(--tokie-deboss);
+}
+/* Panel and dialog titles: foil caps between gilt fillets — a double
+   rule the way a binder's roll lays it, sitting inside the stitch line. */
+html[data-theme="tokie"] .panel-header,
+html[data-theme="tokie"] .modal-header {
+  padding-top: 0.95rem;
+  padding-bottom: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: var(--tokie-deboss);
+  border-bottom: 0;
+  background-image:
+    linear-gradient(90deg, transparent, #a8853f 12%, #a8853f 88%, transparent) 50% calc(100% - 3px) / calc(100% - 28px) 1px no-repeat,
+    linear-gradient(90deg, transparent, #6b5326 12%, #6b5326 88%, transparent) 50% 100% / calc(100% - 28px) 1px no-repeat;
+}
+
+/* --- Buttons ------------------------------------------------------------ *
+ * Default: a leather key with a gold bezel. Primary: polished mirror gold.
+ * Danger / success: enamelled leather (oxblood, bottle green) keeping the
+ * gold bezel, so they stay unmistakable. */
+html[data-theme="tokie"] .btn { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6); }
+html[data-theme="tokie"] .btn-primary {
+  --btn-bg: var(--tokie-polished);
+  --btn-bg-hover: var(--tokie-polished-hover);
+  --btn-fg: #1b1408;
+  --btn-border: #6b4b14;
+  --btn-border-hover: #3d2a0a;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(90, 60, 10, 0.5), 0 1px 0 rgba(0, 0, 0, 0.8), 0 3px 8px rgba(0, 0, 0, 0.55);
+  --btn-shadow-hover: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(90, 60, 10, 0.5), 0 0 12px rgba(243, 212, 126, 0.35), 0 3px 8px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 0 rgba(255, 245, 210, 0.55);
+}
+html[data-theme="tokie"] .btn-danger {
+  --btn-bg: linear-gradient(180deg, rgba(255, 220, 200, 0.08), transparent 50%), linear-gradient(rgba(140, 38, 30, 0.9), rgba(120, 30, 24, 0.92)), var(--tokie-grain);
+  --btn-bg-hover: linear-gradient(180deg, rgba(255, 220, 200, 0.14), transparent 50%), linear-gradient(rgba(160, 46, 36, 0.9), rgba(132, 34, 27, 0.92)), var(--tokie-grain);
+  --btn-border: #c9a14a;
+}
+html[data-theme="tokie"] .btn-success {
+  --btn-bg: linear-gradient(180deg, rgba(220, 255, 230, 0.07), transparent 50%), linear-gradient(rgba(36, 92, 58, 0.92), rgba(28, 76, 47, 0.94)), var(--tokie-grain);
+  --btn-bg-hover: linear-gradient(180deg, rgba(220, 255, 230, 0.12), transparent 50%), linear-gradient(rgba(44, 106, 67, 0.92), rgba(32, 86, 53, 0.94)), var(--tokie-grain);
+  --btn-border: #c9a14a;
+}
+html[data-theme="tokie"] .btn-go { text-transform: uppercase; letter-spacing: 0.16em; }
+
+/* --- Focus: a polished gold ring, never removed ------------------------- */
+html[data-theme="tokie"] :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+/* --- The shell ---------------------------------------------------------- */
+/* The bar sits on a brushed-gold rail (the lid's hinge bar). */
+html[data-theme="tokie"] .app-bar {
+  /* Stitch laid here, not in --app-bar-bg: the thread never sits behind
+     nav text, and the bar-contrast lint reads the token's stops. */
+  background: var(--tokie-stitch), var(--app-bar-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 240, 210, 0.06), 0 4px 0 -1px #8c6d2f, 0 4px 0 0 #6b4b14, 0 10px 20px rgba(0, 0, 0, 0.55);
+  margin-bottom: 4px;
+}
+html[data-theme="tokie"] .app-bar .nav-item[aria-current],
+html[data-theme="tokie"] .app-bar .nav-item.is-active { box-shadow: inset 0 -2px 0 #f3d47e; }
+html[data-theme="tokie"] .app-rail {
+  box-shadow: inset 0 1px 0 rgba(255, 250, 230, 0.5), inset 0 -1px 0 rgba(60, 40, 8, 0.6), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+/* The lined tray: recessed below the box's rim. */
+html[data-theme="tokie"] .app-main {
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 235, 190, 0.07);
+}
+/* The status strip: a brushed nameplate with engraved lettering. */
+html[data-theme="tokie"] .app-status {
+  /* State text engraved into the plate needs dark inks, not the
+     on-leather tints. */
+  --success-text: #17482a;
+  --warning-text: #5e3a08;
+  --danger-text: #6e1a12;
+  --accent-text: #3d2d10;
+  --muted: #3d2d10;
+  --readout-fg: #1b1408;
+  --readout-bg: transparent;
+  --readout-border-width: 0;
+  border: 1px solid #6b4b14;
+  box-shadow: inset 0 1px 0 rgba(255, 250, 230, 0.55), 0 2px 6px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  text-shadow: 0 1px 0 rgba(255, 245, 215, 0.5);
+}
+html[data-theme="tokie"] .app-status :is(.status, .readout, .badge) { text-shadow: none; }
+
+/* --- Inputs: debossed into the leather ---------------------------------- */
+html[data-theme="tokie"] :is(.input, .select, .textarea):focus-visible {
+  border-color: #d6b25e;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.75), 0 0 0 3px rgba(243, 212, 126, 0.22);
+}
+
+/* --- Tables: foil caps over a brushed-gold rule ------------------------- */
+html[data-theme="tokie"] .table th { font-family: var(--font); font-size: 0.78em; text-shadow: var(--tokie-deboss); }
+
+/* --- Badges: small gold plaques ----------------------------------------- */
+html[data-theme="tokie"] .badge { letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.72em; }
+
+/* --- Readouts: applied gold numerals on a black lacquer dial ------------ */
+html[data-theme="tokie"] .readout {
+  box-shadow: inset 0 0 0 2px #0a0908, inset 0 0 0 3px rgba(168, 133, 63, 0.45), inset 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* --- Meters and progress: a recessed channel, polished fill ------------ */
+html[data-theme="tokie"] :is(.meter, .progress) {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85), 0 1px 0 rgba(255, 235, 190, 0.07);
+}
+html[data-theme="tokie"] .meter-fill { box-shadow: inset 0 1px 0 rgba(255, 250, 230, 0.55), inset 0 -1px 0 rgba(80, 55, 10, 0.5); }
+
+/* --- Knob: a polished watch crown, fluted edge -------------------------- */
+html[data-theme="tokie"] .knob-dial::after {
+  background:
+    radial-gradient(circle at 40% 32%, #fffaf0 0, #f3d98f 18%, #c9a14a 46%, #7a5718 70%, transparent 71%),
+    repeating-conic-gradient(from 0deg, #e9c977 0 6deg, #6b4b14 6deg 12deg);
+  -webkit-mask: radial-gradient(circle, #000 69%, transparent 70%);
+  mask: radial-gradient(circle, #000 69%, transparent 70%);
+}
+
+/* --- Tooltips and own messages are brushed gold; keep text engraved ----- */
+html[data-theme="tokie"] .tooltip { text-shadow: 0 1px 0 rgba(255, 245, 215, 0.5); }
+
+@media print {
+  html[data-theme="tokie"],
+  html[data-theme="tokie"] :is(.panel, .card, .modal, .app-main, .app-bar, .app-status) {
+    background: #fff !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

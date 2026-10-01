@@ -1,0 +1,786 @@
+/* ftl-themes: iOS (Skeuomorphic)
+ * Theme-Name: iOS (Skeuomorphic)
+ * Description: iPhone OS 1 to iOS 6 (2007-2012): a glossy blue navigation bar with an embossed white title, the pinstriped grouped-table backdrop of Settings, rounded white cells, glossy capsule buttons, ON/OFF switches, the black glossy tab bar, the navy alert view, and CSS-only linen, legal-pad paper, felt and leather.
+ *
+ * Era rule: this is the pre-iOS-7 theme. iOS 7-18 (flat white, thin type,
+ * frosted blur) is the separate `ios-flat` theme. Nothing here is flat:
+ * every fill has a gloss split, every label has a 1px emboss, and every
+ * well has an inner shadow. If a change makes a control look like iOS 7,
+ * it belongs in the other theme.
+ *
+ * Note on fonts: iOS 4-6 set the UI in Helvetica / Helvetica Neue Bold.
+ * Nothing is vendored. macOS and iOS have Helvetica Neue; elsewhere Arial
+ * (metric-compatible) or Liberation Sans stand in. The Notes paper names
+ * Noteworthy / Marker Felt (macOS) and falls back to the UI face.
+ *
+ * Note on contrast: real iOS 6 nav bars run from #bdcbdc to #597498 with
+ * a white title, about 1.7:1 at the top. This theme starts the gradient
+ * at #5b779c so the white title holds 4.5:1 everywhere; the gloss comes
+ * from an inset highlight line instead of a pale top stop. See README.
+ */
+
+html[data-theme="ios-skeuomorphic"] {
+  color-scheme: light;
+  --bg: #d1d6df;           /* groupTableViewBackgroundColor, sampled */
+  --surface: #f7f7f7;      /* grouped cell */
+  --surface-2: #ffffff;    /* text fields, menus */
+  --border: #abb0b8;       /* grouped cell outline */
+  --hairline: #d9d9d9;     /* cell separator */
+  --text: #000000;         /* cell labels are pure black, bold */
+  --muted: #4c566c;        /* grouped section header / footer text */
+  --accent: #2a68c8;       /* the "Done" bar button blue */
+  --accent-2: #058cf5;     /* selected-cell blue, top stop */
+  --accent-text: #385487;  /* value1 detail-label blue ("Nobel WiFi", "On") */
+  --link: #385487;
+  --danger: #c8101a;       /* destructive action-sheet red */
+  --success: #2b7d1d;      /* Call / Start green */
+  --warning: #d98c00;
+  --danger-text: #b5121b;
+  --success-text: #2b7d1d;
+  --warning-text: #8a5a00;
+  --on-accent: #ffffff;
+  --on-danger: #ffffff;
+  --on-success: #ffffff;
+  --radius: 0.6rem;
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --font-mono: Menlo, "DejaVu Sans Mono", Consolas, "Courier New", monospace;
+  --flare: #e3101a;        /* the SpringBoard unread badge */
+
+  /* --- Shared materials ------------------------------------------------ */
+  --ios-pinstripe: repeating-linear-gradient(90deg, #d1d6df 0 4px, #cbd1da 4px 7px);
+  /* Linen: a fine weave of two thread directions at prime periods so the
+     repeat never lines up, over the Notification Center slate (#434852). */
+  --ios-linen:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.09) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 11px),
+    #434852;
+  --ios-navbar: linear-gradient(180deg, #5b779c 0%, #4f6a90 50%, #435d83 100%);
+  --ios-navbar-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 #2d405c;
+  --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
+  --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
+  --ios-select: linear-gradient(180deg, #058cf5 0%, #015fe6 100%);
+  --ios-tabbar: linear-gradient(180deg, #3d3d3d 0%, #262626 50%, #0d0d0d 51%, #000000 100%);
+  --ios-emboss-light: 0 1px 0 rgba(255, 255, 255, 0.8);
+  --ios-emboss-dark: 0 -1px 0 rgba(0, 0, 0, 0.45);
+  --ios-section-head: linear-gradient(180deg, #6d7f96 0%, #5c6d84 100%);
+
+  /* --- Buttons: glossy white action-sheet button by default ------------- */
+  --btn-bg: linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #dadada 100%);
+  --btn-bg-hover: linear-gradient(180deg, #ffffff 0%, #f8f8f8 50%, #ececec 51%, #e2e2e2 100%);
+  --btn-fg: #1a1a1a;
+  --btn-border: #8e9299;
+  --btn-border-hover: #6f747c;
+  --btn-radius: 0.6rem;
+  --btn-weight: 700;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 0 rgba(255, 255, 255, 0.55);
+  --btn-shadow-hover: var(--btn-shadow);
+  --ios-btn-text-shadow: var(--ios-emboss-light);
+
+  /* --- Fields: rounded-rect UITextField --------------------------------- */
+  --input-bg: #ffffff;
+  --input-fg: #000000;
+  --input-border: #8e9299;
+  --input-radius: 0.4rem;
+  --input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  --input-placeholder: #6d6d72;
+  --input-caret: #2a68c8;
+  --input-addon-bg: linear-gradient(180deg, #f4f4f4, #dcdcdc);
+  --input-addon-fg: var(--muted);
+  --focus: #2a68c8;
+  --focus-ring: 0 0 0 3px rgba(42, 104, 200, 0.35);
+  --select-arrow-fg: #385487;
+
+  /* --- Switch: the iOS 5/6 ON|OFF pill (shape below) -------------------- */
+  --switch-radius: 999px;
+  --switch-bg: linear-gradient(180deg, #dcdcdc 0%, #f4f4f4 45%, #fdfdfd 100%);
+  --switch-border: #9a9a9a;
+  --switch-bg-on: linear-gradient(180deg, #0a5fcf 0%, #2b84ec 55%, #4b9df5 100%);
+  --switch-border-on: #1953a8;
+  --switch-thumb-bg: linear-gradient(180deg, #ffffff 0%, #f3f3f3 50%, #dedede 100%);
+  --switch-thumb-bg-on: var(--switch-thumb-bg);
+  --switch-thumb-radius: 50%;
+
+  /* --- Slider / progress: UISlider and UIProgressView ------------------- */
+  --slider-height: 0.55rem;
+  --slider-radius: 999px;
+  --slider-bg: linear-gradient(180deg, #3b7fe0 0%, #7cb3f6 100%);
+  --slider-border: #2b5fae;
+  --slider-thumb-size: 1.45rem;
+  --slider-thumb-bg: radial-gradient(circle at 50% 35%, #ffffff 0%, #f1f1f1 45%, #c9c9c9 100%);
+  --slider-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(0, 0, 0, 0.15);
+  --progress-height: 0.6rem;
+  --progress-radius: 999px;
+  --progress-bg: linear-gradient(180deg, #c7c7c7 0%, #f5f5f5 100%);
+  --progress-border: #8e9299;
+  --progress-fill: linear-gradient(180deg, #8ec1fa 0%, #4b9df5 45%, #1b6fe0 55%, #2f84ec 100%);
+  --indicator-fg: #6d6d72;
+  --indicator-track: #c8c8c8;
+  --spinner-fg: #6d6d72;
+  --spinner-track: #d0d0d0;
+
+  /* --- Surfaces: grouped-table cells ------------------------------------- */
+  --panel-bg: var(--surface);
+  --panel-border: var(--border);
+  --panel-radius: var(--radius);
+  --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  --panel-header-bg: var(--ios-section-head);
+  --panel-header-fg: #ffffff;
+  --card-bg: var(--surface);
+  --card-border: var(--border);
+  --card-radius: var(--radius);
+  --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  --field-row-bg: var(--surface);
+  --field-row-border: var(--border);
+  --field-row-border-hover: #8e9299;
+  --field-row-radius: var(--radius);
+  --field-group-title-fg: var(--muted);
+  --list-bg: var(--surface);
+  --list-border: var(--border);
+  --list-radius: var(--radius);
+  --list-rule: var(--hairline);
+  --list-item-fg: #000000;
+  --list-item-meta-fg: #385487;
+  --list-item-meta-fg-active: #ffffff;
+  --list-active-marker: none;
+  --list-item-title-weight: 700;
+
+  /* --- Alert view: the navy translucent UIAlertView ---------------------- */
+  --modal-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0, rgba(255, 255, 255, 0.1) 2.6rem, transparent 2.65rem),
+    linear-gradient(180deg, rgba(42, 57, 97, 0.94), rgba(21, 30, 66, 0.96));
+  --modal-border: rgba(255, 255, 255, 0.85);
+  --modal-radius: 0.75rem;
+  --modal-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 6px 22px rgba(0, 0, 0, 0.65);
+  --modal-header-bg: transparent;
+  --modal-header-fg: #ffffff;
+  --overlay-bg: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.72) 100%);
+
+  /* --- Popover / menus: the iPad popover's navy glass frame -------------- */
+  --popover-bg: #ffffff;
+  --popover-border: #1d2a45;
+  --popover-border-width: 0.4rem;
+  --popover-radius: 0.7rem;
+  --popover-shadow: 0 8px 26px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  --dropdown-bg: #ffffff;
+  --dropdown-border: var(--border);
+  --dropdown-radius: var(--radius);
+  --dropdown-item-bg-hover: var(--ios-select);
+  --dropdown-item-fg-hover: #ffffff;
+  --context-menu-bg: #ffffff;
+  --context-menu-border: var(--border);
+  --context-menu-radius: var(--radius);
+  --context-menu-item-bg-hover: var(--ios-select);
+  --context-menu-item-fg-hover: #ffffff;
+  --tooltip-bg: linear-gradient(180deg, #4b5671 0%, #1d2a45 50%, #111a2e 100%);
+  --tooltip-fg: #ffffff;
+  --tooltip-border: #0b1120;
+  --tooltip-radius: 0.45rem;
+
+  /* --- Tables: plain-table section header + blue selected cell ---------- */
+  --table-head-bg: var(--ios-section-head);
+  --table-head-fg: #ffffff;
+  --table-head-fg-hover: #ffffff;
+  --table-head-transform: none;
+  --table-head-tracking: 0;
+  --table-head-rule: #4c5c71;
+  --table-sort-fg: #dfe6ef;
+  --table-rule: #e0e0e0;
+  --row-alt-bg: #f3f5f8;
+  --row-hover-bg: #eef3fb;
+  --row-selected-bg: var(--ios-select);
+  --row-selected-fg: #ffffff;
+  --row-active-bg: #e3edfa;
+  --row-active-marker: inset 0.25rem 0 0 #2a68c8;
+
+  /* --- Navigation bar, bar buttons, tab bar, segmented control ----------- */
+  --nav-bg: var(--ios-navbar);
+  --nav-rule: #2d405c;
+  --nav-radius: 0;
+  --nav-brand-fg: #ffffff;
+  --nav-item-fg: #ffffff;
+  --nav-item-bg: var(--ios-barbtn);
+  --nav-item-bg-active: var(--ios-donebtn);
+  --nav-item-fg-active: #ffffff;
+  --nav-item-radius: 0.4rem;
+  --tab-bg: transparent;
+  --tab-fg: #b3b3b3;
+  --tab-bg-active: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+  --tab-fg-active: #ffffff;
+  --tab-underline-active: transparent;
+  --tab-radius: 0.3rem;
+  --segmented-bg: transparent;
+  --segmented-border: #6f747c;
+  --segmented-border-width: 1px;
+  --segmented-padding: 0;
+  --segmented-radius: 0.45rem;
+  --segmented-item-radius: 0;
+  --segmented-item-fg: #4c566c;
+  --segmented-item-fg-hover: #1a1a1a;
+  --segmented-item-bg-active: linear-gradient(180deg, #1c4f9d 0%, #2a68c8 50%, #2f73d6 51%, #4f8ee6 100%);
+  --segmented-item-fg-active: #ffffff;
+  --toolbar-bg: var(--ios-navbar);
+  --pagination-item-radius: 0.4rem;
+  --pagination-item-bg-active: var(--ios-donebtn);
+  --pagination-item-fg-active: #ffffff;
+  --pagination-item-bg-hover: #e6ecf5;
+  --breadcrumb-current-fg: #000000;
+  --scrollspy-link-active-fg: #385487;
+  --carousel-dot: rgba(0, 0, 0, 0.25);
+  --carousel-dot-active: #4c566c;
+
+  /* --- Badges: the Settings count pill (gray-blue) ----------------------- */
+  --badge-bg: #67779a;
+  --badge-fg: #ffffff;
+  --badge-border: transparent;
+  --badge-radius: 999px;
+  --avatar-bg: linear-gradient(180deg, #c9ced6 0%, #9aa2ae 100%);
+  --avatar-fg: #ffffff;
+  --avatar-radius: 0.4rem;
+
+  /* --- Toasts: the iOS 5 notification banner ----------------------------- */
+  --toast-bg: linear-gradient(180deg, #4a4a4a 0%, #262626 50%, #141414 51%, #0b0b0b 100%);
+  --toast-fg: #ffffff;
+  --toast-border: #000000;
+  --toast-radius: 0.5rem;
+  --toast-shadow: 0 3px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --alert-bg: var(--surface);
+  --alert-fg: #000000;
+  --alert-radius: var(--radius);
+  --alert-border-width: 1px;
+
+  /* --- Instruments: Stopwatch digits, Music app transport --------------- */
+  --readout-bg: linear-gradient(180deg, #5b5b5b 0%, #2f2f2f 50%, #1d1d1d 51%, #121212 100%);
+  --readout-fg: #ffffff;
+  --readout-font: var(--font);
+  --readout-weight: 400;
+  --readout-tracking: 0;
+  --readout-radius: 0.45rem;
+  --readout-border: #000000;
+  --readout-unit-fg: #c7c7c7;
+  --readout-glow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+  --meter-track: linear-gradient(180deg, #c7c7c7 0%, #f5f5f5 100%);
+  --meter-border: #8e9299;
+  --meter-radius: 999px;
+  --meter-low: #2f84ec;
+  --meter-mid: #e8a100;
+  --meter-high: #d0141c;
+  --lamp-radius: 50%;
+  --lamp-off: radial-gradient(circle at 50% 30%, #f2f2f2, #9a9a9a);
+  --lamp-border: #6f6f6f;
+  --lamp-glow: inset 0 -2px 3px rgba(0, 0, 0, 0.25), 0 0 0.35rem currentColor;
+  --transport-bg: var(--ios-tabbar);
+  --transport-border: #000000;
+  --transport-radius: 0.5rem;
+  --go-bg: var(--ios-donebtn);
+  --go-fg: #ffffff;
+  --go-border: #1d4a90;
+  --go-radius: 0.6rem;
+
+  /* --- Odds and ends ----------------------------------------------------- */
+  --kbd-bg: linear-gradient(180deg, #ffffff 0%, #e9e9ec 100%);
+  --kbd-fg: #000000;
+  --kbd-border: #a5a7ab;
+  --kbd-radius: 0.35rem;
+  --kbd-shadow: 0 1px 0 #6b6e73;
+  --code-bg: #ffffff;
+  --code-fg: #000000;
+  --code-block-bg: #ffffff;
+  --code-block-border: var(--border);
+  --selection-bg: #b5d5fd;
+  --selection-fg: #000000;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.45);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.6);
+  --scrollbar-track: transparent;
+  --scrollbar-radius: 999px;
+  --skeleton-bg: #e3e5e9;
+  --dropzone-bg: rgba(255, 255, 255, 0.45);
+  --dropzone-border: #8e9299;
+  --dropzone-radius: var(--radius);
+  --drawer-bg: var(--ios-linen);
+  --drawer-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
+  --message-radius: 1rem;
+  --message-tail-radius: 0.3rem;
+  --message-bg: linear-gradient(180deg, #f2f2f4 0%, #e3e3e7 50%, #d8d8dd 100%);
+  --message-fg: #000000;
+  --message-border: #b2b4ba;
+  --message-own-bg: linear-gradient(180deg, #e6fbc8 0%, #b9ea86 50%, #9bd965 100%);
+  --message-own-fg: #000000;
+  --message-own-border: #7cb24a;
+  --message-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.2);
+  --attachment-bg: var(--surface);
+  --attachment-border: var(--border);
+  --attachment-radius: 0.5rem;
+  --bar-chart-bar: linear-gradient(90deg, #1b6fe0, #6aaef7 45%, #2f84ec 55%, #1b6fe0);
+  --bar-chart-bar-alt: linear-gradient(90deg, #6d7f96, #b4c0cf 45%, #8494a8 55%, #6d7f96);
+  --bar-chart-radius: 0.35rem 0.35rem 0 0;
+  --chart-series-1: #2a68c8;
+  --chart-series-2: #6d7f96;
+  --hero-bg:
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.12), transparent 70%),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 4px),
+    #1f6b33;
+  --hero-fg: #ffffff;
+  --hero-lede-fg: #f2e6b8;
+  --band-tint-bg:
+    repeating-linear-gradient(35deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(-55deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, #6e4a2e, #553620);
+  --band-tint-fg: #fbf3e4;
+  --taskbar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(220, 225, 232, 0.25) 45%, rgba(40, 44, 52, 0.55) 46%, rgba(20, 22, 26, 0.75) 100%);
+  --log-bg: #ffffff;
+  --log-border: var(--border);
+}
+
+/* --- Page: the pinstriped grouped-table background --------------------- */
+html[data-theme="ios-skeuomorphic"] {
+  background: var(--ios-pinstripe);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Voice: bold Helvetica, embossed --------------------------------------
+ * Every label on the pinstripe carries a white 1px emboss below it, the
+ * way grouped section headers do; every label on a dark or colored fill
+ * carries a dark 1px emboss above it. */
+html[data-theme="ios-skeuomorphic"] h1,
+html[data-theme="ios-skeuomorphic"] h2,
+html[data-theme="ios-skeuomorphic"] h3,
+html[data-theme="ios-skeuomorphic"] h4 {
+  font-weight: 700;
+  letter-spacing: 0;
+  text-shadow: var(--ios-emboss-light);
+}
+html[data-theme="ios-skeuomorphic"] h1 { font-size: 1.6rem; }
+html[data-theme="ios-skeuomorphic"] h2 { font-size: 1.2rem; }
+html[data-theme="ios-skeuomorphic"] h3 { font-size: 1.05rem; color: var(--muted); }
+/* On dark or textured fills the emboss flips to a dark cut above. */
+html[data-theme="ios-skeuomorphic"] :is(.modal, .toast) :is(h1, h2, h3, h4) {
+  color: inherit;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6);
+}
+html[data-theme="ios-skeuomorphic"] .label,
+html[data-theme="ios-skeuomorphic"] .field-group-title { font-weight: 700; }
+/* Figures are Helvetica, as on the Stocks and Calculator faces, not mono. */
+html[data-theme="ios-skeuomorphic"] :is(.stat-value, .price) { font-family: var(--font); }
+html[data-theme="ios-skeuomorphic"] .stat-label { text-transform: none; letter-spacing: 0; font-weight: 700; font-size: 0.85em; }
+html[data-theme="ios-skeuomorphic"] .field-group-title { text-shadow: var(--ios-emboss-light); }
+/* iOS never set a label in tracked capitals. */
+html[data-theme="ios-skeuomorphic"] :is(.field-group-title, .readout-unit) { text-transform: none; letter-spacing: 0; }
+html[data-theme="ios-skeuomorphic"] .drawer :is(.field-group-title, .label, .checkbox, .radio):not(:is(.field-row, .card, .panel) *) { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6); }
+
+/* --- Buttons ------------------------------------------------------------ */
+html[data-theme="ios-skeuomorphic"] .btn { text-shadow: var(--ios-btn-text-shadow); }
+html[data-theme="ios-skeuomorphic"] .btn:active { --ios-btn-text-shadow: none; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35); }
+html[data-theme="ios-skeuomorphic"] .btn-primary {
+  --btn-bg: var(--ios-donebtn);
+  --btn-bg-hover: linear-gradient(180deg, #6aa0ee 0%, #4683e0 50%, #3474d4 51%, #2a64bf 100%);
+  --btn-border: #1d4a90;
+  --btn-border-hover: #163c78;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 0 rgba(255, 255, 255, 0.55);
+  --ios-btn-text-shadow: var(--ios-emboss-dark);
+}
+html[data-theme="ios-skeuomorphic"] .btn-danger {
+  --btn-bg: linear-gradient(180deg, #ee6b70 0%, #d93038 50%, #c8101a 51%, #b20d16 100%);
+  --btn-bg-hover: linear-gradient(180deg, #f27b80 0%, #e0414a 50%, #d21822 51%, #bb111a 100%);
+  --btn-border: #7c0a10;
+  --btn-border-hover: #5e070c;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 0 rgba(255, 255, 255, 0.55);
+  --ios-btn-text-shadow: var(--ios-emboss-dark);
+}
+html[data-theme="ios-skeuomorphic"] .btn-success {
+  --btn-bg: linear-gradient(180deg, #7acb69 0%, #45a336 50%, #2f8a22 51%, #2b7d1d 100%);
+  --btn-bg-hover: linear-gradient(180deg, #86d475 0%, #52ae42 50%, #36952a 51%, #2f8722 100%);
+  --btn-border: #1d5713;
+  --btn-border-hover: #16430f;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 0 rgba(255, 255, 255, 0.55);
+  --ios-btn-text-shadow: var(--ios-emboss-dark);
+}
+/* Rounded-rect UIButton: white, blue bold label. */
+html[data-theme="ios-skeuomorphic"] .btn-secondary {
+  --btn-bg: linear-gradient(180deg, #ffffff 0%, #f6f6f6 100%);
+  --btn-bg-hover: linear-gradient(180deg, #ffffff 0%, #eef3fb 100%);
+  --btn-fg: #385487;
+  --btn-border: #a3a7ad;
+}
+html[data-theme="ios-skeuomorphic"] .btn-ghost { --btn-fg: #385487; --ios-btn-text-shadow: var(--ios-emboss-light); }
+
+/* --- Navigation bar (free-standing .nav, .toolbar and the app bar) -------- */
+html[data-theme="ios-skeuomorphic"] .nav:not(.app-bar .nav),
+html[data-theme="ios-skeuomorphic"] .toolbar:not(.is-plain) {
+  box-shadow: var(--ios-navbar-highlight), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --focus: #ffffff;
+  --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+/* Everything written on a blue bar is white. */
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) {
+  --muted: #e4eaf3;
+  --link: #ffffff;
+  --accent-text: #ffffff;
+  --breadcrumb-current-fg: #ffffff;
+  --breadcrumb-separator: #c9d4e3;
+}
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .breadcrumb-item { text-shadow: var(--ios-emboss-dark); }
+html[data-theme="ios-skeuomorphic"] .nav-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55);
+}
+/* Bar buttons: the capsule UIBarButtonItem, a recessed glossy pill. */
+html[data-theme="ios-skeuomorphic"] .nav-item {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35em 0.75em;
+  text-decoration: none;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+  border: 1px solid #2d405c;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+html[data-theme="ios-skeuomorphic"] .nav-item.is-active { border-color: #193f7d; }
+html[data-theme="ios-skeuomorphic"] .toolbar:not(.is-plain) { border-color: #2d405c; }
+
+/* Bar buttons inside blue bars: the plain .btn picks up the capsule. */
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .btn:not(.btn-primary, .btn-danger, .btn-success) {
+  --btn-bg: var(--ios-barbtn);
+  --btn-bg-hover: linear-gradient(180deg, #6a84ad 0%, #56719c 50%, #4a6691 51%, #45608a 100%);
+  --btn-fg: #ffffff;
+  --btn-border: #2d405c;
+  --btn-border-hover: #22324a;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 0 rgba(255, 255, 255, 0.25);
+  --btn-radius: 0.4rem;
+  --ios-btn-text-shadow: var(--ios-emboss-dark);
+}
+
+/* --- Tabs: the black glossy UITabBar ------------------------------------- */
+html[data-theme="ios-skeuomorphic"] .tabs {
+  background: var(--ios-tabbar);
+  border: 0;
+  border-radius: 0.35rem;
+  padding: 0.25rem;
+  gap: 0.25rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --focus: #ffffff;
+}
+html[data-theme="ios-skeuomorphic"] .tab {
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-bottom-width: 1px;
+  text-shadow: 0 -1px 0 #000;
+}
+html[data-theme="ios-skeuomorphic"] .tab:hover { color: #ffffff; }
+/* The selected item: a lit square with the label in glow-blue light. */
+html[data-theme="ios-skeuomorphic"] .tab.is-active {
+  border-bottom-width: 1px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  text-shadow: 0 0 6px rgba(70, 160, 255, 0.95), 0 0 2px rgba(70, 160, 255, 0.9);
+}
+
+/* --- Segmented control (bordered style) ---------------------------------- */
+html[data-theme="ios-skeuomorphic"] .segmented {
+  overflow: hidden;
+  gap: 0;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #d9d9d9 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+html[data-theme="ios-skeuomorphic"] .segmented-item {
+  font-weight: 700;
+  text-shadow: var(--ios-emboss-light);
+}
+html[data-theme="ios-skeuomorphic"] .segmented-item + .segmented-item { border-inline-start: 1px solid #8e9299; }
+html[data-theme="ios-skeuomorphic"] .segmented-item.is-active {
+  text-shadow: var(--ios-emboss-dark);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+/* --- Grouped cells: panels, cards, lists, field rows ---------------------- */
+html[data-theme="ios-skeuomorphic"] .panel-header {
+  --success-text: #c9f7b8;
+  --warning-text: #ffe2a3;
+  --danger-text: #ffd0d2;
+  --muted: #eef2f7;
+  --accent-text: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  border-bottom-color: #4c5c71;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+html[data-theme="ios-skeuomorphic"] .list-item { font-weight: 700; }
+html[data-theme="ios-skeuomorphic"] .list-item.is-active { --list-item-fg: #ffffff; }
+html[data-theme="ios-skeuomorphic"] .list-item.is-active,
+html[data-theme="ios-skeuomorphic"] .table tr.is-selected td { text-shadow: var(--ios-emboss-dark); }
+/* The disclosure chevron: every tappable cell in a grouped table had one. */
+html[data-theme="ios-skeuomorphic"] :is(a, button).list-item {
+  position: relative;
+  padding-inline-end: 2.1em;
+}
+html[data-theme="ios-skeuomorphic"] a.list-item::after,
+html[data-theme="ios-skeuomorphic"] button.list-item::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0.95em;
+  top: calc(50% - 0.3rem);
+  width: 0.45rem;
+  height: 0.45rem;
+  border-top: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.55;
+  pointer-events: none;
+}
+html[data-theme="ios-skeuomorphic"] .field-row > .label { font-weight: 700; }
+
+/* --- Tables ------------------------------------------------------------- */
+html[data-theme="ios-skeuomorphic"] .table th {
+  font-size: 0.85em;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+html[data-theme="ios-skeuomorphic"] .table td { background-color: #ffffff; }
+/* Everything in a selected (blue) cell turns white, status text included. */
+html[data-theme="ios-skeuomorphic"] .table tr.is-selected,
+html[data-theme="ios-skeuomorphic"] .list-item.is-active {
+  --success-text: #ffffff;
+  --warning-text: #ffffff;
+  --danger-text: #ffffff;
+  --accent-text: #ffffff;
+  --muted: #ffffff;
+}
+
+
+/* --- Switch: ON | OFF in the track --------------------------------------- */
+html[data-theme="ios-skeuomorphic"] .switch:not(button),
+html[data-theme="ios-skeuomorphic"] button.switch .switch-track {
+  width: calc(4.1em * var(--density));
+}
+html[data-theme="ios-skeuomorphic"] .switch { --switch-shift: calc(2.7em * var(--density)); }
+html[data-theme="ios-skeuomorphic"] .switch:dir(rtl) { --switch-shift: calc(-2.7em * var(--density)); }
+html[data-theme="ios-skeuomorphic"] .switch-track {
+  overflow: visible;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.22);
+}
+html[data-theme="ios-skeuomorphic"] .switch-thumb {
+  top: -1px;
+  inset-inline-start: -1px;
+  width: calc(1.4em * var(--density));
+  height: calc(1.4em * var(--density));
+  border: 1px solid #a2a2a2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 #ffffff;
+  z-index: 1;
+}
+html[data-theme="ios-skeuomorphic"] .switch-track::after {
+  content: "OFF";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0.55em;
+  display: flex;
+  align-items: center;
+  font-size: 0.68em;
+  font-weight: 700;
+  color: #6f6f6f;
+  text-shadow: var(--ios-emboss-light);
+  pointer-events: none;
+}
+html[data-theme="ios-skeuomorphic"] .switch input:checked ~ .switch-track::after,
+html[data-theme="ios-skeuomorphic"] .switch[aria-checked="true"] .switch-track::after {
+  content: "ON";
+  inset-inline-end: auto;
+  inset-inline-start: 0.8em;
+  color: #ffffff;
+  text-shadow: var(--ios-emboss-dark);
+}
+html[data-theme="ios-skeuomorphic"] .switch input:checked ~ .switch-track,
+html[data-theme="ios-skeuomorphic"] .switch[aria-checked="true"] .switch-track {
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* --- Badges: SpringBoard red badge for danger, count pill otherwise ------ */
+html[data-theme="ios-skeuomorphic"] .badge { text-shadow: var(--ios-emboss-dark); }
+html[data-theme="ios-skeuomorphic"] .badge-danger {
+  --badge-bg: linear-gradient(180deg, #f2636a 0%, #e3101a 50%, #c80d16 100%);
+  --badge-fg: #ffffff;
+  --badge-border: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+html[data-theme="ios-skeuomorphic"] .badge-accent { --badge-bg: var(--ios-donebtn); --badge-fg: #ffffff; }
+html[data-theme="ios-skeuomorphic"] .badge-success { --badge-bg: linear-gradient(180deg, #5fb84f, #2b7d1d); --badge-fg: #ffffff; }
+html[data-theme="ios-skeuomorphic"] .badge-warning { --badge-bg: linear-gradient(180deg, #f1b43c, #b06f00); --badge-fg: #ffffff; }
+
+/* --- Alert view ------------------------------------------------------------ *
+ * Everything inside the navy glass is white, centered, and its buttons
+ * are the alert's own dark glossy capsules (the default action lighter). */
+html[data-theme="ios-skeuomorphic"] .modal {
+  --on-surface: #ffffff;
+  --text: #ffffff;
+  --muted: #d8dcea;
+  --label-fg: #ffffff;
+  --focus: #ffffff;
+  --btn-bg: linear-gradient(180deg, #4e5a7d 0%, #384467 50%, #27365e 51%, #2b3a61 100%);
+  --btn-bg-hover: linear-gradient(180deg, #5c6890 0%, #44507a 50%, #31406b 51%, #34446d 100%);
+  --btn-fg: #ffffff;
+  --btn-border: rgba(10, 16, 40, 0.9);
+  --btn-border-hover: #000000;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 0 rgba(255, 255, 255, 0.15);
+  --ios-btn-text-shadow: var(--ios-emboss-dark);
+  border-width: 2px;
+  text-align: center;
+  text-shadow: var(--ios-emboss-dark);
+}
+html[data-theme="ios-skeuomorphic"] .modal :is(.btn-secondary, .btn-ghost) {
+  --btn-bg: linear-gradient(180deg, #4e5a7d 0%, #384467 50%, #27365e 51%, #2b3a61 100%);
+  --btn-fg: #ffffff;
+  --btn-border: rgba(10, 16, 40, 0.9);
+  --ios-btn-text-shadow: var(--ios-emboss-dark);
+}
+html[data-theme="ios-skeuomorphic"] .modal .btn-primary {
+  --btn-bg: linear-gradient(180deg, #a6a9be 0%, #858aa6 50%, #6b7290 51%, #707a96 100%);
+  --btn-bg-hover: linear-gradient(180deg, #b3b6ca 0%, #9196b0 50%, #78809c 51%, #7c86a1 100%);
+  --btn-border: rgba(10, 16, 40, 0.9);
+}
+html[data-theme="ios-skeuomorphic"] .modal-header {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+html[data-theme="ios-skeuomorphic"] .modal-footer { justify-content: stretch; }
+html[data-theme="ios-skeuomorphic"] .modal-footer > .btn { flex: 1; }
+html[data-theme="ios-skeuomorphic"] .modal :is(.input, .select, .textarea) { text-shadow: none; text-align: start; }
+
+/* --- Toasts: notification banners ---------------------------------------- */
+html[data-theme="ios-skeuomorphic"] .toast { text-shadow: var(--ios-emboss-dark); }
+html[data-theme="ios-skeuomorphic"] .toast :is(strong, b) { font-weight: 700; }
+
+/* --- Inline alerts: a grouped cell with a colored leading cap ------------- */
+html[data-theme="ios-skeuomorphic"] .alert { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), inset 0.3rem 0 0 var(--alert-border, var(--border)); }
+
+/* --- Textures ------------------------------------------------------------ */
+/* Notes: the yellow legal pad, ruled lines and a double red margin. */
+html[data-theme="ios-skeuomorphic"] .textarea {
+  --input-bg:
+    linear-gradient(90deg, transparent 1.6rem, rgba(200, 60, 60, 0.45) 1.6rem 1.7rem, transparent 1.7rem 1.85rem, rgba(200, 60, 60, 0.45) 1.85rem 1.95rem, transparent 1.95rem),
+    repeating-linear-gradient(180deg, transparent 0 calc(1.5em - 1px), #d7cf86 calc(1.5em - 1px) 1.5em),
+    #fcf6a8;
+  --input-border: #b5a96a;
+  --input-radius: 0.2rem;
+  padding-inline-start: 2.4rem;
+  padding-block-start: 0;
+  line-height: 1.5em;
+  font-family: Noteworthy, "Marker Felt", var(--font);
+  background-attachment: local;
+}
+/* Notification Center linen in the drawer (white embossed text on it). */
+html[data-theme="ios-skeuomorphic"] .drawer {
+  --text: #ffffff;
+  --on-surface: #ffffff;
+  --muted: #c4c8d0;
+  --field-group-title-fg: #d5d9e0;
+  --label-fg: #e4e7ec;
+}
+/* Game Center felt: a wood rim around the green baize. */
+html[data-theme="ios-skeuomorphic"] .hero {
+  border: 0.55rem solid #6b4423;
+  border-image: linear-gradient(180deg, #8a5a30, #4e2f15) 1;
+  box-shadow: inset 0 0 2.5rem rgba(0, 0, 0, 0.55);
+}
+/* Calendar / Find My Friends leather with a stitched edge. */
+html[data-theme="ios-skeuomorphic"] .band.is-tinted {
+  --muted: #ecdcc0;
+  --scrollspy-nav-bg: rgba(0, 0, 0, 0.3);
+  --scrollspy-link-fg: #fbf3e4;
+  --scrollspy-link-active-fg: #ffffff;
+  outline: 2px dashed rgba(255, 240, 210, 0.45);
+  outline-offset: -0.6rem;
+}
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) :is(h1, h2, h3, h4, p:not([class])) {
+  color: inherit;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) :is(.card, .panel) :is(h1, h2, h3, h4, p:not([class])) {
+  text-shadow: var(--ios-emboss-light);
+}
+
+/* Cells set on a texture go back to black-on-white, without the emboss. */
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) :is(.card, .panel, .list, .field-row, .input, .select, .textarea) {
+  --muted: #4c566c;
+  --text: #000000;
+  --on-surface: #000000;
+  text-shadow: none;
+}
+
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) .table { color: #000000; --muted: #4c566c; }
+
+/* --- Keyboard keys and code ---------------------------------------------- */
+html[data-theme="ios-skeuomorphic"] kbd { font-family: var(--font); font-weight: 700; }
+
+/* --- App shell: an iPhone app ------------------------------------------------
+ * Black status strip and blue navigation bar on top, the pinstriped grouped
+ * table as the content, and the black glossy tab bar pinned at the foot.
+ * No rail: iOS apps had none. */
+html[data-theme="ios-skeuomorphic"] {
+  --app-padding: 0;
+  --app-bg: transparent;
+  --app-bar-bg: var(--ios-navbar);
+  --app-bar-fg: #ffffff;
+  --app-bar-rule: #2d405c;
+  --app-bar-rule-width: 1px;
+  --app-bar-height: 2.75rem;
+  --app-bar-padding: 0.3rem 0.75rem;
+  --app-rail-display: none;
+  --app-main-bg: transparent;
+  --app-main-padding: 1.25rem clamp(0.75rem, 4vw, 3rem);
+  --app-main-padding-sm: 0.75rem 0.6rem;
+  --app-status-bg: var(--ios-tabbar);
+  --app-status-fg: #b3b3b3;
+  --app-status-rule: #000000;
+  --app-status-padding: 0.55rem 1rem;
+}
+html[data-theme="ios-skeuomorphic"] .app-bar {
+  --nav-brand-fg: #ffffff;
+  --nav-item-fg: #ffffff;
+  --focus: #ffffff;
+  --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.35);
+  position: relative;
+  /* The iPhone status bar: a black strip above the navigation bar. */
+  border-top: 1.15rem solid #000000;
+  box-shadow: var(--ios-navbar-highlight), 0 1px 3px rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+/* Battery glyph at the right of the status strip, drawn, not written. */
+html[data-theme="ios-skeuomorphic"] .app-bar::before {
+  content: "";
+  position: absolute;
+  top: -0.85rem;
+  right: 0.75rem;
+  width: 1.35rem;
+  height: 0.55rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #e8e8e8 0 85%, transparent 85%) 1px 1px / calc(100% - 2px) calc(100% - 2px) no-repeat;
+  box-shadow: 3px 0 0 -1px #d0d0d0;
+}
+html[data-theme="ios-skeuomorphic"] .app-bar::after {
+  content: "";
+  position: absolute;
+  top: -0.85rem;
+  left: 0.75rem;
+  width: 2.6rem;
+  height: 0.5rem;
+  background: radial-gradient(circle, #e8e8e8 0 0.18rem, transparent 0.2rem) 0 50% / 0.5rem 0.5rem repeat-x;
+}
+html[data-theme="ios-skeuomorphic"] .app-status {
+  justify-content: center;
+  gap: 2rem;
+  font-weight: 700;
+  font-size: 0.75em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  text-shadow: 0 -1px 0 #000000;
+  --success-text: #6fd65c;
+  --warning-text: #f4c04a;
+  --danger-text: #ff6a70;
+  --muted: #b3b3b3;
+}
+@media (max-width: 720px) {
+  html[data-theme="ios-skeuomorphic"] .app-bar .nav-item { padding: 0.3em 0.5em; }
+}

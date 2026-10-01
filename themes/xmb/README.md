@@ -19,7 +19,11 @@ which doesn't translate to a general-purpose page background.
 1. **Nothing is a filled block.** Every surface — cards, inputs, the nav
    itself — is a translucent tint over the wave gradient, never an opaque
    fill. An opaque panel is the fastest way to look like a generic dark
-   dashboard instead of XMB.
+   dashboard instead of XMB. **Exception: overlays.** A PS3 system dialog
+   dims the XMB almost to black and sits on it as a dark smoked-glass box
+   with thin white rules (`references/xmb/modalDialog.jpg`), so the modal,
+   toast and tooltip are near-opaque navy (`--modal-bg` 94%, `--toast-bg`
+   94%, `--tooltip-bg` 96%) over a heavy, blurred `--overlay-bg`.
 2. **Selection is a glow, not a fill.** The active icon/row gets a soft
    blue glow and a scale-up, not a solid highlight block — see
    `--btn-shadow-hover` and the icon-button hover rule.
@@ -44,7 +48,9 @@ which doesn't translate to a general-purpose page background.
 
 ## Tell-tales of an inauthentic result
 
-- Any opaque panel or card background.
+- Any opaque panel or card background (overlays excepted, see Core values).
+- A see-through modal: if page text is legible *through* an open dialog, the
+  overlay is wrong.
 - A left-aligned or edge-anchored navigation bar instead of a centred one.
 - Sharp rectangular corners on interactive elements.
 - A stadium/pill-shaped info panel, alert or dropdown — those are
@@ -54,7 +60,7 @@ which doesn't translate to a general-purpose page background.
 
 ## Don'ts
 
-- **No opaque panels or cards**; everything is a translucent tint over the wave.
+- **No opaque panels or cards**; everything is a translucent tint over the wave. Overlays (modal, toast, tooltip) are the exception and must be near-opaque.
 - **No filled selection block**; selection is a glow plus scale.
 - **No left-anchored primary nav** where the layout allows a centred bar.
 - **No stadium/pill info panels**; only buttons, nav items and badges are pills.
@@ -68,17 +74,20 @@ which doesn't translate to a general-purpose page background.
 
 - **Text on the deep-blue base is very high:** `--text` `#eaf2ff` is 15.82:1 on `--bg` `#0a1730`; `--muted` `#b9cbe8` is 10.84:1; `--accent` `#7ec8ff` is 9.84:1 (no lift needed).
 - **Translucent surfaces:** `--surface`/`--surface-2` are white at 8%/14% alpha over the wave, so ratios depend on what is behind; I measured on `--bg` only. The `theme.css` comment asserts `--muted` clears AA on both surfaces; the tint raises luminance only slightly, but I did not composite them.
+- **Overlays (measured, rendered pixels, 1280x900, all 7 demo pages):** the modal used to be `--surface` (8% white), so whatever was behind it showed through. On the demo pages the inline copy of the same dialog was readable through the open one, and the "Confirm SCRAM" title was doubled. Now `--modal-bg` `rgba(14,28,58,.94)` over `--overlay-bg` `rgba(0,4,12,.78)` + `--overlay-blur: blur(6px)`: title 12.5:1 (was 8.4-10.3), body/labels in `--muted` 10.4:1 (was 7.7-9.3, and down to 5.6 where page content sat behind), `.btn-secondary` text 9.5:1, `.field-error` 6.2:1 (was 2.8 at worst). The surface itself is only 1.1-1.2:1 against the dimmed page, as on the PS3; what separates it is the 40%-white `--modal-border` at roughly 3.5:1. Toasts: 16:1 on `--toast-bg` (was 4.9-7.7 on 14% white).
 - **Glow lifted for legibility:** the selection glow is a bright light-blue halo (`--accent`/`--flare` `#bfe4ff`); the strengthened active-item glow and the blurred, floating bar were added so the bar still reads on the wave, not to meet a text ratio. `--on-accent` `#04162e` on `--accent` is 10.0:1.
 - **Hue is a choice.** The PS3 capture (`xmb-ps3-screenshot.jpg`) shows a green wave, the RetroArch capture blue. The XMB wave colour changes by month/setting, so blue is the theme's selection, not the only reference; hexes not sampled.
 
 ## Reference status
 
-`references/xmb/` holds 2 captures plus `RESEARCH.md`:
+`references/xmb/` holds 6 captures plus `RESEARCH.md`:
 
 - `xmb-ps3-screenshot.jpg` — a PS3 XMB (green wave variant) with the horizontal icon row and the vertical list dropping from Music. Backs the cross layout, the wave and the thin-type look.
 - `xmb-retroarch-main-menu.jpg` — RetroArch's XMB recreation on a blue gradient: rounded-square category icons in a row, a highlighted first icon, a vertical menu list below and a wave. Backs the blue palette, the wave and the cross.
 
-Gap (from `RESEARCH.md`): no people-free game-thumbnail example remains. Not backed by either file: the pill-shaped nav, the blurred floating app-bar capsule and the exact glow values. (An earlier note here claiming no `references/xmb/` folder exists was wrong.)
+- `modalDialog.jpg`, `modalDialog-form.jpg`, `modalDialog-optionsMenu.jpg`, `toast.jpg` — PS3 user's-guide screens (Yes/No confirm, PSN sign-in form, Options menu, online notification). Back the overlay values above.
+
+Gap (from `RESEARCH.md`): no tooltip reference, and no standalone capture of the "O Enter / X Back" hint footer. The theme doesn't draw that footer; the contract's `.modal-footer` holds real buttons. no people-free game-thumbnail example remains. Not backed by either file: the pill-shaped nav, the blurred floating app-bar capsule and the exact glow values. (An earlier note here claiming no `references/xmb/` folder exists was wrong.)
 
 ## Known harness limitation: the app-bar doesn't render centred everywhere
 

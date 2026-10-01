@@ -1,0 +1,768 @@
+/* ftl-themes: Liquid Glass
+ * Theme-Name: Liquid Glass
+ * Description: Apple's 2025 Liquid Glass (iOS 26 / macOS Tahoe 26): refractive capsule controls with specular rims floating over a vivid wallpaper, a full-height glass sidebar, and a floating tab bar the content scrolls under.
+ * Variants: dark=Dark
+ *
+ * Sources: references/liquid-glass/RESEARCH.md (Apple Newsroom WWDC25
+ * press images: iOS 26 Phone/Messages/Maps/Games, macOS Tahoe 26 Music,
+ * Control Center, Safari, Phone, iPadOS 26 menu bar and Files; Apple HIG
+ * "Color" and "Materials" for the system colors and the glass rules).
+ *
+ * Distinct from `ios-flat` (iOS 7-18: flat opaque bars, hairline
+ * separators, edge-to-edge chrome) and `ios-skeuomorphic` (iOS 6: linen,
+ * glossy stitched leather): here every control is a translucent capsule
+ * that FLOATS inset from the edges with a bright specular rim, and the
+ * content runs underneath it. If a bar touches the window edge or has a
+ * hairline under it, it has turned into ios-flat.
+ *
+ * Note on fonts: SF Pro / SF Mono are Apple-licensed and cannot be
+ * vendored. The stack names them first (-apple-system resolves to SF on
+ * Apple platforms); elsewhere Helvetica Neue / Inter / system-ui render.
+ *
+ * Note on refraction: real Liquid Glass bends the content at its rim (a
+ * lens). CSS can't do that portably — an SVG feDisplacementMap in
+ * backdrop-filter only works in Chromium and needs inline SVG in the page —
+ * so the lensing is suggested with layered inset rim highlights over
+ * blur + saturate instead. Without backdrop-filter, surfaces fall back to
+ * their translucent white fill, still legible.
+ */
+
+html[data-theme="liquid-glass"] {
+  color-scheme: light;
+  /* Page backdrop: the average of the Tahoe-style wallpaper below. Text
+     never sits on it directly; it is what the lint composites glass over. */
+  --bg: #dce6f2;
+  /* Opaque equivalents of the regular glass material over that wallpaper.
+     Surfaces actually paint --lg-* translucent fills; these keep contrast
+     math honest and serve L0 apps that never see the wallpaper. */
+  --surface: #f5f6f8;
+  --surface-2: #e9ebef;
+  --border: rgba(60, 60, 67, 0.22);
+  --hairline: rgba(60, 60, 67, 0.12);
+  --text: #1d1d1f;
+  /* iOS secondaryLabel is 60% #3c3c43; flattened and pulled one step
+     darker so it clears 4.5:1 on the grey fill too. */
+  --muted: #5e5e63;
+  /* systemBlue in iOS 26 is #0088ff, but white on it is 3.5:1; #0071e3
+     (Apple's own action blue on apple.com) carries white text at 4.7:1.
+     The brighter #0088ff stays the focus ring and --accent-2. */
+  --accent: #0071e3;
+  --accent-2: #0088ff;
+  --accent-text: #0058b8;
+  --link: #0058b8;
+  /* systemRed #ff383c deepened until white text clears 4.5:1. */
+  --danger: #e0262b;
+  --danger-text: #c4161c;
+  /* systemGreen as the fill, with dark text: Apple's green is too light
+     for white type at any useful size. */
+  --success: #34c759;
+  --success-text: #1b7a34;
+  --warning: #ff8d28;
+  --warning-text: #a84d00;
+  --on-accent: #ffffff;
+  --on-danger: #ffffff;
+  --on-success: #06240f;
+  --radius: 14px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", Inter, system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, "Cascadia Mono", monospace;
+  /* The specular highlight: the white light along every glass rim. */
+  --flare: #ffffff;
+  --density: 1.05;
+
+  /* --- The material ------------------------------------------------------
+   * Two glass weights, as in the HIG: "clear" for small floating controls
+   * (more wallpaper reads through) and "regular" for text-carrying sheets
+   * (a heavier white scrim so body text holds 4.5:1 whatever is behind). */
+  --lg-blur: blur(14px) saturate(160%) brightness(1.08);
+  --lg-blur-heavy: blur(28px) saturate(180%) brightness(1.04);
+  --lg-clear: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.54));
+  --lg-clear-hover: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.7));
+  --lg-regular: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7));
+  --lg-press: rgba(255, 255, 255, 0.9);
+  /* Rim: light catches the top-left and bottom-right of the curved bezel,
+     a faint inner glow is the refraction band, and a soft drop shadow
+     lifts the pane off the content. */
+  --lg-rim:
+    inset 1.5px 1.5px 0.5px -1px rgba(255, 255, 255, 0.95),
+    inset -1.5px -1.5px 0.5px -1px rgba(255, 255, 255, 0.85),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.55),
+    inset 0 0 8px rgba(255, 255, 255, 0.35);
+  --lg-lift: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(0, 20, 60, 0.14);
+  --lg-lift-high: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 18px 48px rgba(0, 20, 60, 0.24);
+  --lg-lens: rgba(120, 120, 128, 0.16);
+  --lg-sheet-radius: 28px;
+
+  /* --- Controls: capsules of clear glass ------------------------------- */
+  --btn-bg: var(--lg-clear);
+  --btn-bg-hover: var(--lg-clear-hover);
+  --btn-fg: var(--text);
+  --btn-border: transparent;
+  --btn-border-hover: transparent;
+  --btn-border-width: 0;
+  --btn-radius: 999px;
+  --btn-weight: 500;
+  --btn-padding: calc(0.55em * var(--density)) calc(1.25em * var(--density));
+  --btn-shadow: var(--lg-rim), var(--lg-lift);
+  --btn-shadow-hover: var(--lg-rim), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 8px 22px rgba(0, 20, 60, 0.18);
+  --btn-icon-radius: 50%;
+  --btn-group-gap: 0;
+  --btn-close-bg: var(--lg-clear);
+  --btn-close-bg-hover: var(--lg-clear-hover);
+  --btn-close-border: transparent;
+  --btn-close-fg: var(--text);
+  --btn-close-radius: 50%;
+
+  --input-bg: rgba(118, 118, 128, 0.12);
+  --input-border: transparent;
+  --input-radius: 999px;
+  --input-padding: calc(0.55em * var(--density)) calc(1em * var(--density));
+  --input-placeholder: #6e6e73;
+  --input-caret: var(--accent-2);
+  --input-addon-bg: rgba(118, 118, 128, 0.2);
+  --input-addon-fg: var(--muted);
+  --input-readonly-bg: rgba(118, 118, 128, 0.06);
+  --input-error-ring: 0 0 0 3px rgba(224, 38, 43, 0.3);
+  --select-arrow-fg: var(--muted);
+
+  --focus: #0088ff;
+  --focus-ring: 0 0 0 4px rgba(0, 136, 255, 0.28);
+  --selection-bg: rgba(0, 136, 255, 0.25);
+  --selection-fg: inherit;
+
+  /* The iOS switch: systemGreen track, a white capsule knob (iOS 26's
+     knob is wider than tall — it becomes a glass lens while dragged). */
+  --switch-bg: rgba(120, 120, 128, 0.2);
+  --switch-bg-on: #34c759;
+  --switch-border: transparent;
+  --switch-border-on: transparent;
+  --switch-border-width: 0;
+  --switch-thumb-bg: #ffffff;
+  --switch-thumb-bg-on: #ffffff;
+  --switch-thumb-radius: 999px;
+
+  /* Control Center slider: a thick capsule track with a white capsule
+     thumb. */
+  --slider-bg: rgba(120, 120, 128, 0.22);
+  --slider-border: transparent;
+  --slider-border-width: 0;
+  --slider-height: 0.375rem;
+  --slider-radius: 999px;
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-radius: 999px;
+  --slider-thumb-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  --progress-bg: rgba(120, 120, 128, 0.2);
+  --progress-border: transparent;
+  --progress-border-width: 0;
+  --progress-radius: 999px;
+  --progress-height: 0.375rem;
+  --progress-fill: var(--accent-2);
+
+  /* Segmented control: a grey capsule with a white lifted lens. */
+  --segmented-bg: rgba(118, 118, 128, 0.12);
+  --segmented-border: transparent;
+  --segmented-border-width: 0;
+  --segmented-radius: 999px;
+  --segmented-item-radius: 999px;
+  --segmented-padding: 3px;
+  --segmented-item-bg-active: #ffffff;
+  --segmented-item-fg: var(--muted);
+  --segmented-item-fg-active: var(--text);
+
+  /* Tabs read as the floating tab bar: a glass capsule whose selected
+     item is a grey lens with tinted (blue) label — the iOS 26 tab bar. */
+  --tab-radius: 999px;
+  --tab-bg: transparent;
+  --tab-fg: var(--text);
+  --tab-bg-active: var(--lg-lens);
+  --tab-fg-active: var(--accent-text);
+  --tab-border-active: transparent;
+  --tab-underline-active: transparent;
+
+  --badge-radius: 999px;
+  --badge-bg: rgba(118, 118, 128, 0.14);
+  --badge-fg: var(--muted);
+
+  /* Surfaces in the CONTENT layer are a standard thick material, not
+     Liquid Glass: HIG — "Don't use Liquid Glass in the content layer."
+     Frosted white, a soft shadow, no specular rim. The rim is what marks
+     the floating functional layer (bars, controls, menus, sheets). */
+  --panel-bg: var(--lg-regular);
+  --panel-border: transparent;
+  --panel-border-width: 0;
+  --panel-radius: 24px;
+  --panel-shadow: var(--lg-lift);
+  --panel-header-bg: transparent;
+  --panel-header-fg: var(--text);
+  --card-bg: var(--lg-regular);
+  --card-border: transparent;
+  --card-border-width: 0;
+  --card-radius: 24px;
+  --card-shadow: var(--lg-lift);
+
+  --modal-bg: var(--lg-regular);
+  --modal-border: transparent;
+  --modal-radius: var(--lg-sheet-radius);
+  --modal-shadow: var(--lg-rim), var(--lg-lift-high);
+  --modal-header-bg: transparent;
+  --modal-header-fg: var(--text);
+  --overlay-bg: rgba(0, 10, 30, 0.18);
+  --overlay-blur: blur(6px);
+
+  --dropdown-bg: var(--lg-regular);
+  --dropdown-border: transparent;
+  --dropdown-border-width: 0;
+  --dropdown-radius: 18px;
+  --dropdown-item-bg-hover: rgba(118, 118, 128, 0.18);
+  --dropdown-item-fg-hover: var(--text);
+
+  --popover-bg: var(--lg-regular);
+  --popover-border: transparent;
+  --popover-border-width: 0;
+  --popover-radius: 22px;
+  --popover-shadow: var(--lg-rim), var(--lg-lift-high);
+  --tooltip-bg: rgba(40, 40, 44, 0.86);
+  --tooltip-fg: #ffffff;
+  --tooltip-border: transparent;
+  --tooltip-radius: 999px;
+
+  /* Notifications: rounded glass banners, the Lock Screen stack. */
+  --toast-bg: var(--lg-regular);
+  --toast-fg: var(--text);
+  --toast-border: transparent;
+  --toast-border-width: 1px;
+  --toast-radius: 22px;
+  --toast-shadow: var(--lg-rim), var(--lg-lift-high);
+
+  --alert-bg: var(--lg-regular);
+  --alert-border: transparent;
+  --alert-radius: 20px;
+
+  /* Lists, not grids: no header fill, sentence-case grey headers,
+     inset hairlines, grey rounded selection. */
+  --table-head-bg: transparent;
+  --table-head-fg: var(--muted);
+  --table-head-transform: none;
+  --table-head-tracking: normal;
+  --table-head-rule: var(--hairline);
+  --table-rule: var(--hairline);
+  --row-hover-bg: rgba(118, 118, 128, 0.08);
+  --row-alt-bg: rgba(118, 118, 128, 0.05);
+  --row-selected-bg: rgba(0, 136, 255, 0.14);
+  --row-selected-fg: var(--text);
+  --row-active-bg: rgba(118, 118, 128, 0.14);
+  --row-active-marker: var(--accent-2);
+
+  --list-bg: rgba(255, 255, 255, 0.6);
+  --list-border: transparent;
+  --list-radius: 18px;
+  --list-rule: var(--hairline);
+  --nav-bg: transparent;
+  --nav-rule-width: 0;
+  --nav-radius: 999px;
+  --nav-item-radius: 999px;
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--text);
+  --nav-item-bg-active: var(--lg-lens);
+  --nav-item-fg-active: var(--accent-text);
+  --toolbar-bg: var(--lg-clear);
+
+  --kbd-bg: var(--lg-clear);
+  --kbd-border: rgba(60, 60, 67, 0.18);
+  --kbd-radius: 7px;
+  --code-bg: rgba(118, 118, 128, 0.12);
+  --code-block-bg: rgba(255, 255, 255, 0.55);
+  --code-block-border: transparent;
+
+  --readout-bg: rgba(118, 118, 128, 0.1);
+  --readout-border: transparent;
+  --readout-radius: 16px;
+  --readout-font: var(--font);
+  --readout-weight: 600;
+  --lamp-radius: 50%;
+  --lamp-border: rgba(255, 255, 255, 0.7);
+  --meter-radius: 999px;
+  --meter-track: rgba(120, 120, 128, 0.2);
+  --meter-border: transparent;
+  --transport-bg: var(--lg-clear);
+  --transport-border: transparent;
+  --transport-radius: 999px;
+  --transport-shadow: var(--lg-rim), var(--lg-lift);
+
+  --indicator-fg: var(--accent-2);
+  --indicator-track: rgba(120, 120, 128, 0.2);
+
+  /* Messages: grey incoming bubbles, blue outgoing, white text. */
+  --message-bg: #e9e9eb;
+  --message-fg: #1d1d1f;
+  --message-border: transparent;
+  --message-radius: 20px;
+  --message-own-bg: #0071e3;
+  --message-own-fg: #ffffff;
+  --message-own-border: transparent;
+  --message-own-meta-fg: rgba(255, 255, 255, 0.85);
+  --message-tail-radius: 6px;
+  --attachment-bg: rgba(255, 255, 255, 0.7);
+  --attachment-border: transparent;
+  --bar-chart-bar: linear-gradient(180deg, #4aa8ff, #0071e3);
+  --bar-chart-bar-alt: linear-gradient(180deg, #7ee29a, #34c759);
+  --bar-chart-radius: 999px 999px 6px 6px;
+
+  /* The floating tab bar in the status strip (components.html shows it as
+     a .taskbar): items are capsules, the running one sits in a lens. */
+  --taskbar-bg: transparent;
+  --taskbar-start-bg: var(--lg-clear);
+  --taskbar-start-radius: 999px;
+  --taskbar-start-border: transparent;
+  --taskbar-start-shadow: var(--lg-rim), var(--lg-lift);
+  --taskbar-task-bg: transparent;
+  --taskbar-task-fg: var(--text);
+  --taskbar-task-border: transparent;
+  --taskbar-task-radius: 999px;
+  --taskbar-task-shadow: none;
+  --taskbar-task-bg-active: var(--lg-lens);
+  --taskbar-task-shadow-active: none;
+  --taskbar-tray-fg: var(--text);
+}
+
+/* --- The wallpaper ---------------------------------------------------------
+ * Glass is invisible over a flat colour; it needs bright, saturated content
+ * with edges behind it to refract. This is a CSS sketch of the macOS Tahoe
+ * day wallpaper: a sand-pale top-left, deep blue sweeping waves, and the
+ * thin white crest arcs that the frosted panes visibly soften. Fixed, so
+ * the blur behind the floating bars changes as the page scrolls under them
+ * — the whole point of the material. */
+html[data-theme="liquid-glass"] {
+  background-color: #a9c7ec;
+  background-image:
+    radial-gradient(160% 120% at 105% -5%, transparent 55%, rgba(255, 255, 255, 0.9) 56.5%, transparent 59%),
+    radial-gradient(130% 110% at 110% 0%, transparent 63%, rgba(200, 235, 255, 0.75) 64.5%, transparent 67%),
+    radial-gradient(70% 55% at 100% 105%, #0a2fa8 0 35%, transparent 70%),
+    radial-gradient(120% 70% at -15% 110%, #0f5fe6 0 30%, #3f9bff 48%, transparent 66%),
+    radial-gradient(60% 45% at 80% 35%, #67c3ff 0 25%, transparent 70%),
+    radial-gradient(70% 55% at 10% 0%, #f7ead8 0 25%, transparent 70%),
+    linear-gradient(155deg, #e8eef6 0%, #a6cbf3 38%, #3e86ec 70%, #1546c4 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  accent-color: var(--accent-2);
+}
+
+/* Headings: SF's bold large-title voice, slightly tight. Headings sit on
+   the wallpaper as often as on glass, so they carry a faint white halo —
+   the scrim the system draws under labels over busy content. */
+html[data-theme="liquid-glass"] h1,
+html[data-theme="liquid-glass"] h2,
+html[data-theme="liquid-glass"] h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 2px rgba(255, 255, 255, 0.6);
+}
+html[data-theme="liquid-glass"] h1 { font-size: 2.1rem; letter-spacing: -0.025em; }
+
+/* --- Glass, applied --------------------------------------------------------
+ * Shape and the backdrop filter only; fills come from the tokens above, so
+ * primary / danger / success keep their tinted-glass identity. */
+html[data-theme="liquid-glass"] :is(.btn, .btn-close, .panel, .card, .modal, .dropdown, .popover, .toast, .alert, .context-menu, .transport, .toolbar, .tabs, .taskbar-start, .kbd) {
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+}
+html[data-theme="liquid-glass"] :is(.panel, .card, .modal, .dropdown, .popover, .toast, .alert, .context-menu) {
+  -webkit-backdrop-filter: var(--lg-blur-heavy);
+  backdrop-filter: var(--lg-blur-heavy);
+}
+html[data-theme="liquid-glass"] .btn { min-height: 2.25rem; }
+html[data-theme="liquid-glass"] .btn-sm { min-height: 1.85rem; }
+/* Press: glass swells like a drop of liquid instead of sinking. */
+html[data-theme="liquid-glass"] .btn:active:not(:disabled) { transform: scale(1.04); }
+
+/* Prominent glass: the tinted variants keep the fill colour but are still
+   glass — a lit top edge, the same rim, a coloured bloom underneath. */
+html[data-theme="liquid-glass"] .btn-primary {
+  --btn-bg: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #ffffff), var(--accent) 60%);
+  --btn-bg-hover: linear-gradient(180deg, color-mix(in srgb, var(--accent) 72%, #ffffff), color-mix(in srgb, var(--accent) 92%, #ffffff) 60%);
+  --btn-shadow: var(--lg-rim), 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent);
+  --btn-shadow-hover: var(--lg-rim), 0 8px 24px color-mix(in srgb, var(--accent) 45%, transparent);
+  --btn-weight: 600;
+}
+html[data-theme="liquid-glass"] .btn-danger {
+  --btn-bg: linear-gradient(180deg, color-mix(in srgb, var(--danger) 82%, #ffffff), var(--danger) 60%);
+  --btn-bg-hover: var(--btn-bg);
+  --btn-shadow: var(--lg-rim), 0 6px 18px color-mix(in srgb, var(--danger) 35%, transparent);
+  --btn-shadow-hover: var(--btn-shadow);
+}
+html[data-theme="liquid-glass"] .btn-success {
+  --btn-bg: linear-gradient(180deg, color-mix(in srgb, var(--success) 75%, #ffffff), var(--success) 60%);
+  --btn-bg-hover: var(--btn-bg);
+  --btn-shadow: var(--lg-rim), 0 6px 18px color-mix(in srgb, var(--success) 35%, transparent);
+  --btn-shadow-hover: var(--btn-shadow);
+  --btn-weight: 600;
+}
+/* Secondary is the plain clear-glass button with a tinted label. */
+html[data-theme="liquid-glass"] .btn-secondary {
+  --btn-bg: var(--lg-clear);
+  --btn-fg: var(--accent-text);
+}
+/* Ghost (borderless toolbar item): no glass of its own until hovered. */
+html[data-theme="liquid-glass"] .btn-ghost {
+  --btn-shadow: none;
+  --btn-bg-hover: var(--lg-lens);
+  --btn-shadow-hover: none;
+}
+html[data-theme="liquid-glass"] .btn-ghost:not(:hover) { -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* Grouped toolbar buttons share one capsule of glass (Safari's back/
+   forward pair, Preview's zoom cluster). */
+html[data-theme="liquid-glass"] .btn-group {
+  border-radius: 999px;
+  box-shadow: var(--lg-rim), var(--lg-lift);
+  background: var(--lg-clear);
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+}
+html[data-theme="liquid-glass"] .btn-group > .btn {
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-theme="liquid-glass"] .btn-group > .btn:not(.btn-primary, .btn-danger, .btn-success) {
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--lg-lens);
+}
+
+/* Inputs are filled capsules (the search field); multi-line text keeps a
+   rounded rectangle concentric with its sheet. */
+html[data-theme="liquid-glass"] :is(.textarea, textarea.input) { border-radius: 18px; }
+html[data-theme="liquid-glass"] .input-group > :not(:last-child) { border-start-end-radius: 0; border-end-end-radius: 0; }
+html[data-theme="liquid-glass"] .input-group > :not(:first-child) { border-start-start-radius: 0; border-end-start-radius: 0; }
+
+/* Switch: the wider iOS 26 track with a capsule knob that is a little
+   wider than tall. */
+html[data-theme="liquid-glass"] .switch { --switch-shift: calc(1.25em * var(--density)); }
+html[data-theme="liquid-glass"] .switch:not(button),
+html[data-theme="liquid-glass"] button.switch .switch-track {
+  width: calc(3.1em * var(--density));
+  height: calc(1.5em * var(--density));
+}
+html[data-theme="liquid-glass"] .switch-thumb {
+  top: 3px;
+  inset-inline-start: 3px;
+  width: calc(1.85em * var(--density) - 6px);
+  height: calc(1.5em * var(--density) - 6px);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+/* Slider thumb: the white capsule from Control Center. */
+html[data-theme="liquid-glass"] .slider::-webkit-slider-thumb { width: 2.1rem; height: 1.35rem; border: 0; }
+html[data-theme="liquid-glass"] .slider::-moz-range-thumb { width: 2.1rem; height: 1.35rem; border: 0; }
+html[data-theme="liquid-glass"] .slider.is-vertical::-webkit-slider-thumb { width: 1.35rem; height: 2.1rem; }
+html[data-theme="liquid-glass"] .slider.is-vertical::-moz-range-thumb { width: 1.35rem; height: 2.1rem; }
+
+/* Segmented: the selected segment is a lifted white lens. */
+html[data-theme="liquid-glass"] .segmented-item.is-active {
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.04), 0 3px 8px rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+}
+
+/* Tabs: a floating capsule of clear glass, never an underlined strip. */
+html[data-theme="liquid-glass"] .tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lg-clear);
+  box-shadow: var(--lg-rim), var(--lg-lift);
+}
+html[data-theme="liquid-glass"] .tab { border: 0; padding: 0.45em 1.1em; font-weight: 500; }
+html[data-theme="liquid-glass"] .tab.is-active { border-bottom: 0; font-weight: 600; }
+html[data-theme="liquid-glass"] .tabs[aria-orientation="vertical"] { border-radius: 22px; padding: 6px; }
+html[data-theme="liquid-glass"] .tabs[aria-orientation="vertical"] > .tab { border-radius: 14px; }
+
+/* A toolbar is one floating sheet of glass, concentric with the sheets
+   around it — never a ruled strip. */
+html[data-theme="liquid-glass"] .toolbar:not(.is-plain) {
+  border-bottom: 0;
+  border-radius: 26px;
+  padding: 0.4rem 0.5rem;
+  box-shadow: var(--lg-rim), var(--lg-lift);
+}
+
+/* Panel header: a bold title, no rule, no strip — Apple separates by
+   spacing, not lines. */
+html[data-theme="liquid-glass"] .panel-header {
+  border-bottom: 0;
+  padding-bottom: 0;
+  font-weight: 600;
+  font-size: 1.02em;
+  letter-spacing: -0.01em;
+}
+html[data-theme="liquid-glass"] .modal-header {
+  margin: -1.5rem -1.5rem 0.75rem;
+  padding: 1.25rem 1.5rem 0;
+  border-bottom: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+html[data-theme="liquid-glass"] .modal-footer .btn { min-width: 6rem; }
+
+/* Menus: items are rounded highlights inset in the glass, concentric with
+   the 18px menu (18 - 6 padding = 12). */
+html[data-theme="liquid-glass"] .dropdown { padding: 6px; }
+html[data-theme="liquid-glass"] :is(.dropdown-item, .context-menu-item) { border-radius: 12px; }
+
+/* Tables read as an inset grouped list. */
+html[data-theme="liquid-glass"] .table th { font-weight: 600; font-size: 0.82em; }
+html[data-theme="liquid-glass"] .table tbody tr.is-selected td:first-child,
+html[data-theme="liquid-glass"] .table tbody tr:hover td:first-child { border-start-start-radius: 12px; border-end-start-radius: 12px; }
+html[data-theme="liquid-glass"] .table tbody tr.is-selected td:last-child,
+html[data-theme="liquid-glass"] .table tbody tr:hover td:last-child { border-start-end-radius: 12px; border-end-end-radius: 12px; }
+
+html[data-theme="liquid-glass"] .badge { font-weight: 600; }
+html[data-theme="liquid-glass"] .readout { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+html[data-theme="liquid-glass"] .avatar { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); }
+
+/* Focus: the macOS keyboard ring — a soft systemBlue halo hugging the
+   capsule, outside the glass rim. */
+html[data-theme="liquid-glass"] :focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--focus) 75%, transparent);
+  outline-offset: 2px;
+}
+
+/* --- Layout --------------------------------------------------------------
+ * A macOS Tahoe window: a full-height glass SIDEBAR floats on the left
+ * (traffic lights in its corner); to its right the content WINDOW is one
+ * big frosted pane, and the capsule TOOLBAR and the capsule TAB BAR float
+ * *over* that pane, inset from its edges. The window spans all three shell
+ * rows so the bars overlap it, and the bars are sticky, so content scrolls
+ * underneath the glass — the material's whole reason to exist. Nothing
+ * touches the screen edge and every radius is concentric with its inset:
+ * window 28 = capsule + 0.6rem inset. */
+html[data-theme="liquid-glass"] {
+  --app-padding: 0.75rem;
+  --app-gap: 0 0.75rem;
+  --app-areas: "rail bar" "rail main" "rail status";
+  --app-columns: 12rem minmax(0, 1fr);
+  --app-bg: transparent;
+  --app-bar-bg: var(--lg-clear);
+  --app-bar-fg: var(--text);
+  --app-bar-rule-width: 0;
+  --app-bar-radius: 999px;
+  --app-bar-height: 3rem;
+  --app-bar-padding: 0.3rem 0.4rem 0.3rem 0.9rem;
+  --app-rail-display: block;
+  --app-rail-empty-display: block;
+  --app-rail-radius: 26px;
+  /* The window pane: a white scrim heavy enough that body and muted text
+     hold their contrast over the darkest wallpaper blue, light enough that
+     the wallpaper still tints through it. */
+  --app-main-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.74));
+  --app-main-padding: 4.6rem 1.25rem 5rem;
+  --app-main-radius: 28px;
+  --app-status-bg: var(--lg-clear);
+  --app-status-fg: var(--text);
+  --app-status-rule: transparent;
+  --app-status-radius: 999px;
+  --app-status-padding: 0.35rem 0.5rem 0.35rem 1.1rem;
+}
+html[data-theme="liquid-glass"] .app-bar,
+html[data-theme="liquid-glass"] .app-status,
+html[data-theme="liquid-glass"] .app-rail {
+  -webkit-backdrop-filter: var(--lg-blur);
+  backdrop-filter: var(--lg-blur);
+  box-shadow: var(--lg-rim), var(--lg-lift);
+  z-index: 10;
+}
+html[data-theme="liquid-glass"] .app-main {
+  grid-row: bar-start / status-end;
+  overflow: visible;
+  -webkit-backdrop-filter: var(--lg-blur-heavy);
+  backdrop-filter: var(--lg-blur-heavy);
+  box-shadow: var(--lg-rim), var(--lg-lift-high);
+}
+html[data-theme="liquid-glass"] .app-bar {
+  position: sticky;
+  top: 1.35rem;
+  margin: 0.6rem 0.6rem 0;
+}
+/* The toolbar never wraps — a second line would slide under the window
+   padding — it scrolls sideways instead, like an iPad toolbar overflow.
+   The 6px block padding keeps the focus ring inside the scroll clip. */
+html[data-theme="liquid-glass"] .app-bar .nav {
+  flex: 1;
+  flex-wrap: nowrap;
+  gap: 0.1rem;
+  min-width: 0;
+  margin-block: -6px;
+  padding: 6px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  font-size: 0.94em;
+}
+html[data-theme="liquid-glass"] .app-bar .nav > * { flex-shrink: 0; }
+html[data-theme="liquid-glass"] .app-bar .nav-brand { font-size: 1.05rem; letter-spacing: -0.01em; white-space: nowrap; }
+html[data-theme="liquid-glass"] .app-bar .nav-item { padding: 0.35em 0.6em; font-weight: 500; }
+html[data-theme="liquid-glass"] .app-bar .nav-item.is-active { font-weight: 600; }
+/* The floating tab bar: centred, only as wide as its items. */
+html[data-theme="liquid-glass"] .app-status {
+  position: sticky;
+  bottom: 1.35rem;
+  align-self: end;
+  justify-self: center;
+  max-width: calc(100% - 1.2rem);
+  margin-bottom: 0.6rem;
+  min-height: 2.9rem;
+  border-top: 0;
+  font-size: 0.85em;
+}
+/* The sidebar: clear glass, full height, with the three traffic lights
+   in its top-left corner and a faint selected-row lens under them — the
+   Tahoe sidebar silhouette, drawn because the rail is empty by contract. */
+html[data-theme="liquid-glass"] .app-rail {
+  position: sticky;
+  top: 0.75rem;
+  align-self: start;
+  height: calc(100dvh - 1.5rem);
+  background:
+    radial-gradient(circle 6px at 22px 22px, #ff5f57 5.5px, rgba(0, 0, 0, 0.12) 6px, transparent 6.5px),
+    radial-gradient(circle 6px at 42px 22px, #febc2e 5.5px, rgba(0, 0, 0, 0.12) 6px, transparent 6.5px),
+    radial-gradient(circle 6px at 62px 22px, #28c840 5.5px, rgba(0, 0, 0, 0.12) 6px, transparent 6.5px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='172' height='32'%3E%3Crect width='172' height='32' rx='10' fill='%23787880' fill-opacity='.16'/%3E%3C/svg%3E") 10px 96px / calc(100% - 20px) 32px no-repeat,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.36));
+  border-radius: 26px;
+}
+/* Phone width: no sidebar; the toolbar stops overlapping the window and
+   may wrap (a wrapped capsule becomes a 26px rounded rectangle). */
+@media (max-width: 720px) {
+  html[data-theme="liquid-glass"] .app-rail { display: none; }
+  html[data-theme="liquid-glass"] { --app-padding: 0.5rem; --app-gap: 0.5rem; --app-bar-radius: 26px; }
+  html[data-theme="liquid-glass"] .app-main { grid-row: auto; padding: 1rem 0.75rem 4.8rem; }
+  html[data-theme="liquid-glass"] .app-bar { margin: 0; top: 0.5rem; }
+  html[data-theme="liquid-glass"] .app-bar .nav { flex-wrap: wrap; overflow: visible; }
+}
+
+/* --- Dark (Settings → Display → Dark) -------------------------------------
+ * The same material over the Tahoe night wallpaper: smoked glass, white
+ * rims dimmed to a thin cool edge, label colours from the dark HIG table. */
+html[data-theme="liquid-glass"][data-variant="dark"] {
+  color-scheme: dark;
+  --bg: #0e1426;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --border: rgba(235, 235, 245, 0.2);
+  --hairline: rgba(235, 235, 245, 0.1);
+  --text: #f5f5f7;
+  --muted: #a1a1a6;
+  --accent: #0a6ce0;
+  --accent-2: #0091ff;
+  --accent-text: #4aa3ff;
+  --link: #4aa3ff;
+  --danger: #e0262b;
+  --danger-text: #ff6961;
+  --success: #30d158;
+  --success-text: #30d158;
+  --warning: #ff9230;
+  --warning-text: #ff9f43;
+  --on-accent: #ffffff;
+  --on-danger: #ffffff;
+  --on-success: #06240f;
+  --focus: #0091ff;
+  --focus-ring: 0 0 0 4px rgba(0, 145, 255, 0.35);
+  --lg-blur: blur(14px) saturate(170%) brightness(0.9);
+  --lg-blur-heavy: blur(28px) saturate(160%) brightness(0.85);
+  --lg-clear: linear-gradient(180deg, rgba(60, 60, 67, 0.5), rgba(30, 30, 34, 0.42));
+  --lg-clear-hover: linear-gradient(180deg, rgba(80, 80, 88, 0.62), rgba(44, 44, 50, 0.55));
+  --lg-regular: linear-gradient(180deg, rgba(36, 36, 40, 0.8), rgba(26, 26, 30, 0.74));
+  --lg-rim:
+    inset 1.5px 1.5px 0.5px -1px rgba(255, 255, 255, 0.55),
+    inset -1.5px -1.5px 0.5px -1px rgba(255, 255, 255, 0.3),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16),
+    inset 0 0 8px rgba(255, 255, 255, 0.06);
+  --lg-lift: 0 0 0 0.5px rgba(0, 0, 0, 0.5), 0 6px 18px rgba(0, 0, 0, 0.35);
+  --lg-lift-high: 0 0 0 0.5px rgba(0, 0, 0, 0.6), 0 18px 48px rgba(0, 0, 0, 0.5);
+  --lg-lens: rgba(120, 120, 128, 0.32);
+  --input-bg: rgba(118, 118, 128, 0.24);
+  --input-placeholder: #8d8d93;
+  --input-addon-bg: rgba(118, 118, 128, 0.32);
+  --switch-bg: rgba(120, 120, 128, 0.36);
+  --switch-bg-on: #30d158;
+  --slider-bg: rgba(120, 120, 128, 0.36);
+  --progress-bg: rgba(120, 120, 128, 0.36);
+  --segmented-bg: rgba(118, 118, 128, 0.24);
+  --segmented-item-bg-active: #636366;
+  --segmented-item-fg-active: #ffffff;
+  --badge-bg: rgba(118, 118, 128, 0.3);
+  --row-hover-bg: rgba(118, 118, 128, 0.14);
+  --row-alt-bg: rgba(118, 118, 128, 0.08);
+  --row-selected-bg: rgba(0, 145, 255, 0.24);
+  --row-active-bg: rgba(118, 118, 128, 0.24);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
+  --tooltip-bg: rgba(229, 229, 234, 0.92);
+  --tooltip-fg: #1d1d1f;
+  --code-bg: rgba(118, 118, 128, 0.24);
+  --code-block-bg: rgba(0, 0, 0, 0.35);
+  --readout-bg: rgba(118, 118, 128, 0.18);
+  --meter-track: rgba(120, 120, 128, 0.36);
+  --list-bg: rgba(44, 44, 46, 0.6);
+  --app-main-bg: linear-gradient(180deg, rgba(30, 30, 34, 0.8), rgba(24, 24, 28, 0.76));
+  --message-bg: #3a3a3c;
+  --message-fg: #f5f5f7;
+  --message-own-bg: #0a6ce0;
+  --attachment-bg: rgba(44, 44, 46, 0.85);
+  --lamp-border: rgba(255, 255, 255, 0.3);
+  --indicator-track: rgba(120, 120, 128, 0.36);
+  background-color: #0b1a3c;
+  background-image:
+    radial-gradient(160% 120% at 105% -5%, transparent 55%, rgba(140, 190, 255, 0.55) 56.5%, transparent 59%),
+    radial-gradient(130% 110% at 110% 0%, transparent 63%, rgba(80, 140, 255, 0.45) 64.5%, transparent 67%),
+    radial-gradient(70% 55% at 100% 105%, #050c2e 0 35%, transparent 70%),
+    radial-gradient(120% 70% at -15% 110%, #0a2c8a 0 30%, #1a52c4 48%, transparent 66%),
+    radial-gradient(60% 45% at 80% 35%, #1d4fa8 0 25%, transparent 70%),
+    radial-gradient(70% 55% at 10% 0%, #2a2f4a 0 25%, transparent 70%),
+    linear-gradient(155deg, #151a2c 0%, #0f2350 38%, #0c2c78 70%, #050b28 100%);
+}
+html[data-theme="liquid-glass"][data-variant="dark"] :is(h1, h2, h3) {
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.6), 0 0 2px rgba(0, 0, 0, 0.5);
+}
+html[data-theme="liquid-glass"][data-variant="dark"] .app-rail {
+  background:
+    radial-gradient(circle 6px at 22px 22px, #ff5f57 5.5px, rgba(0, 0, 0, 0.3) 6px, transparent 6.5px),
+    radial-gradient(circle 6px at 42px 22px, #febc2e 5.5px, rgba(0, 0, 0, 0.3) 6px, transparent 6.5px),
+    radial-gradient(circle 6px at 62px 22px, #28c840 5.5px, rgba(0, 0, 0, 0.3) 6px, transparent 6.5px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='172' height='32'%3E%3Crect width='172' height='32' rx='10' fill='%23787880' fill-opacity='.32'/%3E%3C/svg%3E") 10px 96px / calc(100% - 20px) 32px no-repeat,
+    linear-gradient(180deg, rgba(44, 44, 50, 0.62), rgba(28, 28, 32, 0.5));
+}
+html[data-theme="liquid-glass"][data-variant="dark"] .avatar { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25); }
+
+/* --- Motion: the lens settles with a spring, only for users who allow it. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="liquid-glass"] :is(.btn, .tab, .segmented-item, .nav-item, .switch-thumb) {
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+/* --- Accessibility: Reduce Transparency ------------------------------------
+ * The system setting turns every glass surface frosted-opaque; honour the
+ * equivalent media query, and the repo's high-contrast switch. */
+@media (prefers-reduced-transparency: reduce) {
+  html[data-theme="liquid-glass"] {
+    --lg-clear: var(--surface);
+    --lg-clear-hover: var(--surface-2);
+    --lg-regular: var(--surface);
+  }
+}
+html[data-theme="liquid-glass"][data-contrast="high"] {
+  --lg-clear: var(--surface);
+  --lg-regular: var(--surface);
+}
+
+@media print {
+  html[data-theme="liquid-glass"] { background: #ffffff !important; }
+  html[data-theme="liquid-glass"] :is(.btn, .panel, .card, .modal, .dropdown, .popover, .toast, .tabs, .app-bar, .app-status, .app-rail) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+  html[data-theme="liquid-glass"] .app-rail { display: none !important; }
+  html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .app-rail) { position: static !important; }
+}
