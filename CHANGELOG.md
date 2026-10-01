@@ -5,6 +5,18 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **No-JS modals:** `<div class="modal" popover>` opened by
+  `<button popovertarget>` (and `<dialog class="modal">` via showModal)
+  now sit centred in the top layer with the themed `::backdrop`, even in
+  themes that set `position` on `.modal`. Every demo page has an **Open
+  dialog** button that opens its dialog for real.
+- **Theme tint is documented HTML/CSS-first:** render
+  `style="--token: #rrggbb"` on `<html>` from a plain `<input type=color>`
+  setting; JS only for optional live preview.
+- **win7-aero dialogs:** tinted glass frame with the caption on the glass,
+  white client area, #f0f0f0 command strip, and standard push buttons for
+  `.btn-secondary` (was an outlined blue link look).
+
 - **Theme tint — a required appearance setting.** A theme can declare a
   user-chosen colour (`Tint: --token #default Label` header →
   `tint: {token, default, label}` in `dist/themes.json`); apps must offer

@@ -588,14 +588,30 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .modal-footer { margin-block-start: 1.5rem; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
 
-/* Native <dialog> bridge: an app using <dialog class="modal"> instead
-   of the .modal-overlay + div pattern gets the same panel styling
-   from the rule above (a plain selector, it already matches), plus a
-   themed ::backdrop here — the one piece <dialog> paints itself that the
-   overlay div above doesn't need. */
-dialog.modal::backdrop {
+/* Native top-layer bridge: <dialog class="modal"> and
+   <div class="modal" popover> get the same panel styling from the rule
+   above (a plain selector, it already matches), plus a themed ::backdrop
+   here — the one piece the browser paints itself that the overlay div
+   above doesn't need. */
+.modal::backdrop {
   background: var(--overlay-bg, rgba(0, 0, 0, 0.6));
   backdrop-filter: var(--overlay-blur, none);
+}
+/* No-JS modal: `<div class="modal" popover id="m">` opened by
+   `<button popovertarget="m">` (closed by Esc, a click outside, or a
+   button with popovertargetaction="hide") sits in the top layer centred
+   on the viewport, with the themed ::backdrop above. A <dialog> opened
+   with showModal() lands in the same place. .modal is position:relative
+   for the overlay-div pattern, so the top-layer forms take it back —
+   keyed on the open state so the selector outranks a theme's own
+   `html[data-theme] .modal { position: relative }` (several set one for
+   pseudo-element decoration). */
+.modal[popover]:popover-open,
+dialog.modal:modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
 }
 
 /* Size variants — the default max-width above is the "medium" case. */

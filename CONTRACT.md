@@ -604,24 +604,34 @@ contrast holds at any colour; the app never has to vet the choice.
 
 **Implementers must expose it.** If the selected theme's manifest entry
 has `tint`, the app's appearance/theme settings offer a colour control
-next to the theme and sub-theme choice, labelled with `tint.label`:
+next to the theme and sub-theme choice, labelled with `tint.label`. It
+needs **no JavaScript** — the token is just an inline custom property:
 
-1. **Apply** — set the token inline on `<html>`:
-   `document.documentElement.style.setProperty(tint.token, "#rrggbb")`.
-   Inline beats the theme's root block and its variants.
-2. **Persist per theme** — store the colour against the theme slug and
-   re-apply it whenever that theme is selected; remove the inline
-   property when switching to a theme without a tint.
+```html
+<!-- render the saved choice on the root element, server-side -->
+<html data-theme="win7-aero" data-variant="ruby" style="--aero-tint: #6e3ba1">
+
+<!-- the setting is an ordinary form field, saved with the rest -->
+<label>Window Color <input type="color" name="tint" value="#6e3ba1"></label>
+```
+
+1. **Apply** — render `style="<tint.token>: #rrggbb"` on `<html>`.
+   Inline beats the theme's root block and its variants. Omit it to get
+   the theme's `tint.default` (or the chosen preset).
+2. **Persist per theme** — store the colour against the theme slug; drop
+   it when rendering a theme without `tint`.
 3. **Presets are sub-themes** — a theme may ship named tint presets as
-   ordinary palette variants (Win7's fifteen other colours). Choosing a
-   preset clears the custom colour so the preset shows; the colour
-   control then displays the preset's value.
-4. **Default** — with no stored colour, set nothing; the theme's
-   `tint.default` (or the selected preset) is already in effect.
+   ordinary palette variants (`data-variant`; Win7's fifteen other
+   colours). Choosing a preset clears the stored custom colour so the
+   preset shows.
+4. **Hide the control** for themes without `tint`.
 
-Hide the control for themes without `tint`. The demo pages implement all
-four steps in `assets/js/tint.js` (≈60 lines) — copy or adapt it, and
-`?tint=%23rrggbb` sets the colour for screenshots.
+Live preview while dragging the colour is the only optional script —
+one line:
+`oninput="document.documentElement.style.setProperty('--aero-tint', this.value)"`.
+The demo pages build their pickers from `themes.json` in JS anyway, so
+`assets/js/tint.js` does the same four steps client-side with
+`localStorage`; `?tint=%23rrggbb` sets it for screenshots.
 
 ## Component vocabulary
 
@@ -911,6 +921,19 @@ sit next to the default `.modal` sizing:
 <div class="modal">…</div>                <!-- min(32rem, …), default -->
 <div class="modal modal-lg">…</div>   <!-- min(48rem, …) -->
 <div class="modal modal-xl">…</div>   <!-- min(64rem, …) -->
+```
+**Opening a modal without JavaScript** — make it a popover and point a
+button at it; the browser handles the top layer, Esc, click-outside and
+focus, and `::backdrop` takes `--overlay-bg`/`--overlay-blur`:
+```html
+<button class="btn" popovertarget="confirm">Delete…</button>
+<div class="modal" popover id="confirm">
+  <div class="modal-header">Delete scene?</div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" popovertarget="confirm" popovertargetaction="hide">Cancel</button>
+    <button class="btn btn-danger">Delete</button>
+  </div>
+</div>
 ```
 A `<dialog class="modal">` bridge's native `::backdrop` already reads
 `--overlay-bg`/`--overlay-blur` — the same tokens the

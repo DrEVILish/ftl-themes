@@ -588,14 +588,30 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .modal-footer { margin-block-start: 1.5rem; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
 
-/* Native <dialog> bridge: an app using <dialog class="modal"> instead
-   of the .modal-overlay + div pattern gets the same panel styling
-   from the rule above (a plain selector, it already matches), plus a
-   themed ::backdrop here — the one piece <dialog> paints itself that the
-   overlay div above doesn't need. */
-dialog.modal::backdrop {
+/* Native top-layer bridge: <dialog class="modal"> and
+   <div class="modal" popover> get the same panel styling from the rule
+   above (a plain selector, it already matches), plus a themed ::backdrop
+   here — the one piece the browser paints itself that the overlay div
+   above doesn't need. */
+.modal::backdrop {
   background: var(--overlay-bg, rgba(0, 0, 0, 0.6));
   backdrop-filter: var(--overlay-blur, none);
+}
+/* No-JS modal: `<div class="modal" popover id="m">` opened by
+   `<button popovertarget="m">` (closed by Esc, a click outside, or a
+   button with popovertargetaction="hide") sits in the top layer centred
+   on the viewport, with the themed ::backdrop above. A <dialog> opened
+   with showModal() lands in the same place. .modal is position:relative
+   for the overlay-div pattern, so the top-layer forms take it back —
+   keyed on the open state so the selector outranks a theme's own
+   `html[data-theme] .modal { position: relative }` (several set one for
+   pseudo-element decoration). */
+.modal[popover]:popover-open,
+dialog.modal:modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
 }
 
 /* Size variants — the default max-width above is the "medium" case. */
@@ -3395,4 +3411,60 @@ html[data-theme="win7-aero"][data-variant="taupe"] { --aero-tint: #d1c79f; }
 html[data-theme="win7-aero"][data-variant="chocolate"] { --aero-tint: #4e0000; }
 html[data-theme="win7-aero"][data-variant="slate"] { --aero-tint: #555555; }
 html[data-theme="win7-aero"][data-variant="frost"] { --aero-tint: #fcfcfc; }
+
+/* --- Dialogs ------------------------------------------------------------ *
+ * A Win7 dialog: a tinted glass frame (the Window Color, blurred desktop
+ * behind it) with the caption on the glass, a white client area inset in
+ * it, and a light-grey command strip along the bottom holding standard
+ * buttons. The client area is painted as a second background layer so
+ * the dialog needs no extra markup: glass everywhere, white from under
+ * the caption down to the frame edge. */
+html[data-theme="win7-aero"] {
+  --w7-frame: 7px;
+  --w7-caption: 2rem;
+  --modal-bg:
+    linear-gradient(#ffffff, #ffffff) var(--w7-frame) var(--w7-caption) / calc(100% - 2 * var(--w7-frame)) calc(100% - var(--w7-caption) - var(--w7-frame)) no-repeat,
+    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 30%, rgb(255 255 255 / 0.6)), color-mix(in srgb, var(--aero-tint) 45%, rgb(255 255 255 / 0.45)));
+  --modal-border: rgba(0, 0, 0, 0.55);
+  --modal-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55) inset, 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+html[data-theme="win7-aero"] .modal {
+  padding: 0 var(--w7-frame) var(--w7-frame);
+  --on-surface: #1a1a1a;
+}
+/* Caption: on the glass, normal weight, black with the white glow. */
+html[data-theme="win7-aero"] .modal-header {
+  --modal-header-bg: transparent;
+  --modal-header-fg: #000000;
+  height: var(--w7-caption);
+  margin: 0 calc(-1 * var(--w7-frame));
+  padding: 0 0.6rem;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-weight: 400;
+  font-size: 0.95rem;
+  text-shadow: 0 0 8px #ffffff, 0 0 8px #ffffff, 0 0 2px #ffffff;
+}
+html[data-theme="win7-aero"] .modal-header::before { content: none; }
+/* Client-area content sits in from the white edge. */
+html[data-theme="win7-aero"] .modal > :not(.modal-header):not(.modal-footer) { margin-inline: 1rem; }
+html[data-theme="win7-aero"] .modal-header + * { margin-top: 1rem; }
+/* Command strip: #f0f0f0 with a #dfdfdf top rule, buttons right. */
+html[data-theme="win7-aero"] .modal-footer {
+  margin: 1.25rem 0 0;
+  padding: 0.6rem 1rem;
+  background: #f0f0f0;
+  border-top: 1px solid #dfdfdf;
+}
+/* Secondary buttons are ordinary Win7 push buttons, not outlined links. */
+html[data-theme="win7-aero"] .btn-secondary {
+  --btn-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%);
+  --btn-fg: #1a1a1a;
+  --btn-border: #707070;
+}
+html[data-theme="win7-aero"] .modal .btn { min-width: 5.5rem; }
+
 }
