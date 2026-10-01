@@ -462,6 +462,15 @@ for path in sorted(glob.glob("themes/*/theme.css")):
     exempt = "contrast-exempt:" in readme_text.lower()
     check_contrast(theme, tokens, exempt)
 
+    # A declared tint (CONTRACT.md "Theme tint") must name a token the
+    # theme defines at root with the declared default, or the app's colour
+    # control would write to a property nothing reads.
+    tm = re.search(r"(?m)^[ \t]*\*?[ \t]*Tint:[ \t]*(--[a-z0-9-]+)[ \t]+(#[0-9a-fA-F]{6})", css)
+    if tm:
+        have = tokens.get(tm.group(1)[2:], "").strip().lower()
+        if have != tm.group(2).lower():
+            fail(theme, "tint", f"Tint header names {tm.group(1)} {tm.group(2)}, but the root block sets it to {have or 'nothing'}")
+
     # Palette variants (html[data-theme="x"][data-variant="y"]) replace
     # tokens wholesale, so each is a palette in its own right and gets the
     # same floors. Previously only the first value of each token was read,

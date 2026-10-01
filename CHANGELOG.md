@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Theme tint — a required appearance setting.** A theme can declare a
+  user-chosen colour (`Tint: --token #default Label` header →
+  `tint: {token, default, label}` in `dist/themes.json`); apps must offer
+  it as a colour control beside the theme/sub-theme picker, set the token
+  on `<html>`, persist it per theme, and clear it when a preset sub-theme
+  is chosen (CONTRACT.md "Theme tint"). win7-aero declares
+  `--aero-tint` (Window Color). Every demo page and the components QA
+  page show the control (`assets/js/tint.js`); `?tint=` sets it for
+  screenshots. The lint checks a declared tint matches its root token.
+
 - **win7-aero: Window Color.** One `--aero-tint` token tints every glass
   surface; Win7's fifteen other presets ship as variants (`twilight` …
   `frost`).

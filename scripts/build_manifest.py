@@ -161,6 +161,9 @@ def write_manifest():
         # header as `Variants: id=Label, id=Label` so pickers can offer them.
         variants = [dict(zip(("id", "label"), (x.strip() for x in v.split("=", 1))))
                     for v in header_field(src, "Variants").split(",") if "=" in v]
+        # Theme tint (CONTRACT.md "Theme tint"): `Tint: --token #default Label`.
+        tm = re.match(r"(--[a-z0-9-]+)\s+(#[0-9a-fA-F]{6})\s*(.*)$", header_field(src, "Tint"))
+        tint = {"token": tm.group(1), "default": tm.group(2).lower(), "label": tm.group(3) or "Tint"} if tm else None
         entries.append({
             "slug": slug,
             "dataTheme": slug,
@@ -176,6 +179,7 @@ def write_manifest():
             "category": meta.get("category"),
             "era": meta.get("era"),
             **({"variants": variants} if variants else {}),
+            **({"tint": tint} if tint else {}),
         })
     lines = ",\n".join("  " + json.dumps(e, ensure_ascii=False) for e in entries)
     with open("dist/themes.json", "w") as f:

@@ -100,7 +100,7 @@ layout at **L1**.
 without it — surfaces fall back to their plain translucent color with no
 blur, still legible, just not glassy.
 
-## Window Color variants
+## Window Color (theme tint) and its preset variants
 
 Windows 7's *Personalize → Window Color* tinted all the glass. The theme
 does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
@@ -111,4 +111,9 @@ variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
 `fuchsia`, `blush`, `violet`, `lavender`, `taupe`, `chocolate`, `slate`,
 `frost` (values in `references/win7-aero/RESEARCH.md`; approximate,
 community-collected colorization values).
+
+The token is declared as this theme's **tint** (`Tint:` header →
+`tint` in `dist/themes.json`), so apps must offer it as a colour control
+alongside the theme and sub-theme choice — any colour, not only the
+presets, as Win7's colour mixer allowed. See CONTRACT.md "Theme tint".
 

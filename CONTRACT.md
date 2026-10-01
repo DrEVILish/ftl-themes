@@ -38,9 +38,13 @@ attribute together. Themes are mutually exclusive: load exactly one
   "slug": "lcars", "dataTheme": "lcars", "label": "LCARS",
   "description": "…", "hasChrome": true, "shellAware": true,
   "version": "1f7c1589aa66",
-  "scheme": "dark", "luminance": 0.049
+  "scheme": "dark", "luminance": 0.049,
+  "variants": [{"id": "voyager", "label": "Voyager / DS9"}, …],
+  "tint": {"token": "--aero-tint", "default": "#74b8fc", "label": "Window Color"}
 }]
 ```
+
+`variants` and `tint` are present only on themes that have them.
 
 Read it to populate a theme picker (embed it, or serve it) instead of
 hardcoding a list or scraping CSS comments.
@@ -73,6 +77,11 @@ hardcoding a list or scraping CSS comments.
   "full layout requires the app shell") instead of a user discovering the
   gap by linking the theme and wondering why LCARS looks like a recolored
   default page.
+- **`variants` lists the theme's sub-themes** (`id`, `label`) — see
+  "Palette variants". Offer each in the picker beneath its theme.
+- **`tint` describes the theme's user-chosen colour**, if it has one —
+  see "Theme tint". When present, your appearance settings **must**
+  offer it.
 
 ### Serving the assets
 
@@ -576,6 +585,43 @@ html[data-theme="imac-g3"][data-variant="grape"] { --accent: #6b3fa0; … }
 which outranks the theme's own root block at `(0,1,1)`, so the variant
 wins. List a theme's variants in its `README.md`; `themes/imac-g3` is a
 worked example (Bondi/Blueberry/Grape/Tangerine).
+
+## Theme tint (required appearance setting when a theme declares one)
+
+Some originals let the user pick a colour that repaints the chrome —
+Windows 7's *Personalize → Window Color* tinted all the glass. A theme
+reproduces that with **one token** and declares it in its header:
+
+```css
+/* Tint: --aero-tint #74b8fc Window Color */
+html[data-theme="win7-aero"] { --aero-tint: #74b8fc; }
+```
+
+The build publishes it as `tint: {token, default, label}` in
+`dist/themes.json`, and the lint fails if the token isn't defined at root
+with that default. The theme mixes the token into its surfaces so text
+contrast holds at any colour; the app never has to vet the choice.
+
+**Implementers must expose it.** If the selected theme's manifest entry
+has `tint`, the app's appearance/theme settings offer a colour control
+next to the theme and sub-theme choice, labelled with `tint.label`:
+
+1. **Apply** — set the token inline on `<html>`:
+   `document.documentElement.style.setProperty(tint.token, "#rrggbb")`.
+   Inline beats the theme's root block and its variants.
+2. **Persist per theme** — store the colour against the theme slug and
+   re-apply it whenever that theme is selected; remove the inline
+   property when switching to a theme without a tint.
+3. **Presets are sub-themes** — a theme may ship named tint presets as
+   ordinary palette variants (Win7's fifteen other colours). Choosing a
+   preset clears the custom colour so the preset shows; the colour
+   control then displays the preset's value.
+4. **Default** — with no stored colour, set nothing; the theme's
+   `tint.default` (or the selected preset) is already in effect.
+
+Hide the control for themes without `tint`. The demo pages implement all
+four steps in `assets/js/tint.js` (≈60 lines) — copy or adapt it, and
+`?tint=%23rrggbb` sets the colour for screenshots.
 
 ## Component vocabulary
 

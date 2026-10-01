@@ -10,6 +10,7 @@
   var link = document.getElementById("theme-link");
   var picker = document.getElementById("theme-picker");
   var known = null; // slugs from dist/themes.json; null until it loads
+  var entries = {}; // slug -> themes.json entry
 
   // Keeps every .icon's <use> pointed at the current theme's merged
   // icon sprite (dist/icons/<slug>.svg — generic icons plus that theme's
@@ -48,6 +49,7 @@
   // variants"); the variant only ever lands in a data attribute, but is
   // held to the same charset as a slug anyway.
   function apply(value, persist) {
+    var before = document.documentElement.dataset.theme + ":" + (document.documentElement.dataset.variant || "");
     var parts = String(value).split(":");
     var slug = parts[0], variant = parts[1];
     document.documentElement.dataset.theme = slug;
@@ -59,6 +61,9 @@
       try { localStorage.setItem("example-theme", value); } catch (e) {}
     }
     if (picker) picker.value = value;
+    // Theme tint (CONTRACT.md "Theme tint"): a user-picked sub-theme
+    // replaces any custom colour; a load from storage/URL keeps it.
+    if (window.themeTint) window.themeTint(picker, entries[slug], persist && before !== slug + ":" + (variant || ""));
   }
 
   fetch("dist/themes.json").then(function (r) {
@@ -66,7 +71,7 @@
     return r.json();
   }).then(function (list) {
     if (!list.length) throw new Error("themes.json is empty");
-    known = list.map(function (t) { return t.slug; });
+    known = list.map(function (t) { entries[t.slug] = t; return t.slug; });
     var stored;
     try { stored = localStorage.getItem("example-theme"); } catch (e) {}
     var wanted = params.get("theme") && params.get("variant") ? params.get("theme") + ":" + params.get("variant") : params.get("theme");

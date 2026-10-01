@@ -620,6 +620,7 @@
 <div class="toast-region" aria-hidden="true"></div>
 
 <script src="assets/js/window.js"></script>
+<script src="assets/js/tint.js"></script>
 <script>
   (function () {
     var grid = document.getElementById("icon-pack-swatches");
@@ -792,13 +793,14 @@
   }
 
   // `value` is "slug" or "slug:variant" (CONTRACT.md "Palette variants").
-  function applyTheme(value) {
+  function applyTheme(value, userPick) {
     var slug = String(value).split(":")[0], variant = String(value).split(":")[1];
     document.documentElement.dataset.theme = slug;
     if (variant && /^[a-z0-9-]+$/.test(variant)) document.documentElement.dataset.variant = variant;
     else delete document.documentElement.dataset.variant;
     link.href = "dist/" + slug + ".css";
     applyIconTheme(slug);
+    if (window.themeTint) window.themeTint(picker, themes.find(function (x) { return x.slug === slug; }), userPick);
     // Compare-mode panes are copies of this page; letting them persist
     // would make whichever pane loaded last the single-mode theme.
     if (!isEmbed) store("qa-theme", value);
@@ -849,7 +851,7 @@
       readmePanel.innerHTML = '<p class="qa-note">Serve this folder over HTTP for theme enumeration and README loading.</p>';
     });
 
-  picker.addEventListener("change", function () { applyTheme(picker.value); });
+  picker.addEventListener("change", function () { applyTheme(picker.value, true); });
   document.getElementById("prev-theme").addEventListener("click", function () { stepTheme(-1); });
   document.getElementById("next-theme").addEventListener("click", function () { stepTheme(1); });
   document.addEventListener("keydown", function (e) {
