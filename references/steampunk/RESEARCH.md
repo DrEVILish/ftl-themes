@@ -47,9 +47,9 @@ Steampunk technology is mechanical, visceral and complex.
 - **Lighting and glow:** warm amber, soft gaslight yellow or emerald
   vacuum-tube glow marks active states against dark, sooty backdrops.
 
-## Reference images (described; files to be added to this folder)
+## Reference images
 
-1. **Recorder panel** — green perforated-metal backdrop full of gears and
+1. `recorder-panel-nixie.webp` — **Recorder panel** — green perforated-metal backdrop full of gears and
    steel linkages; a brass-capped glass tube (sight glass) on the left with a
    download button and a "NEW" badge; a riveted brass plate with a toggle
    switch, red stop and green play buttons in brass bezels and a slider
@@ -57,15 +57,15 @@ Steampunk technology is mechanical, visceral and complex.
    an hourglass, four **Nixie tubes** reading 01:00, a red jewel record
    button and an embossed brass "Done" button. Whole thing framed in a
    riveted brass border.
-2. **Steampunk UI kit** — brass-framed panels with plaque titles ("Select
+2. `ui-kit-sheet.webp` — **Steampunk UI kit** — brass-framed panels with plaque titles ("Select
    level", "Inbox", "Are you sure you want to quit?"), round brass knobs,
    cog-decorated progress bars with segmented red/blue/yellow fills,
    counter plaques (999999, 99/99), cog stars, a grid of round and square
    brass icon buttons, banner nameplate "STEAMPUNK UI".
-3. **Circular gauge** — ornate filigree brass scrollwork around a large dial
+3. `filigree-dial-gauge.webp` — **Circular gauge** — ornate filigree brass scrollwork around a large dial
    with a ribbed bezel and a 78,5 % readout, a small analogue voltmeter
    inset, round play/pause/power buttons, and a curved slot slider.
-4. **World map** — parchment map in a carved wooden frame with brass
+4. `world-map-frame.webp` — **World map** — parchment map in a carved wooden frame with brass
    corner gears, compass roses, chains, and ribbon banners for the title.
 
 ## How the `steampunk` theme maps this

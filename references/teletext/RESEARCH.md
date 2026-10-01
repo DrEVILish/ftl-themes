@@ -41,16 +41,16 @@ Audit 2026-09-26: all 3 kept — ARTE page 100 (blocky double-height + Fastext b
 - teletextart.co.uk (https://teletextart.co.uk/make-teletext-art) points
   to edit.tf / zxnet-style editors for drawing mosaic art.
 
-## Reference images (described; files to be added to this folder)
+## Reference images
 
-1. CEEFAX 1 P100 index — BBC block logo, CEEFAX mosaic wordmark on blue,
+1. `ceefax-p100-index.webp` — CEEFAX 1 P100 index — BBC block logo, CEEFAX mosaic wordmark on blue,
    two-column yellow index with white page numbers, blue strapline, Fastext.
-2. P324 Football — BBC FOOTBALL mosaic banner, league table with cyan
+2. `ceefax-p324-football-table.png` — P324 Football — BBC FOOTBALL mosaic banner, league table with cyan
    highlight rows and red separator rules.
-3. BBC1 P696 listings — cyan BBC1 mosaic logo, yellow times, white
+3. `ceefax-p696-bbc1-listings.webp` — BBC1 P696 listings — cyan BBC1 mosaic logo, yellow times, white
    titles, cyan descriptions, magenta "N".
-4. P299 Newsreel intro — yellow mosaic CEEFAX blocks with drop shadow on
+4. `ceefax-p299-newsreel.png` — P299 Newsreel intro — yellow mosaic CEEFAX blocks with drop shadow on
    a blue frame, black inset panel with double-height yellow text.
-5. "Football Nostalgia" print — green-on-blue and black-on-white mosaic
+5. `football-nostalgia-print.webp` — "Football Nostalgia" print — green-on-blue and black-on-white mosaic
    wordmarks, centred multicolour paragraphs.
 

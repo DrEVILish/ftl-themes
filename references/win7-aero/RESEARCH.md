@@ -29,7 +29,11 @@ their approximate colorization values (ARGB, from the registry
 | Pumpkin | `#ff9c00` | | Slate | `#555555` |
 | Ruby | `#ce0f0f` | | Frost | `#fcfcfc` |
 
-## Explorer references (described; files to be added to this folder)
+## Explorer references
+
+Files: `explorer-large-icons-annotated.png`, `explorer-details-view-menu.png`,
+`explorer-details-closeup.png`, `explorer-stacked-windows-menu.png`,
+`start-menu-desktop.png`.
 
 - Explorer window: glass title area with no caption text, back/forward
   round glass buttons, breadcrumb address bar ("Libraries ▸ Documents ▸")
