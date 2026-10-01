@@ -5,6 +5,20 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+## v4.1.0 — conversation, charts and console components; two new themes (2026-10-01)
+
+Additive over v4.0.0: no class or token was renamed or removed. Two
+behaviour notes for upgraders: a `.nav` inside `.app-bar` no longer
+paints its own box (themes opt back in with `--app-bar-nav-bg`), and
+popover/`<dialog>` modals are positioned by core in the top layer. New
+themes: `windows-live`, `prometheus`. New core components: the
+mixing-console primitives and the v4.1 conversation, row, chart and page
+components (CONTRACT.md). Theme tint is a documented appearance setting.
+
+- **Demo top bars stay on one line.** The theme picker is capped at
+  11rem, marketing drops its "Sign in" button and "Power station" is
+  "Power"; at 1280px the bar now wraps only in three wide-lettered
+  theme/page combinations (it wrapped in 52).
 - **v4.1 components, upstreamed from the example pages** (CONTRACT.md
   "v4.1 additions"): `.thread` / `.message` (`.is-own`) /
   `.thread-divider` / `.typing`, `.attachment`, two-line `.list-item`
