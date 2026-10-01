@@ -1667,6 +1667,7 @@ for what, if anything, it cites.
 | `weyland-yutani` | Weyland-Yutani | Bone-beige equipment-plate bars on warm black, amber phosphor readouts, and yellow/black hazard striping on danger states only. | |
 | `win7-aero` | Windows 7 Aero | Real `backdrop-filter` blur — translucent glass, not Luna's opaque gloss. | |
 | `winamp-classic` | WinAmp Classic | Tiny uppercase labels and llama-green LCD-style numeric readouts. | |
+| `windows-live` | Windows Live | White Scenic-Ribbon apps on a pale-blue aurora, with Messenger's glossy green presence frames. | |
 | `windows95` | Windows 95 | Bevels invert light-to-dark on `:active` — the "is this actually pressable" cue. | |
 | `winxp-luna` | Windows XP (Luna) | Glossy round-cornered blue chrome; green is reserved for primary/"go" actions only. | |
 | `wmp11` | Windows Media Player 11 | Black glass with a cool blue glow — the last WMP skin before the Zune-era flattening. | |

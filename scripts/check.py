@@ -315,8 +315,9 @@ def check_app_bar(theme, tokens, css, variant=None):
             continue
         # A nav item with its own fill (pill items) is read against that
         # fill, not the bar behind it.
-        item_bg = resolve(scoped, scoped.get("nav-item-bg", "")) if tok == "nav-item-fg" else None
-        item_stops = [over(item_bg, s) for s in stops] if item_bg and item_bg[3] > 0 else stops
+        own = {"nav-item-fg": "nav-item-bg", "nav-brand-fg": "nav-brand-bg"}[tok]
+        own_stops = color_stops(scoped, scoped.get(own, "")) if scoped.get(own) else []
+        item_stops = [over(c, s) for c in own_stops for s in stops] if own_stops else stops
         worst = min(contrast(over(fg, s), s) for s in item_stops)
         if worst < 4.5:
             fail(theme, "contrast",

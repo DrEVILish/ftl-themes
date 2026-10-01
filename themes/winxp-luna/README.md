@@ -72,6 +72,8 @@ the window shape is shared, only the paint changes.
 | *(none)* | Luna Blue: royal-blue gloss, beige `#ece9d8` dialog face. |
 | `royale` | Royale / Media Center "Energy Blue": a glassier title bar with a strong upper highlight, cool grey-lilac `#ebe9ed` face, deep navy taskbar. |
 | `royale-noir` | Royale Noir: glossy black chrome and caption buttons, neutral grey `#ececec` face, graphite `#4a4a4a` selection. The orange hot-track and green Start survive. |
+| `zune` | The Zune theme (2006): Royale Noir's black glass with burnt-orange Start/GO, selection and headings on a neutral grey face. Orange deepened to `#a54400` for 4.5:1 under white. |
+| `embedded` | XP Embedded / Windows Embedded Standard: deeper, flatter steel-blue title bar and taskbar, grey-blue face, **blue** Start/GO instead of green. |
 
 ## Layout
 

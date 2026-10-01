@@ -53,3 +53,14 @@ Files: `explorer-large-icons-annotated.png`, `explorer-details-view-menu.png`,
   Games, Computer, Control Panel…), Shut down button with ▸.
 - Taskbar: dark glass with the round Start orb and large pinned icons.
 
+## Tray and balloon captures
+
+- `notification-balloons.jpeg` — "Found new hardware" balloons: white
+  body with a pale gradient, blue title, grey text, pin and close glyphs,
+  tail pointing into the tray.
+- `tray-overflow-flyout.png`, `tray-flyout-customize.avif` — the
+  notification-area overflow: white panel inside a thin glass frame,
+  icon grid, "Customize..." link in a pale footer.
+- `start-search-restart.avif` — Start menu search box with clear ×, and
+  the split "Restart ▸" button; taskbar with the orb and pinned icons.
+

@@ -5,6 +5,19 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **New theme: `windows-live`** — Windows Live Essentials 2011: Scenic
+  Ribbon tab strip with the blue application button and Windows flag,
+  white panes on a pale-blue aurora, Segoe UI Light headings (Live green
+  titles), Windows 7 controls, Explorer selection and Messenger's glossy
+  green presence frame on every avatar. 14 reference captures.
+- **winxp-luna: `zune` and `embedded` variants** (orange-on-black;
+  steel blue with a blue Start), XP balloon-tooltip corners, and new
+  Royale / Royale Noir / Zune / Embedded / balloon references.
+- **win7-aero:** flyouts and balloons are white in a tinted-glass frame;
+  tray, balloon and Start-search references.
+- **check:** a brand with its own fill (`--nav-brand-bg`, e.g. an
+  application button) is measured against that fill.
+
 - **No-JS modals:** `<div class="modal" popover>` opened by
   `<button popovertarget>` (and `<dialog class="modal">` via showModal)
   now sit centred in the top layer with the themed `::backdrop`, even in
