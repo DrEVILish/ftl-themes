@@ -57,6 +57,13 @@
     else delete document.documentElement.dataset.variant;
     if (link) link.href = "dist/" + slug + ".css";
     applyIcons(slug);
+    // Links between the demo pages carry the theme along, so a theme that
+    // arrived via ?theme= (not persisted) survives the click.
+    var query = "?theme=" + slug + (document.documentElement.dataset.variant ? "&variant=" + variant : "");
+    var demoLinks = document.querySelectorAll("a[data-demo-link]");
+    for (var i = 0; i < demoLinks.length; i++) {
+      demoLinks[i].href = demoLinks[i].getAttribute("href").split("?")[0] + query;
+    }
     if (persist) {
       try { localStorage.setItem("example-theme", value); } catch (e) {}
     }

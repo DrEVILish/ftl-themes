@@ -5,6 +5,12 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Demo pages link to each other.** The six example apps' top-bar nav
+  is now real navigation between them (Dashboard, Marketing, Support,
+  Power station, Mixer, Chat; the current page active), and the links
+  carry the current `?theme=`/`&variant=` along. The gallery has a row of
+  links to every example page at the top.
+
 - **New theme: `prometheus`** — the USCSS Prometheus's holographic ship
   displays (2012): cyan holo-glass on deep navy, every panel opened by a
   rounded left bracket and named on a filled pill tab, outlined pill
