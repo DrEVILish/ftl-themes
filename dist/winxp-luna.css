@@ -3542,4 +3542,117 @@ html[data-theme="winxp-luna"][data-variant="embedded"] {
 /* XP notification balloon: the cream tooltip with rounded corners. */
 html[data-theme="winxp-luna"] { --tooltip-radius: 7px; }
 
+/* --- Dialog windows ---------------------------------------------------- *
+ * A modal is an XP window: the Luna title bar across the full width with
+ * its rounded top corners and a red close button, the thick title-bar
+ * blue carried down both sides and along the bottom as the frame, and
+ * the beige dialog face inside. The frame is inset box-shadow (borders
+ * would let the modal's overflow clip the title bar to inside them). */
+html[data-theme="winxp-luna"] {
+  --modal-bg: var(--bg);
+  --modal-border: transparent;
+  --modal-radius: 8px 8px 0 0;
+  --modal-shadow: inset 3px 0 var(--luna-frame), inset -3px 0 var(--luna-frame), inset 0 -3px var(--luna-frame), 2px 4px 14px rgba(0, 0, 0, 0.4);
+  --luna-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='21' height='21'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f0a080'/%3E%3Cstop offset='.45' stop-color='%23e0582c'/%3E%3Cstop offset='1' stop-color='%23c1370f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='.5' y='.5' width='20' height='20' rx='3' fill='url(%23r)' stroke='%23fff'/%3E%3Cpath d='M5.5 5.5l10 10M15.5 5.5l-10 10' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E");
+}
+html[data-theme="winxp-luna"] .modal { border: 0; padding: 0 1rem 1rem; }
+html[data-theme="winxp-luna"] .modal-header {
+  position: relative;
+  margin: 0 -1rem 0.9rem;
+  min-height: 1.9rem;
+  padding: 0.25rem calc(21px + 0.9rem) 0.25rem 0.55rem;
+  display: flex;
+  align-items: center;
+  background: var(--luna-titlebar);
+  box-shadow: var(--luna-lip);
+  color: #ffffff;
+  font-family: "Trebuchet MS", var(--font);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-shadow: 1px 1px #0f1089;
+  border: 0;
+}
+html[data-theme="winxp-luna"] .modal-header::after {
+  content: "";
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  width: 21px;
+  height: 21px;
+  transform: translateY(-50%);
+  background: var(--luna-close) no-repeat;
+  pointer-events: none;
+}
+html[data-theme="winxp-luna"] .modal-footer { margin-top: 1rem; }
+/* Dialog buttons are all Luna push buttons; secondary is not a link. */
+html[data-theme="winxp-luna"] .btn-secondary {
+  --btn-bg: linear-gradient(180deg, #ffffff, #ecebe6 86%, #d6d0c5);
+  --btn-fg: #000000;
+  --btn-border: #003c74;
+}
+html[data-theme="winxp-luna"] .modal .btn { min-width: 4.7rem; }
+/* Text fields are square-cornered, #7f9db9 frame, as in every XP dialog. */
+html[data-theme="winxp-luna"] { --input-radius: 0; }
+
+/* --- Taskbar ------------------------------------------------------------ *
+ * The status strip is the XP taskbar: the Start button at the left (green
+ * pill, rounded on its right, italic "start" with the flag — orange for
+ * Zune, blue for Embedded via --taskbar-start-bg), the app's status items
+ * along it, and the last item in the notification-area tray: a lighter
+ * blue well with a dark left edge. */
+html[data-theme="winxp-luna"] .app-status {
+  min-height: 30px;
+  padding: 0 0 0 0;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+html[data-theme="winxp-luna"] .app-status::before {
+  content: "start";
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 1.4rem 0 0.55rem;
+  border-radius: 0 12px 12px 0;
+  box-shadow: var(--taskbar-start-shadow);
+  color: #ffffff;
+  font-family: "Trebuchet MS", var(--font);
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+}
+/* The flag on the Start button: an element pseudo is spent, so it rides
+   as a background layer of the button, offset to its left edge. */
+html[data-theme="winxp-luna"] .app-status::before {
+  padding-left: 2rem;
+  background:
+    linear-gradient(#f65314,#f65314) 0.6rem calc(50% - 0.27rem) / 0.55rem 0.5rem no-repeat, linear-gradient(#7cbb00,#7cbb00) 1.2rem calc(50% - 0.27rem) / 0.55rem 0.5rem no-repeat, linear-gradient(#00a1f1,#00a1f1) 0.6rem calc(50% + 0.3rem) / 0.55rem 0.5rem no-repeat, linear-gradient(#ffbb00,#ffbb00) 1.2rem calc(50% + 0.3rem) / 0.55rem 0.5rem no-repeat,
+    var(--taskbar-start-bg);
+}
+html[data-theme="winxp-luna"] .app-status > * { align-self: center; }
+html[data-theme="winxp-luna"] .app-status > :last-child:not(:first-child) {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 0 0.9rem;
+  background: linear-gradient(180deg, #0c59b9 0, #139ee9 6%, #18b5f2 12%, #139beb 45%, #1290e8 80%, #0d8dea 92%, #0b5ac6 100%);
+  border-left: 1px solid #092e8d;
+  box-shadow: inset 1px 0 #19b9f3;
+}
+html[data-theme="winxp-luna"]:is([data-variant="royale-noir"], [data-variant="zune"]) .app-status > :last-child:not(:first-child) {
+  background: linear-gradient(180deg, #4a4a4a, #2c2c2c 45%, #1a1a1a 55%, #262626);
+  border-left-color: #000000;
+  box-shadow: inset 1px 0 #5a5a5a;
+}
+html[data-theme="winxp-luna"][data-variant="embedded"] .app-status > :last-child:not(:first-child) {
+  background: linear-gradient(180deg, #1f5bbf, #2b6fd4 45%, #2465c8 55%, #1d55b0);
+  border-left-color: #0e2f6e;
+  box-shadow: inset 1px 0 #4d84da;
+}
+@media (max-width: 720px) {
+  html[data-theme="winxp-luna"] .app-status::before { content: none; }
+}
+
 }

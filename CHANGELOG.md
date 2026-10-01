@@ -5,6 +5,13 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **winxp-luna: real XP dialogs and taskbar.** Modals get the full Luna
+  window frame (title bar with red close, blue side/bottom frame, beige
+  face, Luna buttons, square fields); the status strip becomes the
+  taskbar with the Start button and the notification-area tray, per
+  variant (green / orange Zune / blue Embedded; charcoal tray on the
+  black styles).
+
 - **New theme: `windows-live`** — Windows Live Essentials 2011: Scenic
   Ribbon tab strip with the blue application button and Windows flag,
   white panes on a pale-blue aurora, Segoe UI Light headings (Live green

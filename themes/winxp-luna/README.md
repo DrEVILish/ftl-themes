@@ -123,3 +123,19 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Dialogs and the taskbar
+
+- **Every modal is an XP window:** the Luna title bar across the full
+  width (rounded top corners, white bold Trebuchet caption, red close
+  button), the title-bar blue carried down both sides and the bottom as a
+  3px frame, the beige dialog face inside, square-cornered text fields
+  and Luna push buttons (`.btn-secondary` included). Each variant's title
+  bar and frame follow automatically.
+- **The status strip is the taskbar:** the Start button at the left —
+  italic "start" with the flag, rounded on its right, green (orange for
+  Zune, blue for Embedded via `--taskbar-start-bg`) — status items along
+  the bar, and the last item in the notification-area tray (a lighter
+  well with a dark left edge; charcoal on Royale Noir/Zune). The Start
+  button is dropped on phones.
+
