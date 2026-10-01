@@ -5,6 +5,17 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **v4.1 components styled in 22 more themes.** Each gives the
+  conversation, file chip and bar chart its own character: Aqua's iChat
+  gel bubbles and gel columns, Barbie's pink speech bubbles, Winamp's
+  spectrum analyser, Windows 95's sunken fields and navy progress blocks,
+  steampunk's riveted-leather and brass message plates over copper-pipe
+  columns, teletext's Ceefax colour bands, MS-DOS double-line boxes,
+  Tron's hollow light-line columns, Hot Wheels' checkered-flag highlight,
+  NERV's hazard stripes, and matching treatments for alienware,
+  bloomberg, imac-g3, lego-classic, material, matrix, nokia-3310, pipboy,
+  vaporwave, wmp11, xbmc and xmb.
+
 ## v4.1.0 — conversation, charts and console components; two new themes (2026-10-01)
 
 Additive over v4.0.0: no class or token was renamed or removed. Two
