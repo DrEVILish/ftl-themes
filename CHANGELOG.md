@@ -5,6 +5,12 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **steampunk: Nixie tubes, needle gauges, knife switches, filigree.**
+  Counters and timecode glow in Nixie tubes; horizontal meters are
+  edgewise panel meters with a needle; switches are hinged copper knife
+  switches; cards and dialogs carry brass scrollwork corners. From the
+  reference notes' "not yet done" list.
+
 - **v4.1 components styled in 22 more themes.** Each gives the
   conversation, file chip and bar chart its own character: Aqua's iChat
   gel bubbles and gel columns, Barbie's pink speech bubbles, Winamp's

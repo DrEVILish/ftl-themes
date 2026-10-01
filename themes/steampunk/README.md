@@ -73,4 +73,18 @@ layout at **L1**.
   console keys are brass-bezelled push-buttons that glow like a filament
   lamp when lit; scribble strips are brass nameplates; the EQ curve is
   inked on a chart recorder's parchment roll.
+- **Nixie tubes** for counters and timecode: `.readout-lg` and a
+  transport's readout glow orange in a smoked-glass envelope with the
+  tube's honeycomb mesh (Antonio stands in for the tall neon numerals).
+  Smaller readouts keep the brass dial.
+- **Needle gauges**: a horizontal `.meter` is an edgewise panel meter, an
+  ivory scale with engraved ticks, a red zone above 70% and a red needle
+  at the level. Vertical meters stay sight glasses (a boiler's level
+  gauge); segmented meters keep their lamps.
+- **Knife switches**: `.switch` is a copper blade with a black handle,
+  hinged on a slate base; off, it stands raised at 32 degrees; on, it
+  lies seated in the copper clip.
+- **Filigree**: cards are brass-scrollwork plates (panels keep their
+  rivets); dialogs carry the scrolls in their lower corners under the
+  brass title band.
 

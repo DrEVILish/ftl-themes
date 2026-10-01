@@ -73,5 +73,6 @@ Steampunk technology is mechanical, visceral and complex.
 Valve handwheels for knobs, sight glasses for faders/progress/sliders,
 glowing brass push-buttons for keys, brass nameplates for titles, copper
 steam pipes and a turning gear train in the shell, parchment for the EQ
-trace. Not yet done: Nixie-tube readouts, needle gauges for meters, knife
-switches for toggles, filigree framing.
+trace. Nixie tubes for counters and timecode, edgewise needle gauges for
+horizontal meters, knife switches for toggles and filigree corners on cards
+and dialogs were added in the second pass.
