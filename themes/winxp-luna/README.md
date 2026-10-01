@@ -74,6 +74,8 @@ the window shape is shared, only the paint changes.
 | `royale-noir` | Royale Noir: glossy black chrome and caption buttons, neutral grey `#ececec` face, graphite `#4a4a4a` selection. The orange hot-track and green Start survive. |
 | `zune` | The Zune theme (2006): Royale Noir's black glass with burnt-orange Start/GO, selection and headings on a neutral grey face. Orange deepened to `#a54400` for 4.5:1 under white. |
 | `embedded` | XP Embedded / Windows Embedded Standard: deeper, flatter steel-blue title bar and taskbar, grey-blue face, **blue** Start/GO instead of green. |
+| `olive` | Olive Green ("HomeStead"): olive title bar and taskbar, Luna's beige face, olive selection, green Start. The olive is held dark enough for white title text (the real highlight band was lighter). |
+| `silver` | Silver ("Metallic"): light silver title bar and taskbar with **dark** title and taskbar text, silver caption buttons with dark glyphs (red close kept), cool grey face, grey selection with black text. |
 
 ## Layout
 

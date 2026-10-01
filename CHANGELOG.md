@@ -5,6 +5,11 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **winxp-luna: `olive` (Olive Green) and `silver` (Silver) variants,**
+  completing the XP colour schemes. Silver has dark title-bar, dialog and
+  taskbar text and silver caption buttons; the dialog title now follows
+  `--modal-header-fg`.
+
 - **steampunk: Nixie tubes, needle gauges, knife switches, filigree.**
   Counters and timecode glow in Nixie tubes; horizontal meters are
   edgewise panel meters with a needle; switches are hinged copper knife
