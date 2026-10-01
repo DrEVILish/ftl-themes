@@ -5,6 +5,13 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **lcars: per-page review fixes.** Compact modals (no longer clipped in
+  fixed-height boxes), panel titles that stop before the cap and keep
+  their controls, wrapping two-line keys instead of overflowing rows,
+  one-row scrolling tabs, visible tracks on horizontal meters, Antonio for
+  codes and logs, no zebra, LCARS accordion rows and section links, and an
+  elbow frame on pages without the app shell. Review notes in the README.
+
 - **lcars: corner geometry follows the guide.** One elbow rule for every
   swept (outer `(leg + r) × (bar + r)`, inner a true circle), square
   corners everywhere else (`--radius: 0`), flat arm ends with separate

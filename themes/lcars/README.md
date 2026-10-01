@@ -253,3 +253,37 @@ Reviewed every demo page against the guideline and manifesto rules:
 - The transport is a bracket (thick leg, thin arms, square ends) instead
   of a left edge with one rounded corner.
 
+## Per-page review (theme vs markup)
+
+Fixed in the theme:
+
+- **Modals clipped** (powerstation, livechat, marketing, components): an
+  LCARS modal ran 30-70px taller than other themes', so fixed-height demo
+  stages cut its top and bottom bars off. Modals are now compact.
+- **Panel titles** ran into the bar's cap in narrow panels, and headers
+  with a sub-line or buttons (ticket header) lost their controls; titles
+  now stop short of the cap, sub-lines sit inline and shrink first,
+  header buttons drop their minimum width.
+- **Button rows overflowed** their frame (ticket actions): minimum widths
+  are smaller and long labels break onto a second line, bottom-right.
+- **Tabs** wrapped into two rows (caps mid-run); they now stay one row and
+  scroll sideways.
+- **Horizontal meters** (tables, cards) had no visible track; only
+  vertical meters are ruler tubes now.
+- **One face**: logs, codes and table figures were Consolas; now Antonio
+  with tabular figures.
+- **Zebra rows**, **plain accordion rows** and **plain section links**:
+  no grey bands; accordion rows are lavender bar segments with caps (open
+  = orange); section links are lavender codes.
+- **Pages without the app shell** (marketing) had no frame at all; the
+  free-standing top nav is now an elbow with the brand as screen title.
+
+Needs markup (left as is):
+
+- Demo stages are fixed-height; marketing's is too small even for Aqua.
+- The ticket inbox column and chat presence list are not in panels, so
+  they get no frame; the chat's narrow side columns squeeze names.
+- Long button labels should switch to the flat-ended variant — an app
+  decision, not visible to CSS.
+- Only two rail blocks can carry codes without rail markup.
+

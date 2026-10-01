@@ -62,7 +62,9 @@ html[data-theme="lcars"] {
   /* Everything is set in the condensed display face, body copy included:
      a Trebuchet paragraph under Antonio headings reads as a web page. */
   --font: "Antonio", "Arial Narrow", sans-serif-condensed, sans-serif;
-  --font-mono: Consolas, monospace;
+  /* One face (reference §7): codes, timecodes and logs are Antonio too,
+     with tabular figures so columns still line up. */
+  --font-mono: "Antonio", "Arial Narrow", sans-serif-condensed, sans-serif;
   --flare: #ffcc99;
   /* LCARS candy bars — namespaced so nothing collides. --accent (#ff9900,
      "atomic tangerine"), --lcars-lavender (#cc99cc, "lilac") and
@@ -335,8 +337,12 @@ html[data-theme="lcars"] .alert {
 
 /* Buttons: pill blocks, label at the right-hand end. */
 /* Labels sit at the bottom right of the block, as on every LCARS key. */
-html[data-theme="lcars"] .btn:not(.btn-icon):not(.btn-sm) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 6.9rem; min-height: 2.3rem; }
-html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; min-width: 4.8rem; }
+/* Labels sit at the bottom right of the block, as on every LCARS key; a
+   label too long for the block's width breaks onto a second line, still
+   bottom-right, as on the panels' two-line keys. Minimum widths are kept
+   modest so a row of keys can still shrink to fit its frame. */
+html[data-theme="lcars"] .btn:not(.btn-icon):not(.btn-sm) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 4.8rem; min-height: 2.3rem; line-height: 1.05; }
+html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; min-width: 3.4rem; }
 html[data-theme="lcars"] .btn-primary { --btn-bg: var(--accent); --btn-bg-hover: var(--lcars-gold); }
 html[data-theme="lcars"] .btn-secondary { --btn-bg: var(--lcars-periwinkle); --btn-fg: #000; }
 html[data-theme="lcars"] .btn-success { --btn-bg: var(--lcars-sky); }
@@ -344,11 +350,11 @@ html[data-theme="lcars"] .btn-ghost { min-width: 0; }
 
 /* Tabs: touching blocks, pill-capped at the two ends of the row. */
 html[data-theme="lcars"] .tabs { border-bottom: 0; gap: 0.3rem; }
-html[data-theme="lcars"] .tab { border: 0; padding: 0.45em 1.2em 0.3em; font-size: 0.95em; }
+html[data-theme="lcars"] .tab { border: 0; padding: 0.4em 0.7em 0.25em; font-size: 0.95em; }
 html[data-theme="lcars"] .tab.is-active { border-bottom: 0; }
 html[data-theme="lcars"] .tab:hover:not(.is-active) { background: var(--lcars-tan); color: #000; }
-html[data-theme="lcars"] .tab:first-child { border-radius: 999px 0 0 999px; padding-left: 1.6em; }
-html[data-theme="lcars"] .tab:last-child { border-radius: 0 999px 999px 0; padding-right: 1.6em; }
+html[data-theme="lcars"] .tab:first-child { border-radius: 999px 0 0 999px; padding-left: 1.1em; }
+html[data-theme="lcars"] .tab:last-child { border-radius: 0 999px 999px 0; padding-right: 1.1em; }
 
 html[data-theme="lcars"] .table th:first-child { border-radius: 1rem 0 0 1rem; }
 html[data-theme="lcars"] .table th:last-child { border-radius: 0 1rem 1rem 0; }
@@ -633,13 +639,11 @@ html[data-theme="lcars"] body { font-size: var(--lcars-size-data); }
 html[data-theme="lcars"] :is(h1, .app-bar .nav-brand, .stat-value, .readout, .readout-lg) { font-size: var(--lcars-size-title); }
 html[data-theme="lcars"] .readout-sm { font-size: var(--lcars-size-sub); }
 html[data-theme="lcars"] .transport { flex-wrap: wrap; border-right: 0; }
-html[data-theme="lcars"] .toggle-btn { white-space: nowrap; }
 html[data-theme="lcars"] :is(h2, h3, h4, .panel-header, .modal-header, .app-bar .nav-item) { font-size: var(--lcars-size-sub); }
 html[data-theme="lcars"] :is(p, .btn, .btn-sm, .label, .field-hint, .field-error, .stat-label, .stat-trend, .badge, .status,
   .table th, .table td, .list-item, .breadcrumb-item, .segmented-item, .pagination-item, .context-menu-item, .dropdown-item,
   .toast, .alert, .input, .select, .textarea, .input-addon, kbd, .log, .readout-unit, .switch-label, .toggle-btn,
   .strip-label, .knob-label, .key, .scribble-name, .scribble-num, .nav-item, .tab, small) { font-size: var(--lcars-size-data); }
-html[data-theme="lcars"] .btn { white-space: nowrap; }
 html[data-theme="lcars"] .readout-unit { font-size: var(--lcars-size-data); }
 
 /* Modal titles: a modal scrolls (overflow clips anything pulled into its
@@ -696,3 +700,73 @@ html[data-theme="lcars"] .eq-curve {
   border-radius: 0;
 }
 html[data-theme="lcars"] .eq-curve path { filter: drop-shadow(0 0 2px var(--eq-line)); }
+
+/* --- Per-page review fixes ------------------------------------------- */
+
+html[data-theme="lcars"] body { font-variant-numeric: tabular-nums; }
+
+/* Modals are compact: the frame already gives them presence, and a tall
+   modal gets clipped wherever it sits in a fixed-height box. */
+html[data-theme="lcars"] .modal { --lc-pad: 1rem; padding: var(--lc-pad) var(--lc-pad) var(--lc-pad) 1.25rem; }
+html[data-theme="lcars"] .modal-header { margin-bottom: 0.5rem; }
+html[data-theme="lcars"] .modal .field { margin-bottom: 0.4rem; }
+html[data-theme="lcars"] .modal-footer { margin-top: 0.6rem; }
+
+/* A panel title never runs into the cap at the end of its bar, and a
+   header carrying a sub-line or controls stays on the bar: sub-lines sit
+   inline after the title, buttons drop their minimum width. */
+html[data-theme="lcars"] .panel-header { max-width: calc(100% - 1.5rem - var(--lc-top) * 1.5 - 1rem); }
+html[data-theme="lcars"] .panel-header > div { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; overflow: hidden; }
+html[data-theme="lcars"] .panel-header .field-hint { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); flex: 0 20 auto; min-width: 0; }
+html[data-theme="lcars"] .panel-header :is(.btn, .btn-sm) { min-width: 0; min-height: 0; padding: 0.05rem 0.6rem; }
+html[data-theme="lcars"] .panel-header > :not(:first-child) { flex: none; }
+
+/* Gauges vs bars: only vertical meters are MSD tubes with a tick ruler;
+   horizontal meters (in tables, cards) get a plain dark track so an empty
+   one still reads as a meter. */
+html[data-theme="lcars"] .meter:not(.meter-v) { --meter-track: #1c1c2c; }
+html[data-theme="lcars"] .meter-v:not(.is-segmented) { --meter-thickness: 1.3rem; }
+
+/* Tabs stay one row — wrapping would leave pill caps in the middle of a
+   run (reference §4) — and scroll sideways when the frame is too narrow,
+   rather than truncating labels to nothing. */
+html[data-theme="lcars"] .tabs { flex-wrap: nowrap; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+html[data-theme="lcars"] .tab { flex: none; white-space: nowrap; }
+
+/* No zebra: LCARS has no grey bands. */
+html[data-theme="lcars"] { --row-alt-bg: transparent; }
+
+/* Accordion rows are lavender bar segments with the label bottom-right
+   and a cap on the free end; the open row turns orange (active). */
+html[data-theme="lcars"] .accordion-item { border: 0; margin-bottom: 0.3rem; }
+html[data-theme="lcars"] .accordion-trigger {
+  background: var(--lcars-lavender);
+  color: #000;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 1rem 0.2rem 0.8rem;
+  border-radius: 0 999px 999px 0;
+}
+html[data-theme="lcars"] .accordion-item[open] > .accordion-trigger { background: var(--accent); }
+html[data-theme="lcars"] .accordion-panel { padding: 0.5rem 0.8rem; }
+
+/* Section links (scrollspy): lavender codes, the current one orange. */
+html[data-theme="lcars"] {
+  --scrollspy-link-fg: var(--lcars-lavender);
+  --scrollspy-link-active-fg: var(--accent);
+}
+html[data-theme="lcars"] .scrollspy-link { text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* A page without the app shell (marketing) still gets the frame: a
+   free-standing top nav is an elbow — thick leg on the left curving into
+   a thin bar under the nav — with the brand as the screen title. */
+html[data-theme="lcars"] body:not(.app) > * > .nav:first-child,
+html[data-theme="lcars"] body:not(.app) > .nav:first-child {
+  border-left: 4rem solid var(--accent);
+  border-bottom: 0.8rem solid var(--accent);
+  border-bottom-left-radius: calc(4rem + 1rem) calc(0.8rem + 1rem);
+  padding: 0.6rem 0 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+}
+html[data-theme="lcars"] body:not(.app) .nav:first-child .nav-brand { font-size: var(--lcars-size-title); color: var(--accent); text-transform: uppercase; }
