@@ -11,8 +11,11 @@
 An app-agnostic design system and theme library for Go + HTMX (or any
 server-rendered, htmx-swapped) applications: a small component
 class vocabulary, a `--*` design-token contract, and a growing catalog
-of fully switchable themes — from LCARS to Windows 95 to a Matrix
-terminal.
+of 42 fully switchable themes — from LCARS to Windows 95 to a Matrix
+terminal, Skyrim, Liquid Glass and black leather with gold.
+
+**Live examples:** https://drevilish.github.io/ftl-themes/ — the gallery,
+the component page and six demo apps, published from `main` by GitHub Pages.
 
 - **Using it in an app:** read [`CONTRACT.md`](CONTRACT.md).
 - **Icon pack, style & branding guide, per-theme scores against real
@@ -31,8 +34,18 @@ terminal.
   between a theme and its design doc is visible while you tick items off.
   A "Compare two" mode puts two themes side by side.
 - **Browsing every theme at once:** [`gallery.html`](gallery.html) — a
-  filterable grid with a live, scaled-down preview of each theme (pick
-  which example page renders in each card).
+  filterable grid with a screenshot of each theme (pick which example page
+  shows in each card). The screenshots live in `test/visual-baseline/`;
+  regenerate a theme's with `scripts/screenshot_themes.py --baseline --theme <slug>`.
+- **Demo apps:** [`dashboard.html`](dashboard.html),
+  [`marketing.html`](marketing.html), [`ticketsystem.html`](ticketsystem.html),
+  [`powerstation.html`](powerstation.html), [`soundmixer.html`](soundmixer.html)
+  and [`livechat.html`](livechat.html), each with the theme picker.
+- **What each theme is copying:** [`references/`](references/README.md) —
+  real reference images, one folder per theme (`references/<theme>/`) and
+  one subfolder per palette variant (`references/<theme>/<variant>/`),
+  each with a `RESEARCH.md`. Image filenames name the UI components they
+  show, in camelCase, `-` between components (`elbowFrame-pillButton.webp`).
 - **Engine-level recommendations** (what's been reviewed and what's still
   open): [`docs/engine-improvements.md`](docs/engine-improvements.md).
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
@@ -78,7 +91,10 @@ assets/                   fonts and other binary assets themes reference
 scripts/build.sh          regenerates dist/ from core/ + themes/
 scripts/check.sh          contract lint (tokens, contrast, focus, variants, dist sync)
 scripts/new-theme.sh      scaffolds a new themes/<slug>/theme.css
-docs/                     authoring guide, LCARS chrome spec, theme backlog
+references/<name>/        reference images + RESEARCH.md per theme (variants in subfolders)
+test/visual-baseline/     per-theme screenshots, shown by gallery.html
+index.html                redirects the Pages site root to gallery.html
+docs/                     authoring guide, LCARS chrome spec, branding guide
 ```
 
 Serve `dist/` and `assets/` as siblings — bundled CSS resolves fonts as
