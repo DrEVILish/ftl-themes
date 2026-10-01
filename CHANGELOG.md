@@ -5,6 +5,12 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **References: the rest of lcars.org.uk.** The Alien-species, Enterprise
+  (NX-01), TOS/TOS-films and Star Trek (2009) galleries are captured and
+  component-tagged in `references/lcars/lcars-org-uk/` (446 screens,
+  #513–#958), with a per-gallery table in INDEX.md. Marked as non-LCARS
+  references; the Voyager gallery remains Flash-only.
+
 - **winxp-luna: `olive` (Olive Green) and `silver` (Silver) variants,**
   completing the XP colour schemes. Silver has dark title-bar, dialog and
   taskbar text and silver caption buttons; the dialog title now follows

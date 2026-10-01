@@ -174,7 +174,7 @@ kept, so the theme can be checked against it rule by rule.
 
 ## 11. Patterns across the lcars.org.uk panel collection
 
-512 screen-used panels captured and tagged in `lcars-org-uk/INDEX.md`.
+512 screen-used LCARS panels captured and tagged in `lcars-org-uk/INDEX.md` (#1–#512); the same index also holds 446 non-LCARS Trek screens (alien species, Enterprise NX-01, TOS, Star Trek 2009) as #513–#958, which the patterns below do not draw on.
 What recurs, and therefore belongs in the theme:
 
 - **Elbow + segmented bars** frame almost every full screen (≈70%); the
@@ -210,7 +210,8 @@ What recurs, and therefore belongs in the theme:
   captures (`Lcars_wallpaper.svg.webp` — the TNG split frame;
   `Starship_LCARS_Interface_E_900_for_Site.webp` — Sovereign-class
   bracket frames and titles in bar breaks).
-- lcars.org.uk panel galleries (TNG, TNG films, DS9) and lcars.htm,
-  captured into `lcars-org-uk/` with a component index.
+- lcars.org.uk panel galleries (TNG, TNG films, DS9, plus the Alien,
+  Enterprise, TOS and Star Trek 2009 galleries) and lcars.htm, captured
+  into `lcars-org-uk/` with a component index.
 - Other working examples: https://www.thelcars.com/ ,
   https://github.com/MichalSvatos/pi-hole-lcars-next-gen
