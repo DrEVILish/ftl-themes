@@ -2834,6 +2834,260 @@ pre code { padding: 0; background: none; border-radius: 0; }
   inset: 0;
 }
 
+/* --- v4.1 additions: conversation, lists, charts, rows, pages ------------
+ * Shapes the demo pages had each hand-rolled (and two had built twice), now
+ * themeable through --<comp>-* tokens like every other component. */
+
+/* .thread / .message — a conversation: chat, ticket replies, comments.
+ *   <div class="thread">
+ *     <div class="thread-divider">Today</div>
+ *     <div class="message">
+ *       <span class="avatar">AT</span>
+ *       <div class="message-bubble">
+ *         <div class="message-meta"><strong>Ava</strong> <time>09:41</time></div>
+ *         <p>Morning all</p>
+ *         <div class="message-reactions"><button class="badge badge-button">👍 3</button></div>
+ *       </div>
+ *     </div>
+ *     <div class="message is-own">…</div>
+ *     <div class="typing">Leo is typing…</div>
+ *   </div>
+ * .is-own mirrors the row (avatar on the end side) and reads the --message-own-*
+ * tokens; --message-tail-radius is the corner nearest the avatar. */
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--thread-gap, calc(0.75rem * var(--density)));
+}
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.message.is-own { flex-direction: row-reverse; }
+.message-bubble {
+  min-width: 0;
+  max-width: var(--message-max-width, 32rem);
+  padding: var(--message-padding, 0.5rem 0.75rem);
+  background: var(--message-bg, var(--surface));
+  color: var(--message-fg, var(--text));
+  border: var(--message-border-width, 1px) solid var(--message-border, var(--border));
+  border-radius: var(--message-radius, var(--radius));
+  border-start-start-radius: var(--message-tail-radius, var(--message-radius, var(--radius)));
+  box-shadow: var(--message-shadow, none);
+}
+.message.is-own > .message-bubble {
+  background: var(--message-own-bg, color-mix(in srgb, var(--accent) 12%, var(--message-bg, var(--surface))));
+  color: var(--message-own-fg, var(--message-fg, var(--text)));
+  border-color: var(--message-own-border, var(--message-border, var(--border)));
+  box-shadow: var(--message-own-shadow, var(--message-shadow, none));
+  border-start-start-radius: var(--message-radius, var(--radius));
+  border-start-end-radius: var(--message-tail-radius, var(--message-radius, var(--radius)));
+}
+.message-bubble > * { margin-block: 0; }
+.message-bubble > * + * { margin-block-start: 0.35rem; }
+.message-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2em 0.5em; }
+.message-meta > :is(time, small, .message-time) { font-size: 0.8em; color: var(--message-meta-fg, var(--muted)); }
+.message.is-own .message-meta > :is(time, small, .message-time) { color: var(--message-own-meta-fg, var(--message-meta-fg, var(--muted))); }
+.message-reactions { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+/* .thread-divider — a centred label between hairlines ("Today", "New"). */
+.thread-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--thread-divider-fg, var(--muted));
+  font-size: 0.8em;
+  letter-spacing: var(--label-tracking, normal);
+  text-transform: var(--label-transform, none);
+}
+.thread-divider::before,
+.thread-divider::after {
+  content: "";
+  flex: 1;
+  border-block-start: 1px solid var(--thread-divider-rule, var(--hairline));
+}
+
+/* .typing — "Leo is typing…" with three pulsing dots drawn in CSS. */
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+.typing::before {
+  content: "";
+  width: 1.6em;
+  height: 0.4em;
+  flex: none;
+  background:
+    radial-gradient(circle closest-side, var(--typing-dot, currentColor) 98%, transparent) 0 50% / 0.4em 0.4em no-repeat,
+    radial-gradient(circle closest-side, var(--typing-dot, currentColor) 98%, transparent) 50% 50% / 0.4em 0.4em no-repeat,
+    radial-gradient(circle closest-side, var(--typing-dot, currentColor) 98%, transparent) 100% 50% / 0.4em 0.4em no-repeat;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .typing::before { animation: typing-pulse 1.2s ease-in-out infinite; }
+}
+html[data-motion="reduced"] .typing::before { animation: none; }
+@keyframes typing-pulse { 50% { opacity: 0.35; } }
+
+/* .attachment — a file chip: icon, name, size, optional upload progress.
+ *   <div class="attachment"><svg class="icon">…</svg>
+ *     <span class="attachment-name">notes.pdf</span><span class="attachment-size">88 KB</span>
+ *     <div class="progress">…</div></div> */
+.attachment {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.6rem;
+  padding: var(--attachment-padding, 0.45rem 0.7rem);
+  background: var(--attachment-bg, var(--surface-2));
+  color: var(--attachment-fg, var(--text));
+  border: 1px solid var(--attachment-border, var(--border));
+  border-radius: var(--attachment-radius, var(--radius));
+}
+.attachment-name { font-family: var(--font-mono); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attachment-size { font-size: 0.8em; color: var(--muted); margin-inline-start: auto; }
+.attachment > .progress { flex-basis: 100%; }
+
+/* Two-line list rows: a .list-item holding .list-item-title stacks a title
+ * over a meta line (sender + status, size + date). It keeps the list's
+ * hover/selected styling. */
+.list-item:has(> .list-item-title) {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+}
+.list-item-title { font-weight: var(--list-item-title-weight, 600); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  font-size: 0.8em;
+  color: var(--list-item-meta-fg, var(--muted));
+}
+/* On a selected row the meta line follows the row's own (selected) text
+   colour; muted grey would vanish into an accent fill. */
+.list-item.is-active .list-item-meta,
+.list-item.is-active .list-item-meta .status { color: var(--list-item-meta-fg-active, inherit); }
+
+/* .bar-chart — a CSS column chart; each child is a bar of height --value (0–1).
+ *   <div class="bar-chart" role="img" aria-label="Revenue, 12 weeks, rising">
+ *     <span style="--value:0.38"></span>…</div>
+ * .is-highlight on a bar uses the second series colour. For anything richer,
+ * draw with the Chart palette tokens instead. */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--bar-chart-gap, 0.5rem);
+  height: var(--bar-chart-height, 8rem);
+  padding-block-start: 0.5rem;
+  border-block-end: var(--bar-chart-axis-width, 1px) solid var(--bar-chart-axis, var(--chart-grid, var(--hairline)));
+}
+.bar-chart > * {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--value, 0) * 100%);
+  background: var(--bar-chart-bar, var(--chart-series-1, var(--accent)));
+  border-radius: var(--bar-chart-radius, 2px 2px 0 0);
+  box-shadow: var(--bar-chart-shadow, none);
+}
+.bar-chart > .is-highlight { background: var(--bar-chart-bar-alt, var(--chart-series-2, var(--success))); }
+
+/* .value-row — label | control | value, for setpoints, goals and gains.
+ *   <div class="value-row"><label class="label" for="g">Gain</label>
+ *     <input class="slider" id="g" type="range"><span class="readout readout-sm">62%</span></div> */
+.value-row {
+  display: grid;
+  grid-template-columns: var(--value-row-label, 8rem) minmax(0, 1fr) var(--value-row-value, 4.5rem);
+  align-items: center;
+  gap: 0.75rem;
+}
+.value-row > .label { margin: 0; }
+.value-row > :last-child { justify-self: end; font-variant-numeric: tabular-nums; }
+
+/* .meter-bank — vertical meters side by side, each over its label (tank
+ * levels, bus meters). Each child is a column: the .meter-v grows, the
+ * label sits under it. */
+.meter-bank {
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 1rem;
+  height: var(--meter-bank-height, 11rem);
+}
+.meter-bank > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8em;
+  color: var(--muted);
+}
+.meter-bank .meter-v { flex: 1; }
+
+/* .table.is-matrix — a grid of checkboxes or marks (routing, permissions):
+ * every column but the first is centred. */
+.table.is-matrix :is(th, td) { text-align: center; }
+.table.is-matrix :is(th, td):first-child { text-align: start; }
+
+/* .toolbar.is-plain — the toolbar row without its box: filters and bulk
+ * actions above a list. */
+.toolbar.is-plain { padding: 0; background: none; border: 0; }
+
+/* .hero / .band — marketing page structure. A .band is a full-width page
+ * section; .is-tinted paints it. .band-head centres a heading and its lede. */
+.hero {
+  text-align: center;
+  padding: calc(4rem * var(--density)) 1rem calc(3rem * var(--density));
+  background: var(--hero-bg, transparent);
+  color: var(--hero-fg, inherit);
+}
+.hero :is(h1, h2) + p { max-width: 38rem; margin: 0.75rem auto 1.5rem; color: var(--hero-lede-fg, var(--muted)); }
+.band { padding-block: calc(3rem * var(--density)); }
+.band.is-tinted { background: var(--band-tint-bg, var(--surface)); color: var(--band-tint-fg, inherit); }
+.band-head { text-align: center; max-width: 38rem; margin: 0 auto 2rem; }
+.band-head > * { margin-block: 0; }
+.band-head > p { margin-block-start: 0.5rem; color: var(--muted); }
+
+/* .price — a plan's big figure with an optional .price-period.
+ * .feature-list — a plan's features, ticked; .is-excluded crossed out. */
+.price {
+  font-size: var(--price-size, 2.2rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--price-fg, inherit);
+}
+.price-period { font-size: 0.4em; font-weight: 400; color: var(--muted); }
+.feature-list { list-style: none; margin: 1rem 0; padding: 0; text-align: start; }
+.feature-list > li { display: flex; gap: 0.5em; padding: 0.35rem 0; }
+.feature-list > li + li { border-block-start: 1px solid var(--hairline); }
+.feature-list > li::before { content: var(--feature-mark, "✓"); color: var(--feature-mark-fg, var(--success-text, var(--success))); font-weight: 700; }
+.feature-list > li.is-excluded { color: var(--muted); }
+.feature-list > li.is-excluded::before { content: var(--feature-mark-off, "✕"); color: var(--muted); }
+
+/* --- Layout helpers ------------------------------------------------------
+ * .push — eat the free space before this item (end-align it in a flex row:
+ *   a nav's trailing controls, a list item's count).
+ * .columns — fixed-ratio columns: style="--columns: 2fr 1fr" (any
+ *   grid-template-columns value). Below 960px they become --columns-narrow
+ *   (default one column).
+ * .is-auto on .select/.input — size to content instead of filling the row. */
+.push { margin-inline-start: auto; }
+.columns {
+  display: grid;
+  grid-template-columns: var(--columns, 1fr 1fr);
+  gap: var(--columns-gap, calc(1.25rem * var(--density)));
+  align-items: start;
+}
+.columns > * { min-width: 0; }
+@media (max-width: 960px) {
+  .columns { grid-template-columns: var(--columns-narrow, minmax(0, 1fr)); }
+}
+:is(.select, .input).is-auto { width: auto; flex: none; }
+
 /* --- Print baseline ------------------------------------------------------
  *
  * No theme opts into this — it's the universal floor every theme gets for
@@ -3380,6 +3634,27 @@ html[data-theme="prometheus"] .app-status {
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+
+/* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
+ * Messages are glass slabs with the bracket on the speaker's side; the
+ * chart is translucent hologram columns with a bright top edge. */
+html[data-theme="prometheus"] {
+  --message-bg: var(--surface-2);
+  --message-border: transparent;
+  --message-radius: 0.5rem;
+  --message-tail-radius: 0;
+  --message-shadow: inset 3px 0 0 var(--accent);
+  --message-own-bg: var(--surface-2);
+  --message-own-shadow: inset -3px 0 0 var(--accent-2);
+  --attachment-bg: #0e3a54;
+  --attachment-border: transparent;
+  --attachment-radius: 3px;
+  --bar-chart-bar: linear-gradient(var(--accent) 0 2px, color-mix(in srgb, var(--accent) 32%, transparent) 2px);
+  --bar-chart-bar-alt: linear-gradient(var(--accent-2) 0 2px, color-mix(in srgb, var(--accent-2) 40%, transparent) 2px);
+  --bar-chart-radius: 0;
+  --bar-chart-axis: var(--border);
+}
+html[data-theme="prometheus"][data-variant="suit"] { --attachment-bg: #15495c; }
 
 @media print {
   html[data-theme="prometheus"] body { background: #fff; }

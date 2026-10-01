@@ -1455,6 +1455,86 @@ native primitives only — no script, no checkbox hacks:
   values). Drop your own mark inside `-start` (logo svg, orb glyph) —
   core draws no brand artwork.
 
+### v4.1 additions: conversation, rows, charts, page structure
+
+Shapes the example pages used to hand-roll (two of them twice), now core
+components themed through tokens like the rest. A theme never sets
+`background`/`color` on these base selectors (lint-enforced); it sets the
+tokens.
+
+```html
+<!-- Conversation: chat, ticket replies, comments -->
+<div class="thread">
+  <div class="thread-divider">Today</div>
+  <div class="message">
+    <span class="avatar">AT</span>
+    <div class="message-bubble">
+      <div class="message-meta"><strong>Ava</strong> <time>09:41</time></div>
+      <p>Is the export fix live yet?</p>
+      <div class="message-reactions"><button class="badge badge-button">👍 3</button></div>
+    </div>
+  </div>
+  <div class="message is-own">…</div>          <!-- mirrored: avatar on the end side -->
+  <div class="typing">Leo is typing…</div>      <!-- CSS-drawn dots, motion-gated -->
+</div>
+
+<!-- File chip (in a message or anywhere); the progress row is optional -->
+<div class="attachment"><svg class="icon">…</svg>
+  <span class="attachment-name">notes.pdf</span><span class="attachment-size">88 KB</span>
+  <div class="progress"><div class="progress-bar" style="width:64%"></div></div></div>
+
+<!-- Two-line list row: any .list-item holding .list-item-title stacks -->
+<li><a class="list-item is-active" href="…">
+  <span class="list-item-title">Can't export invoices</span>
+  <span class="list-item-meta"><span>#4821 · Ava</span><span class="status status-warn">Pending</span></span>
+</a></li>
+
+<!-- Column chart: each child's height is --value (0–1) -->
+<div class="bar-chart" role="img" aria-label="Revenue, 12 weeks, rising">
+  <span style="--value:0.38"></span>… <span class="is-highlight" style="--value:0.88"></span>
+</div>
+
+<!-- label | control | value -->
+<div class="value-row"><label class="label" for="g">Gain</label>
+  <input class="slider" id="g" type="range"><span class="readout readout-sm">62%</span></div>
+
+<!-- Vertical meters over labels -->
+<div class="meter-bank"><div><div class="meter meter-v" style="--meter-level:78%">…</div><span>Coolant</span></div>…</div>
+
+<!-- Checkbox grid; plain toolbar -->
+<table class="table is-matrix">…</table>
+<div class="toolbar is-plain">…</div>
+
+<!-- Marketing structure -->
+<section class="hero"><h1>…</h1><p>Lede</p>…</section>
+<section class="band is-tinted"><div class="band-head"><h2>Pricing</h2><p>Lede</p></div>…</section>
+<div class="price">$49<span class="price-period">/mo</span></div>
+<ul class="feature-list"><li>Offline sync</li><li class="is-excluded">SSO</li></ul>
+```
+
+| Component | Tokens |
+|---|---|
+| `.message-bubble` | `--message-bg`, `--message-fg`, `--message-border`, `--message-border-width`, `--message-radius`, `--message-tail-radius` (corner nearest the avatar), `--message-padding`, `--message-max-width`, `--message-shadow`, `--message-meta-fg`; own messages `--message-own-bg` (default: 12% accent over the bubble), `--message-own-fg`, `--message-own-border`, `--message-own-shadow`, `--message-own-meta-fg` |
+| `.thread`, `.thread-divider`, `.typing` | `--thread-gap`, `--thread-divider-fg`, `--thread-divider-rule`, `--typing-dot` |
+| `.attachment` | `--attachment-bg`, `--attachment-fg`, `--attachment-border`, `--attachment-radius`, `--attachment-padding` |
+| `.list-item-title` / `-meta` | `--list-item-title-weight`, `--list-item-meta-fg`, `--list-item-meta-fg-active` |
+| `.bar-chart` | `--bar-chart-bar`, `--bar-chart-bar-alt` (`.is-highlight`), `--bar-chart-radius`, `--bar-chart-gap`, `--bar-chart-height`, `--bar-chart-axis`, `--bar-chart-axis-width`, `--bar-chart-shadow`; defaults read the Chart palette |
+| `.value-row` | `--value-row-label`, `--value-row-value` (column widths) |
+| `.meter-bank` | `--meter-bank-height` |
+| `.hero`, `.band` | `--hero-bg`, `--hero-fg`, `--hero-lede-fg`, `--band-tint-bg`, `--band-tint-fg` |
+| `.price`, `.feature-list` | `--price-size`, `--price-fg`, `--feature-mark`, `--feature-mark-off`, `--feature-mark-fg` |
+
+The contrast lint measures message, own-message and attachment text
+against their fills, falling back along the same chains core uses.
+
+**Layout helpers.** `.push` (`margin-inline-start: auto`) end-aligns an
+item in a flex row: a nav's trailing controls, a list row's count.
+`.columns` lays out fixed-ratio columns from `--columns` (any
+`grid-template-columns` value, e.g. `style="--columns: 2fr 1fr"`) and
+switches to `--columns-narrow` (default one column) below 960px.
+`.select.is-auto` / `.input.is-auto` size to content instead of filling
+the row.
+
 ## Icon system
 
 Icons are one shared SVG sprite, `assets/icons/icons.svg`, used everywhere

@@ -5,6 +5,24 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **v4.1 components, upstreamed from the example pages** (CONTRACT.md
+  "v4.1 additions"): `.thread` / `.message` (`.is-own`) /
+  `.thread-divider` / `.typing`, `.attachment`, two-line `.list-item`
+  (`.list-item-title` / `-meta`), `.bar-chart`, `.value-row`,
+  `.meter-bank`, `.table.is-matrix`, `.toolbar.is-plain`, `.hero`,
+  `.band`, `.price`, `.feature-list`; layout helpers `.push`, `.columns`
+  and `.is-auto`. All token-driven; added to the lint's base-component
+  rule, with message, own-message and attachment text added to the
+  contrast pairs. Styled in lcars, winxp-luna, win7-aero, windows-live,
+  weyland-yutani and prometheus. Shown on components.html.
+- **Example pages use them.** The chat and ticket threads, ticket inbox,
+  dashboard chart and goals, power-station tanks and setpoints, mixer
+  routing table and the marketing hero/bands/pricing are now core
+  markup; the page-local grids are `.columns`; inline margins are
+  `.mt-*`. The scaffolding that stays demo-only (static modal stages,
+  inline previews of floating surfaces, top-bar wrapping) moved into one
+  shared `assets/css/demo.css` instead of six drifting copies.
+
 - **Demo pages link to each other.** The six example apps' top-bar nav
   is now real navigation between them (Dashboard, Marketing, Support,
   Power station, Mixer, Chat; the current page active), and the links

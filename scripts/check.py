@@ -101,6 +101,10 @@ BASE_COMPONENTS = [
     # Mixing-console primitives: same token-variant architecture (.key-mute,
     # .knob-hf, .strip.is-selected, …), so the same cascade rule applies.
     "mixer", "strip", "knob", "fader", "key", "scribble", "eq-curve",
+    # v4.1 additions: conversation, file chip, chart, rows and page
+    # structure — themed through --message-*, --attachment-*, --bar-chart-*,
+    # --hero-*, --band-* tokens.
+    "message-bubble", "attachment", "bar-chart", "hero", "band",
 ]
 FORBIDDEN_ON_BASE = ["background", "background-color", "color"]
 
@@ -199,10 +203,17 @@ def check_contrast(theme, tokens, exempt):
         ("body text on backdrop (AAA)", "text", "bg", 7.0, False),
         ("accent legibility", "accent", "surface", 3.0, False),
         ("accent on page backdrop", "accent", "bg", 3.0, False),
+        # Conversation and file chips (v4.1): each side falls back along
+        # the same chain core's rule does, so a theme that sets only the
+        # bubble fill is still measured against the text it will get.
+        ("message text", "message-fg|text", "message-bg|surface", 4.5, True),
+        ("own message text", "message-own-fg|message-fg|text", "message-own-bg|message-bg|surface", 4.5, True),
+        ("attachment text", "attachment-fg|text", "attachment-bg|surface-2", 4.5, True),
     ):
         if not hard and exempt:
             continue
         fg_tok = next((t for t in fg_tok.split("|") if t in tokens), fg_tok.split("|")[-1])
+        bg_tok = next((t for t in bg_tok.split("|") if t in tokens), bg_tok.split("|")[-1])
         fg = resolve(tokens, tokens.get(fg_tok, ""))
         bg = resolve(tokens, tokens.get(bg_tok, ""))
         if not (fg and bg):

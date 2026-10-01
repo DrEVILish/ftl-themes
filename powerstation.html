@@ -5,21 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Power Station — ftl-themes layout demo</title>
 <link id="theme-link" rel="stylesheet" href="dist/aqua.css">
-<style>
-  * { box-sizing: border-box; }
-  .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-  .demo-topbar-spacer { flex: 1; }
-  .demo-topbar .nav-brand { white-space: nowrap; }
-  .demo-two-col { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
-  @media (max-width: 860px) { .demo-two-col { grid-template-columns: 1fr; } }
-  .demo-tanks { display: flex; gap: 1rem; justify-content: space-around; align-items: flex-end; padding: 0.9rem; height: 11rem; }
-  .demo-tank { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; height: 100%; }
-  .demo-tank .meter { flex: 1; }
-  .demo-stage { position: relative; min-height: 13rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; }
-  .demo-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
-  @media (max-width: 960px) { .demo-three { grid-template-columns: 1fr; } }
-  .demo-setpoint { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 5rem; gap: 0.75rem; align-items: center; margin: 0.6rem 0; }
-</style>
+<link rel="stylesheet" href="assets/css/demo.css">
+
 </head>
 <body class="app">
   <header class="app-bar">
@@ -31,8 +18,7 @@
       <a class="nav-item is-active" href="powerstation.html" data-demo-link aria-current="page">Power station</a>
       <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
       <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
-      <span class="demo-topbar-spacer"></span>
-      <select class="select" id="theme-picker" aria-label="Theme" style="width:auto; flex:none;"></select>
+      <select class="select is-auto push" id="theme-picker" aria-label="Theme"></select>
     </nav>
   </header>
 
@@ -67,7 +53,7 @@
       </div>
     </div>
 
-    <div class="demo-two-col">
+    <div class="columns" style="--columns: minmax(0, 2fr) minmax(0, 1fr);">
       <section class="panel">
         <header class="panel-header"><strong>Subsystems</strong></header>
         <table class="table">
@@ -99,25 +85,25 @@
       </aside>
     </div>
 
-    <div class="demo-three">
+    <div class="columns mt-l" style="--columns: repeat(3, minmax(0, 1fr));">
       <section class="panel">
         <header class="panel-header"><strong>Tank levels</strong><span class="badge badge-success">Normal</span></header>
-        <div class="demo-tanks">
-          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:78%;--meter-peak:85%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Coolant</span></div>
-          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:52%;--meter-peak:60%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Feedwater</span></div>
-          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:91%;--meter-peak:93%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Boric acid</span></div>
-          <div class="demo-tank"><div class="meter meter-v" style="--meter-level:24%;--meter-peak:30%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="field-hint">Diesel</span></div>
+        <div class="meter-bank" style="padding: 0.9rem;">
+          <div><div class="meter meter-v" style="--meter-level:78%;--meter-peak:85%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span>Coolant</span></div>
+          <div><div class="meter meter-v" style="--meter-level:52%;--meter-peak:60%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span>Feedwater</span></div>
+          <div><div class="meter meter-v" style="--meter-level:91%;--meter-peak:93%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span>Boric acid</span></div>
+          <div><div class="meter meter-v" style="--meter-level:24%;--meter-peak:30%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span>Diesel</span></div>
         </div>
       </section>
 
       <section class="panel">
         <header class="panel-header"><strong>Setpoints</strong></header>
-        <div style="padding: 0.9rem;">
-          <div class="demo-setpoint"><label class="label" for="sp1">Rod bank D</label><input class="slider" id="sp1" type="range" value="62"><span class="readout readout-sm">62<span class="readout-unit">%</span></span></div>
-          <div class="demo-setpoint"><label class="label" for="sp2">Pump speed</label><input class="slider" id="sp2" type="range" value="80"><span class="readout readout-sm">80<span class="readout-unit">%</span></span></div>
-          <div class="demo-setpoint"><label class="label" for="sp3">Boron</label><input class="slider" id="sp3" type="range" value="35"><span class="readout readout-sm">35<span class="readout-unit">ppm</span></span></div>
-          <div class="input-group" style="margin-top:0.75rem;"><span class="input-addon">Target</span><input class="input" type="text" value="412" aria-label="Output target"><span class="input-addon">MW</span><button class="btn btn-secondary">Apply</button></div>
-          <div class="field-row" style="margin-top:0.75rem;"><label class="label">Auto load-follow</label><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+        <div class="stack stack-sm" style="padding: 0.9rem; --value-row-value: 5rem;">
+          <div class="value-row"><label class="label" for="sp1">Rod bank D</label><input class="slider" id="sp1" type="range" value="62"><span class="readout readout-sm">62<span class="readout-unit">%</span></span></div>
+          <div class="value-row"><label class="label" for="sp2">Pump speed</label><input class="slider" id="sp2" type="range" value="80"><span class="readout readout-sm">80<span class="readout-unit">%</span></span></div>
+          <div class="value-row"><label class="label" for="sp3">Boron</label><input class="slider" id="sp3" type="range" value="35"><span class="readout readout-sm">35<span class="readout-unit">ppm</span></span></div>
+          <div class="input-group"><span class="input-addon">Target</span><input class="input" type="text" value="412" aria-label="Output target"><span class="input-addon">MW</span><button class="btn btn-secondary">Apply</button></div>
+          <div class="field-row"><label class="label">Auto load-follow</label><label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
         </div>
       </section>
 
@@ -128,13 +114,13 @@
           <p class="field-hint">71% of cycle &middot; refuel in 118 days</p>
           <time class="schedule" datetime="2026-11-04"><svg class="icon"><use href="#icon-clock"/></svg><span>Outage 4 Nov 06:00</span></time>
           <div class="divider"></div>
-          <div class="row is-items-center" style="gap:0.5rem;"><span class="avatar">RK</span><div><strong>R. Kaplan</strong><div class="field-hint">Shift supervisor &middot; on since 06:00</div></div></div>
-          <div class="row is-items-center" style="gap:0.5rem;margin-top:0.5rem;"><span class="avatar avatar-sm">MT</span><span class="field-hint">M. Tan &middot; reactor operator</span></div>
+          <div class="row is-items-center is-gap-xs"><span class="avatar">RK</span><div><strong>R. Kaplan</strong><div class="field-hint">Shift supervisor &middot; on since 06:00</div></div></div>
+          <div class="row is-items-center is-gap-xs mt-xs"><span class="avatar avatar-sm">MT</span><span class="field-hint">M. Tan &middot; reactor operator</span></div>
         </div>
       </section>
     </div>
 
-    <div class="demo-three">
+    <div class="columns mt-l" style="--columns: repeat(3, minmax(0, 1fr));">
       <section class="panel">
         <header class="panel-header"><strong>Alarms</strong><span class="badge badge-danger">2</span></header>
         <table class="table">
@@ -172,14 +158,14 @@
       </section>
     </div>
 
-    <div class="demo-three">
+    <div class="columns mt-l" style="--columns: repeat(3, minmax(0, 1fr));">
       <p><button class="btn btn-secondary btn-sm" popovertarget="demo-modal">Open dialog</button> <span class="field-hint">— the same dialog, opened for real (HTML popover, no JS)</span></p>
-      <div class="demo-stage">
-        <div class="modal-overlay" style="position:absolute;">
+      <div class="demo-stage" style="--demo-stage-height:13rem;">
+        <div class="modal-overlay">
           <div class="modal">
             <div class="modal-header">Confirm SCRAM</div>
             <p class="field-hint" style="margin:0;">All control rods will insert. This cannot be undone from this screen.</p>
-            <div class="field-error" style="margin-top:0.5rem;">Type SCRAM to confirm.</div>
+            <div class="field-error mt-xs">Type SCRAM to confirm.</div>
             <div class="modal-footer"><button class="btn btn-secondary btn-sm">Cancel</button><button class="btn btn-danger btn-sm">SCRAM</button></div>
           </div>
         </div>
@@ -193,7 +179,7 @@
       <div class="stack">
         <div class="transport"><button class="btn btn-go">Sync</button><label class="toggle-btn"><input type="checkbox" checked><span class="toggle-btn-off">Auto</span><span class="toggle-btn-on">Auto on</span></label><button class="btn btn-secondary">Hold</button></div>
         <div class="row is-items-center" style="gap:0.6rem;"><span class="lamp is-on"></span><span class="lamp is-on"></span><span class="lamp is-warn"></span><span class="lamp is-error"></span><span class="lamp"></span><span class="spinner" aria-label="Syncing"></span></div>
-        <div class="context-menu" style="position:static;width:11rem;"><button class="context-menu-item">Acknowledge</button><button class="context-menu-item">Silence horn</button><div class="context-menu-divider"></div><button class="context-menu-item is-danger">Isolate loop</button></div>
+        <div class="context-menu demo-inline" style="width:11rem;"><button class="context-menu-item">Acknowledge</button><button class="context-menu-item">Silence horn</button><div class="context-menu-divider"></div><button class="context-menu-item is-danger">Isolate loop</button></div>
       </div>
     </div>
   </main>
@@ -206,7 +192,7 @@
 <div class="modal" popover id="demo-modal" aria-label="Demo dialog">
             <div class="modal-header">Confirm SCRAM</div>
             <p class="field-hint" style="margin:0;">All control rods will insert. This cannot be undone from this screen.</p>
-            <div class="field-error" style="margin-top:0.5rem;">Type SCRAM to confirm.</div>
+            <div class="field-error mt-xs">Type SCRAM to confirm.</div>
             <div class="modal-footer"><button class="btn btn-secondary btn-sm" popovertarget="demo-modal" popovertargetaction="hide">Cancel</button><button class="btn btn-danger btn-sm" popovertarget="demo-modal" popovertargetaction="hide">SCRAM</button></div>
           </div>
 <script src="assets/js/tint.js"></script>

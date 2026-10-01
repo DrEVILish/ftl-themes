@@ -5,28 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Support Desk — ftl-themes master-detail demo</title>
 <link id="theme-link" rel="stylesheet" href="dist/aqua.css">
+<link rel="stylesheet" href="assets/css/demo.css">
 <style>
-  * { box-sizing: border-box; }
-  .demo-topbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-  .demo-topbar-spacer { flex: 1; }
-  .demo-topbar .nav-brand { white-space: nowrap; }
-  .demo-topbar .btn { flex-shrink: 0; }
-  .demo-split { display: grid; grid-template-columns: 18rem minmax(0, 1fr) 16rem; gap: 1.25rem; align-items: start; }
-  @media (max-width: 1100px) { .demo-split { grid-template-columns: 18rem minmax(0, 1fr); } .demo-split > aside.stack { grid-column: 1 / -1; } }
-  @media (max-width: 860px) { .demo-split { grid-template-columns: 1fr; } .demo-split > aside.stack { grid-column: auto; } }
-  .demo-ticket-list { display: flex; flex-direction: column; gap: 0.5rem; }
-  .demo-ticket { display: block; padding: 0.75rem 0.9rem; border-radius: var(--radius); border: 1px solid var(--hairline); cursor: pointer; }
-  .demo-ticket.is-active { border-color: var(--accent); background: var(--surface-2); }
-  .demo-ticket-title { display: block; font-weight: 600; margin-bottom: 0.2rem; }
-  .demo-ticket-meta { display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.75; }
+  /* Page-specific only; shared demo scaffolding is in assets/css/demo.css. */
   .demo-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-  .demo-thread { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
-  .demo-msg { display: flex; gap: 0.6rem; align-items: flex-start; }
-  .demo-msg.is-agent { flex-direction: row-reverse; }
-  .demo-msg .card { max-width: 32rem; }
-  .demo-msg-actions { position: relative; }
-  .demo-stage { position: relative; min-height: 14rem; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; margin-top: 1rem; }
-  .demo-bulk { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; }
 </style>
 </head>
 <body class="app">
@@ -39,8 +21,7 @@
       <a class="nav-item" href="powerstation.html" data-demo-link>Power station</a>
       <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
       <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
-      <span class="demo-topbar-spacer"></span>
-      <select class="select" id="theme-picker" aria-label="Theme" style="width:auto; flex:none;"></select>
+      <select class="select is-auto push" id="theme-picker" aria-label="Theme"></select>
       <span class="avatar">SM</span>
     </nav>
   </header>
@@ -48,45 +29,33 @@
   <aside class="app-rail" aria-hidden="true"></aside>
 
   <main class="app-main">
-    <div class="demo-split">
+    <div class="columns" style="--columns: 18rem minmax(0, 1fr) 16rem;">
       <section class="panel">
         <nav class="breadcrumbs" style="margin-bottom:0.5rem;"><a class="breadcrumb-item" href="#">Inbox</a><span class="breadcrumb-item is-current">Support</span></nav>
         <div class="input-group" style="margin-bottom: 0.75rem;">
           <span class="input-addon"><svg class="icon"><use href="assets/icons/icons.svg#icon-search"/></svg></span>
           <input class="input" type="search" placeholder="Search tickets&hellip;" aria-label="Search tickets">
         </div>
-        <div class="demo-bulk">
+        <div class="toolbar is-plain mb-xs">
           <input class="checkbox" type="checkbox" aria-label="Select all tickets">
           <button class="badge badge-accent badge-button is-active">Mine</button>
           <button class="badge badge-button">Unassigned</button>
           <button class="badge badge-button">Urgent</button>
-          <select class="select input-sm" aria-label="Sort" style="width:auto;margin-left:auto;"><option>Newest</option><option>SLA due</option></select>
+          <select class="select input-sm is-auto push" aria-label="Sort"><option>Newest</option><option>SLA due</option></select>
         </div>
         <div class="segmented" style="margin-bottom: 0.75rem;">
           <button class="segmented-item is-active" type="button">Open</button>
           <button class="segmented-item" type="button">Pending</button>
           <button class="segmented-item" type="button">Closed</button>
         </div>
-        <div class="demo-ticket-list">
-          <a class="demo-ticket is-active">
-            <span class="demo-ticket-title">Can't export invoices as CSV</span>
-            <span class="demo-ticket-meta"><span>#4821 &middot; Ava Thompson</span><span class="status status-warn">Pending</span></span>
-          </a>
-          <a class="demo-ticket">
-            <span class="demo-ticket-title">Billing charged twice this month</span>
-            <span class="demo-ticket-meta"><span>#4819 &middot; Marcus Lee</span><span class="status status-error">Urgent</span></span>
-          </a>
-          <a class="demo-ticket">
-            <span class="demo-ticket-title">Feature request: dark mode</span>
-            <span class="demo-ticket-meta"><span>#4810 &middot; Priya Nair</span><span class="status status-idle">Low</span></span>
-          </a>
-          <a class="demo-ticket">
-            <span class="demo-ticket-title">Login loop on mobile app</span>
-            <span class="demo-ticket-meta"><span>#4802 &middot; Sam O'Reilly</span><span class="status status-ok">Answered</span></span>
-          </a>
-        </div>
-        <nav class="pagination" style="margin-top:0.75rem;"><a class="pagination-item is-disabled">&lsaquo;</a><a class="pagination-item is-active">1</a><a class="pagination-item">2</a><a class="pagination-item">&rsaquo;</a></nav>
-        <div class="skeleton skeleton-text" style="margin-top:0.75rem;"></div>
+        <ul class="list">
+          <li><a class="list-item is-active" href="#"><span class="list-item-title">Can't export invoices as CSV</span><span class="list-item-meta"><span>#4821 &middot; Ava Thompson</span><span class="status status-warn">Pending</span></span></a></li>
+          <li><a class="list-item" href="#"><span class="list-item-title">Billing charged twice this month</span><span class="list-item-meta"><span>#4819 &middot; Marcus Lee</span><span class="status status-error">Urgent</span></span></a></li>
+          <li><a class="list-item" href="#"><span class="list-item-title">Feature request: dark mode</span><span class="list-item-meta"><span>#4810 &middot; Priya Nair</span><span class="status status-idle">Low</span></span></a></li>
+          <li><a class="list-item" href="#"><span class="list-item-title">Login loop on mobile app</span><span class="list-item-meta"><span>#4802 &middot; Sam O'Reilly</span><span class="status status-ok">Answered</span></span></a></li>
+        </ul>
+        <nav class="pagination mt-s"><a class="pagination-item is-disabled">&lsaquo;</a><a class="pagination-item is-active">1</a><a class="pagination-item">2</a><a class="pagination-item">&rsaquo;</a></nav>
+        <div class="skeleton skeleton-text mt-s"></div>
         <div class="skeleton skeleton-text" style="width:60%;"></div>
       </section>
 
@@ -99,7 +68,7 @@
           <span class="btn-toolbar"><span class="badge badge-warning">Pending</span><span class="btn-group"><button class="btn btn-sm" data-tooltip="Previous ticket">&lsaquo;</button><button class="btn btn-sm" data-tooltip="Next ticket">&rsaquo;</button></span></span>
         </header>
 
-        <div class="tabs" style="padding: 0 0.9rem; margin-top: 0.75rem;">
+        <div class="tabs mt-s" style="padding: 0 0.9rem;">
           <button class="tab is-active">Conversation</button>
           <button class="tab">Ticket details</button>
           <button class="tab">Activity</button>
@@ -108,31 +77,29 @@
         <div style="padding: 0.9rem;">
           <div class="alert alert-info">Customer is on the Company plan, renews in 12 days.</div>
 
-          <div class="demo-thread">
-            <div class="demo-msg">
+          <div class="thread mt-m">
+            <div class="message">
               <span class="avatar">AT</span>
-              <div class="card"><strong>Ava Thompson</strong> <span class="field-hint">09:02</span><p style="margin:0.25rem 0 0;">When I click Export on the invoices page nothing happens. It worked last month.</p>
-                <div class="card" style="margin-top:0.5rem;padding:0.5rem 0.75rem;"><span class="mono">invoices-export.png</span> <span class="field-hint">142 KB</span></div>
+              <div class="message-bubble"><div class="message-meta"><strong>Ava Thompson</strong> <time>09:02</time></div><p>When I click Export on the invoices page nothing happens. It worked last month.</p>
+                <div class="attachment"><svg class="icon"><use href="assets/icons/icons.svg#icon-download"/></svg><span class="attachment-name">invoices-export.png</span><span class="attachment-size">142 KB</span></div>
               </div>
             </div>
-            <div class="demo-msg is-agent">
+            <div class="message is-own">
               <span class="avatar">SM</span>
-              <div class="card"><strong>Sam Morgan</strong> <span class="badge">Agent</span> <span class="field-hint">09:14</span><p style="margin:0.25rem 0 0;">Thanks Ava &mdash; looking into it now.</p></div>
-              <div class="demo-msg-actions">
-                <div class="context-menu" style="position:static; width:9rem;">
+              <div class="message-bubble"><div class="message-meta"><strong>Sam Morgan</strong> <span class="badge">Agent</span> <time>09:14</time></div><p>Thanks Ava &mdash; looking into it now.</p></div>
+              <div class="context-menu demo-inline" style="width:9rem;">
                   <button class="context-menu-item">Quote reply</button>
                   <button class="context-menu-item">Copy link</button>
                   <div class="context-menu-divider"></div>
                   <button class="context-menu-item is-danger">Delete note</button>
-                </div>
               </div>
             </div>
             <div class="alert alert-warning">SLA due in 2 hours &mdash; first reply sent, resolution pending.</div>
-            <div class="row is-items-center" style="gap:0.5rem;"><span class="spinner" aria-label="Customer typing"></span><span class="field-hint">Ava is typing&hellip;</span></div>
+            <div class="typing">Ava is typing&hellip;</div>
           </div>
 
 
-          <div class="field-group" style="margin-top: 1rem;">
+          <div class="field-group mt-m">
             <div class="field-group-title">Reply</div>
             <div class="field">
               <label class="label" for="demo-reply">Message</label>
@@ -159,7 +126,7 @@
             <div class="dropzone">Drop a screenshot, or click to attach.</div>
           </div>
 
-          <div class="qa-row" style="display:flex; gap:0.5rem; margin-top: 1rem;">
+          <div class="cluster mt-m">
             <button class="btn btn-primary">Send reply</button>
             <button class="btn btn-success">Resolve</button>
             <button class="btn btn-secondary">Close ticket</button>
@@ -184,8 +151,8 @@
             </ul>
           </details>
           <p><button class="btn btn-secondary btn-sm" popovertarget="demo-modal">Open dialog</button> <span class="field-hint">— the same dialog, opened for real (HTML popover, no JS)</span></p>
-          <div class="demo-stage">
-            <div class="modal-overlay" style="position:absolute;">
+          <div class="demo-stage" style="--demo-stage-height:14rem;">
+            <div class="modal-overlay">
               <div class="modal">
                 <div class="modal-header">Merge into #4790?</div>
                 <p class="field-hint" style="margin:0;">Replies and attachments from both tickets will be combined.</p>
@@ -193,8 +160,8 @@
               </div>
             </div>
           </div>
-          <div class="toast toast-success" style="margin-top:0.75rem;">Reply sent to Ava.</div>
-          <div class="toast toast-danger" style="margin-top:0.5rem;">Could not attach file: over 10 MB.</div>
+          <div class="toast toast-success mt-s">Reply sent to Ava.</div>
+          <div class="toast toast-danger mt-xs">Could not attach file: over 10 MB.</div>
         </div>
       </section>
 
@@ -218,7 +185,7 @@
           <header class="panel-header"><strong>Satisfaction</strong></header>
           <div style="padding: 0.9rem;">
             <div class="stat"><span class="stat-value">94%</span><span class="stat-label">CSAT this month</span><span class="stat-trend is-up">&uarr; 2 pts</span></div>
-            <div class="progress" style="margin-top:0.75rem;"><div class="progress-bar" style="width:94%"></div></div>
+            <div class="progress mt-s"><div class="progress-bar" style="width:94%"></div></div>
           </div>
         </section>
         <section class="panel">
@@ -229,7 +196,7 @@
             <span class="empty-state-hint">Drop files into the reply box.</span>
           </div>
         </section>
-        <div class="popover" style="position:static;">
+        <div class="popover demo-inline">
           <strong>Macro: CSV export</strong>
           <p class="field-hint" style="margin:0.35em 0 0;">Inserts the standard browser troubleshooting steps.</p>
         </div>
