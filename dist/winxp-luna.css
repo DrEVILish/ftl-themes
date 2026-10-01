@@ -48,6 +48,13 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+
+/* Components set their own display, which would otherwise beat the UA's
+   [hidden] rule. until-found is left to the browser: it hides through
+   content-visibility so find-in-page can still reveal it. */
+[hidden]:not([hidden="until-found"]) {
+  display: none !important;
+}
 /* ftl-themes: core component structure.
  *
  * Every component reads its look from local custom properties with
@@ -575,16 +582,38 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   border-radius: var(--modal-radius, var(--panel-radius, var(--radius)));
   box-shadow: var(--modal-shadow, var(--panel-shadow, none));
   padding: 1.5rem;
+  /* width, not just max-width: inside the flex overlay a modal would
+     otherwise shrink to its content and change width as it changes. */
+  width: min(32rem, calc(100vw - 2rem));
   max-width: min(32rem, calc(100vw - 2rem));
   max-height: calc(100vh - 2rem);
   overflow: auto;
 }
 .modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: -1.5rem -1.5rem 1rem;
   padding: 0.5rem 1rem;
   background: var(--modal-header-bg, transparent);
   color: var(--modal-header-fg, inherit);
   font-weight: 600;
+}
+.modal-header > .btn-close { margin-inline-start: auto; }
+/* A close button on a filled title bar follows the title's colour, not the
+   content-area --btn-close-fg (grey on a navy bar is invisible). */
+.modal-header > .btn-close:not(:hover) {
+  color: var(--modal-header-close-fg, var(--modal-header-fg, var(--btn-close-fg, var(--muted))));
+}
+/* A heading used as the title takes the header's own type, not the page's
+   h1-h6 styling. Two classes, so it outranks a theme's `html[data-theme] h2`. */
+.modal .modal-header > :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
 }
 .modal-footer { margin-block-start: 1.5rem; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
 
@@ -614,10 +643,10 @@ dialog.modal:modal {
   height: fit-content;
 }
 
-/* Size variants — the default max-width above is the "medium" case. */
-.modal-sm { max-width: min(22rem, calc(100vw - 2rem)); }
-.modal-lg { max-width: min(48rem, calc(100vw - 2rem)); }
-.modal-xl { max-width: min(64rem, calc(100vw - 2rem)); }
+/* Size variants — the default width above is the "medium" case. */
+.modal-sm { width: min(22rem, calc(100vw - 2rem)); max-width: min(22rem, calc(100vw - 2rem)); }
+.modal-lg { width: min(48rem, calc(100vw - 2rem)); max-width: min(48rem, calc(100vw - 2rem)); }
+.modal-xl { width: min(64rem, calc(100vw - 2rem)); max-width: min(64rem, calc(100vw - 2rem)); }
 
 /* Window states: maximized, minimized, resizable, focus stacking — the
    window behaviors that decompose into CSS (see CONTRACT.md "Window
@@ -1412,6 +1441,12 @@ dialog.modal:modal {
   background: var(--table-head-bg, var(--surface));
   z-index: 1;
 }
+/* Each sticky cell is its own stacking context, so a column-filter
+   dropdown/popover inside one would sit under its neighbours. Lift the
+   cell while it holds an open surface. Two rules: a selector the engine
+   doesn't know would drop the whole list. */
+.table.is-sticky thead th:has(details[open]) { z-index: 3; }
+.table.is-sticky thead th:has(:popover-open) { z-index: 3; }
 
 /* Zebra striping: opt in with `.table.is-striped`. A dedicated token
    rather than reaching for --surface-2 directly — a theme with a
@@ -2120,17 +2155,23 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 .nav-toggle::before { content: "\2630"; }
 .nav-collapse[open] > .nav-toggle::before { content: "\d7"; }
 .nav-collapse:not([open]) > .nav { display: none; }
-.nav-collapse[open] > .nav {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.25rem;
-  margin-block-start: 0.5rem;
+@media (max-width: 720px) {
+  .nav-collapse[open] > .nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    margin-block-start: 0.5rem;
+  }
 }
 @media (min-width: 721px) {
   .nav-collapse > .nav-toggle { display: none; }
   /* Outranks the UA's `details:not([open]) > :not(summary)` hide, so the
      nav lays out on desktop whether or not the details is open. */
   .nav-collapse:not([open]) > .nav { display: flex; }
+  /* Chromium 131+ hides a closed <details>'s content through
+     ::details-content { content-visibility: hidden }, which display
+     can't override. Engines without the pseudo-element drop this rule. */
+  .nav-collapse::details-content { content-visibility: visible; display: contents; }
 }
 
 /* .taskbar — an OS-style task strip: a Start button, window task
@@ -2747,6 +2788,23 @@ pre code { padding: 0; background: none; border-radius: 0; }
 /* Muted text — an alias onto the same --muted token .field-hint
    already uses, for body copy that isn't a field hint. */
 .text-muted { color: var(--muted); }
+/* In the app bar, transparent buttons and muted text sit on the bar's own
+   fill, not --surface, so they take the bar's text colour (--app-bar-fg),
+   falling back to the bar nav colour (--nav-item-fg) for themes that only
+   set that. check.py holds both to 4.5:1 against the bar. Filled buttons
+   keep their own fill and need nothing. */
+.app-bar {
+  --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
+}
+.app-bar .text-muted { color: var(--app-bar-text); }
+.app-bar .btn-secondary,
+.app-bar .btn-ghost {
+  --btn-fg: var(--app-bar-text);
+  --btn-border: color-mix(in srgb, var(--app-bar-text) 45%, transparent);
+  --btn-bg-hover: color-mix(in srgb, var(--app-bar-text) 14%, transparent);
+  --btn-border-hover: var(--app-bar-text);
+}
+.app-bar .btn-ghost { --btn-border: transparent; }
 
 /* Screen-reader-only content — the standard visually-hidden-but-announced
    clip-rect pattern, not display:none (which screen readers also skip). */
@@ -3921,6 +3979,19 @@ html[data-theme="winxp-luna"] .modal-header::after {
   transform: translateY(-50%);
   background: var(--luna-close) no-repeat;
   pointer-events: none;
+}
+/* A real close button takes the decoration's place and look. */
+html[data-theme="winxp-luna"] .modal-header:has(> .btn-close)::after { content: none; }
+html[data-theme="winxp-luna"] .modal-header > .btn-close {
+  --btn-close-bg: var(--luna-close) no-repeat;
+  --btn-close-bg-hover: var(--luna-close) no-repeat;
+  --btn-close-glyph: "";
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  width: 21px;
+  height: 21px;
+  transform: translateY(-50%);
 }
 html[data-theme="winxp-luna"] .modal-footer { margin-top: 1rem; }
 /* Dialog buttons are all Luna push buttons; secondary is not a link. */

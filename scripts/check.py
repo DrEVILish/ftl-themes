@@ -320,21 +320,27 @@ def check_app_bar(theme, tokens, css, variant=None):
     stops = [over(s, base) for s in color_stops(scoped, bar_value)]
     if not stops:
         return
-    for label, tok, default in (("brand", "nav-brand-fg", "accent"), ("nav item", "nav-item-fg", "muted")):
+    # --app-bar-fg is what core gives text sitting straight on the bar
+    # (.btn-secondary/.btn-ghost, .text-muted); unset, those fall back to
+    # --nav-item-fg, already checked here.
+    for label, tok, default in (("brand", "nav-brand-fg", "accent"), ("nav item", "nav-item-fg", "muted"),
+                                ("bar text (.btn-secondary, .text-muted)", "app-bar-fg", None)):
+        if default is None and tok not in scoped:
+            continue
         fg = resolve(scoped, scoped.get(tok, f"var(--{default})"))
         if not fg:
             continue
         # A nav item with its own fill (pill items) is read against that
         # fill, not the bar behind it.
-        own = {"nav-item-fg": "nav-item-bg", "nav-brand-fg": "nav-brand-bg"}[tok]
-        own_stops = color_stops(scoped, scoped.get(own, "")) if scoped.get(own) else []
+        own = {"nav-item-fg": "nav-item-bg", "nav-brand-fg": "nav-brand-bg"}.get(tok)
+        own_stops = color_stops(scoped, scoped.get(own, "")) if own and scoped.get(own) else []
         item_stops = [over(c, s) for c in own_stops for s in stops] if own_stops else stops
         worst = min(contrast(over(fg, s), s) for s in item_stops)
         if worst < 4.5:
             fail(theme, "contrast",
                  f"app-bar {label}: --{tok} {fg[:3]} is {worst:.1f}:1 against the "
-                 f"bar background (floor 4.5:1). --app-bar-fg does not reach nav "
-                 f"text — re-point --{tok} in a `.app-bar` scoped block.")
+                 f"bar background (floor 4.5:1). Re-point --{tok} in a `.app-bar` "
+                 f"scoped block (--app-bar-fg does not reach nav text).")
 
     # The status strip's own text (--app-status-fg) on its background.
     status_stops = [over(s, base) for s in color_stops(

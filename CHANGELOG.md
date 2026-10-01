@@ -5,6 +5,28 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Core fixes from adopting ftl-themes in Playlist Lab.** All six are
+  checked across every theme by the new `scripts/core_regressions.mjs`
+  (Chromium, at 1280px and 390px).
+  - `hidden` now hides components that set their own `display`
+    (`.alert`, `.badge`, `.btn`, `.stack`, `.field`…). The reset adds
+    `[hidden] { display: none !important }`, leaving `until-found` alone.
+  - `.nav-collapse` paints on desktop in Chromium 131+, whose
+    `::details-content` hid a closed `<details>`. Its open-state column
+    layout only applies under 720px.
+  - `.modal` and `.modal-sm|-lg|-xl` set a width, not just a maximum, so
+    form modals no longer shrink to their content.
+  - `.modal-header` is a flex row with the close button at the end, in the
+    title bar's colour. A heading used as the title takes the header's type
+    and colour. `winxp-luna` shows a real close button as its red Luna ×
+    (no second, decorative one). `lcars`, `msdos` and `prometheus`, whose
+    headers are only as wide as the title, put it in the modal's corner.
+  - `.btn-secondary`, `.btn-ghost` and `.text-muted` in `.app-bar` take
+    `--app-bar-fg` (or `--nav-item-fg`), so they no longer vanish on a
+    coloured bar. `check.py` now also checks `--app-bar-fg` against the bar.
+  - A `.table.is-sticky` header cell holding an open dropdown or popover is
+    raised above its neighbours.
+
 - **New theme: `westworld`.** The Delos tablet and Mesa control-room UI (by Chris Kieffer): cyan line-work on slate e-paper, condensed caps in the vendored Antonio, `[bracketed]` values. The shell becomes a tri-fold tablet of rounded panes with a right-hand rail of segmented attribute sliders, under a red cove-light status strip. Meters and progress bars are segmented ladders. 14 stills plus RESEARCH.md in `references/westworld/`. Self-scored fidelity 7/10.
 
 - **New theme: `silo`** (Apple TV+'s Silo). Teal phosphor on CRT glass inside a steel monitor bezel; PACT-style bar with auto-numbered nav between pale-yellow double rules, pale-teal title/status plates, yellow-outline selection. Ships a `legacy` variant (Territory Studio's gold S2 tablet); 15 reference stills in `references/silo/` (`legacy/` for the variant). Self-scored fidelity 7.5/10.

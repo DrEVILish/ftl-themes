@@ -354,9 +354,13 @@ html[data-theme="winxp-luna"] .app-bar {
 }
 ```
 
-`scripts/check.py` measures brand and item text against every color stop
-of `--app-bar-bg`, and `--app-status-fg` against the status strip,
-and fails anything under 4.5:1.
+Other text sitting straight on the bar — `.btn-secondary`, `.btn-ghost`
+and `.text-muted` — takes `--app-bar-fg`, or `--nav-item-fg` when a theme
+sets no `--app-bar-fg`. Filled buttons keep their own fill.
+
+`scripts/check.py` measures brand and item text and `--app-bar-fg` against
+every color stop of `--app-bar-bg`, and `--app-status-fg` against the
+status strip, and fails anything under 4.5:1.
 
 A `.nav` inside the bar does not paint `--nav-bg`: it sits on the bar. A
 theme that wants a distinct strip inside its bar sets `--app-bar-nav-bg`
@@ -892,7 +896,9 @@ needs neither:
 header's `aria-sort` — `"ascending"`/`"descending"`, the same attribute a
 screen reader already wants on a sortable column — gets a clickable
 cursor, a hover tint, and a themed arrow; toggle the attribute value on
-click, don't add a separate `.is-sorted` class.
+click, don't add a separate `.is-sorted` class. A header cell holding an
+open `<details>` or `:popover-open` surface (a column filter) is raised
+above its neighbours while it's open.
 
 Zebra striping (v3.13.0), opt-in — a plain table needs neither:
 ```html
@@ -914,8 +920,13 @@ theme's surface-2 isn't opaque.
 `.btn-close` (v3.13.0) draws the "×" itself via `::before` — no icon
 markup needed, though it'll get out of the way (`content: none` on the
 pseudo-element) if you put an `.icon` inside instead. Always add
-`aria-label` yourself; the glyph alone isn't accessible. Size variants
-sit next to the default `.modal` sizing:
+`aria-label` yourself; the glyph alone isn't accessible.
+`.modal-header` is a flex row: the close button sits at the end, in the
+title bar's colour (`--modal-header-fg`, or `--modal-header-close-fg` to
+set it apart). The title can be bare text or a heading
+(`<h2>Title</h2>`); a heading takes the header's own type and colour.
+Sizes are widths, not just caps, so a form modal doesn't shrink to its
+content:
 ```html
 <div class="modal modal-sm">…</div>   <!-- min(22rem, …) -->
 <div class="modal">…</div>                <!-- min(32rem, …), default -->
@@ -1005,6 +1016,12 @@ tighten the whole app's rhythm from one place.
 <span class="visually-hidden">Screen-reader-only text</span>
 <div class="scroll">…</div>                         <!-- themed scrollbar -->
 ```
+
+The `hidden` attribute always hides, including on components that set
+their own `display` (`.alert`, `.badge`, `.btn`, `.stack`, `.field`…):
+the reset carries `[hidden] { display: none !important }`.
+`hidden="until-found"` is left to the browser.
+
 `.row`/`.stack`/`.flex` all read `--gap` (default
 `--space-m`); `.is-gap-none`/`-2xs`/`-xs`/`-s`/`-l`/`-xl` override it.
 `.is-items-*` and `.is-justify-*` cover the alignment cases that come up
@@ -1428,8 +1445,10 @@ native primitives only — no script, no checkbox hacks:
 - **`.nav-collapse`** — below 720px (the same breakpoint the app
   shell collapses at) the summary renders as a ☰/× toggle and the nav
   stacks only while open; above it the toggle hides and the nav always
-  lays out. No checkbox hack: `<details>` disclosure is
-  keyboard-operable and announced correctly with zero ARIA upkeep.
+  lays out (in a row, even if the `<details>` is open — including on
+  Chromium 131+, whose `::details-content` hides a closed `<details>`).
+  No checkbox hack: `<details>` disclosure is keyboard-operable and
+  announced correctly with zero ARIA upkeep.
 
 ```html
 <!-- Taskbar (OS task strip — Start, window tasks, tray well) -->

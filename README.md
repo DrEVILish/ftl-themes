@@ -90,6 +90,7 @@ dist/themes.json          machine-readable theme index for pickers, incl. build 
 assets/                   fonts and other binary assets themes reference
 scripts/build.sh          regenerates dist/ from core/ + themes/
 scripts/check.sh          contract lint (tokens, contrast, focus, variants, dist sync)
+scripts/core_regressions.mjs  rendered check of core layout bugs, every theme (Playwright)
 scripts/new-theme.sh      scaffolds a new themes/<slug>/theme.css
 references/<name>/        reference images + RESEARCH.md per theme (variants in subfolders)
 test/visual-baseline/     per-theme screenshots, shown by gallery.html
