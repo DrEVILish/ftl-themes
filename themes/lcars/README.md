@@ -235,3 +235,21 @@ Reviewed every demo page against the guideline and manifesto rules:
 - **Data displays** — meters are gauges; the EQ curve is a glowing
   periwinkle trace on a black grid inside a `[ ]` bracket.
 
+## Corner geometry pass
+
+- One elbow rule everywhere: outer radius `(leg + r) × (bar + r)`, inner
+  curve a true circle of radius `r` (shell r = 1.5rem, panels 0.8rem,
+  cards/transport 0.5rem). The shell's upper elbow, lower (rail) elbow,
+  status elbow and every panel/card/transport bracket now follow it; the
+  lower elbow's inner fillet is sized to its own r instead of a fixed
+  1.25rem.
+- Every other corner is square: `--radius` is 0, so dropdowns, menus,
+  popovers, tooltips, dropzones, meters, logs, mixer strips and EQ
+  fields are cut flat. Only buttons, tabs, badges, keys and caps are
+  round.
+- Bar arms end flat; a panel's top arm then carries a separate cap (gap,
+  then a full semicircle), and both shell bars end in a short capped
+  segment after a gap — the cap is the full stop, never a rounded bar.
+- The transport is a bracket (thick leg, thin arms, square ends) instead
+  of a left edge with one rounded corner.
+

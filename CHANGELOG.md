@@ -5,6 +5,13 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **lcars: corner geometry follows the guide.** One elbow rule for every
+  swept (outer `(leg + r) × (bar + r)`, inner a true circle), square
+  corners everywhere else (`--radius: 0`), flat arm ends with separate
+  semicircular caps, and the transport drawn as a bracket. Fixes the
+  mismatched inner/outer curves at the top-left of the shell and the odd
+  rounded ends on panel arms and overlays.
+
 - **lcars: reference rules pass.** `references/lcars/RESEARCH.md` now
   summarises the LCARS guideline and manifesto (Bracer Jack, via
   lcars-terminal.de) plus four new captures. Every demo page was reviewed

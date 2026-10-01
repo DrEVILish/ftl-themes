@@ -50,6 +50,23 @@ kept, so the theme can be checked against it rule by rule.
   labels/codes) over floating separate buttons inside an empty frame —
   unless the frame is too thin to press.
 
+### Elbow and corner geometry (from the guideline diagrams)
+
+- **The swept**: the outer curve is a long, flat ellipse running from
+  the outside of the leg into the outside of the bar; the inner curve is
+  a small, true quarter circle. Both are tangent to the straight edges
+  they meet — no kinks, no flat spots, no step where leg meets bar.
+- One consistent inner radius `r` per frame family. Outer radius =
+  `(leg width + r)` across × `(bar thickness + r)` down, which is exactly
+  what keeps the inner curve circular.
+- Wrong sweeps (the ✗ examples): a square notch where the curve should
+  be, a cap or button glued onto the sweep, an outer curve that ends
+  before the bar starts.
+- **Every other corner is square.** Bar ends, leg ends, segment ends and
+  blocks are cut flat; the only other round thing is the **cap**, which
+  is a full semicircle (radius = half the bar's thickness), separated
+  from the bar by the in-frame gap.
+
 ## 4. The cap
 
 - The rounded **cap** is LCARS's full stop: it marks the **termination**
