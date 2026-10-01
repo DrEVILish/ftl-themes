@@ -46,6 +46,8 @@ the component page and six demo apps, published from `main` by GitHub Pages.
   one subfolder per palette variant (`references/<theme>/<variant>/`),
   each with a `RESEARCH.md`. Image filenames name the UI components they
   show, in camelCase, `-` between components (`elbowFrame-pillButton.webp`).
+- **What's next — v5.0 plan** (mobile/tablet/XL tiers, touch, spacing,
+  editable tables, nesting, 50 new components): [`PLAN.md`](PLAN.md).
 - **Engine-level recommendations** (what's been reviewed and what's still
   open): [`docs/engine-improvements.md`](docs/engine-improvements.md).
 - **Upgrading:** [`CHANGELOG.md`](CHANGELOG.md) — v2.0.0 renamed the tokens
