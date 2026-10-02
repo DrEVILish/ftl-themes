@@ -565,7 +565,7 @@ for path in sorted(glob.glob("themes/*/theme.css")):
 # and ids. Nothing that ships may reintroduce it (`ftl-themes`, the product
 # name, is the one legitimate occurrence).
 LEGACY_RE = re.compile(r"(?<![A-Za-z0-9_])(?:--)?ftl-(?!themes)[A-Za-z0-9]")
-for path in sorted(glob.glob("core/*.css") + glob.glob("themes/*/*.css")
+for path in sorted(glob.glob("core/*.css") + glob.glob("core/components/*.css") + glob.glob("themes/*/*.css")
                    + glob.glob("themes/*/icons.svg") + glob.glob("assets/js/*.js")
                    + glob.glob("*.html")):
     for n, line in enumerate(open(path, encoding="utf-8").read().split("\n"), 1):
@@ -577,7 +577,7 @@ for path in sorted(glob.glob("core/*.css") + glob.glob("themes/*/*.css")
 # Remote URLs are also checked in core/ (themes/ is covered per-theme above)
 # — a field-offline consumer embeds dist/, so a remote reference anywhere in
 # the source it's built from breaks the same offline guarantee.
-for path in sorted(glob.glob("core/*.css")):
+for path in sorted(glob.glob("core/*.css") + glob.glob("core/components/*.css")):
     body = strip_comments(open(path).read())
     for m in re.finditer(r"url\(\s*['\"]?(https?:)?//", body):
         failures.append(f"core: [remote-url] {path} contains a remote `url(...)` "
@@ -585,6 +585,16 @@ for path in sorted(glob.glob("core/*.css")):
     for m in re.finditer(r"@import\s+(?:url\()?['\"]?(https?:)?//", body):
         failures.append(f"core: [remote-url] {path} contains a remote `@import` "
                          f"(`{m.group(0)}`).")
+
+# v5 conventions in core: controls keep the arrow cursor (PLAN.md §4), and
+# every z-index reads the --z-* scale (§6) so layers stack the same way.
+for path in sorted(glob.glob("core/*.css") + glob.glob("core/components/*.css")):
+    body = strip_comments(open(path).read())
+    for m in re.finditer(r"cursor:\s*pointer", body):
+        failures.append(f"core: [cursor] {path} uses `cursor: pointer`; v5 controls keep the arrow.")
+    for m in re.finditer(r"z-index:\s*(-?\d+)\s*[;}]", body):
+        if m.group(1) not in ("0", "-1"):
+            failures.append(f"core: [z-scale] {path} has `z-index: {m.group(1)}`; use a --z-* token.")
 
 # dist/ must match a fresh build — including themes.json, which is
 # deterministic now (its version is a content hash of the bundles; no

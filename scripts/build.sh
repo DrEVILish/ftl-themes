@@ -16,6 +16,9 @@ rm -f dist/*.css dist/themes.json
 # Bundled CSS sits one directory deeper than the theme sources it's built
 # from, so relative url() references (the LCARS @font-face) would 404 from
 # dist/. Apps serve assets/ next to dist/, so rewrite to ../assets/.
+# v5 component groups (core/components/*.css), in name order, after core.css
+# so they can build on its components and tokens.
+cat_components() { for f in core/components/*.css; do [ -f "$f" ] && cat "$f"; done; return 0; }
 rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../assets/#g'; }
 
 # core/reset.css + core.css alone, with no theme and no layout
@@ -34,6 +37,7 @@ rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../ass
   echo "@layer ui {"
   cat core/reset.css
   cat core/core.css
+  cat_components
   echo "}"
 } | rewrite_urls > dist/core.css
 echo "built dist/core.css"
@@ -54,6 +58,7 @@ for dir in themes/*/; do
     echo "@layer ui {"
     cat core/reset.css
     cat core/core.css
+    cat_components
     cat core/layout.css
     cat "$src"
     if [ -f "themes/${name}/chrome.css" ]; then cat "themes/${name}/chrome.css"; fi
