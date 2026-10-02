@@ -13,11 +13,11 @@ token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
 4. **An experience layer**: user accessibility settings, per-theme motion
    and theme-switch transitions, accent and seasonal tints, splash screens,
    themed empty and error states, cursor packs, and installed-app (PWA and
-   desktop wrapper) title bars. Added after the 2026-10-02 reviews (§10–20).
+   desktop wrapper) title bars. Added after the 2026-10-02 reviews (§10–24).
 
 **Primary development theme: `blue-future`.** Every v5 change lands in core
 first and is proven on `blue-future`. Then the change is rolled out to the
-other 41 themes in batches (see [Rollout](#22-rollout)).
+other 41 themes in batches (see [Rollout](#26-rollout)).
 
 **Rule that does not change:** markup stays declarative and as plain as
 possible: native elements, a class or two, standard attributes. Apps add
@@ -861,7 +861,214 @@ accessibility notes. Generated from one source per component, so docs,
   after the 10th error. Each lives in the theme's own folder, with a list
   in its README.
 
-## 21. Considered and not planned
+## 21. New themes for v5
+
+Three new themes, built with the same process as `tokie`, `silo`,
+`westworld` and `skyrim` (reference images first, then the theme), and v5
+ready from the start: all tiers, touch, spacing tokens, chart palette,
+gutter art and the experience layer.
+
+| Slug | Source | Signature details | Layout idea |
+|---|---|---|---|
+| `teenage-engineering` | Teenage Engineering OP-1 / OP-Z | Off-white aluminium surfaces, tiny monochrome display graphics, the four colour-coded encoders (blue, green, white, orange) as the accent set, playful pixel animations, tight grotesque type. | The display is a dark inset "screen" panel in a light hardware body; the four encoder colours drive tabs, sliders and chart series. Knobs (`.knob`) become the signature control. |
+| `cyberpunk-2077` | Cyberpunk 2077 HUD and menus | Red/cyan on near-black, angular cut corners, glitch offsets on hover and alerts, scanline noise, the netrunner breach grid for tables, heavy condensed caps. | Angular cut panels, a top HUD bar, and a breach-grid table style. Glitch motion only under full motion settings. |
+| `motorsport-telemetry` | Broadcast F1-style timing graphics and a modern car dash | Tyre-compound colours (soft red, medium yellow, hard white) as semantic colours, purple/green/yellow sector times, delta bars, rev-light strips, carbon-fibre texture, tabular figures everywhere. | A timing-tower rail on the left, the dial gauge (§9 #1) as a rev counter, and the live-data states (§18) as the default look. |
+
+Notes:
+
+- **Brands:** these themes are *inspired by* the source UIs. They don't use
+  the companies' logos or trademarks (no F1 logo, no Teenage Engineering or
+  CD PROJEKT marks); that is why the motorsport theme is named
+  generically. References follow the same rules as today: credited,
+  openly licensed or fair-use reference stills, kept in
+  `references/<slug>/`.
+- **References wanted** lists get produced as part of building each theme,
+  as they were for the last eight.
+
+## 22. Content, page templates and kits
+
+### Prose and Markdown (`.prose`)
+
+A `.prose` wrapper that styles raw HTML from Markdown or a CMS, with no
+classes inside: headings, paragraphs, lists (nested), block quotes,
+footnotes, definition lists, tables, images and figures with captions,
+horizontal rules, `<kbd>`, `<mark>`, `<abbr>`, and `<details>`.
+
+- **Readable measure:** text capped at about 70 characters per line, with
+  wide media and tables allowed to break out to the container width.
+- **Vertical rhythm** from the spacing scale (§5), per tier.
+- **Code blocks:** `<pre><code class="language-*">` styled with a **per-theme
+  code palette** (`--code-keyword`, `--code-string`, `--code-comment`,
+  `--code-number`, `--code-function`, …), library-neutral like charts:
+  it targets the class names that Prism, highlight.js and Shiki emit,
+  without bundling any of them. Line numbers, highlighted lines, a copy
+  button style, and diff (`+`/`-`) lines.
+- **Callouts:** `> [!NOTE]` / `[!WARNING]`-style blocks (GitHub's syntax,
+  which most Markdown renderers output as `<blockquote>` or `<div>`
+  markers), mapped to the alert colours.
+
+### Page templates
+
+Ready, responsive example pages that combine existing components. Each
+one is a plain HTML file apps can copy, and each passes the tier checks:
+
+| Template | Contents |
+|---|---|
+| `auth.html` | Sign in, sign up, forgot password, 2FA code entry (a one-time-code input with per-digit boxes), and "check your email". |
+| `settings.html` | A settings page with section nav (sidebar on Desktop, a list that drills in on Mobile), forms, toggles, the `.prefs` panel (§10) and a danger zone. |
+| `master-detail.html` | A list and a detail pane side by side on Desktop; on Mobile the detail slides over the list with a back button. |
+| `inbox.html` | A three-pane split view (folders, list, reading pane) that collapses per tier. |
+| `onboarding.html` | A stepper (§9 #44) wizard with progress, skip and back. |
+| `pricing.html` | Plan cards with a highlighted plan, feature comparison table, and billing toggle. |
+| `404.html` | The themed not-found page (§14). |
+
+### Productivity kit
+
+Built on the same declarative approach as the other kits (§19), with a
+`planner.html` example page:
+
+- **Kanban board:** columns, cards with labels, assignees and due dates,
+  WIP limits, drag states (the app moves cards), and horizontal scrolling
+  on Mobile.
+- **Calendar:** month, week and day views, with events spanning days,
+  overlapping events side by side, "today" and the current-time line,
+  and an agenda list on Mobile. Shares the `.calendar` grid of the date
+  picker (§9 #26).
+- **Gantt timeline:** task bars on a time axis, dependencies as connectors,
+  milestones, progress fill, and a today marker. Horizontal scroll with
+  the task list frozen.
+- **Schedule list:** time-blocked agenda rows (`.schedule` exists and is
+  extended).
+
+### Themed HTML emails
+
+Transactional email templates that match the app's theme: welcome,
+verify email, reset password, receipt/invoice, alert or notification,
+and weekly digest.
+
+- **Built for email clients:** table-based layout, all CSS inlined at
+  build time, no custom properties, web fonts or `@layer` (email clients
+  don't support them), 600px wide, images with fallbacks, and plain-text
+  versions.
+- **Theme-flavoured, not theme-perfect:** each theme's email keeps its
+  palette, header style and one signature detail (an LCARS elbow header
+  image, a Windows 95 title bar), since effects like blur and glow don't
+  survive email clients.
+- **Generated:** `build.sh` resolves each theme's tokens to literal values
+  and writes `dist/email/<slug>/*.html`.
+- Tested against the common clients' rules (Gmail, Outlook, Apple Mail),
+  including their dark-mode rewriting.
+
+## 23. Theme identity across the catalogue
+
+### Custom icon sets for every theme
+
+Today the generic sprite has about 1,000 icons; 24 themes redraw between 54
+and 205 of them, and 18 themes redraw none (including all eight newest).
+v5 gives **every theme a full redraw of the core UI set** (the icons
+components use: navigation, actions, status, media, files, about 150),
+in its own style: pixel icons for `msdos`, line glyphs for `lcars`,
+debossed gold for `tokie`, Futura-style rune-like strokes for `skyrim`.
+
+- The build reports coverage per theme; a theme is "icon complete" when it
+  redraws the whole core set.
+- `docs/icon-library-roadmap.md` gets the per-theme style rules (stroke
+  width, grid, corner style) so redraws stay consistent.
+
+### Signature navigation per theme
+
+Each theme can offer its source's own navigation pattern, opt in, on top
+of the standard shell. The markup stays the same nested `<ul>` used for
+menus (§8), so an app switches pattern without changing markup:
+
+| Theme | Signature navigation |
+|---|---|
+| `windows95` / `winxp-luna` / `win7-aero` | The Start menu (nested `ul` with cascading submenus) and the taskbar. |
+| `xmb` | The cross media bar: categories across, items down. |
+| `lcars` | Panel buttons down the rail with the elbow. |
+| `skyrim` | The skills constellation for a top-level map of sections. |
+| `ios-*` / `liquid-glass` | The home-screen icon grid and the dock. |
+| `pipboy` | STAT / INV / DATA top tabs with sub-tabs. |
+| `aqua` | The Dock with magnification. |
+
+A theme without a signature pattern falls back to the standard nav. On
+Mobile, every pattern reduces to a touch-friendly equivalent.
+
+### Authentic fonts
+
+Many themes use stand-ins (Antonio for LCARS's Swiss 911 and for Skyrim's
+Futura, Tahoma for MS Sans Serif, Arial for Helvetica). v5 replaces stand-ins
+with **open-licensed faces closer to the originals** where one exists, for
+example a pixel MS Sans Serif-style face for `windows95` and a geometric
+Futura-like face for `skyrim`.
+
+- Only fonts under the SIL OFL or an equally permissive licence, recorded in
+  `assets/fonts/NOTICE.md` as today.
+- Subset to what each theme uses, within the font budgets (§20).
+- A theme's README records the original face, the chosen substitute, and
+  why.
+
+### Favicons and share cards
+
+- A **per-theme favicon and app icon set** (SVG favicon plus PNG sizes and a
+  maskable icon for PWAs), generated from one SVG template per theme;
+  `theme-loader.js` swaps the favicon with the theme.
+- An **Open Graph share-image template** per theme (1200×630), as an HTML
+  page apps can screenshot or render server-side with their own title, so
+  shared links look on-theme.
+
+## 24. Quality and contributing
+
+### Firefox and WebKit testing
+
+The rendered checks (`core_regressions.mjs`, the tier and overflow checks)
+and the screenshot baselines run in **Chromium, Firefox and WebKit**
+through Playwright. WebKit matters most: every iPhone browser uses it.
+Engine-specific differences get a known-issue list rather than silent
+failures.
+
+### Automated accessibility audits
+
+**axe-core** runs on every example page, in every theme, at the Mobile and
+Desktop tiers, alongside the existing contrast and target-size checks.
+Results are reported per theme in the gallery and in the check output;
+serious and critical issues fail the check once v5 ships.
+
+### Browser support policy
+
+A written support baseline (proposed: **Baseline 2024**, the features
+available in all major engines since 2024), plus a list of newer features v5
+uses with their fallbacks, each tested:
+
+| Feature | Used for | Fallback |
+|---|---|---|
+| Container queries | Component tiers (§2) | Already Baseline. |
+| `:has()` | State styling | Already Baseline. |
+| Popover API | Menus, dropdowns, modals (§6) | Already Baseline. |
+| CSS anchor positioning | Placing and flipping popovers (§6) | Below the trigger, no flipping. |
+| View transitions | Theme switching (§11) | Instant switch. |
+| `::details-content` | `.nav-collapse` | v4's display rule (kept). |
+| `@starting-style`, `transition-behavior` | Enter/exit motion | No animation. |
+
+### Theme contribution kit
+
+A documented path for adding a theme, based on how the last eight were
+built:
+
+1. `docs/contributing-a-theme.md`: the checklist from brief to merge.
+2. **Reference gathering:** what to collect, naming
+   (`references/<slug>/` with camelCase component filenames, variant
+   subfolders), licences and credits, and RESEARCH.md's required sections.
+3. **The agent brief** used for `tokie`, `silo`, `westworld` and `skyrim`,
+   cleaned up as a reusable template, including the rule to vendor fonts in
+   `assets/fonts/`.
+4. **`scripts/theme-ready.sh <slug>`:** runs the lint, the rendered checks
+   at all tiers, axe, the budgets and the fidelity score, and prints a
+   "ready for review" report.
+5. The gallery's "references wanted" list as the place contributors can
+   help without building a theme.
+
+## 25. Considered and not planned
 
 From the same review, these were offered and **not chosen** for v5. They
 are recorded so they can be revisited:
@@ -882,7 +1089,7 @@ are recorded so they can be revisited:
   page-wide. Note that the family build (§16) keeps this possible later,
   since bundles stay selector-based.
 
-## 22. Rollout
+## 26. Rollout
 
 | Phase | Work | Done when |
 |---|---|---|
@@ -894,10 +1101,11 @@ are recorded so they can be revisited:
 | **4b. Experience layer** | Accessibility attributes and the `.prefs` panel (§10), forced-colors support, motion tokens and theme-switch transitions (§11), the arrow-cursor change (§4), accent swatches (§12). Proven on `blue-future`. | `blue-future` passes the checks in every `.prefs` combination and under forced colors. |
 | **4c. Personality and installed apps** | `.splash` (§13), themed empty/error/404 states (§14), cursor packs (§11), PWA and wrapper title bars with `.window-controls` (§15). | `blue-future` and three contrasting themes (`windows95`, `liquid-glass`, `lcars`) ship all of them. |
 | **4d. Data, kits and tooling** | Theme families (§16), advanced tables, the library-neutral `.chart` contract and `charts.html`, live-data states, the dashboard grid (§18), the four kits with `player.html` and `hud.html` (§19), the keyboard layer, budgets and scheduling (§20). The fidelity tool (§17) and docs site (§20) run from here on. | `blue-future` passes every check; Playlist Lab can build its player and tables from the music kit. |
-| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, motion tokens, accent swatches, chart palette, splash, empty states, cursors (where the source had distinctive ones), window controls, per-tier check, fidelity score. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
+| **4e. Content, identity and quality** | `.prose` and code palettes, the page templates, the productivity kit and the email build (§22); icon redraws, signature navigation, font replacements, favicons and share cards (§23); Firefox and WebKit, axe, the support policy and the contribution kit (§24). The three new themes (§21) are built with the contribution kit, which proves it. | `teenage-engineering`, `cyberpunk-2077` and `motorsport-telemetry` ship v5-ready, and all checks run in three engines. |
+| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, motion tokens, accent swatches, chart palette, code palette, full icon set, signature navigation (where the source has one), font review, favicon, email template, splash, empty states, cursors (where the source had distinctive ones), window controls, per-tier check, fidelity score. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
 | **6. Release** | MIGRATING-v5.md, CHANGELOG, and a `v4` branch kept for apps that pin it, as `v3` was. | Tagged v5.0.0. |
 
-## 23. Breaking changes to expect (for MIGRATING-v5.md)
+## 27. Breaking changes to expect (for MIGRATING-v5.md)
 
 - The 720px breakpoint becomes four tiers. Apps that wrote their own
   `@media (max-width: 720px)` overrides around the shell must re-check
@@ -920,7 +1128,7 @@ are recorded so they can be revisited:
   contexts. Apps positioning things relative to the viewport from inside
   a panel should check for side effects.
 
-## 24. Open questions
+## 28. Open questions
 
 1. **"iPhone Duo":** a book foldable or a hinged dual-screen device?
    (Decides whether viewport-segment support is in scope.)
@@ -947,3 +1155,10 @@ are recorded so they can be revisited:
 9. **Families:** which family first, the Windows line or the iOS line?
 10. **Easter eggs:** any you specifically want, or any themes that must
     never have them (for example themes used in professional dashboards)?
+11. **Support baseline:** is Baseline 2024 right, or do some Playlist Lab
+    users need older browsers (older iPads stuck on old iOS versions)?
+12. **New theme names:** happy with `motorsport-telemetry` as the generic
+    name, and with `teenage-engineering` and `cyberpunk-2077` using the
+    source names (as `skyrim` and `westworld` do)?
+13. **Emails:** which email templates does Playlist Lab send today, so
+    those come first?
