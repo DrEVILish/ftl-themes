@@ -62,8 +62,19 @@ Every rule corresponds to a bug that actually shipped once:
              from the color-scheme rule above: this checks the *manifest's*
              stamped value against the CSS; that one checks the CSS declares
              a value at all.
+  budget     (warning until v5 ships, PLAN.md §20) bundle size, the theme's
+             own CSS, and its vendored fonts, against the BUDGET_* numbers
+             below.
+
+Usage: check.py [--theme slug]... [--budgets]
+  --theme    lint only these themes; failures and warnings not attributed to
+             them (core, dist, other themes) are printed as notes and do not
+             affect the exit status.
+  --budgets  print the size table (bundle, theme CSS, fonts) per theme.
 """
+import argparse
 import glob
+import gzip
 import json
 import os
 import re
@@ -73,6 +84,36 @@ import xml.etree.ElementTree as ET
 
 import cssparse  # noqa: E402
 import build_manifest  # noqa: E402  (sys.path[0] is scripts/ when run as a script)
+
+# Performance budgets (PLAN.md §20), in bytes. Reported as warnings for now;
+# they become failures once v5 ships. Set from the 2026-10 distribution of
+# the 42 themes:
+#  - Whole bundle, gzipped (reset + core + components + layout + theme):
+#    core alone is ~112 KiB on 2026-10-02 with 11 v5 component groups (it
+#    was ~81 KiB before them) and themes add 1.4-12.5 KiB, so bundles run
+#    114-124 KiB. 144 KiB leaves ~20 KiB for the groups still to land plus
+#    the largest theme; past it core needs splitting into opt-in groups,
+#    not a theme fix. Every theme crossing it at once means core grew.
+#  - The theme's own theme.css + chrome.css, gzipped: median 4.4 KiB, 90th
+#    percentile 8.8 KiB, largest lcars at 12.5 KiB (it ships chrome.css).
+#    16 KiB is a quarter above the heaviest legitimate theme.
+#  - Vendored fonts: a Latin-subset woff2 of one weight is 10-35 KiB (most
+#    files here are 12-22 KiB), and themes use 1-4 files. 40 KiB per file
+#    flags an unsubsetted face; 64 KiB per theme is about three subset
+#    weights. Fonts are counted from the theme's own url("assets/fonts/…").
+BUDGET_BUNDLE_GZ = 144 * 1024
+BUDGET_THEME_GZ = 16 * 1024
+BUDGET_FONT_FILE = 40 * 1024
+BUDGET_FONTS_TOTAL = 64 * 1024
+
+ap = argparse.ArgumentParser(description="Contract lint for ftl-themes (see the module docstring).")
+ap.add_argument("--theme", action="append", default=[], help="lint only this theme (repeatable)")
+ap.add_argument("--budgets", action="store_true", help="print the per-theme size table")
+ARGS = ap.parse_args()
+ONLY = set(ARGS.theme)
+_unknown = ONLY - {os.path.basename(os.path.dirname(p)) for p in glob.glob("themes/*/theme.css")}
+if _unknown:
+    sys.exit(f"unknown theme(s): {', '.join(sorted(_unknown))} — no themes/<slug>/theme.css")
 
 REQUIRED_TOKENS = [
     "bg", "surface", "surface-2", "border", "hairline", "text", "muted",
@@ -356,6 +397,8 @@ def check_app_bar(theme, tokens, css, variant=None):
 
 for path in sorted(glob.glob("themes/*/theme.css")):
     theme = os.path.basename(os.path.dirname(path))
+    if ONLY and theme not in ONLY:
+        continue
     css = open(path).read()
     body = strip_comments(css)
 
@@ -610,6 +653,31 @@ if diff:
     failures.append("dist: committed bundles are stale — run scripts/build.sh and commit "
                     f"({', '.join(diff)})")
 
+# Size budgets, read from the fresh build above.
+budget_rows = []
+for path in sorted(glob.glob("themes/*/theme.css")):
+    theme = os.path.basename(os.path.dirname(path))
+    if ONLY and theme not in ONLY:
+        continue
+    own = b"".join(open(p, "rb").read() for p in (path, os.path.join(os.path.dirname(path), "chrome.css"))
+                   if os.path.exists(p))
+    bundle = f"dist/{theme}.css"
+    bundle_gz = len(gzip.compress(open(bundle, "rb").read(), 9)) if os.path.exists(bundle) else 0
+    theme_gz = len(gzip.compress(own, 9))
+    fonts = {f: os.path.getsize(f) for f in sorted(set(re.findall(
+        r"url\(\s*['\"]?(assets/fonts/[^'\")\s]+)", strip_comments(own.decode("utf-8"))))) if os.path.exists(f)}
+    if bundle_gz > BUDGET_BUNDLE_GZ:
+        warn(theme, "budget", f"bundle is {bundle_gz / 1024:.1f} KiB gzipped (budget {BUDGET_BUNDLE_GZ // 1024} KiB)")
+    if theme_gz > BUDGET_THEME_GZ:
+        warn(theme, "budget", f"theme.css + chrome.css are {theme_gz / 1024:.1f} KiB gzipped (budget {BUDGET_THEME_GZ // 1024} KiB)")
+    for f, size in fonts.items():
+        if size > BUDGET_FONT_FILE:
+            warn(theme, "budget", f"{f} is {size / 1024:.1f} KiB (budget {BUDGET_FONT_FILE // 1024} KiB per file) — subset it")
+    if sum(fonts.values()) > BUDGET_FONTS_TOTAL:
+        warn(theme, "budget", f"vendored fonts total {sum(fonts.values()) / 1024:.1f} KiB over {len(fonts)} file(s) "
+                              f"(budget {BUDGET_FONTS_TOTAL // 1024} KiB)")
+    budget_rows.append((theme, bundle_gz, theme_gz, sum(fonts.values()), len(fonts)))
+
 # The manifest must list every theme, and each entry must carry the fields
 # integrators actually rely on: dataTheme (guaranteed equal to slug — spelled
 # out per-entry anyway, per CONTRACT.md "dataTheme"), the build-identity
@@ -656,9 +724,24 @@ if staged_raw.returncode == 0:
     except json.JSONDecodeError:
         pass  # staged copy predates this format; first migration is exempt
 
+if ARGS.budgets:
+    print(f"{'theme':22} {'bundle gz':>10} {'theme gz':>9} {'fonts':>13}   (KiB; budgets "
+          f"{BUDGET_BUNDLE_GZ // 1024} / {BUDGET_THEME_GZ // 1024} / {BUDGET_FONTS_TOTAL // 1024})")
+    for theme, b, t, f, n in budget_rows:
+        flag = "  over" if b > BUDGET_BUNDLE_GZ or t > BUDGET_THEME_GZ or f > BUDGET_FONTS_TOTAL else ""
+        print(f"{theme:22} {b / 1024:10.1f} {t / 1024:9.1f} {f / 1024:8.1f} ({n}f){flag}")
+    print()
+
+# With --theme, only what is attributed to those themes (`slug:` or
+# `slug[variant]:`) counts; the rest is shown as notes.
+mine = lambda line: not ONLY or any(line.startswith((f"{t}:", f"{t}[")) for t in ONLY)
 for w in warnings:
-    print(f"warn  {w}")
+    print(f"{'warn' if mine(w) else 'note'}  {w}")
 for f in failures:
-    print(f"FAIL  {f}")
-print(f"\n{len(on_disk)} themes checked — {len(failures)} failure(s), {len(warnings)} warning(s)")
-sys.exit(1 if failures else 0)
+    print(f"{'FAIL' if mine(f) else 'note'}  {f}")
+counted_f = [f for f in failures if mine(f)]
+counted_w = [w for w in warnings if mine(w)]
+scope = ", ".join(sorted(ONLY)) if ONLY else f"{len(on_disk)} themes"
+print(f"\n{scope} checked — {len(counted_f)} failure(s), {len(counted_w)} warning(s)"
+      + (f"; {len(failures) + len(warnings) - len(counted_f) - len(counted_w)} note(s) outside the scope" if ONLY else ""))
+sys.exit(1 if counted_f else 0)

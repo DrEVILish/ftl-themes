@@ -5,6 +5,12 @@ A theme is one file, `themes/<slug>/theme.css`, plus an optional
 (LCARS is the existing example — see `docs/lcars-chrome.md`). Nothing else
 in the repo needs to change.
 
+This page explains how a theme works. For the order of work from brief to
+merge (references, RESEARCH.md, fonts, v5 tiers, gutter art, nesting,
+close buttons, `scripts/theme-ready.sh`) follow
+[`contributing-a-theme.md`](contributing-a-theme.md); to hand the job to an
+agent, use [`agent-theme-brief.md`](agent-theme-brief.md).
+
 ## 0. Read the one rule first
 
 `CONTRACT.md` § "How a theme overrides a component". Set component look via
@@ -74,6 +80,10 @@ override, `outline: none` on a focus state, `!important` on a universal
 selector, a contrast floor violation, a stale `dist/`, and a manifest that
 doesn't match `themes/`. Each of those rules exists because that exact bug
 shipped once — see `CHANGELOG.md`.
+
+Before review, `scripts/theme-ready.sh <slug>` runs these plus the
+rendered checks, axe and the size budgets for your theme in one go (see
+[`test/README.md`](../test/README.md)).
 
 Then open `components.html` (serve the folder over HTTP so `dist/themes.json`
 loads) and pick your theme. Check every component renders distinctly, Tab

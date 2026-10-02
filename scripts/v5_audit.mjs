@@ -9,21 +9,21 @@
 //      desktop/xl); inline links in running text are exempt (WCAG 2.5.8)
 //   3. mobile/tablet only: adjacent targets closer than 8px
 //   4. text closer than 4px to the padding edge of a bordered/filled box
+//      (chips, legends and data-audit-edge="ignore" exempt, see below)
 //   5. xl only: .app capped at <= 1800px and centred
 //
-// Usage (Playwright resolvable from scripts/node_modules, see
-// screenshot_themes.py; CHROMIUM_PATH optional):
+// Usage (Playwright resolvable from scripts/node_modules, see test/README.md):
 //   node scripts/v5_audit.mjs [--theme slug[~variant]]... [--page name]...
-//                             [--device name]... [--strict]
+//                             [--device name]... [--engine chromium|firefox|webkit]...
+//                             [--strict]
 // Writes test/v5-audit/report.json. Exit 0 (report mode) unless --strict
-// and something failed.
-import { chromium } from 'playwright';
-import http from 'http';
+// and something failed. A failure listed for its engine in
+// test/engine-known-issues.json (script "v5_audit", key
+// "<theme> <device> <page> <check>", check one of overflow, targets,
+// spacing, edgeText, xl, error) is reported as a warning instead.
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+import { ROOT as root, takeEngines, launch, contextOptions, knownIssues, serveRoot, openThemed, themeEntries, FREEZE_CSS } from './_harness.mjs';
 
 const DEVICES = {
   'iphone-15-pro': { width: 393, height: 852, tier: 'mobile' },
@@ -33,6 +33,7 @@ const DEVICES = {
   'desktop-1440p': { width: 2560, height: 1440, tier: 'xl' },
 };
 const PAGES = ['components', 'dashboard', 'marketing', 'ticketsystem', 'powerstation', 'soundmixer', 'livechat', 'nesting',
+  'player', 'hud', 'planner',
   // v5 component pages (components-<group>.html), whichever exist.
   ...fs.readdirSync(root).filter(f => /^components-[a-z]+\.html$/.test(f)).map(f => f.replace(/\.html$/, '')).sort()]
   .filter(p => fs.existsSync(path.join(root, p + '.html')));
@@ -41,6 +42,7 @@ const VARIANT_PAGES = ['dashboard'];
 
 // ---- args
 const argv = process.argv.slice(2), want = { theme: [], page: [], device: [] };
+const engines = takeEngines(argv);
 let strict = false;
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
@@ -48,45 +50,14 @@ for (let i = 0; i < argv.length; i++) {
   else if (a.startsWith('--') && a.slice(2) in want && argv[i + 1]) want[a.slice(2)].push(argv[++i]);
   else { console.error(`unknown or incomplete argument: ${a}`); process.exit(2); }
 }
-const all = JSON.parse(fs.readFileSync(path.join(root, 'dist/themes.json'), 'utf8'))
-  .flatMap(t => [t.slug, ...(t.variants || []).map(v => `${t.slug}~${v.id}`)]);
+const all = themeEntries();
 const themes = want.theme.length ? want.theme : all;
 const pages = want.page.length ? want.page : PAGES;
 const devices = want.device.length ? want.device : Object.keys(DEVICES);
 for (const [list, known, what] of [[themes, all, 'theme'], [pages, PAGES, 'page'], [devices, Object.keys(DEVICES), 'device']])
   for (const x of list) if (!known.includes(x)) { console.error(`unknown ${what}: ${x} (known: ${known.join(', ')})`); process.exit(2); }
 
-// ---- static server on the repo root (pages fetch dist/themes.json)
-const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json',
-  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif',
-  '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.otf': 'font/otf' };
-const server = http.createServer((req, res) => {
-  const file = path.join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname));
-  if (!file.startsWith(root + path.sep)) { res.writeHead(403); return res.end(); }
-  fs.readFile(file, (err, buf) => {
-    if (err) { res.writeHead(404); return res.end(); }
-    res.writeHead(200, { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' });
-    res.end(buf);
-  });
-});
-await new Promise(r => server.listen(0, '127.0.0.1', r));
-const base = `http://127.0.0.1:${server.address().port}`;
-
-// Same readiness test as _pw_shot.mjs: theme stylesheet applied, fonts done.
-async function themeReady(pw, slug) {
-  try {
-    await pw.waitForFunction((slug) => {
-      if (document.documentElement.dataset.theme !== slug) return false;
-      const link = document.getElementById('theme-link');
-      if (!link || !link.sheet) return false;
-      const count = (rules) => Array.from(rules).reduce((n, r) => n + 1 + (r.cssRules ? count(r.cssRules) : 0), 0);
-      try { if (count(link.sheet.cssRules) < 3) return false; } catch (e) { return false; }
-      return document.fonts.status === 'loaded';
-    }, slug, { timeout: 5000, polling: 100 });
-    return true;
-  } catch { return false; }
-}
-const FREEZE_CSS = '*{animation:none!important;transition:none!important;scroll-behavior:auto!important}';
+const { base, close } = await serveRoot();
 
 // ---- the in-page measurement (runs in the browser)
 function measure({ tier }) {
@@ -199,16 +170,19 @@ function measure({ tier }) {
     return boxOf.get(el);
   };
   const edge = [];
+  const EDGE_EXEMPT = '.badge, code, kbd, samp, mark, .mention, .tag, .visually-hidden, legend, [data-audit-edge="ignore"]';
   const range = document.createRange();
   for (const el of document.body.querySelectorAll('*')) {
     const texts = [...el.childNodes].filter(n => n.nodeType === 3 && n.data.trim());
     if (!texts.length || /^(SCRIPT|STYLE|TEXTAREA|OPTION|SELECT)$/.test(el.tagName) || !visible(el)) continue;
-    // Inline chips (code, kbd, badges) sit in running text: their tight
-    // padding is the design, and WCAG asks nothing of it. Hidden labels too.
-    if (el.closest('code, kbd, samp, .badge, .visually-hidden') && cs(el).display.startsWith('inline')) continue;
-    if (el.closest('.visually-hidden')) continue;
+    // Exempt, whatever their display: chips (badges, code, kbd, samp, mark,
+    // mentions, tags), whose tight padding is the design and of which WCAG
+    // asks nothing; hidden labels; captions that sit on a frame line by
+    // design (legend); and an explicit opt-out, data-audit-edge="ignore",
+    // on the text's element, an ancestor, or the box itself.
+    if (el.closest(EDGE_EXEMPT)) continue;
     const b = box(el);
-    if (!b) continue;
+    if (!b || b.matches('[data-audit-edge="ignore"]')) continue;
     range.setStartBefore(texts[0]); range.setEndAfter(texts[texts.length - 1]);
     const t = range.getBoundingClientRect();
     if (t.width < 2 || t.height < 2) continue;
@@ -244,45 +218,55 @@ function measure({ tier }) {
 }
 
 // ---- run
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 const results = [];
-console.log(['theme'.padEnd(22), 'device'.padEnd(14), 'page'.padEnd(13), ...['overflow', 'small', 'tight', 'edge', 'xl-cap'].map(h => h.padStart(8))].join(' '));
-for (const dname of devices) {
-  const d = DEVICES[dname], touch = d.tier !== 'desktop' && d.tier !== 'xl';
-  const ctx = await browser.newContext({ viewport: { width: d.width, height: d.height }, hasTouch: touch, isMobile: touch });
-  const pw = await ctx.newPage();
-  for (const entry of themes) {
-    const [slug, variant] = entry.split('~');
-    for (const pg of variant ? pages.filter(p => VARIANT_PAGES.includes(p)) : pages) {
-      const url = `${base}/${pg}.html?theme=${slug}` + (variant ? `&variant=${variant}` : '') + (pg === 'components' ? '&embed=1' : '');
-      const row = { theme: entry, device: dname, tier: d.tier, page: pg };
-      try {
-        let ready = false;
-        for (let i = 0; i < 3 && !ready; i++) { await pw.goto(url, { waitUntil: 'networkidle' }); ready = await themeReady(pw, slug); }
-        if (!ready) row.warning = 'theme CSS/fonts never fully applied';
-        await pw.addStyleTag({ content: FREEZE_CSS });
-        Object.assign(row, await pw.evaluate(measure, { tier: d.tier }));
-        row.fail = row.overflow.px > 0 || row.overflow.elements > 0 || row.targets.small > 0 ||
-          (row.spacing?.tight ?? 0) > 0 || row.edgeText.count > 0 || row.xl?.ok === false;
-      } catch (err) {
-        row.error = String(err?.message || err); row.fail = true;
+for (const engine of engines) {
+  const browser = await launch(engine);
+  if (!browser) { results.push({ engine, skipped: true }); continue; }
+  const known = knownIssues(engine, 'v5_audit');
+  console.log(`\n[${engine}]`);
+  console.log(['theme'.padEnd(22), 'device'.padEnd(14), 'page'.padEnd(13), ...['overflow', 'small', 'tight', 'edge', 'xl-cap'].map(h => h.padStart(8))].join(' '));
+  for (const dname of devices) {
+    const d = DEVICES[dname], touch = d.tier !== 'desktop' && d.tier !== 'xl';
+    const ctx = await browser.newContext(contextOptions(engine, { viewport: { width: d.width, height: d.height }, hasTouch: touch, isMobile: touch }));
+    const pw = await ctx.newPage();
+    for (const entry of themes) {
+      const [slug, variant] = entry.split('~');
+      for (const pg of variant ? pages.filter(p => VARIANT_PAGES.includes(p)) : pages) {
+        const url = `${base}/${pg}.html?theme=${slug}` + (variant ? `&variant=${variant}` : '') + (pg === 'components' ? '&embed=1' : '');
+        const row = { engine, theme: entry, device: dname, tier: d.tier, page: pg };
+        let checks = [];
+        try {
+          if (!await openThemed(pw, url, slug)) row.warning = 'theme CSS/fonts never fully applied';
+          await pw.addStyleTag({ content: FREEZE_CSS });
+          Object.assign(row, await pw.evaluate(measure, { tier: d.tier }));
+          checks = [['overflow', row.overflow.px > 0 || row.overflow.elements > 0], ['targets', row.targets.small > 0],
+            ['spacing', (row.spacing?.tight ?? 0) > 0], ['edgeText', row.edgeText.count > 0], ['xl', row.xl?.ok === false]]
+            .filter(([, bad]) => bad).map(([k]) => k);
+        } catch (err) {
+          row.error = String(err?.message || err); checks = ['error'];
+        }
+        const excused = checks.map(c => known(`${entry} ${dname} ${pg} ${c}`)).filter(Boolean);
+        if (excused.length) row.knownIssues = excused.map(e => e.reason || e.match);
+        row.fail = excused.length < checks.length;
+        results.push(row);
+        const x = row.error ? ['ERROR', '', '', '', row.error.split('\n')[0]]
+          : [row.overflow.px + (row.overflow.elements ? `/${row.overflow.elements}el` : ''), row.targets.small, row.spacing ? row.spacing.tight : '-',
+            row.edgeText.count, row.xl ? (row.xl.ok ? 'ok' : `NO ${row.xl.width}w ${row.xl.left}/${row.xl.right}`) : d.tier === 'xl' ? 'n/a' : '-'];
+        console.log([entry.padEnd(22), dname.padEnd(14), pg.padEnd(13), ...x.map(v => String(v).padStart(8)),
+          row.fail ? ' FAIL' : checks.length ? ' warn (known issue)' : ' pass'].join(' '));
       }
-      results.push(row);
-      const x = row.error ? ['ERROR', '', '', '', row.error.split('\n')[0]]
-        : [row.overflow.px + (row.overflow.elements ? `/${row.overflow.elements}el` : ''), row.targets.small, row.spacing ? row.spacing.tight : '-',
-          row.edgeText.count, row.xl ? (row.xl.ok ? 'ok' : `NO ${row.xl.width}w ${row.xl.left}/${row.xl.right}`) : d.tier === 'xl' ? 'n/a' : '-'];
-      console.log([entry.padEnd(22), dname.padEnd(14), pg.padEnd(13), ...x.map(v => String(v).padStart(8)), row.fail ? ' FAIL' : ' pass'].join(' '));
     }
+    await ctx.close();
   }
-  await ctx.close();
+  await browser.close();
 }
-await browser.close();
-server.close();
+close();
 
 const out = path.join(root, 'test/v5-audit/report.json');
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, JSON.stringify({ generated: new Date().toISOString(), devices: DEVICES, results }, null, 1));
-const failed = results.filter(r => r.fail).length;
-console.log(`\n${results.length} runs, ${failed} failing. Columns: overflow px[/escaping elements], small targets, tight pairs, edge text, xl cap.`);
+const failed = results.filter(r => r.fail).length, runs = results.filter(r => !r.skipped).length;
+console.log('\nColumns: overflow px[/escaping elements], small targets, tight pairs, edge text, xl cap.');
 console.log(`Report: ${path.relative(root, out)}`);
+console.log(`${runs} runs, ${failed} failing.`);
 process.exit(strict && failed ? 1 : 0);

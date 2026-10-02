@@ -453,6 +453,15 @@ v5 adds component groups, each in its own `core/components/<group>.css`
 | Surfaces | [`docs/components/surfaces.md`](docs/components/surfaces.md) | `components-surfaces.html` | `.card.has-media` image cards, draggable windows (`assets/js/window.js`: touch, keep-on-screen, double-click maximize, Alt+Arrow move), `.btn-brand` sign-in buttons (company rules, not themed) |
 | Display settings | [`docs/components/experience.md`](docs/components/experience.md) | `components-experience.html` | `data-text-size`/`-density`/`-contrast`/`-motion`/`-transparency`/`-underline-links`, forced colours, the `.prefs` panel + `assets/js/prefs.js`, motion tokens and theme-switch view transitions, accent swatches, `.splash`, themed empty/error/offline/404 states, `404.html` |
 
+| Collaboration | [`docs/components/social.md`](docs/components/social.md) | `components-social.html` | Collaboration and notifications: presence, live cursors, comment threads, mentions, typing indicator, notification centre, activity feed |
+| Game HUD | [`docs/components/hud.md`](docs/components/hud.md) | `hud.html` | `.hud` overlay regions, `.hud-bar` (health/mana/stamina, `--value` + damage `--trail`, low/regen/segmented/centred), `.hud-minimap`, `.hud-quests`, `.hud-slot` hotbar/inventory (`--cooldown`, `data-rarity`), `.hud-float` numbers, `.hud-achievement` toast, `.hud-prompt` + `kbd.hud-pad` |
+| Productivity | [`docs/components/planner.md`](docs/components/planner.md) | `planner.html` | `.kanban` board (WIP limits, drag states), `.calendar.is-planner` month/week/day views, `.gantt` timeline (bars, milestones, today, dependency links), `.schedule-list` |
+
+**Shared vocabulary:** `data-series="1".."6"` picks a chart series colour;
+`data-rarity="common|uncommon|rare|epic|legendary"` sets `--rarity` and
+`--rarity-rank` (themes override `--rarity-*`), used by HUD slots and
+available to any component.
+
 **Close button tokens (v5):** `--btn-close-width`, `--btn-close-height`,
 `--btn-close-pad`, `--btn-close-font-size`, `--btn-close-glyph-size`, and
 placement `--btn-close-order: -1` with `--btn-close-push: 0` to put it at the

@@ -1,0 +1,822 @@
+/* --- v5 productivity kit (PLAN.md §22 "Productivity kit") -------------------
+ * Kanban board, planner calendar (month, week and day views, agenda),
+ * Gantt timeline, and the schedule list (extends core's .schedule badge).
+ * Builds on core's .calendar frame (forms.css), .tabset view switch, .badge,
+ * .avatar, .btn and the data-series colours (instruments.css). Apps move
+ * cards, lay out events and draw connectors; this file styles every state.
+ * Positions come in through documented inline APIs: --day/--span/--lane
+ * (month bars), --start/--end/--col/--cols (timed events, Gantt bars),
+ * --now, --at, --progress, --duration.
+ * Docs: docs/components/planner.md. Example: planner.html.
+ *
+ * Private custom properties (--_*) are internal plumbing, not theme tokens. */
+
+/* ===========================================================================
+ * Kanban board
+ * ======================================================================== */
+.kanban {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kanban-gap, var(--space-s));
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--space-2xs);
+  padding-block-end: var(--space-2xs);
+  container-type: inline-size;
+}
+/* One column per screen on phones; the next one peeks in. */
+@media (max-width: 480px) { .kanban { scroll-snap-type: x mandatory; } }
+
+.kanban-column {
+  flex: 0 0 var(--kanban-column-width, 17.5rem);
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-block-size: var(--kanban-column-max, none);
+  padding: var(--kanban-column-pad, var(--space-s));
+  background: var(--kanban-column-bg, var(--surface-2));
+  color: var(--kanban-column-fg, var(--text));
+  border: var(--kanban-column-border-width, 1px) solid var(--kanban-column-border, var(--hairline));
+  border-block-start: var(--kanban-column-accent-width, 1px) solid var(--kanban-column-accent, var(--kanban-column-border, var(--hairline)));
+  border-radius: var(--kanban-column-radius, var(--panel-radius, var(--radius)));
+  scroll-snap-align: start;
+}
+@container (max-width: 480px) {
+  .kanban-column { flex-basis: calc(100% - var(--space-xl)); }
+}
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-block-size: var(--tap-min);
+}
+.kanban-column-title {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  font-size: 1em;
+  font-weight: 600;
+  text-transform: var(--label-transform, none);
+  overflow-wrap: anywhere;
+}
+.kanban-count { flex: none; font-variant-numeric: tabular-nums; }
+.kanban-limit { color: var(--muted); font-weight: 400; }
+.kanban-limit::before { content: "\2009/\2009"; }
+
+/* Over the WIP limit: danger stripe, danger count and a "!" before it,
+   so the state is not carried by colour alone. */
+.kanban-column.is-over-limit {
+  --kanban-column-accent: var(--kanban-over-limit, var(--danger));
+  --kanban-column-accent-width: 3px;
+}
+.kanban-column.is-over-limit .kanban-count {
+  --badge-bg: color-mix(in srgb, var(--kanban-over-limit, var(--danger)) 22%, var(--surface));
+  --badge-fg: var(--danger-text, var(--text));
+  --badge-border: var(--kanban-over-limit, var(--danger));
+}
+.kanban-column.is-over-limit .kanban-count::before { content: "!\2009"; font-weight: 800; }
+.kanban-column.is-over-limit .kanban-limit { color: inherit; }
+
+/* Drop target: the column the dragged card is over. */
+.kanban-column.is-drop-target {
+  background: var(--kanban-drop-bg, color-mix(in srgb, var(--accent) 12%, var(--kanban-column-bg, var(--surface-2))));
+  outline: 2px dashed var(--kanban-drop-ring, var(--accent));
+  outline-offset: -2px;
+}
+
+.kanban-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kanban-card-gap, var(--space-xs));
+  min-block-size: var(--kanban-empty-size, 3.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+/* An empty column still reads as a place to drop. */
+.kanban-cards:empty {
+  border: 1px dashed var(--kanban-column-border, var(--border));
+  border-radius: var(--kanban-card-radius, var(--radius));
+}
+
+.kanban-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  padding: var(--kanban-card-pad, var(--space-s));
+  background: var(--kanban-card-bg, var(--surface));
+  color: var(--kanban-card-fg, var(--text));
+  border: var(--kanban-card-border-width, 1px) solid var(--kanban-card-border, var(--border));
+  border-radius: var(--kanban-card-radius, var(--radius));
+  box-shadow: var(--kanban-card-shadow, none);
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+}
+.kanban-card[draggable="true"] { cursor: grab; }
+.kanban-card:focus-within { border-color: var(--kanban-card-border-focus, var(--focus)); }
+@media (hover: hover) {
+  .kanban-card:hover { border-color: var(--kanban-card-border-hover, var(--accent)); }
+}
+.kanban-card-title { margin: 0; font-size: 1em; font-weight: 600; line-height: 1.35; }
+.kanban-card-title a { color: inherit; }
+.kanban-card > p { margin: 0; color: var(--muted); font-size: 0.875em; }
+
+/* The card being dragged: lifted, tilted and accent-ringed. The app keeps
+   it in the DOM (or uses it as the drag image) and adds .is-dragging. */
+.kanban-card.is-dragging {
+  cursor: grabbing;
+  border-color: var(--kanban-drag-ring, var(--accent));
+  box-shadow: var(--kanban-drag-shadow, 0 0.6rem 1.4rem color-mix(in srgb, #000 35%, transparent));
+  rotate: var(--kanban-drag-tilt, 2deg);
+  opacity: var(--kanban-drag-opacity, 0.92);
+}
+/* The slot a dropped card will land in. --kanban-placeholder-size can be
+   set inline to the dragged card's height. */
+.kanban-placeholder {
+  position: relative;
+  flex: none;
+  block-size: var(--kanban-placeholder-size, 4.5rem);
+  background: var(--kanban-placeholder-bg, color-mix(in srgb, var(--accent) 10%, transparent));
+  border: 2px dashed var(--kanban-placeholder-border, var(--accent));
+  border-radius: var(--kanban-card-radius, var(--radius));
+}
+
+.kanban-labels { display: flex; flex-wrap: wrap; gap: var(--space-3xs, 0.2rem); margin: 0; padding: 0; list-style: none; }
+.kanban-labels > li { display: contents; }
+.kanban-labels .badge[data-series] {
+  --badge-bg: color-mix(in srgb, var(--series) 24%, var(--kanban-card-bg, var(--surface)));
+  --badge-fg: var(--kanban-card-fg, var(--text));
+  --badge-border: color-mix(in srgb, var(--series) 70%, transparent);
+}
+
+.kanban-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+  font-size: 0.8em;
+  color: var(--muted);
+}
+.kanban-card-meta > :last-child:is(.kanban-assignees) { margin-inline-start: auto; }
+
+.kanban-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-variant-numeric: tabular-nums;
+}
+.kanban-due .icon { inline-size: 1em; block-size: 1em; flex: none; }
+.kanban-due.is-soon { color: var(--kanban-due-soon, var(--warning-text, var(--text))); font-weight: 600; }
+.kanban-due.is-overdue {
+  padding: max(var(--space-2xs), 0.4em) 0.5em;
+  background: var(--kanban-overdue-bg, color-mix(in srgb, var(--danger) 20%, var(--kanban-card-bg, var(--surface))));
+  color: var(--kanban-overdue-fg, var(--danger-text, var(--text)));
+  border: 1px solid var(--kanban-overdue-border, var(--danger));
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+
+/* Priority: a glyph plus the word, so colour is never the only signal. */
+.kanban-priority { display: inline-flex; align-items: center; gap: 0.3em; }
+.kanban-priority::before {
+  content: var(--_glyph, "\25C6");
+  color: var(--_tone, var(--muted));
+  font-size: 0.9em;
+  line-height: 1;
+}
+.kanban-priority[data-priority="urgent"] { --_glyph: var(--kanban-priority-urgent-glyph, "\25B2\25B2"); --_tone: var(--danger); color: var(--danger-text, var(--text)); font-weight: 700; }
+.kanban-priority[data-priority="high"] { --_glyph: var(--kanban-priority-high-glyph, "\25B2"); --_tone: var(--warning); }
+.kanban-priority[data-priority="medium"] { --_glyph: var(--kanban-priority-medium-glyph, "\25C6"); --_tone: var(--accent); }
+.kanban-priority[data-priority="low"] { --_glyph: var(--kanban-priority-low-glyph, "\25BC"); --_tone: var(--muted); }
+
+.kanban-assignees { display: inline-flex; margin: 0; padding: 0; list-style: none; }
+.kanban-assignees > li { display: contents; }
+.kanban-assignees .avatar {
+  --avatar-size: var(--kanban-avatar-size, 1.6rem);
+  font-size: 0.75em;
+  box-shadow: 0 0 0 2px var(--kanban-card-bg, var(--surface));
+}
+.kanban-assignees .avatar + .avatar,
+.kanban-assignees > li + li > .avatar { margin-inline-start: -0.4rem; }
+
+/* ===========================================================================
+ * Planner calendar: month, week and day views
+ * Reuses forms.css .calendar (frame, header, title, today/outside tokens).
+ * ======================================================================== */
+.calendar.is-planner {
+  display: block;
+  inline-size: auto;
+  font-size: 1em;
+  container-type: inline-size;
+  --_line: var(--calendar-grid-line, var(--hairline));
+}
+
+/* Event chip, shared by the month bars and the timed grid. */
+.calendar-event {
+  --_ev: var(--series, var(--calendar-event-color, var(--accent)));
+  display: block;
+  min-inline-size: 0;
+  padding: 0.3em 0.45em;
+  background: var(--calendar-event-bg, color-mix(in srgb, var(--_ev) 24%, var(--calendar-bg, var(--surface))));
+  color: var(--calendar-event-fg, var(--text));
+  border: 0;
+  border-inline-start: var(--calendar-event-bar, 3px) solid var(--_ev);
+  border-radius: var(--calendar-event-radius, calc(var(--radius) * 0.75));
+  font-size: 0.8em;
+  line-height: 1.25;
+  text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  touch-action: manipulation;
+}
+.calendar-event time { font-variant-numeric: tabular-nums; font-weight: 600; }
+@media (hover: hover) {
+  .calendar-event:is(a, button):hover { background: var(--calendar-event-bg-hover, color-mix(in srgb, var(--_ev) 36%, var(--calendar-bg, var(--surface)))); }
+}
+.calendar-event:is(a, button):focus-visible { outline-offset: 1px; z-index: var(--z-raised); }
+/* Tentative / cancelled: a pattern and a strike, not just a tint. */
+.calendar-event.is-tentative {
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--_ev) 24%, var(--calendar-bg, var(--surface))) 0 0.4em, var(--calendar-bg, var(--surface)) 0.4em 0.8em);
+}
+.calendar-event.is-cancelled { text-decoration: line-through; color: var(--muted); }
+
+/* --- Month view --------------------------------------------------------- */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  color: var(--calendar-weekday-fg, var(--muted));
+  font-size: 0.8em;
+  font-weight: 600;
+  text-align: center;
+  text-transform: var(--label-transform, none);
+}
+.calendar-weekdays > * { padding-block: var(--space-2xs); }
+.calendar-month { border-block-end: 1px solid var(--_line); }
+
+/* A week row: seven day cells spanning every row, event bars laid over
+   them in lanes. Row 1 holds the date, rows 2…lanes+1 the bars, the last
+   row the "+n more" button. */
+.calendar-week {
+  --_lanes: var(--lanes, var(--calendar-lanes, 3));
+  --_lane: max(var(--calendar-lane, 1.75em), var(--tap-min));
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: var(--calendar-date-row, 2.4em) repeat(var(--_lanes), var(--_lane)) minmax(var(--_lane), 1fr);
+  row-gap: 2px;
+  min-block-size: var(--calendar-week-min, 7.5em);
+  padding-block-end: 2px;
+  border-block-start: 1px solid var(--_line);
+}
+.calendar-cell {
+  grid-row: 1 / -1;
+  min-inline-size: 0;
+  padding: var(--space-2xs);
+  border-inline-start: 1px solid var(--_line);
+}
+.calendar-week > .calendar-cell:nth-child(1) { grid-column: 1; border-inline-start: 0; }
+.calendar-week > .calendar-cell:nth-child(2) { grid-column: 2; }
+.calendar-week > .calendar-cell:nth-child(3) { grid-column: 3; }
+.calendar-week > .calendar-cell:nth-child(4) { grid-column: 4; }
+.calendar-week > .calendar-cell:nth-child(5) { grid-column: 5; }
+.calendar-week > .calendar-cell:nth-child(6) { grid-column: 6; }
+.calendar-week > .calendar-cell:nth-child(7) { grid-column: 7; }
+.calendar-cell.is-weekend { background: var(--calendar-weekend-bg, color-mix(in srgb, var(--surface-2) 45%, transparent)); }
+.calendar-cell.is-outside {
+  background: var(--calendar-outside-bg, color-mix(in srgb, var(--surface-2) 70%, transparent));
+  color: var(--calendar-outside-fg, var(--muted));
+}
+.calendar-cell:is(.is-selected, [aria-selected="true"]) {
+  box-shadow: inset 0 0 0 2px var(--calendar-selected-bg, var(--accent));
+}
+
+/* The day number. Today: a filled disc (shape plus colour). */
+.calendar-date {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 2.1em;
+  block-size: 2.1em;
+  padding-inline: 0.3em;
+  border-radius: var(--calendar-date-radius, 999px);
+  font-size: 0.85em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.calendar-date-month { margin-inline-start: 0.25em; white-space: nowrap; }
+:is(.calendar-cell, .calendar-column-head)[aria-current="date"] .calendar-date {
+  background: var(--calendar-today-bg, var(--calendar-today-ring, var(--accent)));
+  color: var(--calendar-today-fg, var(--on-accent));
+}
+
+/* Bars: --day (1–7) and --span place them, --lane picks the row. A bar
+   that runs on from the previous or into the next week squares that end. */
+.calendar-week > .calendar-event {
+  grid-column: var(--day, 1) / span var(--span, 1);
+  grid-row: calc(var(--lane, 1) + 1);
+  align-self: stretch;
+  margin-inline: 3px;
+  padding-block: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.calendar-week > .calendar-event.is-continued-before { margin-inline-start: 0; border-start-start-radius: 0; border-end-start-radius: 0; border-inline-start-style: dashed; }
+.calendar-week > .calendar-event.is-continued-after { margin-inline-end: 0; border-start-end-radius: 0; border-end-end-radius: 0; }
+.calendar-week > .calendar-event.is-continued-after::after { content: "\2192"; margin-inline-start: auto; }
+.calendar-week > .calendar-event.is-continued-after:dir(rtl)::after { content: "\2190"; }
+/* A timed (not all-day) event in the month grid: a dot, no fill. */
+.calendar-week > .calendar-event.is-timed {
+  background: none;
+  border-inline-start: 0;
+}
+.calendar-week > .calendar-event.is-timed::before {
+  content: "";
+  flex: none;
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  border-radius: 50%;
+  background: var(--_ev);
+}
+.calendar-more {
+  grid-column: var(--day, 1);
+  grid-row: -2;
+  align-self: stretch;
+  justify-self: start;
+  margin-inline: 3px;
+  padding: 0 0.45em;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--calendar-more-fg, var(--accent-text, var(--text)));
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: underline;
+  touch-action: manipulation;
+}
+@media (hover: hover) {
+  .calendar-more:hover { background: var(--calendar-day-bg-hover, var(--surface-2)); }
+}
+
+/* Narrow (phone) month: a compact grid with an event dot per busy day
+   (data-events on the cell), and the agenda list below takes over. */
+.calendar-agenda { display: none; }
+@container (max-width: 480px) {
+  .calendar-week {
+    grid-template-rows: auto;
+    min-block-size: 0;
+    padding-block-end: 0;
+  }
+  .calendar-week > :is(.calendar-event, .calendar-more) { display: none; }
+  .calendar-cell {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 2px;
+    min-block-size: var(--tap-min);
+    padding-inline: 0;
+  }
+  .calendar-cell[data-events]::after {
+    content: "";
+    inline-size: 0.4em;
+    block-size: 0.4em;
+    border-radius: 50%;
+    background: var(--calendar-event-color, var(--accent));
+  }
+  .calendar-agenda { display: block; margin-block-start: var(--space-s); }
+  /* "28 Sep" → "28": the month name stays in the accessibility tree. */
+  .calendar-date-month { margin: 0; font-size: 0; }
+}
+
+/* --- Week and day views: the time grid -------------------------------- */
+.calendar-timegrid {
+  --_hour: var(--calendar-hour, max(3.5rem, calc(var(--tap-min) * 2)));
+  --_from: var(--hour-start, 0);
+  --_to: var(--hour-end, 24);
+  display: grid;
+  grid-template-columns: var(--calendar-gutter, 3.5rem) repeat(var(--days, 7), minmax(var(--calendar-column-min, 6rem), 1fr));
+  max-block-size: var(--calendar-timegrid-max, none);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-block: 1px solid var(--_line, var(--hairline));
+}
+.calendar-corner,
+.calendar-column-head {
+  grid-row: 1;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-sticky);
+  background: var(--calendar-bg, var(--surface));
+  border-block-end: 1px solid var(--_line, var(--hairline));
+}
+.calendar-corner {
+  grid-column: 1;
+  inset-inline-start: 0;
+  z-index: calc(var(--z-sticky) + 1);
+  display: flex;
+  align-items: end;
+  padding: var(--space-2xs);
+  color: var(--muted);
+  font-size: 0.7em;
+}
+.calendar-column-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+  padding: var(--space-2xs);
+  color: var(--calendar-weekday-fg, var(--muted));
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: var(--label-transform, none);
+}
+.calendar-column-head[aria-current="date"] { color: var(--calendar-today-text, var(--accent-text, var(--text))); }
+.calendar-column-head .calendar-date { font-size: 1em; }
+
+.calendar-hours {
+  grid-row: 2;
+  grid-column: 1;
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: var(--z-sticky);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--calendar-bg, var(--surface));
+  color: var(--muted);
+  font-size: 0.72em;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+.calendar-hours > li {
+  block-size: var(--_hour);
+  box-sizing: border-box;
+  padding: 0.45em 0.5em 0;
+  border-block-start: 1px solid var(--_line, var(--hairline));
+}
+.calendar-hours > li:first-child { border-block-start-color: transparent; }
+
+.calendar-column {
+  grid-row: 2;
+  position: relative;
+  min-inline-size: 0;
+  block-size: calc((var(--_to) - var(--_from)) * var(--_hour));
+  border-inline-start: 1px solid var(--_line, var(--hairline));
+  background-image:
+    repeating-linear-gradient(to bottom, var(--_line, var(--hairline)) 0 1px, transparent 1px var(--_hour)),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--_hour) / 2), var(--calendar-half-hour-line, color-mix(in srgb, var(--_line, var(--hairline)) 45%, transparent)) calc(var(--_hour) / 2) calc(var(--_hour) / 2 + 1px), transparent calc(var(--_hour) / 2 + 1px) var(--_hour));
+}
+.calendar-column.is-weekend { background-color: var(--calendar-weekend-bg, color-mix(in srgb, var(--surface-2) 45%, transparent)); }
+.calendar-column[aria-current="date"] { background-color: var(--calendar-today-column-bg, color-mix(in srgb, var(--accent) 6%, transparent)); }
+
+/* Timed events: --start/--end in hours (9.5 = 09:30), overlapping events
+   side by side with --col (1-based) of --cols. */
+.calendar-column > .calendar-event {
+  position: absolute;
+  inset-block-start: calc((var(--start, 0) - var(--_from)) * var(--_hour) + 1px);
+  block-size: calc((var(--end, 1) - var(--start, 0)) * var(--_hour) - 2px);
+  inset-inline-start: calc((var(--col, 1) - 1) * 100% / var(--cols, 1) + 1px);
+  inline-size: calc(100% / var(--cols, 1) - 3px);
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: normal;
+  box-shadow: 0 0 0 1px var(--calendar-bg, var(--surface));
+}
+.calendar-column > .calendar-event > time { margin-inline-start: 0.35em; white-space: nowrap; font-weight: 400; color: var(--muted); }
+
+/* The current-time line at --now (hours), in today's column. */
+.calendar-now {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc((var(--now, 0) - var(--_from)) * var(--_hour));
+  z-index: var(--z-raised);
+  block-size: 0;
+  border-block-start: var(--calendar-now-width, 2px) solid var(--calendar-now, var(--danger));
+  pointer-events: none;
+}
+.calendar-now::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -0.35rem;
+  inset-block-start: calc(-0.35rem - var(--calendar-now-width, 2px) / 2);
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border-radius: 50%;
+  background: var(--calendar-now, var(--danger));
+}
+
+/* ===========================================================================
+ * Gantt timeline
+ * ======================================================================== */
+.gantt {
+  --_unit: var(--gantt-unit, max(var(--tap-min), 2.25rem));
+  --_row: var(--gantt-row, var(--_unit));
+  --_units: var(--units, 14);
+  --_line: var(--gantt-grid-line, var(--hairline));
+  max-inline-size: 100%;
+  max-block-size: var(--gantt-max, none);
+  overflow: auto;
+  overscroll-behavior-x: contain;
+  background: var(--gantt-bg, var(--surface));
+  color: var(--gantt-fg, var(--text));
+  border: var(--gantt-border-width, 1px) solid var(--gantt-border, var(--border));
+  border-radius: var(--gantt-radius, var(--panel-radius, var(--radius)));
+  container-type: inline-size;
+}
+.gantt-header,
+.gantt-body { --_list: var(--gantt-list-width, 13rem); }
+@container (max-width: 480px) {
+  .gantt-header,
+  .gantt-body { --_list: var(--gantt-list-width-narrow, 8.5rem); }
+}
+.gantt-header,
+.gantt-row {
+  display: grid;
+  grid-template-columns: var(--_list) calc(var(--_units) * var(--_unit));
+  inline-size: max-content;
+}
+.gantt-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: calc(var(--z-sticky) + 1);
+  background: var(--gantt-header-bg, var(--surface-2));
+  box-shadow: inset 0 -1px 0 var(--gantt-border, var(--border));
+}
+.gantt-corner,
+.gantt-task {
+  position: sticky;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  padding-inline: var(--space-s);
+  box-shadow: inset -1px 0 0 var(--gantt-border, var(--border));
+}
+.gantt-corner:dir(rtl),
+.gantt-task:dir(rtl) { box-shadow: inset 1px 0 0 var(--gantt-border, var(--border)); }
+.gantt-corner {
+  z-index: var(--z-raised);
+  background: var(--gantt-header-bg, var(--surface-2));
+  color: var(--muted);
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: var(--label-transform, none);
+}
+.gantt-scale {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--_unit);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.72em;
+  font-variant-numeric: tabular-nums;
+}
+.gantt-scale > li {
+  grid-column: span var(--span, 1);
+  display: grid;
+  place-items: center;
+  min-inline-size: 0;
+  padding-block: var(--space-xs);
+  box-shadow: inset 1px 0 0 var(--_line);
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+}
+.gantt-scale > li.is-off { background: var(--gantt-off-bg, color-mix(in srgb, var(--surface) 55%, transparent)); }
+.gantt-scale > li[aria-current="date"] {
+  background: var(--gantt-today, var(--danger));
+  color: var(--gantt-today-fg, var(--on-danger, #fff));
+  font-weight: 700;
+}
+
+.gantt-body { position: relative; inline-size: max-content; }
+.gantt-rows { margin: 0; padding: 0; list-style: none; }
+.gantt-row { block-size: var(--_row); }
+.gantt-task {
+  z-index: var(--z-sticky);
+  background: var(--gantt-bg, var(--surface));
+  box-shadow: inset -1px 0 0 var(--gantt-border, var(--border)), inset 0 -1px 0 var(--_line);
+  font-size: 0.875em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-inline-start: calc(var(--space-s) + (var(--level, 1) - 1) * 1.1em);
+}
+.gantt-task:dir(rtl) { box-shadow: inset 1px 0 0 var(--gantt-border, var(--border)), inset 0 -1px 0 var(--_line); }
+.gantt-task > :is(span, a) { overflow: hidden; text-overflow: ellipsis; }
+.gantt-row.is-group > .gantt-task { font-weight: 700; }
+.gantt-row[aria-selected="true"] > .gantt-task,
+.gantt-row.is-selected > .gantt-task { background: var(--gantt-selected-bg, color-mix(in srgb, var(--accent) 16%, var(--gantt-bg, var(--surface)))); }
+
+.gantt-track {
+  position: relative;
+  background-image: repeating-linear-gradient(to right, var(--_line) 0 1px, transparent 1px var(--_unit));
+  box-shadow: inset 0 -1px 0 var(--_line);
+}
+
+/* Bars: --start and --end in time units from the left of the axis
+   (fractions allowed), --progress 0–1 as a fill strip along the bottom. */
+.gantt-bar {
+  --_bar: var(--series, var(--gantt-bar, var(--accent)));
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inset-inline-start: calc(var(--start, 0) * var(--_unit));
+  inline-size: calc((var(--end, 1) - var(--start, 0)) * var(--_unit));
+  min-inline-size: 0.5rem;
+  block-size: var(--gantt-bar-size, max(66%, calc(1.45em + 14px)));
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5em var(--gantt-progress-size, 0.25em);
+  background:
+    linear-gradient(var(--_bar), var(--_bar)) left bottom / calc(var(--progress, 0) * 100%) var(--gantt-progress-size, 0.25em) no-repeat,
+    var(--gantt-bar-bg, color-mix(in srgb, var(--_bar) 26%, var(--gantt-bg, var(--surface))));
+  color: var(--gantt-bar-fg, var(--text));
+  border: 1px solid var(--_bar);
+  border-radius: var(--gantt-bar-radius, var(--radius));
+  font-size: 0.75em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+.gantt-bar:dir(rtl) { background-position: right bottom, 0 0; }
+/* As a link or button the bar's hit area is the full row height. */
+.gantt-bar:is(a, button) { overflow: visible; font: inherit; font-size: 0.75em; touch-action: manipulation; }
+.gantt-bar:is(a, button)::before { content: ""; position: absolute; inset-inline: 0; inset-block: calc((100% - var(--_row)) / 2); }
+.gantt-bar:is(a, button) > span { overflow: hidden; text-overflow: ellipsis; }
+@media (hover: hover) {
+  .gantt-bar:is(a, button):hover { border-width: 2px; }
+}
+.gantt-bar.is-done { --gantt-bar-bg: color-mix(in srgb, var(--_bar) 14%, var(--gantt-bg, var(--surface))); color: var(--muted); }
+.gantt-bar.is-critical { border-width: 2px; border-color: var(--gantt-critical, var(--danger)); }
+.gantt-bar.is-late { border-style: dashed; border-color: var(--gantt-critical, var(--danger)); }
+.gantt-bar.is-summary {
+  block-size: 0.6rem;
+  padding: 0;
+  border-radius: 0;
+  background: var(--_bar);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, calc(100% - 0.4rem) 55%, 0.4rem 55%, 0 100%);
+}
+
+/* Milestone: a diamond centred on --at. */
+.gantt-milestone {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--at, 0) * var(--_unit));
+  inline-size: var(--gantt-milestone-size, 0.95rem);
+  block-size: var(--gantt-milestone-size, 0.95rem);
+  translate: -50% -50%;
+  rotate: 45deg;
+  background: var(--series, var(--gantt-milestone, var(--accent)));
+  border: 2px solid var(--gantt-bg, var(--surface));
+  outline: 1px solid var(--series, var(--gantt-milestone, var(--accent)));
+}
+.gantt-milestone:dir(rtl) { translate: 50% -50%; }
+.gantt-milestone.is-done { background: var(--gantt-bg, var(--surface)); }
+.gantt-milestone-label {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--at, 0) * var(--_unit) + var(--gantt-milestone-size, 0.95rem));
+  translate: 0 -50%;
+  font-size: 0.75em;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+/* Today marker over the rows, at --at units. */
+.gantt-today {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--_list) + var(--at, 0) * var(--_unit) - var(--gantt-today-width, 2px) / 2);
+  z-index: var(--z-raised);
+  inline-size: var(--gantt-today-width, 2px);
+  background: var(--gantt-today, var(--danger));
+  pointer-events: none;
+}
+
+/* Dependency connectors: an SVG over the time axis whose user units are
+   the grid (x = time unit, y = row), so the app draws in data
+   coordinates: viewBox="0 0 <units> <rows>" preserveAspectRatio="none".
+   Strokes don't scale; cells are square by default (--gantt-row =
+   --gantt-unit), so arrowheads keep their shape. */
+.gantt-links {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--_list);
+  inline-size: calc(var(--_units) * var(--_unit));
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--gantt-link, var(--muted));
+}
+.gantt-links:dir(rtl) { scale: -1 1; }
+.gantt-link {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--gantt-link-width, 1.5px);
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.gantt-link.is-critical { stroke: var(--gantt-critical, var(--danger)); stroke-width: calc(var(--gantt-link-width, 1.5px) + 1px); }
+.gantt-link.is-blocked { stroke-dasharray: 4 3; }
+.gantt-link-head { fill: currentColor; }
+.gantt-link-head.is-critical { fill: var(--gantt-critical, var(--danger)); }
+
+/* ===========================================================================
+ * Schedule list: time-blocked agenda rows, built on core's .schedule badge
+ * ======================================================================== */
+.schedule-heading {
+  margin: var(--space-s) 0 var(--space-2xs);
+  color: var(--schedule-heading-fg, var(--muted));
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: var(--label-transform, none);
+  letter-spacing: 0.02em;
+}
+.schedule-heading:first-child { margin-block-start: 0; }
+.schedule-heading[aria-current="date"] { color: var(--accent-text, var(--text)); }
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--schedule-list-gap, var(--space-2xs));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* --duration (hours) makes the block that tall (--schedule-hour per hour). */
+.schedule-item {
+  position: relative;
+  --_ev: var(--series, var(--schedule-color, var(--accent-2, var(--accent))));
+  display: grid;
+  grid-template-columns: var(--schedule-time-width, 4.25em) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2xs) var(--space-s);
+  min-block-size: max(var(--tap-min), calc(var(--duration, 0) * var(--schedule-hour, 3rem)));
+  box-sizing: border-box;
+  padding: var(--schedule-item-pad, var(--space-xs) var(--space-s));
+  background: var(--schedule-item-bg, color-mix(in srgb, var(--_ev) 12%, var(--surface)));
+  color: var(--text);
+  border-inline-start: var(--schedule-bar-width, 3px) solid var(--_ev);
+  border-radius: var(--schedule-item-radius, var(--radius));
+  overflow-wrap: anywhere;
+}
+.schedule-item > .schedule {
+  --schedule-font-size: 0.85em;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding-block-start: 0.15em;
+  color: var(--schedule-time-fg, var(--text));
+  font-weight: 600;
+}
+.schedule-item > .schedule > .schedule-end { display: block; color: var(--muted); font-weight: 400; }
+.schedule-body { min-inline-size: 0; }
+.schedule-title { display: block; font-weight: 600; }
+.schedule-title a { color: inherit; }
+.schedule-meta { display: block; color: var(--muted); font-size: 0.85em; }
+.schedule-item > :last-child:not(.schedule-body, .schedule) { align-self: center; }
+.schedule-item.is-past { --schedule-item-bg: transparent; color: var(--muted); }
+.schedule-item.is-past .schedule-title { font-weight: 400; }
+.schedule-item[aria-current="time"],
+.schedule-item.is-current {
+  box-shadow: inset 0 0 0 2px var(--schedule-current-ring, var(--accent));
+}
+.schedule-item.is-free {
+  --schedule-item-bg: transparent;
+  border-inline-start-style: dashed;
+  border-inline-start-color: var(--border);
+  color: var(--muted);
+}
+.schedule-item.is-free .schedule-title { font-weight: 400; font-style: italic; }
+.schedule-item.is-conflict { box-shadow: inset 0 0 0 1px var(--danger); }
+
+/* --- Motion ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) :is(.kanban-card, .calendar-event, .calendar-more, .gantt-bar) {
+    transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.15s ease, rotate 0.15s ease;
+  }
+}
+
+/* --- Forced colours ---------------------------------------------------------- */
+@media (forced-colors: active) {
+  .calendar-event, .gantt-bar, .schedule-item, .kanban-placeholder { border-color: CanvasText; }
+  .calendar-now, .calendar-now::before, .gantt-today, .gantt-milestone { background: Highlight; forced-color-adjust: none; }
+  :is(.calendar-cell, .calendar-column-head)[aria-current="date"] .calendar-date { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}

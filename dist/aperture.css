@@ -5073,6 +5073,607 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     transition: background-color 0.12s ease, color 0.12s ease;
   }
 }
+/* --- v5 game HUD kit (PLAN.md §19 "Game HUD") ------------------------------
+ * The overlay layer (.hud) and its six edge regions, resource bars
+ * (.hud-bar), the minimap (.map.hud-minimap, built on instruments.css's
+ * .map/.map-pin and .compass-strip), the quest tracker (.hud-quests),
+ * hotbar and inventory slots (.hud-slot) with rarity tokens, floating
+ * damage/heal numbers (.hud-float), the achievement toast
+ * (.toast.hud-achievement, in core's .toast-region) and key prompts
+ * (.hud-prompt with core <kbd>, gamepad glyphs kbd.hud-pad).
+ *
+ * Values come in through documented inline APIs: --value / --trail
+ * (0–1) on bars, --segments, --cooldown (0–1) on slots, --x/--y on
+ * floats and the minimap player, --heading (degrees).
+ * Docs: docs/components/hud.md. Demo: hud.html. */
+
+/* Shared HUD surface: the translucent backing that keeps text readable over
+   any scene. Read by .hud-bars, .hud-quests and .hud-prompt. */
+:is(.hud-bars, .hud-quests, .hud-prompt) {
+  background: var(--hud-panel-bg, color-mix(in srgb, var(--surface) 82%, transparent));
+  border: var(--hud-panel-border-width, 1px) solid var(--hud-panel-border, color-mix(in srgb, var(--border) 60%, transparent));
+  border-radius: var(--hud-panel-radius, var(--radius));
+  box-shadow: var(--hud-panel-shadow, none);
+  -webkit-backdrop-filter: var(--hud-panel-blur, none);
+  backdrop-filter: var(--hud-panel-blur, none);
+}
+
+/* ---- The overlay layer ---------------------------------------------------
+ * <div class="hud">
+ *   <svg|img|video|canvas class="hud-scene">   the game view, behind
+ *   <div class="hud-top">  <div class="hud-top-start">  <div class="hud-top-end">
+ *   <div class="hud-bottom">  <div class="hud-bottom-start">  <div class="hud-bottom-end">
+ *   <span class="hud-float" style="--x:…; --y:…">   anywhere, over the scene
+ * Desktop container (> 900px): the four corners plus top and bottom centre;
+ * the middle row (--hud-center-min) is kept clear. ≤ 900px: compass row,
+ * then the two top corners side by side, the clear middle, the hotbar row,
+ * the two bottom corners. ≤ 480px: the bottom corners stack.
+ * One grid serves every tier (3 columns, 6 rows, empty tracks collapse), so
+ * the regions can re-place themselves from the .hud container. */
+.hud {
+  container: hud / inline-size;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(var(--hud-center-min, 8rem), 1fr) auto auto auto;
+  column-gap: var(--hud-gap, var(--space-s));
+  min-inline-size: 0;
+  min-block-size: var(--hud-min-height, 34rem);
+  padding: var(--hud-pad, var(--space-m));
+  overflow: hidden;
+  background: var(--hud-scene-bg, linear-gradient(var(--surface-2), var(--bg)));
+  color: var(--hud-fg, var(--text));
+  border: var(--hud-border-width, 1px) solid var(--hud-border, var(--border));
+  border-radius: var(--hud-radius, var(--radius));
+  font-family: var(--hud-font, inherit);
+  font-size: var(--hud-font-size, 0.875rem);
+  line-height: 1.3;
+}
+/* A real game: the HUD covers the viewport, clear of notches. */
+.hud.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  min-block-size: 100dvh;
+  padding:
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-top))
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-right))
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-bottom))
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-left));
+  border: 0;
+  border-radius: 0;
+}
+.hud-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  object-fit: cover;
+  border: 0;
+  filter: var(--hud-scene-filter, none);
+}
+:is(.hud-top, .hud-top-start, .hud-top-end, .hud-bottom, .hud-bottom-start, .hud-bottom-end) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hud-gap, var(--space-s));
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.hud-top { grid-area: 1 / 2; align-items: center; }
+.hud-top-start { grid-area: 1 / 1 / 4 / 2; align-self: start; align-items: flex-start; }
+.hud-top-end { grid-area: 1 / 3 / 4 / 4; align-self: start; align-items: flex-end; }
+.hud-bottom { grid-area: 6 / 2; align-self: end; align-items: center; }
+.hud-bottom-start { grid-area: 3 / 1 / 7 / 2; align-self: end; align-items: flex-start; }
+.hud-bottom-end { grid-area: 3 / 3 / 7 / 4; align-self: end; align-items: flex-end; }
+.hud-top > .compass-strip { inline-size: var(--hud-compass-width, 22rem); max-inline-size: 100%; }
+@container hud (max-width: 900px) {
+  .hud-top { grid-area: 1 / 1 / 2 / -1; align-self: start; margin-block-end: var(--hud-gap, var(--space-s)); }
+  .hud-top > .compass-strip { inline-size: min(var(--hud-compass-width, 22rem), 100%); }
+  .hud-top-start { grid-area: 2 / 1 / 3 / 3; }
+  .hud-top-end { grid-area: 2 / 3; }
+  .hud-bottom { grid-area: 4 / 1 / 5 / -1; margin-block-end: var(--hud-gap, var(--space-s)); }
+  .hud-bottom-start { grid-area: 5 / 1 / 6 / 3; }
+  .hud-bottom-end { grid-area: 5 / 3; }
+}
+@container hud (max-width: 480px) {
+  .hud-bottom-start { grid-area: 5 / 1 / 6 / -1; }
+  .hud-bottom-end { grid-area: 6 / 1 / 7 / -1; margin-block-start: var(--hud-gap, var(--space-s)); }
+}
+
+/* ---- Resource bars --------------------------------------------------------
+ * <div class="hud-bar hud-bar-health" role="meter" aria-label="Health"
+ *      aria-valuemin="0" aria-valuemax="250" aria-valuenow="180" style="--value:.72">
+ *   <span class="hud-bar-label">Health</span><span class="hud-bar-value">180</span>
+ * </div>
+ * Drawn on ::before: the fill (--value), under it the damage-taken trail
+ * (--trail, or automatic: with motion the trail follows --value late), on
+ * the track. --hud-bar-anchor: 0 fills from the start, .5 from the centre
+ * (Skyrim), 1 from the end. Children are optional: a bare bar is a track. */
+@property --hud-bar-v {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --hud-bar-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+.hud-bar {
+  --hud-bar-v: clamp(0, var(--value, 1), 1);
+  --hud-bar-t: clamp(0, var(--trail, var(--value, 1)), 1);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "label value" "track track";
+  align-items: center;
+  column-gap: var(--space-xs);
+  row-gap: var(--space-3xs);
+  inline-size: var(--hud-bar-width, 16rem);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  color: var(--hud-bar-fg, var(--text));
+  font-size: var(--hud-bar-font-size, 0.75rem);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.hud-bar:has(> .icon) {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "icon label value" "icon track track";
+}
+.hud-bar > .icon { grid-area: icon; color: var(--hud-bar-fill, var(--accent)); }
+.hud-bar-label {
+  grid-area: label;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: var(--hud-bar-label-transform, none);
+  letter-spacing: var(--hud-bar-label-spacing, normal);
+}
+.hud-bar-value { grid-area: value; justify-self: end; font-weight: 600; white-space: nowrap; }
+.hud-bar::before {
+  --hud-bar-at: calc(var(--hud-bar-anchor, 0) * 100%) 0;
+  content: "";
+  grid-area: track;
+  block-size: var(--hud-bar-height, 0.625rem);
+  background:
+    var(--hud-bar-sheen, linear-gradient(rgba(255, 255, 255, 0.22), transparent 70%)) var(--hud-bar-at) / calc(var(--hud-bar-v) * 100%) 100% no-repeat,
+    linear-gradient(var(--hud-bar-fill, var(--accent)) 0 0) var(--hud-bar-at) / calc(var(--hud-bar-v) * 100%) 100% no-repeat,
+    linear-gradient(var(--hud-bar-trail, color-mix(in oklab, var(--hud-bar-fill, var(--accent)) 35%, var(--text))) 0 0) var(--hud-bar-at) / calc(var(--hud-bar-t) * 100%) 100% no-repeat,
+    var(--hud-bar-track, var(--meter-track, var(--surface-2)));
+  border: var(--hud-bar-border-width, 1px) solid var(--hud-bar-border, var(--meter-border, var(--border)));
+  border-radius: var(--hud-bar-radius, var(--radius));
+  box-shadow: var(--hud-bar-shadow, none);
+  clip-path: var(--hud-bar-clip, none);
+}
+.hud-bar-health { --hud-bar-fill: var(--hud-health, var(--danger)); }
+.hud-bar-mana { --hud-bar-fill: var(--hud-mana, var(--accent-2)); }
+.hud-bar-stamina { --hud-bar-fill: var(--hud-stamina, var(--success)); }
+.hud-bar.is-centered { --hud-bar-anchor: 0.5; }
+.hud-bar.is-reversed { --hud-bar-anchor: 1; }
+/* Segmented: --segments pips (10), --hud-bar-gap apart. The mask is one gap
+   wider than the bar, so the last pip ends flush. */
+.hud-bar.is-segmented::before {
+  --hud-bar-pip: calc(100% / var(--segments, 10));
+  border-color: transparent;
+  mask: repeating-linear-gradient(90deg, #000 0 calc(var(--hud-bar-pip) - var(--hud-bar-gap, 3px)), transparent 0 var(--hud-bar-pip)) 0 0 / calc(100% + var(--hud-bar-gap, 3px)) 100% no-repeat;
+}
+/* Low: the app adds .is-low under its threshold. Red rule and text plus a
+   "!" before the value; with motion the bar also pulses. */
+.hud-bar.is-low { color: var(--hud-bar-low-fg, var(--danger-text, var(--danger))); }
+.hud-bar.is-low::before {
+  border-color: var(--hud-bar-low, var(--danger));
+  box-shadow: 0 0 0 1px var(--hud-bar-low, var(--danger)), var(--hud-bar-shadow, 0 0 transparent);
+}
+.hud-bar.is-low > .hud-bar-value::before { content: "!" / ""; margin-inline-end: 0.3em; font-weight: 800; }
+/* Regenerating: a ▲ after the value; with motion a light runs along the fill. */
+.hud-bar.is-regen > .hud-bar-value::after {
+  content: "\25B2" / "";
+  margin-inline-start: 0.3em;
+  font-size: 0.75em;
+  color: var(--hud-bar-regen-fg, var(--success-text, var(--success)));
+}
+
+/* A stack of bars on the shared HUD backing. */
+.hud-bars {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xs);
+  inline-size: max-content;
+  max-inline-size: 100%;
+  padding: var(--hud-panel-pad, var(--space-xs) var(--space-s));
+}
+
+/* ---- Minimap: core's .map, square or round -------------------------------
+ * <figure class="map hud-minimap is-round" style="--heading:300">
+ *   <svg|img>…</svg> <span class="hud-minimap-player"></span> .map-pin… .map-north
+ * </figure> */
+.map.hud-minimap {
+  inline-size: var(--hud-minimap-size, 11rem);
+  max-inline-size: 100%;
+  min-block-size: 0;
+  aspect-ratio: 1;
+  border-width: var(--hud-minimap-border-width, 2px);
+  box-shadow: var(--hud-minimap-shadow, inset 0 0 1.5rem rgba(0, 0, 0, 0.45));
+}
+.map.hud-minimap.is-round { border-radius: 50%; }
+/* In a circle the corners are cut: north sits at the top centre, the
+   attribution or place name at the bottom centre. */
+.map.hud-minimap.is-round > .map-north { grid-column: 1 / -1; justify-self: center; }
+.map.hud-minimap.is-round > .map-attribution { grid-column: 1 / -1; justify-self: center; text-align: center; }
+.hud-minimap-player {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  inline-size: var(--hud-minimap-player-size, 1.1rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  rotate: calc(var(--heading, 0) * 1deg);
+  background: var(--hud-minimap-player, var(--accent));
+  clip-path: polygon(50% 0, 92% 100%, 50% 78%, 8% 100%);
+  filter: drop-shadow(0 0 2px var(--bg));
+}
+@container hud (max-width: 480px) {
+  .map.hud-minimap { --hud-minimap-size: 7.5rem; }
+}
+
+/* ---- Quest tracker --------------------------------------------------------
+ * <section class="hud-quests" aria-label="Quests">
+ *   <h3>The Golden Claw</h3>
+ *   <ol class="hud-objectives">
+ *     <li class="is-done">…</li> <li aria-current="step">… <span class="hud-count">3/5</span></li>
+ *     <li class="is-failed">…</li> <li>…</li>
+ *   </ol>
+ * </section>
+ * Each state has its own glyph (announced as a word: --hud-objective-*-label),
+ * so colour is never the only signal. */
+.hud-quests {
+  display: grid;
+  gap: var(--space-2xs);
+  inline-size: var(--hud-quests-width, 17rem);
+  max-inline-size: 100%;
+  padding: var(--hud-panel-pad, var(--space-xs) var(--space-s));
+}
+.hud-quests > :is(h2, h3, h4, h5) {
+  margin: 0;
+  color: var(--hud-quests-title-fg, var(--text));
+  font-size: 0.85rem;
+  text-transform: var(--hud-quests-title-transform, none);
+  letter-spacing: var(--hud-quests-title-spacing, normal);
+  overflow-wrap: anywhere;
+}
+.hud-quests > :is(h2, h3, h4, h5):not(:first-child) { margin-block-start: var(--space-2xs); }
+.hud-objectives {
+  display: grid;
+  gap: var(--space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+}
+.hud-objectives > li {
+  display: grid;
+  grid-template-columns: 1.1em minmax(0, 1fr) auto;
+  gap: var(--space-2xs);
+  align-items: baseline;
+  color: var(--hud-objective-fg, var(--text));
+  overflow-wrap: anywhere;
+}
+.hud-objectives > li::before {
+  content: var(--hud-objective-glyph, "\25CB") / var(--hud-objective-label, "");
+  color: var(--muted);
+  text-align: center;
+}
+.hud-objectives > li[aria-current]:not([aria-current="false"]) { font-weight: 600; }
+.hud-objectives > li[aria-current]:not([aria-current="false"])::before {
+  content: var(--hud-objective-current-glyph, "\25C6") / "";
+  color: var(--hud-objective-current, var(--accent));
+}
+.hud-objectives > li.is-done { color: var(--hud-objective-done-fg, var(--muted)); text-decoration: line-through; }
+.hud-objectives > li.is-done::before {
+  content: var(--hud-objective-done-glyph, "\2713") / var(--hud-objective-done-label, "Done:");
+  color: var(--hud-objective-done, var(--success-text, var(--success)));
+}
+.hud-objectives > li.is-failed { color: var(--hud-objective-failed-fg, var(--danger-text, var(--danger))); text-decoration: line-through; }
+.hud-objectives > li.is-failed::before {
+  content: var(--hud-objective-failed-glyph, "\2717") / var(--hud-objective-failed-label, "Failed:");
+  color: inherit;
+}
+.hud-count {
+  grid-column: 3;
+  font-variant-numeric: tabular-nums;
+  color: var(--hud-count-fg, var(--muted));
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ---- Hotbar and inventory slots -------------------------------------------
+ * <div class="hud-hotbar" role="radiogroup" aria-label="Hotbar">
+ *   <label class="hud-slot" data-rarity="rare" style="--cooldown:.4">
+ *     <input type="radio" name="hotbar" aria-label="1: Frost bolt, rare, cooling down" checked>
+ *     <svg class="icon" aria-hidden="true">…</svg>
+ *     <kbd class="hud-slot-key">1</kbd> <span class="hud-slot-count">12</span>
+ *     <span class="hud-slot-timer">4s</span>
+ *   </label>
+ * </div>
+ * The checked radio selects the slot (.is-active also works). --cooldown
+ * (0–1, the fraction still to wait) shades a clockwise sweep. */
+[data-rarity="common"] { --rarity: var(--rarity-common, var(--muted)); --rarity-rank: 1; }
+[data-rarity="uncommon"] { --rarity: var(--rarity-uncommon, #3fae2a); --rarity-rank: 2; }
+[data-rarity="rare"] { --rarity: var(--rarity-rare, #2f80e8); --rarity-rank: 3; }
+[data-rarity="epic"] { --rarity: var(--rarity-epic, #a64ff0); --rarity-rank: 4; }
+[data-rarity="legendary"] { --rarity: var(--rarity-legendary, #f08a12); --rarity-rank: 5; }
+.hud-slot {
+  --hud-slot-s: max(var(--hud-slot-size, 3rem), var(--tap-min));
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--hud-slot-s);
+  block-size: var(--hud-slot-s);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--hud-slot-bg, color-mix(in srgb, var(--surface) 85%, transparent));
+  color: var(--hud-slot-fg, var(--text));
+  border: var(--hud-slot-border-width, 2px) solid var(--rarity, var(--hud-slot-border, var(--border)));
+  border-radius: var(--hud-slot-radius, var(--radius));
+  box-shadow: inset 0 0 var(--hud-slot-glow, 0.9rem) color-mix(in srgb, var(--rarity, transparent) 40%, transparent);
+  font-size: 0.7rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  touch-action: manipulation;
+}
+.hud-slot > .icon { --icon-size: calc(var(--hud-slot-s) * 0.5); }
+.hud-slot > input:is([type="radio"], [type="checkbox"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+/* Cooldown sweep: the part still to wait is shaded, from 12 o'clock. */
+.hud-slot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(transparent calc((1 - var(--cooldown, 0)) * 360deg), var(--hud-slot-cooldown, rgba(0, 0, 0, 0.62)) 0);
+  pointer-events: none;
+}
+/* Rarity rank pips (1–5), top end: the non-colour rarity signal. */
+.hud-slot[data-rarity]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-end: 3px;
+  inline-size: calc(var(--rarity-rank) * 5px);
+  block-size: 5px;
+  background: radial-gradient(circle closest-side, var(--rarity) 85%, transparent) 0 0 / 5px 5px repeat-x;
+  pointer-events: none;
+}
+.hud-slot-key,
+.hud-slot-count,
+.hud-slot-timer { position: absolute; pointer-events: none; }
+kbd.hud-slot-key {
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  padding: 0.1em 0.3em;
+  font-size: 0.62rem;
+  line-height: 1.2;
+}
+.hud-slot-count {
+  inset-block-end: calc(var(--space-2xs) + 1px);
+  inset-inline-end: calc(var(--space-2xs) + 1px);
+  font-weight: 700;
+  text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg);
+}
+.hud-slot-timer {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg);
+}
+.hud-slot.is-empty { border-style: dashed; background: var(--hud-slot-empty-bg, color-mix(in srgb, var(--surface) 50%, transparent)); }
+.hud-slot:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+  border-color: var(--hud-slot-selected, var(--accent));
+  box-shadow:
+    0 0 0 var(--hud-slot-selected-width, 2px) var(--hud-slot-selected, var(--accent)),
+    inset 0 0 var(--hud-slot-glow, 0.9rem) color-mix(in srgb, var(--rarity, var(--hud-slot-selected, var(--accent))) 50%, transparent);
+}
+/* Selected also lifts the slot and marks it, so the state isn't colour alone. */
+.hud-slot:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) > kbd.hud-slot-key {
+  background: var(--hud-slot-selected, var(--accent));
+  color: var(--hud-slot-selected-fg, var(--on-accent));
+  border-color: var(--hud-slot-selected, var(--accent));
+}
+.hud-slot:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+.hud-slot:has(> input:disabled), .hud-slot[aria-disabled="true"] { opacity: 0.55; }
+@media (hover: hover) {
+  .hud-slot:has(> input:not(:disabled)):hover { background: var(--hud-slot-bg-hover, color-mix(in srgb, var(--surface-2) 92%, transparent)); }
+}
+.hud-hotbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--hud-slot-gap, var(--space-2xs));
+  max-inline-size: 100%;
+}
+.hud-inventory {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, max(var(--hud-slot-size, 3rem), var(--tap-min)));
+  gap: var(--hud-slot-gap, var(--space-2xs));
+  min-inline-size: 0;
+}
+
+/* ---- Floating damage / heal numbers ---------------------------------------
+ * <span class="hud-float" style="--x:48%; --y:40%" aria-hidden="true">−48</span>
+ * Absolutely placed in the nearest positioned box (.hud is one). With motion
+ * it rises and fades once (--hud-float-duration); the app removes it on
+ * animationend, or after a timeout when motion is off (it stays put). */
+.hud-float {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  translate: -50% -50%;
+  color: var(--hud-float-damage, var(--danger));
+  font-size: var(--hud-float-size, 1.5rem);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  paint-order: stroke fill;
+  -webkit-text-stroke: var(--hud-float-stroke-width, 3px) var(--hud-float-stroke, rgba(0, 0, 0, 0.8));
+  text-shadow: var(--hud-float-shadow, 0 2px 6px rgba(0, 0, 0, 0.5));
+}
+.hud-float.is-heal { color: var(--hud-float-heal, var(--success)); }
+.hud-float.is-crit { --hud-float-size: var(--hud-float-crit-size, 2.25rem); color: var(--hud-float-crit, var(--warning)); }
+.hud-float.is-mana { color: var(--hud-float-mana, var(--hud-mana, var(--accent-2))); }
+.hud-float.is-miss { --hud-float-size: 1.1rem; color: var(--hud-float-miss, var(--muted)); font-style: italic; }
+
+/* ---- Achievement toast: a .toast in core's .toast-region -------------------
+ * <div class="toast-region" popover="manual" id="ach">
+ *   <div class="toast hud-achievement" role="status">
+ *     <svg class="icon hud-achievement-icon" aria-hidden="true">…</svg>
+ *     <div class="hud-achievement-body">
+ *       <span class="hud-achievement-kicker">Achievement unlocked</span>
+ *       <strong class="hud-achievement-title">…</strong>
+ *       <span class="hud-achievement-text">…</span>
+ *       <progress class="progress" value="7" max="10">7 of 10</progress>
+ *     </div>
+ *     <span class="hud-achievement-score">20G</span>
+ *   </div>
+ * </div> */
+.toast.hud-achievement {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--space-s);
+  inline-size: min(var(--hud-achievement-width, 22rem), 100%);
+  border-color: var(--hud-achievement-border, var(--toast-border, var(--border)));
+}
+.hud-achievement-icon {
+  inline-size: var(--hud-achievement-icon-size, 2.75rem);
+  block-size: var(--hud-achievement-icon-size, 2.75rem);
+  min-inline-size: var(--hud-achievement-icon-size, 2.75rem);
+  padding: 0.55rem;
+  background: var(--hud-achievement-icon-bg, var(--accent));
+  color: var(--hud-achievement-icon-fg, var(--on-accent));
+  border-radius: var(--hud-achievement-icon-radius, 50%);
+}
+.hud-achievement-body { display: grid; gap: var(--space-3xs); min-inline-size: 0; }
+.hud-achievement-kicker {
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-transform: var(--hud-achievement-kicker-transform, uppercase);
+  letter-spacing: 0.06em;
+}
+.hud-achievement-title { overflow-wrap: anywhere; }
+.hud-achievement-text { color: var(--muted); overflow-wrap: anywhere; }
+.hud-achievement-body > .progress { margin-block-start: var(--space-3xs); inline-size: 100%; }
+.hud-achievement-score { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---- Key prompts ------------------------------------------------------------
+ * <p class="hud-prompt"><kbd>E</kbd> Open</p>
+ * <button class="hud-prompt" popovertarget="inv"><kbd>I</kbd> Inventory</button>
+ * <p class="hud-prompt"><kbd class="hud-pad" data-button="south">A</kbd> Open</p>
+ * Core's <kbd> draws the key; kbd.hud-pad is a gamepad button (round, pill
+ * for "LB"/"RT"), ringed in the face-button colour of data-button
+ * south|east|west|north. The letter is the non-colour signal. */
+.hud-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  max-inline-size: 100%;
+  margin: 0;
+  padding: var(--hud-prompt-pad, var(--space-2xs) var(--space-xs));
+  background: var(--hud-prompt-bg, var(--hud-panel-bg, color-mix(in srgb, var(--surface) 82%, transparent)));
+  color: var(--hud-prompt-fg, var(--text));
+  font: inherit;
+  font-size: var(--hud-prompt-font-size, 0.85rem);
+  line-height: 1.3;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+button.hud-prompt { min-block-size: var(--tap-min); touch-action: manipulation; }
+@media (hover: hover) {
+  button.hud-prompt:hover { background: var(--hud-prompt-bg-hover, var(--surface-2)); }
+}
+.hud-prompt > kbd { flex: none; }
+kbd.hud-pad {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.75em;
+  block-size: 1.75em;
+  padding: 0 0.45em;
+  background: var(--hud-pad-bg, var(--kbd-bg, var(--surface-2)));
+  color: var(--hud-pad-fg, var(--kbd-fg, var(--text)));
+  border: 2px solid var(--hud-pad-ring, var(--kbd-border, var(--border)));
+  border-radius: 999px;
+  box-shadow: none;
+  font-family: var(--hud-pad-font, var(--font));
+  font-weight: 700;
+  line-height: 1;
+}
+kbd.hud-pad[data-button="south"] { --hud-pad-ring: var(--hud-pad-south, var(--success)); }
+kbd.hud-pad[data-button="east"] { --hud-pad-ring: var(--hud-pad-east, var(--danger)); }
+kbd.hud-pad[data-button="west"] { --hud-pad-ring: var(--hud-pad-west, var(--accent-2)); }
+kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--warning)); }
+
+/* ---- Motion: only with no-preference, never under data-motion reduced/none */
+@keyframes hud-bar-low {
+  to { filter: brightness(1.6); }
+}
+@keyframes hud-bar-regen {
+  from { background-position-x: -150%; }
+  to { background-position-x: 250%; }
+}
+@keyframes hud-float-rise {
+  0% { opacity: 0; translate: -50% -20%; scale: 0.7; }
+  12% { opacity: 1; translate: -50% -60%; scale: 1.1; }
+  25% { scale: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; translate: -50% calc(-50% - var(--hud-float-rise, 3rem)); }
+}
+@keyframes hud-achievement-in {
+  from { opacity: 0; translate: 0 -0.75rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-bar {
+    transition:
+      --hud-bar-v var(--hud-bar-speed, 0.15s) ease-out,
+      --hud-bar-t var(--hud-bar-trail-speed, 0.6s) ease-in var(--hud-bar-trail-delay, 0.5s);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-bar.is-low::before {
+    animation: hud-bar-low 0.8s ease-in-out infinite alternate;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-bar.is-regen::after {
+    content: "";
+    grid-area: track;
+    align-self: stretch;
+    inline-size: calc(var(--hud-bar-v) * 100%);
+    margin-inline-start: calc((1 - var(--hud-bar-v)) * var(--hud-bar-anchor, 0) * 100%);
+    background: linear-gradient(90deg, transparent, var(--hud-bar-regen-glow, rgba(255, 255, 255, 0.55)), transparent) -150% 0 / 40% 100% no-repeat;
+    clip-path: var(--hud-bar-clip, none);
+    animation: hud-bar-regen 1.8s linear infinite;
+    pointer-events: none;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-float {
+    animation: hud-float-rise var(--hud-float-duration, 1.2s) ease-out var(--hud-float-delay, 0s) var(--hud-float-repeat, 1) both;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-achievement {
+    animation: hud-achievement-in 0.35s ease-out;
+  }
+}
 /* --- v5 instruments and data display (PLAN.md §9 #1–16, §18 Charts) -------
  * Dial, arc and linear gauges, compass and heading strip, map frame and
  * pins, legend, progress ring, sparkline, donut, heatmap, timeline,
@@ -6945,6 +7546,828 @@ kbd kbd { font-size: 0.9em; }
 .list-item[tabindex] { min-block-size: var(--tap-min); }
 .table :is(td, th):focus-visible,
 [role="row"]:focus-visible { outline-offset: -2px; }
+/* --- v5 productivity kit (PLAN.md §22 "Productivity kit") -------------------
+ * Kanban board, planner calendar (month, week and day views, agenda),
+ * Gantt timeline, and the schedule list (extends core's .schedule badge).
+ * Builds on core's .calendar frame (forms.css), .tabset view switch, .badge,
+ * .avatar, .btn and the data-series colours (instruments.css). Apps move
+ * cards, lay out events and draw connectors; this file styles every state.
+ * Positions come in through documented inline APIs: --day/--span/--lane
+ * (month bars), --start/--end/--col/--cols (timed events, Gantt bars),
+ * --now, --at, --progress, --duration.
+ * Docs: docs/components/planner.md. Example: planner.html.
+ *
+ * Private custom properties (--_*) are internal plumbing, not theme tokens. */
+
+/* ===========================================================================
+ * Kanban board
+ * ======================================================================== */
+.kanban {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kanban-gap, var(--space-s));
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--space-2xs);
+  padding-block-end: var(--space-2xs);
+  container-type: inline-size;
+}
+/* One column per screen on phones; the next one peeks in. */
+@media (max-width: 480px) { .kanban { scroll-snap-type: x mandatory; } }
+
+.kanban-column {
+  flex: 0 0 var(--kanban-column-width, 17.5rem);
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-block-size: var(--kanban-column-max, none);
+  padding: var(--kanban-column-pad, var(--space-s));
+  background: var(--kanban-column-bg, var(--surface-2));
+  color: var(--kanban-column-fg, var(--text));
+  border: var(--kanban-column-border-width, 1px) solid var(--kanban-column-border, var(--hairline));
+  border-block-start: var(--kanban-column-accent-width, 1px) solid var(--kanban-column-accent, var(--kanban-column-border, var(--hairline)));
+  border-radius: var(--kanban-column-radius, var(--panel-radius, var(--radius)));
+  scroll-snap-align: start;
+}
+@container (max-width: 480px) {
+  .kanban-column { flex-basis: calc(100% - var(--space-xl)); }
+}
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-block-size: var(--tap-min);
+}
+.kanban-column-title {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  font-size: 1em;
+  font-weight: 600;
+  text-transform: var(--label-transform, none);
+  overflow-wrap: anywhere;
+}
+.kanban-count { flex: none; font-variant-numeric: tabular-nums; }
+.kanban-limit { color: var(--muted); font-weight: 400; }
+.kanban-limit::before { content: "\2009/\2009"; }
+
+/* Over the WIP limit: danger stripe, danger count and a "!" before it,
+   so the state is not carried by colour alone. */
+.kanban-column.is-over-limit {
+  --kanban-column-accent: var(--kanban-over-limit, var(--danger));
+  --kanban-column-accent-width: 3px;
+}
+.kanban-column.is-over-limit .kanban-count {
+  --badge-bg: color-mix(in srgb, var(--kanban-over-limit, var(--danger)) 22%, var(--surface));
+  --badge-fg: var(--danger-text, var(--text));
+  --badge-border: var(--kanban-over-limit, var(--danger));
+}
+.kanban-column.is-over-limit .kanban-count::before { content: "!\2009"; font-weight: 800; }
+.kanban-column.is-over-limit .kanban-limit { color: inherit; }
+
+/* Drop target: the column the dragged card is over. */
+.kanban-column.is-drop-target {
+  background: var(--kanban-drop-bg, color-mix(in srgb, var(--accent) 12%, var(--kanban-column-bg, var(--surface-2))));
+  outline: 2px dashed var(--kanban-drop-ring, var(--accent));
+  outline-offset: -2px;
+}
+
+.kanban-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kanban-card-gap, var(--space-xs));
+  min-block-size: var(--kanban-empty-size, 3.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+/* An empty column still reads as a place to drop. */
+.kanban-cards:empty {
+  border: 1px dashed var(--kanban-column-border, var(--border));
+  border-radius: var(--kanban-card-radius, var(--radius));
+}
+
+.kanban-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  padding: var(--kanban-card-pad, var(--space-s));
+  background: var(--kanban-card-bg, var(--surface));
+  color: var(--kanban-card-fg, var(--text));
+  border: var(--kanban-card-border-width, 1px) solid var(--kanban-card-border, var(--border));
+  border-radius: var(--kanban-card-radius, var(--radius));
+  box-shadow: var(--kanban-card-shadow, none);
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+}
+.kanban-card[draggable="true"] { cursor: grab; }
+.kanban-card:focus-within { border-color: var(--kanban-card-border-focus, var(--focus)); }
+@media (hover: hover) {
+  .kanban-card:hover { border-color: var(--kanban-card-border-hover, var(--accent)); }
+}
+.kanban-card-title { margin: 0; font-size: 1em; font-weight: 600; line-height: 1.35; }
+.kanban-card-title a { color: inherit; }
+.kanban-card > p { margin: 0; color: var(--muted); font-size: 0.875em; }
+
+/* The card being dragged: lifted, tilted and accent-ringed. The app keeps
+   it in the DOM (or uses it as the drag image) and adds .is-dragging. */
+.kanban-card.is-dragging {
+  cursor: grabbing;
+  border-color: var(--kanban-drag-ring, var(--accent));
+  box-shadow: var(--kanban-drag-shadow, 0 0.6rem 1.4rem color-mix(in srgb, #000 35%, transparent));
+  rotate: var(--kanban-drag-tilt, 2deg);
+  opacity: var(--kanban-drag-opacity, 0.92);
+}
+/* The slot a dropped card will land in. --kanban-placeholder-size can be
+   set inline to the dragged card's height. */
+.kanban-placeholder {
+  position: relative;
+  flex: none;
+  block-size: var(--kanban-placeholder-size, 4.5rem);
+  background: var(--kanban-placeholder-bg, color-mix(in srgb, var(--accent) 10%, transparent));
+  border: 2px dashed var(--kanban-placeholder-border, var(--accent));
+  border-radius: var(--kanban-card-radius, var(--radius));
+}
+
+.kanban-labels { display: flex; flex-wrap: wrap; gap: var(--space-3xs, 0.2rem); margin: 0; padding: 0; list-style: none; }
+.kanban-labels > li { display: contents; }
+.kanban-labels .badge[data-series] {
+  --badge-bg: color-mix(in srgb, var(--series) 24%, var(--kanban-card-bg, var(--surface)));
+  --badge-fg: var(--kanban-card-fg, var(--text));
+  --badge-border: color-mix(in srgb, var(--series) 70%, transparent);
+}
+
+.kanban-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+  font-size: 0.8em;
+  color: var(--muted);
+}
+.kanban-card-meta > :last-child:is(.kanban-assignees) { margin-inline-start: auto; }
+
+.kanban-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-variant-numeric: tabular-nums;
+}
+.kanban-due .icon { inline-size: 1em; block-size: 1em; flex: none; }
+.kanban-due.is-soon { color: var(--kanban-due-soon, var(--warning-text, var(--text))); font-weight: 600; }
+.kanban-due.is-overdue {
+  padding: max(var(--space-2xs), 0.4em) 0.5em;
+  background: var(--kanban-overdue-bg, color-mix(in srgb, var(--danger) 20%, var(--kanban-card-bg, var(--surface))));
+  color: var(--kanban-overdue-fg, var(--danger-text, var(--text)));
+  border: 1px solid var(--kanban-overdue-border, var(--danger));
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+
+/* Priority: a glyph plus the word, so colour is never the only signal. */
+.kanban-priority { display: inline-flex; align-items: center; gap: 0.3em; }
+.kanban-priority::before {
+  content: var(--_glyph, "\25C6");
+  color: var(--_tone, var(--muted));
+  font-size: 0.9em;
+  line-height: 1;
+}
+.kanban-priority[data-priority="urgent"] { --_glyph: var(--kanban-priority-urgent-glyph, "\25B2\25B2"); --_tone: var(--danger); color: var(--danger-text, var(--text)); font-weight: 700; }
+.kanban-priority[data-priority="high"] { --_glyph: var(--kanban-priority-high-glyph, "\25B2"); --_tone: var(--warning); }
+.kanban-priority[data-priority="medium"] { --_glyph: var(--kanban-priority-medium-glyph, "\25C6"); --_tone: var(--accent); }
+.kanban-priority[data-priority="low"] { --_glyph: var(--kanban-priority-low-glyph, "\25BC"); --_tone: var(--muted); }
+
+.kanban-assignees { display: inline-flex; margin: 0; padding: 0; list-style: none; }
+.kanban-assignees > li { display: contents; }
+.kanban-assignees .avatar {
+  --avatar-size: var(--kanban-avatar-size, 1.6rem);
+  font-size: 0.75em;
+  box-shadow: 0 0 0 2px var(--kanban-card-bg, var(--surface));
+}
+.kanban-assignees .avatar + .avatar,
+.kanban-assignees > li + li > .avatar { margin-inline-start: -0.4rem; }
+
+/* ===========================================================================
+ * Planner calendar: month, week and day views
+ * Reuses forms.css .calendar (frame, header, title, today/outside tokens).
+ * ======================================================================== */
+.calendar.is-planner {
+  display: block;
+  inline-size: auto;
+  font-size: 1em;
+  container-type: inline-size;
+  --_line: var(--calendar-grid-line, var(--hairline));
+}
+
+/* Event chip, shared by the month bars and the timed grid. */
+.calendar-event {
+  --_ev: var(--series, var(--calendar-event-color, var(--accent)));
+  display: block;
+  min-inline-size: 0;
+  padding: 0.3em 0.45em;
+  background: var(--calendar-event-bg, color-mix(in srgb, var(--_ev) 24%, var(--calendar-bg, var(--surface))));
+  color: var(--calendar-event-fg, var(--text));
+  border: 0;
+  border-inline-start: var(--calendar-event-bar, 3px) solid var(--_ev);
+  border-radius: var(--calendar-event-radius, calc(var(--radius) * 0.75));
+  font-size: 0.8em;
+  line-height: 1.25;
+  text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  touch-action: manipulation;
+}
+.calendar-event time { font-variant-numeric: tabular-nums; font-weight: 600; }
+@media (hover: hover) {
+  .calendar-event:is(a, button):hover { background: var(--calendar-event-bg-hover, color-mix(in srgb, var(--_ev) 36%, var(--calendar-bg, var(--surface)))); }
+}
+.calendar-event:is(a, button):focus-visible { outline-offset: 1px; z-index: var(--z-raised); }
+/* Tentative / cancelled: a pattern and a strike, not just a tint. */
+.calendar-event.is-tentative {
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--_ev) 24%, var(--calendar-bg, var(--surface))) 0 0.4em, var(--calendar-bg, var(--surface)) 0.4em 0.8em);
+}
+.calendar-event.is-cancelled { text-decoration: line-through; color: var(--muted); }
+
+/* --- Month view --------------------------------------------------------- */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  color: var(--calendar-weekday-fg, var(--muted));
+  font-size: 0.8em;
+  font-weight: 600;
+  text-align: center;
+  text-transform: var(--label-transform, none);
+}
+.calendar-weekdays > * { padding-block: var(--space-2xs); }
+.calendar-month { border-block-end: 1px solid var(--_line); }
+
+/* A week row: seven day cells spanning every row, event bars laid over
+   them in lanes. Row 1 holds the date, rows 2…lanes+1 the bars, the last
+   row the "+n more" button. */
+.calendar-week {
+  --_lanes: var(--lanes, var(--calendar-lanes, 3));
+  --_lane: max(var(--calendar-lane, 1.75em), var(--tap-min));
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: var(--calendar-date-row, 2.4em) repeat(var(--_lanes), var(--_lane)) minmax(var(--_lane), 1fr);
+  row-gap: 2px;
+  min-block-size: var(--calendar-week-min, 7.5em);
+  padding-block-end: 2px;
+  border-block-start: 1px solid var(--_line);
+}
+.calendar-cell {
+  grid-row: 1 / -1;
+  min-inline-size: 0;
+  padding: var(--space-2xs);
+  border-inline-start: 1px solid var(--_line);
+}
+.calendar-week > .calendar-cell:nth-child(1) { grid-column: 1; border-inline-start: 0; }
+.calendar-week > .calendar-cell:nth-child(2) { grid-column: 2; }
+.calendar-week > .calendar-cell:nth-child(3) { grid-column: 3; }
+.calendar-week > .calendar-cell:nth-child(4) { grid-column: 4; }
+.calendar-week > .calendar-cell:nth-child(5) { grid-column: 5; }
+.calendar-week > .calendar-cell:nth-child(6) { grid-column: 6; }
+.calendar-week > .calendar-cell:nth-child(7) { grid-column: 7; }
+.calendar-cell.is-weekend { background: var(--calendar-weekend-bg, color-mix(in srgb, var(--surface-2) 45%, transparent)); }
+.calendar-cell.is-outside {
+  background: var(--calendar-outside-bg, color-mix(in srgb, var(--surface-2) 70%, transparent));
+  color: var(--calendar-outside-fg, var(--muted));
+}
+.calendar-cell:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+  box-shadow: inset 0 0 0 2px var(--calendar-selected-bg, var(--accent));
+}
+
+/* The day number. Today: a filled disc (shape plus colour). */
+.calendar-date {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 2.1em;
+  block-size: 2.1em;
+  padding-inline: 0.3em;
+  border-radius: var(--calendar-date-radius, 999px);
+  font-size: 0.85em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.calendar-date-month { margin-inline-start: 0.25em; white-space: nowrap; }
+:is(.calendar-cell, .calendar-column-head)[aria-current="date"] .calendar-date {
+  background: var(--calendar-today-bg, var(--calendar-today-ring, var(--accent)));
+  color: var(--calendar-today-fg, var(--on-accent));
+}
+
+/* Bars: --day (1–7) and --span place them, --lane picks the row. A bar
+   that runs on from the previous or into the next week squares that end. */
+.calendar-week > .calendar-event {
+  grid-column: var(--day, 1) / span var(--span, 1);
+  grid-row: calc(var(--lane, 1) + 1);
+  align-self: stretch;
+  margin-inline: 3px;
+  padding-block: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.calendar-week > .calendar-event.is-continued-before { margin-inline-start: 0; border-start-start-radius: 0; border-end-start-radius: 0; border-inline-start-style: dashed; }
+.calendar-week > .calendar-event.is-continued-after { margin-inline-end: 0; border-start-end-radius: 0; border-end-end-radius: 0; }
+.calendar-week > .calendar-event.is-continued-after::after { content: "\2192"; margin-inline-start: auto; }
+.calendar-week > .calendar-event.is-continued-after:dir(rtl)::after { content: "\2190"; }
+/* A timed (not all-day) event in the month grid: a dot, no fill. */
+.calendar-week > .calendar-event.is-timed {
+  background: none;
+  border-inline-start: 0;
+}
+.calendar-week > .calendar-event.is-timed::before {
+  content: "";
+  flex: none;
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  border-radius: 50%;
+  background: var(--_ev);
+}
+.calendar-more {
+  grid-column: var(--day, 1);
+  grid-row: -2;
+  align-self: stretch;
+  justify-self: start;
+  margin-inline: 3px;
+  padding: 0 0.45em;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--calendar-more-fg, var(--accent-text, var(--text)));
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: underline;
+  touch-action: manipulation;
+}
+@media (hover: hover) {
+  .calendar-more:hover { background: var(--calendar-day-bg-hover, var(--surface-2)); }
+}
+
+/* Narrow (phone) month: a compact grid with an event dot per busy day
+   (data-events on the cell), and the agenda list below takes over. */
+.calendar-agenda { display: none; }
+@container (max-width: 480px) {
+  .calendar-week {
+    grid-template-rows: auto;
+    min-block-size: 0;
+    padding-block-end: 0;
+  }
+  .calendar-week > :is(.calendar-event, .calendar-more) { display: none; }
+  .calendar-cell {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 2px;
+    min-block-size: var(--tap-min);
+    padding-inline: 0;
+  }
+  .calendar-cell[data-events]::after {
+    content: "";
+    inline-size: 0.4em;
+    block-size: 0.4em;
+    border-radius: 50%;
+    background: var(--calendar-event-color, var(--accent));
+  }
+  .calendar-agenda { display: block; margin-block-start: var(--space-s); }
+  /* "28 Sep" → "28": the month name stays in the accessibility tree. */
+  .calendar-date-month { margin: 0; font-size: 0; }
+}
+
+/* --- Week and day views: the time grid -------------------------------- */
+.calendar-timegrid {
+  --_hour: var(--calendar-hour, max(3.5rem, calc(var(--tap-min) * 2)));
+  --_from: var(--hour-start, 0);
+  --_to: var(--hour-end, 24);
+  display: grid;
+  grid-template-columns: var(--calendar-gutter, 3.5rem) repeat(var(--days, 7), minmax(var(--calendar-column-min, 6rem), 1fr));
+  max-block-size: var(--calendar-timegrid-max, none);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-block: 1px solid var(--_line, var(--hairline));
+}
+.calendar-corner,
+.calendar-column-head {
+  grid-row: 1;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-sticky);
+  background: var(--calendar-bg, var(--surface));
+  border-block-end: 1px solid var(--_line, var(--hairline));
+}
+.calendar-corner {
+  grid-column: 1;
+  inset-inline-start: 0;
+  z-index: calc(var(--z-sticky) + 1);
+  display: flex;
+  align-items: end;
+  padding: var(--space-2xs);
+  color: var(--muted);
+  font-size: 0.7em;
+}
+.calendar-column-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+  padding: var(--space-2xs);
+  color: var(--calendar-weekday-fg, var(--muted));
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: var(--label-transform, none);
+}
+.calendar-column-head[aria-current="date"] { color: var(--calendar-today-text, var(--accent-text, var(--text))); }
+.calendar-column-head .calendar-date { font-size: 1em; }
+
+.calendar-hours {
+  grid-row: 2;
+  grid-column: 1;
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: var(--z-sticky);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--calendar-bg, var(--surface));
+  color: var(--muted);
+  font-size: 0.72em;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+.calendar-hours > li {
+  block-size: var(--_hour);
+  box-sizing: border-box;
+  padding: 0.45em 0.5em 0;
+  border-block-start: 1px solid var(--_line, var(--hairline));
+}
+.calendar-hours > li:first-child { border-block-start-color: transparent; }
+
+.calendar-column {
+  grid-row: 2;
+  position: relative;
+  min-inline-size: 0;
+  block-size: calc((var(--_to) - var(--_from)) * var(--_hour));
+  border-inline-start: 1px solid var(--_line, var(--hairline));
+  background-image:
+    repeating-linear-gradient(to bottom, var(--_line, var(--hairline)) 0 1px, transparent 1px var(--_hour)),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--_hour) / 2), var(--calendar-half-hour-line, color-mix(in srgb, var(--_line, var(--hairline)) 45%, transparent)) calc(var(--_hour) / 2) calc(var(--_hour) / 2 + 1px), transparent calc(var(--_hour) / 2 + 1px) var(--_hour));
+}
+.calendar-column.is-weekend { background-color: var(--calendar-weekend-bg, color-mix(in srgb, var(--surface-2) 45%, transparent)); }
+.calendar-column[aria-current="date"] { background-color: var(--calendar-today-column-bg, color-mix(in srgb, var(--accent) 6%, transparent)); }
+
+/* Timed events: --start/--end in hours (9.5 = 09:30), overlapping events
+   side by side with --col (1-based) of --cols. */
+.calendar-column > .calendar-event {
+  position: absolute;
+  inset-block-start: calc((var(--start, 0) - var(--_from)) * var(--_hour) + 1px);
+  block-size: calc((var(--end, 1) - var(--start, 0)) * var(--_hour) - 2px);
+  inset-inline-start: calc((var(--col, 1) - 1) * 100% / var(--cols, 1) + 1px);
+  inline-size: calc(100% / var(--cols, 1) - 3px);
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: normal;
+  box-shadow: 0 0 0 1px var(--calendar-bg, var(--surface));
+}
+.calendar-column > .calendar-event > time { margin-inline-start: 0.35em; white-space: nowrap; font-weight: 400; color: var(--muted); }
+
+/* The current-time line at --now (hours), in today's column. */
+.calendar-now {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc((var(--now, 0) - var(--_from)) * var(--_hour));
+  z-index: var(--z-raised);
+  block-size: 0;
+  border-block-start: var(--calendar-now-width, 2px) solid var(--calendar-now, var(--danger));
+  pointer-events: none;
+}
+.calendar-now::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -0.35rem;
+  inset-block-start: calc(-0.35rem - var(--calendar-now-width, 2px) / 2);
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border-radius: 50%;
+  background: var(--calendar-now, var(--danger));
+}
+
+/* ===========================================================================
+ * Gantt timeline
+ * ======================================================================== */
+.gantt {
+  --_unit: var(--gantt-unit, max(var(--tap-min), 2.25rem));
+  --_row: var(--gantt-row, var(--_unit));
+  --_units: var(--units, 14);
+  --_line: var(--gantt-grid-line, var(--hairline));
+  max-inline-size: 100%;
+  max-block-size: var(--gantt-max, none);
+  overflow: auto;
+  overscroll-behavior-x: contain;
+  background: var(--gantt-bg, var(--surface));
+  color: var(--gantt-fg, var(--text));
+  border: var(--gantt-border-width, 1px) solid var(--gantt-border, var(--border));
+  border-radius: var(--gantt-radius, var(--panel-radius, var(--radius)));
+  container-type: inline-size;
+}
+.gantt-header,
+.gantt-body { --_list: var(--gantt-list-width, 13rem); }
+@container (max-width: 480px) {
+  .gantt-header,
+  .gantt-body { --_list: var(--gantt-list-width-narrow, 8.5rem); }
+}
+.gantt-header,
+.gantt-row {
+  display: grid;
+  grid-template-columns: var(--_list) calc(var(--_units) * var(--_unit));
+  inline-size: max-content;
+}
+.gantt-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: calc(var(--z-sticky) + 1);
+  background: var(--gantt-header-bg, var(--surface-2));
+  box-shadow: inset 0 -1px 0 var(--gantt-border, var(--border));
+}
+.gantt-corner,
+.gantt-task {
+  position: sticky;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  padding-inline: var(--space-s);
+  box-shadow: inset -1px 0 0 var(--gantt-border, var(--border));
+}
+.gantt-corner:dir(rtl),
+.gantt-task:dir(rtl) { box-shadow: inset 1px 0 0 var(--gantt-border, var(--border)); }
+.gantt-corner {
+  z-index: var(--z-raised);
+  background: var(--gantt-header-bg, var(--surface-2));
+  color: var(--muted);
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: var(--label-transform, none);
+}
+.gantt-scale {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--_unit);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.72em;
+  font-variant-numeric: tabular-nums;
+}
+.gantt-scale > li {
+  grid-column: span var(--span, 1);
+  display: grid;
+  place-items: center;
+  min-inline-size: 0;
+  padding-block: var(--space-xs);
+  box-shadow: inset 1px 0 0 var(--_line);
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+}
+.gantt-scale > li.is-off { background: var(--gantt-off-bg, color-mix(in srgb, var(--surface) 55%, transparent)); }
+.gantt-scale > li[aria-current="date"] {
+  background: var(--gantt-today, var(--danger));
+  color: var(--gantt-today-fg, var(--on-danger, #fff));
+  font-weight: 700;
+}
+
+.gantt-body { position: relative; inline-size: max-content; }
+.gantt-rows { margin: 0; padding: 0; list-style: none; }
+.gantt-row { block-size: var(--_row); }
+.gantt-task {
+  z-index: var(--z-sticky);
+  background: var(--gantt-bg, var(--surface));
+  box-shadow: inset -1px 0 0 var(--gantt-border, var(--border)), inset 0 -1px 0 var(--_line);
+  font-size: 0.875em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-inline-start: calc(var(--space-s) + (var(--level, 1) - 1) * 1.1em);
+}
+.gantt-task:dir(rtl) { box-shadow: inset 1px 0 0 var(--gantt-border, var(--border)), inset 0 -1px 0 var(--_line); }
+.gantt-task > :is(span, a) { overflow: hidden; text-overflow: ellipsis; }
+.gantt-row.is-group > .gantt-task { font-weight: 700; }
+.gantt-row:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > .gantt-task,
+.gantt-row.is-selected > .gantt-task { background: var(--gantt-selected-bg, color-mix(in srgb, var(--accent) 16%, var(--gantt-bg, var(--surface)))); }
+
+.gantt-track {
+  position: relative;
+  background-image: repeating-linear-gradient(to right, var(--_line) 0 1px, transparent 1px var(--_unit));
+  box-shadow: inset 0 -1px 0 var(--_line);
+}
+
+/* Bars: --start and --end in time units from the left of the axis
+   (fractions allowed), --progress 0–1 as a fill strip along the bottom. */
+.gantt-bar {
+  --_bar: var(--series, var(--gantt-bar, var(--accent)));
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inset-inline-start: calc(var(--start, 0) * var(--_unit));
+  inline-size: calc((var(--end, 1) - var(--start, 0)) * var(--_unit));
+  min-inline-size: 0.5rem;
+  block-size: var(--gantt-bar-size, max(66%, calc(1.45em + 14px)));
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5em var(--gantt-progress-size, 0.25em);
+  background:
+    linear-gradient(var(--_bar), var(--_bar)) left bottom / calc(var(--progress, 0) * 100%) var(--gantt-progress-size, 0.25em) no-repeat,
+    var(--gantt-bar-bg, color-mix(in srgb, var(--_bar) 26%, var(--gantt-bg, var(--surface))));
+  color: var(--gantt-bar-fg, var(--text));
+  border: 1px solid var(--_bar);
+  border-radius: var(--gantt-bar-radius, var(--radius));
+  font-size: 0.75em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+.gantt-bar:dir(rtl) { background-position: right bottom, 0 0; }
+/* As a link or button the bar's hit area is the full row height. */
+.gantt-bar:is(a, button) { overflow: visible; font: inherit; font-size: 0.75em; touch-action: manipulation; }
+.gantt-bar:is(a, button)::before { content: ""; position: absolute; inset-inline: 0; inset-block: calc((100% - var(--_row)) / 2); }
+.gantt-bar:is(a, button) > span { overflow: hidden; text-overflow: ellipsis; }
+@media (hover: hover) {
+  .gantt-bar:is(a, button):hover { border-width: 2px; }
+}
+.gantt-bar.is-done { --gantt-bar-bg: color-mix(in srgb, var(--_bar) 14%, var(--gantt-bg, var(--surface))); color: var(--muted); }
+.gantt-bar.is-critical { border-width: 2px; border-color: var(--gantt-critical, var(--danger)); }
+.gantt-bar.is-late { border-style: dashed; border-color: var(--gantt-critical, var(--danger)); }
+.gantt-bar.is-summary {
+  block-size: 0.6rem;
+  padding: 0;
+  border-radius: 0;
+  background: var(--_bar);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, calc(100% - 0.4rem) 55%, 0.4rem 55%, 0 100%);
+}
+
+/* Milestone: a diamond centred on --at. */
+.gantt-milestone {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--at, 0) * var(--_unit));
+  inline-size: var(--gantt-milestone-size, 0.95rem);
+  block-size: var(--gantt-milestone-size, 0.95rem);
+  translate: -50% -50%;
+  rotate: 45deg;
+  background: var(--series, var(--gantt-milestone, var(--accent)));
+  border: 2px solid var(--gantt-bg, var(--surface));
+  outline: 1px solid var(--series, var(--gantt-milestone, var(--accent)));
+}
+.gantt-milestone:dir(rtl) { translate: 50% -50%; }
+.gantt-milestone.is-done { background: var(--gantt-bg, var(--surface)); }
+.gantt-milestone-label {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--at, 0) * var(--_unit) + var(--gantt-milestone-size, 0.95rem));
+  translate: 0 -50%;
+  font-size: 0.75em;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+/* Today marker over the rows, at --at units. */
+.gantt-today {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--_list) + var(--at, 0) * var(--_unit) - var(--gantt-today-width, 2px) / 2);
+  z-index: var(--z-raised);
+  inline-size: var(--gantt-today-width, 2px);
+  background: var(--gantt-today, var(--danger));
+  pointer-events: none;
+}
+
+/* Dependency connectors: an SVG over the time axis whose user units are
+   the grid (x = time unit, y = row), so the app draws in data
+   coordinates: viewBox="0 0 <units> <rows>" preserveAspectRatio="none".
+   Strokes don't scale; cells are square by default (--gantt-row =
+   --gantt-unit), so arrowheads keep their shape. */
+.gantt-links {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--_list);
+  inline-size: calc(var(--_units) * var(--_unit));
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--gantt-link, var(--muted));
+}
+.gantt-links:dir(rtl) { scale: -1 1; }
+.gantt-link {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--gantt-link-width, 1.5px);
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.gantt-link.is-critical { stroke: var(--gantt-critical, var(--danger)); stroke-width: calc(var(--gantt-link-width, 1.5px) + 1px); }
+.gantt-link.is-blocked { stroke-dasharray: 4 3; }
+.gantt-link-head { fill: currentColor; }
+.gantt-link-head.is-critical { fill: var(--gantt-critical, var(--danger)); }
+
+/* ===========================================================================
+ * Schedule list: time-blocked agenda rows, built on core's .schedule badge
+ * ======================================================================== */
+.schedule-heading {
+  margin: var(--space-s) 0 var(--space-2xs);
+  color: var(--schedule-heading-fg, var(--muted));
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: var(--label-transform, none);
+  letter-spacing: 0.02em;
+}
+.schedule-heading:first-child { margin-block-start: 0; }
+.schedule-heading[aria-current="date"] { color: var(--accent-text, var(--text)); }
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--schedule-list-gap, var(--space-2xs));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* --duration (hours) makes the block that tall (--schedule-hour per hour). */
+.schedule-item {
+  position: relative;
+  --_ev: var(--series, var(--schedule-color, var(--accent-2, var(--accent))));
+  display: grid;
+  grid-template-columns: var(--schedule-time-width, 4.25em) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2xs) var(--space-s);
+  min-block-size: max(var(--tap-min), calc(var(--duration, 0) * var(--schedule-hour, 3rem)));
+  box-sizing: border-box;
+  padding: var(--schedule-item-pad, var(--space-xs) var(--space-s));
+  background: var(--schedule-item-bg, color-mix(in srgb, var(--_ev) 12%, var(--surface)));
+  color: var(--text);
+  border-inline-start: var(--schedule-bar-width, 3px) solid var(--_ev);
+  border-radius: var(--schedule-item-radius, var(--radius));
+  overflow-wrap: anywhere;
+}
+.schedule-item > .schedule {
+  --schedule-font-size: 0.85em;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding-block-start: 0.15em;
+  color: var(--schedule-time-fg, var(--text));
+  font-weight: 600;
+}
+.schedule-item > .schedule > .schedule-end { display: block; color: var(--muted); font-weight: 400; }
+.schedule-body { min-inline-size: 0; }
+.schedule-title { display: block; font-weight: 600; }
+.schedule-title a { color: inherit; }
+.schedule-meta { display: block; color: var(--muted); font-size: 0.85em; }
+.schedule-item > :last-child:not(.schedule-body, .schedule) { align-self: center; }
+.schedule-item.is-past { --schedule-item-bg: transparent; color: var(--muted); }
+.schedule-item.is-past .schedule-title { font-weight: 400; }
+.schedule-item[aria-current="time"],
+.schedule-item.is-current {
+  box-shadow: inset 0 0 0 2px var(--schedule-current-ring, var(--accent));
+}
+.schedule-item.is-free {
+  --schedule-item-bg: transparent;
+  border-inline-start-style: dashed;
+  border-inline-start-color: var(--border);
+  color: var(--muted);
+}
+.schedule-item.is-free .schedule-title { font-weight: 400; font-style: italic; }
+.schedule-item.is-conflict { box-shadow: inset 0 0 0 1px var(--danger); }
+
+/* --- Motion ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) :is(.kanban-card, .calendar-event, .calendar-more, .gantt-bar) {
+    transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.15s ease, rotate 0.15s ease;
+  }
+}
+
+/* --- Forced colours ---------------------------------------------------------- */
+@media (forced-colors: active) {
+  .calendar-event, .gantt-bar, .schedule-item, .kanban-placeholder { border-color: CanvasText; }
+  .calendar-now, .calendar-now::before, .gantt-today, .gantt-milestone { background: Highlight; forced-color-adjust: none; }
+  :is(.calendar-cell, .calendar-column-head)[aria-current="date"] .calendar-date { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
 /* --- v5 social group (PLAN.md §19 "Collaboration", "Notifications and
  * activity") ------------------------------------------------------------------
  * Presence: .presence avatar stack, status on any .avatar[data-status],

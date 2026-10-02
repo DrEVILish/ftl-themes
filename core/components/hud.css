@@ -1,0 +1,601 @@
+/* --- v5 game HUD kit (PLAN.md §19 "Game HUD") ------------------------------
+ * The overlay layer (.hud) and its six edge regions, resource bars
+ * (.hud-bar), the minimap (.map.hud-minimap, built on instruments.css's
+ * .map/.map-pin and .compass-strip), the quest tracker (.hud-quests),
+ * hotbar and inventory slots (.hud-slot) with rarity tokens, floating
+ * damage/heal numbers (.hud-float), the achievement toast
+ * (.toast.hud-achievement, in core's .toast-region) and key prompts
+ * (.hud-prompt with core <kbd>, gamepad glyphs kbd.hud-pad).
+ *
+ * Values come in through documented inline APIs: --value / --trail
+ * (0–1) on bars, --segments, --cooldown (0–1) on slots, --x/--y on
+ * floats and the minimap player, --heading (degrees).
+ * Docs: docs/components/hud.md. Demo: hud.html. */
+
+/* Shared HUD surface: the translucent backing that keeps text readable over
+   any scene. Read by .hud-bars, .hud-quests and .hud-prompt. */
+:is(.hud-bars, .hud-quests, .hud-prompt) {
+  background: var(--hud-panel-bg, color-mix(in srgb, var(--surface) 82%, transparent));
+  border: var(--hud-panel-border-width, 1px) solid var(--hud-panel-border, color-mix(in srgb, var(--border) 60%, transparent));
+  border-radius: var(--hud-panel-radius, var(--radius));
+  box-shadow: var(--hud-panel-shadow, none);
+  -webkit-backdrop-filter: var(--hud-panel-blur, none);
+  backdrop-filter: var(--hud-panel-blur, none);
+}
+
+/* ---- The overlay layer ---------------------------------------------------
+ * <div class="hud">
+ *   <svg|img|video|canvas class="hud-scene">   the game view, behind
+ *   <div class="hud-top">  <div class="hud-top-start">  <div class="hud-top-end">
+ *   <div class="hud-bottom">  <div class="hud-bottom-start">  <div class="hud-bottom-end">
+ *   <span class="hud-float" style="--x:…; --y:…">   anywhere, over the scene
+ * Desktop container (> 900px): the four corners plus top and bottom centre;
+ * the middle row (--hud-center-min) is kept clear. ≤ 900px: compass row,
+ * then the two top corners side by side, the clear middle, the hotbar row,
+ * the two bottom corners. ≤ 480px: the bottom corners stack.
+ * One grid serves every tier (3 columns, 6 rows, empty tracks collapse), so
+ * the regions can re-place themselves from the .hud container. */
+.hud {
+  container: hud / inline-size;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(var(--hud-center-min, 8rem), 1fr) auto auto auto;
+  column-gap: var(--hud-gap, var(--space-s));
+  min-inline-size: 0;
+  min-block-size: var(--hud-min-height, 34rem);
+  padding: var(--hud-pad, var(--space-m));
+  overflow: hidden;
+  background: var(--hud-scene-bg, linear-gradient(var(--surface-2), var(--bg)));
+  color: var(--hud-fg, var(--text));
+  border: var(--hud-border-width, 1px) solid var(--hud-border, var(--border));
+  border-radius: var(--hud-radius, var(--radius));
+  font-family: var(--hud-font, inherit);
+  font-size: var(--hud-font-size, 0.875rem);
+  line-height: 1.3;
+}
+/* A real game: the HUD covers the viewport, clear of notches. */
+.hud.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  min-block-size: 100dvh;
+  padding:
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-top))
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-right))
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-bottom))
+    max(var(--hud-pad, var(--space-m)), env(safe-area-inset-left));
+  border: 0;
+  border-radius: 0;
+}
+.hud-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  object-fit: cover;
+  border: 0;
+  filter: var(--hud-scene-filter, none);
+}
+:is(.hud-top, .hud-top-start, .hud-top-end, .hud-bottom, .hud-bottom-start, .hud-bottom-end) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hud-gap, var(--space-s));
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.hud-top { grid-area: 1 / 2; align-items: center; }
+.hud-top-start { grid-area: 1 / 1 / 4 / 2; align-self: start; align-items: flex-start; }
+.hud-top-end { grid-area: 1 / 3 / 4 / 4; align-self: start; align-items: flex-end; }
+.hud-bottom { grid-area: 6 / 2; align-self: end; align-items: center; }
+.hud-bottom-start { grid-area: 3 / 1 / 7 / 2; align-self: end; align-items: flex-start; }
+.hud-bottom-end { grid-area: 3 / 3 / 7 / 4; align-self: end; align-items: flex-end; }
+.hud-top > .compass-strip { inline-size: var(--hud-compass-width, 22rem); max-inline-size: 100%; }
+@container hud (max-width: 900px) {
+  .hud-top { grid-area: 1 / 1 / 2 / -1; align-self: start; margin-block-end: var(--hud-gap, var(--space-s)); }
+  .hud-top > .compass-strip { inline-size: min(var(--hud-compass-width, 22rem), 100%); }
+  .hud-top-start { grid-area: 2 / 1 / 3 / 3; }
+  .hud-top-end { grid-area: 2 / 3; }
+  .hud-bottom { grid-area: 4 / 1 / 5 / -1; margin-block-end: var(--hud-gap, var(--space-s)); }
+  .hud-bottom-start { grid-area: 5 / 1 / 6 / 3; }
+  .hud-bottom-end { grid-area: 5 / 3; }
+}
+@container hud (max-width: 480px) {
+  .hud-bottom-start { grid-area: 5 / 1 / 6 / -1; }
+  .hud-bottom-end { grid-area: 6 / 1 / 7 / -1; margin-block-start: var(--hud-gap, var(--space-s)); }
+}
+
+/* ---- Resource bars --------------------------------------------------------
+ * <div class="hud-bar hud-bar-health" role="meter" aria-label="Health"
+ *      aria-valuemin="0" aria-valuemax="250" aria-valuenow="180" style="--value:.72">
+ *   <span class="hud-bar-label">Health</span><span class="hud-bar-value">180</span>
+ * </div>
+ * Drawn on ::before: the fill (--value), under it the damage-taken trail
+ * (--trail, or automatic: with motion the trail follows --value late), on
+ * the track. --hud-bar-anchor: 0 fills from the start, .5 from the centre
+ * (Skyrim), 1 from the end. Children are optional: a bare bar is a track. */
+@property --hud-bar-v {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --hud-bar-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+.hud-bar {
+  --hud-bar-v: clamp(0, var(--value, 1), 1);
+  --hud-bar-t: clamp(0, var(--trail, var(--value, 1)), 1);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "label value" "track track";
+  align-items: center;
+  column-gap: var(--space-xs);
+  row-gap: var(--space-3xs);
+  inline-size: var(--hud-bar-width, 16rem);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  color: var(--hud-bar-fg, var(--text));
+  font-size: var(--hud-bar-font-size, 0.75rem);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.hud-bar:has(> .icon) {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "icon label value" "icon track track";
+}
+.hud-bar > .icon { grid-area: icon; color: var(--hud-bar-fill, var(--accent)); }
+.hud-bar-label {
+  grid-area: label;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: var(--hud-bar-label-transform, none);
+  letter-spacing: var(--hud-bar-label-spacing, normal);
+}
+.hud-bar-value { grid-area: value; justify-self: end; font-weight: 600; white-space: nowrap; }
+.hud-bar::before {
+  --hud-bar-at: calc(var(--hud-bar-anchor, 0) * 100%) 0;
+  content: "";
+  grid-area: track;
+  block-size: var(--hud-bar-height, 0.625rem);
+  background:
+    var(--hud-bar-sheen, linear-gradient(rgba(255, 255, 255, 0.22), transparent 70%)) var(--hud-bar-at) / calc(var(--hud-bar-v) * 100%) 100% no-repeat,
+    linear-gradient(var(--hud-bar-fill, var(--accent)) 0 0) var(--hud-bar-at) / calc(var(--hud-bar-v) * 100%) 100% no-repeat,
+    linear-gradient(var(--hud-bar-trail, color-mix(in oklab, var(--hud-bar-fill, var(--accent)) 35%, var(--text))) 0 0) var(--hud-bar-at) / calc(var(--hud-bar-t) * 100%) 100% no-repeat,
+    var(--hud-bar-track, var(--meter-track, var(--surface-2)));
+  border: var(--hud-bar-border-width, 1px) solid var(--hud-bar-border, var(--meter-border, var(--border)));
+  border-radius: var(--hud-bar-radius, var(--radius));
+  box-shadow: var(--hud-bar-shadow, none);
+  clip-path: var(--hud-bar-clip, none);
+}
+.hud-bar-health { --hud-bar-fill: var(--hud-health, var(--danger)); }
+.hud-bar-mana { --hud-bar-fill: var(--hud-mana, var(--accent-2)); }
+.hud-bar-stamina { --hud-bar-fill: var(--hud-stamina, var(--success)); }
+.hud-bar.is-centered { --hud-bar-anchor: 0.5; }
+.hud-bar.is-reversed { --hud-bar-anchor: 1; }
+/* Segmented: --segments pips (10), --hud-bar-gap apart. The mask is one gap
+   wider than the bar, so the last pip ends flush. */
+.hud-bar.is-segmented::before {
+  --hud-bar-pip: calc(100% / var(--segments, 10));
+  border-color: transparent;
+  mask: repeating-linear-gradient(90deg, #000 0 calc(var(--hud-bar-pip) - var(--hud-bar-gap, 3px)), transparent 0 var(--hud-bar-pip)) 0 0 / calc(100% + var(--hud-bar-gap, 3px)) 100% no-repeat;
+}
+/* Low: the app adds .is-low under its threshold. Red rule and text plus a
+   "!" before the value; with motion the bar also pulses. */
+.hud-bar.is-low { color: var(--hud-bar-low-fg, var(--danger-text, var(--danger))); }
+.hud-bar.is-low::before {
+  border-color: var(--hud-bar-low, var(--danger));
+  box-shadow: 0 0 0 1px var(--hud-bar-low, var(--danger)), var(--hud-bar-shadow, 0 0 transparent);
+}
+.hud-bar.is-low > .hud-bar-value::before { content: "!" / ""; margin-inline-end: 0.3em; font-weight: 800; }
+/* Regenerating: a ▲ after the value; with motion a light runs along the fill. */
+.hud-bar.is-regen > .hud-bar-value::after {
+  content: "\25B2" / "";
+  margin-inline-start: 0.3em;
+  font-size: 0.75em;
+  color: var(--hud-bar-regen-fg, var(--success-text, var(--success)));
+}
+
+/* A stack of bars on the shared HUD backing. */
+.hud-bars {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xs);
+  inline-size: max-content;
+  max-inline-size: 100%;
+  padding: var(--hud-panel-pad, var(--space-xs) var(--space-s));
+}
+
+/* ---- Minimap: core's .map, square or round -------------------------------
+ * <figure class="map hud-minimap is-round" style="--heading:300">
+ *   <svg|img>…</svg> <span class="hud-minimap-player"></span> .map-pin… .map-north
+ * </figure> */
+.map.hud-minimap {
+  inline-size: var(--hud-minimap-size, 11rem);
+  max-inline-size: 100%;
+  min-block-size: 0;
+  aspect-ratio: 1;
+  border-width: var(--hud-minimap-border-width, 2px);
+  box-shadow: var(--hud-minimap-shadow, inset 0 0 1.5rem rgba(0, 0, 0, 0.45));
+}
+.map.hud-minimap.is-round { border-radius: 50%; }
+/* In a circle the corners are cut: north sits at the top centre, the
+   attribution or place name at the bottom centre. */
+.map.hud-minimap.is-round > .map-north { grid-column: 1 / -1; justify-self: center; }
+.map.hud-minimap.is-round > .map-attribution { grid-column: 1 / -1; justify-self: center; text-align: center; }
+.hud-minimap-player {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  inline-size: var(--hud-minimap-player-size, 1.1rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  rotate: calc(var(--heading, 0) * 1deg);
+  background: var(--hud-minimap-player, var(--accent));
+  clip-path: polygon(50% 0, 92% 100%, 50% 78%, 8% 100%);
+  filter: drop-shadow(0 0 2px var(--bg));
+}
+@container hud (max-width: 480px) {
+  .map.hud-minimap { --hud-minimap-size: 7.5rem; }
+}
+
+/* ---- Quest tracker --------------------------------------------------------
+ * <section class="hud-quests" aria-label="Quests">
+ *   <h3>The Golden Claw</h3>
+ *   <ol class="hud-objectives">
+ *     <li class="is-done">…</li> <li aria-current="step">… <span class="hud-count">3/5</span></li>
+ *     <li class="is-failed">…</li> <li>…</li>
+ *   </ol>
+ * </section>
+ * Each state has its own glyph (announced as a word: --hud-objective-*-label),
+ * so colour is never the only signal. */
+.hud-quests {
+  display: grid;
+  gap: var(--space-2xs);
+  inline-size: var(--hud-quests-width, 17rem);
+  max-inline-size: 100%;
+  padding: var(--hud-panel-pad, var(--space-xs) var(--space-s));
+}
+.hud-quests > :is(h2, h3, h4, h5) {
+  margin: 0;
+  color: var(--hud-quests-title-fg, var(--text));
+  font-size: 0.85rem;
+  text-transform: var(--hud-quests-title-transform, none);
+  letter-spacing: var(--hud-quests-title-spacing, normal);
+  overflow-wrap: anywhere;
+}
+.hud-quests > :is(h2, h3, h4, h5):not(:first-child) { margin-block-start: var(--space-2xs); }
+.hud-objectives {
+  display: grid;
+  gap: var(--space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+}
+.hud-objectives > li {
+  display: grid;
+  grid-template-columns: 1.1em minmax(0, 1fr) auto;
+  gap: var(--space-2xs);
+  align-items: baseline;
+  color: var(--hud-objective-fg, var(--text));
+  overflow-wrap: anywhere;
+}
+.hud-objectives > li::before {
+  content: var(--hud-objective-glyph, "\25CB") / var(--hud-objective-label, "");
+  color: var(--muted);
+  text-align: center;
+}
+.hud-objectives > li[aria-current]:not([aria-current="false"]) { font-weight: 600; }
+.hud-objectives > li[aria-current]:not([aria-current="false"])::before {
+  content: var(--hud-objective-current-glyph, "\25C6") / "";
+  color: var(--hud-objective-current, var(--accent));
+}
+.hud-objectives > li.is-done { color: var(--hud-objective-done-fg, var(--muted)); text-decoration: line-through; }
+.hud-objectives > li.is-done::before {
+  content: var(--hud-objective-done-glyph, "\2713") / var(--hud-objective-done-label, "Done:");
+  color: var(--hud-objective-done, var(--success-text, var(--success)));
+}
+.hud-objectives > li.is-failed { color: var(--hud-objective-failed-fg, var(--danger-text, var(--danger))); text-decoration: line-through; }
+.hud-objectives > li.is-failed::before {
+  content: var(--hud-objective-failed-glyph, "\2717") / var(--hud-objective-failed-label, "Failed:");
+  color: inherit;
+}
+.hud-count {
+  grid-column: 3;
+  font-variant-numeric: tabular-nums;
+  color: var(--hud-count-fg, var(--muted));
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ---- Hotbar and inventory slots -------------------------------------------
+ * <div class="hud-hotbar" role="radiogroup" aria-label="Hotbar">
+ *   <label class="hud-slot" data-rarity="rare" style="--cooldown:.4">
+ *     <input type="radio" name="hotbar" aria-label="1: Frost bolt, rare, cooling down" checked>
+ *     <svg class="icon" aria-hidden="true">…</svg>
+ *     <kbd class="hud-slot-key">1</kbd> <span class="hud-slot-count">12</span>
+ *     <span class="hud-slot-timer">4s</span>
+ *   </label>
+ * </div>
+ * The checked radio selects the slot (.is-active also works). --cooldown
+ * (0–1, the fraction still to wait) shades a clockwise sweep. */
+[data-rarity="common"] { --rarity: var(--rarity-common, var(--muted)); --rarity-rank: 1; }
+[data-rarity="uncommon"] { --rarity: var(--rarity-uncommon, #3fae2a); --rarity-rank: 2; }
+[data-rarity="rare"] { --rarity: var(--rarity-rare, #2f80e8); --rarity-rank: 3; }
+[data-rarity="epic"] { --rarity: var(--rarity-epic, #a64ff0); --rarity-rank: 4; }
+[data-rarity="legendary"] { --rarity: var(--rarity-legendary, #f08a12); --rarity-rank: 5; }
+.hud-slot {
+  --hud-slot-s: max(var(--hud-slot-size, 3rem), var(--tap-min));
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--hud-slot-s);
+  block-size: var(--hud-slot-s);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--hud-slot-bg, color-mix(in srgb, var(--surface) 85%, transparent));
+  color: var(--hud-slot-fg, var(--text));
+  border: var(--hud-slot-border-width, 2px) solid var(--rarity, var(--hud-slot-border, var(--border)));
+  border-radius: var(--hud-slot-radius, var(--radius));
+  box-shadow: inset 0 0 var(--hud-slot-glow, 0.9rem) color-mix(in srgb, var(--rarity, transparent) 40%, transparent);
+  font-size: 0.7rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  touch-action: manipulation;
+}
+.hud-slot > .icon { --icon-size: calc(var(--hud-slot-s) * 0.5); }
+.hud-slot > input:is([type="radio"], [type="checkbox"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+/* Cooldown sweep: the part still to wait is shaded, from 12 o'clock. */
+.hud-slot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(transparent calc((1 - var(--cooldown, 0)) * 360deg), var(--hud-slot-cooldown, rgba(0, 0, 0, 0.62)) 0);
+  pointer-events: none;
+}
+/* Rarity rank pips (1–5), top end: the non-colour rarity signal. */
+.hud-slot[data-rarity]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-end: 3px;
+  inline-size: calc(var(--rarity-rank) * 5px);
+  block-size: 5px;
+  background: radial-gradient(circle closest-side, var(--rarity) 85%, transparent) 0 0 / 5px 5px repeat-x;
+  pointer-events: none;
+}
+.hud-slot-key,
+.hud-slot-count,
+.hud-slot-timer { position: absolute; pointer-events: none; }
+kbd.hud-slot-key {
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  padding: 0.1em 0.3em;
+  font-size: 0.62rem;
+  line-height: 1.2;
+}
+.hud-slot-count {
+  inset-block-end: calc(var(--space-2xs) + 1px);
+  inset-inline-end: calc(var(--space-2xs) + 1px);
+  font-weight: 700;
+  text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg);
+}
+.hud-slot-timer {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg);
+}
+.hud-slot.is-empty { border-style: dashed; background: var(--hud-slot-empty-bg, color-mix(in srgb, var(--surface) 50%, transparent)); }
+.hud-slot:is(.is-active, [aria-selected="true"]) {
+  border-color: var(--hud-slot-selected, var(--accent));
+  box-shadow:
+    0 0 0 var(--hud-slot-selected-width, 2px) var(--hud-slot-selected, var(--accent)),
+    inset 0 0 var(--hud-slot-glow, 0.9rem) color-mix(in srgb, var(--rarity, var(--hud-slot-selected, var(--accent))) 50%, transparent);
+}
+/* Selected also lifts the slot and marks it, so the state isn't colour alone. */
+.hud-slot:is(.is-active, [aria-selected="true"]) > kbd.hud-slot-key {
+  background: var(--hud-slot-selected, var(--accent));
+  color: var(--hud-slot-selected-fg, var(--on-accent));
+  border-color: var(--hud-slot-selected, var(--accent));
+}
+.hud-slot:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+.hud-slot:has(> input:disabled), .hud-slot[aria-disabled="true"] { opacity: 0.55; }
+@media (hover: hover) {
+  .hud-slot:has(> input:not(:disabled)):hover { background: var(--hud-slot-bg-hover, color-mix(in srgb, var(--surface-2) 92%, transparent)); }
+}
+.hud-hotbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--hud-slot-gap, var(--space-2xs));
+  max-inline-size: 100%;
+}
+.hud-inventory {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, max(var(--hud-slot-size, 3rem), var(--tap-min)));
+  gap: var(--hud-slot-gap, var(--space-2xs));
+  min-inline-size: 0;
+}
+
+/* ---- Floating damage / heal numbers ---------------------------------------
+ * <span class="hud-float" style="--x:48%; --y:40%" aria-hidden="true">−48</span>
+ * Absolutely placed in the nearest positioned box (.hud is one). With motion
+ * it rises and fades once (--hud-float-duration); the app removes it on
+ * animationend, or after a timeout when motion is off (it stays put). */
+.hud-float {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  translate: -50% -50%;
+  color: var(--hud-float-damage, var(--danger));
+  font-size: var(--hud-float-size, 1.5rem);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  paint-order: stroke fill;
+  -webkit-text-stroke: var(--hud-float-stroke-width, 3px) var(--hud-float-stroke, rgba(0, 0, 0, 0.8));
+  text-shadow: var(--hud-float-shadow, 0 2px 6px rgba(0, 0, 0, 0.5));
+}
+.hud-float.is-heal { color: var(--hud-float-heal, var(--success)); }
+.hud-float.is-crit { --hud-float-size: var(--hud-float-crit-size, 2.25rem); color: var(--hud-float-crit, var(--warning)); }
+.hud-float.is-mana { color: var(--hud-float-mana, var(--hud-mana, var(--accent-2))); }
+.hud-float.is-miss { --hud-float-size: 1.1rem; color: var(--hud-float-miss, var(--muted)); font-style: italic; }
+
+/* ---- Achievement toast: a .toast in core's .toast-region -------------------
+ * <div class="toast-region" popover="manual" id="ach">
+ *   <div class="toast hud-achievement" role="status">
+ *     <svg class="icon hud-achievement-icon" aria-hidden="true">…</svg>
+ *     <div class="hud-achievement-body">
+ *       <span class="hud-achievement-kicker">Achievement unlocked</span>
+ *       <strong class="hud-achievement-title">…</strong>
+ *       <span class="hud-achievement-text">…</span>
+ *       <progress class="progress" value="7" max="10">7 of 10</progress>
+ *     </div>
+ *     <span class="hud-achievement-score">20G</span>
+ *   </div>
+ * </div> */
+.toast.hud-achievement {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--space-s);
+  inline-size: min(var(--hud-achievement-width, 22rem), 100%);
+  border-color: var(--hud-achievement-border, var(--toast-border, var(--border)));
+}
+.hud-achievement-icon {
+  inline-size: var(--hud-achievement-icon-size, 2.75rem);
+  block-size: var(--hud-achievement-icon-size, 2.75rem);
+  min-inline-size: var(--hud-achievement-icon-size, 2.75rem);
+  padding: 0.55rem;
+  background: var(--hud-achievement-icon-bg, var(--accent));
+  color: var(--hud-achievement-icon-fg, var(--on-accent));
+  border-radius: var(--hud-achievement-icon-radius, 50%);
+}
+.hud-achievement-body { display: grid; gap: var(--space-3xs); min-inline-size: 0; }
+.hud-achievement-kicker {
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-transform: var(--hud-achievement-kicker-transform, uppercase);
+  letter-spacing: 0.06em;
+}
+.hud-achievement-title { overflow-wrap: anywhere; }
+.hud-achievement-text { color: var(--muted); overflow-wrap: anywhere; }
+.hud-achievement-body > .progress { margin-block-start: var(--space-3xs); inline-size: 100%; }
+.hud-achievement-score { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---- Key prompts ------------------------------------------------------------
+ * <p class="hud-prompt"><kbd>E</kbd> Open</p>
+ * <button class="hud-prompt" popovertarget="inv"><kbd>I</kbd> Inventory</button>
+ * <p class="hud-prompt"><kbd class="hud-pad" data-button="south">A</kbd> Open</p>
+ * Core's <kbd> draws the key; kbd.hud-pad is a gamepad button (round, pill
+ * for "LB"/"RT"), ringed in the face-button colour of data-button
+ * south|east|west|north. The letter is the non-colour signal. */
+.hud-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  max-inline-size: 100%;
+  margin: 0;
+  padding: var(--hud-prompt-pad, var(--space-2xs) var(--space-xs));
+  background: var(--hud-prompt-bg, var(--hud-panel-bg, color-mix(in srgb, var(--surface) 82%, transparent)));
+  color: var(--hud-prompt-fg, var(--text));
+  font: inherit;
+  font-size: var(--hud-prompt-font-size, 0.85rem);
+  line-height: 1.3;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+button.hud-prompt { min-block-size: var(--tap-min); touch-action: manipulation; }
+@media (hover: hover) {
+  button.hud-prompt:hover { background: var(--hud-prompt-bg-hover, var(--surface-2)); }
+}
+.hud-prompt > kbd { flex: none; }
+kbd.hud-pad {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.75em;
+  block-size: 1.75em;
+  padding: 0 0.45em;
+  background: var(--hud-pad-bg, var(--kbd-bg, var(--surface-2)));
+  color: var(--hud-pad-fg, var(--kbd-fg, var(--text)));
+  border: 2px solid var(--hud-pad-ring, var(--kbd-border, var(--border)));
+  border-radius: 999px;
+  box-shadow: none;
+  font-family: var(--hud-pad-font, var(--font));
+  font-weight: 700;
+  line-height: 1;
+}
+kbd.hud-pad[data-button="south"] { --hud-pad-ring: var(--hud-pad-south, var(--success)); }
+kbd.hud-pad[data-button="east"] { --hud-pad-ring: var(--hud-pad-east, var(--danger)); }
+kbd.hud-pad[data-button="west"] { --hud-pad-ring: var(--hud-pad-west, var(--accent-2)); }
+kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--warning)); }
+
+/* ---- Motion: only with no-preference, never under data-motion reduced/none */
+@keyframes hud-bar-low {
+  to { filter: brightness(1.6); }
+}
+@keyframes hud-bar-regen {
+  from { background-position-x: -150%; }
+  to { background-position-x: 250%; }
+}
+@keyframes hud-float-rise {
+  0% { opacity: 0; translate: -50% -20%; scale: 0.7; }
+  12% { opacity: 1; translate: -50% -60%; scale: 1.1; }
+  25% { scale: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; translate: -50% calc(-50% - var(--hud-float-rise, 3rem)); }
+}
+@keyframes hud-achievement-in {
+  from { opacity: 0; translate: 0 -0.75rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-bar {
+    transition:
+      --hud-bar-v var(--hud-bar-speed, 0.15s) ease-out,
+      --hud-bar-t var(--hud-bar-trail-speed, 0.6s) ease-in var(--hud-bar-trail-delay, 0.5s);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-bar.is-low::before {
+    animation: hud-bar-low 0.8s ease-in-out infinite alternate;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-bar.is-regen::after {
+    content: "";
+    grid-area: track;
+    align-self: stretch;
+    inline-size: calc(var(--hud-bar-v) * 100%);
+    margin-inline-start: calc((1 - var(--hud-bar-v)) * var(--hud-bar-anchor, 0) * 100%);
+    background: linear-gradient(90deg, transparent, var(--hud-bar-regen-glow, rgba(255, 255, 255, 0.55)), transparent) -150% 0 / 40% 100% no-repeat;
+    clip-path: var(--hud-bar-clip, none);
+    animation: hud-bar-regen 1.8s linear infinite;
+    pointer-events: none;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-float {
+    animation: hud-float-rise var(--hud-float-duration, 1.2s) ease-out var(--hud-float-delay, 0s) var(--hud-float-repeat, 1) both;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .hud-achievement {
+    animation: hud-achievement-in 0.35s ease-out;
+  }
+}

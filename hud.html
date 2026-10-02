@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game HUD — ftl-themes components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- v5 component kit "Game HUD" (PLAN.md §19). Core classes only, no page
+     CSS; everything works without JavaScript except the two live demos at
+     the end of the bars and floats sections (marked). Docs:
+     docs/components/hud.md. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Game HUD</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon" aria-label="Notifications" data-tooltip="Tooltip in the app bar"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Game HUD</h1>
+      <p class="text-muted">Resource bars, minimap, quest tracker, hotbar and inventory, floating numbers, achievement toast and key prompts, laid over a scene. Corners on wide screens, stacked edges on phones, and the middle of the screen always clear. Try it in Skyrim, Pip-Boy, XMB and Cassette Futurism.</p>
+    </div>
+
+    <section class="stack" id="c-hud">
+      <h2>HUD overlay <code>.hud</code></h2>
+      <p class="text-muted">Six regions over a <code>.hud-scene</code> (any image, SVG, video or canvas). The middle row stays empty; only floating numbers cross it.</p>
+      <div class="hud" role="region" aria-label="Game HUD example">
+        <svg class="hud-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1426"/><stop offset=".6" stop-color="#28365a"/><stop offset="1" stop-color="#5b5470"/></linearGradient>
+            <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c4a6c"/><stop offset="1" stop-color="#151d33"/></linearGradient>
+          </defs>
+          <rect width="1600" height="900" fill="url(#sky)"/>
+          <g fill="#e8ecf5" opacity=".7"><circle cx="140" cy="90" r="2"/><circle cx="420" cy="60" r="1.5"/><circle cx="610" cy="140" r="2"/><circle cx="900" cy="70" r="1.5"/><circle cx="1180" cy="120" r="2"/><circle cx="1450" cy="60" r="1.5"/><circle cx="1320" cy="210" r="1.5"/><circle cx="260" cy="220" r="1.5"/></g>
+          <circle cx="1220" cy="170" r="54" fill="#f1ead2" opacity=".9"/>
+          <path d="M0 560 L180 380 L300 470 L470 290 L640 470 L760 400 L900 520 L1060 330 L1240 500 L1380 420 L1600 560 V900 H0 Z" fill="#323b55"/>
+          <path d="M470 290 L520 340 L495 336 L470 360 L445 338 L420 345 Z M1060 330 L1110 380 L1080 375 L1060 395 L1035 378 L1012 382 Z" fill="#dfe5f0" opacity=".8"/>
+          <path d="M0 640 L220 540 L420 610 L640 520 L860 600 L1080 540 L1320 610 L1600 560 V900 H0 Z" fill="#1d2438"/>
+          <g fill="#11162a"><path d="M700 560 h40 v-60 l20 -30 l20 30 v60 h30 v-90 l25 -35 l25 35 v90 h40 v40 h-200 Z"/></g>
+          <path d="M0 700 C300 670 520 720 800 700 S1300 680 1600 710 V900 H0 Z" fill="url(#lake)"/>
+          <path d="M0 790 C260 760 560 820 820 800 S1320 770 1600 800 V900 H0 Z" fill="#0c111f"/>
+        </svg>
+
+        <div class="hud-top">
+          <ol class="compass-strip" style="--heading:300" role="img" aria-label="Heading 300 degrees. Quest marker at 330 degrees, camp at 250 degrees.">
+            <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+            <li class="is-marker" data-series="2" style="--at:330"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+            <li class="is-marker" data-series="3" style="--at:250"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-home"/></svg></li>
+          </ol>
+        </div>
+
+        <div class="hud-top-start">
+          <div class="hud-bars">
+            <div class="hud-bar hud-bar-health" role="meter" aria-label="Health" aria-valuemin="0" aria-valuemax="250" aria-valuenow="168" aria-valuetext="168 of 250" style="--value:.672; --trail:.82">
+              <span class="hud-bar-label">Health</span><span class="hud-bar-value">168 / 250</span>
+            </div>
+            <div class="hud-bar hud-bar-mana is-regen" role="meter" aria-label="Magicka, regenerating" aria-valuemin="0" aria-valuemax="180" aria-valuenow="81" aria-valuetext="81 of 180" style="--value:.45">
+              <span class="hud-bar-label">Magicka</span><span class="hud-bar-value">81 / 180</span>
+            </div>
+            <div class="hud-bar hud-bar-stamina" role="meter" aria-label="Stamina" aria-valuemin="0" aria-valuemax="200" aria-valuenow="190" aria-valuetext="190 of 200" style="--value:.95">
+              <span class="hud-bar-label">Stamina</span><span class="hud-bar-value">190 / 200</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hud-top-end">
+          <figure class="map hud-minimap is-round" style="--heading:300" aria-label="Minimap: Whiterun Hold, heading north-west">
+            <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="200" height="200" fill="#5f6a5a"/>
+              <path d="M0 140 C40 120 80 150 120 130 S180 100 200 110 V200 H0 Z" fill="#46617a"/>
+              <path d="M20 20 h50 v40 h-50 Z M130 30 h45 v35 h-45 Z" fill="#7b8a6a"/>
+              <g fill="none" stroke="#d8d2bc" stroke-width="4" stroke-linecap="round"><path d="M0 95 H200"/><path d="M100 0 V125"/><path d="M100 95 L170 170"/></g>
+            </svg>
+            <span class="hud-minimap-player" style="--heading:300"></span>
+            <button class="map-pin" style="--x:68%; --y:32%" data-series="2" popovertarget="pin-quest" aria-label="Quest: Bleak Falls Barrow"></button>
+            <button class="map-pin" style="--x:26%; --y:62%" data-series="3" popovertarget="pin-camp" aria-label="Camp"></button>
+            <span class="map-north" role="img" aria-label="North">N</span>
+            <figcaption class="map-attribution">Whiterun Hold</figcaption>
+          </figure>
+          <section class="hud-quests" aria-label="Quest tracker">
+            <h3>Bleak Falls Barrow</h3>
+            <ol class="hud-objectives">
+              <li class="is-done">Speak to Farengar</li>
+              <li aria-current="step">Retrieve the Dragonstone</li>
+              <li>Collect draugr relics <span class="hud-count">3/5</span></li>
+            </ol>
+          </section>
+        </div>
+
+        <div class="hud-bottom">
+          <div class="hud-hotbar" role="radiogroup" aria-label="Hotbar">
+            <label class="hud-slot" data-rarity="common"><input type="radio" name="hud-hotbar" aria-label="1: Iron shield, common"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-shield"/></svg><kbd class="hud-slot-key">1</kbd></label>
+            <label class="hud-slot" data-rarity="rare" style="--cooldown:.4"><input type="radio" name="hud-hotbar" aria-label="2: Frost bolt, rare, ready in 4 seconds" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-snowflake"/></svg><kbd class="hud-slot-key">2</kbd><span class="hud-slot-timer">4s</span></label>
+            <label class="hud-slot" data-rarity="uncommon"><input type="radio" name="hud-hotbar" aria-label="3: Healing potion, uncommon, 12 left"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg><kbd class="hud-slot-key">3</kbd><span class="hud-slot-count">12</span></label>
+            <label class="hud-slot" data-rarity="epic" style="--cooldown:.85"><input type="radio" name="hud-hotbar" aria-label="4: Storm call, epic, ready in 51 seconds"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-cloud-bolt"/></svg><kbd class="hud-slot-key">4</kbd><span class="hud-slot-timer">51s</span></label>
+            <label class="hud-slot" data-rarity="legendary"><input type="radio" name="hud-hotbar" aria-label="5: Dawnbreaker, legendary"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-sun"/></svg><kbd class="hud-slot-key">5</kbd></label>
+            <label class="hud-slot" data-rarity="common"><input type="radio" name="hud-hotbar" aria-label="6: Lockpick, common, 7 left"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-key"/></svg><kbd class="hud-slot-key">6</kbd><span class="hud-slot-count">7</span></label>
+            <label class="hud-slot is-empty"><input type="radio" name="hud-hotbar" aria-label="7: empty"><kbd class="hud-slot-key">7</kbd></label>
+            <label class="hud-slot is-empty"><input type="radio" name="hud-hotbar" aria-label="8: empty"><kbd class="hud-slot-key">8</kbd></label>
+          </div>
+        </div>
+
+        <div class="hud-bottom-start">
+          <p class="hud-prompt"><kbd>E</kbd> Open chest</p>
+          <button class="hud-prompt" popovertarget="hud-inventory-drawer"><kbd>I</kbd> Inventory</button>
+        </div>
+
+        <div class="hud-bottom-end">
+          <div class="toast hud-achievement" role="status">
+            <svg class="icon hud-achievement-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg>
+            <div class="hud-achievement-body">
+              <span class="hud-achievement-kicker">Achievement unlocked</span>
+              <strong class="hud-achievement-title">Taking Care of Business</strong>
+              <span class="hud-achievement-text">Join the Thieves Guild</span>
+            </div>
+            <span class="hud-achievement-score">20G</span>
+          </div>
+        </div>
+
+        <span class="hud-float" style="--x:47%; --y:54%; --hud-float-repeat:infinite; --hud-float-duration:2.4s" aria-hidden="true">−48</span>
+        <span class="hud-float is-crit" style="--x:56%; --y:48%; --hud-float-repeat:infinite; --hud-float-duration:2.4s; --hud-float-delay:.8s" aria-hidden="true">−212!</span>
+        <span class="hud-float is-heal" style="--x:22%; --y:56%; --hud-float-repeat:infinite; --hud-float-duration:2.4s; --hud-float-delay:1.6s" aria-hidden="true">+30</span>
+      </div>
+      <div class="popover" popover id="pin-quest"><strong>Bleak Falls Barrow</strong><p class="text-muted">Main quest. 1.2 km north-east.</p></div>
+      <div class="popover" popover id="pin-camp"><strong>Riverwood camp</strong><p class="text-muted">Fast travel available.</p></div>
+    </section>
+
+    <section class="stack" id="c-hud-bar">
+      <h2>Resource bars <code>.hud-bar</code></h2>
+      <p class="text-muted"><code>--value</code> (0–1) fills the bar; <code>--trail</code> shows the damage just taken. With motion on, the trail also follows <code>--value</code> by itself, half a second late.</p>
+      <div class="grid">
+        <div class="stack stack-sm">
+          <div class="hud-bar hud-bar-health" role="meter" aria-label="Health" aria-valuemin="0" aria-valuemax="250" aria-valuenow="200" aria-valuetext="200 of 250" style="--value:.8">
+            <span class="hud-bar-label">Health</span><span class="hud-bar-value">200 / 250</span>
+          </div>
+          <div class="hud-bar hud-bar-health" role="meter" aria-label="Health, just hit" aria-valuemin="0" aria-valuemax="250" aria-valuenow="120" aria-valuetext="120 of 250" style="--value:.48; --trail:.8">
+            <span class="hud-bar-label">Health (hit, trail)</span><span class="hud-bar-value">120 / 250</span>
+          </div>
+          <div class="hud-bar hud-bar-health is-low" role="meter" aria-label="Health, low" aria-valuemin="0" aria-valuemax="250" aria-valuenow="30" aria-valuetext="30 of 250" style="--value:.12">
+            <span class="hud-bar-label">Health (low)</span><span class="hud-bar-value">30 / 250</span>
+          </div>
+          <div class="hud-bar hud-bar-mana is-regen" role="meter" aria-label="Magicka, regenerating" aria-valuemin="0" aria-valuemax="180" aria-valuenow="99" aria-valuetext="99 of 180" style="--value:.55">
+            <span class="hud-bar-label">Magicka (regen)</span><span class="hud-bar-value">99 / 180</span>
+          </div>
+          <div class="hud-bar hud-bar-stamina" role="meter" aria-label="Stamina" aria-valuemin="0" aria-valuemax="200" aria-valuenow="140" aria-valuetext="140 of 200" style="--value:.7">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-activity"/></svg>
+            <span class="hud-bar-label">Stamina (icon)</span><span class="hud-bar-value">140</span>
+          </div>
+        </div>
+        <div class="stack stack-sm">
+          <div class="hud-bar" role="meter" aria-label="Experience, level 12" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63" aria-valuetext="63 of 100" style="--value:.63">
+            <span class="hud-bar-label">Level 12</span><span class="hud-bar-value">63%</span>
+          </div>
+          <div class="hud-bar hud-bar-stamina is-segmented" role="meter" aria-label="Stamina, 7 of 10 pips" aria-valuemin="0" aria-valuemax="10" aria-valuenow="7" aria-valuetext="7 of 10" style="--value:.7; --segments:10">
+            <span class="hud-bar-label">Segmented (10)</span><span class="hud-bar-value">7 / 10</span>
+          </div>
+          <div class="hud-bar hud-bar-health is-segmented" role="meter" aria-label="Hearts, 3 of 5" aria-valuemin="0" aria-valuemax="5" aria-valuenow="3" aria-valuetext="3 of 5" style="--value:.6; --trail:.8; --segments:5; --hud-bar-height:1rem">
+            <span class="hud-bar-label">Hearts (5, hit)</span><span class="hud-bar-value">3 / 5</span>
+          </div>
+          <div class="hud-bar hud-bar-health is-centered" role="meter" aria-label="Health, from the centre" aria-valuemin="0" aria-valuemax="250" aria-valuenow="150" aria-valuetext="150 of 250" style="--value:.6; --trail:.72">
+            <span class="hud-bar-label">Centred (Skyrim)</span><span class="hud-bar-value">150</span>
+          </div>
+          <div class="hud-bar hud-bar-mana is-reversed" role="meter" aria-label="Magicka, filling from the end" aria-valuemin="0" aria-valuemax="180" aria-valuenow="126" aria-valuetext="126 of 180" style="--value:.7">
+            <span class="hud-bar-label">Reversed</span><span class="hud-bar-value">126</span>
+          </div>
+          <div class="hud-bar hud-bar-stamina" role="meter" aria-label="Stamina" aria-valuemin="0" aria-valuemax="200" aria-valuenow="90" aria-valuetext="90 of 200" style="--value:.45"></div>
+        </div>
+      </div>
+      <p class="text-muted">Live (needs JavaScript): each hit drops <code>--value</code> only; the trail is automatic when motion is on.</p>
+      <div class="cluster">
+        <div class="hud-bar hud-bar-health" id="live-bar" role="meter" aria-label="Health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 of 100" style="--value:1">
+          <span class="hud-bar-label">Health</span><span class="hud-bar-value" id="live-bar-value">100</span>
+        </div>
+        <button class="btn" type="button" data-hp="-18">Take a hit</button>
+        <button class="btn btn-ghost" type="button" data-hp="25">Heal</button>
+      </div>
+    </section>
+
+    <section class="stack" id="c-hud-minimap">
+      <h2>Minimap <code>.map.hud-minimap</code> and heading strip</h2>
+      <p class="text-muted">Core's <code>.map</code> frame and <code>.map-pin</code>s, square or round, with a player arrow turned by <code>--heading</code>. The heading strip is core's <code>.compass-strip</code>.</p>
+      <div class="cluster">
+        <figure class="map hud-minimap" aria-label="Minimap, square">
+          <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="200" height="200" fill="#5f6a5a"/>
+            <path d="M0 140 C40 120 80 150 120 130 S180 100 200 110 V200 H0 Z" fill="#46617a"/>
+            <g fill="none" stroke="#d8d2bc" stroke-width="4" stroke-linecap="round"><path d="M0 95 H200"/><path d="M100 0 V125"/></g>
+          </svg>
+          <span class="hud-minimap-player" style="--heading:45; --x:40%; --y:60%"></span>
+          <button class="map-pin" style="--x:72%; --y:30%" data-series="2" popovertarget="pin-quest" aria-label="Quest: Bleak Falls Barrow"></button>
+          <span class="map-north" role="img" aria-label="North">N</span>
+        </figure>
+        <figure class="map hud-minimap is-round" style="--hud-minimap-size:9rem" aria-label="Minimap, round">
+          <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="200" height="200" fill="#4c5560"/>
+            <path d="M30 0 V200 M0 60 H200 M120 0 L200 140" stroke="#c9cdd3" stroke-width="5" fill="none"/>
+          </svg>
+          <span class="hud-minimap-player" style="--heading:160"></span>
+          <span class="map-north" role="img" aria-label="North">N</span>
+          <figcaption class="map-attribution">Riften</figcaption>
+        </figure>
+      </div>
+      <ol class="compass-strip" style="--heading:300; --compass-strip-span:120" role="img" aria-label="Heading 300 degrees. Quest marker at 330 degrees.">
+        <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+        <li class="is-marker" data-series="2" style="--at:330"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+      </ol>
+    </section>
+
+    <section class="stack" id="c-hud-quests">
+      <h2>Quest tracker <code>.hud-quests</code></h2>
+      <p class="text-muted">Objectives are an <code>&lt;ol class="hud-objectives"&gt;</code>: done, current (<code>aria-current="step"</code>), failed and pending each have their own mark, with an optional <code>.hud-count</code>.</p>
+      <section class="hud-quests" aria-label="Quest tracker">
+        <h3>The Golden Claw</h3>
+        <ol class="hud-objectives">
+          <li class="is-done">Speak to Lucan Valerius</li>
+          <li class="is-done">Find the bandits <span class="hud-count">1/1</span></li>
+          <li aria-current="step">Retrieve the golden claw <span class="hud-count">0/1</span></li>
+          <li class="is-failed">Keep Camilla out of danger</li>
+          <li>Collect wolf pelts <span class="hud-count">3/5</span></li>
+        </ol>
+        <h3>Side: A Night to Remember</h3>
+        <ol class="hud-objectives">
+          <li aria-current="step">Find Sam Guevenne's staff in Morthal, the town hall or the general store</li>
+        </ol>
+      </section>
+    </section>
+
+    <section class="stack" id="c-hud-slot">
+      <h2>Hotbar and inventory slots <code>.hud-slot</code></h2>
+      <p class="text-muted">Square slots with an icon, key, count and a cooldown sweep from <code>--cooldown</code> (0–1). Rarity from <code>data-rarity</code> sets the border, glow and 1–5 pips. A hidden radio selects the slot.</p>
+      <div class="hud-hotbar" role="radiogroup" aria-label="Hotbar">
+        <label class="hud-slot" data-rarity="common"><input type="radio" name="demo-hotbar" aria-label="1: Iron shield, common"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-shield"/></svg><kbd class="hud-slot-key">1</kbd></label>
+        <label class="hud-slot" data-rarity="uncommon"><input type="radio" name="demo-hotbar" aria-label="2: Healing potion, uncommon, 12 left" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg><kbd class="hud-slot-key">2</kbd><span class="hud-slot-count">12</span></label>
+        <label class="hud-slot" data-rarity="rare" style="--cooldown:.25"><input type="radio" name="demo-hotbar" aria-label="3: Frost bolt, rare, ready in 2 seconds"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-snowflake"/></svg><kbd class="hud-slot-key">3</kbd><span class="hud-slot-timer">2s</span></label>
+        <label class="hud-slot" data-rarity="epic" style="--cooldown:.6"><input type="radio" name="demo-hotbar" aria-label="4: Storm call, epic, ready in 36 seconds"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-cloud-bolt"/></svg><kbd class="hud-slot-key">4</kbd><span class="hud-slot-timer">36s</span></label>
+        <label class="hud-slot" data-rarity="legendary"><input type="radio" name="demo-hotbar" aria-label="5: Dawnbreaker, legendary"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-sun"/></svg><kbd class="hud-slot-key">5</kbd></label>
+        <label class="hud-slot" data-rarity="rare"><input type="radio" name="demo-hotbar" aria-label="6: Scroll of fire, rare, unavailable" disabled><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><kbd class="hud-slot-key">6</kbd><span class="hud-slot-count">0</span></label>
+        <label class="hud-slot is-empty"><input type="radio" name="demo-hotbar" aria-label="7: empty"><kbd class="hud-slot-key">7</kbd></label>
+      </div>
+      <h3>Inventory grid <code>.hud-inventory</code></h3>
+      <div class="panel">
+        <div class="hud-inventory" role="radiogroup" aria-label="Inventory">
+          <label class="hud-slot" data-rarity="legendary"><input type="radio" name="demo-inv" aria-label="Dawnbreaker, legendary" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-sun"/></svg></label>
+          <label class="hud-slot" data-rarity="epic"><input type="radio" name="demo-inv" aria-label="Ebony armour, epic"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-shield"/></svg></label>
+          <label class="hud-slot" data-rarity="rare"><input type="radio" name="demo-inv" aria-label="Moonstone ring, rare"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-moon-stars"/></svg></label>
+          <label class="hud-slot" data-rarity="uncommon"><input type="radio" name="demo-inv" aria-label="Healing potion, uncommon, 12"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg><span class="hud-slot-count">12</span></label>
+          <label class="hud-slot" data-rarity="common"><input type="radio" name="demo-inv" aria-label="Gold, 1,240"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-coins"/></svg><span class="hud-slot-count">1.2k</span></label>
+          <label class="hud-slot" data-rarity="common"><input type="radio" name="demo-inv" aria-label="Lockpick, common, 7"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-key"/></svg><span class="hud-slot-count">7</span></label>
+          <label class="hud-slot" data-rarity="rare"><input type="radio" name="demo-inv" aria-label="Map of Skyrim, rare"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map"/></svg></label>
+          <label class="hud-slot" data-rarity="uncommon"><input type="radio" name="demo-inv" aria-label="Gift box, uncommon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-gift"/></svg></label>
+          <label class="hud-slot is-empty"><input type="radio" name="demo-inv" aria-label="Empty slot"></label>
+          <label class="hud-slot is-empty"><input type="radio" name="demo-inv" aria-label="Empty slot"></label>
+          <label class="hud-slot is-empty"><input type="radio" name="demo-inv" aria-label="Empty slot"></label>
+          <label class="hud-slot is-empty"><input type="radio" name="demo-inv" aria-label="Empty slot"></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-hud-float">
+      <h2>Floating numbers <code>.hud-float</code></h2>
+      <p class="text-muted">Placed at <code>--x</code>/<code>--y</code> in the nearest positioned box. With motion on they rise and fade once; here they repeat. With motion off they stay put until the app removes them.</p>
+      <div class="hud" style="--hud-min-height:12rem" role="img" aria-label="Damage, critical, heal, mana and miss numbers over a target">
+        <span class="hud-float" style="--x:20%; --y:55%; --hud-float-repeat:infinite; --hud-float-duration:2s">−48</span>
+        <span class="hud-float is-crit" style="--x:40%; --y:50%; --hud-float-repeat:infinite; --hud-float-duration:2s; --hud-float-delay:.4s">−212!</span>
+        <span class="hud-float is-heal" style="--x:60%; --y:55%; --hud-float-repeat:infinite; --hud-float-duration:2s; --hud-float-delay:.8s">+30</span>
+        <span class="hud-float is-mana" style="--x:76%; --y:50%; --hud-float-repeat:infinite; --hud-float-duration:2s; --hud-float-delay:1.2s">+15</span>
+        <span class="hud-float is-miss" style="--x:90%; --y:55%; --hud-float-repeat:infinite; --hud-float-duration:2s; --hud-float-delay:1.6s">Miss</span>
+      </div>
+      <p class="text-muted">Live (needs JavaScript): spawns a number that removes itself on <code>animationend</code>.</p>
+      <div class="hud" id="live-floats" style="--hud-min-height:10rem" role="region" aria-label="Floating number demo">
+        <div class="hud-bottom-start"><button class="hud-prompt" type="button" id="spawn-float"><kbd>F</kbd> Strike</button></div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-hud-achievement">
+      <h2>Achievement toast <code>.toast.hud-achievement</code></h2>
+      <p class="text-muted">A core <code>.toast</code> with an icon, title, description, score and optional progress. Put it in a <code>.toast-region</code> with <code>popover="manual"</code> so it shows over everything, even an open modal.</p>
+      <div class="demo-toasts stack stack-sm">
+        <div class="toast hud-achievement" role="status">
+          <svg class="icon hud-achievement-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg>
+          <div class="hud-achievement-body">
+            <span class="hud-achievement-kicker">Achievement unlocked</span>
+            <strong class="hud-achievement-title">Dragonslayer</strong>
+            <span class="hud-achievement-text">Defeat Alduin at the Throat of the World</span>
+          </div>
+          <span class="hud-achievement-score">50G</span>
+        </div>
+        <div class="toast hud-achievement" role="status">
+          <svg class="icon hud-achievement-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map"/></svg>
+          <div class="hud-achievement-body">
+            <span class="hud-achievement-kicker">Progress</span>
+            <strong class="hud-achievement-title">Explorer</strong>
+            <span class="hud-achievement-text">Discover 100 locations</span>
+            <progress class="progress" value="72" max="100">72 of 100</progress>
+          </div>
+          <span class="hud-achievement-score">72/100</span>
+        </div>
+      </div>
+      <div class="cluster">
+        <button class="btn" popovertarget="ach-toast">Show in the top layer</button>
+      </div>
+      <div class="toast-region" popover="manual" id="ach-toast">
+        <div class="toast hud-achievement" role="status">
+          <svg class="icon hud-achievement-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg>
+          <div class="hud-achievement-body">
+            <span class="hud-achievement-kicker">Achievement unlocked</span>
+            <strong class="hud-achievement-title">Thane of Whiterun</strong>
+            <span class="hud-achievement-text">Buy Breezehome and serve the Jarl</span>
+          </div>
+          <button class="btn-close" popovertarget="ach-toast" popovertargetaction="hide" aria-label="Dismiss"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-hud-prompt">
+      <h2>Key prompts <code>.hud-prompt</code></h2>
+      <p class="text-muted">Core <code>&lt;kbd&gt;</code> for keys; <code>kbd.hud-pad</code> for gamepad buttons, ringed by <code>data-button</code> (south, east, west, north). A <code>&lt;button class="hud-prompt"&gt;</code> is the tap target on touch screens.</p>
+      <div class="cluster">
+        <p class="hud-prompt"><kbd>E</kbd> Open</p>
+        <p class="hud-prompt"><kbd>R</kbd> Take all</p>
+        <p class="hud-prompt"><kbd>Shift</kbd> + <kbd>E</kbd> Steal</p>
+        <p class="hud-prompt"><kbd>Hold E</kbd> Pick lock</p>
+      </div>
+      <div class="cluster">
+        <p class="hud-prompt"><kbd class="hud-pad" data-button="south">A</kbd> Open</p>
+        <p class="hud-prompt"><kbd class="hud-pad" data-button="east">B</kbd> Back</p>
+        <p class="hud-prompt"><kbd class="hud-pad" data-button="west">X</kbd> Take all</p>
+        <p class="hud-prompt"><kbd class="hud-pad" data-button="north">Y</kbd> Favourite</p>
+        <p class="hud-prompt"><kbd class="hud-pad">LB</kbd><kbd class="hud-pad">RB</kbd> Switch tab</p>
+        <p class="hud-prompt"><kbd class="hud-pad" data-button="south">✕</kbd> Select</p>
+        <p class="hud-prompt"><kbd class="hud-pad" data-button="east">○</kbd> Cancel</p>
+      </div>
+      <div class="cluster">
+        <button class="hud-prompt" popovertarget="hud-inventory-drawer"><kbd>I</kbd> Inventory</button>
+        <button class="hud-prompt" popovertarget="ach-toast"><kbd class="hud-pad" data-button="north">Y</kbd> Achievements</button>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <aside class="drawer" id="hud-inventory-drawer" popover aria-label="Inventory">
+    <div class="panel-header">Inventory <button class="btn-close" popovertarget="hud-inventory-drawer" popovertargetaction="hide" aria-label="Close"></button></div>
+    <div class="hud-inventory" role="radiogroup" aria-label="Inventory items">
+      <label class="hud-slot" data-rarity="legendary"><input type="radio" name="drawer-inv" aria-label="Dawnbreaker, legendary" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-sun"/></svg></label>
+      <label class="hud-slot" data-rarity="epic"><input type="radio" name="drawer-inv" aria-label="Ebony armour, epic"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-shield"/></svg></label>
+      <label class="hud-slot" data-rarity="uncommon"><input type="radio" name="drawer-inv" aria-label="Healing potion, uncommon, 12"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg><span class="hud-slot-count">12</span></label>
+      <label class="hud-slot" data-rarity="common"><input type="radio" name="drawer-inv" aria-label="Lockpick, common, 7"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-key"/></svg><span class="hud-slot-count">7</span></label>
+      <label class="hud-slot is-empty"><input type="radio" name="drawer-inv" aria-label="Empty slot"></label>
+      <label class="hud-slot is-empty"><input type="radio" name="drawer-inv" aria-label="Empty slot"></label>
+    </div>
+  </aside>
+
+  <footer class="app-status">
+    <span>Game HUD</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+<script>
+// Live demos only: the app sets --value / aria-valuenow, and spawns and
+// removes floats. Everything else on this page is HTML and CSS.
+(() => {
+  const bar = document.getElementById('live-bar'), out = document.getElementById('live-bar-value');
+  let hp = 100;
+  document.querySelectorAll('[data-hp]').forEach(b => b.addEventListener('click', () => {
+    hp = Math.max(0, Math.min(100, hp + Number(b.dataset.hp)));
+    bar.style.setProperty('--value', hp / 100);
+    bar.setAttribute('aria-valuenow', hp);
+    bar.setAttribute('aria-valuetext', hp + ' of 100');
+    bar.classList.toggle('is-low', hp <= 25);
+    out.textContent = hp;
+  }));
+  const box = document.getElementById('live-floats');
+  document.getElementById('spawn-float').addEventListener('click', () => {
+    const f = document.createElement('span'), crit = Math.random() < 0.25;
+    f.className = 'hud-float' + (crit ? ' is-crit' : '');
+    f.setAttribute('aria-hidden', 'true');
+    f.textContent = '−' + Math.round((crit ? 150 : 20) + Math.random() * 60) + (crit ? '!' : '');
+    f.style.cssText = `--x:${30 + Math.random() * 50}%; --y:${35 + Math.random() * 30}%`;
+    const done = () => f.remove();
+    f.addEventListener('animationend', done);
+    setTimeout(done, 1500); // motion off: no animation, so remove on a timer
+    box.append(f);
+  });
+})();
+</script>
+</body>
+</html>

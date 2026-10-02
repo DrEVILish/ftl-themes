@@ -5,6 +5,26 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **v5 kits, emails, scheduling and quality tooling.**
+  - New component groups with pages and docs: social (`components-social.html`),
+    game HUD (`hud.html`: overlay regions, resource bars with damage trail,
+    minimap, quest tracker, hotbar/inventory slots with cooldown and
+    `data-rarity`, floating numbers, achievement toast, key/gamepad prompts)
+    and productivity (`planner.html`: kanban, month/week/day calendar,
+    Gantt timeline with dependency links, schedule list).
+  - Themed transactional emails: `scripts/build_emails.py` writes six
+    table-based, inline-styled emails per theme to `dist/email/<slug>/`
+    (HTML + plain text), run by `build.sh`.
+  - `assets/js/schedule.js` switches theme, variant or season by time of
+    day or date; a user's own choice always wins.
+  - Quality: `--engine chromium|firefox|webkit` on every browser script
+    (`scripts/_harness.mjs`, per-engine known issues in
+    `test/engine-known-issues.json`), `scripts/a11y_audit.mjs` (axe-core,
+    `--blame <slug>`), size budgets in `check.py` (`--theme`, `--budgets`),
+    `scripts/render_cost.mjs` (frame times under 4x CPU throttle) and
+    `scripts/theme-ready.sh <slug>` running every gate. New docs:
+    `docs/contributing-a-theme.md`, `docs/agent-theme-brief.md`.
+
 - **CSS-only tabs, panes and selection; knobs; button widths; hovers.**
   - Hidden radios select list items, nav items, tabs, pagination, segmented
     items and menu items with no JS; the build (`scripts/radio_state.py`)

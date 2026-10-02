@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 // Screenshot helper for scripts/screenshot_themes.py — do not run directly
-// unless you know what you're doing. Launches one Chromium instance and
-// walks every theme x example page combination, writing
-// <outdir>/<slug>/<page-name>.png at a fixed 1280x900 viewport.
+// unless you know what you're doing. Launches one browser (--engine,
+// default chromium) and walks every theme x example page combination,
+// writing <outdir>/<slug>/<page-name>.png at a fixed 1280x900 viewport.
+// Prints one JSON line; {"skipped": "..."} when the engine isn't installed.
 //
 // Needs the `playwright` package resolvable from this file (see the
 // scripts/node_modules/playwright symlink that screenshot_themes.py sets
 // up before invoking this).
-import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { ROOT as root, launch, themeReady, FREEZE_CSS } from './_harness.mjs';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args.splice(i, 2)[1] : dflt; };
 const base = opt('--base', 'http://localhost:8000');
 const outdir = opt('--outdir');
 const only = opt('--themes', '');
+const engine = opt('--engine', 'chromium');
 if (!outdir) { console.error('--outdir is required'); process.exit(2); }
 
 const EXAMPLE_PAGES = ['components.html', 'dashboard.html', 'marketing.html', 'ticketsystem.html', 'powerstation.html', 'soundmixer.html', 'livechat.html'];
@@ -30,41 +30,15 @@ const themes = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'themes.json')
   .filter(s => !only || only.split(',').includes(s.split('~')[0]))
   .sort();
 
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
+const browser = await launch(engine);
+if (!browser) { console.log(JSON.stringify({ skipped: `${engine} is not installed (npx playwright install ${engine}, or set ${engine.toUpperCase()}_PATH)` })); process.exit(0); }
 const page = await browser.newPage({ viewport: VIEWPORT });
 
-// Freeze anything time-based (CSS animations/transitions, blinking carets)
+// FREEZE_CSS stops anything time-based (animations, transitions, carets)
 // so repeated runs of the same markup produce byte-identical screenshots.
-const FREEZE_CSS = '*{animation:none!important;transition:none!important;caret-color:transparent!important;scroll-behavior:auto!important}';
-
-// theme-loader.js sets html[data-theme] and the #theme-link href
-// synchronously, but the stylesheet itself loads async — and under the
-// dev-only ThreadingHTTPServer, occasional connection hiccups can leave a
-// page rendered with no theme CSS at all (or a still-loading custom font,
-// e.g. the LEGO wordmark) even after networkidle. Verify the stylesheet
-// actually applied and fonts are done, retrying the navigation a few times
-// before giving up, so a screenshot never silently captures an unstyled page.
-// Polls (rather than a single snapshot check) so a page that's still
-// loading its webfont -- normal right after a cold navigation, especially
-// the very first one of a run -- gets real time to finish instead of
-// being retried (and reloaded) for no reason.
-async function waitForThemeReady(pw, slug, timeout = 5000) {
-  try {
-    await pw.waitForFunction((slug) => {
-      if (document.documentElement.dataset.theme !== slug) return false;
-      const link = document.getElementById('theme-link');
-      if (!link || !link.sheet) return false;
-      // Count nested rules too: a bundle is one `@layer ui { ... }` block, so the
-      // top-level list has a single entry however much CSS it holds.
-      const count = (rules) => Array.from(rules).reduce((n, r) => n + 1 + (r.cssRules ? count(r.cssRules) : 0), 0);
-      try { if (count(link.sheet.cssRules) < 3) return false; } catch (e) { return false; }
-      return document.fonts.status === 'loaded';
-    }, slug, { timeout, polling: 100 });
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
+// themeReady (scripts/_harness.mjs) waits until the theme stylesheet has
+// actually applied and fonts are done, so a screenshot never silently
+// captures an unstyled page; the navigation is retried up to three times.
 
 let shots = 0;
 const failures = [];
@@ -80,7 +54,7 @@ for (const entry of themes) {
       let ready = false;
       for (let attempt = 0; attempt < 3 && !ready; attempt++) {
         await page.goto(url, { waitUntil: 'networkidle' });
-        ready = await waitForThemeReady(page, slug);
+        ready = await themeReady(page, slug);
         if (!ready && process.env.SHOT_DEBUG) console.error(`retrying ${slug} ${pageName} (attempt ${attempt + 1})`);
       }
       await page.addStyleTag({ content: FREEZE_CSS });

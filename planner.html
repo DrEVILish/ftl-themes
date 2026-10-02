@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planner — ftl-themes productivity kit</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- The productivity kit (PLAN.md §22): kanban board, calendar (month, week,
+     day, agenda), Gantt timeline and schedule list. Core markup only, no
+     page CSS, no JavaScript: every state (dragging, drop target, over the WIP
+     limit, overdue, now line, today marker) is shown statically, the view
+     switch is a CSS-only .tabset. Apps move cards and lay out events. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Planner</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Planner</h1>
+      <p class="text-muted">The productivity kit: a kanban board, a calendar with month, week and day views, a Gantt timeline and a schedule list. Apps move cards, place events and draw connectors; ftl-themes styles every state. Today is Friday 2 October 2026, 13:36.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-kanban">
+      <h2>Kanban board</h2>
+      <p class="text-muted">Columns with a count and WIP limit (“In progress” is over it), cards with labels, priority, due dates (soon, overdue) and assignees. “Review” is the drop target while a card is dragged, with its drop placeholder. “Blocked” is empty. On phones the board scrolls sideways one column at a time.</p>
+      <div class="kanban" role="group" aria-label="Release board">
+          <section class="kanban-column" aria-labelledby="k-backlog">
+            <header class="kanban-column-header">
+              <h3 class="kanban-column-title" id="k-backlog">Backlog</h3>
+              <span class="badge kanban-count" aria-label="2 cards">2</span>
+              <button class="btn btn-icon btn-sm is-clear" aria-label="Backlog column actions" popovertarget="col-menu" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+            </header>
+            <ol class="kanban-cards">
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="3">Design</span></li></ul>
+              <h4 class="kanban-card-title">Audit the icon sprite for missing glyphs</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="low">Low</span></div>
+              </li>
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="5">Email</span></li><li><span class="badge" data-series="3">Design</span></li></ul>
+              <h4 class="kanban-card-title">Dark mode for transactional email templates</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><time class="kanban-due" datetime="2026-10-30"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due </span>30 Oct</time></div>
+              </li>
+            </ol>
+            <button class="btn btn-clear btn-sm"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-plus"/></svg> Add card</button>
+          </section>
+          <section class="kanban-column" aria-labelledby="k-todo">
+            <header class="kanban-column-header">
+              <h3 class="kanban-column-title" id="k-todo">To do</h3>
+              <span class="badge kanban-count" aria-label="2 cards, limit 4">2<span class="kanban-limit">4</span></span>
+              <button class="btn btn-icon btn-sm is-clear" aria-label="To do column actions" popovertarget="col-menu" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+            </header>
+            <ol class="kanban-cards">
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="2">Docs</span></li></ul>
+              <h4 class="kanban-card-title">Write MIGRATING-v5.md</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="high">High</span><time class="kanban-due is-soon" datetime="2026-10-06"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due soon, </span>Tue 6 Oct</time><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Ada Kim">AK</span></li><li><span class="avatar" role="img" aria-label="Jo Lund">JL</span></li></ul></div>
+              </li>
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">Core</span></li></ul>
+              <h4 class="kanban-card-title">Arrowheads for Gantt dependency connectors</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><time class="kanban-due" datetime="2026-10-12"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due </span>12 Oct</time><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Mia Berg">MB</span></li></ul></div>
+              </li>
+            </ol>
+            <button class="btn btn-clear btn-sm"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-plus"/></svg> Add card</button>
+          </section>
+          <section class="kanban-column is-over-limit" aria-labelledby="k-doing">
+            <header class="kanban-column-header">
+              <h3 class="kanban-column-title" id="k-doing">In progress</h3>
+              <span class="badge kanban-count" aria-label="4 cards, limit 3, over the limit">4<span class="kanban-limit">3</span></span>
+              <button class="btn btn-icon btn-sm is-clear" aria-label="In progress column actions" popovertarget="col-menu" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+            </header>
+            <ol class="kanban-cards">
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">Core</span></li><li><span class="badge" data-series="4">Mobile</span></li></ul>
+              <h4 class="kanban-card-title">Calendar agenda list on phones</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="urgent">Urgent</span><time class="kanban-due is-overdue" datetime="2026-09-30"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Overdue, was due </span>30 Sep</time><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Sam Reyes">SR</span></li><li><span class="avatar" role="img" aria-label="Ada Kim">AK</span></li><li><span class="avatar" role="img" aria-label="Jo Lund">JL</span></li></ul></div>
+              </li>
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="4">QA</span></li></ul>
+              <h4 class="kanban-card-title">Tier checks for the planner page</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="high">High</span><time class="kanban-due is-soon" datetime="2026-10-02"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due soon, </span>Today</time><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Mia Berg">MB</span></li></ul></div>
+              </li>
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">Core</span></li><li><span class="badge" data-series="3">Design</span></li></ul>
+              <h4 class="kanban-card-title">Kanban drag and drop states</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Sam Reyes">SR</span></li></ul></div>
+              </li>
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="6">Theme</span></li></ul>
+              <h4 class="kanban-card-title">LCARS skin for the month grid: elbow headers, candy event bars, a very long unbroken label like lcars-calendar-month-elbow-variant</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="low">Low</span><time class="kanban-due" datetime="2026-10-20"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due </span>20 Oct</time></div>
+              </li>
+            </ol>
+            <button class="btn btn-clear btn-sm"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-plus"/></svg> Add card</button>
+          </section>
+          <section class="kanban-column is-drop-target" aria-labelledby="k-review">
+            <header class="kanban-column-header">
+              <h3 class="kanban-column-title" id="k-review">Review</h3>
+              <span class="badge kanban-count" aria-label="1 cards, limit 3">1<span class="kanban-limit">3</span></span>
+              <button class="btn btn-icon btn-sm is-clear" aria-label="Review column actions" popovertarget="col-menu" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+            </header>
+            <ol class="kanban-cards">
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">Core</span></li></ul>
+              <h4 class="kanban-card-title">Schedule list extends the .schedule badge</h4>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><time class="kanban-due" datetime="2026-10-05"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due </span>Mon 5 Oct</time><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Jo Lund">JL</span></li></ul></div>
+              </li>
+              <li class="kanban-card is-dragging" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">Core</span></li></ul>
+              <h4 class="kanban-card-title">Gantt today marker and milestones</h4>
+              <p>Being dragged (.is-dragging)</p>
+              <div class="kanban-card-meta"><span class="kanban-priority" data-priority="high">High</span><time class="kanban-due" datetime="2026-10-09"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Due </span>9 Oct</time><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Ada Kim">AK</span></li></ul></div>
+              </li>
+              <li class="kanban-placeholder"><span class="visually-hidden">Drop here</span></li>
+            </ol>
+            <button class="btn btn-clear btn-sm"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-plus"/></svg> Add card</button>
+          </section>
+          <section class="kanban-column" aria-labelledby="k-blocked">
+            <header class="kanban-column-header">
+              <h3 class="kanban-column-title" id="k-blocked">Blocked</h3>
+              <span class="badge kanban-count" aria-label="0 cards">0</span>
+              <button class="btn btn-icon btn-sm is-clear" aria-label="Blocked column actions" popovertarget="col-menu" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+            </header>
+            <ol class="kanban-cards"></ol>
+            <button class="btn btn-clear btn-sm"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-plus"/></svg> Add card</button>
+          </section>
+          <section class="kanban-column" aria-labelledby="k-done">
+            <header class="kanban-column-header">
+              <h3 class="kanban-column-title" id="k-done">Done</h3>
+              <span class="badge kanban-count" aria-label="1 cards">1</span>
+              <button class="btn btn-icon btn-sm is-clear" aria-label="Done column actions" popovertarget="col-menu" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+            </header>
+            <ol class="kanban-cards">
+              <li class="kanban-card" draggable="true" tabindex="0">
+              <ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">Core</span></li></ul>
+              <h4 class="kanban-card-title">Spacing tokens step per tier</h4>
+              <div class="kanban-card-meta"><ul class="kanban-assignees" aria-label="Assignees"><li><span class="avatar" role="img" aria-label="Sam Reyes">SR</span></li><li><span class="avatar" role="img" aria-label="Mia Berg">MB</span></li></ul></div>
+              </li>
+            </ol>
+          </section>
+      </div>
+      <ul class="context-menu" role="menu" popover id="col-menu">
+        <li><button role="menuitem">Set WIP limit…</button></li>
+        <li><button role="menuitem">Sort by due date</button></li>
+        <li role="separator"></li>
+        <li><button role="menuitem" class="is-danger">Archive column</button></li>
+      </ul>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-calendar">
+      <h2>Calendar</h2>
+      <p class="text-muted">Month view with multi-day bars, outside-month days, today, a selected day and “+n more” overflow; week and day views on a time grid with side-by-side overlaps and the current-time line. On phones the month view becomes a compact grid with dots, followed by an agenda list. The view switch is a CSS-only <code>.tabset</code>.</p>
+      <div class="panel">
+        <div class="tabset">
+          <div class="tabs">
+            <label class="tab"><input type="radio" name="cal-view" checked>Month</label>
+            <label class="tab"><input type="radio" name="cal-view">Week</label>
+            <label class="tab"><input type="radio" name="cal-view">Day</label>
+          </div>
+          <div class="tab-panel">
+          <div class="calendar is-planner" role="group" aria-label="October 2026">
+            <div class="calendar-header">
+              <button class="btn btn-icon is-clear btn-sm" aria-label="Previous month"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg></button>
+              <h3 class="calendar-title" aria-live="polite">October 2026</h3>
+              <button class="btn btn-icon is-clear btn-sm" aria-label="Next month"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></button>
+              <button class="btn btn-sm">Today</button>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <div class="calendar-month">
+            <div class="calendar-week">
+              <div class="calendar-cell is-outside" data-events><time class="calendar-date" datetime="2026-09-28">28<span class="calendar-date-month"> Sep</span></time></div>
+              <div class="calendar-cell is-outside" data-events><time class="calendar-date" datetime="2026-09-29">29<span class="calendar-date-month"> Sep</span></time></div>
+              <div class="calendar-cell is-outside" data-events><time class="calendar-date" datetime="2026-09-30">30<span class="calendar-date-month"> Sep</span></time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-01">1</time></div>
+              <div class="calendar-cell" aria-current="date" data-events><time class="calendar-date" datetime="2026-10-02">2</time></div>
+              <div class="calendar-cell is-weekend"><time class="calendar-date" datetime="2026-10-03">3</time></div>
+              <div class="calendar-cell is-weekend"><time class="calendar-date" datetime="2026-10-04">4</time></div>
+              <a class="calendar-event" href="#!" data-series="2" style="--day:3; --span:3; --lane:1">Q4 planning offsite</a>
+              <a class="calendar-event" href="#!" data-series="4" style="--day:5; --span:1; --lane:2">Release 2.4</a>
+              <a class="calendar-event is-timed" href="#!" data-series="1" style="--day:1; --span:1; --lane:1"><time>09:30</time> Standup</a>
+              <a class="calendar-event is-timed" href="#!" data-series="3" style="--day:2; --span:1; --lane:1"><time>14:00</time> Design review</a>
+              <a class="calendar-event is-timed" href="#!" data-series="1" style="--day:5; --span:1; --lane:3"><time>14:00</time> Retro</a>
+              <button class="calendar-more" style="--day:5">+2 more</button>
+            </div>
+            <div class="calendar-week">
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-05">5</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-06">6</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-07">7</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-08">8</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-09">9</time></div>
+              <div class="calendar-cell is-weekend" data-events><time class="calendar-date" datetime="2026-10-10">10</time></div>
+              <div class="calendar-cell is-weekend" data-events><time class="calendar-date" datetime="2026-10-11">11</time></div>
+              <a class="calendar-event" href="#!" data-series="1" style="--day:1; --span:5; --lane:1">Design sprint</a>
+              <a class="calendar-event is-tentative" href="#!" data-series="3" style="--day:6; --span:2; --lane:1">Hike (tentative)</a>
+              <a class="calendar-event is-timed" href="#!" data-series="5" style="--day:3; --span:1; --lane:2"><time>08:15</time> Dentist</a>
+            </div>
+            <div class="calendar-week">
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-12">12</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-13">13</time></div>
+              <div class="calendar-cell"><time class="calendar-date" datetime="2026-10-14">14</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-15">15</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-16">16</time></div>
+              <div class="calendar-cell is-weekend" data-events><time class="calendar-date" datetime="2026-10-17">17</time></div>
+              <div class="calendar-cell is-weekend" data-events><time class="calendar-date" datetime="2026-10-18">18</time></div>
+              <a class="calendar-event" href="#!" data-series="4" style="--day:1; --span:1; --lane:1">Board deck due</a>
+              <a class="calendar-event is-timed" href="#!" data-series="2" style="--day:2; --span:1; --lane:1"><time>11:00</time> 1:1 with Sam</a>
+              <a class="calendar-event is-continued-after" href="#!" data-series="5" style="--day:4; --span:4; --lane:1">Berlin design conference</a>
+            </div>
+            <div class="calendar-week">
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-19">19</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-20">20</time></div>
+              <div class="calendar-cell is-selected" data-events><time class="calendar-date" datetime="2026-10-21">21</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-22">22</time></div>
+              <div class="calendar-cell"><time class="calendar-date" datetime="2026-10-23">23</time></div>
+              <div class="calendar-cell is-weekend"><time class="calendar-date" datetime="2026-10-24">24</time></div>
+              <div class="calendar-cell is-weekend"><time class="calendar-date" datetime="2026-10-25">25</time></div>
+              <a class="calendar-event is-continued-before" href="#!" data-series="5" style="--day:1; --span:2; --lane:1">Berlin design conference</a>
+              <a class="calendar-event" href="#!" data-series="6" style="--day:3; --span:1; --lane:1">Launch day</a>
+              <a class="calendar-event is-timed" href="#!" data-series="2" style="--day:3; --span:1; --lane:2"><time>10:00</time> Press briefing</a>
+              <a class="calendar-event is-timed" href="#!" data-series="1" style="--day:3; --span:1; --lane:3"><time>13:00</time> Live demo</a>
+              <a class="calendar-event is-cancelled" href="#!" data-series="3" style="--day:4; --span:1; --lane:2">Team dinner (cancelled)</a>
+              <button class="calendar-more" style="--day:3">+3 more</button>
+            </div>
+            <div class="calendar-week">
+              <div class="calendar-cell"><time class="calendar-date" datetime="2026-10-26">26</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-27">27</time></div>
+              <div class="calendar-cell"><time class="calendar-date" datetime="2026-10-28">28</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-29">29</time></div>
+              <div class="calendar-cell" data-events><time class="calendar-date" datetime="2026-10-30">30</time></div>
+              <div class="calendar-cell is-weekend"><time class="calendar-date" datetime="2026-10-31">31</time></div>
+              <div class="calendar-cell is-outside is-weekend"><time class="calendar-date" datetime="2026-11-01">1<span class="calendar-date-month"> Nov</span></time></div>
+              <a class="calendar-event is-timed" href="#!" data-series="2" style="--day:2; --span:1; --lane:1"><time>10:00</time> OKR check-in</a>
+              <a class="calendar-event is-tentative" href="#!" data-series="3" style="--day:4; --span:2; --lane:1">Leave (tentative)</a>
+            </div>
+            </div>
+          <div class="calendar-agenda">
+            <h4 class="schedule-heading" aria-current="date">Today, Fri 2 Oct</h4>
+            <ol class="schedule-list">
+              <li class="schedule-item" data-series="2">
+                <time class="schedule" datetime="2026-10-02">All day</time>
+                <div class="schedule-body"><span class="schedule-title">Q4 planning offsite</span><span class="schedule-meta">Day 3 of 3</span></div>
+              </li>
+              <li class="schedule-item" data-series="4">
+                <time class="schedule" datetime="2026-10-02">All day</time>
+                <div class="schedule-body"><span class="schedule-title">Release 2.4</span></div>
+              </li>
+              <li class="schedule-item is-past" data-series="1">
+                <time class="schedule" datetime="09:30">09:30<span class="schedule-end">10:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Standup</span><span class="schedule-meta">Room 4</span></div>
+              </li>
+              <li class="schedule-item" data-series="1">
+                <time class="schedule" datetime="14:00">14:00<span class="schedule-end">15:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Retro</span><span class="schedule-meta">Room 2</span></div>
+              </li>
+            </ol>
+            <h4 class="schedule-heading">Mon 5 Oct</h4>
+            <ol class="schedule-list">
+              <li class="schedule-item" data-series="1">
+                <time class="schedule" datetime="2026-10-02">All day</time>
+                <div class="schedule-body"><span class="schedule-title">Design sprint</span><span class="schedule-meta">Day 1 of 5</span></div>
+              </li>
+            </ol>
+          </div>
+          </div>
+          </div>
+          <div class="tab-panel">
+          <div class="calendar is-planner">
+            <div class="calendar-header">
+              <button class="btn btn-icon is-clear btn-sm" aria-label="Previous week"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg></button>
+              <h3 class="calendar-title" aria-live="polite">28 Sep – 4 Oct 2026</h3>
+              <button class="btn btn-icon is-clear btn-sm" aria-label="Next week"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></button>
+              <button class="btn btn-sm">Today</button>
+            </div>
+            <div class="calendar-timegrid" style="--days:7; --hour-start:8; --hour-end:18" role="group" aria-label="Week of 28 September">
+              <div class="calendar-corner">GMT+1</div>
+              <div class="calendar-column-head"><span>Mon</span><span class="calendar-date">28</span></div>
+              <div class="calendar-column-head"><span>Tue</span><span class="calendar-date">29</span></div>
+              <div class="calendar-column-head"><span>Wed</span><span class="calendar-date">30</span></div>
+              <div class="calendar-column-head"><span>Thu</span><span class="calendar-date">1</span></div>
+              <div class="calendar-column-head" aria-current="date"><span>Fri</span><span class="calendar-date">2</span></div>
+              <div class="calendar-column-head"><span>Sat</span><span class="calendar-date">3</span></div>
+              <div class="calendar-column-head"><span>Sun</span><span class="calendar-date">4</span></div>
+              <ol class="calendar-hours" aria-hidden="true"><li>08:00</li><li>09:00</li><li>10:00</li><li>11:00</li><li>12:00</li><li>13:00</li><li>14:00</li><li>15:00</li><li>16:00</li><li>17:00</li></ol>
+              <div class="calendar-column" role="group" aria-label="Monday 28 September">
+                <a class="calendar-event" href="#!" data-series="1" style="--start:9.5; --end:10">Standup<time>09:30–10:00</time></a>
+                <a class="calendar-event" href="#!" data-series="2" style="--start:13; --end:14.5">Roadmap review<time>13:00–14:30</time></a>
+              </div>
+              <div class="calendar-column" role="group" aria-label="Tuesday 29 September">
+                <a class="calendar-event" href="#!" data-series="1" style="--start:9.5; --end:10">Standup<time>09:30–10:00</time></a>
+                <a class="calendar-event" href="#!" data-series="3" style="--start:14; --end:15.5; --col:1; --cols:2">Design review<time>14:00–15:30</time></a>
+                <a class="calendar-event" href="#!" data-series="2" style="--start:14.5; --end:15.5; --col:2; --cols:2">Hiring sync<time>14:30–15:30</time></a>
+              </div>
+              <div class="calendar-column" role="group" aria-label="Wednesday 30 September">
+                <a class="calendar-event" href="#!" data-series="2" style="--start:9; --end:12">Offsite kickoff<time>09:00–12:00</time></a>
+                <a class="calendar-event" href="#!" data-series="5" style="--start:12; --end:13">Lunch<time>12:00–13:00</time></a>
+              </div>
+              <div class="calendar-column" role="group" aria-label="Thursday 1 October">
+                <a class="calendar-event" href="#!" data-series="2" style="--start:9; --end:12; --col:1; --cols:2">Workshops<time>09:00–12:00</time></a>
+                <a class="calendar-event" href="#!" data-series="4" style="--start:10; --end:11; --col:2; --cols:2">Customer call<time>10:00–11:00</time></a>
+                <a class="calendar-event" href="#!" data-series="2" style="--start:15; --end:17">Offsite wrap-up<time>15:00–17:00</time></a>
+              </div>
+              <div class="calendar-column" aria-current="date" role="group" aria-label="Friday 2 October">
+                <a class="calendar-event" href="#!" data-series="1" style="--start:9.5; --end:10">Standup<time>09:30–10:00</time></a>
+                <a class="calendar-event" href="#!" data-series="4" style="--start:11; --end:12.5; --col:1; --cols:2">Release 2.4<time>11:00–12:30</time></a>
+                <a class="calendar-event" href="#!" data-series="6" style="--start:11.5; --end:12.5; --col:2; --cols:2">Infra check<time>11:30–12:30</time></a>
+                <a class="calendar-event" href="#!" data-series="5" style="--start:13; --end:14">Lunch &amp; learn<time>13:00–14:00</time></a>
+                <a class="calendar-event" href="#!" data-series="1" style="--start:14; --end:15">Retro<time>14:00–15:00</time></a>
+                <span class="calendar-now" style="--now:13.6"><span class="visually-hidden">Now, 13:36</span></span>
+              </div>
+              <div class="calendar-column is-weekend" role="group" aria-label="Saturday 3 October">
+                <a class="calendar-event is-tentative" href="#!" data-series="3" style="--start:10; --end:14">Hike<time>10:00–14:00</time></a>
+              </div>
+              <div class="calendar-column is-weekend" role="group" aria-label="Sunday 4 October">
+              </div>
+            </div>
+          </div>
+          </div>
+          <div class="tab-panel">
+          <div class="calendar is-planner">
+            <div class="calendar-header">
+              <button class="btn btn-icon is-clear btn-sm" aria-label="Previous day"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg></button>
+              <h3 class="calendar-title" aria-live="polite">Friday 2 October</h3>
+              <button class="btn btn-icon is-clear btn-sm" aria-label="Next day"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></button>
+              <button class="btn btn-sm">Today</button>
+            </div>
+            <div class="calendar-timegrid" style="--days:1; --hour-start:8; --hour-end:18" role="group" aria-label="Friday 2 October">
+              <div class="calendar-corner">GMT+1</div>
+              <div class="calendar-column-head" aria-current="date"><span>Fri</span><span class="calendar-date">2</span></div>
+              <ol class="calendar-hours" aria-hidden="true"><li>08:00</li><li>09:00</li><li>10:00</li><li>11:00</li><li>12:00</li><li>13:00</li><li>14:00</li><li>15:00</li><li>16:00</li><li>17:00</li></ol>
+              <div class="calendar-column" aria-current="date" role="group" aria-label="Friday 2 October">
+                <a class="calendar-event" href="#!" data-series="1" style="--start:9.5; --end:10">Standup<span class="visually-hidden">, Room 4</span><time>09:30–10:00</time></a>
+                <a class="calendar-event" href="#!" data-series="4" style="--start:11; --end:12.5; --col:1; --cols:3">Release 2.4<time>11:00–12:30</time></a>
+                <a class="calendar-event" href="#!" data-series="6" style="--start:11.5; --end:12.5; --col:2; --cols:3">Infra check<time>11:30–12:30</time></a>
+                <a class="calendar-event" href="#!" data-series="2" style="--start:12; --end:13; --col:3; --cols:3">Ship notes<time>12:00–13:00</time></a>
+                <a class="calendar-event" href="#!" data-series="5" style="--start:13; --end:14; --col:1; --cols:2">Lunch &amp; learn<time>13:00–14:00</time></a>
+                <a class="calendar-event is-cancelled" href="#!" data-series="3" style="--start:13.5; --end:14; --col:2; --cols:2">Vendor demo (cancelled)<time>13:30–14:00</time></a>
+                <a class="calendar-event" href="#!" data-series="1" style="--start:14; --end:15">Retro<time>14:00–15:00</time></a>
+                <a class="calendar-event is-tentative" href="#!" data-series="2" style="--start:15; --end:17">Focus time (tentative)<time>15:00–17:00</time></a>
+                <span class="calendar-now" style="--now:13.6"><span class="visually-hidden">Now, 13:36</span></span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-gantt">
+      <h2>Gantt timeline</h2>
+      <p class="text-muted">Bars at <code>--start</code>/<code>--end</code> with a progress strip, a summary bar, milestones as diamonds, dependency connectors in an SVG layer (critical path thicker, blocked dashed), today's marker, a selected row, and the task list frozen while the axis scrolls.</p>
+        <div class="gantt" style="--units:23" role="group" aria-label="Website relaunch timeline, 28 September to 20 October">
+          <div class="gantt-header">
+            <span class="gantt-corner">Task</span>
+            <ol class="gantt-scale"><li aria-label="Monday 28 September">M<br>28</li><li aria-label="Tuesday 29 September">T<br>29</li><li aria-label="Wednesday 30 September">W<br>30</li><li aria-label="Thursday 1 October">T<br>1</li><li aria-current="date" aria-label="Friday 2 October">F<br>2</li><li class="is-off" aria-label="Saturday 3 October">S<br>3</li><li class="is-off" aria-label="Sunday 4 October">S<br>4</li><li aria-label="Monday 5 October">M<br>5</li><li aria-label="Tuesday 6 October">T<br>6</li><li aria-label="Wednesday 7 October">W<br>7</li><li aria-label="Thursday 8 October">T<br>8</li><li aria-label="Friday 9 October">F<br>9</li><li class="is-off" aria-label="Saturday 10 October">S<br>10</li><li class="is-off" aria-label="Sunday 11 October">S<br>11</li><li aria-label="Monday 12 October">M<br>12</li><li aria-label="Tuesday 13 October">T<br>13</li><li aria-label="Wednesday 14 October">W<br>14</li><li aria-label="Thursday 15 October">T<br>15</li><li aria-label="Friday 16 October">F<br>16</li><li class="is-off" aria-label="Saturday 17 October">S<br>17</li><li class="is-off" aria-label="Sunday 18 October">S<br>18</li><li aria-label="Monday 19 October">M<br>19</li><li aria-label="Tuesday 20 October">T<br>20</li></ol>
+          </div>
+          <div class="gantt-body">
+            <ol class="gantt-rows">
+              <li class="gantt-row is-group"><span class="gantt-task">Website relaunch</span><div class="gantt-track"><span class="gantt-bar is-summary" style="--start:0; --end:19.5" role="img" aria-label="Website relaunch, 28 Sep to 17 Oct"></span></div></li>
+              <li class="gantt-row"><span class="gantt-task" style="--level:2">Research</span><div class="gantt-track"><span class="gantt-bar is-done" data-series="1" style="--start:0; --end:4; --progress:1">Research · done</span></div></li>
+              <li class="gantt-row" aria-selected="true"><span class="gantt-task" style="--level:2">Wireframes</span><div class="gantt-track"><a class="gantt-bar" href="#!" data-series="1" style="--start:4.5; --end:9; --progress:.4"><span>Wireframes · 40%</span></a></div></li>
+              <li class="gantt-row"><span class="gantt-task" style="--level:2">Design sign-off</span><div class="gantt-track"><span class="gantt-milestone" style="--at:9.5" role="img" aria-label="Milestone: design sign-off, 7 Oct"></span><span class="gantt-milestone-label" style="--at:9.5">Sign-off</span></div></li>
+              <li class="gantt-row"><span class="gantt-task" style="--level:2">Build API</span><div class="gantt-track"><span class="gantt-bar is-critical" data-series="2" style="--start:6; --end:14; --progress:.15">Build API · 15% · critical</span></div></li>
+              <li class="gantt-row"><span class="gantt-task" style="--level:2">Build UI</span><div class="gantt-track"><span class="gantt-bar" data-series="2" style="--start:10; --end:16; --progress:0">Build UI</span></div></li>
+              <li class="gantt-row"><span class="gantt-task" style="--level:2">QA and fixes</span><div class="gantt-track"><span class="gantt-bar is-late" data-series="3" style="--start:16; --end:19">QA · at risk</span></div></li>
+              <li class="gantt-row"><span class="gantt-task" style="--level:2">Launch</span><div class="gantt-track"><span class="gantt-milestone" data-series="6" style="--at:19.5" role="img" aria-label="Milestone: launch, 17 Oct"></span><span class="gantt-milestone-label" style="--at:19.5">Launch</span></div></li>
+            </ol>
+            <svg class="gantt-links" viewBox="0 0 23 8" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <marker id="gantt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth=".3" markerHeight=".3" orient="auto"><path class="gantt-link-head" d="M0 0 10 5 0 10z"/></marker>
+                <marker id="gantt-arrow-critical" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth=".3" markerHeight=".3" orient="auto"><path class="gantt-link-head is-critical" d="M0 0 10 5 0 10z"/></marker>
+              </defs>
+              <path class="gantt-link" d="M4 1.5 H4.25 V2.5 H4.5" marker-end="url(#gantt-arrow)"/>
+              <path class="gantt-link" d="M9 2.5 H9.5 V3.2" marker-end="url(#gantt-arrow)"/>
+              <path class="gantt-link" d="M9.8 3.5 H9.9 V5.5 H10" marker-end="url(#gantt-arrow)"/>
+              <path class="gantt-link is-critical" d="M14 4.5 H15.5 V6.5 H16" marker-end="url(#gantt-arrow-critical)"/>
+              <path class="gantt-link is-blocked" d="M16 5.5 H16.3 V6.18" marker-end="url(#gantt-arrow)"/>
+              <path class="gantt-link is-critical" d="M19 6.5 H19.5 V7.2" marker-end="url(#gantt-arrow-critical)"/>
+            </svg>
+            <span class="gantt-today" style="--at:4.55"><span class="visually-hidden">Today, 2 October</span></span>
+          </div>
+        </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-schedule">
+      <h2>Schedule list</h2>
+      <p class="text-muted">Time-blocked agenda rows built on core's <code>.schedule</code> time badge: each block is as tall as its <code>--duration</code>. Past, free, current (“now”) and overlapping states.</p>
+      <div class="panel">
+            <h3 class="schedule-heading" aria-current="date">Today, Friday 2 October</h3>
+            <ol class="schedule-list">
+              <li class="schedule-item is-past" style="--duration:0.5">
+                <time class="schedule" datetime="08:00">08:00<span class="schedule-end">08:30</span></time>
+                <div class="schedule-body"><span class="schedule-title">Inbox and triage</span></div>
+              </li>
+              <li class="schedule-item is-past" data-series="1" style="--duration:0.5">
+                <time class="schedule" datetime="09:30">09:30<span class="schedule-end">10:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Standup</span><span class="schedule-meta">Room 4 · 6 people</span></div>
+              </li>
+              <li class="schedule-item is-past" data-series="4" style="--duration:1.5">
+                <time class="schedule" datetime="11:00">11:00<span class="schedule-end">12:30</span></time>
+                <div class="schedule-body"><span class="schedule-title">Release 2.4</span><span class="schedule-meta">Deploy window · #release</span></div>
+              </li>
+              <li class="schedule-item is-free" style="--duration:0.5">
+                <time class="schedule" datetime="12:30">12:30<span class="schedule-end">13:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Free</span></div>
+              </li>
+              <li class="schedule-item" data-series="5" style="--duration:1" aria-current="time">
+                <time class="schedule" datetime="13:00">13:00<span class="schedule-end">14:00</span></time>
+                <div class="schedule-body"><span class="schedule-title"><a class="stretched-link" href="#!">Lunch &amp; learn: container queries</a></span><span class="schedule-meta">Kitchen · Ada Kim</span></div>
+                <span class="badge badge-accent">Now</span>
+              </li>
+              <li class="schedule-item is-conflict" data-series="1" style="--duration:1">
+                <time class="schedule" datetime="14:00">14:00<span class="schedule-end">15:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Retro</span><span class="schedule-meta">Room 2</span></div>
+                <span class="badge badge-danger">Overlaps</span>
+              </li>
+              <li class="schedule-item is-conflict" data-series="6" style="--duration:0.5">
+                <time class="schedule" datetime="14:30">14:30<span class="schedule-end">15:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Call with Northwind</span><span class="schedule-meta">Video</span></div>
+                <span class="badge badge-danger">Overlaps</span>
+              </li>
+              <li class="schedule-item" data-series="2" style="--duration:2">
+                <time class="schedule" datetime="15:00">15:00<span class="schedule-end">17:00</span></time>
+                <div class="schedule-body"><span class="schedule-title">Focus time</span><span class="schedule-meta">Notifications paused</span></div>
+                <button class="btn btn-icon btn-sm is-clear" aria-label="Focus time actions"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+              </li>
+            </ol>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Planner</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>
