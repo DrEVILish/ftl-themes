@@ -33,7 +33,7 @@ const DEVICES = {
   'desktop-1440p': { width: 2560, height: 1440, tier: 'xl' },
 };
 const PAGES = ['components', 'dashboard', 'marketing', 'ticketsystem', 'powerstation', 'soundmixer', 'livechat', 'nesting',
-  'player', 'hud', 'planner',
+  'player', 'hud', 'planner', 'auth', 'settings', 'master-detail', 'inbox', 'onboarding', 'pricing',
   // v5 component pages (components-<group>.html), whichever exist.
   ...fs.readdirSync(root).filter(f => /^components-[a-z]+\.html$/.test(f)).map(f => f.replace(/\.html$/, '')).sort()]
   .filter(p => fs.existsSync(path.join(root, p + '.html')));

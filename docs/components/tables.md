@@ -34,7 +34,7 @@ Shared tokens:
   <input class="input" aria-invalid="true" aria-describedby="e1" aria-label="Trip">
   <span class="field-error" id="e1">A name is required.</span>
 </td>
-<td class="is-editable" aria-readonly="true">Locked</td>                 <!-- read-only -->
+<td class="is-editable is-readonly">Locked</td>                  <!-- read-only -->
 ```
 
 Whole row in edit mode, with its actions in the last cell:
@@ -58,7 +58,7 @@ States:
 | `.is-saving` / `.htmx-request` | Dimmed text plus a spinner (spins only with motion allowed). |
 | `.is-saved` | Success tint plus a tick; the tint flashes then settles (motion allowed). |
 | error | `aria-invalid="true"` on the control (or the `td`): a 2px danger ring and tint on the cell, core's invalid input look, and the `.field-error` text below the control (the row grows by one line). |
-| `aria-readonly="true"` | Muted text, arrow cursor, no underline or pencil. |
+| `.is-readonly` | Muted text, arrow cursor, no underline or pencil. In a `role="grid"` table use `aria-readonly="true"` instead (also styled); it is not allowed on a plain `<td>`. |
 | `td[tabindex]` | Focus ring drawn inside the cell (not clipped by `.table-wrap`), for spreadsheet-style arrow-key navigation. |
 
 Dropdown, date and combobox in a cell:

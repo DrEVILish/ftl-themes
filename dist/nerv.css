@@ -145,6 +145,14 @@ html {
 }
 
 a { color: var(--link, var(--accent)); }
+/* Links in running text are underlined: colour alone rarely reaches 3:1
+   against the text around them (WCAG 1.4.1). Class-less links only; links
+   that are controls keep their own shape. */
+:where(p, li, dd, td, blockquote, figcaption, small) > a[href]:not([class]) {
+  text-decoration-line: underline;
+  text-decoration-thickness: max(1px, 0.08em);
+  text-underline-offset: 0.18em;
+}
 
 :focus-visible {
   outline: 2px solid var(--focus);
@@ -3776,20 +3784,24 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
      <div class="tabs"><label class="tab"><input type="radio" name="t" checked>One</label>…</div>
      <div class="tab-panel">…</div><div class="tab-panel">…</div>
    </div> */
-.tabset > .tab-panel { display: none; padding-block-start: var(--tab-panel-pad, var(--space-m)); }
-.tabset:has(> .tabs > .tab:nth-child(1) > input:checked) > .tab-panel:nth-child(2),
-.tabset:has(> .tabs > .tab:nth-child(2) > input:checked) > .tab-panel:nth-child(3),
-.tabset:has(> .tabs > .tab:nth-child(3) > input:checked) > .tab-panel:nth-child(4),
-.tabset:has(> .tabs > .tab:nth-child(4) > input:checked) > .tab-panel:nth-child(5),
-.tabset:has(> .tabs > .tab:nth-child(5) > input:checked) > .tab-panel:nth-child(6),
-.tabset:has(> .tabs > .tab:nth-child(6) > input:checked) > .tab-panel:nth-child(7),
-.tabset:has(> .tabs > .tab:nth-child(7) > input:checked) > .tab-panel:nth-child(8),
-.tabset:has(> .tabs > .tab:nth-child(8) > input:checked) > .tab-panel:nth-child(9),
-.tabset:has(> .tabs > .tab:nth-child(9) > input:checked) > .tab-panel:nth-child(10),
-.tabset:has(> .tabs > .tab:nth-child(10) > input:checked) > .tab-panel:nth-child(11),
-.tabset:has(> .tabs > .tab:nth-child(11) > input:checked) > .tab-panel:nth-child(12),
-.tabset:has(> .tabs > .tab:nth-child(12) > input:checked) > .tab-panel:nth-child(13) {
-  display: block;
+.tabset > .tab-panel { padding-block-start: var(--tab-panel-pad, var(--space-m)); }
+/* Hide every panel but the chosen one, so the shown panel keeps its own
+   display (a .stack, a grid…). */
+.tabset > .tab-panel:not(:is(
+  .tabset:has(> .tabs > .tab:nth-child(1) > input:checked) > .tab-panel:nth-child(2),
+  .tabset:has(> .tabs > .tab:nth-child(2) > input:checked) > .tab-panel:nth-child(3),
+  .tabset:has(> .tabs > .tab:nth-child(3) > input:checked) > .tab-panel:nth-child(4),
+  .tabset:has(> .tabs > .tab:nth-child(4) > input:checked) > .tab-panel:nth-child(5),
+  .tabset:has(> .tabs > .tab:nth-child(5) > input:checked) > .tab-panel:nth-child(6),
+  .tabset:has(> .tabs > .tab:nth-child(6) > input:checked) > .tab-panel:nth-child(7),
+  .tabset:has(> .tabs > .tab:nth-child(7) > input:checked) > .tab-panel:nth-child(8),
+  .tabset:has(> .tabs > .tab:nth-child(8) > input:checked) > .tab-panel:nth-child(9),
+  .tabset:has(> .tabs > .tab:nth-child(9) > input:checked) > .tab-panel:nth-child(10),
+  .tabset:has(> .tabs > .tab:nth-child(10) > input:checked) > .tab-panel:nth-child(11),
+  .tabset:has(> .tabs > .tab:nth-child(11) > input:checked) > .tab-panel:nth-child(12),
+  .tabset:has(> .tabs > .tab:nth-child(12) > input:checked) > .tab-panel:nth-child(13)
+)) {
+  display: none;
 }
 
 /* A drawer opened with the popover attribute: <button popovertarget="d">
@@ -8348,7 +8360,7 @@ kbd kbd { font-size: 0.9em; }
 .calendar-event.is-tentative {
   background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--_ev) 24%, var(--calendar-bg, var(--surface))) 0 0.4em, var(--calendar-bg, var(--surface)) 0.4em 0.8em);
 }
-.calendar-event.is-cancelled { text-decoration: line-through; color: var(--muted); }
+.calendar-event.is-cancelled { text-decoration: line-through; color: var(--calendar-event-cancelled-fg, inherit); }
 
 /* --- Month view --------------------------------------------------------- */
 .calendar-weekdays {
@@ -8921,6 +8933,753 @@ kbd kbd { font-size: 0.9em; }
   .calendar-event, .gantt-bar, .schedule-item, .kanban-placeholder { border-color: CanvasText; }
   .calendar-now, .calendar-now::before, .gantt-today, .gantt-milestone { background: Highlight; forced-color-adjust: none; }
   :is(.calendar-cell, .calendar-column-head)[aria-current="date"] .calendar-date { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+/* --- v5 prose, code and page templates (PLAN.md §22) -----------------------
+ * Built into every bundle after core.css. Three parts:
+ *   1. Code: a per-theme code palette for the class names Prism, highlight.js
+ *      and Shiki emit (no library bundled), line numbers, highlighted and
+ *      diff lines, and a .code-block with a copy button.
+ *   2. .prose: raw Markdown/CMS HTML with no classes inside, plus GitHub-style
+ *      callouts (.markdown-alert-*).
+ *   3. The pieces the page templates (auth, settings, master-detail, inbox,
+ *      onboarding, pricing) need that core doesn't have: .master-detail, .otp,
+ *      radio-driven .steps wizards, billing-period price swaps, .card.is-featured
+ *      and .panel.is-danger.
+ * Docs: docs/components/prose.md and docs/templates.md. */
+
+/* === 1. Code ============================================================== */
+
+/* The palette. Each colour reads its public token, falling back to base
+ * tokens: semantic text colours (checked at 4.5:1 on --surface by check.py),
+ * or a hue mixed towards --text, which only raises its contrast. The private
+ * --_code-* copies give the Prism, highlight.js and Shiki mappings below one
+ * source each. Set on every pre/code so a theme or an app can also set the
+ * public tokens on any container. */
+:where(pre, code) {
+  --_code-keyword: var(--code-keyword, var(--accent-text, var(--accent)));
+  --_code-string: var(--code-string, var(--success-text, var(--success)));
+  --_code-comment: var(--code-comment, var(--muted));
+  --_code-number: var(--code-number, var(--warning-text, var(--warning)));
+  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 60%, var(--text)));
+  --_code-type: var(--code-type, color-mix(in oklab, var(--accent-text, var(--accent)), var(--danger-text, var(--danger))));
+  --_code-punctuation: var(--code-punctuation, color-mix(in oklab, var(--muted) 55%, var(--text)));
+  --_code-tag: var(--code-tag, var(--danger-text, var(--danger)));
+  --_code-attr: var(--code-attr, color-mix(in oklab, var(--accent-text, var(--accent)) 50%, var(--text)));
+  --_code-variable: var(--code-variable, currentColor);
+  --_code-inserted: var(--code-inserted, var(--success-text, var(--success)));
+  --_code-deleted: var(--code-deleted, var(--danger-text, var(--danger)));
+  --_code-pad: var(--code-pad, calc(var(--space-m) * var(--density)));
+}
+/* Shiki's css-variables theme writes style="color: var(--shiki-token-…)". */
+:where(pre.shiki, .shiki) {
+  --shiki-foreground: var(--code-block-fg, var(--text));
+  --shiki-background: var(--code-block-bg, var(--surface));
+  --shiki-token-keyword: var(--_code-keyword);
+  --shiki-token-string: var(--_code-string);
+  --shiki-token-string-expression: var(--_code-string);
+  --shiki-token-comment: var(--_code-comment);
+  --shiki-token-constant: var(--_code-number);
+  --shiki-token-function: var(--_code-function);
+  --shiki-token-parameter: var(--_code-variable);
+  --shiki-token-punctuation: var(--_code-punctuation);
+  --shiki-token-link: var(--_code-string);
+}
+pre { padding: var(--_code-pad); color: var(--code-block-fg, inherit); tab-size: var(--code-tab-size, 2); }
+pre > code { font-size: var(--code-block-font-size, 0.875em); line-height: var(--code-leading, 1.6); }
+/* Libraries' own root classes paint a background; the pre already has one. */
+pre > code:is(.hljs, [class*="language-"]) { background: none; color: inherit; }
+
+/* Token classes, in this order: later rules win where a span carries two
+ * (highlight.js's .hljs-title.class_ is a type, not a function). */
+:where(pre, code) :is(.token.comment, .token.prolog, .token.doctype, .token.cdata, .hljs-comment, .hljs-quote) {
+  color: var(--_code-comment);
+  font-style: var(--code-comment-style, italic);
+}
+:where(pre, code) .token.prefix:is(.inserted, .deleted) { color: inherit; }
+:where(pre, code) :is(.token.keyword, .token.atrule, .token.important, .token.rule, .hljs-keyword, .hljs-doctag, .hljs-meta) {
+  color: var(--_code-keyword);
+}
+:where(pre, code) :is(.token.string, .token.char, .token.attr-value, .token.regex, .token.url, .hljs-string, .hljs-regexp, .hljs-char, .hljs-link, .hljs-meta .hljs-string) {
+  color: var(--_code-string);
+}
+:where(pre, code) :is(.token.number, .token.boolean, .token.constant, .token.symbol, .token.entity, .hljs-number, .hljs-literal, .hljs-symbol, .hljs-bullet) {
+  color: var(--_code-number);
+}
+:where(pre, code) :is(.token.function, .hljs-title, .hljs-section) { color: var(--_code-function); }
+:where(pre, code) :is(.token.class-name, .token.builtin, .hljs-type, .hljs-built_in, .hljs-title.class_) {
+  color: var(--_code-type);
+}
+:where(pre, code) :is(.token.punctuation, .token.operator, .hljs-punctuation, .hljs-operator, .hljs-tag) {
+  color: var(--_code-punctuation);
+}
+/* Prism's .token.tag shares its name with the .tag chip (forms.css): undo
+ * the chip inside code. */
+:where(pre, code) .token.tag {
+  display: inline;
+  max-inline-size: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: inherit;
+  line-height: inherit;
+  overflow-wrap: normal;
+}
+:where(pre, code) :is(.token.tag, .token.selector, .hljs-name, .hljs-selector-tag) { color: var(--_code-tag); }
+:where(pre, code) :is(.token.attr-name, .token.property, .hljs-attr, .hljs-attribute, .hljs-property,
+  .hljs-selector-class, .hljs-selector-id, .hljs-selector-attr, .hljs-selector-pseudo) {
+  color: var(--_code-attr);
+}
+:where(pre, code) :is(.token.variable, .token.parameter, .hljs-variable, .hljs-template-variable, .hljs-params, .hljs-subst) {
+  color: var(--_code-variable);
+}
+:where(pre, code) :is(.token.bold, .token.important, .hljs-strong, .hljs-section) { font-weight: 700; }
+:where(pre, code) :is(.token.italic, .hljs-emphasis) { font-style: italic; }
+:where(pre, code) :is(.token.inserted:not(.prefix), .hljs-addition) {
+  color: var(--_code-inserted);
+  background: var(--code-inserted-bg, color-mix(in srgb, var(--success) 14%, transparent));
+}
+:where(pre, code) :is(.token.deleted:not(.prefix), .hljs-deletion) {
+  color: var(--_code-deleted);
+  background: var(--code-deleted-bg, color-mix(in srgb, var(--danger) 14%, transparent));
+}
+
+/* Lines. Shiki (.line) and rehype-pretty-code ([data-line]) wrap each line in
+ * a span; diff lines from highlight.js and Prism are spans too. Each becomes
+ * a full-width strip that bleeds into the pre's padding, so a tint reaches
+ * both edges. */
+pre :is(.line, [data-line], .hljs-addition, .hljs-deletion),
+pre:is(.language-diff, .diff-highlight) :is(.token.inserted, .token.deleted):not(.prefix),
+pre > code.language-diff :is(.token.inserted, .token.deleted):not(.prefix) {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  min-inline-size: calc(100% + 2 * var(--_code-pad));
+  margin-inline: calc(-1 * var(--_code-pad));
+  padding-inline: var(--_code-pad);
+}
+/* Highlighted lines: a tint and a start-edge bar (not colour alone). */
+pre :is(.line.highlighted, .line.is-highlighted, [data-highlighted-line]) {
+  background: var(--code-highlight-bg, color-mix(in srgb, var(--accent) 14%, transparent));
+  box-shadow: inset var(--code-highlight-bar-width, 3px) 0 0 var(--code-highlight-bar, var(--accent));
+}
+/* Prism's line-highlight plugin positions its own .line-highlight boxes. */
+pre:has(> .line-highlight) { position: relative; }
+.line-highlight {
+  position: absolute;
+  inset-inline: 0;
+  background: var(--code-highlight-bg, color-mix(in srgb, var(--accent) 14%, transparent));
+  box-shadow: inset var(--code-highlight-bar-width, 3px) 0 0 var(--code-highlight-bar, var(--accent));
+  pointer-events: none;
+}
+/* Shiki's diff notation drops the +/- from the text, so the sign is drawn
+ * in the padding band, along with the tint. */
+pre .line.diff:is(.add, .remove) { background: var(--code-inserted-bg, color-mix(in srgb, var(--success) 14%, transparent)); }
+pre .line.diff.remove { background: var(--code-deleted-bg, color-mix(in srgb, var(--danger) 14%, transparent)); }
+pre .line.diff:is(.add, .remove)::after {
+  position: absolute;
+  inset-inline-start: calc(var(--_code-pad) / 2 - 0.5ch);
+  content: "+";
+  content: "+" / "";
+  color: var(--_code-inserted);
+}
+pre .line.diff.remove::after { content: "\2212"; content: "\2212" / ""; color: var(--_code-deleted); }
+/* Shiki's focus notation dims everything but the focused lines. */
+pre.has-focused .line:not(.focused) { opacity: 0.55; }
+
+/* Line numbers: .line-numbers on the pre (Prism's class) or
+ * data-line-numbers on the code (rehype-pretty-code), over line spans. */
+:is(pre.line-numbers, code[data-line-numbers]) { counter-reset: code-line; }
+:is(pre.line-numbers, code[data-line-numbers]) :is(.line, [data-line])::before {
+  counter-increment: code-line;
+  content: counter(code-line);
+  display: inline-block;
+  inline-size: var(--code-gutter, 3ch);
+  margin-inline-end: 2ch;
+  color: var(--code-line-number, var(--muted));
+  text-align: end;
+  user-select: none;
+}
+/* Prism's own line-numbers plugin markup (.line-numbers-rows). */
+pre.line-numbers:has(.line-numbers-rows) { position: relative; padding-inline-start: calc(var(--_code-pad) + var(--code-gutter, 3ch) + 2ch); }
+pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
+.line-numbers-rows {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(-1 * (var(--code-gutter, 3ch) + 2ch));
+  inline-size: calc(var(--code-gutter, 3ch) + 1ch);
+  border-inline-end: 1px solid var(--code-gutter-rule, var(--hairline));
+  pointer-events: none;
+  user-select: none;
+  counter-reset: code-line;
+}
+.line-numbers-rows > span { display: block; counter-increment: code-line; }
+.line-numbers-rows > span::before {
+  content: counter(code-line);
+  display: block;
+  padding-inline-end: 1ch;
+  color: var(--code-line-number, var(--muted));
+  text-align: end;
+}
+
+/* .code-block — a code block with a header (file name, language, copy):
+ *   <figure class="code-block">
+ *     <figcaption class="code-block-header"><span>app.js</span>
+ *       <button class="btn btn-sm btn-clear code-copy" type="button">
+ *         <span>Copy</span><span>Copied</span></button></figcaption>
+ *     <pre><code class="language-js">…</code></pre>
+ *   </figure>
+ * rehype-pretty-code's figure and title get the same look. The app copies
+ * the text and adds .is-copied (or data-copied) for a moment; the two labels
+ * share one cell, so the button keeps its width. */
+:is(.code-block, [data-rehype-pretty-code-figure]) {
+  margin: 0;
+  min-inline-size: 0;
+  border: var(--code-block-border-width, 1px) solid var(--code-block-border, var(--border));
+  border-radius: var(--radius);
+  background: var(--code-block-bg, var(--surface));
+  overflow: hidden;
+}
+:is(.code-block, [data-rehype-pretty-code-figure]) > pre { margin: 0; border: 0; border-radius: 0; }
+:is(.code-block-header, [data-rehype-pretty-code-title]) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-inline-size: 0;
+  padding: var(--space-3xs) var(--space-3xs) var(--space-3xs) var(--_code-pad, var(--space-m));
+  border-block-end: 1px solid var(--code-block-border, var(--border));
+  background: var(--code-block-header-bg, var(--surface-2));
+  color: var(--code-block-header-fg, var(--muted));
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+}
+.code-block-header { --_code-pad: var(--code-pad, calc(var(--space-m) * var(--density))); }
+.code-block-header > :first-child { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.code-block-header > .code-copy { margin-inline-start: auto; }
+.code-copy { flex: none; }
+.code-copy:has(> :not(.icon) + :not(.icon)) { display: inline-grid; justify-items: center; }
+.code-copy > .icon { grid-area: 1 / 1; }
+.code-copy > :not(.icon) { grid-area: 1 / 2; }
+.code-copy:not(:has(> .icon)) > * { grid-column: 1; }
+.code-copy > :not(.icon) + :not(.icon),
+.code-copy:is(.is-copied, [data-copied]) > :not(.icon):first-of-type { visibility: hidden; }
+.code-copy:is(.is-copied, [data-copied]) > :not(.icon) + :not(.icon) { visibility: visible; color: var(--success-text, var(--success)); }
+
+/* === 2. Prose ============================================================= */
+
+/*   <article class="prose">…HTML from Markdown…</article>
+ * Text holds a ~70ch measure; code, tables, figures and lone images may run
+ * to the container width. Spacing comes from the --space-* scale, so the
+ * rhythm tightens on phones and opens up on XL. */
+.prose {
+  color: var(--prose-fg, inherit);
+  font-size: var(--prose-font-size, 1rem);
+  line-height: var(--prose-leading, 1.65);
+  overflow-wrap: break-word;
+  min-inline-size: 0;
+}
+.prose > * { max-inline-size: var(--prose-measure, 70ch); margin-block: 0; }
+.prose.is-centered > * { margin-inline: auto; }
+.prose > :is(pre, figure, .code-block, .table-wrap, video, iframe, p:has(> img:only-child)) {
+  max-inline-size: var(--prose-wide, none);
+}
+/* Vertical rhythm. */
+.prose > * + * { margin-block-start: var(--prose-flow, var(--space-m)); }
+.prose > :is(h1, h2) { margin-block-start: var(--prose-h2-space, var(--space-2xl)); }
+.prose > :is(h3, h4) { margin-block-start: var(--prose-h3-space, var(--space-xl)); }
+.prose > :is(h5, h6) { margin-block-start: var(--space-l); }
+.prose > :is(h1, h2, h3, h4, h5, h6) + * { margin-block-start: var(--prose-heading-gap, var(--space-xs)); }
+.prose > hr,
+.prose > hr + * { margin-block-start: var(--space-xl); }
+.prose > :first-child { margin-block-start: 0; }
+
+/* Headings. Sizes beat a theme's global heading rule (a theme that styles
+ * every h2 as a small label) so the hierarchy holds; a theme styles prose
+ * headings with html[data-theme="x"] .prose h2, or with the size tokens. */
+.prose :is(h1, h2, h3, h4, h5, h6) {
+  line-height: var(--prose-heading-leading, 1.25);
+  text-wrap: balance;
+  scroll-margin-block-start: var(--space-xl);
+}
+:root .prose h1 { font-size: var(--prose-h1-size, 2em); }
+:root .prose h2 { font-size: var(--prose-h2-size, 1.5em); }
+:root .prose h3 { font-size: var(--prose-h3-size, 1.25em); }
+:root .prose h4 { font-size: var(--prose-h4-size, 1.1em); }
+:root .prose h5 { font-size: var(--prose-h5-size, 1em); }
+:root .prose h6 { font-size: var(--prose-h6-size, 0.9em); }
+.prose h6 { color: var(--muted); }
+
+.prose a:not([class]) {
+  color: var(--link, var(--accent));
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.15em;
+}
+@media (hover: hover) {
+  .prose a:not([class]):hover { text-decoration-thickness: 2px; }
+}
+.prose :is(strong, b) { font-weight: 700; }
+.prose :not(pre) > code { font-size: 0.875em; overflow-wrap: anywhere; }
+.prose :is(sup, sub) { line-height: 0; }
+.prose mark {
+  padding: 0.25em 0.35em;
+  border-radius: calc(var(--radius) * 0.5);
+  background: var(--mark-bg, color-mix(in srgb, var(--warning) 35%, transparent));
+  color: var(--mark-fg, inherit);
+}
+.prose abbr[title] {
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: help;
+}
+.prose :is(del, s) { color: var(--muted); }
+.prose ins { text-decoration: underline; text-decoration-color: var(--success); }
+
+/* Lists, nested to three levels. */
+.prose :is(ul, ol) { padding-inline-start: var(--prose-list-indent, 1.6em); }
+.prose ul { list-style: disc; }
+.prose ul ul { list-style: circle; }
+.prose ul ul ul { list-style: square; }
+.prose ol { list-style: decimal; }
+.prose ol ol { list-style: lower-alpha; }
+.prose ol ol ol { list-style: lower-roman; }
+.prose li::marker { color: var(--prose-marker, var(--muted)); }
+.prose li + li,
+.prose li > * + * { margin-block-start: var(--prose-list-gap, var(--space-2xs)); }
+.prose li > p { margin: 0; }
+/* GitHub task lists. */
+.prose :is(ul.contains-task-list, ul:has(> li > input[type="checkbox"]:first-child)) { list-style: none; padding-inline-start: 0.4em; }
+.prose li > input[type="checkbox"]:first-child { margin: 0 0.5em 0 0; vertical-align: -0.1em; accent-color: var(--accent); }
+
+.prose blockquote {
+  padding-inline-start: var(--space-m);
+  border-inline-start: var(--prose-quote-rule-width, 3px) solid var(--prose-quote-rule, var(--border));
+  color: var(--prose-quote-fg, var(--muted));
+}
+.prose blockquote > * { margin: 0; }
+.prose blockquote > * + * { margin-block-start: var(--space-s); }
+
+.prose dt { font-weight: 600; }
+.prose dd { margin: var(--space-3xs) 0 0; padding-inline-start: var(--space-l); }
+.prose dd + dt { margin-block-start: var(--space-s); }
+
+.prose hr {
+  block-size: 0;
+  border: 0;
+  border-block-start: 1px solid var(--prose-rule, var(--hairline));
+}
+
+/* Media. Markdown wraps a lone image in a <p>; it gets the wide measure. */
+.prose :is(img, video) { display: inline-block; max-inline-size: 100%; block-size: auto; vertical-align: middle; }
+.prose :is(p > img:only-child, figure img, figure video, figure > svg) {
+  display: block;
+  border-radius: var(--prose-media-radius, var(--radius));
+}
+.prose figure { margin-inline: 0; }
+.prose figcaption { margin-block-start: var(--space-xs); color: var(--muted); font-size: 0.875em; }
+.prose figure:has(> :is(img, picture, video, svg)) > figcaption { text-align: center; }
+
+/* Tables need no wrapper: the table itself scrolls sideways when its cells
+ * can't wrap to fit. display: block keeps table semantics in Chromium and
+ * Firefox; WebKit has historically dropped them, so where the renderer can
+ * add one, a .table-wrap around the table is the safe form (the table then
+ * stays display: table). */
+.prose table {
+  display: block;
+  inline-size: max-content;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, var(--border)) transparent;
+}
+.prose .table-wrap > table { display: table; inline-size: 100%; max-inline-size: none; overflow: visible; }
+.prose :is(th, td) {
+  padding: calc(0.5em * var(--density)) calc(0.75em * var(--density));
+  border-block-end: 1px solid var(--table-rule, var(--hairline));
+  text-align: start;
+  vertical-align: top;
+}
+.prose th {
+  background: var(--table-head-bg, transparent);
+  color: var(--table-head-fg, var(--muted));
+  border-block-end: var(--table-head-rule-width, 1px) solid var(--table-head-rule, var(--border));
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: var(--table-head-tracking, 0.06em);
+  text-transform: var(--table-head-transform, uppercase);
+  white-space: nowrap;
+}
+.prose :is(th, td)[align="center"] { text-align: center; }
+.prose :is(th, td)[align="right"] { text-align: end; }
+
+.prose details {
+  padding-inline: var(--space-s);
+  border: 1px solid var(--prose-details-border, var(--border));
+  border-radius: var(--radius);
+  background: var(--prose-details-bg, transparent);
+}
+.prose details[open] { padding-block-end: var(--space-s); }
+.prose summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-block-size: max(var(--tap-min), 2.5rem);
+  padding-block: var(--space-2xs);
+  font-weight: 600;
+  list-style: none;
+  touch-action: manipulation;
+}
+.prose summary::-webkit-details-marker { display: none; }
+.prose summary::before {
+  content: var(--prose-details-glyph, "\25B8");
+  content: var(--prose-details-glyph, "\25B8") / "";
+  flex: none;
+  color: var(--muted);
+}
+.prose details[open] > summary::before { rotate: 90deg; }
+.prose details > :not(summary) { margin: 0; }
+.prose details > :not(summary) + * { margin-block-start: var(--space-xs); }
+
+/* Footnotes, as GitHub, markdown-it-footnote and Pandoc write them. */
+.prose :is(.footnotes, [data-footnotes], [role="doc-endnotes"]) {
+  margin-block-start: var(--space-2xl);
+  padding-block-start: var(--space-m);
+  border-block-start: 1px solid var(--prose-rule, var(--hairline));
+  color: var(--muted);
+  font-size: 0.875em;
+}
+.prose :is(.footnotes, [data-footnotes], [role="doc-endnotes"]) > hr,
+.prose > hr.footnotes-sep { display: none; }
+.prose :is(.footnotes, [data-footnotes], [role="doc-endnotes"]) li > p { display: inline; }
+.prose :is(sup > a, a[role="doc-noteref"], [data-footnote-ref]) { text-decoration: none; font-size: 0.8em; padding-inline: 0.1em; }
+.prose :is(.footnotes, [data-footnotes], [role="doc-endnotes"]) li:target,
+.prose :is(sup, a[role="doc-noteref"]):target {
+  background: var(--prose-target-bg, color-mix(in srgb, var(--accent) 16%, transparent));
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+}
+.prose :is(.footnotes, [data-footnotes]) [id] { scroll-margin-block-start: var(--space-xl); }
+/* GitHub hides the "Footnotes" heading with .sr-only. */
+.prose .sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Callouts: > [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION] ------
+ * GitHub, remark-github-blockquote-alert and markdown-it-github-alerts write
+ *   <div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title">Note</p>…</div>
+ * Obsidian-style renderers write <blockquote data-callout="note">. Both get
+ * the alert colours; the title word carries the meaning, not the colour. */
+:is(.markdown-alert, [data-callout]) {
+  --_callout: var(--callout-note, var(--accent));
+  --_callout-fg: var(--callout-note-text, var(--accent-text, var(--accent)));
+  margin-inline: 0;
+  padding: var(--space-s) var(--space-m);
+  border: 0;
+  border-inline-start: var(--callout-rule-width, 4px) solid var(--_callout);
+  border-radius: var(--callout-radius, 0 var(--radius) var(--radius) 0);
+  background: var(--callout-bg, color-mix(in srgb, var(--_callout) 9%, transparent));
+  color: var(--callout-fg, var(--text));
+}
+:is(.markdown-alert, [data-callout]) > * { margin: 0; }
+:is(.markdown-alert, [data-callout]) > * + * { margin-block-start: var(--space-xs); }
+:is(.markdown-alert-title, .callout-title) {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--_callout-fg);
+  font-weight: 600;
+}
+:is(.markdown-alert-title, .callout-title) > svg { flex: none; inline-size: 1em; block-size: 1em; fill: currentColor; }
+:is(.markdown-alert-tip, [data-callout="tip"], [data-callout="success"]) {
+  --_callout: var(--callout-tip, var(--success));
+  --_callout-fg: var(--callout-tip-text, var(--success-text, var(--success)));
+}
+:is(.markdown-alert-important, [data-callout="important"]) {
+  --_callout: var(--callout-important, var(--accent-2));
+  --_callout-fg: var(--callout-important-text, color-mix(in oklab, var(--accent-2) 55%, var(--text)));
+}
+:is(.markdown-alert-warning, [data-callout="warning"]) {
+  --_callout: var(--callout-warning, var(--warning));
+  --_callout-fg: var(--callout-warning-text, var(--warning-text, var(--warning)));
+}
+:is(.markdown-alert-caution, [data-callout="caution"], [data-callout="danger"]) {
+  --_callout: var(--callout-caution, var(--danger));
+  --_callout-fg: var(--callout-caution-text, var(--danger-text, var(--danger)));
+}
+
+/* === 3. Page-template pieces ============================================== */
+
+/* --- .master-detail: a list beside its detail; on a phone the detail covers
+ * the list, with a back control. Settings, master-detail and inbox use it.
+ *   <div class="master-detail">
+ *     [<nav class="nav-rail">…folders…</nav>]          optional third pane
+ *     <nav class="master-detail-list"><ul class="list">
+ *       <li><label class="list-item"><input type="radio" name="md" form="md">
+ *         <input type="radio" name="md" form="md" class="master-detail-home" checked hidden>One</label></li>
+ *       <li><label class="list-item"><input type="radio" name="md" form="md">Two</label></li>
+ *     </ul></nav>
+ *     <section class="master-detail-pane">
+ *       <button class="btn btn-ghost master-detail-back" type="reset" form="md">Back</button>…</section>
+ *     <section class="master-detail-pane">…</section>
+ *   </div>
+ *   <form id="md" hidden></form>
+ * No JS: item n shows pane n (up to 12). The hidden .master-detail-home radio
+ * is the "list" state: it marks item 1 as the default on wide screens, and
+ * the reset button (a real, focusable button) restores it, which on a phone
+ * goes back to the list. The radios belong to their own empty form, so the
+ * reset touches nothing else on the page. A server-rendered app drops the
+ * radios, renders the one pane, and adds .is-detail on phones when an item
+ * is open (its back control is then a link to the list). */
+.master-detail {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: var(--master-detail-list-width, minmax(14rem, 20rem)) minmax(0, 1fr);
+  gap: var(--master-detail-gap, var(--space-m));
+  align-items: start;
+}
+.master-detail:has(> .nav-rail) {
+  grid-template-columns: auto var(--master-detail-list-width, minmax(14rem, 20rem)) minmax(0, 1fr);
+}
+.master-detail > * { grid-row: 1; min-inline-size: 0; }
+.master-detail > .nav-rail { grid-column: 1; align-self: stretch; }
+.master-detail > .master-detail-list { grid-column: -3; }
+.master-detail > .master-detail-pane { grid-column: -2; }
+.master-detail-back { display: none; }
+/* Pane n hides unless item n is checked (the shown pane keeps its own
+ * display, so a pane can be a .stack or a grid). */
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(1) input:checked))) > .master-detail-pane:where(:nth-child(1 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(2) input:checked))) > .master-detail-pane:where(:nth-child(2 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(3) input:checked))) > .master-detail-pane:where(:nth-child(3 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(4) input:checked))) > .master-detail-pane:where(:nth-child(4 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(5) input:checked))) > .master-detail-pane:where(:nth-child(5 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(6) input:checked))) > .master-detail-pane:where(:nth-child(6 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(7) input:checked))) > .master-detail-pane:where(:nth-child(7 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(8) input:checked))) > .master-detail-pane:where(:nth-child(8 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(9) input:checked))) > .master-detail-pane:where(:nth-child(9 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(10) input:checked))) > .master-detail-pane:where(:nth-child(10 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(11) input:checked))) > .master-detail-pane:where(:nth-child(11 of .master-detail-pane)),
+.master-detail:where(:has(.master-detail-list input[type="radio"]):not(:has(.master-detail-list li:nth-child(12) input:checked))) > .master-detail-pane:where(:nth-child(12 of .master-detail-pane)) {
+  display: none;
+}
+/* A drill-in list on phones: a chevron (an .icon last in the row) shows
+ * only when the list drills in. */
+.master-detail-list .list-item > .icon:last-child:not(:first-child) { display: none; margin-inline-start: auto; color: var(--muted); }
+/* Phone-sized box: one column. The list (and the rail) show until an item
+ * is chosen, then the chosen pane covers them. */
+@container (max-width: 480px) {
+  .master-detail > .master-detail-list,
+  .master-detail > .master-detail-pane { grid-column: 2 / -1; }
+  .master-detail:not(:has(> .nav-rail)) > :is(.master-detail-list, .master-detail-pane) { grid-column: 1 / -1; }
+  .master-detail:not(.is-detail, :has(.master-detail-list input:checked:not(.master-detail-home))) > .master-detail-pane { display: none; }
+  .master-detail:is(.is-detail, :has(.master-detail-list input:checked:not(.master-detail-home))) > :not(.master-detail-pane) { display: none; }
+  .master-detail:is(.is-detail, :has(.master-detail-list input:checked:not(.master-detail-home))) > .master-detail-pane { grid-column: 1 / -1; }
+  .master-detail-back { display: inline-flex; }
+  .master-detail-list .list-item > .icon:last-child:not(:first-child) { display: block; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @container (max-width: 480px) {
+    html:not([data-motion="reduced"], [data-motion="none"]) .master-detail > .master-detail-pane {
+      transition: translate var(--motion-duration-m, 200ms) var(--motion-ease, ease-out), opacity var(--motion-duration-m, 200ms) var(--motion-ease, ease-out);
+      @starting-style { translate: 2rem 0; opacity: 0; }
+    }
+  }
+}
+
+/* --- .otp: a one-time code in per-digit boxes ------------------------------
+ *   <div class="otp">
+ *     <input class="otp-input" id="code" inputmode="numeric" autocomplete="one-time-code"
+ *            maxlength="6" pattern="[0-9]{6}" aria-label="6-digit code">
+ *     <span></span><span></span><span></span><span></span><span></span><span></span>
+ *   </div>
+ * One real input (so typing, paste, autofill and the SMS/e-mail code
+ * suggestion all work with no JS), its digits spaced onto the boxes drawn by
+ * the empty spans. --otp-length matches the box count (default 6). */
+.otp {
+  --_otp-n: var(--otp-length, 6);
+  --_otp-gap: var(--otp-gap, var(--space-xs));
+  --_otp-cell: min(var(--otp-cell-size, 2.75rem), (100cqi - (var(--_otp-n) - 1) * var(--_otp-gap)) / var(--_otp-n));
+  container-type: inline-size;
+  position: relative;
+  display: flex;
+  gap: var(--_otp-gap);
+  block-size: var(--otp-height, 3.25rem);
+  overflow: hidden;
+  direction: ltr;
+}
+.otp > span {
+  flex: 0 0 var(--_otp-cell);
+  border: var(--input-border-width, 1px) solid var(--input-border, var(--border));
+  border-radius: var(--otp-radius, var(--input-radius, var(--radius)));
+  background: var(--input-bg, var(--surface-2));
+}
+.otp-input {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: var(--z-raised);
+  inline-size: calc((var(--_otp-n) + 1) * (var(--_otp-cell) + var(--_otp-gap)));
+  min-block-size: var(--tap-min);
+  margin: 0;
+  padding: 0 0 0 calc((var(--_otp-cell) - 1ch) / 2);
+  border: 0;
+  background: transparent;
+  color: var(--input-fg, var(--text));
+  caret-color: var(--input-caret, var(--focus));
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, var(--_otp-cell) * 0.55, 1.5rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: calc(var(--_otp-cell) + var(--_otp-gap) - 1ch);
+  outline: none;
+}
+.otp-input::placeholder { color: var(--input-placeholder, var(--muted)); opacity: 1; }
+/* The input's own ring would sit off the boxes, so the boxes show focus. */
+.otp:has(> .otp-input:focus-visible) > span {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 1px var(--focus), var(--focus-ring, 0 0 0 0 transparent);
+}
+.otp:has(> .otp-input:is([aria-invalid="true"], .is-invalid)) > span {
+  border-color: var(--danger);
+  background: var(--input-error-bg, var(--input-bg, var(--surface-2)));
+}
+.otp:has(> .otp-input:disabled) { opacity: 0.55; }
+
+/* --- Radio-driven wizard on ol.steps ----------------------------------------
+ *   <div class="wizard">
+ *     <ol class="steps" aria-label="Setup">
+ *       <li><label><input type="radio" name="wiz" id="wiz-1" checked>Workspace</label></li>
+ *       <li><label><input type="radio" name="wiz" id="wiz-2">Invite</label></li>
+ *     </ol>
+ *     <section class="wizard-step">… <label class="btn btn-primary" for="wiz-2">Continue</label></section>
+ *     <section class="wizard-step">…</section>
+ *   </div>
+ * The checked step is current, the steps before it are done (the same
+ * tokens and glyphs as .is-done and aria-current="step"), and step n shows
+ * .wizard-step n (up to 8). The step labels are the radio group, so arrow
+ * keys move through it; Back/Next/Skip are <label for> shortcuts. */
+.steps > li > label {
+  display: block;
+  min-block-size: var(--tap-min);
+  margin-block-start: calc(-1 * (var(--steps-marker) + var(--space-2xs)));
+  padding-block-start: calc(var(--steps-marker) + var(--space-2xs));
+  color: inherit;
+  touch-action: manipulation;
+}
+.steps > li > label > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+.steps > li > label:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.steps > li:has(> label > input:checked) { color: var(--steps-fg-current, var(--text)); font-weight: 600; }
+.steps > li:has(> label > input:checked)::before {
+  border-color: var(--steps-current, var(--accent));
+  color: var(--steps-current-fg, var(--accent-text, var(--accent)));
+  box-shadow: 0 0 0 3px var(--steps-current-halo, transparent);
+}
+.steps > li:has(~ li > label > input:checked) { color: var(--steps-fg-done, var(--text)); }
+.steps > li:has(~ li > label > input:checked)::before {
+  content: var(--steps-done-glyph, "\2713");
+  background: var(--steps-done-bg, var(--accent));
+  border-color: var(--steps-done-bg, var(--accent));
+  color: var(--steps-done-fg, var(--on-accent));
+}
+.steps > li:has(~ li > label > input:checked)::after { background: var(--steps-line-done, var(--accent)); }
+/* Stacked steps (vertical, or a box/screen of 480px or less): the label
+ * reaches back over the marker beside it instead. */
+.steps.is-vertical > li > label {
+  min-block-size: max(var(--tap-min), var(--steps-marker));
+  margin-block-start: -0.3em;
+  margin-inline-start: calc(-1 * (var(--steps-marker) + var(--space-s)));
+  padding-block-start: 0.3em;
+  padding-inline-start: calc(var(--steps-marker) + var(--space-s));
+}
+@container (max-width: 480px) {
+  .steps > li > label {
+    min-block-size: max(var(--tap-min), var(--steps-marker));
+    margin-block-start: -0.3em;
+    margin-inline-start: calc(-1 * (var(--steps-marker) + var(--space-s)));
+    padding-block-start: 0.3em;
+    padding-inline-start: calc(var(--steps-marker) + var(--space-s));
+  }
+}
+@media (max-width: 480px) {
+  .steps > li > label {
+    min-block-size: max(var(--tap-min), var(--steps-marker));
+    margin-block-start: -0.3em;
+    margin-inline-start: calc(-1 * (var(--steps-marker) + var(--space-s)));
+    padding-block-start: 0.3em;
+    padding-inline-start: calc(var(--steps-marker) + var(--space-s));
+  }
+}
+.wizard:not(:has(> .steps > li:nth-child(1) input:checked)) > .wizard-step:nth-child(1 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(2) input:checked)) > .wizard-step:nth-child(2 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(3) input:checked)) > .wizard-step:nth-child(3 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(4) input:checked)) > .wizard-step:nth-child(4 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(5) input:checked)) > .wizard-step:nth-child(5 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(6) input:checked)) > .wizard-step:nth-child(6 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(7) input:checked)) > .wizard-step:nth-child(7 of .wizard-step),
+.wizard:not(:has(> .steps > li:nth-child(8) input:checked)) > .wizard-step:nth-child(8 of .wizard-step) {
+  display: none;
+}
+.wizard > .steps { margin-block-end: var(--space-l); }
+.wizard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-l);
+  padding-block-start: var(--space-m);
+  border-block-start: 1px solid var(--hairline);
+}
+.wizard-actions > .push ~ * { flex: none; }
+
+/* --- Billing period price swap ---------------------------------------------
+ *   <div class="pricing">
+ *     <div class="segmented"><label class="segmented-item"><input type="radio" name="billing" value="monthly" checked>Monthly</label>
+ *       <label class="segmented-item"><input type="radio" name="billing" value="annual">Annual</label></div>
+ *     <div class="price"><span data-billing="monthly">$12<span class="price-period">/mo</span></span>
+ *       <span data-billing="annual">$10<span class="price-period">/mo</span></span></div>
+ *   </div>
+ * Both versions share one grid cell, so nothing moves when the period
+ * changes; the other one is hidden (visibility, so it leaves the
+ * accessibility tree too). */
+.pricing :not(td, th):has(> [data-billing]) { display: grid; }
+.pricing [data-billing] { grid-area: 1 / 1; }
+.pricing:has(input[value="annual"]:checked) [data-billing="monthly"],
+.pricing:not(:has(input[value="annual"]:checked)) [data-billing="annual"] { visibility: hidden; }
+
+/* .card.is-featured — the plan to pick: a heavier ring in the accent. Pair it
+ * with a visible label ("Most popular"), so colour isn't the only signal. */
+.card.is-featured {
+  border-color: var(--card-featured-border, var(--accent));
+  outline: var(--card-featured-ring-width, 2px) solid var(--card-featured-border, var(--accent));
+  outline-offset: -1px;
+}
+/* .panel.is-danger — a danger zone: irreversible actions. */
+.panel.is-danger { border-color: var(--panel-danger-border, var(--danger)); }
+.panel.is-danger > .panel-header { color: var(--danger-text, var(--danger)); }
+
+/* --- Forced colours --------------------------------------------------------- */
+@media (forced-colors: active) {
+  :is(.markdown-alert, [data-callout]) { border-inline-start-color: CanvasText; }
+  pre :is(.line.highlighted, [data-highlighted-line], .line.diff) { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  .otp > span { border-color: CanvasText; }
+  .otp:has(> .otp-input:focus-visible) > span { border-color: Highlight; }
+  .card.is-featured { outline-color: Highlight; }
 }
 /* --- v5 social group (PLAN.md §19 "Collaboration", "Notifications and
  * activity") ------------------------------------------------------------------
@@ -9841,12 +10600,12 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
   font-size: 0.9em;
 }
 /* Read-only: no affordance, quieter text, the arrow cursor. */
-.table td[aria-readonly="true"] {
+.table td:is(.is-readonly, [aria-readonly="true"]) {
   cursor: default;
   color: var(--cell-readonly-fg, var(--muted));
   text-decoration: none;
 }
-.table td.is-editable[aria-readonly="true"]::after { content: none; }
+.table td.is-editable:is(.is-readonly, [aria-readonly="true"])::after { content: none; }
 
 /* Editing: the control fills the cell exactly. The cell's padding moves onto
    the control (less its border), the font and line height are the cell's,

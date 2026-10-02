@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings — ftl-themes template</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<script src="assets/js/prefs.js"></script>
+</head>
+<!-- PLAN.md §22 page template: settings with section nav. .master-detail from core/components/prose.css: a sidebar beside the section on wider screens, a drill-in list on phones (Back is a reset button for the nav radios' own form, so it never resets a settings form). Forms, switch rows, the .prefs display panel (experience.css, made live by assets/js/prefs.js) and a .panel.is-danger danger zone. Section switching needs no JavaScript. See docs/templates.md. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Settings</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack">
+    <h1>Settings</h1>
+    <form id="settings-nav" hidden></form>
+    <div class="master-detail" style="--master-detail-list-width: minmax(12rem, 16rem);">
+      <nav class="master-detail-list" aria-label="Settings sections">
+        <ul class="list">
+        <li><label class="list-item"><input type="radio" name="section" form="settings-nav">
+          <input type="radio" name="section" form="settings-nav" class="master-detail-home" checked hidden><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-user"/></svg><span>Profile</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></label></li>
+        <li><label class="list-item"><input type="radio" name="section" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-lock"/></svg><span>Account</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></label></li>
+        <li><label class="list-item"><input type="radio" name="section" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-bell"/></svg><span>Notifications</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></label></li>
+        <li><label class="list-item"><input type="radio" name="section" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-accessible"/></svg><span>Display</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></label></li>
+        <li><label class="list-item"><input type="radio" name="section" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg><span>Danger zone</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-right"/></svg></label></li>
+        </ul>
+      </nav>
+      <section class="master-detail-pane panel stack" aria-labelledby="s1-title">
+        <div class="cluster"><button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg>Settings</button><h2 id="s1-title">Profile</h2></div>
+        <form class="stack" action="settings.html" method="get">
+          <div class="cluster"><span class="avatar">SM</span><div><strong>Sam Morgan</strong><div class="text-muted">Stage manager, Northstage Company</div></div></div>
+          <div class="columns">
+            <div class="field"><label class="label" for="p-first">First name</label><input class="input" id="p-first" value="Sam" autocomplete="given-name"></div>
+            <div class="field"><label class="label" for="p-last">Last name</label><input class="input" id="p-last" value="Morgan" autocomplete="family-name"></div>
+          </div>
+          <div class="field"><label class="label" for="p-role">Role</label>
+            <select class="select" id="p-role"><option>Stage manager</option><option>Deputy stage manager</option><option>Assistant stage manager</option><option>Operator</option></select></div>
+          <div class="field"><label class="label" for="p-bio">About</label><textarea class="textarea" id="p-bio" rows="3">Calling shows since 2014. Ask me about cue numbering.</textarea>
+            <span class="field-hint">Shown to operators on your shows.</span></div>
+          <div class="cluster"><button class="btn btn-primary" type="submit">Save profile</button><button class="btn btn-secondary" type="reset">Discard</button></div>
+        </form>
+      </section>
+      <section class="master-detail-pane panel stack" aria-labelledby="s2-title">
+        <div class="cluster"><button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg>Settings</button><h2 id="s2-title">Account</h2></div>
+        <form class="stack" action="settings.html" method="get">
+          <div class="field"><label class="label" for="a-email">Email</label><input class="input" id="a-email" type="email" value="sam@northstage.example" autocomplete="email"></div>
+          <div class="field"><label class="label" for="a-pass">New password</label><input class="input" id="a-pass" type="password" autocomplete="new-password" aria-describedby="a-pass-hint a-pass-err" aria-invalid="true" value="short">
+            <span class="field-hint" id="a-pass-hint">At least 12 characters.</span>
+            <span class="field-error" id="a-pass-err">Too short: 5 of 12 characters.</span></div>
+          <div class="field-row">
+            <label class="label" for="a-2fa">Two-factor authentication</label>
+            <span class="field-hint">A code from your authenticator app at sign-in</span>
+            <label class="switch"><input type="checkbox" id="a-2fa" name="a-2fa" checked><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+          <div class="cluster"><button class="btn btn-primary" type="submit">Update account</button></div>
+        </form>
+      </section>
+      <section class="master-detail-pane panel stack" aria-labelledby="s3-title">
+        <div class="cluster"><button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg>Settings</button><h2 id="s3-title">Notifications</h2></div>
+        <form class="stack stack-sm" action="settings.html" method="get">
+          <div class="field-row">
+            <label class="label" for="n-standby">Standby reminders</label>
+            <span class="field-hint">A ping one page before each of your cues</span>
+            <label class="switch"><input type="checkbox" id="n-standby" name="n-standby" checked><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+          <div class="field-row">
+            <label class="label" for="n-sync">Sync conflicts</label>
+            <span class="field-hint">When two operators edit the same cue</span>
+            <label class="switch"><input type="checkbox" id="n-sync" name="n-sync" checked><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+          <div class="field-row">
+            <label class="label" for="n-digest">Weekly show report</label>
+            <span class="field-hint">Every Monday, by email</span>
+            <label class="switch"><input type="checkbox" id="n-digest" name="n-digest"><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+          <div class="field-row">
+            <label class="label" for="n-product">Product news</label>
+            <span class="field-hint">A few times a year</span>
+            <label class="switch"><input type="checkbox" id="n-product" name="n-product"><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+          <div class="field"><label class="label" for="n-quiet">Quiet hours</label>
+            <select class="select" id="n-quiet"><option>During performances</option><option>Never</option><option>22:00 to 08:00</option></select></div>
+        </form>
+      </section>
+      <section class="master-detail-pane panel stack" aria-labelledby="s4-title">
+        <div class="cluster"><button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg>Settings</button><h2 id="s4-title">Display</h2></div>
+        <p class="text-muted">These follow your system settings until you change them, and apply to this whole page (with <code>assets/js/prefs.js</code>).</p>
+          <form class="prefs" id="prefs-settings">
+            <fieldset class="prefs-item">
+              <legend class="prefs-label">Text size</legend>
+              <div class="segmented">
+                <label class="segmented-item"><input type="radio" name="text-size" value="s"><span class="prefs-sample is-s" aria-hidden="true">A</span><span class="visually-hidden">Small</span></label>
+                <label class="segmented-item"><input type="radio" name="text-size" value="" checked><span class="prefs-sample" aria-hidden="true">A</span><span class="visually-hidden">Default</span></label>
+                <label class="segmented-item"><input type="radio" name="text-size" value="l"><span class="prefs-sample is-l" aria-hidden="true">A</span><span class="visually-hidden">Large</span></label>
+                <label class="segmented-item"><input type="radio" name="text-size" value="xl"><span class="prefs-sample is-xl" aria-hidden="true">A</span><span class="visually-hidden">Extra large</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="prefs-item">
+              <legend class="prefs-label">Density</legend>
+              <div class="segmented">
+                <label class="segmented-item"><input type="radio" name="density" value="compact">Compact</label>
+                <label class="segmented-item"><input type="radio" name="density" value="" checked>Default</label>
+                <label class="segmented-item"><input type="radio" name="density" value="comfortable">Roomy</label>
+              </div>
+            </fieldset>
+            <fieldset class="prefs-item">
+              <legend class="prefs-label">Contrast<span class="prefs-hint">More: every border in the text colour, links underlined.</span></legend>
+              <div class="segmented">
+                <label class="segmented-item"><input type="radio" name="contrast" value="standard" checked>Standard</label>
+                <label class="segmented-item"><input type="radio" name="contrast" value="high" data-media="(prefers-contrast: more)">High</label>
+                <label class="segmented-item"><input type="radio" name="contrast" value="more">More</label>
+              </div>
+            </fieldset>
+            <fieldset class="prefs-item">
+              <legend class="prefs-label">Motion<span class="prefs-hint">Off also stops background art and glows.</span></legend>
+              <div class="segmented">
+                <label class="segmented-item"><input type="radio" name="motion" value="full" checked>Full</label>
+                <label class="segmented-item"><input type="radio" name="motion" value="reduced" data-media="(prefers-reduced-motion: reduce)">Reduced</label>
+                <label class="segmented-item"><input type="radio" name="motion" value="none">Off</label>
+              </div>
+            </fieldset>
+            <label class="prefs-item">
+              <span class="prefs-label">Reduce transparency<span class="prefs-hint">Glass and blur become solid.</span></span>
+              <span class="switch"><input type="checkbox" name="transparency" value="reduced" data-media="(prefers-reduced-transparency: reduce)" data-off="default"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+            </label>
+            <label class="prefs-item">
+              <span class="prefs-label">Large touch targets<span class="prefs-hint">44px controls on any screen.</span></span>
+              <span class="switch"><input type="checkbox" name="pointer" value="touch"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+            </label>
+            <label class="prefs-item">
+              <span class="prefs-label">Underline links</span>
+              <span class="switch"><input type="checkbox" name="underline-links" value="on"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+            </label>
+            <fieldset class="prefs-item">
+              <legend class="prefs-label">Accent<span class="prefs-hint">Colours this theme allows.</span></legend>
+              <div class="prefs-accents" data-prefs-accents>
+                <label class="prefs-swatch is-default"><input type="radio" name="accent" value="" checked><span>Theme</span></label>
+              </div>
+            </fieldset>
+            <div class="prefs-actions">
+              <button class="btn" type="reset">Reset to system</button>
+            </div>
+          </form>
+      </section>
+      <section class="master-detail-pane panel stack" aria-labelledby="s5-title">
+        <div class="cluster"><button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="settings-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg>Settings</button><h2 id="s5-title">Danger zone</h2></div>
+        <div class="panel is-danger stack stack-sm">
+          <div class="panel-header">Danger zone</div>
+          <div class="cluster"><div><strong>Leave Northstage Company</strong><div class="text-muted">You lose access to its shows and cue lists.</div></div><button class="btn btn-secondary push" type="button">Leave company</button></div>
+          <div class="cluster"><div><strong>Export my data</strong><div class="text-muted">Every prompt book and note you created, as a zip.</div></div><button class="btn btn-secondary push" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-download"/></svg>Export</button></div>
+          <div class="cluster"><div><strong>Delete account</strong><div class="text-muted">Permanent. Your shows stay with their companies.</div></div><button class="btn btn-danger push" type="button">Delete account</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Settings</span>
+    <span class="push text-muted">Saved 09:12</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

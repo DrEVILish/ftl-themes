@@ -19,6 +19,25 @@ changes are called out explicitly here.
     span the full touch target, the nested-menu pattern in CONTRACT.md
     marks wrapper `<li>`s `role="none"`, blue-future's `--muted` reaches
     4.5:1 on every surface.
+  - Prose and page templates: `.prose` (`components-prose.html`) styles
+    class-less Markdown with a library-neutral `--code-*` palette and
+    callouts; six no-JS templates (sign in, settings, master–detail, inbox,
+    onboarding wizard, pricing) in `docs/templates.md`.
+  - `.tabset` now hides the unchosen panels instead of setting
+    `display: block` on the chosen one, so a panel can be a `.stack` or a
+    grid.
+  - Links in running text (class-less `a` in `p`, `li`, `dd`, `td`,
+    `blockquote`, `figcaption`, `small`) are underlined in every theme
+    (WCAG 1.4.1).
+  - Read-only editable cells use `td.is-readonly` (`aria-readonly` is
+    still styled, for `role="grid"` tables); selected Gantt rows use
+    `.is-selected`; cancelled calendar events keep readable text
+    (`--calendar-event-cancelled-fg`).
+  - Demo pages: `lang`, labelled controls, `role="none"` menu items,
+    focusable scroll regions, table checkboxes in `label.check` (44px touch
+    target), status role on spinners. blue-future gains `--danger-text`.
+    axe on blue-future: 50 of 52 page runs failing → 4.
+  - `scripts/v5_audit.mjs` covers the kit and template pages.
   - Themed transactional emails: `scripts/build_emails.py` writes six
     table-based, inline-styled emails per theme to `dist/email/<slug>/`
     (HTML + plain text), run by `build.sh`.

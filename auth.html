@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — ftl-themes template</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- PLAN.md §22 page template: authentication screens. Sign in and sign up share a .tabset (radio tabs, no JS); forgot password, the two-factor code (.otp: one input drawn as per-digit boxes, so typing, paste and one-time-code autofill work without JS) and check-your-email are their own cards, each ready to copy on its own. Brand buttons follow surfaces.css (not themed). See docs/templates.md. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Cue Lab</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="container stack stack-lg" style="--container-max: 60rem;">
+    <div class="stack stack-sm">
+      <h1>Sign in</h1>
+      <p class="text-muted">Every screen of the sign-in flow. In an app each card is its own page; here they sit side by side so every state can be checked in every theme.</p>
+    </div>
+
+    <div class="columns">
+      <!-- 1. Sign in / sign up -->
+      <section class="card stack" id="signin" aria-labelledby="signin-title">
+        <h2 id="signin-title">Welcome back</h2>
+        <div class="tabset">
+          <div class="tabs">
+            <label class="tab"><input type="radio" name="auth-mode" checked>Sign in</label>
+            <label class="tab"><input type="radio" name="auth-mode">Create account</label>
+          </div>
+          <div class="tab-panel"><form class="stack" action="auth.html#twofactor" method="get">
+            <div class="field">
+              <label class="label" for="in-email">Email</label>
+              <div class="input-group"><span class="input-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mail"/></svg></span><input class="input" id="in-email" name="email" type="email" autocomplete="email" required placeholder="you@company.example"></div>
+            </div>
+            <div class="field">
+              <label class="label" for="in-pass">Password</label>
+              <div class="input-group"><span class="input-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-lock"/></svg></span><input class="input" id="in-pass" name="password" type="password" autocomplete="current-password" required></div>
+            </div>
+            <div class="cluster">
+              <label class="check"><input class="checkbox" type="checkbox" name="remember" checked> Keep me signed in</label>
+              <a class="btn btn-clear btn-sm push" href="#forgot">Forgot password?</a>
+            </div>
+            <button class="btn btn-primary" type="submit">Sign in</button>
+            <hr class="divider">
+          <div class="btn-brand-stack">
+            <button class="btn-brand is-google is-block" type="button"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Continue with Google</button>
+            <button class="btn-brand is-microsoft is-block" type="button"><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in with Microsoft</button>
+          </div>
+          </form></div>
+          <div class="tab-panel"><form class="stack" action="auth.html#check-email" method="get">
+            <div class="field"><label class="label" for="up-name">Full name</label><input class="input" id="up-name" name="name" autocomplete="name" required></div>
+            <div class="field"><label class="label" for="up-email">Work email</label><input class="input" id="up-email" name="email" type="email" autocomplete="email" required></div>
+            <div class="field">
+              <label class="label" for="up-pass">Password</label>
+              <input class="input" id="up-pass" name="password" type="password" autocomplete="new-password" minlength="12" required aria-describedby="up-pass-hint">
+              <span class="field-hint" id="up-pass-hint">At least 12 characters. A passphrase works well.</span>
+            </div>
+            <label class="check"><input class="checkbox" type="checkbox" name="terms" required> I agree to the terms of service</label>
+            <button class="btn btn-primary" type="submit">Create account</button>
+            <hr class="divider">
+          <div class="btn-brand-stack">
+            <button class="btn-brand is-google is-block" type="button"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Continue with Google</button>
+            <button class="btn-brand is-microsoft is-block" type="button"><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in with Microsoft</button>
+          </div>
+          </form></div>
+        </div>
+      </section>
+
+      <div class="stack">
+        <!-- 2. Forgot password -->
+        <section class="card stack" id="forgot" aria-labelledby="forgot-title">
+          <h2 id="forgot-title">Reset your password</h2>
+          <p class="text-muted">Enter the email you signed up with and we'll send a reset link. It works for an hour.</p>
+          <form class="stack" action="auth.html#check-email" method="get">
+            <div class="field">
+              <label class="label" for="fp-email">Email</label>
+              <input class="input" id="fp-email" name="email" type="email" autocomplete="email" required aria-invalid="true" aria-describedby="fp-err" value="sam@northstage">
+              <span class="field-error" id="fp-err">Enter a full email address, like sam@northstage.example.</span>
+            </div>
+            <div class="cluster">
+              <button class="btn btn-primary" type="submit">Send reset link</button>
+              <a class="btn btn-clear" href="#signin"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg>Back to sign in</a>
+            </div>
+          </form>
+        </section>
+
+        <!-- 3. Two-factor code -->
+        <section class="card stack" id="twofactor" aria-labelledby="otp-title">
+          <h2 id="otp-title">Two-step verification</h2>
+          <p class="text-muted">Enter the 6-digit code from your authenticator app.</p>
+          <form class="stack" action="auth.html" method="get">
+            <div class="field">
+              <label class="label" for="otp-code">Verification code</label>
+              <div class="otp">
+                <input class="otp-input" id="otp-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required placeholder="······" aria-describedby="otp-hint">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <span class="field-hint" id="otp-hint">The code changes every 30 seconds.</span>
+            </div>
+            <label class="check"><input class="checkbox" type="checkbox" name="trust"> Trust this device for 30 days</label>
+            <div class="cluster">
+              <button class="btn btn-primary" type="submit">Verify</button>
+              <a class="btn btn-clear" href="#twofactor-recovery">Use a recovery code</a>
+            </div>
+          </form>
+          <form class="stack stack-sm" id="twofactor-recovery" action="auth.html" method="get" aria-label="Recovery code">
+            <div class="field">
+              <label class="label" for="otp-bad">Code (wrong code state)</label>
+              <div class="otp">
+                <input class="otp-input" id="otp-bad" name="code" inputmode="numeric" autocomplete="off" maxlength="6" pattern="[0-9]{6}" value="482019" aria-invalid="true" aria-describedby="otp-bad-err">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <span class="field-error" id="otp-bad-err">That code didn't match. Check your device's clock and try the next one.</span>
+            </div>
+          </form>
+        </section>
+
+        <!-- 4. Check your email -->
+        <section class="card" id="check-email" aria-labelledby="check-title">
+          <div class="empty-state">
+            <span class="empty-state-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mail-opened"/></svg></span>
+            <h2 class="empty-state-title" id="check-title">Check your email</h2>
+            <p class="empty-state-hint">We sent a link to <strong>sam@northstage.example</strong>. Open it on this device to continue. It expires in 60 minutes.</p>
+            <div class="cluster">
+              <button class="btn btn-secondary" type="button">Resend email</button>
+              <a class="btn btn-clear" href="#signin">Use a different email</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Cue Lab</span>
+    <span class="push text-muted">Secured with TLS</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

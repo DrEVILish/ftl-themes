@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prose and code — ftl-themes components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- PLAN.md §22 "Prose and Markdown": .prose for class-less Markdown/CMS
+     HTML, the library-neutral code palette (the class names Prism,
+     highlight.js and Shiki emit, written by hand here: no library is
+     loaded), code-block features and GitHub-style callouts. Core markup
+     only, no page CSS. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Prose</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Prose and code</h1>
+      <p class="text-muted">Markdown and CMS output styled with one wrapper class, a per-theme code palette for Prism, highlight.js and Shiki class names, and GitHub-style callouts (PLAN.md §22). Everything inside <code>.prose</code> below is plain HTML as a Markdown renderer writes it.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-prose">
+      <h2>Article (<code>.prose</code>)</h2>
+      <div class="panel">
+        <article class="prose">
+          <h1>Calling a show from a laptop</h1>
+          <p>Most stage managers learn to call cues from a <strong>paper prompt book</strong>, a pencil and a headset. Moving that book onto a screen changes less than people fear and more than they expect: the <em>timing</em> stays the same, but the book can now talk to sound, lighting and video directly.<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup> This guide covers what changes, what doesn't, and the shortcuts worth learning on day one.</p>
+          <p>Press <kbd>Space</kbd> to fire the next cue, <kbd>Shift</kbd>+<kbd>Space</kbd> to fire it without advancing the playhead, and <kbd>Esc</kbd> to stop everything. The cue list is saved as <code>show.cues.json</code> next to the prompt book, and every change is <mark>synced to the other operators within a second</mark>. <abbr title="Stage Manager">SM</abbr>, <abbr title="Deputy Stage Manager">DSM</abbr> and <abbr title="Assistant Stage Manager">ASM</abbr> each get their own view.</p>
+
+          <h2>Before the first rehearsal</h2>
+          <p>Set the book up the way you would a paper one: script on the left, cues on the right, standby lines a page ahead of the GO. Then work through this list:</p>
+          <ol>
+            <li>Import the script as a PDF or plain text.</li>
+            <li>Create one cue list per department:
+              <ul>
+                <li>Lighting (LX), numbered by the board operator</li>
+                <li>Sound (SQ), with playback cues and mic scenes
+                  <ul>
+                    <li>Playback: one cue per file</li>
+                    <li>Scenes: one cue per mic snapshot</li>
+                  </ul>
+                </li>
+                <li>Video and automation</li>
+              </ul>
+            </li>
+            <li>Agree the standby wording with every operator before tech.</li>
+          </ol>
+          <p>A paper habit worth keeping: write the cue number <em>and</em> the visual or line it hangs off. If the network goes down, the book still has to be readable.<sup><a href="#fn2" id="fnref2" role="doc-noteref">2</a></sup></p>
+
+          <blockquote>
+            <p>The book is the show. If it is not in the book, it did not happen.</p>
+            <p>— A production stage manager, on the first day of tech</p>
+          </blockquote>
+
+          <div class="markdown-alert markdown-alert-note">
+            <p class="markdown-alert-title"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-info"/></svg>Note</p>
+            <p>Cue numbers are text, not numbers: <code>12.5</code> and <code>12A</code> both sort after <code>12</code>.</p>
+          </div>
+          <div class="markdown-alert markdown-alert-tip">
+            <p class="markdown-alert-title"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg>Tip</p>
+            <p>Colour each department's standby line the same as its operator's cue light, so a glance tells you who is waiting.</p>
+          </div>
+          <div class="markdown-alert markdown-alert-important">
+            <p class="markdown-alert-title"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-bell"/></svg>Important</p>
+            <p>Back up the book before every performance. The sync is not a backup.</p>
+          </div>
+          <div class="markdown-alert markdown-alert-warning">
+            <p class="markdown-alert-title"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-warning"/></svg>Warning</p>
+            <p>Renumbering cues during a run renumbers them for every operator at once.</p>
+          </div>
+          <div class="markdown-alert markdown-alert-caution">
+            <p class="markdown-alert-title"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-stop"/></svg>Caution</p>
+            <p>Never fire automation cues from a laptop running on battery saver: the network card sleeps.</p>
+          </div>
+
+          <h2>Cue types at a glance</h2>
+          <dl>
+            <dt>Standby</dt>
+            <dd>A warning to an operator that a cue is coming. Always acknowledged.</dd>
+            <dt>GO</dt>
+            <dd>The command that fires a cue. Said once, on the beat.</dd>
+            <dt>Follow</dt>
+            <dd>A cue that fires itself after the previous one, with a delay in seconds.</dd>
+          </dl>
+
+          <h3>Timing by department</h3>
+          <p>Fade times from the last production week. The table has no wrapper: it scrolls sideways on its own when the cells can't wrap any further.</p>
+          <table tabindex="0">
+            <thead><tr><th>Cue</th><th>Department</th><th>Trigger</th><th align="right">Fade (s)</th><th align="right">Follow (s)</th><th>Operator</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>LX 12</td><td>Lighting</td><td>"Into the woods"</td><td align="right">3.0</td><td align="right">—</td><td>Board 1</td><td>Preheat specials</td></tr>
+              <tr><td>SQ 4</td><td>Sound</td><td>Visual: door opens</td><td align="right">0.5</td><td align="right">2.0</td><td>A1</td><td>Wind loop</td></tr>
+              <tr><td>VID 2</td><td>Video</td><td>With LX 12</td><td align="right">1.5</td><td align="right">—</td><td>Media server</td><td>Forest projection, layer 3</td></tr>
+              <tr><td>FLY 7</td><td>Automation</td><td>"Look, the moon"</td><td align="right">8.0</td><td align="right">—</td><td>Flys</td><td>Moon in, deadhead 2</td></tr>
+            </tbody>
+          </table>
+          <p>The same data in a <code>.table-wrap</code>, the form to use when the renderer can add one:</p>
+          <div tabindex="0" class="table-wrap">
+            <table>
+              <thead><tr><th>Operator</th><th>Cues</th><th align="right">Standbys</th></tr></thead>
+              <tbody>
+                <tr><td>Board 1</td><td>LX 1–48</td><td align="right">31</td></tr>
+                <tr><td>A1</td><td>SQ 1–22</td><td align="right">18</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>The prompt desk</h3>
+          <figure>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 420'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23101a33'/%3E%3Cstop offset='1' stop-color='%23324a7a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='420' fill='url(%23s)'/%3E%3Ccircle cx='920' cy='110' r='54' fill='%23f3e9c6'/%3E%3Cpath d='M0 330 L180 210 L330 300 L520 160 L700 290 L860 200 L1040 300 L1200 230 L1200 420 L0 420Z' fill='%231c2a48'/%3E%3Crect x='120' y='300' width='960' height='90' rx='8' fill='%230b1222'/%3E%3Crect x='170' y='318' width='300' height='54' rx='4' fill='%232fd6ff' opacity='.55'/%3E%3Crect x='500' y='318' width='120' height='54' rx='4' fill='%23ffb000' opacity='.7'/%3E%3Crect x='650' y='318' width='380' height='54' rx='4' fill='%23e6edf3' opacity='.25'/%3E%3C/svg%3E" width="1200" height="420" alt="A prompt desk in front of a stage set: a moonlit forest backdrop above a dark desk with a lit cue screen.">
+            <figcaption>The prompt desk, stage left. Wide images run past the text measure to the container's width.</figcaption>
+          </figure>
+
+          <h3>Firing cues from code</h3>
+          <p>The desk exposes a small API. This block was highlighted by <strong>Prism</strong> (<code>.token.*</code> classes):</p>
+          <pre tabindex="0" class="language-js"><code class="language-js"><span class="token comment">// Fire a cue and wait for every department to confirm.</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> connect <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@cuelab/desk"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> desk <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">show</span><span class="token operator">:</span> <span class="token string">"into-the-woods"</span><span class="token punctuation">,</span> <span class="token literal-property property">retries</span><span class="token operator">:</span> <span class="token number">3</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">go</span><span class="token punctuation">(</span><span class="token parameter">cue<span class="token punctuation">,</span> <span class="token punctuation">{</span> dryRun <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>desk<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>cue<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RangeError</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">No cue </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>cue<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> desk<span class="token punctuation">.</span><span class="token function">fire</span><span class="token punctuation">(</span>cue<span class="token punctuation">,</span> <span class="token punctuation">{</span> dryRun<span class="token punctuation">,</span> <span class="token literal-property property">timeout</span><span class="token operator">:</span> <span class="token number">1500</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+
+          <p>And a footnote-free paragraph before the end, with a <a href="#c-code">link to the code palette</a> and <del>struck</del> and <ins>inserted</ins> text.</p>
+
+          <details>
+            <summary>What if the network drops mid-show?</summary>
+            <p>Every operator's laptop keeps a full copy of the book. Cues still fire locally; the sync catches up when the network returns.</p>
+          </details>
+
+          <hr>
+          <p>Questions about this guide go to the production office.</p>
+
+          <section class="footnotes" role="doc-endnotes">
+            <hr>
+            <ol>
+              <li id="fn1"><p>Through OSC and MIDI show control, or the desk's own network protocol. <a href="#fnref1" class="footnote-back" role="doc-backlink" aria-label="Back to reference 1">↩︎</a></p></li>
+              <li id="fn2"><p>Print the book on the morning of first preview and keep it at the desk. <a href="#fnref2" class="footnote-back" role="doc-backlink" aria-label="Back to reference 2">↩︎</a></p></li>
+            </ol>
+          </section>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-code">
+      <h2>Code palette (Prism, highlight.js, Shiki)</h2>
+      <p class="text-muted">One palette, three libraries' class names. Each block below is hand-written HTML in the shape that library emits; none is loaded on this page. Themes set <code>--code-keyword</code>, <code>--code-string</code>, <code>--code-comment</code> and the rest.</p>
+      <div class="columns" style="--columns: repeat(2, minmax(0, 1fr));">
+        <div class="stack stack-sm">
+          <h3>highlight.js (<code>.hljs-*</code>)</h3>
+          <pre tabindex="0"><code class="hljs language-python"><span class="hljs-comment"># Count standbys per operator</span>
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter
+
+<span class="hljs-meta">@dataclass</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Cue</span>:
+    number: <span class="hljs-built_in">str</span>
+    operator: <span class="hljs-built_in">str</span>
+    standby: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">True</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">standbys</span>(<span class="hljs-params">cues</span>):
+    <span class="hljs-keyword">return</span> Counter(c.operator <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> cues <span class="hljs-keyword">if</span> c.standby)
+
+<span class="hljs-built_in">print</span>(standbys(load(<span class="hljs-string">"show.cues.json"</span>))[<span class="hljs-string">"A1"</span>] * <span class="hljs-number">2</span>)</code></pre>
+        </div>
+        <div class="stack stack-sm">
+          <h3>Shiki (<code>css-variables</code> theme)</h3>
+          <pre tabindex="0" class="shiki css-variables" style="background-color: var(--shiki-background); color: var(--shiki-foreground)"><code><span class="line"><span style="color: var(--shiki-token-keyword)">type</span><span style="color: var(--shiki-foreground)"> </span><span style="color: var(--shiki-token-function)">Department</span><span style="color: var(--shiki-token-keyword)"> =</span><span style="color: var(--shiki-token-string-expression)"> "LX"</span><span style="color: var(--shiki-token-keyword)"> |</span><span style="color: var(--shiki-token-string-expression)"> "SQ"</span><span style="color: var(--shiki-token-keyword)"> |</span><span style="color: var(--shiki-token-string-expression)"> "VID"</span><span style="color: var(--shiki-token-punctuation)">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: var(--shiki-token-comment)">// Standby lines sit one page ahead of the GO</span></span>
+<span class="line"><span style="color: var(--shiki-token-keyword)">const</span><span style="color: var(--shiki-token-constant)"> STANDBY_PAGES</span><span style="color: var(--shiki-token-keyword)"> =</span><span style="color: var(--shiki-token-constant)"> 1</span><span style="color: var(--shiki-token-punctuation)">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: var(--shiki-token-keyword)">function</span><span style="color: var(--shiki-token-function)"> standbyPage</span><span style="color: var(--shiki-token-punctuation)">(</span><span style="color: var(--shiki-token-parameter)">goPage</span><span style="color: var(--shiki-token-keyword)">:</span><span style="color: var(--shiki-token-function)"> number</span><span style="color: var(--shiki-token-punctuation)">)</span><span style="color: var(--shiki-token-punctuation)"> {</span></span>
+<span class="line"><span style="color: var(--shiki-token-keyword)">  return</span><span style="color: var(--shiki-token-function)"> Math</span><span style="color: var(--shiki-token-punctuation)">.</span><span style="color: var(--shiki-token-function)">max</span><span style="color: var(--shiki-token-punctuation)">(</span><span style="color: var(--shiki-token-constant)">1</span><span style="color: var(--shiki-token-punctuation)">,</span><span style="color: var(--shiki-token-parameter)"> goPage</span><span style="color: var(--shiki-token-keyword)"> -</span><span style="color: var(--shiki-token-constant)"> STANDBY_PAGES</span><span style="color: var(--shiki-token-punctuation)">);</span></span>
+<span class="line"><span style="color: var(--shiki-token-punctuation)">}</span></span></code></pre>
+        </div>
+        <div class="stack stack-sm">
+          <h3>Prism markup (<code>language-html</code>)</h3>
+          <pre tabindex="0" class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn btn-primary<span class="token punctuation">"</span></span> <span class="token attr-name">data-cue</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>LX 12<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  GO
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span>
+<span class="token comment">&lt;!-- one GO per cue --&gt;</span></code></pre>
+        </div>
+        <div class="stack stack-sm">
+          <h3>highlight.js CSS (<code>language-css</code>)</h3>
+          <pre tabindex="0"><code class="hljs language-css"><span class="hljs-selector-tag">html</span><span class="hljs-selector-attr">[data-theme=<span class="hljs-string">"my-theme"</span>]</span> {
+  <span class="hljs-attribute">--code-keyword</span>: <span class="hljs-number">#c792ea</span>;
+  <span class="hljs-attribute">--code-string</span>: <span class="hljs-number">#c3e88d</span>;
+  <span class="hljs-attribute">--code-comment</span>: <span class="hljs-built_in">var</span>(--muted);
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-code-features">
+      <h2>Code blocks: header, copy, line numbers, highlighted and diff lines</h2>
+      <p class="text-muted"><code>.code-block</code> adds a header with the file name and a copy button (the app copies and sets <code>.is-copied</code>; both labels share one cell so the width never changes). Line numbers come from <code>.line-numbers</code> on the pre over line spans, or from Prism's own plugin markup.</p>
+      <div class="columns" style="--columns: repeat(2, minmax(0, 1fr));">
+        <figure class="code-block">
+          <figcaption class="code-block-header"><span>standby.ts — Shiki, lines 6 and 7 highlighted</span>
+            <button class="btn btn-sm btn-clear code-copy" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-copy"/></svg><span>Copy</span><span>Copied</span></button></figcaption>
+          <pre tabindex="0" class="shiki css-variables line-numbers has-highlighted" style="background-color: var(--shiki-background); color: var(--shiki-foreground)"><code><span class="line"><span style="color: var(--shiki-token-keyword)">import</span><span style="color: var(--shiki-token-punctuation)"> {</span><span style="color: var(--shiki-token-parameter)"> cues</span><span style="color: var(--shiki-token-punctuation)"> }</span><span style="color: var(--shiki-token-keyword)"> from</span><span style="color: var(--shiki-token-string-expression)"> "./book"</span><span style="color: var(--shiki-token-punctuation)">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: var(--shiki-token-keyword)">export</span><span style="color: var(--shiki-token-keyword)"> function</span><span style="color: var(--shiki-token-function)"> nextStandby</span><span style="color: var(--shiki-token-punctuation)">(</span><span style="color: var(--shiki-token-parameter)">page</span><span style="color: var(--shiki-token-keyword)">:</span><span style="color: var(--shiki-token-function)"> number</span><span style="color: var(--shiki-token-punctuation)">) {</span></span>
+<span class="line"><span style="color: var(--shiki-token-keyword)">  for</span><span style="color: var(--shiki-token-punctuation)"> (</span><span style="color: var(--shiki-token-keyword)">const</span><span style="color: var(--shiki-token-parameter)"> cue</span><span style="color: var(--shiki-token-keyword)"> of</span><span style="color: var(--shiki-token-parameter)"> cues</span><span style="color: var(--shiki-token-punctuation)">) {</span></span>
+<span class="line"><span style="color: var(--shiki-token-comment)">    // standby one page early</span></span>
+<span class="line highlighted"><span style="color: var(--shiki-token-keyword)">    if</span><span style="color: var(--shiki-token-punctuation)"> (</span><span style="color: var(--shiki-token-parameter)">cue</span><span style="color: var(--shiki-token-punctuation)">.</span><span style="color: var(--shiki-token-parameter)">page</span><span style="color: var(--shiki-token-keyword)"> -</span><span style="color: var(--shiki-token-constant)"> 1</span><span style="color: var(--shiki-token-keyword)"> ===</span><span style="color: var(--shiki-token-parameter)"> page</span><span style="color: var(--shiki-token-punctuation)">)</span></span>
+<span class="line highlighted"><span style="color: var(--shiki-token-keyword)">      return</span><span style="color: var(--shiki-token-parameter)"> cue</span><span style="color: var(--shiki-token-punctuation)">;</span></span>
+<span class="line"><span style="color: var(--shiki-token-punctuation)">  }</span></span>
+<span class="line"><span style="color: var(--shiki-token-punctuation)">}</span></span></code></pre>
+        </figure>
+        <figure class="code-block">
+          <figcaption class="code-block-header"><span>book.ts — Shiki diff notation</span>
+            <button class="btn btn-sm btn-clear code-copy is-copied" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-check"/></svg><span>Copy</span><span aria-live="polite">Copied</span></button></figcaption>
+          <pre tabindex="0" class="shiki css-variables has-diff" style="background-color: var(--shiki-background); color: var(--shiki-foreground)"><code><span class="line"><span style="color: var(--shiki-token-keyword)">export</span><span style="color: var(--shiki-token-keyword)"> const</span><span style="color: var(--shiki-token-constant)"> show</span><span style="color: var(--shiki-token-keyword)"> =</span><span style="color: var(--shiki-token-punctuation)"> {</span></span>
+<span class="line diff remove"><span style="color: var(--shiki-token-parameter)">  title</span><span style="color: var(--shiki-token-punctuation)">:</span><span style="color: var(--shiki-token-string-expression)"> "Into the Woods"</span><span style="color: var(--shiki-token-punctuation)">,</span></span>
+<span class="line diff add"><span style="color: var(--shiki-token-parameter)">  title</span><span style="color: var(--shiki-token-punctuation)">:</span><span style="color: var(--shiki-token-string-expression)"> "Into the Woods (tour)"</span><span style="color: var(--shiki-token-punctuation)">,</span></span>
+<span class="line diff add"><span style="color: var(--shiki-token-parameter)">  venues</span><span style="color: var(--shiki-token-punctuation)">:</span><span style="color: var(--shiki-token-constant)"> 10</span><span style="color: var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color: var(--shiki-token-parameter)">  cues</span><span style="color: var(--shiki-token-punctuation)">:</span><span style="color: var(--shiki-token-constant)"> 214</span><span style="color: var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color: var(--shiki-token-punctuation)">};</span></span></code></pre>
+        </figure>
+        <div class="stack stack-sm">
+          <h3>Prism line-numbers plugin</h3>
+          <pre tabindex="0" class="language-js line-numbers"><code class="language-js"><span class="token keyword">const</span> fade <span class="token operator">=</span> <span class="token number">3.0</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> follow <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+desk<span class="token punctuation">.</span><span class="token function">fire</span><span class="token punctuation">(</span><span class="token string">"LX 12"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> fade <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+        </div>
+        <div class="stack stack-sm">
+          <h3>Diff: highlight.js and Prism</h3>
+          <pre tabindex="0"><code class="hljs language-diff"><span class="hljs-meta">@@ -3,3 +3,3 @@</span>
+ fade: 3.0
+<span class="hljs-deletion">- follow: 2.0</span>
+<span class="hljs-addition">+ follow: 1.5</span></code></pre>
+          <pre tabindex="0" class="language-diff"><code class="language-diff"><span class="token coord">@@ -1,2 +1,2 @@</span>
+<span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line">operator: A2</span></span>
+<span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line">operator: A1</span></span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-callouts">
+      <h2>Callouts outside prose</h2>
+      <p class="text-muted">The <code>.markdown-alert-*</code> classes work anywhere, and so does the Obsidian-style <code>blockquote[data-callout]</code>.</p>
+      <blockquote data-callout="warning">
+        <p class="callout-title"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-warning"/></svg>Warning</p>
+        <p>The wireless channel plan changes at the next venue. Re-scan before the half.</p>
+      </blockquote>
+      <blockquote data-callout="tip">
+        <p class="callout-title">Tip</p>
+        <p>Name cue lists after the department, not the operator: operators change between tours.</p>
+      </blockquote>
+    </section>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Prose and code</span>
+    <span class="push text-muted">PLAN.md §22</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

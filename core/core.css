@@ -82,6 +82,14 @@ html {
 }
 
 a { color: var(--link, var(--accent)); }
+/* Links in running text are underlined: colour alone rarely reaches 3:1
+   against the text around them (WCAG 1.4.1). Class-less links only; links
+   that are controls keep their own shape. */
+:where(p, li, dd, td, blockquote, figcaption, small) > a[href]:not([class]) {
+  text-decoration-line: underline;
+  text-decoration-thickness: max(1px, 0.08em);
+  text-underline-offset: 0.18em;
+}
 
 :focus-visible {
   outline: 2px solid var(--focus);
@@ -3713,20 +3721,24 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
      <div class="tabs"><label class="tab"><input type="radio" name="t" checked>One</label>…</div>
      <div class="tab-panel">…</div><div class="tab-panel">…</div>
    </div> */
-.tabset > .tab-panel { display: none; padding-block-start: var(--tab-panel-pad, var(--space-m)); }
-.tabset:has(> .tabs > .tab:nth-child(1) > input:checked) > .tab-panel:nth-child(2),
-.tabset:has(> .tabs > .tab:nth-child(2) > input:checked) > .tab-panel:nth-child(3),
-.tabset:has(> .tabs > .tab:nth-child(3) > input:checked) > .tab-panel:nth-child(4),
-.tabset:has(> .tabs > .tab:nth-child(4) > input:checked) > .tab-panel:nth-child(5),
-.tabset:has(> .tabs > .tab:nth-child(5) > input:checked) > .tab-panel:nth-child(6),
-.tabset:has(> .tabs > .tab:nth-child(6) > input:checked) > .tab-panel:nth-child(7),
-.tabset:has(> .tabs > .tab:nth-child(7) > input:checked) > .tab-panel:nth-child(8),
-.tabset:has(> .tabs > .tab:nth-child(8) > input:checked) > .tab-panel:nth-child(9),
-.tabset:has(> .tabs > .tab:nth-child(9) > input:checked) > .tab-panel:nth-child(10),
-.tabset:has(> .tabs > .tab:nth-child(10) > input:checked) > .tab-panel:nth-child(11),
-.tabset:has(> .tabs > .tab:nth-child(11) > input:checked) > .tab-panel:nth-child(12),
-.tabset:has(> .tabs > .tab:nth-child(12) > input:checked) > .tab-panel:nth-child(13) {
-  display: block;
+.tabset > .tab-panel { padding-block-start: var(--tab-panel-pad, var(--space-m)); }
+/* Hide every panel but the chosen one, so the shown panel keeps its own
+   display (a .stack, a grid…). */
+.tabset > .tab-panel:not(:is(
+  .tabset:has(> .tabs > .tab:nth-child(1) > input:checked) > .tab-panel:nth-child(2),
+  .tabset:has(> .tabs > .tab:nth-child(2) > input:checked) > .tab-panel:nth-child(3),
+  .tabset:has(> .tabs > .tab:nth-child(3) > input:checked) > .tab-panel:nth-child(4),
+  .tabset:has(> .tabs > .tab:nth-child(4) > input:checked) > .tab-panel:nth-child(5),
+  .tabset:has(> .tabs > .tab:nth-child(5) > input:checked) > .tab-panel:nth-child(6),
+  .tabset:has(> .tabs > .tab:nth-child(6) > input:checked) > .tab-panel:nth-child(7),
+  .tabset:has(> .tabs > .tab:nth-child(7) > input:checked) > .tab-panel:nth-child(8),
+  .tabset:has(> .tabs > .tab:nth-child(8) > input:checked) > .tab-panel:nth-child(9),
+  .tabset:has(> .tabs > .tab:nth-child(9) > input:checked) > .tab-panel:nth-child(10),
+  .tabset:has(> .tabs > .tab:nth-child(10) > input:checked) > .tab-panel:nth-child(11),
+  .tabset:has(> .tabs > .tab:nth-child(11) > input:checked) > .tab-panel:nth-child(12),
+  .tabset:has(> .tabs > .tab:nth-child(12) > input:checked) > .tab-panel:nth-child(13)
+)) {
+  display: none;
 }
 
 /* A drawer opened with the popover attribute: <button popovertarget="d">

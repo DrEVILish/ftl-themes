@@ -186,7 +186,7 @@ too.
 - **Event states:** `.is-continued-before` / `.is-continued-after` (the bar runs on from
   or into another week: squared ends, dashed start, an arrow at the end),
   `.is-timed` (a dot and no fill, for a timed event in the month grid),
-  `.is-tentative` (hatched), `.is-cancelled` (struck through, muted).
+  `.is-tentative` (hatched), `.is-cancelled` (struck through; colour `--calendar-event-cancelled-fg`, default the event text).
 - **Phones (container ≤ 480px):** the month grid becomes a compact grid of dates with a
   dot under busy days (`data-events`), bars and "+n more" are hidden, the
   `.calendar-date-month` text (" Sep") is visually hidden, and `.calendar-agenda` is
@@ -289,7 +289,7 @@ too.
     <ol class="gantt-rows">
       <li class="gantt-row is-group"><span class="gantt-task">Website relaunch</span>
         <div class="gantt-track"><span class="gantt-bar is-summary" style="--start:0; --end:19.5" role="img" aria-label="Website relaunch, 28 Sep to 17 Oct"></span></div></li>
-      <li class="gantt-row" aria-selected="true"><span class="gantt-task" style="--level:2">Wireframes</span>
+      <li class="gantt-row is-selected"><span class="gantt-task" style="--level:2">Wireframes</span>
         <div class="gantt-track"><a class="gantt-bar" href="/t/2" data-series="1" style="--start:4.5; --end:9; --progress:.4"><span>Wireframes · 40%</span></a></div></li>
       <li class="gantt-row"><span class="gantt-task" style="--level:2">Design sign-off</span>
         <div class="gantt-track"><span class="gantt-milestone" style="--at:9.5" role="img" aria-label="Milestone: design sign-off, 7 Oct"></span><span class="gantt-milestone-label" style="--at:9.5">Sign-off</span></div></li>
@@ -319,7 +319,7 @@ too.
   (dashed danger border), `.is-summary` (a thin bracket for a group).
 - **Milestones.** `.gantt-milestone` at `--at` (a diamond); `.is-done` hollows it.
   `.gantt-milestone-label` at the same `--at` prints a name beside it.
-- **Rows.** `.gantt-row.is-group` (bold task), `aria-selected="true"` / `.is-selected`
+- **Rows.** `.gantt-row.is-group` (bold task), `.is-selected` (or `aria-selected="true"` when the rows are a `role="grid"`/`treegrid`)
   (tinted task cell), `--level` on `.gantt-task` indents sub-tasks (1 = no indent).
 - **Today.** `.gantt-today` at `--at` units: a full-height line over the rows.
 - **Dependencies.** `svg.gantt-links` is laid over the time axis. Its user units are the
