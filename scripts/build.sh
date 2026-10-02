@@ -82,3 +82,7 @@ python3 scripts/build_manifest.py
 # system". Every theme gets a merged sprite generated for it, even one
 # with no overrides, so the reference path is always valid.
 python3 scripts/build_icons.py
+
+# Themed transactional emails: tokens resolved to literal colours in
+# table-based, inline-styled HTML + plain text (dist/email/<slug>/).
+python3 scripts/build_emails.py

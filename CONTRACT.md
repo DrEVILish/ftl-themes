@@ -460,6 +460,37 @@ start of the title bar. Minimise, maximise and close travel together at the
 end. Every theme's close is now period-correct (Aqua's red light, Mac OS 9's
 close box, Win7's red caption, DOS `[■]`, iOS "Done", XMB "○ Back"…).
 
+### Theme scheduling (v5)
+
+`assets/js/schedule.js` (a reference snippet) switches theme, palette
+variant or seasonal palette by time of day or date, from rules declared on
+`<html>`:
+
+```html
+<html data-theme="blue-future" data-schedule='[
+  {"from": "19:00", "to": "07:00", "variant": "night"},
+  {"from": "10-24", "to": "11-01", "season": "halloween"}
+]'>
+```
+
+`HH:MM` ranges are times of day and `MM-DD` ranges are dates; both may wrap
+midnight or the new year. The first matching rule of each kind wins, and
+it is re-checked every minute. A choice the user made always wins: mark it
+with `data-user-theme` / `data-user-variant` on `<html>`. Switching
+`theme` needs that theme's bundle loaded (or `dist/tokens.css`).
+
+### Themed HTML emails (v5)
+
+`scripts/build.sh` writes transactional emails for every theme to
+`dist/email/<slug>/`: `welcome`, `verify-email`, `reset-password`,
+`receipt`, `alert` and `weekly-digest`, each as `.html` and `.txt`. Email
+clients don't support custom properties, layers or web fonts, so
+`scripts/build_emails.py` resolves the theme's tokens to literal colours
+(gradients collapse to their first colour, translucent colours are blended
+onto the page colour, text is forced to 4.5:1) and writes table-based,
+inline-styled, 600px HTML with a web-safe font stack. Copy the file into
+your mail templates and replace the sample copy, app name and links.
+
 ### CSS-only selection, tabs and panes (v5)
 
 Example pages and plain-HTML apps switch tabs, select list items and open

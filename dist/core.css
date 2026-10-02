@@ -6949,6 +6949,559 @@ kbd kbd { font-size: 0.9em; }
 .list-item[tabindex] { min-block-size: var(--tap-min); }
 .table :is(td, th):focus-visible,
 [role="row"]:focus-visible { outline-offset: -2px; }
+/* --- v5 social group (PLAN.md §19 "Collaboration", "Notifications and
+ * activity") ------------------------------------------------------------------
+ * Presence: .presence avatar stack, status on any .avatar[data-status],
+ * .presence-status labels, per-user colours (data-color="1..6").
+ * Live: .collab-layer holding .live-cursor and .comment-pin at --x/--y.
+ * Comments: mark.comment-anchor, details.comment-thread (core .thread and
+ * .message inside), .message.is-reply, .mention chips; the suggestion list
+ * is forms.css's .combobox + .listbox (options holding an .avatar lay out
+ * as a row here).
+ * Notifications: .notifications (in a .panel, .drawer[popover] or
+ * .popover[popover]), .notification items with unread/group/actions, the
+ * do-not-disturb switch, and .has-badge.is-muted on the bell.
+ * Activity: ol.timeline.activity (instruments.css's timeline with avatars).
+ * Typing stays core's .typing, empty states core's .empty-state.
+ * Docs: docs/components/social.md. */
+
+/* --- Per-user colours -------------------------------------------------------
+ * A short list a theme can repaint; defaults follow the chart palette, which
+ * every theme already keeps distinct. data-color="n" picks one for an
+ * avatar, a live cursor or a comment pin. */
+:root {
+  --presence-color-1: var(--chart-series-1, var(--accent));
+  --presence-color-2: var(--chart-series-2, var(--success));
+  --presence-color-3: var(--chart-series-3, var(--warning));
+  --presence-color-4: var(--chart-series-4, var(--danger));
+  --presence-color-5: var(--chart-series-5, var(--accent-2, var(--accent)));
+  --presence-color-6: var(--chart-series-6, var(--muted));
+}
+[data-color="1"] { --user-color: var(--presence-color-1); }
+[data-color="2"] { --user-color: var(--presence-color-2); }
+[data-color="3"] { --user-color: var(--presence-color-3); }
+[data-color="4"] { --user-color: var(--presence-color-4); }
+[data-color="5"] { --user-color: var(--presence-color-5); }
+[data-color="6"] { --user-color: var(--presence-color-6); }
+/* Text on a user colour: black or white, whichever the colour's lightness
+   calls for (relative colour syntax; older engines keep the fallback). */
+:is(.live-cursor, .comment-pin)[data-color] {
+  --user-fg: var(--live-cursor-fg, #fff);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.68 - l) * 1000, 1) 0 0);
+}
+.avatar[data-color] {
+  --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
+  --avatar-fg: var(--text);
+}
+
+/* --- Status on an avatar ------------------------------------------------------
+ *   <span class="avatar" data-status="away">AT<span class="visually-hidden">, away</span></span>
+ * Four shapes, so colour is never the only signal: online a filled disc,
+ * away a crescent, busy a disc with a bar, offline a hollow ring. */
+.avatar[data-status] {
+  position: relative;
+  overflow: visible;
+}
+.avatar[data-status] > img { border-radius: inherit; }
+:is(.avatar[data-status], .presence-status)::after {
+  content: "";
+  box-sizing: border-box;
+  inline-size: var(--presence-dot-size, 0.7rem);
+  block-size: var(--presence-dot-size, 0.7rem);
+  border-radius: 50%;
+  background: var(--presence-dot);
+  box-shadow: 0 0 0 var(--presence-dot-ring-width, 2px) var(--presence-dot-ring, var(--surface));
+}
+.avatar[data-status]::after {
+  position: absolute;
+  z-index: var(--z-raised); /* above the next avatar in a stack */
+  inset-block-end: -1px;
+  inset-inline-end: -1px;
+}
+[data-status="online"] { --presence-dot: var(--presence-online, var(--success)); }
+[data-status="away"] {
+  --presence-dot: radial-gradient(circle at 72% 28%, var(--presence-dot-ring, var(--surface)) 0 34%, var(--presence-away, var(--warning)) 37%);
+}
+[data-status="busy"] {
+  --presence-dot: linear-gradient(var(--presence-dot-ring, var(--surface)) 0 0) center / 60% 22% no-repeat, var(--presence-busy, var(--danger));
+}
+[data-status="offline"] { --presence-dot: var(--presence-dot-ring, var(--surface)); }
+:is(.avatar, .presence-status)[data-status="offline"]::after {
+  box-shadow:
+    0 0 0 var(--presence-dot-ring-width, 2px) var(--presence-dot-ring, var(--surface)),
+    inset 0 0 0 0.16rem var(--presence-offline, var(--muted));
+}
+/* The shape as a label: <span class="presence-status" data-status="busy">Busy</span> */
+.presence-status {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.45em;
+  font-size: 0.85em;
+  color: var(--presence-status-fg, var(--muted));
+}
+.presence-status::after { flex: none; }
+
+/* --- .presence — the avatar stack ("5 people viewing") ---------------------
+ *   <button class="presence" popovertarget="viewers" aria-label="5 people viewing">
+ *     <span class="avatar" data-status="online">AT</span>…
+ *     <span class="avatar presence-more">+3</span>
+ *   </button>
+ * A <div role="group"> for a stack that opens nothing. Avatars overlap by
+ * --presence-overlap, each ringed in the surface colour. The button form
+ * opens a popover listing who is viewing (.presence-list). Overlap defaults
+ * to a quarter of the avatar size. */
+.presence {
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  vertical-align: middle;
+}
+button.presence {
+  min-block-size: var(--tap-min);
+  border-radius: var(--presence-radius, 999px);
+  touch-action: manipulation;
+}
+@media (hover: hover) {
+  button.presence:hover > .avatar { box-shadow: 0 0 0 2px var(--presence-ring-hover, var(--accent)); }
+}
+button.presence:is(:focus-visible, [aria-expanded="true"]) > .avatar { box-shadow: 0 0 0 2px var(--presence-ring-hover, var(--accent)); }
+.presence > .avatar {
+  margin-inline-start: calc(-1 * var(--presence-overlap, var(--avatar-size, 2.2rem) * 0.25));
+  box-shadow: 0 0 0 var(--presence-ring-width, 2px) var(--presence-ring, var(--surface));
+}
+.presence > .avatar:first-child { margin-inline-start: 0; }
+.presence-more {
+  --avatar-bg: var(--presence-more-bg, var(--surface-2));
+  --avatar-fg: var(--presence-more-fg, var(--text));
+  font-variant-numeric: tabular-nums;
+}
+.presence-label {
+  margin-inline-start: var(--space-xs);
+  font-size: 0.85em;
+  color: var(--presence-label-fg, var(--muted));
+  white-space: nowrap;
+}
+/* Who's viewing: rows of avatar, name and status. Lives in a .popover. */
+.presence-list {
+  display: grid;
+  gap: var(--space-xs);
+  min-inline-size: min(14rem, calc(100vw - 4rem));
+}
+.presence-list > li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-inline-size: 0;
+}
+.presence-list > li > .presence-status { margin-inline-start: auto; }
+
+/* --- .collab-layer, .live-cursor ------------------------------------------
+ *   <div class="collab-layer">…document…
+ *     <span class="live-cursor" data-color="2" style="--x: 40%; --y: 30%" aria-hidden="true">Leo</span>
+ *   </div>
+ * The app moves cursors by setting --x/--y (lengths or percentages of the
+ * layer). The tip of the arrow is the point. Cursors are decoration: the
+ * presence stack carries who is here for assistive tech. */
+.collab-layer {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.live-cursor {
+  position: absolute;
+  z-index: var(--z-raised);
+  left: var(--x, 0);
+  top: var(--y, 0);
+  inline-size: max-content;
+  max-inline-size: 12rem;
+  margin: 1.05rem 0 0 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--live-cursor-radius, var(--radius));
+  background: var(--user-color, var(--accent));
+  color: var(--user-fg, var(--on-accent));
+  box-shadow: var(--live-cursor-shadow, 0 1px 3px rgba(0, 0, 0, 0.35));
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+/* The arrow: its tip is the (--x, --y) point. */
+.live-cursor::before {
+  content: "";
+  position: absolute;
+  left: -0.75rem;
+  top: -1.05rem;
+  inline-size: 1rem;
+  block-size: 1.15rem;
+  background: var(--user-color, var(--accent));
+  clip-path: polygon(0 0, 100% 62%, 52% 64%, 30% 100%);
+  filter: drop-shadow(0 0 1px var(--live-cursor-outline, var(--surface)));
+}
+/* Idle: a faded arrow and a neutral label, so the name stays readable. */
+.live-cursor.is-idle {
+  background: var(--live-cursor-idle-bg, var(--surface-2));
+  color: var(--live-cursor-idle-fg, var(--text));
+  box-shadow: inset 0 0 0 1px var(--user-color, var(--border));
+}
+.live-cursor.is-idle::before { opacity: var(--live-cursor-idle-opacity, 0.45); }
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"], [data-motion="none"]) .live-cursor {
+    transition: left 0.12s linear, top 0.12s linear, opacity 0.3s ease;
+  }
+  html:not([data-motion="reduced"], [data-motion="none"]) .comment-thread-summary::before,
+  html:not([data-motion="reduced"], [data-motion="none"]) .notification-summary::after {
+    transition: rotate 0.15s ease;
+  }
+}
+
+/* --- Comments ---------------------------------------------------------------
+ * mark.comment-anchor: the text a thread is about. Tinted and underlined
+ * (dashed while idle, solid when its thread is open), so colour is not the
+ * only signal. */
+.comment-anchor {
+  background: var(--comment-anchor-bg, color-mix(in srgb, var(--warning) 22%, transparent));
+  padding: 0.25em;
+  color: inherit;
+  text-decoration: underline dashed var(--comment-anchor-line, var(--warning-text, var(--warning)));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.comment-anchor:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-current]:not([aria-current="false"])) {
+  background: var(--comment-anchor-bg-active, color-mix(in srgb, var(--warning) 40%, transparent));
+  text-decoration-style: solid;
+}
+.comment-anchor.is-resolved { background: none; text-decoration-color: var(--muted); }
+
+/* .comment-pin: a speech-bubble marker with a count or initials. A button.
+ * Inside .collab-layer it sits at --x/--y (its tail is the point); anywhere
+ * else it is an inline button (a margin rail, a table cell). */
+.comment-pin {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--tap-min);
+  min-block-size: var(--tap-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--user-fg, var(--comment-pin-fg, var(--on-accent)));
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  touch-action: manipulation;
+  vertical-align: middle;
+}
+.comment-pin::before {
+  content: "";
+  grid-area: 1 / 1;
+  inline-size: var(--comment-pin-size, 1.6rem);
+  block-size: var(--comment-pin-size, 1.6rem);
+  border-radius: var(--comment-pin-radius, 50% 50% 50% 0);
+  background: var(--user-color, var(--comment-pin-bg, var(--accent)));
+  box-shadow: 0 0 0 2px var(--comment-pin-ring, var(--surface)), var(--comment-pin-shadow, 0 1px 3px rgba(0, 0, 0, 0.4));
+}
+.comment-pin > * { grid-area: 1 / 1; position: relative; }
+.collab-layer > .comment-pin {
+  position: absolute;
+  z-index: var(--z-raised);
+  left: var(--x, 0);
+  top: var(--y, 0);
+  translate: calc(-50% + var(--comment-pin-size, 1.6rem) / 2) calc(-50% - var(--comment-pin-size, 1.6rem) / 2);
+}
+.comment-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { --comment-pin-size: 2rem; --comment-pin-ring: var(--comment-pin-ring-active, var(--text)); }
+.collab-layer > .comment-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { z-index: calc(var(--z-raised) + 1); }
+.comment-pin.is-resolved {
+  --user-color: var(--comment-pin-resolved-bg, var(--surface-2));
+  --user-fg: var(--comment-pin-resolved-fg, var(--muted));
+}
+.comment-pin.is-resolved::before { box-shadow: 0 0 0 2px var(--comment-pin-ring, var(--surface)), inset 0 0 0 1px var(--border); }
+@media (hover: hover) {
+  .comment-pin:hover::before { box-shadow: 0 0 0 2px var(--comment-pin-ring-active, var(--text)); }
+}
+.comment-pin:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; border-radius: 50%; }
+
+/* details.comment-thread: the summary quotes the anchored text and says how
+ * many replies there are; closing it collapses the thread. .is-resolved
+ * mutes it (put a "Resolved" badge in the summary: text, not colour). */
+.comment-thread {
+  min-inline-size: 0;
+  background: var(--comment-thread-bg, var(--surface));
+  color: var(--text);
+  border: var(--comment-thread-border-width, 1px) solid var(--comment-thread-border, var(--border));
+  border-radius: var(--comment-thread-radius, var(--radius));
+  box-shadow: var(--comment-thread-shadow, none);
+  overflow-wrap: anywhere;
+}
+.comment-thread:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { border-color: var(--comment-thread-border-active, var(--accent)); box-shadow: 0 0 0 1px var(--comment-thread-border-active, var(--accent)); }
+.comment-thread.is-resolved { --comment-thread-bg: var(--comment-thread-resolved-bg, var(--surface)); border-style: dashed; }
+.comment-thread-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3xs) var(--space-xs);
+  min-block-size: var(--tap-min);
+  padding: var(--space-xs) var(--comment-thread-pad, var(--space-s));
+  font-size: 0.85em;
+  list-style: none;
+  touch-action: manipulation;
+}
+.comment-thread-summary::-webkit-details-marker { display: none; }
+.comment-thread-summary::before {
+  content: var(--comment-thread-marker, "\203A");
+  display: inline-block;
+  inline-size: 0.8em;
+  color: var(--muted);
+}
+.comment-thread[open] > .comment-thread-summary::before { rotate: 90deg; }
+.comment-thread[open] > .comment-thread-summary { border-block-end: 1px solid var(--comment-thread-rule, var(--hairline)); }
+.comment-thread-summary:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+@media (hover: hover) {
+  .comment-thread-summary:hover { background: var(--comment-thread-summary-bg-hover, color-mix(in srgb, var(--text) 6%, transparent)); }
+}
+.comment-thread-quote {
+  flex: 1 1 10rem;
+  min-inline-size: 0;
+  padding-inline-start: var(--space-xs);
+  border-inline-start: 3px solid var(--comment-anchor-line, var(--warning-text, var(--warning)));
+  color: var(--muted);
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.comment-thread-count { color: var(--muted); white-space: nowrap; }
+.comment-thread.is-resolved .comment-thread-quote { border-inline-start-color: var(--muted); text-decoration: line-through; }
+.comment-thread > .thread,
+.comment-thread-footer { padding: var(--comment-thread-pad, var(--space-s)); }
+.comment-thread > .thread { --thread-gap: var(--space-s); }
+/* Comments read as a list, not a chat: bubbles drop their fill and border. */
+.comment-thread .message-bubble {
+  --message-bg: transparent;
+  --message-border: transparent;
+  --message-shadow: none;
+  --message-padding: 0;
+  max-inline-size: none;
+  flex: 1;
+}
+.message.is-reply { margin-inline-start: calc(var(--avatar-size, 2.2rem) + 0.6rem); }
+.message.is-reply > .avatar { --avatar-size: 1.6rem; font-size: 0.7em; }
+.comment-thread-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  border-block-start: 1px solid var(--comment-thread-rule, var(--hairline));
+}
+.comment-thread-footer > .input-group { flex: 1 1 12rem; min-inline-size: 0; }
+/* Reaction chips are core's .badge-button in .message-reactions; a hidden
+   checkbox (or aria-pressed) makes one toggle. */
+.message-reactions > .badge-button { gap: 0.3em; padding: 0.35em 0.7em; }
+.message-reactions > .badge-button[aria-pressed="true"] {
+  background: var(--badge-bg-active, var(--accent));
+  color: var(--badge-fg-active, var(--on-accent));
+}
+
+/* --- .mention — an @name chip in text ------------------------------------
+ * <a class="mention" href="/u/ava">@Ava Tran</a>; .is-self for "you".
+ * Inline, so it wraps with the sentence and stays in running text. */
+.mention {
+  padding: 0.25em 0.3em;
+  border-radius: var(--mention-radius, var(--radius));
+  background: var(--mention-bg, color-mix(in srgb, var(--accent) 16%, transparent));
+  color: var(--mention-fg, var(--accent-text, var(--text)));
+  font-weight: 600;
+  text-decoration: none;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.mention.is-self {
+  background: var(--mention-self-bg, color-mix(in srgb, var(--warning) 30%, transparent));
+  color: var(--mention-self-fg, var(--text));
+  box-shadow: inset 0 -2px 0 var(--mention-self-line, var(--warning-text, var(--warning)));
+}
+@media (hover: hover) {
+  a.mention:hover { text-decoration: underline; }
+}
+a.mention:focus-visible { text-decoration: underline; }
+/* People in a suggestion list (forms.css .listbox): avatar, name, handle. */
+.listbox [role="option"]:has(> .avatar) {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; opacity: 0.75; }
+
+/* --- .notifications — the notification centre ------------------------------
+ * The same content in a page panel, a .drawer[popover] or a .popover[popover]
+ * opened from the bell. Items are .notification rows in a .list. */
+.notifications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  min-inline-size: 0;
+}
+.popover.notifications[popover] {
+  inline-size: min(var(--notifications-width, 24rem), calc(100vw - 1rem));
+  max-inline-size: none;
+  max-block-size: min(var(--notifications-max-height, 36rem), calc(100dvh - 2rem));
+}
+.notifications-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+}
+.notifications-header > :is(h1, h2, h3, h4) { margin: 0; font-size: 1.05rem; }
+.notifications-header > :is(.btn, .btn-close):last-child { margin-inline-start: auto; }
+/* Do not disturb: a switch in a label. Checked (or .notifications.is-dnd,
+   set by the app) shows the paused note. */
+.notifications-dnd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  min-block-size: var(--tap-min);
+  font-size: 0.9em;
+  touch-action: manipulation;
+}
+.notifications-paused {
+  display: none;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: var(--space-xs) var(--space-s);
+  border-radius: var(--radius);
+  background: var(--notifications-paused-bg, var(--surface-2));
+  color: var(--notifications-paused-fg, var(--text));
+  font-size: 0.85em;
+}
+.notifications:is(.is-dnd, :has(.notifications-dnd input:checked)) .notifications-paused { display: flex; }
+.notifications > .list { --list-bg: transparent; }
+
+.notification {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--notification-pad, var(--space-xs) var(--space-s));
+  padding-inline-start: calc(var(--space-s) + var(--notification-dot-size, 0.5rem));
+  min-inline-size: 0;
+  color: var(--notification-read-fg, var(--muted));
+}
+.notification-body {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--space-3xs);
+  overflow-wrap: anywhere;
+}
+.notification-body > * { margin: 0; }
+.notification-body > time { font-size: 0.8em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.notification-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-3xs);
+  margin-block: calc(-1 * var(--space-3xs));
+}
+/* Unread: a tinted row, a dot at the start and bolder text (put "Unread"
+   in a visually hidden span too). */
+.notification.is-unread {
+  background: var(--notification-unread-bg, color-mix(in srgb, var(--accent) 9%, transparent));
+  color: var(--notification-unread-fg, var(--text));
+}
+.notification.is-unread .notification-body > :first-child { font-weight: 600; }
+.notification.is-unread::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-s) / 2);
+  top: calc(var(--space-xs) + 0.55em);
+  inline-size: var(--notification-dot-size, 0.5rem);
+  block-size: var(--notification-dot-size, 0.5rem);
+  border-radius: 50%;
+  background: var(--notification-dot, var(--accent));
+}
+/* Grouped: <li class="notification is-group"><details>
+     <summary class="notification-summary">…3 new comments on…</summary>
+     <ul class="notification-group">…</ul>…</details></li> */
+.notification.is-group { display: block; padding: 0; }
+.notification.is-group.is-unread::before { top: calc(var(--space-xs) + 1.2em); }
+.notification-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-block-size: var(--tap-min);
+  padding: var(--notification-pad, var(--space-xs) var(--space-s));
+  padding-inline-start: calc(var(--space-s) + var(--notification-dot-size, 0.5rem));
+  list-style: none;
+  touch-action: manipulation;
+}
+.notification-summary::-webkit-details-marker { display: none; }
+.notification-summary::after {
+  content: var(--comment-thread-marker, "\203A");
+  margin-inline-start: auto;
+  color: var(--muted);
+}
+details[open] > .notification-summary::after { rotate: 90deg; }
+.notification-summary:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+@media (hover: hover) {
+  .notification-summary:hover { background: var(--notification-bg-hover, color-mix(in srgb, var(--text) 6%, transparent)); }
+}
+.notification-group {
+  display: grid;
+  margin-inline-start: calc(var(--space-s) + var(--notification-dot-size, 0.5rem));
+  border-inline-start: 2px solid var(--notification-group-rule, var(--hairline));
+}
+.notification-group > .notification { padding-inline-start: var(--space-s); font-size: 0.92em; }
+.notification-group > .notification::before { display: none; }
+.notification-group-footer { display: flex; justify-content: flex-end; padding: 0 var(--space-s) var(--space-xs); }
+
+/* The bell while notifications are paused: a quiet grey count. */
+.has-badge.is-muted {
+  --has-badge-bg: var(--has-badge-muted-bg, var(--surface-2));
+  --has-badge-fg: var(--has-badge-muted-fg, var(--muted));
+}
+
+/* --- .activity — an activity feed on core's timeline -----------------------
+ *   <ol class="timeline activity">
+ *     <li><span class="avatar">AT</span>
+ *       <p><strong>Ava Tran</strong> commented on <a href="…">Q4 plan</a></p>
+ *       <time datetime="…">5 min ago</time></li>
+ * The actor's avatar replaces the timeline dot; a row without one (a system
+ * event) keeps the dot and its state (.is-done, .is-warn…). */
+.timeline.activity {
+  --timeline-dot-size: var(--activity-avatar-size, 1.8rem);
+  --timeline-gap: var(--activity-gap, var(--space-s));
+}
+.activity > li > .avatar:first-child {
+  --avatar-size: var(--activity-avatar-size, 1.8rem);
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  font-size: 0.7em;
+}
+.activity > li:has(> .avatar:first-child)::before { visibility: hidden; }
+.activity > li > p { margin: 0; color: var(--activity-fg, var(--text)); }
+.activity > li > time { margin-block-start: var(--space-3xs); }
+.activity-quote {
+  margin: var(--space-2xs) 0 0;
+  padding-inline-start: var(--space-xs);
+  border-inline-start: 3px solid var(--activity-quote-rule, var(--hairline));
+  color: var(--muted);
+  font-size: 0.9em;
+}
 /* --- v5 surfaces and media (PLAN.md §9 #47, #49, #50) --------------------
  * Image card, draggable-window states, brand sign-in buttons.
  * Docs: docs/components/surfaces.md. Demo: components-surfaces.html. */

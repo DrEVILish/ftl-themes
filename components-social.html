@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collaboration and notifications — ftl-themes components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- PLAN.md §19 "Collaboration" and "Notifications and activity": presence,
+     live cursors, comment threads, mentions, the typing indicator, the
+     notification centre and the activity feed. Core markup only, no page
+     CSS, and no script: every popover, drawer, tab and toggle is HTML. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Social</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon has-badge" data-count="4" popovertarget="notif-pop" aria-label="Notifications, 4 unread"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Collaboration and notifications</h1>
+      <p class="text-muted">Presence, live cursors, comments, mentions, the notification centre and the activity feed (PLAN.md §19). Apps send the live data; these classes style every state. Nothing on this page needs JavaScript: the bell, the pins and the avatar stack open popovers, the drawer is a popover, and the tabs and toggles are radios and checkboxes.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-presence">
+      <h2>Presence <code>.presence</code></h2>
+      <p class="text-muted">An avatar stack with a “+3” overflow. As a button it opens who's viewing; as a group it is just a picture with a label. Status dots differ in shape as well as colour.</p>
+      <div class="panel stack">
+        <div class="cluster cluster-lg">
+          <button class="presence" popovertarget="viewers" aria-label="6 people viewing: Ava Tran, Leo Park, Mia Chen and 3 more">
+            <span class="avatar" data-color="1" data-status="online">AT</span>
+            <span class="avatar" data-color="2" data-status="online">LP</span>
+            <span class="avatar" data-color="3" data-status="away">MC</span>
+            <span class="avatar presence-more">+3</span>
+          </button>
+          <div class="presence" role="group" aria-label="3 people editing">
+            <span class="avatar avatar-sm" data-color="4">SO</span>
+            <span class="avatar avatar-sm" data-color="5">JR</span>
+            <span class="avatar avatar-sm" data-color="6">KB</span>
+            <span class="presence-label" aria-hidden="true">3 editing</span>
+          </div>
+          <div class="presence" role="group" aria-label="2 people viewing">
+            <span class="avatar avatar-lg" data-status="busy">NO<span class="visually-hidden">, busy</span></span>
+            <span class="avatar avatar-lg" data-status="offline">RV<span class="visually-hidden">, offline</span></span>
+            <span class="presence-label" aria-hidden="true">2 viewing</span>
+          </div>
+        </div>
+        <ul class="cluster cluster-lg" aria-label="Status key">
+          <li><span class="presence-status" data-status="online">Online</span></li>
+          <li><span class="presence-status" data-status="away">Away</span></li>
+          <li><span class="presence-status" data-status="busy">Busy</span></li>
+          <li><span class="presence-status" data-status="offline">Offline</span></li>
+        </ul>
+        <div class="cluster">
+          <span class="avatar" data-status="online">AT<span class="visually-hidden">, online</span></span>
+          <span class="avatar" data-status="away">LP<span class="visually-hidden">, away</span></span>
+          <span class="avatar" data-status="busy">MC<span class="visually-hidden">, busy</span></span>
+          <span class="avatar" data-status="offline">SO<span class="visually-hidden">, offline</span></span>
+          <span class="avatar avatar-sm" data-color="1" data-status="online">AT<span class="visually-hidden">, online</span></span>
+          <span class="avatar avatar-lg" data-color="2" data-status="away">LP<span class="visually-hidden">, away</span></span>
+        </div>
+      </div>
+      <div class="popover" popover id="viewers" aria-label="Who's viewing">
+        <ul class="presence-list">
+          <li><span class="avatar avatar-sm" data-color="1">AT</span>Ava Tran<span class="presence-status" data-status="online">Online</span></li>
+          <li><span class="avatar avatar-sm" data-color="2">LP</span>Leo Park<span class="presence-status" data-status="online">Online</span></li>
+          <li><span class="avatar avatar-sm" data-color="3">MC</span>Mia Chen<span class="presence-status" data-status="away">Away</span></li>
+          <li><span class="avatar avatar-sm" data-color="4">SO</span>Sam Ortiz<span class="presence-status" data-status="busy">Busy</span></li>
+          <li><span class="avatar avatar-sm" data-color="5">JR</span>Jo Reyes<span class="presence-status" data-status="away">Away</span></li>
+          <li><span class="avatar avatar-sm" data-color="6">KB</span>Kai Brandt<span class="presence-status" data-status="offline">Offline</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-live-cursors">
+      <h2>Live cursors and comment pins <code>.collab-layer</code></h2>
+      <p class="text-muted">The app sets <code>--x</code>/<code>--y</code> on each cursor and pin. Each person keeps one colour (<code>data-color</code>) across their avatar, cursor and pins. Tap a pin to open its thread.</p>
+      <div class="panel collab-layer">
+        <h3>Q4 launch plan</h3>
+        <p>We ship the export rewrite in <mark class="comment-anchor is-active">week 42, after the freeze lifts</mark>. Support gets a two-week heads-up and the release notes go out with the build.</p>
+        <p>Pricing stays as it is until January; the <mark class="comment-anchor is-resolved">annual discount</mark> is still under review with finance.</p>
+        <p class="text-muted">Owners: Ava (export), Leo (docs), Mia (support).</p>
+        <span class="live-cursor" data-color="2" style="--x: 62%; --y: 30%" aria-hidden="true">Leo Park</span>
+        <span class="live-cursor" data-color="3" style="--x: 20%; --y: 52%" aria-hidden="true">Mia Chen</span>
+        <span class="live-cursor is-idle" data-color="5" style="--x: 74%; --y: 58%" aria-hidden="true">Jo (idle)</span>
+        <button class="comment-pin is-active" data-color="1" style="--x: 30%; --y: 42%" popovertarget="pin-thread-1" aria-label="Comment thread by Ava Tran, 3 comments"><span>3</span></button>
+        <button class="comment-pin is-resolved" style="--x: 90%; --y: 20%" popovertarget="pin-thread-2" aria-label="Resolved comment by Leo Park"><span>LP</span></button>
+      </div>
+      <div class="popover" popover id="pin-thread-1" aria-label="Comment thread">
+        <div class="thread">
+          <div class="message"><span class="avatar avatar-sm" data-color="1">AT</span>
+            <div class="message-bubble"><div class="message-meta"><strong>Ava Tran</strong> <time>10:02</time></div><p>Can we move this to week 43? QA wants one more pass.</p></div></div>
+          <div class="message"><span class="avatar avatar-sm" data-color="2">LP</span>
+            <div class="message-bubble"><div class="message-meta"><strong>Leo Park</strong> <time>10:15</time></div><p>Fine by docs.</p></div></div>
+        </div>
+      </div>
+      <div class="popover" popover id="pin-thread-2" aria-label="Resolved comment">
+        <p><span class="badge badge-success">Resolved</span> Leo Park: “Finance signed off the annual discount.”</p>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-comments">
+      <h2>Comment threads <code>.comment-thread</code></h2>
+      <p class="text-muted">A <code>&lt;details&gt;</code>: the summary quotes the anchored text, and closing it collapses the thread. Replies, reaction chips (checkboxes, so they toggle with no script), the typing indicator and a reply box. Resolved threads are muted and say so.</p>
+      <div class="grid grid-lg">
+        <details class="comment-thread is-active" open>
+          <summary class="comment-thread-summary">
+            <span class="comment-thread-quote">“week 42, after the freeze lifts”</span>
+            <span class="comment-thread-count">3 comments</span>
+          </summary>
+          <div class="thread">
+            <div class="message"><span class="avatar" data-color="1" data-status="online">AT<span class="visually-hidden">, online</span></span>
+              <div class="message-bubble">
+                <div class="message-meta"><strong>Ava Tran</strong> <time datetime="2026-10-02T10:02">10:02</time></div>
+                <p>Can we move this to week 43? QA wants one more pass on the CSV path. <a class="mention" href="#c-mentions">@Leo Park</a> does that work for docs?</p>
+                <div class="message-reactions">
+                  <label class="badge badge-button"><input type="checkbox" checked><span aria-hidden="true">👍</span> 2<span class="visually-hidden"> people agree; you reacted</span></label>
+                  <label class="badge badge-button"><input type="checkbox"><span aria-hidden="true">👀</span> 1<span class="visually-hidden"> person looking</span></label>
+                </div>
+              </div></div>
+            <div class="message is-reply"><span class="avatar" data-color="2">LP</span>
+              <div class="message-bubble">
+                <div class="message-meta"><strong>Leo Park</strong> <time datetime="2026-10-02T10:15">10:15</time></div>
+                <p>Fine by docs. <a class="mention is-self" href="#c-mentions">@you</a> can you tell support?</p>
+              </div></div>
+            <div class="message is-reply"><span class="avatar" data-color="3">MC</span>
+              <div class="message-bubble">
+                <div class="message-meta"><strong>Mia Chen</strong> <time datetime="2026-10-02T10:21">10:21</time></div>
+                <p>Support is ready either way.</p>
+              </div></div>
+            <div class="typing">Leo is typing…</div>
+          </div>
+          <form class="comment-thread-footer" action="#c-comments">
+            <div class="input-group">
+              <input class="input" aria-label="Reply" placeholder="Reply…">
+              <button class="btn btn-primary" type="button">Reply</button>
+            </div>
+            <button class="btn btn-ghost" type="button"><svg class="icon"><use href="assets/icons/icons.svg#icon-check"/></svg> Resolve</button>
+          </form>
+        </details>
+
+        <div class="stack">
+          <details class="comment-thread">
+            <summary class="comment-thread-summary">
+              <span class="comment-thread-quote">“release notes go out with the build”</span>
+              <span class="comment-thread-count">2 comments</span>
+            </summary>
+            <div class="thread">
+              <div class="message"><span class="avatar" data-color="4">SO</span>
+                <div class="message-bubble"><div class="message-meta"><strong>Sam Ortiz</strong> <time>Yesterday</time></div><p>Collapsed thread: open it to read.</p></div></div>
+              <div class="message is-reply"><span class="avatar" data-color="1">AT</span>
+                <div class="message-bubble"><div class="message-meta"><strong>Ava Tran</strong> <time>Yesterday</time></div><p>Noted.</p></div></div>
+            </div>
+          </details>
+
+          <details class="comment-thread is-resolved">
+            <summary class="comment-thread-summary">
+              <span class="comment-thread-quote">“annual discount”</span>
+              <span class="badge badge-success">Resolved</span>
+              <span class="comment-thread-count">4 comments</span>
+            </summary>
+            <div class="thread">
+              <div class="message"><span class="avatar" data-color="2">LP</span>
+                <div class="message-bubble"><div class="message-meta"><strong>Leo Park</strong> <time>Mon</time></div><p>Finance signed off the annual discount.</p></div></div>
+            </div>
+            <div class="comment-thread-footer">
+              <button class="btn btn-ghost" type="button">Reopen</button>
+            </div>
+          </details>
+
+          <details class="comment-thread is-resolved" open>
+            <summary class="comment-thread-summary">
+              <span class="comment-thread-quote">“Owners: Ava, Leo, Mia”</span>
+              <span class="badge badge-success">Resolved</span>
+              <span class="comment-thread-count">1 comment</span>
+            </summary>
+            <div class="thread">
+              <div class="message"><span class="avatar" data-color="3">MC</span>
+                <div class="message-bubble"><div class="message-meta"><strong>Mia Chen</strong> <time>Mon</time></div><p>Resolved but open: still readable, muted.</p></div></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-mentions">
+      <h2>Mentions <code>.mention</code></h2>
+      <p class="text-muted">Inline chips that wrap with the sentence; <code>.is-self</code> marks you. The suggestion list is the forms group's <code>.combobox</code> and <code>.listbox</code>: an option holding an avatar lays out as a person row. The app filters as you type after “@”.</p>
+      <div class="panel stack">
+        <p>Thanks <a class="mention" href="#c-presence">@Ava Tran</a> and <a class="mention" href="#c-presence">@Leo Park</a>. <a class="mention is-self" href="#c-presence">@you</a>, the hand-off is yours. A plain span works too: <span class="mention">@design-team</span>.</p>
+        <div class="field">
+          <label class="label" for="mention-input">Comment</label>
+          <div class="combobox">
+            <input class="input" id="mention-input" role="combobox" aria-expanded="true" aria-controls="mention-list" aria-autocomplete="list" aria-activedescendant="mo-2" value="Over to @a" autocomplete="off">
+            <ul class="listbox demo-inline" role="listbox" id="mention-list" aria-label="People">
+              <li role="option" id="mo-1"><span class="avatar avatar-sm" data-color="1" data-status="online">AT</span><span><mark>A</mark>va Tran</span><small>@ava</small></li>
+              <li role="option" id="mo-2" class="is-active"><span class="avatar avatar-sm" data-color="6" data-status="away">AB</span><span><mark>A</mark>lex Brandt</span><small>@alexb</small></li>
+              <li role="option" id="mo-3" aria-selected="true"><span class="avatar avatar-sm" data-color="4" data-status="offline">AO</span><span><mark>A</mark>mir Osei</span><small>@amir</small></li>
+              <li role="option" id="mo-4" aria-disabled="true"><span class="avatar avatar-sm">AN</span><span><mark>A</mark>nna (no access)</span><small>@anna</small></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-typing">
+      <h2>Typing indicator <code>.typing</code></h2>
+      <p class="text-muted">Core's indicator, unchanged: dots pulse only with motion allowed.</p>
+      <div class="panel stack stack-sm">
+        <div class="typing">Leo is typing…</div>
+        <div class="typing">Ava and 2 others are typing…</div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-notifications">
+      <h2>Notification centre <code>.notifications</code></h2>
+      <p class="text-muted">One block of markup in three places: a page panel, a popover from the bell, and a drawer. Unread rows are tinted, dotted and bold; a group collapses “3 new comments on …”; do not disturb is a switch.</p>
+      <div class="cluster">
+        <button class="btn btn-icon is-clear has-badge" data-count="4" popovertarget="notif-pop" aria-label="Notifications, 4 unread"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+        <button class="btn btn-icon is-clear has-badge" popovertarget="notif-pop" aria-label="Notifications, new"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+        <button class="btn btn-icon is-clear has-badge is-muted" data-count="4" popovertarget="notif-pop" aria-label="Notifications paused, 4 unread"><svg class="icon"><use href="assets/icons/icons.svg#icon-moon"/></svg></button>
+        <button class="btn btn-icon is-clear" popovertarget="notif-pop" aria-label="Notifications, none unread"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+        <button class="btn btn-secondary" popovertarget="notif-drawer">Open as a drawer</button>
+      </div>
+
+      <section class="panel notifications" aria-labelledby="notif-panel-title">
+        <div class="notifications-header">
+          <h3 id="notif-panel-title">Notifications</h3>
+          <span class="badge badge-accent">4 new</span>
+          <button class="btn btn-clear btn-sm" type="button">Mark all read</button>
+        </div>
+        <label class="notifications-dnd">Do not disturb
+          <span class="switch"><input type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+        </label>
+        <p class="notifications-paused" role="status"><svg class="icon"><use href="assets/icons/icons.svg#icon-moon"/></svg> Paused until 09:00. You'll still see everything here.</p>
+        <div class="tabset">
+          <div class="tabs">
+            <label class="tab"><input type="radio" name="notif-tab" checked>All</label>
+            <label class="tab has-badge" data-count="1"><input type="radio" name="notif-tab">Mentions<span class="visually-hidden">, 1 unread</span></label>
+            <label class="tab"><input type="radio" name="notif-tab">Following</label>
+          </div>
+          <div class="tab-panel">
+            <ul class="list">
+              <li class="notification is-unread">
+                <span class="avatar avatar-sm" data-color="2">LP</span>
+                <div class="notification-body">
+                  <p><span class="visually-hidden">Unread: </span>Leo Park mentioned you in <a href="#c-comments">Q4 launch plan</a></p>
+                  <p class="text-muted">“@you can you tell support?”</p>
+                  <time datetime="2026-10-02T10:15">5 min ago</time>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon"><use href="assets/icons/icons.svg#icon-check"/></svg></button>
+                  <button class="btn btn-icon btn-sm is-clear" popovertarget="notif-menu" aria-label="More actions" aria-haspopup="menu"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+                </div>
+              </li>
+              <li class="notification is-group is-unread">
+                <details>
+                  <summary class="notification-summary">
+                    <span class="presence" aria-hidden="true">
+                      <span class="avatar avatar-sm" data-color="1">AT</span>
+                      <span class="avatar avatar-sm" data-color="3">MC</span>
+                    </span>
+                    <span class="notification-body"><span><span class="visually-hidden">Unread: </span>3 new comments on <strong>Q4 launch plan</strong></span><time datetime="2026-10-02T10:21">12 min ago</time></span>
+                  </summary>
+                  <ul class="notification-group">
+                    <li class="notification is-unread"><div class="notification-body"><p>Ava Tran: “Can we move this to week 43?”</p><time>10:02</time></div></li>
+                    <li class="notification is-unread"><div class="notification-body"><p>Leo Park: “Fine by docs.”</p><time>10:15</time></div></li>
+                    <li class="notification is-unread"><div class="notification-body"><p>Mia Chen: “Support is ready either way.”</p><time>10:21</time></div></li>
+                  </ul>
+                  <div class="notification-group-footer"><button class="btn btn-clear btn-sm" type="button">Mark 3 read</button></div>
+                </details>
+              </li>
+              <li class="notification is-unread">
+                <span class="avatar avatar-sm" data-color="4">SO</span>
+                <div class="notification-body">
+                  <p><span class="visually-hidden">Unread: </span>Sam Ortiz assigned you <a href="#c-activity">EXP-412 CSV export</a></p>
+                  <time datetime="2026-10-02T09:40">40 min ago</time>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon"><use href="assets/icons/icons.svg#icon-check"/></svg></button>
+                  <button class="btn btn-icon btn-sm is-clear" popovertarget="notif-menu" aria-label="More actions" aria-haspopup="menu"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+                </div>
+              </li>
+              <li class="notification">
+                <span class="avatar avatar-sm" data-color="5">JR</span>
+                <div class="notification-body">
+                  <p>Jo Reyes resolved your comment on <a href="#c-comments">Pricing</a></p>
+                  <time datetime="2026-10-01T16:05">Yesterday</time>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn btn-icon btn-sm is-clear" aria-label="Mark as unread"><svg class="icon"><use href="assets/icons/icons.svg#icon-mail"/></svg></button>
+                  <button class="btn btn-icon btn-sm is-clear" popovertarget="notif-menu" aria-label="More actions" aria-haspopup="menu"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button>
+                </div>
+              </li>
+              <li class="notification">
+                <span class="avatar avatar-sm"><svg class="icon"><use href="assets/icons/icons.svg#icon-settings"/></svg></span>
+                <div class="notification-body">
+                  <p>Export finished: 1,240 rows</p>
+                  <time datetime="2026-10-01T11:00">Yesterday</time>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <ul class="list">
+              <li class="notification is-unread">
+                <span class="avatar avatar-sm" data-color="2">LP</span>
+                <div class="notification-body">
+                  <p><span class="visually-hidden">Unread: </span>Leo Park mentioned you in <a href="#c-comments">Q4 launch plan</a></p>
+                  <time datetime="2026-10-02T10:15">5 min ago</time>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="tab-panel">
+            <div class="empty-state">
+              <svg class="icon empty-state-icon"><use href="assets/icons/icons.svg#icon-bell"/></svg>
+              <p class="empty-state-title">You're all caught up</p>
+              <p class="empty-state-hint">Nothing new from the pages you follow.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <ul class="context-menu" role="menu" popover id="notif-menu">
+        <li><button role="menuitem">Mark as read</button></li>
+        <li><button role="menuitem">Mute this thread</button></li>
+        <li><button role="menuitem">Notification settings</button></li>
+        <li role="separator"></li>
+        <li><button role="menuitem" class="is-danger">Remove</button></li>
+      </ul>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-activity">
+      <h2>Activity feed <code>.activity</code></h2>
+      <p class="text-muted">The instruments group's <code>ol.timeline</code> with the actor's avatar in place of the dot: who, what, which object, when. A system event keeps the dot and its state.</p>
+      <div class="panel stack">
+        <div class="thread-divider">Today</div>
+        <ol class="timeline activity">
+          <li><span class="avatar" data-color="3">MC</span>
+            <p><strong>Mia Chen</strong> commented on <a href="#c-comments">Q4 launch plan</a></p>
+            <blockquote class="activity-quote">Support is ready either way.</blockquote>
+            <time datetime="2026-10-02T10:21">12 min ago</time></li>
+          <li><span class="avatar" data-color="2">LP</span>
+            <p><strong>Leo Park</strong> resolved a comment on <a href="#c-comments">Pricing</a></p>
+            <time datetime="2026-10-02T09:58">35 min ago</time></li>
+          <li class="is-done">
+            <p>Export <strong>EXP-412</strong> finished: 1,240 rows</p>
+            <time datetime="2026-10-02T09:40">53 min ago</time></li>
+          <li><span class="avatar" data-color="1">AT</span>
+            <p><strong>Ava Tran</strong> invited <a class="mention" href="#c-presence">@Kai Brandt</a> to <a href="#c-live-cursors">Q4 launch plan</a></p>
+            <time datetime="2026-10-02T08:12">2 h ago</time></li>
+        </ol>
+        <div class="thread-divider">Yesterday</div>
+        <ol class="timeline activity">
+          <li><span class="avatar" data-color="4">SO</span>
+            <p><strong>Sam Ortiz</strong> changed the status of <a href="#c-activity">EXP-412</a> from Open to In progress</p>
+            <time datetime="2026-10-01T16:30">Yesterday, 16:30</time></li>
+          <li class="is-warn">
+            <p>Sync with <strong>billing</strong> failed twice, then recovered</p>
+            <time datetime="2026-10-01T03:10">Yesterday, 03:10</time></li>
+        </ol>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <!-- The bell's popover and the drawer: the same centre, in the top layer. -->
+  <div class="popover notifications" popover id="notif-pop" aria-labelledby="notif-pop-title">
+    <div class="notifications-header">
+      <h2 id="notif-pop-title">Notifications</h2>
+      <button class="btn btn-clear btn-sm" type="button">Mark all read</button>
+    </div>
+    <ul class="list">
+      <li class="notification is-unread">
+        <span class="avatar avatar-sm" data-color="2">LP</span>
+        <div class="notification-body">
+          <p><span class="visually-hidden">Unread: </span>Leo Park mentioned you in <a href="#c-comments">Q4 launch plan</a></p>
+          <time datetime="2026-10-02T10:15">5 min ago</time>
+        </div>
+        <div class="notification-actions">
+          <button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon"><use href="assets/icons/icons.svg#icon-check"/></svg></button>
+        </div>
+      </li>
+      <li class="notification is-unread">
+        <span class="avatar avatar-sm" data-color="1">AT</span>
+        <div class="notification-body">
+          <p><span class="visually-hidden">Unread: </span>3 new comments on <strong>Q4 launch plan</strong></p>
+          <time datetime="2026-10-02T10:21">12 min ago</time>
+        </div>
+        <div class="notification-actions">
+          <button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon"><use href="assets/icons/icons.svg#icon-check"/></svg></button>
+        </div>
+      </li>
+      <li class="notification">
+        <span class="avatar avatar-sm" data-color="5">JR</span>
+        <div class="notification-body">
+          <p>Jo Reyes resolved your comment on <a href="#c-comments">Pricing</a></p>
+          <time datetime="2026-10-01T16:05">Yesterday</time>
+        </div>
+      </li>
+    </ul>
+    <button class="btn btn-ghost btn-sm" popovertarget="notif-drawer">See all</button>
+  </div>
+
+  <aside class="drawer notifications" id="notif-drawer" popover aria-labelledby="notif-drawer-title">
+    <div class="notifications-header">
+      <h2 id="notif-drawer-title">Notifications</h2>
+      <button class="btn-close" popovertarget="notif-drawer" popovertargetaction="hide" aria-label="Close"></button>
+    </div>
+    <label class="notifications-dnd">Do not disturb
+      <span class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></span>
+    </label>
+    <p class="notifications-paused" role="status"><svg class="icon"><use href="assets/icons/icons.svg#icon-moon"/></svg> Paused until 09:00.</p>
+    <ul class="list">
+      <li class="notification is-unread">
+        <span class="avatar avatar-sm" data-color="4">SO</span>
+        <div class="notification-body">
+          <p><span class="visually-hidden">Unread: </span>Sam Ortiz assigned you <a href="#c-activity">EXP-412 CSV export</a></p>
+          <time datetime="2026-10-02T09:40">40 min ago</time>
+        </div>
+        <div class="notification-actions">
+          <button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon"><use href="assets/icons/icons.svg#icon-check"/></svg></button>
+        </div>
+      </li>
+    </ul>
+    <div class="empty-state">
+      <svg class="icon empty-state-icon"><use href="assets/icons/icons.svg#icon-bell"/></svg>
+      <p class="empty-state-title">Nothing older</p>
+      <p class="empty-state-hint">Notifications are kept for 30 days.</p>
+    </div>
+  </aside>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>
