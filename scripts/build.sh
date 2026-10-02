@@ -20,6 +20,9 @@ rm -f dist/*.css dist/themes.json
 # so they can build on its components and tokens.
 cat_components() { for f in core/components/*.css; do [ -f "$f" ] && cat "$f"; done; return 0; }
 rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../assets/#g'; }
+# CSS-only selection: .is-active / [aria-selected="true"] also match an item
+# whose own radio or checkbox is checked (scripts/radio_state.py).
+radio_state() { python3 "$root/scripts/radio_state.py"; }
 
 # core/reset.css + core.css alone, with no theme and no layout
 # shell — for an app that wants the --* token contract and component
@@ -39,7 +42,7 @@ rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../ass
   cat core/core.css
   cat_components
   echo "}"
-} | rewrite_urls > dist/core.css
+} | rewrite_urls | radio_state > dist/core.css
 echo "built dist/core.css"
 
 for dir in themes/*/; do
@@ -63,7 +66,7 @@ for dir in themes/*/; do
     cat "$src"
     if [ -f "themes/${name}/chrome.css" ]; then cat "themes/${name}/chrome.css"; fi
     echo "}"
-  } | rewrite_urls > "$out"
+  } | rewrite_urls | radio_state > "$out"
   echo "built $out"
 done
 

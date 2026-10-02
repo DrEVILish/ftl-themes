@@ -1057,8 +1057,15 @@ dialog.modal:modal {
   height: 100%;
   margin: 0;
   opacity: 0;
-  cursor: ew-resize;
+  cursor: ns-resize;
+  /* controls.js turns knobs by vertical drag; this stops a swipe that
+     starts on a knob from scrolling the page instead. */
+  touch-action: none;
 }
+/* Values that drag-adjust a control (controls.js): the knob's own label
+   and any [data-for] readout. */
+:is([data-for], [data-fader-readout]) { cursor: ns-resize; touch-action: none; user-select: none; }
+html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important; user-select: none; }
 .knob-dial {
   position: relative;
   width: var(--knob-size, calc(2.1rem * var(--density)));
@@ -1564,7 +1571,7 @@ dialog.modal:modal {
   text-transform: var(--label-transform, none);
 }
 @media (hover: hover) {
-.tab:hover { color: var(--text); }
+.tab:hover { color: var(--tab-fg-hover, var(--text)); background: var(--tab-bg-hover, var(--tab-bg, transparent)); border-color: var(--tab-border-hover, transparent); }
 }
 .tab.is-active {
   background: var(--tab-bg-active, transparent);
@@ -2463,8 +2470,10 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  padding: var(--toggle-btn-padding, calc(0.5em * var(--density)) calc(1.1em * var(--density)));
-  border: var(--toggle-btn-border-width, 1px) solid var(--toggle-btn-border, var(--btn-border, var(--border)));
+  /* Falls back to the theme's button padding, so a toggle sits at the same
+     height as the buttons beside it. */
+  padding: var(--toggle-btn-padding, var(--btn-padding, calc(0.5em * var(--density)) calc(1.1em * var(--density))));
+  border: var(--toggle-btn-border-width, var(--btn-border-width, 1px)) solid var(--toggle-btn-border, var(--btn-border, var(--border)));
   border-radius: var(--toggle-btn-radius, var(--btn-radius, var(--radius)));
   background: var(--toggle-btn-bg, var(--btn-bg, var(--surface-2)));
   color: var(--toggle-btn-fg, var(--btn-fg, var(--text)));
@@ -2496,9 +2505,14 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 }
 .toggle-btn:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
 .toggle-btn:has(input:disabled) { opacity: 0.45; cursor: not-allowed; }
-.toggle-btn-on { display: none; }
-.toggle-btn:has(input:checked) .toggle-btn-on { display: inline; }
-.toggle-btn:has(input:checked) .toggle-btn-off { display: none; }
+/* Both labels share one grid cell and the hidden one keeps its space, so
+   the button is always as wide as its longer label: toggling "Rec" to
+   "Recording" doesn't change its width or move anything beside it. */
+.toggle-btn:has(> .toggle-btn-on) { display: inline-grid; place-items: center; }
+.toggle-btn > :is(.toggle-btn-on, .toggle-btn-off) { grid-area: 1 / 1; }
+.toggle-btn-on { visibility: hidden; }
+.toggle-btn:has(input:checked) .toggle-btn-on { visibility: visible; }
+.toggle-btn:has(input:checked) .toggle-btn-off { visibility: hidden; }
 
 /* .schedule — a small time badge: <time class="schedule" datetime="14:30">
    <svg class="icon"><use href="#icon-clock"/></svg><span>14:30</span></time> */
@@ -3315,18 +3329,21 @@ html[data-motion="reduced"] .typing::before { animation: none; }
 }
 html[data-pointer="touch"] { --tap-min: 44px; }
 
-:where(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
+/* Class-level specificity (0,1,0), placed after the components: beats a
+   component's own base min sizes, and a component file loaded after core
+   (core/components/) can still set its own. */
+:is(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
     .nav-item, .tab, .segmented-item, .pagination-item, .dropdown-item,
-    .context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a),
-    .accordion-trigger, .scrollspy-link, .taskbar-task,
-    .taskbar-start, .nav-toggle, .key, button.list-item, a.list-item) {
+    .context-menu-item, .accordion-trigger, .scrollspy-link, .taskbar-task,
+    .taskbar-start, .nav-toggle, .key, .list-item:where(a, button, label)),
+:where(.context-menu, .menubar) li > :is(button, a) {
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:where(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task) {
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button) {
   min-inline-size: var(--tap-min);
 }
-:where(.input, .select) { min-block-size: var(--tap-min); }
+:is(.input, .select) { min-block-size: var(--tap-min); }
 /* Checkboxes and radios: the label is the target. */
 :where(.check, .radio) {
   min-block-size: var(--tap-min);
@@ -3657,3 +3674,72 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 @media (max-width: 900px), (any-pointer: coarse) {
   :where(.btn) { min-inline-size: var(--tap-min); }
 }
+/* Hover feedback for controls that had none in v4 (found by a hover sweep
+   across the Windows themes; every theme was affected). */
+@media (hover: hover) {
+  .accordion-trigger:hover { background: var(--accordion-trigger-bg-hover, color-mix(in srgb, var(--text) 6%, transparent)); }
+  .breadcrumb-item:not(.is-current):hover { color: var(--breadcrumb-fg-hover, var(--link, var(--accent))); text-decoration: underline; }
+  :is(a.list-item, button.list-item, .list-item:has(> a:only-child)):hover {
+    background: var(--list-item-bg-hover, var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent)));
+  }
+  .key:hover { filter: var(--key-hover-filter, brightness(1.15)); }
+}
+
+/* --- v5 CSS-only selection (CONTRACT.md "CSS-only selection") -------------
+ * A hidden radio (or checkbox) inside an item selects it with no JS. The
+ * build (scripts/radio_state.py) makes every .is-active / [aria-selected]
+ * style, in core and in each theme, also match an item whose own input is
+ * checked, so selection looks the same either way. The radio stays in the
+ * tab order: arrow keys move through a group, as radios always do.
+ *   <label class="list-item"><input type="radio" name="view" checked> Weekly</label> */
+:is(.list-item, .nav-item, .tab, .pagination-item, .segmented-item, .dropdown-item, .badge-button) > input:is([type="radio"], [type="checkbox"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+:is(.list-item, .nav-item, .tab, .pagination-item, .dropdown-item):has(> input:is([type="radio"], [type="checkbox"])) { position: relative; }
+:is(.list-item, .nav-item, .tab, .pagination-item, .dropdown-item):has(> input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* Tabs with panels, no JS: the checked tab shows the panel in the same
+   position (panel n follows tab n; up to 12).
+   <div class="tabset">
+     <div class="tabs"><label class="tab"><input type="radio" name="t" checked>One</label>…</div>
+     <div class="tab-panel">…</div><div class="tab-panel">…</div>
+   </div> */
+.tabset > .tab-panel { display: none; padding-block-start: var(--tab-panel-pad, var(--space-m)); }
+.tabset:has(> .tabs > .tab:nth-child(1) > input:checked) > .tab-panel:nth-child(2),
+.tabset:has(> .tabs > .tab:nth-child(2) > input:checked) > .tab-panel:nth-child(3),
+.tabset:has(> .tabs > .tab:nth-child(3) > input:checked) > .tab-panel:nth-child(4),
+.tabset:has(> .tabs > .tab:nth-child(4) > input:checked) > .tab-panel:nth-child(5),
+.tabset:has(> .tabs > .tab:nth-child(5) > input:checked) > .tab-panel:nth-child(6),
+.tabset:has(> .tabs > .tab:nth-child(6) > input:checked) > .tab-panel:nth-child(7),
+.tabset:has(> .tabs > .tab:nth-child(7) > input:checked) > .tab-panel:nth-child(8),
+.tabset:has(> .tabs > .tab:nth-child(8) > input:checked) > .tab-panel:nth-child(9),
+.tabset:has(> .tabs > .tab:nth-child(9) > input:checked) > .tab-panel:nth-child(10),
+.tabset:has(> .tabs > .tab:nth-child(10) > input:checked) > .tab-panel:nth-child(11),
+.tabset:has(> .tabs > .tab:nth-child(11) > input:checked) > .tab-panel:nth-child(12),
+.tabset:has(> .tabs > .tab:nth-child(12) > input:checked) > .tab-panel:nth-child(13) {
+  display: block;
+}
+
+/* A drawer opened with the popover attribute: <button popovertarget="d">
+   opens it, Esc or a click outside closes it, no JS. */
+.drawer[popover] {
+  margin: 0;
+  inset-inline-start: auto;
+  height: 100dvh;
+  max-height: none;
+  border-block: 0;
+  border-inline-end: 0;
+}
+.drawer[popover]:popover-open { transform: none; visibility: visible; }
+.drawer[popover]::backdrop { background: var(--overlay-bg, rgba(0, 0, 0, 0.6)); }
+
+.drawer.is-start[popover] { inset-inline-start: 0; inset-inline-end: auto; border-inline-end: var(--drawer-border-width, 1px) solid var(--drawer-border, var(--border)); border-inline-start: 0; }

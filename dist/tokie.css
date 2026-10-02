@@ -1020,13 +1020,13 @@ dialog.modal:modal {
 /* "Happening now", as distinct from "happened and succeeded" (.is-on). The
    pulse only runs for users who haven't asked the OS to reduce motion; for
    everyone else the lamp is simply lit in the accent. */
-.lamp.is-active {
+.lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--lamp-active, var(--accent));
   border-color: var(--lamp-active, var(--accent));
   box-shadow: var(--lamp-glow, 0 0 0.4rem var(--lamp-active, var(--accent)));
 }
 @media (prefers-reduced-motion: no-preference) {
-  .lamp.is-active { animation: lamp-pulse var(--lamp-pulse-duration, 1.2s) ease-in-out infinite; }
+  .lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { animation: lamp-pulse var(--lamp-pulse-duration, 1.2s) ease-in-out infinite; }
 }
 @keyframes lamp-pulse { 50% { opacity: 0.4; } }
 
@@ -1120,8 +1120,15 @@ dialog.modal:modal {
   height: 100%;
   margin: 0;
   opacity: 0;
-  cursor: ew-resize;
+  cursor: ns-resize;
+  /* controls.js turns knobs by vertical drag; this stops a swipe that
+     starts on a knob from scrolling the page instead. */
+  touch-action: none;
 }
+/* Values that drag-adjust a control (controls.js): the knob's own label
+   and any [data-for] readout. */
+:is([data-for], [data-fader-readout]) { cursor: ns-resize; touch-action: none; user-select: none; }
+html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important; user-select: none; }
 .knob-dial {
   position: relative;
   width: var(--knob-size, calc(2.1rem * var(--density)));
@@ -1414,7 +1421,7 @@ dialog.modal:modal {
 @media (hover: hover) {
 .segmented-item:hover { color: var(--segmented-item-fg-hover, var(--text)); }
 }
-.segmented-item.is-active {
+.segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--segmented-item-bg-active, var(--accent));
   color: var(--segmented-item-fg-active, var(--on-accent));
 }
@@ -1441,28 +1448,28 @@ dialog.modal:modal {
 }
 /* Row states carry BOTH a background and a left marker, so a theme that
    flattens one language still communicates the state through the other. */
-.table tr:is(.is-selected, [aria-selected="true"]) td {
+.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) td {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
 }
-.table tr.is-active td {
+.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) td {
   background: var(--row-active-bg, transparent);
 }
 /* The marker belongs to the row, so only its leading cell draws it — on
    every cell it read as a column divider repeated across the row. */
-.table tr.is-active td:first-child {
+.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) td:first-child {
   box-shadow: var(--row-active-marker, inset 0.25rem 0 0 var(--accent));
 }
 /* A theme with a solid selection fill declares --row-selected-fg for
    it; state-colored text in that row has to follow it too, or a green
    "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
    highlight leave the token unset and keep the state color. */
-.table tr:is(.is-selected, [aria-selected="true"]) .status,
-.table tr:is(.is-selected, [aria-selected="true"]) .stat-trend {
+.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) .status,
+.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) .stat-trend {
   color: var(--row-selected-fg, var(--state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .table tr:is(.is-selected, [aria-selected="true"]) td {
+  .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) td {
     background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
   }
 }
@@ -1483,7 +1490,7 @@ dialog.modal:modal {
   }
 }
 /* Selected rows keep their own fill under the pointer. */
-.table tbody tr:is(.is-selected, [aria-selected="true"]):focus-within td {
+.table tbody tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))):focus-within td {
   background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
 @media (hover: hover) {
@@ -1525,7 +1532,7 @@ dialog.modal:modal {
 }
 }
 .table.is-striped tbody tr.is-selected:nth-child(even) td,
-.table.is-striped tbody tr.is-active:nth-child(even) td {
+.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
 }
 
@@ -1587,7 +1594,7 @@ dialog.modal:modal {
   background: var(--nav-item-bg, transparent);
   color: var(--nav-item-fg, var(--muted));
 }
-:is(.nav-item.is-active, .nav-item[aria-current="page"]) {
+:is(.nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), .nav-item[aria-current="page"]) {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
 }
@@ -1627,9 +1634,9 @@ dialog.modal:modal {
   text-transform: var(--label-transform, none);
 }
 @media (hover: hover) {
-.tab:hover { color: var(--text); }
+.tab:hover { color: var(--tab-fg-hover, var(--text)); background: var(--tab-bg-hover, var(--tab-bg, transparent)); border-color: var(--tab-border-hover, transparent); }
 }
-.tab.is-active {
+.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--tab-bg-active, transparent);
   color: var(--tab-fg-active, var(--accent));
   border-color: var(--tab-border-active, transparent);
@@ -1657,7 +1664,7 @@ dialog.modal:modal {
   border-bottom-color: transparent;
   border-radius: var(--tab-radius, var(--radius));
 }
-.tabs[aria-orientation="vertical"] > .tab.is-active {
+.tabs[aria-orientation="vertical"] > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   border-color: var(--tab-border-active, transparent);
   border-inline-end: 2px solid var(--tab-underline-active, var(--accent));
 }
@@ -1973,7 +1980,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   font: inherit;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.badge-button.is-active {
+.badge-button:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--badge-bg-active, var(--accent));
   color: var(--badge-fg-active, var(--on-accent));
 }
@@ -2147,7 +2154,7 @@ a.list-item { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 a.list-item:hover,
 button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 }
-.list-item.is-active {
+.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
@@ -2242,7 +2249,7 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
 @media (hover: hover) {
 .scrollspy-link:hover { color: var(--text); }
 }
-.scrollspy-link.is-active {
+.scrollspy-link:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   color: var(--scrollspy-link-active-fg, var(--accent));
   box-shadow: var(--scrollspy-link-active-marker, inset 0 -2px 0 var(--accent));
 }
@@ -2344,7 +2351,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.taskbar-task.is-active {
+.taskbar-task:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--taskbar-task-bg-active, var(--taskbar-task-bg, transparent));
   border-color: var(--taskbar-task-border-active, var(--taskbar-task-border, transparent));
   box-shadow: var(--taskbar-task-shadow-active, var(--taskbar-task-shadow, none));
@@ -2409,7 +2416,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   color: var(--pagination-item-fg-hover, var(--text));
 }
 }
-.pagination-item.is-active {
+.pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--pagination-item-bg-active, var(--accent));
   color: var(--pagination-item-fg-active, var(--on-accent));
   font-weight: 600;
@@ -2526,8 +2533,10 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  padding: var(--toggle-btn-padding, calc(0.5em * var(--density)) calc(1.1em * var(--density)));
-  border: var(--toggle-btn-border-width, 1px) solid var(--toggle-btn-border, var(--btn-border, var(--border)));
+  /* Falls back to the theme's button padding, so a toggle sits at the same
+     height as the buttons beside it. */
+  padding: var(--toggle-btn-padding, var(--btn-padding, calc(0.5em * var(--density)) calc(1.1em * var(--density))));
+  border: var(--toggle-btn-border-width, var(--btn-border-width, 1px)) solid var(--toggle-btn-border, var(--btn-border, var(--border)));
   border-radius: var(--toggle-btn-radius, var(--btn-radius, var(--radius)));
   background: var(--toggle-btn-bg, var(--btn-bg, var(--surface-2)));
   color: var(--toggle-btn-fg, var(--btn-fg, var(--text)));
@@ -2559,9 +2568,14 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 }
 .toggle-btn:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
 .toggle-btn:has(input:disabled) { opacity: 0.45; cursor: not-allowed; }
-.toggle-btn-on { display: none; }
-.toggle-btn:has(input:checked) .toggle-btn-on { display: inline; }
-.toggle-btn:has(input:checked) .toggle-btn-off { display: none; }
+/* Both labels share one grid cell and the hidden one keeps its space, so
+   the button is always as wide as its longer label: toggling "Rec" to
+   "Recording" doesn't change its width or move anything beside it. */
+.toggle-btn:has(> .toggle-btn-on) { display: inline-grid; place-items: center; }
+.toggle-btn > :is(.toggle-btn-on, .toggle-btn-off) { grid-area: 1 / 1; }
+.toggle-btn-on { visibility: hidden; }
+.toggle-btn:has(input:checked) .toggle-btn-on { visibility: visible; }
+.toggle-btn:has(input:checked) .toggle-btn-off { visibility: hidden; }
 
 /* .schedule — a small time badge: <time class="schedule" datetime="14:30">
    <svg class="icon"><use href="#icon-clock"/></svg><span>14:30</span></time> */
@@ -3150,8 +3164,8 @@ html[data-motion="reduced"] .typing::before { animation: none; }
 }
 /* On a selected row the meta line follows the row's own (selected) text
    colour; muted grey would vanish into an accent fill. */
-.list-item.is-active .list-item-meta,
-.list-item.is-active .list-item-meta .status { color: var(--list-item-meta-fg-active, inherit); }
+.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) .list-item-meta,
+.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) .list-item-meta .status { color: var(--list-item-meta-fg-active, inherit); }
 
 /* .bar-chart — a CSS column chart; each child is a bar of height --value (0–1).
  *   <div class="bar-chart" role="img" aria-label="Revenue, 12 weeks, rising">
@@ -3378,18 +3392,21 @@ html[data-motion="reduced"] .typing::before { animation: none; }
 }
 html[data-pointer="touch"] { --tap-min: 44px; }
 
-:where(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
+/* Class-level specificity (0,1,0), placed after the components: beats a
+   component's own base min sizes, and a component file loaded after core
+   (core/components/) can still set its own. */
+:is(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
     .nav-item, .tab, .segmented-item, .pagination-item, .dropdown-item,
-    .context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a),
-    .accordion-trigger, .scrollspy-link, .taskbar-task,
-    .taskbar-start, .nav-toggle, .key, button.list-item, a.list-item) {
+    .context-menu-item, .accordion-trigger, .scrollspy-link, .taskbar-task,
+    .taskbar-start, .nav-toggle, .key, .list-item:where(a, button, label)),
+:where(.context-menu, .menubar) li > :is(button, a) {
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:where(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task) {
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button) {
   min-inline-size: var(--tap-min);
 }
-:where(.input, .select) { min-block-size: var(--tap-min); }
+:is(.input, .select) { min-block-size: var(--tap-min); }
 /* Checkboxes and radios: the label is the target. */
 :where(.check, .radio) {
   min-block-size: var(--tap-min);
@@ -3720,6 +3737,75 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 @media (max-width: 900px), (any-pointer: coarse) {
   :where(.btn) { min-inline-size: var(--tap-min); }
 }
+/* Hover feedback for controls that had none in v4 (found by a hover sweep
+   across the Windows themes; every theme was affected). */
+@media (hover: hover) {
+  .accordion-trigger:hover { background: var(--accordion-trigger-bg-hover, color-mix(in srgb, var(--text) 6%, transparent)); }
+  .breadcrumb-item:not(.is-current):hover { color: var(--breadcrumb-fg-hover, var(--link, var(--accent))); text-decoration: underline; }
+  :is(a.list-item, button.list-item, .list-item:has(> a:only-child)):hover {
+    background: var(--list-item-bg-hover, var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent)));
+  }
+  .key:hover { filter: var(--key-hover-filter, brightness(1.15)); }
+}
+
+/* --- v5 CSS-only selection (CONTRACT.md "CSS-only selection") -------------
+ * A hidden radio (or checkbox) inside an item selects it with no JS. The
+ * build (scripts/radio_state.py) makes every .is-active / [aria-selected]
+ * style, in core and in each theme, also match an item whose own input is
+ * checked, so selection looks the same either way. The radio stays in the
+ * tab order: arrow keys move through a group, as radios always do.
+ *   <label class="list-item"><input type="radio" name="view" checked> Weekly</label> */
+:is(.list-item, .nav-item, .tab, .pagination-item, .segmented-item, .dropdown-item, .badge-button) > input:is([type="radio"], [type="checkbox"]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+:is(.list-item, .nav-item, .tab, .pagination-item, .dropdown-item):has(> input:is([type="radio"], [type="checkbox"])) { position: relative; }
+:is(.list-item, .nav-item, .tab, .pagination-item, .dropdown-item):has(> input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* Tabs with panels, no JS: the checked tab shows the panel in the same
+   position (panel n follows tab n; up to 12).
+   <div class="tabset">
+     <div class="tabs"><label class="tab"><input type="radio" name="t" checked>One</label>…</div>
+     <div class="tab-panel">…</div><div class="tab-panel">…</div>
+   </div> */
+.tabset > .tab-panel { display: none; padding-block-start: var(--tab-panel-pad, var(--space-m)); }
+.tabset:has(> .tabs > .tab:nth-child(1) > input:checked) > .tab-panel:nth-child(2),
+.tabset:has(> .tabs > .tab:nth-child(2) > input:checked) > .tab-panel:nth-child(3),
+.tabset:has(> .tabs > .tab:nth-child(3) > input:checked) > .tab-panel:nth-child(4),
+.tabset:has(> .tabs > .tab:nth-child(4) > input:checked) > .tab-panel:nth-child(5),
+.tabset:has(> .tabs > .tab:nth-child(5) > input:checked) > .tab-panel:nth-child(6),
+.tabset:has(> .tabs > .tab:nth-child(6) > input:checked) > .tab-panel:nth-child(7),
+.tabset:has(> .tabs > .tab:nth-child(7) > input:checked) > .tab-panel:nth-child(8),
+.tabset:has(> .tabs > .tab:nth-child(8) > input:checked) > .tab-panel:nth-child(9),
+.tabset:has(> .tabs > .tab:nth-child(9) > input:checked) > .tab-panel:nth-child(10),
+.tabset:has(> .tabs > .tab:nth-child(10) > input:checked) > .tab-panel:nth-child(11),
+.tabset:has(> .tabs > .tab:nth-child(11) > input:checked) > .tab-panel:nth-child(12),
+.tabset:has(> .tabs > .tab:nth-child(12) > input:checked) > .tab-panel:nth-child(13) {
+  display: block;
+}
+
+/* A drawer opened with the popover attribute: <button popovertarget="d">
+   opens it, Esc or a click outside closes it, no JS. */
+.drawer[popover] {
+  margin: 0;
+  inset-inline-start: auto;
+  height: 100dvh;
+  max-height: none;
+  border-block: 0;
+  border-inline-end: 0;
+}
+.drawer[popover]:popover-open { transform: none; visibility: visible; }
+.drawer[popover]::backdrop { background: var(--overlay-bg, rgba(0, 0, 0, 0.6)); }
+
+.drawer.is-start[popover] { inset-inline-start: 0; inset-inline-end: auto; border-inline-end: var(--drawer-border-width, 1px) solid var(--drawer-border, var(--border)); border-inline-start: 0; }
 /* --- v5 experience layer (PLAN.md §10–§14) ---------------------------------
  * User display settings on <html>, forced colours, motion tokens and the
  * theme-switch transition, the .prefs panel with its accent swatches, the
@@ -4187,7 +4273,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     outline-offset: -1px;
   }
   :is(.btn, .toggle-btn, .badge-button, .key):disabled { color: GrayText; outline-color: GrayText; }
-  :is(.is-active, .toggle-btn-on, .key-on, [aria-selected="true"], [aria-pressed="true"],
+  :is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), .toggle-btn-on, .key-on, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-pressed="true"],
       [aria-current]:not([aria-current="false"])):is(.btn, .tab, .nav-item, .segmented-item,
       .pagination-item, .toggle-btn, .badge-button, .dropdown-item, .list-item, .key, .scrollspy-link),
   .prefs .segmented-item:has(> input:checked) {
@@ -4575,7 +4661,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   text-decoration: line-through;
   cursor: not-allowed;
 }
-.calendar-day:is([aria-pressed="true"], [aria-selected="true"]) {
+.calendar-day:is([aria-pressed="true"], :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
   background: var(--calendar-selected-bg, var(--accent));
   color: var(--calendar-selected-fg, var(--on-accent));
   font-weight: 700;
@@ -4663,15 +4749,15 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   translate: 0 -50%;
   visibility: hidden;
 }
-.listbox [role="option"][aria-selected="true"] { font-weight: 600; }
-.listbox [role="option"][aria-selected="true"]::after { visibility: visible; }
-.listbox [role="option"].is-active {
+.listbox [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { font-weight: 600; }
+.listbox [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))::after { visibility: visible; }
+.listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--listbox-option-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
 }
 @media (hover: hover) {
   .listbox [role="option"]:not([aria-disabled="true"]):hover { background: var(--listbox-option-bg-hover, var(--row-hover-bg, rgb(128 128 128 / 0.15))); }
-  .listbox [role="option"].is-active:hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
+  .listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
 }
 .listbox [role="option"][aria-disabled="true"] { color: var(--muted); cursor: not-allowed; }
 .listbox mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; }
@@ -5078,7 +5164,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   stroke-width: 2;
   stroke-dasharray: none;
 }
-.chart-point:is(:focus-visible, .is-active, [aria-selected="true"]) { stroke: var(--chart-highlight, var(--text)); }
+.chart-point:is(:focus-visible, :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { stroke: var(--chart-highlight, var(--text)); }
 @media (hover: hover) {
   .chart-point:hover { stroke: var(--chart-highlight, var(--text)); }
 }
@@ -5637,7 +5723,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   background: radial-gradient(circle, var(--map-pin-dot, var(--surface)) 0 22%, var(--series, var(--map-pin-bg, var(--accent))) 26%);
   box-shadow: var(--map-pin-shadow, 0 1px 3px rgba(0, 0, 0, 0.45));
 }
-.map-pin:is([aria-expanded="true"], .is-active, [aria-current]:not([aria-current="false"])) {
+.map-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-current]:not([aria-current="false"])) {
   z-index: calc(var(--z-raised) + 1);
   --map-pin-size: 1.8rem;
   --map-pin-border: var(--map-pin-border-active, var(--text));
@@ -5783,7 +5869,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     color-mix(in oklab, var(--chart-div-neg) calc(max(var(--v, 0) * -1, 0) * 100%), var(--chart-div-mid)));
 }
 .heatmap > .is-empty { background: transparent; outline: 1px dashed var(--hairline); outline-offset: -1px; }
-.heatmap > :is(:focus-visible, .is-active) { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
+.heatmap > :is(:focus-visible, :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
 @media (hover: hover) {
   .heatmap > :hover { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
 }
@@ -6218,14 +6304,14 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
 .tree details[open] > summary::before { transform: rotate(90deg); }
 .tree .icon { color: var(--tree-icon-fg, var(--muted)); }
 :is(.tree :is(summary, li > a, li > button, li > span):is(.is-selected, [aria-current]:not([aria-current="false"])),
-    .tree [role="treeitem"][aria-selected="true"] > :is(a, button, span, details > summary)) {
+    .tree [role="treeitem"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > :is(a, button, span, details > summary)) {
   background: var(--tree-item-bg-selected, var(--row-selected-bg, rgba(128, 128, 128, 0.25)));
   color: var(--tree-item-fg-selected, var(--row-selected-fg, inherit));
   box-shadow: var(--tree-selected-marker, inset 0.2rem 0 0 var(--accent));
   font-weight: 600;
 }
 :is(.tree :is(summary, li > a, li > button, li > span):is(.is-selected, [aria-current]:not([aria-current="false"])),
-    .tree [role="treeitem"][aria-selected="true"] > :is(a, button, span, details > summary)) .icon { color: inherit; }
+    .tree [role="treeitem"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > :is(a, button, span, details > summary)) .icon { color: inherit; }
 @media (hover: hover) {
   .tree :is(summary, li > a, li > button):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 }
@@ -6277,7 +6363,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.tabbar > :is([aria-current]:not([aria-current="false"]), [aria-selected="true"], .is-active) {
+.tabbar > :is([aria-current]:not([aria-current="false"]), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
   color: var(--tabbar-fg-active, var(--accent-text, var(--accent)));
   border-top-color: var(--tabbar-indicator, currentColor);
   font-weight: 600;
@@ -6393,7 +6479,7 @@ dialog.sheet:modal,
 }
 .nav-rail > .nav-item > :not(.icon, .badge) { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
 .nav-rail > .nav-item > .badge { margin-inline-start: auto; }
-.nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) {
+.nav-rail > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-current]:not([aria-current="false"])) {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
   border-inline-start-color: var(--nav-rail-marker, var(--accent));
@@ -6647,15 +6733,15 @@ dialog.command:modal,
 .command-list [role="option"] > :is(kbd, .command-hint) { margin-inline-start: auto; }
 .command-list [role="option"] > .command-hint { color: var(--muted); font-size: 0.8em; white-space: nowrap; }
 .command-list [role="option"] > .command-hint + kbd { margin-inline-start: 0; }
-.command-list [role="option"][aria-selected="true"] {
+.command-list [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--command-item-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--command-item-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
   border-inline-start-color: currentColor;
 }
-.command-list [role="option"][aria-selected="true"] > .command-hint { color: inherit; }
+.command-list [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > .command-hint { color: inherit; }
 .command-list [role="option"]:is([aria-disabled="true"]) { opacity: 0.5; }
 @media (hover: hover) {
-  .command-list [role="option"]:not([aria-selected="true"]):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
+  .command-list [role="option"]:not(:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 }
 .command mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 0.15em; }
 .command-footer {
@@ -7373,7 +7459,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table tbody tr:nth-child(n):is(:hover, :focus-within):not(.table-empty, .table-more) {
   --_row-tint: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
-.table tbody tr.is-active:nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
+.table tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
 .table tbody tr.is-selected:nth-child(n) {
   --_row-tint: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
@@ -8354,7 +8440,7 @@ html[data-theme="tokie"] .app-bar {
   margin-bottom: 4px;
 }
 html[data-theme="tokie"] .app-bar .nav-item[aria-current],
-html[data-theme="tokie"] .app-bar .nav-item.is-active { box-shadow: inset 0 -2px 0 #f3d47e; }
+html[data-theme="tokie"] .app-bar .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { box-shadow: inset 0 -2px 0 #f3d47e; }
 html[data-theme="tokie"] .app-rail {
   box-shadow: inset 0 1px 0 rgba(255, 250, 230, 0.5), inset 0 -1px 0 rgba(60, 40, 8, 0.6), 0 2px 6px rgba(0, 0, 0, 0.6);
 }

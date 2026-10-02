@@ -32,7 +32,9 @@
   <aside class="app-rail" aria-hidden="true"></aside>
 
   <main class="app-main">
-    <div class="tabs" role="tablist"><button class="tab is-active" role="tab" aria-selected="true">Faders</button><button class="tab" role="tab">EQ</button><button class="tab" role="tab">Routing</button><button class="tab" role="tab">Scenes</button></div>
+    <div class="tabset">
+    <div class="tabs"><label class="tab"><input type="radio" name="desk-view" checked>Faders</label><label class="tab"><input type="radio" name="desk-view">EQ</label><label class="tab"><input type="radio" name="desk-view">Routing</label><label class="tab"><input type="radio" name="desk-view">Scenes</label></div>
+    <div class="tab-panel">
     <h1>Front of house</h1>
     <div class="transport" style="margin: 0.5rem 0 1rem;">
       <button class="btn btn-go">Play</button>
@@ -342,9 +344,9 @@
       <section class="panel">
         <header class="panel-header"><strong>Scenes</strong><span class="badge">6</span></header>
         <ul class="list">
-          <li><a class="list-item is-active" href="#">1 &middot; Line check</a></li>
-          <li><a class="list-item" href="#">2 &middot; Overture</a></li>
-          <li><a class="list-item" href="#">3 &middot; Act one</a></li>
+          <li><label class="list-item"><input type="radio" name="desk-cue" checked>1 &middot; Line check</label></li>
+          <li><label class="list-item"><input type="radio" name="desk-cue">2 &middot; Overture</label></li>
+          <li><label class="list-item"><input type="radio" name="desk-cue">3 &middot; Act one</label></li>
           <li><button class="list-item">4 &middot; Interval walk-in</button></li>
           <li><span class="list-item text-truncate">5 &middot; Act two with the extended orchestral cue list <span class="badge push">draft</span></span></li>
         </ul>
@@ -376,7 +378,7 @@
 
       <div class="stack">
         <div class="context-menu demo-inline" style="width:12rem;"><button class="context-menu-item">Copy channel</button><button class="context-menu-item">Paste settings</button><div class="context-menu-divider"></div><button class="context-menu-item is-danger">Reset strip</button></div>
-        <div class="dropdown demo-inline" style="width:12rem;"><a class="dropdown-item" href="#">Preset: Male vocal</a><a class="dropdown-item" href="#">Preset: Kick</a><a class="dropdown-item" href="#">Preset: Keys</a></div>
+        <div class="dropdown demo-inline" style="width:12rem;"><button class="dropdown-item">Preset: Male vocal</button><button class="dropdown-item">Preset: Kick</button><button class="dropdown-item">Preset: Keys</button></div>
         <div class="toast toast-success">Scene 3 saved.</div>
         <div class="toast toast-danger">Clip on Vocal.</div>
       </div>
@@ -391,6 +393,17 @@
           <div class="modal-footer"><button class="btn btn-secondary btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Overwrite</button></div>
         </div>
       </div>
+    </div>
+    </div>
+    <div class="tab-panel">
+      <div class="empty-state"><p class="empty-state-title">EQ</p><p class="empty-state-hint">Every channel's four-band EQ on one screen.</p></div>
+    </div>
+    <div class="tab-panel">
+      <div class="empty-state"><p class="empty-state-title">Routing</p><p class="empty-state-hint">Inputs to busses, matrices and outputs.</p></div>
+    </div>
+    <div class="tab-panel">
+      <div class="empty-state"><p class="empty-state-title">Scenes</p><p class="empty-state-hint">Saved desk states, recalled with the cue list.</p></div>
+    </div>
     </div>
   </main>
 
@@ -423,6 +436,34 @@
     var out = e.target.closest(".strip").querySelector("[data-fader-readout]");
     out.firstChild.nodeValue = db === -Infinity ? "\u2212\u221e" : (db > 0 ? "+" : "") + db.toFixed(1);
   });
+
+  /* Demo EQ curve: redrawn live from the strip's four band knobs (dB).
+     LF and HF are shelves, LMF and HMF bells, plus the high-pass roll-off
+     at the left. 0 dB is the middle line (y = 25); the drawing is a
+     picture of the knobs, not a real filter response. */
+  function bandDb(strip, cls) {
+    var i = strip.querySelector(".knob-" + cls + " input");
+    return i ? +i.value : 0;
+  }
+  function drawEq(strip) {
+    var path = strip.querySelector(".eq-curve path");
+    if (!path) return;
+    var lf = bandDb(strip, "lf"), lmf = bandDb(strip, "lmf"), hmf = bandDb(strip, "hmf"), hf = bandDb(strip, "hf");
+    var d = "M0,25.0";
+    for (var x = 0; x <= 100; x += 4) {
+      var shelfLo = 1 / (1 + Math.exp((x - 18) / 6)), shelfHi = 1 / (1 + Math.exp((82 - x) / 6));
+      var bell = function (c) { return Math.exp(-Math.pow((x - c) / 13, 2)); };
+      var g = lf * shelfLo + lmf * bell(38) + hmf * bell(64) + hf * shelfHi;
+      var hpf = x < 24 ? (24 - x) * 0.9 : 0;
+      var y = Math.min(49, Math.max(1, 25 - g * 1.2 + hpf));
+      d += " L" + x + "," + y.toFixed(1);
+    }
+    path.setAttribute("d", d + " L100,25.0 Z");
+  }
+  document.addEventListener("input", function (e) {
+    if (e.target.closest(".knob-lf, .knob-lmf, .knob-hmf, .knob-hf")) drawEq(e.target.closest(".strip"));
+  });
+  document.querySelectorAll(".strip").forEach(drawEq);
 </script>
 </body>
 </html>

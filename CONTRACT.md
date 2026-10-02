@@ -460,6 +460,51 @@ start of the title bar. Minimise, maximise and close travel together at the
 end. Every theme's close is now period-correct (Aqua's red light, Mac OS 9's
 close box, Win7's red caption, DOS `[■]`, iOS "Done", XMB "○ Back"…).
 
+### CSS-only selection, tabs and panes (v5)
+
+Example pages and plain-HTML apps switch tabs, select list items and open
+panes with **no JavaScript**:
+
+- **Selecting items:** put a hidden radio (or checkbox) inside the item. It
+  works for `.list-item`, `.nav-item`, `.tab`, `.pagination-item`,
+  `.segmented-item`, `.dropdown-item` and `.badge-button`:
+  ```html
+  <ul class="list">
+    <li><label class="list-item"><input type="radio" name="view" checked> Weekly revenue</label></li>
+    <li><label class="list-item"><input type="radio" name="view"> EMEA churn</label></li>
+  </ul>
+  ```
+  The build (`scripts/radio_state.py`) makes every `.is-active` and
+  `[aria-selected="true"]` style, in core and in every theme, also match an
+  item whose own input is checked, so each theme's selected look applies
+  unchanged (specificity is not affected). The radios stay in the tab order,
+  and arrow keys move through a group. Apps that keep state server-side can
+  go on using `.is-active`.
+- **Tabs with panels:** wrap the tabs and their panels in `.tabset`; the
+  checked tab shows the panel in the same position (up to 12):
+  ```html
+  <div class="tabset">
+    <div class="tabs">
+      <label class="tab"><input type="radio" name="ticket" checked>Conversation</label>
+      <label class="tab"><input type="radio" name="ticket">Details</label>
+    </div>
+    <div class="tab-panel">…</div>
+    <div class="tab-panel">…</div>
+  </div>
+  ```
+- **Drawers** open and close with the popover attribute:
+  `<button popovertarget="filters">` and
+  `<aside class="drawer" id="filters" popover>`; Esc or a click outside
+  closes it, and a close button inside uses `popovertargetaction="hide"`.
+  The v4 `.is-open` class still works.
+- **Accordions** are `<details>`, as before (`name` makes a group where only
+  one is open).
+- **Placeholder links:** `href="#"` scrolls to the top of the page. Use a
+  real target, a `<button>` for actions, or a radio for selection.
+- **Toggle buttons keep their width:** a `.toggle-btn`'s two labels share
+  one grid cell, so "Rec" → "Recording" doesn't move anything beside it, and
+  its padding and border follow the theme's `.btn`.
+
 ### Floating surfaces, menus and nesting (v5)
 
 - **Top layer.** Give a `.popover`, `.context-menu` or `.dropdown` the
@@ -629,6 +674,13 @@ instead of hand-rolling one. Signal flow reads top to bottom in each strip:
   `.knob-hmf` green, `.knob-lmf` blue, `.knob-lf` brown — as tokens
   (`--knob-hf|hmf|lmf|lf`). `assets/js/controls.js` keeps `--value` in
   step with the input; an app rendering `--value` itself can skip it.
+  With `controls.js`, knobs turn by **dragging up and down** (a full sweep
+  is 200px; hold Shift for fine steps), the way hardware-style rotaries are
+  used on touch screens and desks, and the knob's label drags too. Any
+  element with `data-for="<range input id>"` (a readout showing the value),
+  and a mixer strip's `[data-fader-readout]`, drag-adjust their control the
+  same way. Each change fires the input's normal `input` event, so anything
+  drawn from the value (an EQ curve, a readout) updates live.
 - `.fader` — a long-throw console fader (a vertical native range input
   drawn as a groove and a ridged cap). The app owns the fader law;
   `.scale` prints the legend: each mark at a 0–1 `--at`, `.is-unity` for

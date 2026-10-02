@@ -5,6 +5,27 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **CSS-only tabs, panes and selection; knobs; button widths; hovers.**
+  - Hidden radios select list items, nav items, tabs, pagination, segmented
+    items and menu items with no JS; the build (`scripts/radio_state.py`)
+    gives them every theme's existing `.is-active` / `[aria-selected]`
+    look. `.tabset` shows the panel for the checked tab. `.drawer[popover]`
+    opens and closes with `popovertarget`.
+  - Demo pages converted: tabs switch panels (ticket details as a property
+    list, activity as a timeline), channel/view/ticket/cue lists select,
+    drawers are popovers, menu entries are buttons, breadcrumbs link to real
+    pages, and no `href="#"` remains (it scrolled to the top).
+  - Knobs turn by dragging up and down (`controls.js`), their labels and
+    `[data-for]` / fader readouts drag too, and the mixer's EQ curves redraw
+    live from the band knobs.
+  - `.toggle-btn` keeps its width when its label changes ("Rec" →
+    "Recording"), and follows the theme's button padding and border so it
+    lines up with buttons beside it (Windows Live, Windows 95, Liquid Glass,
+    LCARS mixer transport).
+  - Hover feedback added where every theme had none: accordion triggers,
+    breadcrumbs, interactive list items, mixer keys; Win7 tabs light up blue
+    (`--tab-bg-hover`, `--tab-border-hover`).
+
 - **v5: six component groups, all 41 themes rolled out, integration fixes.**
   - Component groups in `core/components/` with pages and docs: tables
     (editable cells, stacked/frozen/grouped/tree tables, bulk bar),
