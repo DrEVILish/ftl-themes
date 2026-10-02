@@ -131,6 +131,7 @@ html[data-theme="steampunk"] h3 { color: var(--accent-2); font-variant: small-ca
    both unreadable. */
 html[data-theme="steampunk"] .readout {
   position: relative;
+  white-space: nowrap;
   padding: 0.15em 0.7em;
   background: radial-gradient(circle at 30% 25%, #f0d9a0, #d9ab4a 55%, #a97a24);
   color: #2a1c10;
@@ -224,9 +225,13 @@ html[data-theme="steampunk"] .panel-header {
   font-weight: 400;
   letter-spacing: 0.06em;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
 }
+/* With controls on the plate, the engraved name keeps its width and the
+   controls wrap under it. */
+html[data-theme="steampunk"] .panel-header > :first-child { flex-shrink: 0; max-width: 100%; }
 
 /* The shell: copper steam pipes run along the foot of the bar and the
    head of the status strip, and a brass-and-copper gear train turns at
@@ -271,10 +276,32 @@ html[data-theme="steampunk"] .app-bar::after {
   html[data-theme="steampunk"] .app-bar::after { animation: steampunk-cog 15.3s linear infinite reverse; }
 }
 @keyframes steampunk-cog { to { transform: rotate(360deg); } }
-@media (max-width: 720px) {
+/* v5 tiers: on a phone the gear train would sit on the actions, so it
+   goes and the bar loses its gear bay; tablets keep both. The display
+   face steps down so a heading isn't half the screen. */
+@media (max-width: 480px) {
   html[data-theme="steampunk"] .app-bar { padding-right: 1rem; }
   html[data-theme="steampunk"] .app-bar::before,
   html[data-theme="steampunk"] .app-bar::after { content: none; }
+  html[data-theme="steampunk"] h1 { font-size: 1.9rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the plant room behind the panel. Two copper
+   pipe runs drop down each gutter with a flange collar every 320px, and a
+   big flywheel gear sits half-hidden at each outer edge, all dimmed into
+   the leather (copper at low alpha, the gear at 30% opacity); within
+   about 1.2:1 of --bg. Still: the bar's small gears are the ones that turn. */
+html[data-theme="steampunk"] {
+  --app-gutter-art:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.3'%3E%3Ccircle cx='160' cy='160' r='128' fill='none' stroke='%238a5a2e' stroke-width='40' stroke-dasharray='25.1 25.1'/%3E%3Ccircle cx='160' cy='160' r='112' fill='%235c3d22'/%3E%3Ccircle cx='160' cy='160' r='78' fill='none' stroke='%23241a12' stroke-width='22' stroke-dasharray='61.3 61.3'/%3E%3Ccircle cx='160' cy='160' r='22' fill='%23241a12'/%3E%3C/svg%3E") left -160px top 18% / 320px 320px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.3'%3E%3Ccircle cx='160' cy='160' r='128' fill='none' stroke='%238a5a2e' stroke-width='40' stroke-dasharray='25.1 25.1'/%3E%3Ccircle cx='160' cy='160' r='112' fill='%235c3d22'/%3E%3Ccircle cx='160' cy='160' r='78' fill='none' stroke='%23241a12' stroke-width='22' stroke-dasharray='61.3 61.3'/%3E%3Ccircle cx='160' cy='160' r='22' fill='%23241a12'/%3E%3C/svg%3E") right -160px top 64% / 320px 320px no-repeat,
+    linear-gradient(rgba(169, 122, 36, 0.16) 0 10px, transparent 10px) 116px 40px / 30px 320px repeat-y,
+    linear-gradient(rgba(169, 122, 36, 0.16) 0 10px, transparent 10px) right 116px top 200px / 30px 320px repeat-y,
+    linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.2) 35%, rgba(122, 62, 22, 0.25) 60%, rgba(58, 32, 8, 0.5)) 120px 0 / 22px 100% no-repeat,
+    linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.16) 35%, rgba(122, 62, 22, 0.2) 60%, rgba(58, 32, 8, 0.5)) 196px 0 / 14px 100% no-repeat,
+    linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.2) 35%, rgba(122, 62, 22, 0.25) 60%, rgba(58, 32, 8, 0.5)) right 120px top 0 / 22px 100% no-repeat,
+    linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.16) 35%, rgba(122, 62, 22, 0.2) 60%, rgba(58, 32, 8, 0.5)) right 196px top 0 / 14px 100% no-repeat,
+    var(--steampunk-leather);
 }
 
 /* --- Controls as plant: valves, sight glasses, brass push-buttons ------ */
@@ -400,6 +427,9 @@ html[data-theme="steampunk"] {
   /* Cards are filigreed plates (panels keep their rivets); a dialog's
      brass title band covers its top edge, so it carries the lower pair. */
   --card-bg: var(--steampunk-filigree), var(--steampunk-leather);
+  /* A little more pad than core so a card's first line clears the
+     1.3rem scrollwork in its corners. */
+  --card-pad: calc(var(--space-m) * var(--density) + 0.4rem);
   --modal-bg:
     var(--steampunk-filigree-bl) 4px calc(100% - 4px) / 2.2rem 2.2rem no-repeat,
     var(--steampunk-filigree-br) calc(100% - 4px) calc(100% - 4px) / 2.2rem 2.2rem no-repeat,
@@ -475,3 +505,28 @@ html[data-theme="steampunk"] .meter:not(.meter-v, .is-segmented) .meter-fill {
   border-inline-end: 2px solid #9e2a1b;
 }
 html[data-theme="steampunk"] .meter:not(.meter-v, .is-segmented) .meter-peak { background: rgba(58, 37, 18, 0.45); }
+
+/* --- Nested plates step down ---------------------------------------------- *
+ * A panel or card inside another panel, card, dialog or drawer is plain
+ * stitched leather: no rivets, no scrollwork, a softer shadow, so a
+ * three-deep stack doesn't repeat three full sets of ornaments. Its name
+ * plate is a flatter, smaller brass tag without the polish streak. */
+html[data-theme="steampunk"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  --panel-bg: var(--steampunk-leather);
+  --card-bg: var(--steampunk-leather);
+  --card-pad: calc(var(--space-m) * var(--density));
+  --panel-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+html[data-theme="steampunk"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header {
+  background:
+    radial-gradient(circle, #f0d9a0 0 2px, #5c3d15 2.5px 3px, transparent 3.5px) 0.5rem 50% / 7px 7px no-repeat,
+    radial-gradient(circle, #f0d9a0 0 2px, #5c3d15 2.5px 3px, transparent 3.5px) calc(100% - 0.5rem) 50% / 7px 7px no-repeat,
+    linear-gradient(180deg, #d9b468, #a97a24);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  font-size: 0.88rem;
+  padding: 0.25rem 1.3rem;
+}
+/* A dialog's lower scrollwork is 2.2rem: its content (a footer's buttons,
+   a scrolling panel) ends above it instead of running over it. */
+html[data-theme="steampunk"] .modal { padding-block-end: max(var(--surface-pad, 1.5rem), calc(2.2rem + 6px)); }

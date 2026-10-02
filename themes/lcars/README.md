@@ -174,6 +174,12 @@ The palette follows the trekcolors/Okuda hexes, so almost nothing was lifted to 
 
 `references/lcars/` holds 237 captures plus `RESEARCH.md`: the default (TNG) look at the top level and in `tng/` and `tng-films/`, the `voyager` variant's DS9 panels in `voyager/`, and the `picard` variant's capture in `picard/`. Every file is named by the UI components it shows (`elbowFrame-pillButton.webp`) and scored in `INDEX.md`, which also maps each old filename. No people in any of them. No hex values were sampled from these images, so the candy hexes rest on the trekcolors palette (cited above).
 
+## v5 layout
+
+- **Tiers.** Phones and tablets (up to 900px): the rail becomes a horizontal colour strip under the bar (a 7rem rail would cost a tablet its content width), and the frame's leg slims to 2.5rem. In the bar the app's actions and the screen title share line 1 (the title keeps its place at the right end and truncates) and the nav pills run along line 2, scrolling sideways. The split frame's second bar and the block codes are desktop-only. `chrome.css` collapses its optional rail at the same 900px tier.
+- **Nesting.** Panel titles are pulled into the bar using core's `--surface-pad`, so they land in the bar at every tier. A frame inside a frame steps down to the thin card weights and keeps clear of the content above it. A scrolling panel's title sits under its bar (a scroller clips anything pulled out of it), and a header holding form controls becomes a full-width control row under the bar. Stacked-table labels use `--muted`.
+- **XL gutter art (1801px+).** Out-of-focus neighbouring panels: dimmed candy bar fragments and elbows, within about 1.3:1 of the black.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -273,12 +273,37 @@ html[data-theme="wmp11"] .app-status::before {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='236' height='46'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233a3a44'/%3E%3Cstop offset='.5' stop-color='%2315151b'/%3E%3Cstop offset='.51' stop-color='%23050507'/%3E%3Cstop offset='1' stop-color='%231a1a22'/%3E%3C/linearGradient%3E%3CradialGradient id='p' cx='.4' cy='.28' r='.8'%3E%3Cstop offset='0' stop-color='%23d6f2ff'/%3E%3Cstop offset='.4' stop-color='%234bb6ff'/%3E%3Cstop offset='.75' stop-color='%231d6fb8'/%3E%3Cstop offset='1' stop-color='%230b3560'/%3E%3C/radialGradient%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='1.5' y='8.5' width='233' height='29' rx='14.5' fill='url(%23c)' stroke='%2356565f'/%3E%3Crect x='18' y='18' width='9' height='9' fill='%23d0d0d8'/%3E%3Crect x='70.5' y='12.5' width='95' height='21' rx='10.5' fill='url(%23c)' stroke='%236a6a74'/%3E%3Cpath d='M80 23l7-5v10zM87 23l7-5v10z' fill='%23d0d0d8'/%3E%3Cpath d='M156 23l-7-5v10zM149 23l-7-5v10z' fill='%23d0d0d8'/%3E%3Ccircle cx='118' cy='23' r='21' fill='url(%23p)' stroke='%230a2b4d' stroke-width='1.2'/%3E%3Cellipse cx='118' cy='12' rx='13' ry='7' fill='url(%23s)'/%3E%3Cpath d='M112 13v20l17-10z' fill='%23fff'/%3E%3Cpath d='M190 19h4l5-4v16l-5-4h-4z' fill='%23d0d0d8'/%3E%3Crect x='205' y='22' width='22' height='2' rx='1' fill='%233fa9f5'/%3E%3C/svg%3E") no-repeat;
   pointer-events: none;
 }
-@media (max-width: 1000px) {
+/* Touch tiers (v5). The bar wraps to two lines (brand + actions, then
+   the tab strip, which scrolls), so the back/forward orbs pin to the
+   first line's left end, and the transport capsule, which would sit on
+   the status text, goes. On a phone the orbs' 4.4rem would push the
+   actions onto a line of their own, so they go too and the tabs drop
+   their fixed width; the black gloss strip and blue capsule tab stay. */
+@media (max-width: 900px) {
   html[data-theme="wmp11"] .app-status::before { content: none; }
+  html[data-theme="wmp11"] .app-bar::before { top: calc(0.25rem + var(--tap-min) / 2); }
 }
-@media (max-width: 720px) {
-  html[data-theme="wmp11"] { --app-bar-padding: 0.25rem 0.6rem 0.25rem 4.2rem; }
+@media (max-width: 480px) {
+  html[data-theme="wmp11"] { --app-bar-padding: 0.25rem 0.6rem; }
+  html[data-theme="wmp11"] .app-bar::before { content: none; }
+  html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 0; }
   html[data-theme="wmp11"] .app-bar .nav-item { min-width: 0; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the page behind the player is the bright
+   blue silk; beside the capped window it is dimmed to a whisper of the
+   same ribbons on the black --bg (~1.3:1), so the player stays the only
+   lit thing on screen. The page itself goes black at XL so the bright
+   silk doesn't glow through the fade at the content edge. Still. */
+@media (min-width: 1801px) {
+  html[data-theme="wmp11"] { background: var(--bg); }
+}
+html[data-theme="wmp11"] {
+  --app-gutter-art:
+    linear-gradient(116deg, transparent 30%, rgba(90, 170, 240, 0.09) 42%, transparent 54%),
+    linear-gradient(124deg, transparent 50%, rgba(60, 150, 230, 0.08) 60%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 12% 30%, rgba(30, 110, 200, 0.12), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 88% 70%, rgba(30, 110, 200, 0.1), transparent 70%);
 }
 
 /* Panel headers are the player's list-pane header bars: dark gloss split
@@ -296,6 +321,22 @@ html[data-theme="wmp11"] .tabs { border-bottom-color: #000; gap: 2px; }
 html[data-theme="wmp11"] .tab.is-active { border-bottom: 0; box-shadow: inset 0 0 0 1px rgba(191, 234, 255, 0.5), 0 0 8px rgba(63, 169, 245, 0.45); }
 html[data-theme="wmp11"] .progress-bar { box-shadow: 0 0 8px rgba(63, 169, 245, 0.8); }
 
+/* Nested surfaces step down (PLAN.md §6): the gloss sheen and the lit
+   header bar belong to the outermost pane. A panel inside a panel, card,
+   dialog or drawer is a flat inset list pane: no second sheen, and its
+   header is a quiet hairline-ruled caption. */
+html[data-theme="wmp11"] :is(.panel, .card, .modal, .drawer) .panel::before { content: none; }
+html[data-theme="wmp11"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  --panel-header-bg: transparent;
+  box-shadow: none;
+  border-bottom-color: var(--hairline);
+}
+/* Window caption buttons sit together at the bar's right end with the
+   close button (core pushes only close), lit like the bar's text. */
+html[data-theme="wmp11"] .modal-header > .btn-min { margin-inline-start: auto; }
+html[data-theme="wmp11"] .modal-header > :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: 0; }
+html[data-theme="wmp11"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, var(--text)); }
+
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * black-glass messages and glossy blue glowing columns. */
 html[data-theme="wmp11"] {
@@ -305,4 +346,10 @@ html[data-theme="wmp11"] {
   --bar-chart-bar-alt: linear-gradient(90deg, #3a8a1a, #a6f07f 45%, #6fd13f 55%, #3a8a1a);
   --bar-chart-radius: 0.2rem 0.2rem 0 0;
   --bar-chart-shadow: 0 0 0.4rem rgba(63, 169, 245, 0.35);
+}
+
+/* Close (v5): the Vista-era caption close turns red under the pointer. */
+html[data-theme="wmp11"] .modal-header > .btn-close {
+  --btn-close-bg-hover: linear-gradient(#e88a76, #c62b14);
+  --btn-close-fg-hover: #fff;
 }

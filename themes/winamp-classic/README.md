@@ -37,6 +37,13 @@ The shell is a **player window**: 0.25rem outer padding, a 1.8rem beveled
 gradient title bar, a bordered inset content area, and a gradient footer.
 Everything is snug against everything else.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** core's one-column shell; the compact player chrome already fits a phone. The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
+- **XL gutters (≥1801):** the spectrum analyser along the foot of the desk: twelve-band bars in a dim, translucent analyser green, with the page's brushed 4px ribbing showing through as LED segments. Paused, not animated.
+
 ## Tell-tales of an inauthentic result
 
 - Large comfortable type → a modern music app, not a skin.

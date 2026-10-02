@@ -68,6 +68,13 @@ inset-shadowed tray with rounded corners. The status strip is a
 brushed-gold nameplate with engraved uppercase lettering; state text on
 it switches to dark inks. Below 720px the rail drops away (core default).
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** one column. The brushed-gold spine rail is packed away (the rail opts in through `--app-rail-empty-display`, which outranks core's per-tier rail token, so the theme switches it off up to 900px). Phones get a slightly tighter box rim and lid padding. Main padding is set per tier (`--app-main-padding-mobile` / `-tablet`).
+- **XL gutters (≥1801):** the lid lining, quilted: a diamond tuft in faint champagne thread with a dark brass button at every crossing, on the same black leather. Still.
+
 ## Typography
 
 Nothing is vendored. Display: `Didot, "Bodoni 72", "Bodoni MT",

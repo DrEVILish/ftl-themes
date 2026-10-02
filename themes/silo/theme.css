@@ -308,6 +308,14 @@ html[data-theme="silo"] .panel-header::after {
   float: right;
   color: var(--muted);
 }
+/* The × is a decoration, so it goes where it would be repeated or read as
+   a second control: on a box nested in another box (which also steps its
+   double rules down to single ones) and on a header with its own controls. */
+html[data-theme="silo"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header {
+  border-block: 1px solid var(--border);
+}
+html[data-theme="silo"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header::after,
+html[data-theme="silo"] .panel-header:has(button, input, select, .btn-close)::after { content: none; }
 html[data-theme="silo"] .modal-header {
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -384,7 +392,10 @@ html[data-theme="silo"] {
   --app-status-fg: var(--silo-plate-fg);
   --app-status-rule: var(--bg);
   --app-status-padding: 0.25rem 1.25rem;
-  --app-main-padding-sm: 0.75rem;
+  /* v5 tiers: the CRT keeps its bezel on every screen, thinner on touch
+     tiers; the scroll-track rail goes (core hides it up to 900px). */
+  --app-main-padding-mobile: 0.75rem;
+  --app-main-padding-tablet: 1rem 1.25rem;
 }
 html[data-theme="silo"] .app {
   border-radius: 0.6rem;
@@ -433,8 +444,29 @@ html[data-theme="silo"] .app-status {
   --danger-text: #7a1406;
   --muted: #1d4a40;
 }
-@media (max-width: 720px) {
+/* Touch tiers: core lets the brand flex to fill the first line so it can
+   truncate; this brand is a filled plate, so cap it at its own width. */
+@media (max-width: 900px) {
+  html[data-theme="silo"] .app-bar > .nav-brand { max-width: max-content; }
+}
+@media (max-width: 480px) {
   html[data-theme="silo"] { --app-padding: 0.5rem; }
+}
+@media (min-width: 481px) and (max-width: 900px) {
+  html[data-theme="silo"] { --app-padding: 0.75rem 0.9rem 1rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the silo's poured concrete around the
+   monitor. Formwork board seams (a horizontal joint every 96px, butt
+   joints staggered every 288px) and the tie-rod holes left in a 144px
+   grid, in near-black greys a step off --bg; within about 1.1:1. Still. */
+html[data-theme="silo"] {
+  --app-gutter-art:
+    radial-gradient(circle, #000 0 3px, rgba(120, 140, 130, 0.08) 3.5px 4.5px, transparent 5px) 36px 24px / 144px 96px,
+    linear-gradient(rgba(150, 170, 160, 0.06) 1px, transparent 1px) 0 0 / 100% 96px,
+    conic-gradient(from 270deg at 1px 50%, rgba(150, 170, 160, 0.05) 0 25%, transparent 0) 0 0 / 288px 192px,
+    conic-gradient(from 270deg at 1px 50%, rgba(150, 170, 160, 0.05) 0 25%, transparent 0) 144px 96px / 288px 192px,
+    var(--bg);
 }
 
 /* --- The Legacy (Season 2): Territory Studio's gold tablet ---------------- *

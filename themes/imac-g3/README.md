@@ -96,6 +96,12 @@ The shell is a saturated mid-tone, so this theme sits near the floors and `pytho
 
 `references/imac-g3/` has 5 captures plus `RESEARCH.md`: two Finder Preferences GIFs (`0201700042_ch04lev1sec2_image01/02.gif`), two Mac OS 9.x About/System Folder screenshots (`Mac_OS_9.0.4_emulated…png`, `5654e869….png`) and a Platinum Finder-windows webp. All are the **light Platinum software UI**; `RESEARCH.md` notes there is no Bondi/fruit hardware photo. So the translucent-plastic shell, the Bondi/fruit hexes and the pinstripe are backed by the RESEARCH text ("translucent Bondi Blue candy shell") and the verified `#0095b6` hardware colour, not by any image in the folder.
 
+## v5 layout
+
+- **Tiers.** No rail at any size; the rounded bar and status strip work unchanged on phones and tablets, where core stacks the brand and actions over a scrolling nav line.
+- **Nesting.** The diagonal sheen is the surface's top background layer, not a clipped pseudo-element, so panels no longer need `overflow: hidden` (which cut off menus and popovers opened inside them). A panel or card inside another surface keeps the gloss and pinstripe but drops the streak: one streak per stack of plastic.
+- **XL gutter art (1801px+).** The case continues past the screen as ribbed translucent plastic with one broad diagonal sheen, white at low alpha so every colorway tints it.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

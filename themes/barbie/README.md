@@ -47,6 +47,16 @@ bar on top, a matching sparkle-gradient status strip on the bottom, and a
 soft pale-pink backdrop (`radial-gradient`) that makes the white content
 card in the middle pop — box art, not a dashboard.
 
+## v5 layout
+
+- **Tiers.** No rail; the glossy bar's pills wrap as core lays them out,
+  so phone (≤480px) and tablet (481–900px) use the one-column shell as is.
+- **Nesting.** A panel or card inside another surface drops the pink
+  drop-glow, so stacked levels read as inserts in one toy box.
+- **XL gutter art.** The packaging either side of the doll: soft polka
+  dots in a deeper blush on a blush-to-pink fade. Still, and within about
+  1.3:1 of `--bg`.
+
 ## Tell-tales of an inauthentic result
 
 - Pastel/muted pink instead of the saturated hot pink.

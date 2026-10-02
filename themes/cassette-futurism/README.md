@@ -70,6 +70,19 @@ How it differs from its neighbours:
 - The dark surfaces (`.app-bar`, `.transport`) re-point `--text`/`--muted`/
   `--link` locally so text on them stays legible.
 
+## v5 layout
+
+- **Tiers.** Desktop and XL keep the vent-grille rail on the right. Phone
+  (≤480px) and tablet (481–900px) drop it, since it costs a 3.25rem column;
+  the dark deck, its four-colour stripe and the LED status window stay.
+  Phones get a thinner housing margin. The housing stipple now sits on the
+  page root, so it never covers the XL gutters.
+- **Nesting.** A panel inside another surface keeps its moulded header rule
+  but drops the vent slots, so only the outer housing reads as vented.
+- **XL gutter art.** The beige housing continues past the deck: two banks
+  of ribbed vent slots on the stipple, the rail's grille writ large. Still,
+  and within about 1.3:1 of `--bg`.
+
 ## Typography
 
 - `--font`: `"Helvetica Neue", Helvetica, "Nimbus Sans", Univers,

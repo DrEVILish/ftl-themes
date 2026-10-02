@@ -116,3 +116,21 @@ layout at **L1**.
   white scribble and EQ fields.
 - Icon buttons are square bevels, not circles.
 
+## v5 layout
+
+- **Tiers.** Desktop (901–1800px) is the v4 window unchanged. Tablet
+  (481–900px) keeps the navy title bar; the bar wraps to two lines (brand
+  and actions, then the scrolling nav) and the three caption buttons pin
+  to the first line's right end instead of floating over both. Mobile
+  (≤480px) drops the decorative caption buttons, so the brand gets their
+  52px. No rail on any tier.
+- **Nesting.** Only the outermost surface is a window with a navy caption.
+  A panel inside a panel, card, dialog or drawer becomes a group box: a
+  plain bold label over an etched grey/white rule. Controls in a caption
+  bar (search field, select) keep the dialog's own colours, and
+  `.btn-min`/`.btn-max`/`.btn-close` on a title bar are grey bevelled
+  squares with black glyphs (min and max touch, close 2px apart).
+- **XL gutter art.** The teal desktop carries on beside the window, with a
+  column of desktop icons (My Computer, a folder, the Recycle Bin) at the
+  left and Network Neighborhood at the right, drawn in teal one step off
+  `--bg` (about 1.2:1). Still.

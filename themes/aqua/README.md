@@ -40,6 +40,21 @@ The shell becomes a **Mac window**: 0.75rem desktop margin, a rounded
 brushed-metal title bar, a near-white content area, and a rounded metal
 status strip, with a 28px blurred shadow under the whole frame.
 
+## v5 layout
+
+- **Tiers.** No rail on any tier. On phone and tablet (≤900px) the
+  traffic lights stay level with the bar's first line (brand and actions)
+  instead of centring on the wrapped two-line bar. On phones (≤480px) the
+  window goes nearly full-screen and the bar's lights shrink to
+  panel-header size so the brand keeps some room.
+- **Nesting.** A panel or card inside another surface becomes an Aqua group
+  box: a lighter flat inset (the parent's pinstripe shows through), no
+  drop shadow, and no traffic lights, since only a window has window
+  controls.
+- **XL gutter art.** The original Aqua pinstripe carried out across the
+  gradient desktop either side of the window. Still, and within about
+  1.2:1 of `--bg`.
+
 ## Extending it
 
 Do: keep every fill a top-light gradient; keep shadows large and soft.

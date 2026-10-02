@@ -73,7 +73,9 @@ html[data-theme="imac-g3"] {
      `background-image` rule, which replaced this gradient outright — the
      gloss never rendered and panels lost their fill. */
   --imac-g3-pinstripe: repeating-linear-gradient(180deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 4px);
-  --panel-bg: var(--imac-g3-pinstripe), linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 30%, var(--surface));
+  --imac-g3-panel-fill: var(--imac-g3-pinstripe), linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 30%, var(--surface));
+  /* The diagonal sheen (below) rides on top of the fill. */
+  --panel-bg: var(--imac-g3-sheen), var(--imac-g3-panel-fill);
   --panel-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 6px 18px rgba(0,0,0,0.3);
   --modal-header-bg: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
   --table-head-bg: rgba(255,255,255,0.15);
@@ -128,40 +130,22 @@ html[data-theme="imac-g3"] .app-bar {
 
 /* A strong diagonal sheen band — the single most recognizable "translucent
    candy plastic" cue (the diagonal light streak molded into the actual
-   iMac G3 case) — layered as a pseudo-element so it never fights the
-   panel/card's own vertical gloss-gradient fill or repaints the base
-   colour. Diagonal, bright and un-missable rather than the earlier flat
+   iMac G3 case) — layered over the panel/card's own vertical gloss
+   fill, never replacing it. Diagonal, bright and un-missable rather than the earlier flat
    vertical highlight alone, which read as ordinary UI gloss rather than
    thick curved plastic. Kept to panel/card/modal — the shapes with real
    surface area for the streak to travel across. */
-html[data-theme="imac-g3"] .panel,
-html[data-theme="imac-g3"] .card,
-html[data-theme="imac-g3"] .modal {
-  position: relative;
-  overflow: hidden;
+html[data-theme="imac-g3"] {
+  --imac-g3-sheen: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.55) 42%, rgba(255, 255, 255, 0.15) 50%, transparent 62%);
 }
-html[data-theme="imac-g3"] .panel::before,
-html[data-theme="imac-g3"] .card::before,
-html[data-theme="imac-g3"] .modal::before {
-  content: "";
-  position: absolute;
-  inset: -20% -60%;
-  background: linear-gradient(
-    115deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.55) 42%,
-    rgba(255, 255, 255, 0.15) 50%,
-    transparent 62%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-/* Content needs to sit above the sheen layer, not under it. */
-html[data-theme="imac-g3"] .panel > *,
-html[data-theme="imac-g3"] .card > *,
-html[data-theme="imac-g3"] .modal > * {
-  position: relative;
-  z-index: 1;
+/* Painted as the surfaces' top background layer (through --panel-bg, which
+   cards and modals inherit) rather than a clipped pseudo-element: an
+   overflow:hidden surface, plus a stacking context on every child to lift
+   it over the streak, clipped menus and popovers opened inside a panel.
+   Nested surfaces step down: one streak per stack of plastic, so a panel
+   inside a panel keeps the gloss and pinstripe but not a second streak. */
+html[data-theme="imac-g3"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  --panel-bg: var(--imac-g3-panel-fill);
 }
 
 /* --- Full-shell colorways ------------------------------------------------
@@ -201,4 +185,27 @@ html[data-theme="imac-g3"] {
   --bar-chart-bar: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.55) 38%, rgba(255, 255, 255, 0) 60%), color-mix(in srgb, var(--accent) 72%, transparent);
   --bar-chart-bar-alt: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.55) 38%, rgba(255, 255, 255, 0) 60%), color-mix(in srgb, var(--accent-2) 80%, transparent);
   --bar-chart-radius: 0.6rem 0.6rem 0 0;
+}
+
+/* --- v5 layout (PLAN.md §2–§3) -------------------------------------------- *
+ * The shell already works on phone and tablet as-is (no rail, rounded bar
+ * and status). XL gutters: the case continues past the screen as ribbed
+ * translucent plastic with one broad diagonal sheen, in white at low alpha
+ * so every colorway tints it. */
+html[data-theme="imac-g3"] {
+  --app-gutter-art:
+    linear-gradient(115deg, transparent 25%, rgba(255, 255, 255, 0.07) 42%, rgba(255, 255, 255, 0.02) 52%, transparent 65%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 7px);
+}
+
+/* Close box (v5): Mac OS 8/9's square close box at the start of the title
+   bar. Drawn as a centred 13px layer, so the hit area can grow to
+   --tap-min without the box growing with it. */
+html[data-theme="imac-g3"] .modal-header > .btn-close {
+  --btn-close-glyph: "";
+  --btn-close-bg: linear-gradient(135deg, #fff, #bbb) center / 11px 11px no-repeat, linear-gradient(#555, #555) center / 13px 13px no-repeat;
+  --btn-close-bg-hover: linear-gradient(135deg, #bbb, #fff) center / 11px 11px no-repeat, linear-gradient(#222, #222) center / 13px 13px no-repeat;
+  --btn-close-radius: 0;
+  --btn-close-order: -1;
+  --btn-close-push: 0;
 }

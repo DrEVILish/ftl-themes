@@ -567,10 +567,19 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   color: var(--modal-header-fg, inherit);
   font-weight: 600;
 }
-.modal-header > .btn-close { margin-inline-start: auto; }
+.modal-header > .btn-close {
+  /* --btn-close-order: -1 with --btn-close-push: 0 puts it at the start
+     (Aqua, Mac OS 9, DOS); the default is the end. */
+  order: var(--btn-close-order, 0);
+}
+/* The caption buttons travel as a group: the first of them takes the push,
+   so minimise / maximise / close sit together at the end. */
+.modal-header > :is(.btn-min, .btn-max, .btn-close):not(:is(.btn-min, .btn-max, .btn-close) + *) {
+  margin-inline-start: var(--btn-close-push, auto);
+}
 /* A close button on a filled title bar follows the title's colour, not the
    content-area --btn-close-fg (grey on a navy bar is invisible). */
-.modal-header > .btn-close:not(:hover) {
+.modal-header > :is(.btn-close, .btn-min, .btn-max):not(:hover) {
   color: var(--modal-header-close-fg, var(--modal-header-fg, var(--btn-close-fg, var(--muted))));
 }
 /* A heading used as the title takes the header's own type, not the page's
@@ -670,9 +679,13 @@ dialog.modal:modal {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.8em;
-  height: 1.8em;
-  padding: 0;
+  /* Size and shape tokens: a theme whose close is a word ("Done", "Back")
+     sets --btn-close-width: auto and a --btn-close-pad. */
+  width: var(--btn-close-width, 1.8em);
+  height: var(--btn-close-height, 1.8em);
+  padding: var(--btn-close-pad, 0);
+  font-size: var(--btn-close-font-size, inherit);
+  white-space: nowrap;
   border: var(--btn-close-border-width, 0px) solid var(--btn-close-border, transparent);
   border-radius: var(--btn-close-radius, var(--radius));
   background: var(--btn-close-bg, transparent);
@@ -699,7 +712,7 @@ dialog.modal:modal {
 .btn-close::before,
 .btn-min::before,
 .btn-max::before {
-  font-size: 1.3em;
+  font-size: var(--btn-close-glyph-size, 1.3em);
   line-height: 1;
 }
 .btn-close::before { content: var(--btn-close-glyph, "\00d7"); }
@@ -768,6 +781,7 @@ dialog.modal:modal {
  * (e.g. from a dB scale) without the theme fighting it. */
 .meter {
   position: relative;
+  container-type: size;
   overflow: hidden;
   width: 100%;
   height: var(--meter-thickness, 0.6rem);
@@ -789,7 +803,9 @@ dialog.modal:modal {
     var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%),
     var(--meter-high, var(--danger)) var(--meter-peak-at, 90%)
   ));
-  background-size: var(--meter-span, 100%) 100%;
+  /* cqi is the track (the meter is a size container): % here would be the
+     fill's own width, squeezing every band into whatever level shows. */
+  background-size: var(--meter-span, 100cqi) 100%;
   background-repeat: no-repeat;
   transition: width 0.06s linear;
 }
@@ -820,7 +836,7 @@ dialog.modal:modal {
     var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%),
     var(--meter-high, var(--danger)) var(--meter-peak-at, 90%)
   ));
-  background-size: 100% var(--meter-span, 100%);
+  background-size: 100% var(--meter-span, 100cqb);
   background-position: bottom;
   transition: height 0.06s linear;
 }
@@ -1362,7 +1378,7 @@ dialog.modal:modal {
 }
 /* Row states carry BOTH a background and a left marker, so a theme that
    flattens one language still communicates the state through the other. */
-.table tr.is-selected td {
+.table tr:is(.is-selected, [aria-selected="true"]) td {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
 }
@@ -1378,12 +1394,12 @@ dialog.modal:modal {
    it; state-colored text in that row has to follow it too, or a green
    "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
    highlight leave the token unset and keep the state color. */
-.table tr.is-selected .status,
-.table tr.is-selected .stat-trend {
+.table tr:is(.is-selected, [aria-selected="true"]) .status,
+.table tr:is(.is-selected, [aria-selected="true"]) .stat-trend {
   color: var(--row-selected-fg, var(--state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .table tr.is-selected td {
+  .table tr:is(.is-selected, [aria-selected="true"]) td {
     background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
   }
 }
@@ -1404,7 +1420,7 @@ dialog.modal:modal {
   }
 }
 /* Selected rows keep their own fill under the pointer. */
-.table tbody tr.is-selected:focus-within td {
+.table tbody tr:is(.is-selected, [aria-selected="true"]):focus-within td {
   background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
 @media (hover: hover) {
@@ -1508,7 +1524,7 @@ dialog.modal:modal {
   background: var(--nav-item-bg, transparent);
   color: var(--nav-item-fg, var(--muted));
 }
-.nav-item.is-active {
+:is(.nav-item.is-active, .nav-item[aria-current="page"]) {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
 }
@@ -2537,24 +2553,8 @@ html[data-motion="reduced"] * {
  * actually depends on — visible borders and secondary text — by pulling
  * them toward the theme's own text/border colors rather than introducing a
  * palette of its own, so it stays in-theme instead of overriding it. */
-html[data-contrast="high"] {
-  --hairline: var(--border);
-  --muted: var(--text);
-}
-html[data-contrast="high"] :focus-visible {
-  outline-width: 3px;
-}
-/* The OS preference applies the same boost automatically. An app can force
-   it off with data-contrast="standard" (and on with "high", above). */
-@media (prefers-contrast: more) {
-  html:not([data-contrast="standard"]) {
-    --hairline: var(--border);
-    --muted: var(--text);
-  }
-  html:not([data-contrast="standard"]) :focus-visible {
-    outline-width: 3px;
-  }
-}
+/* The rules for data-contrast live in core/components/experience.css (v5):
+   the v4 rules here lost to every theme's root block. */
 
 /* --- Accent swatches (optional per-theme accent override) ---------------
  * A theme MAY offer a curated set of alternate accents as numbered token
@@ -2566,12 +2566,8 @@ html[data-contrast="high"] :focus-visible {
  * theme JSON" style features with something themes can vouch for: every
  * swatch a theme ships is a color ITS author picked and verified, never an
  * arbitrary user-supplied value that could fail contrast unnoticed. */
-html[data-accent="1"] { --accent: var(--accent-swatch-1, var(--accent)); --on-accent: var(--on-accent-swatch-1, var(--on-accent)); }
-html[data-accent="2"] { --accent: var(--accent-swatch-2, var(--accent)); --on-accent: var(--on-accent-swatch-2, var(--on-accent)); }
-html[data-accent="3"] { --accent: var(--accent-swatch-3, var(--accent)); --on-accent: var(--on-accent-swatch-3, var(--on-accent)); }
-html[data-accent="4"] { --accent: var(--accent-swatch-4, var(--accent)); --on-accent: var(--on-accent-swatch-4, var(--on-accent)); }
-html[data-accent="5"] { --accent: var(--accent-swatch-5, var(--accent)); --on-accent: var(--on-accent-swatch-5, var(--on-accent)); }
-html[data-accent="6"] { --accent: var(--accent-swatch-6, var(--accent)); --on-accent: var(--on-accent-swatch-6, var(--on-accent)); }
+/* The data-accent mapping lives in core/components/experience.css (v5): the
+   v4 rules here lost to every theme's root block. */
 
 /* --- Layout primitives -----------------------------------------------------
  * Components carry no outer margin; these give a page its rhythm without
@@ -3319,23 +3315,48 @@ html[data-motion="reduced"] .typing::before { animation: none; }
 }
 html[data-pointer="touch"] { --tap-min: 44px; }
 
-:is(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
+:where(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
     .nav-item, .tab, .segmented-item, .pagination-item, .dropdown-item,
-    .context-menu-item, .accordion-trigger, .scrollspy-link, .taskbar-task,
+    .context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a),
+    .accordion-trigger, .scrollspy-link, .taskbar-task,
     .taskbar-start, .nav-toggle, .key, button.list-item, a.list-item) {
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle) {
+:where(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task) {
   min-inline-size: var(--tap-min);
 }
-:is(.input, .select) { min-block-size: var(--tap-min); }
-/* Checkboxes, radios and switches: the label is the target. */
-:is(.check, .radio, .switch) {
+:where(.input, .select) { min-block-size: var(--tap-min); }
+/* Checkboxes and radios: the label is the target. */
+:where(.check, .radio) {
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-.slider { min-block-size: var(--tap-min); touch-action: none; }
+/* Switches and sliders keep their drawn size: an invisible box centred on
+   the control makes up the hit area (growing the box itself turned the
+   switch thumb into a ball that spilled out of its track). */
+.switch { touch-action: manipulation; }
+.switch::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, var(--tap-min));
+  height: max(100%, var(--tap-min));
+  transform: translate(-50%, -50%);
+}
+.slider { touch-action: none; }
+@media (max-width: 900px), (any-pointer: coarse) {
+  /* The range input's own box is both its track and its target. On touch
+     it grows to the target height; padding keeps the drawn track the same
+     thin line in the middle (the border can't follow it, so it hides). */
+  .slider:not(.is-range > .slider) {
+    height: var(--tap-min);
+    padding-block: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
+    background-clip: content-box;
+    border-color: transparent;
+  }
+}
 /* Inline text links inside running text are exempt (WCAG 2.5.8); links
    that stand alone as navigation are not. */
 .breadcrumb-item:not(.is-current) {
@@ -3352,7 +3373,7 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 /* Small visuals, full-size hit areas: the dot or box stays the theme's size
    and transparent padding (clipped out of the background) makes up the
    target. */
-@media (max-width: 900px), (any-pointer: coarse) {
+/* Carousel dots: a full-size hit area round the small dot, at every tier. */
   /* Sized as border-box on purpose: apps commonly reset box-sizing with an
      unlayered rule, which would beat anything set here. */
   .carousel-nav > a:not(.carousel-prev, .carousel-next) {
@@ -3366,6 +3387,8 @@ html[data-pointer="touch"] { --tap-min: 44px; }
     height: var(--tap-min);
     line-height: var(--tap-min);
   }
+
+@media (max-width: 900px), (any-pointer: coarse) {
   /* A native checkbox draws itself at whatever size it is given, so its
      hit area can't be bigger than the box. A bare one (a table's select
      column) gets 24px (WCAG AA); for the full touch size, wrap it in a
@@ -3476,9 +3499,13 @@ html[data-pointer="touch"] { --tap-min: 44px; }
    next column. Table cells use break-word so column widths still come from
    their content; badges truncate. */
 :is(.panel-header, .modal-header, .card, .panel, .toast, .alert, .popover) { overflow-wrap: anywhere; }
-:is(.table td, .table th) { overflow-wrap: break-word; }
+/* break-word (not anywhere) where a box sizes from its content: it still
+   breaks a word too long for the line, but doesn't let the box shrink to
+   one letter per line (a squeezed title beside header controls, a button
+   label in a narrow cell or toast). */
+:is(.table td, .table th, .panel-header:has(:is(.input, .select, .btn, .input-group))) { overflow-wrap: break-word; }
 .badge { max-inline-size: 100%; min-inline-size: 0; }
-.btn { max-inline-size: 100%; overflow-wrap: anywhere; }
+.btn { max-inline-size: 100%; overflow-wrap: break-word; }
 
 /* --- v5 nested menus (PLAN.md §8) ----------------------------------------
  * Nested <ul> lists are the structure: a <li class="has-submenu"> holds its
@@ -3573,4 +3600,60 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 @media (max-width: 480px) {
   .value-row { grid-template-columns: minmax(0, 1fr) var(--value-row-value, 4.5rem); }
   .value-row > :first-child { grid-column: 1 / -1; }
+}
+
+/* --- v5 integration fixes ------------------------------------------------ */
+/* Nav items centre their label at the touch target height. */
+.nav-item { display: inline-flex; align-items: center; }
+/* Touch tiers: tabs never push past their box, even when a theme makes
+   .tabs inline-flex. */
+@media (max-width: 900px) { .tabs { max-inline-size: 100%; } }
+/* A panel header holding controls wraps instead of squeezing its title to
+   one letter per line. */
+.panel-header:has(:is(.input, .select, .btn, .input-group)) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+}
+/* A field row keeps its label when it holds a slider. */
+.field-row > .label { min-inline-size: min(8rem, 40%); }
+.field-row > .slider { flex: 1 1 8rem; min-inline-size: 0; }
+/* Windows and inline modals never get wider than their box. */
+.modal { max-inline-size: 100%; }
+/* Indeterminate progress: a sweeping segment (static with reduced motion). */
+progress.progress:indeterminate {
+  background-image: linear-gradient(90deg, transparent, var(--progress-fill, var(--accent)), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+}
+progress.progress:indeterminate::-webkit-progress-bar { background: transparent; }
+progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) progress.progress:indeterminate {
+    animation: progress-sweep 1.4s ease-in-out infinite;
+  }
+}
+@keyframes progress-sweep {
+  from { background-position: -40% 0; }
+  to { background-position: 140% 0; }
+}
+/* An absolutely positioned child (a visually-hidden label) stays inside its
+   scroller instead of escaping it and widening the page. */
+:is(.table-wrap, .scroll) { position: relative; }
+/* A checkbox or radio wrapped in a label with a hidden name gets the full
+   target width at every tier. */
+.check:has(> .visually-hidden:last-child) { min-inline-size: var(--tap-min); justify-content: center; }
+/* A field-row's label for a switch or checkbox is the target: it gets the
+   target height without changing the row's look. */
+.field-row:has(.switch, .check, .checkbox) > .label {
+  padding-block: max(0px, calc((var(--tap-min) - 1lh) / 2));
+}
+/* Action links inside toasts and alerts are targets, not inline text. */
+:where(.toast, .alert) > a { display: inline-flex; align-items: center; min-block-size: var(--tap-min); }
+/* Touch tiers: buttons reach the target width too (a "7d" segment in a
+   button group was 34px wide). */
+@media (max-width: 900px), (any-pointer: coarse) {
+  :where(.btn) { min-inline-size: var(--tap-min); }
 }

@@ -213,9 +213,10 @@ html[data-theme="winxp-luna"] .panel { margin-top: 0.6rem; }
 html[data-theme="winxp-luna"] .panel-header {
   width: fit-content;
   max-width: calc(100% - 1rem);
-  margin: calc(-1rem * var(--density) - 0.7em) 0 calc(0.6rem * var(--density)) -0.35rem;
+  /* --surface-pad is the box's own padding (v5: it steps per tier). */
+  margin: calc(-1 * var(--surface-pad, 1rem) - 0.7em) 0 calc(0.6rem * var(--density)) -0.35rem;
   padding: 0 0.3rem;
-  background: linear-gradient(180deg, transparent 50%, var(--panel-bg) 50%);
+  background: var(--luna-legend-bg, linear-gradient(180deg, transparent 50%, var(--panel-bg) 50%));
   border: 0;
   font-size: 0.9em;
   font-weight: 400;
@@ -223,6 +224,68 @@ html[data-theme="winxp-luna"] .panel-header {
   gap: 0.4rem;
   align-items: center;
 }
+
+/* A caption can't sit on the frame of a box that scrolls or slides in
+   (the scroller clips it): a scrolling panel gets a plain caption strip
+   across its top, and a drawer, a window edge, gets the Luna title bar
+   its dialogs wear. */
+html[data-theme="winxp-luna"] :is(.panel.scroll, .drawer) > .panel-header,
+html[data-theme="winxp-luna"] .panel-header:has(.input, .select) {
+  --luna-legend-bg: var(--panel-bg);
+  width: auto;
+  max-width: none;
+  margin: calc(-1 * var(--surface-pad, 1rem)) calc(-1 * var(--surface-pad, 1rem)) var(--space-s);
+  padding: 0.3rem var(--surface-pad, 1rem);
+  border-bottom: 1px solid var(--border);
+}
+html[data-theme="winxp-luna"] .drawer.drawer > .panel-header {
+  --luna-legend-bg: var(--modal-header-bg);
+  --panel-header-fg: var(--modal-header-fg);
+  font-family: "Trebuchet MS", var(--font);
+  font-weight: 700;
+  border-bottom: 0;
+}
+html[data-theme="winxp-luna"] .drawer.drawer > .panel-header > .btn-close {
+  --btn-close-bg: var(--luna-close) no-repeat center / 21px 21px;
+  --btn-close-bg-hover: var(--luna-close) no-repeat center / 21px 21px;
+  --btn-close-glyph: "";
+  margin-inline-start: auto;
+}
+
+/* Minimize / maximize on a window's title bar: the blue glossy Luna
+   caption squares in a white frame, white glyphs (core leaves them in
+   --muted, invisible on the blue). Close keeps the red-orange one. */
+html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) {
+  --btn-close-bg: transparent;
+  --btn-close-bg-hover: transparent;
+  width: 21px;
+  height: 21px;
+}
+/* The square is cropped from the variant's own --luna-caption strip onto
+   the glyph box, so it matches the title bar's close button and stays
+   21px when touch tiers grow the hit area to 44px. */
+html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) {
+  --btn-min-glyph: "";
+  --btn-max-glyph: "";
+}
+html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max)::before {
+  display: block;
+  width: 21px;
+  height: 21px;
+  background: var(--luna-caption) no-repeat 0 0 / 67px 21px;
+}
+html[data-theme="winxp-luna"] .modal-header > .btn-max::before { background-position: -23px 0; }
+@media (hover: hover) {
+  html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max):hover::before { filter: brightness(1.15); }
+}
+html[data-theme="winxp-luna"] .modal-header > .btn-min { margin-inline-start: auto; }
+/* With min/max beside it, the close button joins the row instead of
+   sitting absolutely over the bar's right end. */
+html[data-theme="winxp-luna"] .modal-header:has(> .btn-min, > .btn-max) > .btn-close {
+  position: static;
+  transform: none;
+}
+html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: calc(2px - 0.5rem); }
 
 /* Tabs: selected tab rises 2px, sits over the strip's rule, and carries
    the orange top line; hovering an unselected tab lights the same line. */
@@ -610,8 +673,8 @@ html[data-theme="winxp-luna"] .modal-header::after {
 /* A real close button takes the decoration's place and look. */
 html[data-theme="winxp-luna"] .modal-header:has(> .btn-close)::after { content: none; }
 html[data-theme="winxp-luna"] .modal-header > .btn-close {
-  --btn-close-bg: var(--luna-close) no-repeat;
-  --btn-close-bg-hover: var(--luna-close) no-repeat;
+  --btn-close-bg: var(--luna-close) no-repeat center / 21px 21px;
+  --btn-close-bg-hover: var(--luna-close) no-repeat center / 21px 21px;
   --btn-close-glyph: "";
   position: absolute;
   right: 0.35rem;
@@ -688,8 +751,45 @@ html[data-theme="winxp-luna"][data-variant="embedded"] .app-status > :last-child
   border-left-color: #0e2f6e;
   box-shadow: inset 1px 0 #4d84da;
 }
-@media (max-width: 720px) {
+/* Touch tiers (v5). The bar wraps to two lines (brand + actions, then
+   the nav), so the caption buttons pin to the first line's right end. On
+   a phone the 5.4rem they reserve would push the actions onto a line of
+   their own, so they go (the blue glossy bar stays), and so does the
+   Start button, which would take half the taskbar. */
+@media (max-width: 900px) {
+  html[data-theme="winxp-luna"] .app-bar::after {
+    top: calc(0.2rem + var(--tap-min) / 2);
+  }
+  /* The Luna box draws at 13px; a bare one in a table's select column
+     gets core's 24px touch size, as in every other theme. */
+  html[data-theme="winxp-luna"] :is(td, th) > :is(.checkbox, .radio):only-child {
+    width: 24px;
+    height: 24px;
+  }
+}
+@media (max-width: 480px) {
+  html[data-theme="winxp-luna"] { --app-bar-padding: 0.2rem 0.6rem; }
+  html[data-theme="winxp-luna"] .app-bar::after { content: none; }
   html[data-theme="winxp-luna"] .app-status::before { content: none; }
+  html[data-theme="winxp-luna"] .app-status { padding-inline-start: 0.6rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): Bliss, washed almost out. A pale sky band
+   high up and the rolling green hill low down, both within ~1.15:1 of the
+   tan --bg, so the window sits on the XP desktop without the desktop
+   competing with it. The full-strength Bliss behind the page gives way
+   to --bg at XL, so it doesn't glow through the fade at the content
+   edge. Still. */
+@media (min-width: 1801px) {
+  html[data-theme="winxp-luna"] { background: var(--bg); }
+}
+html[data-theme="winxp-luna"] {
+  --app-gutter-art:
+    radial-gradient(ellipse 70% 6% at 30% 22%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(ellipse 50% 5% at 75% 30%, rgba(255, 255, 255, 0.45), transparent 70%),
+    radial-gradient(ellipse 140% 45% at 35% 100%, #d4dfbb 55%, transparent 56%),
+    radial-gradient(ellipse 120% 40% at 85% 105%, #cbd9b2 55%, transparent 56%),
+    linear-gradient(180deg, #d5e0ee 0%, #e3e6e4 60%, var(--bg) 75%);
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *

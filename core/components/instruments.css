@@ -1,0 +1,992 @@
+/* --- v5 instruments and data display (PLAN.md §9 #1–16, §18 Charts) -------
+ * Dial, arc and linear gauges, compass and heading strip, map frame and
+ * pins, legend, progress ring, sparkline, donut, heatmap, timeline,
+ * property grid, battery and signal glyphs, analog clock and countdown,
+ * plus the library-neutral .chart contract.
+ *
+ * Every look reads a --<component>-* token with a fallback to the base
+ * tokens; values come in through documented inline APIs (--value, --heading,
+ * --x/--y, --seg-n, --v, --at) or native elements (<meter>, <ol>, <dl>).
+ * See docs/components/instruments.md. */
+
+/* --- Chart tokens (§18) ----------------------------------------------------
+ * Series colours stay --chart-series-1..6 (core.css). New here, with
+ * defaults derived from them so every theme has working scales:
+ *   --chart-seq-0..8   sequential, one hue from the chart surface to full
+ *   --chart-div-neg|mid|pos  diverging poles and a neutral midpoint
+ *   --chart-dash-1..6  stroke-dasharray per series (tiny-palette themes)
+ * Themes override any of them at root scope. */
+:root {
+  --chart-seq-0: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 8%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-1: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 18%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-2: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 30%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-3: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 42%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-4: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 54%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-5: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 66%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-6: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 78%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-7: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 90%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-8: var(--chart-seq-hue, var(--chart-series-1));
+  --chart-div-neg: var(--chart-series-4);
+  --chart-div-mid: var(--surface-2);
+  --chart-div-pos: var(--chart-series-1);
+  --chart-dash-1: none;
+  --chart-dash-2: none;
+  --chart-dash-3: none;
+  --chart-dash-4: none;
+  --chart-dash-5: none;
+  --chart-dash-6: none;
+}
+
+/* data-series="1..6" picks a series colour (and dash) for anything that
+   draws one: chart series, legend items, map pins, compass markers. */
+[data-series="1"] { --series: var(--chart-series-1); --series-dash: var(--chart-dash-1); }
+[data-series="2"] { --series: var(--chart-series-2); --series-dash: var(--chart-dash-2); }
+[data-series="3"] { --series: var(--chart-series-3); --series-dash: var(--chart-dash-3); }
+[data-series="4"] { --series: var(--chart-series-4); --series-dash: var(--chart-dash-4); }
+[data-series="5"] { --series: var(--chart-series-5); --series-dash: var(--chart-dash-5); }
+[data-series="6"] { --series: var(--chart-series-6); --series-dash: var(--chart-dash-6); }
+
+/* --- .chart: the library-neutral contract (§18) ---------------------------
+ * color is the chart foreground, so anything a library draws with
+ * currentColor (axes, ticks, labels) follows the theme; the plot is
+ * transparent. Plain-SVG hooks: .chart-grid, .chart-axis, .chart-series
+ * [data-series], .chart-point, .chart-label, .chart-legend, plus
+ * .chart-frame, .chart-crosshair, .chart-annotation, .chart-selection and
+ * an HTML .chart-tooltip placed by the app at --x/--y. */
+.chart {
+  position: relative;
+  min-inline-size: 0;
+  color: var(--chart-fg, var(--chart-text));
+  background: var(--chart-bg, transparent);
+  font-size: var(--chart-font-size, 0.85rem);
+}
+.chart svg { inline-size: 100%; block-size: auto; overflow: visible; font-family: var(--chart-font, var(--font)); }
+.chart text { fill: currentColor; stroke: none; font-size: var(--chart-text-size, 11px); }
+/* SVG text scales with the chart; on a phone-width chart print it larger in
+   user units so it stays readable. */
+@container (max-width: 480px) { .chart text { font-size: var(--chart-text-size-narrow, 16px); } }
+@media (max-width: 480px) { .chart text { font-size: var(--chart-text-size-narrow, 16px); } }
+.chart-grid { fill: none; stroke: var(--chart-grid); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-axis { fill: none; stroke: var(--chart-axis, currentColor); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-frame { fill: var(--chart-plot-bg, none); stroke: var(--chart-frame, none); }
+:is(.chart-grid, .chart-axis, .chart-frame, .chart-series, .chart-crosshair, .chart-annotation),
+:is(.chart-grid, .chart-axis, .chart-series, .chart-annotation) * { vector-effect: non-scaling-stroke; }
+.chart-series {
+  color: var(--series, var(--chart-series-1));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--chart-line-width, 2);
+  stroke-dasharray: var(--series-dash, none);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+/* Bars and areas are fills; a bar takes the series colour, not a stroke. */
+:is(rect.chart-series, .chart-series rect) { fill: currentColor; stroke: none; }
+:is(.chart-series.is-area, .chart-series .is-area) { fill: currentColor; fill-opacity: var(--chart-area-opacity, 0.16); stroke: none; }
+.chart-point {
+  fill: var(--series, currentColor);
+  stroke: var(--chart-point-ring, var(--surface));
+  stroke-width: 2;
+  stroke-dasharray: none;
+}
+.chart-point:is(:focus-visible, .is-active, [aria-selected="true"]) { stroke: var(--chart-highlight, var(--text)); }
+@media (hover: hover) {
+  .chart-point:hover { stroke: var(--chart-highlight, var(--text)); }
+}
+/* Direct labels and values wear text colours, never the series colour. */
+.chart .chart-label { fill: var(--chart-label-fg, var(--text)); }
+.chart-crosshair { fill: none; stroke: var(--chart-crosshair, var(--muted)); stroke-width: 1; stroke-dasharray: 3 3; }
+.chart-annotation { fill: none; stroke: var(--chart-annotation, var(--flare)); stroke-dasharray: 4 3; }
+.chart text.chart-annotation, .chart-annotation text { fill: var(--chart-annotation-fg, var(--text)); stroke: none; }
+.chart-selection { fill: var(--chart-selection, color-mix(in srgb, var(--accent) 14%, transparent)); stroke: none; }
+.chart-tooltip {
+  position: absolute;
+  z-index: var(--z-tooltip);
+  left: var(--x, 50%);
+  top: var(--y, 0);
+  translate: -50% calc(-100% - var(--space-2xs));
+  max-inline-size: min(16rem, 90%);
+  inline-size: max-content;
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--tooltip-bg, var(--surface));
+  color: var(--tooltip-fg, var(--text));
+  border: var(--tooltip-border-width, 1px) solid var(--tooltip-border, var(--border));
+  border-radius: var(--tooltip-radius, var(--radius));
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+/* --- .legend / .chart-legend (§9 #11) --------------------------------------
+ *   <ul class="legend"><li data-series="1">Revenue</li>…</ul>
+ * Items may be toggle buttons: <li><button aria-pressed="true">…</button>. */
+:is(.legend, .chart-legend) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs) var(--space-m);
+  font-size: var(--legend-size, 0.85em);
+  color: var(--legend-fg, var(--text));
+}
+:is(.legend, .chart-legend) > li { display: inline-flex; align-items: center; gap: 0.45em; min-inline-size: 0; }
+:is(.legend, .chart-legend) > li:not(:has(> button))::before,
+:is(.legend, .chart-legend) > li > button::before {
+  content: "";
+  flex: none;
+  inline-size: var(--legend-swatch-size, 0.8em);
+  block-size: var(--legend-swatch-size, 0.8em);
+  border-radius: var(--legend-swatch-radius, 2px);
+  background: var(--series, var(--chart-series-1));
+}
+:is(.legend, .chart-legend).is-line > li:not(:has(> button))::before,
+:is(.legend, .chart-legend).is-line > li > button::before { block-size: 3px; inline-size: 1.4em; }
+:is(.legend, .chart-legend).is-vertical { flex-direction: column; }
+/* A colour scale (heatmap, choropleth): each item's --v (0–1) picks the step. */
+:is(.legend, .chart-legend).is-scale > li::before {
+  background: color-mix(in oklab, var(--chart-seq-8) calc(var(--v, 0) * 100%), var(--chart-seq-0));
+}
+:is(.legend, .chart-legend) > li > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-block-size: var(--tap-min);
+  padding: 0 var(--space-3xs);
+  border-radius: var(--radius);
+  touch-action: manipulation;
+}
+:is(.legend, .chart-legend) > li > button[aria-pressed="false"] { color: var(--muted); text-decoration: line-through; }
+:is(.legend, .chart-legend) > li > button[aria-pressed="false"]::before { opacity: 0.3; }
+
+/* --- Gauges: shared dial geometry (§9 #1, #2, #4, #16) -----------------------
+ * .gauge-dial (needle, 270°), .gauge-arc (semicircle, no needle), .compass
+ * (rose turned by --heading) and .clock (12-hour face) share one face:
+ *   ::before   the arc track
+ *   ::after    tick marks (major --gauge-ticks, minor --gauge-minor) and the
+ *              redline band from --gauge-redline (0–1) to the end
+ *   ol.gauge-ticks  printed numbers, placed round the arc by their index
+ *   <meter> or .gauge-needle   the value layer: fill arc, needle and hub,
+ *              turned as one. A <meter>'s value/min/max drive it where
+ *              typed attr() is supported; --value (0–1) on the gauge drives
+ *              it everywhere, so set both for every engine.
+ *   .gauge-readout  the value printed in the lower centre
+ * Sizes are in cqi of the gauge, so one --gauge-size scales everything. */
+@property --gauge-v {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock) {
+  --gauge-from: var(--gauge-start, calc(var(--gauge-sweep, 270deg) / -2));
+  --gauge-span: var(--gauge-sweep, 270deg);
+  --gauge-in: var(--gauge-inset, 3cqi);
+  --gauge-arc: var(--gauge-arc-width, 5cqi);
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--gauge-size, 12rem);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--gauge-face, var(--surface-2));
+  color: var(--gauge-label-fg, var(--text));
+  border: var(--gauge-border-width, 1px) solid var(--gauge-border, var(--border));
+  border-radius: 50%;
+  box-shadow: var(--gauge-shadow, none);
+  font-variant-numeric: tabular-nums;
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::before,
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::after,
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) {
+  position: absolute;
+  inset: var(--gauge-in) auto auto var(--gauge-in);
+  inline-size: calc(100% - 2 * var(--gauge-in));
+  block-size: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::before,
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::after { content: ""; }
+/* Track */
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::before {
+  background: conic-gradient(from var(--gauge-from), var(--gauge-track, var(--meter-track, var(--bg))) 0 var(--gauge-span), transparent 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--gauge-arc)), #000 calc(100% - var(--gauge-arc) + 0.5px));
+}
+/* Ticks and redline, in a ring just inside the track */
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::after {
+  --gauge-tick-in: calc(var(--gauge-in) + var(--gauge-arc) + 1cqi);
+  --gauge-major: calc(var(--gauge-span) / var(--gauge-ticks, 8));
+  --gauge-minor-step: calc(var(--gauge-major) / var(--gauge-minor, 5));
+  inset: var(--gauge-tick-in) auto auto var(--gauge-tick-in);
+  inline-size: calc(100% - 2 * var(--gauge-tick-in));
+  background:
+    repeating-conic-gradient(from calc(var(--gauge-from) - 0.8deg), var(--gauge-tick, var(--text)) 0 1.6deg, transparent 0 var(--gauge-major)),
+    repeating-conic-gradient(from calc(var(--gauge-from) - 0.3deg), var(--gauge-tick-minor, var(--muted)) 0 0.6deg, transparent 0 var(--gauge-minor-step)),
+    conic-gradient(from var(--gauge-from), transparent 0 calc(var(--gauge-redline, 1) * var(--gauge-span)), var(--gauge-redline-color, var(--danger)) 0 var(--gauge-span), transparent 0);
+  mask:
+    radial-gradient(farthest-side, transparent calc(100% - var(--gauge-tick-length, 5cqi)), #000 calc(100% - var(--gauge-tick-length, 5cqi) + 0.5px)),
+    conic-gradient(from calc(var(--gauge-from) - 1deg), #000 0 calc(var(--gauge-span) + 2deg), transparent 0);
+  mask-composite: intersect;
+}
+/* The value layer: a <meter> (native semantics) or a span. Drawn pointing
+   up, then turned to the value, so the fill arc is laid out backwards from
+   the needle. */
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) {
+  --gauge-v: clamp(0, var(--value, 0), 1);
+  --gauge-needle-image: linear-gradient(to top,
+    transparent calc(50% - var(--gauge-needle-tail, 8%) / 2),
+    var(--gauge-needle, var(--danger)) 0 calc(50% + var(--gauge-needle-length, 82%) / 2),
+    transparent 0);
+  z-index: var(--z-raised);
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: transparent;
+  rotate: calc(var(--gauge-from) + var(--gauge-v) * var(--gauge-span));
+  background:
+    radial-gradient(circle closest-side, var(--gauge-hub, var(--text)) 0 var(--gauge-hub-size, 12%), transparent calc(var(--gauge-hub-size, 12%) + 1%)) center / 100% 100% no-repeat,
+    var(--gauge-needle-image) center / var(--gauge-needle-width, 2.5cqi) 100% no-repeat,
+    conic-gradient(from calc(var(--gauge-v) * var(--gauge-span) * -1), var(--gauge-fill, var(--accent)) 0 calc(var(--gauge-v) * var(--gauge-span)), transparent 0);
+  mask:
+    radial-gradient(circle closest-side, #000 0 var(--gauge-hub-size, 12%), transparent calc(var(--gauge-hub-size, 12%) + 1%)) center / 100% 100% no-repeat,
+    var(--gauge-needle-image) center / var(--gauge-needle-width, 2.5cqi) 100% no-repeat,
+    radial-gradient(farthest-side, transparent calc(100% - var(--gauge-arc)), #000 calc(100% - var(--gauge-arc) + 0.5px));
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-bar { background: none; border: 0; }
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-optimum-value,
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-suboptimum-value,
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-even-less-good-value { background: none; }
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-moz-meter-bar { background: none; }
+/* Typed attr(): the <meter>'s own value, min and max drive the needle. */
+@supports (x: attr(x type(*))) {
+  :is(.gauge-dial, .gauge-arc) > meter[value] {
+    --gauge-v: clamp(0, calc((attr(value type(<number>), 0) - attr(min type(<number>), 0)) / (attr(max type(<number>), 1) - attr(min type(<number>), 0))), 1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) { transition: --gauge-v var(--gauge-speed, 0.4s) ease-out; }
+}
+.gauge-dial.is-warn, .gauge-arc.is-warn { --gauge-fill: var(--gauge-fill-warn, var(--warning)); }
+.gauge-dial.is-error, .gauge-arc.is-error { --gauge-fill: var(--gauge-fill-error, var(--danger)); }
+
+/* Printed numbers: an <ol> whose items sit round the arc, upright. */
+.gauge-ticks { display: contents; }
+.gauge-ticks > li {
+  --gauge-a: calc(var(--gauge-from) + var(--i, 0) * var(--gauge-span) / (var(--n, 1) + var(--gauge-closed, 0)));
+  position: absolute;
+  top: 50cqi;
+  left: 50%;
+  font-size: var(--gauge-label-size, 7cqi);
+  line-height: 1;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) rotate(var(--gauge-a)) translateY(calc(-1 * var(--gauge-label-r, 29cqi))) rotate(calc(-1 * var(--gauge-a)));
+}
+.gauge-ticks > li.is-redline { color: var(--gauge-redline-fg, var(--danger-text, var(--danger))); }
+/* Item index (--i) and count − 1 (--n), shared with .compass-strip. */
+:is(.gauge-ticks, .compass-strip) > li:nth-child(2) { --i: 1; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(3) { --i: 2; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(4) { --i: 3; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(5) { --i: 4; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(6) { --i: 5; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(7) { --i: 6; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(8) { --i: 7; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(9) { --i: 8; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(10) { --i: 9; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(11) { --i: 10; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(12) { --i: 11; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(13) { --i: 12; }
+.gauge-ticks:has(> li:nth-child(3):last-child) { --n: 2; }
+.gauge-ticks:has(> li:nth-child(4):last-child) { --n: 3; }
+.gauge-ticks:has(> li:nth-child(5):last-child) { --n: 4; }
+.gauge-ticks:has(> li:nth-child(6):last-child) { --n: 5; }
+.gauge-ticks:has(> li:nth-child(7):last-child) { --n: 6; }
+.gauge-ticks:has(> li:nth-child(8):last-child) { --n: 7; }
+.gauge-ticks:has(> li:nth-child(9):last-child) { --n: 8; }
+.gauge-ticks:has(> li:nth-child(10):last-child) { --n: 9; }
+.gauge-ticks:has(> li:nth-child(11):last-child) { --n: 10; }
+.gauge-ticks:has(> li:nth-child(12):last-child) { --n: 11; }
+.gauge-ticks:has(> li:nth-child(13):last-child) { --n: 12; }
+
+.gauge-readout {
+  position: absolute;
+  z-index: var(--z-raised);
+  inset: 62cqi 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--gauge-readout-size, 6cqi);
+  line-height: 1.15;
+  color: var(--gauge-readout-fg, var(--muted));
+  text-align: center;
+}
+.gauge-readout .readout { --readout-size: 11cqi; padding: 0; }
+
+/* Arc gauge: the top half of the same face, no needle. */
+.gauge-arc {
+  --gauge-sweep: 180deg;
+  --gauge-arc-width: 9cqi;
+  --gauge-hub-size: 0%;
+  --gauge-needle-width: 0px;
+  --gauge-ticks: 4;
+  --gauge-minor: 2;
+  aspect-ratio: 100 / 64;
+  border-radius: 50% 50% var(--radius) var(--radius) / 78% 78% var(--radius) var(--radius);
+}
+.gauge-arc .gauge-readout { inset: auto 0 2cqi; }
+.gauge-arc .gauge-ticks > li { --gauge-label-r: 25cqi; }
+
+/* --- .compass (§9 #4): a rose turned by --heading (degrees). The needle
+   layer is the lubber line pointing at the heading; .is-north-up keeps the
+   rose still and turns the needle instead. */
+.compass {
+  --gauge-start: calc(var(--heading, 0) * -1deg);
+  --gauge-sweep: 360deg;
+  --gauge-closed: 1;
+  --gauge-ticks: 8;
+  --gauge-minor: 3;
+  --gauge-arc-width: 0px;
+  --value: calc(var(--heading, 0) / 360);
+  --gauge-hub-size: 9%;
+  --gauge-needle-width: 5cqi;
+  --gauge-needle-image: linear-gradient(to top,
+    transparent calc(50% - var(--compass-needle-tail-length, 30%) / 2),
+    var(--compass-needle-tail, var(--muted)) 0 50%,
+    var(--compass-needle, var(--danger)) 0 calc(50% + var(--compass-needle-length, 70%) / 2),
+    transparent 0);
+}
+.compass.is-north-up { --gauge-start: 0deg; }
+.compass .gauge-ticks > li { --gauge-label-r: 30cqi; --gauge-label-size: 8cqi; font-weight: 600; }
+.compass .gauge-ticks > li:first-child { color: var(--compass-north, var(--danger-text, var(--danger))); }
+
+/* .compass-strip: a heading bar (Skyrim style). An <ol> of cardinal points
+   every --compass-step degrees (45); items with --at are markers placed at
+   their own bearing. --compass-strip-span degrees are visible (180). */
+.compass-strip {
+  --compass-h: var(--heading, 0);
+  --compass-deg: calc(100cqi / var(--compass-strip-span, 180));
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  min-inline-size: 0;
+  block-size: var(--compass-strip-height, 2.5rem);
+  background: var(--compass-strip-bg, var(--surface-2));
+  color: var(--compass-strip-fg, var(--text));
+  border: var(--compass-strip-border-width, 1px) solid var(--compass-strip-border, var(--border));
+  border-radius: var(--compass-strip-radius, var(--radius));
+  mask: var(--compass-strip-mask, none);
+  font-variant-numeric: tabular-nums;
+}
+.compass-strip::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  block-size: 40%;
+  background:
+    linear-gradient(90deg, var(--compass-tick, var(--muted)) 0 1px, transparent 0),
+    linear-gradient(90deg, var(--compass-tick-minor, var(--muted)) 0 1px, transparent 0);
+  background-size: calc(var(--compass-deg) * 45) 100%, calc(var(--compass-deg) * 15) 50%;
+  background-repeat: repeat-x;
+  background-position-x: calc(50cqi - var(--compass-h) * var(--compass-deg)), calc(50cqi - var(--compass-h) * var(--compass-deg));
+  background-position-y: 100%;
+}
+.compass-strip::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  inline-size: 2px;
+  translate: -50% 0;
+  background: var(--compass-lubber, var(--accent));
+}
+.compass-strip > li {
+  --compass-a: var(--at, calc(var(--i, 0) * var(--compass-step, 45)));
+  --compass-off: calc(mod(var(--compass-a) - var(--compass-h) + 180, 360) - 180);
+  position: absolute;
+  top: var(--space-2xs);
+  left: calc(50% + var(--compass-off) * var(--compass-deg));
+  translate: -50% 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.compass-strip > li:first-child { color: var(--compass-north, var(--danger-text, var(--danger))); }
+.compass-strip > li.is-marker { color: var(--series, var(--accent)); }
+.compass-strip > li.is-marker .icon { --icon-size: 1rem; }
+
+/* --- .clock (§9 #16): the dial face with 12 numbers and three hands.
+   Set --h, --m and --s (numbers) on it; the app updates them. */
+.clock {
+  --gauge-start: 0deg;
+  --gauge-sweep: 360deg;
+  --gauge-closed: 1;
+  --gauge-ticks: 12;
+  --gauge-minor: 5;
+  --gauge-arc-width: 0px;
+}
+.clock .gauge-ticks > li { --gauge-label-r: 32cqi; --gauge-label-size: 8cqi; }
+.clock-hand {
+  --clock-a: 0deg;
+  position: absolute;
+  z-index: var(--z-raised);
+  left: 50%;
+  bottom: 50%;
+  inline-size: var(--clock-hand-width, 3cqi);
+  block-size: 30cqi;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  rotate: var(--clock-a);
+  background: var(--clock-hand, var(--text));
+  border-radius: 1cqi;
+}
+.clock-hand.is-hour { --clock-a: calc((mod(var(--h, 0), 12) + var(--m, 0) / 60) * 30deg); block-size: 24cqi; inline-size: var(--clock-hour-width, 4cqi); }
+.clock-hand.is-minute { --clock-a: calc((var(--m, 0) + var(--s, 0) / 60) * 6deg); block-size: 36cqi; }
+.clock-hand.is-second {
+  --clock-a: calc(var(--s, 0) * 6deg);
+  block-size: 40cqi;
+  inline-size: var(--clock-second-width, 1cqi);
+  background: var(--clock-second-hand, var(--danger));
+}
+/* The pivot cap over the hands. */
+.clock-hand.is-second::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  inline-size: 5cqi;
+  aspect-ratio: 1;
+  translate: -50% 50%;
+  border-radius: 50%;
+  background: inherit;
+}
+
+/* --- .gauge-linear (§9 #3): a .meter (div or native <meter class="meter">)
+   with markers at --at (percent). Plain marks are scale labels; .is-target
+   and .is-warn sit below the bar, .is-min and .is-max (recorded extremes)
+   above it. Each mark's text is its label. */
+.gauge-linear {
+  position: relative;
+  min-inline-size: 0;
+  padding-block: var(--gauge-linear-label-room, 1.35rem);
+  font-size: var(--gauge-linear-label-size, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  /* The bands of a .meter-fill are sized to the fill, not the track; inside
+     a linear gauge the track width is known, so they land on-scale. */
+  container-type: inline-size;
+}
+.gauge-linear .meter-fill { --meter-span: calc(100cqi - 2 * var(--meter-border-width, 1px)); }
+.gauge-mark {
+  position: absolute;
+  inset-block: 0;
+  left: var(--at, 0%);
+  display: flex;
+  align-items: flex-end;
+  translate: calc(-1 * var(--at, 0%)) 0;
+  color: var(--gauge-mark-fg, var(--muted));
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.gauge-mark::before {
+  content: "";
+  position: absolute;
+  left: var(--at, 0%);
+  top: calc(var(--gauge-linear-label-room, 1.35rem) + var(--meter-thickness, 0.6rem));
+  inline-size: 1px;
+  block-size: 0.35rem;
+  translate: -50% 0;
+  background: currentColor;
+}
+.gauge-mark:is(.is-target, .is-warn, .is-min, .is-max)::before {
+  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.3rem);
+  inline-size: 2px;
+  block-size: calc(var(--meter-thickness, 0.6rem) + 0.6rem);
+}
+.gauge-mark.is-target { color: var(--gauge-target, var(--text)); font-weight: 600; }
+/* The target also gets a head, so it isn't told apart by colour alone. */
+.gauge-mark.is-target::after {
+  content: "";
+  position: absolute;
+  left: var(--at, 0%);
+  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.75rem);
+  inline-size: 0.6rem;
+  block-size: 0.45rem;
+  translate: -50% 0;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.gauge-mark.is-warn { color: var(--gauge-warn, var(--warning-text, var(--warning))); }
+.gauge-mark.is-warn::before { background: repeating-linear-gradient(currentColor 0 3px, transparent 3px 5px); }
+.gauge-mark:is(.is-min, .is-max) { align-items: flex-start; color: var(--gauge-minmax, var(--muted)); }
+
+/* --- .map (§9 #5–7): a themed frame for an <img>, <svg>, <iframe> or
+   <canvas> map. Overlays sit in a grid: .map-north top-start,
+   .map-controls top-end, .map-legend above .map-scale bottom-start,
+   .map-attribution bottom-end. Pins are absolutely placed at --x/--y. */
+.map {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template: auto 1fr auto auto / minmax(0, 1fr) auto;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  min-block-size: var(--map-min-height, 14rem);
+  aspect-ratio: var(--map-ratio, 16 / 10);
+  padding: var(--map-pad, var(--space-xs));
+  overflow: hidden;
+  background: var(--map-bg, var(--surface-2));
+  border: var(--map-border-width, 1px) solid var(--map-border, var(--border));
+  border-radius: var(--map-radius, var(--radius));
+  box-shadow: var(--map-shadow, none);
+}
+.map > :is(img, svg, iframe, canvas, video) {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  object-fit: cover;
+  border: 0;
+  filter: var(--map-media-filter, none);
+}
+.map > :is(.map-north, .map-controls, .map-legend, .map-scale, .map-attribution) {
+  position: relative;
+  z-index: calc(var(--z-raised) + 1);
+}
+.map > :is(.map-north, .map-legend, .map-scale, .map-attribution) {
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--map-overlay-bg, color-mix(in srgb, var(--surface) 88%, transparent));
+  color: var(--map-overlay-fg, var(--text));
+  border-radius: var(--map-overlay-radius, var(--radius));
+  font-size: var(--map-overlay-size, 0.75rem);
+}
+.map-north {
+  grid-area: 1 / 1;
+  justify-self: start;
+  align-self: start;
+  display: grid;
+  justify-items: center;
+  min-inline-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  rotate: calc(var(--map-bearing, 0) * -1deg);
+}
+.map-north::before {
+  content: "";
+  inline-size: 0.7rem;
+  block-size: 0.8rem;
+  background: var(--map-north, var(--danger));
+  clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%);
+}
+.map-controls {
+  grid-area: 1 / 2 / span 2;
+  justify-self: end;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.map > .map-legend {
+  grid-area: 3 / 1;
+  justify-self: start;
+  align-self: end;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.map-scale {
+  grid-area: 4 / 1;
+  justify-self: start;
+  align-self: end;
+  display: grid;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.map-scale::before {
+  content: "";
+  inline-size: var(--map-scale-width, 5rem);
+  block-size: 0.35rem;
+  border: 1px solid var(--map-scale-fg, var(--text));
+  background: linear-gradient(90deg, var(--map-scale-fg, var(--text)) 0 25%, transparent 0 50%, var(--map-scale-fg, var(--text)) 0 75%, transparent 0);
+}
+.map-attribution {
+  grid-area: 4 / 2;
+  justify-self: end;
+  align-self: end;
+  max-inline-size: 22rem;
+  --map-overlay-size: 0.68rem;
+  --map-overlay-fg: var(--map-attribution-fg, var(--muted));
+}
+.map-attribution a { text-decoration: underline; }
+
+/* .map-pin: a button at --x/--y (percent of the frame). Its hit area is
+   --tap-min square; the drawn pin is --map-pin-size. data-series colours it;
+   aria-expanded / .is-active / aria-current mark the selected one. An
+   optional .map-pin-label rides beside it; a popover opens from it. */
+.map-pin {
+  position: absolute;
+  z-index: var(--z-raised);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  display: grid;
+  place-items: end center;
+  inline-size: var(--tap-min);
+  block-size: var(--tap-min);
+  translate: -50% -100%;
+  padding: 0;
+  touch-action: manipulation;
+}
+.map-pin::before {
+  content: "";
+  inline-size: var(--map-pin-size, 1.4rem);
+  block-size: var(--map-pin-size, 1.4rem);
+  margin-block-end: calc(var(--map-pin-size, 1.4rem) * 0.21);
+  border: 2px solid var(--map-pin-border, var(--surface));
+  border-radius: 50% 50% 50% 0;
+  rotate: -45deg;
+  background: radial-gradient(circle, var(--map-pin-dot, var(--surface)) 0 22%, var(--series, var(--map-pin-bg, var(--accent))) 26%);
+  box-shadow: var(--map-pin-shadow, 0 1px 3px rgba(0, 0, 0, 0.45));
+}
+.map-pin:is([aria-expanded="true"], .is-active, [aria-current]:not([aria-current="false"])) {
+  z-index: calc(var(--z-raised) + 1);
+  --map-pin-size: 1.8rem;
+  --map-pin-border: var(--map-pin-border-active, var(--text));
+}
+.map-pin-label {
+  position: absolute;
+  left: calc(50% + var(--map-pin-size, 1.4rem) / 2 + 0.2rem);
+  bottom: calc(var(--map-pin-size, 1.4rem) * 0.55);
+  padding: var(--space-2xs);
+  background: var(--map-overlay-bg, color-mix(in srgb, var(--surface) 88%, transparent));
+  color: var(--map-overlay-fg, var(--text));
+  border-radius: var(--radius);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* --- .progress-ring (§9 #8) -------------------------------------------------
+ *   <div class="progress-ring" role="progressbar" aria-valuenow="64"
+ *        aria-valuemin="0" aria-valuemax="100" style="--value:.64">64%</div>
+ * Indeterminate: .is-indeterminate, or a progressbar with no aria-valuenow. */
+.progress-ring {
+  --progress-ring-v: clamp(0, var(--value, 0), 1);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--progress-ring-size, 3rem);
+  aspect-ratio: 1;
+  vertical-align: middle;
+  color: var(--progress-ring-fg, var(--text));
+  font-size: var(--progress-ring-text, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: center;
+}
+.progress-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--progress-ring-fill, var(--progress-fill, var(--accent))) calc(var(--progress-ring-v) * 360deg), var(--progress-ring-track, var(--progress-bg, var(--surface-2))) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--progress-ring-width, 0.3rem)), #000 calc(100% - var(--progress-ring-width, 0.3rem) + 0.5px));
+}
+.progress-ring:is(.is-indeterminate, [role="progressbar"]:not([aria-valuenow]))::before {
+  background: conic-gradient(var(--progress-ring-fill, var(--progress-fill, var(--accent))) 0 25%, var(--progress-ring-track, var(--progress-bg, var(--surface-2))) 0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .progress-ring:is(.is-indeterminate, [role="progressbar"]:not([aria-valuenow]))::before { animation: spinner-rotate 1s linear infinite; }
+}
+.progress-ring.is-success { --progress-ring-fill: var(--success); }
+.progress-ring.is-error { --progress-ring-fill: var(--danger); }
+.progress-ring > * { position: relative; }
+
+/* --- .sparkline (§9 #9): inline SVG, styling only ---------------------------
+ *   <svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none"
+ *        role="img" aria-label="…"><polyline points="…"/></svg>
+ * Optional .sparkline-area (a filled polygon) and .sparkline-baseline. */
+.sparkline {
+  display: inline-block;
+  vertical-align: middle;
+  inline-size: var(--sparkline-width, 6em);
+  block-size: var(--sparkline-height, 1.5em);
+  overflow: visible;
+  color: var(--sparkline-stroke, var(--chart-series-1));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--sparkline-line-width, 1.5);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.sparkline * { vector-effect: non-scaling-stroke; }
+.sparkline .sparkline-area { fill: currentColor; fill-opacity: var(--sparkline-area-opacity, 0.16); stroke: none; }
+.sparkline .sparkline-baseline { stroke: var(--chart-grid); stroke-width: 1; stroke-dasharray: 2 2; }
+.sparkline.is-up { --sparkline-stroke: var(--success-text, var(--success)); }
+.sparkline.is-down { --sparkline-stroke: var(--danger-text, var(--danger)); }
+
+/* --- .donut (§9 #10): a conic-gradient ring of up to six segments, sized by
+   --seg-1..--seg-6 (percentages) and coloured --chart-series-1..6, so it
+   matches a .legend with data-series. --donut-hole: 0% makes a pie. */
+.donut {
+  --donut-a1: var(--seg-1, 0%);
+  --donut-a2: calc(var(--donut-a1) + var(--seg-2, 0%));
+  --donut-a3: calc(var(--donut-a2) + var(--seg-3, 0%));
+  --donut-a4: calc(var(--donut-a3) + var(--seg-4, 0%));
+  --donut-a5: calc(var(--donut-a4) + var(--seg-5, 0%));
+  --donut-a6: calc(var(--donut-a5) + var(--seg-6, 0%));
+  --donut-g: var(--donut-gap, 0.4%);
+  --donut-sep: var(--donut-gap-color, var(--surface));
+  position: relative;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  inline-size: var(--donut-size, 9rem);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.2;
+  font-size: 0.8rem;
+  color: var(--donut-fg, var(--muted));
+}
+.donut::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--chart-series-1) 0 calc(var(--donut-a1) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a1),
+    var(--chart-series-2) 0 calc(var(--donut-a2) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a2),
+    var(--chart-series-3) 0 calc(var(--donut-a3) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a3),
+    var(--chart-series-4) 0 calc(var(--donut-a4) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a4),
+    var(--chart-series-5) 0 calc(var(--donut-a5) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a5),
+    var(--chart-series-6) 0 calc(var(--donut-a6) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a6),
+    var(--donut-track, var(--surface-2)) 0);
+  mask: radial-gradient(farthest-side, transparent var(--donut-hole, 58%), #000 calc(var(--donut-hole, 58%) + 0.5px));
+}
+.donut > * { position: relative; }
+.donut strong, .donut .donut-value { display: block; font-size: 1.6em; color: var(--donut-value-fg, var(--text)); font-variant-numeric: tabular-nums; }
+
+/* --- .heatmap (§9 #12): calendar-style grid; each cell's --v (0–1) picks a
+   colour on the sequential scale (.is-diverging: --v −1..1 on the diverging
+   scale). Columns flow in --heatmap-rows rows (7, a week). Scrolls sideways
+   inside itself when wider than its box. */
+.heatmap {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--heatmap-rows, 7), var(--heatmap-cell, 0.85rem));
+  grid-auto-columns: var(--heatmap-cell, 0.85rem);
+  gap: var(--heatmap-gap, 3px);
+  justify-content: start;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  padding: 2px;
+  scrollbar-width: thin;
+}
+.heatmap > * {
+  border-radius: var(--heatmap-radius, 2px);
+  background: color-mix(in oklab, var(--chart-seq-8) calc(var(--v, 0) * 100%), var(--chart-seq-0));
+}
+.heatmap.is-diverging > * {
+  background: color-mix(in oklab, var(--chart-div-pos) calc(max(var(--v, 0), 0) * 100%),
+    color-mix(in oklab, var(--chart-div-neg) calc(max(var(--v, 0) * -1, 0) * 100%), var(--chart-div-mid)));
+}
+.heatmap > .is-empty { background: transparent; outline: 1px dashed var(--hairline); outline-offset: -1px; }
+.heatmap > :is(:focus-visible, .is-active) { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
+@media (hover: hover) {
+  .heatmap > :hover { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
+}
+
+/* --- .timeline (§9 #13): an <ol>; each <li> gets a dot on a rail.
+   States: .is-done (✓), aria-current (ringed), .is-warn (!), .is-error (✕).
+   .is-horizontal lays it out across on desktop and wider. */
+.timeline {
+  --timeline-dot-size: 1rem;
+  display: grid;
+  gap: var(--timeline-gap, var(--space-m));
+  min-inline-size: 0;
+}
+.timeline > li {
+  position: relative;
+  min-inline-size: 0;
+  padding-inline-start: calc(var(--timeline-dot-size) + var(--space-s));
+  overflow-wrap: anywhere;
+}
+.timeline > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.15em;
+  display: grid;
+  place-items: center;
+  inline-size: var(--timeline-dot-size);
+  block-size: var(--timeline-dot-size);
+  border: 2px solid var(--timeline-dot-border, var(--border));
+  border-radius: 50%;
+  background: var(--timeline-dot-bg, var(--surface));
+  color: var(--timeline-dot-fg, var(--on-accent));
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.timeline > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--timeline-dot-size) / 2 - 1px);
+  top: calc(0.15em + var(--timeline-dot-size));
+  bottom: calc(-1 * var(--timeline-gap, var(--space-m)) - 0.15em);
+  inline-size: 2px;
+  background: var(--timeline-line, var(--hairline));
+}
+.timeline > li > time { display: block; font-size: 0.8em; color: var(--timeline-time-fg, var(--muted)); font-variant-numeric: tabular-nums; }
+.timeline > li > p { color: var(--muted); }
+.timeline > li.is-done::before { content: "\2713"; border-color: var(--timeline-done, var(--success)); background: var(--timeline-done, var(--success)); color: var(--on-success); }
+.timeline > li.is-done:not(:last-child)::after { background: var(--timeline-done, var(--success)); }
+.timeline > li[aria-current]:not([aria-current="false"])::before {
+  border-color: var(--timeline-current, var(--accent));
+  background: var(--timeline-current, var(--accent));
+  box-shadow: 0 0 0 3px var(--timeline-current-ring, color-mix(in srgb, var(--accent) 30%, transparent));
+}
+.timeline > li.is-warn::before { content: "!"; border-color: var(--warning); background: var(--warning); color: var(--on-accent); }
+.timeline > li.is-error::before { content: "\2715"; border-color: var(--danger); background: var(--danger); color: var(--on-danger); }
+@media (min-width: 901px) {
+  .timeline.is-horizontal {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(9rem, 1fr);
+    overflow-x: auto;
+    padding-block-start: 0.25rem;
+  }
+  .timeline.is-horizontal > li { padding-inline-start: 0; padding-block-start: calc(var(--timeline-dot-size) + var(--space-xs)); }
+  .timeline.is-horizontal > li::before { top: 0; }
+  .timeline.is-horizontal > li:not(:last-child)::after {
+    top: calc(var(--timeline-dot-size) / 2 - 1px);
+    bottom: auto;
+    inset-inline-start: var(--timeline-dot-size);
+    inset-inline-end: calc(-1 * var(--timeline-gap, var(--space-m)));
+    inline-size: auto;
+    block-size: 2px;
+  }
+}
+
+/* --- dl.props (§9 #14): key/value inspector rows. <div> row wrappers are
+   allowed. Keys take what they need up to 40%; long values wrap. */
+.props {
+  display: grid;
+  grid-template-columns: fit-content(40%) minmax(0, 1fr);
+  margin: 0;
+  font-size: var(--props-size, 0.9em);
+}
+.props > div { display: contents; }
+.props :is(dt, dd) {
+  margin: 0;
+  min-inline-size: 0;
+  padding: var(--props-pad-y, var(--space-2xs)) var(--props-pad-x, var(--space-xs));
+  border-block-start: 1px solid var(--props-rule, var(--hairline));
+  overflow-wrap: anywhere;
+}
+.props dt { grid-column: 1; padding-inline-start: 0; color: var(--props-key-fg, var(--muted)); }
+.props dd { grid-column: 2; padding-inline-end: 0; color: var(--props-value-fg, var(--text)); }
+.props > :is(dt:first-child, dt:first-child + dd, div:first-child > *) { border-block-start: 0; }
+
+/* --- .battery and .signal (§9 #15): status-strip glyphs sized in em.
+ *   <span class="battery" role="img" aria-label="Battery 64%" style="--value:.64"></span>
+ *   <span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span> */
+.battery {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--battery-width, 1.6em);
+  block-size: var(--battery-height, 0.85em);
+  margin-inline-end: var(--battery-nub, 0.15em);
+  padding: 1.5px;
+  border: var(--battery-border-width, 1.5px) solid var(--battery-border, currentColor);
+  border-radius: var(--battery-radius, 0.2em);
+  background: linear-gradient(var(--battery-fill, currentColor), var(--battery-fill, currentColor)) content-box no-repeat;
+  background-size: calc(clamp(0, var(--value, 1), 1) * 100%) 100%;
+}
+.battery::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 100%;
+  top: 50%;
+  inline-size: var(--battery-nub, 0.15em);
+  block-size: 40%;
+  translate: 1px -50%;
+  border-radius: 0 1px 1px 0;
+  background: var(--battery-border, currentColor);
+}
+.battery.is-low { --battery-fill: var(--danger); }
+.battery.is-charging::before {
+  content: "";
+  position: absolute;
+  inset: -1px 25%;
+  background: var(--battery-bolt, var(--warning));
+  clip-path: polygon(60% 0, 10% 58%, 45% 58%, 35% 100%, 90% 40%, 55% 40%);
+}
+.signal {
+  --signal-on: var(--signal-fg, currentColor);
+  --signal-off: var(--signal-off-fg, color-mix(in srgb, currentColor 25%, transparent));
+  --signal-b1: var(--signal-off);
+  --signal-b2: var(--signal-off);
+  --signal-b3: var(--signal-off);
+  --signal-b4: var(--signal-off);
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--signal-width, 1.1em);
+  block-size: var(--signal-height, 0.9em);
+  background:
+    linear-gradient(var(--signal-b1), var(--signal-b1)) 0% 100% / 20% 25% no-repeat,
+    linear-gradient(var(--signal-b2), var(--signal-b2)) 33.33% 100% / 20% 50% no-repeat,
+    linear-gradient(var(--signal-b3), var(--signal-b3)) 66.67% 100% / 20% 75% no-repeat,
+    linear-gradient(var(--signal-b4), var(--signal-b4)) 100% 100% / 20% 100% no-repeat;
+}
+.signal:is([data-bars="1"], [data-bars="2"], [data-bars="3"], [data-bars="4"]) { --signal-b1: var(--signal-on); }
+.signal:is([data-bars="2"], [data-bars="3"], [data-bars="4"]) { --signal-b2: var(--signal-on); }
+.signal:is([data-bars="3"], [data-bars="4"]) { --signal-b3: var(--signal-on); }
+.signal[data-bars="4"] { --signal-b4: var(--signal-on); }
+
+/* --- .countdown (§9 #16): readout-styled parts with unit labels.
+ *   <div class="countdown" role="timer" aria-label="2 days 4 hours left">
+ *     <span data-unit="days">02</span><span data-unit="hrs">04</span>…</div>
+ * .is-urgent (final stretch) and .is-done (elapsed); change the text too. */
+.countdown {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--countdown-gap, var(--space-s));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--countdown-glow, var(--readout-glow, none));
+}
+.countdown > * {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--countdown-size, 1.75rem);
+  font-weight: var(--readout-weight, 600);
+  line-height: 1.1;
+}
+.countdown > [data-unit]::after {
+  content: attr(data-unit);
+  font-family: var(--font);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--countdown-unit-fg, var(--muted));
+}
+.countdown.is-urgent { --countdown-fg: var(--danger-text, var(--danger)); }
+.countdown.is-done { --countdown-fg: var(--muted); --countdown-glow: none; }
+
+/* --- Forced colours: keep the instruments legible with system colours. */
+@media (forced-colors: active) {
+  :is(.gauge-dial, .gauge-arc, .compass, .clock) { --gauge-fill: Highlight; --gauge-needle: CanvasText; --gauge-hub: CanvasText; --gauge-tick: CanvasText; --gauge-track: GrayText; forced-color-adjust: none; background: Canvas; color: CanvasText; }
+  .clock-hand { forced-color-adjust: none; background: CanvasText; }
+  :is(.progress-ring, .donut, .heatmap, .battery, .signal, .map-pin, .compass-strip, .legend, .chart-legend) { forced-color-adjust: none; }
+}

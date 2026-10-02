@@ -75,6 +75,16 @@ system.
 - `playlist-lab/` — the project owner's own **playlist-lab** app logo
   (`playlist-lab-logo.svg`, copied from `static/logo.svg`). Deliberately
   **excludes** that app's `static/service-logos/` folder — see rule 4.
+- `google/google-g.svg` — the Google "G" from Google's own Sign in with
+  Google asset bundle (developers.google.com), frame removed and viewBox
+  cropped, logo unchanged. For `.btn-brand.is-google` only.
+- `microsoft/microsoft-logo.svg` — the Microsoft logo, a byte-identical
+  copy of the file on Microsoft's own Sign in with Microsoft branding
+  page (learn.microsoft.com). For `.btn-brand.is-microsoft` only.
+- GitHub, Apple (Sign in with Apple) and Spotify are `pending`: their
+  pages don't give this library a redistribution right, so apps supply
+  those marks themselves (see `docs/components/surfaces.md`, "Brand
+  sign-in buttons").
 - See `manifest.json` for the structured entries, including `pending`
   placeholders for real third-party brand marks that are not yet safe to
   vendor (no verified official source fetched yet).

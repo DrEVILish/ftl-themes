@@ -494,6 +494,31 @@ html[data-theme="weyland-yutani"][data-variant="earth"] {
   --selection-fg: #02090c;
 }
 
+/* Window caption buttons on the label plate follow the plate's ink, as
+   core already does for the close button: the default muted grey all but
+   vanished on beige. */
+html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, inherit); }
+
+/* --- v5 layout (PLAN.md §2–§3) ---------------------------------------------
+ * Phones and tablets: bar, main, status in one column. The equipment rail
+ * costs 3rem of a narrow screen, so it goes; core gives the shell a single
+ * track up to 900px, and the rail's --app-rail-empty-display opt-in
+ * outranks the per-tier rail token, so it is switched off here. */
+@media (max-width: 900px) {
+  html[data-theme="weyland-yutani"] { --app-rail-empty-display: none; }
+}
+
+/* XL gutters: the bay wall either side of the console. A ruled plotting
+   grid in --hairline with the rail's tick-ruler marks down every second
+   line, all in the active screen's own line colours (so the phosphor
+   variants follow), within ~1.3:1 of --bg. Still. */
+html[data-theme="weyland-yutani"] {
+  --app-gutter-art:
+    conic-gradient(from 270deg at 10px 1px, var(--wy-line-dim) 25%, transparent 0) 0 0 / 128px 8px,
+    linear-gradient(var(--hairline) 1px, transparent 1px) 0 0 / 100% 64px,
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px) 0 0 / 64px 100%;
+}
+
 /* --- Print ---------------------------------------------------------------- *
  * Scanlines, glow, corner marks and the amber rail marker are screen-only. */
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *

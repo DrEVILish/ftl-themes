@@ -116,6 +116,12 @@ Research is search-summary based (direct fetches were blocked); craft colours
 the cream console finish and the switch styling are period-plausible design
 choices, not sampled. See RESEARCH.md.
 
+## v5 layout
+
+- **Tiers.** Phones (up to 480px): the lamp rail becomes a horizontal strip of the five craft lamps under the bar. Tablets (481–900px, often a short landscape screen): the rail is hidden so the console keeps its full width and height. Both tighten the shell gap and padding, and the 44px nav keys centre their labels.
+- **Nesting.** Panel headers read core's `--surface-pad`, so the navy caption bar sits flush in its panel at every tier. A panel or card inside another surface drops its hard drop shadow, takes a 2px outline and a thinner hazard band. Tables round their corner cells instead of clipping (`overflow: hidden` cut off row-action menus), readouts never wrap, and stacked-table labels use `--muted`.
+- **XL gutter art (1801px+).** Tracy Island's long-range radar: faint navy range rings spread in from both screen edges over the map-room graticule.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware: true`). At

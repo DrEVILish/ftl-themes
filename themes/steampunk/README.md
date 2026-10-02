@@ -43,6 +43,10 @@ console reads as a cabinet fitted with brass hardware.
 - Rivets missing from panels, or appearing somewhere they shouldn't
   (buttons, inputs) — they belong to panel corners only.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the leather (about 1.1:1). The gutter art is still; only the bar's small gears turn.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

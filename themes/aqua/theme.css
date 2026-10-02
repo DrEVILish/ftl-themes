@@ -108,6 +108,24 @@ html[data-theme="aqua"] .modal-header::before {
   background-position: 0 0, 0.75rem 0, 1.5rem 0;
 }
 
+/* Nesting steps down to an Aqua group box: a panel or card inside another
+   surface is a lighter, flat inset (the parent's pinstripe shows through)
+   with no drop shadow, and its header has no traffic lights, since only a
+   window has window controls. Full-strength gloss and lights at every
+   level stacked windows inside windows. */
+html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  --panel-bg: rgba(255, 255, 255, 0.4);
+  --card-bg: rgba(255, 255, 255, 0.4);
+  --panel-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  --card-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  background-image: none;
+}
+html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  padding-left: var(--surface-pad, 1rem);
+}
+html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::before {
+  content: none;
+}
 /* Glossy candy fills for the semantic variants. */
 html[data-theme="aqua"] .btn-primary { --btn-bg: linear-gradient(180deg, #006fee, #2a74d0 55%, #1f66c2); --btn-border: #1f66c2; }
 /* The pulsing default button — Aqua's own signature affordance for "the
@@ -195,6 +213,35 @@ html[data-theme="aqua"] .app-bar::before {
   background-position: 0 0, 1.05rem 0, 2.1rem 0;
 }
 
+/* --- v5 tiers --------------------------------------------------------------
+ * Phone and tablet: the window goes nearly full-screen (a thinner desktop
+ * margin), and the traffic lights stay level with the bar's first line
+ * (brand and actions) instead of centring on the wrapped two-line bar,
+ * where they landed beside the nav. No rail on any tier. */
+@container style(--tier: mobile) or style(--tier: tablet) {
+  html[data-theme="aqua"] .app-bar::before { top: calc(0.6rem + var(--tap-min, 44px) / 2); }
+}
+@container style(--tier: mobile) {
+  html[data-theme="aqua"] .app { padding: 0.35rem; }
+  /* Panel-header-sized lights leave the brand room to show on a phone. */
+  html[data-theme="aqua"] .app-bar { padding-left: 3.1rem; }
+  html[data-theme="aqua"] .app-bar::before {
+    left: 0.75rem;
+    transform: translateY(-50%) scale(0.75);
+    transform-origin: left center;
+  }
+}
+
+/* XL gutters (v5, PLAN.md §3): the original Aqua pinstripe, the desktop
+   texture of 10.0-10.2, carried out across the gradient desktop either
+   side of the window. White lines on the light gradient stay within
+   ~1.2:1; still. */
+html[data-theme="aqua"] {
+  --app-gutter-art:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 70%);
+}
+
 /* Accent as text (active tab, secondary button, transport trigger) sits on
    the brushed gradients, darker than --surface; the primary gel's top
    stop is deepened so its white label holds 4.5:1 across the button. */
@@ -219,3 +266,22 @@ html[data-theme="aqua"] {
   --bar-chart-bar-alt: linear-gradient(90deg, #4f5b67, #a9b6c2 35%, #dfe5ea 50%, #7c8896 65%, #4f5b67);
   --bar-chart-radius: 0.5rem 0.5rem 0 0;
 }
+
+/* Close (v5): in Aqua the close IS the red traffic light. The real button
+   sits over the header's red light (drawn by .modal-header::before), clear
+   until hovered, when it shows the dark ×, as Mac OS X did. */
+html[data-theme="aqua"] .modal-header > .btn-close {
+  --btn-close-glyph: "";
+  --btn-close-bg: transparent;
+  --btn-close-order: -1;
+  --btn-close-push: 0;
+  --btn-close-bg-hover: transparent;
+  --btn-close-radius: 50%;
+  --btn-close-glyph-size: 0.5rem;
+  --btn-close-fg-hover: #4d0000;
+  position: absolute;
+  left: 1.3rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+html[data-theme="aqua"] .modal-header > .btn-close:is(:hover, :focus-visible) { --btn-close-glyph: "\00d7"; }

@@ -147,6 +147,10 @@ exact typeface, the vanilla parchment journal, the compass bar (only a
 partial crop is referenced) and the dialogue menu. See
 `references/skyrim/RESEARCH.md`.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The rail is hidden up to 900px. On touch tiers the chevron-capped bar is shallower and less inset. On a phone the `h1` steps down, and panels use smaller corner knots and a full 1rem padding, so text clears them. Nested panels drop the knotwork and the drop shadow. Panel titles clear the corner knot, and a header holding controls wraps with the title kept whole. On XL the gutters show knotwork border bands: a woven lattice between silver rules with a chain of diamonds, a few percent over `--bg` (about 1.0:1).
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

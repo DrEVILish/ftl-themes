@@ -45,6 +45,10 @@ green rule, content filling the frame, scanlines over the whole shell.
 - Filled, solid buttons — the Pip-Boy draws in outline.
 - An animated flicker — static scanlines only.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. The scanline overlay now sits just under the modal layer (`--z-modal` − 1), not at a literal 999. On XL the gutters show the MAP tab with the lamp turned down: a world graticule and scattered location pips in dim phosphor (about 1.0:1).
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

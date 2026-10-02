@@ -105,3 +105,18 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## v5 layout
+
+- **Tiers.** Desktop is unchanged. Tablet keeps the black gloss tab strip
+  (it wraps to two lines and scrolls) with the back/forward orbs pinned to
+  the first line; the transport capsule goes below 901px, where it would
+  sit on the status text. Mobile also drops the orbs and the tabs' fixed
+  width. No rail.
+- **Nesting.** The gloss sheen and lit header bar belong to the outermost
+  pane; a panel nested in a panel, card, dialog or drawer is a flat inset
+  pane with a hairline-ruled caption. Window caption buttons group at the
+  title bar's right end.
+- **XL gutter art.** A whisper of the blue-silk ribbons on the black
+  `--bg` (about 1.3:1); the page goes black at XL so the bright silk
+  doesn't glow through the gutter fade. Still.

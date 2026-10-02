@@ -1,0 +1,780 @@
+/* --- v5 forms group (PLAN.md §9 #17–#35) ---------------------------------
+ * Buttons and icons: .btn-clear, .btn-icon.is-clear, icon + label buttons,
+ * .btn-split, .fab, .toggle-group, .has-badge.
+ * Forms and inputs: .input-icon / .input-clear (inside .input-group),
+ * search fields, native date/time inputs, .calendar, date ranges,
+ * .combobox + .listbox, .tag-input + .tag, .stepper, .slider.is-range,
+ * .rating, .swatches, .file-list.
+ * Built on core's .btn, .input, .input-group, .toggle-btn, .slider, .list,
+ * .progress and [popover] rules; every look reads a --<component>-* token
+ * that falls back to the base palette. See docs/components/forms.md. */
+
+/* --- .btn-clear / .btn-icon.is-clear -------------------------------------
+ * No fill and no border at rest (not even a theme's button shadow); a tint
+ * of the accent on hover, keyboard focus and press. .btn-ghost differs: it
+ * keeps the theme's button chrome and hovers to an opaque --surface-2. */
+:is(.btn-clear, .btn-icon.is-clear) {
+  --btn-bg: transparent;
+  --btn-border: transparent;
+  --btn-fg: var(--btn-clear-fg, var(--text));
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  --btn-border-hover: transparent;
+  --btn-bg-hover: var(--btn-clear-bg-hover, color-mix(in srgb, var(--accent) 16%, transparent));
+}
+:is(.btn-clear, .btn-icon.is-clear):focus-visible { background: var(--btn-clear-bg-hover, color-mix(in srgb, var(--accent) 16%, transparent)); }
+:is(.btn-clear, .btn-icon.is-clear):is(:active, [aria-pressed="true"], [aria-expanded="true"]) {
+  background: var(--btn-clear-bg-active, color-mix(in srgb, var(--accent) 28%, transparent));
+}
+
+/* --- Icon + label buttons -------------------------------------------------
+ * The icon scales with the button's own font size (so .btn-sm shrinks it
+ * too), never grows the line box, and sits optically flush with the
+ * padding edge it is next to. Icon after the label: put the <svg> last. */
+:is(.btn, .toggle-btn) > .icon {
+  --icon-size: var(--btn-glyph-size, 1.15em);
+  margin-block: -0.15em;
+}
+.btn:not(.btn-icon) > .icon:first-child:not(:last-child) { margin-inline-start: -0.2em; }
+.btn:not(.btn-icon) > .icon:last-child:not(:first-child) { margin-inline-end: -0.2em; }
+.btn:has(> .icon) { gap: var(--btn-gap, 0.45em); }
+
+/* --- .btn-split — a main action joined to a caret that opens a menu -------
+ *   <div class="btn-split">
+ *     <button class="btn btn-primary">Save</button>
+ *     <button class="btn btn-primary btn-split-toggle" popovertarget="m"
+ *       aria-haspopup="menu" aria-label="More save options">…caret…</button>
+ *     <ul class="context-menu" role="menu" popover id="m">…</ul>
+ *   </div> */
+.btn-split { display: inline-flex; align-items: stretch; max-inline-size: 100%; }
+.btn-split > .btn:not(.btn-split-toggle) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  min-inline-size: 0;
+}
+.btn-split > .btn-split-toggle {
+  --btn-padding: 0 var(--btn-split-toggle-pad, 0.55em);
+  margin-inline-start: calc(-1 * var(--btn-border-width, 1px));
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-inline-start-color: var(--btn-split-divider, color-mix(in srgb, currentColor 35%, transparent));
+  min-inline-size: var(--tap-min);
+}
+.btn-split > .btn:is(:hover, :focus-visible) { z-index: var(--z-raised); }
+.btn-split-toggle > .icon { margin: 0; }
+.btn-split:has(> :popover-open) > .btn-split-toggle > .icon,
+.btn-split-toggle[aria-expanded="true"] > .icon { rotate: 180deg; }
+
+/* --- .fab — floating action button ---------------------------------------
+ * Fixed to the end corner, clear of the safe area (home indicator, notch).
+ * Icon-only: <button class="btn btn-primary btn-icon fab" aria-label="New">.
+ * .is-extended (no .btn-icon) adds a label, .is-start moves it to the start corner,
+ * .is-contained pins it inside a positioned parent (a map, a panel). Apps
+ * with a bottom bar lift it with --fab-offset-block. Layered on .btn (the
+ * doubled class outranks core's (0,1,1) tap-min rule). */
+.btn.fab {
+  position: fixed;
+  inset-block-end: calc(var(--fab-offset-block, var(--space-l)) + env(safe-area-inset-bottom, 0px));
+  inset-inline-end: calc(var(--fab-offset-inline, var(--space-l)) + max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));
+  z-index: var(--z-sticky);
+  --btn-padding: 0;
+  --btn-radius: var(--fab-radius, 999px);
+  --btn-shadow: var(--fab-shadow, 0 0.25rem 0.9rem rgb(0 0 0 / 0.35));
+  --btn-shadow-hover: var(--fab-shadow, 0 0.25rem 0.9rem rgb(0 0 0 / 0.35));
+  min-inline-size: max(var(--tap-min), var(--fab-size, 3.5rem));
+  min-block-size: max(var(--tap-min), var(--fab-size, 3.5rem));
+  font-size: 1rem;
+}
+.fab > .icon { --icon-size: var(--fab-icon-size, 1.5em); width: var(--icon-size); height: var(--icon-size); min-width: var(--icon-size); margin: 0; }
+.fab.is-extended { --btn-padding: 0 1.4em 0 1.1em; }
+.fab.is-extended:dir(rtl) { --btn-padding: 0 1.1em 0 1.4em; }
+.fab.is-start {
+  inset-inline-end: auto;
+  inset-inline-start: calc(var(--fab-offset-inline, var(--space-l)) + max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));
+}
+.fab.is-contained {
+  position: absolute;
+  inset-block-end: var(--fab-offset-block, var(--space-m));
+  inset-inline-end: var(--fab-offset-inline, var(--space-m));
+}
+.fab.is-contained.is-start { inset-inline-end: auto; inset-inline-start: var(--fab-offset-inline, var(--space-m)); }
+
+/* --- .toggle-group — joined .toggle-btn labels -----------------------------
+ * Checkboxes inside = multi-select (bold + italic); radios sharing a name =
+ * single-select (align left/centre/right). State is the inputs' own. */
+.toggle-group { display: inline-flex; max-inline-size: 100%; }
+.toggle-group > .toggle-btn { min-inline-size: var(--tap-min); }
+.toggle-group > .toggle-btn:not(:first-child) {
+  margin-inline-start: calc(-1 * var(--toggle-btn-border-width, 1px));
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.toggle-group > .toggle-btn:not(:last-child) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.toggle-group > .toggle-btn:is(:hover, :has(input:checked), :has(input:focus-visible)) { z-index: var(--z-raised); }
+.toggle-group > .toggle-btn:has(input:focus-visible) { z-index: calc(var(--z-raised) + 1); }
+
+/* --- .has-badge — a dot or count on any button, tab or nav item ------------
+ * <button class="btn btn-icon has-badge" data-count="3" aria-label="Alerts, 3 new">
+ * No data-count (or an empty one) draws a dot. The number is decoration:
+ * put it in the accessible name too. Items that sit in a scroller (tabs,
+ * nav, menus, lists) carry it inline after their label instead. */
+.has-badge:not(.fab) { position: relative; }
+.has-badge::after {
+  content: attr(data-count);
+  content: attr(data-count) / "";
+  position: absolute;
+  inset-block-start: var(--has-badge-y, -0.3rem);
+  inset-inline-end: var(--has-badge-x, -0.3rem);
+  box-sizing: border-box;
+  min-inline-size: 1.6em;
+  block-size: 1.6em;
+  padding-inline: 0.4em;
+  border-radius: 999px;
+  background: var(--has-badge-bg, var(--danger));
+  color: var(--has-badge-fg, var(--on-danger));
+  box-shadow: 0 0 0 var(--has-badge-ring-width, 2px) var(--has-badge-ring, var(--surface));
+  font-family: var(--font);
+  font-size: var(--has-badge-font-size, 0.68rem);
+  font-weight: 700;
+  line-height: 1.6em;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: none;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.has-badge:is(:not([data-count]), [data-count=""])::after {
+  min-inline-size: 0;
+  inline-size: var(--has-badge-dot, 0.6rem);
+  block-size: var(--has-badge-dot, 0.6rem);
+  padding: 0;
+  inset-block-start: var(--has-badge-y, -0.1rem);
+  inset-inline-end: var(--has-badge-x, -0.1rem);
+}
+/* On an icon button the badge hangs off the glyph's corner, so it stays put
+   when a touch tier grows the hit area around the glyph. */
+.btn-icon.has-badge::after {
+  inset-block-start: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-y, -0.3rem));
+  inset-inline-end: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-x, -0.3rem));
+}
+.btn-icon.has-badge:is(:not([data-count]), [data-count=""])::after {
+  inset-block-start: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-y, -0.1rem));
+  inset-inline-end: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-x, -0.1rem));
+}
+:is(.tab, .nav-item, .segmented-item, .list-item, .dropdown-item, .context-menu li > *).has-badge::after {
+  position: static;
+  display: inline-block;
+  margin-inline-start: 0.5em;
+  vertical-align: 0.1em;
+}
+
+/* --- .input-icon / .input-clear inside .input-group ------------------------
+ *   <div class="input-group">
+ *     <span class="input-icon"><svg class="icon">…</svg></span>
+ *     <input class="input" placeholder="Filter">
+ *     <button class="input-clear" type="button" aria-label="Clear"></button>
+ *   </div>
+ * The icon and the clear button overlay the field's own padding, so the
+ * field keeps one border and its native focus ring. The clear button hides
+ * itself while the field is empty (that needs a placeholder, even " "). */
+:is(.input-icon, .input-clear) {
+  position: relative;
+  z-index: calc(var(--z-raised) + 1);
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: 0.9em;
+  color: var(--input-icon-fg, var(--muted));
+}
+@media (any-pointer: coarse) {
+  :is(.input-icon, .input-clear) { font-size: max(16px, 1em); }
+}
+.input-group > .input-icon {
+  inline-size: var(--input-icon-w, 2.5em);
+  margin-inline-end: calc(-1 * var(--input-icon-w, 2.5em));
+  pointer-events: none;
+}
+.input-group > .input-icon:first-child + :is(.input, .select) {
+  margin-inline-start: 0;
+  padding-inline-start: var(--input-icon-w, 2.5em);
+  border-start-start-radius: var(--input-radius, var(--radius));
+  border-end-start-radius: var(--input-radius, var(--radius));
+}
+.input-clear {
+  inline-size: var(--input-clear-w, max(var(--tap-min), 2.5em));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  line-height: 1;
+}
+.input-group > .input-clear {
+  margin-inline-start: calc(-1 * var(--input-clear-w, max(var(--tap-min), 2.5em)));
+}
+.input-group > :is(.input, .select):has(+ .input-clear) { padding-inline-end: var(--input-clear-w, max(var(--tap-min), 2.5em)); }
+.input-clear:not(:has(.icon))::before { content: var(--input-clear-glyph, "\00d7"); font-size: 1.35em; }
+.input-clear .icon { --icon-size: 1em; }
+.input-clear:focus-visible { color: var(--text); outline-offset: -4px; }
+@media (hover: hover) {
+  .input-clear:hover { color: var(--text); }
+}
+.input:placeholder-shown + .input-clear { visibility: hidden; }
+.input-clear:disabled { visibility: hidden; }
+/* The field keeps its end radii when only overlays (clear, shortcut) follow. */
+.input-group > :is(.input, .select):not(:has(~ :not(.input-clear, kbd))) {
+  border-start-end-radius: var(--input-radius, var(--radius));
+  border-end-end-radius: var(--input-radius, var(--radius));
+}
+
+/* Search: type="search" plus .input-icon, .input-clear and an optional
+ * shortcut hint (<kbd> as the group's last child), which hides once the
+ * field has focus or a value. The native cancel button is themed, and
+ * hidden when an .input-clear stands in for it. */
+.input[type="search"] { -webkit-appearance: none; appearance: none; }
+.input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+.input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  background: var(--input-icon-fg, var(--muted));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.input[type="search"]:has(+ .input-clear)::-webkit-search-cancel-button { display: none; }
+.input-group:has(> kbd) { position: relative; }
+.input-group > kbd {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset-inline-end: var(--space-xs);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  pointer-events: none;
+}
+.input-group:has(> kbd) > :is(.input, .select) { padding-inline-end: var(--input-kbd-w, 4.5em); }
+.input-group > :is(.input:focus, .input:not(:placeholder-shown)) ~ kbd { display: none; }
+
+/* --- Native date, time and list inputs ------------------------------------
+ * The popup calendar follows the theme's color-scheme (every theme sets
+ * one). The indicator is redrawn in --input-icon-fg from a mask a theme
+ * can swap (--input-date-icon, --input-time-icon, --input-list-icon); the
+ * focused segment (day, month, hour…) takes the accent. */
+.input:is([type="date"], [type="datetime-local"], [type="month"], [type="week"], [type="time"], [list])::-webkit-calendar-picker-indicator {
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  margin-inline-start: 0.4em;
+  padding: 0.15em;
+  border-radius: var(--radius);
+  background: var(--input-icon-fg, var(--muted));
+  -webkit-mask: var(--input-date-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E")) center / contain no-repeat;
+  mask: var(--input-date-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E")) center / contain no-repeat;
+}
+.input[type="time"]::-webkit-calendar-picker-indicator {
+  -webkit-mask-image: var(--input-time-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E"));
+  mask-image: var(--input-time-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E"));
+}
+.input[list]::-webkit-calendar-picker-indicator {
+  -webkit-mask-image: var(--input-list-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"));
+  mask-image: var(--input-list-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"));
+}
+@media (hover: hover) {
+  .input::-webkit-calendar-picker-indicator:hover { background: var(--text); }
+}
+.input:focus-visible::-webkit-calendar-picker-indicator { background: var(--focus); }
+.input::-webkit-datetime-edit-text { color: var(--input-icon-fg, var(--muted)); }
+.input::-webkit-datetime-edit-day-field:focus,
+.input::-webkit-datetime-edit-month-field:focus,
+.input::-webkit-datetime-edit-year-field:focus,
+.input::-webkit-datetime-edit-week-field:focus,
+.input::-webkit-datetime-edit-hour-field:focus,
+.input::-webkit-datetime-edit-minute-field:focus,
+.input::-webkit-datetime-edit-second-field:focus,
+.input::-webkit-datetime-edit-ampm-field:focus {
+  background: var(--input-segment-bg, var(--accent));
+  color: var(--input-segment-fg, var(--on-accent));
+  border-radius: calc(var(--radius) * 0.5);
+}
+/* Native date inputs have a wide intrinsic size; in a group they may
+   shrink to fit (a date range on a phone). */
+.input-group > .input:is([type="date"], [type="time"], [type="datetime-local"], [type="month"]) { min-inline-size: 0; }
+
+/* --- .calendar — a month grid for app-rendered pickers -------------------
+ * A <table> of day buttons. Day state on the button: aria-current="date"
+ * (today), aria-pressed="true" (selected), disabled, .is-outside (another
+ * month). Range state on the <td>: .is-range-start, .is-in-range,
+ * .is-range-end (the band runs through the cells). */
+.calendar {
+  display: inline-block;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  padding: var(--calendar-pad, var(--space-s));
+  background: var(--calendar-bg, var(--surface));
+  color: var(--calendar-fg, var(--text));
+  border: var(--calendar-border-width, 1px) solid var(--calendar-border, var(--border));
+  border-radius: var(--calendar-radius, var(--panel-radius, var(--radius)));
+  font-size: 0.9em;
+  --calendar-day: max(var(--tap-min), var(--calendar-day-size, 2.25em));
+}
+.popover > .calendar { padding: 0; border: 0; background: none; }
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-block-end: var(--space-xs);
+}
+.calendar-title { margin: 0; font-size: 1em; font-weight: 600; text-align: center; flex: 1; }
+.calendar-grid { inline-size: auto; border-collapse: collapse; border-spacing: 0; table-layout: fixed; }
+.calendar-grid th {
+  inline-size: var(--calendar-day);
+  padding-block: 0 var(--space-2xs);
+  color: var(--calendar-weekday-fg, var(--muted));
+  font-size: 0.8em;
+  font-weight: 600;
+  text-align: center;
+  text-transform: var(--label-transform, none);
+}
+.calendar-grid td { padding: 1px 0; text-align: center; }
+.calendar-day {
+  display: grid;
+  place-items: center;
+  inline-size: var(--calendar-day);
+  block-size: var(--calendar-day);
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--calendar-day-radius, var(--radius));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  touch-action: manipulation;
+}
+@media (hover: hover) {
+  .calendar-day:hover:not(:disabled, [aria-pressed="true"]) { background: var(--calendar-day-bg-hover, var(--surface-2)); }
+}
+.calendar-day.is-outside { color: var(--calendar-outside-fg, var(--muted)); }
+.calendar-day[aria-current="date"] {
+  border-color: var(--calendar-today-ring, var(--accent));
+  font-weight: 700;
+}
+.calendar-day:disabled {
+  color: var(--muted);
+  opacity: 0.55;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+.calendar-day:is([aria-pressed="true"], [aria-selected="true"]) {
+  background: var(--calendar-selected-bg, var(--accent));
+  color: var(--calendar-selected-fg, var(--on-accent));
+  font-weight: 700;
+}
+.calendar-grid td.is-in-range { background: var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)); }
+.calendar-grid td.is-range-start { background: linear-gradient(to right, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-end { background: linear-gradient(to left, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-start:dir(rtl) { background: linear-gradient(to left, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-end:dir(rtl) { background: linear-gradient(to right, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-start.is-range-end { background: none; }
+.calendar-grid td.is-in-range > .calendar-day:not(:disabled) { border-radius: 0; }
+.calendar-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-xs);
+}
+
+/* --- .combobox + .listbox ---------------------------------------------------
+ *   <div class="combobox">
+ *     <input class="input" role="combobox" aria-expanded="true"
+ *       aria-controls="lb" aria-autocomplete="list" aria-activedescendant="o2">
+ *     <ul class="listbox" role="listbox" id="lb" popover="manual">
+ *       <li role="option" id="o1">Berlin</li>
+ *       <li role="option" id="o2" class="is-active" aria-selected="true">Bern</li>
+ *     </ul>
+ *   </div>
+ * With popover the list lives in the top layer, anchored under the field
+ * and as wide as it (centred where anchor positioning is unsupported).
+ * Without popover it drops below the field in flow, like .anchor. */
+.combobox { position: relative; anchor-scope: --combobox; }
+.combobox > .input { anchor-name: --combobox; }
+.listbox {
+  margin: 0;
+  padding: var(--listbox-pad, 0.3rem);
+  list-style: none;
+  background: var(--listbox-bg, var(--dropdown-bg, var(--surface-2)));
+  color: var(--listbox-fg, var(--text));
+  border: var(--listbox-border-width, 1px) solid var(--listbox-border, var(--dropdown-border, var(--border)));
+  border-radius: var(--listbox-radius, var(--dropdown-radius, var(--radius)));
+  box-shadow: var(--listbox-shadow, var(--panel-shadow, 0 2px 12px rgb(0 0 0 / 0.3)));
+  max-block-size: var(--listbox-max, 16rem);
+  overflow-y: auto;
+  font-size: 0.9em;
+}
+.combobox > .listbox:not([popover]) {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  inset-block-start: calc(100% + 0.25rem);
+  inset-inline: 0;
+}
+.listbox[popover] {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  inline-size: min(22rem, calc(100vw - 2rem));
+  block-size: fit-content;
+}
+.listbox[popover]:not(:popover-open) { display: none; }
+@supports (position-anchor: --a) {
+  .combobox > .listbox[popover] {
+    position-anchor: --combobox;
+    inset: auto;
+    margin: 0.25rem 0;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block;
+    inline-size: anchor-size(inline);
+  }
+}
+.listbox [role="option"] {
+  position: relative;
+  display: block;
+  align-content: center;
+  min-block-size: var(--tap-min);
+  padding: 0.35em 2em 0.35em 0.7em;
+  border-radius: var(--listbox-radius, var(--dropdown-radius, var(--radius)));
+  overflow-wrap: anywhere;
+}
+.listbox [role="option"]:dir(rtl) { padding-inline: 2em 0.7em; }
+.listbox [role="option"]::after {
+  content: var(--listbox-check-glyph, "\2713");
+  position: absolute;
+  inset-inline-end: 0.7em;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  visibility: hidden;
+}
+.listbox [role="option"][aria-selected="true"] { font-weight: 600; }
+.listbox [role="option"][aria-selected="true"]::after { visibility: visible; }
+.listbox [role="option"].is-active {
+  background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
+  color: var(--listbox-option-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
+}
+@media (hover: hover) {
+  .listbox [role="option"]:not([aria-disabled="true"]):hover { background: var(--listbox-option-bg-hover, var(--row-hover-bg, rgb(128 128 128 / 0.15))); }
+  .listbox [role="option"].is-active:hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
+}
+.listbox [role="option"][aria-disabled="true"] { color: var(--muted); cursor: not-allowed; }
+.listbox mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; }
+.listbox-empty { padding: 0.6em 0.7em; color: var(--muted); font-style: italic; }
+
+/* --- .tag-input + .tag — removable chips inside a field ---------------------
+ *   <div class="tag-input">
+ *     <span class="tag">Design<button class="tag-remove" aria-label="Remove Design"></button></span>
+ *     <input class="tag-input-field" aria-label="Add a tag" placeholder="Add…">
+ *   </div> */
+.tag-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-block-size: var(--tap-min);
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--input-bg, var(--surface));
+  color: var(--input-fg, var(--text));
+  border: var(--input-border-width, 1px) solid var(--input-border, var(--border));
+  border-radius: var(--input-radius, var(--radius));
+  box-shadow: var(--input-shadow, none);
+  font-size: 0.9em;
+  cursor: text;
+}
+@media (any-pointer: coarse) {
+  .tag-input { font-size: max(16px, 1em); }
+}
+.tag-input:focus-within {
+  border-color: var(--focus);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring, var(--input-shadow, none));
+}
+.tag-input:has(.tag-input-field:is([aria-invalid="true"], .is-invalid)) { border-color: var(--danger); outline-color: var(--danger); }
+.tag-input:has(.tag-input-field:disabled) { opacity: 0.5; cursor: not-allowed; }
+.tag-input-field {
+  flex: 1 1 6ch;
+  min-inline-size: 6ch;
+  /* The field's hit area is the full row height: it overlaps the
+     container's padding instead of shrinking inside it. */
+  min-block-size: var(--tap-min);
+  margin-block: calc(-1 * var(--space-2xs) - var(--input-border-width, 1px));
+  padding: 0 var(--space-3xs);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.tag-input-field:focus { outline: none; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  max-inline-size: 100%;
+  padding: 0.15em 0.55em;
+  background: var(--tag-bg, var(--surface-2));
+  color: var(--tag-fg, var(--text));
+  border: var(--tag-border-width, 1px) solid var(--tag-border, var(--border));
+  border-radius: var(--tag-radius, var(--radius));
+  font-size: 0.85em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  cursor: default;
+}
+.tag:has(> .tag-remove) { padding-inline-end: 0.2em; }
+.tag-remove {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tag-radius, var(--radius));
+  background: transparent;
+  color: var(--tag-remove-fg, var(--muted));
+  font: inherit;
+  line-height: 1;
+  touch-action: manipulation;
+}
+.tag-remove::before {
+  content: "";
+  position: absolute;
+  inset: calc((1.25em - var(--tap-min)) / 2);
+}
+.tag-remove:not(:has(.icon))::after { content: var(--input-clear-glyph, "\00d7"); font-size: 1.2em; }
+.tag-remove:focus-visible { color: var(--text); outline-offset: 0; }
+@media (hover: hover) {
+  .tag-remove:hover { background: var(--tag-remove-bg-hover, color-mix(in srgb, var(--danger) 20%, transparent)); color: var(--text); }
+}
+.tag.is-accent { --tag-bg: color-mix(in srgb, var(--accent) 20%, var(--surface)); --tag-border: var(--accent); }
+
+/* --- .stepper — − / value / + ---------------------------------------------
+ *   <div class="input-group stepper" role="group" aria-label="Guests">
+ *     <button class="btn btn-icon" aria-label="Fewer guests">−</button>
+ *     <input class="input" type="number" value="2" aria-label="Guests">
+ *     <button class="btn btn-icon" aria-label="More guests">+</button>
+ *   </div>
+ * Built on .input-group's joins; the buttons are square tap targets. */
+.stepper { display: inline-flex; inline-size: auto; max-inline-size: 100%; vertical-align: middle; }
+.stepper > .btn {
+  --btn-padding: 0;
+  --btn-radius: var(--stepper-radius, var(--input-radius, var(--radius)));
+  min-inline-size: max(var(--tap-min), var(--stepper-btn-size, 2.4em));
+  min-block-size: max(var(--tap-min), var(--stepper-btn-size, 2.4em));
+  font-size: 1em;
+}
+.stepper > .input {
+  flex: 0 1 auto;
+  inline-size: var(--stepper-input-w, 4.5em);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.stepper > .input::-webkit-inner-spin-button,
+.stepper > .input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper > .btn:is(:hover, :focus-visible) { z-index: var(--z-raised); }
+
+/* --- .slider.is-range — two thumbs on one track -------------------------------
+ *   <div class="slider is-range" style="--from: 20; --to: 75">
+ *     <input class="slider" type="range" value="20" aria-label="Minimum price">
+ *     <input class="slider" type="range" value="75" aria-label="Maximum price">
+ *   </div>
+ * --from/--to are the two values as percentages of the track (0–100); the
+ * app updates them on input, as it does --value elsewhere. */
+.slider.is-range {
+  position: relative;
+  display: grid;
+  align-items: center;
+  block-size: auto;
+  min-block-size: var(--tap-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+.slider.is-range::before,
+.slider.is-range::after {
+  content: "";
+  grid-area: 1 / 1;
+  block-size: var(--slider-height, 0.35rem);
+  border-radius: var(--slider-radius, var(--radius));
+}
+.slider.is-range::before {
+  background: var(--slider-bg, var(--surface-2));
+  border: var(--slider-border-width, 1px) solid var(--slider-border, var(--border));
+}
+.slider.is-range::after {
+  margin-inline-start: calc(var(--from, 0) * 1%);
+  margin-inline-end: calc(100% - var(--to, 100) * 1%);
+  background: var(--slider-range-fill, var(--accent));
+}
+.slider.is-range > .slider {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: var(--z-raised);
+  margin: 0;
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+.slider.is-range > .slider::-webkit-slider-thumb { pointer-events: auto; }
+.slider.is-range > .slider::-moz-range-thumb { pointer-events: auto; }
+.slider.is-range > .slider:focus-visible { z-index: calc(var(--z-raised) + 1); outline-offset: 4px; }
+.slider.is-range:has(> :disabled) { opacity: 0.5; }
+
+/* --- .rating — radio stars (or a theme glyph) -------------------------------
+ *   <fieldset class="rating"><legend class="visually-hidden">Rating</legend>
+ *     <label><input type="radio" name="r" value="1"><span class="visually-hidden">1 star</span></label> …
+ *   </fieldset>
+ * Filled and empty glyphs differ in shape, not only colour. */
+.rating {
+  display: inline-flex;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+  font-size: var(--rating-size, 1.6em);
+  line-height: 1;
+}
+.rating > label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-inline-size: max(var(--tap-min), 1.2em);
+  min-block-size: max(var(--tap-min), 1.2em);
+  color: var(--rating-empty-fg, var(--muted));
+  touch-action: manipulation;
+}
+.rating > label > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  clip-path: inset(50%);
+}
+.rating > label::before { content: var(--rating-glyph-empty, "\2606"); }
+.rating:has(input:checked) > label,
+.rating > label:has(input:checked) { color: var(--rating-fg, var(--warning)); }
+.rating:has(input:checked) > label::before { content: var(--rating-glyph, "\2605"); }
+.rating > label:has(input:checked) ~ label { color: var(--rating-empty-fg, var(--muted)); }
+.rating > label:has(input:checked) ~ label::before { content: var(--rating-glyph-empty, "\2606"); }
+@media (hover: hover) {
+  .rating:not(:disabled):hover > label { color: var(--rating-fg, var(--warning)); }
+  .rating:not(:disabled):hover > label::before { content: var(--rating-glyph, "\2605"); }
+  .rating:not(:disabled) > label:hover ~ label { color: var(--rating-empty-fg, var(--muted)); }
+  .rating:not(:disabled) > label:hover ~ label::before { content: var(--rating-glyph-empty, "\2606"); }
+}
+.rating > label:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--radius); }
+.rating:disabled { opacity: 0.5; }
+.rating:disabled > label { cursor: not-allowed; }
+
+/* --- .swatches — radio colour picker ------------------------------------------
+ *   <fieldset class="swatches"><legend class="label">Accent</legend>
+ *     <label class="swatch" style="--swatch: #2f7cf6"><input type="radio" name="c" value="blue"><span class="visually-hidden">Blue</span></label> …
+ *   </fieldset>
+ * --swatch is the colour (a documented value API). The chosen one gets a
+ * ring and a check mark. */
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--swatches-gap, var(--space-xs));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-inline-size: max(var(--tap-min), var(--swatch-size, 1.75rem));
+  min-block-size: max(var(--tap-min), var(--swatch-size, 1.75rem));
+  touch-action: manipulation;
+}
+.swatch > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  clip-path: inset(50%);
+}
+.swatch::before {
+  content: "";
+  grid-area: 1 / 1;
+  inline-size: var(--swatch-size, 1.75rem);
+  block-size: var(--swatch-size, 1.75rem);
+  border-radius: var(--swatch-radius, 50%);
+  background: var(--swatch, var(--accent));
+  box-shadow: inset 0 0 0 1px var(--swatch-border, rgb(128 128 128 / 0.5));
+}
+.swatch::after {
+  grid-area: 1 / 1;
+  color: var(--swatch-check-fg, #fff);
+  font-size: calc(var(--swatch-size, 1.75rem) * 0.55);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 2px rgb(0 0 0 / 0.9), 0 0 1px rgb(0 0 0 / 0.9);
+}
+.swatch:has(input:checked)::before {
+  box-shadow: inset 0 0 0 1px var(--swatch-border, rgb(128 128 128 / 0.5)),
+    0 0 0 2px var(--swatch-gap, var(--surface)), 0 0 0 4px var(--swatch-ring, var(--text));
+}
+.swatch:has(input:checked)::after { content: var(--swatch-check-glyph, "\2713"); }
+.swatch:has(input:focus-visible)::before { outline: 2px solid var(--focus); outline-offset: 5px; }
+.swatch:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+
+/* --- .file-list — an upload queue (pairs with .dropzone) ---------------------
+ *   <ul class="list file-list">
+ *     <li class="is-uploading"><svg class="icon">…</svg>
+ *       <span class="list-item-title">report.pdf</span>
+ *       <span class="list-item-meta">2.4 MB · 64%</span>
+ *       <progress class="progress" value="64" max="100" aria-label="report.pdf"></progress>
+ *       <button class="btn btn-icon is-clear" aria-label="Cancel report.pdf">…</button></li>
+ *   </ul>
+ * Row states: .is-queued, .is-uploading, .is-done, .is-error. Say the
+ * state in the meta text too; the colour only reinforces it. */
+.dropzone + .file-list { margin-block-start: var(--space-s); }
+.file-list > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-s);
+  row-gap: var(--space-3xs);
+  padding: var(--list-item-padding, 0.55em 0.9em);
+}
+.file-list > li > .icon { grid-row: 1 / span 3; --icon-size: 1.6em; color: var(--file-icon-fg, var(--muted)); }
+.file-list > li > :is(.list-item-title, .list-item-meta, .progress) { grid-column: 2; }
+.file-list > li > :is(.btn, button):last-child { grid-column: 3; grid-row: 1 / span 3; }
+.file-list .progress { --progress-height: 0.3rem; }
+.file-list > li.is-queued > .progress { visibility: hidden; }
+.file-list > li.is-done { --progress-fill: var(--success); --file-icon-fg: var(--success-text, var(--success)); }
+.file-list > li.is-done > .progress { display: none; }
+.file-list > li.is-error {
+  --progress-fill: var(--danger);
+  --file-icon-fg: var(--danger-text, var(--danger));
+  --list-item-meta-fg: var(--danger-text, var(--danger));
+  box-shadow: inset 0.2rem 0 0 var(--danger);
+}
+.file-list > li.is-error:dir(rtl) { box-shadow: inset -0.2rem 0 0 var(--danger); }
+
+/* --- Motion ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) :is(.btn-split-toggle > .icon) { transition: rotate 0.15s ease; }
+  html:not([data-motion="reduced"]) :is(.calendar-day, .tag-remove, .input-clear, .rating > label) {
+    transition: background-color 0.12s ease, color 0.12s ease;
+  }
+}

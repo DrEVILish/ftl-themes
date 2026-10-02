@@ -251,16 +251,46 @@ html[data-theme="prometheus"] .panel-header {
   gap: 0.75rem;
   font-size: 0.7rem;
 }
-html[data-theme="prometheus"] .panel-header strong:first-child,
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
-html[data-theme="prometheus"] .modal-header > .btn-close { position: absolute; top: 0.25rem; right: 0.5rem; }
+html[data-theme="prometheus"] .modal-header > .btn-close { --btn-close-glyph-size: 1.6em; position: absolute; top: 0.25rem; right: 0.5rem; }
+html[data-theme="prometheus"] .panel-header strong:first-child,
 html[data-theme="prometheus"] .modal-header {
   background: var(--accent);
   color: var(--on-accent);
   border-radius: 4px;
-  padding: 0.2em 1.4em 0.2em 0.8em;
+  padding: 0.4em 1.4em 0.4em 0.8em;
   font-weight: 400;
+}
+/* A table straight on the page (no panel) gets a glass wash, so the tick
+   grid behind the page doesn't run through its rows. */
+html[data-theme="prometheus"] .table:not(:is(.panel, .card, .modal, .drawer, .popover, .dropdown) .table) {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+/* A header that is only its title (no <strong>, no controls) is the tab
+   itself. */
+html[data-theme="prometheus"] .panel-header:not(:has(> *)) {
+  width: fit-content;
+  max-width: 100%;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 4px;
+  padding: 0.4em 1.4em 0.4em 0.8em;
+  /* Inside the glass like the <strong> tab, not bled to the corner. */
+  margin: calc(var(--space-xs) - var(--surface-pad, 1rem)) 0 var(--space-m);
+}
+/* Nested glass steps down: a box inside a box keeps its bracket but thinner
+   and dimmer, and its title tab is outlined rather than filled, so a
+   panel > card > panel stack doesn't repeat three full-strength frames. */
+html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  --panel-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 50%, transparent);
+  --card-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 50%, transparent);
+}
+html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header:not(:has(> *)),
+html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header > strong:first-child {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 html[data-theme="prometheus"] .modal-header {
   width: fit-content;
@@ -321,6 +351,45 @@ html[data-theme="prometheus"] .app-status {
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+/* Touch tiers: core lets the brand flex to fill the first line so it can
+   truncate; this brand is a filled plate, so cap it at its own width. */
+@media (max-width: 900px) {
+  html[data-theme="prometheus"] .app-bar > .nav-brand { max-width: max-content; }
+}
+/* --- v5 tiers and XL gutters -------------------------------------------- *
+ * Phone and tablet drop the edge-code rail (core hides it up to 900px;
+ * the content needs the width more than the orange codes do).
+ * XL: the Engineers' star map. Each gutter holds a dim orrery, three
+ * thin orbit rings around a faint core, in a scatter of hologram stars,
+ * all in the holo cyan at low alpha over --bg; within about 1.2:1. Still. */
+html[data-theme="prometheus"] {
+  --app-gutter-art:
+    radial-gradient(circle at 7.5% 46%, rgba(79, 210, 255, 0.16) 0 3px, rgba(79, 210, 255, 0.05) 4px 22px, transparent 40px,
+      transparent 89px, rgba(79, 210, 255, 0.12) 90px 91px, transparent 92px,
+      transparent 139px, rgba(79, 210, 255, 0.09) 140px 141px, transparent 142px,
+      transparent 169px, rgba(79, 210, 255, 0.06) 170px 171px, transparent 172px),
+    radial-gradient(circle at 92.5% 62%, rgba(79, 210, 255, 0.16) 0 3px, rgba(79, 210, 255, 0.05) 4px 22px, transparent 40px,
+      transparent 69px, rgba(79, 210, 255, 0.12) 70px 71px, transparent 72px,
+      transparent 129px, rgba(79, 210, 255, 0.09) 130px 131px, transparent 132px,
+      transparent 164px, rgba(79, 210, 255, 0.06) 165px 166px, transparent 167px),
+    radial-gradient(circle, rgba(79, 210, 255, 0.4) 0 1px, transparent 1.5px) 13px 29px / 97px 131px,
+    radial-gradient(circle, rgba(79, 210, 255, 0.25) 0 1px, transparent 1.5px) 61px 7px / 151px 113px,
+    radial-gradient(circle, rgba(255, 255, 255, 0.3) 0 1.2px, transparent 1.7px) 37px 83px / 229px 197px,
+    var(--bg);
+}
+html[data-theme="prometheus"][data-variant="suit"] {
+  --app-gutter-art:
+    radial-gradient(circle at 7.5% 46%, rgba(255, 181, 31, 0.14) 0 3px, rgba(255, 181, 31, 0.04) 4px 22px, transparent 40px,
+      transparent 89px, rgba(255, 181, 31, 0.1) 90px 91px, transparent 92px,
+      transparent 139px, rgba(255, 181, 31, 0.07) 140px 141px, transparent 142px),
+    radial-gradient(circle at 92.5% 62%, rgba(255, 181, 31, 0.14) 0 3px, rgba(255, 181, 31, 0.04) 4px 22px, transparent 40px,
+      transparent 69px, rgba(255, 181, 31, 0.1) 70px 71px, transparent 72px,
+      transparent 129px, rgba(255, 181, 31, 0.07) 130px 131px, transparent 132px),
+    radial-gradient(circle, rgba(255, 181, 31, 0.3) 0 1px, transparent 1.5px) 13px 29px / 97px 131px,
+    radial-gradient(circle, rgba(79, 210, 255, 0.22) 0 1px, transparent 1.5px) 61px 7px / 151px 113px,
+    var(--bg);
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *

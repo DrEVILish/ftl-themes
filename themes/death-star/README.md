@@ -36,6 +36,19 @@ blue — with no frame, border or shadow drawn anywhere to soften it.
 No bar rule, no status rule — the bar and status strip are the same black
 as the page, distinguished only by the content sitting on them.
 
+## v5 layout
+
+- **Tiers.** No rail, and the bar is just its red rule, so phone (≤480px)
+  and tablet (481–900px) use core's one-column shell as is.
+- **Nesting.** A panel inside another surface is a plain dark block (a
+  second lattice ran lines through labels and fields), and its header is a
+  slim red block at the left edge instead of another full red bar. Fields
+  sit one step above `--surface-2` so a borderless input still shows on a
+  panel, and close buttons in red headers are white.
+- **XL gutter art.** More bulkhead: the circuit-grid lattice, much fainter
+  than inside the shell, with a few unlit red control blocks. Still, and
+  within about 1.2:1 of black.
+
 ## Tell-tales of an inauthentic result
 
 - Any visible border on a panel, button or input.

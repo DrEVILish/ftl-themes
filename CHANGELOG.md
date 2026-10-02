@@ -5,6 +5,38 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **v5: six component groups, all 41 themes rolled out, integration fixes.**
+  - Component groups in `core/components/` with pages and docs: tables
+    (editable cells, stacked/frozen/grouped/tree tables, bulk bar),
+    instruments and charts (needle gauge, compass, map, rings, donut,
+    heatmap, timeline, clock, library-neutral chart contract), buttons and
+    forms (19 components incl. date picker, combobox, tag input), navigation
+    (menubar, tree, tab bar, sheet, rail, steps, command palette, split
+    panes, keyboard layer), surfaces (image cards, draggable windows, brand
+    sign-in buttons) and display settings (accessibility attributes, forced
+    colours, `.prefs` + `prefs.js`, motion tokens, view-transition theme
+    switching, splash, themed empty states, `404.html`). See CONTRACT.md
+    "v5 component groups".
+  - Every theme: v5 tiers (v4 720px queries replaced), phone and tablet
+    layout fixes, XL gutter art, and a nesting pass so nested panels, cards,
+    modals and drawers step down instead of repeating full decoration
+    (e.g. Win7 nested title bars become group boxes, LCARS frames no longer
+    collide, Aqua/Windows nested windows lose their window controls).
+  - Period-correct modal close controls in every theme, with new close
+    tokens (size, width, start placement); minimise/maximise follow the
+    title bar's colour and group with close.
+  - Core fixes found on the way: `data-accent` and `data-contrast="high"`
+    now actually apply (they lost to every theme's root block); meter warn
+    and peak bands are sized to the track, not the fill; switches and
+    sliders get touch hit areas without changing their look; nav items
+    centre their labels; `.btn` reaches the touch width; panel headers with
+    controls wrap; `aria-current="page"` nav items and `aria-selected`
+    table rows are styled; the tap-size rule no longer outranks components;
+    a rail's tier display now beats `.app-rail:empty`; per-tier
+    `--app-columns-mobile|-tablet`.
+  - `scripts/v5_audit.mjs` covers the component pages and ignores inline
+    chips (code, kbd, badges) in the text-to-edge check.
+
 - **Fix: scrolling and carousels.** `.app-main` is no longer a scroll
   container (`overflow-x: clip; overflow-y: visible`). With v4's
   `overflow: auto`, anything sticking out of it (an open menu near the

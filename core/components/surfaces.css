@@ -1,0 +1,296 @@
+/* --- v5 surfaces and media (PLAN.md §9 #47, #49, #50) --------------------
+ * Image card, draggable-window states, brand sign-in buttons.
+ * Docs: docs/components/surfaces.md. Demo: components-surfaces.html. */
+
+/* ---- #47 Image card ------------------------------------------------------
+ * <article class="card has-media">
+ *   <img src="…" alt="…" loading="lazy" width="1200" height="675">
+ *   <div class="card-body">…</div>
+ * </article>
+ * Media is the first child: <img>, <video>, <picture> or a .card-media box.
+ * It bleeds to the card edge and is locked to --card-media-ratio (16 / 9),
+ * so a lazy image reserves its space and nothing jumps when it arrives. */
+.card.has-media {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  position: relative; /* anchors a .stretched-link (whole card clickable) */
+  padding: 0;
+  overflow: hidden; /* the media takes the card's corners */
+}
+.card.has-media > :is(img, video, picture, .card-media) {
+  display: block;
+  inline-size: 100%;
+  block-size: auto; /* beats the height="" attribute, so the ratio holds */
+  aspect-ratio: var(--card-media-ratio, 16 / 9);
+  object-fit: cover;
+  overflow: hidden;
+  /* The lazy-load placeholder: shows until the image paints over it. */
+  background: var(--card-media-placeholder, var(--skeleton-bg, var(--surface-2)));
+}
+.card.has-media > :is(picture, .card-media) > :is(img, video) {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.card-body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2xs);
+  padding: var(--card-body-pad, var(--surface-pad, var(--space-m)));
+  min-inline-size: 0;
+}
+
+/* Loading: aria-busy="true" on the card (the app clears it on load) runs
+   core's skeleton shimmer over the reserved box and hides the alt text. */
+.card.has-media[aria-busy="true"] > :is(img, video, picture, .card-media) {
+  color: transparent;
+  background-image: linear-gradient(90deg, transparent, var(--skeleton-shine, rgba(255, 255, 255, 0.08)), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card.has-media[aria-busy="true"] > :is(img, video, picture, .card-media) {
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+html[data-motion="reduced"] .card.has-media > * { animation: none; }
+
+/* Overlay title: the body sits on the bottom of the media behind a scrim.
+   The scrim is dark enough for white text over any image (≥ 4.5:1 even
+   over pure white), so the text tokens are set for it locally. */
+.card.has-media.is-overlay > * { grid-area: 1 / 1; }
+.card.has-media.is-overlay > .card-body {
+  align-self: end;
+  padding-block-start: calc(var(--surface-pad, var(--space-m)) + var(--space-l));
+  background: var(--card-overlay-bg, linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.78) var(--space-l), rgba(0, 0, 0, 0.85)));
+  --text: var(--card-overlay-fg, #fff);
+  --on-surface: var(--card-overlay-fg, #fff);
+  --muted: var(--card-overlay-muted, rgba(255, 255, 255, 0.82));
+  color: var(--text);
+}
+
+/* Horizontal: media beside the body once there's room. It follows the
+   nearest size container (.modal, .drawer or .cq; put .cq on the grid
+   cell or column that holds the card) and falls back to the viewport when
+   there is none. Media takes --card-media-size of the width and the full
+   height of the card. */
+@media (min-width: 481px) {
+  .card.has-media.is-horizontal:not(.is-overlay) {
+    grid-template-columns: minmax(0, var(--card-media-size, 40%)) minmax(0, 1fr);
+  }
+  .card.has-media.is-horizontal:not(.is-overlay) > :is(img, video, picture, .card-media) {
+    block-size: 100%;
+    align-self: stretch;
+  }
+}
+@container (max-width: 480px) {
+  .card.has-media.is-horizontal:not(.is-overlay) { grid-template-columns: minmax(0, 1fr); }
+  .card.has-media.is-horizontal:not(.is-overlay) > :is(img, video, picture, .card-media) { block-size: auto; }
+}
+
+/* ---- #49 Draggable window ------------------------------------------------
+ * <div class="modal" data-drag> + assets/js/window.js. The header is the
+ * handle: grab cursor, and touch-action: none on it only, so a touch drag
+ * moves the window while the body still scrolls. */
+.modal[data-drag] > .modal-header {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.modal[data-drag].is-dragging { box-shadow: var(--window-drag-shadow, var(--modal-shadow, var(--panel-shadow, 0 0.75rem 2rem rgba(0, 0, 0, 0.35)))); }
+.modal[data-drag].is-dragging > .modal-header { cursor: grabbing; }
+/* A focusable header (tabindex="0", for Alt+Arrow moves) keeps its ring
+   inside the window edge, where overflow can't clip it. */
+.modal[data-drag] > .modal-header:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: -2px;
+}
+/* Maximized wins over the inline left/top/width a drag leaves behind (the
+   checkbox path has no JS to clear them), and the header stops looking
+   draggable. */
+.modal[data-drag]:is(.is-maximized, .window-max:checked + *) {
+  inset: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+.modal[data-drag]:is(.is-maximized, .window-max:checked + *) > .modal-header { cursor: default; }
+
+/* ---- #50 Brand sign-in and connect buttons -------------------------------
+ * <button class="btn-brand is-google">
+ *   <img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">
+ *   Sign in with Google
+ * </button>
+ * Deliberately NOT themed: colours, sizes, radius, font and spacing are each
+ * company's published values (sources in docs/components/surfaces.md) and
+ * live in private --_bb-* properties on the button itself, so no theme token
+ * reaches them. The logo is always an <img> the app supplies (a logo is never
+ * part of a theme bundle; see assets/logos/README.md). Only the focus ring
+ * and the hit area follow the library. */
+.btn-brand {
+  /* Defaults are Google's (light). Each brand below overrides what differs. */
+  --_bb-h: 40px;
+  --_bb-bg: #fff;
+  --_bb-fg: #1f1f1f;
+  --_bb-border: #747775;
+  --_bb-radius: 4px;
+  --_bb-pad: 12px;
+  --_bb-pad-end: 12px;
+  --_bb-gap: 10px;
+  --_bb-logo: 20px;
+  --_bb-font: "Google Sans", Roboto, Arial, sans-serif;
+  --_bb-size: 14px;
+  --_bb-weight: 500;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_bb-gap);
+  box-sizing: border-box;
+  block-size: var(--_bb-h);
+  max-inline-size: 100%;
+  margin: 0;
+  padding: 0 var(--_bb-pad-end) 0 var(--_bb-pad);
+  border: 1px solid var(--_bb-border);
+  border-radius: var(--_bb-radius);
+  background: var(--_bb-bg);
+  box-shadow: none;
+  color: var(--_bb-fg);
+  font: var(--_bb-weight) var(--_bb-size) / 1.25 var(--_bb-font);
+  letter-spacing: normal;
+  text-transform: none;
+  text-shadow: none;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+}
+/* Logical padding flips in RTL along with the logo. */
+.btn-brand:dir(rtl) { padding: 0 var(--_bb-pad) 0 var(--_bb-pad-end); }
+.btn-brand > .btn-brand-logo {
+  flex: none;
+  inline-size: auto;
+  block-size: var(--_bb-logo);
+  max-inline-size: none;
+}
+/* Hit area: the visual height is the brand's; the ::after grows the
+   target to --tap-min on touch tiers without changing the look. */
+.btn-brand::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((var(--_bb-h) - var(--tap-min, 24px)) / 2 - 1px)) 0; /* - 1px: the border */
+}
+/* State layer (Material-style tint of the text colour) — the brand's
+   colours are kept underneath. Hover has a focus-visible equivalent. */
+.btn-brand:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+  background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 10%, transparent) 0 0);
+}
+@media (hover: hover) {
+  .btn-brand:hover { background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 8%, transparent) 0 0); }
+}
+.btn-brand:active { background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 14%, transparent) 0 0); }
+.btn-brand:is(:disabled, [aria-disabled="true"]) { opacity: 0.38; cursor: not-allowed; background-image: none; }
+/* Full width (a sign-in stack): content stays centred, like the providers' own. */
+.btn-brand.is-block { display: flex; inline-size: 100%; }
+/* Icon-only (Google, Apple and Microsoft allow logo-only buttons): square. */
+.btn-brand.is-icon { inline-size: var(--_bb-h); padding: 0; }
+.btn-brand.is-icon::after { inset: min(0px, calc((var(--_bb-h) - var(--tap-min, 24px)) / 2 - 1px)); }
+
+/* Google — developers.google.com/identity/branding-guidelines:
+   40px, 12 / 10 / 12px padding, 20px G, Google Sans Medium 14/20,
+   light / dark / neutral, rectangular (4px) or pill. */
+.btn-brand.is-google.is-dark { --_bb-bg: #131314; --_bb-fg: #e3e3e3; --_bb-border: #8e918f; }
+.btn-brand.is-google.is-neutral { --_bb-bg: #f2f2f2; --_bb-fg: #1f1f1f; --_bb-border: #f2f2f2; }
+.btn-brand.is-google.is-pill { --_bb-radius: 20px; }
+
+/* Microsoft — learn.microsoft.com …/howto-add-branding-in-apps redlines:
+   41px, 12px padding and gap, Segoe UI 15px weight 600, square corners;
+   light #fff / #5e5e5e text / 1px #8c8c8c border, dark #2f2f2f / #fff. */
+.btn-brand.is-microsoft {
+  --_bb-h: 41px;
+  --_bb-fg: #5e5e5e;
+  --_bb-border: #8c8c8c;
+  --_bb-radius: 0;
+  --_bb-gap: 12px;
+  --_bb-logo: 21px;
+  --_bb-font: "Segoe UI", system-ui, sans-serif;
+  --_bb-size: 15px;
+  --_bb-weight: 600;
+}
+.btn-brand.is-microsoft.is-dark { --_bb-bg: #2f2f2f; --_bb-fg: #fff; --_bb-border: #2f2f2f; }
+
+/* Apple — developer.apple.com HIG "Sign in with Apple": black (default),
+   .is-white, .is-outline (white with a black outline); logo and title both
+   black or white; title 43% of the button height in the system font;
+   minimum 140 × 30px; the logo file is as tall as the button and carries
+   its own leading padding, so the button adds none; at least 8% of the
+   width after the title. Rounded corners by default (any radius allowed). */
+.btn-brand.is-apple {
+  --_bb-h: 44px;
+  --_bb-bg: #000;
+  --_bb-fg: #fff;
+  --_bb-border: #000;
+  --_bb-radius: 6px;
+  --_bb-pad: 0px;
+  --_bb-pad-end: max(16px, 2em);
+  --_bb-gap: 0px;
+  --_bb-logo: var(--_bb-h);
+  --_bb-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --_bb-size: calc(var(--_bb-h) * 0.43);
+  min-inline-size: 140px;
+}
+.btn-brand.is-apple.is-white { --_bb-bg: #fff; --_bb-fg: #000; --_bb-border: #fff; }
+.btn-brand.is-apple.is-outline { --_bb-bg: #fff; --_bb-fg: #000; --_bb-border: #000; }
+.btn-brand.is-apple.is-icon { min-inline-size: 0; }
+
+/* GitHub — brand.github.com/foundations/logo: the Invertocat only in black
+   or white, high contrast, no effects. GitHub publishes no button spec, so
+   the box follows the Google/Microsoft proportions. Dark by default. */
+.btn-brand.is-github {
+  --_bb-bg: #000;
+  --_bb-fg: #fff;
+  --_bb-border: #000;
+  --_bb-radius: 6px;
+  --_bb-font: "Mona Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --_bb-weight: 600;
+}
+.btn-brand.is-github.is-light { --_bb-bg: #fff; --_bb-fg: #000; --_bb-border: #000; }
+
+/* Spotify — developer.spotify.com/documentation/design: green icon only on
+   black or white; icon ≥ 21px; exclusion zone half the icon height; link
+   text OPEN SPOTIFY / PLAY ON SPOTIFY / LISTEN ON SPOTIFY / GET SPOTIFY
+   FREE; platform sans-serif (Helvetica Neue, Helvetica, Arial). */
+.btn-brand.is-spotify {
+  --_bb-h: 48px;
+  --_bb-bg: #121212;
+  --_bb-fg: #fff;
+  --_bb-border: #121212;
+  --_bb-radius: 24px;
+  --_bb-logo: 24px;
+  --_bb-gap: 12px;
+  --_bb-pad: 12px;
+  --_bb-pad-end: 20px;
+  --_bb-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --_bb-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.btn-brand.is-spotify.is-light { --_bb-bg: #fff; --_bb-fg: #121212; --_bb-border: #121212; }
+
+/* A row or stack of providers: equal widths, as Google and Apple ask
+   ("at least as prominent as other sign-in options"). */
+.btn-brand-stack {
+  display: grid;
+  gap: var(--space-xs);
+  inline-size: min(100%, 22rem);
+}
+.btn-brand-stack > .btn-brand { display: flex; inline-size: 100%; }
+
+/* Brands keep their own colours in forced-colors mode only where the OS
+   allows; give them a visible border there. */
+@media (forced-colors: active) {
+  .btn-brand { border-color: ButtonText; }
+}

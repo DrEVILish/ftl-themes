@@ -1,0 +1,560 @@
+/* --- v5 tables (PLAN.md §7 editable tables and small screens, §18 advanced
+ * tables, §9 #48 table in a modal) ------------------------------------------
+ * Builds on core's .table, .is-sticky, .is-striped, aria-sort, .is-selected,
+ * .table-wrap and --sticky-top. Apps provide the behaviour (open an editor,
+ * save, resize, reorder, select); this file styles every state.
+ * Docs: docs/components/tables.md. Example: components-tables.html.
+ *
+ * Private custom properties (--_*) are internal plumbing, not theme tokens.
+ * A table resets them so a table nested in a cell starts clean. */
+.table {
+  --_cell-paint: initial;
+  --_row-tint: initial;
+  --_base: initial;
+  --_dir: 1;
+}
+.table:dir(rtl) { --_dir: -1; }
+
+/* Cell padding as tokens (same values as core's literal padding), so the
+   density modifiers and the in-cell editors all read one source. */
+.table :is(th, td) {
+  padding: var(--cell-pad-y, calc(0.5em * var(--density))) var(--cell-pad-x, calc(0.75em * var(--density)));
+}
+.table.is-compact {
+  --cell-pad-y: max(var(--space-2xs), calc(0.25em * var(--density)));
+  --cell-pad-x: calc(0.5em * var(--density));
+}
+.table.is-comfortable {
+  --cell-pad-y: calc(0.85em * var(--density));
+  --cell-pad-x: calc(1em * var(--density));
+}
+
+/* Touch switch, set once: the pencil on idle editable cells. Same
+   conditions as core's --tap-min. */
+:root { --_cell-pencil: none; }
+@media (max-width: 900px), (any-pointer: coarse) {
+  :root { --_cell-pencil: inline-block; }
+}
+html[data-pointer="touch"] { --_cell-pencil: inline-block; }
+
+/* Spreadsheet-style navigation: an app gives cells tabindex and moves focus
+   with the arrow keys. The ring sits inside the cell so a .table-wrap
+   scroller can't clip it. */
+.table :is(td, th):focus-visible { outline-offset: -2px; }
+.table td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { height: var(--tap-min); }
+
+/* --- Editable cells (§7) ----------------------------------------------- */
+
+/* Idle: editable on double-click (desktop) or tap (touch). A dotted
+   underline on hover and focus; a pencil on touch tiers, where there is no
+   hover. */
+.table td.is-editable { cursor: text; }
+.table td.is-editable:focus-visible,
+.table td.is-editable:focus-within {
+  text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
+  text-underline-offset: 0.25em;
+}
+@media (hover: hover) {
+  .table td.is-editable:hover {
+    text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
+    text-underline-offset: 0.25em;
+  }
+}
+.table td.is-editable::after {
+  display: var(--_cell-pencil);
+  content: var(--cell-edit-glyph, "\270E") / "";
+  margin-inline-start: 0.5em;
+  color: var(--cell-edit-glyph-fg, var(--muted));
+  font-size: 0.9em;
+}
+/* Read-only: no affordance, quieter text, the arrow cursor. */
+.table td[aria-readonly="true"] {
+  cursor: default;
+  color: var(--cell-readonly-fg, var(--muted));
+  text-decoration: none;
+}
+.table td.is-editable[aria-readonly="true"]::after { content: none; }
+
+/* Editing: the control fills the cell exactly. The cell's padding moves onto
+   the control (less its border), the font and line height are the cell's,
+   and field-sizing keeps its intrinsic width at its content, so neither the
+   row height nor the column width jumps. Works for a single cell
+   (td.is-editing) and a whole row (tr.is-editing). */
+.table :is(td.is-editing, tr.is-editing > td):has(> :is(.input, .select, .textarea)) { padding: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea) {
+  display: block;
+  width: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  padding: calc(var(--cell-pad-y, calc(0.5em * var(--density))) - var(--input-border-width, 1px))
+    calc(var(--cell-pad-x, calc(0.75em * var(--density))) - var(--input-border-width, 1px));
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  border-radius: var(--cell-input-radius, 0);
+  field-sizing: content;
+  outline-offset: -2px;
+  text-align: start;
+}
+/* Chrome pads the date fields and its picker icon; the cell's padding rules. */
+.table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit,
+.table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit-fields-wrapper { padding-block: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-calendar-picker-indicator { block-size: 1em; padding-block: 0; margin-block: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > .select {
+  padding-inline-end: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + 1.5em);
+}
+.table :is(td.is-editing, tr.is-editing > td) > .textarea { min-height: 0; resize: none; }
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea):not(.is-invalid, [aria-invalid="true"]) {
+  background-color: var(--cell-input-bg, var(--input-bg, var(--surface)));
+  border-color: var(--cell-editing-border, var(--accent));
+}
+/* iOS zooms on focus below 16px; the 44px touch row absorbs the difference. */
+@media (any-pointer: coarse) {
+  .table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea) { font-size: max(16px, 1em); }
+}
+/* A validation message in an editing cell lines up with the control's text. */
+.table :is(td.is-editing, tr.is-editing > td) > .field-error {
+  display: block;
+  margin: 0;
+  padding: var(--space-3xs) var(--cell-pad-x, calc(0.75em * var(--density))) var(--space-2xs);
+}
+
+/* Cell states paint with an inset box-shadow (--_cell-paint), above the row's
+   hover/stripe/selection fill, so a state always shows whatever the row is
+   doing. Each state also has a non-colour signal: a bar, a glyph, a ring or
+   the error text. */
+.table tr > td:is(.is-dirty, .is-saving, .htmx-request, .is-saved, [aria-invalid="true"], :has(> [aria-invalid="true"])),
+.table tr.is-editing > td {
+  box-shadow: var(--_cell-paint);
+}
+.table tr.is-editing > td {
+  --_cell-paint: inset 0 0 0 100vmax var(--row-editing-bg, color-mix(in srgb, var(--accent) 8%, transparent));
+}
+.table tr.is-editing {
+  --_marker: inset 0.25rem 0 0 var(--row-editing-marker, var(--accent));
+}
+.table tr.is-editing > td:first-child { box-shadow: var(--_marker), var(--_cell-paint); }
+/* Row actions (save, cancel) sit in the last cell, kept on one line. */
+.table tr.is-editing > td:last-child:not(:has(> :is(.input, .select, .textarea))) {
+  white-space: nowrap;
+  text-align: end;
+}
+
+/* Dirty: changed, not saved. A bar on the leading edge plus a tint. */
+.table tr > td.is-dirty {
+  --_cell-paint: inset calc(var(--_dir) * 0.2rem) 0 0 var(--cell-dirty-marker, var(--warning)),
+    inset 0 0 0 100vmax var(--cell-dirty-bg, color-mix(in srgb, var(--warning) 14%, transparent));
+}
+/* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
+   and a spinner; the app should also set aria-busy="true" on the cell. */
+.table tr > td:is(.is-saving, .htmx-request) {
+  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.6) * 100%), transparent);
+}
+.table tr > td:is(.is-saving, .htmx-request)::after {
+  content: "";
+  display: inline-block;
+  inline-size: 0.85em;
+  block-size: 0.85em;
+  margin-inline-start: 0.5em;
+  vertical-align: -0.1em;
+  border: 2px solid var(--indicator-track, var(--border));
+  border-top-color: var(--indicator-fg, var(--accent));
+  border-radius: 50%;
+}
+/* Saved: a tick and a success tint; the app removes .is-saved after a moment. */
+.table tr > td.is-saved {
+  --_cell-paint: inset 0 0 0 100vmax var(--cell-saved-bg, color-mix(in srgb, var(--success) 14%, transparent));
+}
+.table tr > td.is-saved::after {
+  content: var(--cell-saved-glyph, "\2713") / "";
+  margin-inline-start: 0.5em;
+  color: var(--cell-saved-fg, var(--success-text, var(--success)));
+  font-weight: 700;
+}
+/* Error: aria-invalid on the cell or its control, plus a .field-error. */
+.table tr > td:is([aria-invalid="true"], :has(> [aria-invalid="true"])) {
+  --_cell-paint: inset 0 0 0 2px var(--cell-error-border, var(--danger)),
+    inset 0 0 0 100vmax var(--cell-error-bg, color-mix(in srgb, var(--danger) 10%, transparent));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .table tr > td:is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
+  .table tr > td.is-saved { animation: cell-saved 1.6s ease-out forwards; }
+}
+@keyframes cell-saved { from { box-shadow: inset 0 0 0 100vmax var(--cell-saved-flash, color-mix(in srgb, var(--success) 35%, transparent)); } }
+
+/* Dropdown, date and combobox in a cell: give the list the popover
+   attribute so it lives in the top layer, where the table's scroller and
+   sticky header can't clip it (core places top-layer popovers). Where anchor
+   positioning is supported, it opens under its own cell, at least as wide:
+     <td class="is-editing"><input class="input" role="combobox" …>
+       <ul class="dropdown" popover role="listbox">…</ul></td> */
+@supports (position-area: block-end) and (anchor-scope: all) {
+  .table :is(td, th):has(> [popover]) { anchor-name: --cell; anchor-scope: --cell; }
+  .table :is(td, th) > :is(.popover, .dropdown, .context-menu)[popover] {
+    position-anchor: --cell;
+    min-inline-size: anchor-size(inline);
+    margin: 0;
+  }
+}
+
+/* --- Frozen columns (§7 small screens, §18) ------------------------------
+ * A .table-wrap keeps its first column in view while the table scrolls
+ * sideways. .is-frozen-1 / .is-frozen-2 do the same in any scroller (and
+ * freeze two columns: the first must be a narrow column, e.g. a selection
+ * checkbox, of width --table-frozen-1-size). A stacked table is not frozen.
+ *
+ * A frozen cell must be opaque while the table is scrolled, or the rows
+ * passing under it show through. Core paints row states as translucent cell
+ * backgrounds, so a frozen body cell paints the row's state (--_row-tint,
+ * mirrored from core's row rules just below) over an opaque base
+ * (--table-bg). It is !important because core's and themes' row-state
+ * selectors outweigh any plain selector here; themes restyle it through the
+ * --row-* and --table-bg tokens. box-shadow is left alone: themes draw row
+ * markers with it. */
+.table.is-striped tbody tr:nth-child(even) { --_row-tint: var(--row-alt-bg, var(--surface-2)); }
+/* :nth-child(n) matches every row; it only lifts these to the stripe's weight. */
+.table tbody tr:nth-child(n):is(:hover, :focus-within):not(.table-empty, .table-more) {
+  --_row-tint: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
+}
+.table tbody tr.is-active:nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
+.table tbody tr.is-selected:nth-child(n) {
+  --_row-tint: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
+}
+
+/* The scroller is the containing block for anything absolutely positioned
+   in the table (a .visually-hidden checkbox name), or it escapes the
+   scroller and widens the page. */
+.table-wrap { position: relative; }
+
+:is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > * > tr > :first-child,
+.table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: var(--z-raised);
+  --_base: var(--table-bg, var(--surface));
+}
+.table.is-frozen-2:not(.is-stacked) > * > tr > :first-child {
+  box-sizing: border-box;
+  inline-size: var(--table-frozen-1-size, calc(var(--tap-min) + 1.5rem));
+  min-inline-size: var(--table-frozen-1-size, calc(var(--tap-min) + 1.5rem));
+}
+.table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+  inset-inline-start: var(--table-frozen-1-size, calc(var(--tap-min) + 1.5rem));
+}
+:is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > :is(tbody, tfoot) > tr > td:first-child,
+.table.is-frozen-2:not(.is-stacked) > :is(tbody, tfoot) > tr > td:nth-child(2) {
+  background: linear-gradient(var(--_row-tint, transparent) 0 0), var(--_base) !important;
+}
+/* Header cells in a frozen column sit above the frozen body cells and a
+   sticky header's other cells (the top-left corner). */
+:is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > thead > tr > th:first-child,
+.table.is-frozen-2:not(.is-stacked) > thead > tr > th:nth-child(2) {
+  background: linear-gradient(var(--table-head-bg, transparent) 0 0), var(--_base);
+  z-index: calc(var(--z-sticky) + 1);
+}
+/* The edge of the last frozen column: a hairline for .is-frozen-N, and a
+   shadow once the table is scrolled sideways (where scroll-driven
+   animations are supported). */
+.table.is-frozen-1:not(.is-stacked) > * > tr > :first-child,
+.table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+  border-inline-end: 1px solid var(--table-frozen-edge, var(--hairline));
+}
+/* Where scroll-driven animations are supported, the opaque base and the
+   edge shadow only appear once the table is scrolled, so a table at rest
+   looks exactly as it would unfrozen, whatever surface it sits on. */
+@supports (animation-timeline: scroll()) {
+  :is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > * > tr > :first-child,
+  .table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+    --_base: transparent;
+    animation: table-frozen-base linear both;
+    animation-timeline: scroll(nearest inline);
+    animation-range: 0 2px;
+  }
+  :is(.table-wrap > .table:not(.is-frozen-2), .table.is-frozen-1):not(.is-stacked) > * > tr > :first-child,
+  .table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) { animation-name: table-frozen-edge; }
+}
+/* data-motion="reduced" pauses every animation, which would freeze these
+   at rest; such pages get the always-opaque form instead. */
+html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > * > tr > :is(:first-child, :nth-child(2)) {
+  --_base: var(--table-bg, var(--surface));
+  animation: none;
+}
+@keyframes table-frozen-base { to { --_base: var(--table-bg, var(--surface)); } }
+@keyframes table-frozen-edge {
+  from { filter: none; }
+  to {
+    --_base: var(--table-bg, var(--surface));
+    filter: drop-shadow(calc(var(--_dir) * 3px) 0 3px var(--table-frozen-shadow, rgb(0 0 0 / 0.4)));
+  }
+}
+
+/* --- Tables on small screens: stacked cards (§7) -------------------------
+ * Opt in with .table.is-stacked: below the Tablet tier (the nearest .modal,
+ * .drawer or .cq container, or the viewport) each row becomes a card and each
+ * cell shows its column name from data-label. The thead stays for screen
+ * readers. The block is written twice: once for a container, once for the
+ * viewport when there is no container. */
+@media (max-width: 480px) {
+  .table.is-stacked,
+  .table.is-stacked > :is(thead, tbody, tfoot),
+  .table.is-stacked > * > tr:not([hidden]),
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) { display: block; }
+  .table.is-stacked > thead {
+    position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .table.is-stacked > * > tr {
+    margin-block-end: var(--space-xs);
+    border: 1px solid var(--table-card-border, var(--border));
+    border-radius: var(--table-card-radius, var(--radius));
+    background: var(--table-card-bg, transparent);
+    overflow: hidden;
+  }
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) {
+    padding: var(--space-2xs) var(--space-s);
+    text-align: start;
+    height: auto;
+  }
+  .table.is-stacked > * > tr > td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { min-block-size: var(--tap-min); }
+  .table.is-stacked > * > tr > :last-child { border-bottom: 0; }
+  .table.is-stacked > * > tr > [data-label]:nth-child(n) {
+    display: grid;
+    grid-template-columns: minmax(0, var(--table-label-size, 38%)) minmax(0, 1fr) auto;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+  .table.is-stacked > * > tr > [data-label]::before {
+    content: attr(data-label);
+    color: var(--table-label-fg, var(--muted));
+    font-size: 0.78em;
+    text-transform: var(--table-head-transform, uppercase);
+    letter-spacing: var(--table-head-tracking, 0.06em);
+  }
+  .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
+}
+@container (max-width: 480px) {
+  .table.is-stacked,
+  .table.is-stacked > :is(thead, tbody, tfoot),
+  .table.is-stacked > * > tr:not([hidden]),
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) { display: block; }
+  .table.is-stacked > thead {
+    position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .table.is-stacked > * > tr {
+    margin-block-end: var(--space-xs);
+    border: 1px solid var(--table-card-border, var(--border));
+    border-radius: var(--table-card-radius, var(--radius));
+    background: var(--table-card-bg, transparent);
+    overflow: hidden;
+  }
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) {
+    padding: var(--space-2xs) var(--space-s);
+    text-align: start;
+    height: auto;
+  }
+  .table.is-stacked > * > tr > td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { min-block-size: var(--tap-min); }
+  .table.is-stacked > * > tr > :last-child { border-bottom: 0; }
+  .table.is-stacked > * > tr > [data-label]:nth-child(n) {
+    display: grid;
+    grid-template-columns: minmax(0, var(--table-label-size, 38%)) minmax(0, 1fr) auto;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+  .table.is-stacked > * > tr > [data-label]::before {
+    content: attr(data-label);
+    color: var(--table-label-fg, var(--muted));
+    font-size: 0.78em;
+    text-transform: var(--table-head-transform, uppercase);
+    letter-spacing: var(--table-head-tracking, 0.06em);
+  }
+  .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
+}
+
+/* --- Column resize and reorder (§18) ------------------------------------
+ * th.is-resizable draws a grip on its trailing edge for pointer users; add a
+ * focusable <span class="table-resizer" role="separator" tabindex="0"> inside
+ * it for keyboard users (it replaces the drawn grip). .is-resizing on the th
+ * while dragging. The app does the resizing. */
+.table th.is-resizable { position: relative; height: var(--tap-min); }
+.table th.is-resizable::before,
+.table th.is-resizable > .table-resizer {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: var(--table-resizer-size, var(--tap-min));
+  border-inline-end: 2px solid var(--table-resizer-fg, var(--hairline));
+  cursor: col-resize;
+  touch-action: none;
+}
+.table th.is-resizable:has(> .table-resizer)::before { content: none; }
+.table th.is-resizable > .table-resizer:focus-visible { outline-offset: -2px; }
+.table th.is-resizable.is-resizing::before,
+.table th.is-resizable > .table-resizer:is(:focus-visible, :active),
+.table th.is-resizing > .table-resizer { border-inline-end-color: var(--table-resizer-fg-active, var(--accent)); }
+@media (hover: hover) {
+  .table th.is-resizable:hover::before,
+  .table th.is-resizable > .table-resizer:hover { border-inline-end-color: var(--table-resizer-fg-active, var(--accent)); }
+}
+
+/* Reorder: a draggable header, the column being dragged (.is-dragging) and
+   the drop indicator between columns (.is-drop-before / .is-drop-after on
+   the header, or on every cell of the target column). */
+.table th[draggable="true"] { cursor: grab; }
+.table th[draggable="true"]:active { cursor: grabbing; }
+.table :is(th, td).is-dragging {
+  opacity: 0.5;
+  outline: 1px dashed var(--table-drop-marker, var(--accent));
+  outline-offset: -1px;
+}
+.table :is(th, td).is-drop-before { box-shadow: inset calc(var(--_dir) * 3px) 0 0 var(--table-drop-marker, var(--accent)); }
+.table :is(th, td).is-drop-after { box-shadow: inset calc(var(--_dir) * -3px) 0 0 var(--table-drop-marker, var(--accent)); }
+
+/* --- Row groups and tree rows (§18) --------------------------------------
+ * <tbody class="table-group"> with a header row and an optional totals row.
+ * A .table-toggle with aria-expanded collapses the group (the app flips the
+ * attribute) and marks expandable tree rows. */
+.table-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-block-size: var(--tap-min);
+  min-inline-size: var(--tap-min);
+  margin-block: calc(-1 * var(--cell-pad-y, calc(0.5em * var(--density))));
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: start;
+  touch-action: manipulation;
+}
+.table-toggle::before {
+  content: var(--table-toggle-glyph, "\25B8") / "";
+  display: inline-block;
+  inline-size: 1em;
+  text-align: center;
+  color: var(--table-toggle-fg, var(--muted));
+}
+.table-toggle:dir(rtl)::before { scale: -1 1; }
+.table-toggle[aria-expanded="true"]::before { rotate: 90deg; }
+.table-toggle:dir(rtl)[aria-expanded="true"]::before { rotate: -90deg; }
+@media (prefers-reduced-motion: no-preference) {
+  .table-toggle::before { transition: rotate 0.15s ease; }
+}
+
+.table .table-group-header > :is(th, td) {
+  background: var(--table-group-bg, var(--surface-2));
+  color: var(--table-group-fg, var(--text));
+  font-weight: 600;
+}
+.table .table-group-total > :is(th, td) {
+  border-top: 1px solid var(--table-total-border, var(--border));
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.table .table-group:has(> .table-group-header [aria-expanded="false"]) > tr:not(.table-group-header, .table-group-total) {
+  display: none;
+}
+
+/* Tree rows: <tr data-level="2"> (or aria-level in a treegrid) indents the
+   first cell. Rows with children carry a .table-toggle; leaf rows are
+   indented by its width too so their text lines up. The app hides the rows
+   of a collapsed branch (the hidden attribute). */
+.table tr:is([data-level="2"], [aria-level="2"]) { --_level: 1; }
+.table tr:is([data-level="3"], [aria-level="3"]) { --_level: 2; }
+.table tr:is([data-level="4"], [aria-level="4"]) { --_level: 3; }
+.table tr:is([data-level="5"], [aria-level="5"]) { --_level: 4; }
+.table tr:is([data-level="6"], [aria-level="6"]) { --_level: 5; }
+.table tr:is([data-level="7"], [aria-level="7"]) { --_level: 6; }
+.table tr:is([data-level], [aria-level]) > :first-child {
+  padding-inline-start: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + var(--_level, 0) * var(--table-indent, 1.25rem));
+}
+.table tr:is([data-level], [aria-level]) > :first-child:not(:has(> .table-toggle)) {
+  padding-inline-start: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + var(--_level, 0) * var(--table-indent, 1.25rem) + 1.4em);
+}
+
+/* --- Selection column and bulk-action bar (§18) ---------------------------
+ * Rows select with core's tr.is-selected (add aria-selected="true" in a
+ * grid). A checkbox-only first column shrinks to its content. A .bulk-bar
+ * placed before the table (or its .table-wrap) shows only while a row in it
+ * is selected; elsewhere, the app shows and hides it. */
+/* :where() so .is-frozen-2's fixed first-column width wins. */
+:where(.table tr > :first-child:has(> :is(.checkbox, .check):only-child)) { inline-size: 1px; text-align: center; }
+/* A row checkbox wrapped in a label with a hidden name (CONTRACT.md "Touch
+   and pointer") gets the full target width at every tier, not just touch. */
+.table .check:has(> .visually-hidden:last-child) { min-inline-size: var(--tap-min); justify-content: center; }
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--bulk-bar-pad, var(--space-2xs) var(--space-s));
+  background: var(--bulk-bar-bg, color-mix(in srgb, var(--accent) 14%, var(--surface)));
+  color: var(--bulk-bar-fg, var(--text));
+  border: 1px solid var(--bulk-bar-border, var(--accent));
+  border-radius: var(--bulk-bar-radius, var(--radius));
+}
+.bulk-bar-count { margin-inline-end: auto; font-weight: 600; }
+.bulk-bar:has(~ :is(.table, .table-wrap)):not(:has(~ .table tr.is-selected, ~ .table-wrap tr.is-selected)) { display: none; }
+
+/* --- Loading, empty and load-more rows (§18) ----------------------------
+ * .table.is-loading (with aria-busy="true") turns every body cell into a
+ * skeleton bar, keeping the rows' size. .table-empty holds an .empty-state;
+ * .table-more is the infinite-scroll row ("Loading more…", a spinner, or a
+ * Load more button for htmx's revealed trigger). */
+.table.is-loading tbody td { position: relative; color: transparent; }
+.table.is-loading tbody td > * { visibility: hidden; }
+.table.is-loading tbody td::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset-block-start: calc(50% - 0.45em);
+  inset-inline: var(--cell-pad-x, calc(0.75em * var(--density)));
+  block-size: 0.9em;
+  border-radius: 0.2em;
+  background-color: var(--skeleton-bg, var(--surface-2));
+}
+.table.is-loading tbody td:nth-child(3n + 2)::after { inset-inline-end: 30%; }
+.table.is-loading tbody td:nth-child(3n)::after { inset-inline-end: 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .table.is-loading tbody td::after {
+    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.08), transparent);
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+/* Two classes plus :nth-child(n) to outweigh core's striped-and-hovered
+   cell rule: these rows never take a hover or stripe fill. */
+.table.table tbody tr:nth-child(n):is(.table-empty, .table-more) > td {
+  background: transparent;
+  border-bottom: 0;
+}
+.table tr.table-empty > td { padding: 0; }
+.table tr.table-more > td {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+.table tr.table-more > td > :is(.spinner, .indicator) { vertical-align: middle; margin-inline-end: 0.5em; }
+
+/* --- Table in a modal (§9 #48) -------------------------------------------
+ * <div class="modal"> … <div class="table-wrap"><table class="table is-sticky">
+ * The modal becomes a column: its header and footer stay put, the
+ * .table-wrap is the scrolling body, and the sticky header sticks to it.
+ * Zero specificity so .is-minimized and themes still win; only applied
+ * while the modal is shown, so a closed popover or dialog stays hidden. */
+:where(.modal:has(> .table-wrap):is(:popover-open, [open], :not([popover], dialog))) {
+  display: flex;
+  flex-direction: column;
+}
+.modal > .table-wrap {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: auto;
+}

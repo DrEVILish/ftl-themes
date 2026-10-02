@@ -91,6 +91,12 @@ apart from `aqua`.
   its own component only.
 - An uppercase, letter-spaced label anywhere. iOS never did that.
 
+## v5 layout
+
+- **Tiers.** No rail. Phones and tablets: core puts the title and bar buttons on line 1 and the glossy nav buttons on a scrolling line 2, with their labels centred in the 44px buttons; phones tighten the button padding. Content padding is set per tier (`--app-main-padding-mobile|-tablet`).
+- **Nesting.** A panel, card, list, field row or table inside the navy alert view (`.modal`) goes back to black-on-white without the emboss, so its text no longer inherits the alert's white embossed type onto a white cell. Stacked-table labels use `--muted`.
+- **XL gutter art (1801px+).** The grey linen of the iOS 6 notification shade and lock screen, woven from two fine crossing stripe sets and a soft vignette.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

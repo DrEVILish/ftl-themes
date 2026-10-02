@@ -233,8 +233,11 @@ html[data-theme="windows95"] .dropdown { border-color: #ffffff #000000 #000000 #
    a white highlight, the same light/dark pairing as every other bevel in
    this theme. */
 html[data-theme="windows95"] .panel-header {
-  margin: calc(-1rem * var(--density) + 1px) calc(-1rem * var(--density) + 1px) calc(0.8rem * var(--density));
-  padding: 0.15rem 0.35rem;
+  /* Pulled out by the panel's own --surface-pad (v5: it steps per tier),
+     less the 1px inner bevel, so the caption bar always meets the frame. */
+  margin: calc(1px - var(--surface-pad, 1rem)) calc(1px - var(--surface-pad, 1rem)) calc(0.8rem * var(--density));
+  /* 4px round the caption text: the v5 audit's text-to-edge floor. */
+  padding: 0.25rem 0.35rem;
   border-bottom: 0;
   font-weight: 700;
   font-size: 0.8rem;
@@ -248,6 +251,62 @@ html[data-theme="windows95"] .panel-header {
   --success-text: #7cff7c;
   --warning-text: #ffff7c;
   --danger-text: #ffb0b0;
+}
+/* Controls sitting in a caption bar keep the dialog's own tokens: the
+   light tints above are for the caption's text, and a search field's
+   addon icon drawn in #dfdfdf on its grey face vanished. */
+html[data-theme="windows95"] .panel-header :is(.input-group, .input, .select, .dropdown, .popover, .context-menu) {
+  --muted: #444444;
+  --success-text: #005c00;
+  --warning-text: #4d4d00;
+  --danger-text: #800000;
+}
+/* A caption bar holding controls grows to fit them instead of squeezing
+   them into the 11px-text strip. */
+html[data-theme="windows95"] .panel-header:has(.input, .select, .btn) {
+  padding-block: 0.2rem;
+}
+/* Nested surfaces step down (PLAN.md §6): only the outermost surface is
+   a window with a navy caption. A panel inside a panel, card, dialog or
+   drawer is a group box: an etched frame line under a plain bold label
+   on the grey face, as 95 drew sections inside one dialog. */
+html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  --panel-header-bg: transparent;
+  --panel-header-fg: var(--text);
+  --muted: #444444;
+  --success-text: #005c00;
+  --warning-text: #4d4d00;
+  --danger-text: #800000;
+  border-bottom: 1px solid #808080;
+  box-shadow: 0 1px 0 #ffffff;
+}
+html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header .btn-ghost { color: var(--text); }
+/* Caption buttons on a title bar: grey bevelled squares with black
+   glyphs, as on every 95 window (core's default follows the bar's text
+   colour for close only, and leaves min/max in --muted: invisible on
+   navy). */
+html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max) {
+  --btn-close-bg: var(--surface);
+  --btn-close-bg-hover: var(--surface);
+  --btn-close-fg: #000000;
+  --btn-close-fg-hover: #000000;
+  --btn-close-radius: 0;
+  --modal-header-close-fg: #000000;
+  width: 1.45em;
+  height: 1.3em;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+/* Minimize and maximize touch; close stands 2px apart. */
+html[data-theme="windows95"] .modal-header > .btn-min { margin-inline-start: auto; }
+html[data-theme="windows95"] .modal-header > .btn-min + .btn-max { margin-inline-start: -0.5rem; }
+html[data-theme="windows95"] .modal-header > :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: calc(2px - 0.5rem); }
+html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max):active {
+  border-color: #000000 #ffffff #ffffff #000000;
+  box-shadow: inset 1px 1px 0 #808080;
 }
 html[data-theme="windows95"] .stat-value { font-family: var(--font); }
 
@@ -268,7 +327,7 @@ html[data-theme="windows95"] .tab.is-active { position: relative; bottom: -1px; 
 html[data-theme="windows95"] .app-status > * {
   border: 1px solid;
   border-color: #808080 #ffffff #ffffff #808080;
-  padding: 0 0.4rem;
+  padding: 0.25rem 0.4rem;
 }
 
 /* Console primitives: sunken bay, raised strips, keys that sink and light
@@ -364,6 +423,31 @@ html[data-theme="windows95"] .app-bar::after {
   pointer-events: none;
 }
 html[data-theme="windows95"] :is(.app-bar, .panel-header) .btn-ghost { color: #ffffff; }
+
+/* Touch tiers (v5): the bar wraps to two lines (brand + actions, then the
+   nav), so the caption buttons pin to the first line's right end instead
+   of floating at the middle of both. On a phone the 52px they reserve is
+   worth more as brand text, so they go; the navy title bar stays. */
+@media (max-width: 900px) {
+  html[data-theme="windows95"] .app-bar::after {
+    top: calc(0.2rem + var(--tap-min) / 2);
+  }
+}
+@media (max-width: 480px) {
+  html[data-theme="windows95"] .app-bar { padding-right: 0.4rem; }
+  html[data-theme="windows95"] .app-bar::after { content: none; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the teal desktop carries on beside the
+   window, with a column of greyed-out desktop icons (My Computer, a
+   folder, the Recycle Bin) down the left edge and Network Neighborhood
+   on the right, all in teal one step off --bg (~1.2:1). Still. */
+html[data-theme="windows95"] {
+  --w95-icons: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='270'%3E%3Cg fill='%23178f8f'%3E%3Crect x='24' y='6' width='32' height='24'/%3E%3Crect x='34' y='30' width='12' height='4'/%3E%3Crect x='26' y='34' width='28' height='4'/%3E%3Crect x='14' y='46' width='52' height='8'/%3E%3Cpath d='M22 96h14l4 4h18v26H22z'/%3E%3Crect x='18' y='136' width='44' height='8'/%3E%3Cpath d='M28 186h24l-3 32H31z'/%3E%3Crect x='26' y='181' width='28' height='4'/%3E%3Crect x='16' y='226' width='48' height='8'/%3E%3C/g%3E%3Cg fill='%23007070'%3E%3Crect x='28' y='10' width='24' height='16'/%3E%3C/g%3E%3C/svg%3E");
+  --app-gutter-art:
+    var(--w95-icons) 1.5rem 1.5rem / 80px 270px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='70'%3E%3Cg fill='%23178f8f'%3E%3Crect x='14' y='6' width='22' height='16'/%3E%3Crect x='44' y='6' width='22' height='16'/%3E%3Crect x='29' y='26' width='22' height='16'/%3E%3Crect x='14' y='52' width='52' height='8'/%3E%3C/g%3E%3C/svg%3E") right 1.5rem top 1.5rem / 80px 70px no-repeat;
+}
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * sunken white fields for messages (tooltip yellow for yours) and navy progress blocks stood on end. */

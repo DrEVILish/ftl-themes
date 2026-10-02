@@ -54,6 +54,19 @@ than as a HUD's telemetry glow.
 A black bar and status strip both edged in the purple rule, with the
 content area carrying the same vinyl-gloss panels throughout.
 
+## v5 layout
+
+- **Tiers.** No rail on any tier. On phone and tablet (≤900px) the nav
+  gets its own scrolling line in the bar; its own sawtooth is dropped
+  there (the scroller clipped it, and the bar's sawtooth already edges the
+  whole bar).
+- **Nesting.** A panel inside another surface gets a smaller, unlit
+  sawtooth. Headers leave a wider gap below them so the teeth never touch
+  the first line of the body.
+- **XL gutter art.** The club wall beside the console: a fishnet lattice in
+  dark violet with a faint sawtooth trim running down each side. Still,
+  and within about 1.2:1 of `--bg`.
+
 ## Tell-tales of an inauthentic result
 
 - Purple and green swapping jobs (purple as the primary action colour, or

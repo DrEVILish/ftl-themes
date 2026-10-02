@@ -74,6 +74,10 @@ is decoration under the panels and carries no text.
 - Bold condensed type: the labels are wide and light.
 - Neon glow on everything: only headings and readouts glow.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On touch tiers the brand tab stays as wide as its text, so it doesn't stretch across the first line. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

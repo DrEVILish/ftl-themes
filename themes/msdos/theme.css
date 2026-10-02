@@ -101,10 +101,43 @@ html[data-theme="msdos"] .modal {
   --muted: #000000;
   /* VGA red #aa0000 is 3.3:1 on the grey; one step darker clears 4.5:1. */
   --danger-text: #800000;
+  /* State inks on the grey: VGA bright green/yellow are ~1.3:1 here. */
+  --success-text: #004400;
+  --warning-text: #553300;
+  /* Column heads on the grey: the screen's yellow is 1.3:1 here. */
+  --table-head-fg: #0000aa;
+  --table-head-rule: #000000;
   outline: 3px double #ffffff;
   outline-offset: -0.6em;
 }
 html[data-theme="msdos"] .modal .btn:not(.btn-primary):not(.btn-danger) { --btn-bg: #ffffff; --btn-fg: #000000; }
+/* A blue box inside a dialog (panel, card, drawer) is the screen again,
+   not the grey dialog: it takes the screen's white-on-blue inks back.
+   Blue-filled controls straight on the dialog (inputs, alerts, file
+   chips) keep white ink; rows and menus sit on the grey in black. */
+html[data-theme="msdos"] .modal :is(.panel, .card, .drawer) {
+  --on-surface: #ffffff;
+  --text: #ffffff;
+  --muted: #aaaaaa;
+  --danger-text: #ff7e7e;
+  --success-text: var(--success);
+  --warning-text: var(--warning);
+  --table-head-fg: #ffff55;
+  --table-head-rule: #55ffff;
+  --dropdown-bg: var(--surface-2);
+}
+html[data-theme="msdos"] .modal {
+  --input-fg: #ffffff;
+  --alert-fg: #ffffff;
+  --attachment-fg: #ffffff;
+  --field-row-bg: transparent;
+  --field-row-border: #000000;
+  --dropdown-bg: #aaaaaa;
+  /* The active tab: black on the grey (cyan is 1.4:1 here). */
+  --tab-fg-active: #0000aa;
+}
+/* A file chip straight on the dialog is blue: its size reads in grey. */
+html[data-theme="msdos"] .modal > .attachment { --muted: #aaaaaa; }
 
 /* The F-key bar: <kbd> is how a status footer would mark up "1Help 2Menu
    3View …" — Norton Commander's most recognizable single element after
@@ -178,12 +211,36 @@ html[data-theme="msdos"] .panel-header {
   font-weight: 400;
   line-height: 1;
   display: flex;
+  flex-wrap: wrap;
   gap: 1ch;
   align-items: center;
 }
+/* A titled box nested in another box needs headroom for its title tab,
+   which stands half a line above its frame: without it the tab sat on the
+   parent's last line of text (tight phone spacing made it collide). */
+html[data-theme="msdos"] :is(.panel, .card, .modal, .drawer) .panel:has(> .panel-header):not(:first-child),
+html[data-theme="msdos"] :is(h1, h2, h3, h4, h5, h6, p) + .panel:has(> .panel-header) { margin-block-start: 1em; }
+/* Its title never breaks mid-word when controls share the tab. */
+html[data-theme="msdos"] .panel-header > :first-child { flex: none; max-width: 100%; }
+/* A drawer has no top frame line to set the title into, and a drawer or
+   a .scroll panel scrolls, so it would clip a title pulled up over its
+   edge: there the tab sits at the top of the content instead. */
+html[data-theme="msdos"] :is(.drawer, .scroll) > .panel-header { margin-top: 0; }
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
-html[data-theme="msdos"] .modal-header > .btn-close { position: absolute; top: 0; right: 0.5rem; }
+/* Close (v5): DOS dialogs closed with [■] at the left of the frame. */
+html[data-theme="msdos"] .modal-header > .btn-close {
+  --btn-close-glyph: "[\25A0]";
+  --btn-close-order: -1;
+  --btn-close-push: 0;
+  --btn-close-width: auto;
+  --btn-close-pad: 0 0.25ch;
+  --btn-close-glyph-size: 1em;
+  --btn-close-radius: 0;
+  position: absolute;
+  top: 0;
+  left: 0.5rem;
+}
 html[data-theme="msdos"] .modal-header {
   width: fit-content;
   margin-inline: auto;
@@ -250,6 +307,18 @@ html[data-theme="msdos"] .app-status::before {
 html[data-theme="msdos"] .app-status::after {
   content: "1       2       3       4       5       6       7       8       9       10     ";
   color: #aaaaaa;
+}
+
+/* XL gutters (v5, PLAN.md §3): the Turbo Vision desktop. Beyond the
+   capped shell the blue screen carries the CP437 light-shade fill (░)
+   that text-mode desktops drew behind their windows, in VGA bright blue so
+   it stays within about 1.4:1 of --bg. Still: text mode never scrolled
+   its wallpaper. */
+html[data-theme="msdos"] {
+  --app-gutter-art:
+    radial-gradient(circle, #3a3af0 0 0.7px, transparent 1px) 0 0 / 4px 4px,
+    radial-gradient(circle, #3a3af0 0 0.7px, transparent 1px) 2px 2px / 4px 4px,
+    #0000aa;
 }
 
 /* Mixing-console primitives in the VGA 16: knob caps in bright red, green

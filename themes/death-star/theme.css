@@ -38,7 +38,9 @@ html[data-theme="death-star"] {
   --btn-fg: var(--text);
   --btn-border-width: 0;
   --btn-radius: 0;
-  --input-bg: var(--surface-2);
+  /* One step above --surface-2: a borderless field on a surface-2 panel
+     was the same black as the panel and vanished entirely. */
+  --input-bg: #121212;
   --input-border-width: 0;
   --focus-ring: 0 0 0 2px var(--accent);
   --panel-border-width: 0;
@@ -157,6 +159,43 @@ html[data-theme="death-star"] .modal-header {
   background: var(--accent);
   color: #ffffff;
   background-image: none;
+  /* Close/min/max glyphs default to --muted, which vanished on the red
+     block; white like the title, with a darker red press state. */
+  --btn-close-fg: #ffffff;
+  --btn-close-fg-hover: #ffffff;
+  --btn-close-bg-hover: #8f1010;
+}
+
+/* Nesting steps down: a panel inside another surface is a plain
+   dark block (the lattice belongs to the bulkhead, and a second grid
+   inside the first ran lines through labels and fields), and a nested
+   panel's header is a slim red block at its left edge instead of another
+   full red bar under the parent's. */
+html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer, .transport) .panel {
+  background-image: none;
+}
+html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  background: linear-gradient(var(--accent), var(--accent)) left / 0.35rem 100% no-repeat;
+  color: var(--text);
+  padding-left: calc(var(--surface-pad, 1rem) + 0.35rem);
+  --btn-close-fg: var(--muted);
+  --btn-close-bg-hover: var(--surface-2);
+}
+
+/* --- v5 tiers --------------------------------------------------------------
+ * No rail and no bar decoration beyond its red rule, so phone and tablet
+ * use core's one-column shell as is. */
+
+/* XL gutters (v5, PLAN.md §3): more bulkhead. The circuit-grid lattice
+   continues, much fainter than inside the shell, with a few unlit red
+   control blocks set into it. Within ~1.2:1 of black; still. */
+html[data-theme="death-star"] {
+  --app-gutter-art:
+    linear-gradient(#2a0505, #2a0505) 5rem 30% / 5rem 2.5rem no-repeat,
+    linear-gradient(#2a0505, #2a0505) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
+    linear-gradient(#2a0505, #2a0505) 10rem 78% / 2.5rem 2.5rem no-repeat,
+    linear-gradient(rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem,
+    linear-gradient(90deg, rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem;
 }
 
 /* --- Print ----------------------------------------------------------------

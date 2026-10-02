@@ -52,7 +52,7 @@ for (const t of themes) {
     return {
       hidden: [cs('h1').display, cs('h2').display],
       navVisible: $('ncnav').checkVisibility(), navDir: cs('ncnav').flexDirection,
-      modalW: m.width, closeEnd: m.right - mc.right < 48, closeRow: mc.bottom <= document.querySelector('#m .input').getBoundingClientRect().top,
+      modalW: m.width, closeEnd: m.right - mc.right < 48 || (getComputedStyle($('mc')).order === '-1' && mc.left - m.left < 64) /* a theme may put it first (Mac OS 9, Aqua) */, closeRow: mc.bottom <= document.querySelector('#m .input').getBoundingClientRect().top,
       dbg: [m.right, mc.right, mc.bottom, document.querySelector('#m .input').getBoundingClientRect().top, mh.width],
       titleFg: getComputedStyle(document.querySelector('#mh h2')).color, headFg: cs('mh').color,
       

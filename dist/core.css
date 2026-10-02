@@ -634,10 +634,19 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   color: var(--modal-header-fg, inherit);
   font-weight: 600;
 }
-.modal-header > .btn-close { margin-inline-start: auto; }
+.modal-header > .btn-close {
+  /* --btn-close-order: -1 with --btn-close-push: 0 puts it at the start
+     (Aqua, Mac OS 9, DOS); the default is the end. */
+  order: var(--btn-close-order, 0);
+}
+/* The caption buttons travel as a group: the first of them takes the push,
+   so minimise / maximise / close sit together at the end. */
+.modal-header > :is(.btn-min, .btn-max, .btn-close):not(:is(.btn-min, .btn-max, .btn-close) + *) {
+  margin-inline-start: var(--btn-close-push, auto);
+}
 /* A close button on a filled title bar follows the title's colour, not the
    content-area --btn-close-fg (grey on a navy bar is invisible). */
-.modal-header > .btn-close:not(:hover) {
+.modal-header > :is(.btn-close, .btn-min, .btn-max):not(:hover) {
   color: var(--modal-header-close-fg, var(--modal-header-fg, var(--btn-close-fg, var(--muted))));
 }
 /* A heading used as the title takes the header's own type, not the page's
@@ -737,9 +746,13 @@ dialog.modal:modal {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.8em;
-  height: 1.8em;
-  padding: 0;
+  /* Size and shape tokens: a theme whose close is a word ("Done", "Back")
+     sets --btn-close-width: auto and a --btn-close-pad. */
+  width: var(--btn-close-width, 1.8em);
+  height: var(--btn-close-height, 1.8em);
+  padding: var(--btn-close-pad, 0);
+  font-size: var(--btn-close-font-size, inherit);
+  white-space: nowrap;
   border: var(--btn-close-border-width, 0px) solid var(--btn-close-border, transparent);
   border-radius: var(--btn-close-radius, var(--radius));
   background: var(--btn-close-bg, transparent);
@@ -766,7 +779,7 @@ dialog.modal:modal {
 .btn-close::before,
 .btn-min::before,
 .btn-max::before {
-  font-size: 1.3em;
+  font-size: var(--btn-close-glyph-size, 1.3em);
   line-height: 1;
 }
 .btn-close::before { content: var(--btn-close-glyph, "\00d7"); }
@@ -835,6 +848,7 @@ dialog.modal:modal {
  * (e.g. from a dB scale) without the theme fighting it. */
 .meter {
   position: relative;
+  container-type: size;
   overflow: hidden;
   width: 100%;
   height: var(--meter-thickness, 0.6rem);
@@ -856,7 +870,9 @@ dialog.modal:modal {
     var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%),
     var(--meter-high, var(--danger)) var(--meter-peak-at, 90%)
   ));
-  background-size: var(--meter-span, 100%) 100%;
+  /* cqi is the track (the meter is a size container): % here would be the
+     fill's own width, squeezing every band into whatever level shows. */
+  background-size: var(--meter-span, 100cqi) 100%;
   background-repeat: no-repeat;
   transition: width 0.06s linear;
 }
@@ -887,7 +903,7 @@ dialog.modal:modal {
     var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%),
     var(--meter-high, var(--danger)) var(--meter-peak-at, 90%)
   ));
-  background-size: 100% var(--meter-span, 100%);
+  background-size: 100% var(--meter-span, 100cqb);
   background-position: bottom;
   transition: height 0.06s linear;
 }
@@ -1429,7 +1445,7 @@ dialog.modal:modal {
 }
 /* Row states carry BOTH a background and a left marker, so a theme that
    flattens one language still communicates the state through the other. */
-.table tr.is-selected td {
+.table tr:is(.is-selected, [aria-selected="true"]) td {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
 }
@@ -1445,12 +1461,12 @@ dialog.modal:modal {
    it; state-colored text in that row has to follow it too, or a green
    "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
    highlight leave the token unset and keep the state color. */
-.table tr.is-selected .status,
-.table tr.is-selected .stat-trend {
+.table tr:is(.is-selected, [aria-selected="true"]) .status,
+.table tr:is(.is-selected, [aria-selected="true"]) .stat-trend {
   color: var(--row-selected-fg, var(--state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .table tr.is-selected td {
+  .table tr:is(.is-selected, [aria-selected="true"]) td {
     background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
   }
 }
@@ -1471,7 +1487,7 @@ dialog.modal:modal {
   }
 }
 /* Selected rows keep their own fill under the pointer. */
-.table tbody tr.is-selected:focus-within td {
+.table tbody tr:is(.is-selected, [aria-selected="true"]):focus-within td {
   background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
 @media (hover: hover) {
@@ -1575,7 +1591,7 @@ dialog.modal:modal {
   background: var(--nav-item-bg, transparent);
   color: var(--nav-item-fg, var(--muted));
 }
-.nav-item.is-active {
+:is(.nav-item.is-active, .nav-item[aria-current="page"]) {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
 }
@@ -2604,24 +2620,8 @@ html[data-motion="reduced"] * {
  * actually depends on — visible borders and secondary text — by pulling
  * them toward the theme's own text/border colors rather than introducing a
  * palette of its own, so it stays in-theme instead of overriding it. */
-html[data-contrast="high"] {
-  --hairline: var(--border);
-  --muted: var(--text);
-}
-html[data-contrast="high"] :focus-visible {
-  outline-width: 3px;
-}
-/* The OS preference applies the same boost automatically. An app can force
-   it off with data-contrast="standard" (and on with "high", above). */
-@media (prefers-contrast: more) {
-  html:not([data-contrast="standard"]) {
-    --hairline: var(--border);
-    --muted: var(--text);
-  }
-  html:not([data-contrast="standard"]) :focus-visible {
-    outline-width: 3px;
-  }
-}
+/* The rules for data-contrast live in core/components/experience.css (v5):
+   the v4 rules here lost to every theme's root block. */
 
 /* --- Accent swatches (optional per-theme accent override) ---------------
  * A theme MAY offer a curated set of alternate accents as numbered token
@@ -2633,12 +2633,8 @@ html[data-contrast="high"] :focus-visible {
  * theme JSON" style features with something themes can vouch for: every
  * swatch a theme ships is a color ITS author picked and verified, never an
  * arbitrary user-supplied value that could fail contrast unnoticed. */
-html[data-accent="1"] { --accent: var(--accent-swatch-1, var(--accent)); --on-accent: var(--on-accent-swatch-1, var(--on-accent)); }
-html[data-accent="2"] { --accent: var(--accent-swatch-2, var(--accent)); --on-accent: var(--on-accent-swatch-2, var(--on-accent)); }
-html[data-accent="3"] { --accent: var(--accent-swatch-3, var(--accent)); --on-accent: var(--on-accent-swatch-3, var(--on-accent)); }
-html[data-accent="4"] { --accent: var(--accent-swatch-4, var(--accent)); --on-accent: var(--on-accent-swatch-4, var(--on-accent)); }
-html[data-accent="5"] { --accent: var(--accent-swatch-5, var(--accent)); --on-accent: var(--on-accent-swatch-5, var(--on-accent)); }
-html[data-accent="6"] { --accent: var(--accent-swatch-6, var(--accent)); --on-accent: var(--on-accent-swatch-6, var(--on-accent)); }
+/* The data-accent mapping lives in core/components/experience.css (v5): the
+   v4 rules here lost to every theme's root block. */
 
 /* --- Layout primitives -----------------------------------------------------
  * Components carry no outer margin; these give a page its rhythm without
@@ -3386,23 +3382,48 @@ html[data-motion="reduced"] .typing::before { animation: none; }
 }
 html[data-pointer="touch"] { --tap-min: 44px; }
 
-:is(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
+:where(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
     .nav-item, .tab, .segmented-item, .pagination-item, .dropdown-item,
-    .context-menu-item, .accordion-trigger, .scrollspy-link, .taskbar-task,
+    .context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a),
+    .accordion-trigger, .scrollspy-link, .taskbar-task,
     .taskbar-start, .nav-toggle, .key, button.list-item, a.list-item) {
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle) {
+:where(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task) {
   min-inline-size: var(--tap-min);
 }
-:is(.input, .select) { min-block-size: var(--tap-min); }
-/* Checkboxes, radios and switches: the label is the target. */
-:is(.check, .radio, .switch) {
+:where(.input, .select) { min-block-size: var(--tap-min); }
+/* Checkboxes and radios: the label is the target. */
+:where(.check, .radio) {
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-.slider { min-block-size: var(--tap-min); touch-action: none; }
+/* Switches and sliders keep their drawn size: an invisible box centred on
+   the control makes up the hit area (growing the box itself turned the
+   switch thumb into a ball that spilled out of its track). */
+.switch { touch-action: manipulation; }
+.switch::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, var(--tap-min));
+  height: max(100%, var(--tap-min));
+  transform: translate(-50%, -50%);
+}
+.slider { touch-action: none; }
+@media (max-width: 900px), (any-pointer: coarse) {
+  /* The range input's own box is both its track and its target. On touch
+     it grows to the target height; padding keeps the drawn track the same
+     thin line in the middle (the border can't follow it, so it hides). */
+  .slider:not(.is-range > .slider) {
+    height: var(--tap-min);
+    padding-block: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
+    background-clip: content-box;
+    border-color: transparent;
+  }
+}
 /* Inline text links inside running text are exempt (WCAG 2.5.8); links
    that stand alone as navigation are not. */
 .breadcrumb-item:not(.is-current) {
@@ -3419,7 +3440,7 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 /* Small visuals, full-size hit areas: the dot or box stays the theme's size
    and transparent padding (clipped out of the background) makes up the
    target. */
-@media (max-width: 900px), (any-pointer: coarse) {
+/* Carousel dots: a full-size hit area round the small dot, at every tier. */
   /* Sized as border-box on purpose: apps commonly reset box-sizing with an
      unlayered rule, which would beat anything set here. */
   .carousel-nav > a:not(.carousel-prev, .carousel-next) {
@@ -3433,6 +3454,8 @@ html[data-pointer="touch"] { --tap-min: 44px; }
     height: var(--tap-min);
     line-height: var(--tap-min);
   }
+
+@media (max-width: 900px), (any-pointer: coarse) {
   /* A native checkbox draws itself at whatever size it is given, so its
      hit area can't be bigger than the box. A bare one (a table's select
      column) gets 24px (WCAG AA); for the full touch size, wrap it in a
@@ -3543,9 +3566,13 @@ html[data-pointer="touch"] { --tap-min: 44px; }
    next column. Table cells use break-word so column widths still come from
    their content; badges truncate. */
 :is(.panel-header, .modal-header, .card, .panel, .toast, .alert, .popover) { overflow-wrap: anywhere; }
-:is(.table td, .table th) { overflow-wrap: break-word; }
+/* break-word (not anywhere) where a box sizes from its content: it still
+   breaks a word too long for the line, but doesn't let the box shrink to
+   one letter per line (a squeezed title beside header controls, a button
+   label in a narrow cell or toast). */
+:is(.table td, .table th, .panel-header:has(:is(.input, .select, .btn, .input-group))) { overflow-wrap: break-word; }
 .badge { max-inline-size: 100%; min-inline-size: 0; }
-.btn { max-inline-size: 100%; overflow-wrap: anywhere; }
+.btn { max-inline-size: 100%; overflow-wrap: break-word; }
 
 /* --- v5 nested menus (PLAN.md §8) ----------------------------------------
  * Nested <ul> lists are the structure: a <li class="has-submenu"> holds its
@@ -3640,5 +3667,4056 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 @media (max-width: 480px) {
   .value-row { grid-template-columns: minmax(0, 1fr) var(--value-row-value, 4.5rem); }
   .value-row > :first-child { grid-column: 1 / -1; }
+}
+
+/* --- v5 integration fixes ------------------------------------------------ */
+/* Nav items centre their label at the touch target height. */
+.nav-item { display: inline-flex; align-items: center; }
+/* Touch tiers: tabs never push past their box, even when a theme makes
+   .tabs inline-flex. */
+@media (max-width: 900px) { .tabs { max-inline-size: 100%; } }
+/* A panel header holding controls wraps instead of squeezing its title to
+   one letter per line. */
+.panel-header:has(:is(.input, .select, .btn, .input-group)) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+}
+/* A field row keeps its label when it holds a slider. */
+.field-row > .label { min-inline-size: min(8rem, 40%); }
+.field-row > .slider { flex: 1 1 8rem; min-inline-size: 0; }
+/* Windows and inline modals never get wider than their box. */
+.modal { max-inline-size: 100%; }
+/* Indeterminate progress: a sweeping segment (static with reduced motion). */
+progress.progress:indeterminate {
+  background-image: linear-gradient(90deg, transparent, var(--progress-fill, var(--accent)), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+}
+progress.progress:indeterminate::-webkit-progress-bar { background: transparent; }
+progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) progress.progress:indeterminate {
+    animation: progress-sweep 1.4s ease-in-out infinite;
+  }
+}
+@keyframes progress-sweep {
+  from { background-position: -40% 0; }
+  to { background-position: 140% 0; }
+}
+/* An absolutely positioned child (a visually-hidden label) stays inside its
+   scroller instead of escaping it and widening the page. */
+:is(.table-wrap, .scroll) { position: relative; }
+/* A checkbox or radio wrapped in a label with a hidden name gets the full
+   target width at every tier. */
+.check:has(> .visually-hidden:last-child) { min-inline-size: var(--tap-min); justify-content: center; }
+/* A field-row's label for a switch or checkbox is the target: it gets the
+   target height without changing the row's look. */
+.field-row:has(.switch, .check, .checkbox) > .label {
+  padding-block: max(0px, calc((var(--tap-min) - 1lh) / 2));
+}
+/* Action links inside toasts and alerts are targets, not inline text. */
+:where(.toast, .alert) > a { display: inline-flex; align-items: center; min-block-size: var(--tap-min); }
+/* Touch tiers: buttons reach the target width too (a "7d" segment in a
+   button group was 34px wide). */
+@media (max-width: 900px), (any-pointer: coarse) {
+  :where(.btn) { min-inline-size: var(--tap-min); }
+}
+/* --- v5 experience layer (PLAN.md §10–§14) ---------------------------------
+ * User display settings on <html>, forced colours, motion tokens and the
+ * theme-switch transition, the .prefs panel with its accent swatches, the
+ * .splash screen, and the themed .empty-state states. Reference script:
+ * assets/js/prefs.js. Docs: docs/components/experience.md.
+ *
+ * User settings override the theme, so the attribute rules use !important
+ * on custom properties: a theme's root block (html[data-theme], 0,1,1) and
+ * its palette variants (0,2,1) load after core and would otherwise win.
+ * Every attribute is optional and falls back to the OS media query. */
+
+/* --- §11 Motion tokens ---------------------------------------------------
+ * A theme describes how it moves with these. --motion-enter/--motion-exit
+ * are animation shorthands, so a theme can name its own keyframes and
+ * timing (steps() for a "decode", a spring for glass). Every animation
+ * below sits inside prefers-reduced-motion: no-preference and stops under
+ * data-motion="reduced" or "none". */
+:root {
+  --motion-duration-s: 120ms;
+  --motion-duration-m: 200ms;
+  --motion-duration-l: 320ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  --motion-enter: motion-fade-in var(--motion-duration-m) var(--motion-ease) both;
+  --motion-exit: motion-fade-out var(--motion-duration-s) var(--motion-ease) both;
+}
+@keyframes motion-fade-in { from { opacity: 0; transform: scale(0.98); } }
+@keyframes motion-fade-out { to { opacity: 0; } }
+
+/* Theme switching (theme-loader.js runs it through startViewTransition):
+   a cross-fade at the theme's own pace. A theme supplies its entrance with
+   ::view-transition-new(root). Without the API, or under reduced motion,
+   the switch is instant. */
+::view-transition-group(root) {
+  animation-duration: var(--motion-duration-l);
+  animation-timing-function: var(--motion-ease);
+}
+
+/* --- §10 Text size ------------------------------------------------------
+ * Every component is in rem, so the layout follows the root size. A theme
+ * whose root size isn't the browser default declares it as
+ * --root-font-size (e.g. 17px) so the steps scale from it. */
+:root[data-text-size="s"] { font-size: calc(var(--root-font-size, 100%) * 0.875) !important; }
+:root[data-text-size="l"] { font-size: calc(var(--root-font-size, 100%) * 1.125) !important; }
+:root[data-text-size="xl"] { font-size: calc(var(--root-font-size, 100%) * 1.25) !important; }
+
+/* --- §10 Density --------------------------------------------------------
+ * Multiplies the theme's own --density. The theme's value is read on <html>
+ * and the product is set on <body>, because a custom property can't refer
+ * to itself. */
+:root[data-density] { --density-theme: var(--density); }
+:root[data-density="compact"] body { --density: calc(var(--density-theme, 1) * 0.8) !important; }
+:root[data-density="comfortable"] body { --density: calc(var(--density-theme, 1) * 1.25) !important; }
+
+/* --- §10 Contrast -------------------------------------------------------
+ * "high" (also the OS prefers-contrast: more, opted out with "standard")
+ * pulls hairlines and muted text up to the theme's border and text colours.
+ * core.css has the same rule without !important, which a theme's root block
+ * outranks; these make it stick. "more" goes further: every border in the
+ * text colour, links underlined, no text glow and no translucency. */
+:root:is([data-contrast="high"], [data-contrast="more"]) {
+  --hairline: var(--border) !important;
+  --muted: var(--text) !important;
+}
+@media (prefers-contrast: more) {
+  :root:not([data-contrast="standard"], [data-contrast="default"]) {
+    --hairline: var(--border) !important;
+    --muted: var(--text) !important;
+  }
+}
+:root[data-contrast="more"] {
+  --border: var(--text) !important;
+  --hairline: var(--text) !important;
+}
+:root[data-contrast="more"] :focus-visible { outline-width: 3px; outline-offset: 3px; }
+:root[data-contrast="more"] *,
+:root[data-contrast="more"] *::before,
+:root[data-contrast="more"] *::after { text-shadow: none !important; }
+
+/* --- §10 Underlined links -----------------------------------------------
+ * Running-text links, for themes that tell links apart by colour alone.
+ * Links that are controls (buttons, nav, tabs, menu items) keep their
+ * shape, which is their affordance. */
+:root:is([data-underline-links], [data-contrast="more"])
+  a[href]:not(.btn, .nav-item, .nav-brand, .tab, .pagination-item, .dropdown-item,
+    .scrollspy-link, .list-item, .card, .stretched-link, [role="menuitem"], [role="tab"]) {
+  text-decoration-line: underline !important;
+  text-decoration-thickness: max(1px, 0.08em);
+  text-underline-offset: 0.18em;
+}
+
+/* --- §10 Transparency ---------------------------------------------------
+ * Glass is backdrop-filter plus a translucent fill. Core removes the blur
+ * everywhere; the fill is the theme's own token, so a translucent theme
+ * makes it opaque in its own block (docs/components/experience.md):
+ *   html[data-theme="x"][data-transparency="reduced"] { --x-glass: var(--surface); }
+ * plus the same inside @media (prefers-reduced-transparency: reduce) on
+ * html[data-theme="x"]:not([data-transparency="default"]). */
+:root:is([data-transparency="reduced"], [data-contrast="more"]) {
+  --overlay-blur: none !important;
+}
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *,
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *::before,
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *::after,
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *::backdrop {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root:not([data-transparency="default"]) { --overlay-blur: none !important; }
+  :root:not([data-transparency="default"]) *,
+  :root:not([data-transparency="default"]) *::before,
+  :root:not([data-transparency="default"]) *::after,
+  :root:not([data-transparency="default"]) *::backdrop {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* --- §10 Motion ---------------------------------------------------------
+ * "reduced" (core.css) pauses animations and zeroes transitions on
+ * elements; this also pauses pseudo-elements and the gutter art layer.
+ * "none" removes every animation and transition, ambient theme motion
+ * (gutter art, glows, scanlines) and view transitions included.
+ * "full" is the same as unset: CSS gated on the OS setting still honours
+ * it, but theme-loader.js plays the theme-switch transition. */
+:root[data-motion="reduced"]::before,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-play-state: paused !important;
+}
+:root[data-motion="none"]::before,
+:root[data-motion="none"]::after,
+:root[data-motion="none"] *,
+:root[data-motion="none"] *::before,
+:root[data-motion="none"] *::after,
+:root[data-motion="none"]::view-transition-group(*),
+:root[data-motion="none"]::view-transition-old(*),
+:root[data-motion="none"]::view-transition-new(*) {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* --- §12 Accent swatches ------------------------------------------------
+ * data-accent="<n>" picks the theme's --accent-swatch-<n>. core.css has the
+ * same mapping without !important, which every theme's root block
+ * outranks; these make the user's pick stick. Only set a number the
+ * theme declares (prefs.js checks): an undeclared one leaves --accent
+ * invalid, and a swatch must come as a pair (--on-accent-swatch-<n>).
+ * Derived colours follow wherever a theme writes them from
+ * --accent (color-mix(in oklab, var(--accent) 80%, black)), not as hex. */
+:root[data-accent="1"] { --accent: var(--accent-swatch-1) !important; --on-accent: var(--on-accent-swatch-1) !important; }
+:root[data-accent="2"] { --accent: var(--accent-swatch-2) !important; --on-accent: var(--on-accent-swatch-2) !important; }
+:root[data-accent="3"] { --accent: var(--accent-swatch-3) !important; --on-accent: var(--on-accent-swatch-3) !important; }
+:root[data-accent="4"] { --accent: var(--accent-swatch-4) !important; --on-accent: var(--on-accent-swatch-4) !important; }
+:root[data-accent="5"] { --accent: var(--accent-swatch-5) !important; --on-accent: var(--on-accent-swatch-5) !important; }
+:root[data-accent="6"] { --accent: var(--accent-swatch-6) !important; --on-accent: var(--on-accent-swatch-6) !important; }
+
+/* --- .prefs: the settings panel (§10) -----------------------------------
+ * A plain form: one .prefs-item per setting (a fieldset of segmented
+ * radios, or a label with a switch). assets/js/prefs.js applies each
+ * change as it happens and stores it; an app can store it server-side
+ * and render the attributes on <html> instead. */
+.prefs {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  color: var(--prefs-fg, var(--text));
+}
+.prefs-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-m);
+  min-inline-size: 0;
+  min-block-size: var(--tap-min);
+  margin: 0;
+  padding: var(--prefs-item-pad, var(--space-s) 0);
+  border: 0;
+  border-block-end: 1px solid var(--prefs-divider, var(--hairline));
+  touch-action: manipulation;
+}
+.prefs-item:last-of-type { border-block-end: 0; }
+/* A floated legend takes part in the fieldset's flex layout like any child. */
+.prefs-item > legend { float: inline-start; padding: 0; }
+.prefs-label {
+  flex: 1 1 12rem;
+  min-inline-size: 0;
+  color: var(--prefs-label-fg, var(--text));
+  font-weight: var(--prefs-label-weight, 500);
+  overflow-wrap: anywhere;
+}
+.prefs-hint {
+  display: block;
+  margin-block-start: var(--space-3xs);
+  color: var(--prefs-hint-fg, var(--muted));
+  font-size: 0.82em;
+  font-weight: 400;
+}
+.prefs-item > .segmented { flex-wrap: wrap; max-inline-size: 100%; }
+.prefs-item > .switch { flex: none; min-block-size: 0; } /* the row is the target */
+.prefs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+  padding-block-start: var(--space-m);
+}
+
+/* Segmented radios: the label is the segment and the radio hides inside
+   it (still focusable, arrow keys move between options). */
+.prefs .segmented-item {
+  position: relative;
+  min-inline-size: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.prefs .segmented-item > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+}
+.prefs .segmented-item:has(> input:checked) {
+  background: var(--segmented-item-bg-active, var(--accent));
+  color: var(--segmented-item-fg-active, var(--on-accent));
+  font-weight: var(--prefs-checked-weight, 600);
+}
+.prefs .segmented-item:has(> input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* Text-size samples: the letter shows the step it picks. */
+.prefs-sample { font-weight: 600; line-height: 1; }
+.prefs-sample.is-s { font-size: 0.8em; }
+.prefs-sample.is-l { font-size: 1.15em; }
+.prefs-sample.is-xl { font-size: 1.35em; }
+
+/* --- Accent swatches (§12) ----------------------------------------------
+ * One radio per swatch the theme declares (--accent-swatch-1..6); prefs.js
+ * builds them from the theme, so only approved colours are offered. The
+ * picked swatch shows a ring and a check mark, never colour alone. */
+.prefs-accents {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+.prefs-swatch {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--tap-min);
+  min-block-size: var(--tap-min);
+  touch-action: manipulation;
+}
+.prefs-swatch > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+}
+.prefs-swatch::before {
+  content: "";
+  grid-area: 1 / 1;
+  inline-size: var(--prefs-swatch-size, 1.6rem);
+  block-size: var(--prefs-swatch-size, 1.6rem);
+  border-radius: var(--prefs-swatch-radius, 50%);
+  background: var(--swatch, var(--accent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 30%, transparent);
+}
+.prefs-swatch::after {
+  content: "\2713";
+  grid-area: 1 / 1;
+  color: var(--on-swatch, var(--on-accent));
+  font-weight: 700;
+  line-height: 1;
+  visibility: hidden;
+}
+.prefs-swatch:has(> input:checked)::before {
+  outline: 2px solid var(--prefs-swatch-ring, var(--text));
+  outline-offset: 2px;
+}
+.prefs-swatch:has(> input:checked)::after { visibility: visible; }
+.prefs-swatch:has(> input:focus-visible)::before {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+/* "Theme default": a labelled pill, not a colour. */
+.prefs-swatch.is-default { padding-inline: var(--space-xs); }
+.prefs-swatch.is-default::before {
+  inline-size: 100%;
+  border-radius: var(--prefs-swatch-radius, 999px);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.prefs-swatch.is-default::after { content: none; }
+.prefs-swatch.is-default > span { grid-area: 1 / 1; position: relative; font-size: 0.85em; padding-inline: var(--space-xs); }
+.prefs-swatch.is-default:has(> input:checked) > span { font-weight: 600; }
+
+/* --- .splash: boot and loading screen (§13) -----------------------------
+ * Real-load mode (default): render it, remove it (or set hidden) the
+ * moment the app is ready. Timed intro: data-intro="2s"; prefs.js hides it
+ * after that time or on any key, click or tap, once per session. Under
+ * reduced motion it is a static frame. .is-contained covers its nearest
+ * positioned ancestor instead of the viewport. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-window) + 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--splash-gap, var(--space-m));
+  padding: var(--space-xl) var(--space-m);
+  overflow: hidden;
+  background: var(--splash-bg, var(--surface));
+  color: var(--splash-fg, var(--text));
+  font-family: var(--splash-font, inherit);
+  text-align: center;
+}
+.splash.is-contained { position: absolute; z-index: var(--z-raised); }
+html[data-splash-seen] .splash[data-intro] { display: none; }
+/* The theme's mark: any background layers (gradients, SVG data URIs). */
+.splash-art {
+  inline-size: var(--splash-art-size, 5rem);
+  aspect-ratio: 1;
+  flex: none;
+  background: var(--splash-art,
+    conic-gradient(var(--accent) 0 70%, color-mix(in srgb, var(--accent) 20%, transparent) 0));
+  border-radius: var(--splash-art-radius, 50%);
+  /* The default mark is a ring with a gap: a spinner when motion is on. */
+  mask: var(--splash-art-mask, radial-gradient(circle, transparent 0 52%, #000 53% 69%, transparent 70%));
+}
+.splash-title {
+  margin: 0;
+  color: var(--splash-title-fg, inherit);
+  font-size: var(--splash-title-size, 1.5rem);
+  font-weight: var(--splash-title-weight, 600);
+  letter-spacing: var(--splash-title-tracking, 0.02em);
+  text-transform: var(--splash-title-transform, none);
+  overflow-wrap: anywhere;
+}
+.splash-message {
+  margin: 0;
+  min-block-size: 1.5em;
+  color: var(--splash-message-fg, var(--muted));
+  font-family: var(--splash-message-font, inherit);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+.splash > progress {
+  flex: none;
+  inline-size: min(var(--splash-progress-width, 16rem), 100%);
+  block-size: var(--progress-height, 0.5rem);
+}
+.splash-skip { margin: 0; color: var(--muted); font-size: 0.78em; }
+/* Indeterminate <progress> (no value): a segment sweeps along the track;
+   static (a centred segment) without motion. */
+.splash > progress:indeterminate {
+  block-size: var(--progress-height, 0.5rem);
+  border: var(--progress-border-width, 1px) solid var(--progress-border, var(--border));
+  border-radius: var(--progress-radius, var(--radius));
+  background: linear-gradient(90deg, transparent 35%, var(--progress-fill, var(--accent)) 35% 65%, transparent 65%)
+    50% 0 / 200% 100% no-repeat, var(--progress-bg, var(--surface-2));
+}
+.splash > progress:indeterminate::-webkit-progress-bar { background: transparent; }
+.splash > progress:indeterminate::-moz-progress-bar { background: transparent; }
+
+/* --- Themed states (§14) -----------------------------------------------
+ * Modifiers on core's .empty-state. An <svg class="icon empty-state-icon">
+ * becomes the illustration: the state's icon on a tinted disc (or the
+ * theme's --empty-state-art). An empty .empty-state-title shows the
+ * theme's suggested heading; the app's own text always wins. */
+.empty-state > svg.empty-state-icon {
+  /* Sized as border-box on purpose: apps commonly reset box-sizing with an
+     unlayered rule. The disc is the icon plus its padding. */
+  box-sizing: border-box;
+  inline-size: calc(var(--empty-state-icon-size, 2.5rem) + 2 * var(--empty-state-art-pad, var(--space-m)));
+  block-size: calc(var(--empty-state-icon-size, 2.5rem) + 2 * var(--empty-state-art-pad, var(--space-m)));
+  padding: var(--empty-state-art-pad, var(--space-m));
+  margin-block-end: var(--space-xs);
+  border-radius: var(--empty-state-art-radius, 50%);
+  background: var(--_empty-art, var(--empty-state-art,
+    color-mix(in srgb, var(--empty-state-tone, var(--muted)) 16%, transparent)));
+  color: var(--empty-state-tone, var(--muted));
+  opacity: 1;
+}
+.empty-state.is-error {
+  --empty-state-tone: var(--empty-state-error-fg, var(--danger-text, var(--danger)));
+  --_empty-art: var(--empty-state-error-art);
+}
+.empty-state.is-offline {
+  --empty-state-tone: var(--empty-state-offline-fg, var(--warning));
+  --_empty-art: var(--empty-state-offline-art);
+}
+.empty-state.is-404 {
+  --empty-state-tone: var(--empty-state-404-fg, var(--accent));
+  --_empty-art: var(--empty-state-404-art);
+}
+.empty-state.is-locked {
+  --empty-state-tone: var(--empty-state-locked-fg, var(--text));
+  --_empty-art: var(--empty-state-locked-art);
+}
+.empty-state.is-loading {
+  --empty-state-tone: var(--empty-state-loading-fg, var(--accent));
+  --_empty-art: var(--empty-state-loading-art);
+}
+.empty-state > :is(.empty-state-title, .empty-state-hint) { margin: 0; max-inline-size: 36rem; overflow-wrap: anywhere; }
+.empty-state > .cluster { justify-content: center; margin-block-start: var(--space-xs); }
+.empty-state.is-error > .empty-state-title:empty::before { content: var(--empty-state-error-title, "Something went wrong"); }
+.empty-state.is-offline > .empty-state-title:empty::before { content: var(--empty-state-offline-title, "You\2019re offline"); }
+.empty-state.is-404 > .empty-state-title:empty::before { content: var(--empty-state-404-title, "Page not found"); }
+.empty-state.is-locked > .empty-state-title:empty::before { content: var(--empty-state-locked-title, "You don\2019t have access"); }
+.empty-state.is-loading > .empty-state-title:empty::before { content: var(--empty-state-loading-title, "Loading\2026"); }
+
+/* --- Motion for the components above ----------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash {
+    transition: opacity var(--motion-duration-l) var(--motion-ease),
+      display var(--motion-duration-l) allow-discrete;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash[hidden] { opacity: 0; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash[data-intro] > * {
+    animation: var(--motion-enter);
+    animation-delay: calc(sibling-index() * 150ms);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash-art {
+    animation: var(--splash-art-motion, splash-turn 2.4s linear infinite);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash > progress:indeterminate {
+    animation: splash-sweep 1.4s ease-in-out infinite;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .empty-state.is-loading > svg.empty-state-icon {
+    animation: var(--empty-state-loading-motion, empty-state-flip 2s var(--motion-ease) infinite);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .prefs .segmented-item,
+  :root:not([data-motion="reduced"], [data-motion="none"]) .prefs-swatch::before {
+    transition: background var(--motion-duration-s) var(--motion-ease), color var(--motion-duration-s) var(--motion-ease);
+  }
+}
+@keyframes splash-turn { to { transform: rotate(1turn); } }
+@keyframes splash-sweep { from { background-position: 100% 0, 0 0; } to { background-position: 0 0, 0 0; } }
+@keyframes empty-state-flip { 0%, 40% { transform: rotate(0); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+
+/* --- §10 Forced colours (Windows High Contrast) --------------------------
+ * The OS replaces every colour with system colours and drops box-shadows
+ * and background images. Shapes themes draw with shadows or fills get a
+ * real outline, selected states use Highlight, and fills that carry a
+ * value (meters, progress, switches) opt out to paint in system colours. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight !important; outline-offset: 2px; }
+  :is(.panel, .card, .modal, .drawer, .dropdown, .popover, .context-menu, .toast, .alert,
+      .segmented, .tabs, .field-row, .readout, .knob, .avatar, .badge, .skeleton,
+      .app-bar, .app-status, .tooltip, .splash-art):not(:focus-visible) {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+  :is(.btn, .btn-icon, .btn-close, .toggle-btn, .badge-button, .segmented-item, .tab,
+      .nav-item, .pagination-item, .key):not(:focus-visible) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+  }
+  :is(.btn, .toggle-btn, .badge-button, .key):disabled { color: GrayText; outline-color: GrayText; }
+  :is(.is-active, .toggle-btn-on, .key-on, [aria-selected="true"], [aria-pressed="true"],
+      [aria-current]:not([aria-current="false"])):is(.btn, .tab, .nav-item, .segmented-item,
+      .pagination-item, .toggle-btn, .badge-button, .dropdown-item, .list-item, .key, .scrollspy-link),
+  .prefs .segmented-item:has(> input:checked) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  :is(.meter-fill, .progress-bar, .switch-thumb, .meter-peak) { forced-color-adjust: none; background: CanvasText; }
+  :is(.switch input:checked ~ .switch-track .switch-thumb, .switch[aria-checked="true"] .switch-thumb) { background: Highlight; }
+  .switch-track, .meter, .progress { border: 1px solid CanvasText; }
+  progress.progress, meter.meter { forced-color-adjust: none; color: Highlight; }
+  progress.progress::-webkit-progress-value { background: Highlight; }
+  .slider { forced-color-adjust: none; accent-color: Highlight; }
+  .prefs-swatch::before { forced-color-adjust: none; border: 1px solid CanvasText; }
+  .prefs-swatch:has(> input:checked)::before { outline-color: Highlight; }
+  .splash-art { background: none; mask: none; }
+  .empty-state > svg.empty-state-icon { background: Canvas; color: CanvasText; outline: 1px solid CanvasText; outline-offset: -1px; }
+  .splash > progress:indeterminate { background: Canvas; }
+}
+/* --- v5 forms group (PLAN.md §9 #17–#35) ---------------------------------
+ * Buttons and icons: .btn-clear, .btn-icon.is-clear, icon + label buttons,
+ * .btn-split, .fab, .toggle-group, .has-badge.
+ * Forms and inputs: .input-icon / .input-clear (inside .input-group),
+ * search fields, native date/time inputs, .calendar, date ranges,
+ * .combobox + .listbox, .tag-input + .tag, .stepper, .slider.is-range,
+ * .rating, .swatches, .file-list.
+ * Built on core's .btn, .input, .input-group, .toggle-btn, .slider, .list,
+ * .progress and [popover] rules; every look reads a --<component>-* token
+ * that falls back to the base palette. See docs/components/forms.md. */
+
+/* --- .btn-clear / .btn-icon.is-clear -------------------------------------
+ * No fill and no border at rest (not even a theme's button shadow); a tint
+ * of the accent on hover, keyboard focus and press. .btn-ghost differs: it
+ * keeps the theme's button chrome and hovers to an opaque --surface-2. */
+:is(.btn-clear, .btn-icon.is-clear) {
+  --btn-bg: transparent;
+  --btn-border: transparent;
+  --btn-fg: var(--btn-clear-fg, var(--text));
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  --btn-border-hover: transparent;
+  --btn-bg-hover: var(--btn-clear-bg-hover, color-mix(in srgb, var(--accent) 16%, transparent));
+}
+:is(.btn-clear, .btn-icon.is-clear):focus-visible { background: var(--btn-clear-bg-hover, color-mix(in srgb, var(--accent) 16%, transparent)); }
+:is(.btn-clear, .btn-icon.is-clear):is(:active, [aria-pressed="true"], [aria-expanded="true"]) {
+  background: var(--btn-clear-bg-active, color-mix(in srgb, var(--accent) 28%, transparent));
+}
+
+/* --- Icon + label buttons -------------------------------------------------
+ * The icon scales with the button's own font size (so .btn-sm shrinks it
+ * too), never grows the line box, and sits optically flush with the
+ * padding edge it is next to. Icon after the label: put the <svg> last. */
+:is(.btn, .toggle-btn) > .icon {
+  --icon-size: var(--btn-glyph-size, 1.15em);
+  margin-block: -0.15em;
+}
+.btn:not(.btn-icon) > .icon:first-child:not(:last-child) { margin-inline-start: -0.2em; }
+.btn:not(.btn-icon) > .icon:last-child:not(:first-child) { margin-inline-end: -0.2em; }
+.btn:has(> .icon) { gap: var(--btn-gap, 0.45em); }
+
+/* --- .btn-split — a main action joined to a caret that opens a menu -------
+ *   <div class="btn-split">
+ *     <button class="btn btn-primary">Save</button>
+ *     <button class="btn btn-primary btn-split-toggle" popovertarget="m"
+ *       aria-haspopup="menu" aria-label="More save options">…caret…</button>
+ *     <ul class="context-menu" role="menu" popover id="m">…</ul>
+ *   </div> */
+.btn-split { display: inline-flex; align-items: stretch; max-inline-size: 100%; }
+.btn-split > .btn:not(.btn-split-toggle) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  min-inline-size: 0;
+}
+.btn-split > .btn-split-toggle {
+  --btn-padding: 0 var(--btn-split-toggle-pad, 0.55em);
+  margin-inline-start: calc(-1 * var(--btn-border-width, 1px));
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-inline-start-color: var(--btn-split-divider, color-mix(in srgb, currentColor 35%, transparent));
+  min-inline-size: var(--tap-min);
+}
+.btn-split > .btn:is(:hover, :focus-visible) { z-index: var(--z-raised); }
+.btn-split-toggle > .icon { margin: 0; }
+.btn-split:has(> :popover-open) > .btn-split-toggle > .icon,
+.btn-split-toggle[aria-expanded="true"] > .icon { rotate: 180deg; }
+
+/* --- .fab — floating action button ---------------------------------------
+ * Fixed to the end corner, clear of the safe area (home indicator, notch).
+ * Icon-only: <button class="btn btn-primary btn-icon fab" aria-label="New">.
+ * .is-extended (no .btn-icon) adds a label, .is-start moves it to the start corner,
+ * .is-contained pins it inside a positioned parent (a map, a panel). Apps
+ * with a bottom bar lift it with --fab-offset-block. Layered on .btn (the
+ * doubled class outranks core's (0,1,1) tap-min rule). */
+.btn.fab {
+  position: fixed;
+  inset-block-end: calc(var(--fab-offset-block, var(--space-l)) + env(safe-area-inset-bottom, 0px));
+  inset-inline-end: calc(var(--fab-offset-inline, var(--space-l)) + max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));
+  z-index: var(--z-sticky);
+  --btn-padding: 0;
+  --btn-radius: var(--fab-radius, 999px);
+  --btn-shadow: var(--fab-shadow, 0 0.25rem 0.9rem rgb(0 0 0 / 0.35));
+  --btn-shadow-hover: var(--fab-shadow, 0 0.25rem 0.9rem rgb(0 0 0 / 0.35));
+  min-inline-size: max(var(--tap-min), var(--fab-size, 3.5rem));
+  min-block-size: max(var(--tap-min), var(--fab-size, 3.5rem));
+  font-size: 1rem;
+}
+.fab > .icon { --icon-size: var(--fab-icon-size, 1.5em); width: var(--icon-size); height: var(--icon-size); min-width: var(--icon-size); margin: 0; }
+.fab.is-extended { --btn-padding: 0 1.4em 0 1.1em; }
+.fab.is-extended:dir(rtl) { --btn-padding: 0 1.1em 0 1.4em; }
+.fab.is-start {
+  inset-inline-end: auto;
+  inset-inline-start: calc(var(--fab-offset-inline, var(--space-l)) + max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));
+}
+.fab.is-contained {
+  position: absolute;
+  inset-block-end: var(--fab-offset-block, var(--space-m));
+  inset-inline-end: var(--fab-offset-inline, var(--space-m));
+}
+.fab.is-contained.is-start { inset-inline-end: auto; inset-inline-start: var(--fab-offset-inline, var(--space-m)); }
+
+/* --- .toggle-group — joined .toggle-btn labels -----------------------------
+ * Checkboxes inside = multi-select (bold + italic); radios sharing a name =
+ * single-select (align left/centre/right). State is the inputs' own. */
+.toggle-group { display: inline-flex; max-inline-size: 100%; }
+.toggle-group > .toggle-btn { min-inline-size: var(--tap-min); }
+.toggle-group > .toggle-btn:not(:first-child) {
+  margin-inline-start: calc(-1 * var(--toggle-btn-border-width, 1px));
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.toggle-group > .toggle-btn:not(:last-child) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.toggle-group > .toggle-btn:is(:hover, :has(input:checked), :has(input:focus-visible)) { z-index: var(--z-raised); }
+.toggle-group > .toggle-btn:has(input:focus-visible) { z-index: calc(var(--z-raised) + 1); }
+
+/* --- .has-badge — a dot or count on any button, tab or nav item ------------
+ * <button class="btn btn-icon has-badge" data-count="3" aria-label="Alerts, 3 new">
+ * No data-count (or an empty one) draws a dot. The number is decoration:
+ * put it in the accessible name too. Items that sit in a scroller (tabs,
+ * nav, menus, lists) carry it inline after their label instead. */
+.has-badge:not(.fab) { position: relative; }
+.has-badge::after {
+  content: attr(data-count);
+  content: attr(data-count) / "";
+  position: absolute;
+  inset-block-start: var(--has-badge-y, -0.3rem);
+  inset-inline-end: var(--has-badge-x, -0.3rem);
+  box-sizing: border-box;
+  min-inline-size: 1.6em;
+  block-size: 1.6em;
+  padding-inline: 0.4em;
+  border-radius: 999px;
+  background: var(--has-badge-bg, var(--danger));
+  color: var(--has-badge-fg, var(--on-danger));
+  box-shadow: 0 0 0 var(--has-badge-ring-width, 2px) var(--has-badge-ring, var(--surface));
+  font-family: var(--font);
+  font-size: var(--has-badge-font-size, 0.68rem);
+  font-weight: 700;
+  line-height: 1.6em;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: none;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.has-badge:is(:not([data-count]), [data-count=""])::after {
+  min-inline-size: 0;
+  inline-size: var(--has-badge-dot, 0.6rem);
+  block-size: var(--has-badge-dot, 0.6rem);
+  padding: 0;
+  inset-block-start: var(--has-badge-y, -0.1rem);
+  inset-inline-end: var(--has-badge-x, -0.1rem);
+}
+/* On an icon button the badge hangs off the glyph's corner, so it stays put
+   when a touch tier grows the hit area around the glyph. */
+.btn-icon.has-badge::after {
+  inset-block-start: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-y, -0.3rem));
+  inset-inline-end: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-x, -0.3rem));
+}
+.btn-icon.has-badge:is(:not([data-count]), [data-count=""])::after {
+  inset-block-start: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-y, -0.1rem));
+  inset-inline-end: calc(50% - var(--btn-icon-size, 2.2em) / 2 + var(--has-badge-x, -0.1rem));
+}
+:is(.tab, .nav-item, .segmented-item, .list-item, .dropdown-item, .context-menu li > *).has-badge::after {
+  position: static;
+  display: inline-block;
+  margin-inline-start: 0.5em;
+  vertical-align: 0.1em;
+}
+
+/* --- .input-icon / .input-clear inside .input-group ------------------------
+ *   <div class="input-group">
+ *     <span class="input-icon"><svg class="icon">…</svg></span>
+ *     <input class="input" placeholder="Filter">
+ *     <button class="input-clear" type="button" aria-label="Clear"></button>
+ *   </div>
+ * The icon and the clear button overlay the field's own padding, so the
+ * field keeps one border and its native focus ring. The clear button hides
+ * itself while the field is empty (that needs a placeholder, even " "). */
+:is(.input-icon, .input-clear) {
+  position: relative;
+  z-index: calc(var(--z-raised) + 1);
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: 0.9em;
+  color: var(--input-icon-fg, var(--muted));
+}
+@media (any-pointer: coarse) {
+  :is(.input-icon, .input-clear) { font-size: max(16px, 1em); }
+}
+.input-group > .input-icon {
+  inline-size: var(--input-icon-w, 2.5em);
+  margin-inline-end: calc(-1 * var(--input-icon-w, 2.5em));
+  pointer-events: none;
+}
+.input-group > .input-icon:first-child + :is(.input, .select) {
+  margin-inline-start: 0;
+  padding-inline-start: var(--input-icon-w, 2.5em);
+  border-start-start-radius: var(--input-radius, var(--radius));
+  border-end-start-radius: var(--input-radius, var(--radius));
+}
+.input-clear {
+  inline-size: var(--input-clear-w, max(var(--tap-min), 2.5em));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  line-height: 1;
+}
+.input-group > .input-clear {
+  margin-inline-start: calc(-1 * var(--input-clear-w, max(var(--tap-min), 2.5em)));
+}
+.input-group > :is(.input, .select):has(+ .input-clear) { padding-inline-end: var(--input-clear-w, max(var(--tap-min), 2.5em)); }
+.input-clear:not(:has(.icon))::before { content: var(--input-clear-glyph, "\00d7"); font-size: 1.35em; }
+.input-clear .icon { --icon-size: 1em; }
+.input-clear:focus-visible { color: var(--text); outline-offset: -4px; }
+@media (hover: hover) {
+  .input-clear:hover { color: var(--text); }
+}
+.input:placeholder-shown + .input-clear { visibility: hidden; }
+.input-clear:disabled { visibility: hidden; }
+/* The field keeps its end radii when only overlays (clear, shortcut) follow. */
+.input-group > :is(.input, .select):not(:has(~ :not(.input-clear, kbd))) {
+  border-start-end-radius: var(--input-radius, var(--radius));
+  border-end-end-radius: var(--input-radius, var(--radius));
+}
+
+/* Search: type="search" plus .input-icon, .input-clear and an optional
+ * shortcut hint (<kbd> as the group's last child), which hides once the
+ * field has focus or a value. The native cancel button is themed, and
+ * hidden when an .input-clear stands in for it. */
+.input[type="search"] { -webkit-appearance: none; appearance: none; }
+.input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+.input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  background: var(--input-icon-fg, var(--muted));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.input[type="search"]:has(+ .input-clear)::-webkit-search-cancel-button { display: none; }
+.input-group:has(> kbd) { position: relative; }
+.input-group > kbd {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset-inline-end: var(--space-xs);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  pointer-events: none;
+}
+.input-group:has(> kbd) > :is(.input, .select) { padding-inline-end: var(--input-kbd-w, 4.5em); }
+.input-group > :is(.input:focus, .input:not(:placeholder-shown)) ~ kbd { display: none; }
+
+/* --- Native date, time and list inputs ------------------------------------
+ * The popup calendar follows the theme's color-scheme (every theme sets
+ * one). The indicator is redrawn in --input-icon-fg from a mask a theme
+ * can swap (--input-date-icon, --input-time-icon, --input-list-icon); the
+ * focused segment (day, month, hour…) takes the accent. */
+.input:is([type="date"], [type="datetime-local"], [type="month"], [type="week"], [type="time"], [list])::-webkit-calendar-picker-indicator {
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  margin-inline-start: 0.4em;
+  padding: 0.15em;
+  border-radius: var(--radius);
+  background: var(--input-icon-fg, var(--muted));
+  -webkit-mask: var(--input-date-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E")) center / contain no-repeat;
+  mask: var(--input-date-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E")) center / contain no-repeat;
+}
+.input[type="time"]::-webkit-calendar-picker-indicator {
+  -webkit-mask-image: var(--input-time-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E"));
+  mask-image: var(--input-time-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E"));
+}
+.input[list]::-webkit-calendar-picker-indicator {
+  -webkit-mask-image: var(--input-list-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"));
+  mask-image: var(--input-list-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"));
+}
+@media (hover: hover) {
+  .input::-webkit-calendar-picker-indicator:hover { background: var(--text); }
+}
+.input:focus-visible::-webkit-calendar-picker-indicator { background: var(--focus); }
+.input::-webkit-datetime-edit-text { color: var(--input-icon-fg, var(--muted)); }
+.input::-webkit-datetime-edit-day-field:focus,
+.input::-webkit-datetime-edit-month-field:focus,
+.input::-webkit-datetime-edit-year-field:focus,
+.input::-webkit-datetime-edit-week-field:focus,
+.input::-webkit-datetime-edit-hour-field:focus,
+.input::-webkit-datetime-edit-minute-field:focus,
+.input::-webkit-datetime-edit-second-field:focus,
+.input::-webkit-datetime-edit-ampm-field:focus {
+  background: var(--input-segment-bg, var(--accent));
+  color: var(--input-segment-fg, var(--on-accent));
+  border-radius: calc(var(--radius) * 0.5);
+}
+/* Native date inputs have a wide intrinsic size; in a group they may
+   shrink to fit (a date range on a phone). */
+.input-group > .input:is([type="date"], [type="time"], [type="datetime-local"], [type="month"]) { min-inline-size: 0; }
+
+/* --- .calendar — a month grid for app-rendered pickers -------------------
+ * A <table> of day buttons. Day state on the button: aria-current="date"
+ * (today), aria-pressed="true" (selected), disabled, .is-outside (another
+ * month). Range state on the <td>: .is-range-start, .is-in-range,
+ * .is-range-end (the band runs through the cells). */
+.calendar {
+  display: inline-block;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  padding: var(--calendar-pad, var(--space-s));
+  background: var(--calendar-bg, var(--surface));
+  color: var(--calendar-fg, var(--text));
+  border: var(--calendar-border-width, 1px) solid var(--calendar-border, var(--border));
+  border-radius: var(--calendar-radius, var(--panel-radius, var(--radius)));
+  font-size: 0.9em;
+  --calendar-day: max(var(--tap-min), var(--calendar-day-size, 2.25em));
+}
+.popover > .calendar { padding: 0; border: 0; background: none; }
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-block-end: var(--space-xs);
+}
+.calendar-title { margin: 0; font-size: 1em; font-weight: 600; text-align: center; flex: 1; }
+.calendar-grid { inline-size: auto; border-collapse: collapse; border-spacing: 0; table-layout: fixed; }
+.calendar-grid th {
+  inline-size: var(--calendar-day);
+  padding-block: 0 var(--space-2xs);
+  color: var(--calendar-weekday-fg, var(--muted));
+  font-size: 0.8em;
+  font-weight: 600;
+  text-align: center;
+  text-transform: var(--label-transform, none);
+}
+.calendar-grid td { padding: 1px 0; text-align: center; }
+.calendar-day {
+  display: grid;
+  place-items: center;
+  inline-size: var(--calendar-day);
+  block-size: var(--calendar-day);
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--calendar-day-radius, var(--radius));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  touch-action: manipulation;
+}
+@media (hover: hover) {
+  .calendar-day:hover:not(:disabled, [aria-pressed="true"]) { background: var(--calendar-day-bg-hover, var(--surface-2)); }
+}
+.calendar-day.is-outside { color: var(--calendar-outside-fg, var(--muted)); }
+.calendar-day[aria-current="date"] {
+  border-color: var(--calendar-today-ring, var(--accent));
+  font-weight: 700;
+}
+.calendar-day:disabled {
+  color: var(--muted);
+  opacity: 0.55;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+.calendar-day:is([aria-pressed="true"], [aria-selected="true"]) {
+  background: var(--calendar-selected-bg, var(--accent));
+  color: var(--calendar-selected-fg, var(--on-accent));
+  font-weight: 700;
+}
+.calendar-grid td.is-in-range { background: var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)); }
+.calendar-grid td.is-range-start { background: linear-gradient(to right, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-end { background: linear-gradient(to left, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-start:dir(rtl) { background: linear-gradient(to left, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-end:dir(rtl) { background: linear-gradient(to right, transparent 50%, var(--calendar-range-bg, color-mix(in srgb, var(--accent) 22%, transparent)) 50%); }
+.calendar-grid td.is-range-start.is-range-end { background: none; }
+.calendar-grid td.is-in-range > .calendar-day:not(:disabled) { border-radius: 0; }
+.calendar-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-xs);
+}
+
+/* --- .combobox + .listbox ---------------------------------------------------
+ *   <div class="combobox">
+ *     <input class="input" role="combobox" aria-expanded="true"
+ *       aria-controls="lb" aria-autocomplete="list" aria-activedescendant="o2">
+ *     <ul class="listbox" role="listbox" id="lb" popover="manual">
+ *       <li role="option" id="o1">Berlin</li>
+ *       <li role="option" id="o2" class="is-active" aria-selected="true">Bern</li>
+ *     </ul>
+ *   </div>
+ * With popover the list lives in the top layer, anchored under the field
+ * and as wide as it (centred where anchor positioning is unsupported).
+ * Without popover it drops below the field in flow, like .anchor. */
+.combobox { position: relative; anchor-scope: --combobox; }
+.combobox > .input { anchor-name: --combobox; }
+.listbox {
+  margin: 0;
+  padding: var(--listbox-pad, 0.3rem);
+  list-style: none;
+  background: var(--listbox-bg, var(--dropdown-bg, var(--surface-2)));
+  color: var(--listbox-fg, var(--text));
+  border: var(--listbox-border-width, 1px) solid var(--listbox-border, var(--dropdown-border, var(--border)));
+  border-radius: var(--listbox-radius, var(--dropdown-radius, var(--radius)));
+  box-shadow: var(--listbox-shadow, var(--panel-shadow, 0 2px 12px rgb(0 0 0 / 0.3)));
+  max-block-size: var(--listbox-max, 16rem);
+  overflow-y: auto;
+  font-size: 0.9em;
+}
+.combobox > .listbox:not([popover]) {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  inset-block-start: calc(100% + 0.25rem);
+  inset-inline: 0;
+}
+.listbox[popover] {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  inline-size: min(22rem, calc(100vw - 2rem));
+  block-size: fit-content;
+}
+.listbox[popover]:not(:popover-open) { display: none; }
+@supports (position-anchor: --a) {
+  .combobox > .listbox[popover] {
+    position-anchor: --combobox;
+    inset: auto;
+    margin: 0.25rem 0;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block;
+    inline-size: anchor-size(inline);
+  }
+}
+.listbox [role="option"] {
+  position: relative;
+  display: block;
+  align-content: center;
+  min-block-size: var(--tap-min);
+  padding: 0.35em 2em 0.35em 0.7em;
+  border-radius: var(--listbox-radius, var(--dropdown-radius, var(--radius)));
+  overflow-wrap: anywhere;
+}
+.listbox [role="option"]:dir(rtl) { padding-inline: 2em 0.7em; }
+.listbox [role="option"]::after {
+  content: var(--listbox-check-glyph, "\2713");
+  position: absolute;
+  inset-inline-end: 0.7em;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  visibility: hidden;
+}
+.listbox [role="option"][aria-selected="true"] { font-weight: 600; }
+.listbox [role="option"][aria-selected="true"]::after { visibility: visible; }
+.listbox [role="option"].is-active {
+  background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
+  color: var(--listbox-option-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
+}
+@media (hover: hover) {
+  .listbox [role="option"]:not([aria-disabled="true"]):hover { background: var(--listbox-option-bg-hover, var(--row-hover-bg, rgb(128 128 128 / 0.15))); }
+  .listbox [role="option"].is-active:hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
+}
+.listbox [role="option"][aria-disabled="true"] { color: var(--muted); cursor: not-allowed; }
+.listbox mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; }
+.listbox-empty { padding: 0.6em 0.7em; color: var(--muted); font-style: italic; }
+
+/* --- .tag-input + .tag — removable chips inside a field ---------------------
+ *   <div class="tag-input">
+ *     <span class="tag">Design<button class="tag-remove" aria-label="Remove Design"></button></span>
+ *     <input class="tag-input-field" aria-label="Add a tag" placeholder="Add…">
+ *   </div> */
+.tag-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-block-size: var(--tap-min);
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--input-bg, var(--surface));
+  color: var(--input-fg, var(--text));
+  border: var(--input-border-width, 1px) solid var(--input-border, var(--border));
+  border-radius: var(--input-radius, var(--radius));
+  box-shadow: var(--input-shadow, none);
+  font-size: 0.9em;
+  cursor: text;
+}
+@media (any-pointer: coarse) {
+  .tag-input { font-size: max(16px, 1em); }
+}
+.tag-input:focus-within {
+  border-color: var(--focus);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring, var(--input-shadow, none));
+}
+.tag-input:has(.tag-input-field:is([aria-invalid="true"], .is-invalid)) { border-color: var(--danger); outline-color: var(--danger); }
+.tag-input:has(.tag-input-field:disabled) { opacity: 0.5; cursor: not-allowed; }
+.tag-input-field {
+  flex: 1 1 6ch;
+  min-inline-size: 6ch;
+  /* The field's hit area is the full row height: it overlaps the
+     container's padding instead of shrinking inside it. */
+  min-block-size: var(--tap-min);
+  margin-block: calc(-1 * var(--space-2xs) - var(--input-border-width, 1px));
+  padding: 0 var(--space-3xs);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.tag-input-field:focus { outline: none; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  max-inline-size: 100%;
+  padding: 0.15em 0.55em;
+  background: var(--tag-bg, var(--surface-2));
+  color: var(--tag-fg, var(--text));
+  border: var(--tag-border-width, 1px) solid var(--tag-border, var(--border));
+  border-radius: var(--tag-radius, var(--radius));
+  font-size: 0.85em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  cursor: default;
+}
+.tag:has(> .tag-remove) { padding-inline-end: 0.2em; }
+.tag-remove {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tag-radius, var(--radius));
+  background: transparent;
+  color: var(--tag-remove-fg, var(--muted));
+  font: inherit;
+  line-height: 1;
+  touch-action: manipulation;
+}
+.tag-remove::before {
+  content: "";
+  position: absolute;
+  inset: calc((1.25em - var(--tap-min)) / 2);
+}
+.tag-remove:not(:has(.icon))::after { content: var(--input-clear-glyph, "\00d7"); font-size: 1.2em; }
+.tag-remove:focus-visible { color: var(--text); outline-offset: 0; }
+@media (hover: hover) {
+  .tag-remove:hover { background: var(--tag-remove-bg-hover, color-mix(in srgb, var(--danger) 20%, transparent)); color: var(--text); }
+}
+.tag.is-accent { --tag-bg: color-mix(in srgb, var(--accent) 20%, var(--surface)); --tag-border: var(--accent); }
+
+/* --- .stepper — − / value / + ---------------------------------------------
+ *   <div class="input-group stepper" role="group" aria-label="Guests">
+ *     <button class="btn btn-icon" aria-label="Fewer guests">−</button>
+ *     <input class="input" type="number" value="2" aria-label="Guests">
+ *     <button class="btn btn-icon" aria-label="More guests">+</button>
+ *   </div>
+ * Built on .input-group's joins; the buttons are square tap targets. */
+.stepper { display: inline-flex; inline-size: auto; max-inline-size: 100%; vertical-align: middle; }
+.stepper > .btn {
+  --btn-padding: 0;
+  --btn-radius: var(--stepper-radius, var(--input-radius, var(--radius)));
+  min-inline-size: max(var(--tap-min), var(--stepper-btn-size, 2.4em));
+  min-block-size: max(var(--tap-min), var(--stepper-btn-size, 2.4em));
+  font-size: 1em;
+}
+.stepper > .input {
+  flex: 0 1 auto;
+  inline-size: var(--stepper-input-w, 4.5em);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.stepper > .input::-webkit-inner-spin-button,
+.stepper > .input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper > .btn:is(:hover, :focus-visible) { z-index: var(--z-raised); }
+
+/* --- .slider.is-range — two thumbs on one track -------------------------------
+ *   <div class="slider is-range" style="--from: 20; --to: 75">
+ *     <input class="slider" type="range" value="20" aria-label="Minimum price">
+ *     <input class="slider" type="range" value="75" aria-label="Maximum price">
+ *   </div>
+ * --from/--to are the two values as percentages of the track (0–100); the
+ * app updates them on input, as it does --value elsewhere. */
+.slider.is-range {
+  position: relative;
+  display: grid;
+  align-items: center;
+  block-size: auto;
+  min-block-size: var(--tap-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+.slider.is-range::before,
+.slider.is-range::after {
+  content: "";
+  grid-area: 1 / 1;
+  block-size: var(--slider-height, 0.35rem);
+  border-radius: var(--slider-radius, var(--radius));
+}
+.slider.is-range::before {
+  background: var(--slider-bg, var(--surface-2));
+  border: var(--slider-border-width, 1px) solid var(--slider-border, var(--border));
+}
+.slider.is-range::after {
+  margin-inline-start: calc(var(--from, 0) * 1%);
+  margin-inline-end: calc(100% - var(--to, 100) * 1%);
+  background: var(--slider-range-fill, var(--accent));
+}
+.slider.is-range > .slider {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: var(--z-raised);
+  margin: 0;
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+.slider.is-range > .slider::-webkit-slider-thumb { pointer-events: auto; }
+.slider.is-range > .slider::-moz-range-thumb { pointer-events: auto; }
+.slider.is-range > .slider:focus-visible { z-index: calc(var(--z-raised) + 1); outline-offset: 4px; }
+.slider.is-range:has(> :disabled) { opacity: 0.5; }
+
+/* --- .rating — radio stars (or a theme glyph) -------------------------------
+ *   <fieldset class="rating"><legend class="visually-hidden">Rating</legend>
+ *     <label><input type="radio" name="r" value="1"><span class="visually-hidden">1 star</span></label> …
+ *   </fieldset>
+ * Filled and empty glyphs differ in shape, not only colour. */
+.rating {
+  display: inline-flex;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+  font-size: var(--rating-size, 1.6em);
+  line-height: 1;
+}
+.rating > label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-inline-size: max(var(--tap-min), 1.2em);
+  min-block-size: max(var(--tap-min), 1.2em);
+  color: var(--rating-empty-fg, var(--muted));
+  touch-action: manipulation;
+}
+.rating > label > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  clip-path: inset(50%);
+}
+.rating > label::before { content: var(--rating-glyph-empty, "\2606"); }
+.rating:has(input:checked) > label,
+.rating > label:has(input:checked) { color: var(--rating-fg, var(--warning)); }
+.rating:has(input:checked) > label::before { content: var(--rating-glyph, "\2605"); }
+.rating > label:has(input:checked) ~ label { color: var(--rating-empty-fg, var(--muted)); }
+.rating > label:has(input:checked) ~ label::before { content: var(--rating-glyph-empty, "\2606"); }
+@media (hover: hover) {
+  .rating:not(:disabled):hover > label { color: var(--rating-fg, var(--warning)); }
+  .rating:not(:disabled):hover > label::before { content: var(--rating-glyph, "\2605"); }
+  .rating:not(:disabled) > label:hover ~ label { color: var(--rating-empty-fg, var(--muted)); }
+  .rating:not(:disabled) > label:hover ~ label::before { content: var(--rating-glyph-empty, "\2606"); }
+}
+.rating > label:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--radius); }
+.rating:disabled { opacity: 0.5; }
+.rating:disabled > label { cursor: not-allowed; }
+
+/* --- .swatches — radio colour picker ------------------------------------------
+ *   <fieldset class="swatches"><legend class="label">Accent</legend>
+ *     <label class="swatch" style="--swatch: #2f7cf6"><input type="radio" name="c" value="blue"><span class="visually-hidden">Blue</span></label> …
+ *   </fieldset>
+ * --swatch is the colour (a documented value API). The chosen one gets a
+ * ring and a check mark. */
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--swatches-gap, var(--space-xs));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-inline-size: max(var(--tap-min), var(--swatch-size, 1.75rem));
+  min-block-size: max(var(--tap-min), var(--swatch-size, 1.75rem));
+  touch-action: manipulation;
+}
+.swatch > input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  opacity: 0;
+  clip-path: inset(50%);
+}
+.swatch::before {
+  content: "";
+  grid-area: 1 / 1;
+  inline-size: var(--swatch-size, 1.75rem);
+  block-size: var(--swatch-size, 1.75rem);
+  border-radius: var(--swatch-radius, 50%);
+  background: var(--swatch, var(--accent));
+  box-shadow: inset 0 0 0 1px var(--swatch-border, rgb(128 128 128 / 0.5));
+}
+.swatch::after {
+  grid-area: 1 / 1;
+  color: var(--swatch-check-fg, #fff);
+  font-size: calc(var(--swatch-size, 1.75rem) * 0.55);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 2px rgb(0 0 0 / 0.9), 0 0 1px rgb(0 0 0 / 0.9);
+}
+.swatch:has(input:checked)::before {
+  box-shadow: inset 0 0 0 1px var(--swatch-border, rgb(128 128 128 / 0.5)),
+    0 0 0 2px var(--swatch-gap, var(--surface)), 0 0 0 4px var(--swatch-ring, var(--text));
+}
+.swatch:has(input:checked)::after { content: var(--swatch-check-glyph, "\2713"); }
+.swatch:has(input:focus-visible)::before { outline: 2px solid var(--focus); outline-offset: 5px; }
+.swatch:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+
+/* --- .file-list — an upload queue (pairs with .dropzone) ---------------------
+ *   <ul class="list file-list">
+ *     <li class="is-uploading"><svg class="icon">…</svg>
+ *       <span class="list-item-title">report.pdf</span>
+ *       <span class="list-item-meta">2.4 MB · 64%</span>
+ *       <progress class="progress" value="64" max="100" aria-label="report.pdf"></progress>
+ *       <button class="btn btn-icon is-clear" aria-label="Cancel report.pdf">…</button></li>
+ *   </ul>
+ * Row states: .is-queued, .is-uploading, .is-done, .is-error. Say the
+ * state in the meta text too; the colour only reinforces it. */
+.dropzone + .file-list { margin-block-start: var(--space-s); }
+.file-list > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-s);
+  row-gap: var(--space-3xs);
+  padding: var(--list-item-padding, 0.55em 0.9em);
+}
+.file-list > li > .icon { grid-row: 1 / span 3; --icon-size: 1.6em; color: var(--file-icon-fg, var(--muted)); }
+.file-list > li > :is(.list-item-title, .list-item-meta, .progress) { grid-column: 2; }
+.file-list > li > :is(.btn, button):last-child { grid-column: 3; grid-row: 1 / span 3; }
+.file-list .progress { --progress-height: 0.3rem; }
+.file-list > li.is-queued > .progress { visibility: hidden; }
+.file-list > li.is-done { --progress-fill: var(--success); --file-icon-fg: var(--success-text, var(--success)); }
+.file-list > li.is-done > .progress { display: none; }
+.file-list > li.is-error {
+  --progress-fill: var(--danger);
+  --file-icon-fg: var(--danger-text, var(--danger));
+  --list-item-meta-fg: var(--danger-text, var(--danger));
+  box-shadow: inset 0.2rem 0 0 var(--danger);
+}
+.file-list > li.is-error:dir(rtl) { box-shadow: inset -0.2rem 0 0 var(--danger); }
+
+/* --- Motion ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) :is(.btn-split-toggle > .icon) { transition: rotate 0.15s ease; }
+  html:not([data-motion="reduced"]) :is(.calendar-day, .tag-remove, .input-clear, .rating > label) {
+    transition: background-color 0.12s ease, color 0.12s ease;
+  }
+}
+/* --- v5 instruments and data display (PLAN.md §9 #1–16, §18 Charts) -------
+ * Dial, arc and linear gauges, compass and heading strip, map frame and
+ * pins, legend, progress ring, sparkline, donut, heatmap, timeline,
+ * property grid, battery and signal glyphs, analog clock and countdown,
+ * plus the library-neutral .chart contract.
+ *
+ * Every look reads a --<component>-* token with a fallback to the base
+ * tokens; values come in through documented inline APIs (--value, --heading,
+ * --x/--y, --seg-n, --v, --at) or native elements (<meter>, <ol>, <dl>).
+ * See docs/components/instruments.md. */
+
+/* --- Chart tokens (§18) ----------------------------------------------------
+ * Series colours stay --chart-series-1..6 (core.css). New here, with
+ * defaults derived from them so every theme has working scales:
+ *   --chart-seq-0..8   sequential, one hue from the chart surface to full
+ *   --chart-div-neg|mid|pos  diverging poles and a neutral midpoint
+ *   --chart-dash-1..6  stroke-dasharray per series (tiny-palette themes)
+ * Themes override any of them at root scope. */
+:root {
+  --chart-seq-0: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 8%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-1: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 18%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-2: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 30%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-3: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 42%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-4: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 54%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-5: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 66%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-6: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 78%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-7: color-mix(in oklab, var(--chart-seq-hue, var(--chart-series-1)) 90%, var(--chart-seq-base, var(--surface)));
+  --chart-seq-8: var(--chart-seq-hue, var(--chart-series-1));
+  --chart-div-neg: var(--chart-series-4);
+  --chart-div-mid: var(--surface-2);
+  --chart-div-pos: var(--chart-series-1);
+  --chart-dash-1: none;
+  --chart-dash-2: none;
+  --chart-dash-3: none;
+  --chart-dash-4: none;
+  --chart-dash-5: none;
+  --chart-dash-6: none;
+}
+
+/* data-series="1..6" picks a series colour (and dash) for anything that
+   draws one: chart series, legend items, map pins, compass markers. */
+[data-series="1"] { --series: var(--chart-series-1); --series-dash: var(--chart-dash-1); }
+[data-series="2"] { --series: var(--chart-series-2); --series-dash: var(--chart-dash-2); }
+[data-series="3"] { --series: var(--chart-series-3); --series-dash: var(--chart-dash-3); }
+[data-series="4"] { --series: var(--chart-series-4); --series-dash: var(--chart-dash-4); }
+[data-series="5"] { --series: var(--chart-series-5); --series-dash: var(--chart-dash-5); }
+[data-series="6"] { --series: var(--chart-series-6); --series-dash: var(--chart-dash-6); }
+
+/* --- .chart: the library-neutral contract (§18) ---------------------------
+ * color is the chart foreground, so anything a library draws with
+ * currentColor (axes, ticks, labels) follows the theme; the plot is
+ * transparent. Plain-SVG hooks: .chart-grid, .chart-axis, .chart-series
+ * [data-series], .chart-point, .chart-label, .chart-legend, plus
+ * .chart-frame, .chart-crosshair, .chart-annotation, .chart-selection and
+ * an HTML .chart-tooltip placed by the app at --x/--y. */
+.chart {
+  position: relative;
+  min-inline-size: 0;
+  color: var(--chart-fg, var(--chart-text));
+  background: var(--chart-bg, transparent);
+  font-size: var(--chart-font-size, 0.85rem);
+}
+.chart svg { inline-size: 100%; block-size: auto; overflow: visible; font-family: var(--chart-font, var(--font)); }
+.chart text { fill: currentColor; stroke: none; font-size: var(--chart-text-size, 11px); }
+/* SVG text scales with the chart; on a phone-width chart print it larger in
+   user units so it stays readable. */
+@container (max-width: 480px) { .chart text { font-size: var(--chart-text-size-narrow, 16px); } }
+@media (max-width: 480px) { .chart text { font-size: var(--chart-text-size-narrow, 16px); } }
+.chart-grid { fill: none; stroke: var(--chart-grid); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-axis { fill: none; stroke: var(--chart-axis, currentColor); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-frame { fill: var(--chart-plot-bg, none); stroke: var(--chart-frame, none); }
+:is(.chart-grid, .chart-axis, .chart-frame, .chart-series, .chart-crosshair, .chart-annotation),
+:is(.chart-grid, .chart-axis, .chart-series, .chart-annotation) * { vector-effect: non-scaling-stroke; }
+.chart-series {
+  color: var(--series, var(--chart-series-1));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--chart-line-width, 2);
+  stroke-dasharray: var(--series-dash, none);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+/* Bars and areas are fills; a bar takes the series colour, not a stroke. */
+:is(rect.chart-series, .chart-series rect) { fill: currentColor; stroke: none; }
+:is(.chart-series.is-area, .chart-series .is-area) { fill: currentColor; fill-opacity: var(--chart-area-opacity, 0.16); stroke: none; }
+.chart-point {
+  fill: var(--series, currentColor);
+  stroke: var(--chart-point-ring, var(--surface));
+  stroke-width: 2;
+  stroke-dasharray: none;
+}
+.chart-point:is(:focus-visible, .is-active, [aria-selected="true"]) { stroke: var(--chart-highlight, var(--text)); }
+@media (hover: hover) {
+  .chart-point:hover { stroke: var(--chart-highlight, var(--text)); }
+}
+/* Direct labels and values wear text colours, never the series colour. */
+.chart .chart-label { fill: var(--chart-label-fg, var(--text)); }
+.chart-crosshair { fill: none; stroke: var(--chart-crosshair, var(--muted)); stroke-width: 1; stroke-dasharray: 3 3; }
+.chart-annotation { fill: none; stroke: var(--chart-annotation, var(--flare)); stroke-dasharray: 4 3; }
+.chart text.chart-annotation, .chart-annotation text { fill: var(--chart-annotation-fg, var(--text)); stroke: none; }
+.chart-selection { fill: var(--chart-selection, color-mix(in srgb, var(--accent) 14%, transparent)); stroke: none; }
+.chart-tooltip {
+  position: absolute;
+  z-index: var(--z-tooltip);
+  left: var(--x, 50%);
+  top: var(--y, 0);
+  translate: -50% calc(-100% - var(--space-2xs));
+  max-inline-size: min(16rem, 90%);
+  inline-size: max-content;
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--tooltip-bg, var(--surface));
+  color: var(--tooltip-fg, var(--text));
+  border: var(--tooltip-border-width, 1px) solid var(--tooltip-border, var(--border));
+  border-radius: var(--tooltip-radius, var(--radius));
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+/* --- .legend / .chart-legend (§9 #11) --------------------------------------
+ *   <ul class="legend"><li data-series="1">Revenue</li>…</ul>
+ * Items may be toggle buttons: <li><button aria-pressed="true">…</button>. */
+:is(.legend, .chart-legend) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs) var(--space-m);
+  font-size: var(--legend-size, 0.85em);
+  color: var(--legend-fg, var(--text));
+}
+:is(.legend, .chart-legend) > li { display: inline-flex; align-items: center; gap: 0.45em; min-inline-size: 0; }
+:is(.legend, .chart-legend) > li:not(:has(> button))::before,
+:is(.legend, .chart-legend) > li > button::before {
+  content: "";
+  flex: none;
+  inline-size: var(--legend-swatch-size, 0.8em);
+  block-size: var(--legend-swatch-size, 0.8em);
+  border-radius: var(--legend-swatch-radius, 2px);
+  background: var(--series, var(--chart-series-1));
+}
+:is(.legend, .chart-legend).is-line > li:not(:has(> button))::before,
+:is(.legend, .chart-legend).is-line > li > button::before { block-size: 3px; inline-size: 1.4em; }
+:is(.legend, .chart-legend).is-vertical { flex-direction: column; }
+/* A colour scale (heatmap, choropleth): each item's --v (0–1) picks the step. */
+:is(.legend, .chart-legend).is-scale > li::before {
+  background: color-mix(in oklab, var(--chart-seq-8) calc(var(--v, 0) * 100%), var(--chart-seq-0));
+}
+:is(.legend, .chart-legend) > li > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-block-size: var(--tap-min);
+  padding: 0 var(--space-3xs);
+  border-radius: var(--radius);
+  touch-action: manipulation;
+}
+:is(.legend, .chart-legend) > li > button[aria-pressed="false"] { color: var(--muted); text-decoration: line-through; }
+:is(.legend, .chart-legend) > li > button[aria-pressed="false"]::before { opacity: 0.3; }
+
+/* --- Gauges: shared dial geometry (§9 #1, #2, #4, #16) -----------------------
+ * .gauge-dial (needle, 270°), .gauge-arc (semicircle, no needle), .compass
+ * (rose turned by --heading) and .clock (12-hour face) share one face:
+ *   ::before   the arc track
+ *   ::after    tick marks (major --gauge-ticks, minor --gauge-minor) and the
+ *              redline band from --gauge-redline (0–1) to the end
+ *   ol.gauge-ticks  printed numbers, placed round the arc by their index
+ *   <meter> or .gauge-needle   the value layer: fill arc, needle and hub,
+ *              turned as one. A <meter>'s value/min/max drive it where
+ *              typed attr() is supported; --value (0–1) on the gauge drives
+ *              it everywhere, so set both for every engine.
+ *   .gauge-readout  the value printed in the lower centre
+ * Sizes are in cqi of the gauge, so one --gauge-size scales everything. */
+@property --gauge-v {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock) {
+  --gauge-from: var(--gauge-start, calc(var(--gauge-sweep, 270deg) / -2));
+  --gauge-span: var(--gauge-sweep, 270deg);
+  --gauge-in: var(--gauge-inset, 3cqi);
+  --gauge-arc: var(--gauge-arc-width, 5cqi);
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--gauge-size, 12rem);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--gauge-face, var(--surface-2));
+  color: var(--gauge-label-fg, var(--text));
+  border: var(--gauge-border-width, 1px) solid var(--gauge-border, var(--border));
+  border-radius: 50%;
+  box-shadow: var(--gauge-shadow, none);
+  font-variant-numeric: tabular-nums;
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::before,
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::after,
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) {
+  position: absolute;
+  inset: var(--gauge-in) auto auto var(--gauge-in);
+  inline-size: calc(100% - 2 * var(--gauge-in));
+  block-size: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::before,
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::after { content: ""; }
+/* Track */
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::before {
+  background: conic-gradient(from var(--gauge-from), var(--gauge-track, var(--meter-track, var(--bg))) 0 var(--gauge-span), transparent 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--gauge-arc)), #000 calc(100% - var(--gauge-arc) + 0.5px));
+}
+/* Ticks and redline, in a ring just inside the track */
+:is(.gauge-dial, .gauge-arc, .compass, .clock)::after {
+  --gauge-tick-in: calc(var(--gauge-in) + var(--gauge-arc) + 1cqi);
+  --gauge-major: calc(var(--gauge-span) / var(--gauge-ticks, 8));
+  --gauge-minor-step: calc(var(--gauge-major) / var(--gauge-minor, 5));
+  inset: var(--gauge-tick-in) auto auto var(--gauge-tick-in);
+  inline-size: calc(100% - 2 * var(--gauge-tick-in));
+  background:
+    repeating-conic-gradient(from calc(var(--gauge-from) - 0.8deg), var(--gauge-tick, var(--text)) 0 1.6deg, transparent 0 var(--gauge-major)),
+    repeating-conic-gradient(from calc(var(--gauge-from) - 0.3deg), var(--gauge-tick-minor, var(--muted)) 0 0.6deg, transparent 0 var(--gauge-minor-step)),
+    conic-gradient(from var(--gauge-from), transparent 0 calc(var(--gauge-redline, 1) * var(--gauge-span)), var(--gauge-redline-color, var(--danger)) 0 var(--gauge-span), transparent 0);
+  mask:
+    radial-gradient(farthest-side, transparent calc(100% - var(--gauge-tick-length, 5cqi)), #000 calc(100% - var(--gauge-tick-length, 5cqi) + 0.5px)),
+    conic-gradient(from calc(var(--gauge-from) - 1deg), #000 0 calc(var(--gauge-span) + 2deg), transparent 0);
+  mask-composite: intersect;
+}
+/* The value layer: a <meter> (native semantics) or a span. Drawn pointing
+   up, then turned to the value, so the fill arc is laid out backwards from
+   the needle. */
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) {
+  --gauge-v: clamp(0, var(--value, 0), 1);
+  --gauge-needle-image: linear-gradient(to top,
+    transparent calc(50% - var(--gauge-needle-tail, 8%) / 2),
+    var(--gauge-needle, var(--danger)) 0 calc(50% + var(--gauge-needle-length, 82%) / 2),
+    transparent 0);
+  z-index: var(--z-raised);
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: transparent;
+  rotate: calc(var(--gauge-from) + var(--gauge-v) * var(--gauge-span));
+  background:
+    radial-gradient(circle closest-side, var(--gauge-hub, var(--text)) 0 var(--gauge-hub-size, 12%), transparent calc(var(--gauge-hub-size, 12%) + 1%)) center / 100% 100% no-repeat,
+    var(--gauge-needle-image) center / var(--gauge-needle-width, 2.5cqi) 100% no-repeat,
+    conic-gradient(from calc(var(--gauge-v) * var(--gauge-span) * -1), var(--gauge-fill, var(--accent)) 0 calc(var(--gauge-v) * var(--gauge-span)), transparent 0);
+  mask:
+    radial-gradient(circle closest-side, #000 0 var(--gauge-hub-size, 12%), transparent calc(var(--gauge-hub-size, 12%) + 1%)) center / 100% 100% no-repeat,
+    var(--gauge-needle-image) center / var(--gauge-needle-width, 2.5cqi) 100% no-repeat,
+    radial-gradient(farthest-side, transparent calc(100% - var(--gauge-arc)), #000 calc(100% - var(--gauge-arc) + 0.5px));
+}
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-bar { background: none; border: 0; }
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-optimum-value,
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-suboptimum-value,
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-webkit-meter-even-less-good-value { background: none; }
+:is(.gauge-dial, .gauge-arc, .compass, .clock) > meter::-moz-meter-bar { background: none; }
+/* Typed attr(): the <meter>'s own value, min and max drive the needle. */
+@supports (x: attr(x type(*))) {
+  :is(.gauge-dial, .gauge-arc) > meter[value] {
+    --gauge-v: clamp(0, calc((attr(value type(<number>), 0) - attr(min type(<number>), 0)) / (attr(max type(<number>), 1) - attr(min type(<number>), 0))), 1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) { transition: --gauge-v var(--gauge-speed, 0.4s) ease-out; }
+}
+.gauge-dial.is-warn, .gauge-arc.is-warn { --gauge-fill: var(--gauge-fill-warn, var(--warning)); }
+.gauge-dial.is-error, .gauge-arc.is-error { --gauge-fill: var(--gauge-fill-error, var(--danger)); }
+
+/* Printed numbers: an <ol> whose items sit round the arc, upright. */
+.gauge-ticks { display: contents; }
+.gauge-ticks > li {
+  --gauge-a: calc(var(--gauge-from) + var(--i, 0) * var(--gauge-span) / (var(--n, 1) + var(--gauge-closed, 0)));
+  position: absolute;
+  top: 50cqi;
+  left: 50%;
+  font-size: var(--gauge-label-size, 7cqi);
+  line-height: 1;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) rotate(var(--gauge-a)) translateY(calc(-1 * var(--gauge-label-r, 29cqi))) rotate(calc(-1 * var(--gauge-a)));
+}
+.gauge-ticks > li.is-redline { color: var(--gauge-redline-fg, var(--danger-text, var(--danger))); }
+/* Item index (--i) and count − 1 (--n), shared with .compass-strip. */
+:is(.gauge-ticks, .compass-strip) > li:nth-child(2) { --i: 1; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(3) { --i: 2; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(4) { --i: 3; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(5) { --i: 4; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(6) { --i: 5; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(7) { --i: 6; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(8) { --i: 7; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(9) { --i: 8; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(10) { --i: 9; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(11) { --i: 10; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(12) { --i: 11; }
+:is(.gauge-ticks, .compass-strip) > li:nth-child(13) { --i: 12; }
+.gauge-ticks:has(> li:nth-child(3):last-child) { --n: 2; }
+.gauge-ticks:has(> li:nth-child(4):last-child) { --n: 3; }
+.gauge-ticks:has(> li:nth-child(5):last-child) { --n: 4; }
+.gauge-ticks:has(> li:nth-child(6):last-child) { --n: 5; }
+.gauge-ticks:has(> li:nth-child(7):last-child) { --n: 6; }
+.gauge-ticks:has(> li:nth-child(8):last-child) { --n: 7; }
+.gauge-ticks:has(> li:nth-child(9):last-child) { --n: 8; }
+.gauge-ticks:has(> li:nth-child(10):last-child) { --n: 9; }
+.gauge-ticks:has(> li:nth-child(11):last-child) { --n: 10; }
+.gauge-ticks:has(> li:nth-child(12):last-child) { --n: 11; }
+.gauge-ticks:has(> li:nth-child(13):last-child) { --n: 12; }
+
+.gauge-readout {
+  position: absolute;
+  z-index: var(--z-raised);
+  inset: 62cqi 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--gauge-readout-size, 6cqi);
+  line-height: 1.15;
+  color: var(--gauge-readout-fg, var(--muted));
+  text-align: center;
+}
+.gauge-readout .readout { --readout-size: 11cqi; padding: 0; }
+
+/* Arc gauge: the top half of the same face, no needle. */
+.gauge-arc {
+  --gauge-sweep: 180deg;
+  --gauge-arc-width: 9cqi;
+  --gauge-hub-size: 0%;
+  --gauge-needle-width: 0px;
+  --gauge-ticks: 4;
+  --gauge-minor: 2;
+  aspect-ratio: 100 / 64;
+  border-radius: 50% 50% var(--radius) var(--radius) / 78% 78% var(--radius) var(--radius);
+}
+.gauge-arc .gauge-readout { inset: auto 0 2cqi; }
+.gauge-arc .gauge-ticks > li { --gauge-label-r: 25cqi; }
+
+/* --- .compass (§9 #4): a rose turned by --heading (degrees). The needle
+   layer is the lubber line pointing at the heading; .is-north-up keeps the
+   rose still and turns the needle instead. */
+.compass {
+  --gauge-start: calc(var(--heading, 0) * -1deg);
+  --gauge-sweep: 360deg;
+  --gauge-closed: 1;
+  --gauge-ticks: 8;
+  --gauge-minor: 3;
+  --gauge-arc-width: 0px;
+  --value: calc(var(--heading, 0) / 360);
+  --gauge-hub-size: 9%;
+  --gauge-needle-width: 5cqi;
+  --gauge-needle-image: linear-gradient(to top,
+    transparent calc(50% - var(--compass-needle-tail-length, 30%) / 2),
+    var(--compass-needle-tail, var(--muted)) 0 50%,
+    var(--compass-needle, var(--danger)) 0 calc(50% + var(--compass-needle-length, 70%) / 2),
+    transparent 0);
+}
+.compass.is-north-up { --gauge-start: 0deg; }
+.compass .gauge-ticks > li { --gauge-label-r: 30cqi; --gauge-label-size: 8cqi; font-weight: 600; }
+.compass .gauge-ticks > li:first-child { color: var(--compass-north, var(--danger-text, var(--danger))); }
+
+/* .compass-strip: a heading bar (Skyrim style). An <ol> of cardinal points
+   every --compass-step degrees (45); items with --at are markers placed at
+   their own bearing. --compass-strip-span degrees are visible (180). */
+.compass-strip {
+  --compass-h: var(--heading, 0);
+  --compass-deg: calc(100cqi / var(--compass-strip-span, 180));
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  min-inline-size: 0;
+  block-size: var(--compass-strip-height, 2.5rem);
+  background: var(--compass-strip-bg, var(--surface-2));
+  color: var(--compass-strip-fg, var(--text));
+  border: var(--compass-strip-border-width, 1px) solid var(--compass-strip-border, var(--border));
+  border-radius: var(--compass-strip-radius, var(--radius));
+  mask: var(--compass-strip-mask, none);
+  font-variant-numeric: tabular-nums;
+}
+.compass-strip::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  block-size: 40%;
+  background:
+    linear-gradient(90deg, var(--compass-tick, var(--muted)) 0 1px, transparent 0),
+    linear-gradient(90deg, var(--compass-tick-minor, var(--muted)) 0 1px, transparent 0);
+  background-size: calc(var(--compass-deg) * 45) 100%, calc(var(--compass-deg) * 15) 50%;
+  background-repeat: repeat-x;
+  background-position-x: calc(50cqi - var(--compass-h) * var(--compass-deg)), calc(50cqi - var(--compass-h) * var(--compass-deg));
+  background-position-y: 100%;
+}
+.compass-strip::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  inline-size: 2px;
+  translate: -50% 0;
+  background: var(--compass-lubber, var(--accent));
+}
+.compass-strip > li {
+  --compass-a: var(--at, calc(var(--i, 0) * var(--compass-step, 45)));
+  --compass-off: calc(mod(var(--compass-a) - var(--compass-h) + 180, 360) - 180);
+  position: absolute;
+  top: var(--space-2xs);
+  left: calc(50% + var(--compass-off) * var(--compass-deg));
+  translate: -50% 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.compass-strip > li:first-child { color: var(--compass-north, var(--danger-text, var(--danger))); }
+.compass-strip > li.is-marker { color: var(--series, var(--accent)); }
+.compass-strip > li.is-marker .icon { --icon-size: 1rem; }
+
+/* --- .clock (§9 #16): the dial face with 12 numbers and three hands.
+   Set --h, --m and --s (numbers) on it; the app updates them. */
+.clock {
+  --gauge-start: 0deg;
+  --gauge-sweep: 360deg;
+  --gauge-closed: 1;
+  --gauge-ticks: 12;
+  --gauge-minor: 5;
+  --gauge-arc-width: 0px;
+}
+.clock .gauge-ticks > li { --gauge-label-r: 32cqi; --gauge-label-size: 8cqi; }
+.clock-hand {
+  --clock-a: 0deg;
+  position: absolute;
+  z-index: var(--z-raised);
+  left: 50%;
+  bottom: 50%;
+  inline-size: var(--clock-hand-width, 3cqi);
+  block-size: 30cqi;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  rotate: var(--clock-a);
+  background: var(--clock-hand, var(--text));
+  border-radius: 1cqi;
+}
+.clock-hand.is-hour { --clock-a: calc((mod(var(--h, 0), 12) + var(--m, 0) / 60) * 30deg); block-size: 24cqi; inline-size: var(--clock-hour-width, 4cqi); }
+.clock-hand.is-minute { --clock-a: calc((var(--m, 0) + var(--s, 0) / 60) * 6deg); block-size: 36cqi; }
+.clock-hand.is-second {
+  --clock-a: calc(var(--s, 0) * 6deg);
+  block-size: 40cqi;
+  inline-size: var(--clock-second-width, 1cqi);
+  background: var(--clock-second-hand, var(--danger));
+}
+/* The pivot cap over the hands. */
+.clock-hand.is-second::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  inline-size: 5cqi;
+  aspect-ratio: 1;
+  translate: -50% 50%;
+  border-radius: 50%;
+  background: inherit;
+}
+
+/* --- .gauge-linear (§9 #3): a .meter (div or native <meter class="meter">)
+   with markers at --at (percent). Plain marks are scale labels; .is-target
+   and .is-warn sit below the bar, .is-min and .is-max (recorded extremes)
+   above it. Each mark's text is its label. */
+.gauge-linear {
+  position: relative;
+  min-inline-size: 0;
+  padding-block: var(--gauge-linear-label-room, 1.35rem);
+  font-size: var(--gauge-linear-label-size, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  /* The bands of a .meter-fill are sized to the fill, not the track; inside
+     a linear gauge the track width is known, so they land on-scale. */
+  container-type: inline-size;
+}
+.gauge-linear .meter-fill { --meter-span: calc(100cqi - 2 * var(--meter-border-width, 1px)); }
+.gauge-mark {
+  position: absolute;
+  inset-block: 0;
+  left: var(--at, 0%);
+  display: flex;
+  align-items: flex-end;
+  translate: calc(-1 * var(--at, 0%)) 0;
+  color: var(--gauge-mark-fg, var(--muted));
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.gauge-mark::before {
+  content: "";
+  position: absolute;
+  left: var(--at, 0%);
+  top: calc(var(--gauge-linear-label-room, 1.35rem) + var(--meter-thickness, 0.6rem));
+  inline-size: 1px;
+  block-size: 0.35rem;
+  translate: -50% 0;
+  background: currentColor;
+}
+.gauge-mark:is(.is-target, .is-warn, .is-min, .is-max)::before {
+  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.3rem);
+  inline-size: 2px;
+  block-size: calc(var(--meter-thickness, 0.6rem) + 0.6rem);
+}
+.gauge-mark.is-target { color: var(--gauge-target, var(--text)); font-weight: 600; }
+/* The target also gets a head, so it isn't told apart by colour alone. */
+.gauge-mark.is-target::after {
+  content: "";
+  position: absolute;
+  left: var(--at, 0%);
+  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.75rem);
+  inline-size: 0.6rem;
+  block-size: 0.45rem;
+  translate: -50% 0;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.gauge-mark.is-warn { color: var(--gauge-warn, var(--warning-text, var(--warning))); }
+.gauge-mark.is-warn::before { background: repeating-linear-gradient(currentColor 0 3px, transparent 3px 5px); }
+.gauge-mark:is(.is-min, .is-max) { align-items: flex-start; color: var(--gauge-minmax, var(--muted)); }
+
+/* --- .map (§9 #5–7): a themed frame for an <img>, <svg>, <iframe> or
+   <canvas> map. Overlays sit in a grid: .map-north top-start,
+   .map-controls top-end, .map-legend above .map-scale bottom-start,
+   .map-attribution bottom-end. Pins are absolutely placed at --x/--y. */
+.map {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template: auto 1fr auto auto / minmax(0, 1fr) auto;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  min-block-size: var(--map-min-height, 14rem);
+  aspect-ratio: var(--map-ratio, 16 / 10);
+  padding: var(--map-pad, var(--space-xs));
+  overflow: hidden;
+  background: var(--map-bg, var(--surface-2));
+  border: var(--map-border-width, 1px) solid var(--map-border, var(--border));
+  border-radius: var(--map-radius, var(--radius));
+  box-shadow: var(--map-shadow, none);
+}
+.map > :is(img, svg, iframe, canvas, video) {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  object-fit: cover;
+  border: 0;
+  filter: var(--map-media-filter, none);
+}
+.map > :is(.map-north, .map-controls, .map-legend, .map-scale, .map-attribution) {
+  position: relative;
+  z-index: calc(var(--z-raised) + 1);
+}
+.map > :is(.map-north, .map-legend, .map-scale, .map-attribution) {
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--map-overlay-bg, color-mix(in srgb, var(--surface) 88%, transparent));
+  color: var(--map-overlay-fg, var(--text));
+  border-radius: var(--map-overlay-radius, var(--radius));
+  font-size: var(--map-overlay-size, 0.75rem);
+}
+.map-north {
+  grid-area: 1 / 1;
+  justify-self: start;
+  align-self: start;
+  display: grid;
+  justify-items: center;
+  min-inline-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  rotate: calc(var(--map-bearing, 0) * -1deg);
+}
+.map-north::before {
+  content: "";
+  inline-size: 0.7rem;
+  block-size: 0.8rem;
+  background: var(--map-north, var(--danger));
+  clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%);
+}
+.map-controls {
+  grid-area: 1 / 2 / span 2;
+  justify-self: end;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.map > .map-legend {
+  grid-area: 3 / 1;
+  justify-self: start;
+  align-self: end;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.map-scale {
+  grid-area: 4 / 1;
+  justify-self: start;
+  align-self: end;
+  display: grid;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.map-scale::before {
+  content: "";
+  inline-size: var(--map-scale-width, 5rem);
+  block-size: 0.35rem;
+  border: 1px solid var(--map-scale-fg, var(--text));
+  background: linear-gradient(90deg, var(--map-scale-fg, var(--text)) 0 25%, transparent 0 50%, var(--map-scale-fg, var(--text)) 0 75%, transparent 0);
+}
+.map-attribution {
+  grid-area: 4 / 2;
+  justify-self: end;
+  align-self: end;
+  max-inline-size: 22rem;
+  --map-overlay-size: 0.68rem;
+  --map-overlay-fg: var(--map-attribution-fg, var(--muted));
+}
+.map-attribution a { text-decoration: underline; }
+
+/* .map-pin: a button at --x/--y (percent of the frame). Its hit area is
+   --tap-min square; the drawn pin is --map-pin-size. data-series colours it;
+   aria-expanded / .is-active / aria-current mark the selected one. An
+   optional .map-pin-label rides beside it; a popover opens from it. */
+.map-pin {
+  position: absolute;
+  z-index: var(--z-raised);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  display: grid;
+  place-items: end center;
+  inline-size: var(--tap-min);
+  block-size: var(--tap-min);
+  translate: -50% -100%;
+  padding: 0;
+  touch-action: manipulation;
+}
+.map-pin::before {
+  content: "";
+  inline-size: var(--map-pin-size, 1.4rem);
+  block-size: var(--map-pin-size, 1.4rem);
+  margin-block-end: calc(var(--map-pin-size, 1.4rem) * 0.21);
+  border: 2px solid var(--map-pin-border, var(--surface));
+  border-radius: 50% 50% 50% 0;
+  rotate: -45deg;
+  background: radial-gradient(circle, var(--map-pin-dot, var(--surface)) 0 22%, var(--series, var(--map-pin-bg, var(--accent))) 26%);
+  box-shadow: var(--map-pin-shadow, 0 1px 3px rgba(0, 0, 0, 0.45));
+}
+.map-pin:is([aria-expanded="true"], .is-active, [aria-current]:not([aria-current="false"])) {
+  z-index: calc(var(--z-raised) + 1);
+  --map-pin-size: 1.8rem;
+  --map-pin-border: var(--map-pin-border-active, var(--text));
+}
+.map-pin-label {
+  position: absolute;
+  left: calc(50% + var(--map-pin-size, 1.4rem) / 2 + 0.2rem);
+  bottom: calc(var(--map-pin-size, 1.4rem) * 0.55);
+  padding: var(--space-2xs);
+  background: var(--map-overlay-bg, color-mix(in srgb, var(--surface) 88%, transparent));
+  color: var(--map-overlay-fg, var(--text));
+  border-radius: var(--radius);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* --- .progress-ring (§9 #8) -------------------------------------------------
+ *   <div class="progress-ring" role="progressbar" aria-valuenow="64"
+ *        aria-valuemin="0" aria-valuemax="100" style="--value:.64">64%</div>
+ * Indeterminate: .is-indeterminate, or a progressbar with no aria-valuenow. */
+.progress-ring {
+  --progress-ring-v: clamp(0, var(--value, 0), 1);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--progress-ring-size, 3rem);
+  aspect-ratio: 1;
+  vertical-align: middle;
+  color: var(--progress-ring-fg, var(--text));
+  font-size: var(--progress-ring-text, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: center;
+}
+.progress-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--progress-ring-fill, var(--progress-fill, var(--accent))) calc(var(--progress-ring-v) * 360deg), var(--progress-ring-track, var(--progress-bg, var(--surface-2))) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--progress-ring-width, 0.3rem)), #000 calc(100% - var(--progress-ring-width, 0.3rem) + 0.5px));
+}
+.progress-ring:is(.is-indeterminate, [role="progressbar"]:not([aria-valuenow]))::before {
+  background: conic-gradient(var(--progress-ring-fill, var(--progress-fill, var(--accent))) 0 25%, var(--progress-ring-track, var(--progress-bg, var(--surface-2))) 0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .progress-ring:is(.is-indeterminate, [role="progressbar"]:not([aria-valuenow]))::before { animation: spinner-rotate 1s linear infinite; }
+}
+.progress-ring.is-success { --progress-ring-fill: var(--success); }
+.progress-ring.is-error { --progress-ring-fill: var(--danger); }
+.progress-ring > * { position: relative; }
+
+/* --- .sparkline (§9 #9): inline SVG, styling only ---------------------------
+ *   <svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none"
+ *        role="img" aria-label="…"><polyline points="…"/></svg>
+ * Optional .sparkline-area (a filled polygon) and .sparkline-baseline. */
+.sparkline {
+  display: inline-block;
+  vertical-align: middle;
+  inline-size: var(--sparkline-width, 6em);
+  block-size: var(--sparkline-height, 1.5em);
+  overflow: visible;
+  color: var(--sparkline-stroke, var(--chart-series-1));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--sparkline-line-width, 1.5);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.sparkline * { vector-effect: non-scaling-stroke; }
+.sparkline .sparkline-area { fill: currentColor; fill-opacity: var(--sparkline-area-opacity, 0.16); stroke: none; }
+.sparkline .sparkline-baseline { stroke: var(--chart-grid); stroke-width: 1; stroke-dasharray: 2 2; }
+.sparkline.is-up { --sparkline-stroke: var(--success-text, var(--success)); }
+.sparkline.is-down { --sparkline-stroke: var(--danger-text, var(--danger)); }
+
+/* --- .donut (§9 #10): a conic-gradient ring of up to six segments, sized by
+   --seg-1..--seg-6 (percentages) and coloured --chart-series-1..6, so it
+   matches a .legend with data-series. --donut-hole: 0% makes a pie. */
+.donut {
+  --donut-a1: var(--seg-1, 0%);
+  --donut-a2: calc(var(--donut-a1) + var(--seg-2, 0%));
+  --donut-a3: calc(var(--donut-a2) + var(--seg-3, 0%));
+  --donut-a4: calc(var(--donut-a3) + var(--seg-4, 0%));
+  --donut-a5: calc(var(--donut-a4) + var(--seg-5, 0%));
+  --donut-a6: calc(var(--donut-a5) + var(--seg-6, 0%));
+  --donut-g: var(--donut-gap, 0.4%);
+  --donut-sep: var(--donut-gap-color, var(--surface));
+  position: relative;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  inline-size: var(--donut-size, 9rem);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.2;
+  font-size: 0.8rem;
+  color: var(--donut-fg, var(--muted));
+}
+.donut::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--chart-series-1) 0 calc(var(--donut-a1) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a1),
+    var(--chart-series-2) 0 calc(var(--donut-a2) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a2),
+    var(--chart-series-3) 0 calc(var(--donut-a3) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a3),
+    var(--chart-series-4) 0 calc(var(--donut-a4) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a4),
+    var(--chart-series-5) 0 calc(var(--donut-a5) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a5),
+    var(--chart-series-6) 0 calc(var(--donut-a6) - var(--donut-g)), var(--donut-sep) 0 var(--donut-a6),
+    var(--donut-track, var(--surface-2)) 0);
+  mask: radial-gradient(farthest-side, transparent var(--donut-hole, 58%), #000 calc(var(--donut-hole, 58%) + 0.5px));
+}
+.donut > * { position: relative; }
+.donut strong, .donut .donut-value { display: block; font-size: 1.6em; color: var(--donut-value-fg, var(--text)); font-variant-numeric: tabular-nums; }
+
+/* --- .heatmap (§9 #12): calendar-style grid; each cell's --v (0–1) picks a
+   colour on the sequential scale (.is-diverging: --v −1..1 on the diverging
+   scale). Columns flow in --heatmap-rows rows (7, a week). Scrolls sideways
+   inside itself when wider than its box. */
+.heatmap {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--heatmap-rows, 7), var(--heatmap-cell, 0.85rem));
+  grid-auto-columns: var(--heatmap-cell, 0.85rem);
+  gap: var(--heatmap-gap, 3px);
+  justify-content: start;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  padding: 2px;
+  scrollbar-width: thin;
+}
+.heatmap > * {
+  border-radius: var(--heatmap-radius, 2px);
+  background: color-mix(in oklab, var(--chart-seq-8) calc(var(--v, 0) * 100%), var(--chart-seq-0));
+}
+.heatmap.is-diverging > * {
+  background: color-mix(in oklab, var(--chart-div-pos) calc(max(var(--v, 0), 0) * 100%),
+    color-mix(in oklab, var(--chart-div-neg) calc(max(var(--v, 0) * -1, 0) * 100%), var(--chart-div-mid)));
+}
+.heatmap > .is-empty { background: transparent; outline: 1px dashed var(--hairline); outline-offset: -1px; }
+.heatmap > :is(:focus-visible, .is-active) { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
+@media (hover: hover) {
+  .heatmap > :hover { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
+}
+
+/* --- .timeline (§9 #13): an <ol>; each <li> gets a dot on a rail.
+   States: .is-done (✓), aria-current (ringed), .is-warn (!), .is-error (✕).
+   .is-horizontal lays it out across on desktop and wider. */
+.timeline {
+  --timeline-dot-size: 1rem;
+  display: grid;
+  gap: var(--timeline-gap, var(--space-m));
+  min-inline-size: 0;
+}
+.timeline > li {
+  position: relative;
+  min-inline-size: 0;
+  padding-inline-start: calc(var(--timeline-dot-size) + var(--space-s));
+  overflow-wrap: anywhere;
+}
+.timeline > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.15em;
+  display: grid;
+  place-items: center;
+  inline-size: var(--timeline-dot-size);
+  block-size: var(--timeline-dot-size);
+  border: 2px solid var(--timeline-dot-border, var(--border));
+  border-radius: 50%;
+  background: var(--timeline-dot-bg, var(--surface));
+  color: var(--timeline-dot-fg, var(--on-accent));
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.timeline > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--timeline-dot-size) / 2 - 1px);
+  top: calc(0.15em + var(--timeline-dot-size));
+  bottom: calc(-1 * var(--timeline-gap, var(--space-m)) - 0.15em);
+  inline-size: 2px;
+  background: var(--timeline-line, var(--hairline));
+}
+.timeline > li > time { display: block; font-size: 0.8em; color: var(--timeline-time-fg, var(--muted)); font-variant-numeric: tabular-nums; }
+.timeline > li > p { color: var(--muted); }
+.timeline > li.is-done::before { content: "\2713"; border-color: var(--timeline-done, var(--success)); background: var(--timeline-done, var(--success)); color: var(--on-success); }
+.timeline > li.is-done:not(:last-child)::after { background: var(--timeline-done, var(--success)); }
+.timeline > li[aria-current]:not([aria-current="false"])::before {
+  border-color: var(--timeline-current, var(--accent));
+  background: var(--timeline-current, var(--accent));
+  box-shadow: 0 0 0 3px var(--timeline-current-ring, color-mix(in srgb, var(--accent) 30%, transparent));
+}
+.timeline > li.is-warn::before { content: "!"; border-color: var(--warning); background: var(--warning); color: var(--on-accent); }
+.timeline > li.is-error::before { content: "\2715"; border-color: var(--danger); background: var(--danger); color: var(--on-danger); }
+@media (min-width: 901px) {
+  .timeline.is-horizontal {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(9rem, 1fr);
+    overflow-x: auto;
+    padding-block-start: 0.25rem;
+  }
+  .timeline.is-horizontal > li { padding-inline-start: 0; padding-block-start: calc(var(--timeline-dot-size) + var(--space-xs)); }
+  .timeline.is-horizontal > li::before { top: 0; }
+  .timeline.is-horizontal > li:not(:last-child)::after {
+    top: calc(var(--timeline-dot-size) / 2 - 1px);
+    bottom: auto;
+    inset-inline-start: var(--timeline-dot-size);
+    inset-inline-end: calc(-1 * var(--timeline-gap, var(--space-m)));
+    inline-size: auto;
+    block-size: 2px;
+  }
+}
+
+/* --- dl.props (§9 #14): key/value inspector rows. <div> row wrappers are
+   allowed. Keys take what they need up to 40%; long values wrap. */
+.props {
+  display: grid;
+  grid-template-columns: fit-content(40%) minmax(0, 1fr);
+  margin: 0;
+  font-size: var(--props-size, 0.9em);
+}
+.props > div { display: contents; }
+.props :is(dt, dd) {
+  margin: 0;
+  min-inline-size: 0;
+  padding: var(--props-pad-y, var(--space-2xs)) var(--props-pad-x, var(--space-xs));
+  border-block-start: 1px solid var(--props-rule, var(--hairline));
+  overflow-wrap: anywhere;
+}
+.props dt { grid-column: 1; padding-inline-start: 0; color: var(--props-key-fg, var(--muted)); }
+.props dd { grid-column: 2; padding-inline-end: 0; color: var(--props-value-fg, var(--text)); }
+.props > :is(dt:first-child, dt:first-child + dd, div:first-child > *) { border-block-start: 0; }
+
+/* --- .battery and .signal (§9 #15): status-strip glyphs sized in em.
+ *   <span class="battery" role="img" aria-label="Battery 64%" style="--value:.64"></span>
+ *   <span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span> */
+.battery {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--battery-width, 1.6em);
+  block-size: var(--battery-height, 0.85em);
+  margin-inline-end: var(--battery-nub, 0.15em);
+  padding: 1.5px;
+  border: var(--battery-border-width, 1.5px) solid var(--battery-border, currentColor);
+  border-radius: var(--battery-radius, 0.2em);
+  background: linear-gradient(var(--battery-fill, currentColor), var(--battery-fill, currentColor)) content-box no-repeat;
+  background-size: calc(clamp(0, var(--value, 1), 1) * 100%) 100%;
+}
+.battery::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 100%;
+  top: 50%;
+  inline-size: var(--battery-nub, 0.15em);
+  block-size: 40%;
+  translate: 1px -50%;
+  border-radius: 0 1px 1px 0;
+  background: var(--battery-border, currentColor);
+}
+.battery.is-low { --battery-fill: var(--danger); }
+.battery.is-charging::before {
+  content: "";
+  position: absolute;
+  inset: -1px 25%;
+  background: var(--battery-bolt, var(--warning));
+  clip-path: polygon(60% 0, 10% 58%, 45% 58%, 35% 100%, 90% 40%, 55% 40%);
+}
+.signal {
+  --signal-on: var(--signal-fg, currentColor);
+  --signal-off: var(--signal-off-fg, color-mix(in srgb, currentColor 25%, transparent));
+  --signal-b1: var(--signal-off);
+  --signal-b2: var(--signal-off);
+  --signal-b3: var(--signal-off);
+  --signal-b4: var(--signal-off);
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--signal-width, 1.1em);
+  block-size: var(--signal-height, 0.9em);
+  background:
+    linear-gradient(var(--signal-b1), var(--signal-b1)) 0% 100% / 20% 25% no-repeat,
+    linear-gradient(var(--signal-b2), var(--signal-b2)) 33.33% 100% / 20% 50% no-repeat,
+    linear-gradient(var(--signal-b3), var(--signal-b3)) 66.67% 100% / 20% 75% no-repeat,
+    linear-gradient(var(--signal-b4), var(--signal-b4)) 100% 100% / 20% 100% no-repeat;
+}
+.signal:is([data-bars="1"], [data-bars="2"], [data-bars="3"], [data-bars="4"]) { --signal-b1: var(--signal-on); }
+.signal:is([data-bars="2"], [data-bars="3"], [data-bars="4"]) { --signal-b2: var(--signal-on); }
+.signal:is([data-bars="3"], [data-bars="4"]) { --signal-b3: var(--signal-on); }
+.signal[data-bars="4"] { --signal-b4: var(--signal-on); }
+
+/* --- .countdown (§9 #16): readout-styled parts with unit labels.
+ *   <div class="countdown" role="timer" aria-label="2 days 4 hours left">
+ *     <span data-unit="days">02</span><span data-unit="hrs">04</span>…</div>
+ * .is-urgent (final stretch) and .is-done (elapsed); change the text too. */
+.countdown {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--countdown-gap, var(--space-s));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--countdown-glow, var(--readout-glow, none));
+}
+.countdown > * {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--countdown-size, 1.75rem);
+  font-weight: var(--readout-weight, 600);
+  line-height: 1.1;
+}
+.countdown > [data-unit]::after {
+  content: attr(data-unit);
+  font-family: var(--font);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--countdown-unit-fg, var(--muted));
+}
+.countdown.is-urgent { --countdown-fg: var(--danger-text, var(--danger)); }
+.countdown.is-done { --countdown-fg: var(--muted); --countdown-glow: none; }
+
+/* --- Forced colours: keep the instruments legible with system colours. */
+@media (forced-colors: active) {
+  :is(.gauge-dial, .gauge-arc, .compass, .clock) { --gauge-fill: Highlight; --gauge-needle: CanvasText; --gauge-hub: CanvasText; --gauge-tick: CanvasText; --gauge-track: GrayText; forced-color-adjust: none; background: Canvas; color: CanvasText; }
+  .clock-hand { forced-color-adjust: none; background: CanvasText; }
+  :is(.progress-ring, .donut, .heatmap, .battery, .signal, .map-pin, .compass-strip, .legend, .chart-legend) { forced-color-adjust: none; }
+}
+/* ftl-themes v5: navigation and structure (PLAN.md §9 #37, #39–#46) and
+ * the keyboard layer (§20). Built into every bundle after core.css, so it
+ * reuses .tabs/.tab, .btn-close, .nav-item, the nested-ul menu rules and
+ * the --z-* scale from there. Docs: docs/components/navigation.md. */
+
+/* --- Closable tabs (#37) ---------------------------------------------------
+ *   <div class="tabs is-scroll" role="tablist">
+ *     <div class="tab is-active"><button role="tab" aria-selected="true">a.css</button>
+ *       <button class="btn-close" tabindex="-1" aria-label="Close a.css"></button></div>
+ *     <button class="tab-add" aria-label="New tab"></button>
+ *   </div>
+ * A <button> can't hold a second button, so a closable .tab is a wrapper:
+ * the first child is the tab itself, the .btn-close sits beside it. */
+.tabs.is-scroll {
+  /* max-inline-size: a theme may make .tabs inline-flex (a capsule), which
+     would otherwise grow with its tabs and never scroll. */
+  max-inline-size: 100%;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, var(--border)) transparent;
+}
+.tabs.is-scroll > * { flex-shrink: 0; }
+.tab:has(> .btn-close) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  padding: 0;
+  padding-inline-end: var(--space-3xs);
+}
+.tab:has(> .btn-close) > :not(.btn-close) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  align-self: stretch;
+  min-block-size: var(--tap-min);
+  max-inline-size: var(--tab-max, 14rem);
+  padding-block: 0.4em;
+  padding-inline: 0.9em 0.2em;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  touch-action: manipulation;
+}
+.tab > .btn-close { width: 1.5em; height: 1.5em; font-size: 0.95em; }
+/* On a filled tab the close glyph follows the tab's own text colour. */
+.tab > .btn-close:not(:hover) { color: var(--tab-close-fg, inherit); }
+/* Unsaved changes: a dot before the name (a shape, not just a colour). */
+.tab.is-dirty > :not(.btn-close)::before {
+  content: var(--tab-dirty-glyph, "\25CF");
+  content: var(--tab-dirty-glyph, "\25CF") / "";
+  font-size: 0.75em;
+  color: var(--tab-dirty-fg, currentColor);
+}
+/* The add-tab button stays in view at the end of a scrolling strip. */
+.tab-add {
+  position: sticky;
+  inset-inline-end: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-inline-size: var(--tap-min);
+  min-block-size: var(--tap-min);
+  padding: 0 0.6em;
+  border-radius: var(--tab-radius, var(--radius) var(--radius) 0 0);
+  background: var(--tab-add-bg, var(--surface));
+  color: var(--tab-add-fg, var(--muted));
+  touch-action: manipulation;
+}
+.tab-add::before { content: var(--tab-add-glyph, "+"); font-size: 1.25em; line-height: 1; }
+.tab-add:has(.icon)::before { content: none; }
+.tab-add:focus-visible { color: var(--text); outline-offset: -2px; }
+@media (hover: hover) {
+  .tab-add:hover { color: var(--text); background: var(--tab-add-bg-hover, var(--surface-2)); }
+}
+
+/* --- Menu bar (#39) ---------------------------------------------------------
+ * The same nested-ul markup as .context-menu (core's "v5 nested menus"
+ * shows and hides every .has-submenu > ul and draws the separators):
+ *   <ul class="menubar" role="menubar">
+ *     <li class="has-submenu"><button role="menuitem" aria-haspopup="menu">File</button>
+ *       <ul role="menu"><li><button role="menuitem">New <kbd>Ctrl+N</kbd></button></li>…</ul></li>
+ *   </ul>
+ * Top-level items open their panel on hover, on focus (tap on touch), or
+ * when the app sets aria-expanded="true". */
+.menubar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--menubar-gap, 0);
+  padding: var(--menubar-pad, var(--space-3xs));
+  background: var(--menubar-bg, var(--surface));
+  color: var(--menubar-fg, var(--text));
+  border-bottom: var(--menubar-rule-width, 1px) solid var(--menubar-rule, var(--border));
+}
+.app-bar .menubar { --menubar-bg: transparent; --menubar-rule-width: 0; }
+.menubar li { position: relative; }
+.menubar > li > :is(button, a) {
+  display: flex;
+  align-items: center;
+  block-size: 100%;
+  min-block-size: var(--tap-min);
+  padding: 0.3em 0.75em;
+  border-radius: var(--menubar-item-radius, var(--radius));
+  color: inherit;
+  font-size: var(--menubar-font-size, 0.9em);
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+.menubar > li > :is(button, a):is(:focus-visible, [aria-expanded="true"]),
+.menubar > li:focus-within > :is(button, a) {
+  background: var(--menubar-item-bg-active, var(--accent));
+  color: var(--menubar-item-fg-active, var(--on-accent));
+}
+@media (hover: hover) {
+  .menubar > li:hover > :is(button, a) {
+    background: var(--menubar-item-bg-active, var(--accent));
+    color: var(--menubar-item-fg-active, var(--on-accent));
+  }
+}
+.menubar > li > :is(button, a):focus-visible { outline-offset: -2px; }
+/* Top-level items open downwards, so they carry no side arrow. */
+.menubar > .has-submenu > :is(button, a)::after { content: none; }
+:is(.context-menu, .menubar) .has-submenu > [aria-expanded="true"] + ul { display: block; }
+/* The dropdown panels: the context menu's surface, under the item. Two
+   classes so it outranks core's touch-tier inline-submenu rule. */
+.menubar > .has-submenu > ul {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  z-index: var(--z-dropdown);
+  min-inline-size: var(--menubar-panel-min, 12rem);
+  inline-size: max-content;
+  max-inline-size: min(20rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0.35rem;
+  background: var(--context-menu-bg, var(--dropdown-bg, var(--surface-2)));
+  border: var(--context-menu-border-width, 1px) solid var(--context-menu-border, var(--dropdown-border, var(--border)));
+  border-radius: var(--context-menu-radius, var(--dropdown-radius, var(--radius)));
+  box-shadow: var(--context-menu-shadow, var(--panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
+}
+.menubar > li.is-end > ul { inset-inline-start: auto; inset-inline-end: 0; }
+/* Nested-menu items reach the tap minimum (core sizes .context-menu-item,
+   not yet the ul form's buttons). */
+:is(.menubar, .context-menu) li > :is(button, a) { min-block-size: var(--tap-min); touch-action: manipulation; }
+/* Deeper levels fly out to the side on desktop, like the context menu. */
+@media (min-width: 901px) and (hover: hover) {
+  .menubar ul .has-submenu > ul {
+    position: absolute;
+    top: calc(-0.35rem - 1px);
+    inset-inline-start: calc(100% + 0.35rem);
+    z-index: var(--z-dropdown);
+    min-inline-size: 10rem;
+    inline-size: max-content;
+    max-inline-size: 20rem;
+    padding: 0.35rem;
+    background: var(--context-menu-bg, var(--dropdown-bg, var(--surface-2)));
+    border: var(--context-menu-border-width, 1px) solid var(--context-menu-border, var(--dropdown-border, var(--border)));
+    border-radius: var(--context-menu-radius, var(--dropdown-radius, var(--radius)));
+    box-shadow: var(--context-menu-shadow, var(--panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
+  }
+  .menubar ul .has-submenu > ul::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: -0.5rem;
+    inline-size: 0.5rem;
+  }
+}
+
+/* Menu item states shared by .menubar and the ul .context-menu: disabled,
+   and checkable items (role="menuitemcheckbox"/"menuitemradio" with
+   aria-checked) that show a tick, not just a colour. */
+:is(.context-menu, .menubar) li > :is(button, a):is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+:is(.context-menu, .menubar) li > :is([role="menuitemcheckbox"], [role="menuitemradio"])::before {
+  content: "";
+  inline-size: 1em;
+  margin-inline-end: -0.5rem;
+  flex: none;
+}
+:is(.context-menu, .menubar) li > :is([role="menuitemcheckbox"], [role="menuitemradio"])[aria-checked="true"]::before {
+  content: var(--menu-check-glyph, "\2713");
+}
+:is(.context-menu, .menubar) li > :is([role="menuitemcheckbox"], [role="menuitemradio"]) { justify-content: flex-start; }
+:is(.context-menu, .menubar) li > :is([role="menuitemcheckbox"], [role="menuitemradio"]) > kbd { margin-inline-start: auto; }
+
+/* --- Tree view (#40) ----------------------------------------------------------
+ * Nested lists with <details>, so expand and collapse need no JS:
+ *   <ul class="tree">
+ *     <li><details open><summary>src</summary>
+ *       <ul><li><a href="#" aria-current="page">app.js</a></li></ul></details></li>
+ *   </ul>
+ * Rows are the <summary> and any a / button / span directly in an <li>.
+ * Selected: aria-current, .is-selected, or aria-selected="true" on a
+ * role="treeitem" <li> (apps that add arrow-key navigation). */
+.tree {
+  font-size: var(--tree-font-size, 0.9em);
+  --tree-marker: 1em;
+}
+.tree ul {
+  margin-inline-start: calc(0.5em + var(--tree-marker) / 2);
+  padding-inline-start: var(--tree-indent, 0.5em);
+  border-inline-start: 1px solid var(--tree-guide, var(--hairline));
+}
+.tree :is(summary, li > a, li > button, li > span) {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  inline-size: 100%;
+  min-block-size: var(--tap-min);
+  padding: 0.15em 0.5em;
+  padding-inline-start: calc(0.9em + var(--tree-marker));
+  border-radius: var(--tree-item-radius, var(--radius));
+  color: var(--tree-item-fg, var(--text));
+  text-align: start;
+  list-style: none;
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+}
+.tree summary { padding-inline-start: 0.5em; }
+.tree summary::-webkit-details-marker { display: none; }
+.tree summary::before {
+  content: var(--tree-glyph, "\25B8");
+  flex: none;
+  inline-size: var(--tree-marker);
+  text-align: center;
+  color: var(--tree-glyph-fg, var(--muted));
+}
+.tree details[open] > summary::before { transform: rotate(90deg); }
+.tree .icon { color: var(--tree-icon-fg, var(--muted)); }
+:is(.tree :is(summary, li > a, li > button, li > span):is(.is-selected, [aria-current]:not([aria-current="false"])),
+    .tree [role="treeitem"][aria-selected="true"] > :is(a, button, span, details > summary)) {
+  background: var(--tree-item-bg-selected, var(--row-selected-bg, rgba(128, 128, 128, 0.25)));
+  color: var(--tree-item-fg-selected, var(--row-selected-fg, inherit));
+  box-shadow: var(--tree-selected-marker, inset 0.2rem 0 0 var(--accent));
+  font-weight: 600;
+}
+:is(.tree :is(summary, li > a, li > button, li > span):is(.is-selected, [aria-current]:not([aria-current="false"])),
+    .tree [role="treeitem"][aria-selected="true"] > :is(a, button, span, details > summary)) .icon { color: inherit; }
+@media (hover: hover) {
+  .tree :is(summary, li > a, li > button):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tree summary::before { transition: transform 0.15s ease; }
+}
+
+/* --- Bottom tab bar (#41) -----------------------------------------------------
+ *   <nav class="tabbar" aria-label="Primary">
+ *     <a href="/" aria-current="page"><svg class="icon">…</svg><span>Home</span></a>…
+ *   </nav>
+ * The mobile primary nav. In the shell it can BE the status row:
+ * <nav class="app-status tabbar">. Clears the home indicator through
+ * env(safe-area-inset-bottom) (needs viewport-fit=cover to be non-zero). */
+.tabbar {
+  display: flex;
+  align-items: stretch;
+  padding: 0 env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  background: var(--tabbar-bg, var(--surface));
+  color: var(--tabbar-fg, var(--muted));
+  border-top: var(--tabbar-rule-width, 1px) solid var(--tabbar-rule, var(--border));
+}
+.app-status.tabbar {
+  gap: 0;
+  padding: 0 env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  font-size: inherit;
+}
+.tabbar > :is(a, button) {
+  position: relative;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xs);
+  min-block-size: max(var(--tap-min), var(--tabbar-height, 3.25rem));
+  padding: var(--space-2xs) var(--space-3xs);
+  border-top: var(--tabbar-indicator-width, 2px) solid transparent;
+  color: inherit;
+  font-size: var(--tabbar-label-size, 0.7rem);
+  letter-spacing: var(--label-tracking, normal);
+  touch-action: manipulation;
+}
+.tabbar > * > .icon { --icon-size: var(--tabbar-icon-size, 1.5rem); }
+.tabbar > * > :not(.icon, .badge) {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tabbar > :is([aria-current]:not([aria-current="false"]), [aria-selected="true"], .is-active) {
+  color: var(--tabbar-fg-active, var(--accent-text, var(--accent)));
+  border-top-color: var(--tabbar-indicator, currentColor);
+  font-weight: 600;
+}
+.tabbar > * > .badge {
+  position: absolute;
+  top: var(--space-3xs);
+  inset-inline-start: calc(50% + 0.35rem);
+  font-size: 0.65rem;
+}
+.tabbar > :focus-visible { outline-offset: -2px; }
+@media (hover: hover) {
+  .tabbar > :hover { color: var(--tabbar-fg-hover, var(--text)); }
+}
+
+/* --- Bottom sheet (#42) ---------------------------------------------------------
+ *   <dialog class="sheet" aria-labelledby="t">
+ *     <div class="sheet-header"><h2 id="t">Share</h2><button class="btn-close" commandfor=… command="close" aria-label="Close"></button></div>…
+ *   </dialog>
+ * The mobile counterpart of .modal and .dropdown: anchored to the bottom
+ * edge, full width up to --sheet-max, with a drag-handle mark on top (a
+ * visual; dragging is the app's). Also works as <div class="sheet" popover>. */
+.sheet {
+  --surface-pad: var(--sheet-pad, var(--space-m));
+  position: relative;
+  inline-size: min(100%, var(--sheet-max, 40rem));
+  max-inline-size: 100%;
+  max-block-size: var(--sheet-max-height, 85dvh);
+  margin: 0 auto;
+  padding: var(--surface-pad);
+  padding-block: calc(var(--surface-pad) + 0.75rem) calc(var(--surface-pad) + env(safe-area-inset-bottom, 0px));
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--sheet-bg, var(--modal-bg, var(--panel-bg, var(--surface))));
+  color: var(--on-surface);
+  border: var(--panel-border-width, 1px) solid var(--sheet-border, var(--modal-border, var(--border)));
+  border-block-end: 0;
+  border-radius: var(--sheet-radius, calc(var(--radius) * 3)) var(--sheet-radius, calc(var(--radius) * 3)) 0 0;
+  box-shadow: var(--sheet-shadow, 0 -4px 24px rgba(0, 0, 0, 0.3));
+  overflow-wrap: anywhere;
+}
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  translate: -50% 0;
+  inline-size: var(--sheet-handle-width, 2.25rem);
+  block-size: 0.3rem;
+  border-radius: 999px;
+  background: var(--sheet-handle, var(--border));
+}
+dialog.sheet:modal,
+.sheet[popover]:popover-open {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0 auto;
+  color: var(--on-surface);
+}
+.sheet[popover]:not(:popover-open) { display: none; }
+.sheet::backdrop {
+  background: var(--overlay-bg, rgba(0, 0, 0, 0.6));
+  backdrop-filter: var(--overlay-blur, none);
+}
+.sheet-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block-end: var(--space-s);
+  color: var(--sheet-header-fg, inherit);
+  font-weight: 600;
+}
+.sheet-header > .btn-close { margin-inline-start: auto; }
+.sheet .sheet-header > :is(h1, h2, h3, h4, h5, h6) { margin: 0; font: inherit; font-size: 1.05em; color: inherit; }
+@media (prefers-reduced-motion: no-preference) {
+  dialog.sheet,
+  .sheet[popover] { transition: translate 0.25s ease, display 0.25s allow-discrete, overlay 0.25s allow-discrete; }
+  @starting-style {
+    dialog.sheet[open],
+    .sheet[popover]:popover-open { translate: 0 100%; }
+  }
+}
+
+/* --- Collapsible nav rail (#43) ------------------------------------------------
+ * .app-rail stays decorative (themes paint it, LCARS even writes labels in
+ * it), so navigation gets its own element built from .nav-item:
+ *   <nav class="nav-rail" aria-label="Sections">
+ *     <a class="nav-item" href="#" aria-current="page"><svg class="icon">…</svg><span>Inbox</span></a>…
+ *   </nav>
+ * Full on desktop and XL; icon-only up to 900px (labels stay as the
+ * accessible name). .is-collapsed forces icon-only, .is-expanded forces
+ * labels, for an app's own toggle. */
+.nav-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  flex: none;
+  inline-size: var(--nav-rail-width, 14rem);
+  max-inline-size: 100%;
+  padding: var(--nav-rail-pad, var(--space-xs));
+  overflow: hidden auto;
+  background: var(--nav-rail-bg, var(--surface));
+  border-inline-end: var(--nav-rail-rule-width, 1px) solid var(--nav-rail-rule, var(--border));
+}
+.nav-rail > .nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  min-inline-size: 0;
+  border-inline-start: 3px solid transparent;
+  white-space: nowrap;
+}
+.nav-rail > .nav-item > :not(.icon, .badge) { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+.nav-rail > .nav-item > .badge { margin-inline-start: auto; }
+.nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) {
+  background: var(--nav-item-bg-active, var(--surface-2));
+  color: var(--nav-item-fg-active, var(--text));
+  border-inline-start-color: var(--nav-rail-marker, var(--accent));
+}
+.nav-rail > .nav-item:focus-visible { outline-offset: -2px; }
+.nav-rail > :is(h2, h3, h4, .nav-rail-heading) {
+  margin: var(--space-xs) 0 0;
+  padding-inline: 0.7em;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: var(--label-tracking, normal);
+  text-transform: var(--label-transform, none);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-rail.is-collapsed {
+  inline-size: var(--nav-rail-collapsed-width, calc(max(var(--tap-min), 2.75rem) + 2 * var(--space-xs) + 1px));
+  padding-inline: var(--space-xs);
+}
+.nav-rail.is-collapsed > .nav-item { justify-content: center; padding-inline: 0; min-inline-size: max(var(--tap-min), 2.75rem); }
+.nav-rail.is-collapsed > .nav-item > :not(.icon, .badge),
+.nav-rail.is-collapsed > :is(h2, h3, h4, .nav-rail-heading) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.nav-rail.is-collapsed > .nav-item > .badge { position: absolute; top: 0; inset-inline-end: 0; margin: 0; font-size: 0.6rem; }
+@media (max-width: 900px) {
+  .nav-rail:not(.is-expanded) {
+    inline-size: var(--nav-rail-collapsed-width, calc(max(var(--tap-min), 2.75rem) + 2 * var(--space-xs) + 1px));
+    padding-inline: var(--space-xs);
+  }
+  .nav-rail:not(.is-expanded) > .nav-item { justify-content: center; padding-inline: 0; min-inline-size: max(var(--tap-min), 2.75rem); }
+  .nav-rail:not(.is-expanded) > .nav-item > :not(.icon, .badge),
+  .nav-rail:not(.is-expanded) > :is(h2, h3, h4, .nav-rail-heading) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .nav-rail:not(.is-expanded) > .nav-item > .badge { position: absolute; top: 0; inset-inline-end: 0; margin: 0; font-size: 0.6rem; }
+}
+
+/* --- Stepper / wizard progress (#44) -------------------------------------------
+ *   <ol class="steps">
+ *     <li class="is-done">Account</li>
+ *     <li aria-current="step">Billing <small>Card or invoice</small></li>
+ *     <li class="is-error">Shipping</li>
+ *     <li>Review</li>
+ *   </ol>
+ * Upcoming is the default. Each marker carries its state as a glyph
+ * (number, tick, "!") as well as colour. Horizontal; vertical with
+ * .is-vertical, and always in a box or screen 480px wide or less. */
+.steps {
+  display: flex;
+  gap: var(--steps-gap, var(--space-xs));
+  counter-reset: step;
+  --steps-marker: var(--steps-marker-size, 1.75rem);
+}
+.steps > li {
+  position: relative;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  counter-increment: step;
+  color: var(--steps-fg, var(--muted));
+  font-size: 0.85em;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.steps > li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: var(--steps-marker);
+  block-size: var(--steps-marker);
+  margin: 0 auto var(--space-2xs);
+  border: 2px solid var(--steps-marker-border, var(--muted));
+  border-radius: var(--steps-marker-radius, 50%);
+  background: var(--steps-marker-bg, var(--surface));
+  color: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* Connector from this marker to the next one. */
+.steps > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--steps-marker) / 2 - 1px);
+  inset-inline-start: calc(50% + var(--steps-marker) / 2 + 0.25rem);
+  inset-inline-end: calc(-50% - var(--steps-gap, var(--space-xs)) + var(--steps-marker) / 2 + 0.25rem);
+  block-size: 2px;
+  background: var(--steps-line, var(--border));
+}
+.steps small { display: block; color: var(--muted); font-size: 0.85em; }
+.steps > li > a { position: relative; display: inline-block; color: inherit; touch-action: manipulation; }
+.steps > li > a::before {
+  content: "";
+  position: absolute;
+  left: -0.5rem;
+  right: -0.5rem;
+  top: calc((1em - var(--tap-min)) / 2);
+  bottom: calc((1em - var(--tap-min)) / 2);
+}
+.steps > li.is-done { color: var(--steps-fg-done, var(--text)); }
+.steps > li.is-done::before {
+  content: var(--steps-done-glyph, "\2713");
+  background: var(--steps-done-bg, var(--accent));
+  border-color: var(--steps-done-bg, var(--accent));
+  color: var(--steps-done-fg, var(--on-accent));
+}
+.steps > li.is-done::after { background: var(--steps-line-done, var(--accent)); }
+.steps > li[aria-current="step"] { color: var(--steps-fg-current, var(--text)); font-weight: 600; }
+.steps > li[aria-current="step"]::before {
+  border-color: var(--steps-current, var(--accent));
+  color: var(--steps-current-fg, var(--accent-text, var(--accent)));
+  box-shadow: 0 0 0 3px var(--steps-current-halo, transparent);
+}
+.steps > li.is-error { color: var(--danger-text, var(--danger)); }
+.steps > li.is-error::before {
+  content: var(--steps-error-glyph, "!");
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--on-danger);
+}
+/* Vertical: markers down the inline-start edge, the label beside them. */
+.steps.is-vertical { flex-direction: column; gap: 0; }
+.steps.is-vertical > li {
+  flex: none;
+  min-block-size: calc(var(--steps-marker) + var(--space-m));
+  padding-inline-start: calc(var(--steps-marker) + var(--space-s));
+  padding-block: 0.3em var(--space-m);
+  text-align: start;
+}
+.steps.is-vertical > li::before { position: absolute; top: 0; inset-inline-start: 0; margin: 0; }
+.steps.is-vertical > li:not(:last-child)::after {
+  top: calc(var(--steps-marker) + 2px);
+  bottom: 2px;
+  inset-inline: calc(var(--steps-marker) / 2 - 1px) auto;
+  inline-size: 2px;
+  block-size: auto;
+}
+@container (max-width: 480px) {
+  .steps { flex-direction: column; gap: 0; }
+  .steps > li { flex: none; min-block-size: calc(var(--steps-marker) + var(--space-m)); padding-inline-start: calc(var(--steps-marker) + var(--space-s)); padding-block: 0.3em var(--space-m); text-align: start; }
+  .steps > li::before { position: absolute; top: 0; inset-inline-start: 0; margin: 0; }
+  .steps > li:not(:last-child)::after { top: calc(var(--steps-marker) + 2px); bottom: 2px; inset-inline: calc(var(--steps-marker) / 2 - 1px) auto; inline-size: 2px; block-size: auto; }
+}
+@media (max-width: 480px) {
+  .steps { flex-direction: column; gap: 0; }
+  .steps > li { flex: none; min-block-size: calc(var(--steps-marker) + var(--space-m)); padding-inline-start: calc(var(--steps-marker) + var(--space-s)); padding-block: 0.3em var(--space-m); text-align: start; }
+  .steps > li::before { position: absolute; top: 0; inset-inline-start: 0; margin: 0; }
+  .steps > li:not(:last-child)::after { top: calc(var(--steps-marker) + 2px); bottom: 2px; inset-inline: calc(var(--steps-marker) / 2 - 1px) auto; inline-size: 2px; block-size: auto; }
+}
+
+/* --- Command palette (#45) -------------------------------------------------------
+ *   <dialog class="command" aria-label="Command palette">
+ *     <div class="command-search"><svg class="icon">…</svg>
+ *       <input class="input" type="search" role="combobox" aria-controls="r" aria-expanded="true"
+ *              aria-activedescendant="o1" placeholder="Type a command"></div>
+ *     <div class="command-list" role="listbox" id="r">
+ *       <ul role="group" aria-labelledby="g1"><li role="presentation" id="g1">Files</li>
+ *         <li role="option" id="o1" aria-selected="true">Open file… <kbd>Ctrl+O</kbd></li></ul>
+ *     </div>
+ *     <div class="command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> move</span>…</div>
+ *   </dialog>
+ * The app filters and moves aria-selected; <mark> highlights the match. */
+.command {
+  inline-size: min(var(--command-width, 40rem), calc(100vw - 2rem));
+  max-inline-size: calc(100vw - 2rem);
+  padding: 0;
+  overflow: hidden;
+  background: var(--command-bg, var(--modal-bg, var(--panel-bg, var(--surface))));
+  color: var(--on-surface);
+  border: var(--panel-border-width, 1px) solid var(--command-border, var(--modal-border, var(--border)));
+  border-radius: var(--command-radius, var(--modal-radius, var(--panel-radius, var(--radius))));
+  box-shadow: var(--command-shadow, var(--modal-shadow, 0 12px 40px rgba(0, 0, 0, 0.45)));
+}
+dialog.command:modal,
+.command[popover]:popover-open {
+  position: fixed;
+  inset: 0;
+  margin: var(--command-top, 12dvh) auto auto;
+  block-size: fit-content;
+  max-block-size: calc(100dvh - 2 * var(--command-top, 12dvh));
+}
+.command[popover]:not(:popover-open) { display: none; }
+.command::backdrop {
+  background: var(--overlay-bg, rgba(0, 0, 0, 0.6));
+  backdrop-filter: var(--overlay-blur, none);
+}
+@media (max-width: 480px) {
+  .command { --command-top: var(--space-s); }
+}
+.command-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-2xs) var(--space-m);
+  border-block-end: 1px solid var(--command-rule, var(--hairline));
+  color: var(--muted);
+  --input-bg: transparent;
+  --input-border: transparent;
+  --input-shadow: none;
+}
+.command-search > .input {
+  flex: 1;
+  min-inline-size: 0;
+  padding-inline: 0;
+  color: var(--text);
+  font-size: 1.05em;
+}
+.command-search > .input:focus-visible { outline-offset: -2px; }
+.command-list {
+  max-block-size: var(--command-list-max, min(22rem, 55dvh));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-2xs);
+}
+.command-list [role="group"] + [role="group"] {
+  margin-block-start: var(--space-2xs);
+  padding-block-start: var(--space-2xs);
+  border-block-start: 1px solid var(--command-rule, var(--hairline));
+}
+.command-list [role="group"] > [role="presentation"] {
+  padding: 0.4em 0.75em 0.2em;
+  color: var(--muted);
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: var(--label-tracking, normal);
+  text-transform: var(--label-transform, none);
+}
+.command-list [role="option"] {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  min-block-size: var(--tap-min);
+  padding: 0.35em 0.75em;
+  border-inline-start: 3px solid transparent;
+  border-radius: var(--command-item-radius, var(--radius));
+  color: var(--text);
+  touch-action: manipulation;
+}
+.command-list [role="option"] > :is(kbd, .command-hint) { margin-inline-start: auto; }
+.command-list [role="option"] > .command-hint { color: var(--muted); font-size: 0.8em; white-space: nowrap; }
+.command-list [role="option"] > .command-hint + kbd { margin-inline-start: 0; }
+.command-list [role="option"][aria-selected="true"] {
+  background: var(--command-item-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
+  color: var(--command-item-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
+  border-inline-start-color: currentColor;
+}
+.command-list [role="option"][aria-selected="true"] > .command-hint { color: inherit; }
+.command-list [role="option"]:is([aria-disabled="true"]) { opacity: 0.5; }
+@media (hover: hover) {
+  .command-list [role="option"]:not([aria-selected="true"]):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
+}
+.command mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 0.15em; }
+.command-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs) var(--space-m);
+  padding: var(--space-xs) var(--space-m);
+  border-block-start: 1px solid var(--command-rule, var(--hairline));
+  color: var(--muted);
+  font-size: 0.75em;
+}
+.command-footer kbd { margin-inline-end: 0.25em; }
+
+/* --- Split pane (#46) -----------------------------------------------------------
+ *   <div class="split"><section>…</section><section>…</section></div>
+ * The first pane resizes with the browser's own grip (CSS resize, bottom
+ * corner); its start size is --split-size. For a full-height drag bar the
+ * app drives, put <div class="split-handle" role="separator" tabindex="0"
+ * aria-orientation="vertical" aria-valuenow="40" aria-label="Resize">
+ * between the panes and set --split-size from JS. .is-vertical stacks the
+ * panes top and bottom. Side-by-side panes stack in 480px or less. */
+.split {
+  display: flex;
+  min-block-size: var(--split-min-height, 12rem);
+  border: var(--split-border-width, 1px) solid var(--split-border, var(--border));
+  border-radius: var(--split-radius, var(--radius));
+}
+.split > :not(.split-handle) { min-inline-size: 0; overflow: auto; overflow-wrap: anywhere; padding: var(--split-pad, var(--space-s)); }
+.split > :first-child {
+  flex: none;
+  inline-size: var(--split-size, 50%);
+  min-inline-size: var(--split-min, 6rem);
+  max-inline-size: calc(100% - var(--split-min, 6rem));
+  resize: horizontal;
+  border-inline-end: var(--split-rule-width, 1px) solid var(--split-rule, var(--border));
+}
+.split > :last-child { flex: 1 1 0; }
+.split:has(> .split-handle) > :first-child { resize: none; border-inline-end: 0; }
+.split-handle {
+  position: relative;
+  flex: none;
+  inline-size: var(--split-handle-size, 0.5rem);
+  background: var(--split-handle-bg, var(--surface-2));
+  border-inline: 1px solid var(--split-rule, var(--border));
+  cursor: col-resize;
+  touch-action: none;
+}
+/* The grip mark, and a hit area at least --tap-min wide. */
+.split-handle::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  inline-size: 2px;
+  block-size: 1.5rem;
+  border-radius: 1px;
+  background: var(--split-grip, var(--muted));
+}
+.split-handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((100% - var(--tap-min)) / 2);
+  right: calc((100% - var(--tap-min)) / 2);
+  z-index: var(--z-raised);
+}
+.split-handle:is(:focus-visible, .is-dragging) { background: var(--split-handle-bg-active, var(--accent)); }
+.split-handle:is(:focus-visible, .is-dragging)::after { background: var(--split-grip-active, var(--on-accent)); }
+@media (hover: hover) {
+  .split-handle:hover { background: var(--split-handle-bg-active, var(--accent)); }
+  .split-handle:hover::after { background: var(--split-grip-active, var(--on-accent)); }
+}
+.split.is-vertical { flex-direction: column; block-size: var(--split-height, 24rem); }
+.split.is-vertical > :first-child {
+  inline-size: auto;
+  max-inline-size: none;
+  block-size: var(--split-size, 50%);
+  min-block-size: var(--split-min, 4rem);
+  max-block-size: calc(100% - var(--split-min, 4rem));
+  resize: vertical;
+  border-inline-end: 0;
+  border-block-end: var(--split-rule-width, 1px) solid var(--split-rule, var(--border));
+}
+.split.is-vertical:has(> .split-handle) > :first-child { border-block-end: 0; }
+.split.is-vertical > .split-handle {
+  inline-size: auto;
+  block-size: var(--split-handle-size, 0.5rem);
+  border-inline: 0;
+  border-block: 1px solid var(--split-rule, var(--border));
+  cursor: row-resize;
+}
+.split.is-vertical > .split-handle::after { inline-size: 1.5rem; block-size: 2px; }
+.split.is-vertical > .split-handle::before {
+  left: 0;
+  right: 0;
+  top: calc((100% - var(--tap-min)) / 2);
+  bottom: calc((100% - var(--tap-min)) / 2);
+}
+@container (max-width: 480px) {
+  .split:not(.is-vertical) { flex-direction: column; }
+  .split:not(.is-vertical) > :first-child { inline-size: auto; max-inline-size: none; resize: none; border-inline-end: 0; border-block-end: var(--split-rule-width, 1px) solid var(--split-rule, var(--border)); }
+  .split:not(.is-vertical) > .split-handle { display: none; }
+  .split:not(.is-vertical) > :last-child { flex: 1 0 auto; }
+}
+@media (max-width: 480px) {
+  .split:not(.is-vertical) { flex-direction: column; }
+  .split:not(.is-vertical) > :first-child { inline-size: auto; max-inline-size: none; resize: none; border-inline-end: 0; border-block-end: var(--split-rule-width, 1px) solid var(--split-rule, var(--border)); }
+  .split:not(.is-vertical) > .split-handle { display: none; }
+  .split:not(.is-vertical) > :last-child { flex: 1 0 auto; }
+}
+
+/* --- Keyboard layer (§20) ----------------------------------------------------- */
+
+/* A key combination: <kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd>. The outer
+   kbd is the whole input; only the keys are boxed. */
+kbd:has(> kbd) {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+kbd kbd { font-size: 0.9em; }
+/* Shortcut hints inside menu items read as plain text at the item's end,
+   the way desktop menus print them; they follow the item's own colour on
+   hover and focus. */
+:is(.context-menu, .menubar, .dropdown) kbd {
+  margin-inline-start: auto;
+  padding: 0;
+  padding-inline-start: 1.5rem;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--menu-kbd-fg, inherit);
+  font-size: 0.85em;
+}
+/* Inside a button or a command result: a quiet outlined key that follows
+   the control's text colour. */
+:is(.btn, .tab, .command-list, .command-search) kbd {
+  padding: 0.1em 0.35em;
+  border-color: var(--kbd-hint-border, currentColor);
+  background: var(--kbd-hint-bg, transparent);
+  box-shadow: none;
+  color: inherit;
+  font-size: 0.75em;
+  line-height: 1.5;
+}
+.command-footer kbd { font-size: 0.95em; }
+/* Attribute tooltips can't hold markup, so a shortcut rides in its own
+   attribute: <button data-tooltip="Save" data-shortcut="Ctrl+S">. The app
+   picks the platform's symbols (⌘S vs Ctrl+S). */
+[data-tooltip][data-shortcut]::after { content: attr(data-tooltip) "  " attr(data-shortcut); }
+
+/* .shortcuts — the "?" overlay listing the app's shortcuts. Put it on the
+   dialog itself (<dialog class="modal modal-lg shortcuts">) or any box;
+   groups are <section>s of a <dl> (name in <dt>, keys in <dd>). */
+.shortcuts {
+  --shortcuts-col: 16rem;
+}
+.shortcuts-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--shortcuts-col)), 1fr));
+  gap: var(--space-m) var(--space-l);
+}
+.shortcuts :is(h2, h3, h4):not(.modal-header > *) {
+  margin: 0 0 var(--space-2xs);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: var(--label-tracking, normal);
+  text-transform: var(--label-transform, none);
+}
+.shortcuts dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 0;
+  font-size: 0.9em;
+}
+.shortcuts :is(dt, dd) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+  margin: 0;
+  padding-block: var(--space-2xs);
+  border-block-end: 1px solid var(--shortcuts-rule, var(--hairline));
+}
+.shortcuts dd { justify-content: flex-end; padding-inline-start: var(--space-s); white-space: nowrap; }
+
+/* Roving focus (§20): composite widgets move focus with the arrow keys
+   (one tabindex="0" item, the rest -1). Inside boxes that clip or scroll,
+   the ring is drawn inset so it is never cut off. */
+:is(.list, .tree, .menubar, .context-menu, .dropdown, .command-list, .nav-rail, .tabbar, .tabs, .segmented,
+    .toolbar, .btn-group, .table-wrap, [role="grid"], [role="listbox"], [role="toolbar"], [role="tablist"]) :focus-visible {
+  outline-offset: -2px;
+}
+/* A list row that takes roving focus is a target like a button row. */
+.list-item[tabindex] { min-block-size: var(--tap-min); }
+.table :is(td, th):focus-visible,
+[role="row"]:focus-visible { outline-offset: -2px; }
+/* --- v5 surfaces and media (PLAN.md §9 #47, #49, #50) --------------------
+ * Image card, draggable-window states, brand sign-in buttons.
+ * Docs: docs/components/surfaces.md. Demo: components-surfaces.html. */
+
+/* ---- #47 Image card ------------------------------------------------------
+ * <article class="card has-media">
+ *   <img src="…" alt="…" loading="lazy" width="1200" height="675">
+ *   <div class="card-body">…</div>
+ * </article>
+ * Media is the first child: <img>, <video>, <picture> or a .card-media box.
+ * It bleeds to the card edge and is locked to --card-media-ratio (16 / 9),
+ * so a lazy image reserves its space and nothing jumps when it arrives. */
+.card.has-media {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  position: relative; /* anchors a .stretched-link (whole card clickable) */
+  padding: 0;
+  overflow: hidden; /* the media takes the card's corners */
+}
+.card.has-media > :is(img, video, picture, .card-media) {
+  display: block;
+  inline-size: 100%;
+  block-size: auto; /* beats the height="" attribute, so the ratio holds */
+  aspect-ratio: var(--card-media-ratio, 16 / 9);
+  object-fit: cover;
+  overflow: hidden;
+  /* The lazy-load placeholder: shows until the image paints over it. */
+  background: var(--card-media-placeholder, var(--skeleton-bg, var(--surface-2)));
+}
+.card.has-media > :is(picture, .card-media) > :is(img, video) {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.card-body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2xs);
+  padding: var(--card-body-pad, var(--surface-pad, var(--space-m)));
+  min-inline-size: 0;
+}
+
+/* Loading: aria-busy="true" on the card (the app clears it on load) runs
+   core's skeleton shimmer over the reserved box and hides the alt text. */
+.card.has-media[aria-busy="true"] > :is(img, video, picture, .card-media) {
+  color: transparent;
+  background-image: linear-gradient(90deg, transparent, var(--skeleton-shine, rgba(255, 255, 255, 0.08)), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card.has-media[aria-busy="true"] > :is(img, video, picture, .card-media) {
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+html[data-motion="reduced"] .card.has-media > * { animation: none; }
+
+/* Overlay title: the body sits on the bottom of the media behind a scrim.
+   The scrim is dark enough for white text over any image (≥ 4.5:1 even
+   over pure white), so the text tokens are set for it locally. */
+.card.has-media.is-overlay > * { grid-area: 1 / 1; }
+.card.has-media.is-overlay > .card-body {
+  align-self: end;
+  padding-block-start: calc(var(--surface-pad, var(--space-m)) + var(--space-l));
+  background: var(--card-overlay-bg, linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.78) var(--space-l), rgba(0, 0, 0, 0.85)));
+  --text: var(--card-overlay-fg, #fff);
+  --on-surface: var(--card-overlay-fg, #fff);
+  --muted: var(--card-overlay-muted, rgba(255, 255, 255, 0.82));
+  color: var(--text);
+}
+
+/* Horizontal: media beside the body once there's room. It follows the
+   nearest size container (.modal, .drawer or .cq; put .cq on the grid
+   cell or column that holds the card) and falls back to the viewport when
+   there is none. Media takes --card-media-size of the width and the full
+   height of the card. */
+@media (min-width: 481px) {
+  .card.has-media.is-horizontal:not(.is-overlay) {
+    grid-template-columns: minmax(0, var(--card-media-size, 40%)) minmax(0, 1fr);
+  }
+  .card.has-media.is-horizontal:not(.is-overlay) > :is(img, video, picture, .card-media) {
+    block-size: 100%;
+    align-self: stretch;
+  }
+}
+@container (max-width: 480px) {
+  .card.has-media.is-horizontal:not(.is-overlay) { grid-template-columns: minmax(0, 1fr); }
+  .card.has-media.is-horizontal:not(.is-overlay) > :is(img, video, picture, .card-media) { block-size: auto; }
+}
+
+/* ---- #49 Draggable window ------------------------------------------------
+ * <div class="modal" data-drag> + assets/js/window.js. The header is the
+ * handle: grab cursor, and touch-action: none on it only, so a touch drag
+ * moves the window while the body still scrolls. */
+.modal[data-drag] > .modal-header {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.modal[data-drag].is-dragging { box-shadow: var(--window-drag-shadow, var(--modal-shadow, var(--panel-shadow, 0 0.75rem 2rem rgba(0, 0, 0, 0.35)))); }
+.modal[data-drag].is-dragging > .modal-header { cursor: grabbing; }
+/* A focusable header (tabindex="0", for Alt+Arrow moves) keeps its ring
+   inside the window edge, where overflow can't clip it. */
+.modal[data-drag] > .modal-header:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: -2px;
+}
+/* Maximized wins over the inline left/top/width a drag leaves behind (the
+   checkbox path has no JS to clear them), and the header stops looking
+   draggable. */
+.modal[data-drag]:is(.is-maximized, .window-max:checked + *) {
+  inset: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+.modal[data-drag]:is(.is-maximized, .window-max:checked + *) > .modal-header { cursor: default; }
+
+/* ---- #50 Brand sign-in and connect buttons -------------------------------
+ * <button class="btn-brand is-google">
+ *   <img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">
+ *   Sign in with Google
+ * </button>
+ * Deliberately NOT themed: colours, sizes, radius, font and spacing are each
+ * company's published values (sources in docs/components/surfaces.md) and
+ * live in private --_bb-* properties on the button itself, so no theme token
+ * reaches them. The logo is always an <img> the app supplies (a logo is never
+ * part of a theme bundle; see assets/logos/README.md). Only the focus ring
+ * and the hit area follow the library. */
+.btn-brand {
+  /* Defaults are Google's (light). Each brand below overrides what differs. */
+  --_bb-h: 40px;
+  --_bb-bg: #fff;
+  --_bb-fg: #1f1f1f;
+  --_bb-border: #747775;
+  --_bb-radius: 4px;
+  --_bb-pad: 12px;
+  --_bb-pad-end: 12px;
+  --_bb-gap: 10px;
+  --_bb-logo: 20px;
+  --_bb-font: "Google Sans", Roboto, Arial, sans-serif;
+  --_bb-size: 14px;
+  --_bb-weight: 500;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_bb-gap);
+  box-sizing: border-box;
+  block-size: var(--_bb-h);
+  max-inline-size: 100%;
+  margin: 0;
+  padding: 0 var(--_bb-pad-end) 0 var(--_bb-pad);
+  border: 1px solid var(--_bb-border);
+  border-radius: var(--_bb-radius);
+  background: var(--_bb-bg);
+  box-shadow: none;
+  color: var(--_bb-fg);
+  font: var(--_bb-weight) var(--_bb-size) / 1.25 var(--_bb-font);
+  letter-spacing: normal;
+  text-transform: none;
+  text-shadow: none;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+}
+/* Logical padding flips in RTL along with the logo. */
+.btn-brand:dir(rtl) { padding: 0 var(--_bb-pad) 0 var(--_bb-pad-end); }
+.btn-brand > .btn-brand-logo {
+  flex: none;
+  inline-size: auto;
+  block-size: var(--_bb-logo);
+  max-inline-size: none;
+}
+/* Hit area: the visual height is the brand's; the ::after grows the
+   target to --tap-min on touch tiers without changing the look. */
+.btn-brand::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((var(--_bb-h) - var(--tap-min, 24px)) / 2 - 1px)) 0; /* - 1px: the border */
+}
+/* State layer (Material-style tint of the text colour) — the brand's
+   colours are kept underneath. Hover has a focus-visible equivalent. */
+.btn-brand:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+  background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 10%, transparent) 0 0);
+}
+@media (hover: hover) {
+  .btn-brand:hover { background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 8%, transparent) 0 0); }
+}
+.btn-brand:active { background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 14%, transparent) 0 0); }
+.btn-brand:is(:disabled, [aria-disabled="true"]) { opacity: 0.38; cursor: not-allowed; background-image: none; }
+/* Full width (a sign-in stack): content stays centred, like the providers' own. */
+.btn-brand.is-block { display: flex; inline-size: 100%; }
+/* Icon-only (Google, Apple and Microsoft allow logo-only buttons): square. */
+.btn-brand.is-icon { inline-size: var(--_bb-h); padding: 0; }
+.btn-brand.is-icon::after { inset: min(0px, calc((var(--_bb-h) - var(--tap-min, 24px)) / 2 - 1px)); }
+
+/* Google — developers.google.com/identity/branding-guidelines:
+   40px, 12 / 10 / 12px padding, 20px G, Google Sans Medium 14/20,
+   light / dark / neutral, rectangular (4px) or pill. */
+.btn-brand.is-google.is-dark { --_bb-bg: #131314; --_bb-fg: #e3e3e3; --_bb-border: #8e918f; }
+.btn-brand.is-google.is-neutral { --_bb-bg: #f2f2f2; --_bb-fg: #1f1f1f; --_bb-border: #f2f2f2; }
+.btn-brand.is-google.is-pill { --_bb-radius: 20px; }
+
+/* Microsoft — learn.microsoft.com …/howto-add-branding-in-apps redlines:
+   41px, 12px padding and gap, Segoe UI 15px weight 600, square corners;
+   light #fff / #5e5e5e text / 1px #8c8c8c border, dark #2f2f2f / #fff. */
+.btn-brand.is-microsoft {
+  --_bb-h: 41px;
+  --_bb-fg: #5e5e5e;
+  --_bb-border: #8c8c8c;
+  --_bb-radius: 0;
+  --_bb-gap: 12px;
+  --_bb-logo: 21px;
+  --_bb-font: "Segoe UI", system-ui, sans-serif;
+  --_bb-size: 15px;
+  --_bb-weight: 600;
+}
+.btn-brand.is-microsoft.is-dark { --_bb-bg: #2f2f2f; --_bb-fg: #fff; --_bb-border: #2f2f2f; }
+
+/* Apple — developer.apple.com HIG "Sign in with Apple": black (default),
+   .is-white, .is-outline (white with a black outline); logo and title both
+   black or white; title 43% of the button height in the system font;
+   minimum 140 × 30px; the logo file is as tall as the button and carries
+   its own leading padding, so the button adds none; at least 8% of the
+   width after the title. Rounded corners by default (any radius allowed). */
+.btn-brand.is-apple {
+  --_bb-h: 44px;
+  --_bb-bg: #000;
+  --_bb-fg: #fff;
+  --_bb-border: #000;
+  --_bb-radius: 6px;
+  --_bb-pad: 0px;
+  --_bb-pad-end: max(16px, 2em);
+  --_bb-gap: 0px;
+  --_bb-logo: var(--_bb-h);
+  --_bb-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --_bb-size: calc(var(--_bb-h) * 0.43);
+  min-inline-size: 140px;
+}
+.btn-brand.is-apple.is-white { --_bb-bg: #fff; --_bb-fg: #000; --_bb-border: #fff; }
+.btn-brand.is-apple.is-outline { --_bb-bg: #fff; --_bb-fg: #000; --_bb-border: #000; }
+.btn-brand.is-apple.is-icon { min-inline-size: 0; }
+
+/* GitHub — brand.github.com/foundations/logo: the Invertocat only in black
+   or white, high contrast, no effects. GitHub publishes no button spec, so
+   the box follows the Google/Microsoft proportions. Dark by default. */
+.btn-brand.is-github {
+  --_bb-bg: #000;
+  --_bb-fg: #fff;
+  --_bb-border: #000;
+  --_bb-radius: 6px;
+  --_bb-font: "Mona Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --_bb-weight: 600;
+}
+.btn-brand.is-github.is-light { --_bb-bg: #fff; --_bb-fg: #000; --_bb-border: #000; }
+
+/* Spotify — developer.spotify.com/documentation/design: green icon only on
+   black or white; icon ≥ 21px; exclusion zone half the icon height; link
+   text OPEN SPOTIFY / PLAY ON SPOTIFY / LISTEN ON SPOTIFY / GET SPOTIFY
+   FREE; platform sans-serif (Helvetica Neue, Helvetica, Arial). */
+.btn-brand.is-spotify {
+  --_bb-h: 48px;
+  --_bb-bg: #121212;
+  --_bb-fg: #fff;
+  --_bb-border: #121212;
+  --_bb-radius: 24px;
+  --_bb-logo: 24px;
+  --_bb-gap: 12px;
+  --_bb-pad: 12px;
+  --_bb-pad-end: 20px;
+  --_bb-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --_bb-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.btn-brand.is-spotify.is-light { --_bb-bg: #fff; --_bb-fg: #121212; --_bb-border: #121212; }
+
+/* A row or stack of providers: equal widths, as Google and Apple ask
+   ("at least as prominent as other sign-in options"). */
+.btn-brand-stack {
+  display: grid;
+  gap: var(--space-xs);
+  inline-size: min(100%, 22rem);
+}
+.btn-brand-stack > .btn-brand { display: flex; inline-size: 100%; }
+
+/* Brands keep their own colours in forced-colors mode only where the OS
+   allows; give them a visible border there. */
+@media (forced-colors: active) {
+  .btn-brand { border-color: ButtonText; }
+}
+/* --- v5 tables (PLAN.md §7 editable tables and small screens, §18 advanced
+ * tables, §9 #48 table in a modal) ------------------------------------------
+ * Builds on core's .table, .is-sticky, .is-striped, aria-sort, .is-selected,
+ * .table-wrap and --sticky-top. Apps provide the behaviour (open an editor,
+ * save, resize, reorder, select); this file styles every state.
+ * Docs: docs/components/tables.md. Example: components-tables.html.
+ *
+ * Private custom properties (--_*) are internal plumbing, not theme tokens.
+ * A table resets them so a table nested in a cell starts clean. */
+.table {
+  --_cell-paint: initial;
+  --_row-tint: initial;
+  --_base: initial;
+  --_dir: 1;
+}
+.table:dir(rtl) { --_dir: -1; }
+
+/* Cell padding as tokens (same values as core's literal padding), so the
+   density modifiers and the in-cell editors all read one source. */
+.table :is(th, td) {
+  padding: var(--cell-pad-y, calc(0.5em * var(--density))) var(--cell-pad-x, calc(0.75em * var(--density)));
+}
+.table.is-compact {
+  --cell-pad-y: max(var(--space-2xs), calc(0.25em * var(--density)));
+  --cell-pad-x: calc(0.5em * var(--density));
+}
+.table.is-comfortable {
+  --cell-pad-y: calc(0.85em * var(--density));
+  --cell-pad-x: calc(1em * var(--density));
+}
+
+/* Touch switch, set once: the pencil on idle editable cells. Same
+   conditions as core's --tap-min. */
+:root { --_cell-pencil: none; }
+@media (max-width: 900px), (any-pointer: coarse) {
+  :root { --_cell-pencil: inline-block; }
+}
+html[data-pointer="touch"] { --_cell-pencil: inline-block; }
+
+/* Spreadsheet-style navigation: an app gives cells tabindex and moves focus
+   with the arrow keys. The ring sits inside the cell so a .table-wrap
+   scroller can't clip it. */
+.table :is(td, th):focus-visible { outline-offset: -2px; }
+.table td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { height: var(--tap-min); }
+
+/* --- Editable cells (§7) ----------------------------------------------- */
+
+/* Idle: editable on double-click (desktop) or tap (touch). A dotted
+   underline on hover and focus; a pencil on touch tiers, where there is no
+   hover. */
+.table td.is-editable { cursor: text; }
+.table td.is-editable:focus-visible,
+.table td.is-editable:focus-within {
+  text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
+  text-underline-offset: 0.25em;
+}
+@media (hover: hover) {
+  .table td.is-editable:hover {
+    text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
+    text-underline-offset: 0.25em;
+  }
+}
+.table td.is-editable::after {
+  display: var(--_cell-pencil);
+  content: var(--cell-edit-glyph, "\270E") / "";
+  margin-inline-start: 0.5em;
+  color: var(--cell-edit-glyph-fg, var(--muted));
+  font-size: 0.9em;
+}
+/* Read-only: no affordance, quieter text, the arrow cursor. */
+.table td[aria-readonly="true"] {
+  cursor: default;
+  color: var(--cell-readonly-fg, var(--muted));
+  text-decoration: none;
+}
+.table td.is-editable[aria-readonly="true"]::after { content: none; }
+
+/* Editing: the control fills the cell exactly. The cell's padding moves onto
+   the control (less its border), the font and line height are the cell's,
+   and field-sizing keeps its intrinsic width at its content, so neither the
+   row height nor the column width jumps. Works for a single cell
+   (td.is-editing) and a whole row (tr.is-editing). */
+.table :is(td.is-editing, tr.is-editing > td):has(> :is(.input, .select, .textarea)) { padding: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea) {
+  display: block;
+  width: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  padding: calc(var(--cell-pad-y, calc(0.5em * var(--density))) - var(--input-border-width, 1px))
+    calc(var(--cell-pad-x, calc(0.75em * var(--density))) - var(--input-border-width, 1px));
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  border-radius: var(--cell-input-radius, 0);
+  field-sizing: content;
+  outline-offset: -2px;
+  text-align: start;
+}
+/* Chrome pads the date fields and its picker icon; the cell's padding rules. */
+.table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit,
+.table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit-fields-wrapper { padding-block: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-calendar-picker-indicator { block-size: 1em; padding-block: 0; margin-block: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > .select {
+  padding-inline-end: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + 1.5em);
+}
+.table :is(td.is-editing, tr.is-editing > td) > .textarea { min-height: 0; resize: none; }
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea):not(.is-invalid, [aria-invalid="true"]) {
+  background-color: var(--cell-input-bg, var(--input-bg, var(--surface)));
+  border-color: var(--cell-editing-border, var(--accent));
+}
+/* iOS zooms on focus below 16px; the 44px touch row absorbs the difference. */
+@media (any-pointer: coarse) {
+  .table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea) { font-size: max(16px, 1em); }
+}
+/* A validation message in an editing cell lines up with the control's text. */
+.table :is(td.is-editing, tr.is-editing > td) > .field-error {
+  display: block;
+  margin: 0;
+  padding: var(--space-3xs) var(--cell-pad-x, calc(0.75em * var(--density))) var(--space-2xs);
+}
+
+/* Cell states paint with an inset box-shadow (--_cell-paint), above the row's
+   hover/stripe/selection fill, so a state always shows whatever the row is
+   doing. Each state also has a non-colour signal: a bar, a glyph, a ring or
+   the error text. */
+.table tr > td:is(.is-dirty, .is-saving, .htmx-request, .is-saved, [aria-invalid="true"], :has(> [aria-invalid="true"])),
+.table tr.is-editing > td {
+  box-shadow: var(--_cell-paint);
+}
+.table tr.is-editing > td {
+  --_cell-paint: inset 0 0 0 100vmax var(--row-editing-bg, color-mix(in srgb, var(--accent) 8%, transparent));
+}
+.table tr.is-editing {
+  --_marker: inset 0.25rem 0 0 var(--row-editing-marker, var(--accent));
+}
+.table tr.is-editing > td:first-child { box-shadow: var(--_marker), var(--_cell-paint); }
+/* Row actions (save, cancel) sit in the last cell, kept on one line. */
+.table tr.is-editing > td:last-child:not(:has(> :is(.input, .select, .textarea))) {
+  white-space: nowrap;
+  text-align: end;
+}
+
+/* Dirty: changed, not saved. A bar on the leading edge plus a tint. */
+.table tr > td.is-dirty {
+  --_cell-paint: inset calc(var(--_dir) * 0.2rem) 0 0 var(--cell-dirty-marker, var(--warning)),
+    inset 0 0 0 100vmax var(--cell-dirty-bg, color-mix(in srgb, var(--warning) 14%, transparent));
+}
+/* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
+   and a spinner; the app should also set aria-busy="true" on the cell. */
+.table tr > td:is(.is-saving, .htmx-request) {
+  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.6) * 100%), transparent);
+}
+.table tr > td:is(.is-saving, .htmx-request)::after {
+  content: "";
+  display: inline-block;
+  inline-size: 0.85em;
+  block-size: 0.85em;
+  margin-inline-start: 0.5em;
+  vertical-align: -0.1em;
+  border: 2px solid var(--indicator-track, var(--border));
+  border-top-color: var(--indicator-fg, var(--accent));
+  border-radius: 50%;
+}
+/* Saved: a tick and a success tint; the app removes .is-saved after a moment. */
+.table tr > td.is-saved {
+  --_cell-paint: inset 0 0 0 100vmax var(--cell-saved-bg, color-mix(in srgb, var(--success) 14%, transparent));
+}
+.table tr > td.is-saved::after {
+  content: var(--cell-saved-glyph, "\2713") / "";
+  margin-inline-start: 0.5em;
+  color: var(--cell-saved-fg, var(--success-text, var(--success)));
+  font-weight: 700;
+}
+/* Error: aria-invalid on the cell or its control, plus a .field-error. */
+.table tr > td:is([aria-invalid="true"], :has(> [aria-invalid="true"])) {
+  --_cell-paint: inset 0 0 0 2px var(--cell-error-border, var(--danger)),
+    inset 0 0 0 100vmax var(--cell-error-bg, color-mix(in srgb, var(--danger) 10%, transparent));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .table tr > td:is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
+  .table tr > td.is-saved { animation: cell-saved 1.6s ease-out forwards; }
+}
+@keyframes cell-saved { from { box-shadow: inset 0 0 0 100vmax var(--cell-saved-flash, color-mix(in srgb, var(--success) 35%, transparent)); } }
+
+/* Dropdown, date and combobox in a cell: give the list the popover
+   attribute so it lives in the top layer, where the table's scroller and
+   sticky header can't clip it (core places top-layer popovers). Where anchor
+   positioning is supported, it opens under its own cell, at least as wide:
+     <td class="is-editing"><input class="input" role="combobox" …>
+       <ul class="dropdown" popover role="listbox">…</ul></td> */
+@supports (position-area: block-end) and (anchor-scope: all) {
+  .table :is(td, th):has(> [popover]) { anchor-name: --cell; anchor-scope: --cell; }
+  .table :is(td, th) > :is(.popover, .dropdown, .context-menu)[popover] {
+    position-anchor: --cell;
+    min-inline-size: anchor-size(inline);
+    margin: 0;
+  }
+}
+
+/* --- Frozen columns (§7 small screens, §18) ------------------------------
+ * A .table-wrap keeps its first column in view while the table scrolls
+ * sideways. .is-frozen-1 / .is-frozen-2 do the same in any scroller (and
+ * freeze two columns: the first must be a narrow column, e.g. a selection
+ * checkbox, of width --table-frozen-1-size). A stacked table is not frozen.
+ *
+ * A frozen cell must be opaque while the table is scrolled, or the rows
+ * passing under it show through. Core paints row states as translucent cell
+ * backgrounds, so a frozen body cell paints the row's state (--_row-tint,
+ * mirrored from core's row rules just below) over an opaque base
+ * (--table-bg). It is !important because core's and themes' row-state
+ * selectors outweigh any plain selector here; themes restyle it through the
+ * --row-* and --table-bg tokens. box-shadow is left alone: themes draw row
+ * markers with it. */
+.table.is-striped tbody tr:nth-child(even) { --_row-tint: var(--row-alt-bg, var(--surface-2)); }
+/* :nth-child(n) matches every row; it only lifts these to the stripe's weight. */
+.table tbody tr:nth-child(n):is(:hover, :focus-within):not(.table-empty, .table-more) {
+  --_row-tint: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
+}
+.table tbody tr.is-active:nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
+.table tbody tr.is-selected:nth-child(n) {
+  --_row-tint: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
+}
+
+/* The scroller is the containing block for anything absolutely positioned
+   in the table (a .visually-hidden checkbox name), or it escapes the
+   scroller and widens the page. */
+.table-wrap { position: relative; }
+
+:is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > * > tr > :first-child,
+.table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: var(--z-raised);
+  --_base: var(--table-bg, var(--surface));
+}
+.table.is-frozen-2:not(.is-stacked) > * > tr > :first-child {
+  box-sizing: border-box;
+  inline-size: var(--table-frozen-1-size, calc(var(--tap-min) + 1.5rem));
+  min-inline-size: var(--table-frozen-1-size, calc(var(--tap-min) + 1.5rem));
+}
+.table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+  inset-inline-start: var(--table-frozen-1-size, calc(var(--tap-min) + 1.5rem));
+}
+:is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > :is(tbody, tfoot) > tr > td:first-child,
+.table.is-frozen-2:not(.is-stacked) > :is(tbody, tfoot) > tr > td:nth-child(2) {
+  background: linear-gradient(var(--_row-tint, transparent) 0 0), var(--_base) !important;
+}
+/* Header cells in a frozen column sit above the frozen body cells and a
+   sticky header's other cells (the top-left corner). */
+:is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > thead > tr > th:first-child,
+.table.is-frozen-2:not(.is-stacked) > thead > tr > th:nth-child(2) {
+  background: linear-gradient(var(--table-head-bg, transparent) 0 0), var(--_base);
+  z-index: calc(var(--z-sticky) + 1);
+}
+/* The edge of the last frozen column: a hairline for .is-frozen-N, and a
+   shadow once the table is scrolled sideways (where scroll-driven
+   animations are supported). */
+.table.is-frozen-1:not(.is-stacked) > * > tr > :first-child,
+.table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+  border-inline-end: 1px solid var(--table-frozen-edge, var(--hairline));
+}
+/* Where scroll-driven animations are supported, the opaque base and the
+   edge shadow only appear once the table is scrolled, so a table at rest
+   looks exactly as it would unfrozen, whatever surface it sits on. */
+@supports (animation-timeline: scroll()) {
+  :is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > * > tr > :first-child,
+  .table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) {
+    --_base: transparent;
+    animation: table-frozen-base linear both;
+    animation-timeline: scroll(nearest inline);
+    animation-range: 0 2px;
+  }
+  :is(.table-wrap > .table:not(.is-frozen-2), .table.is-frozen-1):not(.is-stacked) > * > tr > :first-child,
+  .table.is-frozen-2:not(.is-stacked) > * > tr > :nth-child(2) { animation-name: table-frozen-edge; }
+}
+/* data-motion="reduced" pauses every animation, which would freeze these
+   at rest; such pages get the always-opaque form instead. */
+html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table.is-frozen-2):not(.is-stacked) > * > tr > :is(:first-child, :nth-child(2)) {
+  --_base: var(--table-bg, var(--surface));
+  animation: none;
+}
+@keyframes table-frozen-base { to { --_base: var(--table-bg, var(--surface)); } }
+@keyframes table-frozen-edge {
+  from { filter: none; }
+  to {
+    --_base: var(--table-bg, var(--surface));
+    filter: drop-shadow(calc(var(--_dir) * 3px) 0 3px var(--table-frozen-shadow, rgb(0 0 0 / 0.4)));
+  }
+}
+
+/* --- Tables on small screens: stacked cards (§7) -------------------------
+ * Opt in with .table.is-stacked: below the Tablet tier (the nearest .modal,
+ * .drawer or .cq container, or the viewport) each row becomes a card and each
+ * cell shows its column name from data-label. The thead stays for screen
+ * readers. The block is written twice: once for a container, once for the
+ * viewport when there is no container. */
+@media (max-width: 480px) {
+  .table.is-stacked,
+  .table.is-stacked > :is(thead, tbody, tfoot),
+  .table.is-stacked > * > tr:not([hidden]),
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) { display: block; }
+  .table.is-stacked > thead {
+    position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .table.is-stacked > * > tr {
+    margin-block-end: var(--space-xs);
+    border: 1px solid var(--table-card-border, var(--border));
+    border-radius: var(--table-card-radius, var(--radius));
+    background: var(--table-card-bg, transparent);
+    overflow: hidden;
+  }
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) {
+    padding: var(--space-2xs) var(--space-s);
+    text-align: start;
+    height: auto;
+  }
+  .table.is-stacked > * > tr > td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { min-block-size: var(--tap-min); }
+  .table.is-stacked > * > tr > :last-child { border-bottom: 0; }
+  .table.is-stacked > * > tr > [data-label]:nth-child(n) {
+    display: grid;
+    grid-template-columns: minmax(0, var(--table-label-size, 38%)) minmax(0, 1fr) auto;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+  .table.is-stacked > * > tr > [data-label]::before {
+    content: attr(data-label);
+    color: var(--table-label-fg, var(--muted));
+    font-size: 0.78em;
+    text-transform: var(--table-head-transform, uppercase);
+    letter-spacing: var(--table-head-tracking, 0.06em);
+  }
+  .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
+}
+@container (max-width: 480px) {
+  .table.is-stacked,
+  .table.is-stacked > :is(thead, tbody, tfoot),
+  .table.is-stacked > * > tr:not([hidden]),
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) { display: block; }
+  .table.is-stacked > thead {
+    position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .table.is-stacked > * > tr {
+    margin-block-end: var(--space-xs);
+    border: 1px solid var(--table-card-border, var(--border));
+    border-radius: var(--table-card-radius, var(--radius));
+    background: var(--table-card-bg, transparent);
+    overflow: hidden;
+  }
+  .table.is-stacked > * > tr > :is(th, td):nth-child(n) {
+    padding: var(--space-2xs) var(--space-s);
+    text-align: start;
+    height: auto;
+  }
+  .table.is-stacked > * > tr > td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { min-block-size: var(--tap-min); }
+  .table.is-stacked > * > tr > :last-child { border-bottom: 0; }
+  .table.is-stacked > * > tr > [data-label]:nth-child(n) {
+    display: grid;
+    grid-template-columns: minmax(0, var(--table-label-size, 38%)) minmax(0, 1fr) auto;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+  .table.is-stacked > * > tr > [data-label]::before {
+    content: attr(data-label);
+    color: var(--table-label-fg, var(--muted));
+    font-size: 0.78em;
+    text-transform: var(--table-head-transform, uppercase);
+    letter-spacing: var(--table-head-tracking, 0.06em);
+  }
+  .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
+}
+
+/* --- Column resize and reorder (§18) ------------------------------------
+ * th.is-resizable draws a grip on its trailing edge for pointer users; add a
+ * focusable <span class="table-resizer" role="separator" tabindex="0"> inside
+ * it for keyboard users (it replaces the drawn grip). .is-resizing on the th
+ * while dragging. The app does the resizing. */
+.table th.is-resizable { position: relative; height: var(--tap-min); }
+.table th.is-resizable::before,
+.table th.is-resizable > .table-resizer {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: var(--table-resizer-size, var(--tap-min));
+  border-inline-end: 2px solid var(--table-resizer-fg, var(--hairline));
+  cursor: col-resize;
+  touch-action: none;
+}
+.table th.is-resizable:has(> .table-resizer)::before { content: none; }
+.table th.is-resizable > .table-resizer:focus-visible { outline-offset: -2px; }
+.table th.is-resizable.is-resizing::before,
+.table th.is-resizable > .table-resizer:is(:focus-visible, :active),
+.table th.is-resizing > .table-resizer { border-inline-end-color: var(--table-resizer-fg-active, var(--accent)); }
+@media (hover: hover) {
+  .table th.is-resizable:hover::before,
+  .table th.is-resizable > .table-resizer:hover { border-inline-end-color: var(--table-resizer-fg-active, var(--accent)); }
+}
+
+/* Reorder: a draggable header, the column being dragged (.is-dragging) and
+   the drop indicator between columns (.is-drop-before / .is-drop-after on
+   the header, or on every cell of the target column). */
+.table th[draggable="true"] { cursor: grab; }
+.table th[draggable="true"]:active { cursor: grabbing; }
+.table :is(th, td).is-dragging {
+  opacity: 0.5;
+  outline: 1px dashed var(--table-drop-marker, var(--accent));
+  outline-offset: -1px;
+}
+.table :is(th, td).is-drop-before { box-shadow: inset calc(var(--_dir) * 3px) 0 0 var(--table-drop-marker, var(--accent)); }
+.table :is(th, td).is-drop-after { box-shadow: inset calc(var(--_dir) * -3px) 0 0 var(--table-drop-marker, var(--accent)); }
+
+/* --- Row groups and tree rows (§18) --------------------------------------
+ * <tbody class="table-group"> with a header row and an optional totals row.
+ * A .table-toggle with aria-expanded collapses the group (the app flips the
+ * attribute) and marks expandable tree rows. */
+.table-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-block-size: var(--tap-min);
+  min-inline-size: var(--tap-min);
+  margin-block: calc(-1 * var(--cell-pad-y, calc(0.5em * var(--density))));
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: start;
+  touch-action: manipulation;
+}
+.table-toggle::before {
+  content: var(--table-toggle-glyph, "\25B8") / "";
+  display: inline-block;
+  inline-size: 1em;
+  text-align: center;
+  color: var(--table-toggle-fg, var(--muted));
+}
+.table-toggle:dir(rtl)::before { scale: -1 1; }
+.table-toggle[aria-expanded="true"]::before { rotate: 90deg; }
+.table-toggle:dir(rtl)[aria-expanded="true"]::before { rotate: -90deg; }
+@media (prefers-reduced-motion: no-preference) {
+  .table-toggle::before { transition: rotate 0.15s ease; }
+}
+
+.table .table-group-header > :is(th, td) {
+  background: var(--table-group-bg, var(--surface-2));
+  color: var(--table-group-fg, var(--text));
+  font-weight: 600;
+}
+.table .table-group-total > :is(th, td) {
+  border-top: 1px solid var(--table-total-border, var(--border));
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.table .table-group:has(> .table-group-header [aria-expanded="false"]) > tr:not(.table-group-header, .table-group-total) {
+  display: none;
+}
+
+/* Tree rows: <tr data-level="2"> (or aria-level in a treegrid) indents the
+   first cell. Rows with children carry a .table-toggle; leaf rows are
+   indented by its width too so their text lines up. The app hides the rows
+   of a collapsed branch (the hidden attribute). */
+.table tr:is([data-level="2"], [aria-level="2"]) { --_level: 1; }
+.table tr:is([data-level="3"], [aria-level="3"]) { --_level: 2; }
+.table tr:is([data-level="4"], [aria-level="4"]) { --_level: 3; }
+.table tr:is([data-level="5"], [aria-level="5"]) { --_level: 4; }
+.table tr:is([data-level="6"], [aria-level="6"]) { --_level: 5; }
+.table tr:is([data-level="7"], [aria-level="7"]) { --_level: 6; }
+.table tr:is([data-level], [aria-level]) > :first-child {
+  padding-inline-start: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + var(--_level, 0) * var(--table-indent, 1.25rem));
+}
+.table tr:is([data-level], [aria-level]) > :first-child:not(:has(> .table-toggle)) {
+  padding-inline-start: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + var(--_level, 0) * var(--table-indent, 1.25rem) + 1.4em);
+}
+
+/* --- Selection column and bulk-action bar (§18) ---------------------------
+ * Rows select with core's tr.is-selected (add aria-selected="true" in a
+ * grid). A checkbox-only first column shrinks to its content. A .bulk-bar
+ * placed before the table (or its .table-wrap) shows only while a row in it
+ * is selected; elsewhere, the app shows and hides it. */
+/* :where() so .is-frozen-2's fixed first-column width wins. */
+:where(.table tr > :first-child:has(> :is(.checkbox, .check):only-child)) { inline-size: 1px; text-align: center; }
+/* A row checkbox wrapped in a label with a hidden name (CONTRACT.md "Touch
+   and pointer") gets the full target width at every tier, not just touch. */
+.table .check:has(> .visually-hidden:last-child) { min-inline-size: var(--tap-min); justify-content: center; }
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--bulk-bar-pad, var(--space-2xs) var(--space-s));
+  background: var(--bulk-bar-bg, color-mix(in srgb, var(--accent) 14%, var(--surface)));
+  color: var(--bulk-bar-fg, var(--text));
+  border: 1px solid var(--bulk-bar-border, var(--accent));
+  border-radius: var(--bulk-bar-radius, var(--radius));
+}
+.bulk-bar-count { margin-inline-end: auto; font-weight: 600; }
+.bulk-bar:has(~ :is(.table, .table-wrap)):not(:has(~ .table tr.is-selected, ~ .table-wrap tr.is-selected)) { display: none; }
+
+/* --- Loading, empty and load-more rows (§18) ----------------------------
+ * .table.is-loading (with aria-busy="true") turns every body cell into a
+ * skeleton bar, keeping the rows' size. .table-empty holds an .empty-state;
+ * .table-more is the infinite-scroll row ("Loading more…", a spinner, or a
+ * Load more button for htmx's revealed trigger). */
+.table.is-loading tbody td { position: relative; color: transparent; }
+.table.is-loading tbody td > * { visibility: hidden; }
+.table.is-loading tbody td::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset-block-start: calc(50% - 0.45em);
+  inset-inline: var(--cell-pad-x, calc(0.75em * var(--density)));
+  block-size: 0.9em;
+  border-radius: 0.2em;
+  background-color: var(--skeleton-bg, var(--surface-2));
+}
+.table.is-loading tbody td:nth-child(3n + 2)::after { inset-inline-end: 30%; }
+.table.is-loading tbody td:nth-child(3n)::after { inset-inline-end: 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .table.is-loading tbody td::after {
+    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.08), transparent);
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+/* Two classes plus :nth-child(n) to outweigh core's striped-and-hovered
+   cell rule: these rows never take a hover or stripe fill. */
+.table.table tbody tr:nth-child(n):is(.table-empty, .table-more) > td {
+  background: transparent;
+  border-bottom: 0;
+}
+.table tr.table-empty > td { padding: 0; }
+.table tr.table-more > td {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+.table tr.table-more > td > :is(.spinner, .indicator) { vertical-align: middle; margin-inline-end: 0.5em; }
+
+/* --- Table in a modal (§9 #48) -------------------------------------------
+ * <div class="modal"> … <div class="table-wrap"><table class="table is-sticky">
+ * The modal becomes a column: its header and footer stay put, the
+ * .table-wrap is the scrolling body, and the sticky header sticks to it.
+ * Zero specificity so .is-minimized and themes still win; only applied
+ * while the modal is shown, so a closed popover or dialog stays hidden. */
+:where(.modal:has(> .table-wrap):is(:popover-open, [open], :not([popover], dialog))) {
+  display: flex;
+  flex-direction: column;
+}
+.modal > .table-wrap {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: auto;
 }
 }

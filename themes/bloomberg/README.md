@@ -46,6 +46,16 @@ The shell becomes a **data wall**: a thin 1.8rem function-key bar, no
 decorative rail at all (density wins over chrome), and a status strip that
 reads as another data row rather than a conventional status bar.
 
+## v5 layout
+
+- **Tiers.** Desktop and XL keep the vertical function-key band. Phone
+  (≤480px) and tablet (481–900px) drop it: density over chrome, and the
+  status strip still carries the same key row. Brand and actions share the
+  bar's first line and the nav scrolls on the second.
+- **XL gutter art.** More of the data wall, out of focus: rows of dim amber
+  readout cells on the terminal's row rules, like neighbouring monitors on
+  a trading floor. Still, and within about 1.3:1 of black.
+
 ## Tell-tales of an inauthentic result
 
 - Any proportional (non-monospace) font anywhere on the page.

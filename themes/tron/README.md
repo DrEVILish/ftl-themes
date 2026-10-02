@@ -37,6 +37,14 @@ The shell becomes **an enclosure**: 0.75rem padding all round, a thin
 0.35rem lit conduit down the left edge (the rail, drawn as a vertical light
 gradient with a bloom rather than as a panel), and a glowing bar above.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** core's one-column shell; the 0.35rem lit conduit rail is dropped.
+- **Nested surfaces:** a panel or card inside another surface takes the smaller 10px bevel. A surface that holds an in-flow `.anchor` menu keeps square corners, because `clip-path` would cut the menu off at its edge (top-layer popovers escape either way).
+- **XL gutters (≥1801):** light-cycle trails on the Grid floor: thin right-angled jetwalls in cyan and one rival orange, faint, over the page's own grid. Still.
+
 ## Known compromise
 
 Eurostile, the reference face, is not web-available; the stack falls

@@ -110,10 +110,10 @@ html[data-theme="teletext"] :is(h1, h2, h3, .panel-header, .stat-value) { font-w
 html[data-theme="teletext"] .stat-value { color: var(--warning); }
 /* Section titles are colour bands across the whole panel, rotating
    through the broadcast set with the text colour each needs. */
-html[data-theme="teletext"] .panel { --tt-band: #0000ff; --tt-band-fg: #ffffff; }
-html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+2) { --tt-band: #00ff00; --tt-band-fg: #000000; }
-html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+3) { --tt-band: #ff00ff; --tt-band-fg: #000000; }
-html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+4) { --tt-band: #ffff00; --tt-band-fg: #000000; }
+html[data-theme="teletext"] .panel { --tt-band: #0000ff; --tt-band-fg: #ffffff; --tt-ink: #00ffff; }
+html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+2) { --tt-band: #00ff00; --tt-band-fg: #000000; --tt-ink: #00ff00; }
+html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+3) { --tt-band: #ff00ff; --tt-band-fg: #000000; --tt-ink: #ff00ff; }
+html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+4) { --tt-band: #ffff00; --tt-band-fg: #000000; --tt-ink: #ffff00; }
 html[data-theme="teletext"] .panel-header {
   background: var(--tt-band);
   color: var(--tt-band-fg);
@@ -122,6 +122,14 @@ html[data-theme="teletext"] .panel-header {
   font-size: 1em;
 }
 html[data-theme="teletext"] .card { border: 0; border-top: 0.35rem solid var(--tt-band, #0000ff); }
+/* A panel inside another surface steps down: no second full-width band
+   under the parent's, just the title in its colour (blue reads as cyan
+   ink on black) over a thin band, the way a card is marked. */
+html[data-theme="teletext"] :is(.panel, .card, .modal, .drawer, .popover) .panel > .panel-header {
+  background: transparent;
+  color: var(--tt-ink, #00ffff);
+  border-top: 0.35rem solid var(--tt-band, #0000ff);
+}
 html[data-theme="teletext"] .tabs { border-bottom: 0; }
 html[data-theme="teletext"] .tab.is-active { border-bottom: 0; }
 html[data-theme="teletext"] .tab:nth-child(4n+2):not(.is-active) { color: #00ff00; }
@@ -135,16 +143,13 @@ html[data-theme="teletext"] h3 {
 
 /* The page-number header: every real teletext page opens with a cyan
    "Pnnn" index in the top-left corner of the frame. */
-html[data-theme="teletext"] .app-bar {
-  position: relative;
-  padding-left: 4.5rem;
-}
 html[data-theme="teletext"] .app-bar::before {
+  /* A flex item, not an absolute overlay: it leads the brand's line on
+     every tier, so on a phone the brand truncates after it instead of
+     sliding underneath it. */
   content: "P100";
-  position: absolute;
-  left: 0.6rem;
-  top: 50%;
-  transform: translateY(-50%);
+  order: -1;
+  flex: none;
   color: #ffffff;
 }
 /* The header row's nav: every link a different broadcast colour, as a
@@ -231,4 +236,24 @@ html[data-theme="teletext"] {
   --bar-chart-gap: 4px;
   --bar-chart-radius: 0;
   --bar-chart-axis: #ffffff;
+}
+
+/* --- v5 layout (PLAN.md §2–§3) -------------------------------------------
+ * No breakpoints of its own: core's tiers stack bar, main and status on
+ * phones and tablets, and "P100" leads the brand line at every size. The
+ * double-height headline shrinks on touch tiers so OVERVIEW still fits a
+ * 393px screen at its doubled height. */
+html[data-theme="teletext"] h1 { font-size: clamp(1.1rem, 4vw + 0.3rem, 1.5rem); }
+
+/* XL gutters: a dark teletext page beside the frame. Character cells 12x20
+   (the SAA5050 grid), a dim blue header band every ten rows, and sparse
+   mosaic sixel blocks in the broadcast eight dimmed to within 1.5:1 of
+   black. Hard stops only: teletext had no anti-aliasing. Still. */
+html[data-theme="teletext"] {
+  --app-gutter-art:
+    conic-gradient(from 270deg at 24px 20px, #002b2b 25%, transparent 0) 36px 60px / 156px 220px,
+    conic-gradient(from 270deg at 12px 40px, #2b002b 25%, transparent 0) 108px 140px / 204px 260px,
+    conic-gradient(from 270deg at 36px 20px, #002b00 25%, transparent 0) 168px 20px / 252px 340px,
+    conic-gradient(from 270deg at 12px 20px, #262600 25%, transparent 0) 60px 180px / 132px 300px,
+    repeating-linear-gradient(#000 0 200px, #000038 200px 240px);
 }

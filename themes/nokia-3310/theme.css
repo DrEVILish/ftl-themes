@@ -144,7 +144,11 @@ html[data-theme="nokia-3310"] .app-bar {
  * bezel around the whole app shell, plus a keypad-style softkey row along
  * the bottom, are the two cheapest, most legible cues that this is a
  * compact handset display rather than a desktop app. */
-html[data-theme="nokia-3310"] body {
+/* The casing is the page around the shell, not `body`: in the shell
+   markup body IS .app, so a dark body background painted over the LCD
+   and left dark ink on dark plastic. .app keeps --app-bg (the LCD). Only
+   with the shell adopted: at L0 the page stays the plain LCD. */
+html[data-theme="nokia-3310"]:has(.app) {
   background: #14180d;
   padding: 1.5rem;
 }
@@ -156,7 +160,9 @@ html[data-theme="nokia-3310"] .app {
     0 0 0 2px #050603,
     inset 0 0 0 1px rgba(255, 255, 255, 0.06),
     0 24px 48px rgba(0, 0, 0, 0.55);
-  overflow: hidden;
+  /* clip, not hidden: hidden would make the shell a scroll container and
+     stop sticky headers inside it sticking to the screen. */
+  overflow: clip;
   min-height: calc(100vh - 3rem);
   min-height: calc(100dvh - 3rem);
 }
@@ -219,6 +225,58 @@ html[data-theme="nokia-3310"] .app-status::after {
   right: 1rem;
 }
 
+/* --- v5 tiers -----------------------------------------------------------
+ * The handset stays a handset on a phone, it just gets a thinner casing so
+ * the screen keeps its width. On touch tiers the bar is two lines (brand
+ * and actions, then the scrolling nav), so the signal and battery bars sit
+ * on the first line instead of straddling both. */
+@media (max-width: 900px) {
+  html[data-theme="nokia-3310"]:has(.app) { padding: 0.75rem; }
+  html[data-theme="nokia-3310"] .app {
+    border-width: 10px;
+    border-radius: 1.2rem;
+    min-height: calc(100vh - 1.5rem);
+    min-height: calc(100dvh - 1.5rem);
+  }
+  html[data-theme="nokia-3310"] .app-bar { padding: 0 2.6rem; }
+  /* The earpiece moves into the casing, off the bar's first line. */
+  html[data-theme="nokia-3310"] .app::before { top: -7px; }
+  html[data-theme="nokia-3310"] .app-bar::before,
+  html[data-theme="nokia-3310"] .app-bar::after { top: 22px; width: 1.3rem; }
+  html[data-theme="nokia-3310"] .app-bar::before { left: 0.5rem; }
+  html[data-theme="nokia-3310"] .app-bar::after { right: 0.5rem; }
+}
+@media (max-width: 480px) {
+  html[data-theme="nokia-3310"]:has(.app) { padding: 0.25rem; }
+  html[data-theme="nokia-3310"] .app {
+    border-width: 6px;
+    border-radius: 0.9rem;
+    min-height: calc(100vh - 0.5rem);
+    min-height: calc(100dvh - 0.5rem);
+  }
+  html[data-theme="nokia-3310"] { --app-status-padding: 0.4rem 4.2rem; }
+  /* Smaller signal/battery bars, so the brand keeps a few characters
+     beside the actions on a 393px screen. */
+  html[data-theme="nokia-3310"] .app-bar { padding: 0 1.5rem; }
+  html[data-theme="nokia-3310"] .app::before { top: -5px; height: 0.25rem; }
+  html[data-theme="nokia-3310"] .app-bar::before,
+  html[data-theme="nokia-3310"] .app-bar::after { width: 0.95rem; height: 0.6rem; }
+  html[data-theme="nokia-3310"] .app-bar::before { left: 0.3rem; }
+  html[data-theme="nokia-3310"] .app-bar::after { right: 0.3rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the rest of the handset. The casing
+   carries the keypad: rows of rounded keys moulded in the same dark
+   plastic, a shade lighter, three to a row like the 3310's number pad.
+   Measured against the casing (#14180d), the page colour here, not the
+   LCD --bg; within about 1.1:1. Still. */
+html[data-theme="nokia-3310"] {
+  --app-gutter-art:
+    radial-gradient(ellipse 34px 18px at 50% 50%, #1f2516 0 92%, transparent 100%) 0 0 / 92px 64px,
+    radial-gradient(ellipse 34px 18px at 50% 50%, rgba(255, 255, 255, 0.035) 0 30%, transparent 70%) 0 -4px / 92px 64px,
+    #14180d;
+}
+
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * pixel-dark columns on the LCD, square messages. */
 html[data-theme="nokia-3310"] {
@@ -228,4 +286,12 @@ html[data-theme="nokia-3310"] {
   --bar-chart-bar-alt: repeating-linear-gradient(0deg, var(--text) 0 3px, transparent 3px 5px);
   --bar-chart-radius: 0;
   --bar-chart-gap: 3px;
+}
+
+/* Close (v5): the phone backed out with its "Back" soft key, not ×. */
+html[data-theme="nokia-3310"] .modal-header > .btn-close {
+  --btn-close-glyph: "Back";
+  --btn-close-width: auto;
+  --btn-close-pad: 0 0.4em;
+  --btn-close-glyph-size: 1em;
 }

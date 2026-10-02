@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instruments and data display — ftl-themes components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- v5 component group "instruments" (PLAN.md §9 #1–16 and the §18 chart
+     contract). Generated; core classes only, no page CSS. Every chart has
+     an accessible data table. Docs: docs/components/instruments.md. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Instruments</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon" aria-label="Notifications" data-tooltip="Tooltip in the app bar"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Instruments and data display</h1>
+      <p class="text-muted">Gauges, compass, map, rings, charts and status glyphs. Values come from native elements or one documented custom property; every look is a theme token.</p>
+    </div>
+
+    <section class="stack" id="c-gauge-dial">
+      <h2>Dial gauge <code>.gauge-dial</code></h2>
+      <p class="text-muted">A <code>&lt;meter&gt;</code> carries the value (its attributes drive the needle where typed <code>attr()</code> is supported); <code>--value</code> (0–1) drives it everywhere. Red zone from <code>--gauge-redline</code>.</p>
+      <div class="cluster">
+        <div class="gauge-dial" style="--value:.72; --gauge-redline:.8125">
+          <meter min="0" max="8000" low="5500" high="6500" optimum="2000" value="5760">5,760 rpm</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li class="is-redline">7</li><li class="is-redline">8</li></ol>
+          <div class="gauge-readout"><span class="readout">5.7</span>×1000 rpm</div>
+        </div>
+        <div class="gauge-dial" style="--value:.4583; --gauge-ticks:6; --gauge-minor:4">
+          <meter min="0" max="240" value="110">110 km/h</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>40</li><li>80</li><li>120</li><li>160</li><li>200</li><li>240</li></ol>
+          <div class="gauge-readout"><span class="readout">110</span>km/h</div>
+        </div>
+        <div class="gauge-dial is-warn" style="--value:.86; --gauge-size:9rem; --gauge-ticks:4; --gauge-minor:5; --gauge-redline:.9"
+             role="meter" aria-label="Boost pressure" aria-valuemin="0" aria-valuemax="2" aria-valuenow="1.72">
+          <span class="gauge-needle"></span>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>.5</li><li>1</li><li>1.5</li><li class="is-redline">2</li></ol>
+          <div class="gauge-readout"><span class="readout">1.72</span>bar</div>
+        </div>
+        <div class="gauge-dial is-error" style="--value:.97; --gauge-size:9rem; --gauge-ticks:5; --gauge-redline:.8">
+          <meter min="0" max="150" value="146">146 °C</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>30</li><li>60</li><li>90</li><li>120</li><li class="is-redline">150</li></ol>
+          <div class="gauge-readout"><span class="readout">146</span>°C oil</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-gauge-arc">
+      <h2>Arc gauge <code>.gauge-arc</code></h2>
+      <div class="cluster">
+        <div class="gauge-arc" style="--value:.3; --gauge-size:12rem">
+          <meter min="0" max="60" low="10" value="18">18 of 60 litres</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+          <div class="gauge-readout"><span class="readout">18</span>litres</div>
+        </div>
+        <div class="gauge-arc is-warn" style="--value:.12; --gauge-size:12rem">
+          <meter min="0" max="100" value="12">12%</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>25</li><li>50</li><li>75</li><li>100</li></ol>
+          <div class="gauge-readout"><span class="readout">12%</span>tank B</div>
+        </div>
+        <div class="gauge-arc" style="--value:.64; --gauge-size:12rem; --gauge-redline:.75">
+          <meter min="0" max="100" value="64">64%</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>25</li><li>50</li><li>75</li><li class="is-redline">100</li></ol>
+          <div class="gauge-readout"><span class="readout">64%</span>CPU</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-gauge-linear">
+      <h2>Linear gauge <code>.gauge-linear</code></h2>
+      <p class="text-muted">A <code>.meter</code> with marks at <code>--at</code>: scale labels, a target, a warning line, and recorded min and max.</p>
+      <div class="panel stack">
+        <div class="gauge-linear">
+          <div class="meter" style="--meter-level:62%; --meter-warn-at:80%; --meter-peak-at:95%" role="meter" aria-label="Feeder load, kilowatts" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+          <span class="gauge-mark" style="--at:0%">0</span>
+          <span class="gauge-mark" style="--at:100%">100</span>
+          <span class="gauge-mark is-target" style="--at:50%">Target 50</span>
+          <span class="gauge-mark is-warn" style="--at:80%">Warn 80</span>
+          <span class="gauge-mark is-min" style="--at:14%">min 14</span>
+          <span class="gauge-mark is-max" style="--at:91%">max 91</span>
+        </div>
+        <div class="gauge-linear">
+          <meter class="meter" min="0" max="40" low="10" high="32" optimum="20" value="27">27 °C</meter>
+          <span class="gauge-mark" style="--at:0%">0 °C</span>
+          <span class="gauge-mark" style="--at:100%">40 °C</span>
+          <span class="gauge-mark is-target" style="--at:55%">Set 22</span>
+          <span class="gauge-mark is-warn" style="--at:80%">Alarm 32</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-compass">
+      <h2>Compass <code>.compass</code> and heading strip <code>.compass-strip</code></h2>
+      <div class="cluster">
+        <div class="stack stack-sm">
+          <div class="compass" style="--heading:215" role="img" aria-label="Heading 215 degrees, south-west">
+            <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li></ol>
+            <span class="gauge-needle"></span>
+          </div>
+          <span><span class="readout readout-sm">215°</span> heading up</span>
+        </div>
+        <div class="stack stack-sm">
+          <div class="compass is-north-up" style="--heading:72; --gauge-size:9rem" role="img" aria-label="Heading 72 degrees, east-north-east">
+            <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>E</li><li>S</li><li>W</li></ol>
+            <span class="gauge-needle"></span>
+          </div>
+          <span><span class="readout readout-sm">072°</span> north up</span>
+        </div>
+      </div>
+      <ol class="compass-strip" style="--heading:215" role="img" aria-label="Heading 215 degrees. Harbour gate at 250 degrees, depot at 190 degrees.">
+        <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+        <li class="is-marker" data-series="2" style="--at:250"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+        <li class="is-marker" data-series="3" style="--at:190"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg></li>
+      </ol>
+      <ol class="compass-strip" style="--heading:2; --compass-strip-span:120" role="img" aria-label="Heading 2 degrees, north">
+        <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+      </ol>
+    </section>
+
+    <section class="stack" id="c-map">
+      <h2>Map frame <code>.map</code>, pins <code>.map-pin</code> and legend <code>.map-legend</code></h2>
+      <p class="text-muted">Not a map engine: a frame for an image, SVG or iframe map. Pins sit at <code>--x</code>/<code>--y</code> and open a popover.</p>
+      <figure class="map" style="--map-ratio:2">
+        <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Street map of the harbour district">
+          <rect width="800" height="500" fill="#e8e4d8"/>
+          <path d="M0 330 C120 300 200 360 320 340 S520 260 620 300 S760 380 800 360 L800 500 L0 500 Z" fill="#a9c8e0"/>
+          <path d="M520 40 h170 v120 h-170 Z" fill="#c4dcb0"/>
+          <path d="M60 60 h150 v90 h-150 Z" fill="#c4dcb0"/>
+          <g fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round">
+            <path d="M0 220 H800"/><path d="M300 0 V320"/><path d="M460 0 L560 300"/><path d="M0 120 C200 140 380 90 800 200"/>
+          </g>
+          <g fill="none" stroke="#f3c97a" stroke-width="8" stroke-linecap="round"><path d="M0 220 H800"/></g>
+          <g fill="#6b6658" font-family="sans-serif" font-size="18"><text x="80" y="110">Elm Park</text><text x="560" y="105">Quay Gardens</text><text x="40" y="420" fill="#4a6f8c">River Wend</text></g>
+        </svg>
+        <button class="map-pin" style="--x:22%; --y:40%" data-series="1" popovertarget="pin-depot"><span class="map-pin-label">North depot</span></button>
+        <button class="map-pin is-active" style="--x:58%; --y:44%" data-series="2" popovertarget="pin-gate"><span class="map-pin-label">Harbour gate</span></button>
+        <button class="map-pin" style="--x:74%; --y:68%" data-series="3" popovertarget="pin-crane" aria-label="Crane 4, fault"></button>
+        <span class="map-north" role="img" aria-label="North">N</span>
+        <div class="map-controls">
+          <button class="btn btn-icon" aria-label="Zoom in"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-zoom-in"/></svg></button>
+          <button class="btn btn-icon" aria-label="Zoom out"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-zoom-out"/></svg></button>
+          <button class="btn btn-icon" aria-label="My location"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-gps"/></svg></button>
+        </div>
+        <ul class="legend map-legend" aria-label="Legend">
+          <li data-series="1">Depot</li><li data-series="2">Gate</li><li data-series="3">Fault</li>
+        </ul>
+        <span class="map-scale" style="--map-scale-width:5rem">200 m</span>
+        <figcaption class="map-attribution">Map data © Example Cartography</figcaption>
+      </figure>
+      <div class="popover" popover id="pin-depot"><strong>North depot</strong><p class="text-muted">12 vans, 3 charging.</p></div>
+      <div class="popover" popover id="pin-gate"><strong>Harbour gate</strong><p class="text-muted">Open until 22:00.</p></div>
+      <div class="popover" popover id="pin-crane"><strong>Crane 4</strong><p class="text-muted">Hydraulic fault since 09:12.</p></div>
+      <p class="text-muted">A legend outside the frame, for small screens:</p>
+      <ul class="legend map-legend"><li data-series="1">Depot</li><li data-series="2">Gate</li><li data-series="3">Fault</li></ul>
+    </section>
+
+    <section class="stack" id="c-progress-ring">
+      <h2>Progress ring <code>.progress-ring</code></h2>
+      <div class="cluster">
+        <div class="progress-ring" role="progressbar" aria-label="Upload" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="--value:0">0%</div>
+        <div class="progress-ring" role="progressbar" aria-label="Upload" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" style="--value:.64">64%</div>
+        <div class="progress-ring is-success" role="progressbar" aria-label="Backup" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="--value:1"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-check"/></svg></div>
+        <div class="progress-ring is-error" role="progressbar" aria-label="Sync failed at 38%" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" style="--value:.38">!</div>
+        <div class="progress-ring" role="progressbar" aria-label="Loading"></div>
+        <div class="progress-ring" role="progressbar" aria-label="Disk" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100" style="--value:.81; --progress-ring-size:5rem; --progress-ring-width:.5rem; --progress-ring-text:1rem">81%</div>
+      </div>
+    </section>
+
+    <section class="stack" id="c-sparkline">
+      <h2>Sparkline <code>.sparkline</code></h2>
+      <div class="grid grid-sm">
+        <div class="card stat"><span class="stat-label">Requests / min</span><span class="stat-value">1,284</span>
+          <svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Requests rising over 12 hours"><polygon class="sparkline-area" points="0,24 0.0,20.6 9.1,19.1 18.2,22.0 27.3,17.7 36.4,14.9 45.5,16.3 54.5,13.4 63.6,10.6 72.7,12.0 81.8,7.7 90.9,6.3 100.0,2.0 100,24"/><polyline points="0.0,20.6 9.1,19.1 18.2,22.0 27.3,17.7 36.4,14.9 45.5,16.3 54.5,13.4 63.6,10.6 72.7,12.0 81.8,7.7 90.9,6.3 100.0,2.0"/></svg><span class="stat-trend is-up">▲ 12%</span></div>
+        <div class="card stat"><span class="stat-label">Error rate</span><span class="stat-value">0.42%</span>
+          <svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Error rate falling over 12 hours"><polygon class="sparkline-area" points="0,24 0.0,2.0 9.1,5.3 18.2,2.0 27.3,8.7 36.4,12.0 45.5,8.7 54.5,15.3 63.6,12.0 72.7,18.7 81.8,15.3 90.9,22.0 100.0,22.0 100,24"/><polyline points="0.0,2.0 9.1,5.3 18.2,2.0 27.3,8.7 36.4,12.0 45.5,8.7 54.5,15.3 63.6,12.0 72.7,18.7 81.8,15.3 90.9,22.0 100.0,22.0"/></svg><span class="stat-trend is-down">▼ 0.3 pts</span></div>
+        <div class="card stat"><span class="stat-label">Queue depth</span><span class="stat-value">37</span>
+          <svg class="sparkline " viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Queue depth steady over 12 hours"><polygon class="sparkline-area" points="0,24 0.0,22.0 9.1,12.0 18.2,17.0 27.3,7.0 36.4,12.0 45.5,2.0 54.5,7.0 63.6,12.0 72.7,7.0 81.8,17.0 90.9,12.0 100.0,7.0 100,24"/><polyline points="0.0,22.0 9.1,12.0 18.2,17.0 27.3,7.0 36.4,12.0 45.5,2.0 54.5,7.0 63.6,12.0 72.7,7.0 81.8,17.0 90.9,12.0 100.0,7.0"/></svg><span class="stat-trend">steady</span></div>
+      </div>
+      <p>Inline in text: build times this week <svg class="sparkline " viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Build times, 7 days, slightly down"><polygon class="sparkline-area" points="0,24 0.0,15.3 16.7,8.7 33.3,15.3 50.0,2.0 66.7,8.7 83.3,15.3 100.0,22.0 100,24"/><polyline points="0.0,15.3 16.7,8.7 33.3,15.3 50.0,2.0 66.7,8.7 83.3,15.3 100.0,22.0"/></svg> are trending down.</p>
+    </section>
+
+    <section class="stack" id="c-donut">
+      <h2>Donut <code>.donut</code> with <code>--seg-1…6</code></h2>
+      <div class="cluster">
+        <div class="donut" style="--seg-1:42%; --seg-2:28%; --seg-3:18%; --seg-4:12%" role="img" aria-label="Traffic sources: Direct 42%, Search 28%, Social 18%, Email 12%">
+          <span><strong>18.4k</strong>visits</span>
+        </div>
+        <ul class="legend is-vertical"><li data-series="1">Direct 42%</li><li data-series="2">Search 28%</li><li data-series="3">Social 18%</li><li data-series="4">Email 12%</li></ul>
+        <div class="donut" style="--seg-1:65%; --seg-2:20%; --donut-hole:0%; --donut-size:6rem" role="img" aria-label="Storage: used 65%, reserved 20%, free 15%"></div>
+        <ul class="legend is-vertical"><li data-series="1">Used 65%</li><li data-series="2">Reserved 20%</li><li style="--series:var(--surface-2)">Free 15%</li></ul>
+      </div>
+      <details class="accordion-item">
+          <summary class="accordion-trigger">Data table: Traffic sources, last 30 days</summary>
+          <div class="table-wrap"><table class="table">
+            <caption class="visually-hidden">Traffic sources, last 30 days</caption>
+            <thead><tr><th scope="col">Source</th><th scope="col">Share</th><th scope="col">Visits</th></tr></thead>
+            <tbody><tr><th scope="row">Direct</th><td>42%</td><td>7,728</td></tr><tr><th scope="row">Search</th><td>28%</td><td>5,152</td></tr><tr><th scope="row">Social</th><td>18%</td><td>3,312</td></tr><tr><th scope="row">Email</th><td>12%</td><td>2,208</td></tr></tbody>
+          </table></div>
+        </details>
+    </section>
+
+    <section class="stack" id="c-legend">
+      <h2>Chart legend <code>.legend</code> / <code>.chart-legend</code></h2>
+      <ul class="legend"><li data-series="1">Series 1</li><li data-series="2">Series 2</li><li data-series="3">Series 3</li><li data-series="4">Series 4</li><li data-series="5">Series 5</li><li data-series="6">Series 6</li></ul>
+      <ul class="legend is-line"><li data-series="1">Line swatch</li><li data-series="2">Line swatch</li></ul>
+      <ul class="legend" aria-label="Toggle series">
+        <li data-series="1"><button aria-pressed="true">Web</button></li>
+        <li data-series="2"><button aria-pressed="false">App (hidden)</button></li>
+        <li data-series="3"><button aria-pressed="true">API</button></li>
+      </ul>
+      <ul class="legend is-scale" aria-label="Scale"><li style="--v:0">Less</li><li style="--v:.25"></li><li style="--v:.5"></li><li style="--v:.75"></li><li style="--v:1">More</li></ul>
+    </section>
+
+    <section class="stack" id="c-heatmap">
+      <h2>Heatmap <code>.heatmap</code></h2>
+      <p class="text-muted">Commits per day, last 12 weeks (columns are weeks, Monday at the top).</p>
+      <ol class="heatmap" role="img" aria-label="Commits per day over 12 weeks; weekdays are busier than weekends. See the data table."><li style="--v:0.50" title="Week 1, Mon: 5 commits"></li><li style="--v:0.70" title="Week 1, Tue: 7 commits"></li><li style="--v:0.50" title="Week 1, Wed: 5 commits"></li><li style="--v:0.50" title="Week 1, Thu: 5 commits"></li><li style="--v:0.30" title="Week 1, Fri: 3 commits"></li><li style="--v:0.00" title="Week 1, Sat: 0 commits"></li><li style="--v:0.40" title="Week 1, Sun: 4 commits"></li><li style="--v:0.70" title="Week 2, Mon: 7 commits"></li><li style="--v:0.90" title="Week 2, Tue: 9 commits"></li><li style="--v:0.60" title="Week 2, Wed: 6 commits"></li><li style="--v:0.70" title="Week 2, Thu: 7 commits"></li><li style="--v:0.60" title="Week 2, Fri: 6 commits"></li><li style="--v:0.00" title="Week 2, Sat: 0 commits"></li><li style="--v:0.40" title="Week 2, Sun: 4 commits"></li><li style="--v:0.70" title="Week 3, Mon: 7 commits"></li><li style="--v:0.70" title="Week 3, Tue: 7 commits"></li><li style="--v:0.00" title="Week 3, Wed: 0 commits"></li><li style="--v:0.00" title="Week 3, Thu: 0 commits"></li><li style="--v:0.30" title="Week 3, Fri: 3 commits"></li><li style="--v:0.00" title="Week 3, Sat: 0 commits"></li><li style="--v:0.20" title="Week 3, Sun: 2 commits"></li><li style="--v:0.50" title="Week 4, Mon: 5 commits"></li><li style="--v:0.70" title="Week 4, Tue: 7 commits"></li><li style="--v:0.40" title="Week 4, Wed: 4 commits"></li><li style="--v:0.60" title="Week 4, Thu: 6 commits"></li><li style="--v:0.70" title="Week 4, Fri: 7 commits"></li><li style="--v:0.00" title="Week 4, Sat: 0 commits"></li><li style="--v:0.60" title="Week 4, Sun: 6 commits"></li><li style="--v:0.70" title="Week 5, Mon: 7 commits"></li><li style="--v:0.90" title="Week 5, Tue: 9 commits"></li><li style="--v:0.40" title="Week 5, Wed: 4 commits"></li><li style="--v:0.30" title="Week 5, Thu: 3 commits"></li><li style="--v:0.40" title="Week 5, Fri: 4 commits"></li><li style="--v:0.10" title="Week 5, Sat: 1 commits"></li><li style="--v:0.30" title="Week 5, Sun: 3 commits"></li><li style="--v:0.60" title="Week 6, Mon: 6 commits"></li><li style="--v:0.40" title="Week 6, Tue: 4 commits"></li><li style="--v:0.30" title="Week 6, Wed: 3 commits"></li><li style="--v:0.40" title="Week 6, Thu: 4 commits"></li><li style="--v:0.90" title="Week 6, Fri: 9 commits"></li><li style="--v:0.00" title="Week 6, Sat: 0 commits"></li><li style="--v:0.20" title="Week 6, Sun: 2 commits"></li><li style="--v:0.70" title="Week 7, Mon: 7 commits"></li><li style="--v:0.10" title="Week 7, Tue: 1 commits"></li><li style="--v:0.60" title="Week 7, Wed: 6 commits"></li><li style="--v:0.90" title="Week 7, Thu: 9 commits"></li><li style="--v:0.00" title="Week 7, Fri: 0 commits"></li><li style="--v:0.00" title="Week 7, Sat: 0 commits"></li><li style="--v:0.10" title="Week 7, Sun: 1 commits"></li><li style="--v:0.30" title="Week 8, Mon: 3 commits"></li><li style="--v:0.70" title="Week 8, Tue: 7 commits"></li><li style="--v:0.50" title="Week 8, Wed: 5 commits"></li><li style="--v:0.10" title="Week 8, Thu: 1 commits"></li><li style="--v:0.80" title="Week 8, Fri: 8 commits"></li><li style="--v:0.30" title="Week 8, Sat: 3 commits"></li><li style="--v:0.40" title="Week 8, Sun: 4 commits"></li><li style="--v:1.00" title="Week 9, Mon: 10 commits"></li><li style="--v:0.70" title="Week 9, Tue: 7 commits"></li><li style="--v:0.60" title="Week 9, Wed: 6 commits"></li><li style="--v:0.20" title="Week 9, Thu: 2 commits"></li><li style="--v:0.70" title="Week 9, Fri: 7 commits"></li><li style="--v:0.00" title="Week 9, Sat: 0 commits"></li><li style="--v:0.00" title="Week 9, Sun: 0 commits"></li><li style="--v:0.20" title="Week 10, Mon: 2 commits"></li><li style="--v:0.30" title="Week 10, Tue: 3 commits"></li><li style="--v:0.40" title="Week 10, Wed: 4 commits"></li><li style="--v:0.90" title="Week 10, Thu: 9 commits"></li><li style="--v:0.00" title="Week 10, Fri: 0 commits"></li><li style="--v:0.00" title="Week 10, Sat: 0 commits"></li><li style="--v:0.20" title="Week 10, Sun: 2 commits"></li><li style="--v:1.00" title="Week 11, Mon: 10 commits"></li><li style="--v:0.70" title="Week 11, Tue: 7 commits"></li><li style="--v:0.00" title="Week 11, Wed: 0 commits"></li><li style="--v:0.00" title="Week 11, Thu: 0 commits"></li><li style="--v:0.70" title="Week 11, Fri: 7 commits"></li><li style="--v:0.00" title="Week 11, Sat: 0 commits"></li><li style="--v:0.00" title="Week 11, Sun: 0 commits"></li><li style="--v:0.80" title="Week 12, Mon: 8 commits"></li><li style="--v:0.90" title="Week 12, Tue: 9 commits"></li><li style="--v:0.60" title="Week 12, Wed: 6 commits"></li><li style="--v:0.60" title="Week 12, Thu: 6 commits"></li><li style="--v:0.70" title="Week 12, Fri: 7 commits"></li><li style="--v:0.60" title="Week 12, Sat: 6 commits"></li><li style="--v:0.30" title="Week 12, Sun: 3 commits"></li></ol>
+      <ul class="legend is-scale" aria-hidden="true"><li style="--v:0">Less</li><li style="--v:.25"></li><li style="--v:.5"></li><li style="--v:.75"></li><li style="--v:1">More</li></ul>
+      <details class="accordion-item">
+          <summary class="accordion-trigger">Data table: Commits per day, 12 weeks</summary>
+          <div class="table-wrap"><table class="table">
+            <caption class="visually-hidden">Commits per day, 12 weeks</caption>
+            <thead><tr><th scope="col">Week</th><th scope="col">Mon</th><th scope="col">Tue</th><th scope="col">Wed</th><th scope="col">Thu</th><th scope="col">Fri</th><th scope="col">Sat</th><th scope="col">Sun</th></tr></thead>
+            <tbody><tr><th scope="row">Week 1</th><td>5</td><td>7</td><td>5</td><td>5</td><td>3</td><td>0</td><td>4</td></tr><tr><th scope="row">Week 2</th><td>7</td><td>9</td><td>6</td><td>7</td><td>6</td><td>0</td><td>4</td></tr><tr><th scope="row">Week 3</th><td>7</td><td>7</td><td>0</td><td>0</td><td>3</td><td>0</td><td>2</td></tr><tr><th scope="row">Week 4</th><td>5</td><td>7</td><td>4</td><td>6</td><td>7</td><td>0</td><td>6</td></tr><tr><th scope="row">Week 5</th><td>7</td><td>9</td><td>4</td><td>3</td><td>4</td><td>1</td><td>3</td></tr><tr><th scope="row">Week 6</th><td>6</td><td>4</td><td>3</td><td>4</td><td>9</td><td>0</td><td>2</td></tr><tr><th scope="row">Week 7</th><td>7</td><td>1</td><td>6</td><td>9</td><td>0</td><td>0</td><td>1</td></tr><tr><th scope="row">Week 8</th><td>3</td><td>7</td><td>5</td><td>1</td><td>8</td><td>3</td><td>4</td></tr><tr><th scope="row">Week 9</th><td>10</td><td>7</td><td>6</td><td>2</td><td>7</td><td>0</td><td>0</td></tr><tr><th scope="row">Week 10</th><td>2</td><td>3</td><td>4</td><td>9</td><td>0</td><td>0</td><td>2</td></tr><tr><th scope="row">Week 11</th><td>10</td><td>7</td><td>0</td><td>0</td><td>7</td><td>0</td><td>0</td></tr><tr><th scope="row">Week 12</th><td>8</td><td>9</td><td>6</td><td>6</td><td>7</td><td>6</td><td>3</td></tr></tbody>
+          </table></div>
+        </details>
+      <p class="text-muted">Diverging (<code>.is-diverging</code>, <code>--v</code> from −1 to 1): monthly temperature anomaly, one row per year.</p>
+      <ol class="heatmap is-diverging" style="--heatmap-rows:3; --heatmap-cell:1.4rem" role="img" aria-label="Temperature anomaly by month, 2024 to 2026; warmer summers each year. See the data table."><li style="--v:-0.6" title="Jan 2024: -0.6 °C"></li><li style="--v:-0.4" title="Jan 2025: -0.4 °C"></li><li style="--v:0.1" title="Jan 2026: +0.1 °C"></li><li style="--v:-0.3" title="Feb 2024: -0.3 °C"></li><li style="--v:0.0" title="Feb 2025: +0.0 °C"></li><li style="--v:0.2" title="Feb 2026: +0.2 °C"></li><li style="--v:0.1" title="Mar 2024: +0.1 °C"></li><li style="--v:0.3" title="Mar 2025: +0.3 °C"></li><li style="--v:0.5" title="Mar 2026: +0.5 °C"></li><li style="--v:0.4" title="Apr 2024: +0.4 °C"></li><li style="--v:0.6" title="Apr 2025: +0.6 °C"></li><li style="--v:0.7" title="Apr 2026: +0.7 °C"></li><li style="--v:0.2" title="May 2024: +0.2 °C"></li><li style="--v:0.8" title="May 2025: +0.8 °C"></li><li style="--v:1.0" title="May 2026: +1.0 °C"></li><li style="--v:0.7" title="Jun 2024: +0.7 °C"></li><li style="--v:1.0" title="Jun 2025: +1.0 °C"></li><li style="--v:0.9" title="Jun 2026: +0.9 °C"></li><li style="--v:0.9" title="Jul 2024: +0.9 °C"></li><li style="--v:0.9" title="Jul 2025: +0.9 °C"></li><li style="--v:1.0" title="Jul 2026: +1.0 °C"></li><li style="--v:0.5" title="Aug 2024: +0.5 °C"></li><li style="--v:0.7" title="Aug 2025: +0.7 °C"></li><li style="--v:0.8" title="Aug 2026: +0.8 °C"></li><li style="--v:0.0" title="Sep 2024: +0.0 °C"></li><li style="--v:0.3" title="Sep 2025: +0.3 °C"></li><li style="--v:0.6" title="Sep 2026: +0.6 °C"></li><li style="--v:-0.2" title="Oct 2024: -0.2 °C"></li><li style="--v:0.1" title="Oct 2025: +0.1 °C"></li><li class="is-empty" title="Oct 2026: no data yet"></li><li style="--v:-0.5" title="Nov 2024: -0.5 °C"></li><li style="--v:-0.2" title="Nov 2025: -0.2 °C"></li><li class="is-empty" title="Nov 2026: no data yet"></li><li style="--v:-0.8" title="Dec 2024: -0.8 °C"></li><li style="--v:-0.4" title="Dec 2025: -0.4 °C"></li><li class="is-empty" title="Dec 2026: no data yet"></li></ol>
+      <details class="accordion-item">
+          <summary class="accordion-trigger">Data table: Temperature anomaly (°C) by month</summary>
+          <div class="table-wrap"><table class="table">
+            <caption class="visually-hidden">Temperature anomaly (°C) by month</caption>
+            <thead><tr><th scope="col">Year</th><th scope="col">Jan</th><th scope="col">Feb</th><th scope="col">Mar</th><th scope="col">Apr</th><th scope="col">May</th><th scope="col">Jun</th><th scope="col">Jul</th><th scope="col">Aug</th><th scope="col">Sep</th><th scope="col">Oct</th><th scope="col">Nov</th><th scope="col">Dec</th></tr></thead>
+            <tbody><tr><th scope="row">2024</th><td>-0.6</td><td>-0.3</td><td>+0.1</td><td>+0.4</td><td>+0.2</td><td>+0.7</td><td>+0.9</td><td>+0.5</td><td>+0.0</td><td>-0.2</td><td>-0.5</td><td>-0.8</td></tr><tr><th scope="row">2025</th><td>-0.4</td><td>+0.0</td><td>+0.3</td><td>+0.6</td><td>+0.8</td><td>+1.0</td><td>+0.9</td><td>+0.7</td><td>+0.3</td><td>+0.1</td><td>-0.2</td><td>-0.4</td></tr><tr><th scope="row">2026</th><td>+0.1</td><td>+0.2</td><td>+0.5</td><td>+0.7</td><td>+1.0</td><td>+0.9</td><td>+1.0</td><td>+0.8</td><td>+0.6</td><td>–</td><td>–</td><td>–</td></tr></tbody>
+          </table></div>
+        </details>
+    </section>
+
+    <section class="stack" id="c-chart">
+      <h2>Charts <code>.chart</code>: plain SVG with the class hooks</h2>
+      <p class="text-muted">The <code>.chart</code> container sets <code>color</code> to the chart foreground; <code>.chart-grid</code>, <code>.chart-axis</code>, <code>.chart-series[data-series]</code>, <code>.chart-point</code> and <code>.chart-label</code> take the theme's tokens.</p>
+      <div class="columns">
+        <figure class="chart stack stack-sm">
+          <figcaption><strong>Weekly active users</strong> (thousands)</figcaption>
+          <ul class="chart-legend is-line"><li data-series="1">Web</li><li data-series="2">App</li><li data-series="3">API</li></ul>
+          <svg viewBox="0 0 400 228" role="img" aria-labelledby="line-title line-desc"><title id="line-title">Weekly active users by channel, January to June</title><desc id="line-desc">All three channels grow; Web leads, from 42k to 74k.</desc><g class="chart-grid"><line x1="40" x2="380" y1="188.0" y2="188.0"/><line x1="40" x2="380" y1="144.0" y2="144.0"/><line x1="40" x2="380" y1="100.0" y2="100.0"/><line x1="40" x2="380" y1="56.0" y2="56.0"/><line x1="40" x2="380" y1="12.0" y2="12.0"/></g><g class="chart-axis"><line x1="40" x2="380" y1="188" y2="188"/><text x="34" y="192.0" text-anchor="end">0</text><text x="34" y="148.0" text-anchor="end">20</text><text x="34" y="104.0" text-anchor="end">40</text><text x="34" y="60.0" text-anchor="end">60</text><text x="34" y="16.0" text-anchor="end">80</text><text x="40.0" y="204" text-anchor="middle">Jan</text><text x="108.0" y="204" text-anchor="middle">Feb</text><text x="176.0" y="204" text-anchor="middle">Mar</text><text x="244.0" y="204" text-anchor="middle">Apr</text><text x="312.0" y="204" text-anchor="middle">May</text><text x="380.0" y="204" text-anchor="middle">Jun</text></g><rect class="chart-selection" x="232.0" y="12" width="160.0" height="176"/><line class="chart-crosshair" x1="312.0" x2="312.0" y1="12" y2="188"/><g class="chart-series" data-series="1"><polygon class="is-area" points="40,188 40.0,95.6 108.0,82.4 176.0,89.0 244.0,53.8 312.0,42.8 380.0,25.2 380,188"/><polyline points="40.0,95.6 108.0,82.4 176.0,89.0 244.0,53.8 312.0,42.8 380.0,25.2"/><circle class="chart-point" cx="40.0" cy="95.6" r="4"/><circle class="chart-point" cx="108.0" cy="82.4" r="4"/><circle class="chart-point" cx="176.0" cy="89.0" r="4"/><circle class="chart-point" cx="244.0" cy="53.8" r="4"/><circle class="chart-point is-active" cx="312.0" cy="42.8" r="4"/><circle class="chart-point" cx="380.0" cy="25.2" r="4"/></g><text class="chart-label" x="376" y="16.2" text-anchor="end">Web</text><g class="chart-series" data-series="2"><polyline points="40.0,122.0 108.0,113.2 176.0,97.8 244.0,102.2 312.0,78.0 380.0,62.6"/><circle class="chart-point" cx="40.0" cy="122.0" r="4"/><circle class="chart-point" cx="108.0" cy="113.2" r="4"/><circle class="chart-point" cx="176.0" cy="97.8" r="4"/><circle class="chart-point" cx="244.0" cy="102.2" r="4"/><circle class="chart-point is-active" cx="312.0" cy="78.0" r="4"/><circle class="chart-point" cx="380.0" cy="62.6" r="4"/></g><text class="chart-label" x="376" y="53.6" text-anchor="end">App</text><g class="chart-series" data-series="3"><polyline points="40.0,161.6 108.0,155.0 176.0,157.2 244.0,139.6 312.0,128.6 380.0,133.0"/><circle class="chart-point" cx="40.0" cy="161.6" r="4"/><circle class="chart-point" cx="108.0" cy="155.0" r="4"/><circle class="chart-point" cx="176.0" cy="157.2" r="4"/><circle class="chart-point" cx="244.0" cy="139.6" r="4"/><circle class="chart-point is-active" cx="312.0" cy="128.6" r="4"/><circle class="chart-point" cx="380.0" cy="133.0" r="4"/></g><text class="chart-label" x="376" y="124.0" text-anchor="end">API</text><text class="chart-annotation" x="236.0" y="24">Launch</text></svg>
+          <div class="chart-tooltip" style="--x:60%; --y:27%" aria-hidden="true">May · Web 66k</div>
+          <details class="accordion-item">
+          <summary class="accordion-trigger">Data table: Weekly active users by channel (thousands)</summary>
+          <div class="table-wrap"><table class="table">
+            <caption class="visually-hidden">Weekly active users by channel (thousands)</caption>
+            <thead><tr><th scope="col">Month</th><th scope="col">Web</th><th scope="col">App</th><th scope="col">API</th></tr></thead>
+            <tbody><tr><th scope="row">Jan</th><td>42</td><td>30</td><td>12</td></tr><tr><th scope="row">Feb</th><td>48</td><td>34</td><td>15</td></tr><tr><th scope="row">Mar</th><td>45</td><td>41</td><td>14</td></tr><tr><th scope="row">Apr</th><td>61</td><td>39</td><td>22</td></tr><tr><th scope="row">May</th><td>66</td><td>50</td><td>27</td></tr><tr><th scope="row">Jun</th><td>74</td><td>57</td><td>25</td></tr></tbody>
+          </table></div>
+        </details>
+        </figure>
+        <figure class="chart stack stack-sm">
+          <figcaption><strong>Revenue by quarter</strong> (millions)</figcaption>
+          <ul class="chart-legend"><li data-series="1">2025</li><li data-series="2">2026</li></ul>
+          <svg viewBox="0 0 400 228" role="img" aria-labelledby="bar-title bar-desc"><title id="bar-title">Revenue by quarter, 2025 against 2026, in millions</title><desc id="bar-desc">2026 is ahead in every quarter; Q4 2026 is the high at 36 million.</desc><g class="chart-grid"><line x1="40" x2="380" y1="188.0" y2="188.0"/><line x1="40" x2="380" y1="144.0" y2="144.0"/><line x1="40" x2="380" y1="100.0" y2="100.0"/><line x1="40" x2="380" y1="56.0" y2="56.0"/><line x1="40" x2="380" y1="12.0" y2="12.0"/></g><g class="chart-series" data-series="1"><rect x="55.5" y="108.8" width="26" height="79.2" rx="2"/><rect x="140.5" y="82.4" width="26" height="105.6" rx="2"/><rect x="225.5" y="95.6" width="26" height="92.4" rx="2"/><rect x="310.5" y="56.0" width="26" height="132.0" rx="2"/></g><g class="chart-series" data-series="2"><rect x="83.5" y="91.2" width="26" height="96.8" rx="2"/><rect x="168.5" y="69.2" width="26" height="118.8" rx="2"/><rect x="253.5" y="60.4" width="26" height="127.6" rx="2"/><rect x="338.5" y="29.6" width="26" height="158.4" rx="2"/></g><text class="chart-label" x="351.5" y="23.6" text-anchor="middle">36</text><g class="chart-axis"><line x1="40" x2="380" y1="188" y2="188"/><text x="34" y="192.0" text-anchor="end">0</text><text x="34" y="148.0" text-anchor="end">10</text><text x="34" y="104.0" text-anchor="end">20</text><text x="34" y="60.0" text-anchor="end">30</text><text x="34" y="16.0" text-anchor="end">40</text><text x="82.5" y="204" text-anchor="middle">Q1</text><text x="167.5" y="204" text-anchor="middle">Q2</text><text x="252.5" y="204" text-anchor="middle">Q3</text><text x="337.5" y="204" text-anchor="middle">Q4</text></g></svg>
+          <details class="accordion-item">
+          <summary class="accordion-trigger">Data table: Revenue by quarter (millions)</summary>
+          <div class="table-wrap"><table class="table">
+            <caption class="visually-hidden">Revenue by quarter (millions)</caption>
+            <thead><tr><th scope="col">Quarter</th><th scope="col">2025</th><th scope="col">2026</th></tr></thead>
+            <tbody><tr><th scope="row">Q1</th><td>18</td><td>22</td></tr><tr><th scope="row">Q2</th><td>24</td><td>27</td></tr><tr><th scope="row">Q3</th><td>21</td><td>29</td></tr><tr><th scope="row">Q4</th><td>30</td><td>36</td></tr></tbody>
+          </table></div>
+        </details>
+        </figure>
+      </div>
+    </section>
+
+    <section class="stack" id="c-timeline">
+      <h2>Timeline <code>.timeline</code></h2>
+      <div class="columns">
+        <ol class="timeline">
+          <li class="is-done"><time datetime="2026-09-28T09:00">28 Sep, 09:00</time><strong>Order placed</strong><p>Paid by card ending 4242.</p></li>
+          <li class="is-done"><time datetime="2026-09-29T14:20">29 Sep, 14:20</time><strong>Packed</strong></li>
+          <li aria-current="step"><time datetime="2026-10-01T07:45">1 Oct, 07:45</time><strong>Out for delivery</strong><p>Driver is 6 stops away.</p></li>
+          <li><time>Expected 2 Oct</time><strong>Delivered</strong></li>
+        </ol>
+        <ol class="timeline">
+          <li class="is-done"><time>08:02</time><strong>Deploy started</strong></li>
+          <li class="is-warn"><time>08:05</time><strong>Canary latency high</strong><p>p95 410ms, threshold 400ms.</p></li>
+          <li class="is-error"><time>08:07</time><strong>Rolled back</strong><p>https://status.example.com/incidents/2026-10-02-canary-latency-regression</p></li>
+        </ol>
+      </div>
+      <ol class="timeline is-horizontal">
+        <li class="is-done"><time>Q1</time><strong>Research</strong></li>
+        <li class="is-done"><time>Q2</time><strong>Prototype</strong></li>
+        <li aria-current="step"><time>Q3</time><strong>Beta</strong></li>
+        <li><time>Q4</time><strong>Launch</strong></li>
+      </ol>
+    </section>
+
+    <section class="stack" id="c-props">
+      <h2>Property grid <code>dl.props</code></h2>
+      <div class="columns">
+        <div class="panel">
+          <div class="panel-header">Inspector</div>
+          <dl class="props">
+            <dt>Name</dt><dd>pump-station-04</dd>
+            <dt>Status</dt><dd><span class="status status-ok">Running</span></dd>
+            <dt>Flow</dt><dd class="mono">412.6 L/min</dd>
+            <dt>Firmware</dt><dd class="mono">4.12.0+build.2291</dd>
+            <dt>Checksum</dt><dd class="mono">sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</dd>
+            <dt>Tags</dt><dd><span class="badge">north</span> <span class="badge badge-accent">critical</span></dd>
+          </dl>
+        </div>
+        <dl class="props">
+          <div><dt>Created</dt><dd><time datetime="2026-09-14">14 Sep 2026</time></dd></div>
+          <div><dt>Owner</dt><dd>Ava Thompson</dd></div>
+          <div><dt>A much longer property name</dt><dd>Value</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="stack" id="c-battery-signal">
+      <h2>Battery <code>.battery</code> and signal <code>.signal</code></h2>
+      <div class="cluster">
+        <span class="cluster is-gap-xs"><span class="battery" role="img" aria-label="Battery 100%" style="--value:1"></span>100%</span>
+        <span class="cluster is-gap-xs"><span class="battery" role="img" aria-label="Battery 64%" style="--value:.64"></span>64%</span>
+        <span class="cluster is-gap-xs"><span class="battery is-low" role="img" aria-label="Battery low, 12%" style="--value:.12"></span>12% low</span>
+        <span class="cluster is-gap-xs"><span class="battery is-charging" role="img" aria-label="Battery 40%, charging" style="--value:.4"></span>40% charging</span>
+      </div>
+      <div class="cluster">
+        <span class="cluster is-gap-xs"><span class="signal" role="img" aria-label="No signal" data-bars="0"></span>None</span>
+        <span class="cluster is-gap-xs"><span class="signal" role="img" aria-label="Signal 1 of 4" data-bars="1"></span>Weak</span>
+        <span class="cluster is-gap-xs"><span class="signal" role="img" aria-label="Signal 2 of 4" data-bars="2"></span>Fair</span>
+        <span class="cluster is-gap-xs"><span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span>Good</span>
+        <span class="cluster is-gap-xs"><span class="signal" role="img" aria-label="Signal 4 of 4" data-bars="4"></span>Full</span>
+      </div>
+      <div class="toolbar">
+        <span class="mono">09:41</span>
+        <span class="cluster is-gap-xs push"><span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span><span class="battery" role="img" aria-label="Battery 82%" style="--value:.82"></span></span>
+      </div>
+    </section>
+
+    <section class="stack" id="c-clock">
+      <h2>Clock <code>.clock</code> and countdown <code>.countdown</code></h2>
+      <div class="cluster">
+        <div class="clock" style="--h:10; --m:9; --s:30" role="img" aria-label="London, 10:09:30">
+          <ol class="gauge-ticks" aria-hidden="true"><li>12</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li></ol>
+          <span class="clock-hand is-hour"></span><span class="clock-hand is-minute"></span><span class="clock-hand is-second"></span>
+        </div>
+        <div class="clock" style="--h:18; --m:42; --s:5; --gauge-size:8rem" role="img" aria-label="Tokyo, 18:42">
+          <ol class="gauge-ticks" aria-hidden="true"><li>12</li><li></li><li></li><li>3</li><li></li><li></li><li>6</li><li></li><li></li><li>9</li><li></li><li></li></ol>
+          <span class="clock-hand is-hour"></span><span class="clock-hand is-minute"></span><span class="clock-hand is-second"></span>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="countdown" role="timer" aria-label="Launch in 2 days, 4 hours, 17 minutes">
+          <span data-unit="days">02</span><span data-unit="hrs">04</span><span data-unit="min">17</span><span data-unit="sec">09</span>
+        </div>
+        <div class="countdown is-urgent" role="timer" aria-label="Auction ends in 48 seconds">
+          <span data-unit="min">00</span><span data-unit="sec">48</span>
+        </div>
+        <div class="countdown is-done" role="timer" aria-label="Sale ended">
+          <span data-unit="ended">00:00</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Instruments</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

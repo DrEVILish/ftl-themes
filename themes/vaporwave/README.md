@@ -48,6 +48,13 @@ The shell becomes an **outrun horizon**: a gradient sunset bar on top, a
 perspective grid-line floor in the status strip at the bottom, and the
 deep-purple void filling the content well between them.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** core's one-column shell. The fixed sun-and-grid corner emblem stands down up to 900px, because there it sat right on top of the bar's actions and nav. The gradient bar, chrome headings and the status strip's sunset horizon carry the look. The emblem's layer now uses `--z-sticky`.
+- **XL gutters (≥1801):** the outrun floor. A perspective grid recedes to a vanishing point behind the app (cyan rays from the screen centre, pink cross-lines spaced wider toward the viewer), so each gutter shows the floor sweeping in from the side. Still; the emblem sits in the right gutter.
+
 ## Tell-tales of an inauthentic result
 
 - Only one of magenta/cyan used, the other dropped.

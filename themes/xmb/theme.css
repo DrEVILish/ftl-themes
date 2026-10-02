@@ -136,7 +136,9 @@ html[data-theme="xmb"] .app-bar {
   --nav-item-bg-active: rgba(255, 255, 255, 0.1);
 }
 html[data-theme="xmb"] .nav {
-  justify-content: center;
+  /* `safe`: when the row scrolls (touch tiers), start at the first item
+     instead of centring it out of reach off the left edge. */
+  justify-content: safe center;
   gap: 1.75rem;
 }
 /* `justify-content: center` above is correct and does win here (it's the
@@ -165,6 +167,39 @@ html[data-theme="xmb"] .app-bar {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* --- v5 tiers ------------------------------------------------------------ *
+ * Touch tiers: the bar wraps to two lines, and a 999px stadium round a
+ * two-line bar clips the ends of both. It becomes a rounded glass slab
+ * (still floating, still blurred) that spans the content width. Phones
+ * also trade the 1rem frame round the shell for content width. */
+@media (max-width: 900px) {
+  html[data-theme="xmb"] .app-bar {
+    border-radius: 1.25rem;
+    margin: 0.5rem 0 0;
+  }
+}
+@media (max-width: 480px) {
+  html[data-theme="xmb"] { --app-padding: 0.5rem; }
+  html[data-theme="xmb"] .nav { gap: 0.5rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the XMB wave carries on beside the
+   content: three thin translucent light ribbons crossing the gutters,
+   within ~1.3:1 of --bg. They drift sideways once every two minutes,
+   only with motion allowed, the way the PS3 wave never sat still. */
+html[data-theme="xmb"] {
+  --app-gutter-art:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23bfe4ff'%3E%3Cpath d='M0 330C200 250 400 250 600 320S1000 400 1200 330' stroke-opacity='.10' stroke-width='2'/%3E%3Cpath d='M0 360C220 300 380 290 600 350S980 420 1200 360' stroke-opacity='.07' stroke-width='6'/%3E%3Cpath d='M0 300C180 230 420 230 600 290S1020 380 1200 300' stroke-opacity='.05' stroke-width='14'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 1200px 100% repeat-x;
+}
+@media (min-width: 1801px) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="xmb"]:not([data-motion="reduced"])::before {
+    animation: xmb-wave 120s linear infinite;
+  }
+}
+@keyframes xmb-wave {
+  to { background-position: 1200px 0; }
+}
+
 /* --- Print ----------------------------------------------------------------
  * Core's generic print reset already clears the wave background (the
  * html-level gradient) and .app-bar's own background/box-shadow, but
@@ -184,4 +219,19 @@ html[data-theme="xmb"] {
   html[data-theme="xmb"] .app-bar {
     backdrop-filter: none !important;
   }
+}
+/* Window caption buttons sit together at the bar's right end with the
+   close button (core pushes only close). */
+html[data-theme="xmb"] .modal-header > .btn-min { margin-inline-start: auto; }
+html[data-theme="xmb"] .modal-header > :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: 0; }
+html[data-theme="xmb"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--text); }
+
+/* Close (v5): the PS3 closes with the circle button: a "○ Back" hint. */
+html[data-theme="xmb"] .modal-header > .btn-close {
+  --btn-close-glyph: "\25CB  Back";
+  --btn-close-width: auto;
+  --btn-close-pad: 0 0.6em;
+  --btn-close-glyph-size: 0.85em;
+  --modal-header-close-fg: #fff;
+  white-space: pre;
 }

@@ -64,6 +64,16 @@ stands in for the search icon's usual circle, and settings is abstracted
 to a plus of blocks rather than a naturalistic gear, since real teletext
 graphics were never skeuomorphic. The sprite ships 123 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+Core's tiers do the work; the theme has no breakpoints of its own.
+
+- **Phone (≤480) and tablet (481–900):** bar, main and status in one column. The "P100" page number is now part of the bar's first line rather than an absolute overlay, so on a phone the brand truncates after it instead of sliding underneath it. The double-height headline scales down (`clamp`) so it still fits a 393px screen at double height.
+- **Nested surfaces:** a panel inside a panel, card, dialog, drawer or popover drops its full-width colour band and shows its title in the band's colour over a thin band, as a card does, so bands never stack.
+- **XL gutters (≥1801):** a dark teletext page beside the frame: dim blue header bands every ten character rows and sparse mosaic blocks in the broadcast eight, dimmed to within 1.5:1 of black. Hard stops only, and still.
+
 ## Tell-tales of an inauthentic result
 
 - Any rounded corner, drop shadow, or gradient fill.

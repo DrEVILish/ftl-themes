@@ -32,7 +32,9 @@ const DEVICES = {
   'macbook-air': { width: 1280, height: 800, tier: 'desktop' },
   'desktop-1440p': { width: 2560, height: 1440, tier: 'xl' },
 };
-const PAGES = ['components', 'dashboard', 'marketing', 'ticketsystem', 'powerstation', 'soundmixer', 'livechat', 'nesting']
+const PAGES = ['components', 'dashboard', 'marketing', 'ticketsystem', 'powerstation', 'soundmixer', 'livechat', 'nesting',
+  // v5 component pages (components-<group>.html), whichever exist.
+  ...fs.readdirSync(root).filter(f => /^components-[a-z]+\.html$/.test(f)).map(f => f.replace(/\.html$/, '')).sort()]
   .filter(p => fs.existsSync(path.join(root, p + '.html')));
 // Palette variants only repaint, so (as in _pw_shot.mjs) they run on one page.
 const VARIANT_PAGES = ['dashboard'];
@@ -144,6 +146,8 @@ function measure({ tier }) {
     if (el.tagName === 'LABEL' && !check(el.control)) continue;
     if (check(el) && el.labels && [...el.labels].some(visible)) continue;
     if (!visible(el) || inlineLink(el)) continue;
+    // A stretched link's hit area is its positioned ancestor (the card).
+    if (el.matches('.stretched-link')) { const host = el.closest('.card, .panel, [class*="card"]'); if (host) { const hr = host.getBoundingClientRect(); targets.push({ el, r: hr, w: hr.width, h: hr.height }); continue; } }
     const r = el.getBoundingClientRect();
     if (!r.width || !r.height || r.right <= 0 || r.left >= docW) continue;
     const [w, h] = hitSize(el, r);
@@ -199,6 +203,10 @@ function measure({ tier }) {
   for (const el of document.body.querySelectorAll('*')) {
     const texts = [...el.childNodes].filter(n => n.nodeType === 3 && n.data.trim());
     if (!texts.length || /^(SCRIPT|STYLE|TEXTAREA|OPTION|SELECT)$/.test(el.tagName) || !visible(el)) continue;
+    // Inline chips (code, kbd, badges) sit in running text: their tight
+    // padding is the design, and WCAG asks nothing of it. Hidden labels too.
+    if (el.closest('code, kbd, samp, .badge, .visually-hidden') && cs(el).display.startsWith('inline')) continue;
+    if (el.closest('.visually-hidden')) continue;
     const b = box(el);
     if (!b) continue;
     range.setStartBefore(texts[0]); range.setEndAfter(texts[texts.length - 1]);

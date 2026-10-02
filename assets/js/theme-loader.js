@@ -55,7 +55,16 @@
     document.documentElement.dataset.theme = slug;
     if (variant && /^[a-z0-9-]+$/.test(variant)) document.documentElement.dataset.variant = variant;
     else delete document.documentElement.dataset.variant;
-    if (link) link.href = "dist/" + slug + ".css";
+    // Resolves once the new stylesheet has loaded (so a view transition
+    // captures the finished theme), then announces it for prefs.js.
+    var href = "dist/" + slug + ".css";
+    var ready = new Promise(function (done) {
+      if (!link || link.getAttribute("href") === href) return done();
+      link.addEventListener("load", done, { once: true });
+      link.addEventListener("error", done, { once: true });
+      setTimeout(done, 3000);
+      link.href = href;
+    }).then(function () { document.dispatchEvent(new CustomEvent("themechange")); });
     applyIcons(slug);
     // Links between the demo pages carry the theme along, so a theme that
     // arrived via ?theme= (not persisted) survives the click.
@@ -71,6 +80,19 @@
     // Theme tint (CONTRACT.md "Theme tint"): a user-picked sub-theme
     // replaces any custom colour; a load from storage/URL keeps it.
     if (window.themeTint) window.themeTint(picker, entries[slug], persist && before !== slug + ":" + (variant || ""));
+    return ready;
+  }
+
+  // A user's switch cross-fades through a view transition (PLAN.md §11);
+  // a theme styles its entrance with ::view-transition-new(root). Instant
+  // without the API, or under reduced motion (OS or data-motion), unless
+  // the user chose data-motion="full".
+  function switchTheme(value) {
+    var motion = document.documentElement.dataset.motion;
+    var still = !document.startViewTransition || motion === "reduced" || motion === "none" ||
+      (motion !== "full" && matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if (still) return apply(value, true);
+    document.startViewTransition(function () { return apply(value, true); });
   }
 
   fetch("dist/themes.json").then(function (r) {
@@ -97,7 +119,7 @@
           picker.appendChild(vo);
         });
       });
-      picker.addEventListener("change", function () { apply(picker.value, true); });
+      picker.addEventListener("change", function () { switchTheme(picker.value); });
     }
     apply(initial, false);
   }).catch(function () {

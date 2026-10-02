@@ -46,6 +46,10 @@ into that frame.
 - Hazard stripes anywhere other than a destructive action.
 - Thin, quiet borders — NERV's markings are bold.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.0:1).
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

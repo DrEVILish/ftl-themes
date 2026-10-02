@@ -697,19 +697,22 @@ html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) :is(h1,
   color: inherit;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
-html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) :is(.card, .panel) :is(h1, h2, h3, h4, p:not([class])) {
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer, .modal) :is(.card, .panel) :is(h1, h2, h3, h4, p:not([class])) {
   text-shadow: var(--ios-emboss-light);
 }
 
-/* Cells set on a texture go back to black-on-white, without the emboss. */
-html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) :is(.card, .panel, .list, .field-row, .input, .select, .textarea) {
+/* Cells set on a texture (or inside the navy alert view) go back to
+   black-on-white, without the emboss: a panel nested in a modal otherwise
+   inherits the alert's white embossed text onto its white cell. */
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer, .modal) :is(.card, .panel, .list, .field-row, .input, .select, .textarea) {
   --muted: #4c566c;
   --text: #000000;
   --on-surface: #000000;
   text-shadow: none;
 }
 
-html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer) .table { color: #000000; --muted: #4c566c; }
+html[data-theme="ios-skeuomorphic"] :is(.hero, .band.is-tinted, .drawer, .modal) .table { color: #000000; --muted: #4c566c; }
+html[data-theme="ios-skeuomorphic"] .modal :is(.card, .panel, .list, .field-row, .table) { --label-fg: #000000; text-align: start; }
 
 /* --- Keyboard keys and code ---------------------------------------------- */
 html[data-theme="ios-skeuomorphic"] kbd { font-family: var(--font); font-weight: 700; }
@@ -730,7 +733,8 @@ html[data-theme="ios-skeuomorphic"] {
   --app-rail-display: none;
   --app-main-bg: transparent;
   --app-main-padding: 1.25rem clamp(0.75rem, 4vw, 3rem);
-  --app-main-padding-sm: 0.75rem 0.6rem;
+  --app-main-padding-mobile: 0.75rem 0.6rem;
+  --app-main-padding-tablet: 1rem 0.9rem;
   --app-status-bg: var(--ios-tabbar);
   --app-status-fg: #b3b3b3;
   --app-status-rule: #000000;
@@ -745,7 +749,7 @@ html[data-theme="ios-skeuomorphic"] .app-bar {
   /* The iPhone status bar: a black strip above the navigation bar. */
   border-top: 1.15rem solid #000000;
   box-shadow: var(--ios-navbar-highlight), 0 1px 3px rgba(0, 0, 0, 0.35);
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 /* Battery glyph at the right of the status strip, drawn, not written. */
 html[data-theme="ios-skeuomorphic"] .app-bar::before {
@@ -781,6 +785,46 @@ html[data-theme="ios-skeuomorphic"] .app-status {
   --danger-text: #ff6a70;
   --muted: #b3b3b3;
 }
-@media (max-width: 720px) {
+/* --- v5 tiers (PLAN.md §2) -------------------------------------------------
+ * Phone and tablet: core puts the title and the bar buttons on line 1 and
+ * the nav buttons on a scrolling line 2; the 44px bar buttons centre their
+ * labels. Phones tighten the buttons' side padding. */
+@media (max-width: 900px) {
+  html[data-theme="ios-skeuomorphic"] .app-bar .nav-item { display: inline-flex; align-items: center; }
+}
+@media (max-width: 480px) {
   html[data-theme="ios-skeuomorphic"] .app-bar .nav-item { padding: 0.3em 0.5em; }
+}
+
+/* XL gutters: the grey linen of the iOS 6 notification shade and lock
+   screen, woven from two fine crossing stripe sets plus a soft vignette,
+   within ~1.2:1 of the grouped-table background. */
+html[data-theme="ios-skeuomorphic"] {
+  --app-gutter-art:
+    radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(40, 50, 70, 0.08)),
+    repeating-linear-gradient(0deg, rgba(40, 50, 70, 0.05) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 2px, rgba(40, 50, 70, 0.04) 2px 3px, transparent 3px 4px);
+}
+
+/* Stacked tables (phone width) label each cell with its column name in
+   --table-head-fg, a colour tuned for this theme's filled header row and
+   unreadable on the plain cell. Labels take --muted instead. */
+html[data-theme="ios-skeuomorphic"] .table.is-stacked > * > tr > [data-label]::before { color: var(--muted); }
+
+/* Close (v5): iOS 6 closed a sheet with a bordered "Done" bar button, not ×. */
+html[data-theme="ios-skeuomorphic"] .modal-header > .btn-close {
+  --btn-close-glyph: "Done";
+  --btn-close-width: auto;
+  --btn-close-height: 30px;
+  --btn-close-pad: 0 0.75em;
+  --btn-close-glyph-size: 0.85em;
+  --btn-close-bg: linear-gradient(#7d93b3, #4a6491);
+  --btn-close-bg-hover: linear-gradient(#6c83a6, #3b5583);
+  --btn-close-border: #2c4064;
+  --btn-close-border-width: 1px;
+  --btn-close-radius: 5px;
+  --modal-header-close-fg: #fff;
+  --btn-close-fg-hover: #fff;
+  font-weight: 700;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.45);
 }

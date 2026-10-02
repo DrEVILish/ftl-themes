@@ -46,6 +46,13 @@ frame.
 App bar → ribbon tab strip (no padding round the window; the app fills
 it), white panes on the aurora, pale status bar. No rail.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** core puts the application button and the actions on the first line and the ribbon tabs on a scrolling second line. The application button is now a block with `max-width: max-content`, so its label ends in an ellipsis instead of being cut off, and it no longer stretches across the bar. The green h1 steps down a little on phones.
+- **XL gutters (≥1801):** the aurora carries on beside the app window, as behind a Live sign-in screen: pale blue light down each side with two white ribbons of light sweeping through it. Still.
+
 ## Typography
 
 `"Segoe UI", "Segoe UI Web", Tahoma, sans-serif` — **system fonts, not

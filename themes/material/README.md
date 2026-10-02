@@ -52,6 +52,12 @@ no border, no gradient, just color and shadow.
 - Title-case or lowercase button labels instead of tracked uppercase.
 - A flat, shadowless app bar — the elevation is the point.
 
+## v5 layout
+
+- **Tiers.** No rail. The flat purple app bar gets a little block padding up to 900px so its two lines (brand and actions, then the scrolling nav) don't touch its edges.
+- **Nesting.** A panel or card inside another surface is an outlined 0dp sheet rather than a second dp4 slab.
+- **XL gutter art (1801px+).** Overlapping sheets of paper at angles, each edge marked by a soft elevation shadow, in very low contrast.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

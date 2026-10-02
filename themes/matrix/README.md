@@ -76,6 +76,10 @@ flicker animation communicate anything.
 
 `references/matrix/` has 4 captures plus `RESEARCH.md`: digital-rain crops, a "SYSTEM FAILURE" code wall and a green terminal screencap (all people-free per the audit). They back the phosphor palette and the monospace look. `RESEARCH.md` states the operator-console (monitor wall) target remains uncovered, and records no hex values.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On phone and tablet the bar is two lines (brand and actions, then the nav scrolling sideways); the terminal has no rail or bar decoration to rearrange, so nothing else changes. On XL the gutters show the rain frozen: a still wall of dim code columns cut into glyph cells, on black (about 1.0:1 against `--bg`). The live rain keeps running on the page itself.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

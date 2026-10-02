@@ -347,6 +347,9 @@ html[data-theme="westworld"] {
   --app-status-radius: 0;
   --app-status-padding: 0.35rem 1rem;
 }
+/* The DELOS plate hugs its wordmark: on touch tiers core lets the brand
+   grow to fill the first line, which would stretch the pill across it. */
+html[data-theme="westworld"] .app-bar .nav-brand { max-width: max-content; }
 html[data-theme="westworld"] .app-rail { border: 1px solid var(--hairline); margin-block: 0; }
 html[data-theme="westworld"] .app-main { border: 1px solid var(--hairline); }
 html[data-theme="westworld"] .app-bar {
@@ -371,6 +374,26 @@ html[data-theme="westworld"] .app-status {
   font-size: 0.85rem;
 }
 
+/* --- v5 layout (PLAN.md §2–§3) -------------------------------------------
+ * Phones and tablets fold the tablet shut to one leaf: bar, main, status.
+ * The attribute-slider rail is the right leaf; core gives the shell a
+ * single track up to 900px, and the rail's --app-rail-empty-display opt-in
+ * outranks the per-tier rail token, so it is switched off here. */
+@media (max-width: 900px) {
+  html[data-theme="westworld"] { --app-rail-empty-display: none; }
+}
+
+/* XL gutters: the Maze. Concentric rings around the centre of the screen
+   (the tablet sits on its centre), broken by corridors, in a slate barely
+   above --bg (~1.3:1), so each gutter shows arcs of the labyrinth. Still. */
+html[data-theme="westworld"] {
+  --app-gutter-art:
+    repeating-conic-gradient(from 8deg at 50% 50%, var(--bg) 0 2.2deg, transparent 2.2deg 41deg),
+    repeating-conic-gradient(from 27deg at 50% 50%, transparent 0 9deg, var(--bg) 9deg 10.5deg, transparent 10.5deg 67deg),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 40px, #233a42 40px 42px),
+    var(--bg);
+}
+
 @media print {
   html[data-theme="westworld"] {
     --readout-glow: none;
@@ -380,3 +403,6 @@ html[data-theme="westworld"] .app-status {
   }
   html[data-theme="westworld"] .app-status { box-shadow: none; }
 }
+
+/* Close (v5): the default glyph read too small on the slate tablet. */
+html[data-theme="westworld"] .modal-header > .btn-close { --btn-close-glyph-size: 1.6em; }

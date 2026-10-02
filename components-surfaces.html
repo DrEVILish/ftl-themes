@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Surfaces and media — ftl-themes v5 components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- v5 component group "surfaces" (PLAN.md §9 #47, #49, #50). Core markup
+     only, no page CSS: if something looks wrong here, fix it in
+     core/components/surfaces.css or the theme. One <section id="c-…"> per
+     component. Reference: docs/components/surfaces.md. Images are inline
+     SVG data URIs so the page works offline. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Surfaces</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon" aria-label="Notifications"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Surfaces and media</h1>
+      <p class="text-muted">v5 components for PLAN.md §9 "Surfaces and media": image cards, draggable windows and brand sign-in buttons. The script at the bottom only wires up the demo; dragging comes from <code>assets/js/window.js</code>.</p>
+    </div>
+
+    <!-- ========================================================= Image card -->
+    <section class="stack" id="c-image-card">
+      <h2>Image card <code>.card.has-media</code></h2>
+      <p class="text-muted">Media bleeds to the card edge and is locked to <code>--card-media-ratio</code> (16 / 9 by default), so a lazy image reserves its space.</p>
+
+      <h3>Default, square and 4 / 3</h3>
+      <div class="grid">
+        <article class="card has-media">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><defs><linearGradient id='s' x2='0' y2='1'><stop offset='0' stop-color='%23f7b267'/><stop offset='1' stop-color='%23f25c54'/></linearGradient></defs><rect width='160' height='90' fill='url(%23s)'/><circle cx='118' cy='34' r='12' fill='%23fff3c4'/><path d='M0 90L40 40L70 70L100 30L160 90Z' fill='%23355070'/><path d='M0 90L30 62L60 82L95 55L130 75L160 60V90Z' fill='%231d3557'/></svg>" alt="Mountain ridge at dusk" loading="lazy" width="1600" height="900">
+          <div class="card-body">
+            <h4>Ridge walk</h4>
+            <p class="text-muted">Six hours, 14 km, 900 m of climbing. Best started before dawn.</p>
+            <div class="cluster cluster-sm"><span class="badge">Hard</span><span class="badge">Day trip</span></div>
+          </div>
+        </article>
+        <article class="card has-media" style="--card-media-ratio: 1">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%238ecae6'/><rect y='52' width='160' height='38' fill='%23219ebc'/><path d='M0 52h160' stroke='%23fff' stroke-opacity='.5'/><path d='M30 58h26l-4 7H34Z' fill='%23023047'/><path d='M43 58V36l10 20Z' fill='%23ffb703'/><path d='M100 64h34l-5 8h-24Z' fill='%23023047'/><path d='M117 64V40l13 22Z' fill='%23fb8500'/><circle cx='26' cy='20' r='9' fill='%23fff' fill-opacity='.85'/></svg>" alt="Two sailing boats in a harbour" loading="lazy" width="1200" height="1200">
+          <div class="card-body">
+            <h4>Harbour cruise</h4>
+            <p class="text-muted">Square media with <code>--card-media-ratio: 1</code>.</p>
+            <div class="cluster cluster-sm"><button class="btn btn-primary btn-sm">Book</button><button class="btn btn-secondary btn-sm">Details</button></div>
+          </div>
+        </article>
+        <article class="card has-media" style="--card-media-ratio: 4 / 3">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%23d8f3dc'/><path d='M0 90V60q40-18 80 0t80-6V90Z' fill='%2374c69d'/><g fill='%231b4332'><path d='M20 80l12-34 12 34Z'/><path d='M44 84l14-40 14 40Z'/><path d='M96 82l12-30 12 30Z'/><path d='M124 86l13-38 13 38Z'/></g></svg>" alt="Pine forest on a green hill" loading="lazy" width="1200" height="900">
+          <div class="card-body">
+            <h4><a class="stretched-link" href="#c-image-card">Forest loop</a></h4>
+            <p class="text-muted">The whole card is the link (<code>.stretched-link</code>).</p>
+          </div>
+        </article>
+      </div>
+
+      <h3>Overlay title <code>.is-overlay</code></h3>
+      <div class="grid">
+        <article class="card has-media is-overlay">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%2314213d'/><g fill='%23000814'><rect x='8' y='40' width='22' height='50'/><rect x='34' y='24' width='18' height='66'/><rect x='56' y='48' width='26' height='42'/><rect x='88' y='18' width='20' height='72'/><rect x='112' y='36' width='24' height='54'/><rect x='140' y='52' width='16' height='38'/></g><g fill='%23fca311'><rect x='38' y='30' width='3' height='3'/><rect x='45' y='40' width='3' height='3'/><rect x='92' y='26' width='3' height='3'/><rect x='99' y='50' width='3' height='3'/><rect x='117' y='44' width='3' height='3'/><rect x='62' y='56' width='3' height='3'/></g></svg>" alt="City skyline at night" loading="lazy" width="1600" height="900">
+          <div class="card-body">
+            <h4>Night market tour</h4>
+            <p class="text-muted">Fridays, 8pm. Meet at the north gate.</p>
+          </div>
+        </article>
+        <article class="card has-media is-overlay" style="--card-media-ratio: 4 / 3">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%23ffffff'/><path d='M0 90V58q50-20 90-4t70-8V90Z' fill='%23eef3f7'/><path d='M30 60l22-36 22 36Z' fill='%23dfe7ee'/><path d='M44 37l8-13 8 13l-8 4Z' fill='%23fff'/></svg>" alt="Snowy hill under a white sky" loading="lazy" width="1200" height="900">
+          <div class="card-body">
+            <h4>Snowshoe trail</h4>
+            <p class="text-muted">The scrim keeps text readable over a white image.</p>
+          </div>
+        </article>
+      </div>
+
+      <h3>Loading <code>aria-busy="true"</code></h3>
+      <div class="grid">
+        <article class="card has-media" aria-busy="true">
+          <div class="card-media" role="img" aria-label="Image loading"></div>
+          <div class="card-body">
+            <span class="skeleton skeleton-text" style="width: 60%"></span>
+            <span class="skeleton skeleton-text"></span>
+            <span class="skeleton skeleton-text" style="width: 80%"></span>
+          </div>
+        </article>
+        <article class="card has-media" aria-busy="true">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'/%3E" alt="Lighthouse on a cliff" loading="lazy" width="1600" height="900">
+          <div class="card-body">
+            <h4>Lighthouse point</h4>
+            <p class="text-muted">Title known, image still on its way.</p>
+          </div>
+        </article>
+      </div>
+
+      <h3>Horizontal <code>.is-horizontal</code></h3>
+      <p class="text-muted">Beside the body when the nearest container (<code>.cq</code>, a modal or a drawer) is wider than 480px, stacked when it is narrower. Below: the same card in a wide and in a narrow <code>.cq</code> box.</p>
+      <div class="cq">
+        <article class="card has-media is-horizontal">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%238ecae6'/><rect y='52' width='160' height='38' fill='%23219ebc'/><path d='M0 52h160' stroke='%23fff' stroke-opacity='.5'/><path d='M30 58h26l-4 7H34Z' fill='%23023047'/><path d='M43 58V36l10 20Z' fill='%23ffb703'/><path d='M100 64h34l-5 8h-24Z' fill='%23023047'/><path d='M117 64V40l13 22Z' fill='%23fb8500'/><circle cx='26' cy='20' r='9' fill='%23fff' fill-opacity='.85'/></svg>" alt="Two sailing boats in a harbour" loading="lazy" width="1600" height="900">
+          <div class="card-body">
+            <h4>Harbour cruise</h4>
+            <p class="text-muted">Two hours around the bay with a stop at the lighthouse. Media takes <code>--card-media-size</code> (40%) and the card's full height.</p>
+            <div class="cluster cluster-sm"><button class="btn btn-primary btn-sm">Book</button><span class="badge">From £24</span></div>
+          </div>
+        </article>
+      </div>
+      <div class="cq" style="max-inline-size: 20rem">
+        <article class="card has-media is-horizontal">
+          <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%238ecae6'/><rect y='52' width='160' height='38' fill='%23219ebc'/><path d='M0 52h160' stroke='%23fff' stroke-opacity='.5'/><path d='M30 58h26l-4 7H34Z' fill='%23023047'/><path d='M43 58V36l10 20Z' fill='%23ffb703'/><path d='M100 64h34l-5 8h-24Z' fill='%23023047'/><path d='M117 64V40l13 22Z' fill='%23fb8500'/><circle cx='26' cy='20' r='9' fill='%23fff' fill-opacity='.85'/></svg>" alt="Two sailing boats in a harbour" loading="lazy" width="1600" height="900">
+          <div class="card-body">
+            <h4>Harbour cruise</h4>
+            <p class="text-muted">Same markup in a 20rem box: stacked.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================================================== Draggable window -->
+    <section class="stack" id="c-window">
+      <h2>Draggable window <code>.modal[data-drag]</code></h2>
+      <p class="text-muted">Drag the title bar with a mouse, pen or finger. Double-click or double-tap it to maximize. Tab to the title bar and press Alt+Arrow keys to move it (Shift for 1px steps). The window stays inside the viewport.</p>
+
+      <div class="cluster">
+        <input type="checkbox" class="window-max" id="w1max">
+        <div class="modal modal-sm" data-drag role="dialog" aria-labelledby="w1title" id="w1">
+          <div class="modal-header" tabindex="0" aria-describedby="drag-hint">
+            <span id="w1title">Uploads</span>
+            <label for="w1max" class="btn-max" aria-label="Maximize"></label>
+            <button class="btn-close" aria-label="Close" data-close="w1"></button>
+          </div>
+          <div class="stack stack-sm">
+            <div class="field"><label class="label" for="up1">holiday-2026.zip</label><progress class="progress" id="up1" max="100" value="64"></progress></div>
+            <div class="field"><label class="label" for="up2">scan-0042.pdf</label><progress class="progress" id="up2" max="100" value="100"></progress></div>
+          </div>
+        </div>
+        <div class="modal modal-sm" data-drag role="dialog" aria-labelledby="w2title" id="w2">
+          <div class="modal-header" tabindex="0" aria-describedby="drag-hint">
+            <span id="w2title">Notes</span>
+            <button class="btn-close" aria-label="Close" data-close="w2"></button>
+          </div>
+          <p>A second window: focusing one raises it above the other (<code>--z-window</code>).</p>
+          <div class="modal-footer"><button class="btn btn-primary btn-sm">Save</button></div>
+        </div>
+      </div>
+      <p class="visually-hidden" id="drag-hint">Draggable. Alt plus arrow keys move the window; double-click maximizes.</p>
+      <div class="cluster">
+        <button class="btn btn-secondary" popovertarget="w3">Open floating window</button>
+        <button class="btn btn-ghost" id="reopen" hidden>Reopen closed windows</button>
+      </div>
+      <div class="modal" popover id="w3" data-drag role="dialog" aria-labelledby="w3title">
+        <div class="modal-header" tabindex="0" aria-describedby="drag-hint">
+          <span id="w3title">Floating window</span>
+          <button class="btn-close" aria-label="Close" popovertarget="w3" popovertargetaction="hide"></button>
+        </div>
+        <p>A top-layer popover window. It can be dragged anywhere on screen and never leaves it.</p>
+      </div>
+
+      <h3>States</h3>
+      <div class="grid">
+        <div class="stack stack-sm">
+          <p class="text-muted"><code>.is-dragging</code> (set by window.js while a drag is in progress)</p>
+          <div class="modal modal-sm is-dragging" data-drag aria-label="Dragging state">
+            <div class="modal-header">Moving…</div>
+            <p>Lifted shadow, grabbing cursor on the title bar.</p>
+          </div>
+        </div>
+        <div class="stack stack-sm">
+          <p class="text-muted"><code>.is-maximized</code> fills its overlay</p>
+          <div class="demo-stage" style="--demo-stage-height: 10rem">
+            <div class="modal-overlay">
+              <div class="modal is-maximized" data-drag aria-label="Maximized state">
+                <div class="modal-header">Maximized <button class="btn-close" aria-label="Close"></button></div>
+                <p>Double-click the title bar again to restore.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== Brand buttons -->
+    <section class="stack" id="c-brand-buttons">
+      <h2>Brand sign-in and connect buttons <code>.btn-brand</code></h2>
+      <p class="text-muted">Drawn to each company's published guidelines and deliberately not re-themed: they look the same in every theme. Google and Microsoft logos ship in <code>assets/logos/</code>; GitHub, Apple and Spotify logos must be supplied by the app (dashed boxes below mark where they go).</p>
+
+      <h3>Google <code>.is-google</code></h3>
+      <div class="cluster">
+        <button class="btn-brand is-google"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Sign in with Google</button>
+        <button class="btn-brand is-google is-dark"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Sign up with Google</button>
+        <button class="btn-brand is-google is-neutral"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Continue with Google</button>
+        <button class="btn-brand is-google is-pill"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Sign in with Google</button>
+        <button class="btn-brand is-google is-icon" aria-label="Sign in with Google"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt=""></button>
+        <button class="btn-brand is-google is-dark is-pill is-icon" aria-label="Sign in with Google"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt=""></button>
+      </div>
+
+      <h3>Microsoft <code>.is-microsoft</code></h3>
+      <div class="cluster">
+        <button class="btn-brand is-microsoft"><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in with Microsoft</button>
+        <button class="btn-brand is-microsoft is-dark"><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in with Microsoft</button>
+        <button class="btn-brand is-microsoft"><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in</button>
+      </div>
+
+      <h3>Apple <code>.is-apple</code> (app supplies the logo)</h3>
+      <div class="cluster">
+        <button class="btn-brand is-apple"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 44'><rect x='14' y='12' width='17' height='20' rx='3' fill='none' stroke='%23fff' stroke-dasharray='3 2'/></svg>" alt="">Sign in with Apple</button>
+        <button class="btn-brand is-apple is-white"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 44'><rect x='14' y='12' width='17' height='20' rx='3' fill='none' stroke='%23000' stroke-dasharray='3 2'/></svg>" alt="">Sign up with Apple</button>
+        <button class="btn-brand is-apple is-outline"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 44'><rect x='14' y='12' width='17' height='20' rx='3' fill='none' stroke='%23000' stroke-dasharray='3 2'/></svg>" alt="">Continue with Apple</button>
+      </div>
+
+      <h3>GitHub <code>.is-github</code> (app supplies the logo)</h3>
+      <div class="cluster">
+        <button class="btn-brand is-github"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='1.5' y='1.5' width='21' height='21' rx='4' fill='none' stroke='%23fff' stroke-dasharray='3 2'/></svg>" alt="">Sign in with GitHub</button>
+        <button class="btn-brand is-github is-light"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='1.5' y='1.5' width='21' height='21' rx='4' fill='none' stroke='%23000' stroke-dasharray='3 2'/></svg>" alt="">Sign in with GitHub</button>
+      </div>
+
+      <h3>Spotify <code>.is-spotify</code> (app supplies the logo)</h3>
+      <div class="cluster">
+        <a class="btn-brand is-spotify" href="#c-brand-buttons"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='1.5' y='1.5' width='21' height='21' rx='4' fill='none' stroke='%23fff' stroke-dasharray='3 2'/></svg>" alt="">Open Spotify</a>
+        <a class="btn-brand is-spotify is-light" href="#c-brand-buttons"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='1.5' y='1.5' width='21' height='21' rx='4' fill='none' stroke='%23000' stroke-dasharray='3 2'/></svg>" alt="">Listen on Spotify</a>
+      </div>
+
+      <h3>Sign-in stack and disabled</h3>
+      <div class="grid">
+        <div class="card stack stack-sm">
+          <h4>Sign in to Northwind</h4>
+          <div class="btn-brand-stack">
+            <button class="btn-brand is-google"><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Continue with Google</button>
+            <button class="btn-brand is-microsoft"><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in with Microsoft</button>
+            <button class="btn-brand is-apple"><img class="btn-brand-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 44'><rect x='14' y='12' width='17' height='20' rx='3' fill='none' stroke='%23fff' stroke-dasharray='3 2'/></svg>" alt="">Continue with Apple</button>
+          </div>
+          <p class="text-muted">Equal widths: Google and Apple ask to be shown at least as prominently as other providers.</p>
+        </div>
+        <div class="card stack stack-sm">
+          <h4>Disabled</h4>
+          <div class="btn-brand-stack">
+            <button class="btn-brand is-google" disabled><img class="btn-brand-logo" src="assets/logos/google/google-g.svg" alt="">Sign in with Google</button>
+            <button class="btn-brand is-microsoft is-dark" disabled><img class="btn-brand-logo" src="assets/logos/microsoft/microsoft-logo.svg" alt="">Sign in with Microsoft</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Surfaces</span>
+    <span class="text-muted">PLAN.md §9 #47, #49, #50</span>
+  </footer>
+
+<script src="assets/js/window.js"></script>
+<script>
+// Demo only: the div-pattern close buttons are app-dismissed (CONTRACT.md
+// "Dismissing a modal"); here they hide the window and offer a reopen.
+const reopen = document.getElementById("reopen");
+document.addEventListener("click", (e) => {
+  const id = e.target.closest("[data-close]")?.dataset.close;
+  if (!id) return;
+  document.getElementById(id).hidden = true;
+  reopen.hidden = false;
+});
+reopen.addEventListener("click", () => {
+  document.querySelectorAll("#w1, #w2").forEach((w) => { w.hidden = false; });
+  reopen.hidden = true;
+});
+</script>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

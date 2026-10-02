@@ -110,3 +110,17 @@ own floating, blurred, pill-shaped glass capsule with a soft drop shadow
 above the wave, and the active nav item's selection glow is stronger —
 so the bar still reads unmistakably as XMB even where it can't be
 centred.
+
+## v5 layout
+
+- **Tiers.** Desktop is unchanged. Up to 900px the floating bar wraps to
+  two lines, so it becomes a rounded glass slab (1.25rem corners) instead
+  of a stadium, which would clip both lines' ends; the category row
+  scrolls and starts at its first item (`justify-content: safe center`).
+  Mobile trades the 1rem shell frame for content width. No rail.
+- **Nesting.** Translucent surfaces stack as glass does; window caption
+  buttons group at the title bar's right end.
+- **XL gutter art.** The wave carries on beside the content: three thin
+  translucent light ribbons crossing the gutters, within about 1.3:1 of
+  `--bg`. They drift sideways once every two minutes, only with motion
+  allowed (`xmb-wave`).

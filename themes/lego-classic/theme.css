@@ -162,3 +162,42 @@ html[data-theme="lego-classic"] {
   --bar-chart-radius: 0.2rem 0.2rem 0 0;
   --bar-chart-shadow: inset 0 0 0 2px #1b1b1b, inset 4px 0 0 2px rgba(255, 255, 255, 0.25);
 }
+
+/* The stud strip is 26px tall and sits at the top of the brick, so the
+   brick's content starts below it rather than under the studs. */
+html[data-theme="lego-classic"] :is(.panel:not(:has(> .panel-header)), .card) {
+  padding-top: calc(var(--surface-pad, 1rem) + 26px);
+}
+/* A brick inside a brick steps down: one row of studs per stack. Nested
+   panels and cards keep the thick outline and drop shadow but lose their
+   stud strips (and the room reserved for them). */
+html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  padding-top: var(--surface-pad, 1rem);
+}
+html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card)::before,
+html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::before { content: none; }
+html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header { padding-top: var(--space-xs); }
+
+/* --- v5 layout (PLAN.md §2–§3) -------------------------------------------- *
+ * The shell needs nothing extra on phone and tablet: the studded blue bar
+ * wraps its nav onto a second line above the stud row. XL gutters: the page
+ * sits on a light-grey baseplate, studs within ~1.2:1 of --bg. */
+html[data-theme="lego-classic"] {
+  --app-gutter-art:
+    radial-gradient(circle at 13px 13px, rgba(255, 255, 255, 0.9) 0 2.5px, transparent 3.5px) 0 0 / 32px 32px,
+    radial-gradient(circle at 16px 16px, #e4e4e4 0 9px, #d8d8d8 9.5px 10.5px, transparent 11px) 0 0 / 32px 32px;
+}
+
+/* Stacked tables (phone width) label each cell with its column name in
+   --table-head-fg, a colour tuned for this theme's filled header row and
+   unreadable on the plain cell. Labels take --muted instead. */
+html[data-theme="lego-classic"] .table.is-stacked > * > tr > [data-label]::before { color: var(--muted); }
+
+/* Close (v5): a red round stud. */
+html[data-theme="lego-classic"] .modal-header > .btn-close {
+  --btn-close-bg: #c91a09;
+  --btn-close-bg-hover: #a31507;
+  --btn-close-radius: 50%;
+  --modal-header-close-fg: #fff;
+  --btn-close-fg-hover: #fff;
+}

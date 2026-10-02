@@ -140,6 +140,12 @@ Control Center switches and sliders, menus, sheets, list/table, messages
 and notifications. No reference shows a web-style data table header, a
 meter, a toast in the ftl-themes sense or a form with validation errors.
 
+## v5 layout
+
+- **Tiers.** Phones and tablets (up to 900px): no sidebar (12rem of glass would cost the window its width), the toolbar stops overlapping the window and becomes a 26px rounded rectangle with the brand and actions on line 1 and the nav scrolling on line 2. The window no longer sets `overflow: visible`, so wide content is clipped by core instead of spilling past the screen. The floating bars sit on the `--z-sticky` layer, and the capsule buttons grow to `--tap-min` (44px) on touch tiers instead of holding their 1.85–2.25rem desktop height.
+- **Nesting.** Glass on glass already steps down through the material tokens; no extra rules.
+- **XL gutter art (1801px+).** Drops of clear glass resting on the wallpaper, soft lenses with brighter rims, white at low alpha so both the day and night wallpapers show through.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -370,8 +370,8 @@ html[data-theme="liquid-glass"] :is(.panel, .card, .modal, .dropdown, .popover, 
   -webkit-backdrop-filter: var(--lg-blur-heavy);
   backdrop-filter: var(--lg-blur-heavy);
 }
-html[data-theme="liquid-glass"] .btn { min-height: 2.25rem; }
-html[data-theme="liquid-glass"] .btn-sm { min-height: 1.85rem; }
+html[data-theme="liquid-glass"] .btn { min-height: max(2.25rem, var(--tap-min)); }
+html[data-theme="liquid-glass"] .btn-sm { min-height: max(1.85rem, var(--tap-min)); }
 /* Press: glass swells like a drop of liquid instead of sinking. */
 html[data-theme="liquid-glass"] .btn:active:not(:disabled) { transform: scale(1.04); }
 
@@ -571,11 +571,10 @@ html[data-theme="liquid-glass"] .app-rail {
   -webkit-backdrop-filter: var(--lg-blur);
   backdrop-filter: var(--lg-blur);
   box-shadow: var(--lg-rim), var(--lg-lift);
-  z-index: 10;
+  z-index: var(--z-sticky);
 }
 html[data-theme="liquid-glass"] .app-main {
   grid-row: bar-start / status-end;
-  overflow: visible;
   -webkit-backdrop-filter: var(--lg-blur-heavy);
   backdrop-filter: var(--lg-blur-heavy);
   box-shadow: var(--lg-rim), var(--lg-lift-high);
@@ -631,14 +630,33 @@ html[data-theme="liquid-glass"] .app-rail {
     linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.36));
   border-radius: 26px;
 }
-/* Phone width: no sidebar; the toolbar stops overlapping the window and
-   may wrap (a wrapped capsule becomes a 26px rounded rectangle). */
-@media (max-width: 720px) {
+/* --- v5 tiers (PLAN.md §2) -------------------------------------------------
+ * Phone and tablet: no sidebar (12rem of glass would cost the window its
+ * width), and the toolbar stops overlapping the window. Core puts the
+ * brand and actions on the toolbar's first line and the nav on a second,
+ * sideways-scrolling line, so the wrapped capsule becomes a 26px rounded
+ * rectangle. */
+@media (max-width: 900px) {
   html[data-theme="liquid-glass"] .app-rail { display: none; }
   html[data-theme="liquid-glass"] { --app-padding: 0.5rem; --app-gap: 0.5rem; --app-bar-radius: 26px; }
   html[data-theme="liquid-glass"] .app-main { grid-row: auto; padding: 1rem 0.75rem 4.8rem; }
-  html[data-theme="liquid-glass"] .app-bar { margin: 0; top: 0.5rem; }
-  html[data-theme="liquid-glass"] .app-bar .nav { flex-wrap: wrap; overflow: visible; }
+  html[data-theme="liquid-glass"] .app-bar { margin: 0; top: 0.5rem; padding: 0.4rem 0.5rem 0.4rem 0.9rem; }
+  html[data-theme="liquid-glass"] .app-bar .nav { flex: 1 0 100%; margin-block: 0 -2px; }
+}
+@media (min-width: 481px) and (max-width: 900px) {
+  html[data-theme="liquid-glass"] .app-main { padding: 1.25rem 1.25rem 4.8rem; }
+}
+
+/* XL gutters: drops of clear glass resting on the wallpaper, each a soft
+   lens with a brighter rim, white at low alpha so both
+   the day and night wallpapers show through. */
+html[data-theme="liquid-glass"] {
+  --app-gutter-art:
+    radial-gradient(circle 120px at 7% 22%, rgba(255, 255, 255, 0.07) 0 112px, rgba(255, 255, 255, 0.28) 116px, transparent 120px),
+    radial-gradient(circle 70px at 12% 64%, rgba(255, 255, 255, 0.06) 0 64px, rgba(255, 255, 255, 0.24) 67px, transparent 70px),
+    radial-gradient(circle 46px at 4% 84%, rgba(255, 255, 255, 0.05) 0 41px, rgba(255, 255, 255, 0.2) 43px, transparent 46px),
+    radial-gradient(circle 96px at 93% 34%, rgba(255, 255, 255, 0.07) 0 89px, rgba(255, 255, 255, 0.26) 92px, transparent 96px),
+    radial-gradient(circle 58px at 88% 76%, rgba(255, 255, 255, 0.06) 0 52px, rgba(255, 255, 255, 0.22) 55px, transparent 58px);
 }
 
 /* --- Dark (Settings → Display → Dark) -------------------------------------

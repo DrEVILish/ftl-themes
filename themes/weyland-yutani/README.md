@@ -110,6 +110,14 @@ heavy beige label-plate bar with an amber rule, flat content on the warm
 black, and a stencil status strip. At phone width the rail collapses per
 core's default.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** bar, main and status in one column. The 3rem equipment rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token).
+- **Window caption buttons:** minimise and maximise take the label plate's ink, as close already does.
+- **XL gutters (≥1801):** the bay wall: a ruled plotting grid in `--hairline` with the rail's tick-ruler marks, all in the active screen's line colours, so the MU/TH/UR, Emergency and Earth variants follow. Still.
+
 ## Don'ts
 
 - Don't stripe anything that is not a danger state, and don't use hazard

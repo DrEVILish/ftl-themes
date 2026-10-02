@@ -77,6 +77,12 @@ well, and a checkered-flag status strip along the bottom.
 
 `references/hot-wheels/` has 3 captures plus `RESEARCH.md`: `Hot-Wheels-Unleashed05282022-…jpg` (game menu: flame logo, orange track, italic chrome type), `aa470424….jpg` (flame-logo wallpaper) and the 1999 PC set webp (blue/yellow flame hardware). They back the orange track, flame motif and italic type. `RESEARCH.md` states there is no blister-pack card capture, so the blister-pack colours are not backed by a file, and although the outsider read in `RESEARCH.md` names a checkered-flag finish, no capture is described as showing one (unverified).
 
+## v5 layout
+
+- **Tiers.** No rail at any size. On phones and tablets (up to 900px) core puts the brand and the app's actions on the bar's first line and the black nav strip on a second, sideways-scrolling line. The brand's blue logo badge keeps its own width there instead of stretching across the free space, and tightens its padding on phones.
+- **Nesting.** Nothing is drawn per surface beyond the orange outline, so nested panels and cards need no step-down rules.
+- **XL gutter art (1801px+).** A length of orange track runs down each side, raised lips and dark joints every 120px, burnt down to within about 1.3:1 of the black.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

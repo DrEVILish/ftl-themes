@@ -54,6 +54,14 @@ client area (`rgba(255,255,255,0.72)`, so only a hint of desktop colour
 comes through, as in a real Win7 window) and a frosted status strip,
 joined inside one dark hairline frame over the Harmony desktop.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** core puts brand and actions on the bar's first line and the nav on a second. The caption buttons get their own 20px strip along the top edge instead of the desktop's 7.5rem right-hand reserve, which on a phone had pushed the actions onto two extra lines.
+- **Nested surfaces step down:** only a top-level panel is a glass window with a caption bar. A panel inside a panel, card, dialog, drawer or flyout is a group box: a pale tinted label strip, no reflection and no second blur. Buttons, toolbars and navs inside a surface skip the blur too. The title-bar reflection now paints under the header's content (isolated, `z-index: -1`) and follows the corners with `border-radius: inherit` instead of `overflow: hidden`, so it never washes over a title or clips a menu opened from a header control. Minimise and maximise take the caption's black.
+- **XL gutters (≥1801):** the Harmony desktop either side of the window: two soft light swooshes and Aero's faint diagonal glare over the blue desktop. Still.
+
 ## Tell-tales of an inauthentic result
 
 - No `backdrop-filter` anywhere — an opaque theme with a blue accent is

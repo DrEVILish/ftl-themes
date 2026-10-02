@@ -290,11 +290,32 @@ html[data-theme="international-rescue"] .panel-header {
   font-weight: 900;
   border-bottom: 0.4rem solid var(--ir-gold);
   border-radius: 0.75rem 0.75rem 0 0;
-  margin: calc(-1rem * var(--density)) calc(-1rem * var(--density)) 1rem;
   padding: 0.55rem 1rem;
 }
+/* Nested consoles step down: a panel or card inside another surface drops
+   its hard drop shadow, takes a 2px outline and a thinner hazard band, so
+   only the outer console reads as the chunky one. */
+html[data-theme="international-rescue"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  --panel-shadow: none;
+  --card-shadow: none;
+  --panel-border-width: 2px;
+  --card-border-width: 2px;
+}
+html[data-theme="international-rescue"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  border-bottom-width: 0.2rem;
+  padding-block: 0.35rem;
+}
 html[data-theme="international-rescue"] .table th { font-style: italic; }
-html[data-theme="international-rescue"] .table { border: 3px solid var(--ir-navy); border-radius: 0.7rem; border-collapse: separate; border-spacing: 0; overflow: hidden; }
+html[data-theme="international-rescue"] .table { border: 3px solid var(--ir-navy); border-radius: 0.7rem; border-collapse: separate; border-spacing: 0; }
+/* The corner cells take the frame's inner radius themselves: clipping the
+   table (overflow: hidden) also cut off a row-action menu opened in it. */
+html[data-theme="international-rescue"] .table > :first-child > tr:first-child > :first-child { border-start-start-radius: calc(0.7rem - 3px); }
+html[data-theme="international-rescue"] .table > :first-child > tr:first-child > :last-child { border-start-end-radius: calc(0.7rem - 3px); }
+html[data-theme="international-rescue"] .table > :last-child > tr:last-child > :first-child { border-end-start-radius: calc(0.7rem - 3px); }
+html[data-theme="international-rescue"] .table > :last-child > tr:last-child > :last-child { border-end-end-radius: calc(0.7rem - 3px); }
+/* A readout is one number: in a narrow value row it keeps "+2 dB" on one
+   line instead of stacking the unit under the digits. */
+html[data-theme="international-rescue"] .readout { white-space: nowrap; }
 html[data-theme="international-rescue"] .alert,
 html[data-theme="international-rescue"] .card { border-color: var(--ir-navy); }
 html[data-theme="international-rescue"] .alert { border-left: 1rem solid var(--ir-gold); }
@@ -411,17 +432,48 @@ html[data-theme="international-rescue"] .app-rail {
     radial-gradient(circle, var(--ir-tb4) 0 44%, #fff 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
     radial-gradient(circle, var(--ir-tb5) 0 44%, var(--ir-gold) 44% 56%, var(--ir-navy) 56% 68%, transparent 70%);
 }
-@media (max-width: 720px) {
+/* --- v5 tiers (PLAN.md §2) -------------------------------------------------
+ * Phone: the lamp rail turns into a horizontal strip of the five craft
+ * lamps under the bar (portrait phones have the height to spare).
+ * Tablet (481–900, often a short landscape screen): the rail goes, so the
+ * console keeps all of its width and height. */
+html[data-theme="international-rescue"] {
+  --app-areas-mobile: "bar" "rail" "main" "status";
+  --app-rows-mobile: auto 3.6rem minmax(0, 1fr) auto;
+  --app-rail-display-mobile: block;
+  --app-main-padding-mobile: 1rem;
+  --app-main-padding-tablet: 1.25rem;
+}
+@media (max-width: 900px) {
   html[data-theme="international-rescue"] {
-    --app-areas-sm: "bar" "rail" "main" "status";
-    --app-rows-sm: auto 3.6rem minmax(0, 1fr) auto;
-    --app-rail-display-sm: block;
-    --app-main-padding-sm: 1rem;
     --app-gap: 0.7rem;
     --app-padding: 0.6rem;
   }
+  /* 44px nav keys: centre the label in the key, not at its top edge. */
+  html[data-theme="international-rescue"] .app-bar .nav-item { display: inline-flex; align-items: center; }
+}
+/* The rail is painted while empty (--app-rail-empty-display), which would
+   otherwise outrank the tier's own rail switch. */
+@media (min-width: 481px) and (max-width: 900px) {
+  html[data-theme="international-rescue"] { --app-rail-empty-display: none; }
+}
+@media (max-width: 480px) {
   html[data-theme="international-rescue"] .app-rail {
     background-position:
       calc(50% - 8rem) 50%, calc(50% - 4rem) 50%, 50% 50%, calc(50% + 4rem) 50%, calc(50% + 8rem) 50%;
   }
 }
+
+/* XL gutters: Tracy Island's long-range radar. Faint navy range rings
+   spread in from both screen edges over the map-room graticule, which
+   already runs under everything. */
+html[data-theme="international-rescue"] {
+  --app-gutter-art:
+    repeating-radial-gradient(circle at 0 50%, transparent 0 62px, rgba(10, 47, 110, 0.09) 62px 64px),
+    repeating-radial-gradient(circle at 100% 50%, transparent 0 62px, rgba(10, 47, 110, 0.09) 62px 64px);
+}
+
+/* Stacked tables (phone width) label each cell with its column name in
+   --table-head-fg, a colour tuned for this theme's filled header row and
+   unreadable on the plain cell. Labels take --muted instead. */
+html[data-theme="international-rescue"] .table.is-stacked > * > tr > [data-label]::before { color: var(--muted); }

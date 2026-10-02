@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experience layer — ftl-themes components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<script src="assets/js/prefs.js"></script>
+</head>
+<!-- PLAN.md §10–§14: display settings and the .prefs panel, motion tokens and
+     the theme-switch transition, accent swatches and seasons, .splash, and
+     the themed .empty-state states. Core markup only, no page CSS. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Experience</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon" aria-label="Display settings" popovertarget="prefs-dialog"><svg class="icon"><use href="assets/icons/icons.svg#icon-accessible"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Experience layer</h1>
+      <p class="text-muted">Display settings, motion, accents, splash screens and themed states (PLAN.md §10–§14). Every setting below applies to this whole page as you change it, and is remembered by <code>assets/js/prefs.js</code>.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-prefs">
+      <h2>Display settings (<code>.prefs</code>)</h2>
+      <p class="text-muted">A plain form. Unset settings follow the operating system; the panel shows the OS choice until you pick one.</p>
+      <div class="panel">
+        <div class="panel-header">Display</div>
+        <form class="prefs" id="prefs-page">
+          <fieldset class="prefs-item">
+            <legend class="prefs-label">Text size</legend>
+            <div class="segmented">
+              <label class="segmented-item"><input type="radio" name="text-size" value="s"><span class="prefs-sample is-s" aria-hidden="true">A</span><span class="visually-hidden">Small</span></label>
+              <label class="segmented-item"><input type="radio" name="text-size" value="" checked><span class="prefs-sample" aria-hidden="true">A</span><span class="visually-hidden">Default</span></label>
+              <label class="segmented-item"><input type="radio" name="text-size" value="l"><span class="prefs-sample is-l" aria-hidden="true">A</span><span class="visually-hidden">Large</span></label>
+              <label class="segmented-item"><input type="radio" name="text-size" value="xl"><span class="prefs-sample is-xl" aria-hidden="true">A</span><span class="visually-hidden">Extra large</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="prefs-item">
+            <legend class="prefs-label">Density</legend>
+            <div class="segmented">
+              <label class="segmented-item"><input type="radio" name="density" value="compact">Compact</label>
+              <label class="segmented-item"><input type="radio" name="density" value="" checked>Default</label>
+              <label class="segmented-item"><input type="radio" name="density" value="comfortable">Roomy</label>
+            </div>
+          </fieldset>
+          <fieldset class="prefs-item">
+            <legend class="prefs-label">Contrast<span class="prefs-hint">More: every border in the text colour, links underlined.</span></legend>
+            <div class="segmented">
+              <label class="segmented-item"><input type="radio" name="contrast" value="standard" checked>Standard</label>
+              <label class="segmented-item"><input type="radio" name="contrast" value="high" data-media="(prefers-contrast: more)">High</label>
+              <label class="segmented-item"><input type="radio" name="contrast" value="more">More</label>
+            </div>
+          </fieldset>
+          <fieldset class="prefs-item">
+            <legend class="prefs-label">Motion<span class="prefs-hint">Off also stops background art and glows.</span></legend>
+            <div class="segmented">
+              <label class="segmented-item"><input type="radio" name="motion" value="full" checked>Full</label>
+              <label class="segmented-item"><input type="radio" name="motion" value="reduced" data-media="(prefers-reduced-motion: reduce)">Reduced</label>
+              <label class="segmented-item"><input type="radio" name="motion" value="none">Off</label>
+            </div>
+          </fieldset>
+          <label class="prefs-item">
+            <span class="prefs-label">Reduce transparency<span class="prefs-hint">Glass and blur become solid.</span></span>
+            <span class="switch"><input type="checkbox" name="transparency" value="reduced" data-media="(prefers-reduced-transparency: reduce)" data-off="default"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+          </label>
+          <label class="prefs-item">
+            <span class="prefs-label">Large touch targets<span class="prefs-hint">44px controls on any screen.</span></span>
+            <span class="switch"><input type="checkbox" name="pointer" value="touch"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+          </label>
+          <label class="prefs-item">
+            <span class="prefs-label">Underline links</span>
+            <span class="switch"><input type="checkbox" name="underline-links" value="on"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+          </label>
+          <fieldset class="prefs-item">
+            <legend class="prefs-label">Accent<span class="prefs-hint">Colours this theme allows.</span></legend>
+            <div class="prefs-accents" data-prefs-accents>
+              <label class="prefs-swatch is-default"><input type="radio" name="accent" value="" checked><span>Theme</span></label>
+            </div>
+          </fieldset>
+          <div class="prefs-actions">
+            <button class="btn" type="reset">Reset to system</button>
+          </div>
+        </form>
+      </div>
+      <p class="text-muted">Some sample text with <a href="#c-prefs">a running-text link</a>, a <button class="btn btn-sm" type="button">Button</button> and a <span class="badge badge-accent">badge</span>, to preview the settings against.</p>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-prefs-modal">
+      <h2>The panel in a modal</h2>
+      <p class="text-muted">The same form drops into a modal or drawer. The accessibility button in the bar opens this one.</p>
+      <div class="cluster"><button class="btn" popovertarget="prefs-dialog">Open display settings</button></div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-motion">
+      <h2>Motion tokens</h2>
+      <p class="text-muted">A theme describes how it moves with these. Every animation they drive runs only when the OS and <code>data-motion</code> allow it. Switching theme with the picker cross-fades through a view transition, and is instant under reduced motion.</p>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Token</th><th>Default</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td><code>--motion-duration-s</code></td><td>120ms</td><td>Hover, press, small state changes</td></tr>
+            <tr><td><code>--motion-duration-m</code></td><td>200ms</td><td>Surfaces opening</td></tr>
+            <tr><td><code>--motion-duration-l</code></td><td>320ms</td><td>Theme switch, splash exit</td></tr>
+            <tr><td><code>--motion-ease</code></td><td>cubic-bezier(0.2, 0, 0, 1)</td><td>All of the above</td></tr>
+            <tr><td><code>--motion-enter</code></td><td>motion-fade-in m ease both</td><td>An element arriving (splash intro)</td></tr>
+            <tr><td><code>--motion-exit</code></td><td>motion-fade-out s ease both</td><td>An element leaving</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-accent">
+      <h2>Accent swatches and seasons</h2>
+      <p class="text-muted">The accent row in the panel lists the swatches the current theme declares (<code>--accent-swatch-1</code> to <code>-6</code>); a theme without any hides the row. Try <code>imac-g3</code> or <code>cassette-futurism</code>. Seasonal palettes (<code>data-season</code>) are the app's to switch on; a theme tints only its accent and gutter art for them.</p>
+      <div class="cluster">
+        <button class="btn btn-primary" type="button">Primary</button>
+        <span class="badge badge-accent">Accent badge</span>
+        <progress class="progress" max="100" value="64" aria-label="Accent progress"></progress>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-splash">
+      <h2>Splash (<code>.splash</code>)</h2>
+      <p class="text-muted">Shown full screen while the app loads; these use <code>.is-contained</code> to stay in their box.</p>
+      <div class="columns">
+        <div class="stack stack-sm">
+          <h3>Real load, with progress</h3>
+          <div class="demo-stage">
+            <div class="splash is-contained" role="status" aria-live="polite">
+              <div class="splash-art" aria-hidden="true"></div>
+              <p class="splash-title">Telemetry</p>
+              <progress class="progress" max="100" value="45" aria-label="Loading"></progress>
+              <p class="splash-message">Initialising channel 3 of 8…</p>
+            </div>
+          </div>
+        </div>
+        <div class="stack stack-sm">
+          <h3>Indeterminate</h3>
+          <div class="demo-stage">
+            <div class="splash is-contained" role="status" aria-live="polite">
+              <p class="splash-title">Connecting</p>
+              <progress class="progress" aria-label="Loading"></progress>
+              <p class="splash-message">Waiting for the server…</p>
+            </div>
+          </div>
+        </div>
+        <div class="stack stack-sm">
+          <h3>Message only</h3>
+          <div class="demo-stage">
+            <div class="splash is-contained" role="status" aria-live="polite">
+              <div class="splash-art" aria-hidden="true"></div>
+              <p class="splash-message">Restoring your workspace</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cluster">
+        <button class="btn" type="button" onclick="playSplash(document.getElementById('intro'))">Play the timed intro (2s)</button>
+        <span class="text-muted">Any key, click or tap skips it.</span>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-states">
+      <h2>Themed states (<code>.empty-state</code>)</h2>
+      <p class="text-muted">An empty <code>.empty-state-title</code> shows the theme's suggested heading (the last row); the app's own text always wins. A ready-made <a href="404.html" data-demo-link>404 page</a> uses <code>.is-404</code>.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="empty-state" role="status">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg>
+            <h3 class="empty-state-title">No recordings yet</h3>
+            <p class="empty-state-hint">Takes you record appear here.</p>
+            <div class="cluster"><button class="btn btn-primary" type="button">New recording</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-error" role="alert">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-warning"/></svg>
+            <h3 class="empty-state-title">Couldn’t load the mix</h3>
+            <p class="empty-state-hint">The session file is damaged. Error 0x1F.</p>
+            <div class="cluster"><button class="btn" type="button">Try again</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-offline" role="status">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-cloud-off"/></svg>
+            <h3 class="empty-state-title">You’re offline</h3>
+            <p class="empty-state-hint">Changes are saved here and sync when you reconnect.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-404" role="status">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-question"/></svg>
+            <h3 class="empty-state-title">No such channel</h3>
+            <p class="empty-state-hint">Channel 12 was removed or never existed.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-locked" role="status">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-lock"/></svg>
+            <h3 class="empty-state-title">Admins only</h3>
+            <p class="empty-state-hint">Ask an owner for access to billing.</p>
+            <div class="cluster"><button class="btn" type="button">Request access</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-loading" role="status" aria-busy="true">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-hourglass"/></svg>
+            <h3 class="empty-state-title">Loading your takes</h3>
+            <p class="empty-state-hint">Large sessions take a few seconds.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-error" role="alert">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-warning"/></svg>
+            <h3 class="empty-state-title"></h3>
+            <p class="empty-state-hint">Suggested heading from the theme.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="empty-state is-offline" role="status">
+            <svg class="icon empty-state-icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-cloud-off"/></svg>
+            <h3 class="empty-state-title"></h3>
+            <p class="empty-state-hint">Suggested heading from the theme.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-forced">
+      <h2>Forced colours</h2>
+      <p class="text-muted">Under Windows High Contrast (<code>forced-colors: active</code>) every theme falls back to system colours: surfaces drawn with shadows get a real outline, selected items use the Highlight colour, and focus rings stay. Nothing to switch on here; the OS does it.</p>
+      <div class="cluster">
+        <div class="segmented"><button class="segmented-item is-active" type="button" aria-pressed="true">Selected</button><button class="segmented-item" type="button" aria-pressed="false">Not selected</button></div>
+        <label class="switch"><input type="checkbox" checked aria-label="Sample switch"><span class="switch-track"><span class="switch-thumb"></span></span></label>
+        <progress class="progress" max="100" value="30" aria-label="Sample progress"></progress>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <div class="modal" popover id="prefs-dialog" role="dialog" aria-labelledby="prefs-dialog-title">
+    <div class="modal-header"><h2 id="prefs-dialog-title">Display settings</h2><button class="btn-close" popovertarget="prefs-dialog" popovertargetaction="hide" aria-label="Close"></button></div>
+    <form class="prefs">
+      <fieldset class="prefs-item">
+        <legend class="prefs-label">Text size</legend>
+        <div class="segmented">
+          <label class="segmented-item"><input type="radio" name="text-size" value="s"><span class="prefs-sample is-s" aria-hidden="true">A</span><span class="visually-hidden">Small</span></label>
+          <label class="segmented-item"><input type="radio" name="text-size" value="" checked><span class="prefs-sample" aria-hidden="true">A</span><span class="visually-hidden">Default</span></label>
+          <label class="segmented-item"><input type="radio" name="text-size" value="l"><span class="prefs-sample is-l" aria-hidden="true">A</span><span class="visually-hidden">Large</span></label>
+          <label class="segmented-item"><input type="radio" name="text-size" value="xl"><span class="prefs-sample is-xl" aria-hidden="true">A</span><span class="visually-hidden">Extra large</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="prefs-item">
+        <legend class="prefs-label">Motion</legend>
+        <div class="segmented">
+          <label class="segmented-item"><input type="radio" name="motion" value="full" checked>Full</label>
+          <label class="segmented-item"><input type="radio" name="motion" value="reduced" data-media="(prefers-reduced-motion: reduce)">Reduced</label>
+          <label class="segmented-item"><input type="radio" name="motion" value="none">Off</label>
+        </div>
+      </fieldset>
+      <label class="prefs-item">
+        <span class="prefs-label">Reduce transparency</span>
+        <span class="switch"><input type="checkbox" name="transparency" value="reduced" data-media="(prefers-reduced-transparency: reduce)" data-off="default"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+      </label>
+      <fieldset class="prefs-item">
+        <legend class="prefs-label">Accent</legend>
+        <div class="prefs-accents" data-prefs-accents>
+          <label class="prefs-swatch is-default"><input type="radio" name="accent" value="" checked><span>Theme</span></label>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <div class="splash" id="intro" data-intro="2s" role="status" aria-live="polite" hidden>
+    <div class="splash-art" aria-hidden="true"></div>
+    <p class="splash-title">ftl-themes</p>
+    <progress class="progress" aria-label="Starting"></progress>
+    <p class="splash-message">Systems nominal</p>
+    <p class="splash-skip">Press any key to skip</p>
+  </div>
+
+  <footer class="app-status">
+    <span>Experience layer</span>
+    <span class="push text-muted">PLAN.md §10–§14</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

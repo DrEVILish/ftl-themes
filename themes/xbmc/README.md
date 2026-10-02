@@ -71,3 +71,18 @@ toward the edges.
 - `xbmc-confluence-14.jpg` — Kodi 14 Confluence: a horizontal caps menu strip with a sub-menu drop under a blue bokeh backdrop. Backs the horizontal top menu, on which the theme's layout is based.
 
 Not backed: the theme's glowing underline itself (none of the captures shows one — selection is a green LED or a lighter blade) and the specific hexes. (An earlier note here saying no `references/xbmc/` folder exists was wrong.)
+
+## v5 layout
+
+- **Tiers.** Desktop and tablet are the same shell (there is no rail to
+  drop). On mobile the category tiles keep their centred label and blue
+  edge but lose the big home-screen padding, and the top menu tightens.
+- **Nesting.** The home-screen tile look (big padding, centred label,
+  glowing blue bottom edge, hover lift) is for top-level cards. A card
+  nested in a panel, card, dialog or drawer steps down to normal padding,
+  left-aligned text and a 1px accent edge; a card holding a table, form or
+  list stays left-aligned. The hover lift only applies on devices that can
+  hover.
+- **XL gutter art.** The home screen's category tiles, out of focus: a dim
+  grid of flat tiles, each with a faint blue bottom edge, within about
+  1.2:1 of `--bg`. Still.

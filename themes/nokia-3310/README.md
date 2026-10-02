@@ -83,3 +83,7 @@ resolution. The sprite ships 123 `<symbol>`s in total (`grep -c '<symbol'`), and
 - `nokia-3310-grey-front.jpg` — an Orange-branded grey 3310e front view (`RESEARCH.md`); backs casing and keypad only.
 
 `RESEARCH.md` is explicit that the **LCD-screen gap is still open**: no original Series-20 menu screen capture exists in the folder. The inverted title strip, softkey layout and selection behaviour are therefore from documented behaviour, not from a screenshot. (An earlier note here claiming no reference folder was wrong.)
+
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The handset framing is kept at every size. From 900px down the casing and its padding get thinner so the LCD keeps its width; the earpiece moves into the casing; and the signal and battery bars sit on the bar's first line, smaller on a phone. The casing is painted on the page around the shell (`html:has(.app)`), not on `body`, which is the shell itself. On XL the gutters continue the casing with a moulded keypad of rounded keys, three to a row, a shade lighter than the plastic (about 1.1:1 against the casing).

@@ -173,6 +173,12 @@ system colour values match Apple's published table. Not found: a good
 reference for tables (iOS has none), toasts, tooltips, meters, the dock,
 or anything from iOS 7 itself in a resolution worth keeping.
 
+## v5 layout
+
+- **Tiers.** Phones and tablets (up to 900px): the large title moves up beside the trailing buttons, as the Photos and App Store tabs do (30px, 26px on phones, truncating), and the segmented nav takes its own line and scrolls sideways instead of wrapping into a second row of segments. The bars sit on the `--z-sticky` layer.
+- **Nesting.** Grouped sections are flat by design; nested panels need no step-down rules.
+- **XL gutter art (1801px+).** The home screen beside the app: its icon grid reduced to faint squircles (white ones on the dark variant).
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

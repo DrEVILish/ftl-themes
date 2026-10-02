@@ -109,11 +109,27 @@ html[data-theme="alienware"] .btn {
 }
 html[data-theme="alienware"] .panel,
 html[data-theme="alienware"] .modal,
-html[data-theme="alienware"] .card,
-html[data-theme="alienware"] .dropdown,
-html[data-theme="alienware"] .context-menu,
-html[data-theme="alienware"] .popover {
-  clip-path: polygon(34px 0, 100% 0, 100% calc(100% - 34px), calc(100% - 34px) 100%, 0 100%, 0 34px);
+html[data-theme="alienware"] .card {
+  --aw-cut: 34px;
+  clip-path: polygon(var(--aw-cut) 0, 100% 0, 100% calc(100% - var(--aw-cut)), calc(100% - var(--aw-cut)) 100%, 0 100%, 0 var(--aw-cut));
+}
+/* Nesting steps the cut down: a panel or card inside another surface gets
+   a 14px cut (34px on a short inner box ate its last line), and its header
+   needs no extra inset to clear it. Floating menus are small, so 10px; a
+   menu or popover that holds another floating surface (a submenu opened
+   beside it) is not clipped at all, since clip-path would cut the child
+   off at the parent's edge. */
+html[data-theme="alienware"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+html[data-theme="alienware"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  padding-inline: var(--surface-pad, 1rem);
+}
+html[data-theme="alienware"] :is(.dropdown, .context-menu, .popover) {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+html[data-theme="alienware"] :is(.dropdown, .context-menu, .popover):has(.dropdown, .context-menu, .popover, [role="menu"]) {
+  clip-path: none;
 }
 html[data-theme="alienware"] .btn-sm {
   clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
@@ -203,6 +219,43 @@ html[data-theme="alienware"] .app-bar::after {
     linear-gradient(var(--accent), var(--accent)) right / 2px 6px no-repeat;
   opacity: 0.85;
   pointer-events: none;
+}
+
+/* --- v5 tiers --------------------------------------------------------------
+ * Tablet keeps the AlienFX strip: at 0.65rem it costs almost no content
+ * width, and it is the theme's signature lighting zone. Core makes every
+ * touch tier one column, so the strip's column is put back here (core has
+ * no per-tier column token). On phones the strip goes and the bar's lit
+ * cyan edge carries the light alone. The rule is needed (not just
+ * --app-rail-display-mobile) because --app-rail-empty-display keeps an
+ * empty rail visible, which would otherwise drop it into an implicit grid
+ * column beside the content. */
+html[data-theme="alienware"] {
+  --app-areas-tablet: "bar bar" "rail main" "status status";
+  --app-rail-display-tablet: block;
+}
+@container style(--tier: tablet) {
+  html[data-theme="alienware"] .app { grid-template-columns: var(--app-columns); }
+}
+@container style(--tier: mobile) {
+  html[data-theme="alienware"] .app { padding: 0.35rem; gap: 0.35rem; }
+  html[data-theme="alienware"] .app-rail { display: none; }
+  /* Phone padding is tighter, so the top-level cut shrinks with it or it
+     clips the first letter of a headerless card. */
+  html[data-theme="alienware"] :is(.panel, .modal, .card) { --aw-cut: 20px; }
+  html[data-theme="alienware"] :is(.panel-header, .modal-header) { padding-inline: 1.25rem; }
+  /* Orbitron at 2em with wide tracking overruns a phone line. */
+  html[data-theme="alienware"] h1 { font-size: 1.6em; letter-spacing: 0.06em; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the chassis carries on past the screen. A
+   matte black shell with angled vent slots and, out at the edge, the dimmed
+   glow of a second AlienFX strip. All within ~1.2:1 of --bg; still. */
+html[data-theme="alienware"] {
+  --app-gutter-art:
+    linear-gradient(90deg, transparent 0 4.5rem, rgba(0, 212, 255, 0.07) 4.5rem 4.8rem, transparent 4.8rem calc(100% - 4.8rem), rgba(0, 212, 255, 0.07) calc(100% - 4.8rem) calc(100% - 4.5rem), transparent calc(100% - 4.5rem)),
+    repeating-linear-gradient(135deg, transparent 0 18px, #141418 18px 24px) 0 0 / 100% 100%,
+    linear-gradient(180deg, #0c0c0f, #08080a);
 }
 
 /* --- Print ----------------------------------------------------------------

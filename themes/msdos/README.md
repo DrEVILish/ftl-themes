@@ -73,6 +73,10 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 
 `references/msdos/` has 6 captures plus `RESEARCH.md`: an icon-library grid, MS-DOS 6.22 VirtualBox setup and welcome screens, a `moricons.dll` picker dialog, an MS-DOS 2.0 floppy photo and a DOS 5.0 setup screen. They back the blue text-mode field and box chrome. `RESEARCH.md` states there is **no Norton Commander two-panel capture**, so the twin-panel layout, cyan cursor bar and F-key bar are described in RESEARCH text, not shown in any file.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). Phone and tablet keep the grey menu bar, blue work area and F-key strip; the bar wraps to two lines. Nested titled boxes leave headroom for their title tab. Boxes inside a grey dialog take the screen's white-on-blue inks back, and a drawer or `.scroll` panel puts its title tab inside the box rather than on its top edge, where scrolling would clip it. On XL the gutters show the Turbo Vision desktop: the CP437 light-shade fill (░) in dim VGA blue, about 1.4:1 against `--bg`.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

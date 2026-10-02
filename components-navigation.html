@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Navigation and structure — ftl-themes components</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- v5 navigation and structure components (PLAN.md §9 #37, #39–#46) and the
+     keyboard layer (§20). Core markup only, no page CSS: core/components/
+     navigation.css styles every state shown here. Docs:
+     docs/components/navigation.md. Dialogs open with invoker commands
+     (commandfor/command), no script. -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Navigation</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon" aria-label="Notifications" data-tooltip="Notifications" data-shortcut="G N"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Navigation and structure</h1>
+      <p class="text-muted">Closable tabs, menu bar, tree, bottom tab bar, bottom sheet, nav rail, stepper, command palette, split pane and the keyboard layer. Every state is drawn by the theme; behaviour (closing, filtering, arrow keys) is the app's.</p>
+    </div>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-closable-tabs">
+      <h2>Closable tabs</h2>
+      <p class="text-muted"><code>.tabs.is-scroll</code> keeps one row and scrolls sideways; a closable <code>.tab</code> wraps the tab button and its <code>.btn-close</code>. The add button sticks to the end.</p>
+      <div class="panel">
+        <div class="tabs is-scroll" role="tablist" aria-label="Open files">
+          <div class="tab is-active"><button role="tab" aria-selected="true" aria-controls="tp-1">index.html</button><button class="btn-close" tabindex="-1" aria-label="Close index.html"></button></div>
+          <div class="tab is-dirty"><button role="tab" aria-selected="false" tabindex="-1">navigation.css</button><button class="btn-close" tabindex="-1" aria-label="Close navigation.css (unsaved)"></button></div>
+          <div class="tab"><button role="tab" aria-selected="false" tabindex="-1">theme-loader.js</button><button class="btn-close" tabindex="-1" aria-label="Close theme-loader.js"></button></div>
+          <div class="tab"><button role="tab" aria-selected="false" tabindex="-1"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg>a-very-long-component-file-name-that-truncates.css</button><button class="btn-close" tabindex="-1" aria-label="Close long file"></button></div>
+          <div class="tab"><button role="tab" aria-selected="false" tabindex="-1">README.md</button><button class="btn-close" tabindex="-1" aria-label="Close README.md"></button></div>
+          <div class="tab"><button role="tab" aria-selected="false" tabindex="-1">CHANGELOG.md</button><button class="btn-close" tabindex="-1" aria-label="Close CHANGELOG.md"></button></div>
+          <button class="tab-add" aria-label="New tab" data-tooltip="New tab" data-shortcut="Ctrl+T"></button>
+        </div>
+        <p class="mt-s" id="tp-1" role="tabpanel">Active tab, an unsaved tab (dot), an icon tab truncated at <code>--tab-max</code>, and overflow scrolling.</p>
+      </div>
+      <div class="panel">
+        <div class="tabs" role="tablist" aria-label="Short strip">
+          <div class="tab is-active"><button role="tab" aria-selected="true">Console</button><button class="btn-close" tabindex="-1" aria-label="Close Console"></button></div>
+          <div class="tab"><button role="tab" aria-selected="false" tabindex="-1">Network</button><button class="btn-close" tabindex="-1" aria-label="Close Network"></button></div>
+          <button class="tab-add" aria-label="New tab"><svg class="icon"><use href="assets/icons/icons.svg#icon-plus"/></svg></button>
+        </div>
+        <p class="mt-s">A strip that fits: the add button follows the last tab (icon form).</p>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-menubar">
+      <h2>Menu bar</h2>
+      <p class="text-muted"><code>ul.menubar</code> uses the nested-list markup of the context menu. Hover, focus or tap a top item; the second bar has File held open with <code>aria-expanded="true"</code>.</p>
+      <ul class="menubar" role="menubar" aria-label="Editor">
+        <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" aria-expanded="false">File</button>
+          <ul role="menu">
+            <li><button role="menuitem">New file <kbd>Ctrl+N</kbd></button></li>
+            <li><button role="menuitem">Open… <kbd>Ctrl+O</kbd></button></li>
+            <li class="has-submenu"><button role="menuitem" aria-haspopup="menu">Open recent</button>
+              <ul role="menu">
+                <li><button role="menuitem">index.html</button></li>
+                <li><button role="menuitem">navigation.css</button></li>
+                <li class="has-submenu"><button role="menuitem" aria-haspopup="menu">More</button>
+                  <ul role="menu"><li><button role="menuitem">PLAN.md</button></li><li><button role="menuitem">CONTRACT.md</button></li></ul></li>
+              </ul></li>
+            <li role="separator"></li>
+            <li><button role="menuitem">Save <kbd>Ctrl+S</kbd></button></li>
+            <li><button role="menuitem" aria-disabled="true">Save all <kbd>Ctrl+Alt+S</kbd></button></li>
+            <li role="separator"></li>
+            <li><button role="menuitem" class="is-danger">Close window</button></li>
+          </ul></li>
+        <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" aria-expanded="false">Edit</button>
+          <ul role="menu">
+            <li><button role="menuitem">Undo <kbd>Ctrl+Z</kbd></button></li>
+            <li><button role="menuitem">Redo <kbd>Ctrl+Y</kbd></button></li>
+            <li role="separator"></li>
+            <li><button role="menuitem">Find <kbd>Ctrl+F</kbd></button></li>
+          </ul></li>
+        <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" aria-expanded="false">View</button>
+          <ul role="menu">
+            <li><button role="menuitemcheckbox" aria-checked="true">Sidebar <kbd>Ctrl+B</kbd></button></li>
+            <li><button role="menuitemcheckbox" aria-checked="false">Minimap</button></li>
+            <li role="separator"></li>
+            <li><button role="menuitemradio" aria-checked="true">Comfortable</button></li>
+            <li><button role="menuitemradio" aria-checked="false">Compact</button></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu" aria-expanded="false">Help</button>
+          <ul role="menu">
+            <li><button role="menuitem" commandfor="shortcuts" command="show-modal">Keyboard shortcuts <kbd>?</kbd></button></li>
+            <li><button role="menuitem">About</button></li>
+          </ul></li>
+      </ul>
+      <div class="demo-stage">
+        <ul class="menubar" role="menubar" aria-label="Static preview">
+          <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" aria-expanded="true">File</button>
+            <ul role="menu">
+              <li><button role="menuitem">New file <kbd>Ctrl+N</kbd></button></li>
+              <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" aria-expanded="true">Open recent</button>
+                <ul role="menu"><li><button role="menuitem">index.html</button></li><li><button role="menuitem">navigation.css</button></li></ul></li>
+              <li role="separator"></li>
+              <li><button role="menuitem">Save <kbd>Ctrl+S</kbd></button></li>
+              <li><button role="menuitem" aria-disabled="true">Save all</button></li>
+            </ul></li>
+          <li class="has-submenu"><button role="menuitem" aria-haspopup="menu">Edit</button><ul role="menu"><li><button role="menuitem">Undo</button></li></ul></li>
+          <li class="has-submenu"><button role="menuitem" aria-haspopup="menu">View</button><ul role="menu"><li><button role="menuitemcheckbox" aria-checked="true">Sidebar</button></li></ul></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-tree">
+      <h2>Tree view</h2>
+      <p class="text-muted"><code>ul.tree</code> with <code>&lt;details&gt;</code>: expand and collapse with no JS. The selected row uses <code>aria-current</code>.</p>
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-header">Explorer</div>
+          <ul class="tree" aria-label="Files">
+            <li><details open><summary><svg class="icon"><use href="assets/icons/icons.svg#icon-folder"/></svg>ftl-themes</summary>
+              <ul>
+                <li><details open><summary><svg class="icon"><use href="assets/icons/icons.svg#icon-folder"/></svg>core</summary>
+                  <ul>
+                    <li><details open><summary><svg class="icon"><use href="assets/icons/icons.svg#icon-folder"/></svg>components</summary>
+                      <ul>
+                        <li><a href="#c-tree" aria-current="page"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg>navigation.css</a></li>
+                        <li><a href="#c-tree"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg>instruments.css</a></li>
+                      </ul></details></li>
+                    <li><a href="#c-tree"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg>core.css</a></li>
+                    <li><a href="#c-tree"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg>layout.css</a></li>
+                  </ul></details></li>
+                <li><details><summary><svg class="icon"><use href="assets/icons/icons.svg#icon-folder"/></svg>themes</summary>
+                  <ul><li><a href="#c-tree">blue-future</a></li><li><a href="#c-tree">windows95</a></li></ul></details></li>
+                <li><a href="#c-tree"><svg class="icon"><use href="assets/icons/icons.svg#icon-file"/></svg>PLAN.md</a></li>
+                <li><span><svg class="icon"><use href="assets/icons/icons.svg#icon-file"/></svg>LICENSE (read-only)</span></li>
+              </ul></details></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <div class="panel-header">Tree with roles (app adds arrow keys)</div>
+          <ul class="tree" role="tree" aria-label="Channels">
+            <li role="treeitem" aria-expanded="true" aria-selected="false"><details open><summary>Inputs</summary>
+              <ul role="group">
+                <li role="treeitem" aria-selected="true"><button tabindex="-1">Vocal 1</button></li>
+                <li role="treeitem" aria-selected="false"><button tabindex="-1">Vocal 2</button></li>
+                <li role="treeitem" aria-selected="false"><button tabindex="-1">Acoustic guitar, stage-left pickup and the long name wraps</button></li>
+              </ul></details></li>
+            <li role="treeitem" aria-expanded="false" aria-selected="false"><details><summary>Buses</summary>
+              <ul role="group"><li role="treeitem"><button tabindex="-1">Monitor A</button></li></ul></details></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-tabbar">
+      <h2>Bottom tab bar</h2>
+      <p class="text-muted"><code>nav.tabbar</code>: the mobile primary nav. Icon and label, active with <code>aria-current</code>, a badge, safe-area padding. In the shell it can be the status row (<code>&lt;nav class="app-status tabbar"&gt;</code>).</p>
+      <nav class="tabbar" aria-label="Primary (four items)">
+        <a href="#c-tabbar" aria-current="page"><svg class="icon"><use href="assets/icons/icons.svg#icon-home"/></svg><span>Home</span></a>
+        <a href="#c-tabbar"><svg class="icon"><use href="assets/icons/icons.svg#icon-search"/></svg><span>Search</span></a>
+        <a href="#c-tabbar"><svg class="icon"><use href="assets/icons/icons.svg#icon-mail"/></svg><span>Inbox</span><span class="badge badge-accent" aria-label="3 unread">3</span></a>
+        <a href="#c-tabbar"><svg class="icon"><use href="assets/icons/icons.svg#icon-user"/></svg><span>Profile</span></a>
+      </nav>
+      <nav class="tabbar" aria-label="Primary (five items)">
+        <button><svg class="icon"><use href="assets/icons/icons.svg#icon-music"/></svg><span>Library</span></button>
+        <button><svg class="icon"><use href="assets/icons/icons.svg#icon-list"/></svg><span>Playlists</span></button>
+        <button class="is-active" aria-current="page"><svg class="icon"><use href="assets/icons/icons.svg#icon-player-play"/></svg><span>Now playing</span></button>
+        <button><svg class="icon"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span>Schedule and long labels</span></button>
+        <button><svg class="icon"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Settings</span></button>
+      </nav>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-sheet">
+      <h2>Bottom sheet</h2>
+      <p class="text-muted"><code>dialog.sheet</code>: the mobile counterpart of the modal and dropdown, anchored to the bottom edge with a drag-handle mark.</p>
+      <p class="cluster">
+        <button class="btn btn-primary" commandfor="share-sheet" command="show-modal">Open sheet</button>
+        <button class="btn btn-secondary" popovertarget="actions-sheet">Open popover sheet</button>
+      </p>
+      <div class="demo-stage flex is-column is-justify-end">
+        <div class="sheet" role="dialog" aria-labelledby="sheet-prev-title">
+          <div class="sheet-header"><h3 id="sheet-prev-title">Share playlist</h3><button class="btn-close" aria-label="Close"></button></div>
+          <div class="list">
+            <button class="list-item"><svg class="icon"><use href="assets/icons/icons.svg#icon-copy"/></svg>Copy link</button>
+            <button class="list-item"><svg class="icon"><use href="assets/icons/icons.svg#icon-mail"/></svg>Send by email</button>
+            <button class="list-item"><svg class="icon"><use href="assets/icons/icons.svg#icon-download"/></svg>Download</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-nav-rail">
+      <h2>Collapsible nav rail</h2>
+      <p class="text-muted"><code>nav.nav-rail</code> of <code>.nav-item</code>s: labels on desktop, icon-only up to 900px. <code>.is-collapsed</code> and <code>.is-expanded</code> force either. (The shell's <code>.app-rail</code> stays decorative.)</p>
+      <div class="grid">
+        <div class="card row">
+          <nav class="nav-rail" aria-label="Mail folders">
+            <h3>Mail</h3>
+            <a class="nav-item" href="#c-nav-rail" aria-current="page"><svg class="icon"><use href="assets/icons/icons.svg#icon-mail"/></svg><span>Inbox</span><span class="badge badge-accent">12</span></a>
+            <a class="nav-item" href="#c-nav-rail"><svg class="icon"><use href="assets/icons/icons.svg#icon-star"/></svg><span>Starred</span></a>
+            <a class="nav-item" href="#c-nav-rail"><svg class="icon"><use href="assets/icons/icons.svg#icon-clock"/></svg><span>Snoozed until next week</span></a>
+            <h3>Workspace</h3>
+            <a class="nav-item" href="#c-nav-rail"><svg class="icon"><use href="assets/icons/icons.svg#icon-chart-histogram"/></svg><span>Reports</span></a>
+            <a class="nav-item" href="#c-nav-rail"><svg class="icon"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Settings</span></a>
+          </nav>
+          <p>Responsive rail: labels on desktop, icon-only at 900px and below.</p>
+        </div>
+        <div class="card row">
+          <nav class="nav-rail is-collapsed" aria-label="Tools (collapsed)">
+            <a class="nav-item" href="#c-nav-rail" aria-current="page"><svg class="icon"><use href="assets/icons/icons.svg#icon-home"/></svg><span>Home</span></a>
+            <a class="nav-item" href="#c-nav-rail"><svg class="icon"><use href="assets/icons/icons.svg#icon-mail"/></svg><span>Inbox</span><span class="badge badge-accent">4</span></a>
+            <a class="nav-item" href="#c-nav-rail"><svg class="icon"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Settings</span></a>
+          </nav>
+          <p><code>.is-collapsed</code>: icon-only at every width; the label is still the link's name.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-steps">
+      <h2>Stepper</h2>
+      <p class="text-muted"><code>ol.steps</code>: done (<code>.is-done</code>), current (<code>aria-current="step"</code>), upcoming, and error (<code>.is-error</code>). Vertical with <code>.is-vertical</code>, and on phones.</p>
+      <div class="panel stack">
+        <ol class="steps" aria-label="Checkout">
+          <li class="is-done"><a href="#c-steps">Account</a></li>
+          <li class="is-done"><a href="#c-steps">Plan</a></li>
+          <li aria-current="step">Billing <small>Card or invoice</small></li>
+          <li>Review</li>
+        </ol>
+        <ol class="steps" aria-label="Import">
+          <li class="is-done">Upload</li>
+          <li class="is-error">Map columns <small>3 columns unmatched</small></li>
+          <li>Validate</li>
+          <li>Import</li>
+          <li>Done</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <ol class="steps is-vertical" aria-label="Device setup">
+          <li class="is-done">Connect to Wi-Fi <small>Studio-5G</small></li>
+          <li class="is-done">Update firmware <small>v4.2.1 installed</small></li>
+          <li aria-current="step">Pair the control surface <small>Hold the pairing key for three seconds</small></li>
+          <li>Name the device</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-command">
+      <h2>Command palette</h2>
+      <p class="text-muted"><code>dialog.command</code>: a search field, grouped results in a listbox (<code>aria-selected</code> marks the highlighted one), shortcut hints and a footer.</p>
+      <p><button class="btn btn-primary" commandfor="command" command="show-modal">Open palette <kbd>Ctrl+K</kbd></button></p>
+      <div class="command" role="group" aria-label="Command palette (preview)">
+        <div class="command-search"><svg class="icon"><use href="assets/icons/icons.svg#icon-search"/></svg>
+          <input class="input" type="search" role="combobox" aria-expanded="true" aria-controls="cmd-prev-list" aria-activedescendant="cmd-prev-o2" aria-label="Search commands" value="nav"></div>
+        <div class="command-list" role="listbox" id="cmd-prev-list" aria-label="Results">
+          <ul role="group" aria-labelledby="cmd-prev-g1">
+            <li role="presentation" id="cmd-prev-g1">Files</li>
+            <li role="option" id="cmd-prev-o1" aria-selected="false"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg><span><mark>nav</mark>igation.css</span><span class="command-hint">core/components</span></li>
+            <li role="option" id="cmd-prev-o2" aria-selected="true"><svg class="icon"><use href="assets/icons/icons.svg#icon-file"/></svg><span>components-<mark>nav</mark>igation.html</span><span class="command-hint">root</span></li>
+          </ul>
+          <ul role="group" aria-labelledby="cmd-prev-g2">
+            <li role="presentation" id="cmd-prev-g2">Commands</li>
+            <li role="option" id="cmd-prev-o3" aria-selected="false"><svg class="icon"><use href="assets/icons/icons.svg#icon-sidebar"/></svg><span>Toggle <mark>nav</mark> rail</span><kbd>Ctrl+B</kbd></li>
+            <li role="option" id="cmd-prev-o4" aria-selected="false" aria-disabled="true"><svg class="icon"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span><mark>Nav</mark>igate back (nothing to go back to)</span><kbd>Alt+←</kbd></li>
+          </ul>
+        </div>
+        <div class="command-footer"><span><kbd>↑</kbd><kbd>↓</kbd>move</span><span><kbd>↵</kbd>open</span><span><kbd>Esc</kbd>close</span></div>
+      </div>
+      <div class="command" role="group" aria-label="Command palette, no results (preview)">
+        <div class="command-search"><svg class="icon"><use href="assets/icons/icons.svg#icon-search"/></svg>
+          <input class="input" type="search" aria-label="Search commands" value="qwzx"></div>
+        <div class="command-list"><div class="empty-state"><p>No commands match “qwzx”.</p></div></div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-split">
+      <h2>Split pane</h2>
+      <p class="text-muted"><code>.split</code>: drag the corner grip of the first pane (CSS <code>resize</code>). With a <code>.split-handle</code> the app drives <code>--split-size</code>. Panes stack on phones.</p>
+      <div class="split" style="--split-size: 35%">
+        <section>
+          <strong>Folders</strong>
+          <p class="text-muted">This pane resizes with the browser's grip in its bottom corner.</p>
+        </section>
+        <section>
+          <strong>Message</strong>
+          <p>Hi team, the v5 navigation components are ready for review. The split pane holds any content; long words like https://example.com/a/very/long/url/that/wraps wrap inside the pane.</p>
+        </section>
+      </div>
+      <div class="split" style="--split-size: 40%">
+        <section><strong>Outline</strong><p class="text-muted">Pane with a JS handle.</p></section>
+        <div class="split-handle" role="separator" tabindex="0" aria-orientation="vertical" aria-valuemin="10" aria-valuemax="90" aria-valuenow="40" aria-label="Resize outline"></div>
+        <section><strong>Editor</strong><p>Focus the handle with Tab and use the arrow keys (demo script below).</p></section>
+      </div>
+      <div class="split is-vertical" style="--split-size: 55%; --split-height: 18rem">
+        <section><strong>Query</strong><pre><code>SELECT * FROM tracks WHERE bpm &gt; 120;</code></pre></section>
+        <div class="split-handle" role="separator" tabindex="0" aria-orientation="horizontal" aria-valuemin="10" aria-valuemax="90" aria-valuenow="55" aria-label="Resize results"></div>
+        <section><strong>Results</strong><p class="text-muted">42 rows.</p></section>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack stack-sm" id="c-keyboard">
+      <h2>Keyboard layer</h2>
+      <p class="text-muted"><code>&lt;kbd&gt;</code> hints in buttons, menus and tooltips (<code>data-shortcut</code>); key combinations as nested <code>&lt;kbd&gt;</code>; the <code>.shortcuts</code> overlay (press <kbd>?</kbd> in an app); inset roving-focus rings in composite widgets.</p>
+      <div class="cluster">
+        <button class="btn btn-primary">Save <kbd>Ctrl+S</kbd></button>
+        <button class="btn btn-secondary">Find <kbd><kbd>Ctrl</kbd>+<kbd>F</kbd></kbd></button>
+        <button class="btn btn-ghost" data-tooltip="Undo" data-shortcut="⌘Z">Undo</button>
+        <button class="btn" commandfor="shortcuts" command="show-modal">Shortcuts <kbd>?</kbd></button>
+      </div>
+      <p>Press <kbd><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></kbd> to open the palette.</p>
+      <div class="grid">
+        <div class="stack stack-sm">
+          <h3>Menu with hints</h3>
+          <ul class="context-menu demo-inline" role="menu" aria-label="Clip">
+            <li><button role="menuitem">Cut <kbd>Ctrl+X</kbd></button></li>
+            <li><button role="menuitem">Copy <kbd>Ctrl+C</kbd></button></li>
+            <li><button role="menuitem">Paste <kbd>Ctrl+V</kbd></button></li>
+            <li role="separator"></li>
+            <li><button role="menuitemcheckbox" aria-checked="true">Snap to grid <kbd>G</kbd></button></li>
+          </ul>
+        </div>
+        <div class="stack stack-sm">
+          <h3>Roving focus (arrow keys)</h3>
+          <div class="toolbar" role="toolbar" aria-label="Formatting" data-roving>
+            <button class="btn btn-sm btn-ghost" tabindex="0">Bold</button>
+            <button class="btn btn-sm btn-ghost" tabindex="-1">Italic</button>
+            <button class="btn btn-sm btn-ghost" tabindex="-1">Link</button>
+          </div>
+          <div class="list" role="listbox" aria-label="Tracks" data-roving>
+            <div class="list-item is-active" role="option" tabindex="0" aria-selected="true">Opening</div>
+            <div class="list-item" role="option" tabindex="-1" aria-selected="false">Second song</div>
+            <div class="list-item" role="option" tabindex="-1" aria-selected="false">Encore</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel shortcuts">
+        <div class="panel-header">Keyboard shortcuts (inline preview)</div>
+        <div class="shortcuts-groups">
+          <section><h3>General</h3><dl>
+            <dt>Command palette</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>K</kbd></kbd></dd>
+            <dt>Show shortcuts</dt><dd><kbd>?</kbd></dd>
+            <dt>Settings</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>,</kbd></kbd></dd>
+          </dl></section>
+          <section><h3>Navigation</h3><dl>
+            <dt>Go to inbox</dt><dd><kbd>G</kbd> then <kbd>I</kbd></dd>
+            <dt>Next item</dt><dd><kbd>J</kbd></dd>
+            <dt>Previous item</dt><dd><kbd>K</kbd></dd>
+          </dl></section>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  </main>
+
+  <!-- Real top-layer surfaces for the interactive cases. -->
+  <dialog class="sheet" id="share-sheet" aria-labelledby="share-title">
+    <div class="sheet-header"><h2 id="share-title">Share playlist</h2><button class="btn-close" aria-label="Close" commandfor="share-sheet" command="close"></button></div>
+    <div class="list">
+      <button class="list-item" commandfor="share-sheet" command="close"><svg class="icon"><use href="assets/icons/icons.svg#icon-copy"/></svg>Copy link</button>
+      <button class="list-item" commandfor="share-sheet" command="close"><svg class="icon"><use href="assets/icons/icons.svg#icon-mail"/></svg>Send by email</button>
+      <button class="list-item" commandfor="share-sheet" command="close"><svg class="icon"><use href="assets/icons/icons.svg#icon-download"/></svg>Download</button>
+    </div>
+  </dialog>
+  <div class="sheet" popover id="actions-sheet" aria-label="Track actions">
+    <div class="sheet-header">Track actions <button class="btn-close" aria-label="Close" popovertarget="actions-sheet" popovertargetaction="hide"></button></div>
+    <div class="stack stack-sm"><button class="btn">Add to queue</button><button class="btn btn-danger">Remove from playlist</button></div>
+  </div>
+
+  <dialog class="command" id="command" aria-label="Command palette">
+    <div class="command-search"><svg class="icon"><use href="assets/icons/icons.svg#icon-search"/></svg>
+      <input class="input" type="search" role="combobox" aria-expanded="true" aria-controls="cmd-list" aria-activedescendant="cmd-o1" aria-label="Search commands" placeholder="Type a command or file name" autofocus></div>
+    <div class="command-list" role="listbox" id="cmd-list" aria-label="Results">
+      <ul role="group" aria-labelledby="cmd-g1">
+        <li role="presentation" id="cmd-g1">Recent</li>
+        <li role="option" id="cmd-o1" aria-selected="true"><svg class="icon"><use href="assets/icons/icons.svg#icon-file-code"/></svg><span>navigation.css</span><span class="command-hint">core/components</span></li>
+        <li role="option" id="cmd-o2" aria-selected="false"><svg class="icon"><use href="assets/icons/icons.svg#icon-file"/></svg><span>PLAN.md</span></li>
+      </ul>
+      <ul role="group" aria-labelledby="cmd-g2">
+        <li role="presentation" id="cmd-g2">Commands</li>
+        <li role="option" id="cmd-o3" aria-selected="false"><svg class="icon"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Open settings</span><kbd>Ctrl+,</kbd></li>
+        <li role="option" id="cmd-o4" aria-selected="false"><svg class="icon"><use href="assets/icons/icons.svg#icon-keyboard"/></svg><span>Show keyboard shortcuts</span><kbd>?</kbd></li>
+      </ul>
+    </div>
+    <div class="command-footer"><span><kbd>↑</kbd><kbd>↓</kbd>move</span><span><kbd>↵</kbd>open</span><span><kbd>Esc</kbd>close</span></div>
+  </dialog>
+
+  <dialog class="modal modal-lg shortcuts" id="shortcuts" aria-labelledby="shortcuts-title">
+    <div class="modal-header"><h2 id="shortcuts-title">Keyboard shortcuts</h2><button class="btn-close" aria-label="Close" commandfor="shortcuts" command="close"></button></div>
+    <div class="shortcuts-groups">
+      <section><h3>General</h3><dl>
+        <dt>Command palette</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>K</kbd></kbd></dd>
+        <dt>Show shortcuts</dt><dd><kbd>?</kbd></dd>
+        <dt>Close dialog</dt><dd><kbd>Esc</kbd></dd>
+      </dl></section>
+      <section><h3>Editing</h3><dl>
+        <dt>Save</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd></dd>
+        <dt>Undo</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>Z</kbd></kbd></dd>
+        <dt>Redo</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></kbd></dd>
+      </dl></section>
+      <section><h3>Navigation</h3><dl>
+        <dt>Go to inbox</dt><dd><kbd>G</kbd> then <kbd>I</kbd></dd>
+        <dt>Next / previous item</dt><dd><kbd>J</kbd> <kbd>K</kbd></dd>
+        <dt>Toggle sidebar</dt><dd><kbd><kbd>Ctrl</kbd>+<kbd>B</kbd></kbd></dd>
+      </dl></section>
+    </div>
+  </dialog>
+
+  <footer class="app-status">
+    <span>Navigation components</span>
+    <span class="push">Press <kbd>?</kbd> for shortcuts</span>
+  </footer>
+
+<script>
+  // Demo behaviour only (apps write their own): roving focus with the arrow
+  // keys, the split handle's keyboard resize, and "?" for the shortcuts.
+  document.querySelectorAll('[data-roving]').forEach(function (box) {
+    box.addEventListener('keydown', function (e) {
+      var items = Array.prototype.slice.call(box.querySelectorAll('[tabindex]'));
+      var i = items.indexOf(document.activeElement), step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (i < 0 || !step) return;
+      e.preventDefault();
+      var next = items[(i + step + items.length) % items.length];
+      items.forEach(function (el) { el.tabIndex = el === next ? 0 : -1; });
+      next.focus();
+    });
+  });
+  document.querySelectorAll('.split-handle').forEach(function (h) {
+    h.addEventListener('keydown', function (e) {
+      var step = { ArrowRight: 5, ArrowDown: 5, ArrowLeft: -5, ArrowUp: -5 }[e.key];
+      if (!step) return;
+      e.preventDefault();
+      var v = Math.min(90, Math.max(10, +h.getAttribute('aria-valuenow') + step));
+      h.setAttribute('aria-valuenow', v);
+      h.parentElement.style.setProperty('--split-size', v + '%');
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '?' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) document.getElementById('shortcuts').showModal();
+  });
+</script>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

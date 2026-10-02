@@ -49,6 +49,24 @@ The shell becomes a **matte black gaming chassis**: a thin lit-edge bar,
 a narrow glowing AlienFX rail down the side, and a flush black content
 well — hardware, not a HUD.
 
+## v5 layout
+
+- **Tiers.** Desktop and XL keep the full chassis. Tablet (481–900px)
+  keeps the AlienFX strip as a narrow column beside the content: at 0.65rem
+  it costs almost no width and it is the theme's signature light zone.
+  Phones (≤480px) drop the strip and let the bar's lit cyan edge carry the
+  light, with a thinner outer margin.
+- **Phone and tablet.** Brand and actions share the bar's first line (the
+  brand truncates) and the nav scrolls on its own line. On phones the
+  Orbitron `h1` steps down and the corner cuts shrink from 34px to 20px so
+  they don't clip the first letter of a headerless card.
+- **Nesting.** A panel or card inside another surface gets a 14px cut, not
+  the full 34px. Menus and popovers get a 10px cut, and none at all when
+  they hold a submenu (clip-path would cut the flyout off).
+- **XL gutter art.** The chassis continues past the screen: angled vent
+  slots in near-black and, out at the edge, the dim glow of a second
+  AlienFX strip. Still, and within about 1.3:1 of `--bg`.
+
 ## Tell-tales of an inauthentic result
 
 - Rounded corners anywhere on chrome.

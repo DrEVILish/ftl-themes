@@ -317,6 +317,24 @@ html[data-theme="skyrim"] .panel-header {
   text-transform: uppercase;
   border-bottom: 0;
 }
+/* With controls in the header (filter box, select) the title keeps its
+   width; the section rule after it is the part that gives way. */
+html[data-theme="skyrim"] .panel-header { flex-wrap: wrap; }
+html[data-theme="skyrim"] .panel-header > :first-child { flex-shrink: 0; max-width: 100%; }
+/* The title clears the knotwork in the top-left corner. */
+html[data-theme="skyrim"] :is(.panel, .modal) > .panel-header {
+  padding-inline-start: max(var(--surface-pad, 1rem), 1.4rem);
+}
+/* Nested frames step down: a panel inside a panel, card, modal or drawer
+   keeps its silver rule but drops the knotwork corners and the drop
+   shadow, so a three-deep stack isn't three sets of corners. */
+html[data-theme="skyrim"] :is(.panel, .card, .modal, .drawer) .panel {
+  --panel-bg: var(--sky-smoke), var(--surface);
+  --panel-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.4);
+}
+html[data-theme="skyrim"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  padding-inline-start: var(--surface-pad, 1rem);
+}
 html[data-theme="skyrim"] .panel-header::after {
   content: "";
   flex: 1;
@@ -419,6 +437,58 @@ html[data-theme="skyrim"] .app-bar { --nav-item-fg: #c4c4c1; }
 html[data-theme="skyrim"] .app-rail { overflow: visible; }
 html[data-theme="skyrim"] .app-status kbd { font-family: var(--font); }
 
+/* --- v5 tiers ---------------------------------------------------------------- *
+ * The rail goes up to 900px (core default: the content needs the width).
+ * On touch tiers the chevron-capped bar keeps its caps but shallower, with
+ * less inset, so the brand and actions share the first line. Display
+ * headings step down so "OVERVIEW" doesn't dominate a phone. */
+@media (max-width: 900px) {
+  html[data-theme="skyrim"] {
+    --app-bar-padding: 0.3rem 1.6rem;
+    --app-main-padding-tablet: 1.25rem 1.5rem;
+  }
+  html[data-theme="skyrim"] .app-bar {
+    margin: 0.4rem 0.5rem 0;
+    clip-path: polygon(0.9rem 0, calc(100% - 0.9rem) 0, 100% 50%, calc(100% - 0.9rem) 100%, 0.9rem 100%, 0 50%);
+  }
+}
+@media (max-width: 480px) {
+  html[data-theme="skyrim"] { --app-bar-padding: 0.3rem 1.1rem; }
+  /* Phone spacing is tighter than the corner knots are wide: smaller
+     knots, and panels keep a full 1rem pad so text clears them. */
+  html[data-theme="skyrim"] {
+    --panel-pad: 1rem;
+    --panel-bg:
+      var(--sky-knot) top 2px left 2px / 11px 11px no-repeat,
+      var(--sky-knot) top 2px right 2px / 11px 11px no-repeat,
+      var(--sky-knot) bottom 2px left 2px / 11px 11px no-repeat,
+      var(--sky-knot) bottom 2px right 2px / 11px 11px no-repeat,
+      var(--sky-smoke),
+      var(--surface);
+  }
+  html[data-theme="skyrim"] h1 { font-size: 1.75rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): knotwork border bands, very low contrast.
+   Down each gutter runs a Nordic band: a woven lattice (two diagonal
+   strand sets) between a pair of silver rules, with a chain of open
+   diamonds alongside, all at a few percent over --bg so it reads as
+   carving in the dark, not as chrome; within about 1.1:1. Still. */
+html[data-theme="skyrim"] {
+  --app-gutter-art:
+    repeating-linear-gradient(45deg, rgba(185, 185, 181, 0.07) 0 2px, transparent 2px 14px) 96px 0 / 56px 100% no-repeat,
+    repeating-linear-gradient(-45deg, rgba(185, 185, 181, 0.07) 0 2px, transparent 2px 14px) 96px 0 / 56px 100% no-repeat,
+    linear-gradient(rgba(185, 185, 181, 0.1), rgba(185, 185, 181, 0.1)) 90px 0 / 1px 100% no-repeat,
+    linear-gradient(rgba(185, 185, 181, 0.1), rgba(185, 185, 181, 0.1)) 157px 0 / 1px 100% no-repeat,
+    repeating-linear-gradient(-45deg, rgba(185, 185, 181, 0.07) 0 2px, transparent 2px 14px) right 96px top 0 / 56px 100% no-repeat,
+    repeating-linear-gradient(45deg, rgba(185, 185, 181, 0.07) 0 2px, transparent 2px 14px) right 96px top 0 / 56px 100% no-repeat,
+    linear-gradient(rgba(185, 185, 181, 0.1), rgba(185, 185, 181, 0.1)) right 90px top 0 / 1px 100% no-repeat,
+    linear-gradient(rgba(185, 185, 181, 0.1), rgba(185, 185, 181, 0.1)) right 157px top 0 / 1px 100% no-repeat,
+    conic-gradient(from 45deg at 50% 50%, rgba(185, 185, 181, 0.08) 0 25%, transparent 0 50%, rgba(185, 185, 181, 0.08) 0 75%, transparent 0) 196px 0 / 10px 10px repeat-y,
+    conic-gradient(from 45deg at 50% 50%, rgba(185, 185, 181, 0.08) 0 25%, transparent 0 50%, rgba(185, 185, 181, 0.08) 0 75%, transparent 0) right 196px top 0 / 10px 10px repeat-y,
+    var(--bg);
+}
+
 /* --- Print ------------------------------------------------------------------ */
 @media print {
   html[data-theme="skyrim"] { background: #ffffff; }
@@ -431,4 +501,15 @@ html[data-theme="skyrim"] .app-status kbd { font-family: var(--font); }
   }
   html[data-theme="skyrim"] .app-bar,
   html[data-theme="skyrim"] :is(.progress, .meter) { clip-path: none; }
+}
+
+/* Close (v5): Skyrim's menus close with an "Exit" key hint. */
+html[data-theme="skyrim"] .modal-header > .btn-close {
+  --btn-close-glyph: "Exit";
+  --btn-close-width: auto;
+  --btn-close-pad: 0 0.6em;
+  --btn-close-glyph-size: 0.9em;
+  --btn-close-border: currentColor;
+  --btn-close-border-width: 1px;
+  --btn-close-radius: 0;
 }

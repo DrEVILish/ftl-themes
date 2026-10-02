@@ -58,9 +58,25 @@ html[data-theme="pipboy"] .app::after {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 999;
+  /* Over the whole app, under modals and other floating layers. */
+  z-index: calc(var(--z-modal) - 1);
   pointer-events: none;
   background-image: repeating-linear-gradient(180deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px);
+}
+
+/* XL gutters (v5, PLAN.md §3): the Pip-Boy's MAP tab with the lamp
+   turned down. A world-map graticule (major lines every 128px, minor
+   every 32px) and scattered location pips in dim phosphor, under the
+   same scanlines as the screen; within about 1.2:1 of --bg. Still. */
+html[data-theme="pipboy"] {
+  --app-gutter-art:
+    radial-gradient(circle, rgba(57, 255, 106, 0.22) 0 3px, transparent 3.5px) 41px 77px / 256px 224px,
+    radial-gradient(circle, rgba(57, 255, 106, 0.16) 0 2px, transparent 2.5px) 170px 13px / 320px 288px,
+    linear-gradient(rgba(57, 255, 106, 0.09) 1px, transparent 1px) 0 0 / 100% 128px,
+    linear-gradient(90deg, rgba(57, 255, 106, 0.09) 1px, transparent 1px) 0 0 / 128px 100%,
+    linear-gradient(rgba(57, 255, 106, 0.04) 1px, transparent 1px) 0 0 / 100% 32px,
+    linear-gradient(90deg, rgba(57, 255, 106, 0.04) 1px, transparent 1px) 0 0 / 32px 100%,
+    var(--bg);
 }
 
 /* Chart palette: a monochrome phosphor display has one hue, so series are
@@ -82,4 +98,12 @@ html[data-theme="pipboy"] {
   --bar-chart-bar-alt: repeating-linear-gradient(0deg, var(--accent-2) 0 6px, transparent 6px 9px);
   --bar-chart-radius: 0;
   --bar-chart-shadow: 0 0 0.45rem rgba(57, 255, 106, 0.3);
+}
+
+/* Close (v5): Pip-Boy menus back out with a BACK key hint. */
+html[data-theme="pipboy"] .modal-header > .btn-close {
+  --btn-close-glyph: "BACK";
+  --btn-close-width: auto;
+  --btn-close-pad: 0 0.5em;
+  --btn-close-glyph-size: 0.85em;
 }

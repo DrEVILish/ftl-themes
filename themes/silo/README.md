@@ -141,6 +141,10 @@ lifted for contrast. Unverified: the typeface, any danger/error state, and
 tables, toasts, switches and sliders (no screen shows them). See
 RESEARCH.md.
 
+## v5 layout
+
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The steel bezel is kept at every size, thinner on phone (0.5rem) and tablet; the scroll-track rail is hidden up to 900px. Per-tier main padding uses `--app-main-padding-mobile` and `--app-main-padding-tablet`. On touch tiers the brand plate stays as wide as its text. The decorative × in a panel header is dropped on nested boxes, whose double rules also become single, and on headers that hold their own controls. On XL the gutters show the silo's poured concrete: formwork board seams and tie-rod holes, a step off `--bg` (about 1.0:1; the same for `legacy`).
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware: true`).

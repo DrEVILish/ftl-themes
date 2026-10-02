@@ -60,6 +60,14 @@ Minimal chrome: a 2.6rem bar with a 2px amber rule under it, **no rail**,
 list. Compared with LCARS, switching to this theme visibly *tightens* the
 whole shell.
 
+## v5 layout
+
+- **Tiers.** No rail and a thin flat bar, so phone (≤480px) and tablet
+  (481–900px) use core's one-column shell as is.
+- **XL gutter art.** The stage floor beside the console: a hairline
+  stage-plot grid with a scatter of faint amber spike-tape crosses on its
+  intersections. Still, and within about 1.3:1 of `--bg`.
+
 ## Extending it
 
 Do:

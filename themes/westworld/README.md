@@ -111,6 +111,13 @@ room itself: near-black, with the red cove-light rule glowing above it.
 At phone width the layout drops to a single column and the rail is
 hidden.
 
+## v5 layout
+
+Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
+
+- **Phone (≤480) and tablet (481–900):** the tri-fold tablet folds shut to one leaf: bar, main, status. The attribute-slider rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token). The DELOS wordmark pill hugs its text (`max-width: max-content`) instead of stretching across the bar's first line.
+- **XL gutters (≥1801):** the Maze: concentric rings centred on the screen (behind the tablet) and broken by corridors, in a slate barely above `--bg`. Still.
+
 ## Don'ts
 
 - Don't make red an accent, and don't use red anywhere except the status

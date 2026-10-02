@@ -1,0 +1,487 @@
+/* --- v5 experience layer (PLAN.md §10–§14) ---------------------------------
+ * User display settings on <html>, forced colours, motion tokens and the
+ * theme-switch transition, the .prefs panel with its accent swatches, the
+ * .splash screen, and the themed .empty-state states. Reference script:
+ * assets/js/prefs.js. Docs: docs/components/experience.md.
+ *
+ * User settings override the theme, so the attribute rules use !important
+ * on custom properties: a theme's root block (html[data-theme], 0,1,1) and
+ * its palette variants (0,2,1) load after core and would otherwise win.
+ * Every attribute is optional and falls back to the OS media query. */
+
+/* --- §11 Motion tokens ---------------------------------------------------
+ * A theme describes how it moves with these. --motion-enter/--motion-exit
+ * are animation shorthands, so a theme can name its own keyframes and
+ * timing (steps() for a "decode", a spring for glass). Every animation
+ * below sits inside prefers-reduced-motion: no-preference and stops under
+ * data-motion="reduced" or "none". */
+:root {
+  --motion-duration-s: 120ms;
+  --motion-duration-m: 200ms;
+  --motion-duration-l: 320ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  --motion-enter: motion-fade-in var(--motion-duration-m) var(--motion-ease) both;
+  --motion-exit: motion-fade-out var(--motion-duration-s) var(--motion-ease) both;
+}
+@keyframes motion-fade-in { from { opacity: 0; transform: scale(0.98); } }
+@keyframes motion-fade-out { to { opacity: 0; } }
+
+/* Theme switching (theme-loader.js runs it through startViewTransition):
+   a cross-fade at the theme's own pace. A theme supplies its entrance with
+   ::view-transition-new(root). Without the API, or under reduced motion,
+   the switch is instant. */
+::view-transition-group(root) {
+  animation-duration: var(--motion-duration-l);
+  animation-timing-function: var(--motion-ease);
+}
+
+/* --- §10 Text size ------------------------------------------------------
+ * Every component is in rem, so the layout follows the root size. A theme
+ * whose root size isn't the browser default declares it as
+ * --root-font-size (e.g. 17px) so the steps scale from it. */
+:root[data-text-size="s"] { font-size: calc(var(--root-font-size, 100%) * 0.875) !important; }
+:root[data-text-size="l"] { font-size: calc(var(--root-font-size, 100%) * 1.125) !important; }
+:root[data-text-size="xl"] { font-size: calc(var(--root-font-size, 100%) * 1.25) !important; }
+
+/* --- §10 Density --------------------------------------------------------
+ * Multiplies the theme's own --density. The theme's value is read on <html>
+ * and the product is set on <body>, because a custom property can't refer
+ * to itself. */
+:root[data-density] { --density-theme: var(--density); }
+:root[data-density="compact"] body { --density: calc(var(--density-theme, 1) * 0.8) !important; }
+:root[data-density="comfortable"] body { --density: calc(var(--density-theme, 1) * 1.25) !important; }
+
+/* --- §10 Contrast -------------------------------------------------------
+ * "high" (also the OS prefers-contrast: more, opted out with "standard")
+ * pulls hairlines and muted text up to the theme's border and text colours.
+ * core.css has the same rule without !important, which a theme's root block
+ * outranks; these make it stick. "more" goes further: every border in the
+ * text colour, links underlined, no text glow and no translucency. */
+:root:is([data-contrast="high"], [data-contrast="more"]) {
+  --hairline: var(--border) !important;
+  --muted: var(--text) !important;
+}
+@media (prefers-contrast: more) {
+  :root:not([data-contrast="standard"], [data-contrast="default"]) {
+    --hairline: var(--border) !important;
+    --muted: var(--text) !important;
+  }
+}
+:root[data-contrast="more"] {
+  --border: var(--text) !important;
+  --hairline: var(--text) !important;
+}
+:root[data-contrast="more"] :focus-visible { outline-width: 3px; outline-offset: 3px; }
+:root[data-contrast="more"] *,
+:root[data-contrast="more"] *::before,
+:root[data-contrast="more"] *::after { text-shadow: none !important; }
+
+/* --- §10 Underlined links -----------------------------------------------
+ * Running-text links, for themes that tell links apart by colour alone.
+ * Links that are controls (buttons, nav, tabs, menu items) keep their
+ * shape, which is their affordance. */
+:root:is([data-underline-links], [data-contrast="more"])
+  a[href]:not(.btn, .nav-item, .nav-brand, .tab, .pagination-item, .dropdown-item,
+    .scrollspy-link, .list-item, .card, .stretched-link, [role="menuitem"], [role="tab"]) {
+  text-decoration-line: underline !important;
+  text-decoration-thickness: max(1px, 0.08em);
+  text-underline-offset: 0.18em;
+}
+
+/* --- §10 Transparency ---------------------------------------------------
+ * Glass is backdrop-filter plus a translucent fill. Core removes the blur
+ * everywhere; the fill is the theme's own token, so a translucent theme
+ * makes it opaque in its own block (docs/components/experience.md):
+ *   html[data-theme="x"][data-transparency="reduced"] { --x-glass: var(--surface); }
+ * plus the same inside @media (prefers-reduced-transparency: reduce) on
+ * html[data-theme="x"]:not([data-transparency="default"]). */
+:root:is([data-transparency="reduced"], [data-contrast="more"]) {
+  --overlay-blur: none !important;
+}
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *,
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *::before,
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *::after,
+:root:is([data-transparency="reduced"], [data-contrast="more"]) *::backdrop {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root:not([data-transparency="default"]) { --overlay-blur: none !important; }
+  :root:not([data-transparency="default"]) *,
+  :root:not([data-transparency="default"]) *::before,
+  :root:not([data-transparency="default"]) *::after,
+  :root:not([data-transparency="default"]) *::backdrop {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* --- §10 Motion ---------------------------------------------------------
+ * "reduced" (core.css) pauses animations and zeroes transitions on
+ * elements; this also pauses pseudo-elements and the gutter art layer.
+ * "none" removes every animation and transition, ambient theme motion
+ * (gutter art, glows, scanlines) and view transitions included.
+ * "full" is the same as unset: CSS gated on the OS setting still honours
+ * it, but theme-loader.js plays the theme-switch transition. */
+:root[data-motion="reduced"]::before,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-play-state: paused !important;
+}
+:root[data-motion="none"]::before,
+:root[data-motion="none"]::after,
+:root[data-motion="none"] *,
+:root[data-motion="none"] *::before,
+:root[data-motion="none"] *::after,
+:root[data-motion="none"]::view-transition-group(*),
+:root[data-motion="none"]::view-transition-old(*),
+:root[data-motion="none"]::view-transition-new(*) {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* --- §12 Accent swatches ------------------------------------------------
+ * data-accent="<n>" picks the theme's --accent-swatch-<n>. core.css has the
+ * same mapping without !important, which every theme's root block
+ * outranks; these make the user's pick stick. Only set a number the
+ * theme declares (prefs.js checks): an undeclared one leaves --accent
+ * invalid, and a swatch must come as a pair (--on-accent-swatch-<n>).
+ * Derived colours follow wherever a theme writes them from
+ * --accent (color-mix(in oklab, var(--accent) 80%, black)), not as hex. */
+:root[data-accent="1"] { --accent: var(--accent-swatch-1) !important; --on-accent: var(--on-accent-swatch-1) !important; }
+:root[data-accent="2"] { --accent: var(--accent-swatch-2) !important; --on-accent: var(--on-accent-swatch-2) !important; }
+:root[data-accent="3"] { --accent: var(--accent-swatch-3) !important; --on-accent: var(--on-accent-swatch-3) !important; }
+:root[data-accent="4"] { --accent: var(--accent-swatch-4) !important; --on-accent: var(--on-accent-swatch-4) !important; }
+:root[data-accent="5"] { --accent: var(--accent-swatch-5) !important; --on-accent: var(--on-accent-swatch-5) !important; }
+:root[data-accent="6"] { --accent: var(--accent-swatch-6) !important; --on-accent: var(--on-accent-swatch-6) !important; }
+
+/* --- .prefs: the settings panel (§10) -----------------------------------
+ * A plain form: one .prefs-item per setting (a fieldset of segmented
+ * radios, or a label with a switch). assets/js/prefs.js applies each
+ * change as it happens and stores it; an app can store it server-side
+ * and render the attributes on <html> instead. */
+.prefs {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  color: var(--prefs-fg, var(--text));
+}
+.prefs-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-m);
+  min-inline-size: 0;
+  min-block-size: var(--tap-min);
+  margin: 0;
+  padding: var(--prefs-item-pad, var(--space-s) 0);
+  border: 0;
+  border-block-end: 1px solid var(--prefs-divider, var(--hairline));
+  touch-action: manipulation;
+}
+.prefs-item:last-of-type { border-block-end: 0; }
+/* A floated legend takes part in the fieldset's flex layout like any child. */
+.prefs-item > legend { float: inline-start; padding: 0; }
+.prefs-label {
+  flex: 1 1 12rem;
+  min-inline-size: 0;
+  color: var(--prefs-label-fg, var(--text));
+  font-weight: var(--prefs-label-weight, 500);
+  overflow-wrap: anywhere;
+}
+.prefs-hint {
+  display: block;
+  margin-block-start: var(--space-3xs);
+  color: var(--prefs-hint-fg, var(--muted));
+  font-size: 0.82em;
+  font-weight: 400;
+}
+.prefs-item > .segmented { flex-wrap: wrap; max-inline-size: 100%; }
+.prefs-item > .switch { flex: none; min-block-size: 0; } /* the row is the target */
+.prefs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+  padding-block-start: var(--space-m);
+}
+
+/* Segmented radios: the label is the segment and the radio hides inside
+   it (still focusable, arrow keys move between options). */
+.prefs .segmented-item {
+  position: relative;
+  min-inline-size: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.prefs .segmented-item > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+}
+.prefs .segmented-item:has(> input:checked) {
+  background: var(--segmented-item-bg-active, var(--accent));
+  color: var(--segmented-item-fg-active, var(--on-accent));
+  font-weight: var(--prefs-checked-weight, 600);
+}
+.prefs .segmented-item:has(> input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* Text-size samples: the letter shows the step it picks. */
+.prefs-sample { font-weight: 600; line-height: 1; }
+.prefs-sample.is-s { font-size: 0.8em; }
+.prefs-sample.is-l { font-size: 1.15em; }
+.prefs-sample.is-xl { font-size: 1.35em; }
+
+/* --- Accent swatches (§12) ----------------------------------------------
+ * One radio per swatch the theme declares (--accent-swatch-1..6); prefs.js
+ * builds them from the theme, so only approved colours are offered. The
+ * picked swatch shows a ring and a check mark, never colour alone. */
+.prefs-accents {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+.prefs-swatch {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--tap-min);
+  min-block-size: var(--tap-min);
+  touch-action: manipulation;
+}
+.prefs-swatch > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+}
+.prefs-swatch::before {
+  content: "";
+  grid-area: 1 / 1;
+  inline-size: var(--prefs-swatch-size, 1.6rem);
+  block-size: var(--prefs-swatch-size, 1.6rem);
+  border-radius: var(--prefs-swatch-radius, 50%);
+  background: var(--swatch, var(--accent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 30%, transparent);
+}
+.prefs-swatch::after {
+  content: "\2713";
+  grid-area: 1 / 1;
+  color: var(--on-swatch, var(--on-accent));
+  font-weight: 700;
+  line-height: 1;
+  visibility: hidden;
+}
+.prefs-swatch:has(> input:checked)::before {
+  outline: 2px solid var(--prefs-swatch-ring, var(--text));
+  outline-offset: 2px;
+}
+.prefs-swatch:has(> input:checked)::after { visibility: visible; }
+.prefs-swatch:has(> input:focus-visible)::before {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+/* "Theme default": a labelled pill, not a colour. */
+.prefs-swatch.is-default { padding-inline: var(--space-xs); }
+.prefs-swatch.is-default::before {
+  inline-size: 100%;
+  border-radius: var(--prefs-swatch-radius, 999px);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.prefs-swatch.is-default::after { content: none; }
+.prefs-swatch.is-default > span { grid-area: 1 / 1; position: relative; font-size: 0.85em; padding-inline: var(--space-xs); }
+.prefs-swatch.is-default:has(> input:checked) > span { font-weight: 600; }
+
+/* --- .splash: boot and loading screen (§13) -----------------------------
+ * Real-load mode (default): render it, remove it (or set hidden) the
+ * moment the app is ready. Timed intro: data-intro="2s"; prefs.js hides it
+ * after that time or on any key, click or tap, once per session. Under
+ * reduced motion it is a static frame. .is-contained covers its nearest
+ * positioned ancestor instead of the viewport. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-window) + 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--splash-gap, var(--space-m));
+  padding: var(--space-xl) var(--space-m);
+  overflow: hidden;
+  background: var(--splash-bg, var(--surface));
+  color: var(--splash-fg, var(--text));
+  font-family: var(--splash-font, inherit);
+  text-align: center;
+}
+.splash.is-contained { position: absolute; z-index: var(--z-raised); }
+html[data-splash-seen] .splash[data-intro] { display: none; }
+/* The theme's mark: any background layers (gradients, SVG data URIs). */
+.splash-art {
+  inline-size: var(--splash-art-size, 5rem);
+  aspect-ratio: 1;
+  flex: none;
+  background: var(--splash-art,
+    conic-gradient(var(--accent) 0 70%, color-mix(in srgb, var(--accent) 20%, transparent) 0));
+  border-radius: var(--splash-art-radius, 50%);
+  /* The default mark is a ring with a gap: a spinner when motion is on. */
+  mask: var(--splash-art-mask, radial-gradient(circle, transparent 0 52%, #000 53% 69%, transparent 70%));
+}
+.splash-title {
+  margin: 0;
+  color: var(--splash-title-fg, inherit);
+  font-size: var(--splash-title-size, 1.5rem);
+  font-weight: var(--splash-title-weight, 600);
+  letter-spacing: var(--splash-title-tracking, 0.02em);
+  text-transform: var(--splash-title-transform, none);
+  overflow-wrap: anywhere;
+}
+.splash-message {
+  margin: 0;
+  min-block-size: 1.5em;
+  color: var(--splash-message-fg, var(--muted));
+  font-family: var(--splash-message-font, inherit);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+.splash > progress {
+  flex: none;
+  inline-size: min(var(--splash-progress-width, 16rem), 100%);
+  block-size: var(--progress-height, 0.5rem);
+}
+.splash-skip { margin: 0; color: var(--muted); font-size: 0.78em; }
+/* Indeterminate <progress> (no value): a segment sweeps along the track;
+   static (a centred segment) without motion. */
+.splash > progress:indeterminate {
+  block-size: var(--progress-height, 0.5rem);
+  border: var(--progress-border-width, 1px) solid var(--progress-border, var(--border));
+  border-radius: var(--progress-radius, var(--radius));
+  background: linear-gradient(90deg, transparent 35%, var(--progress-fill, var(--accent)) 35% 65%, transparent 65%)
+    50% 0 / 200% 100% no-repeat, var(--progress-bg, var(--surface-2));
+}
+.splash > progress:indeterminate::-webkit-progress-bar { background: transparent; }
+.splash > progress:indeterminate::-moz-progress-bar { background: transparent; }
+
+/* --- Themed states (§14) -----------------------------------------------
+ * Modifiers on core's .empty-state. An <svg class="icon empty-state-icon">
+ * becomes the illustration: the state's icon on a tinted disc (or the
+ * theme's --empty-state-art). An empty .empty-state-title shows the
+ * theme's suggested heading; the app's own text always wins. */
+.empty-state > svg.empty-state-icon {
+  /* Sized as border-box on purpose: apps commonly reset box-sizing with an
+     unlayered rule. The disc is the icon plus its padding. */
+  box-sizing: border-box;
+  inline-size: calc(var(--empty-state-icon-size, 2.5rem) + 2 * var(--empty-state-art-pad, var(--space-m)));
+  block-size: calc(var(--empty-state-icon-size, 2.5rem) + 2 * var(--empty-state-art-pad, var(--space-m)));
+  padding: var(--empty-state-art-pad, var(--space-m));
+  margin-block-end: var(--space-xs);
+  border-radius: var(--empty-state-art-radius, 50%);
+  background: var(--_empty-art, var(--empty-state-art,
+    color-mix(in srgb, var(--empty-state-tone, var(--muted)) 16%, transparent)));
+  color: var(--empty-state-tone, var(--muted));
+  opacity: 1;
+}
+.empty-state.is-error {
+  --empty-state-tone: var(--empty-state-error-fg, var(--danger-text, var(--danger)));
+  --_empty-art: var(--empty-state-error-art);
+}
+.empty-state.is-offline {
+  --empty-state-tone: var(--empty-state-offline-fg, var(--warning));
+  --_empty-art: var(--empty-state-offline-art);
+}
+.empty-state.is-404 {
+  --empty-state-tone: var(--empty-state-404-fg, var(--accent));
+  --_empty-art: var(--empty-state-404-art);
+}
+.empty-state.is-locked {
+  --empty-state-tone: var(--empty-state-locked-fg, var(--text));
+  --_empty-art: var(--empty-state-locked-art);
+}
+.empty-state.is-loading {
+  --empty-state-tone: var(--empty-state-loading-fg, var(--accent));
+  --_empty-art: var(--empty-state-loading-art);
+}
+.empty-state > :is(.empty-state-title, .empty-state-hint) { margin: 0; max-inline-size: 36rem; overflow-wrap: anywhere; }
+.empty-state > .cluster { justify-content: center; margin-block-start: var(--space-xs); }
+.empty-state.is-error > .empty-state-title:empty::before { content: var(--empty-state-error-title, "Something went wrong"); }
+.empty-state.is-offline > .empty-state-title:empty::before { content: var(--empty-state-offline-title, "You\2019re offline"); }
+.empty-state.is-404 > .empty-state-title:empty::before { content: var(--empty-state-404-title, "Page not found"); }
+.empty-state.is-locked > .empty-state-title:empty::before { content: var(--empty-state-locked-title, "You don\2019t have access"); }
+.empty-state.is-loading > .empty-state-title:empty::before { content: var(--empty-state-loading-title, "Loading\2026"); }
+
+/* --- Motion for the components above ----------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash {
+    transition: opacity var(--motion-duration-l) var(--motion-ease),
+      display var(--motion-duration-l) allow-discrete;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash[hidden] { opacity: 0; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash[data-intro] > * {
+    animation: var(--motion-enter);
+    animation-delay: calc(sibling-index() * 150ms);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash-art {
+    animation: var(--splash-art-motion, splash-turn 2.4s linear infinite);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .splash > progress:indeterminate {
+    animation: splash-sweep 1.4s ease-in-out infinite;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .empty-state.is-loading > svg.empty-state-icon {
+    animation: var(--empty-state-loading-motion, empty-state-flip 2s var(--motion-ease) infinite);
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .prefs .segmented-item,
+  :root:not([data-motion="reduced"], [data-motion="none"]) .prefs-swatch::before {
+    transition: background var(--motion-duration-s) var(--motion-ease), color var(--motion-duration-s) var(--motion-ease);
+  }
+}
+@keyframes splash-turn { to { transform: rotate(1turn); } }
+@keyframes splash-sweep { from { background-position: 100% 0, 0 0; } to { background-position: 0 0, 0 0; } }
+@keyframes empty-state-flip { 0%, 40% { transform: rotate(0); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+
+/* --- §10 Forced colours (Windows High Contrast) --------------------------
+ * The OS replaces every colour with system colours and drops box-shadows
+ * and background images. Shapes themes draw with shadows or fills get a
+ * real outline, selected states use Highlight, and fills that carry a
+ * value (meters, progress, switches) opt out to paint in system colours. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight !important; outline-offset: 2px; }
+  :is(.panel, .card, .modal, .drawer, .dropdown, .popover, .context-menu, .toast, .alert,
+      .segmented, .tabs, .field-row, .readout, .knob, .avatar, .badge, .skeleton,
+      .app-bar, .app-status, .tooltip, .splash-art):not(:focus-visible) {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+  :is(.btn, .btn-icon, .btn-close, .toggle-btn, .badge-button, .segmented-item, .tab,
+      .nav-item, .pagination-item, .key):not(:focus-visible) {
+    outline: 1px solid ButtonText;
+    outline-offset: -1px;
+  }
+  :is(.btn, .toggle-btn, .badge-button, .key):disabled { color: GrayText; outline-color: GrayText; }
+  :is(.is-active, .toggle-btn-on, .key-on, [aria-selected="true"], [aria-pressed="true"],
+      [aria-current]:not([aria-current="false"])):is(.btn, .tab, .nav-item, .segmented-item,
+      .pagination-item, .toggle-btn, .badge-button, .dropdown-item, .list-item, .key, .scrollspy-link),
+  .prefs .segmented-item:has(> input:checked) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  :is(.meter-fill, .progress-bar, .switch-thumb, .meter-peak) { forced-color-adjust: none; background: CanvasText; }
+  :is(.switch input:checked ~ .switch-track .switch-thumb, .switch[aria-checked="true"] .switch-thumb) { background: Highlight; }
+  .switch-track, .meter, .progress { border: 1px solid CanvasText; }
+  progress.progress, meter.meter { forced-color-adjust: none; color: Highlight; }
+  progress.progress::-webkit-progress-value { background: Highlight; }
+  .slider { forced-color-adjust: none; accent-color: Highlight; }
+  .prefs-swatch::before { forced-color-adjust: none; border: 1px solid CanvasText; }
+  .prefs-swatch:has(> input:checked)::before { outline-color: Highlight; }
+  .splash-art { background: none; mask: none; }
+  .empty-state > svg.empty-state-icon { background: Canvas; color: CanvasText; outline: 1px solid CanvasText; outline-offset: -1px; }
+  .splash > progress:indeterminate { background: Canvas; }
+}

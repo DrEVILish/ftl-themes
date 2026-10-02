@@ -438,6 +438,28 @@ tokens):
   I-beam.
 - On touch devices, inputs are at least 16px so iOS doesn't zoom on focus.
 
+### v5 component groups
+
+v5 adds component groups, each in its own `core/components/<group>.css`
+(built into every bundle after core), with a live page and full docs
+(markup, states, tokens, touch behaviour, accessibility):
+
+| Group | Docs | Page | Highlights |
+|---|---|---|---|
+| Tables | [`docs/components/tables.md`](docs/components/tables.md) | `components-tables.html` | Editable cells (`td.is-editable`/`.is-editing`, dirty/saving/saved/error/read-only), row edit mode, `.table.is-stacked` cards on phones, frozen columns, row groups, tree rows, `.bulk-bar`, loading/empty/more rows, tables in modals |
+| Instruments | [`docs/components/instruments.md`](docs/components/instruments.md) | `components-instruments.html` | `.gauge-dial` needle gauge, `.gauge-arc`, `.gauge-linear`, `.compass`, `.compass-strip`, `.map` + pins + legend, `.progress-ring`, `.sparkline`, `.donut`, `.heatmap`, `.timeline`, `dl.props`, `.battery`, `.signal`, `.clock`, `.countdown`, and the library-neutral `.chart` contract (adapter recipes for TanStack, Chart.js, ECharts, D3) |
+| Buttons & forms | [`docs/components/forms.md`](docs/components/forms.md) | `components-forms.html` | `.btn-clear`, icon buttons, `.btn-split`, `.fab`, `.toggle-group`, `.has-badge`, `.input-icon`/`.input-clear`, search, date/time pickers + `.calendar`, `.combobox`/`.listbox`, `.tag-input`, `.stepper`, `.slider.is-range`, `.rating`, `.swatches`, `.file-list` |
+| Navigation | [`docs/components/navigation.md`](docs/components/navigation.md) | `components-navigation.html` | Closable tabs, `ul.menubar`, `ul.tree`, `.tabbar`, `.sheet`, `.nav-rail`, `ol.steps`, `.command` palette, `.split` panes, `.shortcuts` overlay and roving-focus styles |
+| Surfaces | [`docs/components/surfaces.md`](docs/components/surfaces.md) | `components-surfaces.html` | `.card.has-media` image cards, draggable windows (`assets/js/window.js`: touch, keep-on-screen, double-click maximize, Alt+Arrow move), `.btn-brand` sign-in buttons (company rules, not themed) |
+| Display settings | [`docs/components/experience.md`](docs/components/experience.md) | `components-experience.html` | `data-text-size`/`-density`/`-contrast`/`-motion`/`-transparency`/`-underline-links`, forced colours, the `.prefs` panel + `assets/js/prefs.js`, motion tokens and theme-switch view transitions, accent swatches, `.splash`, themed empty/error/offline/404 states, `404.html` |
+
+**Close button tokens (v5):** `--btn-close-width`, `--btn-close-height`,
+`--btn-close-pad`, `--btn-close-font-size`, `--btn-close-glyph-size`, and
+placement `--btn-close-order: -1` with `--btn-close-push: 0` to put it at the
+start of the title bar. Minimise, maximise and close travel together at the
+end. Every theme's close is now period-correct (Aqua's red light, Mac OS 9's
+close box, Win7's red caption, DOS `[■]`, iOS "Done", XMB "○ Back"…).
+
 ### Floating surfaces, menus and nesting (v5)
 
 - **Top layer.** Give a `.popover`, `.context-menu` or `.dropdown` the

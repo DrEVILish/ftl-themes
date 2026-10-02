@@ -188,9 +188,13 @@ html[data-theme="win7-aero"] .modal-header {
   --modal-header-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 18%, rgb(255 255 255 / 0.95)) 0%, color-mix(in srgb, var(--aero-tint) 28%, rgb(255 255 255 / 0.9)) 45%, color-mix(in srgb, var(--aero-tint) 40%, rgb(255 255 255 / 0.85)) 100%);
   --modal-header-fg: #0b3a6e;
   position: relative;
-  border-radius: var(--modal-radius, 8px) var(--modal-radius, 8px) 0 0;
+  /* The reflection paints under the header's own content (z-index -1 in an
+     isolated header), never washing over a title or a control, and follows
+     the corners with border-radius: inherit instead of overflow: hidden,
+     which clipped any menu opened from a control in the header. */
+  isolation: isolate;
+  border-radius: var(--panel-radius, var(--radius)) var(--panel-radius, var(--radius)) 0 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(20, 60, 100, 0.25);
-  overflow: hidden;
 }
 /* The reflection strip: a bright diagonal band of light across the glass,
    the single most recognizable Aero window-chrome detail. */
@@ -199,9 +203,34 @@ html[data-theme="win7-aero"] .modal-header::before {
   content: "";
   position: absolute;
   inset: 0 0 55% 0;
+  z-index: -1;
+  border-radius: inherit;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
   pointer-events: none;
 }
+
+/* Nested surfaces step down. Only a top-level panel is a glass window
+   with a caption bar; a panel inside a panel, card, dialog, drawer or
+   flyout is a Win7 group box on the client area: a pale tinted label
+   strip, no reflection, no second blur (the client area behind it is
+   near-white, so blurring it again only costs paint). Buttons, toolbars
+   and navs inside a surface sit on that client area too and skip the blur. */
+html[data-theme="win7-aero"] :is(.panel, .card, .modal, .drawer, .popover) .panel,
+html[data-theme="win7-aero"] :is(.panel, .card, .modal, .drawer, .popover, .dropdown) :is(.btn, .toolbar, .nav) {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-theme="win7-aero"] :is(.panel, .card, .modal, .drawer, .popover) .panel {
+  --panel-shadow: none;
+  --panel-bg: rgba(255, 255, 255, 0.55);
+}
+html[data-theme="win7-aero"] :is(.panel, .card, .modal, .drawer, .popover) .panel > .panel-header {
+  --panel-header-bg: color-mix(in srgb, var(--aero-tint) 10%, rgb(255 255 255 / 0.85));
+  --panel-header-fg: #1e395b;
+  box-shadow: none;
+  font-weight: 400;
+}
+html[data-theme="win7-aero"] :is(.panel, .card, .modal, .drawer, .popover) .panel > .panel-header::before { content: none; }
 
 /* --- Layout ------------------------------------------------------------ *
  * A floating glass window: a translucent blurred title bar with rounded
@@ -300,6 +329,27 @@ html[data-theme="win7-aero"] .app-status {
 }
 html[data-theme="win7-aero"] .app-main { border-top: 0; border-bottom: 0; }
 html[data-theme="win7-aero"] .app-status { border-top: 0; }
+
+/* --- v5 layout (PLAN.md §2–§3) ---------------------------------------------
+ * Touch tiers: core puts brand and actions on the bar's first line and the
+ * nav on a second. The desktop bar keeps 7.5rem clear on the right for the
+ * caption buttons, which on a phone pushed the actions onto two extra
+ * lines; up to 900px the buttons get a 20px strip of their own along the
+ * top edge instead, as a maximised window's do. */
+@media (max-width: 900px) {
+  html[data-theme="win7-aero"] .app-bar { padding-right: 1rem; padding-top: calc(20px + 0.35rem); }
+}
+
+/* XL gutters: the Harmony desktop either side of the window. Two soft
+   light swooshes and Aero's faint diagonal glare over the blue desktop the
+   page already paints, within ~1.4:1 of it. Still. */
+html[data-theme="win7-aero"] {
+  --app-gutter-art:
+    repeating-linear-gradient(115deg, transparent 0 120px, rgba(255, 255, 255, 0.05) 120px 190px, transparent 190px 380px),
+    radial-gradient(ellipse 18% 10% at 8% 30%, rgba(140, 225, 255, 0.22), transparent 70%),
+    radial-gradient(ellipse 16% 12% at 93% 70%, rgba(170, 235, 255, 0.2), transparent 70%),
+    radial-gradient(ellipse 12% 8% at 12% 82%, rgba(120, 230, 180, 0.12), transparent 70%);
+}
 
 /* --- Print ----------------------------------------------------------------
  * backdrop-filter blur is inert on paper (nothing behind an element to
@@ -404,6 +454,9 @@ html[data-theme="win7-aero"] .modal-header {
   text-shadow: 0 0 8px #ffffff, 0 0 8px #ffffff, 0 0 2px #ffffff;
 }
 html[data-theme="win7-aero"] .modal-header::before { content: none; }
+/* Minimise and maximise take the caption's black, as core already gives
+   the close button; the default muted grey faded out on darker tints. */
+html[data-theme="win7-aero"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, inherit); }
 /* Client-area content sits in from the white edge. */
 html[data-theme="win7-aero"] .modal > :not(.modal-header):not(.modal-footer) { margin-inline: 1rem; }
 html[data-theme="win7-aero"] .modal-header + * { margin-top: 1rem; }
@@ -434,3 +487,16 @@ html[data-theme="win7-aero"] {
   --tooltip-radius: 3px;
 }
 
+/* Close (v5): Aero's wide red glossy caption button, drawn as centred
+   layers so it keeps its 43x20 shape when the hit area grows to --tap-min. */
+html[data-theme="win7-aero"] .modal-header > .btn-close {
+  --btn-close-bg: linear-gradient(#e8a493, #d0573c 45%, #c1301a 55%, #d7612f) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+  --btn-close-bg-hover: linear-gradient(#f2b8a6, #e5684b 45%, #d63e22 55%, #ea7a43) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+  --btn-close-radius: 0;
+  --btn-close-width: 43px;
+  --btn-close-height: 20px;
+  --btn-close-glyph-size: 1.1em;
+  --modal-header-close-fg: #fff;
+  --btn-close-fg-hover: #fff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}

@@ -409,8 +409,9 @@ html[data-theme="cassette-futurism"] {
 }
 
 /* --- Housing texture ------------------------------------------------------ *
- * A faint moulded-plastic stipple on the backdrop, nothing more. */
-html[data-theme="cassette-futurism"] body {
+ * A faint moulded-plastic stipple on the backdrop, nothing more. On the
+ * root, not body: a body background would cover the XL gutter art. */
+html[data-theme="cassette-futurism"] {
   background-color: var(--bg);
   background-image: radial-gradient(rgba(80, 60, 30, 0.07) 1px, transparent 1.2px);
   background-size: 5px 5px;
@@ -474,6 +475,13 @@ html[data-theme="cassette-futurism"] .panel-header::before {
   height: 0.85em;
   margin-right: 0.7em;
   background: var(--cf-vent);
+}
+
+/* Nesting steps down: a panel inside another surface keeps its moulded
+   header rule but drops the vent slots, so only the outer housing reads
+   as vented hardware. */
+html[data-theme="cassette-futurism"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::before {
+  content: none;
 }
 
 /* --- Dymo tape: badges and tooltips are embossed labels -------------------- */
@@ -579,7 +587,7 @@ html[data-theme="cassette-futurism"] .app-bar {
   /* the four-colour stripe, stacked as hard shadows under the deck */
   box-shadow: 0 3px 0 var(--cf-yellow), 0 6px 0 var(--cf-orange), 0 9px 0 var(--cf-red), 0 12px 0 var(--cf-brown);
   position: relative;
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 /* Brand on red Dymo tape. */
 html[data-theme="cassette-futurism"] .app-bar .nav-brand {
@@ -609,8 +617,36 @@ html[data-theme="cassette-futurism"] .app-status {
   text-shadow: 0 0 0.3rem var(--cf-vfd-glow);
 }
 
+/* --- v5 tiers --------------------------------------------------------------
+ * The vent-grille rail costs a 3.25rem column, so phone and tablet drop it
+ * (core's touch tiers are one column); the deck, its four-colour stripe and
+ * the LED status window stay. The rule is needed (not only
+ * --app-rail-display-*) because --app-rail-empty-display keeps an empty
+ * rail visible, which would land in an implicit grid column. Phones get a
+ * thinner housing margin and a smaller deck brand. */
+html[data-theme="cassette-futurism"] {
+  --app-rail-display-mobile: none;
+  --app-rail-display-tablet: none;
+}
+@container style(--tier: mobile) or style(--tier: tablet) {
+  html[data-theme="cassette-futurism"] .app-rail { display: none; }
+}
+@container style(--tier: mobile) {
+  html[data-theme="cassette-futurism"] .app { padding: 0.35rem; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the housing carries on past the deck.
+   Two banks of ribbed vent slots per side on the stippled beige, the
+   speaker/heat-sink grille of the rail writ large. Slots within ~1.3:1 of
+   --bg; still. */
+html[data-theme="cassette-futurism"] {
+  --app-gutter-art:
+    repeating-linear-gradient(180deg, #bfb39b 0 5px, transparent 5px 13px) 6rem 6rem / 5rem 40% no-repeat,
+    repeating-linear-gradient(180deg, #bfb39b 0 5px, transparent 5px 13px) calc(100% - 6rem) calc(100% - 6rem) / 5rem 40% no-repeat;
+}
+
 @media print {
-  html[data-theme="cassette-futurism"] body { background-image: none; }
+  html[data-theme="cassette-futurism"] { background-image: none; }
   html[data-theme="cassette-futurism"] {
     --readout-glow: none;
     --readout-bg: #ffffff;

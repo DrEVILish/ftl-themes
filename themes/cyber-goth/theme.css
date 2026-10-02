@@ -109,6 +109,22 @@ html[data-theme="cyber-goth"] .modal-header::after {
 html[data-theme="cyber-goth"] .panel-header,
 html[data-theme="cyber-goth"] .modal-header {
   overflow: visible;
+  /* The 9px sawtooth hangs into the gap under the header; widen the gap
+     by that much so the teeth never touch the first line of the body. */
+  margin-bottom: calc(var(--space-m) + 9px);
+}
+/* Nesting steps the trim down: a panel inside another surface gets a
+   smaller, unlit sawtooth, so stacked levels don't repeat the full glowing
+   fang strip (and it stays inside the inner panel's tighter padding). */
+html[data-theme="cyber-goth"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::after {
+  inset: auto 0 -5px 0;
+  height: 5px;
+  background-size: 8px 8px;
+  background-image:
+    linear-gradient(-45deg, var(--flare) 4px, transparent 0),
+    linear-gradient(45deg, var(--flare) 4px, transparent 0);
+  filter: none;
+  opacity: 0.6;
 }
 
 /* Asymmetric single-corner chrome cut — one sharp diagonal fang on the
@@ -140,4 +156,24 @@ html[data-theme="cyber-goth"] .panel,
 html[data-theme="cyber-goth"] .modal,
 html[data-theme="cyber-goth"] .card {
   box-shadow: 4px 4px 0 #000, var(--panel-shadow);
+}
+
+/* --- v5 tiers --------------------------------------------------------------
+ * No rail on any tier. On phone and tablet core gives the bar's nav its own
+ * sideways-scrolling line; the nav's own sawtooth would be clipped by that
+ * scroller (and add a scrollable strip under it), and the bar's sawtooth
+ * already edges the whole bar, so the nav's is dropped there. */
+@container style(--tier: mobile) or style(--tier: tablet) {
+  html[data-theme="cyber-goth"] .app-bar > .nav::after { display: none; }
+}
+
+/* XL gutters (v5, PLAN.md §3): the club wall beside the console. A
+   fishnet lattice in dark violet with a faint purple sawtooth trim running
+   down each side. Within ~1.2:1 of --bg; still. */
+html[data-theme="cyber-goth"] {
+  --app-gutter-art:
+    linear-gradient(45deg, #2a0e3a 6px, transparent 0) 7rem 0 / 12px 12px repeat-y,
+    linear-gradient(-45deg, #2a0e3a 6px, transparent 0) calc(100% - 7rem) 0 / 12px 12px repeat-y,
+    repeating-linear-gradient(45deg, transparent 0 22px, #1c0a26 22px 24px),
+    repeating-linear-gradient(-45deg, transparent 0 22px, #1c0a26 22px 24px);
 }

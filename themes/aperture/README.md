@@ -40,6 +40,16 @@ otherwise clinical space.
 A plain white bar and status strip on a slightly darker page backdrop —
 the panel sits in the room rather than filling it.
 
+## v5 layout
+
+- **Tiers.** No rail and no bar decoration, so phone (≤480px) and tablet
+  (481–900px) use core's one-column shell as is: brand and actions on the
+  first line, the nav scrolling on the second.
+- **XL gutter art.** The test chamber's wall continues past the console:
+  square white wall panels with recessed seams and one faint portal ring
+  each side (blue left, orange right). Still, and within about 1.3:1 of
+  `--bg`.
+
 ## Tell-tales of an inauthentic result
 
 - Red used for danger instead of orange → loses the portal-colour logic.

@@ -141,3 +141,21 @@ layout at **L1**.
   well with a dark left edge; charcoal on Royale Noir/Zune). The Start
   button is dropped on phones.
 
+## v5 layout
+
+- **Tiers.** Desktop is unchanged. Tablet keeps the glossy title bar; it
+  wraps to two lines and the caption buttons pin to the first line's right
+  end. Mobile drops the decorative caption buttons (their 5.4rem would push
+  the actions onto a line of their own) and the Start button on the
+  taskbar. No rail on any tier. A bare checkbox in a table cell is drawn at
+  24px on touch tiers, as in core.
+- **Nesting.** Group-box captions sit on the frame line at every depth.
+  Where a caption can't sit on a frame (a scrolling panel clips it, or the
+  header holds a search field and selects) it becomes a plain strip across
+  the box's top. A drawer's header is the Luna title bar with the
+  red-orange close button. `.btn-min`/`.btn-max` on a title bar are the
+  blue glossy caption squares, cropped from each variant's own
+  `--luna-caption` strip, so every variant matches.
+- **XL gutter art.** Bliss, washed almost out: a pale sky band and the
+  rolling green hill within about 1.15:1 of the tan `--bg`. The
+  full-strength Bliss behind the page gives way to `--bg` at XL. Still.
