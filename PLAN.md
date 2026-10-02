@@ -651,7 +651,7 @@ site has a themed 404 too.
 - The wrapper wires the buttons to the native window API; ftl-themes
   only provides the markup contract and styles.
 
-## 16. Theme families and light/dark pairs
+## 16. Theme families
 
 ### Families (theme inheritance)
 
@@ -673,25 +673,6 @@ copies structure and drifts independently.
 - First candidates: the Windows line and the iOS line. Each family's base
   theme is refactored so that structure lives in the base and
   period-specific paint in the children.
-
-### Light/dark pairs (as a variant axis)
-
-Every theme gains its opposite scheme, designed in the theme's own
-language rather than inverted (a light `blue-future` is a daylight console
-with navy text on pale grey glass, not white-on-cyan).
-
-- Delivered as a **variant**: one slug, one README, one reference set.
-  Because several themes already use `data-variant` for palettes
-  (`win7-aero`'s 15 colours), the scheme is its own axis,
-  `data-scheme="light|dark|auto"`. It composes with palette variants
-  (`win7-aero` + `ruby` + dark).
-- `auto` (the default) follows `prefers-color-scheme`. Apps can pin it,
-  and the `.prefs` panel (§10) offers it.
-- Themes whose identity *is* one scheme (`matrix`, `teletext`, `msdos`,
-  `death-star`) may declare `scheme: fixed` and skip the pair. The gallery
-  says so.
-- `check.py` runs every contrast rule on both schemes. `dist/themes.json`
-  lists each theme's supported schemes.
 
 ## 17. Fidelity scoring
 
@@ -729,59 +710,52 @@ reports it. It does **not** fail the build.
 | States | `.table.is-loading`, `.table-empty`, `.table-more` | Skeleton rows, an empty row with `.empty-state`, and an infinite-scroll "loading more" row. |
 | Density | `.table.is-compact` / `.is-comfortable` | Ties into `data-density` (§10). |
 
-### Charts: built on TanStack Charts' styling contract
+### Charts: a library-neutral styling contract
 
-Reviewed: [TanStack Charts](https://github.com/TanStack/charts) (MIT,
-v0.18.0, **alpha**: 0.x minor releases may break). What matters for
-ftl-themes:
+ftl-themes doesn't pick or bundle a chart library. It defines how a chart
+*looks* in each theme, through tokens and plain SVG/HTML hooks that any
+library, or hand-written SVG, can use.
 
-- **It inherits the page instead of bringing a theme.** Axes, text and
-  grid use `currentColor`; the chart background is transparent.
-- **Colours are CSS custom properties**, overridable at any container:
-  six categorical colours `--ts-chart-1` … `--ts-chart-6`, and tooltip
-  chrome `--ts-chart-tooltip-background`, `-color`, `-border`,
-  `-border-radius`, `-shadow`, `-padding`, `-font`, `-max-width`.
-- **Data stays as the app's own arrays and objects**; the chart
-  definition maps fields to channels (`x: 'month', y: 'value'`), with
-  scales, guides and marks layered on top.
-- **Rendering:** SVG (server-renderable) or an opt-in Canvas renderer,
-  which re-reads the CSS custom properties when `data-theme`, the colour
-  scheme, forced colours or the viewport change.
-- **Framework-free:** besides React, Vue and others, it has a **vanilla
-  DOM host**, Alpine and Lit adapters. That suits Go + htmx apps, which
-  render in the browser (its server-side SVG needs a JavaScript server).
-- **Accessibility:** every chart requires an `ariaLabel`, keyboard focus
-  across points, and recommends a table when exact values matter.
-  Legends use real buttons with `aria-pressed` and 44px targets.
+**The contract:**
 
-**Plan:**
+1. **A `.chart` container** sets `color` to the theme's chart foreground,
+   so anything drawn with `currentColor` (axes, ticks, labels, grid) follows
+   the theme, and gives the plot a transparent background.
+2. **Series colours:** every theme defines a validated six-colour
+   categorical palette, `--chart-1` … `--chart-6`. They are distinct from
+   each other, at least 3:1 against the chart background, and still
+   distinguishable under the common colour-vision deficiencies.
+   `check.py` validates all of it. Themes with tiny palettes (`teletext`,
+   `nokia-3310`) also define `--chart-dash-1..6` dash patterns so series
+   stay distinguishable beyond the colours.
+3. **Sequential and diverging scales** for heatmaps and choropleths:
+   `--chart-seq-0..8` and `--chart-div-neg|mid|pos`.
+4. **Chart chrome tokens:** grid line, axis line, tick text, plot frame,
+   crosshair, selection and focus highlight, annotation, and the tooltip
+   (which reuses the existing `--tooltip-*` tokens). Themes can add a
+   signature frame (an oscilloscope graticule for `blue-future`, a
+   phosphor glow for `matrix`).
+5. **Plain-SVG class hooks** for libraries and hand-written SVG that emit
+   classes: `.chart-grid`, `.chart-axis`, `.chart-series` with
+   `data-series="1..6"`, `.chart-point`, `.chart-label`, `.chart-legend`.
+   Core styles them from the tokens.
+6. **Adapters are recipes, not dependencies.** CONTRACT.md documents how
+   to feed the tokens to popular libraries, each a few lines of CSS or
+   config: TanStack Charts (map `--ts-chart-1..6` and
+   `--ts-chart-tooltip-*` onto ftl tokens), Chart.js and ECharts (read the
+   tokens with `getComputedStyle` into their options), and Observable Plot
+   and D3 (use the class hooks). None of them ships in ftl-themes.
+7. **CSS-only charts stay:** today's `.bar-chart` plus the donut (§9 #10)
+   cover bar, column, stacked and donut with no JS and no library.
+8. **A `charts.html` example page** draws the same charts in plain inline
+   SVG using the class hooks, in every theme, each with its accessible
+   data table (required for every chart example).
 
-1. **ftl-themes doesn't bundle a chart library.** It ships the styling
-   contract that TanStack Charts (and anything else) reads.
-2. A `.chart` container in core sets `color` to the theme's chart
-   foreground and maps theme tokens onto TanStack's variables:
-   `--ts-chart-1..6` ← the theme's categorical palette
-   (`--chart-1..6`), `--ts-chart-tooltip-*` ← `--tooltip-*`. Any app using
-   TanStack Charts inside `.chart` is themed with no chart-side code.
-3. **Every theme gets a validated six-colour categorical palette**
-   (`--chart-1..6`): distinct from each other, at least 3:1 against the
-   chart background, and still distinguishable under the common colour-
-   vision deficiencies. `check.py` validates all of it. Themes with tiny
-   palettes (`teletext`, `nokia-3310`) use patterns or dashes for series
-   beyond their colours, which TanStack's mark styles support.
-4. **Chart chrome per theme:** tokens for grid lines, axis text, tick
-   marks, selection and focus highlights, plus the plot's frame (e.g. an
-   oscilloscope graticule for `blue-future`, a phosphor glow for
-   `matrix`).
-5. **Simple charts stay CSS-only:** today's `.bar-chart` remains for
-   bar, column, stacked and donut (§9 #10) with no JS. TanStack is the
-   path for line, area, scatter, dense and interactive charts.
-6. **A `charts.html` example page** with a pinned, vendored copy of TanStack
-   Charts (an exact version, per their alpha policy), showing the same
-   charts in every theme, each with its accessible data table.
-7. Watch items: alpha API changes (pin and re-test on upgrade), and Canvas
-   charts can't be styled by CSS selectors, only through the variables,
-   which is fine because ftl-themes is token-based.
+Reviewed while designing this: [TanStack Charts](https://github.com/TanStack/charts)
+(MIT, alpha). Its approach (inherit `currentColor`, transparent
+background, colours as CSS custom properties overridable at any container)
+is the model for this contract, and it gets an adapter recipe like the
+others.
 
 ### Live-data states
 
@@ -875,9 +849,9 @@ accessibility notes. Generated from one source per component, so docs,
 
 ### Theme scheduling and easter eggs
 
-- **Scheduling:** apps can switch scheme, variant or seasonal palette by
+- **Scheduling:** apps can switch theme, variant or seasonal palette by
   time of day or date through `theme-loader.js`
-  (`schedule: [{ from: "19:00", scheme: "dark" }, …]`), and the user's own
+  (`schedule: [{ from: "19:00", variant: "night" }, …]`), and the user's own
   `.prefs` choice always wins.
 - **Easter eggs: off unless the app opts in**
   (`<html data-easter-eggs>`). Harmless, skippable, and never block input.
@@ -898,6 +872,11 @@ are recorded so they can be revisited:
   W3C design-tokens export, versioned CDN/npm packages, and per-component
   split bundles. v5 keeps today's distribution (git submodule, `dist/`).
 - **RTL and i18n** font fallbacks, and theme-specific **print/PDF** styles.
+- **Light/dark pairs for every theme** (a `data-scheme="light|dark|auto"`
+  axis alongside palette variants). Deferred for now; v4's existing dark
+  and light variants (e.g. `ios-flat`, `liquid-glass`) stay as they are.
+- **Bundling or depending on a chart library.** Chart styling stays
+  library-neutral (§18).
 - **Scoped / nested themes** (`data-theme` on any element, so a Windows 95
   window can sit inside an LCARS page). Not chosen; themes stay
   page-wide. Note that the family build (§16) keeps this possible later,
@@ -914,8 +893,8 @@ are recorded so they can be revisited:
 | **4. New components** | The 50 components, in the order of the tables above: instruments first, because they carry the most theme personality. | Each one is on `components.html`, documented in CONTRACT.md, and passes on `blue-future`. |
 | **4b. Experience layer** | Accessibility attributes and the `.prefs` panel (§10), forced-colors support, motion tokens and theme-switch transitions (§11), the arrow-cursor change (§4), accent swatches (§12). Proven on `blue-future`. | `blue-future` passes the checks in every `.prefs` combination and under forced colors. |
 | **4c. Personality and installed apps** | `.splash` (§13), themed empty/error/404 states (§14), cursor packs (§11), PWA and wrapper title bars with `.window-controls` (§15). | `blue-future` and three contrasting themes (`windows95`, `liquid-glass`, `lcars`) ship all of them. |
-| **4d. Data, kits and tooling** | Theme families and the light/dark axis (§16), advanced tables, the `.chart` contract with TanStack Charts and `charts.html`, live-data states, the dashboard grid (§18), the four kits with `player.html` and `hud.html` (§19), the keyboard layer, budgets and scheduling (§20). The fidelity tool (§17) and docs site (§20) run from here on. | `blue-future` passes every check in both schemes; Playlist Lab can build its player and tables from the music kit. |
-| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, motion tokens, accent swatches, light/dark pair, chart palette, splash, empty states, cursors (where the source had distinctive ones), window controls, per-tier check, fidelity score. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
+| **4d. Data, kits and tooling** | Theme families (§16), advanced tables, the library-neutral `.chart` contract and `charts.html`, live-data states, the dashboard grid (§18), the four kits with `player.html` and `hud.html` (§19), the keyboard layer, budgets and scheduling (§20). The fidelity tool (§17) and docs site (§20) run from here on. | `blue-future` passes every check; Playlist Lab can build its player and tables from the music kit. |
+| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, motion tokens, accent swatches, chart palette, splash, empty states, cursors (where the source had distinctive ones), window controls, per-tier check, fidelity score. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
 | **6. Release** | MIGRATING-v5.md, CHANGELOG, and a `v4` branch kept for apps that pin it, as `v3` was. | Tagged v5.0.0. |
 
 ## 23. Breaking changes to expect (for MIGRATING-v5.md)
@@ -933,9 +912,6 @@ are recorded so they can be revisited:
 - Buttons, links and other controls no longer switch to the hand
   pointer; they keep the arrow. Apps that relied on the hand cursor as an
   affordance should rely on the themed hover and focus states instead.
-- A new `data-scheme` attribute (default `auto`) means themes can now
-  render light or dark depending on the OS setting. Apps that relied on a
-  theme always being dark must pin `data-scheme="dark"`.
 - Themes in a family are rebuilt from a shared base, so small visual
   differences between, say, `winxp-luna` and `win7-aero` may move.
 - `theme-loader.js` switches themes through a view transition; apps that
@@ -968,11 +944,6 @@ are recorded so they can be revisited:
    `msdos`, `skyrim`, `steampunk`.
 8. **Window controls side:** follow the theme (Aqua left, Windows right)
    or the user's actual OS by default?
-9. **Charts:** TanStack Charts is alpha. Is a pinned 0.x version
-   acceptable for Playlist Lab, or should the `.chart` contract stay
-   library-neutral, with TanStack only on the example page?
-10. **Families:** which family first, the Windows line or the iOS line?
-11. **Fixed-scheme themes:** agree the list that skips a light/dark pair?
-    Proposed: `matrix`, `teletext`, `msdos`, `death-star`, `pipboy`.
-12. **Easter eggs:** any you specifically want, or any themes that must
+9. **Families:** which family first, the Windows line or the iOS line?
+10. **Easter eggs:** any you specifically want, or any themes that must
     never have them (for example themes used in professional dashboards)?
