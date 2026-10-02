@@ -143,7 +143,7 @@ Themes without gutter art fall back to plain `--bg`, which is still correct.
 | Rule | Mobile and Tablet | Desktop and XL |
 |---|---|---|
 | Minimum target size | **44 × 44px** (`--tap-min: 44px`) for every interactive control: buttons, nav items, tabs, checkbox and radio hit areas, close buttons, pagination, menu items, table row actions. | Current (mouse-sized) sizes, but never below **24 × 24px** (WCAG 2.5.8 AA). |
-| Spacing between targets | At least 8px between adjacent targets. | Current. |
+| Spacing between targets | At least 8px around any target smaller than the minimum. Full-size (44px) targets may sit edge to edge, as menu items and list rows do (WCAG 2.5.8 only asks for spacing around undersized targets). | Current. |
 | Any touch device | `@media (any-pointer: coarse)` raises the targets to 44px even on a desktop-width touch screen (a Surface or a touch laptop). | Same. |
 | Hover | Hover-only reveals (row actions, tooltips) need a touch path: a visible control or `:focus-within`. Hover styles sit inside `@media (hover: hover)` so a tap doesn't leave a sticky hover state. | Same. |
 | Tap delay | `touch-action: manipulation` on controls (no double-tap zoom delay). | Same. |
@@ -1102,6 +1102,14 @@ are recorded so they can be revisited:
   since bundles stay selector-based.
 
 ## 26. Rollout
+
+**Progress (2026-10-02):** phase 0 done (`nesting.html`,
+`scripts/v5_audit.mjs`). Phase 1 core layout done for the shell, tiers, XL
+cap and gutter art, spacing tokens and the `--z-*` scale; container queries
+and top-layer popovers next. Phase 2 touch sizing and the arrow cursor are
+in; hover gating is still to do. The nesting page's findings (popover and
+toast top-layer conflicts, clipped dropdowns, unstyled nested menus,
+tables in modals on phones, the drawer header) are the next work items.
 
 | Phase | Work | Done when |
 |---|---|---|

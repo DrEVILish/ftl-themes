@@ -199,7 +199,6 @@ html[data-theme="blue-future"] .sci-switch {
   background: #02050a;
   border: 1px solid var(--border);
   border-radius: 3px;
-  cursor: pointer;
   font-family: var(--font-mono);
 }
 html[data-theme="blue-future"] .sci-switch > input {
@@ -292,6 +291,27 @@ html[data-theme="blue-future"] {
   --app-main-padding: 1.2rem;
   --app-status-bg: rgba(3, 8, 15, 0.94);
   --app-status-rule: var(--border);
+}
+
+/* XL gutters (v5, PLAN.md §3): deep space beside the console. A sparse
+   starfield and the telemetry grid in --hairline, both within ~1.3:1 of
+   --bg so the eye stays on the content. The grid drifts one cell every two
+   minutes, only with motion allowed. */
+html[data-theme="blue-future"] {
+  --app-gutter-art:
+    radial-gradient(1px 1px at 22px 34px, #24506f 50%, transparent 55%) 0 0 / 140px 160px,
+    radial-gradient(1px 1px at 96px 118px, #1a4260 50%, transparent 55%) 0 0 / 140px 160px,
+    radial-gradient(1.5px 1.5px at 61px 77px, #2d6286 50%, transparent 55%) 0 0 / 230px 210px,
+    linear-gradient(var(--hairline) 1px, transparent 1px) 0 0 / 100% 96px,
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px) 0 0 / 96px 100%;
+}
+@media (min-width: 1801px) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="blue-future"]:not([data-motion="reduced"])::before {
+    animation: blue-future-drift 120s linear infinite;
+  }
+}
+@keyframes blue-future-drift {
+  to { background-position: 0 160px, 0 160px, 0 210px, 0 96px, 96px 0; }
 }
 
 /* Print: the grid, vignette, glows and brackets are screen-only. Core

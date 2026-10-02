@@ -371,8 +371,72 @@ Override points: `--app-areas`, `-columns`, `-rows`, `-gap`,
 `--app-bar-nav-bg|-nav-rule-width|-nav-radius`;
 `--app-rail-display|-bg|-radius|-padding|-gap`;
 `--app-main-bg|-padding|-radius`; `--app-status-bg|-fg|-rule|-radius|-padding`;
-and the `-sm` variants (`--app-areas-sm`, `--app-rows-sm`,
-`--app-rail-display-sm`, `--app-main-padding-sm`) for ≤720px.
+and the per-tier variants below.
+
+### Screen tiers (v5)
+
+Core has four tiers, set once in `core/layout.css` (custom properties can't
+be used in `@media`, so themes never write breakpoints; they set per-tier
+tokens):
+
+| Tier | Width | `--tier` | Shell default |
+|---|---|---|---|
+| Mobile | ≤ 480px | `mobile` | One column: bar, main, status. Rail hidden. |
+| Tablet | 481–900px | `tablet` | One column, roomier padding. Rail hidden. |
+| Desktop | 901–1800px | `desktop` | The full shell. |
+| XL | ≥ 1801px | `xl` | The desktop shell capped at `--app-max` (1800px) and centred. |
+
+- **Per-tier shell tokens:** `--app-areas-mobile|-tablet`,
+  `--app-rows-mobile|-tablet`, `--app-rail-display-mobile|-tablet`,
+  `--app-main-padding-mobile|-tablet`. The v4 `-sm` tokens still work as the
+  fallback for both.
+- **Reading the tier:** `--tier` is set on `:root`, so a component can
+  respond with a container style query: `@container style(--tier: mobile)`.
+- **XL gutters:** `--app-max` (default 1800px) caps the shell.
+  `--app-gutter-art` is a theme's side-gutter art: one or more background
+  layers, painted on a fixed layer masked to the gutters only (never behind
+  content), fading in over `--app-gutter-fade` (8rem). Keep it within about
+  1.5:1 of `--bg` and still by default; any motion goes inside
+  `prefers-reduced-motion: no-preference`.
+- **The bar on touch tiers:** markup it as brand, `<nav class="nav">`,
+  then the app's actions. Up to 900px the brand and actions share the first
+  line (the brand truncates), and the nav takes its own line and scrolls
+  sideways. A bar that doesn't fit at any width wraps instead of
+  overflowing.
+  ```html
+  <header class="app-bar">
+    <span class="nav-brand">App</span>
+    <nav class="nav">…links…</nav>
+    <div class="cluster push">…actions…</div>
+  </header>
+  ```
+- **Spacing:** the `--space-*` scale steps per tier (tighter on mobile,
+  roomier on XL; desktop values are unchanged from v4). Containers read it
+  through `--panel-pad`, `--card-pad`, `--modal-pad`, `--panel-header-pad`,
+  `--modal-header-pad`, `--toast-pad`, `--popover-pad`, `--toolbar-pad` and
+  `--nav-pad`. A panel, card or modal publishes its padding as
+  `--surface-pad`, which its header's negative margin reads, so the two
+  always match (in v4 a density-scaled panel pad was paired with a fixed
+  −1rem header pull).
+- **Layers:** every z-index in core reads `--z-raised`, `--z-sticky`,
+  `--z-modal`, `--z-drawer`, `--z-dropdown`, `--z-toast`, `--z-tooltip` or
+  `--z-window` (in that order).
+
+### Touch and pointer (v5)
+
+- `--tap-min` is the smallest hit area of any control: **44px** up to 900px
+  wide, on any device with a coarse pointer, or with
+  `<html data-pointer="touch">`; **24px** otherwise (WCAG 2.5.8 AA). Buttons,
+  nav items, tabs, segmented items, pagination, menu items, accordion
+  triggers, inputs, selects and the labels of `.check`/`.radio`/`.switch`
+  grow to it; their look is unchanged.
+- A bare checkbox can't have a hit area bigger than the box it draws, so
+  for the full touch size wrap it in a label with a hidden name:
+  `<label class="check"><input type="checkbox" class="checkbox"><span class="visually-hidden">Select row</span></label>`.
+  A bare one in a table cell is drawn at 24px on touch devices.
+- Controls keep the **arrow cursor**, not the hand; text fields keep the
+  I-beam.
+- On touch devices, inputs are at least 16px so iOS doesn't zoom on focus.
 
 **Graceful degrade without the shell.** An app that links a theme but
 never adds this markup still gets a correct, uncluttered result: no rail

@@ -34,7 +34,13 @@ button, input, select, textarea {
 button {
   background: none;
   border: none;
-  cursor: pointer;
+}
+
+/* v5: controls keep the arrow cursor, like an application, rather than the
+   web's hand pointer (PLAN.md §4). Text fields keep the I-beam. */
+a[href], button, summary, label, select,
+[role="button"], [role="tab"], [role="menuitem"], [role="option"], [role="switch"] {
+  cursor: default;
 }
 
 a {
@@ -121,6 +127,21 @@ table {
   --density: 1;
 }
 
+/* v5 layer scale (PLAN.md §6). Every z-index in core reads one of these, so
+   layers stack the same way everywhere and a theme or app can move a whole
+   layer at once. Order: raised < sticky < modal < drawer < dropdown/popover
+   < toast < tooltip < focused window. */
+:root {
+  --z-raised: 1;
+  --z-sticky: 5;
+  --z-modal: 1000;
+  --z-drawer: 1040;
+  --z-dropdown: 1050;
+  --z-toast: 1100;
+  --z-tooltip: 1200;
+  --z-window: var(--window-focus-z, 1500);
+}
+
 html {
   background: var(--bg);
   color: var(--text);
@@ -151,7 +172,6 @@ a { color: var(--link, var(--accent)); }
   letter-spacing: var(--btn-tracking, normal);
   text-transform: var(--btn-transform, none);
   box-shadow: var(--btn-shadow, none);
-  cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 .btn:hover {
@@ -257,7 +277,7 @@ a { color: var(--link, var(--accent)); }
   outline-color: var(--danger);
   box-shadow: var(--input-error-ring, var(--input-shadow, none));
 }
-.input-group > :is(.is-invalid, [aria-invalid="true"]) { z-index: 1; }
+.input-group > :is(.is-invalid, [aria-invalid="true"]) { z-index: var(--z-raised); }
 
 /* Sizes: on .input, .select or .textarea. */
 .input-sm {
@@ -361,7 +381,7 @@ a { color: var(--link, var(--accent)); }
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
-.input-group > :focus-visible { z-index: 1; }
+.input-group > :focus-visible { z-index: var(--z-raised); }
 .input-addon {
   display: inline-flex;
   align-items: center;
@@ -396,7 +416,6 @@ a { color: var(--link, var(--accent)); }
   align-items: center;
   gap: 0.5em;
   color: var(--check-fg, var(--text));
-  cursor: pointer;
 }
 .check:has(:disabled) { opacity: 0.5; cursor: not-allowed; }
 
@@ -428,7 +447,6 @@ a { color: var(--link, var(--accent)); }
   align-items: center;
   width: calc(2.6em * var(--density));
   height: calc(1.4em * var(--density));
-  cursor: pointer;
   --switch-shift: calc(1.2em * var(--density));
 }
 .switch:dir(rtl) { --switch-shift: calc(-1.2em * var(--density)); }
@@ -521,7 +539,6 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   background: var(--slider-thumb-bg, var(--accent));
   border: 2px solid var(--bg);
   box-shadow: var(--slider-thumb-shadow, none);
-  cursor: pointer;
 }
 .slider::-moz-range-thumb {
   width: var(--slider-thumb-size, calc(1rem * var(--density)));
@@ -530,7 +547,6 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   background: var(--slider-thumb-bg, var(--accent));
   border: 2px solid var(--bg);
   box-shadow: var(--slider-thumb-shadow, none);
-  cursor: pointer;
 }
 
 /* .slider.is-vertical — a fader-style range input, up = larger. Length via
@@ -551,11 +567,15 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   border: var(--panel-border-width, 1px) solid var(--panel-border, var(--border));
   border-radius: var(--panel-radius, var(--radius));
   box-shadow: var(--panel-shadow, none);
-  padding: calc(1rem * var(--density));
+  /* --surface-pad is read back by .panel-header's negative margin, so the
+     two can't drift apart (v4 paired a density-scaled pad with a fixed
+     -1rem pull). */
+  --surface-pad: var(--panel-pad, calc(var(--space-m) * var(--density)));
+  padding: var(--surface-pad);
 }
 .panel-header {
-  margin: -1rem -1rem 1rem;
-  padding: 0.5rem 1rem;
+  margin: calc(-1 * var(--surface-pad, 1rem)) calc(-1 * var(--surface-pad, 1rem)) var(--space-m);
+  padding: var(--panel-header-pad, var(--space-xs) var(--surface-pad, 1rem));
   background: var(--panel-header-bg, transparent);
   color: var(--panel-header-fg, var(--muted));
   border-bottom: 1px solid var(--panel-border, var(--border));
@@ -571,11 +591,11 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: var(--space-m);
   background: var(--overlay-bg, rgba(0, 0, 0, 0.6));
   backdrop-filter: var(--overlay-blur, none);
 }
@@ -585,7 +605,8 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   border: var(--panel-border-width, 1px) solid var(--modal-border, var(--border));
   border-radius: var(--modal-radius, var(--panel-radius, var(--radius)));
   box-shadow: var(--modal-shadow, var(--panel-shadow, none));
-  padding: 1.5rem;
+  --surface-pad: var(--modal-pad, var(--space-l));
+  padding: var(--surface-pad);
   /* width, not just max-width: inside the flex overlay a modal would
      otherwise shrink to its content and change width as it changes. */
   width: min(32rem, calc(100vw - 2rem));
@@ -597,8 +618,8 @@ button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: -1.5rem -1.5rem 1rem;
-  padding: 0.5rem 1rem;
+  margin: calc(-1 * var(--surface-pad, 1.5rem)) calc(-1 * var(--surface-pad, 1.5rem)) var(--space-m);
+  padding: var(--modal-header-pad, var(--space-xs) var(--space-m));
   background: var(--modal-header-bg, transparent);
   color: var(--modal-header-fg, inherit);
   font-weight: 600;
@@ -694,7 +715,7 @@ dialog.modal:modal {
   min-width: min(22rem, calc(100vw - 2rem));
   min-height: 12rem;
 }
-.modal:focus-within { z-index: var(--window-focus-z, 1500); }
+.modal:focus-within { z-index: var(--z-window); }
 
 /* The dismiss ("x") button every modal header needs. Ghost by default so
    it recedes into the header; hover/focus lift it to full text color.
@@ -713,7 +734,6 @@ dialog.modal:modal {
   border-radius: var(--btn-close-radius, var(--radius));
   background: var(--btn-close-bg, transparent);
   color: var(--btn-close-fg, var(--muted));
-  cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 .btn-close:hover,
@@ -775,7 +795,7 @@ dialog.modal:modal {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0.5rem;
+  padding: var(--toolbar-pad, var(--space-xs));
   background: var(--toolbar-bg, var(--surface));
   border-bottom: 1px solid var(--border);
 }
@@ -1268,7 +1288,6 @@ dialog.modal:modal {
   border: 1px solid var(--key-border, var(--border));
   border-radius: var(--key-radius, 3px);
   box-shadow: var(--key-shadow, inset 0 -2px 0 rgba(0, 0, 0, 0.25));
-  cursor: pointer;
   user-select: none;
 }
 .key input {
@@ -1276,7 +1295,6 @@ dialog.modal:modal {
   inset: 0;
   margin: 0;
   opacity: 0;
-  cursor: pointer;
 }
 .key:has(input:checked),
 .key[aria-pressed="true"],
@@ -1362,7 +1380,6 @@ dialog.modal:modal {
   color: var(--segmented-item-fg, var(--muted));
   font: inherit;
   font-size: 0.85em;
-  cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .segmented-item:hover { color: var(--segmented-item-fg-hover, var(--text)); }
@@ -1443,14 +1460,14 @@ dialog.modal:modal {
   position: sticky;
   top: 0;
   background: var(--table-head-bg, var(--surface));
-  z-index: 1;
+  z-index: var(--z-sticky);
 }
 /* Each sticky cell is its own stacking context, so a column-filter
    dropdown/popover inside one would sit under its neighbours. Lift the
    cell while it holds an open surface. Two rules: a selector the engine
    doesn't know would drop the whole list. */
-.table.is-sticky thead th:has(details[open]) { z-index: 3; }
-.table.is-sticky thead th:has(:popover-open) { z-index: 3; }
+.table.is-sticky thead th:has(details[open]) { z-index: calc(var(--z-sticky) + 1); }
+.table.is-sticky thead th:has(:popover-open) { z-index: calc(var(--z-sticky) + 1); }
 
 /* Zebra striping: opt in with `.table.is-striped`. A dedicated token
    rather than reaching for --surface-2 directly — a theme with a
@@ -1496,7 +1513,6 @@ dialog.modal:modal {
    active `<th>` (a native a11y attribute, not an .is-* class, since it's
    already the correct semantic marker) and a clickable header gets a
    cursor and hover tint for free. */
-.table th[aria-sort] { cursor: pointer; }
 .table th[aria-sort]:hover { color: var(--table-head-fg-hover, var(--text)); }
 .table th[aria-sort]::after {
   margin-inline-start: 0.35em;
@@ -1511,7 +1527,7 @@ dialog.modal:modal {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.6rem 1rem;
+  padding: var(--nav-pad, 0.6rem var(--space-m));
   background: var(--nav-bg, var(--surface));
   border-bottom: var(--nav-rule-width, 1px) solid var(--nav-rule, var(--border));
   border-radius: var(--nav-radius, 0);
@@ -1538,6 +1554,18 @@ dialog.modal:modal {
   gap: 0.35rem;
   border-bottom: 1px solid var(--border);
 }
+/* Touch tiers: tabs scroll sideways in one row instead of wrapping onto a
+   second line (a wrapped tab row reads as two rows of tabs). Inside the
+   scroller the focus ring is drawn inset so it isn't clipped. */
+@media (max-width: 900px) {
+  .tabs:not([aria-orientation="vertical"]) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs:not([aria-orientation="vertical"]) > .tab { flex-shrink: 0; }
+  .tabs:not([aria-orientation="vertical"]) > .tab:focus-visible { outline-offset: -2px; }
+}
 .tab {
   padding: 0.4em 0.9em;
   border: 1px solid transparent;
@@ -1547,7 +1575,6 @@ dialog.modal:modal {
   font-size: 0.85em;
   letter-spacing: var(--label-tracking, normal);
   text-transform: var(--label-transform, none);
-  cursor: pointer;
 }
 .tab:hover { color: var(--text); }
 .tab.is-active {
@@ -1728,7 +1755,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   position: fixed;
   top: 1rem;
   inset-inline-end: 1rem;
-  z-index: 1100;
+  z-index: var(--z-toast);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1738,7 +1765,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.75rem 1rem;
+  padding: var(--toast-pad, var(--space-s) var(--space-m));
   background: var(--toast-bg, var(--surface-2));
   color: var(--toast-fg, var(--text));
   border: var(--toast-border-width, 1px) solid var(--toast-border, var(--border));
@@ -1774,7 +1801,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   box-shadow: var(--context-menu-shadow, var(--panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
   padding: 0.35rem;
   min-width: 10rem;
-  z-index: 1050;
+  z-index: var(--z-dropdown);
 }
 .context-menu-item {
   display: flex;
@@ -1806,7 +1833,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: calc(2rem * var(--density));
+  padding: calc(var(--space-xl) * var(--density));
   border: var(--dropzone-border-width, 2px) dashed var(--dropzone-border, var(--border));
   border-radius: var(--dropzone-radius, var(--radius));
   background: var(--dropzone-bg, transparent);
@@ -1879,12 +1906,12 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   border: var(--card-border-width, 1px) solid var(--card-border, var(--panel-border, var(--border)));
   border-radius: var(--card-radius, var(--panel-radius, var(--radius)));
   box-shadow: var(--card-shadow, var(--panel-shadow, none));
-  padding: calc(1rem * var(--density));
+  --surface-pad: var(--card-pad, calc(var(--space-m) * var(--density)));
+  padding: var(--surface-pad);
 }
 
 /* .badge-button — a clickable badge (filter chip). */
 .badge-button {
-  cursor: pointer;
   border: none;
   font: inherit;
   transition: background 0.15s ease, color 0.15s ease;
@@ -1902,7 +1929,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: calc(2.5rem * var(--density)) 1rem;
+  padding: calc(var(--space-xl) * 1.25 * var(--density)) var(--space-m);
   color: var(--muted);
   text-align: center;
 }
@@ -1929,7 +1956,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.1s ease, transform 0.1s ease;
-  z-index: 1200;
+  z-index: var(--z-tooltip);
 }
 [data-tooltip]:hover::after,
 [data-tooltip]:focus-visible::after {
@@ -1955,7 +1982,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   color: var(--on-surface);
   border-inline-start: var(--drawer-border-width, 1px) solid var(--drawer-border, var(--border));
   box-shadow: var(--drawer-shadow, var(--panel-shadow, 0 0 24px rgba(0, 0, 0, 0.35)));
-  z-index: 1040;
+  z-index: var(--z-drawer);
   transform: translateX(105%);
   visibility: hidden;
   transition: transform 0.2s ease, visibility 0.2s;
@@ -1979,9 +2006,9 @@ html[dir="rtl"] .drawer.is-start { transform: translateX(105%); }
   border: var(--popover-border-width, 1px) solid var(--popover-border, var(--dropdown-border, var(--border)));
   border-radius: var(--popover-radius, var(--dropdown-radius, var(--radius)));
   box-shadow: var(--popover-shadow, var(--panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
-  padding: 0.75rem;
+  padding: var(--popover-pad, var(--space-s));
   max-width: 20rem;
-  z-index: 1050;
+  z-index: var(--z-dropdown);
 }
 
 /* .accordion — built on <details>/<summary> so it needs no JS. */
@@ -1995,7 +2022,6 @@ html[dir="rtl"] .drawer.is-start { transform: translateX(105%); }
   padding: 0.75em 0.25em;
   color: var(--text);
   font-weight: 600;
-  cursor: pointer;
   list-style: none;
 }
 .accordion-trigger::-webkit-details-marker { display: none; }
@@ -2034,7 +2060,6 @@ html[dir="rtl"] .drawer.is-start { transform: translateX(105%); }
   text-align: start;
 }
 a.list-item,
-button.list-item { cursor: pointer; }
 a.list-item:hover,
 button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 .list-item.is-active {
@@ -2111,7 +2136,7 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
 .scrollspy-nav {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: var(--z-sticky);
   display: flex;
   flex-wrap: wrap;
   gap: 0.15rem 0.9rem;
@@ -2138,10 +2163,9 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 
 /* .nav-collapse — a responsive nav toggler with no JS: a native
    <details>/<summary> (keyboard- and screen-reader-handled by the
-   browser, like .accordion). Below 720px — the same breakpoint the
-   app shell collapses at — the summary renders as a hamburger and the
-   nav stacks only while open; above it the toggle hides and the nav is
-   always laid out, open or not. */
+   browser, like .accordion). Up to 900px (the mobile and tablet tiers)
+   the summary renders as a hamburger and the nav stacks only while open;
+   above it the toggle hides and the nav is always laid out, open or not. */
 .nav-toggle {
   display: inline-flex;
   align-items: center;
@@ -2152,14 +2176,13 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   border-radius: var(--radius);
   color: var(--text);
   font-size: 1rem;
-  cursor: pointer;
   list-style: none;
 }
 .nav-toggle::-webkit-details-marker { display: none; }
 .nav-toggle::before { content: "\2630"; }
 .nav-collapse[open] > .nav-toggle::before { content: "\d7"; }
 .nav-collapse:not([open]) > .nav { display: none; }
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .nav-collapse[open] > .nav {
     flex-direction: column;
     align-items: stretch;
@@ -2167,7 +2190,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
     margin-block-start: 0.5rem;
   }
 }
-@media (min-width: 721px) {
+@media (min-width: 901px) {
   .nav-collapse > .nav-toggle { display: none; }
   /* Outranks the UA's `details:not([open]) > :not(summary)` hide, so the
      nav lays out on desktop whether or not the details is open. */
@@ -2207,7 +2230,6 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   font-style: var(--taskbar-start-style, normal);
   text-shadow: var(--taskbar-start-text-shadow, none);
   box-shadow: var(--taskbar-start-shadow, none);
-  cursor: pointer;
 }
 .taskbar-start:active { transform: translateY(1px); }
 .taskbar-task {
@@ -2224,7 +2246,6 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   box-shadow: var(--taskbar-task-shadow, none);
   overflow: hidden;
   white-space: nowrap;
-  cursor: pointer;
 }
 .taskbar-task > :not(svg):not(.icon) {
   min-width: 0;
@@ -2418,7 +2439,6 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   background: var(--toggle-btn-bg, var(--btn-bg, var(--surface-2)));
   color: var(--toggle-btn-fg, var(--btn-fg, var(--text)));
   font-size: 0.9em;
-  cursor: pointer;
   user-select: none;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
@@ -2578,7 +2598,7 @@ html[data-accent="6"] { --accent: var(--accent-swatch-6, var(--accent)); --on-ac
 .anchor { position: relative; display: inline-block; }
 .anchor > :is(.popover, .context-menu, .dropdown) {
   position: absolute;
-  z-index: 1050;
+  z-index: var(--z-dropdown);
   inset-inline-start: 0;
 }
 .anchor > .is-below { top: calc(100% + 0.25rem); }
@@ -2608,7 +2628,7 @@ html[data-accent="6"] { --accent: var(--accent-swatch-6, var(--accent)); --on-ac
   max-height: var(--log-height, 24rem);
   overflow: auto;
   overflow-anchor: auto;
-  padding: 0.5rem 0;
+  padding: var(--space-xs) 0;
   background: var(--log-bg, var(--surface));
   color: var(--log-fg, var(--text));
   border: var(--log-border-width, 1px) solid var(--log-border, var(--border));
@@ -2620,7 +2640,7 @@ html[data-accent="6"] { --accent: var(--accent-swatch-6, var(--accent)); --on-ac
 .log-line {
   display: flex;
   gap: 0.75em;
-  padding: 0 0.75rem;
+  padding: 0 var(--space-s);
   border-inline-start: 3px solid transparent;
   white-space: var(--log-wrap, pre-wrap);
   overflow-wrap: anywhere;
@@ -2713,7 +2733,7 @@ code {
   font-size: 0.9em;
 }
 pre {
-  padding: calc(1rem * var(--density));
+  padding: calc(var(--space-m) * var(--density));
   background: var(--code-block-bg, var(--surface));
   border: var(--code-block-border-width, 1px) solid var(--code-block-border, var(--border));
   border-radius: var(--radius);
@@ -2748,6 +2768,25 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --space-l: 1.5rem;
   --space-xl: 2rem;
   --space-2xl: 3rem;
+}
+/* v5: the scale steps per tier (PLAN.md §5), so every component that reads
+   it tightens on phones and opens up on wide screens from one place. The
+   widths match core/layout.css's tiers. */
+@media (max-width: 480px) {
+  :root {
+    --space-s: 0.625rem;
+    --space-m: 0.75rem;
+    --space-l: 1.125rem;
+    --space-xl: 1.5rem;
+    --space-2xl: 2rem;
+  }
+}
+@media (min-width: 1801px) {
+  :root {
+    --space-l: 1.75rem;
+    --space-xl: 2.5rem;
+    --space-2xl: 3.5rem;
+  }
 }
 
 .row, .flex { display: flex; gap: var(--space-m); }
@@ -3103,12 +3142,12 @@ html[data-motion="reduced"] .typing::before { animation: none; }
  * section; .is-tinted paints it. .band-head centres a heading and its lede. */
 .hero {
   text-align: center;
-  padding: calc(4rem * var(--density)) 1rem calc(3rem * var(--density));
+  padding: calc(var(--space-2xl) * 4 / 3 * var(--density)) var(--space-m) calc(var(--space-2xl) * var(--density));
   background: var(--hero-bg, transparent);
   color: var(--hero-fg, inherit);
 }
 .hero :is(h1, h2) + p { max-width: 38rem; margin: 0.75rem auto 1.5rem; color: var(--hero-lede-fg, var(--muted)); }
-.band { padding-block: calc(3rem * var(--density)); }
+.band { padding-block: calc(var(--space-2xl) * var(--density)); }
 .band.is-tinted { background: var(--band-tint-bg, var(--surface)); color: var(--band-tint-fg, inherit); }
 .band-head { text-align: center; max-width: 38rem; margin: 0 auto 2rem; }
 .band-head > * { margin-block: 0; }
@@ -3241,6 +3280,82 @@ html[data-motion="reduced"] .typing::before { animation: none; }
   .app-status .btn-icon,
   .app-status [role="button"] {
     display: none !important;
+  }
+}
+
+/* --- v5 touch (PLAN.md §4) ---------------------------------------------
+ * --tap-min is the smallest hit area any control may have: 24px on desktop
+ * (WCAG 2.5.8 AA), 44px on the mobile and tablet tiers, on any device with
+ * a coarse pointer (a touch laptop), or when the user asks for it
+ * (data-pointer="touch"). Controls grow to it with min sizes, so a theme's
+ * look is kept and only the hit area is enforced. */
+:root { --tap-min: 24px; }
+@media (max-width: 900px), (any-pointer: coarse) {
+  :root { --tap-min: 44px; }
+}
+html[data-pointer="touch"] { --tap-min: 44px; }
+
+:is(.btn, .btn-icon, .btn-close, .btn-min, .btn-max, .toggle-btn, .badge-button,
+    .nav-item, .tab, .segmented-item, .pagination-item, .dropdown-item,
+    .context-menu-item, .accordion-trigger, .scrollspy-link, .taskbar-task,
+    .taskbar-start, .nav-toggle, .key, button.list-item, a.list-item) {
+  min-block-size: var(--tap-min);
+  touch-action: manipulation;
+}
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle) {
+  min-inline-size: var(--tap-min);
+}
+:is(.input, .select) { min-block-size: var(--tap-min); }
+/* Checkboxes, radios and switches: the label is the target. */
+:is(.check, .radio, .switch) {
+  min-block-size: var(--tap-min);
+  touch-action: manipulation;
+}
+.slider { min-block-size: var(--tap-min); touch-action: none; }
+/* Inline text links inside running text are exempt (WCAG 2.5.8); links
+   that stand alone as navigation are not. */
+.breadcrumb-item:not(.is-current) {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap-min);
+}
+
+/* iOS Safari zooms the page when a focused field's text is under 16px. */
+@media (any-pointer: coarse) {
+  :is(.input, .select, .textarea) { font-size: max(16px, 1em); }
+}
+
+/* Small visuals, full-size hit areas: the dot or box stays the theme's size
+   and transparent padding (clipped out of the background) makes up the
+   target. */
+@media (max-width: 900px), (any-pointer: coarse) {
+  /* Sized as border-box on purpose: apps commonly reset box-sizing with an
+     unlayered rule, which would beat anything set here. */
+  .carousel-nav > a:not(.carousel-prev, .carousel-next) {
+    min-width: var(--tap-min);
+    height: var(--tap-min);
+    padding: calc((var(--tap-min) - 0.7em) / 2);
+    background-clip: content-box;
+  }
+  .carousel-nav > :is(.carousel-prev, .carousel-next) {
+    min-width: var(--tap-min);
+    height: var(--tap-min);
+    line-height: var(--tap-min);
+  }
+  /* A native checkbox draws itself at whatever size it is given, so its
+     hit area can't be bigger than the box. A bare one (a table's select
+     column) gets 24px (WCAG AA); for the full touch size, wrap it in a
+     label with a hidden name, which core sizes below:
+       <label class="check"><input type="checkbox" class="checkbox">
+         <span class="visually-hidden">Select row</span></label> */
+  td > :is(.checkbox, .radio):only-child,
+  th > :is(.checkbox, .radio):only-child {
+    width: 24px;
+    height: 24px;
+  }
+  .check:has(> .visually-hidden:last-child) {
+    min-inline-size: var(--tap-min);
+    justify-content: center;
   }
 }
 }

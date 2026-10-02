@@ -435,13 +435,16 @@ html[data-theme="lcars"] .app-bar::after {
 
 /* Inside the frame the nav is bare: no box of its own, pill items on
    black, and the brand as the big right-aligned LCARS screen title. */
-html[data-theme="lcars"] .app-bar .nav { padding: 0; flex: 1; min-width: 0; align-items: flex-end; }
+html[data-theme="lcars"] .app-bar .nav { padding: 0; flex: 1; min-width: 0; align-items: flex-end; flex-wrap: wrap; row-gap: 0.3rem; }
 html[data-theme="lcars"] .app-bar .nav-item { text-transform: uppercase; letter-spacing: 0.08em; padding: 0.35em 0.9em 0.2em 1.6em; text-align: right; }
 html[data-theme="lcars"] .app-bar .nav-brand {
   order: 99;
   margin-left: auto;
   color: var(--accent);
-  font-size: 2.4rem;
+  /* The title shares the bar with the nav and the app's actions (the
+     contract's brand / nav / actions order), so it scales down on narrower
+     desktops instead of pushing them out of the frame. */
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
   line-height: 1;
   font-weight: 400;
   text-transform: uppercase;
@@ -636,7 +639,7 @@ html[data-theme="lcars"] {
    that isn't a title or a sub header is set at the data size; only the
    printed ruler numerals on scales keep their own size, as on screen. */
 html[data-theme="lcars"] body { font-size: var(--lcars-size-data); }
-html[data-theme="lcars"] :is(h1, .app-bar .nav-brand, .stat-value, .readout, .readout-lg) { font-size: var(--lcars-size-title); }
+html[data-theme="lcars"] :is(h1, .stat-value, .readout, .readout-lg) { font-size: var(--lcars-size-title); }
 html[data-theme="lcars"] .readout-sm { font-size: var(--lcars-size-sub); }
 html[data-theme="lcars"] .transport { flex-wrap: wrap; border-right: 0; }
 html[data-theme="lcars"] :is(h2, h3, h4, .panel-header, .modal-header, .app-bar .nav-item) { font-size: var(--lcars-size-sub); }

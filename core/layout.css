@@ -52,6 +52,9 @@
 .app-bar {
   grid-area: bar;
   display: flex;
+  /* A bar that doesn't fit wraps its last items onto a second line rather
+     than overflowing the screen. */
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   min-width: 0;
@@ -118,15 +121,95 @@
   font-size: 0.82em;
 }
 
-/* Below this width every theme drops to a single column: a decorative rail
-   is the first thing to go when the viewport is the constraint. Themes can
-   opt back in with --app-rail-display-sm. */
-@media (max-width: 720px) {
+/* --- v5 tiers (PLAN.md §2) ------------------------------------------------
+ * The only place tier widths appear. Custom properties can't be used in
+ * @media, so these four numbers are written once here; themes set per-tier
+ * tokens instead of breakpoints. --tier is also readable by components
+ * through container style queries: @container style(--tier: mobile).
+ *
+ *   mobile   250–480px   touch     single column, bottom status
+ *   tablet   481–900px   touch     single column, roomier
+ *   desktop  901–1800px  mouse     the full shell (rail, bar, status)
+ *   xl       1801px+     mouse     desktop shell capped at --app-max, centred,
+ *                                  theme art in the side gutters
+ *
+ * The v4 `-sm` tokens (--app-areas-sm, --app-rows-sm, --app-rail-display-sm,
+ * --app-main-padding-sm) still work: they are the fallback for both the
+ * mobile and tablet tokens, so a v4 theme keeps its small-screen layout.
+ */
+:root { --tier: desktop; }
+
+@media (max-width: 900px) {
   .app {
-    grid-template-areas: var(--app-areas-sm, "bar" "main" "status");
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: var(--app-rows-sm, auto minmax(0, 1fr) auto);
   }
-  .app-rail { display: var(--app-rail-display-sm, none); }
-  .app-main { padding: var(--app-main-padding-sm, 0.75rem); }
+  /* Bar on touch tiers: brand and actions share the first line; the nav
+     takes its own full-width line and scrolls sideways in one row rather
+     than wrapping into a stack of rows. */
+  .app-bar { flex-wrap: wrap; row-gap: var(--space-2xs); }
+  .app-bar > .nav {
+    order: 10;
+    flex: 1 0 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .app-bar > .nav > * { flex-shrink: 0; }
+  /* The brand gives way first: it truncates so the app's actions keep
+     their place on the first line. */
+  .app-bar > .nav-brand {
+    flex: 1 1 0;  /* zero basis: shrink on the first line rather than wrap */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* A free-standing nav bar (no app shell) scrolls sideways the same way. */
+  .nav { overflow-x: auto; scrollbar-width: none; }
+  .nav > * { flex-shrink: 0; }
+  /* A nav-collapse in the bar keeps its own toggle behaviour instead. */
+}
+@media (max-width: 480px) {
+  :root { --tier: mobile; }
+  .app {
+    grid-template-areas: var(--app-areas-mobile, var(--app-areas-sm, "bar" "main" "status"));
+    grid-template-rows: var(--app-rows-mobile, var(--app-rows-sm, auto minmax(0, 1fr) auto));
+  }
+  .app-rail { display: var(--app-rail-display-mobile, var(--app-rail-display-sm, none)); }
+  .app-main { padding: var(--app-main-padding-mobile, var(--app-main-padding-sm, var(--space-s))); }
+}
+@media (min-width: 481px) and (max-width: 900px) {
+  :root { --tier: tablet; }
+  .app {
+    grid-template-areas: var(--app-areas-tablet, var(--app-areas-sm, "bar" "main" "status"));
+    grid-template-rows: var(--app-rows-tablet, var(--app-rows-sm, auto minmax(0, 1fr) auto));
+  }
+  .app-rail { display: var(--app-rail-display-tablet, var(--app-rail-display-sm, none)); }
+  .app-main { padding: var(--app-main-padding-tablet, var(--app-main-padding-sm, var(--space-m))); }
+}
+
+/* XL: the shell stops growing at --app-max and centres. The side gutters
+   show the theme's --app-gutter-art on a fixed layer masked to the gutters
+   only, so it is never behind content and the theme's own page background
+   is untouched. The art fades in from the content edge outwards. */
+@media (min-width: 1801px) {
+  :root { --tier: xl; }
+  .app {
+    max-inline-size: var(--app-max, 1800px);
+    margin-inline: auto;
+  }
+  html::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--app-gutter-art, none);
+    --gutter: calc((100vw - var(--app-max, 1800px)) / 2);
+    mask-image: linear-gradient(90deg,
+      #000 0, #000 calc(var(--gutter) - var(--app-gutter-fade, 8rem)),
+      transparent var(--gutter),
+      transparent calc(100vw - var(--gutter)),
+      #000 calc(100vw - var(--gutter) + var(--app-gutter-fade, 8rem)), #000 100%);
+  }
 }

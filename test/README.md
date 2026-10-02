@@ -38,3 +38,25 @@ failures — read the diffs first.
 This is a local dev tool, not a CI gate — consistent with this project's
 convention of running checks locally/manually rather than via GitHub
 Actions (see CONTRACT.md).
+
+# v5 audit (overflow, touch targets, spacing)
+
+`scripts/v5_audit.mjs` is the PLAN.md §5 "Enforced by a check" pass. It
+serves the repo root itself and loads every example page (plus
+`nesting.html` when it exists) per theme at the five §2 target devices
+(`iphone-15-pro`, `duo-folded`, `duo-unfolded`, `macbook-air`,
+`desktop-1440p`), then checks horizontal overflow, touch-target size (44px
+on mobile/tablet, 24px on desktop/xl), 8px gaps between targets on touch
+tiers, text within 4px of a bordered/filled box edge, and the 1800px
+centred `.app` cap on xl.
+
+```sh
+node scripts/v5_audit.mjs                                  # everything (report mode, exit 0)
+node scripts/v5_audit.mjs --theme blue-future --page dashboard --device iphone-15-pro
+node scripts/v5_audit.mjs --theme lcars~voyager --strict   # exit 1 on any failure
+```
+
+`--theme`, `--page` and `--device` repeat. Palette variants run on the
+dashboard only. A summary table goes to stdout; the full report (worst
+offenders with selectors and sizes) goes to `test/v5-audit/report.json`
+(gitignored). Set `CHROMIUM_PATH` if Playwright's bundled browser is missing.

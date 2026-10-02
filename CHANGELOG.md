@@ -5,6 +5,32 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **v5, first slice (PLAN.md phases 0–2, on `blue-future`).** Breaking for
+  layouts; v4 stays on the `v4` branch.
+  - **Tiers:** mobile ≤480, tablet 481–900, desktop 901–1800, XL ≥1801px,
+    replacing v4's single 720px breakpoint. Per-tier shell tokens
+    (`--app-*-mobile|-tablet`, with the v4 `-sm` tokens as fallback), and
+    `--tier` for container style queries.
+  - **XL:** the shell is capped at `--app-max` (1800px) and centred, with
+    theme art in the side gutters (`--app-gutter-art`). `blue-future`
+    ships a starfield and drifting telemetry grid.
+  - **Spacing:** the `--space-*` scale steps per tier, and container
+    padding moved onto it through `--*-pad` tokens. Fixes a v4 bug where a
+    density-scaled panel's header was pulled back by a fixed 1rem.
+  - **Layers:** a `--z-*` scale replaces every literal z-index in core.
+  - **Touch:** `--tap-min` (44px on touch tiers and coarse pointers, 24px
+    otherwise) for every control's hit area; carousel dots and table
+    checkboxes get bigger targets; inputs are 16px on touch devices.
+  - **Cursor:** controls keep the arrow cursor (`cursor: pointer` removed
+    from core and three themes).
+  - **Bar:** wraps instead of overflowing; on touch tiers the brand
+    truncates and the nav scrolls on its own line. Tabs scroll instead of
+    wrapping up to 900px. The demo pages' bars now use the contract's brand
+    / nav / actions markup (`lcars` adapted to it).
+  - **New harness:** `nesting.html` (41 nesting and layering cases) and
+    `scripts/v5_audit.mjs` (overflow, touch targets, spacing, edge text and
+    the XL cap, across five target devices).
+
 - **Core fixes from adopting ftl-themes in Playlist Lab.** All six are
   checked across every theme by the new `scripts/core_regressions.mjs`
   (Chromium, at 1280px and 390px).
