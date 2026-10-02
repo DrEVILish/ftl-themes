@@ -1799,7 +1799,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   min-width: 10rem;
   z-index: var(--z-dropdown);
 }
-.context-menu-item {
+:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)) {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1810,13 +1810,13 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   color: var(--context-menu-item-fg, var(--text));
   text-align: start;
 }
-.context-menu-item.is-danger { color: var(--danger-text, var(--danger)); }
-.context-menu-item:hover,
-.context-menu-item:focus-visible {
+:is(.context-menu-item, .context-menu li > :is(button, a)).is-danger { color: var(--danger-text, var(--danger)); }
+:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):hover,
+:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):focus-visible {
   background: var(--context-menu-item-bg-hover, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--context-menu-item-fg-hover, var(--dropdown-item-fg-hover, var(--on-accent)));
 }
-.context-menu-divider {
+:is(.context-menu-divider, .context-menu li[role="separator"], .menubar li[role="separator"]) {
   height: 1px;
   margin: 0.3rem 0.2rem;
   background: var(--context-menu-border, var(--hairline));
@@ -1948,16 +1948,31 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   border: var(--tooltip-border-width, 1px) solid var(--tooltip-border, var(--border));
   border-radius: var(--tooltip-radius, var(--radius));
   font-size: 0.78em;
-  white-space: nowrap;
+  /* Wraps rather than running off a narrow screen. */
+  width: max-content;
+  max-width: min(18rem, calc(100vw - 2rem));
+  white-space: normal;
+  /* Hidden means gone (display: none), not just transparent: an invisible
+     tooltip near the screen edge still widened the page. The fade-in runs
+     through @starting-style and a discrete display transition. */
+  display: none;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.1s ease, transform 0.1s ease;
+  transition: opacity 0.1s ease, transform 0.1s ease, display 0.1s allow-discrete;
   z-index: var(--z-tooltip);
 }
 [data-tooltip]:hover::after,
 [data-tooltip]:focus-visible::after {
+  display: block;
   opacity: 1;
   transform: translateX(-50%) scale(1);
+}
+@starting-style {
+  [data-tooltip]:hover::after,
+  [data-tooltip]:focus-visible::after {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.95);
+  }
 }
 
 /* .drawer — a slide-in side panel (settings sheet, filters, channel
@@ -3354,6 +3369,176 @@ html[data-pointer="touch"] { --tap-min: 44px; }
     justify-content: center;
   }
 }
+
+/* --- v5 top layer and nesting (PLAN.md §6) -------------------------------
+ * A floating surface opened with the popover attribute lives in the top
+ * layer: no overflow can clip it and no stacking context can trap it. The
+ * in-flow `position: absolute` above is for the .anchor pattern only; the
+ * top-layer form is fixed, and stays hidden until it opens even where core
+ * gives the component a display of its own. */
+:is(.popover, .context-menu, .dropdown)[popover] {
+  position: fixed;
+  /* No anchor positioning: centred in the viewport, like a dialog. */
+  inset: 0;
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  max-width: min(22rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  color: var(--text);
+}
+/* Anchor positioning (not yet Baseline): sit beside the button that opened
+   it, flipping at the screen edges. A popovertarget button is the
+   popover's implicit anchor. */
+@supports (position-area: block-end) {
+  :is(.popover, .context-menu, .dropdown)[popover] {
+    inset: auto;
+    margin: 0.25rem 0;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  }
+}
+/* A context menu shown at the pointer: the app sets --x/--y. */
+.context-menu[popover].is-at-pointer {
+  inset: auto;
+  position-area: none;
+  left: var(--x, 0);
+  top: var(--y, 0);
+  margin: 0;
+}
+:is(.popover, .context-menu, .dropdown, .toast-region)[popover]:not(:popover-open) { display: none; }
+
+/* Toasts that must show over an open modal live in the top layer too:
+   <div class="toast-region" popover="manual">. Without the browser's
+   default popover box. */
+.toast-region[popover] {
+  inset: 1rem 1rem auto auto;
+  inset-inline-start: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+/* XL: toasts line up with the content's edge, not the far screen edge. */
+@media (min-width: 1801px) {
+  .toast-region { inset-inline-end: calc((100vw - var(--app-max, 1800px)) / 2 + 1rem); }
+}
+
+/* An anchored surface sizes to its content, not to the trigger it sits
+   under (which wrapped a menu one word per line). */
+.anchor > :is(.popover, .context-menu, .dropdown) {
+  width: max-content;
+  max-width: min(20rem, calc(100vw - 2rem));
+}
+
+/* The drawer is a surface: it pads its content and publishes the pad for
+   a .panel-header inside it. */
+.drawer {
+  --surface-pad: var(--drawer-pad, var(--space-m));
+  padding: var(--surface-pad);
+}
+
+/* Sticky headers in a padded scroller (a modal) stick to the scroller's
+   edge, covering the padding band rather than letting rows show through
+   it. Unpadded scrollers reset it. */
+.modal { --sticky-top: calc(-1 * var(--surface-pad)); }
+:is(.scroll, .table-wrap) { --sticky-top: 0px; }
+.table.is-sticky thead th { top: var(--sticky-top, 0px); }
+
+/* A scroll region with a height cap, as an inline API like --columns:
+   <div class="scroll" style="--scroll-max: 12rem">. */
+.scroll { max-block-size: var(--scroll-max, none); }
+
+/* A table's own horizontal scroller, so a wide table scrolls inside its
+   panel, card or modal instead of being cut off or widening the page. */
+.table-wrap {
+  overflow-x: auto;
+  max-inline-size: 100%;
+  scrollbar-width: thin;
+}
+
+/* Long unbroken text (URLs, hashes, IDs) wraps instead of spilling into the
+   next column. Table cells use break-word so column widths still come from
+   their content; badges truncate. */
+:is(.panel-header, .modal-header, .card, .panel, .toast, .alert, .popover) { overflow-wrap: anywhere; }
+:is(.table td, .table th) { overflow-wrap: break-word; }
+.badge { max-inline-size: 100%; min-inline-size: 0; }
+.btn { max-inline-size: 100%; overflow-wrap: anywhere; }
+
+/* --- v5 nested menus (PLAN.md §8) ----------------------------------------
+ * Nested <ul> lists are the structure: a <li class="has-submenu"> holds its
+ * own <ul role="menu">. Items share .context-menu-item's look (above).
+ *   Desktop: submenus fly out to the side on hover or keyboard focus.
+ *            .is-flip opens them to the other side (near the right edge).
+ *   Touch tiers: they expand inline under their item; a tap focuses the
+ *            item, which opens it. */
+.context-menu li { position: relative; }
+:is(.context-menu, .menubar) .has-submenu > :is(button, a)::after {
+  content: var(--submenu-glyph, "\203A");
+  margin-inline-start: auto;
+  padding-inline-start: 1rem;
+  opacity: 0.7;
+}
+:is(.context-menu, .menubar) .has-submenu > ul { display: none; }
+:is(.context-menu, .menubar) .has-submenu:is(:hover, :focus-within) > ul { display: block; }
+@media (min-width: 901px) and (hover: hover) {
+  .context-menu .has-submenu > ul {
+    position: absolute;
+    top: calc(-0.35rem - 1px);
+    inset-inline-start: calc(100% + 0.35rem);
+    min-width: 10rem;
+    width: max-content;
+    max-width: 20rem;
+    padding: 0.35rem;
+    background: var(--context-menu-bg, var(--dropdown-bg, var(--surface-2)));
+    border: var(--context-menu-border-width, 1px) solid var(--context-menu-border, var(--dropdown-border, var(--border)));
+    border-radius: var(--context-menu-radius, var(--dropdown-radius, var(--radius)));
+    box-shadow: var(--context-menu-shadow, var(--panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3)));
+  }
+  .context-menu.is-flip .has-submenu > ul {
+    inset-inline-start: auto;
+    inset-inline-end: calc(100% + 0.35rem);
+  }
+  /* A submenu must stay visible while the pointer crosses the gap to it. */
+  .context-menu .has-submenu > ul::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: -0.5rem;
+    inline-size: 0.5rem;
+  }
+  .context-menu.is-flip .has-submenu > ul::before { inset-inline-start: auto; inset-inline-end: -0.5rem; }
+}
+/* With anchor positioning (not yet Baseline) each submenu anchors to its
+   own item and flips to the other side at the screen edge by itself. */
+@supports (position-area: inline-end) and (anchor-scope: all) {
+  @media (min-width: 901px) and (hover: hover) {
+    .context-menu .has-submenu { anchor-scope: --submenu; anchor-name: --submenu; }
+    .context-menu .has-submenu > ul {
+      /* fixed: the area it may flip within is the viewport, not its item */
+      position: fixed;
+      position-anchor: --submenu;
+      inset: auto;
+      margin-inline: 0.35rem;
+      margin-block-start: calc(-0.35rem - 1px);
+      position-area: inline-end span-block-end;
+      position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+    }
+    .context-menu .has-submenu > ul::before { display: none; }
+  }
+}
+@media (max-width: 900px), (hover: none) {
+  :is(.context-menu, .menubar) .has-submenu > ul {
+    margin-inline-start: 0.75rem;
+    padding-inline-start: 0.35rem;
+    border-inline-start: 1px solid var(--context-menu-border, var(--hairline));
+  }
+  :is(.context-menu, .menubar) .has-submenu:focus-within > :is(button, a)::after { transform: rotate(90deg); }
+}
+/* A menu popover holding flyouts must not clip them. */
+.context-menu[popover]:has(.has-submenu) { overflow: visible; }
 /* ftl-themes: the app shell.
  *
  * A theme is not only a palette — LCARS and a telemetry HUD are different

@@ -5,6 +5,27 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **v5, slice 2: floating surfaces, nested menus, nesting fixes** (found by
+  `nesting.html`).
+  - `[popover]` popovers, context menus and dropdowns now open in the top
+    layer correctly. v4's `position: absolute` had sent them off-screen.
+    They open beside their button and flip at the screen edges where anchor
+    positioning is supported. `.is-at-pointer` with `--x`/`--y` places a
+    context menu at the pointer.
+  - `.toast-region[popover="manual"]` works: it is hidden until shown, sits
+    top-right without the browser's popover box, and appears above an open
+    modal.
+  - Nested `<ul>` context menus: flyouts on desktop that flip at the screen
+    edge, inline expansion on touch tiers, separators and a submenu marker.
+  - Anchored surfaces size to their content instead of the trigger.
+  - `.drawer` pads its content, so a `.panel-header` inside one is no
+    longer clipped.
+  - Sticky headers in modals cover the padding band. `.table-wrap` scrolls
+    wide tables inside their box. `--scroll-max` caps a `.scroll` region.
+  - Long unbroken text wraps instead of spilling into the next column.
+  - Hidden tooltips no longer widen the page. Tooltips wrap within the
+    screen width.
+
 - **v5, first slice (PLAN.md phases 0–2, on `blue-future`).** Breaking for
   layouts; v4 stays on the `v4` branch.
   - **Tiers:** mobile ≤480, tablet 481–900, desktop 901–1800, XL ≥1801px,

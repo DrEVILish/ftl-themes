@@ -438,6 +438,48 @@ tokens):
   I-beam.
 - On touch devices, inputs are at least 16px so iOS doesn't zoom on focus.
 
+### Floating surfaces, menus and nesting (v5)
+
+- **Top layer.** Give a `.popover`, `.context-menu` or `.dropdown` the
+  `popover` attribute and open it with a `popovertarget` button: it lives in
+  the browser's top layer, so no `overflow` can clip it and no stacking
+  context can trap it. Where anchor positioning is supported it opens beside
+  its button and flips at the screen edges; elsewhere it opens centred. A
+  context menu at the pointer: add `.is-at-pointer` and set `--x`/`--y`.
+  The v4 in-flow `.anchor` pattern still works, but an `overflow` ancestor
+  can clip it; prefer `popover` inside scrollers, carousels and tables.
+- **Toasts over a modal:** `<div class="toast-region" popover="manual">`
+  sits in the top layer above an open modal (the v4 fixed region sits
+  under the modal's backdrop). On XL screens toasts line up with the
+  content edge.
+- **Nested menus** are nested lists:
+  ```html
+  <ul class="context-menu" role="menu" popover id="row-menu">
+    <li><button role="menuitem">Rename</button></li>
+    <li class="has-submenu">
+      <button role="menuitem" aria-haspopup="menu">Move to</button>
+      <ul role="menu"><li><button role="menuitem">Inbox</button></li></ul>
+    </li>
+    <li role="separator"></li>
+    <li><button role="menuitem" class="is-danger">Delete</button></li>
+  </ul>
+  ```
+  On desktop, submenus fly out on hover or keyboard focus, and flip at the
+  screen edge where anchor positioning is supported (`.is-flip` opens them
+  to the other side by hand). On touch tiers they expand inline under their
+  item when tapped. The submenu marker is `--submenu-glyph`. The v4
+  button-based `.context-menu` still works.
+- **Tables in boxes:** wrap a wide table in `<div class="table-wrap">` so it
+  scrolls sideways inside its panel, card or modal instead of being cut off.
+  A sticky header inside a modal sticks to the modal's edge (covering its
+  padding band); `--sticky-top` adjusts it.
+- **Capped scroll regions:** `<div class="scroll" style="--scroll-max: 12rem">`.
+- **Drawers** pad their content (`--drawer-pad`), so a `.panel-header`
+  inside one lines up like it does in a panel.
+- **Long unbroken text** (URLs, hashes) wraps inside panels, cards, headers,
+  toasts, alerts and buttons instead of spilling over; badges truncate.
+- **Tooltips** wrap within the screen width and take no space while hidden.
+
 **Graceful degrade without the shell.** An app that links a theme but
 never adds this markup still gets a correct, uncluttered result: no rail
 element in the DOM means `.app-rail:empty` (or, absent that element
