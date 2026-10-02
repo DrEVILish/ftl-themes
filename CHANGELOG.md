@@ -11,7 +11,14 @@ changes are called out explicitly here.
     minimap, quest tracker, hotbar/inventory slots with cooldown and
     `data-rarity`, floating numbers, achievement toast, key/gamepad prompts)
     and productivity (`planner.html`: kanban, month/week/day calendar,
-    Gantt timeline with dependency links, schedule list).
+    Gantt timeline with dependency links, schedule list) and media
+    (`player.html`: track list, now-playing bar and mini player, scrubber,
+    volume and waveform with JS-free played fill, CSS-only repeat
+    off/all/one, album grid, lyrics, queue).
+  - Accessibility fixes from the new axe audit: `.slider.is-range` inputs
+    span the full touch target, the nested-menu pattern in CONTRACT.md
+    marks wrapper `<li>`s `role="none"`, blue-future's `--muted` reaches
+    4.5:1 on every surface.
   - Themed transactional emails: `scripts/build_emails.py` writes six
     table-based, inline-styled emails per theme to `dist/email/<slug>/`
     (HTML + plain text), run by `build.sh`.

@@ -4919,6 +4919,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   position: relative;
   z-index: var(--z-raised);
   margin: 0;
+  block-size: var(--tap-min); /* the inputs are the hit area; the track is ::before/::after */
   background: transparent;
   border-color: transparent;
   pointer-events: none;
@@ -6665,6 +6666,559 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   :is(.gauge-dial, .gauge-arc, .compass, .clock) { --gauge-fill: Highlight; --gauge-needle: CanvasText; --gauge-hub: CanvasText; --gauge-tick: CanvasText; --gauge-track: GrayText; forced-color-adjust: none; background: Canvas; color: CanvasText; }
   .clock-hand { forced-color-adjust: none; background: CanvasText; }
   :is(.progress-ring, .donut, .heatmap, .battery, .signal, .map-pin, .compass-strip, .legend, .chart-legend) { forced-color-adjust: none; }
+}
+/* --- v5 music and media kit (PLAN.md §19 "Music and media") -------------
+ * Track rows, the playing equaliser glyph, media toggles (shuffle, repeat,
+ * like, mute), the seek scrubber and volume, the now-playing bar and its
+ * mini variant, the waveform scrubber, the album grid and lyrics.
+ * Built on core's .btn/.btn-icon/.btn-ghost, .transport + .btn-go, .badge,
+ * .knob and surfaces.css's .card.has-media. Playlist Lab is the first user.
+ * Docs: docs/components/media.md. Demo: player.html. */
+
+/* ---- Equaliser glyph -----------------------------------------------------
+ * <span class="equaliser" aria-hidden="true"></span>: three bars drawn as
+ * background layers (no child markup). A playing track row draws the same
+ * glyph in its play button. Bars bounce only for users who allow motion;
+ * .is-paused (on the glyph or the row) holds them still. */
+.equaliser,
+.track:is(.is-playing, [aria-current="true"]) > .track-play::before {
+  content: "";
+  display: inline-block;
+  flex: none;
+  inline-size: var(--equaliser-size, 0.9em);
+  block-size: var(--equaliser-size, 0.9em);
+  color: var(--equaliser-color, var(--accent-text, var(--accent)));
+  background:
+    linear-gradient(currentColor 0 0) 0 100% / 24% 45% no-repeat,
+    linear-gradient(currentColor 0 0) 50% 100% / 24% 90% no-repeat,
+    linear-gradient(currentColor 0 0) 100% 100% / 24% 65% no-repeat;
+}
+@keyframes equaliser {
+  0%, 100% { background-size: 24% 45%, 24% 90%, 24% 65%; }
+  25% { background-size: 24% 85%, 24% 40%, 24% 95%; }
+  50% { background-size: 24% 25%, 24% 70%, 24% 35%; }
+  75% { background-size: 24% 70%, 24% 55%, 24% 80%; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .equaliser:not(.is-paused),
+  .track:is(.is-playing, [aria-current="true"]):not(.is-paused) > .track-play::before {
+    animation: equaliser var(--equaliser-speed, 0.9s) ease-in-out infinite;
+  }
+}
+html[data-motion="reduced"] .equaliser,
+html[data-motion="reduced"] .track > .track-play::before { animation: none; }
+
+/* ---- Track rows ------------------------------------------------------------
+ * <ol class="tracklist">
+ *   <li class="track">
+ *     <button class="track-play" aria-label="Play Night Drive"><span class="track-num">1</span><svg class="icon">…#icon-play</svg></button>
+ *     <img src="art.jpg" alt="">
+ *     <span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span>
+ *     <span class="track-album">Harbour Lights</span>
+ *     <label class="btn btn-ghost btn-icon media-toggle is-like">…</label>
+ *     <time class="track-time" datetime="PT4M3S">4:03</time>
+ *   </li>
+ * </ol>
+ * Every cell but .track-main is optional; rows in one list should carry the
+ * same cells so the columns line up. The play button shows the number at
+ * rest and the play icon on row hover or keyboard focus; on touch the
+ * number is the visible button. */
+.tracklist {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--tracklist-gap, 0);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.track {
+  display: flex;
+  align-items: center;
+  gap: var(--track-gap, var(--space-s));
+  min-inline-size: 0;
+  padding: var(--track-pad, var(--space-2xs) var(--space-xs));
+  border-radius: var(--track-radius, var(--radius));
+  color: var(--track-fg, var(--text));
+}
+@media (hover: hover) {
+  .track:hover { background: var(--track-bg-hover, var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent))); }
+}
+.track:focus-within { background: var(--track-bg-hover, var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent))); }
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+  background: var(--track-bg-selected, var(--row-selected-bg, color-mix(in srgb, var(--text) 14%, transparent)));
+  box-shadow: var(--track-selected-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
+  color: var(--row-selected-fg, var(--track-fg, var(--text)));
+  /* Secondary text follows the selected foreground, or it can vanish on a
+     strong selection fill (windows95's navy). */
+  --track-meta-fg: var(--row-selected-fg, var(--muted));
+  --track-num-fg: var(--row-selected-fg, var(--muted));
+}
+.track:is(.is-playing, [aria-current="true"]) .track-title {
+  color: var(--track-playing-fg, var(--accent-text, var(--accent)));
+}
+
+.track-play {
+  appearance: none;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--track-num-size, 2em);
+  min-inline-size: var(--tap-min);
+  min-block-size: var(--tap-min);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--track-num-fg, var(--muted));
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  touch-action: manipulation;
+}
+.track-play > *,
+.track-play::before { grid-area: 1 / 1; }
+.track-play > .icon { visibility: hidden; color: var(--track-fg, var(--text)); }
+.track:not(.is-playing, [aria-current="true"]) > .track-play:not(:has(> .track-num)) > .icon { visibility: visible; }
+.track:is(.is-playing, [aria-current="true"]) > .track-play > .track-num { visibility: hidden; }
+.track-play:focus-visible > .icon { visibility: visible; }
+.track-play:focus-visible > .track-num,
+.track-play:focus-visible::before { visibility: hidden; }
+@media (hover: hover) {
+  .track:hover > .track-play > .icon { visibility: visible; }
+  .track:hover > .track-play > .track-num,
+  .track:hover > .track-play::before { visibility: hidden; }
+}
+
+.track > img {
+  flex: none;
+  inline-size: var(--track-art-size, 2.5rem);
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--track-art-radius, var(--radius));
+  background: var(--surface-2);
+}
+.track-main {
+  display: grid;
+  flex: 2 1 0;
+  min-inline-size: 0;
+}
+:is(.track-title, .track-artist, .track-album) {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
+.track-artist { font-size: 0.875em; }
+.track-album { flex: 1 1 0; font-size: 0.875em; }
+.track-time {
+  flex: none;
+  min-inline-size: 5ch;
+  font-size: 0.875em;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+/* Explicit-content marker: <span class="badge is-explicit" role="img" aria-label="Explicit">E</span> */
+.badge.is-explicit {
+  margin-inline-end: 0.35em;
+  padding: 0 0.3em;
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1.5;
+  vertical-align: 0.1em;
+}
+
+/* Row actions (.btn-ghost: like, more, remove) appear on row hover or
+   focus; a pressed toggle (a liked track) stays. Touch devices can't hover,
+   so they always show. */
+@media (hover: hover) {
+  .track:not(:hover, :focus-within) > .btn-ghost:not([aria-pressed="true"], :has(> input:checked)) { opacity: 0; }
+}
+
+/* Queue rows: a drag handle (the app does the dragging) and the drag and
+   drop states. The dots are the visual; padding makes up the touch target. */
+.track-handle {
+  flex: none;
+  inline-size: 0.75rem;
+  /* Border-box, as apps' resets usually make it: the box is the target, the
+     content box is the 2 x 3 dots. */
+  box-sizing: border-box;
+  block-size: max(var(--tap-min), 1.125rem);
+  padding-block: max(0px, calc((var(--tap-min) - 1.125rem) / 2));
+  background: radial-gradient(circle, currentColor 1.5px, transparent 2px) 0 0 / 0.375rem 0.375rem;
+  background-origin: content-box;
+  background-clip: content-box;
+  color: var(--track-handle-fg, var(--muted));
+  cursor: grab;
+  touch-action: none;
+}
+.track.is-dragging {
+  background: var(--track-drag-bg, var(--surface-2));
+  box-shadow: var(--track-drag-shadow, 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35));
+  cursor: grabbing;
+}
+.track.is-drop-target { box-shadow: inset 0 var(--track-drop-width, 2px) 0 var(--track-drop-color, var(--accent)); }
+
+@container (max-width: 480px) {
+  .track-album,
+  .track-time { display: none; }
+  .track { gap: var(--track-gap, var(--space-xs)); }
+}
+
+/* ---- Media toggles: shuffle, repeat, like, mute ---------------------------
+ * A state layer on an icon button, so it matches the theme's .btn-ghost:
+ *   <label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle"><svg class="icon">…</svg></label>
+ *   <button class="btn btn-ghost btn-icon media-toggle" aria-pressed="true">…</button>
+ * On: accent plus a dot under the icon (never colour alone). .is-like fills
+ * the heart instead. Two icons swap (volume / muted). Repeat off/all/one with
+ * no JS: three radios in a <span>; a click hits the next one (below). The
+ * box never changes width with its state. */
+.media-toggle {
+  position: relative;
+  --btn-fg: var(--media-toggle-fg, var(--muted));
+}
+.media-toggle > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  appearance: none;
+}
+.media-toggle:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.media-toggle:is([aria-pressed="true"], :has(> input[type="checkbox"]:checked), :has(> input[type="radio"]:not(:first-of-type):checked)) {
+  --btn-fg: var(--media-toggle-on, var(--accent-text, var(--accent)));
+}
+.media-toggle:is([aria-pressed="true"], :has(> input[type="checkbox"]:checked), :has(> input[type="radio"]:not(:first-of-type):checked))::after {
+  content: var(--_dot, "");
+  position: absolute;
+  inset-block-start: calc(50% + 0.7em);
+  inset-inline-start: 50%;
+  inline-size: 0.25rem;
+  block-size: 0.25rem;
+  margin-inline-start: -0.125rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+.media-toggle > .icon + .icon { display: none; }
+.media-toggle:is([aria-pressed="true"], :has(> input[type="checkbox"]:checked), :has(> input[type="radio"]:not(:first-of-type):checked)) > .icon:has(+ .icon) { display: none; }
+.media-toggle:is([aria-pressed="true"], :has(> input[type="checkbox"]:checked), :has(> input[type="radio"]:not(:first-of-type):checked)) > .icon + .icon { display: inline-block; }
+/* Like: a filled heart in --media-like-on. */
+.media-toggle.is-like:is([aria-pressed="true"], :has(> input:checked)) {
+  --btn-fg: var(--media-like-on, var(--media-toggle-on, var(--accent-text, var(--accent))));
+  --icon-fill: currentColor;
+}
+.media-toggle.is-like { --_dot: none; }
+/* Repeat one: a small "1" at the icon's top-right corner (a theme's own
+   repeat icon may fill the middle). */
+.media-toggle:is(.is-one, :has(> input[type="radio"]:nth-of-type(3):checked))::before {
+  content: var(--media-repeat-one-glyph, "1");
+  position: absolute;
+  inset-block-start: calc(50% - 1.75em);
+  inset-inline-start: calc(50% + 0.55em);
+  font-size: 0.6em;
+  font-weight: 700;
+  line-height: 1;
+}
+/* The no-JS cycle: only the radio after the checked one takes clicks (the
+   first after the last), so each click steps off, all, one, off. Arrow
+   keys move through the group as usual. */
+.media-toggle > input[type="radio"] { pointer-events: none; }
+.media-toggle > input[type="radio"]:checked + input[type="radio"],
+.media-toggle:has(> input[type="radio"]:last-of-type:checked) > input[type="radio"]:first-of-type { pointer-events: auto; }
+
+/* ---- Scrubber and volume ---------------------------------------------------
+ * <div class="scrubber"><time>1:02</time><input type="range" …><time>-3:01</time></div>
+ * <div class="volume"><label class="btn btn-ghost btn-icon media-toggle">…</label><input type="range" …></div>
+ * Real range inputs. The played fill needs no script: the thumb's
+ * border-image paints the track out to both sides (fill before it, track
+ * after it) and the input clips the overflow. */
+:is(.scrubber, .volume) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-inline-size: 0;
+}
+.volume { gap: var(--space-2xs); }
+.scrubber > time {
+  flex: none;
+  min-inline-size: 4.5ch;
+  color: var(--scrubber-time-fg, var(--muted));
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+}
+.scrubber > time:first-child { text-align: end; }
+:is(.scrubber, .volume) > input[type="range"] {
+  --_track: var(--scrubber-height, 0.25rem);
+  --_thumb: var(--scrubber-thumb-size, 0.75rem);
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  inline-size: 100%;
+  block-size: max(var(--tap-min), var(--_thumb));
+  margin: 0;
+  background: none;
+  overflow: hidden;
+  touch-action: none;
+}
+.volume > input[type="range"] { flex: 0 1 var(--volume-size, 6rem); }
+:is(.scrubber, .volume) > input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  border: 0;
+  border-radius: var(--scrubber-thumb-radius, 50%);
+  background: var(--scrubber-thumb, var(--text));
+  border-image: linear-gradient(90deg, var(--scrubber-fill, var(--accent)) 50%, var(--scrubber-track, color-mix(in srgb, var(--text) 25%, transparent)) 0) 0 1 / calc(50% - var(--_track) / 2) 100vw / 0 100vw;
+}
+:is(.scrubber, .volume, .waveform) > input[type="range"]::-moz-range-track { background: none; }
+:is(.scrubber, .volume) > input[type="range"]::-moz-range-thumb {
+  inline-size: var(--_thumb);
+  block-size: var(--_thumb);
+  border: 0;
+  border-radius: var(--scrubber-thumb-radius, 50%);
+  background: var(--scrubber-thumb, var(--text));
+  border-image: linear-gradient(90deg, var(--scrubber-fill, var(--accent)) 50%, var(--scrubber-track, color-mix(in srgb, var(--text) 25%, transparent)) 0) 0 1 / calc(50% - var(--_track) / 2) 100vw / 0 100vw;
+}
+:is(.scrubber, .volume) > input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* The waveform clips its input, so the ring goes on the waveform. */
+.waveform:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---- Waveform scrubber -----------------------------------------------------
+ * <div class="waveform">
+ *   <input type="range" min="0" max="243" value="88" aria-label="Seek" aria-valuetext="1:28 of 4:03">
+ *   <span class="waveform-bars" aria-hidden="true"><i style="--level:.4"></i>…</span>
+ * </div>
+ * The range input underneath paints played and unplayed (the same thumb
+ * trick as .scrubber, full height); the bars on top are windows cut into a
+ * --waveform-bg mask, one <i> per bar with its --level (0–1). The app may
+ * set --hover (0–1, the pointer position) for the hover preview. */
+.waveform {
+  --_h: var(--waveform-height, 3rem);
+  display: grid;
+  min-inline-size: 0;
+  block-size: var(--_h);
+  overflow: hidden;
+  background: var(--waveform-bg, var(--surface-2));
+  border-radius: var(--waveform-radius, var(--radius));
+}
+.scrubber > .waveform { flex: 1 1 0; }
+.waveform > *,
+.waveform::before { grid-area: 1 / 1; }
+.waveform > input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  background: none;
+  overflow: hidden;
+  touch-action: none;
+}
+.waveform > input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  inline-size: var(--waveform-head-width, 2px);
+  block-size: var(--_h);
+  border: 0;
+  background: var(--waveform-head, var(--waveform-played, var(--accent)));
+  border-image: linear-gradient(90deg, var(--waveform-played, var(--accent)) 50%, var(--waveform-unplayed, var(--muted)) 0) 0 1 / 0 100vw / 0 100vw;
+}
+.waveform > input[type="range"]::-moz-range-thumb {
+  inline-size: var(--waveform-head-width, 2px);
+  block-size: var(--_h);
+  border: 0;
+  border-radius: 0;
+  background: var(--waveform-head, var(--waveform-played, var(--accent)));
+  border-image: linear-gradient(90deg, var(--waveform-played, var(--accent)) 50%, var(--waveform-unplayed, var(--muted)) 0) 0 1 / 0 100vw / 0 100vw;
+}
+/* Hover preview: a tint from the start to --hover, under the bar mask. */
+.waveform::before {
+  content: "";
+  order: 1;
+  justify-self: start;
+  inline-size: calc(var(--hover, 0) * 100%);
+  background: var(--waveform-preview, color-mix(in srgb, var(--waveform-played, var(--accent)) 45%, transparent));
+  pointer-events: none;
+}
+.waveform-bars {
+  order: 2;
+  display: flex;
+  pointer-events: none;
+}
+.waveform-bars > * {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  border-block: calc((1 - var(--level, 0.5)) * var(--_h) / 2) solid var(--waveform-bg, var(--surface-2));
+  border-inline-end: var(--waveform-gap, 2px) solid var(--waveform-bg, var(--surface-2));
+}
+
+/* Forced colours drop the painted track: fall back to the native slider. */
+@media (forced-colors: active) {
+  :is(.scrubber, .volume, .waveform) > input[type="range"] { appearance: auto; overflow: visible; }
+}
+
+/* ---- Now-playing bar ---------------------------------------------------------
+ * <footer class="now-playing" aria-label="Now playing">
+ *   <img src="art.jpg" alt="">
+ *   <span class="track-main"><span class="track-title">…</span><span class="track-artist">…</span></span>
+ *   <label class="btn btn-ghost btn-icon media-toggle is-like">…</label>
+ *   <div class="transport" role="group" aria-label="Playback">shuffle, previous, .btn-go play, next, repeat</div>
+ *   <div class="scrubber">…</div>
+ *   <div class="now-playing-extras">queue, lyrics, <div class="volume">…</div></div>
+ * </footer>
+ * Desktop: art and title | transport over the scrubber | extras. Tablet: the
+ * scrubber takes its own row and the extras (volume, queue…) hide. Mobile and .is-mini: art, title, like and play/next only. As a
+ * direct child of .app it takes the shell's status slot and sticks to the
+ * bottom of the screen, clear of the home indicator. */
+.now-playing {
+  --_areas: "art meta like transport extras" "art meta like progress extras";
+  --_cols: auto minmax(0, 1fr) auto minmax(0, 2fr) minmax(0, 1fr);
+  display: grid;
+  grid-template-areas: var(--_areas);
+  grid-template-columns: var(--_cols);
+  align-items: center;
+  gap: 0 var(--now-playing-gap, var(--space-s));
+  min-inline-size: 0;
+  padding: var(--now-playing-pad-block, var(--space-xs)) var(--now-playing-pad-inline, var(--space-m));
+  background: var(--now-playing-bg, var(--surface));
+  color: var(--now-playing-fg, var(--text));
+  border-block-start: var(--now-playing-rule-width, 1px) solid var(--now-playing-rule, var(--border));
+  box-shadow: var(--now-playing-shadow, none);
+}
+.now-playing > img {
+  grid-area: art;
+  inline-size: var(--now-playing-art-size, 3.5rem);
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--now-playing-art-radius, var(--radius));
+  background: var(--surface-2);
+}
+.now-playing > .track-main { grid-area: meta; }
+.now-playing > .media-toggle { grid-area: like; }
+.now-playing > .transport {
+  grid-area: transport;
+  justify-content: center;
+  gap: var(--space-2xs);
+  --transport-bg: transparent;
+  --transport-border: transparent;
+  --transport-edge: transparent;
+  --transport-shadow: none;
+  --transport-padding: 0;
+}
+.now-playing > .transport > :not(.btn-go, .btn-go + *) { display: var(--_np-secondary, inline-flex); }
+.now-playing > .scrubber { grid-area: progress; }
+.now-playing-extras {
+  grid-area: extras;
+  display: var(--_np-extras, flex);
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+}
+.app > .now-playing {
+  grid-area: status;
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--z-sticky);
+  padding-block-end: calc(var(--now-playing-pad-block, var(--space-xs)) + env(safe-area-inset-bottom, 0px));
+  padding-inline: max(var(--now-playing-pad-inline, var(--space-m)), env(safe-area-inset-left, 0px)) max(var(--now-playing-pad-inline, var(--space-m)), env(safe-area-inset-right, 0px));
+}
+@media (max-width: 900px) {
+  /* Tablets have hardware volume keys: the extras go, so the full
+     transport and a readable title fit down to 481px. */
+  .now-playing {
+    --_areas: "art meta like transport" "progress progress progress progress";
+    --_cols: auto minmax(0, 1fr) auto auto;
+    --_np-extras: none;
+  }
+}
+@media (max-width: 480px) {
+  .now-playing {
+    --_areas: "art meta like transport" "progress progress progress progress";
+    --_cols: auto minmax(0, 1fr) auto auto;
+    --_np-secondary: none;
+    --_np-extras: none;
+  }
+}
+/* Mini player: the mobile layout at any width, as a card. */
+.now-playing.is-mini {
+  --_areas: "art meta like transport" "progress progress progress progress";
+  --_cols: auto minmax(0, 1fr) auto auto;
+  --_np-secondary: none;
+  --_np-extras: none;
+  max-inline-size: var(--now-playing-mini-max, 24rem);
+  border: var(--now-playing-rule-width, 1px) solid var(--now-playing-rule, var(--border));
+  border-radius: var(--now-playing-mini-radius, var(--radius));
+  box-shadow: var(--now-playing-mini-shadow, var(--panel-shadow, none));
+  --now-playing-art-size: 2.75rem;
+}
+
+/* ---- Album grid ------------------------------------------------------------
+ * <ul class="album-grid"><li><article class="card has-media">
+ *   <div class="card-media"><img src="…" alt=""><button class="btn btn-go btn-icon card-play" aria-label="Play Harbour Lights">…</button></div>
+ *   <div class="card-body"><a class="stretched-link" href="…">Harbour Lights</a><span class="text-muted">Lumen Coast · 2024</span></div>
+ * </article></li></ul>
+ * Square art (surfaces.css's image card). .card-play sits on the art, above
+ * the stretched link; it shows on hover or focus, always on touch and on a
+ * playing album (.is-playing). */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--album-min, 9.5rem)), 1fr));
+  gap: var(--album-gap, var(--space-m));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.album-grid > li { display: grid; min-inline-size: 0; }
+.album-grid .card.has-media { --card-media-ratio: 1; }
+.card-media:has(> .card-play) { position: relative; }
+.card-play {
+  position: absolute;
+  inset-block-end: var(--space-xs);
+  inset-inline-end: var(--space-xs);
+  z-index: var(--z-raised);
+  --btn-bg: var(--card-play-bg, var(--accent));
+  --btn-fg: var(--card-play-fg, var(--on-accent));
+  --btn-bg-hover: var(--card-play-bg, var(--accent));
+  --btn-shadow: var(--card-play-shadow, 0 0.25rem 0.75rem rgba(0, 0, 0, 0.4));
+}
+@media (hover: hover) {
+  .card:not(:hover, :focus-within, .is-playing) .card-play { opacity: 0; }
+}
+
+/* ---- Lyrics ----------------------------------------------------------------
+ * <ol class="lyrics"><li>…</li><li aria-current="true">…</li><li></li>…</ol>
+ * The current line (aria-current) is full strength with a marker; an empty
+ * <li> is an instrumental gap. The app scrolls the current line into view;
+ * scroll-margin keeps it off the edge. */
+.lyrics {
+  display: grid;
+  gap: var(--lyrics-gap, var(--space-2xs));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--lyrics-fg, var(--muted));
+  font-size: var(--lyrics-size, 1.375rem);
+  font-weight: var(--lyrics-weight, 700);
+  line-height: 1.3;
+}
+.lyrics > li {
+  padding: var(--space-2xs) var(--space-s);
+  border-radius: var(--radius);
+  scroll-margin-block: var(--lyrics-scroll-margin, 35%);
+  overflow-wrap: anywhere;
+}
+.lyrics > li:empty::before { content: var(--lyrics-gap-glyph, "\266A  \266A  \266A"); white-space: pre; }
+.lyrics > [aria-current="true"] {
+  color: var(--lyrics-current-fg, var(--text));
+  box-shadow: var(--lyrics-current-marker, inset 0.25rem 0 0 var(--accent));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lyrics > li { transition: color 0.3s ease, box-shadow 0.3s ease; }
 }
 /* ftl-themes v5: navigation and structure (PLAN.md §9 #37, #39–#46) and
  * the keyboard layer (§20). Built into every bundle after core.css, so it
@@ -10025,7 +10579,7 @@ html[data-theme="blue-future"] {
   --border: #0f3a5c;
   --hairline: #0a2942;
   --text: #cfeeff;
-  --muted: #5b8aa8;
+  --muted: #6f9cba;
   --accent: #00d9ff;
   --accent-2: #4d7dff;
   --danger: #ff3355;

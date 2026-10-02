@@ -1,0 +1,451 @@
+# Music and media kit (v5)
+
+Source: `core/components/media.css`. Live examples: `player.html`. Covers
+PLAN.md §19 "Music and media" (Playlist Lab first): track rows, the playing
+equaliser glyph, shuffle/repeat/like/mute toggles, the seek scrubber and
+volume, the now-playing bar and mini player, the play queue, the waveform
+scrubber, the album grid and lyrics. Builds on core's `.btn` /
+`.btn-icon` / `.btn-ghost`, `.transport` + `.btn-go`, `.badge`, `.knob`,
+`.context-menu` and surfaces.css's `.card.has-media`.
+
+Tokens are listed as `token: default`. Set them on `html[data-theme="x"]` like
+every other component token. Everything on the page works without
+JavaScript (toggles, repeat cycling, scrubber fill, waveform played colour)
+except the waveform hover preview, which needs the pointer position.
+
+---
+
+## Track rows `.tracklist` > `.track`
+
+```html
+<ol class="tracklist">
+  <li class="track">
+    <button class="track-play" aria-label="Play Night Drive">
+      <span class="track-num">1</span>
+      <svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg>
+    </button>
+    <img src="art.jpg" alt="" width="40" height="40">
+    <span class="track-main">
+      <span class="track-title">Night Drive</span>
+      <span class="track-artist"><span class="badge is-explicit" role="img" aria-label="Explicit">E</span>Lumen Coast</span>
+    </span>
+    <span class="track-album">Harbour Lights</span>
+    <label class="btn btn-ghost btn-icon media-toggle is-like">
+      <input type="checkbox" aria-label="Like Night Drive">
+      <svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg>
+    </label>
+    <time class="track-time" datetime="PT4M3S">4:03</time>
+    <button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Night Drive">
+      <svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg>
+    </button>
+  </li>
+</ol>
+```
+
+- **Cells** (all optional except `.track-main`, in this order): `.track-handle`
+  (queue), `.track-play`, `<img>` (art), `.track-main` (title over artist),
+  `.track-album`, like toggle, `.track-time`, action buttons. Rows in one list
+  should carry the same cells so the columns line up. The row is flex: the
+  title takes 2 parts of the free width, the album 1; long text truncates.
+- **Play button**: shows the number at rest and the play icon on row hover
+  or keyboard focus. On touch (no hover) the number *is* the visible button.
+  A `.track-play` with no `.track-num` always shows its icon, unless the row
+  is playing (the glyph shows then).
+- **Row actions**: `.btn-ghost` children (like, more, remove) appear on row
+  hover or focus on devices that can hover; a pressed toggle (a liked track)
+  stays visible. Touch devices always show them.
+- **Explicit**: `.badge.is-explicit` (needs `role="img"` + `aria-label`).
+
+### States
+
+| Markup | Result |
+|---|---|
+| `.track.is-playing` (or `aria-current="true"`) | Title in the accent; the equaliser glyph replaces the number (bars move only when motion is allowed). Render `#icon-pause` in its button and label it "Pause …". |
+| `.track.is-playing.is-paused` | Current track, paused: the glyph holds still. |
+| `.track.is-active`, or a checked direct-child radio or checkbox (`[aria-selected="true"]` too, but only where the list really is a `listbox`/`grid` with `option`/`row` items) | Selected: `--row-selected-bg` plus the inset marker (never colour alone); text switches to `--row-selected-fg`. |
+| `.track.is-dragging` | Lifted (queue drag in progress). |
+| `.track.is-drop-target` | A drop line along the top edge: the dragged row lands above this one. |
+
+### Tokens
+
+| Token | Default |
+|---|---|
+| `--tracklist-gap` | `0` |
+| `--track-gap` | `var(--space-s)` (`--space-xs` in narrow lists) |
+| `--track-pad` | `var(--space-2xs) var(--space-xs)` |
+| `--track-radius` | `var(--radius)` |
+| `--track-fg` | `var(--text)` |
+| `--track-meta-fg` | `var(--muted)` (artist, album, time) |
+| `--track-num-fg` | `var(--muted)` |
+| `--track-num-size` | `2em` (play cell; never under `--tap-min`) |
+| `--track-art-size` | `2.5rem` |
+| `--track-art-radius` | `var(--radius)` |
+| `--track-bg-hover` | `var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent))` |
+| `--track-bg-selected` | `var(--row-selected-bg, color-mix(in srgb, var(--text) 14%, transparent))` |
+| `--track-selected-marker` | `var(--row-active-marker, inset 0.25rem 0 0 var(--accent))` |
+| `--track-playing-fg` | `var(--accent-text, var(--accent))` |
+| `--track-handle-fg` | `var(--muted)` |
+| `--track-drag-bg` | `var(--surface-2)` |
+| `--track-drag-shadow` | `0 0.5rem 1.5rem rgba(0, 0, 0, 0.35)` |
+| `--track-drop-color` / `--track-drop-width` | `var(--accent)` / `2px` |
+
+### Tier and touch
+
+`.tracklist` is a size container: under 480px wide it hides the album and
+time columns. The play button, like and action buttons are `--tap-min`
+squares (44px on touch). There is no hover on touch, so the number is the
+play control and row actions stay visible.
+
+### Accessibility
+
+Label the play button with the track ("Play Night Drive"); its number is
+then decorative. Liked state lives in the checkbox (or `aria-pressed`).
+Set `aria-current="true"` on the playing row if you want assistive tech to
+know which one it is (it is styled the same as `.is-playing`). For
+spreadsheet-style selection and bulk actions use tables.md's `.table` and
+`.bulk-bar` instead; `.tracklist` is the playback view.
+
+---
+
+## Play queue
+
+A queue is track rows with a drag handle and a remove button, grouped
+under plain headings ("Now playing", "Next in queue", "Next from: …"):
+
+```html
+<li class="track">
+  <span class="track-handle" aria-hidden="true"></span>
+  <button class="track-play" aria-label="Play Glass Hours"><svg class="icon"><use href="…#icon-play"/></svg></button>
+  <img src="art.jpg" alt="">
+  <span class="track-main">…</span>
+  <time class="track-time" datetime="PT3M58S">3:58</time>
+  <button class="btn btn-ghost btn-icon" aria-label="Remove Glass Hours from queue"><svg class="icon"><use href="…#icon-close"/></svg></button>
+</li>
+```
+
+`.track-handle` is a visual: 2 × 3 dots, `cursor: grab`, `touch-action:
+none`, the full `--tap-min` tall. The app does the dragging (Pointer
+Events) and sets `.is-dragging` / `.is-drop-target`. Keep the handle a
+plain, non-focusable span and give keyboard users "Move up/down" items in
+the row menu instead.
+
+---
+
+## Equaliser glyph `.equaliser`
+
+```html
+<span class="equaliser" aria-hidden="true"></span>
+<span class="equaliser is-paused" aria-hidden="true"></span>
+```
+
+Three bars drawn as background layers in `currentColor`. They bounce only
+under `prefers-reduced-motion: no-preference` and stop with
+`html[data-motion="reduced"]`; `.is-paused` holds them still. A playing
+track row draws the same glyph in its play button, with no extra markup.
+
+| Token | Default |
+|---|---|
+| `--equaliser-color` | `var(--accent-text, var(--accent))` |
+| `--equaliser-size` | `0.9em` |
+| `--equaliser-speed` | `0.9s` (one cycle) |
+
+---
+
+## Media toggles `.media-toggle` (shuffle, repeat, like, mute)
+
+A state layer on an icon button, so it matches the theme's `.btn-ghost`:
+
+```html
+<!-- Shuffle: a checkbox, no JS -->
+<label class="btn btn-ghost btn-icon media-toggle">
+  <input type="checkbox" aria-label="Shuffle">
+  <svg class="icon"><use href="…#icon-shuffle"/></svg>
+</label>
+
+<!-- Or a button the app flips -->
+<button class="btn btn-ghost btn-icon media-toggle" aria-pressed="true" aria-label="Shuffle">…</button>
+
+<!-- Repeat off / all / one with no JS: three radios, a click hits the next -->
+<span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat">
+  <input type="radio" name="repeat" value="off" aria-label="Repeat off" checked>
+  <input type="radio" name="repeat" value="all" aria-label="Repeat all">
+  <input type="radio" name="repeat" value="one" aria-label="Repeat one">
+  <svg class="icon"><use href="…#icon-repeat"/></svg>
+</span>
+<!-- App-driven repeat: aria-pressed="true" for all, plus .is-one for one -->
+
+<!-- Like: a filled heart -->
+<label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like">…#icon-heart…</label>
+
+<!-- Two icons swap: volume / muted -->
+<label class="btn btn-ghost btn-icon media-toggle">
+  <input type="checkbox" aria-label="Mute">
+  <svg class="icon"><use href="…#icon-volume"/></svg><svg class="icon"><use href="…#icon-volume-mute"/></svg>
+</label>
+```
+
+### States
+
+| State | Look |
+|---|---|
+| Off | `--media-toggle-fg` (muted). |
+| On (`aria-pressed="true"`, a checked checkbox, or any radio but the first) | `--media-toggle-on` plus a dot under the icon: never colour alone. |
+| Repeat one (`.is-one`, or the third radio) | Also a small "1" at the icon's top-right corner. |
+| Like on | Filled heart in `--media-like-on`, no dot. |
+| Two icons | The second icon replaces the first when on. |
+
+The box never changes size with its state ("stable widths"): the dot and
+the "1" are absolutely positioned. The input covers the whole button, so
+the hit area is the button (`--tap-min` on touch).
+
+**How the repeat cycle works:** the radios are stacked over the button and
+only the one after the checked one (the first, after the last) takes
+pointer events, so each click checks the next state. Keyboard: Tab reaches
+the group, arrow keys step through off/all/one. The app listens for
+`change` on the radios.
+
+| Token | Default |
+|---|---|
+| `--media-toggle-fg` | `var(--muted)` |
+| `--media-toggle-on` | `var(--accent-text, var(--accent))` |
+| `--media-like-on` | `var(--media-toggle-on)` (set `var(--danger)` for a red heart) |
+| `--media-repeat-one-glyph` | `"1"` |
+
+Accessibility: name every input (`aria-label`); the radio group needs its
+own name ("Repeat"). Focus shows the core ring on the button.
+
+---
+
+## Scrubber `.scrubber` and volume `.volume`
+
+```html
+<div class="scrubber">
+  <time>1:46</time>
+  <input type="range" min="0" max="312" value="106" aria-label="Seek" aria-valuetext="1:46 of 5:12">
+  <time>-3:26</time>
+</div>
+
+<div class="volume">
+  <label class="btn btn-ghost btn-icon media-toggle">…mute…</label>
+  <input type="range" min="0" max="100" value="70" aria-label="Volume">
+</div>
+```
+
+Real range inputs. The played fill needs **no script and no `--value`**:
+the thumb's `border-image` paints the track out to both sides (fill before
+the thumb, track after it) and the input clips the overflow. The app only
+moves `value` as the track plays and updates the times and
+`aria-valuetext`. The input is `--tap-min` tall; the drawn track stays
+thin. Under forced colours it falls back to the native slider.
+
+A `.knob` (CONTRACT.md "Mixing-console primitives") works as a volume
+control too, for console-style themes; it needs `assets/js/controls.js`.
+
+| Token | Default |
+|---|---|
+| `--scrubber-height` | `0.25rem` (drawn track) |
+| `--scrubber-fill` | `var(--accent)` |
+| `--scrubber-track` | `color-mix(in srgb, var(--text) 25%, transparent)` |
+| `--scrubber-thumb` | `var(--text)` |
+| `--scrubber-thumb-size` | `0.75rem` |
+| `--scrubber-thumb-radius` | `50%` |
+| `--scrubber-time-fg` | `var(--muted)` |
+| `--volume-size` | `6rem` |
+
+---
+
+## Waveform scrubber `.waveform`
+
+```html
+<div class="scrubber">
+  <time>1:28</time>
+  <div class="waveform">
+    <input type="range" min="0" max="243" value="88" aria-label="Seek" aria-valuetext="1:28 of 4:03">
+    <span class="waveform-bars" aria-hidden="true">
+      <i style="--level:.42"></i><i style="--level:.8"></i>…   <!-- one per bar, 0–1 -->
+    </span>
+  </div>
+  <time>-2:35</time>
+</div>
+```
+
+- **Value APIs** (inline styles): `--level` (0–1) on each bar, from the
+  app's peak data; `--hover` (0–1) on `.waveform`, the pointer position,
+  set on `pointermove` and removed on `pointerleave`.
+- **How it paints:** the range input sits underneath and paints played /
+  unplayed (the same thumb trick as `.scrubber`, full height), so dragging
+  or arrow keys recolour the bars live with no script. The bars on top are
+  windows cut into a `--waveform-bg` mask, so the waveform is always its
+  own filled box. `--hover` tints from the start to the pointer
+  (`--waveform-preview`) under the mask: the hover preview.
+- Bars don't take pointer events; the input gets every click and drag.
+
+```js
+wf.addEventListener("pointermove", (e) => {
+  const r = wf.getBoundingClientRect();
+  wf.style.setProperty("--hover", ((e.clientX - r.left) / r.width).toFixed(3));
+});
+wf.addEventListener("pointerleave", () => wf.style.removeProperty("--hover"));
+```
+
+| Token | Default |
+|---|---|
+| `--waveform-height` | `3rem` (≥ 44px, a full touch target) |
+| `--waveform-bg` | `var(--surface-2)` (box and bar mask) |
+| `--waveform-played` | `var(--accent)` |
+| `--waveform-unplayed` | `var(--muted)` |
+| `--waveform-preview` | `color-mix(in srgb, var(--waveform-played) 45%, transparent)` |
+| `--waveform-head` / `--waveform-head-width` | `var(--waveform-played)` / `2px` |
+| `--waveform-gap` | `2px` |
+| `--waveform-radius` | `var(--radius)` |
+
+Accessibility: the input is the control (`aria-label`, `aria-valuetext`
+with times); the bars are `aria-hidden`. Focus draws the ring around the
+whole waveform.
+
+---
+
+## Now-playing bar `.now-playing`
+
+```html
+<footer class="now-playing" aria-label="Now playing">   <!-- a direct child of .app -->
+  <img src="art.jpg" alt="" width="56" height="56">
+  <span class="track-main"><span class="track-title">Undertow</span><span class="track-artist">Marisol Vega</span></span>
+  <label class="btn btn-ghost btn-icon media-toggle is-like">…</label>
+  <div class="transport is-play" role="group" aria-label="Playback">
+    …shuffle toggle…
+    <button class="btn btn-ghost btn-icon" aria-label="Previous">…#icon-skip-back…</button>
+    <button class="btn btn-go btn-icon" aria-label="Pause">…#icon-pause…</button>
+    <button class="btn btn-ghost btn-icon" aria-label="Next">…#icon-skip-forward…</button>
+    …repeat toggle…
+  </div>
+  <div class="scrubber">…</div>
+  <div class="now-playing-extras">
+    <button class="btn btn-ghost btn-icon" aria-label="Lyrics">…</button>
+    <button class="btn btn-ghost btn-icon" aria-label="Queue">…</button>
+    <div class="volume">…</div>
+  </div>
+</footer>
+```
+
+- **In the shell:** as a direct child of `.app` it takes the shell's
+  `status` grid area (use it *instead of* `.app-status`) and is
+  `position: sticky` to the bottom of the screen at every tier, so it sits
+  in the status position on desktop and docks on phones and tablets. Its
+  bottom and side padding add `env(safe-area-inset-*)`, so it clears the
+  home indicator (the page needs `viewport-fit=cover`). It sits at
+  `--z-sticky`. Being in flow, it never covers the end of the page.
+- **Anywhere else** (a panel, a sidebar) it is an ordinary box in the flow.
+- **Transport:** core's `.transport` with its chrome zeroed (bg, border,
+  edge, padding, shadow) inside the bar; `.btn-go.btn-icon` is the play
+  button. A theme that styles `.transport` directly still paints it here.
+
+### Layouts (viewport tier; `.is-mini` forces the phone layout)
+
+| Tier | Layout |
+|---|---|
+| Desktop, XL | Art, title and like · transport over the scrubber · extras (volume, other buttons) on the right. |
+| Tablet (481–900) | Art, title, like, full transport on one row; the scrubber on its own row; extras hidden (hardware volume keys). |
+| Mobile (≤ 480) and `.is-mini` | Art, title, like, play and the control after it (next); scrubber row. Shuffle, previous and repeat hide. |
+
+The layout follows the viewport, not a container: the bar is shell-level
+furniture, and a grid can't change its own template from a container query.
+For a bar in a narrow box on a wide screen, use `.is-mini`.
+
+### Mini player `.now-playing.is-mini`
+
+The phone layout at any width, as a card (border, radius, panel shadow,
+capped at `--now-playing-mini-max`). For a sidebar, a picture-in-picture
+corner or a popover; the app positions it.
+
+| Token | Default |
+|---|---|
+| `--now-playing-bg` | `var(--surface)` |
+| `--now-playing-fg` | `var(--text)` |
+| `--now-playing-rule` / `--now-playing-rule-width` | `var(--border)` / `1px` |
+| `--now-playing-shadow` | `none` |
+| `--now-playing-pad-block` / `--now-playing-pad-inline` | `var(--space-xs)` / `var(--space-m)` |
+| `--now-playing-gap` | `var(--space-s)` |
+| `--now-playing-art-size` | `3.5rem` (`2.75rem` mini) |
+| `--now-playing-art-radius` | `var(--radius)` |
+| `--now-playing-mini-max` | `24rem` |
+| `--now-playing-mini-radius` | `var(--radius)` |
+| `--now-playing-mini-shadow` | `var(--panel-shadow, none)` |
+
+Plus `--go-*` for the play button and the scrubber/toggle tokens above.
+
+Accessibility: name the region (`aria-label="Now playing"`) and the
+transport group; keep the play button's label in step with its icon
+("Play" / "Pause").
+
+---
+
+## Album grid `.album-grid`
+
+```html
+<ul class="album-grid">
+  <li><article class="card has-media">
+    <div class="card-media">
+      <img src="cover.jpg" alt="" width="300" height="300" loading="lazy">
+      <button class="btn btn-go btn-icon card-play" aria-label="Play Harbour Lights">…#icon-play…</button>
+    </div>
+    <div class="card-body">
+      <a class="stretched-link" href="/album/harbour-lights">Harbour Lights</a>
+      <span class="text-muted">Lumen Coast · 2024</span>
+    </div>
+  </article></li>
+</ul>
+```
+
+Square image cards (surfaces.md's `.card.has-media`, `--card-media-ratio: 1`
+set by the grid) in an auto-fill grid. `.card-play` sits in the art's
+bottom corner, above the stretched link, filled with the accent. It shows
+on card hover or focus, always on touch, and always on a playing album
+(`.card.is-playing`; render `#icon-pause` and "Pause …"). Loading covers use
+the image card's `aria-busy="true"` skeleton.
+
+| Token | Default |
+|---|---|
+| `--album-min` | `9.5rem` (smallest column) |
+| `--album-gap` | `var(--space-m)` |
+| `--card-play-bg` / `--card-play-fg` | `var(--accent)` / `var(--on-accent)` |
+| `--card-play-shadow` | `0 0.25rem 0.75rem rgba(0, 0, 0, 0.4)` |
+
+---
+
+## Lyrics `.lyrics`
+
+```html
+<div class="scroll" style="--scroll-max: 16rem" tabindex="0" role="region" aria-label="Lyrics">
+  <ol class="lyrics">
+    <li>Headlights on the harbour wall</li>
+    <li></li>                                  <!-- instrumental gap -->
+    <li aria-current="true">So hold the line, hold the line</li>
+    <li>the static sounds like you to me</li>
+  </ol>
+</div>
+```
+
+The current line (`aria-current="true"`) is full-strength text with an
+inset marker (not colour alone); other lines are `--lyrics-fg`. An empty
+`<li>` shows `--lyrics-gap-glyph` (♪ ♪ ♪). The app moves `aria-current` and
+calls `scrollIntoView({ block: "center" })`; `scroll-margin-block` keeps the
+line off the edge. Colour changes ease only when motion is allowed.
+
+| Token | Default |
+|---|---|
+| `--lyrics-fg` | `var(--muted)` |
+| `--lyrics-current-fg` | `var(--text)` |
+| `--lyrics-current-marker` | `inset 0.25rem 0 0 var(--accent)` |
+| `--lyrics-size` / `--lyrics-weight` | `1.375rem` / `700` |
+| `--lyrics-gap` | `var(--space-2xs)` |
+| `--lyrics-scroll-margin` | `35%` |
+| `--lyrics-gap-glyph` | `"♪  ♪  ♪"` |
+
+---
+
+## Icons
+
+All from the shared sprite: `play`, `pause`, `skip-back`, `skip-forward`,
+`shuffle`, `repeat`, `heart`, `volume`, `volume-mute`, `more-horizontal`,
+`close`, `playlist`, `microphone`.

@@ -456,6 +456,7 @@ v5 adds component groups, each in its own `core/components/<group>.css`
 | Collaboration | [`docs/components/social.md`](docs/components/social.md) | `components-social.html` | Collaboration and notifications: presence, live cursors, comment threads, mentions, typing indicator, notification centre, activity feed |
 | Game HUD | [`docs/components/hud.md`](docs/components/hud.md) | `hud.html` | `.hud` overlay regions, `.hud-bar` (health/mana/stamina, `--value` + damage `--trail`, low/regen/segmented/centred), `.hud-minimap`, `.hud-quests`, `.hud-slot` hotbar/inventory (`--cooldown`, `data-rarity`), `.hud-float` numbers, `.hud-achievement` toast, `.hud-prompt` + `kbd.hud-pad` |
 | Productivity | [`docs/components/planner.md`](docs/components/planner.md) | `planner.html` | `.kanban` board (WIP limits, drag states), `.calendar.is-planner` month/week/day views, `.gantt` timeline (bars, milestones, today, dependency links), `.schedule-list` |
+| Media | [`docs/components/media.md`](docs/components/media.md) | `player.html` | `ol.tracklist` rows (`.is-playing`, hover-to-play number, ghost actions), `.equaliser`, `.media-toggle` (like, mute, CSS-only repeat off/all/one), `.scrubber` and `.volume` with JS-free played fill, `.waveform` (`--level` per bar, `--hover` preview), sticky `.now-playing` bar and `.is-mini` player, `.album-grid`, `ol.lyrics`, queue with `.track-handle` |
 
 **Shared vocabulary:** `data-series="1".."6"` picks a chart series colour;
 `data-rarity="common|uncommon|rare|epic|legendary"` sets `--rarity` and
@@ -562,13 +563,13 @@ panes with **no JavaScript**:
 - **Nested menus** are nested lists:
   ```html
   <ul class="context-menu" role="menu" popover id="row-menu">
-    <li><button role="menuitem">Rename</button></li>
-    <li class="has-submenu">
+    <li role="none"><button role="menuitem">Rename</button></li>
+    <li role="none" class="has-submenu">
       <button role="menuitem" aria-haspopup="menu">Move to</button>
-      <ul role="menu"><li><button role="menuitem">Inbox</button></li></ul>
+      <ul role="menu"><li role="none"><button role="menuitem">Inbox</button></li></ul>
     </li>
     <li role="separator"></li>
-    <li><button role="menuitem" class="is-danger">Delete</button></li>
+    <li role="none"><button role="menuitem" class="is-danger">Delete</button></li>
   </ul>
   ```
   On desktop, submenus fly out on hover or keyboard focus, and flip at the

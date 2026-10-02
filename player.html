@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Player — ftl-themes v5 music and media kit</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<!-- v5 component kit "music and media" (PLAN.md §19). Core markup only, no
+     page CSS: if something looks wrong here, fix it in
+     core/components/media.css or the theme. One <section id="c-…"> per
+     component. Reference: docs/components/media.md. Album art is inline SVG
+     data URIs so the page works offline; artists, songs and lyrics are
+     made up. Everything works without JavaScript except the knob (controls.js)
+     and the waveform's hover preview (the small script at the bottom). -->
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Player</span>
+    <nav class="nav" aria-label="Demo pages">
+      <a class="nav-item" href="dashboard.html" data-demo-link>Dashboard</a>
+      <a class="nav-item" href="marketing.html" data-demo-link>Marketing</a>
+      <a class="nav-item" href="ticketsystem.html" data-demo-link>Support</a>
+      <a class="nav-item" href="powerstation.html" data-demo-link>Power</a>
+      <a class="nav-item" href="soundmixer.html" data-demo-link>Mixer</a>
+      <a class="nav-item" href="livechat.html" data-demo-link>Chat</a>
+      <a class="nav-item" href="nesting.html" data-demo-link>Nesting</a>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+      <button class="btn btn-ghost btn-icon" aria-label="Notifications"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Music and media</h1>
+      <p class="text-muted">The v5 media kit (PLAN.md §19), built for Playlist Lab: track rows, album grid, the now-playing bar (docked at the bottom of this page), queue, waveform scrubber, shuffle/repeat/like toggles, lyrics and a mini player. Built on core's <code>.transport</code>, <code>.btn-go</code>, <code>.knob</code> and the image card.</p>
+    </div>
+
+    <!-- ========================================================= Track rows -->
+    <section class="stack" id="c-track">
+      <h2>Track rows <code>.tracklist</code> &gt; <code>.track</code></h2>
+      <p class="text-muted">Number, art, title and artist, album, like, duration and a row menu. The number turns into a play button on hover or keyboard focus (on touch the number is the button). Row 3 is playing (animated equaliser, motion settings permitting), row 5 is selected (<code>.is-active</code>), rows 4 and 7 are explicit, liked rows keep their heart. The album column hides in a container under 480px.</p>
+      <div class="panel">
+        <ol class="tracklist">
+          <li class="track"><button class="track-play" aria-label="Play Night Drive"><span class="track-num">1</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230f2a4a'/><stop offset='1' stop-color='%23f2a65a'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='44' cy='22' r='9' fill='%23ffe8b0'/><path d='M0 46h64v18H0z' fill='%23081a30'/><path d='M8 46v-8h3v8M20 46V34h3v12M50 46V30h2v16' stroke='%23ffd27a' stroke-width='2'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span><span class="track-album">Harbour Lights</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Night Drive"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT4M3S">4:03</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Night Drive"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track"><button class="track-play" aria-label="Play Signal Fires"><span class="track-num">2</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%232b1055'/><stop offset='1' stop-color='%237597de'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='14' fill='none' stroke='%23fff' stroke-opacity='.7' stroke-width='2'/><circle cx='46' cy='20' r='3' fill='%23fff'/><circle cx='14' cy='48' r='2' fill='%23fff'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Signal Fires</span><span class="track-artist">The Quiet Orbit</span></span><span class="track-album">Paper Satellites</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Signal Fires" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT3M41S">3:41</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Signal Fires"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track is-playing"><button class="track-play" aria-label="Pause Undertow"><span class="track-num">3</span><svg class="icon"><use href="assets/icons/icons.svg#icon-pause"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230b6e4f'/><stop offset='1' stop-color='%23a8e6cf'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M0 40q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23084c3a'/><path d='M0 48q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23043327'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Undertow</span><span class="track-artist">Marisol Vega</span></span><span class="track-album">Low Tide Radio</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Undertow" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT5M12S">5:12</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Undertow"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track"><button class="track-play" aria-label="Play Glass Hours"><span class="track-num">4</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%23e0e7ef'/><stop offset='1' stop-color='%239fb3c8'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M32 10 54 50H10z' fill='none' stroke='%23334e68' stroke-width='3'/><path d='M32 24 44 46H20z' fill='%23334e68' fill-opacity='.35'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Glass Hours</span><span class="track-artist"><span class="badge is-explicit" role="img" aria-label="Explicit">E</span>North Atlas</span></span><span class="track-album">Glasshouse</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Glass Hours"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT3M58S">3:58</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Glass Hours"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track is-active"><button class="track-play" aria-label="Play Brass and Ember"><span class="track-num">5</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%237f3b08'/><stop offset='1' stop-color='%23e08e45'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='18' fill='%23431c04'/><circle cx='32' cy='32' r='6' fill='%23e08e45'/><circle cx='32' cy='32' r='1.5' fill='%23431c04'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Brass and Ember</span><span class="track-artist">Eddie Fenn Trio</span></span><span class="track-album">Copper Years</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Brass and Ember"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT6M20S">6:20</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Brass and Ember"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track"><button class="track-play" aria-label="Play Postcard Static"><span class="track-num">6</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%23ff6b6b'/><stop offset='1' stop-color='%23ffd93d'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><rect x='12' y='12' width='26' height='26' fill='%23fff' fill-opacity='.55'/><rect x='26' y='26' width='26' height='26' fill='%23c0392b' fill-opacity='.55'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Postcard Static</span><span class="track-artist">Kite Season</span></span><span class="track-album">Afterimage</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Postcard Static"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT2M47S">2:47</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Postcard Static"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track"><button class="track-play" aria-label="Play A Very Long Song Title That Has To Truncate Cleanly On A Phone"><span class="track-num">7</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%232b1055'/><stop offset='1' stop-color='%237597de'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='14' fill='none' stroke='%23fff' stroke-opacity='.7' stroke-width='2'/><circle cx='46' cy='20' r='3' fill='%23fff'/><circle cx='14' cy='48' r='2' fill='%23fff'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">A Very Long Song Title That Has To Truncate Cleanly On A Phone</span><span class="track-artist"><span class="badge is-explicit" role="img" aria-label="Explicit">E</span>The Quiet Orbit</span></span><span class="track-album">Paper Satellites</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like A Very Long Song Title That Has To Truncate Cleanly On A Phone"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT11M6S">11:06</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for A Very Long Song Title That Has To Truncate Cleanly On A Phone"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+        </ol>
+      </div>
+      <ul class="context-menu" role="menu" popover id="track-menu">
+        <li><button role="menuitem">Add to queue</button></li>
+        <li class="has-submenu">
+          <button role="menuitem" aria-haspopup="menu">Add to playlist</button>
+          <ul role="menu"><li><button role="menuitem">Late drive</button></li><li><button role="menuitem">Sunday slow</button></li></ul>
+        </li>
+        <li><button role="menuitem">Go to album</button></li>
+        <li role="separator"></li>
+        <li><button role="menuitem" class="is-danger">Remove from this playlist</button></li>
+      </ul>
+
+      <h3>Album view: no art, no album column, current track paused</h3>
+      <div class="panel">
+        <ol class="tracklist">
+          <li class="track"><button class="track-play" aria-label="Play Night Drive"><span class="track-num">1</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Night Drive"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT4M3S">4:03</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Night Drive"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track is-playing is-paused"><button class="track-play" aria-label="Play Harbour Lights"><span class="track-num">2</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Harbour Lights</span><span class="track-artist">Lumen Coast</span></span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Harbour Lights" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT3M33S">3:33</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Harbour Lights"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track"><button class="track-play" aria-label="Play Fog Signal"><span class="track-num">3</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Fog Signal</span><span class="track-artist"><span class="badge is-explicit" role="img" aria-label="Explicit">E</span>Lumen Coast</span></span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Fog Signal"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT4M48S">4:48</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Fog Signal"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+          <li class="track"><button class="track-play" aria-label="Play Last Ferry"><span class="track-num">4</span><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Last Ferry</span><span class="track-artist">Lumen Coast</span></span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Last Ferry"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT6M1S">6:01</time><button class="btn btn-ghost btn-icon" popovertarget="track-menu" aria-label="More options for Last Ferry"><svg class="icon"><use href="assets/icons/icons.svg#icon-more-horizontal"/></svg></button></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========================================================= Album grid -->
+    <section class="stack" id="c-album-grid">
+      <h2>Album grid <code>.album-grid</code></h2>
+      <p class="text-muted">Square image cards (<code>.card.has-media</code>). The play button (<code>.card-play</code>) shows on hover or focus, always on touch and on the playing album; the last card is still loading.</p>
+      <ul class="album-grid">
+        <li><article class="card has-media">
+          <div class="card-media"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230f2a4a'/><stop offset='1' stop-color='%23f2a65a'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='44' cy='22' r='9' fill='%23ffe8b0'/><path d='M0 46h64v18H0z' fill='%23081a30'/><path d='M8 46v-8h3v8M20 46V34h3v12M50 46V30h2v16' stroke='%23ffd27a' stroke-width='2'/></svg>" alt="" width="300" height="300" loading="lazy"><button class="btn btn-go btn-icon card-play" aria-label="Play Harbour Lights"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button></div>
+          <div class="card-body"><a class="stretched-link" href="#c-album-grid">Harbour Lights</a><span class="text-muted">Lumen Coast · 2024</span></div>
+        </article></li>
+        <li><article class="card has-media">
+          <div class="card-media"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%232b1055'/><stop offset='1' stop-color='%237597de'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='14' fill='none' stroke='%23fff' stroke-opacity='.7' stroke-width='2'/><circle cx='46' cy='20' r='3' fill='%23fff'/><circle cx='14' cy='48' r='2' fill='%23fff'/></svg>" alt="" width="300" height="300" loading="lazy"><button class="btn btn-go btn-icon card-play" aria-label="Play Paper Satellites"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button></div>
+          <div class="card-body"><a class="stretched-link" href="#c-album-grid">Paper Satellites</a><span class="text-muted">The Quiet Orbit · 2023</span></div>
+        </article></li>
+        <li><article class="card has-media is-playing">
+          <div class="card-media"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230b6e4f'/><stop offset='1' stop-color='%23a8e6cf'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M0 40q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23084c3a'/><path d='M0 48q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23043327'/></svg>" alt="" width="300" height="300" loading="lazy"><button class="btn btn-go btn-icon card-play" aria-label="Pause Low Tide Radio"><svg class="icon"><use href="assets/icons/icons.svg#icon-pause"/></svg></button></div>
+          <div class="card-body"><a class="stretched-link" href="#c-album-grid">Low Tide Radio</a><span class="text-muted">Marisol Vega · 2022</span></div>
+        </article></li>
+        <li><article class="card has-media">
+          <div class="card-media"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%23e0e7ef'/><stop offset='1' stop-color='%239fb3c8'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M32 10 54 50H10z' fill='none' stroke='%23334e68' stroke-width='3'/><path d='M32 24 44 46H20z' fill='%23334e68' fill-opacity='.35'/></svg>" alt="" width="300" height="300" loading="lazy"><button class="btn btn-go btn-icon card-play" aria-label="Play Glasshouse"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button></div>
+          <div class="card-body"><a class="stretched-link" href="#c-album-grid">Glasshouse</a><span class="text-muted">North Atlas · 2025</span></div>
+        </article></li>
+        <li><article class="card has-media">
+          <div class="card-media"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%237f3b08'/><stop offset='1' stop-color='%23e08e45'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='18' fill='%23431c04'/><circle cx='32' cy='32' r='6' fill='%23e08e45'/><circle cx='32' cy='32' r='1.5' fill='%23431c04'/></svg>" alt="" width="300" height="300" loading="lazy"><button class="btn btn-go btn-icon card-play" aria-label="Play Copper Years"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button></div>
+          <div class="card-body"><a class="stretched-link" href="#c-album-grid">Copper Years</a><span class="text-muted">Eddie Fenn Trio · 2019</span></div>
+        </article></li>
+        <li><article class="card has-media">
+          <div class="card-media"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%23ff6b6b'/><stop offset='1' stop-color='%23ffd93d'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><rect x='12' y='12' width='26' height='26' fill='%23fff' fill-opacity='.55'/><rect x='26' y='26' width='26' height='26' fill='%23c0392b' fill-opacity='.55'/></svg>" alt="" width="300" height="300" loading="lazy"><button class="btn btn-go btn-icon card-play" aria-label="Play Afterimage"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button></div>
+          <div class="card-body"><a class="stretched-link" href="#c-album-grid">Afterimage</a><span class="text-muted">Kite Season · 2021</span></div>
+        </article></li>
+        <li><article class="card has-media" aria-busy="true">
+          <div class="card-media" role="img" aria-label="Cover loading"></div>
+          <div class="card-body"><span class="skeleton skeleton-text"></span><span class="skeleton skeleton-text"></span></div>
+        </article></li>
+      </ul>
+    </section>
+
+    <!-- ========================================================= Now playing -->
+    <section class="stack" id="c-now-playing">
+      <h2>Now-playing bar <code>.now-playing</code></h2>
+      <p class="text-muted">The live one is this page's footer: in the shell's status slot, stuck to the bottom of the screen, clear of the home indicator. Desktop: art and title, transport over the scrubber, extras with volume. Tablet: the scrubber takes its own row and only the mute button remains. Phone: play and next only. Below, the same bar paused, in the page flow.</p>
+      <section class="now-playing" aria-label="Paused example">
+      <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%237f3b08'/><stop offset='1' stop-color='%23e08e45'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='18' fill='%23431c04'/><circle cx='32' cy='32' r='6' fill='%23e08e45'/><circle cx='32' cy='32' r='1.5' fill='%23431c04'/></svg>" alt="" width="56" height="56">
+      <span class="track-main"><span class="track-title">Brass and Ember</span><span class="track-artist">Eddie Fenn Trio</span></span>
+      <label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Brass and Ember"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label>
+      <div class="transport is-pause" role="group" aria-label="Playback">
+        <label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label>
+        <button class="btn btn-ghost btn-icon" aria-label="Previous"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-back"/></svg></button>
+        <button class="btn btn-go btn-icon" aria-label="Play"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button>
+        <button class="btn btn-ghost btn-icon" aria-label="Next"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-forward"/></svg></button>
+        <span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="rep-paused-example" value="off" aria-label="Repeat off" checked><input type="radio" name="rep-paused-example" value="all" aria-label="Repeat all"><input type="radio" name="rep-paused-example" value="one" aria-label="Repeat one"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span>
+      </div>
+      <div class="scrubber">
+        <time>2:10</time>
+        <input type="range" min="0" max="380" value="129" aria-label="Seek" aria-valuetext="2:10 of 6:20">
+        <time>-4:11</time>
+      </div>
+      <div class="now-playing-extras">
+        <button class="btn btn-ghost btn-icon" aria-label="Lyrics"><svg class="icon"><use href="assets/icons/icons.svg#icon-microphone"/></svg></button>
+        <button class="btn btn-ghost btn-icon" aria-label="Queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-playlist"/></svg></button>
+        <div class="volume"><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Mute"><svg class="icon"><use href="assets/icons/icons.svg#icon-volume"/></svg><svg class="icon"><use href="assets/icons/icons.svg#icon-volume-mute"/></svg></label><input type="range" min="0" max="100" value="70" aria-label="Volume"></div>
+      </div>
+    </section>
+    </section>
+
+    <!-- ========================================================= Mini player -->
+    <section class="stack" id="c-mini-player">
+      <h2>Mini player <code>.now-playing.is-mini</code></h2>
+      <p class="text-muted">The phone layout at any width, as a card: for a sidebar, a picture-in-picture corner or a popover.</p>
+      <section class="now-playing is-mini" aria-label="Mini player">
+      <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%232b1055'/><stop offset='1' stop-color='%237597de'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='14' fill='none' stroke='%23fff' stroke-opacity='.7' stroke-width='2'/><circle cx='46' cy='20' r='3' fill='%23fff'/><circle cx='14' cy='48' r='2' fill='%23fff'/></svg>" alt="" width="56" height="56">
+      <span class="track-main"><span class="track-title">Signal Fires</span><span class="track-artist">The Quiet Orbit</span></span>
+      <label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Signal Fires" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label>
+      <div class="transport is-play" role="group" aria-label="Playback">
+        <label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle"><svg class="icon"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label>
+        <button class="btn btn-ghost btn-icon" aria-label="Previous"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-back"/></svg></button>
+        <button class="btn btn-go btn-icon" aria-label="Pause"><svg class="icon"><use href="assets/icons/icons.svg#icon-pause"/></svg></button>
+        <button class="btn btn-ghost btn-icon" aria-label="Next"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-forward"/></svg></button>
+        <span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="rep-mini-player" value="off" aria-label="Repeat off"><input type="radio" name="rep-mini-player" value="all" aria-label="Repeat all"><input type="radio" name="rep-mini-player" value="one" aria-label="Repeat one" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span>
+      </div>
+      <div class="scrubber">
+        <time>0:48</time>
+        <input type="range" min="0" max="221" value="49" aria-label="Seek" aria-valuetext="0:48 of 3:41">
+        <time>-2:52</time>
+      </div>
+      <div class="now-playing-extras">
+        <button class="btn btn-ghost btn-icon" aria-label="Lyrics"><svg class="icon"><use href="assets/icons/icons.svg#icon-microphone"/></svg></button>
+        <button class="btn btn-ghost btn-icon" aria-label="Queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-playlist"/></svg></button>
+        <div class="volume"><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Mute"><svg class="icon"><use href="assets/icons/icons.svg#icon-volume"/></svg><svg class="icon"><use href="assets/icons/icons.svg#icon-volume-mute"/></svg></label><input type="range" min="0" max="100" value="70" aria-label="Volume"></div>
+      </div>
+    </section>
+    </section>
+
+    <!-- ========================================================= Queue -->
+    <section class="stack" id="c-queue">
+      <h2>Play queue</h2>
+      <p class="text-muted">Track rows with a drag handle (<code>.track-handle</code>, the app does the dragging) and a remove button. "Night Drive" is being dragged (<code>.is-dragging</code>) and will drop above "Brass and Ember" (<code>.is-drop-target</code>).</p>
+      <div class="panel stack">
+        <h3>Now playing</h3>
+        <ol class="tracklist">
+          <li class="track is-playing"><button class="track-play" aria-label="Pause Undertow"><svg class="icon"><use href="assets/icons/icons.svg#icon-pause"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230b6e4f'/><stop offset='1' stop-color='%23a8e6cf'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M0 40q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23084c3a'/><path d='M0 48q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23043327'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Undertow</span><span class="track-artist">Marisol Vega</span></span><span class="track-album">Low Tide Radio</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Undertow" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT5M12S">5:12</time></li>
+        </ol>
+        <h3>Next in queue</h3>
+        <ol class="tracklist">
+          <li class="track"><span class="track-handle" aria-hidden="true"></span><button class="track-play" aria-label="Play Glass Hours"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%23e0e7ef'/><stop offset='1' stop-color='%239fb3c8'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M32 10 54 50H10z' fill='none' stroke='%23334e68' stroke-width='3'/><path d='M32 24 44 46H20z' fill='%23334e68' fill-opacity='.35'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Glass Hours</span><span class="track-artist"><span class="badge is-explicit" role="img" aria-label="Explicit">E</span>North Atlas</span></span><span class="track-album">Glasshouse</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Glass Hours"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT3M58S">3:58</time><button class="btn btn-ghost btn-icon" aria-label="Remove Glass Hours from queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-close"/></svg></button></li>
+          <li class="track is-dragging"><span class="track-handle" aria-hidden="true"></span><button class="track-play" aria-label="Play Night Drive"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230f2a4a'/><stop offset='1' stop-color='%23f2a65a'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='44' cy='22' r='9' fill='%23ffe8b0'/><path d='M0 46h64v18H0z' fill='%23081a30'/><path d='M8 46v-8h3v8M20 46V34h3v12M50 46V30h2v16' stroke='%23ffd27a' stroke-width='2'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span><span class="track-album">Harbour Lights</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Night Drive"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT4M3S">4:03</time><button class="btn btn-ghost btn-icon" aria-label="Remove Night Drive from queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-close"/></svg></button></li>
+          <li class="track is-drop-target"><span class="track-handle" aria-hidden="true"></span><button class="track-play" aria-label="Play Brass and Ember"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%237f3b08'/><stop offset='1' stop-color='%23e08e45'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='18' fill='%23431c04'/><circle cx='32' cy='32' r='6' fill='%23e08e45'/><circle cx='32' cy='32' r='1.5' fill='%23431c04'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Brass and Ember</span><span class="track-artist">Eddie Fenn Trio</span></span><span class="track-album">Copper Years</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Brass and Ember" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT6M20S">6:20</time><button class="btn btn-ghost btn-icon" aria-label="Remove Brass and Ember from queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-close"/></svg></button></li>
+        </ol>
+        <h3>Next from: Late drive</h3>
+        <ol class="tracklist">
+          <li class="track"><span class="track-handle" aria-hidden="true"></span><button class="track-play" aria-label="Play Postcard Static"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%23ff6b6b'/><stop offset='1' stop-color='%23ffd93d'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><rect x='12' y='12' width='26' height='26' fill='%23fff' fill-opacity='.55'/><rect x='26' y='26' width='26' height='26' fill='%23c0392b' fill-opacity='.55'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Postcard Static</span><span class="track-artist">Kite Season</span></span><span class="track-album">Afterimage</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Postcard Static"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT2M47S">2:47</time><button class="btn btn-ghost btn-icon" aria-label="Remove Postcard Static from queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-close"/></svg></button></li>
+          <li class="track"><span class="track-handle" aria-hidden="true"></span><button class="track-play" aria-label="Play Signal Fires"><svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg></button><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%232b1055'/><stop offset='1' stop-color='%237597de'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='32' cy='32' r='14' fill='none' stroke='%23fff' stroke-opacity='.7' stroke-width='2'/><circle cx='46' cy='20' r='3' fill='%23fff'/><circle cx='14' cy='48' r='2' fill='%23fff'/></svg>" alt="" width="40" height="40"><span class="track-main"><span class="track-title">Signal Fires</span><span class="track-artist">The Quiet Orbit</span></span><span class="track-album">Paper Satellites</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Signal Fires" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><time class="track-time" datetime="PT3M41S">3:41</time><button class="btn btn-ghost btn-icon" aria-label="Remove Signal Fires from queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-close"/></svg></button></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========================================================= Waveform -->
+    <section class="stack" id="c-waveform">
+      <h2>Waveform scrubber <code>.waveform</code></h2>
+      <p class="text-muted">A real range input under a row of bars (one <code>&lt;i style="--level:…"&gt;</code> each). Drag or use the arrow keys: the played colour follows with no script. The second shows the hover preview (the app sets <code>--hover</code> from the pointer; this page's script does it on the first one too).</p>
+      <div class="scrubber"><time>1:28</time><div class="waveform"><input type="range" min="0" max="243" value="88" aria-label="Seek" aria-valuetext="1:28 of 4:03"><span class="waveform-bars" aria-hidden="true"><i style="--level:0.24"></i><i style="--level:0.25"></i><i style="--level:0.39"></i><i style="--level:0.30"></i><i style="--level:0.45"></i><i style="--level:0.44"></i><i style="--level:0.38"></i><i style="--level:0.55"></i><i style="--level:0.42"></i><i style="--level:0.58"></i><i style="--level:0.47"></i><i style="--level:0.50"></i><i style="--level:0.64"></i><i style="--level:0.81"></i><i style="--level:0.54"></i><i style="--level:0.58"></i><i style="--level:0.75"></i><i style="--level:0.87"></i><i style="--level:0.72"></i><i style="--level:0.63"></i><i style="--level:0.84"></i><i style="--level:0.47"></i><i style="--level:0.74"></i><i style="--level:0.52"></i><i style="--level:0.44"></i><i style="--level:0.41"></i><i style="--level:0.43"></i><i style="--level:0.53"></i><i style="--level:0.33"></i><i style="--level:0.39"></i><i style="--level:0.35"></i><i style="--level:0.26"></i><i style="--level:0.31"></i><i style="--level:0.26"></i><i style="--level:0.29"></i><i style="--level:0.35"></i><i style="--level:0.51"></i><i style="--level:0.48"></i><i style="--level:0.48"></i><i style="--level:0.60"></i><i style="--level:0.58"></i><i style="--level:0.55"></i><i style="--level:0.76"></i><i style="--level:0.74"></i><i style="--level:0.58"></i><i style="--level:0.72"></i><i style="--level:0.71"></i><i style="--level:0.85"></i><i style="--level:0.79"></i><i style="--level:0.60"></i><i style="--level:0.87"></i><i style="--level:0.52"></i><i style="--level:0.61"></i><i style="--level:0.71"></i><i style="--level:0.48"></i><i style="--level:0.56"></i><i style="--level:0.39"></i><i style="--level:0.55"></i><i style="--level:0.53"></i><i style="--level:0.44"></i><i style="--level:0.46"></i><i style="--level:0.30"></i><i style="--level:0.33"></i><i style="--level:0.30"></i><i style="--level:0.35"></i><i style="--level:0.36"></i><i style="--level:0.50"></i><i style="--level:0.57"></i><i style="--level:0.48"></i><i style="--level:0.58"></i><i style="--level:0.42"></i><i style="--level:0.66"></i></span></div><time>-2:35</time></div>
+      <div class="scrubber"><time>3:02</time><div class="waveform" style="--hover:0.9"><input type="range" min="0" max="243" value="182" aria-label="Seek" aria-valuetext="3:02 of 4:03"><span class="waveform-bars" aria-hidden="true"><i style="--level:0.24"></i><i style="--level:0.25"></i><i style="--level:0.39"></i><i style="--level:0.30"></i><i style="--level:0.45"></i><i style="--level:0.44"></i><i style="--level:0.38"></i><i style="--level:0.55"></i><i style="--level:0.42"></i><i style="--level:0.58"></i><i style="--level:0.47"></i><i style="--level:0.50"></i><i style="--level:0.64"></i><i style="--level:0.81"></i><i style="--level:0.54"></i><i style="--level:0.58"></i><i style="--level:0.75"></i><i style="--level:0.87"></i><i style="--level:0.72"></i><i style="--level:0.63"></i><i style="--level:0.84"></i><i style="--level:0.47"></i><i style="--level:0.74"></i><i style="--level:0.52"></i><i style="--level:0.44"></i><i style="--level:0.41"></i><i style="--level:0.43"></i><i style="--level:0.53"></i><i style="--level:0.33"></i><i style="--level:0.39"></i><i style="--level:0.35"></i><i style="--level:0.26"></i><i style="--level:0.31"></i><i style="--level:0.26"></i><i style="--level:0.29"></i><i style="--level:0.35"></i><i style="--level:0.51"></i><i style="--level:0.48"></i><i style="--level:0.48"></i><i style="--level:0.60"></i><i style="--level:0.58"></i><i style="--level:0.55"></i><i style="--level:0.76"></i><i style="--level:0.74"></i><i style="--level:0.58"></i><i style="--level:0.72"></i><i style="--level:0.71"></i><i style="--level:0.85"></i><i style="--level:0.79"></i><i style="--level:0.60"></i><i style="--level:0.87"></i><i style="--level:0.52"></i><i style="--level:0.61"></i><i style="--level:0.71"></i><i style="--level:0.48"></i><i style="--level:0.56"></i><i style="--level:0.39"></i><i style="--level:0.55"></i><i style="--level:0.53"></i><i style="--level:0.44"></i><i style="--level:0.46"></i><i style="--level:0.30"></i><i style="--level:0.33"></i><i style="--level:0.30"></i><i style="--level:0.35"></i><i style="--level:0.36"></i><i style="--level:0.50"></i><i style="--level:0.57"></i><i style="--level:0.48"></i><i style="--level:0.58"></i><i style="--level:0.42"></i><i style="--level:0.66"></i></span></div><time>-1:01</time></div>
+    </section>
+
+    <!-- ========================================================= Toggles -->
+    <section class="stack" id="c-toggles">
+      <h2>Shuffle, repeat, like and volume <code>.media-toggle</code></h2>
+      <p class="text-muted">On is the accent plus a dot (a filled heart for like), never colour alone, and nothing changes width. Repeat cycles off, all, one with three radios and no script (click, or arrow keys).</p>
+      <div class="panel stack">
+        <div class="cluster"><span class="text-muted">Shuffle</span><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle (off example)"><svg class="icon"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle (on example)" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label></div>
+        <div class="cluster"><span class="text-muted">Repeat off / all / one</span><span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="rep-a" value="off" aria-label="Repeat off" checked><input type="radio" name="rep-a" value="all" aria-label="Repeat all"><input type="radio" name="rep-a" value="one" aria-label="Repeat one"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span><span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="rep-b" value="off" aria-label="Repeat off"><input type="radio" name="rep-b" value="all" aria-label="Repeat all" checked><input type="radio" name="rep-b" value="one" aria-label="Repeat one"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span><span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="rep-c" value="off" aria-label="Repeat off"><input type="radio" name="rep-c" value="all" aria-label="Repeat all"><input type="radio" name="rep-c" value="one" aria-label="Repeat one" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span></div>
+        <div class="cluster"><span class="text-muted">Button form (<code>aria-pressed</code>, <code>.is-one</code>)</span><button class="btn btn-ghost btn-icon media-toggle" aria-pressed="false" aria-label="Repeat: off"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></button><button class="btn btn-ghost btn-icon media-toggle" aria-pressed="true" aria-label="Repeat: all"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></button><button class="btn btn-ghost btn-icon media-toggle is-one" aria-pressed="true" aria-label="Repeat: one"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></button></div>
+        <div class="cluster"><span class="text-muted">Like</span><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like (off example)"><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label><label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like (on example)" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label></div>
+        <div class="cluster"><span class="text-muted">Volume</span><div class="volume"><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Mute"><svg class="icon"><use href="assets/icons/icons.svg#icon-volume"/></svg><svg class="icon"><use href="assets/icons/icons.svg#icon-volume-mute"/></svg></label><input type="range" min="0" max="100" value="70" aria-label="Volume"></div><div class="volume"><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Mute" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-volume"/></svg><svg class="icon"><use href="assets/icons/icons.svg#icon-volume-mute"/></svg></label><input type="range" min="0" max="100" value="0" aria-label="Volume (muted example)"></div></div>
+        <div class="cluster"><span class="text-muted">Volume as a console knob (<code>.knob</code>, needs controls.js)</span><label class="knob" style="--value:0.700"><input type="range" min="0" max="100" value="70" aria-label="Volume knob"><span class="knob-dial"></span><span class="knob-label">Vol</span></label></div>
+      </div>
+    </section>
+
+    <!-- ========================================================= Lyrics -->
+    <section class="stack" id="c-lyrics">
+      <h2>Lyrics <code>.lyrics</code></h2>
+      <p class="text-muted">The current line carries <code>aria-current="true"</code>; an empty line is an instrumental break. The app scrolls the current line into view.</p>
+      <div class="panel">
+        <div class="scroll" style="--scroll-max: 16rem" tabindex="0" role="region" aria-label="Lyrics">
+          <ol class="lyrics">
+            <li>Headlights on the harbour wall</li>
+            <li>we counted ships we couldn't see</li>
+            <li></li>
+            <li>The tide came in and took the call</li>
+            <li>and left the dial tone out at sea</li>
+            <li aria-current="true">So hold the line, hold the line</li>
+            <li>the static sounds like you to me</li>
+            <li>Hold the line, hold the line</li>
+            <li>till morning finds the frequency</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= Equaliser -->
+    <section class="stack" id="c-equaliser">
+      <h2>Playing glyph <code>.equaliser</code></h2>
+      <p class="text-muted">Animated while playing (still under reduced motion), held with <code>.is-paused</code>. Here in a playlist sidebar whose selection is radios, no script.</p>
+      <div class="cluster"><span class="equaliser" aria-hidden="true"></span> Playing <span class="equaliser is-paused" aria-hidden="true"></span> Paused</div>
+      <ul class="list">
+        <li><label class="list-item"><input type="radio" name="playlist" checked> Late drive <span class="equaliser push" aria-hidden="true"></span></label></li>
+        <li><label class="list-item"><input type="radio" name="playlist"> Sunday slow</label></li>
+        <li><label class="list-item"><input type="radio" name="playlist"> Focus, no words</label></li>
+      </ul>
+    </section>
+  </div>
+  </main>
+
+  <footer class="now-playing" aria-label="Now playing">
+      <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230b6e4f'/><stop offset='1' stop-color='%23a8e6cf'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><path d='M0 40q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23084c3a'/><path d='M0 48q8-6 16 0t16 0 16 0 16 0V64H0z' fill='%23043327'/></svg>" alt="" width="56" height="56">
+      <span class="track-main"><span class="track-title">Undertow</span><span class="track-artist">Marisol Vega</span></span>
+      <label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Undertow" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label>
+      <div class="transport is-play" role="group" aria-label="Playback">
+        <label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle"><svg class="icon"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label>
+        <button class="btn btn-ghost btn-icon" aria-label="Previous"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-back"/></svg></button>
+        <button class="btn btn-go btn-icon" aria-label="Pause"><svg class="icon"><use href="assets/icons/icons.svg#icon-pause"/></svg></button>
+        <button class="btn btn-ghost btn-icon" aria-label="Next"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-forward"/></svg></button>
+        <span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="rep-now-playing" value="off" aria-label="Repeat off"><input type="radio" name="rep-now-playing" value="all" aria-label="Repeat all" checked><input type="radio" name="rep-now-playing" value="one" aria-label="Repeat one"><svg class="icon"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span>
+      </div>
+      <div class="scrubber">
+        <time>1:46</time>
+        <input type="range" min="0" max="312" value="106" aria-label="Seek" aria-valuetext="1:46 of 5:12">
+        <time>-3:26</time>
+      </div>
+      <div class="now-playing-extras">
+        <button class="btn btn-ghost btn-icon" aria-label="Lyrics"><svg class="icon"><use href="assets/icons/icons.svg#icon-microphone"/></svg></button>
+        <button class="btn btn-ghost btn-icon" aria-label="Queue"><svg class="icon"><use href="assets/icons/icons.svg#icon-playlist"/></svg></button>
+        <div class="volume"><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Mute"><svg class="icon"><use href="assets/icons/icons.svg#icon-volume"/></svg><svg class="icon"><use href="assets/icons/icons.svg#icon-volume-mute"/></svg></label><input type="range" min="0" max="100" value="70" aria-label="Volume"></div>
+      </div>
+    </footer>
+
+<script src="assets/js/controls.js"></script>
+<script>
+// Demo only: the hover preview follows the pointer (apps do the same).
+document.querySelectorAll(".waveform").forEach((w) => {
+  w.addEventListener("pointermove", (e) => {
+    const r = w.getBoundingClientRect();
+    w.style.setProperty("--hover", ((e.clientX - r.left) / r.width).toFixed(3));
+  });
+  w.addEventListener("pointerleave", () => w.style.removeProperty("--hover"));
+});
+</script>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

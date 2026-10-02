@@ -51,7 +51,7 @@ Changing them is a change to the reference, not a matter of taste.
 | `--border` / `--hairline` | `#0f3a5c` / `#0a2942` | Visible rules are blue-cast, and the hairline is dimmer: dense data needs separators that don't add up to a cage. |
 | `--accent` | `#00d9ff` | Electric cyan. The live/telemetry color. |
 | `--accent-2` | `#4d7dff` | Electric blue. Interactive/selected. |
-| `--text` / `--muted` | `#cfeeff` / `#5b8aa8` | Text is blue-white, never pure white — reserve pure white for a genuinely critical value. Muted is a real step down so labels recede below data. |
+| `--text` / `--muted` | `#cfeeff` / `#6f9cba` | Text is blue-white, never pure white — reserve pure white for a genuinely critical value. Muted is a real step down so labels recede below data. |
 | `--font` | Consolas | Monospace as the *primary* UI font, not just for values. This single choice does more for the "spacecraft computer" feel than any color. |
 | `--radius` | `0.25rem` | Almost square. Rounded corners read as consumer software. |
 | `--flare` | `#d85cff` | Magenta, used almost nowhere. Held in reserve for a single rare emphasis so it keeps its force. |
@@ -132,7 +132,7 @@ Roboto Mono, ...) renders. Metrics are close but not identical.
 ## Contrast note
 
 `--text` and filled controls clear 4.5:1 (enforced by `scripts/check.py`).
-`--muted` (`#5b8aa8`) carries the dim headings, table headers and switch
+`--muted` (`#6f9cba`) carries the dim headings, table headers and switch
 readout at roughly AA, not AAA: deliberately, because "chrome recedes,
 content is bright" is the theme's point. Do not brighten it.
 
