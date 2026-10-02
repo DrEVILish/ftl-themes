@@ -479,6 +479,18 @@ tokens):
 - **Long unbroken text** (URLs, hashes) wraps inside panels, cards, headers,
   toasts, alerts and buttons instead of spilling over; badges truncate.
 - **Tooltips** wrap within the screen width and take no space while hidden.
+- **Containers.** Components respond to the box they sit in with
+  `@container` rules. `.modal` and `.drawer` are containers; add `.cq` to any
+  other box whose width comes from outside (not one that shrinks to its
+  content). A container is also the containing block for `position: fixed`
+  descendants and a stacking context, so don't put `.cq` on a box holding a
+  fixed overlay or a dropdown that must spill out of it. `.columns` becomes
+  one column up to 900px wide (`--columns-narrow` overrides) and inside any
+  container narrower than 480px; `.value-row` puts its label on its own line
+  in narrow boxes.
+- **Hover** styles only apply on devices that can hover
+  (`@media (hover: hover)`), so a tapped control on a phone doesn't keep its
+  hover look.
 
 **Graceful degrade without the shell.** An app that links a theme but
 never adds this markup still gets a correct, uncluttered result: no rail

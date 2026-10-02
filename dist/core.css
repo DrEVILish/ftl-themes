@@ -174,10 +174,12 @@ a { color: var(--link, var(--accent)); }
   box-shadow: var(--btn-shadow, none);
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
+@media (hover: hover) {
 .btn:hover {
   background: var(--btn-bg-hover, var(--btn-bg, var(--surface-2)));
   border-color: var(--btn-border-hover, var(--accent));
   box-shadow: var(--btn-shadow-hover, var(--btn-shadow, none));
+}
 }
 .btn:active { transform: translateY(1px); }
 .btn:disabled,
@@ -314,11 +316,17 @@ a { color: var(--link, var(--accent)); }
    reliable override is this absurdly long transition-delay trick, which
    defers the browser's own paint long enough for ours to stick. */
 .input:-webkit-autofill,
-.input:-webkit-autofill:hover,
 .input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--input-fg, var(--text));
   box-shadow: 0 0 0 1000px var(--input-bg, var(--surface)) inset;
   transition: background-color 600000s 0s, color 600000s 0s;
+}
+@media (hover: hover) {
+.input:-webkit-autofill:hover {
+  -webkit-text-fill-color: var(--input-fg, var(--text));
+  box-shadow: 0 0 0 1000px var(--input-bg, var(--surface)) inset;
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
 }
 
 .label {
@@ -353,8 +361,10 @@ a { color: var(--link, var(--accent)); }
   padding: var(--field-row-padding, 0.55em 0.8em);
   margin-block-end: var(--field-row-gap, 0.5rem);
 }
+@media (hover: hover) {
 .field-row:hover {
   border-color: var(--field-row-border-hover, var(--hairline));
+}
 }
 .field-row > .label {
   flex: 1;
@@ -736,11 +746,13 @@ dialog.modal:modal {
   color: var(--btn-close-fg, var(--muted));
   transition: background-color 0.15s ease, color 0.15s ease;
 }
+@media (hover: hover) {
 .btn-close:hover,
 .btn-min:hover,
 .btn-max:hover {
   background: var(--btn-close-bg-hover, var(--surface-2));
   color: var(--btn-close-fg-hover, var(--text));
+}
 }
 .btn-close:focus-visible,
 .btn-min:focus-visible,
@@ -784,10 +796,15 @@ dialog.modal:modal {
   color: var(--dropdown-item-fg, var(--text));
   text-align: start;
 }
-.dropdown-item:hover,
 .dropdown-item:focus-visible {
   background: var(--dropdown-item-bg-hover, var(--accent));
   color: var(--dropdown-item-fg-hover, var(--on-accent));
+}
+@media (hover: hover) {
+.dropdown-item:hover {
+  background: var(--dropdown-item-bg-hover, var(--accent));
+  color: var(--dropdown-item-fg-hover, var(--on-accent));
+}
 }
 
 .toolbar {
@@ -1382,7 +1399,9 @@ dialog.modal:modal {
   font-size: 0.85em;
   transition: background 0.15s ease, color 0.15s ease;
 }
+@media (hover: hover) {
 .segmented-item:hover { color: var(--segmented-item-fg-hover, var(--text)); }
+}
 .segmented-item.is-active {
   background: var(--segmented-item-bg-active, var(--accent));
   color: var(--segmented-item-fg-active, var(--on-accent));
@@ -1437,9 +1456,13 @@ dialog.modal:modal {
 }
 
 /* Row hover/focus: the pointer's row, or the row holding keyboard focus. */
-.table tbody tr:hover td,
 .table tbody tr:focus-within td {
   background: var(--row-hover-bg, rgba(128, 128, 128, 0.12));
+}
+@media (hover: hover) {
+.table tbody tr:hover td {
+  background: var(--row-hover-bg, rgba(128, 128, 128, 0.12));
+}
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
   .table tbody tr:hover td,
@@ -1448,9 +1471,13 @@ dialog.modal:modal {
   }
 }
 /* Selected rows keep their own fill under the pointer. */
-.table tbody tr.is-selected:hover td,
 .table tbody tr.is-selected:focus-within td {
   background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
+}
+@media (hover: hover) {
+.table tbody tr.is-selected:hover td {
+  background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
+}
 }
 
 /* Sticky header: opt in per-table with `.table.is-sticky` — a plain
@@ -1477,9 +1504,13 @@ dialog.modal:modal {
 .table.is-striped tbody tr:nth-child(even) td {
   background: var(--row-alt-bg, var(--surface-2));
 }
-.table.is-striped tbody tr:nth-child(even):hover td,
 .table.is-striped tbody tr:nth-child(even):focus-within td {
   background: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
+}
+@media (hover: hover) {
+.table.is-striped tbody tr:nth-child(even):hover td {
+  background: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
+}
 }
 .table.is-striped tbody tr.is-selected:nth-child(even) td,
 .table.is-striped tbody tr.is-active:nth-child(even) td {
@@ -1513,7 +1544,9 @@ dialog.modal:modal {
    active `<th>` (a native a11y attribute, not an .is-* class, since it's
    already the correct semantic marker) and a clickable header gets a
    cursor and hover tint for free. */
+@media (hover: hover) {
 .table th[aria-sort]:hover { color: var(--table-head-fg-hover, var(--text)); }
+}
 .table th[aria-sort]::after {
   margin-inline-start: 0.35em;
   font-size: 0.85em;
@@ -1542,10 +1575,15 @@ dialog.modal:modal {
   background: var(--nav-item-bg, transparent);
   color: var(--nav-item-fg, var(--muted));
 }
-.nav-item:hover,
 .nav-item.is-active {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
+}
+@media (hover: hover) {
+.nav-item:hover {
+  background: var(--nav-item-bg-active, var(--surface-2));
+  color: var(--nav-item-fg-active, var(--text));
+}
 }
 
 .tabs {
@@ -1576,7 +1614,9 @@ dialog.modal:modal {
   letter-spacing: var(--label-tracking, normal);
   text-transform: var(--label-transform, none);
 }
+@media (hover: hover) {
 .tab:hover { color: var(--text); }
+}
 .tab.is-active {
   background: var(--tab-bg-active, transparent);
   color: var(--tab-fg-active, var(--accent));
@@ -1815,10 +1855,15 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   text-align: start;
 }
 :is(.context-menu-item, .context-menu li > :is(button, a)).is-danger { color: var(--danger-text, var(--danger)); }
-:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):hover,
 :is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):focus-visible {
   background: var(--context-menu-item-bg-hover, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--context-menu-item-fg-hover, var(--dropdown-item-fg-hover, var(--on-accent)));
+}
+@media (hover: hover) {
+:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):hover {
+  background: var(--context-menu-item-bg-hover, var(--dropdown-item-bg-hover, var(--accent)));
+  color: var(--context-menu-item-fg-hover, var(--dropdown-item-fg-hover, var(--on-accent)));
+}
 }
 :is(.context-menu-divider, .context-menu li[role="separator"], .menubar li[role="separator"]) {
   height: 1px;
@@ -1916,10 +1961,15 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   font: inherit;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.badge-button:hover,
 .badge-button.is-active {
   background: var(--badge-bg-active, var(--accent));
   color: var(--badge-fg-active, var(--on-accent));
+}
+@media (hover: hover) {
+.badge-button:hover {
+  background: var(--badge-bg-active, var(--accent));
+  color: var(--badge-fg-active, var(--on-accent));
+}
 }
 
 /* .empty-state — a placeholder for an empty list/collection/result set. */
@@ -1965,11 +2015,17 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   transition: opacity 0.1s ease, transform 0.1s ease, display 0.1s allow-discrete;
   z-index: var(--z-tooltip);
 }
-[data-tooltip]:hover::after,
 [data-tooltip]:focus-visible::after {
   display: block;
   opacity: 1;
   transform: translateX(-50%) scale(1);
+}
+@media (hover: hover) {
+[data-tooltip]:hover::after {
+  display: block;
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
 }
 @starting-style {
   [data-tooltip]:hover::after,
@@ -2074,9 +2130,11 @@ html[dir="rtl"] .drawer.is-start { transform: translateX(105%); }
   font: inherit;
   text-align: start;
 }
-a.list-item,
+a.list-item { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
+@media (hover: hover) {
 a.list-item:hover,
 button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
+}
 .list-item.is-active {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
@@ -2127,8 +2185,12 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
   overflow: hidden;
   white-space: nowrap;
 }
+@media (hover: hover) {
 .carousel-nav > a:hover { background: var(--carousel-dot-active, var(--accent)); }
+}
 /* Prev/next keep the dot-row's shape language but read as buttons. */
+/* The dot for the slide in view (assets/js/carousel.js marks it). */
+.carousel-nav > a[aria-current="true"] { background: var(--carousel-dot-active, var(--accent)); }
 .carousel-nav > .carousel-prev,
 .carousel-nav > .carousel-next {
   min-width: 1.6em;
@@ -2165,7 +2227,9 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
   font-size: 0.85em;
   text-decoration: none;
 }
+@media (hover: hover) {
 .scrollspy-link:hover { color: var(--text); }
+}
 .scrollspy-link.is-active {
   color: var(--scrollspy-link-active-fg, var(--accent));
   box-shadow: var(--scrollspy-link-active-marker, inset 0 -2px 0 var(--accent));
@@ -2327,9 +2391,11 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   color: var(--pagination-item-fg, var(--muted));
   font-size: 0.85em;
 }
+@media (hover: hover) {
 .pagination-item:hover {
   background: var(--pagination-item-bg-hover, var(--surface-2));
   color: var(--pagination-item-fg-hover, var(--text));
+}
 }
 .pagination-item.is-active {
   background: var(--pagination-item-bg-active, var(--accent));
@@ -2466,7 +2532,9 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   clip-path: inset(50%);
   opacity: 0;
 }
+@media (hover: hover) {
 .toggle-btn:hover { border-color: var(--toggle-btn-border-hover, var(--accent)); }
+}
 .toggle-btn:has(input:checked) {
   background: var(--toggle-btn-bg-on, var(--accent));
   color: var(--toggle-btn-fg-on, var(--on-accent));
@@ -2708,7 +2776,9 @@ html[data-accent="6"] { --accent: var(--accent-swatch-6, var(--accent)); --on-ac
   border: var(--scrollbar-thumb-border, 2px solid transparent);
   background-clip: padding-box;
 }
+@media (hover: hover) {
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover, var(--accent)); }
+}
 
 /* Form placeholder text — browsers default this to their own gray,
    independent of --input-fg. */
@@ -2896,7 +2966,9 @@ pre code { padding: 0; background: none; border-radius: 0; }
   background: var(--scrollbar-thumb, var(--border));
   border-radius: var(--scrollbar-radius, var(--radius));
 }
+@media (hover: hover) {
 .scroll::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover, var(--accent)); }
+}
 
 /* .container — a centered max-width column for sheets and readers. */
 .container {
@@ -3188,19 +3260,23 @@ html[data-motion="reduced"] .typing::before { animation: none; }
  * .push — eat the free space before this item (end-align it in a flex row:
  *   a nav's trailing controls, a list item's count).
  * .columns — fixed-ratio columns: style="--columns: 2fr 1fr" (any
- *   grid-template-columns value). Below 960px they become --columns-narrow
- *   (default one column).
+ *   grid-template-columns value). Up to 900px (the touch tiers) they become
+ *   --columns-narrow (default one column); inside a container (.modal,
+ *   .drawer, .cq) narrower than 480px they become one column too.
  * .is-auto on .select/.input — size to content instead of filling the row. */
 .push { margin-inline-start: auto; }
 .columns {
   display: grid;
   grid-template-columns: var(--columns, 1fr 1fr);
-  gap: var(--columns-gap, calc(1.25rem * var(--density)));
+  gap: var(--columns-gap, calc(var(--space-m) * 1.25 * var(--density)));
   align-items: start;
 }
 .columns > * { min-width: 0; }
-@media (max-width: 960px) {
+@media (max-width: 900px) {
   .columns { grid-template-columns: var(--columns-narrow, minmax(0, 1fr)); }
+}
+@container (max-width: 480px) {
+  .columns { grid-template-columns: minmax(0, 1fr); }
 }
 :is(.select, .input).is-auto { width: auto; flex: none; }
 
@@ -3486,7 +3562,9 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   opacity: 0.7;
 }
 :is(.context-menu, .menubar) .has-submenu > ul { display: none; }
+@media (hover: hover) {
 :is(.context-menu, .menubar) .has-submenu:is(:hover, :focus-within) > ul { display: block; }
+}
 @media (min-width: 901px) and (hover: hover) {
   .context-menu .has-submenu > ul {
     position: absolute;
@@ -3543,4 +3621,24 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 }
 /* A menu popover holding flyouts must not clip them. */
 .context-menu[popover]:has(.has-submenu) { overflow: visible; }
+
+/* --- v5 containers (PLAN.md §2) --------------------------------------------
+ * Components respond to the box they sit in through @container rules. A size
+ * container also applies layout containment: it becomes the containing block
+ * for position:fixed descendants and a stacking context. So core makes only
+ * boxes that are already isolated into containers (.modal, .drawer), and
+ * .cq opts any other box in: use it on a box whose width comes from outside
+ * (not one that shrinks to its content) and that holds no fixed overlays or
+ * surfaces that must spill out of it. */
+:is(.modal, .drawer, .cq) { container-type: inline-size; }
+
+/* Narrow boxes: a value row puts its label on its own line. */
+@container (max-width: 480px) {
+  .value-row { grid-template-columns: minmax(0, 1fr) var(--value-row-value, 4.5rem); }
+  .value-row > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .value-row { grid-template-columns: minmax(0, 1fr) var(--value-row-value, 4.5rem); }
+  .value-row > :first-child { grid-column: 1 / -1; }
+}
 }

@@ -5,6 +5,22 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Fix: scrolling and carousels.** `.app-main` is no longer a scroll
+  container (`overflow-x: clip; overflow-y: visible`). With v4's
+  `overflow: auto`, anything sticking out of it (an open menu near the
+  bottom) turned it into an inner scroller inside the scrolling page.
+  Sticky elements inside main now stick to the screen. Carousel dots and
+  prev/next no longer jump the page: `assets/js/carousel.js` scrolls only
+  the carousel, steps prev/next from the current slide, and marks the
+  current dot with `aria-current` (links still work without JS).
+
+- **v5: containers and hover.** `.modal`, `.drawer` and the new opt-in `.cq`
+  are size containers for `@container` rules (not `.app-main` or panels:
+  a container traps fixed overlays and creates a stacking context).
+  `.columns` collapses up to 900px (was 960px) and in containers narrower
+  than 480px. Hover-only styles in core now sit inside
+  `@media (hover: hover)`.
+
 - **v5, slice 2: floating surfaces, nested menus, nesting fixes** (found by
   `nesting.html`).
   - `[popover]` popovers, context menus and dropdowns now open in the top
