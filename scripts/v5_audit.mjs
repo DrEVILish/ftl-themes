@@ -170,7 +170,7 @@ function measure({ tier }) {
     return boxOf.get(el);
   };
   const edge = [];
-  const EDGE_EXEMPT = '.badge, code, kbd, samp, mark, .mention, .tag, .visually-hidden, legend, [data-audit-edge="ignore"]';
+  const EDGE_EXEMPT = '.badge, code, kbd, samp, mark, .mention, .tag, .visually-hidden, legend, .carousel-prev, .carousel-next, [data-audit-edge="ignore"]';
   const range = document.createRange();
   for (const el of document.body.querySelectorAll('*')) {
     const texts = [...el.childNodes].filter(n => n.nodeType === 3 && n.data.trim());
@@ -178,7 +178,8 @@ function measure({ tier }) {
     // Exempt, whatever their display: chips (badges, code, kbd, samp, mark,
     // mentions, tags), whose tight padding is the design and of which WCAG
     // asks nothing; hidden labels; captions that sit on a frame line by
-    // design (legend); and an explicit opt-out, data-audit-edge="ignore",
+    // design (legend); single-glyph arrow buttons (carousel prev/next),
+    // centred in a fixed box, not text; and an explicit opt-out, data-audit-edge="ignore",
     // on the text's element, an ancestor, or the box itself.
     if (el.closest(EDGE_EXEMPT)) continue;
     const b = box(el);

@@ -5,6 +5,12 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- New theme `motorsport-telemetry`: pit-wall and broadcast timing graphics on
+  carbon, with a painted timing-tower rail, rev-light strip, sector-coloured
+  selection, tyre-compound badge chips, a rev-counter dial gauge, a
+  validated chart palette and telemetry-trace XL gutter art. Vendors
+  Titillium Web (OFL). 14 references in `references/motorsport-telemetry/`.
+
 - **v5 kits, emails, scheduling and quality tooling.**
   - New component groups with pages and docs: social (`components-social.html`),
     game HUD (`hud.html`: overlay regions, resource bars with damage trail,

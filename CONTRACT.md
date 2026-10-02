@@ -1993,6 +1993,7 @@ for what, if anything, it cites.
 | `liquid-glass` | Liquid Glass | Translucent capsule controls with a bright specular rim floating inset over a vivid wallpaper — never docked to an edge, content scrolls under the glass. | |
 | `material` | Material | Layered elevation shadows instead of gloss, and underlined (not boxed) text fields. | |
 | `matrix` | The Matrix | `#00FF41` phosphor green — the actual hex the reference on-screen code uses. | ✓ |
+| `motorsport-telemetry` | Motorsport Telemetry | Timing-tower rail, 15-LED rev-light strip under the bar, purple/green/yellow sector colours, tyre-compound badge rings, tabular Titillium figures on carbon | |
 | `msdos` | MS-DOS (Norton Commander) | Double-line (`═`/`║`) box borders; only cyan/yellow count as "bright". | |
 | `nerv` | NERV (Evangelion) | Hazard-stripe orange on bunker black; crimson reserved for real alerts. | |
 | `nokia-3310` | Nokia 3310 | Selection is a hard colour invert, not a highlight — the phone had no second hue to spend. | |

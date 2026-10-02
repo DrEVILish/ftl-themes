@@ -1,0 +1,740 @@
+/* ftl-themes: Motorsport Telemetry
+ * Theme-Name: Motorsport Telemetry
+ * Description: Pit-wall and broadcast timing graphics on carbon: a timing-tower rail, purple/green/yellow sector colours, tyre-compound chips, rev-light strips and tabular figures everywhere.
+ *
+ * Inspired by open-wheel racing's broadcast timing graphics, the pit-wall
+ * timing screens and a modern car's steering-wheel dash. Generic on
+ * purpose: no series, team, tyre-maker or broadcaster names, logos or
+ * marks, and no real driver codes anywhere (the rail's tower is abstract).
+ *
+ * The colour system is the sport's own:
+ *   - Sector colours: purple = fastest overall (the accent, selection,
+ *     focus), green = personal best (success), yellow = slower (warning).
+ *   - Tyre compounds: soft red (danger), medium yellow (warning), hard white
+ *     (the default badge ring), intermediate green (success), wet blue.
+ *     Badges are drawn as compound chips: a dark disc with a coloured ring.
+ *   - Rev lights: green, red, blue, left to right. Meters run that way;
+ *     the blue shift light is the --flare.
+ * Surfaces are carbon fibre: a near-black twill so faint it reads as
+ * material, never as pattern behind text. Every number is tabular.
+ *
+ * Fonts: Titillium Web (OFL, vendored in assets/fonts/, see NOTICE.md) is
+ * the UI and timing face; its figures are tabular by default. The
+ * broadcast graphics' own face is proprietary and is not named.
+ */
+
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  /* Titillium's own metrics give a 1.52em content area; these trim it to
+     the glyphs so tight chips and readouts keep their padding. */
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+  /* Titillium's own metrics give a 1.52em content area; these trim it to
+     the glyphs so tight chips and readouts keep their padding. */
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-BoldItalic.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: italic;
+  font-display: swap;
+  /* Titillium's own metrics give a 1.52em content area; these trim it to
+     the glyphs so tight chips and readouts keep their padding. */
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+html[data-theme="motorsport-telemetry"] {
+  color-scheme: dark;
+  --bg: #07080a;
+  --surface: #111317;
+  --surface-2: #181b20;
+  --border: #2e333b;
+  --hairline: #1f2329;
+  --text: #f3f4f6;
+  --muted: #9ba3ae;
+  --accent: #8b3ff0;          /* purple sector: fastest overall */
+  --accent-2: #1fcf6b;        /* green sector: personal best */
+  --danger: #e8002d;          /* soft compound */
+  --success: #1fcf6b;         /* green sector / intermediate */
+  --warning: #ffd60a;         /* yellow sector / medium compound */
+  --on-accent: #ffffff;
+  --on-danger: #ffffff;
+  --on-success: #03140a;
+  --accent-text: #c18cff;
+  --success-text: #1fcf6b;
+  --warning-text: #ffd60a;
+  --danger-text: #ff4d5e;
+  --radius: 2px;
+  --font: "Titillium Web", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  --flare: #2fa8ff;           /* the blue shift light */
+  --focus: #b57dff;
+  --focus-ring: 0 0 0 4px rgba(139, 63, 240, 0.35);
+  --link: #c18cff;
+  --label-tracking: 0.08em;
+  --label-transform: uppercase;
+  --selection-bg: rgba(139, 63, 240, 0.55);
+  --selection-fg: #ffffff;
+  --scrollbar-thumb: #2e333b;
+  --scrollbar-thumb-hover: #4a515c;
+  --scrollbar-track: #0b0c0f;
+  --input-caret: #c18cff;
+  --input-placeholder: #7d8692;
+
+  /* --- Materials -------------------------------------------------------- */
+  --mt-soft: #e8002d;
+  --mt-medium: #ffd60a;
+  --mt-hard: #eceae4;
+  --mt-inter: #1fcf6b;
+  --mt-wet: #2fa8ff;
+  --mt-purple: #8b3ff0;
+  /* 2x2 twill: two diagonal stripe sets offset into a woven step, at a few
+     percent of white so it shows as material only under a raking glance. */
+  --mt-twill:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.35) 0 2px, transparent 2px 4px);
+  --mt-carbon: var(--mt-twill), linear-gradient(180deg, #15181c, #0f1114);
+  --mt-carbon-deep: var(--mt-twill), #0b0c0f;
+  --mt-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%);
+
+  /* --- Buttons: steering-wheel keys on a carbon face ---------------------- */
+  --btn-bg: linear-gradient(180deg, #20242b, #181b20);
+  --btn-bg-hover: linear-gradient(180deg, #2a2f37, #1f2329);
+  --btn-fg: var(--text);
+  --btn-border: #3a404a;
+  --btn-border-hover: #c18cff;
+  --btn-radius: 2px;
+  --btn-tracking: 0.06em;
+  --btn-transform: uppercase;
+  --btn-weight: 700;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 0 #000;
+  --btn-shadow-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(193, 140, 255, 0.35);
+
+  --input-bg: #0b0c0f;
+  --input-fg: var(--text);
+  --input-border: #2e333b;
+  --input-radius: 2px;
+  --input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+
+  /* --- Surfaces: carbon panels with a sector-coloured header tab ---------- */
+  --panel-bg: var(--mt-sheen), var(--mt-carbon);
+  --panel-border: #23272e;
+  --panel-border-width: 1px;
+  --panel-radius: 2px;
+  --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 6px 18px rgba(0, 0, 0, 0.55);
+  --panel-header-bg: linear-gradient(100deg, var(--mt-purple) 0 5px, transparent 5px), #1a1d23;
+  --panel-header-fg: var(--text);
+  --card-bg: var(--mt-sheen), var(--mt-carbon);
+  --card-border: #23272e;
+  --card-radius: 2px;
+  --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --modal-bg: var(--mt-sheen), var(--mt-carbon);
+  --modal-border: #3a404a;
+  --modal-radius: 2px;
+  --modal-header-bg: linear-gradient(100deg, var(--mt-purple) 0 6px, transparent 6px), #1a1d23;
+  --modal-header-fg: var(--text);
+  --modal-shadow: inset 0 3px 0 var(--mt-purple), 0 24px 60px rgba(0, 0, 0, 0.8);
+  --drawer-bg: var(--mt-carbon);
+  --drawer-border: #3a404a;
+  --overlay-bg: rgba(3, 4, 6, 0.78);
+
+  /* Close: a square steering-wheel key with a cross; it lights soft-red. */
+  --btn-close-glyph: "\2715";
+  --btn-close-width: 1.9em;
+  --btn-close-height: 1.9em;
+  --btn-close-pad: 0;
+  --btn-close-glyph-size: 0.95em;
+  --btn-close-bg: #0b0c0f;
+  --btn-close-bg-hover: var(--mt-soft);
+  --btn-close-fg-hover: #ffffff;
+  --btn-close-border: #3a404a;
+  --btn-close-border-width: 1px;
+  --btn-close-radius: 2px;
+
+  /* --- Tables: the timing tower ------------------------------------------ */
+  --table-head-bg: #0b0c0f;
+  --table-head-fg: var(--muted);
+  --table-head-rule: var(--mt-purple);
+  --table-head-rule-width: 2px;
+  --table-head-tracking: 0.1em;
+  --table-head-transform: uppercase;
+  --table-rule: #1c2025;
+  --row-alt-bg: rgba(255, 255, 255, 0.022);
+  --row-hover-bg: rgba(193, 140, 255, 0.07);
+  --row-selected-bg: rgba(139, 63, 240, 0.26);
+  --row-selected-fg: #ffffff;
+  --row-active-marker: inset 4px 0 0 var(--mt-purple);
+  --table-group-bg: #1a1d23;
+
+  /* --- Navigation: broadcast caps, purple underline ----------------------- */
+  --nav-bg: var(--mt-carbon-deep);
+  --nav-rule: #23272e;
+  --nav-brand-fg: #ffffff;
+  --nav-item-fg: #c9ced5;
+  --nav-item-fg-active: #ffffff;
+  --nav-item-bg-active: rgba(139, 63, 240, 0.22);
+  --nav-item-radius: 2px;
+  --tab-fg: #aab2bc;
+  --tab-fg-active: #ffffff;
+  --tab-fg-hover: #ffffff;
+  --tab-underline-active: var(--mt-purple);
+  --tab-bg-active: rgba(139, 63, 240, 0.12);
+  --tabbar-bg: #0b0c0f;
+  --tabbar-indicator: var(--mt-purple);
+  --nav-rail-bg: var(--mt-carbon-deep);
+  --nav-rail-marker: var(--mt-purple);
+
+  /* --- Badges: tyre-compound chips. Dark disc, coloured sidewall ring. ---- */
+  --badge-bg: #0b0c0f;
+  --badge-fg: var(--mt-hard);
+  --badge-border: var(--mt-hard);
+  --badge-radius: 999px;
+  --badge-bg-active: var(--mt-purple);
+  --badge-fg-active: #ffffff;
+
+  --alert-bg: var(--mt-carbon);
+  --alert-border: #3a404a;
+  --toast-bg: var(--mt-carbon);
+  --toast-border: #3a404a;
+  --toast-shadow: inset 4px 0 0 var(--mt-purple), 0 10px 28px rgba(0, 0, 0, 0.7);
+  /* Tooltips: the white lower-third caption box. */
+  --tooltip-bg: #f3f4f6;
+  --tooltip-fg: #0b0c0f;
+  --tooltip-border: #ffffff;
+  --dropdown-bg: #14171b;
+  --dropdown-border: #3a404a;
+  --dropdown-item-bg-hover: rgba(139, 63, 240, 0.3);
+  --dropdown-item-fg-hover: #ffffff;
+  --context-menu-bg: #14171b;
+  --context-menu-border: #3a404a;
+  --popover-bg: #14171b;
+  --popover-border: #3a404a;
+  --segmented-bg: #0b0c0f;
+  --segmented-border: #2e333b;
+  --segmented-item-fg: #c9ced5;
+  --segmented-item-bg-active: var(--mt-purple);
+  --segmented-item-fg-active: #ffffff;
+  --pagination-item-bg-active: var(--mt-purple);
+  --pagination-item-fg-active: #ffffff;
+  --kbd-bg: #1a1d23;
+  --kbd-border: #3a404a;
+  --kbd-fg: var(--text);
+  --log-bg: #0b0c0f;
+  --log-border: #23272e;
+  --skeleton-bg: linear-gradient(90deg, #15181c, #20242b, #15181c);
+
+  /* --- Instruments: the steering-wheel dash and the rev counter ----------- */
+  --readout-bg: #050607;
+  --readout-fg: #ffffff;
+  --readout-border: #2e333b;
+  --readout-border-width: 1px;
+  --readout-radius: 2px;
+  --readout-padding: calc(0.08em + 4px) 0.5em;
+  --readout-font: var(--font);
+  --readout-weight: 700;
+  --readout-tracking: 0;
+  --readout-glow: none;
+  --readout-unit-fg: var(--muted);
+  --meter-track: #0b0c0f;
+  --meter-border: #2e333b;
+  --meter-radius: 1px;
+  --meter-low: var(--mt-inter);
+  --meter-mid: var(--mt-medium);
+  --meter-high: var(--mt-soft);
+  --meter-peak-fg: var(--mt-wet);
+  --progress-bg: #0b0c0f;
+  --progress-fill: var(--mt-purple);
+  --progress-border: #2e333b;
+  --progress-border-width: 1px;
+  --progress-radius: 1px;
+  --progress-height: 0.5rem;
+  --progress-ring-fill: var(--mt-purple);
+  --progress-ring-track: #1f2329;
+  --slider-height: 4px;
+  --slider-radius: 1px;
+  --slider-bg: #2e333b;
+  --slider-border-width: 0;
+  --slider-range-fill: var(--mt-purple);
+  --slider-thumb-size: 16px;
+  --slider-thumb-radius: 2px;
+  --slider-thumb-bg: linear-gradient(90deg, #d9dce1, #ffffff 50%, #d9dce1);
+  --slider-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  --switch-bg: #0b0c0f;
+  --switch-bg-on: var(--mt-inter);
+  --switch-border: #3a404a;
+  --switch-border-on: var(--mt-inter);
+  --switch-radius: 2px;
+  --switch-thumb-radius: 1px;
+  --switch-thumb-bg: #9ba3ae;
+  --switch-thumb-bg-on: #ffffff;
+  --lamp-radius: 50%;
+  --lamp-off: #1b1f25;
+  --lamp-on: var(--mt-inter);
+  --lamp-glow: 0 0 0.45rem rgba(31, 207, 107, 0.7);
+  --indicator-fg: var(--mt-purple);
+  --indicator-track: #1f2329;
+  --spinner-fg: #c18cff;
+  --spinner-track: #1f2329;
+
+  /* Rev counter: carbon face, white ticks, green working band that turns
+     yellow then red, a red redline sector, and a red needle. */
+  --gauge-face: radial-gradient(circle, #121418 0 55%, #08090b 100%);
+  --gauge-border: #2e333b;
+  --gauge-shadow: inset 0 0 0 3px #050607, 0 4px 14px rgba(0, 0, 0, 0.6);
+  --gauge-track: #1b1f25;
+  --gauge-fill: var(--mt-inter);
+  --gauge-fill-warn: var(--mt-medium);
+  --gauge-fill-error: var(--mt-soft);
+  --gauge-redline-color: var(--mt-soft);
+  --gauge-redline-fg: #ff4d5e;
+  --gauge-tick: #f3f4f6;
+  --gauge-tick-minor: #5c636d;
+  --gauge-needle: #ff3b4f;
+  --gauge-hub: #2e333b;
+  --gauge-label-fg: var(--text);
+  --gauge-readout-fg: #ffffff;
+  --countdown-fg: #ffffff;
+  --countdown-font: var(--font);
+  --countdown-unit-fg: var(--muted);
+  --clock-hand: #f3f4f6;
+  --clock-second-hand: #ff3b4f;
+  --compass-needle: #ff3b4f;
+  --compass-north: #ff4d5e;
+  --compass-strip-bg: #0b0c0f;
+  --compass-strip-border: #2e333b;
+  --compass-lubber: var(--mt-medium);
+  --sparkline-stroke: #c18cff;
+  --donut-track: #1b1f25;
+  --donut-hole: var(--surface);
+  --donut-gap-color: var(--surface);
+  --heatmap-radius: 1px;
+  --timeline-line: #2e333b;
+  --timeline-done: var(--mt-inter);
+  --timeline-current: var(--mt-purple);
+  --timeline-dot-bg: #0b0c0f;
+  --timeline-dot-border: #3a404a;
+  --battery-border: #9ba3ae;
+  --battery-fill: var(--mt-inter);
+  --signal-on: var(--mt-inter);
+  --signal-off: #2e333b;
+  --map-bg: #0b0c0f;
+  --map-border: #2e333b;
+  --map-pin-bg: var(--mt-purple);
+  --props-key-fg: var(--muted);
+  --props-rule: #1c2025;
+
+  /* Charts: the data-analysis screen. Recessive grid, thin 2px traces, a
+     validated series order (dataviz validate_palette.js, dark mode against
+     --surface: lightness band, chroma, adjacent CVD and normal-vision
+     separation all PASS). Purple leads; red is never next to green. */
+  --chart-series-1: #9a5cf5;
+  --chart-series-2: #df4a4a;
+  --chart-series-3: #2b93d9;
+  --chart-series-4: #169e74;
+  --chart-series-5: #b98a00;
+  --chart-series-6: #c95fb0;
+  --chart-grid: #1c2025;
+  --chart-axis: #3a404a;
+  --chart-text: var(--muted);
+  --chart-font: var(--font);
+  --chart-line-width: 2;
+  --chart-crosshair: #c9ced5;
+  --chart-plot-bg: #0b0c0f;
+  --chart-highlight: #ffffff;
+  --chart-selection: rgba(139, 63, 240, 0.18);
+  --chart-annotation: var(--mt-medium);
+  --chart-seq-hue: var(--mt-purple);
+  --chart-div-neg: #df4a4a;
+  --chart-div-pos: #169e74;
+  --legend-swatch-radius: 1px;
+  --bar-chart-bar: var(--mt-purple);
+  --bar-chart-bar-alt: #3a404a;
+  --bar-chart-axis: #3a404a;
+  --bar-chart-radius: 1px 1px 0 0;
+
+  /* --- Mixing console: steering-wheel rotaries and keys ------------------ */
+  --knob-color: #1d2027;
+  --knob-arc: var(--mt-purple);
+  --knob-track: #2e333b;
+  --knob-border: #3a404a;
+  --knob-pointer: #ffffff;
+  --key-bg: #181b20;
+  --key-fg: var(--text);
+  --key-border: #3a404a;
+  --key-radius: 2px;
+  --key-sel: var(--mt-purple);
+  --key-sel-fg: #ffffff;
+  --key-mute: var(--mt-soft);
+  --key-solo: var(--mt-medium);
+  --key-solo-fg: #111317;
+  --key-on: var(--mt-inter);
+  --key-on-fg: #03140a;
+  --strip-bg: var(--mt-carbon);
+  --strip-border: #23272e;
+  --mixer-bg: var(--mt-carbon-deep);
+  --scribble-bg: #050607;
+  --scribble-fg: #ffffff;
+  --scribble-num-fg: var(--muted);
+  --scribble-radius: 1px;
+  --fader-cap-bg: linear-gradient(180deg, #3a404a, #f3f4f6 46% 54%, #3a404a);
+  --fader-cap-border: #050607;
+  --fader-track: #050607;
+  --eq-bg: #0b0c0f;
+  --eq-grid: #1c2025;
+  --eq-line: #c18cff;
+  --eq-fill: rgba(139, 63, 240, 0.15);
+  --eq-border: #2e333b;
+  --transport-bg: var(--mt-carbon);
+  --transport-border: #23272e;
+  --transport-radius: 2px;
+  --go-bg: var(--mt-inter);
+  --go-fg: #03140a;
+  --go-border: #0d6b36;
+
+  /* --- HUD: the on-board graphic ----------------------------------------- */
+  --hud-font: var(--font);
+  --hud-panel-bg: rgba(8, 9, 11, 0.86);
+  --hud-panel-border: #2e333b;
+  --hud-panel-radius: 2px;
+  --hud-health: var(--mt-inter);
+  --hud-mana: var(--mt-wet);
+  --hud-stamina: var(--mt-medium);
+  --hud-bar-track: #0b0c0f;
+  --hud-bar-border: #2e333b;
+  --hud-bar-radius: 1px;
+  --hud-slot-bg: #14171b;
+  --hud-slot-border: #3a404a;
+  --hud-slot-radius: 2px;
+  --hud-slot-selected: var(--mt-purple);
+  --hud-prompt-bg: #f3f4f6;
+  --hud-prompt-fg: #0b0c0f;
+  --rarity-common: #9ba3ae;
+  --rarity-uncommon: var(--mt-inter);
+  --rarity-rare: var(--mt-wet);
+  --rarity-epic: #b57dff;
+  --rarity-legendary: var(--mt-medium);
+
+  /* --- Planner: race weekend schedule ------------------------------------ */
+  --calendar-today-ring: var(--mt-purple);
+  --calendar-today-bg: rgba(139, 63, 240, 0.16);
+  --calendar-selected-bg: rgba(139, 63, 240, 0.3);
+  --calendar-now: var(--mt-soft);
+  --calendar-grid-line: #1c2025;
+  --calendar-event-bar: var(--mt-purple);
+  --calendar-weekend-bg: rgba(255, 255, 255, 0.02);
+  --gantt-bar: var(--mt-purple);
+  --gantt-critical: var(--mt-soft);
+  --gantt-today: var(--mt-medium);
+  --gantt-grid-line: #1c2025;
+  --gantt-header-bg: #0b0c0f;
+  --gantt-milestone: var(--mt-medium);
+  --gantt-today-fg: #111317;
+  --kanban-column-bg: #0d0f12;
+  --kanban-column-border: #23272e;
+  --kanban-column-accent: var(--mt-purple);
+  --kanban-card-bg: var(--mt-carbon);
+  --kanban-card-border: #2e333b;
+  --kanban-card-border-hover: #c18cff;
+  --schedule-color: var(--mt-purple);
+  --schedule-item-bg: #14171b;
+
+  /* --- Media: onboard audio ---------------------------------------------- */
+  --scrubber-track: #2e333b;
+  --scrubber-fill: var(--mt-purple);
+  --scrubber-thumb: #ffffff;
+  --waveform-bg: #0b0c0f;
+  --waveform-played: #9a5cf5;
+  --waveform-unplayed: #3a404a;
+  --waveform-head: #ffffff;
+  --now-playing-bg: var(--mt-carbon);
+  --track-playing-fg: #c18cff;
+  --equaliser-color: var(--mt-inter);
+
+  /* --- Prose and code: the engineer's notes ------------------------------ */
+  --prose-marker: var(--mt-purple);
+  --prose-quote-rule: var(--mt-purple);
+  --prose-rule: #2e333b;
+  --mark-bg: var(--mt-medium);
+  --mark-fg: #111317;
+  --callout-note: var(--mt-wet);
+  --callout-tip: var(--mt-inter);
+  --callout-important: #b57dff;
+  --callout-warning: var(--mt-medium);
+  --callout-caution: var(--mt-soft);
+  --callout-caution-text: #ff4d5e;
+  --code-bg: #0b0c0f;
+  --code-fg: #e7e9ec;
+  --code-block-bg: #0b0c0f;
+  --code-block-border: #23272e;
+  --code-block-header-bg: #1a1d23;
+  --code-block-header-fg: var(--muted);
+  --code-keyword: #c18cff;
+  --code-string: #4fe08c;
+  --code-number: #ffd60a;
+  --code-comment: #8a929d;
+  --code-function: #5cc0ff;
+  --code-type: #ff9e5c;
+  --code-variable: #e7e9ec;
+  --code-punctuation: #9ba3ae;
+  --code-tag: #ff6b7a;
+  --code-attr: #ffd60a;
+  --code-inserted: #4fe08c;
+  --code-deleted: #ff6b7a;
+  --code-line-number: #5c636d;
+  --code-highlight-bar: var(--mt-purple);
+  --code-highlight-bg: rgba(139, 63, 240, 0.12);
+  --steps-done-bg: var(--mt-inter);
+  --steps-done-fg: #03140a;
+  --steps-current: var(--mt-purple);
+  --steps-current-fg: #ffffff;
+  --message-bg: #14171b;
+  --message-border: #2e333b;
+  --message-own-bg: #2a1747;
+  --message-own-fg: #ffffff;
+  --message-own-meta-fg: #d8c2ff;
+  --message-own-border: var(--mt-purple);
+  --attachment-bg: #14171b;
+  --attachment-border: #2e333b;
+  /* Presence colours: light enough that core picks black text on them. */
+  --presence-color-1: #c18cff;
+  --presence-color-2: #ff7b88;
+  --presence-color-3: #6cc8ff;
+  --presence-color-4: #4fe08c;
+  --presence-color-5: #ffd60a;
+  --presence-color-6: #f39ad6;
+
+  /* --- The shell: pit wall --------------------------------------------- *
+   * A carbon bar with the rev-light strip along its lower edge; the timing
+   * tower down the left (the rail, painted, abstract: positions, neutral
+   * stripes, interval bars and tyre rings); the data on the right; a
+   * race-control strip along the bottom on a green track-clear rule. */
+  --app-padding: 0;
+  --app-gap: 0;
+  --app-columns: 4.75rem minmax(0, 1fr);
+  --app-areas: "bar bar" "rail main" "rail status";
+  --app-bg: transparent;
+  --app-bar-bg: #0e1013;
+  --app-bar-fg: #e7e9ec;
+  --app-bar-rule: #23272e;
+  --app-bar-rule-width: 1px;
+  --app-bar-padding: 0.55rem 1.1rem 1rem;
+  --app-rail-display: flex;
+  --app-rail-empty-display: flex;
+  --app-rail-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='552' viewBox='0 0 76 552'%3E %3Crect width='76' height='28' fill='%231a1d23'/%3E%3Crect width='76' height='2' y='26' fill='%238b3ff0'/%3E %3Ctext x='38' y='18' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='1' fill='%23e7e9ec'%3ELAP 34/57%3C/text%3E %3Crect x='0' y='30' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='33' width='20' height='20' rx='1' fill='%23f3f4f6'/%3E%3Ctext x='14' y='47.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%230b0c0f'%3E1%3C/text%3E%3Crect x='28' y='35' width='3' height='16' fill='%238a93a0'/%3E%3Crect x='35' y='41' width='16' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='43' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='56' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='59' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='73.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E2%3C/text%3E%3Crect x='28' y='61' width='3' height='16' fill='%234f6d8f'/%3E%3Crect x='35' y='67' width='12.1' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='69' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='82' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='85' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='99.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E3%3C/text%3E%3Crect x='28' y='87' width='3' height='16' fill='%237b5ea7'/%3E%3Crect x='35' y='93' width='16.5' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='95' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='108' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='111' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='125.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E4%3C/text%3E%3Crect x='28' y='113' width='3' height='16' fill='%234f8f7a'/%3E%3Crect x='35' y='119' width='6.6' height='4' fill='%238b3ff0'/%3E%3Ccircle cx='66' cy='121' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='134' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='137' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='151.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E5%3C/text%3E%3Crect x='28' y='139' width='3' height='16' fill='%23a0794f'/%3E%3Crect x='35' y='145' width='14.3' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='147' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='160' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='163' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='177.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E6%3C/text%3E%3Crect x='28' y='165' width='3' height='16' fill='%236b7682'/%3E%3Crect x='35' y='171' width='9.9' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='173' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='186' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='189' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='203.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E7%3C/text%3E%3Crect x='28' y='191' width='3' height='16' fill='%238f4f5c'/%3E%3Crect x='35' y='197' width='18.7' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='199' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='212' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='215' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='229.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E8%3C/text%3E%3Crect x='28' y='217' width='3' height='16' fill='%235c7f9e'/%3E%3Crect x='35' y='223' width='5.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='225' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='238' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='241' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='255.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E9%3C/text%3E%3Crect x='28' y='243' width='3' height='16' fill='%239a8c5a'/%3E%3Crect x='35' y='249' width='8.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='251' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='264' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='267' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='281.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E10%3C/text%3E%3Crect x='28' y='269' width='3' height='16' fill='%235f5f8f'/%3E%3Crect x='35' y='275' width='15.4' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='277' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='290' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='293' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='307.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E11%3C/text%3E%3Crect x='28' y='295' width='3' height='16' fill='%238a93a0'/%3E%3Crect x='35' y='301' width='11.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='303' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='316' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='319' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='333.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E12%3C/text%3E%3Crect x='28' y='321' width='3' height='16' fill='%234f6d8f'/%3E%3Crect x='35' y='327' width='6.1' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='329' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='342' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='345' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='359.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E13%3C/text%3E%3Crect x='28' y='347' width='3' height='16' fill='%237b5ea7'/%3E%3Crect x='35' y='353' width='17.1' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='355' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='368' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='371' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='385.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E14%3C/text%3E%3Crect x='28' y='373' width='3' height='16' fill='%234f8f7a'/%3E%3Crect x='35' y='379' width='13.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='381' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='394' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='397' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='411.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E15%3C/text%3E%3Crect x='28' y='399' width='3' height='16' fill='%23a0794f'/%3E%3Crect x='35' y='405' width='4.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='407' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='420' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='423' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='437.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E16%3C/text%3E%3Crect x='28' y='425' width='3' height='16' fill='%236b7682'/%3E%3Crect x='35' y='431' width='8.8' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='433' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='446' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='449' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='463.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E17%3C/text%3E%3Crect x='28' y='451' width='3' height='16' fill='%238f4f5c'/%3E%3Crect x='35' y='457' width='16.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='459' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='472' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='475' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='489.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E18%3C/text%3E%3Crect x='28' y='477' width='3' height='16' fill='%235c7f9e'/%3E%3Crect x='35' y='483' width='7.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='485' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='498' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='501' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='515.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E19%3C/text%3E%3Crect x='28' y='503' width='3' height='16' fill='%239a8c5a'/%3E%3Crect x='35' y='509' width='11.6' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='511' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='524' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='527' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='541.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E20%3C/text%3E%3Crect x='28' y='529' width='3' height='16' fill='%235f5f8f'/%3E%3Crect x='35' y='535' width='18.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='537' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3C/svg%3E") 0 0 / 100% auto no-repeat, var(--mt-carbon-deep);
+  --app-main-bg: transparent;
+  --app-main-padding: 1.25rem 1.5rem;
+  --app-main-padding-tablet: 1rem 1.1rem;
+  --app-main-padding-mobile: 0.75rem;
+  --app-rail-display-tablet: none;
+  --app-rail-display-mobile: none;
+  --app-status-bg: #0b0c0f;
+  --app-status-fg: #c9ced5;
+  --app-status-rule: var(--mt-inter);
+  --app-status-padding: 0.4rem 1.1rem;
+}
+
+/* L0 backdrop: deep carbon. */
+html[data-theme="motorsport-telemetry"] {
+  background: var(--mt-twill), var(--bg);
+  background-color: var(--bg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Type: broadcast caps -------------------------------------------------- */
+html[data-theme="motorsport-telemetry"] :is(h1, h2, h3) {
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+html[data-theme="motorsport-telemetry"] h4 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+html[data-theme="motorsport-telemetry"] .nav-brand {
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+html[data-theme="motorsport-telemetry"] :is(.panel-header, .modal-header) {
+  padding-inline-start: calc(var(--surface-pad, 1rem) + 0.35rem);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom-color: #23272e;
+}
+html[data-theme="motorsport-telemetry"] :is(.stat-value, .readout, .countdown, .price) {
+  font-family: var(--font);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+html[data-theme="motorsport-telemetry"] .stat-label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+/* --- Buttons --------------------------------------------------------------- */
+html[data-theme="motorsport-telemetry"] .btn-primary {
+  --btn-bg: linear-gradient(180deg, #9a55f5, #7f33e6);
+  --btn-bg-hover: linear-gradient(180deg, #a666ff, #8b3ff0);
+  --btn-border: #5d1fb8;
+  --btn-border-hover: #d8c2ff;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 0 #000;
+}
+html[data-theme="motorsport-telemetry"] .btn-danger { --btn-border: #9b0020; --btn-border-hover: #ffb3bd; }
+html[data-theme="motorsport-telemetry"] .btn-success { --btn-border: #0d6b36; --btn-border-hover: #b9f5d2; }
+html[data-theme="motorsport-telemetry"] .btn-ghost { --btn-shadow: none; }
+/* Tracked caps make long tokens wider than core's break-word allows for. */
+html[data-theme="motorsport-telemetry"] .btn { overflow-wrap: anywhere; }
+html[data-theme="motorsport-telemetry"] .btn-secondary { --btn-fg: var(--accent-text); --btn-shadow: none; }
+html[data-theme="motorsport-telemetry"] .btn-go { text-transform: uppercase; letter-spacing: 0.12em; font-style: italic; }
+
+/* Focus: a purple ring, never removed. */
+html[data-theme="motorsport-telemetry"] :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* --- Badges: tyre chips. The ring is the compound; text keeps its tint. --- */
+html[data-theme="motorsport-telemetry"] .badge {
+  border-width: 2px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+html[data-theme="motorsport-telemetry"] .badge-danger { --badge-border: var(--mt-soft); }
+html[data-theme="motorsport-telemetry"] .badge-warning { --badge-border: var(--mt-medium); }
+html[data-theme="motorsport-telemetry"] .badge-success { --badge-border: var(--mt-inter); }
+html[data-theme="motorsport-telemetry"] .badge-accent { --badge-border: var(--mt-purple); }
+
+/* --- Tables: timing-screen rows ------------------------------------------- */
+html[data-theme="motorsport-telemetry"] .table th { font-size: 0.75em; font-weight: 700; }
+html[data-theme="motorsport-telemetry"] .table td:is([data-num], .num, .is-num),
+html[data-theme="motorsport-telemetry"] .table th:is([data-num], .num, .is-num) { text-align: end; }
+html[data-theme="motorsport-telemetry"] .table tr.is-selected td:first-child { box-shadow: inset 4px 0 0 var(--mt-purple); }
+
+/* --- Tabs and nav: the active item gets the purple sector bar ------------- */
+html[data-theme="motorsport-telemetry"] :is(.tab, .nav-item) { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+html[data-theme="motorsport-telemetry"] .tabs > .tab { border-bottom-width: 3px; }
+html[data-theme="motorsport-telemetry"] .app-bar .nav-item:is([aria-current], .is-active) { box-shadow: inset 0 -3px 0 var(--mt-purple); }
+
+/* --- Meters and progress: hard-edged bars, no gloss ----------------------- */
+html[data-theme="motorsport-telemetry"] :is(.meter, .progress) { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9); }
+/* The rev counter's readout sits in a dash window. */
+html[data-theme="motorsport-telemetry"] .gauge-readout { font-weight: 700; }
+
+/* --- Alerts and toasts: a sector-coloured edge ---------------------------- */
+html[data-theme="motorsport-telemetry"] .alert { box-shadow: inset 4px 0 0 var(--mt-alert-edge, #3a404a); }
+html[data-theme="motorsport-telemetry"] .alert-danger { --mt-alert-edge: var(--mt-soft); }
+html[data-theme="motorsport-telemetry"] .alert-warning { --mt-alert-edge: var(--mt-medium); }
+html[data-theme="motorsport-telemetry"] .alert-success { --mt-alert-edge: var(--mt-inter); }
+html[data-theme="motorsport-telemetry"] .alert-info { --mt-alert-edge: var(--mt-wet); }
+
+/* --- Hover only where there's a pointer to hover with --------------------- */
+@media (hover: hover) {
+  html[data-theme="motorsport-telemetry"] .card:hover { border-color: #3a404a; }
+}
+
+/* --- Nesting: a surface inside a surface steps down ----------------------- *
+ * No second carbon weave, header tab, sheen or drop shadow: a flat recessed
+ * box with a hairline, so three levels deep is still one graphic. */
+html[data-theme="motorsport-telemetry"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
+  --panel-bg: var(--surface-2);
+  --card-bg: var(--surface-2);
+  --panel-shadow: none;
+  --card-shadow: none;
+  --panel-border: #262a31;
+  --card-border: #262a31;
+  --panel-header-bg: transparent;
+}
+html[data-theme="motorsport-telemetry"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  padding-inline-start: var(--surface-pad, 1rem);
+  font-style: normal;
+  font-size: 0.9em;
+  letter-spacing: 0.08em;
+}
+html[data-theme="motorsport-telemetry"] :is(.panel, .card, .modal, .drawer) .modal { --modal-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); }
+
+/* --- The shell ------------------------------------------------------------- */
+/* The bar carries the rev-light strip (5 green, 5 red, 5 blue; 11 lit),
+   laid here rather than in --app-bar-bg so the bar-contrast lint reads a
+   flat colour. */
+html[data-theme="motorsport-telemetry"] .app-bar {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='8' viewBox='0 0 150 8'%3E%3Ccircle cx='5' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='15' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='25' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='35' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='45' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='55' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='65' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='75' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='85' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='95' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='105' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='1'/%3E%3Ccircle cx='115' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3Ccircle cx='125' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3Ccircle cx='135' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3Ccircle cx='145' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3C/svg%3E") center bottom 4px / 150px 8px no-repeat,
+    var(--mt-twill),
+    var(--app-bar-bg);
+}
+html[data-theme="motorsport-telemetry"] .app-rail { box-shadow: inset -1px 0 0 #23272e; }
+html[data-theme="motorsport-telemetry"] .app-status {
+  border-top-width: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+html[data-theme="motorsport-telemetry"] .app-status .readout { --readout-size: 1em; --readout-bg: transparent; --readout-border-width: 0; }
+
+/* --- v5 tiers -------------------------------------------------------------- *
+ * Phone and tablet: the timing tower packs away (its tokens are per tier
+ * above), the bar keeps the rev-light strip under brand and actions with
+ * the nav scrolling on line two, and display type steps down. */
+@media (max-width: 480px) {
+  html[data-theme="motorsport-telemetry"] { --app-bar-padding: 0.45rem 0.75rem 0.9rem; }
+  html[data-theme="motorsport-telemetry"] h1 { font-size: 1.5rem; }
+  html[data-theme="motorsport-telemetry"] h2 { font-size: 1.2rem; }
+}
+
+/* --- XL gutters (v5) -------------------------------------------------------- *
+ * The data-analysis screen continues beside the pit wall: stacked channel
+ * strips (speed, throttle, brake) over a faint grid with dashed sector
+ * splits, a few points over --bg (about 1.2:1 at the brightest stroke).
+ * The traces scroll one tile every three minutes, only with motion
+ * allowed. */
+html[data-theme="motorsport-telemetry"] {
+  --app-gutter-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='600' viewBox='0 0 380 600'%3E%3Cpath d='M0 0H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 50H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 100H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 150H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 200H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 250H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 300H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 350H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 400H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 450H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 500H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M0 550H380' stroke='%23111419' stroke-width='1'/%3E%3Cpath d='M127 0V600' stroke='%2313161b' stroke-width='1' stroke-dasharray='2 6'/%3E%3Cpath d='M254 0V600' stroke='%2313161b' stroke-width='1' stroke-dasharray='2 6'/%3E %3Cpolyline points='0,93.0 4,90.1 8,87.1 12,84.0 16,80.8 20,77.7 24,74.6 28,71.6 32,68.6 36,65.8 40,63.2 44,60.8 48,58.6 52,56.7 56,55.0 60,53.7 64,52.8 68,52.2 72,52.0 76,52.1 80,52.7 84,53.7 88,55.1 92,56.9 96,59.1 100,61.6 104,64.5 108,67.8 112,71.3 116,75.1 120,79.1 124,83.4 128,87.8 132,92.3 136,96.8 140,101.4 144,106.0 148,110.5 152,114.8 156,119.0 160,123.0 164,126.7 168,130.1 172,133.2 176,136.0 180,138.3 184,140.2 188,141.7 192,142.7 196,143.3 200,143.3 204,143.0 208,142.1 212,140.8 216,139.0 220,136.8 224,134.3 228,131.3 232,128.0 236,124.4 240,120.6 244,116.5 248,112.3 252,107.9 256,103.4 260,98.9 264,94.4 268,90.0 272,85.7 276,81.5 280,77.5 284,73.7 288,70.2 292,66.9 296,64.0 300,61.4 304,59.2 308,57.3 312,55.8 316,54.8 320,54.1 324,53.8 328,53.8 332,54.3 336,55.1 340,56.2 344,57.7 348,59.4 352,61.5 356,63.7 360,66.1 364,68.7 368,71.5 372,74.3 376,77.2 380,80.2' fill='none' stroke='%23171b22' stroke-width='1.5'/%3E %3Cpolyline points='0,242.0 4,242.0 8,242.0 12,242.0 16,242.0 20,242.0 24,242.0 28,242.0 32,242.0 36,242.0 40,317.7 44,315.4 48,313.1 52,310.8 56,308.6 60,306.3 64,242.0 68,242.0 72,242.0 76,242.0 80,242.0 84,242.0 88,242.0 92,242.0 96,242.0 100,242.0 104,317.3 108,315.0 112,312.7 116,310.5 120,308.2 124,305.9 128,242.0 132,242.0 136,242.0 140,242.0 144,242.0 148,242.0 152,242.0 156,242.0 160,242.0 164,242.0 168,316.9 172,314.6 176,312.4 180,310.1 184,307.8 188,305.5 192,242.0 196,242.0 200,242.0 204,242.0 208,242.0 212,242.0 216,242.0 220,242.0 224,242.0 228,242.0 232,316.5 236,314.3 240,312.0 244,309.7 248,307.4 252,305.2 256,242.0 260,242.0 264,242.0 268,242.0 272,242.0 276,242.0 280,242.0 284,242.0 288,242.0 292,242.0 296,316.1 300,313.9 304,311.6 308,309.3 312,307.1 316,304.8 320,242.0 324,242.0 328,242.0 332,242.0 336,242.0 340,242.0 344,242.0 348,242.0 352,242.0 356,318.0 360,315.8 364,313.5 368,311.2 372,308.9 376,306.7 380,242.0' fill='none' stroke='%23141c17' stroke-width='1.5'/%3E %3Cpolyline points='0,530.0 4,530.0 8,530.0 12,530.0 16,530.0 20,530.0 24,530.0 28,530.0 32,530.0 36,530.0 40,490.8 44,432.8 48,481.1 52,530.0 56,530.0 60,530.0 64,530.0 68,530.0 72,530.0 76,530.0 80,530.0 84,530.0 88,530.0 92,530.0 96,530.0 100,530.0 104,481.1 108,432.8 112,490.8 116,530.0 120,530.0 124,530.0 128,530.0 132,530.0 136,530.0 140,530.0 144,530.0 148,530.0 152,530.0 156,530.0 160,530.0 164,529.5 168,471.5 172,442.5 176,500.5 180,530.0 184,530.0 188,530.0 192,530.0 196,530.0 200,530.0 204,530.0 208,530.0 212,530.0 216,530.0 220,530.0 224,530.0 228,519.8 232,461.8 236,452.2 240,510.1 244,530.0 248,530.0 252,530.0 256,530.0 260,530.0 264,530.0 268,530.0 272,530.0 276,530.0 280,530.0 284,530.0 288,530.0 292,510.1 296,452.2 300,461.8 304,519.8 308,530.0 312,530.0 316,530.0 320,530.0 324,530.0 328,530.0 332,530.0 336,530.0 340,530.0 344,530.0 348,530.0 352,530.0 356,500.5 360,442.5 364,471.5 368,529.5 372,530.0 376,530.0 380,530.0' fill='none' stroke='%231e1619' stroke-width='1.5'/%3E %3C/svg%3E") 0 0 / 380px 600px repeat, var(--bg);
+}
+@media (min-width: 1801px) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="motorsport-telemetry"]:not([data-motion="reduced"])::before {
+    animation: motorsport-telemetry-trace 180s linear infinite;
+  }
+}
+@keyframes motorsport-telemetry-trace {
+  to { background-position: 0 600px, 0 0; }
+}
+
+/* --- Print ------------------------------------------------------------------ */
+@media print {
+  html[data-theme="motorsport-telemetry"] { background: #ffffff; }
+  html[data-theme="motorsport-telemetry"] {
+    --app-rail-bg: none;
+    --app-bar-bg: #ffffff;
+    --app-status-bg: #ffffff;
+    --panel-bg: #ffffff;
+    --panel-shadow: none;
+  }
+  html[data-theme="motorsport-telemetry"] .app-bar { background: #ffffff; }
+}

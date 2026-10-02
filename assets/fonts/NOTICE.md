@@ -137,6 +137,20 @@ files are vendored unmodified.
 - **Source:** https://github.com/keshikan/DSEG
 - **Used by:** `cassette-futurism` (seven-segment readout digits)
 
+## Titillium Web
+
+- **Family:** Titillium Web (weights vendored: Regular 400, Bold 700, Bold
+  Italic 700 — `TitilliumWeb-Regular.woff2`, `TitilliumWeb-Bold.woff2`,
+  `TitilliumWeb-BoldItalic.woff2`; Google Fonts' Latin subset, unmodified)
+- **Designer:** Accademia di Belle Arti di Urbino
+- **License:** SIL Open Font License, version 1.1 (verified in
+  `google/fonts` `ofl/titilliumweb/OFL.txt` and its `METADATA.pb`,
+  `license: "OFL"`)
+- **Source:** https://fonts.google.com/specimen/Titillium+Web
+- **Used by:** `motorsport-telemetry` (UI, timing figures and readouts; its
+  digits are tabular by default, all 560 units wide)
+
+
 ## Bottom line
 
 Thirteen files, twelve families: ten SIL OFL 1.1, Bedstead CC0 and Px437
