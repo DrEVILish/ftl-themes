@@ -1,6 +1,6 @@
 # ftl-themes v5.0 plan
 
-Status: **proposal**, nothing below is built yet. v4 stays the base: the
+Status: **in progress** (started 2026-10-02). Baseline 2026; new theme names agreed. v4 stays the base: the
 token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
 42 themes all carry forward. v5 is about three things v4 does not do well:
 
@@ -1036,19 +1036,31 @@ serious and critical issues fail the check once v5 ships.
 
 ### Browser support policy
 
-A written support baseline (proposed: **Baseline 2024**, the features
-available in all major engines since 2024), plus a list of newer features v5
-uses with their fallbacks, each tested:
+**Baseline 2026**: every feature v5 relies on must be Baseline (available
+in Chrome, Edge, Firefox and Safari on desktop and mobile) by 2026.
+Anything newer is progressive enhancement with a tested fallback.
+Statuses below come from the `web-features` data (checked 2026-10-02):
 
-| Feature | Used for | Fallback |
-|---|---|---|
-| Container queries | Component tiers (§2) | Already Baseline. |
-| `:has()` | State styling | Already Baseline. |
-| Popover API | Menus, dropdowns, modals (§6) | Already Baseline. |
-| CSS anchor positioning | Placing and flipping popovers (§6) | Below the trigger, no flipping. |
-| View transitions | Theme switching (§11) | Instant switch. |
-| `::details-content` | `.nav-collapse` | v4's display rule (kept). |
-| `@starting-style`, `transition-behavior` | Enter/exit motion | No animation. |
+| Feature | Baseline since | Used for | Fallback |
+|---|---|---|---|
+| Container queries (size) | 2023 | Component tiers (§2) | Not needed. |
+| `:has()` | 2023 | State styling | Not needed. |
+| Popover API | 2025 | Menus, dropdowns, modals (§6) | Not needed. |
+| `::details-content` | 2025 | `.nav-collapse` | Not needed (v4's display rule kept for older engines). |
+| View transitions (same-document) | 2025 | Theme switching (§11) | Not needed. |
+| Invoker commands (`command`/`commandfor`) | 2025 | Opening dialogs and popovers with no JS (§6, §9) | Not needed. |
+| `@starting-style`, `transition-behavior` | 2024 | Enter/exit motion | Not needed. |
+| Container **style** queries | **2026** | Components reading `--tier` directly: `@container style(--tier: mobile)` | Not needed. |
+| `field-sizing: content` | **2026** | Auto-growing inputs in editable cells and textareas (§7) | Not needed. |
+| `sibling-count()` / `sibling-index()` | **2026** | Staggered motion, avatar stacks, spacing that depends on item count | Not needed. |
+| CSS anchor positioning | not yet | Placing and flipping popovers (§6) | Below the trigger, no flipping. |
+| Cross-document view transitions | not yet | Transitions between pages | Instant navigation. |
+| Customizable `<select>` (`appearance: base-select`) | not yet | Fully themed select lists | v4's styled native select. |
+| `interpolate-size` / `calc-size()` | not yet | Animating to `height: auto` (accordions) | Instant open. |
+| Scroll-driven animations | not yet | Scroll-linked effects | None (static). |
+
+The rendered checks run in all three engines (above), so a feature that
+isn't Baseline is caught by its fallback being tested.
 
 ### Theme contribution kit
 
@@ -1155,10 +1167,5 @@ are recorded so they can be revisited:
 9. **Families:** which family first, the Windows line or the iOS line?
 10. **Easter eggs:** any you specifically want, or any themes that must
     never have them (for example themes used in professional dashboards)?
-11. **Support baseline:** is Baseline 2024 right, or do some Playlist Lab
-    users need older browsers (older iPads stuck on old iOS versions)?
-12. **New theme names:** happy with `motorsport-telemetry` as the generic
-    name, and with `teenage-engineering` and `cyberpunk-2077` using the
-    source names (as `skyrim` and `westworld` do)?
-13. **Emails:** which email templates does Playlist Lab send today, so
+11. **Emails:** which email templates does Playlist Lab send today, so
     those come first?
