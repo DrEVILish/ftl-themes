@@ -10,10 +10,14 @@ token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
    theme, with no overflow at any supported width.
 3. **A bigger component library** (50 new components), with editable
    tables, nesting and nested menus handled properly.
+4. **An experience layer**: user accessibility settings, per-theme motion
+   and theme-switch transitions, accent and seasonal tints, splash screens,
+   themed empty and error states, cursor packs, and installed-app (PWA and
+   desktop wrapper) title bars. Added after the 2026-10-02 review (§10–16).
 
 **Primary development theme: `blue-future`.** Every v5 change lands in core
 first and is proven on `blue-future`. Then the change is rolled out to the
-other 41 themes in batches (see [Rollout](#10-rollout)).
+other 41 themes in batches (see [Rollout](#17-rollout)).
 
 **Rule that does not change:** markup stays declarative and as plain as
 possible: native elements, a class or two, standard attributes. Apps add
@@ -144,6 +148,7 @@ Themes without gutter art fall back to plain `--bg`, which is still correct.
 | Hover | Hover-only reveals (row actions, tooltips) need a touch path: a visible control or `:focus-within`. Hover styles sit inside `@media (hover: hover)` so a tap doesn't leave a sticky hover state. | Same. |
 | Tap delay | `touch-action: manipulation` on controls (no double-tap zoom delay). | Same. |
 | Inputs | Font size at least 16px on mobile, or iOS Safari zooms in on focus. | Current. |
+| Mouse cursor | Buttons, links, tabs and menu items keep the **arrow** cursor; core drops `cursor: pointer` (18 rules in core, plus 3 themes). Controls should feel like an application, not a web page. Text fields keep the I-beam; drag surfaces get `grab`/`grabbing`; disabled gets `not-allowed`. Theme cursor packs (§11) restyle these cursors but keep the same mapping. | Same. |
 | Drag controls | Knobs, faders, sliders and window dragging use Pointer Events (`window.js` already does), with `touch-action: none` on the drag surface only. | Same. |
 
 Hit area and visual size are separate: a 20px icon button gets a 44px hit
@@ -448,7 +453,217 @@ components:
 
 ---
 
-## 10. Rollout
+## 10. Accessibility controls (a settings panel in core)
+
+v4 already honours `html[data-motion="reduced"]`, `html[data-contrast="high"]`
+and the OS media queries. v5 completes the set and ships the UI for it.
+
+### Attributes (on `<html>`, all optional)
+
+| Attribute | Values | Effect |
+|---|---|---|
+| `data-text-size` | `s`, `m` (default), `l`, `xl` | Scales the root font size; every component is in rem, so layout follows. |
+| `data-density` | `compact`, `default`, `comfortable` | Multiplies `--density` on top of the theme's own value. |
+| `data-contrast` | `default`, `high` (exists), `more` | `high` raises text and border contrast within the theme's palette (AAA text, 3:1 borders). |
+| `data-motion` | `full`, `reduced` (exists), `none` | `none` also stops theme ambient motion (gutter art, glows). |
+| `data-transparency` | `default`, `reduced` | Glass and translucent themes (`liquid-glass`, `win7-aero`, `xmb`) go opaque. |
+| `data-pointer` | `auto`, `touch` | Force touch-size targets on any screen (a desktop user with a touch screen or motor needs). |
+| `data-underline-links` | present / absent | Always underline links, for themes that rely on colour alone. |
+
+Each attribute **defaults to the OS preference** when unset
+(`prefers-reduced-motion`, `prefers-contrast`, `prefers-reduced-transparency`,
+`pointer: coarse`), so the panel only needs to store overrides.
+
+**Forced colors (Windows High Contrast):** every theme must stay usable under
+`@media (forced-colors: active)`. Core maps components to system colours
+(`Canvas`, `ButtonText`, `Highlight`…), keeps borders that themes draw with
+shadows or gradients, and keeps focus rings. Added to the rendered check.
+
+### The panel: `.prefs`
+
+A declarative, themed settings panel an app drops into a modal, drawer or
+page. ftl-themes styles it; a ~20-line reference script
+(`assets/js/prefs.js`, like `window.js`) writes the attributes and stores
+them in `localStorage`. Apps can store them server-side instead.
+
+```html
+<form class="prefs">
+  <fieldset class="field-group">
+    <legend class="field-group-title">Text size</legend>
+    <div class="segmented">
+      <label class="segmented-item"><input type="radio" name="text-size" value="s"> A</label>
+      <label class="segmented-item"><input type="radio" name="text-size" value="m" checked> A</label>
+      …
+    </div>
+  </fieldset>
+  <label class="switch"><input type="checkbox" name="motion" value="reduced"> Reduce motion</label>
+  <label class="switch"><input type="checkbox" name="transparency" value="reduced"> Reduce transparency</label>
+  …
+</form>
+```
+
+The panel previews each change immediately, includes the accent picker
+from §12, and every control is reachable by keyboard and screen reader.
+
+## 11. Theme motion, switching transitions and cursor packs
+
+### A motion language per theme
+
+Each theme declares how things move, not just how they look, through a
+small set of motion tokens: `--motion-enter`, `--motion-exit`,
+`--motion-duration-s|m|l`, `--motion-ease`, plus named keyframes the theme
+owns. Examples:
+
+| Theme | Motion character |
+|---|---|
+| `blue-future` (first) | Fast fades with a brief glow-in on live data; modals scale in from 98%. |
+| `matrix` | Modals "decode" in (glyph scramble through a `steps()` animation). |
+| `windows95` | No easing at all: windows snap open; menus open with the classic slide. |
+| `liquid-glass` | Springy scale with an overshoot; glass blurs in. |
+| `msdos` / `teletext` | Instant, or a line-by-line reveal. |
+| `silo` / `weyland-yutani` | A CRT power-on: a horizontal line expands to the full screen. |
+
+Rules: every animation sits inside `prefers-reduced-motion: no-preference`
+and stops under `data-motion="reduced"`; nothing animates longer than
+400ms for routine UI; no animation blocks input.
+
+### Switching themes
+
+Switching theme runs through the **View Transitions API**
+(`document.startViewTransition`) in `theme-loader.js`: a cross-fade by
+default, and a theme can supply its own *entrance* (the incoming theme's
+motion character) with `::view-transition-new(root)`. Without the API, or
+under reduced motion, the switch is instant, as today.
+
+### Cursor packs
+
+Optional per-theme cursors, shipped as small SVG cursors in
+`themes/<slug>/cursors/` (or `assets/cursors/` when shared), referenced with
+a fallback: `cursor: url(…) 0 0, default`.
+
+| Role | Native fallback | Example (windows95) |
+|---|---|---|
+| Default / controls | `default` (the arrow; see §4) | The black-outlined 95 arrow. |
+| Text | `text` | The 95 I-beam. |
+| Busy | `progress` / `wait` | The hourglass (`aqua`: the spinning beach ball). |
+| Drag | `grab` / `grabbing` | The move cross. |
+| Not allowed | `not-allowed` | The 95 circle-slash. |
+| Resize | `*-resize` | The 95 double arrows. |
+
+Cursors are off under `data-contrast="high"` and `forced-colors` (where
+the OS cursor size and colour settings must win), and all cursor art stays
+within the 32×32px that browsers reliably accept.
+
+## 12. Accent and seasonal tinting
+
+- **Who chooses:** the app sets a default accent; the end user can pick
+  from the swatches the theme allows (in the `.prefs` panel).
+- **The theme decides what is allowed.** Each theme declares an approved
+  swatch list (generalising today's `data-accent="1".."4"` on `imac-g3`),
+  not a free colour picker, so LCARS stays in its candy palette and every
+  swatch is pre-checked for contrast by `check.py`. A theme can also declare
+  "no accent choice" (`teletext`'s 8 broadcast colours are the identity).
+- **Derived colours follow.** Choosing a swatch re-derives `--accent`,
+  `--on-accent`, hover and focus tints with `color-mix()`, so a theme
+  doesn't hand-write every variant.
+- **Seasonal palettes:** optional named palettes per theme
+  (`data-season="winter|spring|summer|autumn|halloween|festive"`),
+  switched on by the app (for example by date). They tint accents and
+  gutter art only, never the base surfaces, so the theme stays
+  recognisable. Off by default.
+
+## 13. Boot and splash screens
+
+A declarative `.splash` component per theme, used two ways:
+
+1. **Real loading** (default): shown while the app is genuinely loading
+   (first htmx request, PWA launch). It never adds delay; it is removed
+   the moment the app is ready.
+2. **Optional timed intro:** an app may play the theme's full boot
+   sequence for a set time, as a deliberate flourish:
+   `<div class="splash" data-intro="2s">`. Always skippable (any key,
+   click or tap), shown at most once per session by the reference script,
+   and reduced to a static frame under reduced motion.
+
+| Theme | Splash idea |
+|---|---|
+| `blue-future` (first) | Telemetry channels initialising one by one, then a cyan "SYSTEM NOMINAL". |
+| `msdos` | A BIOS POST: memory count, then `C:\>` with a blinking cursor. |
+| `winxp-luna` | The XP boot screen with the three-block progress bar. |
+| `windows95` | The clouds splash with the bottom progress strip. |
+| `skyrim` | A loading screen: a slowly rotating 3D-ish emblem and a lore tip line. |
+| `lcars` | "LCARS ACCESS" with the bars sweeping in. |
+| `xmb` | The PS3 wave fading up. |
+
+Markup is plain (`<div class="splash" role="status" aria-live="polite">` with
+an optional `<progress>` and message), and all art is CSS or inline SVG.
+
+## 14. Empty, error, offline and 404 states
+
+v4 has a generic `.empty-state`. v5 gives every theme its own voice for the
+states users actually hit:
+
+| State | Markup | Example (windows95) |
+|---|---|---|
+| Empty list or table | `.empty-state` (exists) | A grey folder with nothing in it. |
+| Error | `.empty-state.is-error` | The 95 error dialog icon (the red circle and X). |
+| Offline | `.empty-state.is-offline` | Unplugged network-cable icon. |
+| Not found (404) | `.empty-state.is-404` or a full `404.html` example page | "The page cannot be found" in IE4 style. |
+| No permission | `.empty-state.is-locked` | A padlock. |
+| Loading | `.empty-state.is-loading` | The hourglass. |
+
+Illustrations are CSS or inline SVG in each theme's language, sized for
+Mobile and Desktop, with `alt` text for screen readers. Copy stays the
+app's job; the theme supplies only the look (and an optional suggested
+heading via `content:` that apps can override).
+
+A ready-made `404.html` example page joins the demo pages, so the Pages
+site has a themed 404 too.
+
+## 15. Installed apps: PWA and desktop wrappers
+
+### PWA (`display-mode: standalone` / `window-controls-overlay`)
+
+- Detect installed mode with `@media (display-mode: standalone)` and
+  adjust: no browser chrome, so the app bar becomes the title bar.
+- Safe areas: `env(safe-area-inset-*)` on the bar, the bottom tab bar
+  (§9 #41) and floating buttons, for notched and rounded screens.
+- **Window Controls Overlay:** the theme draws the whole title bar,
+  using `env(titlebar-area-x|y|width|height)` so content avoids the OS
+  controls area, and `app-region: drag` on the bar (with `no-drag` on its
+  buttons).
+- `theme-color` meta and the manifest's colours follow the active theme
+  (a reference snippet updates the meta tag on theme switch).
+
+### Desktop wrappers (Electron, Tauri)
+
+- Frameless windows: the same title-bar layout as the PWA overlay, with
+  `-webkit-app-region: drag` regions.
+- **Themed window controls:** a declarative `.window-controls` group
+  (minimise, maximise/restore, close) that each theme draws in its own
+  period style: Windows 95 bevelled grey squares, Windows XP's blue and red
+  Luna buttons, Aqua traffic lights on the left, LCARS pills, Liquid Glass
+  traffic lights. These reuse the existing `.btn-min`/`.btn-max`/`.btn-close`
+  so in-page windows and the real app window match.
+- Which side the controls sit on follows the theme (Aqua and Liquid Glass
+  on the left, Windows themes on the right), overridable by the app to
+  match the host OS.
+- The wrapper wires the buttons to the native window API; ftl-themes
+  only provides the markup contract and styles.
+
+## 16. Considered and not planned
+
+From the same review, these were offered and **not chosen** for v5. They
+are recorded so they can be revisited:
+
+- A live **theme builder** page with token export.
+- Opt-in per-theme **UI sound packs**.
+- **Integration** work (no preference given): Go + htmx partials library,
+  W3C design-tokens export, versioned CDN/npm packages, and per-component
+  split bundles. v5 keeps today's distribution (git submodule, `dist/`).
+- **RTL and i18n** font fallbacks, and theme-specific **print/PDF** styles.
+
+## 17. Rollout
 
 | Phase | Work | Done when |
 |---|---|---|
@@ -457,10 +672,12 @@ components:
 | **2. Touch** | `--tap-min`/`--hit-min`, `any-pointer: coarse`, hover gating and `touch-action`. | `blue-future` passes the target-size check on Mobile and Tablet. |
 | **3. Tables and menus** | Editable cells (§7), stacked tables and nested menus, menubar and tree (§8). | Those sections of `nesting.html` pass on `blue-future`. |
 | **4. New components** | The 50 components, in the order of the tables above: instruments first, because they carry the most theme personality. | Each one is on `components.html`, documented in CONTRACT.md, and passes on `blue-future`. |
-| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, per-tier check. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
+| **4b. Experience layer** | Accessibility attributes and the `.prefs` panel (§10), forced-colors support, motion tokens and theme-switch transitions (§11), the arrow-cursor change (§4), accent swatches (§12). Proven on `blue-future`. | `blue-future` passes the checks in every `.prefs` combination and under forced colors. |
+| **4c. Personality and installed apps** | `.splash` (§13), themed empty/error/404 states (§14), cursor packs (§11), PWA and wrapper title bars with `.window-controls` (§15). | `blue-future` and three contrasting themes (`windows95`, `liquid-glass`, `lcars`) ship all of them. |
+| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, motion tokens, accent swatches, splash, empty states, cursors (where the source had distinctive ones), window controls, per-tier check. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
 | **6. Release** | MIGRATING-v5.md, CHANGELOG, and a `v4` branch kept for apps that pin it, as `v3` was. | Tagged v5.0.0. |
 
-## 11. Breaking changes to expect (for MIGRATING-v5.md)
+## 18. Breaking changes to expect (for MIGRATING-v5.md)
 
 - The 720px breakpoint becomes four tiers. Apps that wrote their own
   `@media (max-width: 720px)` overrides around the shell must re-check
@@ -472,11 +689,16 @@ components:
 - `.app` is capped at 1800px.
 - The button-based `.context-menu` is deprecated in favour of the `ul`
   form (it still works in v5).
+- Buttons, links and other controls no longer switch to the hand
+  pointer; they keep the arrow. Apps that relied on the hand cursor as an
+  affordance should rely on the themed hover and focus states instead.
+- `theme-loader.js` switches themes through a view transition; apps that
+  swap the stylesheet themselves get no transition (but nothing breaks).
 - Components gain `container-type`, which makes them containment
   contexts. Apps positioning things relative to the viewport from inside
   a panel should check for side effects.
 
-## 12. Open questions
+## 19. Open questions
 
 1. **"iPhone Duo":** a book foldable or a hinged dual-screen device?
    (Decides whether viewport-segment support is in scope.)
@@ -490,3 +712,13 @@ components:
    become a tab bar on phones, or only themes whose source had one (iOS,
    Liquid Glass)? Proposed: every theme gets the layout, and each theme
    styles it in its own language.
+5. **Accessibility panel storage:** is `localStorage` in the reference
+   script enough, or does Playlist Lab want the preferences saved to the
+   user's account (so they follow them between devices)?
+6. **Timed intros:** should there be a global cap on intro length (e.g.
+   3s), even when an app asks for longer?
+7. **Cursor packs:** which themes have cursors distinctive enough to be
+   worth it? Proposed first set: `windows95`, `winxp-luna`, `aqua`,
+   `msdos`, `skyrim`, `steampunk`.
+8. **Window controls side:** follow the theme (Aqua left, Windows right)
+   or the user's actual OS by default?
