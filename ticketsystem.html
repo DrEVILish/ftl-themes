@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="assets/css/demo.css">
 <style>
   /* Page-specific only; shared demo scaffolding is in assets/css/demo.css. */
-  .demo-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .demo-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+  .demo-csat { display: flex; align-items: center; gap: 0.9rem; }
 </style>
 </head>
 <body class="app">
@@ -56,7 +57,8 @@
     </nav>
     <div class="cluster push">
       <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
-      <span class="avatar">SM</span>
+      <button class="btn btn-icon is-clear has-badge" data-count="3" popovertarget="notif-pop" aria-label="Notifications, 3 unread"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+      <span class="avatar" data-color="1" data-status="online">SM<span class="visually-hidden">, online</span></span>
     </div>
   </header>
 
@@ -99,7 +101,8 @@
             <strong>#4821 &middot; Can't export invoices as CSV</strong>
             <div class="field-hint">Opened by Ava Thompson &middot; 2 hours ago</div>
           </div>
-          <span class="btn-toolbar"><span class="badge badge-warning">Pending</span><span class="btn-group"><button class="btn btn-sm" data-tooltip="Previous ticket">&lsaquo;</button><button class="btn btn-sm" data-tooltip="Next ticket">&rsaquo;</button></span></span>
+          <span class="btn-toolbar"><button class="presence" popovertarget="viewers" aria-label="3 agents viewing: Sam Morgan, Priya Nair, Leo Kim">
+              <span class="avatar avatar-sm" data-color="1" data-status="online">SM</span><span class="avatar avatar-sm" data-color="3" data-status="online">PN</span><span class="avatar avatar-sm" data-color="5" data-status="away">LK</span></button><span class="badge badge-warning">Pending</span><span class="btn-group"><button class="btn btn-sm" data-tooltip="Previous ticket">&lsaquo;</button><button class="btn btn-sm" data-tooltip="Next ticket">&rsaquo;</button></span></span>
         </header>
 
         <div class="tabset">
@@ -115,20 +118,24 @@
 
           <div class="thread mt-m">
             <div class="message">
-              <span class="avatar">AT</span>
+              <span class="avatar" data-color="2" data-status="offline">AT<span class="visually-hidden">, offline</span></span>
               <div class="message-bubble"><div class="message-meta"><strong>Ava Thompson</strong> <time>09:02</time></div><p>When I click Export on the invoices page nothing happens. It worked last month.</p>
                 <div class="attachment"><svg class="icon"><use href="assets/icons/icons.svg#icon-download"/></svg><span class="attachment-name">invoices-export.png</span><span class="attachment-size">142 KB</span></div>
               </div>
             </div>
             <div class="message is-own">
-              <span class="avatar">SM</span>
+              <span class="avatar" data-color="1" data-status="online">SM<span class="visually-hidden">, online</span></span>
               <div class="message-bubble"><div class="message-meta"><strong>Sam Morgan</strong> <span class="badge">Agent</span> <time>09:14</time></div><p>Thanks Ava &mdash; looking into it now.</p></div>
-              <div class="context-menu demo-inline" style="width:9rem;">
-                  <button class="context-menu-item">Quote reply</button>
-                  <button class="context-menu-item">Copy link</button>
-                  <div class="context-menu-divider"></div>
-                  <button class="context-menu-item is-danger">Delete note</button>
-              </div>
+            </div>
+            <div class="context-menu demo-inline" style="width:9rem; margin-inline-start:auto;">
+                <button class="context-menu-item">Quote reply</button>
+                <button class="context-menu-item">Copy link</button>
+                <div class="context-menu-divider"></div>
+                <button class="context-menu-item is-danger">Delete note</button>
+            </div>
+            <div class="message">
+              <span class="avatar" data-color="3" data-status="online">PN<span class="visually-hidden">, online</span></span>
+              <div class="message-bubble"><div class="message-meta"><strong>Priya Nair</strong> <span class="badge">Internal note</span> <time>09:31</time></div><p><a class="mention is-self" href="ticketsystem.html">@Sam Morgan</a> reproduced on Safari 18 &mdash; the export call 403s for accounts with more than 5,000 invoices. Looping in <a class="mention" href="livechat.html">@Leo Kim</a> from billing and <span class="mention">@payments-team</span>.</p></div>
             </div>
             <div class="alert alert-warning">SLA due in 2 hours &mdash; first reply sent, resolution pending.</div>
             <div class="typing">Ava is typing&hellip;</div>
@@ -143,8 +150,19 @@
               <span class="field-error" id="demo-reply-err">Replies over 2,000 characters are truncated in email.</span>
             </div>
             <div class="row" style="gap:0.75rem;flex-wrap:wrap;">
-              <div class="field w-14"><label class="label" for="demo-assignee">Assignee</label><select class="select" id="demo-assignee"><option>Sam Morgan</option><option>Priya Nair</option><option>Unassigned</option></select></div>
+              <div class="field w-14"><label class="label" for="demo-assignee">Assignee</label><div class="combobox"><input class="input" id="demo-assignee" list="agents" value="Sam Morgan" autocomplete="off"></div>
+                <datalist id="agents"><option value="Sam Morgan">Tier 2 &middot; online</option><option value="Priya Nair">QA &middot; online</option><option value="Leo Kim">Billing &middot; away</option><option value="Ava Okafor">Tier 1 &middot; offline</option><option value="Unassigned"></option></datalist></div>
               <div class="field w-14"><label class="label" for="demo-due">Snooze until</label><div class="input-group"><input class="input" id="demo-due" type="text" value="Tomorrow 09:00"><span class="input-addon">local</span></div></div>
+            </div>
+            <div class="field">
+              <label class="label" for="demo-labels">Labels</label>
+              <div class="tag-input">
+                <span class="tag">billing<button class="tag-remove" type="button" aria-label="Remove billing"></button></span>
+                <span class="tag">export<button class="tag-remove" type="button" aria-label="Remove export"></button></span>
+                <span class="tag is-accent">regression<button class="tag-remove" type="button" aria-label="Remove regression"></button></span>
+                <input class="tag-input-field" id="demo-labels" list="label-list" placeholder="Add a label&hellip;">
+              </div>
+              <datalist id="label-list"><option value="safari"><option value="csv"><option value="enterprise"><option value="needs-engineering"></datalist>
             </div>
             <div class="field-row">
               <label class="label">Notify customer by email</label>
@@ -190,8 +208,8 @@
           <details class="accordion-item">
             <summary class="accordion-trigger">Related tickets</summary>
             <ul class="list accordion-panel">
-              <li><a class="list-item" href="#!">#4790 &middot; Export timeout on large accounts</a></li>
-              <li><a class="list-item" href="#!">#4733 &middot; CSV encoding</a></li>
+              <li><a class="list-item" href="ticketsystem.html?ticket=4790">#4790 &middot; Export timeout on large accounts</a></li>
+              <li><a class="list-item" href="ticketsystem.html?ticket=4733">#4733 &middot; CSV encoding</a></li>
             </ul>
           </details>
           <p><button class="btn btn-secondary btn-sm" popovertarget="demo-modal">Open dialog</button> <span class="field-hint">— the same dialog, opened for real (HTML popover, no JS)</span></p>
@@ -228,8 +246,14 @@
         <section class="panel">
           <header class="panel-header"><strong>Satisfaction</strong></header>
           <div style="padding: 0.9rem;">
-            <div class="stat"><span class="stat-value">94%</span><span class="stat-label">CSAT this month</span><span class="stat-trend is-up">&uarr; 2 pts</span></div>
-            <div class="progress mt-s"><div class="progress-bar" style="width:94%"></div></div>
+            <div class="demo-csat">
+              <div class="progress-ring is-success" role="progressbar" aria-label="CSAT this month" aria-valuenow="94" aria-valuemin="0" aria-valuemax="100" style="--value:.94; --progress-ring-size:4.5rem">94%</div>
+              <div class="stat"><span class="stat-label">CSAT this month</span><span class="stat-trend is-up">&uarr; 2 pts</span></div>
+            </div>
+            <div class="demo-csat mt-s">
+              <div class="progress-ring" role="progressbar" aria-label="First reply within SLA" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100" style="--value:.71">71%</div>
+              <span class="field-hint">First replies inside SLA</span>
+            </div>
           </div>
         </section>
         <section class="panel">
@@ -266,6 +290,52 @@
                 <p class="field-hint" style="margin:0;">Replies and attachments from both tickets will be combined.</p>
                 <div class="modal-footer"><button class="btn btn-secondary btn-sm" popovertarget="demo-modal" popovertargetaction="hide">Cancel</button><button class="btn btn-primary btn-sm" popovertarget="demo-modal" popovertargetaction="hide">Merge</button></div>
               </div>
+<div class="popover" popover id="viewers" aria-label="Agents viewing this ticket">
+  <ul class="presence-list">
+    <li><span class="avatar avatar-sm" data-color="1">SM</span>Sam Morgan (you)<span class="presence-status" data-status="online">Online</span></li>
+    <li><span class="avatar avatar-sm" data-color="3">PN</span>Priya Nair<span class="presence-status" data-status="online">Online</span></li>
+    <li><span class="avatar avatar-sm" data-color="5">LK</span>Leo Kim<span class="presence-status" data-status="away">Away</span></li>
+  </ul>
+</div>
+<div class="popover notifications" popover id="notif-pop" aria-labelledby="notif-title">
+  <div class="notifications-header">
+    <h2 id="notif-title">Notifications</h2>
+    <span class="badge badge-accent">3 new</span>
+    <button class="btn btn-clear btn-sm" popovertarget="notif-pop" popovertargetaction="hide">Mark all read</button>
+  </div>
+  <label class="notifications-dnd">Do not disturb
+    <span class="switch"><input type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></span>
+  </label>
+  <p class="notifications-paused" role="status">Paused until 09:00 tomorrow.</p>
+  <ul class="list">
+    <li class="notification is-unread">
+      <span class="avatar avatar-sm" data-color="3">PN</span>
+      <div class="notification-body"><p><span class="visually-hidden">Unread: </span>Priya Nair mentioned you in <a href="ticketsystem.html">#4821 CSV export</a></p><time datetime="2026-10-03T09:31">5 min ago</time></div>
+      <div class="notification-actions"><button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-check"/></svg></button></div>
+    </li>
+    <li class="notification is-unread">
+      <span class="avatar avatar-sm" data-color="4">ML</span>
+      <div class="notification-body"><p><span class="visually-hidden">Unread: </span>SLA breach in 2 hours on <a href="ticketsystem.html?ticket=4819">#4819 Billing charged twice</a></p><time datetime="2026-10-03T09:20">16 min ago</time></div>
+      <div class="notification-actions"><button class="btn btn-icon btn-sm is-clear" aria-label="Mark as read"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-check"/></svg></button></div>
+    </li>
+    <li class="notification is-group is-unread">
+      <details>
+        <summary class="notification-summary">
+          <span class="presence" aria-hidden="true"><span class="avatar avatar-sm" data-color="2">AT</span><span class="avatar avatar-sm" data-color="6">SO</span></span>
+          <span class="notification-body"><span>2 customers replied to <strong>your tickets</strong></span><time datetime="2026-10-03T08:58">38 min ago</time></span>
+        </summary>
+        <ul class="notification-group">
+          <li class="notification is-unread"><span class="avatar avatar-sm" data-color="2">AT</span><div class="notification-body"><p><span class="visually-hidden">Unread: </span>Ava Thompson replied on <a href="ticketsystem.html">#4821</a></p><time datetime="2026-10-03T08:58">38 min ago</time></div></li>
+          <li class="notification"><span class="avatar avatar-sm" data-color="6">SO</span><div class="notification-body"><p>Sam O'Reilly closed <a href="ticketsystem.html?ticket=4802">#4802</a></p><time datetime="2026-10-03T08:40">56 min ago</time></div></li>
+        </ul>
+      </details>
+    </li>
+    <li class="notification">
+      <span class="avatar avatar-sm" data-color="5">LK</span>
+      <div class="notification-body"><p>Leo Kim assigned <a href="ticketsystem.html?ticket=4810">#4810</a> to you</p><time datetime="2026-10-02T17:12">Yesterday</time></div>
+    </li>
+  </ul>
+</div>
 <script src="assets/js/tint.js"></script>
 <script src="assets/js/theme-loader.js"></script>
 </body>

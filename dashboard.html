@@ -6,6 +6,19 @@
 <title>Analytics Dashboard — ftl-themes layout demo</title>
 <link id="theme-link" rel="stylesheet" href="dist/aqua.css">
 <link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Page layout glue only; every colour comes from the theme. */
+  .demo-pad { padding: 0.9rem; }
+  .demo-stat-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+  .demo-stat-foot .sparkline { --sparkline-width: 7em; --sparkline-height: 1.8em; }
+  .demo-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem 1.5rem; }
+  .demo-heat { display: flex; gap: 0.4rem; min-inline-size: 0; --heatmap-cell: 1.35rem; }
+  .demo-heat .heatmap { flex: 1; min-inline-size: 0; }
+  .demo-heat-days { display: grid; grid-template-rows: repeat(7, var(--heatmap-cell)); gap: var(--heatmap-gap, 3px); margin: 0; padding: 0; list-style: none; font-size: 0.7rem; line-height: 1; align-items: center; }
+  .command-list a[role="option"] { text-decoration: none; }
+  /* tables.css shrinks a checkbox-only first column to 1px; undo it when the row is a stacked card. */
+  @media (max-width: 480px) { .table.is-stacked td:first-child { inline-size: auto; } .demo-heat { --heatmap-cell: 1.1rem; } }
+</style>
 
 </head>
 <body class="app">
@@ -53,8 +66,9 @@
     </nav>
     <div class="cluster push">
       <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
-      <button class="btn btn-ghost btn-icon" aria-label="Notifications"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
-      <span class="avatar">JD</span>
+      <button class="btn btn-secondary btn-sm" popovertarget="palette" data-tooltip="Jump to anything"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-search"/></svg> Search <kbd>Ctrl K</kbd></button>
+      <button class="btn btn-ghost btn-icon has-badge" data-count="3" aria-label="Notifications, 3 unread" data-tooltip="Notifications"><svg class="icon"><use href="assets/icons/icons.svg#icon-bell"/></svg></button>
+      <button class="btn btn-icon is-clear" popovertarget="user-menu" aria-haspopup="menu" aria-label="Account menu, Jordan Diaz"><span class="avatar avatar-sm" data-color="1" data-status="online">JD</span></button>
     </div>
   </header>
 
@@ -73,22 +87,26 @@
       <div class="card">
         <span class="stat-label">Revenue</span>
         <span class="stat-value">$84,210</span>
-        <span class="stat-trend is-up">&uarr; 8.4%</span>
+        <span class="demo-stat-foot"><span class="stat-trend is-up">&uarr; 8.4%</span>
+        <svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Revenue, 12 weeks: rising"><polygon class="sparkline-area" points="0,24 0.0,22.0 9.1,17.7 18.2,19.8 27.3,13.3 36.4,14.2 45.5,11.1 54.5,9.0 63.6,10.7 72.7,7.2 81.8,4.6 90.9,5.5 100.0,2.0 100,24"/><polyline points="0.0,22.0 9.1,17.7 18.2,19.8 27.3,13.3 36.4,14.2 45.5,11.1 54.5,9.0 63.6,10.7 72.7,7.2 81.8,4.6 90.9,5.5 100.0,2.0"/></svg></span>
       </div>
       <div class="card">
         <span class="stat-label">Active users</span>
         <span class="stat-value">12,904</span>
-        <span class="stat-trend is-up">&uarr; 3.1%</span>
+        <span class="demo-stat-foot"><span class="stat-trend is-up">&uarr; 3.1%</span>
+        <svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Active users, 12 weeks: rising"><polygon class="sparkline-area" points="0,24 0.0,22.0 9.1,19.2 18.2,20.6 27.3,15.1 36.4,13.0 45.5,14.4 54.5,9.6 63.6,8.2 72.7,6.1 81.8,7.5 90.9,4.1 100.0,2.0 100,24"/><polyline points="0.0,22.0 9.1,19.2 18.2,20.6 27.3,15.1 36.4,13.0 45.5,14.4 54.5,9.6 63.6,8.2 72.7,6.1 81.8,7.5 90.9,4.1 100.0,2.0"/></svg></span>
       </div>
       <div class="card">
         <span class="stat-label">Conversion rate</span>
         <span class="stat-value">4.62%</span>
-        <span class="stat-trend is-down">&darr; 0.3%</span>
+        <span class="demo-stat-foot"><span class="stat-trend is-down">&darr; 0.3%</span>
+        <svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Conversion rate, 12 weeks: falling"><polygon class="sparkline-area" points="0,24 0.0,2.0 9.1,6.2 18.2,4.1 27.3,10.3 36.4,8.2 45.5,14.5 54.5,12.4 63.6,16.6 72.7,18.7 81.8,17.8 90.9,20.7 100.0,22.0 100,24"/><polyline points="0.0,2.0 9.1,6.2 18.2,4.1 27.3,10.3 36.4,8.2 45.5,14.5 54.5,12.4 63.6,16.6 72.7,18.7 81.8,17.8 90.9,20.7 100.0,22.0"/></svg></span>
       </div>
       <div class="card">
         <span class="stat-label">Error rate</span>
         <span class="stat-value">0.08%</span>
-        <span class="stat-trend is-up">&uarr; 0.02%</span>
+        <span class="demo-stat-foot"><span class="stat-trend is-up">&uarr; 0.02%</span>
+        <svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Error rate, 12 weeks: creeping up"><polyline points="0.0,22.0 9.1,15.3 18.2,18.7 27.3,15.3 36.4,8.7 45.5,12.0 54.5,8.7 63.6,7.3 72.7,5.3 81.8,2.0 90.9,3.3 100.0,2.0"/><line class="sparkline-baseline" x1="0" x2="100" y1="12" y2="12"/></svg></span>
       </div>
     </div>
 
@@ -128,16 +146,24 @@
           <button class="btn btn-ghost btn-icon" aria-label="Filter"><svg class="icon"><use href="assets/icons/icons.svg#icon-filter"/></svg></button>
           <button class="btn btn-ghost btn-icon" aria-label="Download"><svg class="icon"><use href="assets/icons/icons.svg#icon-download"/></svg></button>
         </header>
-        <table class="table">
-          <thead><tr><th style="width:2rem;"><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select all</span></label></th><th>Order</th><th>Customer</th><th>Status</th><th>Total</th></tr></thead>
+        <div class="bulk-bar" role="toolbar" aria-label="Bulk actions">
+          <span class="bulk-bar-count" aria-live="polite">2 selected</span>
+          <button class="btn btn-sm">Mark shipped</button>
+          <button class="btn btn-sm btn-danger">Refund</button>
+          <button class="btn-close" aria-label="Clear selection" data-tooltip="Clear selection"></button>
+        </div>
+        <table class="table is-stacked">
+          <caption class="visually-hidden">Recent orders. Customer and total cells are editable.</caption>
+          <thead><tr><th scope="col"><span class="visually-hidden">Select</span></th><th scope="col">Order</th><th scope="col">Customer</th><th scope="col">Status</th><th scope="col">Total</th></tr></thead>
           <tbody>
-            <tr class="is-selected"><td><label class="check"><input class="checkbox" type="checkbox" checked><span class="visually-hidden">Select row</span></label></td><td>#10482</td><td>Ava Thompson</td><td><span class="status status-ok">Paid</span></td><td class="mono">$128.00</td></tr>
-            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select row</span></label></td><td>#10481</td><td>Marcus Lee</td><td><span class="status status-warn">Pending</span></td><td class="mono">$64.50</td></tr>
-            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select row</span></label></td><td>#10480</td><td>Priya Nair</td><td><span class="status status-error">Failed</span></td><td class="mono">$212.10</td></tr>
-            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select row</span></label></td><td>#10479</td><td>Sam O'Reilly</td><td><span class="status status-ok">Paid</span></td><td class="mono">$39.99</td></tr>
-            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select row</span></label></td><td>#10478</td><td>Elena Petrova</td><td><span class="status status-idle">Refunded</span></td><td class="mono">$88.00</td></tr>
+            <tr class="is-selected" aria-selected="true"><td><label class="check"><input class="checkbox" type="checkbox" checked><span class="visually-hidden">Select order #10482</span></label></td><td data-label="Order" class="mono">#10482</td><td data-label="Customer" class="is-editable" tabindex="0">Ava Thompson</td><td data-label="Status"><span class="status status-ok">Paid</span></td><td data-label="Total" class="mono is-editable" tabindex="0">$128.00</td></tr>
+            <tr class="is-selected" aria-selected="true"><td><label class="check"><input class="checkbox" type="checkbox" checked><span class="visually-hidden">Select order #10481</span></label></td><td data-label="Order" class="mono">#10481</td><td data-label="Customer" class="is-dirty">Marcus Lee</td><td data-label="Status"><span class="status status-warn">Pending</span></td><td data-label="Total" class="mono is-editable" tabindex="0">$64.50</td></tr>
+            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select order #10480</span></label></td><td data-label="Order" class="mono">#10480</td><td data-label="Customer" class="is-editable" tabindex="0">Priya Nair</td><td data-label="Status"><span class="status status-error">Failed</span></td><td data-label="Total" class="mono is-saving" aria-busy="true">$212.10</td></tr>
+            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select order #10479</span></label></td><td data-label="Order" class="mono">#10479</td><td data-label="Customer" class="is-saved">Sam O'Reilly</td><td data-label="Status"><span class="status status-ok">Paid</span></td><td data-label="Total" class="mono is-editable" tabindex="0">$39.99</td></tr>
+            <tr><td><label class="check"><input class="checkbox" type="checkbox"><span class="visually-hidden">Select order #10478</span></label></td><td data-label="Order" class="mono">#10478</td><td data-label="Customer" class="is-editing"><input class="input" value="Elena Petrova" aria-label="Customer for order #10478"></td><td data-label="Status"><span class="status status-idle">Refunded</span></td><td data-label="Total" class="mono is-editable is-readonly">$88.00</td></tr>
           </tbody>
         </table>
+        <p class="field-hint demo-pad">Click a name or total to edit. Marcus Lee: unsaved &middot; $212.10: saving &middot; Sam O'Reilly: saved &middot; refunded totals are read-only.</p>
         <nav class="pagination mt-s">
           <a class="pagination-item is-disabled">&lsaquo;</a>
           <label class="pagination-item"><input type="radio" name="dashboard-page-1" checked>1</label>
@@ -167,16 +193,37 @@
 
     <div class="columns mt-l" style="--columns: minmax(0, 2fr) minmax(0, 1fr);">
       <section class="panel">
-        <header class="panel-header"><strong>Revenue trend</strong></header>
-        <div class="bar-chart" style="margin: 1rem 0.9rem 0;" role="img" aria-label="Bar chart of revenue over the last 12 weeks, trending up">
-          <span style="--value:0.38"></span><span style="--value:0.44"></span><span style="--value:0.41"></span><span style="--value:0.52"></span>
-          <span style="--value:0.49"></span><span style="--value:0.58"></span><span style="--value:0.63"></span><span style="--value:0.60"></span>
-          <span style="--value:0.71"></span><span style="--value:0.68"></span><span style="--value:0.79"></span><span class="is-highlight" style="--value:0.88"></span>
-        </div>
-        <p class="field-hint" style="padding: 0 0.9rem 0.9rem;">Weekly revenue, last 12 weeks</p>
+        <header class="panel-header"><strong>Revenue trend</strong><span class="badge badge-success">&uarr; 46% on previous</span></header>
+        <figure class="chart demo-pad">
+          <figcaption class="visually-hidden">Weekly revenue, last 12 weeks, against the previous period</figcaption>
+          <ul class="chart-legend is-line"><li data-series="1">This period</li><li data-series="2">Previous period</li></ul>
+          <svg viewBox="0 0 400 220" role="img" aria-labelledby="rev-t rev-d">
+            <title id="rev-t">Weekly revenue, last 12 weeks</title>
+            <desc id="rev-d">Revenue rose from $14.2k to $27.6k a week; the previous period went from $13.0k to $18.9k.</desc>
+            <g class="chart-grid"><line x1="44" x2="380" y1="133.3" y2="133.3"/><line x1="44" x2="380" y1="76.7" y2="76.7"/><line x1="44" x2="380" y1="20.0" y2="20.0"/></g>
+            <g class="chart-axis"><line x1="44" x2="380" y1="190" y2="190"/><text x="38" y="194.0" text-anchor="end">0k</text><text x="38" y="137.3" text-anchor="end">10k</text><text x="38" y="80.7" text-anchor="end">20k</text><text x="38" y="24.0" text-anchor="end">30k</text><text x="44.0" y="208" text-anchor="middle">W1</text><text x="105.1" y="208" text-anchor="middle">W3</text><text x="166.2" y="208" text-anchor="middle">W5</text><text x="227.3" y="208" text-anchor="middle">W7</text><text x="288.4" y="208" text-anchor="middle">W9</text><text x="349.5" y="208" text-anchor="middle">W11</text></g>
+            <g class="chart-series" data-series="2"><polyline points="44.0,116.3 74.5,111.8 105.1,107.8 135.6,110.1 166.2,103.9 196.7,99.9 227.3,97.6 257.8,99.3 288.4,92.5 318.9,89.1 349.5,87.4 380.0,82.9"/></g>
+            <g class="chart-series" data-series="1"><polygon class="is-area" points="44,190 44.0,109.5 74.5,98.8 105.1,102.7 135.6,88.0 166.2,92.0 196.7,77.8 227.3,71.0 257.8,74.4 288.4,59.1 318.9,62.5 349.5,47.2 380.0,33.6 380,190"/><polyline points="44.0,109.5 74.5,98.8 105.1,102.7 135.6,88.0 166.2,92.0 196.7,77.8 227.3,71.0 257.8,74.4 288.4,59.1 318.9,62.5 349.5,47.2 380.0,33.6"/><circle class="chart-point" cx="44.0" cy="109.5" r="3.5"/><circle class="chart-point" cx="74.5" cy="98.8" r="3.5"/><circle class="chart-point" cx="105.1" cy="102.7" r="3.5"/><circle class="chart-point" cx="135.6" cy="88.0" r="3.5"/><circle class="chart-point" cx="166.2" cy="92.0" r="3.5"/><circle class="chart-point" cx="196.7" cy="77.8" r="3.5"/><circle class="chart-point" cx="227.3" cy="71.0" r="3.5"/><circle class="chart-point" cx="257.8" cy="74.4" r="3.5"/><circle class="chart-point" cx="288.4" cy="59.1" r="3.5"/><circle class="chart-point" cx="318.9" cy="62.5" r="3.5"/><circle class="chart-point" cx="349.5" cy="47.2" r="3.5"/><circle class="chart-point is-active" cx="380.0" cy="33.6" r="3.5"/></g>
+            <line class="chart-crosshair" x1="380" x2="380" y1="20" y2="190"/>
+            <text class="chart-label" x="372" y="98.9" text-anchor="end">Previous</text>
+          </svg>
+          <div class="chart-tooltip" style="--x:76%; --y:28%">Week 12 &middot; $27.6k</div>
+          <details class="accordion-item"><summary class="accordion-trigger">Data table</summary>
+            <div class="accordion-panel"><div class="table-wrap" tabindex="0" role="region" aria-label="Weekly revenue data">
+              <table class="table is-compact"><thead><tr><th scope="col">Week</th><th scope="col">This period</th><th scope="col">Previous</th></tr></thead><tbody><tr><th scope="row">Week 1</th><td>$14.2k</td><td>$13.0k</td></tr><tr><th scope="row">Week 2</th><td>$16.1k</td><td>$13.8k</td></tr><tr><th scope="row">Week 3</th><td>$15.4k</td><td>$14.5k</td></tr><tr><th scope="row">Week 4</th><td>$18.0k</td><td>$14.1k</td></tr><tr><th scope="row">Week 5</th><td>$17.3k</td><td>$15.2k</td></tr><tr><th scope="row">Week 6</th><td>$19.8k</td><td>$15.9k</td></tr><tr><th scope="row">Week 7</th><td>$21.0k</td><td>$16.3k</td></tr><tr><th scope="row">Week 8</th><td>$20.4k</td><td>$16.0k</td></tr><tr><th scope="row">Week 9</th><td>$23.1k</td><td>$17.2k</td></tr><tr><th scope="row">Week 10</th><td>$22.5k</td><td>$17.8k</td></tr><tr><th scope="row">Week 11</th><td>$25.2k</td><td>$18.1k</td></tr><tr><th scope="row">Week 12</th><td>$27.6k</td><td>$18.9k</td></tr></tbody></table>
+            </div></div></details>
+        </figure>
       </section>
 
       <section class="panel">
+        <header class="panel-header"><strong>Traffic sources</strong><span class="badge">30 days</span></header>
+        <div class="demo-donut demo-pad">
+          <div class="donut" style="--seg-1:38%; --seg-2:27%; --seg-3:18%; --seg-4:11%; --seg-5:6%" role="img" aria-label="Traffic: Direct 38%, Search 27%, Social 18%, Email 11%, Referral 6%">
+            <span><strong>18.4k</strong>visits</span>
+          </div>
+          <ul class="legend is-vertical"><li data-series="1">Direct 38%</li><li data-series="2">Search 27%</li><li data-series="3">Social 18%</li><li data-series="4">Email 11%</li><li data-series="5">Referral 6%</li></ul>
+        </div>
+        <div class="divider"></div>
         <header class="panel-header"><strong>Top products</strong></header>
         <table class="table">
           <thead><tr><th>Product</th><th>Units</th><th>Revenue</th></tr></thead>
@@ -189,6 +236,21 @@
         </table>
       </section>
     </div>
+
+    <section class="panel mt-l">
+      <header class="panel-header"><strong>When orders arrive</strong><span class="badge">by weekday and hour</span></header>
+      <div class="demo-pad stack stack-sm">
+        <div class="demo-heat">
+          <ol class="demo-heat-days text-muted" aria-hidden="true"><li>Mon</li><li>Tue</li><li>Wed</li><li>Thu</li><li>Fri</li><li>Sat</li><li>Sun</li></ol>
+          <div class="heatmap" role="img" aria-label="Orders per two-hour block over the last 30 days: busiest weekday early afternoons, a Friday 16:00 to 19:00 spike, quiet nights. See the data table."><span style="--v:0" title="Mon 00:00: 0 orders"></span><span style="--v:0" title="Tue 00:00: 0 orders"></span><span style="--v:0.06" title="Wed 00:00: 8 orders"></span><span style="--v:0.07" title="Thu 00:00: 10 orders"></span><span style="--v:0" title="Fri 00:00: 0 orders"></span><span style="--v:0" title="Sat 00:00: 0 orders"></span><span style="--v:0" title="Sun 00:00: 0 orders"></span><span style="--v:0" title="Mon 02:00: 0 orders"></span><span style="--v:0" title="Tue 02:00: 0 orders"></span><span style="--v:0" title="Wed 02:00: 0 orders"></span><span style="--v:0.03" title="Thu 02:00: 4 orders"></span><span style="--v:0.04" title="Fri 02:00: 6 orders"></span><span style="--v:0.05" title="Sat 02:00: 7 orders"></span><span style="--v:0.0" title="Sun 02:00: 0 orders"></span><span style="--v:0.05" title="Mon 04:00: 7 orders"></span><span style="--v:0.02" title="Tue 04:00: 3 orders"></span><span style="--v:0.09" title="Wed 04:00: 13 orders"></span><span style="--v:0.13" title="Thu 04:00: 18 orders"></span><span style="--v:0.03" title="Fri 04:00: 4 orders"></span><span style="--v:0.01" title="Sat 04:00: 1 orders"></span><span style="--v:0" title="Sun 04:00: 0 orders"></span><span style="--v:0.14" title="Mon 06:00: 20 orders"></span><span style="--v:0.27" title="Tue 06:00: 38 orders"></span><span style="--v:0.23" title="Wed 06:00: 32 orders"></span><span style="--v:0.25" title="Thu 06:00: 35 orders"></span><span style="--v:0.2" title="Fri 06:00: 28 orders"></span><span style="--v:0.12" title="Sat 06:00: 17 orders"></span><span style="--v:0.14" title="Sun 06:00: 20 orders"></span><span style="--v:0.37" title="Mon 08:00: 52 orders"></span><span style="--v:0.49" title="Tue 08:00: 69 orders"></span><span style="--v:0.44" title="Wed 08:00: 62 orders"></span><span style="--v:0.44" title="Thu 08:00: 62 orders"></span><span style="--v:0.43" title="Fri 08:00: 60 orders"></span><span style="--v:0.31" title="Sat 08:00: 43 orders"></span><span style="--v:0.3" title="Sun 08:00: 42 orders"></span><span style="--v:0.73" title="Mon 10:00: 102 orders"></span><span style="--v:0.79" title="Tue 10:00: 111 orders"></span><span style="--v:0.69" title="Wed 10:00: 97 orders"></span><span style="--v:0.73" title="Thu 10:00: 102 orders"></span><span style="--v:0.72" title="Fri 10:00: 101 orders"></span><span style="--v:0.34" title="Sat 10:00: 48 orders"></span><span style="--v:0.48" title="Sun 10:00: 67 orders"></span><span style="--v:1" title="Mon 12:00: 140 orders"></span><span style="--v:1" title="Tue 12:00: 140 orders"></span><span style="--v:0.96" title="Wed 12:00: 134 orders"></span><span style="--v:0.98" title="Thu 12:00: 137 orders"></span><span style="--v:1" title="Fri 12:00: 140 orders"></span><span style="--v:0.46" title="Sat 12:00: 64 orders"></span><span style="--v:0.57" title="Sun 12:00: 80 orders"></span><span style="--v:1" title="Mon 14:00: 140 orders"></span><span style="--v:0.92" title="Tue 14:00: 129 orders"></span><span style="--v:0.9" title="Wed 14:00: 126 orders"></span><span style="--v:0.96" title="Thu 14:00: 134 orders"></span><span style="--v:0.92" title="Fri 14:00: 129 orders"></span><span style="--v:0.49" title="Sat 14:00: 69 orders"></span><span style="--v:0.61" title="Sun 14:00: 85 orders"></span><span style="--v:0.79" title="Mon 16:00: 111 orders"></span><span style="--v:0.71" title="Tue 16:00: 99 orders"></span><span style="--v:0.81" title="Wed 16:00: 113 orders"></span><span style="--v:0.69" title="Thu 16:00: 97 orders"></span><span style="--v:0.91" title="Fri 16:00: 127 orders"></span><span style="--v:0.45" title="Sat 16:00: 63 orders"></span><span style="--v:0.33" title="Sun 16:00: 46 orders"></span><span style="--v:0.39" title="Mon 18:00: 55 orders"></span><span style="--v:0.46" title="Tue 18:00: 64 orders"></span><span style="--v:0.5" title="Wed 18:00: 70 orders"></span><span style="--v:0.41" title="Thu 18:00: 57 orders"></span><span style="--v:0.5" title="Fri 18:00: 70 orders"></span><span style="--v:0.26" title="Sat 18:00: 36 orders"></span><span style="--v:0.21" title="Sun 18:00: 29 orders"></span><span style="--v:0.2" title="Mon 20:00: 28 orders"></span><span style="--v:0.24" title="Tue 20:00: 34 orders"></span><span style="--v:0.21" title="Wed 20:00: 29 orders"></span><span style="--v:0.25" title="Thu 20:00: 35 orders"></span><span style="--v:0.22" title="Fri 20:00: 31 orders"></span><span style="--v:0.07" title="Sat 20:00: 10 orders"></span><span style="--v:0.18" title="Sun 20:00: 25 orders"></span><span style="--v:0.03" title="Mon 22:00: 4 orders"></span><span style="--v:0.13" title="Tue 22:00: 18 orders"></span><span style="--v:0.04" title="Wed 22:00: 6 orders"></span><span style="--v:0" title="Thu 22:00: 0 orders"></span><span style="--v:0.03" title="Fri 22:00: 4 orders"></span><span style="--v:0.01" title="Sat 22:00: 1 orders"></span><span style="--v:0.08" title="Sun 22:00: 11 orders"></span></div>
+        </div>
+        <ul class="legend is-scale"><li style="--v:0">Fewer</li><li style="--v:.25"></li><li style="--v:.5"></li><li style="--v:.75"></li><li style="--v:1">More orders</li></ul>
+        <details class="accordion-item"><summary class="accordion-trigger">Data table</summary>
+          <div class="accordion-panel"><div class="table-wrap" tabindex="0" role="region" aria-label="Orders by weekday and hour">
+            <table class="table is-compact"><thead><tr><th scope="col">Day</th><th scope="col">00:00</th><th scope="col">02:00</th><th scope="col">04:00</th><th scope="col">06:00</th><th scope="col">08:00</th><th scope="col">10:00</th><th scope="col">12:00</th><th scope="col">14:00</th><th scope="col">16:00</th><th scope="col">18:00</th><th scope="col">20:00</th><th scope="col">22:00</th></tr></thead><tbody><tr><th scope="row">Mon</th><td>0</td><td>0</td><td>7</td><td>20</td><td>52</td><td>102</td><td>140</td><td>140</td><td>111</td><td>55</td><td>28</td><td>4</td></tr><tr><th scope="row">Tue</th><td>0</td><td>0</td><td>3</td><td>38</td><td>69</td><td>111</td><td>140</td><td>129</td><td>99</td><td>64</td><td>34</td><td>18</td></tr><tr><th scope="row">Wed</th><td>8</td><td>0</td><td>13</td><td>32</td><td>62</td><td>97</td><td>134</td><td>126</td><td>113</td><td>70</td><td>29</td><td>6</td></tr><tr><th scope="row">Thu</th><td>10</td><td>4</td><td>18</td><td>35</td><td>62</td><td>102</td><td>137</td><td>134</td><td>97</td><td>57</td><td>35</td><td>0</td></tr><tr><th scope="row">Fri</th><td>0</td><td>6</td><td>4</td><td>28</td><td>60</td><td>101</td><td>140</td><td>129</td><td>127</td><td>70</td><td>31</td><td>4</td></tr><tr><th scope="row">Sat</th><td>0</td><td>7</td><td>1</td><td>17</td><td>43</td><td>48</td><td>64</td><td>69</td><td>63</td><td>36</td><td>10</td><td>1</td></tr><tr><th scope="row">Sun</th><td>0</td><td>0</td><td>0</td><td>20</td><td>42</td><td>67</td><td>80</td><td>85</td><td>46</td><td>29</td><td>25</td><td>11</td></tr></tbody></table>
+          </div></div></details>
+      </div>
+    </section>
 
     <div class="columns mt-l" style="--columns: repeat(3, minmax(0, 1fr));">
       <section class="panel">
@@ -361,8 +423,31 @@
               <button class="btn btn-primary btn-sm" popovertarget="demo-modal" popovertargetaction="hide">Schedule</button>
             </div>
           </div>
+<div class="command" popover id="palette" role="dialog" aria-label="Command palette">
+  <div class="command-search"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-search"/></svg>
+    <input class="input" type="search" aria-label="Search pages and commands" placeholder="Jump to a page or run a command&hellip;" autofocus></div>
+  <div class="command-list" role="listbox" aria-label="Results">
+    <div role="group" aria-labelledby="cmd-g1"><div role="presentation" id="cmd-g1">Go to</div>
+      <a role="option" aria-selected="true" href="ticketsystem.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span>Support desk</span><span class="command-hint">4 open tickets</span></a>
+      <a role="option" aria-selected="false" href="livechat.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message-circle"/></svg><span>Team chat</span><span class="command-hint"># general</span></a>
+      <a role="option" aria-selected="false" href="powerstation.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-power"/></svg><span>Power station</span><span class="command-hint">Unit 2</span></a>
+      <a role="option" aria-selected="false" href="pricing.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-credit-card"/></svg><span>Plans &amp; billing</span></a>
+    </div>
+    <div role="group" aria-labelledby="cmd-g2"><div role="presentation" id="cmd-g2">Actions</div>
+      <a role="option" aria-selected="false" href="settings.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Display settings</span><kbd>Ctrl ,</kbd></a>
+      <a role="option" aria-selected="false" href="components-tables.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-table"/></svg><span>Export orders as CSV</span><kbd>Ctrl E</kbd></a>
+      <span role="option" aria-selected="false" aria-disabled="true"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-refresh"/></svg><span>Re-run forecast</span><span class="command-hint">runs nightly</span></span>
+    </div>
+  </div>
+  <div class="command-footer"><span><kbd>Tab</kbd>move</span><span><kbd>&crarr;</kbd>open</span><span><kbd>Esc</kbd>close</span></div>
+</div>
+<ul class="context-menu" role="menu" popover id="user-menu" aria-label="Account">
+  <li role="none"><a class="context-menu-item" role="menuitem" href="settings.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg> Display settings</a></li>
+  <li role="none"><a class="context-menu-item" role="menuitem" href="pricing.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-credit-card"/></svg> Billing</a></li>
+  <li role="none"><div class="context-menu-divider"></div></li>
+  <li role="none"><a class="context-menu-item" role="menuitem" href="auth.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-logout"/></svg> Sign out</a></li>
+</ul>
 <script src="assets/js/tint.js"></script>
 <script src="assets/js/theme-loader.js"></script>
-<script src="assets/js/carousel.js"></script>
 </body>
 </html>

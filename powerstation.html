@@ -6,7 +6,18 @@
 <title>Power Station — ftl-themes layout demo</title>
 <link id="theme-link" rel="stylesheet" href="dist/aqua.css">
 <link rel="stylesheet" href="assets/css/demo.css">
-
+<style>
+  /* Page layout glue only; every colour comes from the theme. */
+  .demo-pad { padding: 0.9rem; }
+  .demo-gauges .card { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .demo-gauges .card > .stat-label { align-self: start; }
+  .demo-gauges { --gauge-size: 11rem; }
+  .demo-gauges .sparkline { --sparkline-width: 100%; --sparkline-height: 1.6rem; }
+  .demo-linear { display: grid; gap: 0.25rem; }
+  .demo-annunciator { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.5rem; margin: 0; padding: 0.9rem; list-style: none; }
+  .demo-annunciator > li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.15rem 0.5rem; padding: 0.5rem 0.6rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85em; }
+  .demo-annunciator > li > strong { grid-column: 2; font-size: 0.8em; letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
 </head>
 <body class="app">
   <header class="app-bar demo-topbar">
@@ -66,26 +77,42 @@
     <div class="tabset">
     <div class="tabs"><label class="tab"><input type="radio" name="plant-view" checked>Reactor</label><label class="tab"><input type="radio" name="plant-view">Turbines</label><label class="tab"><input type="radio" name="plant-view">Grid</label><label class="tab"><input type="radio" name="plant-view">Maintenance</label></div>
     <div class="tab-panel">
-    <div class="grid" style="margin: 1rem 0;">
+    <div class="grid demo-gauges" style="margin: 1rem 0;">
       <div class="card">
         <span class="stat-label">Output</span>
-        <span class="readout readout-lg">412<span class="readout-unit">MW</span></span>
-        <div class="meter" style="--meter-level:72%;--meter-peak:84%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        <div class="gauge-dial" style="--value:.687; --gauge-redline:.917; --gauge-ticks:6">
+          <meter min="0" max="600" high="550" optimum="400" value="412">412 MW of 600</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li class="is-redline">6</li></ol>
+          <div class="gauge-readout"><span class="readout">412</span>MW</div>
+        </div>
+        <svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Output, last hour: ramped up from 380 to 412 MW"><polyline points="0.0,22.0 9.1,17.0 18.2,12.6 27.3,8.9 36.4,10.8 45.5,7.0 54.5,3.9 63.6,5.1 72.7,2.6 81.8,2.0 90.9,3.2 100.0,2.0"/></svg>
       </div>
       <div class="card">
         <span class="stat-label">Grid frequency</span>
-        <span class="readout readout-lg">50.01<span class="readout-unit">Hz</span></span>
-        <div class="meter" style="--meter-level:50%;--meter-peak:55%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        <div class="gauge-arc" style="--value:.51; --gauge-ticks:4">
+          <meter min="49.5" max="50.5" low="49.8" high="50.2" optimum="50" value="50.01">50.01 Hz</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>49.5</li><li>50</li><li>50.5</li></ol>
+          <div class="gauge-readout"><span class="readout">50.01</span>Hz</div>
+        </div>
+        <svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Grid frequency, last hour: steady within 0.03 Hz of 50"><polyline points="0.0,5.3 9.1,18.7 18.2,12.0 27.3,2.0 36.4,15.3 45.5,8.7 54.5,22.0 63.6,12.0 72.7,5.3 81.8,12.0 90.9,15.3 100.0,8.7"/></svg>
       </div>
       <div class="card">
         <span class="stat-label">Turbine speed</span>
-        <span class="readout readout-lg">3,002<span class="readout-unit">rpm</span></span>
-        <div class="meter" style="--meter-level:88%;--meter-peak:93%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        <div class="gauge-dial is-warn" style="--value:.834; --gauge-redline:.917; --gauge-ticks:6">
+          <meter min="0" max="3600" high="3300" optimum="3000" value="3002">3,002 rpm</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>6</li><li>12</li><li>18</li><li>24</li><li>30</li><li class="is-redline">36</li></ol>
+          <div class="gauge-readout"><span class="readout">3,002</span>rpm</div>
+        </div>
+        <svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Turbine speed, last hour: steady near 3,000 rpm"><polyline points="0.0,22.0 9.1,13.4 18.2,6.3 27.3,10.6 36.4,2.0 45.5,7.7 54.5,12.0 63.6,3.4 72.7,6.3 81.8,9.1 90.9,2.0 100.0,4.9"/></svg>
       </div>
       <div class="card">
         <span class="stat-label">Coolant temp</span>
-        <span class="readout readout-lg">291<span class="readout-unit">&deg;C</span></span>
-        <div class="meter" style="--meter-level:64%;--meter-peak:70%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+        <div class="gauge-arc" style="--value:.831; --gauge-redline:.914">
+          <meter min="0" max="350" high="320" optimum="280" value="291">291 &deg;C</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>175</li><li class="is-redline">350</li></ol>
+          <div class="gauge-readout"><span class="readout">291</span>&deg;C</div>
+        </div>
+        <svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Coolant temperature, last hour: rising slowly, 284 to 291 °C"><polyline points="0.0,22.0 9.1,19.1 18.2,16.3 27.3,16.3 36.4,13.4 45.5,10.6 54.5,7.7 63.6,7.7 72.7,4.9 81.8,4.9 90.9,2.0 100.0,2.0"/></svg>
       </div>
     </div>
 
@@ -130,6 +157,20 @@
           <div><div class="meter meter-v" style="--meter-level:91%;--meter-peak:93%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span>Boric acid</span></div>
           <div><div class="meter meter-v" style="--meter-level:24%;--meter-peak:30%"><div class="meter-fill"></div><div class="meter-peak"></div></div><span>Diesel</span></div>
         </div>
+        <div class="stack demo-pad">
+          <div class="demo-linear"><span class="label">Coolant</span><div class="gauge-linear">
+            <div class="meter" style="--meter-level:78%" role="meter" aria-label="Coolant tank level, percent" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+            <span class="gauge-mark" style="--at:0%">0</span><span class="gauge-mark" style="--at:100%">100</span>
+            <span class="gauge-mark is-target" style="--at:75%">Target</span>
+            <span class="gauge-mark is-min" style="--at:58%">min 58</span><span class="gauge-mark is-max" style="--at:88%">max 88</span>
+          </div></div>
+          <div class="demo-linear"><span class="label">Diesel</span><div class="gauge-linear">
+            <div class="meter" style="--meter-level:24%" role="meter" aria-label="Diesel tank level, percent" aria-valuenow="24" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+            <span class="gauge-mark" style="--at:0%">0</span><span class="gauge-mark" style="--at:100%">100</span>
+            <span class="gauge-mark is-target" style="--at:70%">Target</span>
+            <span class="gauge-mark is-warn" style="--at:20%">Low 20</span>
+          </div></div>
+        </div>
       </section>
 
       <section class="panel">
@@ -153,6 +194,37 @@
           <div class="row is-items-center is-gap-xs"><span class="avatar">RK</span><div><strong>R. Kaplan</strong><div class="field-hint">Shift supervisor &middot; on since 06:00</div></div></div>
           <div class="row is-items-center is-gap-xs mt-xs"><span class="avatar avatar-sm">MT</span><span class="field-hint">M. Tan &middot; reactor operator</span></div>
         </div>
+      </section>
+    </div>
+
+    <div class="columns mt-l" style="--columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.9fr);">
+      <section class="panel">
+        <header class="panel-header"><strong>Annunciator</strong><span class="badge badge-danger">1 trip</span><span class="badge badge-warning">2 high</span></header>
+        <ul class="demo-annunciator" aria-label="Alarm points"><li><span class="lamp is-error" aria-hidden="true"></span><span>Pump 3 vibration</span><strong>Trip</strong></li><li><span class="lamp is-warn" aria-hidden="true"></span><span>SG-B outlet temp</span><strong>High</strong></li><li><span class="lamp is-on" aria-hidden="true"></span><span>Reactor protection</span><strong>Armed</strong></li><li><span class="lamp is-on" aria-hidden="true"></span><span>Containment pressure</span><strong>Normal</strong></li><li><span class="lamp is-active" aria-hidden="true"></span><span>Rod bank D</span><strong>Moving</strong></li><li><span class="lamp " aria-hidden="true"></span><span>Emergency diesel</span><strong>Standby</strong></li><li><span class="lamp is-on" aria-hidden="true"></span><span>Grid breaker</span><strong>Closed</strong></li><li><span class="lamp is-warn" aria-hidden="true"></span><span>Grid operator ack</span><strong>Pending</strong></li><li><span class="lamp " aria-hidden="true"></span><span>Fire suppression</span><strong>Off</strong></li></ul>
+        <div class="transport demo-pad"><label class="toggle-btn"><input type="checkbox"><span class="toggle-btn-off">Acknowledge</span><span class="toggle-btn-on">Acknowledged</span></label><label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Silence horn</span><span class="toggle-btn-on">Horn silenced</span></label></div>
+      </section>
+      <section class="panel">
+        <header class="panel-header"><strong>Shift events</strong><span class="badge">since 06:00</span></header>
+        <ol class="timeline demo-pad">
+          <li class="is-done"><time datetime="06:00">06:00</time><strong>Shift B handover</strong><p>R. Kaplan on as supervisor.</p></li>
+          <li class="is-done"><time datetime="12:20">12:20</time><strong>Cooling tower level restored</strong></li>
+          <li class="is-error"><time datetime="13:58">13:58</time><strong>Pump 3 tripped on vibration</strong><p>Loop transferred to pump 4.</p></li>
+          <li class="is-warn"><time datetime="14:12">14:12</time><strong>SG-B outlet temperature high</strong></li>
+          <li aria-current="step"><time datetime="14:22">14:22</time><strong>Turbine trip test</strong><p>Passed; resyncing to grid.</p></li>
+          <li><time datetime="16:00">16:00</time><strong>Boron sample due</strong></li>
+        </ol>
+      </section>
+      <section class="panel">
+        <header class="panel-header"><strong>Unit data</strong></header>
+        <dl class="props demo-pad">
+          <dt>Unit</dt><dd>2 &middot; PWR, 4-loop</dd>
+          <dt>Rated output</dt><dd>600 MWe</dd>
+          <dt>Cycle</dt><dd>18 &middot; day 247 of 365</dd>
+          <dt>Burnup</dt><dd>38.2 GWd/tU</dd>
+          <dt>Rod bank D</dt><dd>step 162 of 228</dd>
+          <dt>Last outage</dt><dd><time datetime="2025-11-02">2 Nov 2025</time></dd>
+          <dt>Permit</dt><dd class="mono">NRG-U2-2026-00417-B</dd>
+        </dl>
       </section>
     </div>
 
