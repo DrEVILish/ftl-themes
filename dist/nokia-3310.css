@@ -929,7 +929,7 @@ dialog.modal:modal {
   gap: 0.15em;
   padding: var(--readout-padding, 0.1em 0.35em);
   background: var(--readout-bg, transparent);
-  color: var(--readout-fg, var(--accent));
+  color: var(--readout-fg, var(--accent-text, var(--accent)));
   border: var(--readout-border-width, 0) solid var(--readout-border, transparent);
   border-radius: var(--readout-radius, var(--radius));
   font-family: var(--readout-font, var(--font-mono));
@@ -2168,7 +2168,7 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
 }
 .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
-  color: var(--row-selected-fg, inherit);
+  color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
 }
 
@@ -6652,7 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
-  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent-text, var(--accent))));
   background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
@@ -6828,6 +6828,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   white-space: nowrap;
 }
 :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
+/* On a selected row's fill, muted can drop under 4.5:1: follow the row ink. */
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
 .track-artist { font-size: 0.875em; }
 .track-album { flex: 1 1 0; font-size: 0.875em; }
 .track-time {
@@ -11336,14 +11338,16 @@ html[data-theme="nokia-3310"] {
   --bg: #9ead86;
   --surface: #a3b58c;
   --surface-2: #94a17c;
-  --border: #2b3320;
+  /* The ink. Was #2b3320, which cleared 4.5:1 on the plain LCD but not on
+     core's tinted fills (accent badges, avatars, calendar events, a
+     selected range): the darker olive keeps every tint above 4.5:1. */
+  --border: #1c2214;
   --hairline: #6e7a57;
-  --text: #2b3320;
-  /* Not a real second shade — darkened further than body text so it still
-     clears 4.5:1 against both --bg and --surface-2 (was #363e24,
-     4.1:1 on surface-2). */
-  --muted: #2d341e;
-  --accent: #2b3320;
+  --text: #1c2214;
+  /* Not a real second shade — a hair lighter than the ink, still 5.6:1 on
+     --surface-2 (was #2d341e). */
+  --muted: #20271a;
+  --accent: #1c2214;
   --accent-2: #3d4629;
   /* The switch's on/off cue can't be thumb-muted-vs-accent: the two are
      ~1:1 on this one-colour screen. Instead the whole track hard-inverts
@@ -11358,16 +11362,16 @@ html[data-theme="nokia-3310"] {
      from ordinary text. Kept inside the same yellow-green LCD family
      (barely-there hue shifts, not saturated colour) so it reads as "the
      same screen, different ink density" rather than a colour display. */
-  --danger: #4a2a1f;
-  --success: #1f3a28;
-  --warning: #4a3d1a;
+  --danger: #3f2219;
+  --success: #1a3122;
+  --warning: #352b10;
   --on-accent: #9ead86;
   --on-danger: #d8dcc0;
   --on-success: #d8dcc0;
   --radius: 0;
   --font: "Consolas", "Courier New", monospace;
   --font-mono: "Consolas", "Courier New", monospace;
-  --flare: #2b3320;
+  --flare: #1c2214;
 
   /* A "button" on this device is a softkey label — no fill, no border, no
      radius, just bold dark-on-LCD text, exactly like the [Menu]/[Names]
@@ -11399,7 +11403,15 @@ html[data-theme="nokia-3310"] {
   --row-selected-fg: var(--bg);
   --nav-bg: var(--text);
   --badge-radius: 0;
-  --overlay-bg: rgba(43, 51, 32, 0.75);
+  --overlay-bg: rgba(28, 34, 20, 0.75);
+  /* Highlights and comment anchors: lighter tints of the dark warning ink
+     so the ink on them keeps 4.5:1 (core's 35%/40% sank to 3.8:1). The
+     active anchor still differs by its solid underline. */
+  --mark-bg: color-mix(in srgb, var(--warning) 25%, transparent);
+  --comment-anchor-bg: color-mix(in srgb, var(--warning) 14%, transparent);
+  --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 25%, transparent);
+  /* Solo's lit key is the dark warning ink: core's black label vanished. */
+  --key-solo-fg: var(--bg);
   --indicator-fg: var(--text);
   --indicator-track: var(--surface-2);
 }
@@ -11451,6 +11463,23 @@ html[data-theme="nokia-3310"] {
   --app-status-bg: var(--text);
   --app-status-fg: var(--bg);
   --app-status-radius: 0;
+}
+/* Text on the inverted (ink) strips: muted and the state inks would be
+   dark-on-dark there (about 1:1), so they flip to the LCD colour too. */
+html[data-theme="nokia-3310"] :is(.app-bar, .app-status, .nav) {
+  --muted: var(--bg);
+  --success-text: var(--bg);
+  --warning-text: var(--bg);
+  --danger-text: var(--bg);
+  /* An avatar keeps its own light disc, so it keeps dark ink. */
+  --avatar-fg: var(--text);
+}
+/* Every .nav sits on the dark --nav-bg strip, so its items are LCD-light
+   with a hard invert for the active one, as on the app bar. */
+html[data-theme="nokia-3310"] .nav {
+  --nav-item-fg: var(--bg);
+  --nav-item-fg-active: var(--text);
+  --nav-item-bg-active: var(--bg);
 }
 html[data-theme="nokia-3310"] .app-bar {
   --nav-brand-fg: var(--bg);

@@ -929,7 +929,7 @@ dialog.modal:modal {
   gap: 0.15em;
   padding: var(--readout-padding, 0.1em 0.35em);
   background: var(--readout-bg, transparent);
-  color: var(--readout-fg, var(--accent));
+  color: var(--readout-fg, var(--accent-text, var(--accent)));
   border: var(--readout-border-width, 0) solid var(--readout-border, transparent);
   border-radius: var(--readout-radius, var(--radius));
   font-family: var(--readout-font, var(--font-mono));
@@ -2168,7 +2168,7 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
 }
 .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
-  color: var(--row-selected-fg, inherit);
+  color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
 }
 
@@ -6652,7 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
-  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent-text, var(--accent))));
   background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
@@ -6828,6 +6828,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   white-space: nowrap;
 }
 :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
+/* On a selected row's fill, muted can drop under 4.5:1: follow the row ink. */
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
 .track-artist { font-size: 0.875em; }
 .track-album { flex: 1 1 0; font-size: 0.875em; }
 .track-time {
@@ -11368,6 +11370,9 @@ html[data-theme="cyber-goth"] {
   --nav-rule: var(--flare);
   --overlay-bg: rgba(3, 0, 5, 0.85);
   --indicator-fg: var(--accent);
+  /* The drop column's green tint is kept faint: the purple column title
+     sits on it (core's 12% took it to 3.4:1). */
+  --kanban-drop-bg: color-mix(in srgb, var(--accent) 4%, var(--surface-2));
 
   --app-bar-bg: #050006;
   --app-bar-rule: var(--flare);
@@ -11383,6 +11388,9 @@ html[data-theme="cyber-goth"] h3 {
   letter-spacing: 0.03em;
   text-shadow: 0 0 10px rgba(214, 31, 255, 0.6);
 }
+/* Kanban column titles sit on a tinted column: the purple bloom behind
+   them dropped the title to 4.4:1, so they keep the colour, not the glow. */
+html[data-theme="cyber-goth"] .kanban-column-title { text-shadow: none; }
 /* The flyer/rave typographic voice extends to buttons and tabs, not just
    headings — otherwise it only shows up in three tags on the page. */
 html[data-theme="cyber-goth"] .btn,

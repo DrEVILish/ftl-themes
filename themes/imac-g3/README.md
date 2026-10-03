@@ -88,8 +88,8 @@ The shell is a saturated mid-tone, so this theme sits near the floors and `pytho
 - **Body text (AAA warning):** `--text` white on `--surface` `#0c6478` is 6.8:1 (floor 7.0:1); on `--bg` `#0a545f` it is 8.58:1. It clears AA everywhere but not AAA on `--surface`.
 - **Accent legibility (warning):** `--accent` `#00b0d4` on `--surface` is 2.6:1 (soft floor 3.0:1); on `--bg` it is 3.34:1. The `theme.css` header comment says `#00b0d4` "clears 3.0:1" — that was measured against an earlier, darker surface; against the current `#0c6478` it does not.
 - **Bondi lifted from the reference:** the verified hardware colour Bondi Blue is `#0095b6`; shipped `--accent` is `#00b0d4`, one step lighter. True Bondi is only 1.92:1 against `--surface`, so it cannot be used as text on this shell at all.
-- **Muted:** `#f5fcfd` is 6.5:1 on `--surface` but only 4.63:1 on `--surface-2` `#0f7d92` (white is 4.81:1 there), so text placed directly on solid `--surface-2` uses `--accent-text` `#bff0f7` or `--on-accent`.
-- **State text** uses pale tints (`--success-text` `#c3f7d2`, `--warning-text` `#ffe6a8`, `--danger-text` `#ffd9d5`) because the fills fail as text on the teal.
+- **Surface-2 darkened:** `#0f7d92` left white at 4.81:1 and every tinted text token under 4.5:1 on context menus, toasts and readonly fields, so `--surface-2` is `#0d7489` (white 5.42:1, `--muted` `#f5fcfd` about 5.2:1). The button gel keeps the old `#0f7d92` stop, so buttons look the same. Accent as text (badges, links, readouts, active tab, GO, `.schedule`) is `--accent-text` `#cff4f9`; raw `--accent` is 2.6:1 on `--surface`. Selection frost is `rgba(255,255,255,0.12)` (was 0.25, white 3.1–3.9:1 on it) and series 6 is graphite `#8a9ba1` instead of near-white `--muted`, so white text on its tints passes.
+- **State text** uses pale tints (`--success-text` `#c9f8d6`, `--warning-text` `#ffebb9`, `--danger-text` `#ffe8e6`, each at least 4.6:1 on `--surface-2`) because the fills fail as text on the teal.
 - **Tangerine variant** was darkened to `#823a0a` after the brighter oranges measured 3.8:1 and 2.7:1 with white.
 
 ## Reference status

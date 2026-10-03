@@ -68,11 +68,12 @@ resolution. The sprite ships 123 `<symbol>`s in total (`grep -c '<symbol'`), and
 
 ## Contrast honesty
 
-- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The shipped tones (`--bg` `#9ead86`, `--surface` `#a3b58c`, `--surface-2` `#94a17c`, ink `#2b3320`) are hand-picked olives, **not sampled from that photo** (unverified).
-- **AAA warnings (`scripts/check.py`):** `--text` on `--surface` is 6.0:1 and on `--bg` 5.5:1 (floor 7.0:1). It clears AA everywhere but not AAA; that is the real LCD's low contrast, and darkening the ink further would look unlike the device.
-- **`--muted` lifted:** `#363e24` (4.1:1 on `--surface-2`) to `#2d341e` (5.89:1 on `--surface`, 4.72:1 on `--surface-2`). It is not really a second shade.
-- **State inks are a departure.** `--danger` `#4a2a1f` (5.34:1 on `--bg`), `--success` `#1f3a28` (5.18:1) and `--warning` `#4a3d1a` (4.45:1 on `--bg`, just under 4.5:1 if used as text there) are dark olive-family tones. The real phone had no such colours.
-- `--on-accent` `#9ead86` on `--accent` `#2b3320` is the same 5.49:1 invert used for selection.
+- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The shipped tones (`--bg` `#9ead86`, `--surface` `#a3b58c`, `--surface-2` `#94a17c`, ink `#1c2214`, darkened from `#2b3320` so core's tinted fills clear 4.5:1) are hand-picked olives, **not sampled from that photo** (unverified).
+- **AAA warnings (`scripts/check.py`):** `--text` on `--surface` is 7.41:1 but on `--bg` 6.81:1 and on `--surface-2` 5.94:1 (floor 7.0:1). It clears AA everywhere but not AAA throughout; that is the real LCD's low contrast, and darkening the ink to near-black would look unlike the device.
+- **`--muted` lifted:** `#363e24` (4.1:1 on `--surface-2`) to `#2d341e`, then to `#20271a` with the darker ink (6.99:1 on `--surface`, 5.6:1 on `--surface-2`). It is not really a second shade. On the dark strips (app bar, status bar, `.nav`) `--muted` and the state-text tokens flip to `--bg` (6.81:1).
+- **Ink darkened:** `--text`/`--accent`/`--border` `#2b3320` (5.49:1 on `--bg`, 4.41:1 under an accent badge's 20% tint) to `#1c2214` (6.81:1 on `--bg`, 5.27:1 under the tint). The mark/comment-anchor tints are lighter so the ink stays above 4.5:1 on them.
+- **State inks are a departure.** `--danger` `#3f2219` (6.03:1 on `--bg`), `--success` `#1a3122` (5.83:1) and `--warning` `#352b10` (5.83:1), darkened from `#4a2a1f`/`#1f3a28`/`#4a3d1a` so their 20% badge tints pass, are dark olive-family tones. The real phone had no such colours.
+- `--on-accent` `#9ead86` on `--accent` `#1c2214` is the same 6.81:1 invert used for selection.
 
 ## Reference status
 

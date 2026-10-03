@@ -929,7 +929,7 @@ dialog.modal:modal {
   gap: 0.15em;
   padding: var(--readout-padding, 0.1em 0.35em);
   background: var(--readout-bg, transparent);
-  color: var(--readout-fg, var(--accent));
+  color: var(--readout-fg, var(--accent-text, var(--accent)));
   border: var(--readout-border-width, 0) solid var(--readout-border, transparent);
   border-radius: var(--readout-radius, var(--radius));
   font-family: var(--readout-font, var(--font-mono));
@@ -2168,7 +2168,7 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
 }
 .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
-  color: var(--row-selected-fg, inherit);
+  color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
 }
 
@@ -6652,7 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
-  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent-text, var(--accent))));
   background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
@@ -6828,6 +6828,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   white-space: nowrap;
 }
 :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
+/* On a selected row's fill, muted can drop under 4.5:1: follow the row ink. */
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
 .track-artist { font-size: 0.875em; }
 .track-album { flex: 1 1 0; font-size: 0.875em; }
 .track-time {
@@ -11347,8 +11349,11 @@ html[data-theme="aqua"] {
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --success-text: #37762c;
-  --warning-text: #915f15;
+  /* Darkened so they also hold 4.5:1 on their own 20% badge tints and on
+     the diff-line tints (were #37762c / #915f15, ~3.7:1 there). */
+  --success-text: #2c6024;
+  --warning-text: #764d10;
+  --danger-text: #a02818;
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
@@ -11571,6 +11576,10 @@ html[data-theme="aqua"] {
   --accent-text: #20589d;
   --tab-fg-active: var(--accent-text);
   --go-fg: var(--accent-text);
+  /* Links and readouts are accent text too: raw #2a74d0 fell to 3.5:1 on
+     the light panels. */
+  --link: var(--accent-text);
+  --readout-fg: var(--accent-text);
 }
 html[data-theme="aqua"] .btn-secondary { --btn-fg: var(--accent-text); }
 

@@ -929,7 +929,7 @@ dialog.modal:modal {
   gap: 0.15em;
   padding: var(--readout-padding, 0.1em 0.35em);
   background: var(--readout-bg, transparent);
-  color: var(--readout-fg, var(--accent));
+  color: var(--readout-fg, var(--accent-text, var(--accent)));
   border: var(--readout-border-width, 0) solid var(--readout-border, transparent);
   border-radius: var(--readout-radius, var(--radius));
   font-family: var(--readout-font, var(--font-mono));
@@ -2168,7 +2168,7 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
 }
 .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
-  color: var(--row-selected-fg, inherit);
+  color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
 }
 
@@ -6652,7 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
-  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent-text, var(--accent))));
   background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
@@ -6828,6 +6828,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   white-space: nowrap;
 }
 :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
+/* On a selected row's fill, muted can drop under 4.5:1: follow the row ink. */
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
 .track-artist { font-size: 0.875em; }
 .track-album { flex: 1 1 0; font-size: 0.875em; }
 .track-time {
@@ -11333,8 +11335,10 @@ html[data-theme="pipboy"] {
   --border: #1f7a3f;
   --hairline: #123d1e;
   --text: #39ff6a;
-  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #1f9c3f, 4.2:1 on --surface-2. */
-  --muted: #1fa43f;
+  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both
+     surfaces and on tinted rows/bubbles under the glow; was #1fa43f (2.9:1
+     on a selected row once the glow is counted). */
+  --muted: #29c450;
   --accent: #39ff6a;
   --accent-2: #8dffab;
   --danger: #ffb15c;
@@ -11356,18 +11360,22 @@ html[data-theme="pipboy"] {
   --panel-shadow: inset 0 0 24px rgba(57, 255, 106, 0.06);
   --table-head-fg: var(--accent);
   --table-head-rule: var(--accent);
-  --row-selected-bg: rgba(57, 255, 106, 0.14);
+  --row-selected-bg: rgba(57, 255, 106, 0.11);
   --nav-bg: #04140a;
   --overlay-bg: rgba(2, 10, 5, 0.85);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
+  /* Core's 40% warning tint lifts the glow-lit text under 4.5:1. */
+  --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 28%, transparent);
 
   --app-bg: #04140a;
   --app-bar-bg: #04140a;
   --app-bar-rule: var(--border);
 }
 
-html[data-theme="pipboy"] { text-shadow: 0 0 3px rgba(57, 255, 106, 0.6); }
+/* The glow is the glyph's own phosphor (currentColor), so dim text glows dim
+   instead of sitting in a bright-green halo that eats its contrast. */
+html[data-theme="pipboy"] { text-shadow: 0 0 3px color-mix(in srgb, currentColor 35%, transparent); }
 html[data-theme="pipboy"] .btn-primary { --btn-bg: rgba(57, 255, 106, 0.12); --btn-fg: var(--accent); }
 html[data-theme="pipboy"] h1,
 html[data-theme="pipboy"] h2,
@@ -11406,7 +11414,7 @@ html[data-theme="pipboy"] {
 html[data-theme="pipboy"] {
   --chart-series-1: #39ff6a;
   --chart-series-2: #3fbf5f;
-  --chart-series-3: #b8ffc6;
+  --chart-series-3: #9de8ad;
   --chart-series-4: #ffb642;
   --chart-series-5: #238a3c;
   --chart-series-6: #4f9a61;

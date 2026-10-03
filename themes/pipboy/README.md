@@ -27,7 +27,8 @@ the screen.
 - Scanlines are a fixed `::after` overlay on `.app` at `z-index: 999`
   with `pointer-events: none` — a 1px-on/2px-off repeating gradient, so
   they never intercept a click and never need JavaScript.
-- All body text carries a faint `text-shadow: 0 0 3px` phosphor glow, not
+- All body text carries a faint `text-shadow: 0 0 3px` phosphor glow in its
+  own colour (`currentColor` at 35%, so dim text glows dim), not
   just headings — the whole screen glows a little, not just the display
   face.
 - `--success` and `--accent` are the *same* green — this theme has

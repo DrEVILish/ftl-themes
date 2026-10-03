@@ -69,6 +69,9 @@ changes are called out explicitly here.
     leans on `--text`.
   - Breadcrumbs in the app bar take the bar's ink (`--app-bar-fg`);
     footnote back-links in `.prose` are underlined like other text links.
+  - Selected list items default to `--text` (not the inherited colour),
+    readouts read `--accent-text`, and track meta on a selected row follows
+    the row ink (`--track-meta-fg-active`).
   - Contrast sweep: every theme's own colour-contrast failures fixed through
     tokens (muted, status text, accent text, selected rows, tints), keeping
     each theme's palette; READMEs note changed hexes.

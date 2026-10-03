@@ -75,9 +75,10 @@ fill without checking the contrast floor.
 ## Contrast honesty
 
 - **`--muted` lifted:** `#6e7075` was 4.2:1; shipped `#58595e` is 5.16:1 on `--bg`, 5.91:1 on `--surface`, 6.99:1 on white. Checked against the darker panel gradient stop too.
-- **Accent blue as text is not free.** `--accent` `#2a74d0` is 4.66:1 under white text (filled controls fine) but only 3.44:1 on `--bg` and 3.94:1 on `--surface`, so accent-as-text uses the darker `--accent-text` `#20589d`, and the app-bar brand uses `#174f9c` (the accent measured 3.8:1 there; muted items 4.0:1).
+- **Accent blue as text is not free.** `--accent` `#2a74d0` is 4.66:1 under white text (filled controls fine) but only 3.44:1 on `--bg` and 3.94:1 on `--surface`, so accent-as-text (active tab, secondary button, links, readouts, `.schedule` stamps) uses the darker `--accent-text` `#20589d`, and the app-bar brand uses `#174f9c` (the accent measured 3.8:1 there; muted items 4.0:1).
 - **Gel button:** the primary gel's lower stop is deepened so its white label holds 4.5:1 across the whole button, at the cost of a slightly darker bottom than a raw Aqua screenshot.
-- `--accent-2` `#5aa6ff` is 1.86:1 on `--bg`: decoration/flare only, never text. `--warning` `#b0741a` is 2.89:1 on `--bg`; text uses `--warning-text` `#915f15`.
+- `--accent-2` `#5aa6ff` is 1.86:1 on `--bg`: decoration/flare only, never text. `--warning` `#b0741a` is 2.89:1 on `--bg`; text uses `--warning-text` `#764d10`.
+- **State text tokens** are dark enough for their own 20% badge tints and the diff-line tints: `--success-text` `#2c6024` (4.95:1 on the success badge), `--danger-text` `#a02818` (4.73:1), `--warning-text` `#764d10` (5.06:1). They were `#37762c`, raw `--danger` and `#915f15`, about 3.4–3.7:1 there.
 
 ## Reference status
 

@@ -76,6 +76,7 @@ except the waveform hover preview, which needs the pointer position.
 | `--track-radius` | `var(--radius)` |
 | `--track-fg` | `var(--text)` |
 | `--track-meta-fg` | `var(--muted)` (artist, album, time) |
+| `--track-meta-fg-active` | `var(--row-selected-fg, var(--text))` (meta text on a selected row) |
 | `--track-num-fg` | `var(--muted)` |
 | `--track-num-size` | `2em` (play cell; never under `--tap-min`) |
 | `--track-art-size` | `2.5rem` |

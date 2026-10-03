@@ -69,9 +69,9 @@ as the page, distinguished only by the content sitting on them.
 
 ## Contrast honesty
 
-- **Accent red fails as text.** `--accent` `#c81e1e` is 3.66:1 on black; white on it is 5.74:1, so red is safe only as a fill/lamp/rule. The app-bar brand text is lifted to `#ff5a5a` (6.86:1 on black).
-- **Muted lifted:** `#6a6a6a` (3.8:1) to `#777777` (4.69:1 on black, 4.55:1 on `--surface-2` `#050505`).
-- **Nav items** `#8a8a8a` (6.08:1 on black) sit a step above `--muted`; the `theme.css` comment says muted measured 3.9:1 on the bar, which does not match the 4.69:1 I compute on pure black (the bar may not be pure black; unverified).
+- **Accent red fails as text.** `--accent` `#c81e1e` is 3.66:1 on black; white on it is 5.74:1, so red is safe only as a fill/lamp/rule. Red as text — links, the brand, the active tab, accent badges, readouts, code keywords and the secondary button — uses `--accent-text` `#ff5a5a` (6.86:1 on black).
+- **Muted lifted:** `#6a6a6a` (3.8:1) to `#777777`, then to `#888888` (5.92:1 on black, 4.81:1 on the `#1c1c1c` current-time schedule row). On the red header block `--muted` is re-pointed to `#ffe3e3` (4.74:1) and `--success-text` to `#c8ffd8` (5.12:1).
+- **Nav items** `#8a8a8a` (6.08:1 on black), a hair above `--muted`.
 - `--text` `#e6e6e6` is 16.83:1. Semantic fills (`#ff3b3b`, `#2fff6f`, `#ffcf2f`) are 5.9–15.7:1 on black with black `--on-*` text.
 - The reference red in the photo is a lamp; `RESEARCH.md` records no hex, so `#c81e1e` is the theme's.
 

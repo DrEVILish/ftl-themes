@@ -67,8 +67,10 @@ How it differs from its neighbours:
 - Inputs are CRT wells with VFD-teal mono entry and a teal caret.
 - Sliders and faders have a cream cap with a dark centre line, like a
   mixer fader cap.
-- The dark surfaces (`.app-bar`, `.transport`) re-point `--text`/`--muted`/
-  `--link` locally so text on them stays legible.
+- The dark surfaces (`.app-bar`, `.transport`, code blocks, the status
+  window, countdowns) re-point `--text`/`--muted`/`--link` and the state-text tokens
+  locally so text on them stays legible; the hero re-points only accent
+  text.
 
 ## v5 layout
 

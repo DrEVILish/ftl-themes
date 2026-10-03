@@ -71,7 +71,7 @@ well, and a checkered-flag status strip along the bottom.
 - **The orange was not lifted; the text colour was flipped.** `--accent` `#ff5f00` is unchanged, but white on it is only 3.05:1. Instead of darkening the orange until white passed (which would turn it brown), `--on-accent` is near-black `#1a0900` (6.36:1). The same choice applies to `--danger` `#ff2d2d` (`#1a0000`, 5.43:1) and `--success` `#29d17a` (`#04220f`, 8.46:1). There is no before/after hex pair for the fills themselves.
 - **The orange hex is not measured from a capture:** `RESEARCH.md` records no hex ("track orange"), so `#ff5f00` is the theme's number.
 - **On dark surfaces** `--accent` is 6.49:1 on `--bg`, 5.94:1 on `--surface`; `--muted` `#9a9a9a` is 6.43:1 on `--surface` and 5.59:1 on `--surface-2`.
-- **Red as text:** `--danger` is 5.34:1 on `--bg`; `--danger-text` `#ff6e6e` is the lighter variant for small copy.
+- **Red as text:** `--danger` is 5.34:1 on `--bg`; `--danger-text` `#ff8080` (was `#ff6e6e`, 4.1:1 on a selected orange row) is the lighter variant for small copy. Selected rows set `--row-selected-fg` to full white, and kanban column titles drop the heading glow over the tinted drop column.
 
 ## Reference status
 

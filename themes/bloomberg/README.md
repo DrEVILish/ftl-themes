@@ -79,7 +79,7 @@ reads as another data row rather than a conventional status bar.
 ## Contrast honesty
 
 - **Amber `#ff9900` is the theme's choice.** `RESEARCH.md` gives no hex for the terminal amber, so it is not a measured reference value. It is 9.81:1 on `--bg`, 9.25:1 on `--surface`, 8.6:1 on `--surface-2`: comfortably AA/AAA.
-- **`--muted` was lifted.** The dimmer amber `#b36b00` (4.4:1) was under the floor; shipped `#b86e00` is 4.97:1 on `--surface` and 4.62:1 on `--surface-2`.
+- **`--muted` was lifted.** The dimmer amber `#b36b00` (4.4:1) was under the floor; `#b86e00` (4.97:1 on `--surface`) still fell to about 4:1 on the tinted schedule and unread-notification fills, so shipped `#cc7a00` is 6.35:1 on black and at least 4.8:1 on those tints. Yellow highlight tints (`--mark-bg`, `--mention-self-bg`, comment anchors) are lighter than core's so amber text keeps 4.5:1 on them.
 - **Yellow `#ffcc00` (`--accent`)** is 13.9:1 on black and carries black text (`--on-accent`) on filled controls; no deviation. **Cyan `#00ccff`** (second data category) is 10.45:1 on `--surface`.
 - **Green GO.** The reference keyboard's `<GO>` key is green (`bloomberg-keyboard-function-keys.jpg`). The green is kept only in the decorative function-key strip and `<kbd>` cycle (`#2ecc40`) and in `--success` `#33ff66` (15.6:1 on black). It is *not* the interactive colour: primary interaction is yellow (`--accent`) and the second category is cyan. So the GO-green role is substituted, not reproduced, in interactive chrome.
 - `--danger` `#ff3333` is 5.77:1 on black.

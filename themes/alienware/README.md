@@ -93,7 +93,7 @@ well — hardware, not a HUD.
 - **Cyan on black is safe:** `--accent` `#00d4ff` is 11.17:1 on `--bg`, 10.19:1 on `--surface`; `--on-accent` `#001318` is 10.72:1 on it. The hex itself is the theme's, not measured (`RESEARCH.md` records no value).
 - **Purple is the weak one:** `--accent-2` `#7a5cff` is 4.52:1 on `--bg` but 4.13:1 on `--surface`, so it is used only for the active-row marker and `--flare` (non-text), never for copy.
 - **Danger text lifted:** `--danger` `#ff3b5c` is 5.68:1 on `--bg`; `--danger-text` `#ff6b84` (6.61:1 on `--surface`) is the small-copy variant.
-- **Muted:** `#8a8a92` is 5.27:1 on `--surface` and 4.79:1 on `--surface-2`.
+- **Muted:** `#93939b` (was `#8a8a92`, 4.2:1 on the cyan-tinted own-message bubble and schedule blocks) is 6.0:1 on `--surface` and at least 4.7:1 on those tints.
 - **The rail is unattested.** The cyan strip, its `#b6f5ff`-to-`#0090b3` fade and its bloom are decoration drawn from the RESEARCH text ("single AlienFX cyan glow per lighting zone"); no capture in the folder shows an app rail, and there is no purple in it.
 
 ## Reference status

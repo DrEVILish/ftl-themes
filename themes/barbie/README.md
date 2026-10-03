@@ -87,6 +87,7 @@ card in the middle pop — box art, not a dashboard.
 - **Mint success:** `--success` `#3ddc97` is too light for white, so the foreground is dark `#052e1c` (8.40:1) instead of dulling the fill. As text, `--success-text` `#146c46`.
 - **Nav gradient:** the pink-to-magenta bar range was chosen so white nav text stays 4.5:1 at every stop (per the `theme.css` comment: white bottomed out at 2.1:1 on earlier lighter stops and the darkest plum at 3.2:1).
 - `--accent` on the pale `--bg` is 4.59:1: fine for large/UI use; `--accent-2` `#ff5cad` is 2.42:1 on `--bg` and is a decorative highlight only.
+- **Pink text on pink tints:** the accent is 3.9:1 on its own badge tint and on a kanban column, so accent badges, kanban column titles, highlighted code and `.schedule` stamps use `--accent-text` `#a01565` (5.4:1 on the badge tint). `--danger-text` is `#ac0d47` (was `#c00f4f`, 4.4:1 on its badge tint).
 
 ## Reference status
 

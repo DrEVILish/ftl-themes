@@ -929,7 +929,7 @@ dialog.modal:modal {
   gap: 0.15em;
   padding: var(--readout-padding, 0.1em 0.35em);
   background: var(--readout-bg, transparent);
-  color: var(--readout-fg, var(--accent));
+  color: var(--readout-fg, var(--accent-text, var(--accent)));
   border: var(--readout-border-width, 0) solid var(--readout-border, transparent);
   border-radius: var(--readout-radius, var(--radius));
   font-family: var(--readout-font, var(--font-mono));
@@ -2168,7 +2168,7 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
 }
 .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
-  color: var(--row-selected-fg, inherit);
+  color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
 }
 
@@ -6652,7 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
-  color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  color: var(--countdown-fg, var(--readout-fg, var(--accent-text, var(--accent))));
   background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
@@ -6828,6 +6828,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   white-space: nowrap;
 }
 :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
+/* On a selected row's fill, muted can drop under 4.5:1: follow the row ink. */
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
 .track-artist { font-size: 0.875em; }
 .track-album { flex: 1 1 0; font-size: 0.875em; }
 .track-time {
@@ -11372,7 +11374,12 @@ html[data-theme="barbie"] {
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
   --success-text: #146c46;
   --warning-text: #7d5a00;
-  --danger-text: #c00f4f;
+  /* Darkened from #c00f4f (4.4:1 on its own 20% badge tint). */
+  --danger-text: #ac0d47;
+  /* Pink as small text on pink tints (accent badges, kanban column titles,
+     highlighted code, .schedule stamps): the accent is 3.9:1 on its own
+     badge tint, so text there takes one deeper step of the same pink. */
+  --accent-text: #a01565;
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #052e1c;
@@ -11424,9 +11431,12 @@ html[data-theme="barbie"] h2,
 html[data-theme="barbie"] h3 {
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--accent);
+  color: var(--heading-fg, var(--accent));
   text-shadow: 0 1px 0 #ffffff, 0 0 12px rgba(255, 215, 0, 0.35);
 }
+/* A kanban column is a pink tint, so its title heading takes the deeper
+   pink (the accent was 3.4-4.0:1 there). */
+html[data-theme="barbie"] .kanban-column { --heading-fg: var(--accent-text); }
 /* h1 carries the wordmark voice: cursive script, not uppercase blocks —
    the single detail that actually reads as "Barbie" rather than "generic
    pink toy brand." */
