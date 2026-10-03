@@ -7581,6 +7581,390 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   .clock-hand { forced-color-adjust: none; background: CanvasText; }
   :is(.progress-ring, .donut, .heatmap, .battery, .signal, .map-pin, .compass-strip, .legend, .chart-legend) { forced-color-adjust: none; }
 }
+/* --- v5 live data and dashboards (PLAN.md §18 "Live-data states",
+ * "Dashboard widget grid") ---------------------------------------------------
+ * State classes an app toggles as data streams in: .is-updated (a brief
+ * flash), .is-up / .is-down (direction), .is-stale + data-age, the
+ * .connection lamp, time.updated, the .feed stream, and the .dashboard
+ * grid of .widgets with a styled edit mode.
+ *
+ * Nothing here needs JavaScript to render; the app adds and removes the
+ * state classes (.is-updated for ~1s, .is-paused, .is-editing). Every look
+ * reads a --live-* / --connection-* / --feed-* / --dashboard-* / --widget-*
+ * token with a fallback to the base tokens. See docs/components/live.md. */
+
+/* --- .is-updated: a value just changed ----------------------------------
+ * The flash is a low-alpha tint (text keeps its contrast), done in the first
+ * fifth of the animation, so a demo can loop it by timing alone
+ * (.is-demo-ticking below). Without motion it is a static underline marker
+ * for as long as the app leaves the class on. */
+.is-updated {
+  text-decoration-line: underline;
+  text-decoration-style: var(--live-mark-style, solid);
+  text-decoration-color: var(--live-mark, var(--accent));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+@keyframes live-flash {
+  0%, 12% {
+    background-color: var(--live-flash-bg, color-mix(in srgb, var(--flare, var(--accent)) 28%, transparent));
+    color: var(--live-flash-fg, inherit);
+    box-shadow: var(--live-flash-shadow, none);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-updated {
+    text-decoration-line: none;
+    animation: live-flash var(--live-flash-duration, 1.2s) ease-out 1;
+  }
+  /* Demo / screenshot loop: re-trigger the flash forever, staggered by an
+     inline --tick-delay per value. Real apps toggle the class instead. */
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-demo-ticking .is-updated {
+    animation-duration: var(--live-tick, 5s);
+    animation-delay: var(--tick-delay, 0s);
+    animation-iteration-count: infinite;
+  }
+}
+
+/* --- .is-up / .is-down: direction of change ------------------------------
+ * Semantic colour plus an arrow, so it's never colour alone. .stat-trend
+ * (core) keeps its own colour rule and its typed arrow; .sparkline (SVG)
+ * recolours its stroke in instruments.css. Don't type your own arrow. */
+/* A .readout keeps its own display colour (it may sit on a lit panel);
+   the arrow carries the direction there. */
+:where(.is-up, .is-down):not(svg, .sparkline, .readout) { color: var(--state-fg); }
+:where(.is-up):not(svg, .sparkline) { --state-fg: var(--live-up, var(--success-text, var(--success)) ); }
+:where(.is-down):not(svg, .sparkline) { --state-fg: var(--live-down, var(--danger-text, var(--danger))); }
+:where(.is-up, .is-down):not(svg, .sparkline, .stat-trend, tr, tbody, table)::before {
+  display: inline-block;
+  margin-inline-end: 0.25em;
+  font-size: 0.75em;
+  vertical-align: 0.08em;
+}
+:where(.is-up):not(svg, .sparkline, .stat-trend, tr, tbody, table)::before { content: var(--live-up-glyph, "\25B2") / "up "; }
+:where(.is-down):not(svg, .sparkline, .stat-trend, tr, tbody, table)::before { content: var(--live-down-glyph, "\25BC") / "down "; }
+/* .is-flat: no change (a neutral dash). */
+:where(.is-flat):not(svg)::before { content: "\25AC" / "unchanged "; margin-inline-end: 0.25em; font-size: 0.6em; vertical-align: 0.2em; color: var(--muted); }
+
+/* --- .is-stale + data-age: out-of-date data -------------------------------
+ * Muted text (a contrast-checked token, never opacity) plus a dashed
+ * outline and a clock marker printing data-age, so it reads without colour. */
+.is-stale:not(.readout) { color: var(--live-stale-fg, var(--muted)); }
+.is-stale {
+  outline: var(--live-stale-border-width, 1px) dashed var(--live-stale-border, var(--muted));
+  outline-offset: -2px;
+  font-style: var(--live-stale-style, normal);
+}
+.is-stale::after, tr.is-stale > :first-child::after {
+  content: "\25F7\00a0" attr(data-age) / "out of date, " attr(data-age);
+  display: inline-block;
+  margin-inline-start: 0.4em;
+  padding: 0 0.3em;
+  border-radius: var(--radius-sm, 2px);
+  background: var(--live-stale-mark-bg, var(--surface-2));
+  color: var(--live-stale-mark-fg, var(--text));
+  font-size: 0.72em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  vertical-align: 0.1em;
+}
+.is-stale:not([data-age])::after, tr.is-stale > :first-child::after { content: "\25F7\00a0stale" / "out of date"; }
+/* Rows: mark the row; a "stale" marker lands in its first cell (put
+   data-age on a cell to print the age). */
+tr.is-stale { outline: none; }
+tr.is-stale::after { content: none; }
+tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-style: dashed; }
+
+/* --- .connection[data-state]: live / reconnecting / offline -------------
+ *   <span class="connection" data-state="live" role="status">Live</span>
+ * The lamp is drawn; the label is the element's own text. Shape differs
+ * per state (filled, ring, crossed ring) so it isn't colour alone. */
+.connection {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font-size: var(--connection-size, 0.85em);
+  color: var(--connection-fg, inherit);
+  white-space: nowrap;
+}
+.connection::before {
+  content: "";
+  flex: none;
+  inline-size: var(--lamp-size, 0.7rem);
+  block-size: var(--lamp-size, 0.7rem);
+  border-radius: var(--lamp-radius, 50%);
+  border: 2px solid var(--connection-lamp, var(--muted));
+  background: var(--connection-lamp, var(--muted));
+  box-shadow: var(--lamp-glow, 0 0 0.4rem var(--connection-lamp, transparent));
+}
+.connection[data-state="live"] { --connection-lamp: var(--connection-live, var(--lamp-on, var(--success))); }
+.connection[data-state="reconnecting"] { --connection-lamp: var(--connection-reconnecting, var(--warning)); }
+.connection[data-state="reconnecting"]::before { background: transparent; border-style: dotted; }
+.connection[data-state="offline"] { --connection-lamp: var(--connection-offline, var(--danger)); }
+.connection[data-state="offline"]::before {
+  background: linear-gradient(45deg, transparent 42%, var(--connection-lamp) 42% 58%, transparent 58%);
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="live"]::before {
+    animation: lamp-pulse var(--lamp-pulse-duration, 2.4s) ease-in-out infinite;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="reconnecting"]::before {
+    animation: connection-spin 1.6s linear infinite;
+  }
+}
+@keyframes connection-spin { to { rotate: 1turn; } }
+
+/* --- time.updated: "Updated 5s ago" --------------------------------------
+ * The app rewrites the text; keep datetime current. */
+time.updated {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--live-updated-fg, var(--muted));
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
+
+/* --- .feed: a stream of items, newest appended ---------------------------
+ * <ol class="feed"> of <li>s (any content; .feed-time and .feed-source are
+ * optional parts). .is-new slides an item in. The app owns auto-scroll and
+ * sets .is-paused (+ data-new="3") while the reader has scrolled away. */
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-block-size: var(--feed-height, 20rem);
+  overflow: auto;
+  overflow-anchor: auto;
+  scrollbar-width: thin;
+  font-size: var(--feed-size, 0.88em);
+}
+.feed > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15em 0.6em;
+  padding: var(--feed-pad, 0.45em 0.5em);
+  border-block-end: 1px solid var(--feed-rule, var(--hairline));
+  border-inline-start: 3px solid transparent;
+  overflow-wrap: anywhere;
+}
+.feed > li > :last-child { flex: 1 1 12rem; min-inline-size: 0; }
+.feed-time { flex: none; color: var(--feed-time-fg, var(--muted)); font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.9em; }
+.feed-source { flex: none; font-weight: 700; color: var(--feed-source-fg, var(--accent-text, var(--text))); text-transform: var(--label-transform, none); letter-spacing: var(--label-tracking, normal); }
+.feed > li.is-new { border-inline-start-color: var(--feed-new, var(--accent)); }
+.feed > li[data-level="warn"] { border-inline-start-color: var(--warning); }
+.feed > li[data-level="error"] { border-inline-start-color: var(--danger); }
+@keyframes feed-in {
+  from { opacity: 0; translate: 0 -0.6em; }
+}
+@keyframes feed-in-loop {
+  0% { opacity: 0; translate: 0 -0.6em; }
+  8%, 100% { opacity: 1; translate: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .feed > li.is-new {
+    animation: feed-in var(--feed-in-duration, 0.35s) ease-out both;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-demo-ticking .feed > li.is-new {
+    animation: feed-in-loop var(--live-tick, 5s) ease-out var(--tick-delay, 0s) infinite;
+  }
+}
+/* Paused: a sticky marker at the end of the scroller. */
+:is(.feed, .log).is-paused::after {
+  content: "\2193\00a0" attr(data-new) " new \00b7 paused" / attr(data-new) " new items, auto-scroll paused";
+  position: sticky;
+  inset-block-end: 0;
+  display: block;
+  margin-block-start: 0.25em;
+  padding: 0.3em 0.6em;
+  background: var(--feed-paused-bg, var(--accent));
+  color: var(--feed-paused-fg, var(--on-accent));
+  font-size: 0.85em;
+  font-weight: 600;
+  text-align: center;
+}
+:is(.feed, .log).is-paused:not([data-new])::after { content: "Auto-scroll paused" / "Auto-scroll paused"; }
+
+/* --- .depth-bar: order-book / queue depth ------------------------------
+ *   <span class="depth-bar is-bid" style="--depth:.62"></span>
+ * A bar of --depth (0–1) of its cell. .is-bid grows from the inline end
+ * (towards the price column), .is-ask from the start. Decorative: the size
+ * is in the next cell as text, so give it aria-hidden="true". */
+.depth-bar {
+  display: flex;
+  block-size: var(--depth-bar-height, 0.9em);
+  min-inline-size: var(--depth-bar-min, 3rem);
+  background: var(--depth-track, transparent);
+  border-radius: var(--depth-radius, 0);
+}
+.depth-bar::before {
+  content: "";
+  inline-size: calc(var(--depth, 0) * 100%);
+  background: var(--depth-fill, var(--accent));
+  border-radius: inherit;
+}
+.depth-bar.is-bid { justify-content: flex-end; --depth-fill: var(--depth-bid, var(--success)); }
+.depth-bar.is-ask { --depth-fill: var(--depth-ask, var(--danger)); }
+
+/* --- .dashboard: a grid of .widgets ---------------------------------------
+ *   <div class="dashboard">
+ *     <section class="panel widget" style="--cols:4; --rows:2">…</section>
+ *   </div>
+ * 12 columns on desktop and XL, 2 on tablet (a widget of 7+ columns spans
+ * both), 1 on mobile, where --rows is dropped. --cols-tablet overrides. */
+.dashboard {
+  --dashboard-cols: 12;
+  display: grid;
+  grid-template-columns: repeat(var(--dashboard-cols), minmax(0, 1fr));
+  grid-auto-rows: var(--dashboard-row, minmax(var(--dashboard-row-min, 9rem), auto));
+  grid-auto-flow: row dense;
+  gap: var(--dashboard-gap, var(--space-m));
+  min-inline-size: 0;
+}
+.widget {
+  grid-column: span min(var(--cols, 3), var(--dashboard-cols));
+  grid-row: span var(--rows, 1);
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+  position: relative;
+  container-type: inline-size;
+}
+/* A .panel-header inside keeps its pull-out; the body fills and scrolls. */
+.widget-body { flex: 1 1 auto; min-block-size: 0; overflow: auto; }
+.widget > .table-wrap, .widget-body > .table-wrap { max-block-size: 100%; }
+@media (min-width: 481px) and (max-width: 900px) {
+  .dashboard { --dashboard-cols: 2; }
+  .widget { grid-column: span var(--cols-tablet, min(round(up, var(--cols, 3) / 6), 2)); }
+}
+@media (max-width: 480px) {
+  .dashboard { --dashboard-cols: 1; }
+  .widget { grid-column: 1 / -1; grid-row: auto; }
+}
+
+/* Inside a widget: lay out for the widget's own size. .widget-split puts
+   two parts side by side from 28rem of widget width; .widget-wide hides a
+   part below it. */
+.widget-split { display: grid; gap: var(--space-m); align-items: center; }
+.widget-wide { display: none; }
+@container (min-width: 28rem) {
+  .widget-split { grid-template-columns: auto minmax(0, 1fr); }
+  .widget-wide { display: revert; }
+}
+
+/* Toolbar above the grid: the edit toggle, an unsaved marker, reset. */
+/* The bar is the first child; its row sizes to it, not to --dashboard-row. */
+.dashboard:has(> .dashboard-bar:first-child) { grid-template-rows: auto; }
+.dashboard-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s);
+}
+.dashboard-bar > .is-pushed { margin-inline-start: auto; }
+
+/* --- Edit mode ------------------------------------------------------------
+ * .dashboard.is-editing, or CSS-only: a checked input.dashboard-edit inside
+ * the dashboard (e.g. in its .dashboard-bar). The app moves things; this
+ * styles the states: column guides, grab handle, resize corner, the
+ * .widget.is-dragging lift, the .widget-placeholder drop target, the
+ * .widget-add tile and .dashboard-dirty (unsaved) marker. */
+.widget-add, .widget-placeholder, .dashboard-dirty, .dashboard-edit-only { display: none; }
+.dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) {
+  --widget-edit-line: var(--dashboard-edit-line, var(--accent));
+  background-image: repeating-linear-gradient(90deg,
+    color-mix(in srgb, var(--widget-edit-line) 9%, transparent) 0 calc((100% - (var(--dashboard-cols) - 1) * var(--dashboard-gap, var(--space-m))) / var(--dashboard-cols)),
+    transparent 0 calc((100% - (var(--dashboard-cols) - 1) * var(--dashboard-gap, var(--space-m))) / var(--dashboard-cols) + var(--dashboard-gap, var(--space-m))));
+  border-radius: var(--radius);
+}
+.dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) :is(.widget-add, .widget-placeholder, .dashboard-dirty) { display: flex; }
+.dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) .dashboard-edit-only { display: revert; }
+.dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) > .widget {
+  outline: 2px dashed var(--widget-edit-line);
+  outline-offset: 2px;
+  cursor: grab;
+}
+/* Grab handle: a dotted grip centred on the top edge. */
+.dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) > .widget::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: max(3rem, var(--tap-min, 24px));
+  block-size: 0.9rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, var(--on-accent) 1.5px, transparent 2px) 0 0 / 0.5rem 0.45rem, var(--widget-edit-line);
+  z-index: var(--z-raised);
+}
+/* Resize corner: diagonal grip lines in the end-end corner. */
+.dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) > .widget::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inline-size: max(1.4rem, calc(var(--tap-min, 24px) * .6));
+  aspect-ratio: 1;
+  background: repeating-linear-gradient(135deg, transparent 0 3px, var(--widget-edit-line) 3px 5px);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  cursor: nwse-resize;
+  z-index: var(--z-raised);
+}
+.widget.is-dragging {
+  box-shadow: var(--shadow-lg, 0 1rem 2rem color-mix(in srgb, var(--text) 25%, transparent));
+  rotate: -1deg;
+  scale: 1.02;
+  cursor: grabbing;
+  z-index: var(--z-sticky);
+}
+.widget-placeholder, .widget-add {
+  grid-column: span min(var(--cols, 3), var(--dashboard-cols));
+  grid-row: span var(--rows, 1);
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-block-size: var(--dashboard-row-min, 9rem);
+  border: 2px dashed var(--widget-edit-line, var(--accent));
+  border-radius: var(--panel-radius, var(--radius));
+  color: var(--muted);
+}
+.widget-placeholder {
+  background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 10%, transparent) 0 6px, transparent 6px 12px);
+}
+.widget-add {
+  font: inherit;
+  background: transparent;
+  color: var(--text);
+  min-inline-size: var(--tap-min, 24px);
+}
+@media (hover: hover) {
+  .widget-add:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+}
+.widget-add:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.dashboard-dirty { align-items: center; gap: 0.4em; font-size: 0.85em; }
+.dashboard-dirty::before {
+  content: "";
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  border-radius: 50%;
+  background: var(--warning);
+}
+@media (max-width: 480px) {
+  .widget-placeholder, .widget-add { grid-column: 1 / -1; grid-row: auto; }
+}
+
+@media (forced-colors: active) {
+  .is-updated { text-decoration-color: Highlight; }
+  .connection::before, .depth-bar::before { forced-color-adjust: none; }
+}
 /* --- v5 music and media kit (PLAN.md §19 "Music and media") -------------
  * Track rows, the playing equaliser glyph, media toggles (shuffle, repeat,
  * like, mute), the seek scrubber and volume, the now-playing bar and its
@@ -13449,7 +13833,7 @@ html[data-theme="lcars"] .alert {
    label too long for the block's width breaks onto a second line, still
    bottom-right, as on the panels' two-line keys. Minimum widths are kept
    modest so a row of keys can still shrink to fit its frame. */
-html[data-theme="lcars"] :is(.btn:not(.btn-icon):not(.btn-sm), .toggle-btn) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 4.8rem; min-height: 2.3rem; line-height: 1.05; }
+html[data-theme="lcars"] :is(.btn:not(.btn-icon):not(.btn-sm), .toggle-btn) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 4.8rem; min-height: max(2.3rem, var(--tap-min)); line-height: 1.05; }
 html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; min-width: 3.4rem; }
 html[data-theme="lcars"] .btn-primary { --btn-bg: var(--accent); --btn-bg-hover: var(--lcars-gold); }
 html[data-theme="lcars"] .btn-secondary { --btn-bg: var(--lcars-periwinkle); --btn-fg: #000; }

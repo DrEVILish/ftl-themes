@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Live data and dashboards** (`core/components/live.css`,
+  [docs](docs/components/live.md)): the PLAN §18 live-data states
+  (`.is-updated`, `.is-up`/`.is-down`, `.is-stale` + `data-age`,
+  `.connection[data-state]`, `time.updated`, `.feed`, `.depth-bar`) and the
+  `.dashboard` widget grid with a CSS-only edit mode.
+- New apps: `mission-control.html` (launch clock with hold/recycle, go/no-go
+  poll, ground track, telemetry) and `trading.html` (watchlist with live
+  ticks and stale rows, depth, order ticket, sector map, positions, news
+  feed), both JavaScript-free. LCARS buttons now reach the touch minimum.
+
 - **Desktop shell** (`desktop.html`, `core/components/desktop.css`,
   [docs](docs/components/desktop.md)): one markup renders as a Windows 95/XP/7
   taskbar desktop with a cascading Start menu, a Mac OS X menu bar and
