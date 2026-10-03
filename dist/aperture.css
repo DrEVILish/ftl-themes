@@ -13450,6 +13450,333 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   .flight-hud > .attitude.is-hud { --attitude-pitch-scale: 2.6cqi; --attitude-rung: 40cqi; --attitude-label-room: 1.6rem; --attitude-label-size: 0.65rem; }
   .flight-hud > .tape { --tape-width: 3.6rem; --tape-readout-size: 0.85rem; --tape-label-size: 0.65rem; }
 }
+
+/* =========================================================================
+ * ADDITIONS for cockpit-boat/-submarine/-spaceship.html (generic parts):
+ *   .radar-line / .radar-vrm  heading line, electronic bearing line and
+ *                  variable range marker on a .radar
+ *   .ownship       own-vehicle silhouette in a dial, radar or map
+ *   .dial-bug      rim pointer at --at degrees on any round instrument
+ *   .annunciator-switch  lighted push-button (checkbox) caption cell;
+ *                  .is-dual lights the off state as a warning
+ *   .waterfall     sonar waterfall / spectrogram with drifting traces
+ *   .orbit         orbit diagram: body at the focus, ellipses from --a/--e,
+ *                  marks (apoapsis, periapsis, craft) at --at degrees
+ * Same rules as above: tokens with base fallbacks, inline values, no JS.
+ * ========================================================================= */
+
+/* ---- .radar-line / .radar-vrm --------------------------------------------
+ * <span class="radar-line" style="--bearing:0"></span>                 heading line
+ * <span class="radar-line is-dashed" style="--bearing:48">EBL 048</span>
+ * <span class="radar-vrm" style="--range:.5">VRM 1.5</span>
+ * Children of .radar, from the same origin as the blips. */
+.radar-line,
+.radar-vrm {
+  position: absolute;
+  z-index: var(--z-raised);
+  pointer-events: none;
+  color: var(--radar-line, var(--radar-fg, var(--accent-text, var(--accent))));
+  font-size: var(--radar-label-size, max(0.65rem, 3.4cqi));
+  line-height: 1;
+  white-space: nowrap;
+}
+.radar-line {
+  left: 50%;
+  top: calc(50cqi - var(--range, 1) * 50cqi);
+  inline-size: 0;
+  block-size: calc(var(--range, 1) * 50cqi);
+  border-inline-start: 2px solid currentColor;
+  translate: -1px 0;
+  transform-origin: 1px 100%;
+  rotate: calc(var(--bearing, 0) * 1deg);
+}
+.radar-line.is-dashed { border-inline-start-style: dashed; }
+.radar-vrm {
+  left: 50%;
+  top: 50cqi;
+  inline-size: calc(var(--range, 0.5) * 100cqi);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  /* The label rides the ring at its top. */
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding-block-start: 0.2em;
+  text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg);
+}
+
+.radar-vrm::before { content: ""; position: absolute; inset: 0; border: 2px dashed currentColor; border-radius: 50%; }
+
+/* ---- .ownship: own-vehicle silhouette ------------------------------------
+ * <span class="ownship" style="--heading:0" aria-hidden="true"></span>
+ * A hull outline (bow up) at --x/--y (default centre) of its positioned
+ * parent, turned by --heading; .is-arrow draws a chevron instead. */
+.ownship {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  inline-size: var(--ownship-size, 14%);
+  aspect-ratio: 1 / 2.4;
+  translate: -50% -50%;
+  rotate: calc(var(--heading, 0) * 1deg);
+  pointer-events: none;
+  /* The outline: a drop-shadow round the clipped hull below. */
+  filter: drop-shadow(1.5px 0 0 var(--ownship-edge, var(--text))) drop-shadow(-1.5px 0 0 var(--ownship-edge, var(--text))) drop-shadow(0 1.5px 0 var(--ownship-edge, var(--text))) drop-shadow(0 -1.5px 0 var(--ownship-edge, var(--text)));
+}
+.ownship::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--ownship-edge, var(--text)), var(--ownship-edge, var(--text))) 50% 62% / 44% 18% no-repeat,
+    var(--ownship-fill, var(--surface));
+  clip-path: polygon(50% 0, 80% 22%, 92% 50%, 88% 100%, 12% 100%, 8% 50%, 20% 22%);
+}
+.ownship.is-arrow { aspect-ratio: 1; }
+.ownship.is-arrow::before { background: var(--ownship-fill, var(--surface)); clip-path: polygon(50% 0, 100% 100%, 50% 72%, 0 100%); }
+
+/* ---- .dial-bug: rim pointer ----------------------------------------------
+ * <span class="dial-bug" style="--at:62" aria-hidden="true">T</span>
+ * Inside .compass, .gauge-dial or .radar: a triangle on the rim at --at
+ * degrees clockwise from up, its text printed in it. .is-hollow outlines
+ * it (a second pointer that must differ by shape). */
+.dial-bug {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset: 0;
+  rotate: calc(var(--at, 0) * 1deg);
+  pointer-events: none;
+  color: var(--dial-bug, var(--flare, var(--accent)));
+  font: 700 max(0.6rem, 6cqi) / 1 var(--font-mono);
+  text-align: center;
+}
+.dial-bug::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1cqi;
+  translate: -50% 0;
+  inline-size: 11cqi;
+  aspect-ratio: 1 / 1.1;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.dial-bug.is-hollow::before {
+  clip-path: polygon(0 0, 100% 0, 50% 100%, 50% 72%, 78% 16%, 22% 16%, 50% 72%, 50% 100%);
+}
+.dial-bug:not(:empty) { padding-block-start: 13cqi; text-shadow: 0 0 2px var(--bg); }
+
+/* ---- .annunciator-switch: lighted push-button ----------------------------
+ * <ul class="annunciator">
+ *   <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>
+ *     MBT 1 <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+ * </ul>
+ * Checked = lit in its state colour (default --accent); unchecked = dark,
+ * or with .is-dual lit as a warning (a hull valve shown open). Optional
+ * .annunciator-on / .annunciator-off spans print the state in words. */
+.annunciator > li:has(> .annunciator-switch) { display: grid; place-items: stretch; padding: 0; border: 0; background: none; }
+.annunciator-switch {
+  --_c: var(--annunciator-on, var(--accent));
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-block-size: max(var(--tap-min), var(--annunciator-cell-height, 2.6rem));
+  padding: 0.3rem 0.45rem;
+  background: var(--annunciator-off, var(--surface-2));
+  color: var(--annunciator-off-fg, var(--muted));
+  border: 1px solid var(--annunciator-cell-border, var(--hairline));
+  border-radius: var(--annunciator-cell-radius, 2px);
+  font-family: var(--annunciator-font, var(--font-mono));
+  font-size: var(--annunciator-size, 0.7rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+}
+.annunciator-switch.is-caution { --_c: var(--annunciator-caution, var(--warning)); }
+.annunciator-switch.is-warning { --_c: var(--annunciator-warning, var(--danger)); }
+.annunciator-switch.is-advisory { --_c: var(--annunciator-advisory, var(--success)); }
+.annunciator-switch.is-dual:not(:has(input:checked)) { --_c: var(--annunciator-warning, var(--danger)); }
+.annunciator-switch:is(:has(input:checked), .is-dual) {
+  background: color-mix(in srgb, var(--_c) var(--annunciator-lit-mix, 12%), var(--annunciator-off, var(--surface-2)));
+  color: var(--annunciator-lit-fg, var(--text));
+  border-color: var(--_c);
+  box-shadow: var(--annunciator-glow, inset 0 0 0.7rem color-mix(in srgb, var(--_c) 35%, transparent), 0 0 0.45rem color-mix(in srgb, var(--_c) 40%, transparent));
+}
+.annunciator-switch input { position: absolute; inline-size: 1px; block-size: 1px; margin: 0; opacity: 0; clip-path: inset(50%); }
+.annunciator-switch:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.annunciator-switch:has(input:checked) .annunciator-off,
+.annunciator-switch:not(:has(input:checked)) .annunciator-on { display: none; }
+:is(.annunciator-on, .annunciator-off) { font-weight: 400; }
+@media (forced-colors: active) {
+  .annunciator-switch:is(:has(input:checked), .is-dual) { border: 3px solid Highlight; }
+}
+
+/* ---- .waterfall: sonar waterfall / spectrogram ---------------------------
+ * <div class="waterfall" role="img" aria-label="…">
+ *   <span class="waterfall-trace" style="--at:.32; --drift:-.04">S1</span>
+ *   <span class="waterfall-trace is-faint" style="--at:.7">S3</span>
+ * </div>
+ * <ol class="waterfall-scale" aria-hidden="true"><li>000</li>…<li>350</li></ol>
+ * Across = bearing (0–1 of the width), down = time (now at the top). A
+ * trace starts at --at and ends --drift further across at the bottom;
+ * its text labels it. The noise and traces roll down under motion. */
+@keyframes vehicles-waterfall { to { background-position-y: var(--waterfall-roll, 48px), var(--waterfall-roll, 48px), 0; } }
+.waterfall {
+  --_fg: var(--waterfall-fg, var(--radar-fg, var(--accent)));
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  block-size: var(--waterfall-height, 14rem);
+  min-inline-size: 0;
+  background:
+    repeating-linear-gradient(180deg, color-mix(in srgb, var(--_fg) 16%, transparent) 0 1px, transparent 1px 3px, color-mix(in srgb, var(--_fg) 8%, transparent) 3px 5px, transparent 5px 8px, color-mix(in srgb, var(--_fg) 22%, transparent) 8px 9px, transparent 9px 12px) 0 0 / 100% 48px,
+    repeating-linear-gradient(90deg, transparent 0 5px, color-mix(in srgb, var(--_fg) 12%, transparent) 5px 6px, transparent 6px 13px, color-mix(in srgb, var(--_fg) 7%, transparent) 13px 15px, transparent 15px 22px) 0 0 / 100% 48px,
+    var(--waterfall-bg, color-mix(in oklab, var(--_fg) 6%, var(--bg)));
+  border: var(--waterfall-border-width, 1px) solid var(--waterfall-border, var(--border));
+  border-radius: var(--waterfall-radius, var(--radius));
+  font-family: var(--waterfall-font, var(--font-mono));
+}
+.waterfall-trace {
+  --_t: var(--waterfall-trace-width, 3px);
+  --_a: calc(var(--at, 0.5) * 100%);
+  --_b: calc((var(--at, 0.5) + var(--drift, 0)) * 100%);
+  position: absolute;
+  inset: 0;
+  padding: 0.4rem 0 0 calc(var(--at, 0.5) * 100% + 0.4rem);
+  pointer-events: none;
+  color: var(--waterfall-label-fg, var(--text));
+  font-size: 0.7rem;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg);
+}
+.waterfall-trace::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    repeating-linear-gradient(180deg, var(--waterfall-trace, var(--_fg)) 0 7px, color-mix(in srgb, var(--waterfall-trace, var(--_fg)) 45%, transparent) 7px 9px, var(--waterfall-trace, var(--_fg)) 9px 14px, transparent 14px 16px) 0 0 / 100% 48px;
+  clip-path: polygon(calc(var(--_a) - var(--_t)) 0, calc(var(--_a) + var(--_t)) 0, calc(var(--_b) + var(--_t)) 100%, calc(var(--_b) - var(--_t)) 100%);
+  filter: drop-shadow(0 0 3px var(--waterfall-trace, var(--_fg)));
+}
+.waterfall-trace.is-faint::before { opacity: 0.45; }
+.waterfall-trace.is-foe { --waterfall-trace: var(--radar-foe, var(--danger)); }
+.waterfall-trace.is-friend { --waterfall-trace: var(--radar-friend, var(--success)); }
+.waterfall-trace.is-unknown { --waterfall-trace: var(--radar-unknown, var(--warning)); }
+@media (prefers-reduced-motion: no-preference) {
+  .waterfall { animation: vehicles-waterfall var(--waterfall-speed, 3s) linear infinite; }
+  .waterfall-trace::before { animation: vehicles-waterfall-trace var(--waterfall-speed, 3s) linear infinite; }
+}
+@keyframes vehicles-waterfall-trace { to { background-position-y: var(--waterfall-roll, 48px); } }
+.waterfall-scale {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font: 0.7rem var(--font-mono);
+}
+
+/* ---- .orbit: orbit diagram -----------------------------------------------
+ * <div class="orbit" role="img" aria-label="…">
+ *   <div class="orbit-path" style="--a:.36; --e:.12; --tilt:-20">
+ *     <span class="orbit-mark" style="--at:0">Pe 212</span>
+ *     <span class="orbit-mark" style="--at:180">Ap 418</span>
+ *     <span class="orbit-mark is-craft" style="--at:64">You</span>
+ *   </div>
+ *   <div class="orbit-path is-target" style="--a:.42; --e:.02">…</div>
+ * </div>
+ * The body (::before, --orbit-body of the width) sits at the centre, which
+ * is the focus of every path. --a is the semi-major axis (0–0.5 of the
+ * width), --e the eccentricity, --tilt turns the line of apsides
+ * (degrees). Marks sit at --at degrees of eccentric anomaly from
+ * periapsis (0 = periapsis, 180 = apoapsis) and stay upright. */
+.orbit {
+  --_fg: var(--orbit-fg, var(--accent-text, var(--accent)));
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  inline-size: var(--orbit-size, 100%);
+  max-inline-size: 100%;
+  aspect-ratio: var(--orbit-ratio, 1);
+  background:
+    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--text) 50%, transparent) 0 1px, transparent 1.5px) 0 0 / 23% 31%,
+    radial-gradient(circle at 70% 60%, color-mix(in srgb, var(--text) 35%, transparent) 0 1px, transparent 1.5px) 0 0 / 17% 19%,
+    var(--orbit-bg, color-mix(in oklab, var(--_fg) 5%, var(--bg)));
+  border: var(--orbit-border-width, 1px) solid var(--orbit-border, var(--border));
+  border-radius: var(--orbit-radius, var(--radius));
+  font-family: var(--orbit-font, var(--font-mono));
+}
+.orbit::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  inline-size: calc(var(--orbit-body, 0.22) * 100cqi);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--orbit-body-light, color-mix(in oklab, var(--accent) 55%, var(--text))), var(--orbit-body-fill, color-mix(in oklab, var(--accent) 45%, var(--bg))) 60%, var(--orbit-body-dark, var(--bg)));
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--orbit-atmosphere, var(--accent)) 25%, transparent);
+}
+.orbit-path {
+  --_a: calc(var(--a, 0.35) * 100cqi);
+  --_b: calc(var(--a, 0.35) * sqrt(1 - var(--e, 0) * var(--e, 0)) * 100cqi);
+  --_c: calc(var(--a, 0.35) * var(--e, 0) * 100cqi);
+  position: absolute;
+  left: calc(50% - var(--_a) - var(--_c));
+  top: calc(50% - var(--_b));
+  inline-size: calc(2 * var(--_a));
+  block-size: calc(2 * var(--_b));
+  transform-origin: calc(var(--_a) + var(--_c)) 50%;
+  rotate: calc(var(--tilt, 0) * 1deg);
+  border: var(--orbit-line-width, 2px) solid var(--orbit-line, var(--_fg));
+  border-radius: 50%;
+  color: var(--orbit-label-fg, var(--text));
+  font-size: max(0.65rem, 3.2cqi);
+  line-height: 1;
+}
+.orbit-path.is-target { border-style: dashed; --orbit-line: var(--orbit-target, var(--success)); }
+.orbit-path.is-planned { border-style: dotted; --orbit-line: var(--orbit-planned, var(--warning)); }
+/* data-series="1..6" colours a path to match a .legend. */
+.orbit-path[data-series] { --orbit-line: var(--series); }
+.orbit-mark {
+  position: absolute;
+  left: calc(50% + cos(var(--at, 0) * 1deg) * 50%);
+  top: calc(50% - sin(var(--at, 0) * 1deg) * 50%);
+  rotate: calc(var(--tilt, 0) * -1deg);
+  display: block;
+  inline-size: 0;
+  block-size: 0;
+  text-indent: 0.7rem;
+  white-space: nowrap;
+  text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg);
+}
+.orbit-mark::before {
+  content: "";
+  position: absolute;
+  inline-size: 0.6rem;
+  aspect-ratio: 1;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  background: var(--orbit-mark, var(--text));
+  rotate: 45deg;
+}
+/* The text, beside the marker, centred on the point's height. */
+.orbit-mark { line-height: 0; }
+.orbit-mark.is-craft::before { inline-size: 0.9rem; rotate: 0deg; border-radius: 50%; background: var(--orbit-craft, var(--flare, var(--warning))); box-shadow: 0 0 0.4rem var(--orbit-craft, var(--flare, var(--warning))); }
+/* .is-start: the label on the start side of the marker (near the right edge). */
+.orbit-mark.is-start { direction: rtl; }
+.orbit-mark.is-node::before { background: none; border: 2px solid var(--orbit-mark, var(--text)); }
 /* ftl-themes: the app shell.
  *
  * A theme is not only a palette — LCARS and a telemetry HUD are different

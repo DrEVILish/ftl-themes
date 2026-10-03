@@ -5,6 +5,15 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- More cockpits: `cockpit-boat.html` (chart plotter with AIS, radar with
+  EBL/VRM, wind, depth, twin engines, VHF with guarded DSC),
+  `cockpit-submarine.html` (sonar waterfall, passive bearings, periscope,
+  "Christmas tree" board, torpedo tubes, depth orders) and
+  `cockpit-spaceship.html` (orbit display, 8-ball, RCS quads, docking camera,
+  burn timer, guarded abort). `vehicles.css` adds `.radar-line`,
+  `.radar-vrm`, `.ownship`, `.dial-bug`, `.annunciator-switch`, a CSS-only
+  `.waterfall` and an `.orbit` diagram.
+
 - New apps, all JavaScript-free: `smart-home.html` (tablet-first wall
   panel: scenes and room filter via `:has()`, alarm confirm, cameras,
   energy), `inventory.html` (location tree, asset table with kit rows,
