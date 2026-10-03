@@ -113,3 +113,24 @@ real iOS 6 screenshots, plus one iOS 5 alert. Sources, sampled hex values
 and a component mapping are in its `RESEARCH.md`. Three pieces have no
 reference image and were drawn from memory: the blue ON switch, the iPad
 popover frame and the leather band.
+
+## Icons
+
+`icons.svg` redraws the whole core icon set (178/178) as iOS 6-era solid
+glyphs, drawn for this project (not Apple artwork):
+
+- **Grid:** 24×24 viewBox, glyphs kept inside roughly 2–22.
+- **Fill vs line:** every closed body is a solid silhouette (bell, folder,
+  envelope, camera, clock face…). Interior detail is knocked out of it as an
+  evenodd cut-out (the clock's hands, the envelope flap, a document's text
+  lines, the camera lens ring), never drawn on top in another colour.
+- **Stroke:** bodies carry a 1px round-join outline that softens their
+  corners; free lines (chevrons, arrows' shafts, rings such as search) are a
+  chunky 2.4 with round caps; arrow heads are solid triangles.
+- **Colour:** `currentColor` only. The emboss and gloss of the real tab bar
+  come from the theme's CSS around the icon, so the same glyph works grey in
+  an idle tab, white on the blue bars and blue in a selected item.
+
+The file is generated from one geometry source shared with `ios-flat` and
+`liquid-glass`, each rendered in its own language (here: filled with
+cut-outs).

@@ -161,3 +161,24 @@ Real Liquid Glass also *refracts* (bends the content at the rim). An SVG
 `feDisplacementMap` in `backdrop-filter` can fake that, but only Chromium
 supports it and it needs inline SVG in the page, so this theme suggests
 the lens with rim highlights instead.
+
+## Icons
+
+`icons.svg` redraws the whole core icon set (178/178) in the weight of
+current SF-style symbols, drawn for this project (not Apple's SF Symbols
+artwork):
+
+- **Grid:** 24×24 viewBox, glyphs kept inside roughly 2.5–21.5.
+- **Stroke:** 2.0 (regular weight), round caps and round joins, generous
+  1.5–3 corner radii.
+- **Fill vs line:** two layers, like SF Symbols' hierarchical rendering.
+  Every closed body (envelope, folder, bell, document, device…) is
+  outlined at full strength and tinted inside with `currentColor` at 22%
+  opacity; interior detail is drawn on top at full strength. Dots, carets
+  and transport glyphs are solid.
+- **Colour:** `currentColor` only, so the tint layer reads as the same hue
+  on glass, on tinted capsules and in selected (white-on-blue) items.
+
+The file is generated from one geometry source shared with `ios-flat` and
+`ios-skeuomorphic`, each rendered in its own language (here: heavier line
+plus a translucent fill).

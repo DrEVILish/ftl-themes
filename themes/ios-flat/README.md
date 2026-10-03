@@ -191,3 +191,22 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Icons
+
+`icons.svg` redraws the whole core icon set (178/178) as iOS 7-era line
+glyphs, drawn for this project (not Apple artwork):
+
+- **Grid:** 24×24 viewBox, glyphs kept inside roughly 2.5–21.5.
+- **Stroke:** 1.5 (a 1px hairline at 16px), round caps and round joins.
+- **Fill vs line:** open outlines with no fill. Only small dots (info,
+  keyboard keys, more-horizontal), the caret triangles and the transport
+  glyphs (play, pause, stop, skip) are solid, as they were in iOS 7.
+- **Corners:** soft 1.5–2.5 radii on boxes; arrows are an open chevron head
+  on a shaft.
+- **Colour:** `currentColor` only, so icons take the text, tint-blue and
+  selected-state colours with no per-state variants.
+
+The file is generated from one geometry source shared with
+`ios-skeuomorphic` and `liquid-glass`, each rendered in its own language
+(here: thin, open, unfilled).
