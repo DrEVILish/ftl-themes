@@ -5,6 +5,17 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Desktop shell** (`desktop.html`, `core/components/desktop.css`,
+  [docs](docs/components/desktop.md)): one markup renders as a Windows 95/XP/7
+  taskbar desktop with a cascading Start menu, a Mac OS X menu bar and
+  magnifying Dock (aqua), or an iOS home screen (ios-flat,
+  ios-skeuomorphic). Windows open, minimise, maximise, close and come to
+  the front with radios and `:has()`, no JavaScript. `--desktop-shell`
+  picks the arrangement per theme; every theme becomes a touch home screen
+  on phones. Desktop blocks in windows95, winxp-luna, win7-aero, aqua,
+  ios-flat, ios-skeuomorphic and liquid-glass. Tree rows get a little more
+  vertical padding.
+
 - **Vehicle cockpits** (CSS only, all 45 themes): `cockpit-car.html`
   (cluster, centre display, gear selector), `cockpit-plane.html` (overhead
   annunciators, autopilot, PFD, ND, EICAS, levers, checklists) and

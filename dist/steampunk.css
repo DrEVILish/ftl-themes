@@ -3823,6 +3823,902 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .drawer[popover]::backdrop { background: var(--overlay-bg, rgba(0, 0, 0, 0.6)); }
 
 .drawer.is-start[popover] { inset-inline-start: 0; inset-inline-end: auto; border-inline-end: var(--drawer-border-width, 1px) solid var(--drawer-border, var(--border)); border-inline-start: 0; }
+/* ==========================================================================
+ * Desktop shell (v5, PLAN.md §23 "Signature navigation per theme")
+ *
+ * One markup that each theme turns into its own operating-system shell:
+ * a wallpaper with desktop icons, windows that open, minimize, maximize,
+ * close and come to the front, and a bar with a Start menu, task buttons
+ * and a tray. No JavaScript: every state is a radio or checkbox read with
+ * :has(), and the Start menu is a popover holding the nested-list menus.
+ *
+ *   body.app.desktop
+ *     main.app-main.desktop-screen   wallpaper, .desktop-icons, .desktop-window…
+ *     footer.app-status.taskbar.desktop-bar
+ *       .taskbar-start  +  .start-menu[popover]
+ *       nav.desktop-dock > ul.desktop-launchers + ul.taskbar-tasks
+ *       .taskbar-tray
+ *
+ * The arrangement is a token, --desktop-shell, read with container style
+ * queries (every element is a style container for its children):
+ *   taskbar  (default) Start button, task buttons and tray along the bottom.
+ *   dock     a menu bar along the top (the Start menu is its first menu,
+ *            the tray its right end) and a Dock at the bottom that
+ *            magnifies under the pointer.
+ *   home     a touch home screen: an icon grid with page dots, a Dock of
+ *            launchers, a status bar on top, and one app at a time filling
+ *            the screen. Every theme switches to it on the Mobile tier.
+ * Browsers without style queries keep the taskbar arrangement.
+ *
+ * Window state, per window (inputs are the first children of the
+ * .desktop-window, so a label anywhere on the page can drive them and the
+ * window can read them with :has()):
+ *   .window-app       radio, name shared by every window and .desktop-home:
+ *                     the switched-to window (front, active, pressed task;
+ *                     the open app in the home arrangement)
+ *   .window-open / .window-minimize / .window-close
+ *                     one radio group per window
+ *   .window-max       checkbox immediately before the .modal (core's
+ *                     maximize rule)
+ * Task button N and window N pair up by position (up to 6), as .tabset
+ * pairs tabs and panels.
+ * ======================================================================== */
+
+.desktop {
+  --_shell-theme: var(--desktop-shell, taskbar);
+  --_shell: var(--desktop-shell, taskbar);
+  position: relative;
+}
+/* Doubled so it outranks the shell's own .app background. */
+.desktop.desktop { background: var(--desktop-bg, var(--app-bg, transparent)); }
+@media (max-width: 480px) {
+  .desktop { --_shell: home; }
+}
+
+/* --- The screen ----------------------------------------------------------- */
+.desktop-screen {
+  position: relative;
+  isolation: isolate;
+  min-block-size: var(--desktop-min-height, 30rem);
+}
+.desktop-home,
+.desktop-window > input,
+.desktop-icon input {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* --- Desktop icons (also a window's large-icon view) ----------------------- */
+.desktop-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--desktop-icon-cell, 5.75rem));
+  grid-auto-rows: min-content;
+  gap: var(--desktop-icon-gap, 0.35rem);
+  align-content: start;
+  padding: var(--desktop-icons-pad, 0.5rem);
+}
+/* On the wallpaper the icons run down the left edge in columns. */
+.desktop-screen > .desktop-icons {
+  position: absolute;
+  inset: var(--desktop-inset-top, 0px) 0 var(--desktop-inset-bottom, 0px);
+  z-index: 0;
+  grid-template-columns: none;
+  grid-template-rows: repeat(auto-fill, minmax(var(--desktop-icon-row, 5rem), auto));
+  grid-auto-flow: column;
+  grid-auto-columns: var(--desktop-icon-cell, 5.75rem);
+  justify-content: var(--desktop-icons-justify, start);
+}
+.desktop-icon {
+  position: relative;
+  min-inline-size: 0;
+}
+.desktop-icon > label:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-block-size: var(--tap-min);
+  padding: 0.25rem 0.15rem;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+}
+.desktop-icon .icon {
+  flex: none;
+  width: var(--desktop-icon-size, 2rem);
+  height: var(--desktop-icon-size, 2rem);
+  padding: var(--desktop-icon-tile-pad, 0);
+  border-radius: var(--desktop-icon-tile-radius, 0);
+  background: var(--desktop-icon-tile, transparent);
+  color: var(--window-icon-glyph, var(--accent));
+}
+.desktop-screen > .desktop-icons .icon {
+  color: var(--desktop-icon-glyph, var(--accent));
+  box-shadow: var(--desktop-icon-tile-shadow, none);
+  filter: var(--desktop-icon-filter, none);
+}
+.desktop-icon > label > span {
+  max-inline-size: 100%;
+  padding: 0.25rem;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  font-size: var(--desktop-icon-font-size, 0.8rem);
+  line-height: 1.25;
+  border: 1px dotted transparent;
+  border-radius: var(--desktop-icon-label-radius, 0);
+}
+.desktop-screen > .desktop-icons .desktop-icon > label > span {
+  color: var(--desktop-icon-fg, var(--text));
+  background: var(--desktop-icon-label-bg, transparent);
+  text-shadow: var(--desktop-icon-text-shadow, none);
+}
+.desktop-icon:has(input:checked) > label > span,
+.desktop-screen > .desktop-icons .desktop-icon:has(input:checked) > label > span {
+  background: var(--desktop-icon-label-bg-selected, var(--accent));
+  color: var(--desktop-icon-label-fg-selected, var(--on-accent));
+  text-shadow: none;
+}
+.desktop-screen > .desktop-icons .desktop-icon:has(input:checked) .icon {
+  color: var(--desktop-icon-glyph-selected, var(--desktop-icon-glyph, var(--accent)));
+  filter: var(--desktop-icon-filter-selected, var(--desktop-icon-filter, none));
+}
+.desktop-icon:has(input:focus-visible) > label > span { border-color: currentColor; }
+/* A selected icon opens with a second click (a double-click without
+   script); in the home arrangement one tap opens it. */
+:is(.desktop-icon-open, .desktop-icon-launch) {
+  position: absolute;
+  inset: 0;
+  display: none;
+  cursor: default;
+}
+.desktop-icon:has(input:checked) > .desktop-icon-open { display: block; }
+
+/* --- Windows --------------------------------------------------------------- */
+.desktop-window {
+  position: absolute;
+  z-index: var(--z-raised);
+  inset-inline-start: min(var(--x, 2rem), 100% - 12rem);
+  inset-block-start: var(--y, 2rem);
+  inline-size: min(var(--w, 30rem), 100% - min(var(--x, 2rem), 100% - 12rem) - 0.5rem);
+  block-size: min(var(--h, 20rem), 100% - var(--y, 2rem) - var(--desktop-inset-top, 0px) - var(--desktop-inset-bottom, 0px) - 0.5rem);
+  min-block-size: 10rem;
+  /* A theme whose bars float over the screen keeps windows clear of them. */
+  margin-block-start: var(--desktop-inset-top, 0px);
+  --modal-pad: var(--window-pad, 3px);
+  /* The box can outlive its window (minimized, or an app not shown on the
+     home screen); only the window itself takes the pointer. */
+  pointer-events: none;
+}
+.desktop-window > .modal { pointer-events: auto; }
+.desktop .desktop-window > .modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  overflow: hidden;
+}
+.desktop-window > .modal > .modal-header {
+  flex: none;
+  margin: calc(-1 * var(--surface-pad, 0px)) calc(-1 * var(--surface-pad, 0px)) 0;
+  gap: 0.35rem;
+  padding: var(--window-header-pad, var(--modal-header-pad, 0.2rem 0.3rem));
+}
+.desktop-window .modal-header > .icon { flex: none; width: 1.1em; height: 1.1em; }
+.window-title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.desktop-window .menubar { flex: none; }
+.window-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: auto;
+  padding: var(--window-body-pad, var(--space-s));
+}
+.desktop-window .tree :is(summary, li > a, li > button, li > span) { padding-block: 0.25rem; }
+.window-body.explorer,
+.window-body.notepad { padding: 0; }
+.window-status {
+  flex: none;
+  display: flex;
+  gap: 0.2rem;
+  padding: 0.15rem;
+  font-size: 0.8em;
+  color: var(--muted);
+  border-block-start: 1px solid var(--hairline);
+}
+.window-status > * {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid;
+  border-color: var(--window-status-field-border, transparent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.window-home { display: none; }
+.desktop-window .modal-footer { margin-block-start: var(--space-s); }
+
+/* A pane inside a window body (an explorer's tree and file list): the
+   theme's field look, as a list view is a field. */
+.window-pane {
+  background: var(--window-pane-bg, var(--input-bg, var(--surface-2)));
+  color: var(--window-pane-fg, var(--input-fg, var(--text)));
+  border: var(--input-border-width, 1px) solid;
+  border-color: var(--window-pane-border, var(--input-border, var(--border)));
+}
+
+/* Minimized and closed windows leave the screen (the inputs stay, so the
+   task button and the Start menu can bring them back). */
+.desktop-window:has(> .window-minimize:checked, > .window-close:checked) > .modal { display: none; }
+/* Front: the switched-to window, then whichever window holds focus. */
+.desktop-window:has(> .window-app:checked) { z-index: calc(var(--z-raised) + 2); }
+.desktop-window:focus-within { z-index: calc(var(--z-raised) + 3); }
+.desktop-window:has(> .window-max:checked) {
+  inset: var(--desktop-inset-top, 0px) 0 var(--desktop-inset-bottom, 0px);
+  margin: 0;
+  inline-size: auto;
+  block-size: auto;
+}
+/* Keyboard focus on a window's state radios rings the window. */
+.desktop-window:has(> input:focus-visible) > .modal {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+}
+/* Inactive title bars: every window but the active one, which is the one
+   holding focus, else the switched-to one, else the topmost (last). */
+.desktop:has(.desktop-window:focus-within) .desktop-window:not(:focus-within),
+.desktop:not(:has(.desktop-window:focus-within)):has(.window-app:checked) .desktop-window:not(:has(> .window-app:checked)),
+.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) {
+  --_inactive: 1;
+}
+.desktop:has(.desktop-window:focus-within) .desktop-window:not(:focus-within) > .modal > .modal-header,
+.desktop:not(:has(.desktop-window:focus-within)):has(.window-app:checked) .desktop-window:not(:has(> .window-app:checked)) > .modal > .modal-header,
+.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) > .modal > .modal-header {
+  background: var(--window-header-bg-inactive, var(--modal-header-bg, transparent));
+  color: var(--window-header-fg-inactive, var(--modal-header-fg, inherit));
+  filter: var(--window-header-filter-inactive, saturate(0.45) opacity(0.85));
+}
+
+/* A small monitor showing the wallpaper (Display Properties). */
+.desktop-monitor {
+  inline-size: 9rem;
+  padding: 0.55rem 0.55rem 1.1rem;
+  border-radius: var(--desktop-monitor-radius, 0.4rem);
+  background: var(--desktop-monitor-bg, var(--surface-2));
+  border: 1px solid var(--border);
+  box-shadow: var(--panel-shadow, none);
+}
+.desktop-monitor-screen {
+  aspect-ratio: 4 / 3;
+  background: var(--desktop-bg, var(--bg));
+  background-size: cover;
+  border: 1px solid var(--border);
+}
+
+/* --- The bar --------------------------------------------------------------- */
+.desktop .desktop-bar {
+  position: relative;
+  z-index: var(--z-sticky);
+  gap: var(--taskbar-gap, 0.3rem);
+  min-block-size: var(--taskbar-height, 2.5rem);
+  padding: var(--taskbar-padding, 0.2rem 0.3rem);
+  background: var(--taskbar-bg, var(--app-status-bg, var(--surface)));
+  color: var(--taskbar-fg, var(--app-status-fg, var(--text)));
+  font-size: var(--taskbar-font-size, 0.85rem);
+}
+.desktop-bar .taskbar-start { align-self: stretch; anchor-name: --desktop-start; }
+.taskbar-start .icon { width: 1.1em; height: 1.1em; }
+.desktop:has(.start-menu:popover-open) .taskbar-start {
+  background: var(--taskbar-start-bg-open, var(--taskbar-start-bg, transparent));
+  border-color: var(--taskbar-start-border-open, var(--taskbar-start-border, transparent));
+  box-shadow: var(--taskbar-start-shadow-open, var(--taskbar-start-shadow, none));
+  color: var(--taskbar-start-fg-open, var(--taskbar-start-fg, inherit));
+  outline: var(--taskbar-start-outline-open, none);
+  outline-offset: -4px;
+}
+.desktop-dock {
+  display: flex;
+  align-items: stretch;
+  gap: var(--taskbar-gap, 0.3rem);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  align-self: stretch;
+}
+.desktop-launchers,
+.taskbar-tasks {
+  display: flex;
+  align-items: stretch;
+  gap: var(--taskbar-gap, 0.3rem);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Quick Launch: small icon buttons beside Start. */
+.desktop-launchers {
+  display: var(--desktop-launchers-display, flex);
+  flex: none;
+  padding-inline-end: var(--taskbar-gap, 0.3rem);
+  border-inline-end: 1px solid var(--desktop-launchers-rule, var(--hairline));
+}
+.desktop-launchers > .is-trash { display: none; }
+.dock-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--tap-min);
+  block-size: 100%;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+.desktop-bar .dock-item .icon { width: 1.15rem; height: 1.15rem; }
+@media (hover: hover) {
+  .desktop-launchers .dock-item:hover { background: var(--taskbar-task-bg-active, var(--row-hover-bg, rgba(128, 128, 128, 0.2))); }
+}
+.taskbar-tasks { flex: 1 1 auto; }
+.taskbar-tasks > li {
+  position: relative;
+  display: flex;
+  flex: 0 1 var(--taskbar-task-max, 10.5rem);
+  min-inline-size: 2.5rem;
+}
+.desktop-bar .taskbar-task {
+  flex: 1 1 auto;
+  max-width: none;
+  cursor: default;
+}
+.taskbar-task .icon { flex: none; width: 1.1em; height: 1.1em; }
+.taskbar-restore {
+  position: absolute;
+  inset: 0;
+  display: none;
+  cursor: default;
+}
+.desktop-bar .taskbar-tray { align-self: stretch; }
+.taskbar-tray .icon { width: 1.05em; height: 1.05em; }
+.taskbar-tray .is-battery { display: var(--desktop-battery-display, none); }
+.desktop-pages { display: none; }
+
+/* --- The Start menu ---------------------------------------------------------
+ * One popover holding a header, the programs list, the places list and a
+ * footer list. Single column by default; --start-menu-layout: columns puts
+ * programs and places side by side under the header (and shows the items
+ * marked .is-columns-only); classic turns the header into a vertical banner
+ * down the left edge (--start-menu-banner is its text). */
+.start-menu[popover] {
+  position: fixed;
+  inset: auto auto calc(var(--taskbar-height, 2.5rem) + 0.1rem) 0.2rem;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  width: max-content;
+  max-width: min(30rem, calc(100vw - 0.5rem));
+  max-height: none;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "banner header" "banner programs" "banner places" "banner footer";
+  border: var(--start-menu-border-width, var(--context-menu-border-width, 1px)) solid;
+  border-color: var(--start-menu-border, var(--context-menu-border, var(--dropdown-border, var(--border))));
+  border-radius: var(--start-menu-radius, var(--context-menu-radius, var(--dropdown-radius, var(--radius))));
+  background: var(--start-menu-bg, var(--context-menu-bg, var(--dropdown-bg, var(--surface-2))));
+  box-shadow: var(--start-menu-shadow, var(--context-menu-shadow, var(--panel-shadow, 0 2px 12px rgba(0, 0, 0, 0.3))));
+  color: var(--context-menu-item-fg, var(--text));
+  font-size: var(--start-menu-font-size, 0.9rem);
+}
+.start-menu[popover]:not(:popover-open) { display: none; }
+/* A bar's own child alignment (a theme centring status items) must not
+   move the menu inside its anchored area. */
+.desktop .desktop-bar > .start-menu[popover] { align-self: normal; justify-self: normal; }
+@supports (position-area: block-start) {
+  .start-menu[popover] {
+    inset: auto;
+    margin: 0;
+    position-anchor: --desktop-start;
+    position-area: block-start span-inline-end;
+    position-try-fallbacks: flip-block;
+  }
+}
+.start-menu-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--start-menu-header-bg, transparent);
+  color: var(--start-menu-header-fg, inherit);
+  font-weight: 700;
+  border-block-end: 1px solid var(--start-menu-rule, var(--hairline));
+  border-radius: var(--start-menu-header-radius, 0);
+}
+.start-menu-header .avatar { flex: none; }
+.desktop .start-menu > ul.context-menu {
+  position: static;
+  min-width: 0;
+  margin: 0;
+  padding: 0.3rem;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  list-style: none;
+}
+.start-menu-programs { grid-area: programs; }
+.start-menu-places { grid-area: places; }
+.start-menu-footer {
+  grid-area: footer;
+  border-block-start: 1px solid var(--start-menu-rule, var(--hairline)) !important;
+}
+.start-menu .is-columns-only { display: none; }
+/* Items: icon, text, then the submenu marker at the end. Labels drive the
+   window radios, so they get the menu item look too. */
+.desktop .start-menu li > :is(a, button, label) {
+  justify-content: flex-start;
+  gap: 0.6em;
+  text-decoration: none;
+}
+.start-menu li > label,
+.desktop-window .menubar li li > label {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  width: 100%;
+  min-block-size: var(--tap-min);
+  padding: 0.45em 0.7em;
+  border-radius: var(--context-menu-radius, var(--radius));
+  color: var(--context-menu-item-fg, var(--text));
+  cursor: default;
+}
+@media (hover: hover) {
+  .start-menu li > label:hover,
+  .desktop-window .menubar li li > label:hover {
+    background: var(--context-menu-item-bg-hover, var(--dropdown-item-bg-hover, var(--accent)));
+    color: var(--context-menu-item-fg-hover, var(--dropdown-item-fg-hover, var(--on-accent)));
+  }
+}
+.start-menu li > :is(a, button, label) > .icon {
+  flex: none;
+  width: var(--start-menu-icon-size, 1.25rem);
+  height: var(--start-menu-icon-size, 1.25rem);
+}
+.start-menu li li > :is(a, button, label) > .icon {
+  width: var(--start-menu-sub-icon-size, 1rem);
+  height: var(--start-menu-sub-icon-size, 1rem);
+}
+.start-menu li > :is(a, button, label) > span { display: flex; flex-direction: column; text-align: start; }
+.start-menu li > :is(a, button, label) > span > b { font-weight: 700; }
+.start-menu li > :is(a, button, label) small { font-size: 0.8em; opacity: 0.75; }
+.start-menu .has-submenu > :is(a, button)::after { margin-inline-start: auto; }
+.start-menu li > :is(a, button, label) > span { white-space: nowrap; }
+/* Flyouts cross the neighbouring column (its items are positioned too). */
+.start-menu .has-submenu > ul { z-index: calc(var(--z-raised) + 1); }
+
+/* Classic: the header is a banner down the left edge. */
+@container style(--start-menu-layout: classic) {
+  .start-menu-header {
+    grid-area: banner;
+    display: block;
+    padding: 0.4rem 0.15rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    border: 0;
+    background: var(--start-menu-banner-bg, var(--accent));
+    color: var(--start-menu-banner-fg, var(--on-accent));
+    font-size: 1.35rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .start-menu-header > * { display: none; }
+  .start-menu-header::before { content: var(--start-menu-banner, ""); }
+  .start-menu .context-menu { padding-block: 0.1rem; }
+  .start-menu-places { border-block-start: 0; }
+}
+/* Columns: programs on the left, places on the right, header and footer
+   across both. */
+@container style(--start-menu-layout: columns) {
+  .start-menu[popover] {
+    grid-template-columns: minmax(12rem, auto) minmax(11rem, auto);
+    grid-template-areas: "header header" "programs places" "footer footer";
+    max-width: min(34rem, calc(100vw - 0.5rem));
+  }
+  .start-menu .is-columns-only { display: revert; }
+  .start-menu span.is-columns-only { display: inline; }
+  .start-menu .is-classic-only { display: none; }
+  .desktop .start-menu > ul.start-menu-programs { background: var(--start-menu-programs-bg, transparent); }
+  .desktop .start-menu > ul.start-menu-places {
+    background: var(--start-menu-places-bg, transparent);
+    border-inline-start: 1px solid var(--start-menu-rule, var(--hairline));
+  }
+  .desktop .start-menu > ul.start-menu-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    background: var(--start-menu-footer-bg, transparent);
+    border-radius: var(--start-menu-footer-radius, 0);
+  }
+  .desktop .start-menu-footer > li > :is(a, button) {
+    color: var(--start-menu-footer-fg, inherit);
+    width: auto;
+  }
+}
+
+/* --- Task buttons follow their windows (positional, up to 6) ---------------
+ * Pressed: the active window's task. Hidden: closed windows' tasks.
+ * Restore: a minimized window's task restores it. Generated in pairs so
+ * window N always maps to task N. */
+.desktop:has(.desktop-window:nth-child(1 of .desktop-window):focus-within > .window-open:checked) .taskbar-tasks > li:nth-child(1) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within)):has(.desktop-window:nth-child(1 of .desktop-window) > .window-app:checked ~ .window-open:checked) .taskbar-tasks > li:nth-child(1) > .taskbar-task,
+.desktop:has(.desktop-window:nth-child(2 of .desktop-window):focus-within > .window-open:checked) .taskbar-tasks > li:nth-child(2) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within)):has(.desktop-window:nth-child(2 of .desktop-window) > .window-app:checked ~ .window-open:checked) .taskbar-tasks > li:nth-child(2) > .taskbar-task,
+.desktop:has(.desktop-window:nth-child(3 of .desktop-window):focus-within > .window-open:checked) .taskbar-tasks > li:nth-child(3) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within)):has(.desktop-window:nth-child(3 of .desktop-window) > .window-app:checked ~ .window-open:checked) .taskbar-tasks > li:nth-child(3) > .taskbar-task,
+.desktop:has(.desktop-window:nth-child(4 of .desktop-window):focus-within > .window-open:checked) .taskbar-tasks > li:nth-child(4) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within)):has(.desktop-window:nth-child(4 of .desktop-window) > .window-app:checked ~ .window-open:checked) .taskbar-tasks > li:nth-child(4) > .taskbar-task,
+.desktop:has(.desktop-window:nth-child(5 of .desktop-window):focus-within > .window-open:checked) .taskbar-tasks > li:nth-child(5) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within)):has(.desktop-window:nth-child(5 of .desktop-window) > .window-app:checked ~ .window-open:checked) .taskbar-tasks > li:nth-child(5) > .taskbar-task,
+.desktop:has(.desktop-window:nth-child(6 of .desktop-window):focus-within > .window-open:checked) .taskbar-tasks > li:nth-child(6) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within)):has(.desktop-window:nth-child(6 of .desktop-window) > .window-app:checked ~ .window-open:checked) .taskbar-tasks > li:nth-child(6) > .taskbar-task,
+.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)):has(.desktop-window:nth-last-child(1 of .desktop-window) > .window-open:checked) .taskbar-tasks > li:last-child > .taskbar-task {
+  background: var(--taskbar-task-bg-active, var(--taskbar-task-bg, transparent));
+  border-color: var(--taskbar-task-border-active, var(--taskbar-task-border, transparent));
+  box-shadow: var(--taskbar-task-shadow-active, var(--taskbar-task-shadow, none));
+  outline: var(--taskbar-task-outline-active, none);
+  outline-offset: -4px;
+  font-weight: var(--taskbar-task-weight-active, inherit);
+  --_task-active: 1;
+}
+.desktop:has(.desktop-window:nth-child(1 of .desktop-window) > .window-close:checked) .taskbar-tasks > li:nth-child(1),
+.desktop:has(.desktop-window:nth-child(2 of .desktop-window) > .window-close:checked) .taskbar-tasks > li:nth-child(2),
+.desktop:has(.desktop-window:nth-child(3 of .desktop-window) > .window-close:checked) .taskbar-tasks > li:nth-child(3),
+.desktop:has(.desktop-window:nth-child(4 of .desktop-window) > .window-close:checked) .taskbar-tasks > li:nth-child(4),
+.desktop:has(.desktop-window:nth-child(5 of .desktop-window) > .window-close:checked) .taskbar-tasks > li:nth-child(5),
+.desktop:has(.desktop-window:nth-child(6 of .desktop-window) > .window-close:checked) .taskbar-tasks > li:nth-child(6) { display: none; }
+.desktop:has(.desktop-window:nth-child(1 of .desktop-window) > .window-minimize:checked) .taskbar-tasks > li:nth-child(1) > .taskbar-restore,
+.desktop:has(.desktop-window:nth-child(2 of .desktop-window) > .window-minimize:checked) .taskbar-tasks > li:nth-child(2) > .taskbar-restore,
+.desktop:has(.desktop-window:nth-child(3 of .desktop-window) > .window-minimize:checked) .taskbar-tasks > li:nth-child(3) > .taskbar-restore,
+.desktop:has(.desktop-window:nth-child(4 of .desktop-window) > .window-minimize:checked) .taskbar-tasks > li:nth-child(4) > .taskbar-restore,
+.desktop:has(.desktop-window:nth-child(5 of .desktop-window) > .window-minimize:checked) .taskbar-tasks > li:nth-child(5) > .taskbar-restore,
+.desktop:has(.desktop-window:nth-child(6 of .desktop-window) > .window-minimize:checked) .taskbar-tasks > li:nth-child(6) > .taskbar-restore { display: block; }
+
+/* --- The dock arrangement --------------------------------------------------- */
+@container style(--_shell: dock) {
+  .desktop .desktop-bar { position: static; }
+  /* The bar becomes a transparent strip; the Dock sits centred in it. */
+  .desktop-bar {
+    justify-content: center;
+    min-block-size: 0;
+    padding-block: 0 var(--dock-gap-below, 0.35rem);
+    border: 0;
+  }
+  .desktop .desktop-bar { background: transparent; box-shadow: none; }
+  /* Start and the tray move up into the menu bar (the app bar). */
+  .desktop-bar > .taskbar-start,
+  .desktop-bar > .taskbar-tray {
+    position: absolute;
+    inset-block-start: var(--app-padding, 0);
+    block-size: var(--desktop-menubar-height, 1.6rem);
+    min-block-size: 0;
+    min-inline-size: var(--tap-min);
+    padding-block: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: var(--app-bar-fg, var(--text));
+    z-index: calc(var(--z-sticky) + 2);
+  }
+  .desktop-bar > .taskbar-start {
+    inset-inline-start: var(--app-padding, 0);
+    margin-inline-start: 0.4rem;
+    width: auto;
+    padding-inline: 0.5rem;
+    border-radius: 0;
+    text-shadow: none;
+    font-style: normal;
+  }
+  .desktop-bar > .taskbar-start > .taskbar-start-label {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+  }
+  .desktop-bar > .taskbar-tray { inset-inline-end: var(--app-padding, 0); margin-inline-end: 0.6rem; }
+  .start-menu[popover] { inset: var(--desktop-menubar-height, 1.6rem) auto auto 0.4rem; }
+  @supports (position-area: block-end) {
+    .start-menu[popover] { inset: auto; position-area: block-end span-inline-end; }
+  }
+  .desktop-dock {
+    flex: none;
+    align-items: flex-end;
+    gap: 0.15rem;
+    padding: 0.25rem 0.45rem 0.15rem;
+    border: 1px solid var(--dock-border, rgba(255, 255, 255, 0.45));
+    border-radius: var(--dock-radius, 0.6rem);
+    background: var(--dock-bg, color-mix(in srgb, var(--surface) 55%, transparent));
+    box-shadow: var(--dock-shadow, 0 2px 12px rgba(0, 0, 0, 0.25));
+    backdrop-filter: var(--dock-blur, blur(8px));
+  }
+  .desktop-launchers,
+  .taskbar-tasks { display: contents; }
+  .desktop-launchers > li,
+  .taskbar-tasks > li {
+    position: relative;
+    display: flex;
+    flex: none;
+    min-inline-size: 0;
+    --_s: 1;
+    --taskbar-task-bg-active: transparent;
+    --taskbar-task-border-active: transparent;
+    --taskbar-task-shadow-active: none;
+    --taskbar-task-outline-active: none;
+  }
+  .desktop-launchers > .is-trash {
+    display: flex;
+    order: 2;
+    margin-inline-start: 0.35rem;
+    padding-inline-start: 0.5rem;
+    border-inline-start: 1px solid var(--dock-separator, rgba(255, 255, 255, 0.5));
+  }
+  .taskbar-tasks > li { order: 1; }
+  .desktop-bar :is(.desktop-launchers, .taskbar-tasks) > li > :is(.dock-item, .taskbar-task) {
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0;
+    width: auto;
+    height: auto;
+    min-inline-size: 0;
+    padding: 0 0 0.45rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: 0;
+    color: var(--text);
+  }
+  .desktop-bar :is(.desktop-launchers, .taskbar-tasks) > li .icon {
+    width: calc(var(--dock-icon-size, 2.9rem) * var(--_s));
+    height: calc(var(--dock-icon-size, 2.9rem) * var(--_s));
+    padding: calc(var(--dock-icon-size, 2.9rem) * 0.16 * var(--_s));
+    border-radius: var(--dock-tile-radius, 22%);
+    background: var(--dock-tile, var(--dock-tile-gloss, linear-gradient(transparent, transparent)), linear-gradient(180deg, color-mix(in srgb, var(--_tile, var(--accent)) 70%, #ffffff), var(--_tile, var(--accent))));
+    color: var(--dock-glyph, var(--accent));
+    box-shadow: var(--dock-tile-shadow, 0 1px 3px rgba(0, 0, 0, 0.35));
+  }
+  /* The name floats above the icon while it is pointed at. */
+  :is(.desktop-launchers, .taskbar-tasks) > li > :is(.dock-item, .taskbar-task) > span {
+    position: absolute;
+    inset-block-end: calc(100% + 0.3rem);
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    padding: 0.1rem 0.6rem;
+    border-radius: 1rem;
+    background: var(--dock-label-bg, rgba(0, 0, 0, 0.7));
+    color: var(--dock-label-fg, #ffffff);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+  }
+  :is(.desktop-launchers, .taskbar-tasks) > li:is(:hover, :focus-within) > :is(.dock-item, .taskbar-task) > span { opacity: 1; }
+  /* Running apps carry an indicator under the icon. */
+  .taskbar-tasks > li > .taskbar-task::after {
+    content: "";
+    position: absolute;
+    inset-block-end: 0.05rem;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    width: var(--dock-indicator-size, 0.35rem);
+    height: var(--dock-indicator-size, 0.35rem);
+    border-radius: var(--dock-indicator-radius, 50%);
+    background: var(--dock-indicator, currentColor);
+    clip-path: var(--dock-indicator-shape, none);
+    box-shadow: var(--dock-indicator-glow, none);
+  }
+  /* Room in the menu bar for the mark and the tray. */
+  .desktop > .app-bar {
+    min-block-size: var(--desktop-menubar-height, 1.6rem);
+    padding-inline-start: calc(var(--tap-min) + 1rem);
+    padding-inline-end: var(--desktop-tray-room, 8.5rem);
+  }
+  :is(.desktop-launchers, .taskbar-tasks) > li:nth-child(5n + 1) { --_tile: var(--chart-series-1, var(--accent)); }
+  :is(.desktop-launchers, .taskbar-tasks) > li:nth-child(5n + 2) { --_tile: var(--chart-series-2, var(--accent)); }
+  :is(.desktop-launchers, .taskbar-tasks) > li:nth-child(5n + 3) { --_tile: var(--chart-series-3, var(--accent)); }
+  :is(.desktop-launchers, .taskbar-tasks) > li:nth-child(5n + 4) { --_tile: var(--chart-series-4, var(--accent)); }
+  :is(.desktop-launchers, .taskbar-tasks) > li:nth-child(5n + 5) { --_tile: var(--chart-series-5, var(--accent)); }
+  .desktop-launchers > li.is-trash { --_tile: var(--muted); }
+  .desktop-window .menubar { display: var(--dock-window-menubar-display, none); }
+  .desktop-screen > .desktop-icons { --desktop-icons-justify: end; }
+  .desktop-screen > .desktop-icons .desktop-icon.is-trash { display: none; }
+  /* Magnification: the pointed icon and, less, its neighbours. */
+  @media (hover: hover) {
+    :is(.desktop-launchers, .taskbar-tasks) > li:hover { --_s: var(--dock-magnify, 1.55); }
+    .desktop-dock li:has(+ li:hover),
+    .desktop-dock li:hover + li { --_s: calc(1 + (var(--dock-magnify, 1.55) - 1) * 0.5); }
+    .desktop-launchers > li:last-child:not(.is-trash):has(~ *:hover),
+    .desktop-dock:has(.taskbar-tasks > li:first-child:hover) .desktop-launchers > li:nth-last-child(2) { --_s: calc(1 + (var(--dock-magnify, 1.55) - 1) * 0.5); }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    :is(.desktop-launchers, .taskbar-tasks) > li .icon { transition: width 0.15s ease-out, height 0.15s ease-out, padding 0.15s ease-out; }
+  }
+}
+html[data-motion="reduced"] .desktop-dock .icon { transition: none !important; }
+
+/* --- The home arrangement ---------------------------------------------------- */
+@container style(--_shell: home) {
+  /* Icons: a centred grid of app tiles. */
+  .desktop-screen > .desktop-icons {
+    position: relative;
+    inset: auto;
+    grid-auto-flow: row;
+    grid-template-rows: none;
+    grid-template-columns: repeat(auto-fill, minmax(var(--home-cell-min, 4.5rem), 1fr));
+    grid-auto-columns: auto;
+    gap: 1.1rem 0.4rem;
+    max-inline-size: var(--home-grid-max, 36rem);
+    margin-inline: auto;
+    padding: var(--desktop-statusbar-height, 1.6rem) 0.6rem 0.5rem;
+    justify-content: stretch;
+  }
+  .desktop-screen > .desktop-icons .desktop-icon.is-trash { display: none; }
+  .desktop-screen > .desktop-icons .desktop-icon > label:first-child { gap: 0.35rem; }
+  .desktop-screen > .desktop-icons .icon {
+    width: var(--home-icon-size, 3.6rem);
+    height: var(--home-icon-size, 3.6rem);
+    padding: calc(var(--home-icon-size, 3.6rem) * 0.2);
+    border-radius: var(--home-tile-radius, 22%);
+    background: var(--home-tile, var(--home-tile-gloss, var(--dock-tile-gloss, linear-gradient(transparent, transparent))), linear-gradient(180deg, color-mix(in srgb, var(--_tile, var(--accent)) 75%, #ffffff), var(--_tile, var(--accent))));
+    color: var(--home-glyph, #ffffff);
+    box-shadow: var(--home-tile-shadow, 0 1px 3px rgba(0, 0, 0, 0.3));
+  }
+  .desktop-screen > .desktop-icons .desktop-icon:nth-child(6n + 1) { --_tile: var(--chart-series-1, var(--accent)); }
+  .desktop-screen > .desktop-icons .desktop-icon:nth-child(6n + 2) { --_tile: var(--chart-series-2, var(--accent)); }
+  .desktop-screen > .desktop-icons .desktop-icon:nth-child(6n + 3) { --_tile: var(--chart-series-3, var(--accent)); }
+  .desktop-screen > .desktop-icons .desktop-icon:nth-child(6n + 4) { --_tile: var(--chart-series-4, var(--accent)); }
+  .desktop-screen > .desktop-icons .desktop-icon:nth-child(6n + 5) { --_tile: var(--chart-series-5, var(--accent)); }
+  .desktop-screen > .desktop-icons .desktop-icon:nth-child(6n + 6) { --_tile: var(--chart-series-6, var(--accent)); }
+  .desktop-screen > .desktop-icons .desktop-icon > label > span,
+  .desktop-screen > .desktop-icons .desktop-icon:has(input:checked) > label > span {
+    background: transparent;
+    color: var(--home-label-fg, var(--desktop-icon-fg, var(--text)));
+    text-shadow: var(--home-label-shadow, var(--desktop-icon-text-shadow, none));
+    font-size: var(--home-label-size, 0.75rem);
+  }
+  .desktop-screen > .desktop-icons .desktop-icon:has(input:checked) .icon { filter: none; }
+  .desktop-icon > .desktop-icon-open,
+  .desktop-icon:has(input:checked) > .desktop-icon-open { display: none; }
+  .desktop-icon > .desktop-icon-launch { display: block; }
+  .desktop-pages {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-block: 0.6rem;
+  }
+  .desktop-pages > span {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--home-dot, color-mix(in srgb, var(--desktop-icon-fg, var(--text)) 35%, transparent));
+  }
+  .desktop-pages > :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { background: var(--home-dot-active, var(--desktop-icon-fg, var(--text))); }
+
+  /* One app at a time, filling the screen; the home indicator goes back. */
+  .desktop-window,
+  .desktop-window:has(> .window-max:checked) {
+    inset: var(--desktop-inset-top, 0px) 0 var(--desktop-inset-bottom, 0px);
+    margin: 0;
+    inline-size: auto;
+    block-size: auto;
+    min-block-size: 0;
+    z-index: calc(var(--z-raised) + 3);
+  }
+  .desktop .desktop-window > .modal { display: none; }
+  .desktop .desktop-window:has(> .window-app:checked) > .modal {
+    display: flex;
+    max-inline-size: var(--home-sheet-max, none);
+    margin-inline: auto;
+    border-radius: var(--home-sheet-radius, 0);
+  }
+  .desktop-window > .modal > .modal-header {
+    background: var(--modal-header-bg, transparent);
+    color: var(--modal-header-fg, inherit);
+    filter: none;
+  }
+  .desktop-window .modal-header > :is(.btn-min, .btn-max, .btn-close) { display: none; }
+  .desktop-window .window-title { text-align: center; }
+  .window-home {
+    display: block;
+    flex: none;
+    align-self: center;
+    width: 8rem;
+    height: var(--tap-min);
+    background: linear-gradient(currentColor, currentColor) 50% 60% / 100% 0.3rem no-repeat;
+    border-radius: 1rem;
+    color: var(--home-indicator, var(--text));
+    opacity: 0.6;
+  }
+
+  /* The bar: a Dock of launchers; the tray becomes the status bar on top. */
+  .desktop-bar { justify-content: center; }
+  /* Not a containing block, so the tray can rise to the top of the page. */
+  .desktop.desktop > .desktop-bar.desktop-bar {
+    position: static;
+    transform: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .start-menu[popover] { max-height: calc(100dvh - var(--taskbar-height, 2.5rem) - 1rem); overflow: auto; }
+  .desktop-bar > .taskbar-tray {
+    position: absolute;
+    inset-block-start: var(--app-padding, 0);
+    inset-inline: var(--app-padding, 0);
+    block-size: var(--desktop-statusbar-height, 1.6rem);
+    min-block-size: 0;
+    margin: 0;
+    padding: 0 1rem;
+    justify-content: flex-end;
+    border: 0;
+    border-radius: 0;
+    background: var(--home-statusbar-bg, transparent);
+    box-shadow: none;
+    color: var(--home-statusbar-fg, var(--app-bar-fg, var(--nav-brand-fg, var(--text))));
+    font-weight: 600;
+    --desktop-battery-display: inline;
+  }
+  .desktop-bar > .taskbar-tray > time { order: -1; margin-inline-end: auto; }
+  .desktop > .app-bar { padding-block-start: calc(var(--desktop-statusbar-height, 1.6rem) + 0.2rem); }
+  .taskbar-tasks { display: none; }
+  .desktop-dock { flex: 0 1 auto; justify-content: center; }
+  .desktop-launchers {
+    display: flex;
+    gap: 0.9rem;
+    padding: 0.5rem 0.9rem;
+    border: 0;
+    border-radius: var(--dock-radius, 1.4rem);
+    background: var(--home-dock-bg, var(--dock-bg, transparent));
+  }
+  .desktop-launchers > li:nth-child(n + 5) { display: none; }
+  .desktop-launchers .dock-item { min-inline-size: 0; }
+  .desktop-launchers .dock-item .icon {
+    width: var(--home-dock-icon-size, 3.1rem);
+    height: var(--home-dock-icon-size, 3.1rem);
+    padding: calc(var(--home-dock-icon-size, 3.1rem) * 0.2);
+    border-radius: var(--home-tile-radius, 22%);
+    background: var(--home-tile, var(--home-tile-gloss, var(--dock-tile-gloss, linear-gradient(transparent, transparent))), linear-gradient(180deg, color-mix(in srgb, var(--_tile, var(--accent)) 75%, #ffffff), var(--_tile, var(--accent))));
+    color: var(--home-dock-glyph, var(--home-glyph, #ffffff));
+    box-shadow: var(--home-tile-shadow, 0 1px 3px rgba(0, 0, 0, 0.3));
+  }
+  .desktop-launchers > li:nth-child(4n + 1) { --_tile: var(--chart-series-2, var(--accent)); }
+  .desktop-launchers > li:nth-child(4n + 2) { --_tile: var(--chart-series-1, var(--accent)); }
+  .desktop-launchers > li:nth-child(4n + 3) { --_tile: var(--chart-series-4, var(--accent)); }
+  .desktop-launchers > li:nth-child(4n + 4) { --_tile: var(--chart-series-3, var(--accent)); }
+}
+/* A home-screen theme has no Start button; a taskbar theme keeps it on a
+   phone, so its Start menu is still a tap away. */
+@container style(--_shell-theme: home) {
+  .desktop-bar > .taskbar-start { display: none; }
+}
+@container style(--_shell-theme: dock) and style(--_shell: home) {
+  .desktop-bar > .taskbar-start { display: none; }
+}
 /* --- v5 experience layer (PLAN.md §10–§14) ---------------------------------
  * User display settings on <html>, forced colours, motion tokens and the
  * theme-switch transition, the .prefs panel with its accent swatches, the
@@ -7458,7 +8354,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   gap: 0.4em;
   inline-size: 100%;
   min-block-size: var(--tap-min);
-  padding: 0.15em 0.5em;
+  padding: 0.25em 0.5em;
   padding-inline-start: calc(0.9em + var(--tree-marker));
   border-radius: var(--tree-item-radius, var(--radius));
   color: var(--tree-item-fg, var(--text));
