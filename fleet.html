@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="motorsport-telemetry">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet dispatch — ftl-themes layout demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/motorsport-telemetry.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Page layout glue only; every colour comes from the theme. */
+  .fleet-h { margin: 0; font-size: 1.1rem; }
+  .fleet-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0; }
+  .fleet-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: var(--space-s); }
+  .fleet-top { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-m); align-items: start; }
+  @media (max-width: 1000px) { .fleet-top { grid-template-columns: minmax(0, 1fr); } }
+  .fleet-map { --map-ratio: 16 / 10; }
+  .fleet-legend-out { display: none; }
+  @media (max-width: 600px) { .fleet-legend-in { display: none; } .fleet-legend-out { display: flex; } }
+  .fleet-pin-pop { display: none; }
+  .fleet-pin-pop:popover-open { display: grid; gap: 0.3rem; }
+  .fleet-md { --master-detail-list-width: minmax(16rem, 22rem); }
+  .fleet-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-s); }
+  .fleet-item-main { display: grid; min-inline-size: 0; }
+  .fleet-glyphs { gap: 0.4rem; }
+  .fleet-item .countdown { --countdown-size: 1.1rem; }
+  .fleet-fuel { display: inline-flex; align-items: center; gap: 0.15rem; font-size: 0.85em; }
+  .fleet-instruments { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: var(--space-m); }
+  .fleet-instruments .compass { --gauge-size: 8rem; }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Dispatch</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+    <div class="stack">
+    <div class="cluster">
+      <div>
+        <h1>Dispatch</h1>
+        <p class="text-muted fleet-sub">Leeds city depot &middot; Saturday 3 October &middot; <span class="readout readout-sm">13:36</span></p>
+      </div>
+      <div class="cluster push">
+        <span class="status status-ok" role="status">Telemetry live &middot; 2 s</span>
+        <button class="presence" popovertarget="dispatchers" aria-label="3 dispatchers online: Kim Hale, Raj Patel, Zoe Marsh">
+          <span class="avatar" data-color="6" data-status="online">KH</span><span class="avatar" data-color="2" data-status="online">RP</span><span class="avatar" data-color="3" data-status="away">ZM</span></button>
+      </div>
+    </div>
+
+    <div class="fleet-kpis">
+      <div class="card stat"><span class="stat-label">On the road</span><span class="stat-value">4 / 5</span><span class="stat-trend">1 at depot</span></div>
+      <div class="card stat"><span class="stat-label">Stops done</span><span class="stat-value">29 / 58</span><div class="progress"><div class="progress-bar" style="width:50%"></div></div></div>
+      <div class="card stat"><span class="stat-label">On time</span><span class="stat-value">91%</span><span class="stat-trend is-down">&#9660; 3 pts vs last Sat</span></div>
+      <div class="card stat"><span class="stat-label">Exceptions</span><span class="stat-value">3</span><span class="stat-trend is-down">1 breakdown, 2 late</span></div>
+    </div>
+
+    <div class="fleet-top">
+      <section class="stack stack-sm" aria-labelledby="map-h">
+        <h2 class="fleet-h" id="map-h">Live map</h2>
+        <figure class="map fleet-map" aria-label="Live map: five vehicles, three routes">
+          <svg viewBox="0 0 1000 625" preserveAspectRatio="none" aria-hidden="true">
+            <rect class="map-land" width="1000" height="625"/>
+            <path class="map-water" d="M0 0 H300 C260 60 200 70 150 140 S60 260 0 280 Z"/>
+            <path class="map-water" d="M1000 520 C900 540 860 600 820 625 H1000 Z"/>
+            <rect class="map-park" x="660" y="420" width="260" height="70" rx="10"/>
+            <rect class="map-park" x="250" y="260" width="90" height="120" rx="10"/>
+            <g class="map-block">
+              <rect x="380" y="120" width="100" height="110" rx="4"/><rect x="520" y="120" width="90" height="110" rx="4"/><rect x="380" y="270" width="100" height="110" rx="4"/>
+              <rect x="520" y="270" width="90" height="110" rx="4"/><rect x="650" y="270" width="110" height="110" rx="4"/><rect x="800" y="270" width="160" height="110" rx="4"/>
+              <rect x="240" y="430" width="240" height="60" rx="4"/><rect x="520" y="430" width="90" height="60" rx="4"/><rect x="100" y="430" width="100" height="150" rx="4"/>
+              <rect x="800" y="40" width="160" height="90" rx="4"/><rect x="650" y="40" width="110" height="180" rx="4"/>
+            </g>
+            <g>
+              <path class="map-road" d="M0 100 H1000 M0 250 H1000 M0 512 H1000 M220 300 V625 M360 0 V625 M630 0 V625 M780 0 V625 M100 300 V625"/>
+              <path class="map-road is-major" d="M0 400 H1000 M500 0 V625"/>
+            </g>
+            <text class="map-label" x="70" y="60">River Aire</text>
+            <text class="map-label" x="690" y="460">Victoria Park</text>
+            <text class="map-label" x="510" y="560">Depot</text>
+            <path class="map-route is-done" data-series="1" d="M500 512 V400 H360 V212"/>
+            <path class="map-route is-planned" data-series="1" d="M360 212 V100 H200"/>
+            <path class="map-route is-done" data-series="2" d="M500 512 H630 V362"/>
+            <path class="map-route is-planned" data-series="2" d="M630 362 V250 H850"/>
+            <path class="map-route is-done" data-series="4" d="M500 400 H780 V162"/>
+            <path class="map-route is-done" data-series="3" d="M220 560 V412"/>
+            <path class="map-route is-planned" data-series="3" d="M220 412 H100 V300"/>
+          </svg>
+            <button class="map-pin" data-shape="circle" data-status="ok" style="--x:36%; --y:34%" popovertarget="pin-VAN-07" aria-label="VAN-07, Moving"><span class="map-pin-label">VAN-07</span></button>
+            <button class="map-pin" data-shape="diamond" data-status="warn" style="--x:63%; --y:58%" popovertarget="pin-VAN-11" aria-label="VAN-11, Delayed"><span class="map-pin-label">VAN-11</span></button>
+            <button class="map-pin" data-shape="triangle" data-status="error" style="--x:78%; --y:26%" popovertarget="pin-TRK-03" aria-label="TRK-03, Breakdown"><span class="map-pin-label">TRK-03</span></button>
+            <button class="map-pin" data-shape="circle" data-status="ok" style="--x:22%; --y:66%" popovertarget="pin-BIKE-2" aria-label="BIKE-2, Moving"><span class="map-pin-label">BIKE-2</span></button>
+            <button class="map-pin" data-shape="square" data-status="idle" style="--x:50%; --y:82%" popovertarget="pin-VAN-12" aria-label="VAN-12, Idle"><span class="map-pin-label">VAN-12</span></button>
+          <span class="map-north" role="img" aria-label="North">N</span>
+          <div class="map-controls">
+            <button class="btn btn-icon" type="button" aria-label="Zoom in"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-zoom-in"/></svg></button>
+            <button class="btn btn-icon" type="button" aria-label="Zoom out"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-zoom-out"/></svg></button>
+          </div>
+          <ul class="legend map-legend fleet-legend-in"><li data-shape="circle" data-status="ok">Moving</li><li data-status="idle">Idle</li><li data-shape="diamond" data-status="warn">Delayed</li><li data-shape="triangle" data-status="error">Breakdown</li></ul>
+          <span class="map-scale" style="--map-scale-width:5rem">500 m</span>
+          <figcaption class="map-attribution">Schematic &middot; not to scale</figcaption>
+        </figure>
+        <ul class="legend fleet-legend-out"><li data-shape="circle" data-status="ok">Moving</li><li data-status="idle">Idle</li><li data-shape="diamond" data-status="warn">Delayed</li><li data-shape="triangle" data-status="error">Breakdown</li><li data-series="1">Route done</li></ul>
+      </section>
+
+      <section class="panel stack" aria-labelledby="exc-h">
+        <header class="panel-header"><strong id="exc-h">Exceptions</strong><span class="badge badge-danger">3</span></header>
+        <div class="alert alert-danger" role="alert"><span><strong>TRK-03 broken down</strong> &middot; Northgate. Engine overheat, driver safe. Recovery 14:40.</span></div>
+        <div class="alert alert-warning"><span><strong>VAN-11 late 25 min</strong> &middot; Bridge St closed. 4 customers notified.</span></div>
+        <div class="alert alert-warning"><span><strong>DL-4377 overdue</strong> &middot; retail park stock, due 12:30. Reassign to VAN-07?</span></div>
+        <div class="cluster"><button class="btn btn-primary btn-sm" type="button">Reassign 3 stops</button><button class="btn btn-secondary btn-sm" type="button">Message customers</button></div>
+        <ol class="timeline">
+          <li class="is-error"><time>13:12</time><strong>TRK-03 fault P0217</strong></li>
+          <li class="is-warn"><time>12:48</time><strong>VAN-11 rerouted</strong><p>+25 min</p></li>
+          <li class="is-done"><time>11:05</time><strong>Cold-chain drop signed</strong></li>
+        </ol>
+      </section>
+    </div>
+
+    <section class="stack stack-sm" aria-labelledby="veh-h">
+      <h2 class="fleet-h" id="veh-h">Vehicles</h2>
+      <form id="veh-nav" hidden></form>
+      <div class="master-detail fleet-md">
+        <nav class="master-detail-list" aria-label="Vehicles">
+          <ul class="list">
+<li><label class="list-item fleet-item"><input type="radio" name="veh" form="veh-nav"><input type="radio" name="veh" form="veh-nav" class="master-detail-home" checked hidden><span class="avatar" data-color="1" data-status="online">MO<span class="visually-hidden">, online</span></span><span class="fleet-item-main"><span class="list-item-title">VAN-07 <span class="badge badge-success">Moving</span></span><span class="list-item-meta"><span>Maya Okafor</span><span class="cluster fleet-glyphs"><span class="battery" role="img" aria-label="Battery 62%" style="--value:0.62"></span><span class="signal" role="img" aria-label="Signal 4 of 4" data-bars="4"></span></span></span></span><span class="fleet-item-eta"><span class="mono">ETA 12 min</span></span></label></li>
+<li><label class="list-item fleet-item"><input type="radio" name="veh" form="veh-nav"><span class="avatar" data-color="2" data-status="online">LB<span class="visually-hidden">, online</span></span><span class="fleet-item-main"><span class="list-item-title">VAN-11 <span class="badge badge-warning">Delayed</span></span><span class="list-item-meta"><span>Leo Brandt</span><span class="cluster fleet-glyphs"><span class="battery" role="img" aria-label="Battery 41%" style="--value:0.41"></span><span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span></span></span></span><span class="fleet-item-eta"><span class="mono">ETA 34 min</span></span></label></li>
+<li><label class="list-item fleet-item"><input type="radio" name="veh" form="veh-nav"><span class="avatar" data-color="4" data-status="away">AR<span class="visually-hidden">, away</span></span><span class="fleet-item-main"><span class="list-item-title">TRK-03 <span class="badge badge-danger">Breakdown</span></span><span class="list-item-meta"><span>Ana Ruiz</span><span class="cluster fleet-glyphs"><span class="fleet-fuel" role="img" aria-label="Fuel 23%"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg>23%</span><span class="signal" role="img" aria-label="Signal 2 of 4" data-bars="2"></span></span></span></span><span class="fleet-item-eta"><span class="mono">No ETA</span></span></label></li>
+<li><label class="list-item fleet-item"><input type="radio" name="veh" form="veh-nav"><span class="avatar" data-color="3" data-status="online">SL<span class="visually-hidden">, online</span></span><span class="fleet-item-main"><span class="list-item-title">BIKE-2 <span class="badge badge-success">Moving</span></span><span class="list-item-meta"><span>Sam Lee</span><span class="cluster fleet-glyphs"><span class="battery" role="img" aria-label="Battery 78%" style="--value:0.78"></span><span class="signal" role="img" aria-label="Signal 4 of 4" data-bars="4"></span></span></span></span><span class="fleet-item-eta"><span class="mono">ETA 6 min</span></span></label></li>
+<li><label class="list-item fleet-item"><input type="radio" name="veh" form="veh-nav"><span class="avatar" data-color="5" data-status="offline">ID<span class="visually-hidden">, offline</span></span><span class="fleet-item-main"><span class="list-item-title">VAN-12 <span class="badge ">Idle</span></span><span class="list-item-meta"><span>Ines Duarte</span><span class="cluster fleet-glyphs"><span class="fleet-fuel" role="img" aria-label="Fuel 88%"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg>88%</span><span class="signal" role="img" aria-label="Signal 1 of 4" data-bars="1"></span></span></span></span><span class="fleet-item-eta"><span class="mono">Parked</span></span></label></li>
+          </ul>
+        </nav>
+<section class="master-detail-pane panel stack" aria-labelledby="vd-VAN-07">
+          <button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="veh-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg>All vehicles</button>
+          <header class="cluster"><h3 class="fleet-h" id="vd-VAN-07">VAN-07 &middot; Electric van</h3><span class="status status-ok">Moving</span>
+            <span class="presence-status push" data-status="online">Maya Okafor &middot; Online</span></header>
+          
+          <div class="fleet-instruments">
+            <div class="compass" style="--heading:52" role="img" aria-label="Heading 52°, north-east">
+              <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li></ol>
+              <span class="gauge-needle"></span>
+            </div>
+            <div class="gauge-arc" style="--value:0.62; --gauge-size:9rem">
+              <meter min="0" max="100" low="25" optimum="80" value="62">Battery 62%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout">62</span>% battery</div>
+            </div>
+            <div class="stack stack-sm">
+              <span class="readout">38<span class="readout-unit">km/h</span></span>
+              <span class="field-hint">Heading 52° north-east</span>
+              <div class="countdown" role="timer" aria-label="ETA 12 minutes"><span data-unit="min">12</span><span data-unit="sec">00</span></div>
+            </div>
+          </div>
+          <dl class="props">
+            <dt>Driver</dt><dd>Maya Okafor</dd>
+            <dt>Next stop</dt><dd>Harbour Rd 14</dd>
+            <dt>Stops</dt><dd>7 of 12 done</dd>
+            <dt>Telematics</dt><dd><span class="signal" role="img" aria-label="Signal 4 of 4" data-bars="4"></span> strong &middot; updated 2 s ago</dd>
+          </dl>
+          <ol class="timeline"><li class="is-done"><time>11:30</time><strong>Stop 6</strong></li><li class="is-done"><time>12:00</time><strong>Stop 7</strong></li><li aria-current="step"><time>12:30</time><strong>Stop 8 · Harbour Rd 14</strong></li><li><time>13:00</time><strong>Stop 9</strong></li><li><time>13:30</time><strong>Stop 10</strong></li></ol>
+          <div class="cluster"><button class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-phone"/></svg>Call driver</button><button class="btn btn-secondary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-route"/></svg>Reroute</button></div>
+        </section>
+<section class="master-detail-pane panel stack" aria-labelledby="vd-VAN-11">
+          <button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="veh-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg>All vehicles</button>
+          <header class="cluster"><h3 class="fleet-h" id="vd-VAN-11">VAN-11 &middot; Electric van</h3><span class="status status-warn">Delayed</span>
+            <span class="presence-status push" data-status="online">Leo Brandt &middot; Online</span></header>
+          <div class="alert alert-warning">Running 25 min late after road closure on Bridge St. Customers notified.</div>
+          <div class="fleet-instruments">
+            <div class="compass" style="--heading:160" role="img" aria-label="Heading 160°, south">
+              <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li></ol>
+              <span class="gauge-needle"></span>
+            </div>
+            <div class="gauge-arc is-warn" style="--value:0.41; --gauge-size:9rem">
+              <meter min="0" max="100" low="25" optimum="80" value="41">Battery 41%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout">41</span>% battery</div>
+            </div>
+            <div class="stack stack-sm">
+              <span class="readout">12<span class="readout-unit">km/h</span></span>
+              <span class="field-hint">Heading 160° south</span>
+              <div class="countdown is-urgent" role="timer" aria-label="ETA 34 minutes"><span data-unit="min">34</span><span data-unit="sec">00</span></div>
+            </div>
+          </div>
+          <dl class="props">
+            <dt>Driver</dt><dd>Leo Brandt</dd>
+            <dt>Next stop</dt><dd>Mill Lane 3</dd>
+            <dt>Stops</dt><dd>5 of 11 done</dd>
+            <dt>Telematics</dt><dd><span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span> good &middot; updated 5 s ago</dd>
+          </dl>
+          <ol class="timeline"><li class="is-done"><time>10:30</time><strong>Stop 4</strong></li><li class="is-done"><time>11:00</time><strong>Stop 5</strong></li><li aria-current="step"><time>11:30</time><strong>Stop 6 · Mill Lane 3</strong></li><li><time>12:00</time><strong>Stop 7</strong></li><li><time>12:30</time><strong>Stop 8</strong></li></ol>
+          <div class="cluster"><button class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-phone"/></svg>Call driver</button><button class="btn btn-secondary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-route"/></svg>Reroute</button></div>
+        </section>
+<section class="master-detail-pane panel stack" aria-labelledby="vd-TRK-03">
+          <button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="veh-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg>All vehicles</button>
+          <header class="cluster"><h3 class="fleet-h" id="vd-TRK-03">TRK-03 &middot; 7.5 t truck</h3><span class="status status-error">Breakdown</span>
+            <span class="presence-status push" data-status="away">Ana Ruiz &middot; Away</span></header>
+          <div class="alert alert-danger">Engine fault P0217 (overheat). Recovery booked, ETA 14:40. 3 stops reassigned to VAN-07.</div>
+          <div class="fleet-instruments">
+            <div class="compass" style="--heading:275" role="img" aria-label="Heading 275°, west">
+              <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li></ol>
+              <span class="gauge-needle"></span>
+            </div>
+            <div class="gauge-arc is-error" style="--value:0.23; --gauge-size:9rem">
+              <meter min="0" max="100" low="25" optimum="80" value="23">Fuel 23%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout">23</span>% fuel</div>
+            </div>
+            <div class="stack stack-sm">
+              <span class="readout">0<span class="readout-unit">km/h</span></span>
+              <span class="field-hint">Heading 275° west</span>
+              <span class="badge">No ETA</span>
+            </div>
+          </div>
+          <dl class="props">
+            <dt>Driver</dt><dd>Ana Ruiz</dd>
+            <dt>Next stop</dt><dd>Northgate Retail Park</dd>
+            <dt>Stops</dt><dd>3 of 6 done</dd>
+            <dt>Telematics</dt><dd><span class="signal" role="img" aria-label="Signal 2 of 4" data-bars="2"></span> fair &middot; updated 8 s ago</dd>
+          </dl>
+          <ol class="timeline"><li class="is-done"><time>09:30</time><strong>Stop 2</strong></li><li class="is-done"><time>10:00</time><strong>Stop 3</strong></li><li class="is-error"><time>10:30</time><strong>Stop 4 · Northgate Retail Park</strong></li><li><time>11:00</time><strong>Stop 5</strong></li><li><time>11:30</time><strong>Stop 6</strong></li></ol>
+          <div class="cluster"><button class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-phone"/></svg>Call driver</button><button class="btn btn-secondary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-route"/></svg>Reroute</button></div>
+        </section>
+<section class="master-detail-pane panel stack" aria-labelledby="vd-BIKE-2">
+          <button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="veh-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg>All vehicles</button>
+          <header class="cluster"><h3 class="fleet-h" id="vd-BIKE-2">BIKE-2 &middot; Cargo e-bike</h3><span class="status status-ok">Moving</span>
+            <span class="presence-status push" data-status="online">Sam Lee &middot; Online</span></header>
+          
+          <div class="fleet-instruments">
+            <div class="compass" style="--heading:310" role="img" aria-label="Heading 310°, north-west">
+              <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li></ol>
+              <span class="gauge-needle"></span>
+            </div>
+            <div class="gauge-arc" style="--value:0.78; --gauge-size:9rem">
+              <meter min="0" max="100" low="25" optimum="80" value="78">Battery 78%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout">78</span>% battery</div>
+            </div>
+            <div class="stack stack-sm">
+              <span class="readout">18<span class="readout-unit">km/h</span></span>
+              <span class="field-hint">Heading 310° north-west</span>
+              <div class="countdown" role="timer" aria-label="ETA 6 minutes"><span data-unit="min">06</span><span data-unit="sec">00</span></div>
+            </div>
+          </div>
+          <dl class="props">
+            <dt>Driver</dt><dd>Sam Lee</dd>
+            <dt>Next stop</dt><dd>Quay St 2</dd>
+            <dt>Stops</dt><dd>14 of 20 done</dd>
+            <dt>Telematics</dt><dd><span class="signal" role="img" aria-label="Signal 4 of 4" data-bars="4"></span> strong &middot; updated 11 s ago</dd>
+          </dl>
+          <ol class="timeline"><li class="is-done"><time>15:00</time><strong>Stop 13</strong></li><li class="is-done"><time>15:30</time><strong>Stop 14</strong></li><li aria-current="step"><time>16:00</time><strong>Stop 15 · Quay St 2</strong></li><li><time>16:30</time><strong>Stop 16</strong></li><li><time>17:00</time><strong>Stop 17</strong></li></ol>
+          <div class="cluster"><button class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-phone"/></svg>Call driver</button><button class="btn btn-secondary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-route"/></svg>Reroute</button></div>
+        </section>
+<section class="master-detail-pane panel stack" aria-labelledby="vd-VAN-12">
+          <button class="btn btn-ghost btn-sm master-detail-back" type="reset" form="veh-nav"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-chevron-left"/></svg>All vehicles</button>
+          <header class="cluster"><h3 class="fleet-h" id="vd-VAN-12">VAN-12 &middot; Diesel van</h3><span class="status status-idle">Idle</span>
+            <span class="presence-status push" data-status="offline">Ines Duarte &middot; Offline</span></header>
+          
+          <div class="fleet-instruments">
+            <div class="compass" style="--heading:0" role="img" aria-label="Heading 0°, north">
+              <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li></ol>
+              <span class="gauge-needle"></span>
+            </div>
+            <div class="gauge-arc" style="--value:0.88; --gauge-size:9rem">
+              <meter min="0" max="100" low="25" optimum="80" value="88">Fuel 88%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout">88</span>% fuel</div>
+            </div>
+            <div class="stack stack-sm">
+              <span class="readout">0<span class="readout-unit">km/h</span></span>
+              <span class="field-hint">Heading 0° north</span>
+              <span class="badge">Parked</span>
+            </div>
+          </div>
+          <dl class="props">
+            <dt>Driver</dt><dd>Ines Duarte</dd>
+            <dt>Next stop</dt><dd>Loading, depot bay 3</dd>
+            <dt>Stops</dt><dd>0 of 9 done</dd>
+            <dt>Telematics</dt><dd><span class="signal" role="img" aria-label="Signal 1 of 4" data-bars="1"></span> weak &middot; updated 14 s ago</dd>
+          </dl>
+          <ol class="timeline"><li aria-current="step"><time>09:00</time><strong>Stop 1 · Loading, depot bay 3</strong></li><li><time>09:30</time><strong>Stop 2</strong></li><li><time>10:00</time><strong>Stop 3</strong></li></ol>
+          <div class="cluster"><button class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-phone"/></svg>Call driver</button><button class="btn btn-secondary" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-route"/></svg>Reroute</button></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="stack stack-sm" aria-labelledby="runs-h">
+      <h2 class="fleet-h" id="runs-h">Today's runs</h2>
+      <div class="gantt" style="--units:14" role="group" aria-label="Today's runs, 06:00 to 20:00" tabindex="0">
+        <div class="gantt-header"><span class="gantt-corner">Vehicle</span><ol class="gantt-scale"><li>06</li><li>07</li><li>08</li><li>09</li><li>10</li><li>11</li><li>12</li><li aria-current="date">13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li></ol></div>
+        <div class="gantt-body"><ol class="gantt-rows"><li class="gantt-row"><span class="gantt-task">VAN-07</span><div class="gantt-track"><span class="gantt-bar" data-series="1" style="--start:1.5; --end:5.5; --progress:1" role="img" aria-label="VAN-07 Run A · 12 stops, 7:30 to 11:30"><span>Run A · 12 stops</span></span><span class="gantt-bar" data-series="1" style="--start:7; --end:10.5; --progress:0.2" role="img" aria-label="VAN-07 Run D · 8 stops, 13:00 to 16:30"><span>Run D · 8 stops</span></span></div></li><li class="gantt-row"><span class="gantt-task">VAN-11</span><div class="gantt-track"><span class="gantt-bar is-late" data-series="2" style="--start:1; --end:6.5; --progress:0.45" role="img" aria-label="VAN-11 Run B · late 25 min, 7:00 to 12:30"><span>Run B · late 25 min</span></span></div></li><li class="gantt-row"><span class="gantt-task">TRK-03</span><div class="gantt-track"><span class="gantt-bar is-critical" data-series="4" style="--start:2; --end:9; --progress:0.5" role="img" aria-label="TRK-03 Retail run · broken down, 8:00 to 15:00"><span>Retail run · broken down</span></span></div></li><li class="gantt-row"><span class="gantt-task">BIKE-2</span><div class="gantt-track"><span class="gantt-bar" data-series="3" style="--start:2.5; --end:8; --progress:0.7" role="img" aria-label="BIKE-2 Old town · 20 drops, 8:30 to 14:00"><span>Old town · 20 drops</span></span></div></li><li class="gantt-row"><span class="gantt-task">VAN-12</span><div class="gantt-track"><span class="gantt-bar" data-series="5" style="--start:8; --end:12.5; --progress:0" role="img" aria-label="VAN-12 Evening run · 9 stops, 14:00 to 18:30"><span>Evening run · 9 stops</span></span></div></li><li class="gantt-row"><span class="gantt-task">Depot</span><div class="gantt-track"><span class="gantt-milestone is-done" style="--at:0.5" role="img" aria-label="Morning load complete, 06:30"></span><span class="gantt-milestone-label" style="--at:0.5">Load</span><span class="gantt-milestone" style="--at:11" role="img" aria-label="Evening cut-off, 17:00"></span><span class="gantt-milestone-label" style="--at:11">Cut-off</span></div></li></ol>
+          <span class="gantt-today" style="--at:7.6"><span class="visually-hidden">Now, 13:36</span></span></div>
+      </div>
+    </section>
+
+    <section class="stack stack-sm" aria-labelledby="del-h">
+      <div class="cluster"><h2 class="fleet-h" id="del-h">Deliveries</h2><span class="badge">8 today</span></div>
+      <div class="kanban" role="group" aria-label="Deliveries" tabindex="0">
+<section class="kanban-column" aria-labelledby="dl-col-0"><header class="kanban-column-header"><h3 class="kanban-column-title" id="dl-col-0">To pick</h3><span class="badge kanban-count">2</span></header><ol class="kanban-cards"><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">DL-4410</span></li></ul><h4 class="kanban-card-title">Pharmacy restock, 6 totes</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="high">High</span><time class="kanban-due is-soon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg>14:30</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="1" role="img" aria-label="Maya Okafor">MO</span></li></ul></div></li><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="3">DL-4415</span></li></ul><h4 class="kanban-card-title">Florist order</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="low">Low</span><time class="kanban-due"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg>16:00</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="3" role="img" aria-label="Sam Lee">SL</span></li></ul></div></li></ol></section>
+<section class="kanban-column" aria-labelledby="dl-col-1"><header class="kanban-column-header"><h3 class="kanban-column-title" id="dl-col-1">Loaded</h3><span class="badge kanban-count">1</span></header><ol class="kanban-cards"><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="5">DL-4402</span></li></ul><h4 class="kanban-card-title">Office furniture, 2 pallets</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><time class="kanban-due"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg>15:00</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="5" role="img" aria-label="Ines Duarte">ID</span></li></ul></div></li></ol></section>
+<section class="kanban-column" aria-labelledby="dl-col-2"><header class="kanban-column-header"><h3 class="kanban-column-title" id="dl-col-2">Out for delivery</h3><span class="badge kanban-count">3</span></header><ol class="kanban-cards"><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">DL-4381</span></li></ul><h4 class="kanban-card-title">Groceries, 14 bags</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><time class="kanban-due is-soon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg>13:50</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="1" role="img" aria-label="Maya Okafor">MO</span></li></ul></div></li><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="4">DL-4377</span></li></ul><h4 class="kanban-card-title">Retail park stock</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="urgent">Urgent</span><time class="kanban-due is-overdue"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg><span class="visually-hidden">Overdue, was due </span>12:30</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="4" role="img" aria-label="Ana Ruiz">AR</span></li></ul></div></li><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="2">DL-4390</span></li></ul><h4 class="kanban-card-title">Bakery wholesale</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="medium">Medium</span><time class="kanban-due is-overdue"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg><span class="visually-hidden">Overdue, was due </span>13:20</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="2" role="img" aria-label="Leo Brandt">LB</span></li></ul></div></li></ol></section>
+<section class="kanban-column" aria-labelledby="dl-col-3"><header class="kanban-column-header"><h3 class="kanban-column-title" id="dl-col-3">Delivered</h3><span class="badge kanban-count">2</span></header><ol class="kanban-cards"><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="3">DL-4350</span></li></ul><h4 class="kanban-card-title">Lab samples (cold chain)</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="high">High</span><time class="kanban-due"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg>11:05</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="3" role="img" aria-label="Sam Lee">SL</span></li></ul></div></li><li class="kanban-card" tabindex="0"><ul class="kanban-labels" aria-label="Labels"><li><span class="badge" data-series="1">DL-4344</span></li></ul><h4 class="kanban-card-title">Parcels, 22</h4><div class="kanban-card-meta"><span class="kanban-priority" data-priority="low">Low</span><time class="kanban-due"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-clock"/></svg>10:40</time><ul class="kanban-assignees" aria-label="Driver"><li><span class="avatar" data-color="1" role="img" aria-label="Maya Okafor">MO</span></li></ul></div></li></ol></section>
+      </div>
+    </section>
+
+    <section class="panel stack" aria-labelledby="notes-h">
+      <header class="panel-header"><strong id="notes-h">Dispatch notes</strong><span class="badge">TRK-03</span></header>
+      <details class="comment-thread is-active" open>
+        <summary class="comment-thread-summary"><span class="comment-thread-quote">TRK-03 breakdown, Northgate Retail Park</span><span class="comment-thread-count">3 notes</span></summary>
+        <div class="thread">
+          <div class="message"><span class="avatar" data-color="6">KH</span><div class="message-bubble"><div class="message-meta"><strong>Kim Hale</strong> <time datetime="2026-10-03T13:14">13:14</time></div>
+            <p>Ana is safe, truck is on the hard shoulder. <a class="mention" href="fleet.html">@Raj Patel</a> can you book recovery?</p></div></div>
+          <div class="message is-reply"><span class="avatar" data-color="2">RP</span><div class="message-bubble"><div class="message-meta"><strong>Raj Patel</strong> <time datetime="2026-10-03T13:20">13:20</time></div>
+            <p>Booked, ETA 14:40. Moving her 3 remaining stops to VAN-07; <a class="mention is-self" href="fleet.html">@you</a> please confirm Maya has room.</p>
+            <div class="message-reactions"><label class="badge badge-button"><input type="checkbox" checked><span aria-hidden="true">&#10003;</span> Agree 2<span class="visually-hidden"> people confirmed; you confirmed</span></label></div></div></div>
+          <div class="message"><span class="avatar" data-color="3">ZM</span><div class="message-bubble"><div class="message-meta"><strong>Zoe Marsh</strong> <time datetime="2026-10-03T13:31">13:31</time></div>
+            <p>VAN-07 has 40% space left after Harbour Rd. <span class="mention">@drivers</span> heads-up on Bridge St closure until 18:00.</p></div></div>
+          <div class="typing">Raj is typing…</div>
+        </div>
+        <form class="comment-thread-footer">
+          <div class="input-group"><input class="input" aria-label="Add a note" placeholder="Add a note, @ to mention…"><button class="btn btn-primary" type="button">Post</button></div>
+          <button class="btn btn-ghost" type="button">Resolve</button>
+        </form>
+      </details>
+    </section>
+    </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Dispatch &middot; Leeds depot</span>
+    <span class="status status-ok">5 vehicles reporting</span>
+    <span class="status status-error">1 breakdown</span>
+  </footer>
+<div class="popover fleet-pin-pop" popover id="pin-VAN-07"><strong>VAN-07 &middot; Maya Okafor</strong><span class="status status-ok">Moving</span><span class="field-hint">Harbour Rd 14 &middot; ETA next stop 12 min</span></div>
+<div class="popover fleet-pin-pop" popover id="pin-VAN-11"><strong>VAN-11 &middot; Leo Brandt</strong><span class="status status-warn">Delayed</span><span class="field-hint">Mill Lane 3 &middot; ETA next stop 34 min</span></div>
+<div class="popover fleet-pin-pop" popover id="pin-TRK-03"><strong>TRK-03 &middot; Ana Ruiz</strong><span class="status status-error">Breakdown</span><span class="field-hint">Northgate Retail Park &middot; Awaiting recovery</span></div>
+<div class="popover fleet-pin-pop" popover id="pin-BIKE-2"><strong>BIKE-2 &middot; Sam Lee</strong><span class="status status-ok">Moving</span><span class="field-hint">Quay St 2 &middot; ETA next stop 6 min</span></div>
+<div class="popover fleet-pin-pop" popover id="pin-VAN-12"><strong>VAN-12 &middot; Ines Duarte</strong><span class="status status-idle">Idle</span><span class="field-hint">Loading, depot bay 3 &middot; At depot</span></div>
+<div class="popover fleet-pin-pop" popover id="pin-VAN-12"><strong>VAN-12 &middot; Ines Duarte</strong><span class="status status-idle">Idle</span><span class="field-hint">Loading, depot bay 3 &middot; At depot</span></div>
+<div class="popover" popover id="dispatchers" aria-label="Dispatchers online">
+  <ul class="presence-list">
+    <li><span class="avatar avatar-sm" data-color="6">KH</span>Kim Hale <span class="presence-status" data-status="online">Online</span></li>
+    <li><span class="avatar avatar-sm" data-color="2">RP</span>Raj Patel <span class="presence-status" data-status="online">Online</span></li>
+    <li><span class="avatar avatar-sm" data-color="3">ZM</span>Zoe Marsh <span class="presence-status" data-status="away">Away</span></li>
+  </ul>
+</div>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>
