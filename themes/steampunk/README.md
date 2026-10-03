@@ -92,3 +92,20 @@ layout at **L1**.
   rivets); dialogs carry the scrolls in their lower corners under the
   brass title band.
 
+
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as engraved brass
+instrument glyphs, after the brass icon buttons and gauges in
+`references/steampunk/`:
+
+- 24×24 grid, 1.4 stroke, round caps and joins, true curves and arcs.
+- Engraving: on plate-like glyphs (devices, lock, save, search lens,
+  info, archive, cash…) the main box or circle gets a fine 0.7 inner rule,
+  so it reads as a double line; big plates also get a rivet in each
+  corner. Dials (clock, compass, gps, coin, album) get a toothed gear rim
+  instead. Busy glyphs (calendar, table, globe…) stay plain.
+- Silhouettes (bookmark, heart, shield…) carry a 35% etched tint under
+  the line. Transport legends (play, pause, stop, skip) are solid castings.
+- `currentColor` everywhere, so icons follow brass text, engraved plates
+  and selected states.

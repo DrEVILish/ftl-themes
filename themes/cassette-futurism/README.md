@@ -155,3 +155,19 @@ default arrangement. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status`
 shell (CONTRACT.md "The app shell" / "Adoption levels") for the deck
 housing with the right-hand vent rail at **L1**. Without the rail element,
 the rail column collapses (core degrade rule).
+
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as 70s/80s hardware
+legends, after the transport-key and panel legends in
+`references/cassette-futurism/`:
+
+- 24×24 grid, heavy 2.1 stroke (same as `--icon-stroke-width`), round caps
+  and joins. Boxes have big moulded corners (radius up to 3), like
+  keycaps and housings.
+- Silhouettes are solid. Transport keys use ISO 7000-style solid
+  pictograms (play, pause, stop, skip), and power is the ISO 5009 broken
+  ring with a bar. Dots are fat. The lettering on file-type glyphs drops
+  to 1.4 so it stays legible.
+- `currentColor` everywhere, so icons work on the beige housing, the dark
+  windows and the keycap colours.

@@ -100,3 +100,16 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as console key legends:
+plain, functional and quick to scan.
+
+- 24×24 grid, 1.6 stroke, square caps, mitred joins, radius 0 (the theme
+  doesn't round corners).
+- Outline only. The exceptions are the transport legends (play, pause,
+  stop, skip), which are solid like the keys on a show-control desk, plus
+  solid level bars and square LED dots.
+- `currentColor` only. Amber marks state, so icons don't use it as
+  decoration.
