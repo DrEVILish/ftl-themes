@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bloomberg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trading terminal — ftl-themes app demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/bloomberg.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: everything visual comes from tokens and components. */
+  .tr-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-s); }
+  .tr-head h1 { margin: 0; }
+  .tr-watch th[scope="row"] { white-space: nowrap; }
+  .tr-watch .tr-name { font-weight: 400; font-size: .85em; }
+  .tr-watch td, .tr-book td, .tr-pos td { white-space: nowrap; }
+  .tr-watch td.mono, .tr-pos td.mono, .tr-book td.mono { text-align: end; }
+  .tr-watch .sparkline { --sparkline-width: 4.5em; }
+  .tr-book td:nth-child(3) { text-align: center; }
+  .tr-ticket .is-sell-only, .tr-ticket .is-limit-only { display: none; }
+  .tr-ticket:has(#tk-sell:checked) .is-sell-only { display: revert; }
+  .tr-ticket:has(#tk-sell:checked) .is-buy-only { display: none; }
+  .tr-ticket:has(#tk-limit:checked, #tk-stop:checked) .is-limit-only { display: revert; }
+  .tr-ticket .segmented { display: flex; align-self: stretch; }
+  .tr-ticket .segmented-item { flex: 1; text-align: center; min-block-size: var(--tap-min); display: grid; place-items: center; }
+  .tr-heat .heatmap { --heatmap-rows: 3; --heatmap-cell: 4.6rem; --heatmap-gap: 3px; }
+  .tr-heat .heatmap > li { display: grid; place-items: center; text-align: center; }
+  .tr-heat .heatmap .badge { font-size: .7rem; line-height: 1.25; --badge-bg: var(--surface); --badge-fg: var(--text); }
+  .tr-alloc .donut { --donut-size: 8rem; }
+  .tr-chart svg { inline-size: 100%; block-size: auto; }
+  .widget .feed { max-block-size: 100%; }
+  .tr-news .feed { max-block-size: 24rem; }
+  .app-status { flex-wrap: wrap; row-gap: 0.25rem; }
+</style>
+
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Equities Desk</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+    <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+    <div class="tr-head">
+      <h1>Equities desk</h1>
+      <div class="cluster">
+        <span class="connection" data-state="live" role="status">Market data live</span>
+        <time class="updated" datetime="2026-10-03T14:22:19Z">Updated 0.4s ago</time>
+      </div>
+    </div>
+
+    <div class="dashboard is-demo-ticking mt-m">
+      <div class="dashboard-bar">
+        <label class="toggle-btn"><input type="checkbox" class="dashboard-edit"><span class="toggle-btn-off">Edit layout</span><span class="toggle-btn-on">Done editing</span></label>
+        <span class="dashboard-dirty" role="status">Unsaved layout</span>
+        <button class="btn btn-secondary btn-sm dashboard-edit-only" type="button">Reset to default</button>
+        <span class="is-pushed text-muted">Workspace: US + EU equities &middot; 10 widgets</span>
+      </div>
+
+      <section class="panel widget tr-watch" style="--cols:8; --rows:2" aria-labelledby="tr-watch-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="tr-watch-h">Watchlist</strong><span class="text-muted">TSX delayed 15 min</span></header>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Watchlist prices">
+          <table class="table is-compact is-frozen-1">
+            <thead><tr><th scope="col">Symbol</th><th scope="col">Last</th><th scope="col">Chg</th><th scope="col">Chg %</th><th scope="col">Bid</th><th scope="col">Ask</th><th scope="col">Volume</th><th scope="col">Day</th><th scope="col">Exch</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><strong>NOVA</strong> <span class="tr-name">Nova Semiconductor</span></th><td class="mono is-updated" style="--tick-delay:0.00s">412.18</td><td class="mono is-up">6.42</td><td class="mono is-up">1.58%</td><td class="mono">412.16</td><td class="mono">412.20</td><td class="mono">18.2M</td><td><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="NOVA intraday up"><polyline points="0,10 11,6 22,6 33,2 44,2 55,2 66,2 77,2 88,2 99,2"/></svg></td><td>NYSE</td></tr>
+              <tr><th scope="row"><strong>KSTR</strong> <span class="tr-name">Kestrel Aerospace</span></th><td class="mono is-updated" style="--tick-delay:0.73s">88.04</td><td class="mono is-down">1.12</td><td class="mono is-down">1.26%</td><td class="mono">88.02</td><td class="mono">88.06</td><td class="mono">4.1M</td><td><svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="KSTR intraday down"><polyline points="0,11 11,9 22,10 33,13 44,12 55,12 66,14 77,18 88,19 99,20"/></svg></td><td>NYSE</td></tr>
+              <tr><th scope="row"><strong>HLX</strong> <span class="tr-name">Helix Biotherapeutics</span></th><td class="mono is-updated" style="--tick-delay:1.46s">23.71</td><td class="mono is-up">0.88</td><td class="mono is-up">3.85%</td><td class="mono">23.69</td><td class="mono">23.73</td><td class="mono">9.7M</td><td><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="HLX intraday up"><polyline points="0,14 11,10 22,11 33,8 44,5 55,2 66,2 77,3 88,2 99,2"/></svg></td><td>NASDAQ</td></tr>
+              <tr><th scope="row"><strong>ORBT</strong> <span class="tr-name">Orbital Freight</span></th><td class="mono is-updated" style="--tick-delay:2.19s">61.30</td><td class="mono is-down">2.45</td><td class="mono is-down">3.84%</td><td class="mono">61.28</td><td class="mono">61.32</td><td class="mono">2.2M</td><td><svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="ORBT intraday down"><polyline points="0,14 11,14 22,16 33,15 44,13 55,13 66,15 77,16 88,16 99,17"/></svg></td><td>NASDAQ</td></tr>
+              <tr><th scope="row"><strong>MRDN</strong> <span class="tr-name">Meridian Bank</span></th><td class="mono is-updated" style="--tick-delay:2.92s">47.92</td><td class="mono is-up">0.21</td><td class="mono is-up">0.44%</td><td class="mono">47.90</td><td class="mono">47.94</td><td class="mono">6.8M</td><td><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="MRDN intraday up"><polyline points="0,11 11,8 22,9 33,9 44,6 55,5 66,4 77,5 88,5 99,3"/></svg></td><td>NYSE</td></tr>
+              <tr><th scope="row"><strong>TRNT</strong> <span class="tr-name">Tarentum Energy</span></th><td class="mono is-updated" style="--tick-delay:3.65s">112.66</td><td class="mono is-down">0.37</td><td class="mono is-down">0.33%</td><td class="mono">112.64</td><td class="mono">112.68</td><td class="mono">3.3M</td><td><svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="TRNT intraday down"><polyline points="0,16 11,15 22,16 33,18 44,18 55,19 66,17 77,19 88,22 99,22"/></svg></td><td>NYSE</td></tr>
+              <tr><th scope="row"><strong>VLTA</strong> <span class="tr-name">Volta Grid</span></th><td class="mono is-updated" style="--tick-delay:4.38s">29.15</td><td class="mono is-up">1.04</td><td class="mono is-up">3.70%</td><td class="mono">29.13</td><td class="mono">29.17</td><td class="mono">1.9M</td><td><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="VLTA intraday up"><polyline points="0,13 11,11 22,11 33,10 44,9 55,8 66,9 77,10 88,9 99,9"/></svg></td><td>LSE</td></tr>
+              <tr><th scope="row"><strong>PYLN</strong> <span class="tr-name">Pylon Telecom</span></th><td class="mono is-updated" style="--tick-delay:0.11s">15.48</td><td class="mono is-down">0.09</td><td class="mono is-down">0.58%</td><td class="mono">15.46</td><td class="mono">15.50</td><td class="mono">5.4M</td><td><svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="PYLN intraday down"><polyline points="0,11 11,13 22,15 33,19 44,22 55,22 66,22 77,22 88,20 99,21"/></svg></td><td>LSE</td></tr>
+              <tr><th scope="row"><strong>GLCR</strong> <span class="tr-name">Glacier Mining</span></th><td class="mono is-stale" data-age="15m">8.62</td><td class="mono is-up">0.31</td><td class="mono is-up">3.73%</td><td class="mono">8.60</td><td class="mono">8.64</td><td class="mono">12.6M</td><td><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="GLCR intraday up"><polyline points="0,9 11,5 22,2 33,2 44,2 55,2 66,2 77,3 88,2 99,2"/></svg></td><td>TSX</td></tr>
+              <tr><th scope="row"><strong>BORL</strong> <span class="tr-name">Boreal Timber</span></th><td class="mono is-stale" data-age="15m">33.07</td><td class="mono is-down">0.58</td><td class="mono is-down">1.72%</td><td class="mono">33.05</td><td class="mono">33.09</td><td class="mono">0.8M</td><td><svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="BORL intraday down"><polyline points="0,13 11,17 22,20 33,22 44,22 55,22 66,22 77,22 88,22 99,21"/></svg></td><td>TSX</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel widget tr-ticket" style="--cols:4; --rows:2" aria-labelledby="tr-ticket-h">
+        <header class="panel-header"><strong id="tr-ticket-h">Order ticket</strong></header>
+        <form class="stack stack-sm" aria-label="Order ticket">
+          <div class="segmented" role="radiogroup" aria-label="Side">
+            <label class="segmented-item"><input type="radio" name="tk-side" id="tk-buy" checked>Buy</label>
+            <label class="segmented-item"><input type="radio" name="tk-side" id="tk-sell">Sell</label>
+          </div>
+          <div class="field">
+            <label class="label" for="tk-sym">Symbol</label>
+            <input class="input" id="tk-sym" list="tk-syms" value="NOVA" autocomplete="off">
+            <datalist id="tk-syms"><option value="NOVA">Nova Semiconductor</option><option value="KSTR">Kestrel Aerospace</option><option value="HLX">Helix Biotherapeutics</option><option value="ORBT">Orbital Freight</option><option value="MRDN">Meridian Bank</option></datalist>
+          </div>
+          <div class="field">
+            <label class="label" for="tk-qty">Quantity</label>
+            <div class="input-group stepper" role="group" aria-label="Quantity">
+              <button class="btn btn-icon" type="button" aria-label="Fewer shares"><svg class="icon"><use href="assets/icons/icons.svg#icon-minus"/></svg></button>
+              <input class="input" id="tk-qty" type="number" value="250" min="1" step="50">
+              <button class="btn btn-icon" type="button" aria-label="More shares"><svg class="icon"><use href="assets/icons/icons.svg#icon-plus"/></svg></button>
+            </div>
+          </div>
+          <fieldset class="radio-group is-inline">
+            <legend class="label">Order type</legend>
+            <label class="check"><input class="radio" type="radio" name="tk-type" id="tk-market" checked> Market</label>
+            <label class="check"><input class="radio" type="radio" name="tk-type" id="tk-limit"> Limit</label>
+            <label class="check"><input class="radio" type="radio" name="tk-type" id="tk-stop"> Stop</label>
+          </fieldset>
+          <div class="field is-limit-only">
+            <label class="label" for="tk-px">Price</label>
+            <div class="input-group"><span class="input-addon">$</span><input class="input" id="tk-px" type="number" value="412.10" step="0.01"></div>
+          </div>
+          <div class="field">
+            <label class="label" for="tk-tif">Time in force</label>
+            <select class="select" id="tk-tif"><option>Day</option><option>Good till cancelled</option><option>Immediate or cancel</option></select>
+          </div>
+          <dl class="props"><dt>Est. value</dt><dd class="mono">$103,045</dd><dt>Buying power</dt><dd class="mono">$1.84M</dd></dl>
+          <button class="btn btn-primary is-buy-only" type="button" popovertarget="tk-confirm">Review buy order</button>
+          <button class="btn btn-danger is-sell-only" type="button" popovertarget="tk-confirm">Review sell order</button>
+          <div class="popover" popover id="tk-confirm" role="dialog" aria-label="Confirm order">
+            <strong>Confirm <span class="is-buy-only">buy</span><span class="is-sell-only">sell</span></strong>
+            <p class="text-muted">250 NOVA at market, day order. Est. $103,045 plus fees.</p>
+            <div class="cluster"><button class="btn btn-secondary btn-sm" type="button" popovertarget="tk-confirm" popovertargetaction="hide">Cancel</button><button class="btn btn-primary btn-sm" type="button" popovertarget="tk-confirm" popovertargetaction="hide">Send order</button></div>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel widget tr-book" style="--cols:3; --rows:2" aria-labelledby="tr-book-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="tr-book-h">Depth &middot; NOVA</strong><span class="connection" data-state="live">L2</span></header>
+        <div class="widget-body" tabindex="0" role="region" aria-label="NOVA order book">
+          <table class="table is-compact">
+            <thead><tr><th scope="col">Bid</th><th scope="col"><span class="visually-hidden">Bid depth</span></th><th scope="col">Price</th><th scope="col"><span class="visually-hidden">Ask depth</span></th><th scope="col">Ask</th></tr></thead>
+            <tbody>
+              <tr><td></td><td></td><td class="mono">412.30</td><td><span class="depth-bar is-ask" style="--depth:0.35" aria-hidden="true"></span></td><td class="mono">1,200</td></tr>
+              <tr><td></td><td></td><td class="mono">412.28</td><td><span class="depth-bar is-ask" style="--depth:0.9" aria-hidden="true"></span></td><td class="mono">4,800</td></tr>
+              <tr><td></td><td></td><td class="mono">412.25</td><td><span class="depth-bar is-ask" style="--depth:0.5" aria-hidden="true"></span></td><td class="mono">2,100</td></tr>
+              <tr><td></td><td></td><td class="mono">412.22</td><td><span class="depth-bar is-ask" style="--depth:0.2" aria-hidden="true"></span></td><td class="mono">900</td></tr>
+              <tr><td></td><td></td><td class="mono">412.20</td><td><span class="depth-bar is-ask" style="--depth:0.7" aria-hidden="true"></span></td><td class="mono">3,300</td></tr>
+              <tr><td colspan="5" class="text-muted">Spread 0.04 &middot; mid 412.18</td></tr>
+              <tr><td class="mono is-updated" style="--tick-delay:2.1s">2,600</td><td><span class="depth-bar is-bid" style="--depth:0.6" aria-hidden="true"></span></td><td class="mono">412.16</td><td></td><td></td></tr>
+              <tr><td class="mono">4,100</td><td><span class="depth-bar is-bid" style="--depth:0.85" aria-hidden="true"></span></td><td class="mono">412.14</td><td></td><td></td></tr>
+              <tr><td class="mono">700</td><td><span class="depth-bar is-bid" style="--depth:0.15" aria-hidden="true"></span></td><td class="mono">412.12</td><td></td><td></td></tr>
+              <tr><td class="mono">5,200</td><td><span class="depth-bar is-bid" style="--depth:1" aria-hidden="true"></span></td><td class="mono">412.10</td><td></td><td></td></tr>
+              <tr><td class="mono">1,500</td><td><span class="depth-bar is-bid" style="--depth:0.3" aria-hidden="true"></span></td><td class="mono">412.08</td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel widget tr-chart" style="--cols:5; --rows:2" aria-labelledby="tr-chart-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="tr-chart-h">NOVA intraday</strong><strong class="mono is-updated" style="--tick-delay:.9s"><span aria-hidden="true">&#9650;</span> 412.18</strong></header>
+        <figure class="chart">
+          <ul class="chart-legend is-line"><li data-series="1">Price</li><li data-series="2">VWAP</li></ul>
+          <svg viewBox="-20 0 440 200" role="img" aria-labelledby="tr-ct tr-cd">
+            <title id="tr-ct">NOVA price today</title><desc id="tr-cd">Opened 405.76, dipped to 403 by 10:30, rallied to 412 after 13:00.</desc>
+            <g class="chart-grid"><line x1="36" x2="396" y1="20" y2="20"/><line x1="36" x2="396" y1="60" y2="60"/><line x1="36" x2="396" y1="100" y2="100"/><line x1="36" x2="396" y1="140" y2="140"/></g>
+            <g class="chart-axis"><line x1="36" x2="396" y1="150" y2="150"/>
+              <text x="32" y="24" text-anchor="end">414</text><text x="32" y="64" text-anchor="end">410</text><text x="32" y="104" text-anchor="end">406</text><text x="32" y="144" text-anchor="end">402</text>
+              <text x="36" y="166">9:30</text><text x="150" y="166">11:00</text><text x="264" y="166">12:30</text><text x="396" y="166" text-anchor="end">14:00</text></g>
+            <g class="chart-series" data-series="1"><polygon class="is-area" points="36,150 36,86 54,96 72,104 90,118 108,124 126,114 144,108 162,112 180,98 198,92 216,84 234,88 252,70 270,62 288,66 306,52 324,46 342,50 360,40 378,38 396,36 396,150"/>
+              <polyline points="36,86 54,96 72,104 90,118 108,124 126,114 144,108 162,112 180,98 198,92 216,84 234,88 252,70 270,62 288,66 306,52 324,46 342,50 360,40 378,38 396,36"/><circle class="chart-point" cx="396" cy="36" r="4"/></g>
+            <g class="chart-series" data-series="2"><polyline points="36,86 90,98 144,104 198,100 252,92 306,82 360,74 396,70"/></g>
+            <g class="chart-series" data-series="3"><rect x="40" y="178" width="10" height="18"/><rect x="76" y="184" width="10" height="12"/><rect x="112" y="182" width="10" height="14"/><rect x="148" y="188" width="10" height="8"/><rect x="184" y="186" width="10" height="10"/><rect x="220" y="185" width="10" height="11"/><rect x="256" y="176" width="10" height="20"/><rect x="292" y="180" width="10" height="16"/><rect x="328" y="174" width="10" height="22"/><rect x="364" y="172" width="10" height="24"/></g>
+            <text class="chart-label" x="300" y="30">412.18</text>
+          </svg>
+        </figure>
+      </section>
+
+      <section class="panel widget tr-heat" style="--cols:4; --rows:2" aria-labelledby="tr-heat-h">
+        <header class="panel-header"><strong id="tr-heat-h">Sector map</strong></header>
+        <ol class="heatmap is-diverging" role="img" aria-label="Sector performance today; see the table below.">
+            <li style="--v:0.8" title="Tech +2.4%"><span class="badge">Tech<br>+2.4%</span></li>
+            <li style="--v:1" title="Semis +3.1%"><span class="badge">Semis<br>+3.1%</span></li>
+            <li style="--v:0.2" title="Banks +0.4%"><span class="badge">Banks<br>+0.4%</span></li>
+            <li style="--v:-0.3" title="Energy −0.6%"><span class="badge">Energy<br>−0.6%</span></li>
+            <li style="--v:0.45" title="Health +1.1%"><span class="badge">Health<br>+1.1%</span></li>
+            <li style="--v:-0.1" title="Utils −0.2%"><span class="badge">Utils<br>−0.2%</span></li>
+            <li style="--v:-0.6" title="Telco −1.4%"><span class="badge">Telco<br>−1.4%</span></li>
+            <li style="--v:0.3" title="Matls +0.7%"><span class="badge">Matls<br>+0.7%</span></li>
+            <li style="--v:0.1" title="Indus +0.3%"><span class="badge">Indus<br>+0.3%</span></li>
+            <li style="--v:-0.85" title="Retail −2.0%"><span class="badge">Retail<br>−2.0%</span></li>
+            <li style="--v:-0.4" title="REITs −0.9%"><span class="badge">REITs<br>−0.9%</span></li>
+            <li style="--v:0.6" title="Autos +1.6%"><span class="badge">Autos<br>+1.6%</span></li>
+        </ol>
+        <details class="accordion-item"><summary class="accordion-trigger">Data table</summary>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Sector performance"><table class="table is-compact"><thead><tr><th scope="col">Sector</th><th scope="col">Change</th></tr></thead><tbody><tr><th scope="row">Tech</th><td class="mono">+2.4%</td></tr>
+<tr><th scope="row">Semis</th><td class="mono">+3.1%</td></tr>
+<tr><th scope="row">Banks</th><td class="mono">+0.4%</td></tr>
+<tr><th scope="row">Energy</th><td class="mono">−0.6%</td></tr>
+<tr><th scope="row">Health</th><td class="mono">+1.1%</td></tr>
+<tr><th scope="row">Utils</th><td class="mono">−0.2%</td></tr>
+<tr><th scope="row">Telco</th><td class="mono">−1.4%</td></tr>
+<tr><th scope="row">Matls</th><td class="mono">+0.7%</td></tr>
+<tr><th scope="row">Indus</th><td class="mono">+0.3%</td></tr>
+<tr><th scope="row">Retail</th><td class="mono">−2.0%</td></tr>
+<tr><th scope="row">REITs</th><td class="mono">−0.9%</td></tr>
+<tr><th scope="row">Autos</th><td class="mono">+1.6%</td></tr></tbody></table></div></details>
+      </section>
+
+      <section class="panel widget tr-alloc" style="--cols:3; --rows:2" aria-labelledby="tr-alloc-h">
+        <header class="panel-header"><strong id="tr-alloc-h">Allocation</strong></header>
+        <div class="widget-split">
+          <div class="donut" style="--seg-1:38%; --seg-2:22%; --seg-3:17%; --seg-4:13%; --seg-5:10%" role="img" aria-label="Allocation: Tech 38%, Financials 22%, Energy 17%, Health 13%, Cash 10%"><span><strong>$4.2M</strong>NAV</span></div>
+          <ul class="legend is-vertical"><li data-series="1">Tech 38%</li><li data-series="2">Financials 22%</li><li data-series="3">Energy 17%</li><li data-series="4">Health 13%</li><li data-series="5">Cash 10%</li></ul>
+        </div>
+      </section>
+
+      <section class="panel widget tr-pos" style="--cols:5; --rows:2" aria-labelledby="tr-pos-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="tr-pos-h">Positions</strong><strong class="mono is-updated" style="--tick-delay:3.1s">P&amp;L +38,412</strong></header>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Positions">
+          <table class="table is-compact is-frozen-1">
+            <thead><tr><th scope="col">Symbol</th><th scope="col">Qty</th><th scope="col">Avg</th><th scope="col">Last</th><th scope="col">P&amp;L</th><th scope="col">P&amp;L %</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">NOVA</th><td class="mono">1,200</td><td class="mono">388.40</td><td class="mono is-updated" style="--tick-delay:.3s">412.18</td><td class="mono is-up">28,536</td><td class="mono is-up">6.12%</td></tr>
+              <tr><th scope="row">KSTR</th><td class="mono">3,000</td><td class="mono">91.20</td><td class="mono is-updated" style="--tick-delay:1.8s">88.04</td><td class="mono is-down">9,480</td><td class="mono is-down">3.46%</td></tr>
+              <tr><th scope="row">MRDN</th><td class="mono">8,000</td><td class="mono">45.10</td><td class="mono">47.92</td><td class="mono is-up">22,560</td><td class="mono is-up">6.25%</td></tr>
+              <tr><th scope="row">VLTA</th><td class="mono">12,500</td><td class="mono">29.55</td><td class="mono is-updated" style="--tick-delay:4.2s">29.15</td><td class="mono is-down">5,000</td><td class="mono is-down">1.35%</td></tr>
+              <tr><th scope="row">GLCR</th><td class="mono">20,000</td><td class="mono">8.52</td><td class="mono is-stale" data-age="15m">8.62</td><td class="mono is-up">2,000</td><td class="mono is-up">1.17%</td></tr>
+              <tr><th scope="row">PYLN</th><td class="mono">6,000</td><td class="mono">15.48</td><td class="mono">15.48</td><td class="mono is-flat">0</td><td class="mono is-flat">0.00%</td></tr>
+            </tbody>
+            <tfoot><tr><th scope="row">Total</th><td></td><td></td><td></td><td class="mono is-up">38,616</td><td class="mono is-up">0.92%</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel widget tr-news" style="--cols:4; --rows:2" aria-labelledby="tr-news-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="tr-news-h">News</strong><span class="connection" data-state="reconnecting">Wire reconnecting</span></header>
+        <ol class="feed" tabindex="0" aria-label="Market news">
+          <li><span class="feed-time">13:58</span><span class="feed-source">MRDN</span><span>Meridian Bank raises dividend 8%, beats on net interest income.</span></li>
+          <li><span class="feed-time">14:04</span><span class="feed-source">Macro</span><span>Treasury 10-year yield slips to 3.92% after soft PMI.</span></li>
+          <li data-level="warn"><span class="feed-time">14:09</span><span class="feed-source">KSTR</span><span>Kestrel Aerospace holds launch on weather; shares off lows.</span></li>
+          <li><span class="feed-time">14:15</span><span class="feed-source">TSX</span><span>Toronto feed on 15-minute delay while vendor link recovers.</span></li>
+          <li class="is-new" style="--tick-delay:.6s"><span class="feed-time">14:21</span><span class="feed-source">NOVA</span><span>Nova Semiconductor up 1.6% on new fab order; volume 2&times; average.</span></li>
+          <li class="is-new" data-level="error" style="--tick-delay:2.8s"><span class="feed-time">14:22</span><span class="feed-source">ORBT</span><span>Orbital Freight halted, news pending.</span></li>
+        </ol>
+      </section>
+
+      <div class="widget-placeholder" style="--cols:6; --rows:1">Drop here</div>
+      <button class="widget-add" type="button" style="--cols:6; --rows:1"><svg class="icon"><use href="assets/icons/icons.svg#icon-plus"/></svg>Add widget</button>
+    </div>
+  </main>
+
+  <footer class="app-status">
+    <span class="connection" data-state="live">NYSE</span>
+    <span class="connection" data-state="live">NASDAQ</span>
+    <span class="connection" data-state="reconnecting">LSE</span>
+    <span class="is-stale" data-age="15m">TSX delayed</span>
+    <span>Day P&amp;L <strong class="is-up mono">38,412</strong></span>
+    <time class="updated" datetime="2026-10-03T14:22:19Z">0.4s ago</time>
+  </footer>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

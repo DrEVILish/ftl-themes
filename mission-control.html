@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nerv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission control — ftl-themes app demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/nerv.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: everything visual comes from tokens and components. */
+  .mc-clock .countdown { --countdown-size: clamp(1.6rem, 9cqi, 3.2rem); }
+  .mc-clock .is-hold-only, .mc-clock .is-recycle-only { display: none; }
+  .mc-clock:has(#clk-hold:checked) .is-hold-only,
+  .mc-clock:has(#clk-recycle:checked) .is-recycle-only { display: revert; }
+  .mc-clock:has(#clk-hold:checked, #clk-recycle:checked) .is-count-only { display: none; }
+  .mc-poll tr:has(.toggle-btn input:checked) .lamp.is-error,
+  .mc-poll tr:not(:has(.toggle-btn input:checked)) .lamp.is-on { display: none; }
+  .mc-poll table { counter-reset: go; }
+  .mc-poll .toggle-btn input:checked { counter-increment: go; }
+  .mc-poll .go-count::before { content: counter(go); }
+  .mc-poll td:last-child, .mc-poll th:last-child { text-align: end; }
+  .mc-gauges { display: flex; flex-wrap: wrap; justify-content: space-around; gap: var(--space-s); --gauge-size: 8.5rem; }
+  .mc-gauges > * { display: grid; justify-items: center; gap: var(--space-xs); }
+  .mc-map .map { --map-ratio: 2 / 1; --map-min-height: 11rem; }
+  .mc-map svg text { font-size: 7px; }
+  .mc-tele dd { display: flex; align-items: center; gap: var(--space-s); justify-content: space-between; }
+  .mc-links li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-xs) var(--space-s); padding-block: var(--space-xs); }
+  .mc-links ul { list-style: none; margin: 0; padding: 0; }
+  .widget .feed { --feed-height: 100%; }
+  .mc-feed .feed { max-block-size: 22rem; }
+  .mc-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-s); }
+  .mc-head h1 { margin: 0; }
+  .app-status { flex-wrap: wrap; row-gap: 0.25rem; }
+</style>
+
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Flight Control</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+    <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a class="breadcrumb-item" href="mission-control.html">Operations</a><a class="breadcrumb-item" href="mission-control.html">Kestrel-4</a><span class="breadcrumb-item is-current">Flight control</span></nav>
+    <div class="mc-head">
+      <h1>Kestrel-4 flight control</h1>
+      <div class="cluster">
+        <span class="connection" data-state="live" role="status">Range net live</span>
+        <time class="updated" datetime="2026-10-03T14:22:18Z">Updated 2s ago</time>
+      </div>
+    </div>
+    <p class="text-muted">Terminal count, pad 39B &middot; launch window 14:32&ndash;14:58 UTC &middot; target orbit 410 km &times; 51.6&deg;</p>
+
+    <div class="dashboard is-demo-ticking mt-m">
+
+      <section class="panel widget mc-clock" style="--cols:5" aria-labelledby="mc-clock-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="mc-clock-h">Launch clock</strong><span class="badge badge-warning is-hold-only">Hold</span><span class="badge badge-danger is-recycle-only">Recycle</span><span class="badge badge-success is-count-only">Counting</span></header>
+        <div class="stack stack-sm">
+          <div class="is-count-only">
+            <span class="stat-label">T&minus;</span>
+            <div class="countdown" role="timer" aria-label="T minus 9 minutes 42 seconds"><span data-unit="hrs">00</span><span data-unit="min">09</span><span data-unit="sec">42</span></div>
+          </div>
+          <div class="is-hold-only">
+            <span class="stat-label">Holding at T&minus;</span>
+            <div class="countdown is-urgent" role="timer" aria-label="Hold at T minus 4 minutes">
+              <span data-unit="hrs">00</span><span data-unit="min">04</span><span data-unit="sec">00</span></div>
+          </div>
+          <div class="is-recycle-only">
+            <span class="stat-label">Recycling to T&minus;</span>
+            <div class="countdown is-done" role="timer" aria-label="Recycle to T minus 10 minutes"><span data-unit="hrs">00</span><span data-unit="min">10</span><span data-unit="sec">00</span></div>
+          </div>
+          <div class="toggle-group" role="radiogroup" aria-label="Count state">
+            <label class="toggle-btn"><input type="radio" name="clk" id="clk-count" checked>Count</label>
+            <label class="toggle-btn"><input type="radio" name="clk" id="clk-hold">Hold</label>
+            <label class="toggle-btn"><input type="radio" name="clk" id="clk-recycle">Recycle</label>
+          </div>
+          <dl class="props">
+            <dt>Liftoff (L&minus;0)</dt><dd class="mono">14:32:00 UTC</dd>
+            <dt>Window closes</dt><dd class="mono">14:58:00 UTC</dd>
+            <dt>Built-in hold</dt><dd>T&minus;4:00, 10 min</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="panel widget mc-poll" style="--cols:4; --rows:2" aria-labelledby="mc-poll-h">
+        <header class="panel-header"><strong id="mc-poll-h">Go / no-go poll</strong></header>
+        <div class="widget-body">
+          <table class="table">
+            <thead><tr><th scope="col">Console</th><th scope="col"><span class="visually-hidden">Lamp</span></th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Flight</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">Flight</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">Booster</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">Booster</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">FIDO</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">FIDO</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">Guidance</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">Guidance</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">EECOM</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">EECOM</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">Network</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">Network</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">Range</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">Range</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">Weather</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox"><span class="visually-hidden">Weather</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">Surgeon</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">Surgeon</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+              <tr><th scope="row">CAPCOM</th><td><span class="lamp is-on"></span><span class="lamp is-error"></span></td><td><label class="toggle-btn"><input type="checkbox" checked><span class="visually-hidden">CAPCOM</span><span class="toggle-btn-off">No-go</span><span class="toggle-btn-on">Go</span></label></td></tr>
+            </tbody>
+            <tfoot><tr><th scope="row" colspan="2">Poll</th><td><strong class="readout readout-sm"><span class="go-count"></span>/10</strong> go</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel widget" style="--cols:3; --rows:2" aria-labelledby="mc-wx-h">
+        <header class="panel-header"><strong id="mc-wx-h">Range &amp; weather</strong></header>
+        <div class="stack stack-sm">
+          <div class="row is-items-center is-gap-xs"><span class="status status-ok">Range green</span><span class="status status-warn">Weather 80% go</span></div>
+          <dl class="props">
+            <dt>Surface wind</dt><dd><span class="is-updated" style="--tick-delay:1.1s">12 kt</span> from 072&deg;</dd>
+            <dt>Gusts</dt><dd class="is-up">19 kt</dd>
+            <dt>Ceiling</dt><dd>6,500 ft</dd>
+            <dt>Lightning</dt><dd>Nearest 14 nmi</dd>
+            <dt>Anvil cloud</dt><dd class="is-down">8 nmi</dd>
+            <dt>Upper winds</dt><dd><span class="is-stale" data-age="47m">Balloon 1132Z</span></dd>
+            <dt>Sea state</dt><dd>1.2 m</dd>
+          </dl>
+          <span class="stat-label">Launch azimuth</span>
+          <ol class="compass-strip" style="--heading:72" role="img" aria-label="Launch azimuth 72 degrees. Surface wind from 72 degrees, downrange recovery ship at 95 degrees.">
+            <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+            <li class="is-marker" data-series="2" style="--at:95"><svg class="icon"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+          </ol>
+          <time class="updated" datetime="2026-10-03T14:22:11Z">Updated 9s ago</time>
+        </div>
+      </section>
+
+      <section class="panel widget" style="--cols:5" aria-labelledby="mc-gauge-h">
+        <header class="panel-header"><strong id="mc-gauge-h">Propellant &amp; pressure</strong></header>
+        <div class="mc-gauges">
+          <div>
+            <div class="gauge-arc" style="--value:.97">
+              <meter min="0" max="100" low="90" value="97">LOX 97%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout is-updated" style="--tick-delay:.4s">97</span>%</div>
+            </div>
+            <span class="stat-label">LOX load</span>
+          </div>
+          <div>
+            <div class="gauge-arc" style="--value:1">
+              <meter min="0" max="100" value="100">RP-1 100%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+              <div class="gauge-readout"><span class="readout">100</span>%</div>
+            </div>
+            <span class="stat-label">RP-1 load</span>
+          </div>
+          <div>
+            <div class="gauge-dial" style="--value:.62; --gauge-redline:.875; --gauge-ticks:4; --gauge-minor:4">
+              <meter min="0" max="80" high="70" value="49.6">49.6 psi</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>20</li><li>40</li><li>60</li><li class="is-redline">80</li></ol>
+              <div class="gauge-readout"><span class="readout is-updated" style="--tick-delay:2.6s">49.6</span>psi</div>
+            </div>
+            <span class="stat-label">LOX tank ullage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel widget mc-map" style="--cols:8; --rows:2" aria-labelledby="mc-map-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="mc-map-h">Ground track &middot; rev 0 / 1</strong><span class="connection" data-state="live">GPS lock</span></header>
+        <figure class="map">
+          <svg viewBox="0 0 360 180" preserveAspectRatio="none" role="img" aria-label="Ground track over an equirectangular grid: the planned first orbit at 51.6 degrees inclination, the vehicle over the southern Indian Ocean, and the coverage circles of three tracking stations.">
+            <g class="chart-grid">
+              <line x1="0" x2="360" y1="30" y2="30"/><line x1="0" x2="360" y1="60" y2="60"/><line x1="0" x2="360" y1="120" y2="120"/><line x1="0" x2="360" y1="150" y2="150"/>
+              <line x1="30" x2="30" y1="0" y2="180"/><line x1="60" x2="60" y1="0" y2="180"/><line x1="90" x2="90" y1="0" y2="180"/><line x1="120" x2="120" y1="0" y2="180"/><line x1="150" x2="150" y1="0" y2="180"/><line x1="210" x2="210" y1="0" y2="180"/><line x1="240" x2="240" y1="0" y2="180"/><line x1="270" x2="270" y1="0" y2="180"/><line x1="300" x2="300" y1="0" y2="180"/><line x1="330" x2="330" y1="0" y2="180"/>
+            </g>
+            <g class="chart-axis"><line x1="0" x2="360" y1="90" y2="90"/><line x1="180" x2="180" y1="0" y2="180"/>
+              <text x="10" y="88">0&deg;</text><text x="10" y="58">30N</text><text x="10" y="118">30S</text><text x="184" y="170">0&deg;E</text></g>
+            <g class="chart-series" data-series="3">
+              <circle class="is-area" cx="329" cy="125.4" r="30"/><circle class="is-area" cx="175.8" cy="49.6" r="30"/><circle class="is-area" cx="63.1" cy="54.6" r="30"/>
+            </g>
+            <g class="chart-series" data-series="1"><polyline points="0,39.2 6,38.5 12,38.4 18,38.9 24,39.9 30,41.5 36,43.6 42,46.2 48,49.3 54,52.9 60,56.8 66,61.1 72,65.8 78,70.7 84,75.8 90,81.0 96,86.4 102,91.8 108,97.2 114,102.5 120,107.6 126,112.6 132,117.3 138,121.8 144,125.8 150,129.5 156,132.8 162,135.6 168,137.8 174,139.6 180,140.8 186,141.5 192,141.6 198,141.1 204,140.1 210,138.5 216,136.4 222,133.8 228,130.7 232,128.3"/></g>
+            <g class="chart-series" data-series="2" style="stroke-dasharray:4 3"><polyline points="232,128.3 238,124.5 244,120.3 250,115.8 256,111.0 262,105.9 268,100.7 274,95.4 280,90.0 286,84.6 292,79.3 298,74.1 304,69.0 310,64.2 316,59.7 322,55.5 328,51.7 334,48.3 340,45.3 346,42.9 352,40.9 358,39.5"/>
+              <polyline points="0,39.5 6,40.9 12,42.9 18,45.3 24,48.3 30,51.7 36,55.5 42,59.7 48,64.2 54,69.0 60,74.1 66,79.3 72,84.6 78,90.0 84,95.4 90,100.7 96,105.9 102,111.0 108,115.8 114,120.3 120,124.5 126,128.3 132,131.7 138,134.7 144,137.1 150,139.1 156,140.5 162,141.3 168,141.6 174,141.3 180,140.5 186,139.1 192,137.1 198,134.7 204,131.7 210,128.3 216,124.5 222,120.3 228,115.8 234,111.0 240,105.9 246,100.7 252,95.4 258,90.0 264,84.6 270,79.3 276,74.1 282,69.0 288,64.2 294,59.7 300,55.5 306,51.7 312,48.3 318,45.3 324,42.9 330,40.9 336,39.5 342,38.7 348,38.4 354,38.7 360,39.5"/></g>
+          </svg>
+          <button class="map-pin is-active" style="--x:64.4%; --y:71.3%" data-series="1" popovertarget="pin-vehicle"><span class="map-pin-label">Kestrel-4</span></button>
+          <button class="map-pin" style="--x:27.6%; --y:34.2%" data-series="4" popovertarget="pin-pad" aria-label="Pad 39B"></button>
+          <button class="map-pin" style="--x:91.4%; --y:69.7%" data-series="3" popovertarget="pin-cbr" aria-label="Canberra station"></button>
+          <button class="map-pin" style="--x:48.8%; --y:27.6%" data-series="3" popovertarget="pin-mad" aria-label="Madrid station"></button>
+          <button class="map-pin" style="--x:17.5%; --y:30.3%" data-series="3" popovertarget="pin-gds" aria-label="Goldstone station"></button>
+          <span class="map-north" role="img" aria-label="North">N</span>
+          <ul class="legend map-legend"><li data-series="1">Flown</li><li data-series="2">Planned</li><li data-series="3">Station</li></ul>
+          <span class="map-scale" style="--map-scale-width:3rem">2,000 km</span>
+        </figure>
+      </section>
+
+      <section class="panel widget mc-feed" style="--cols:4; --rows:2" aria-labelledby="mc-feed-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="mc-feed-h">Flight director loop</strong><span class="badge">FD-1</span></header>
+        <ol class="feed is-paused" data-new="2" tabindex="0" aria-label="Flight director loop transcript" aria-live="off">
+          <li><span class="feed-time">14:12:04</span><span class="feed-source">Flight</span><span>All stations, coming up on the T&minus;20 poll.</span></li>
+          <li><span class="feed-time">14:13:30</span><span class="feed-source">Booster</span><span>Stage 1 tanks at flight pressure.</span></li>
+          <li data-level="warn"><span class="feed-time">14:15:51</span><span class="feed-source">Weather</span><span>Anvil cloud 8 miles west, watching it.</span></li>
+          <li><span class="feed-time">14:17:12</span><span class="feed-source">Network</span><span>Madrid downlink dropped, reacquiring.</span></li>
+          <li><span class="feed-time">14:19:40</span><span class="feed-source">FIDO</span><span>Targeting loaded, azimuth 072.</span></li>
+          <li class="is-new" style="--tick-delay:1.5s"><span class="feed-time">14:21:58</span><span class="feed-source">Range</span><span>Range is green, all assets on station.</span></li>
+          <li class="is-new" data-level="error" style="--tick-delay:3.5s"><span class="feed-time">14:22:16</span><span class="feed-source">Weather</span><span>No-go: cumulus rule, recommend hold at T&minus;4.</span></li>
+        </ol>
+      </section>
+
+      <section class="panel widget mc-tele" style="--cols:4; --rows:2" aria-labelledby="mc-tele-h">
+        <header class="panel-header row is-items-center is-justify-between"><strong id="mc-tele-h">Vehicle telemetry</strong><time class="updated" datetime="2026-10-03T14:22:19Z">1s ago</time></header>
+        <dl class="props">
+          <dt>Bus voltage</dt><dd><span class="readout readout-sm is-updated is-down" style="--tick-delay:.8s">28.1<span class="readout-unit">V</span></span><svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Bus voltage easing down"><polyline points="0,6 12,5 24,7 36,8 48,8 60,11 72,12 84,15 100,17"/></svg></dd>
+          <dt>Battery</dt><dd><span class="battery" role="img" aria-label="Battery 94%" style="--value:.94"></span><span class="readout readout-sm">94<span class="readout-unit">%</span></span></dd>
+          <dt>Avionics temp</dt><dd><span class="readout readout-sm is-updated is-up" style="--tick-delay:2.2s">31.4<span class="readout-unit">&deg;C</span></span><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Avionics temperature rising"><polyline points="0,20 12,19 24,18 36,18 48,15 60,13 72,12 84,9 100,6"/></svg></dd>
+          <dt>Cabin pressure</dt><dd><span class="readout readout-sm is-flat">14.7<span class="readout-unit">psi</span></span><svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Cabin pressure steady"><polyline points="0,12 12,11 24,12 36,12 48,13 60,12 72,12 84,11 100,12"/></svg></dd>
+          <dt>Hydraulics</dt><dd><span class="readout readout-sm is-updated" style="--tick-delay:3.9s">3,012<span class="readout-unit">psi</span></span><span class="lamp is-on" role="img" aria-label="Nominal"></span></dd>
+          <dt>Engine chill</dt><dd><span class="status status-ok">9 of 9 chilled</span></dd>
+          <dt>FTS</dt><dd><span class="status status-ok">Armed &middot; safe</span></dd>
+        </dl>
+      </section>
+
+      <section class="panel widget mc-links" style="--cols:4; --rows:2" aria-labelledby="mc-link-h">
+        <header class="panel-header"><strong id="mc-link-h">Downlinks</strong></header>
+        <ul>
+          <li><span class="connection" data-state="live">Canberra DSS-43</span><span class="row is-items-center is-gap-xs"><span class="signal" role="img" aria-label="Signal 4 of 4" data-bars="4"></span><span class="readout readout-sm is-updated" style="--tick-delay:.2s">2.0<span class="readout-unit">Mb/s</span></span></span></li>
+          <li><span class="connection" data-state="reconnecting">Madrid DSS-63</span><span class="row is-items-center is-gap-xs"><span class="signal" role="img" aria-label="Signal 1 of 4" data-bars="1"></span><span class="readout readout-sm is-stale" data-age="41s">0.4<span class="readout-unit">Mb/s</span></span></span></li>
+          <li><span class="connection" data-state="offline">Goldstone DSS-14</span><span class="row is-items-center is-gap-xs"><span class="signal" role="img" aria-label="No signal" data-bars="0"></span><span class="text-muted">AOS 15:06</span></span></li>
+          <li><span class="connection" data-state="live">TDRS-12 relay</span><span class="row is-items-center is-gap-xs"><span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span><span class="readout readout-sm is-updated" style="--tick-delay:2.9s">50<span class="readout-unit">Mb/s</span></span></span></li>
+        </ul>
+        <div class="divider"></div>
+        <dl class="props">
+          <dt>Frame sync</dt><dd>99.98%</dd>
+          <dt>Range-rate</dt><dd class="is-up mono">+0.42 m/s</dd>
+          <dt>Next handover</dt><dd>Canberra &rarr; TDRS at 14:41</dd>
+        </dl>
+      </section>
+
+      <section class="panel widget" style="--cols:4; --rows:2" aria-labelledby="mc-clk2-h">
+        <header class="panel-header"><strong id="mc-clk2-h">Mission clocks</strong></header>
+        <div class="widget-split">
+          <div class="clock" style="--h:14; --m:22; --s:19; --gauge-size:8rem" role="img" aria-label="UTC 14:22">
+            <ol class="gauge-ticks" aria-hidden="true"><li>12</li><li></li><li></li><li>3</li><li></li><li></li><li>6</li><li></li><li></li><li>9</li><li></li><li></li></ol>
+            <span class="clock-hand is-hour"></span><span class="clock-hand is-minute"></span><span class="clock-hand is-second"></span>
+          </div>
+          <dl class="props">
+            <dt>UTC</dt><dd class="mono is-updated" style="--tick-delay:.1s">14:22:19</dd>
+            <dt>Local (EDT)</dt><dd class="mono">10:22:19</dd>
+            <dt>MET</dt><dd class="mono">&minus;00:09:41</dd>
+            <dt>Sunset</dt><dd class="mono">22:58</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="panel widget" style="--cols:12; --rows:1" aria-labelledby="mc-tl-h">
+        <header class="panel-header"><strong id="mc-tl-h">Mission timeline</strong></header>
+        <div class="widget-body">
+          <ol class="timeline is-horizontal" tabindex="0" aria-label="Mission timeline phases">
+            <li class="is-done"><time>T&minus;3:00:00</time><strong>Propellant load</strong><p>LOX and RP-1</p></li>
+            <li class="is-done"><time>T&minus;0:45:00</time><strong>Crew access arm</strong><p>Retracted</p></li>
+            <li aria-current="step"><time>T&minus;0:09:42</time><strong>Terminal count</strong><p>Poll at T&minus;4</p></li>
+            <li class="is-warn"><time>T+0:01:12</time><strong>Max-Q</strong><p>Shear winds high</p></li>
+            <li><time>T+0:02:34</time><strong>MECO &amp; separation</strong></li>
+            <li><time>T+0:08:47</time><strong>SECO-1</strong></li>
+            <li><time>T+0:52:10</time><strong>Orbit circularise</strong></li>
+          </ol>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Kestrel-4 &middot; FD-1</span>
+    <span class="connection" data-state="live">Canberra</span>
+    <span class="connection" data-state="reconnecting">Madrid</span>
+    <span class="connection" data-state="offline">Goldstone</span>
+    <time class="updated" datetime="2026-10-03T14:22:19Z">Updated 1s ago</time>
+  </footer>
+
+<div class="popover" popover id="pin-vehicle"><strong>Kestrel-4 (planned)</strong><p class="text-muted">Over the southern Indian Ocean at T+0:31, 409 km, 7.66 km/s.</p></div>
+<div class="popover" popover id="pin-pad"><strong>Pad 39B</strong><p class="text-muted">28.6&deg; N, 80.6&deg; W. Liftoff 14:32 UTC.</p></div>
+<div class="popover" popover id="pin-cbr"><strong>Canberra DSS-43</strong><p class="text-muted">70 m dish, tracking, 2.0 Mb/s.</p></div>
+<div class="popover" popover id="pin-mad"><strong>Madrid DSS-63</strong><p class="text-muted">Reacquiring signal since 14:17.</p></div>
+<div class="popover" popover id="pin-gds"><strong>Goldstone DSS-14</strong><p class="text-muted">Offline for maintenance; next pass 15:06.</p></div>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>
