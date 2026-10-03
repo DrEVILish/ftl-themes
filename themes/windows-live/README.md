@@ -70,6 +70,19 @@ back to whatever light weight is available.
   gradient (`--nav-brand-bg`), deepened from the reference's brighter
   `#4f8fd9` top so it clears 4.5:1 end to end.
 
+## Icons
+
+`icons.svg` redraws all 178 core-set icons as soft Wave 3/4 glyphs:
+
+- 24 grid, heavy 2.2 line with round caps and round joins, true curves.
+- Rects rounded (radius up to 3); nothing has a hard corner.
+- Every closed body (envelope, page, folder, lens, bubble) is filled with
+  a 30% `currentColor` tint under the outline: the "glass" of the real
+  glossy icons, done without hard-coded colours. Small silhouettes (play,
+  star, bookmark, pins) are solid.
+- `currentColor` only, so the icons follow text, hover and selected states.
+  Ids outside the core set fall back to the generic outline set.
+
 ## Reference status
 
 `references/windows-live/` — 14 captures: Mail 2007/2009 splash, Mail

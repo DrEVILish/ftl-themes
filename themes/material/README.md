@@ -58,6 +58,20 @@ no border, no gradient, just color and shadow.
 - **Nesting.** A panel or card inside another surface is an outlined 0dp sheet rather than a second dp4 slab.
 - **XL gutter art (1801px+).** Overlapping sheets of paper at angles, each edge marked by a soft elevation shadow, in very low contrast.
 
+## Icons
+
+`icons.svg` redraws all 178 core-set icons in the 2014 to 2018 system-icon
+grammar, filled style (own geometry, not Google's Material Icons artwork):
+
+- 24dp grid with 2dp padding; 2dp lines with butt caps and mitred joins.
+- Object icons (mail, folder, file, calendar, lock, settings, info, user,
+  devices) are solid bodies with 2dp cut-outs (`fill-rule="evenodd"`);
+  line glyphs (arrows, chevrons, close, search, refresh) stay 2dp strokes.
+- Square-ish corners: radius 2 on bodies, 1 on small parts; no gloss,
+  no tint.
+- `currentColor` only. Ids outside the core set fall back to the generic
+  outline set.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

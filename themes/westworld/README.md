@@ -149,11 +149,18 @@ glow are neutralised in a small `@media print` block.
 
 ## Icons
 
-`themes/westworld/icons.svg` is the unmodified scaffold. Every icon falls
-back to the generic outline set at `--icon-stroke-width: 1.6`, which
-already matches the tablets' thin line-work. A custom set could be added
-later, based on the phone's tool-tile glyphs (wrench/hammer, hand, gear,
-droplet) seen in `references/westworld/mobileTablet-modal-contextMenu-iconBar.jpg`.
+`icons.svg` redraws all 178 core-set icons as Delos tablet line-work
+(shapes only, no show marks):
+
+- 24 grid drawn at 84% of the box, so every glyph sits in generous
+  negative space.
+- 1.4 hairline, butt caps, mitred joins, sharp corners; no filled
+  surfaces, only tiny marker dots and level bars.
+- Large circles (radius 8.5 and up: clock, info, help, globe) are drawn as
+  a four-segment dial ring, gaps on the diagonals, like the tablets'
+  radial readouts.
+- `currentColor` only. Ids outside the core set fall back to the generic
+  outline set at `--icon-stroke-width: 1.6`.
 
 ## Reference status
 
