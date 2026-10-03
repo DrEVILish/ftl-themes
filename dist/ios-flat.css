@@ -209,7 +209,7 @@ a { color: var(--link, var(--accent)); }
 }
 .btn-secondary {
   --btn-bg: transparent;
-  --btn-fg: var(--accent);
+  --btn-fg: var(--accent-text, var(--accent));
   --btn-border: var(--border);
 }
 .btn-ghost {
@@ -219,6 +219,8 @@ a { color: var(--link, var(--accent)); }
   --btn-bg-hover: var(--surface-2);
   --btn-border-hover: transparent;
 }
+/* In a filled table head the button follows the head's ink. */
+.table th .btn-ghost { --btn-fg: var(--table-head-fg, var(--text)); }
 
 /* --- Form controls ------------------------------------------------------ */
 .input,
@@ -1539,9 +1541,11 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   background: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
 }
-.table.is-striped tbody tr.is-selected:nth-child(even) td,
-.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+.table.is-striped tbody tr.is-selected:nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
+}
+.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+  background: var(--row-active-bg, var(--row-alt-bg, var(--surface-2)));
 }
 
 /* .table-blank-rows — continues the zebra stripe below the last row so a
@@ -1800,7 +1804,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 .htmx-request .btn,
 .htmx-request.input,
 .htmx-request.select {
-  opacity: var(--pending-opacity, 0.6);
+  opacity: var(--pending-opacity, 0.8);
   pointer-events: none;
 }
 .htmx-swapping { opacity: 0; transition: opacity 0.1s ease-out; }
@@ -2591,7 +2595,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   display: inline-flex;
   align-items: center;
   gap: var(--schedule-gap, 0.3em);
-  color: var(--schedule-color, var(--accent-2, var(--accent)));
+  color: var(--schedule-color, var(--accent-text, var(--accent)));
   font-size: var(--schedule-font-size, 0.8em);
   font-variant-numeric: tabular-nums;
 }
@@ -4805,7 +4809,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   box-shadow: var(--focus-ring, var(--input-shadow, none));
 }
 .tag-input:has(.tag-input-field:is([aria-invalid="true"], .is-invalid)) { border-color: var(--danger); outline-color: var(--danger); }
-.tag-input:has(.tag-input-field:disabled) { opacity: 0.5; cursor: not-allowed; }
+.tag-input:has(.tag-input-field:disabled) { border-style: dashed; cursor: not-allowed; }
 .tag-input-field {
   flex: 1 1 6ch;
   min-inline-size: 6ch;
@@ -6648,6 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
   color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
   text-shadow: var(--countdown-glow, var(--readout-glow, none));
@@ -8249,7 +8254,7 @@ kbd kbd { font-size: 0.9em; }
   border-color: var(--kanban-drag-ring, var(--accent));
   box-shadow: var(--kanban-drag-shadow, 0 0.6rem 1.4rem color-mix(in srgb, #000 35%, transparent));
   rotate: var(--kanban-drag-tilt, 2deg);
-  opacity: var(--kanban-drag-opacity, 0.92);
+  opacity: var(--kanban-drag-opacity, 1);
 }
 /* The slot a dropped card will land in. --kanban-placeholder-size can be
    set inline to the dragged card's height. */
@@ -8960,7 +8965,7 @@ kbd kbd { font-size: 0.9em; }
   --_code-string: var(--code-string, var(--success-text, var(--success)));
   --_code-comment: var(--code-comment, var(--muted));
   --_code-number: var(--code-number, var(--warning-text, var(--warning)));
-  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 60%, var(--text)));
+  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 35%, var(--text)));
   --_code-type: var(--code-type, color-mix(in oklab, var(--accent-text, var(--accent)), var(--danger-text, var(--danger))));
   --_code-punctuation: var(--code-punctuation, color-mix(in oklab, var(--muted) 55%, var(--text)));
   --_code-tag: var(--code-tag, var(--danger-text, var(--danger)));
@@ -9719,7 +9724,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.68 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10073,7 +10078,7 @@ a.mention:focus-visible { text-decoration: underline; }
   align-items: center;
   gap: 0.55em;
 }
-.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; opacity: 0.75; }
+.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; }
 
 /* --- .notifications — the notification centre ------------------------------
  * The same content in a page panel, a .drawer[popover] or a .popover[popover]
@@ -10680,7 +10685,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 /* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
    and a spinner; the app should also set aria-busy="true" on the cell. */
 .table tr > td:is(.is-saving, .htmx-request) {
-  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.6) * 100%), transparent);
+  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.8) * 100%), transparent);
 }
 .table tr > td:is(.is-saving, .htmx-request)::after {
   content: "";
@@ -10936,7 +10941,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: 0.5;
+  opacity: var(--table-drag-opacity, 0.8);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11352,16 +11357,16 @@ html[data-theme="ios-flat"] {
   --border: #c6c6c8;      /* opaqueSeparator */
   --hairline: #d8d8dc;
   --text: #000000;        /* label */
-  --muted: #6c6c70;       /* systemGray, accessible (secondaryLabel 60% is 3.3:1) */
+  --muted: #5f5f63;       /* systemGray, accessible (secondaryLabel 60% is 3.3:1; #6c6c70 is 4.1:1 on fills) */
   --accent: #0071e3;      /* systemBlue nudged to 4.7:1 with white */
   --accent-2: #5856d6;    /* systemIndigo */
   --danger: #d70015;      /* systemRed, Increase Contrast */
   --success: #1e7e34;     /* systemGreen, darkened for white text */
   --warning: #ff9500;     /* systemOrange */
-  --success-text: #1e7e34;
-  --warning-text: #c93400; /* systemOrange, Increase Contrast */
-  --danger-text: #d70015;
-  --accent-text: #0062c4;  /* tint as small text on a tinted wash: 5:1 */
+  --success-text: #1b722f;
+  --warning-text: #bf3100; /* systemOrange, Increase Contrast, a shade deeper for fills */
+  --danger-text: #be0013;
+  --accent-text: #005ebc;  /* tint as small text on a tinted wash or grey fill: 4.8:1+ */
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
@@ -11370,7 +11375,7 @@ html[data-theme="ios-flat"] {
   --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --flare: #34c759;       /* systemGreen: the toggle, the one colour iOS 7 made famous */
-  --link: #0071e3;
+  --link: var(--accent-text);
   --focus: #0071e3;
   --focus-ring: 0 0 0 4px rgba(0, 113, 227, 0.25);
   --overlay-bg: rgba(0, 0, 0, 0.4);
@@ -11401,7 +11406,7 @@ html[data-theme="ios-flat"] {
 
   /* --- Buttons: iOS 15 "filled" / "tinted" / "plain" ---------------- */
   --btn-bg: var(--ios-fill);              /* "gray" style */
-  --btn-fg: var(--accent);
+  --btn-fg: var(--accent-text);
   --btn-border: transparent;
   --btn-border-width: 0;
   --btn-border-hover: transparent;
@@ -11507,7 +11512,7 @@ html[data-theme="ios-flat"] {
   --table-head-tracking: 0;
   --table-rule: var(--hairline);
   --row-hover-bg: rgba(118, 118, 128, 0.08);
-  --row-selected-bg: var(--ios-cell-highlight);
+  --row-selected-bg: var(--ios-gray5);   /* #d1d1d6 drops tinted text under 4.5:1 */
   --row-alt-bg: #f7f7f9;
   --row-active-bg: transparent;
   --row-active-marker: inset 3px 0 0 var(--accent);
@@ -11517,22 +11522,22 @@ html[data-theme="ios-flat"] {
   --nav-rule: var(--ios-separator);
   --nav-rule-width: 0.5px;
   --nav-brand-fg: var(--text);
-  --nav-item-fg: var(--accent);
+  --nav-item-fg: var(--accent-text);
   --nav-item-bg-active: transparent;
   --nav-item-fg-active: var(--text);
   --nav-item-radius: 8px;
   --tab-fg: var(--muted);
-  --tab-fg-active: var(--accent);
+  --tab-fg-active: var(--accent-text);
   --tab-underline-active: transparent;
   --tab-radius: 10px;
   --breadcrumb-separator: "\203A";
   --breadcrumb-current-fg: var(--text);
-  --pagination-item-fg: var(--accent);
+  --pagination-item-fg: var(--accent-text);
   --pagination-item-bg-hover: var(--ios-fill);
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: #ffffff;
   --pagination-item-radius: 50%;
-  --scrollspy-link-active-fg: var(--accent);
+  --scrollspy-link-active-fg: var(--accent-text);
 
   /* Segmented control, iOS 13+: grey track, a white sliding pill. */
   --segmented-bg: var(--surface-2);
@@ -11633,8 +11638,8 @@ html[data-theme="ios-flat"] {
   --transport-border-width: 0;
   --transport-radius: 14px;
   --transport-shadow: none;
-  --go-bg: var(--ios-red);
-  --go-bg-hover: #e0352b;
+  --go-bg: var(--danger);   /* systemRed, Increase Contrast: white is 5:1 */
+  --go-bg-hover: #be0013;
   --go-fg: #ffffff;
   --go-border: transparent;
   --go-radius: 999px;
@@ -11698,7 +11703,7 @@ html[data-theme="ios-flat"] {
   --message-tail-radius: 4px;
   --message-own-bg: var(--accent);
   --message-own-fg: #ffffff;
-  --message-own-meta-fg: rgba(255, 255, 255, 0.85);
+  --message-own-meta-fg: #ffffff;
   --message-own-border: transparent;
   --message-meta-fg: var(--muted);
   --attachment-bg: var(--surface);
@@ -11752,7 +11757,7 @@ html[data-theme="ios-flat"][data-variant="dark"] {
   --border: #38383a;
   --hairline: #38383a;
   --text: #ffffff;
-  --muted: #98989f;
+  --muted: #9d9da3;
   --accent: #0071e3;
   --accent-2: #5e5ce6;
   --danger: #d70015;
@@ -11761,7 +11766,7 @@ html[data-theme="ios-flat"][data-variant="dark"] {
   --success-text: #30d158;
   --warning-text: #ff9f0a;
   --danger-text: #ff6961;
-  --accent-text: #409cff;
+  --accent-text: #4da3ff;
   --link: #0a84ff;
   --focus: #0a84ff;
   --focus-ring: 0 0 0 4px rgba(10, 132, 255, 0.35);
@@ -11784,7 +11789,7 @@ html[data-theme="ios-flat"][data-variant="dark"] {
   --ios-bar: rgba(22, 22, 23, 0.92);
   --ios-alert: rgba(37, 37, 39, 0.96);
 
-  --btn-fg: var(--ios-blue);
+  --btn-fg: var(--accent-text);   /* #0a84ff is 3.5:1 on the grey fill */
   --select-arrow-fg: var(--ios-blue);
   --nav-item-fg: var(--ios-blue);
   --tab-fg-active: var(--ios-blue);
@@ -12190,4 +12195,7 @@ html[data-theme="ios-flat"][data-variant="dark"] {
 @media print {
   html[data-theme="ios-flat"] :is(.app-bar, .app-status) { position: static; backdrop-filter: none; }
 }
+
+/* A badge inside your own (blue) bubble: a white pill, not grey on blue. */
+html[data-theme="ios-flat"] .message.is-own .message-meta > .badge { --badge-bg: #ffffff; --badge-fg: #005ebc; }
 }

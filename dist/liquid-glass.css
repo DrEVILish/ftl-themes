@@ -209,7 +209,7 @@ a { color: var(--link, var(--accent)); }
 }
 .btn-secondary {
   --btn-bg: transparent;
-  --btn-fg: var(--accent);
+  --btn-fg: var(--accent-text, var(--accent));
   --btn-border: var(--border);
 }
 .btn-ghost {
@@ -219,6 +219,8 @@ a { color: var(--link, var(--accent)); }
   --btn-bg-hover: var(--surface-2);
   --btn-border-hover: transparent;
 }
+/* In a filled table head the button follows the head's ink. */
+.table th .btn-ghost { --btn-fg: var(--table-head-fg, var(--text)); }
 
 /* --- Form controls ------------------------------------------------------ */
 .input,
@@ -1539,9 +1541,11 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   background: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
 }
-.table.is-striped tbody tr.is-selected:nth-child(even) td,
-.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+.table.is-striped tbody tr.is-selected:nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
+}
+.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+  background: var(--row-active-bg, var(--row-alt-bg, var(--surface-2)));
 }
 
 /* .table-blank-rows — continues the zebra stripe below the last row so a
@@ -1800,7 +1804,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 .htmx-request .btn,
 .htmx-request.input,
 .htmx-request.select {
-  opacity: var(--pending-opacity, 0.6);
+  opacity: var(--pending-opacity, 0.8);
   pointer-events: none;
 }
 .htmx-swapping { opacity: 0; transition: opacity 0.1s ease-out; }
@@ -2591,7 +2595,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   display: inline-flex;
   align-items: center;
   gap: var(--schedule-gap, 0.3em);
-  color: var(--schedule-color, var(--accent-2, var(--accent)));
+  color: var(--schedule-color, var(--accent-text, var(--accent)));
   font-size: var(--schedule-font-size, 0.8em);
   font-variant-numeric: tabular-nums;
 }
@@ -4805,7 +4809,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   box-shadow: var(--focus-ring, var(--input-shadow, none));
 }
 .tag-input:has(.tag-input-field:is([aria-invalid="true"], .is-invalid)) { border-color: var(--danger); outline-color: var(--danger); }
-.tag-input:has(.tag-input-field:disabled) { opacity: 0.5; cursor: not-allowed; }
+.tag-input:has(.tag-input-field:disabled) { border-style: dashed; cursor: not-allowed; }
 .tag-input-field {
   flex: 1 1 6ch;
   min-inline-size: 6ch;
@@ -6648,6 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
   color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
   text-shadow: var(--countdown-glow, var(--readout-glow, none));
@@ -8249,7 +8254,7 @@ kbd kbd { font-size: 0.9em; }
   border-color: var(--kanban-drag-ring, var(--accent));
   box-shadow: var(--kanban-drag-shadow, 0 0.6rem 1.4rem color-mix(in srgb, #000 35%, transparent));
   rotate: var(--kanban-drag-tilt, 2deg);
-  opacity: var(--kanban-drag-opacity, 0.92);
+  opacity: var(--kanban-drag-opacity, 1);
 }
 /* The slot a dropped card will land in. --kanban-placeholder-size can be
    set inline to the dragged card's height. */
@@ -8960,7 +8965,7 @@ kbd kbd { font-size: 0.9em; }
   --_code-string: var(--code-string, var(--success-text, var(--success)));
   --_code-comment: var(--code-comment, var(--muted));
   --_code-number: var(--code-number, var(--warning-text, var(--warning)));
-  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 60%, var(--text)));
+  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 35%, var(--text)));
   --_code-type: var(--code-type, color-mix(in oklab, var(--accent-text, var(--accent)), var(--danger-text, var(--danger))));
   --_code-punctuation: var(--code-punctuation, color-mix(in oklab, var(--muted) 55%, var(--text)));
   --_code-tag: var(--code-tag, var(--danger-text, var(--danger)));
@@ -9719,7 +9724,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.68 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10073,7 +10078,7 @@ a.mention:focus-visible { text-decoration: underline; }
   align-items: center;
   gap: 0.55em;
 }
-.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; opacity: 0.75; }
+.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; }
 
 /* --- .notifications — the notification centre ------------------------------
  * The same content in a page panel, a .drawer[popover] or a .popover[popover]
@@ -10680,7 +10685,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 /* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
    and a spinner; the app should also set aria-busy="true" on the cell. */
 .table tr > td:is(.is-saving, .htmx-request) {
-  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.6) * 100%), transparent);
+  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.8) * 100%), transparent);
 }
 .table tr > td:is(.is-saving, .htmx-request)::after {
   content: "";
@@ -10936,7 +10941,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: 0.5;
+  opacity: var(--table-drag-opacity, 0.8);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11358,7 +11363,7 @@ html[data-theme="liquid-glass"] {
   --text: #1d1d1f;
   /* iOS secondaryLabel is 60% #3c3c43; flattened and pulled one step
      darker so it clears 4.5:1 on the grey fill too. */
-  --muted: #5e5e63;
+  --muted: #59595e;
   /* systemBlue in iOS 26 is #0088ff, but white on it is 3.5:1; #0071e3
      (Apple's own action blue on apple.com) carries white text at 4.7:1.
      The brighter #0088ff stays the focus ring and --accent-2. */
@@ -11368,13 +11373,13 @@ html[data-theme="liquid-glass"] {
   --link: #0058b8;
   /* systemRed #ff383c deepened until white text clears 4.5:1. */
   --danger: #e0262b;
-  --danger-text: #c4161c;
+  --danger-text: #b6141a;
   /* systemGreen as the fill, with dark text: Apple's green is too light
      for white type at any useful size. */
   --success: #34c759;
-  --success-text: #1b7a34;
+  --success-text: #1a7632;
   --warning: #ff8d28;
-  --warning-text: #a84d00;
+  --warning-text: #a54c00;
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #06240f;
@@ -11591,6 +11596,7 @@ html[data-theme="liquid-glass"] {
   --code-block-border: transparent;
 
   --readout-bg: rgba(118, 118, 128, 0.1);
+  --readout-fg: var(--accent-text);
   --readout-border: transparent;
   --readout-radius: 16px;
   --readout-font: var(--font);
@@ -11616,7 +11622,7 @@ html[data-theme="liquid-glass"] {
   --message-own-bg: #0071e3;
   --message-own-fg: #ffffff;
   --message-own-border: transparent;
-  --message-own-meta-fg: rgba(255, 255, 255, 0.85);
+  --message-own-meta-fg: #ffffff;
   --message-tail-radius: 6px;
   --attachment-bg: rgba(255, 255, 255, 0.7);
   --attachment-border: transparent;
@@ -12100,4 +12106,7 @@ html[data-theme="liquid-glass"][data-contrast="high"] {
   html[data-theme="liquid-glass"] .app-rail { display: none !important; }
   html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .app-rail) { position: static !important; }
 }
+
+/* A badge inside your own (blue) bubble: a white pill, not grey on blue. */
+html[data-theme="liquid-glass"] .message.is-own .message-meta > .badge { --badge-bg: #ffffff; --badge-fg: #0058b8; }
 }

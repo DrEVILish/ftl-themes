@@ -33,6 +33,10 @@ html[data-theme="msdos"] {
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
   --danger-text: #ff7e7e;
+  /* Cyan as text (badges, links, keywords) is the bright VGA cyan: the
+     dim #00aaaa is under 4.5:1 on the blue. */
+  --accent-text: #55ffff;
+  --link: #55ffff;
   --on-accent: #000000;
   --on-danger: #000000;
   --on-success: #000000;
@@ -76,6 +80,8 @@ html[data-theme="msdos"] {
   --nav-item-fg: #000000;
   --overlay-bg: rgba(0, 0, 0, 0.6);
   --indicator-fg: var(--accent-2);
+  /* Text mode has no translucency: a dragged card stays solid. */
+  --kanban-drag-opacity: 1;
 }
 
 html[data-theme="msdos"] .input,
@@ -109,7 +115,22 @@ html[data-theme="msdos"] .modal {
   --table-head-rule: #000000;
   outline: 3px double #ffffff;
   outline-offset: -0.6em;
+  /* Code chips stay blue (surface-2) inside the dialog: white ink. */
+  --code-fg: #ffffff;
+  --input-addon-fg: #aaaaaa;
 }
+/* Sheets and the command palette are grey dialog boxes too: black ink. */
+html[data-theme="msdos"] :is(.sheet, .command) {
+  --on-surface: #000000;
+  --text: #000000;
+  --muted: #000000;
+  --input-fg: #000000;
+  --list-bg: transparent;
+}
+/* A nav rail sits on the blue, not on the grey bar. */
+html[data-theme="msdos"] .nav-rail { --nav-item-fg: #ffffff; }
+/* Outlined buttons letter in the bright cyan, like links. */
+html[data-theme="msdos"] :where(.btn-secondary) { --btn-fg: var(--accent-text); }  /* :where keeps the app bar's own button ink winning */
 html[data-theme="msdos"] .modal .btn:not(.btn-primary):not(.btn-danger) { --btn-bg: #ffffff; --btn-fg: #000000; }
 /* A blue box inside a dialog (panel, card, drawer) is the screen again,
    not the grey dialog: it takes the screen's white-on-blue inks back.
@@ -210,10 +231,23 @@ html[data-theme="msdos"] .panel-header {
   text-transform: uppercase;
   font-weight: 400;
   line-height: 1;
+  /* Everything in the reverse-video tab is black on cyan (VGA greys and
+     brights are 1.2-2.2:1 here). */
+  --muted: #000000;
+  --success-text: #000000;
+  --warning-text: #000000;
+  --danger-text: #000000;
   display: flex;
   flex-wrap: wrap;
   gap: 1ch;
   align-items: center;
+}
+/* A badge in the tab keeps its own blue chip and the screen's inks. */
+html[data-theme="msdos"] .panel-header .badge {
+  --muted: #aaaaaa;
+  --success-text: var(--success);
+  --warning-text: var(--warning);
+  --danger-text: #ff7e7e;
 }
 /* A titled box nested in another box needs headroom for its title tab,
    which stands half a line above its frame: without it the tab sat on the
@@ -277,6 +311,7 @@ html[data-theme="msdos"] .app-bar {
   --nav-item-bg-active: #000000;
   --nav-item-fg-active: #aaaaaa;
   --nav-item-radius: 0;
+  --breadcrumb-current-fg: #000000;
 }
 html[data-theme="msdos"] .app-bar .nav { padding: 0; }
 html[data-theme="msdos"] .app-bar .nav-item { padding: 0.1em 1ch; }

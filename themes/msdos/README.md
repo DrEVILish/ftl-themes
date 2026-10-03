@@ -66,6 +66,7 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 
 - **Cyan on blue:** `--accent` `#00aaaa` on `#0000aa` is 4.64:1 (passes AA by a hair). The Norton cursor bar puts black on cyan, 7.33:1.
 - **Yellow on blue:** `#ffff55` is 12.46:1; light cyan `#55ffff` is 10.84:1.
+- **Cyan as text:** the dim cyan is 4.0:1 on the tinted badge wash, so links, `--accent-text` (accent badges, code keywords) and outlined-button labels use light cyan `#55ffff`. Inside a reverse-video panel title tab every word is black on cyan (VGA greys and brights are 1.2-2.2:1 there), and sheets and the command palette take the grey dialog's black ink.
 - **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa`, 4.83:1 on `--surface-2` `#0000cc`.
 - **The one deviation:** real light red `#ff5555` is only 4.23:1 on the blue, so text uses `--danger-text` `#ff7e7e` (5.40:1) and the raw hex is fill-only.
 

@@ -87,7 +87,7 @@ Tokens:
 | `--cell-editing-border` | `var(--accent)` |
 | `--row-editing-bg` / `--row-editing-marker` | accent 8% / `var(--accent)` |
 | `--cell-dirty-bg` / `--cell-dirty-marker` | warning 14% / `var(--warning)` |
-| `--pending-opacity` (saving text), `--indicator-fg` / `--indicator-track` (spinner) | core values |
+| `--pending-opacity` (saving text), `--indicator-fg` / `--indicator-track` (spinner) | core values (`--pending-opacity` defaults to 0.8 so saving text keeps 4.5:1 in most themes) |
 | `--cell-saved-bg` / `--cell-saved-flash` / `--cell-saved-glyph` / `--cell-saved-fg` | success 14% / success 35% / `"\2713"` / `var(--success-text)` |
 | `--cell-error-bg` / `--cell-error-border` | danger 10% / `var(--danger)` |
 | `--cell-readonly-fg` | `var(--muted)` |
@@ -198,7 +198,7 @@ and `columnheader` to the markup.
   for keyboard resizing (arrow keys, handled by the app); it replaces the
   drawn grip. `.is-resizing` on the `th` while dragging.
 - `th[draggable="true"]` gets the grab cursor. While dragging, `.is-dragging`
-  on the source column's cells (dimmed, dashed outline) and `.is-drop-before`
+  on the source column's cells (dimmed to `--table-drag-opacity`, 0.8, with a dashed outline) and `.is-drop-before`
   / `.is-drop-after` on the target column's cells (a 3px accent bar). The
   browser draws the drag ghost.
 

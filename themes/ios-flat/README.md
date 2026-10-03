@@ -60,7 +60,8 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   trailing).
 - Checkboxes and radios are the round blue checkmark from Mail and
   Reminders' edit mode; iOS has no square checkbox.
-- Table selection is the grey cell highlight (`#d1d1d6`), and the active
+- Table selection is systemGray5 (`#e5e5ea`; the deeper `#d1d1d6` tap
+  flash dropped tinted text under 4.5:1), and the active
   row carries a trailing blue checkmark as well as the leading marker.
 - Buttons follow iOS 15's styles: primary is "filled", secondary is
   "tinted" (a wash of the tint), ghost is "plain" text, the default is
@@ -102,12 +103,12 @@ semibold; section headers and segmented labels are Footnote 13.
 | Pair | Ratio |
 |---|---|
 | `--text` `#000` on `--surface` `#fff` / `--bg` `#f2f2f7` | 21 / 18.8 |
-| `--muted` `#6c6c70` on surface / surface-2 `#eeeeef` | 5.2 / 4.5 |
+| `--muted` `#5f5f63` on surface / surface-2 `#eeeeef` | 6.4 / 5.5 |
 | `--on-accent` white on `--accent` `#0071e3` | 4.7 |
 | white on `--danger` `#d70015` / `--success` `#1e7e34` | 5.4 / 5.1 |
-| `--warning-text` `#c93400` on surface | 5.3 |
-| `--accent-text` `#0062c4` on the tinted button wash | 5.0 |
-| dark: `--muted` `#98989f` on `#1c1c1e` / `#2c2c2e` | 5.9 / 4.9 |
+| `--warning-text` `#bf3100` / `--danger-text` `#be0013` / `--success-text` `#1b722f` on a grey fill `#e5e5ea` | 4.6 / 5.2 / 4.8 |
+| `--accent-text` `#005ebc` (links, tinted text, tabs) on the tinted wash / grey button fill | 4.8 / 4.9 |
+| dark: `--muted` `#9d9da3` on `#1c1c1e` / `#2c2c2e` / grey fill `#323236` | 6.3 / 5.2 / 4.7 |
 | dark: `--danger-text` `#ff6961`, `--success-text` `#30d158` on `#1c1c1e` | 6.0 / 8.4 |
 
 Deviations from Apple's values, all made for the contrast floors:
@@ -117,11 +118,14 @@ Deviations from Apple's values, all made for the contrast floors:
   pure `#007aff` stays as `--ios-blue` for chart series and bars, where
   no text sits on it.
 - **Red and green fills.** systemRed `#ff3b30` (3.6:1 with white) becomes
-  `#d70015`, the HIG's Increase Contrast red. systemGreen `#34c759` is
+  `#d70015`, the HIG's Increase Contrast red (also the Go button's fill). systemGreen `#34c759` is
   2.2:1 with white, so `--success` is a darker `#1e7e34`. The real
   `#34c759` is still the toggle, lamp and meter green.
 - **Secondary label.** secondaryLabel (60% `#3c3c43`) is 3.3:1 on white;
-  `--muted` is `#6c6c70`, close to systemGray's accessible value.
+  `--muted` is `#5f5f63`, a shade under systemGray's accessible `#6c6c70`
+  so it holds 4.5:1 on the grey fills and bubbles too.
+- **Tinted text.** Links, tabs and "gray" button labels use `--accent-text`
+  `#005ebc`; `#0071e3` is 4.1:1 on the grey fills, so it stays a fill colour.
 - **Toggle off track.** `#e9e9ea` on white is low contrast, as it is on
   the device. The thumb's shadow and position carry the state.
 

@@ -146,7 +146,7 @@ a { color: var(--link, var(--accent)); }
 }
 .btn-secondary {
   --btn-bg: transparent;
-  --btn-fg: var(--accent);
+  --btn-fg: var(--accent-text, var(--accent));
   --btn-border: var(--border);
 }
 .btn-ghost {
@@ -156,6 +156,8 @@ a { color: var(--link, var(--accent)); }
   --btn-bg-hover: var(--surface-2);
   --btn-border-hover: transparent;
 }
+/* In a filled table head the button follows the head's ink. */
+.table th .btn-ghost { --btn-fg: var(--table-head-fg, var(--text)); }
 
 /* --- Form controls ------------------------------------------------------ */
 .input,
@@ -1476,9 +1478,11 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   background: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
 }
-.table.is-striped tbody tr.is-selected:nth-child(even) td,
-.table.is-striped tbody tr.is-active:nth-child(even) td {
+.table.is-striped tbody tr.is-selected:nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
+}
+.table.is-striped tbody tr.is-active:nth-child(even) td {
+  background: var(--row-active-bg, var(--row-alt-bg, var(--surface-2)));
 }
 
 /* .table-blank-rows — continues the zebra stripe below the last row so a
@@ -1737,7 +1741,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 .htmx-request .btn,
 .htmx-request.input,
 .htmx-request.select {
-  opacity: var(--pending-opacity, 0.6);
+  opacity: var(--pending-opacity, 0.8);
   pointer-events: none;
 }
 .htmx-swapping { opacity: 0; transition: opacity 0.1s ease-out; }
@@ -2528,7 +2532,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   display: inline-flex;
   align-items: center;
   gap: var(--schedule-gap, 0.3em);
-  color: var(--schedule-color, var(--accent-2, var(--accent)));
+  color: var(--schedule-color, var(--accent-text, var(--accent)));
   font-size: var(--schedule-font-size, 0.8em);
   font-variant-numeric: tabular-nums;
 }

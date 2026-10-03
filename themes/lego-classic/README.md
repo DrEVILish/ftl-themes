@@ -68,7 +68,7 @@ top of it.
 
 ## Contrast honesty
 
-- **Filled primaries carry white text:** red `--accent`/`--danger` `#d0111b` is 5.56:1 under white; green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
+- **Filled primaries carry white text:** red `--danger` `#d0111b` is 5.56:1 under white (`--accent` is a hair darker, `#cc111a`, 5.7:1, so red links clear 4.5:1 on the `#e6e6e6` grey too); green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
 - **Yellow `#f5c400`** is only 1.47:1 on `--bg` and 1.64:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#6e5700` (6.94:1 on white).
 - **Red as small text** uses `--danger-text` `#b80f18` / `--accent-text` `#a50d15`.
 - `--muted` `#5a5a5a` is 6.90:1 on white, 6.16:1 on `--bg`.

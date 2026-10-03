@@ -209,7 +209,7 @@ a { color: var(--link, var(--accent)); }
 }
 .btn-secondary {
   --btn-bg: transparent;
-  --btn-fg: var(--accent);
+  --btn-fg: var(--accent-text, var(--accent));
   --btn-border: var(--border);
 }
 .btn-ghost {
@@ -219,6 +219,8 @@ a { color: var(--link, var(--accent)); }
   --btn-bg-hover: var(--surface-2);
   --btn-border-hover: transparent;
 }
+/* In a filled table head the button follows the head's ink. */
+.table th .btn-ghost { --btn-fg: var(--table-head-fg, var(--text)); }
 
 /* --- Form controls ------------------------------------------------------ */
 .input,
@@ -1539,9 +1541,11 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   background: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
 }
-.table.is-striped tbody tr.is-selected:nth-child(even) td,
-.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+.table.is-striped tbody tr.is-selected:nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
+}
+.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+  background: var(--row-active-bg, var(--row-alt-bg, var(--surface-2)));
 }
 
 /* .table-blank-rows — continues the zebra stripe below the last row so a
@@ -1800,7 +1804,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 .htmx-request .btn,
 .htmx-request.input,
 .htmx-request.select {
-  opacity: var(--pending-opacity, 0.6);
+  opacity: var(--pending-opacity, 0.8);
   pointer-events: none;
 }
 .htmx-swapping { opacity: 0; transition: opacity 0.1s ease-out; }
@@ -2591,7 +2595,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   display: inline-flex;
   align-items: center;
   gap: var(--schedule-gap, 0.3em);
-  color: var(--schedule-color, var(--accent-2, var(--accent)));
+  color: var(--schedule-color, var(--accent-text, var(--accent)));
   font-size: var(--schedule-font-size, 0.8em);
   font-variant-numeric: tabular-nums;
 }
@@ -4805,7 +4809,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   box-shadow: var(--focus-ring, var(--input-shadow, none));
 }
 .tag-input:has(.tag-input-field:is([aria-invalid="true"], .is-invalid)) { border-color: var(--danger); outline-color: var(--danger); }
-.tag-input:has(.tag-input-field:disabled) { opacity: 0.5; cursor: not-allowed; }
+.tag-input:has(.tag-input-field:disabled) { border-style: dashed; cursor: not-allowed; }
 .tag-input-field {
   flex: 1 1 6ch;
   min-inline-size: 6ch;
@@ -6648,6 +6652,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   align-items: flex-start;
   gap: var(--countdown-gap, var(--space-s));
   color: var(--countdown-fg, var(--readout-fg, var(--accent)));
+  background: var(--countdown-bg, var(--readout-bg, transparent));
   font-family: var(--countdown-font, var(--readout-font, var(--font-mono)));
   font-variant-numeric: tabular-nums;
   text-shadow: var(--countdown-glow, var(--readout-glow, none));
@@ -8249,7 +8254,7 @@ kbd kbd { font-size: 0.9em; }
   border-color: var(--kanban-drag-ring, var(--accent));
   box-shadow: var(--kanban-drag-shadow, 0 0.6rem 1.4rem color-mix(in srgb, #000 35%, transparent));
   rotate: var(--kanban-drag-tilt, 2deg);
-  opacity: var(--kanban-drag-opacity, 0.92);
+  opacity: var(--kanban-drag-opacity, 1);
 }
 /* The slot a dropped card will land in. --kanban-placeholder-size can be
    set inline to the dragged card's height. */
@@ -8960,7 +8965,7 @@ kbd kbd { font-size: 0.9em; }
   --_code-string: var(--code-string, var(--success-text, var(--success)));
   --_code-comment: var(--code-comment, var(--muted));
   --_code-number: var(--code-number, var(--warning-text, var(--warning)));
-  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 60%, var(--text)));
+  --_code-function: var(--code-function, color-mix(in oklab, var(--accent-2) 35%, var(--text)));
   --_code-type: var(--code-type, color-mix(in oklab, var(--accent-text, var(--accent)), var(--danger-text, var(--danger))));
   --_code-punctuation: var(--code-punctuation, color-mix(in oklab, var(--muted) 55%, var(--text)));
   --_code-tag: var(--code-tag, var(--danger-text, var(--danger)));
@@ -9719,7 +9724,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.68 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10073,7 +10078,7 @@ a.mention:focus-visible { text-decoration: underline; }
   align-items: center;
   gap: 0.55em;
 }
-.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; opacity: 0.75; }
+.listbox [role="option"] > small { margin-inline-start: auto; color: inherit; }
 
 /* --- .notifications — the notification centre ------------------------------
  * The same content in a page panel, a .drawer[popover] or a .popover[popover]
@@ -10680,7 +10685,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 /* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
    and a spinner; the app should also set aria-busy="true" on the cell. */
 .table tr > td:is(.is-saving, .htmx-request) {
-  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.6) * 100%), transparent);
+  color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.8) * 100%), transparent);
 }
 .table tr > td:is(.is-saving, .htmx-request)::after {
   content: "";
@@ -10936,7 +10941,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: 0.5;
+  opacity: var(--table-drag-opacity, 0.8);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11349,6 +11354,10 @@ html[data-theme="msdos"] {
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
   --danger-text: #ff7e7e;
+  /* Cyan as text (badges, links, keywords) is the bright VGA cyan: the
+     dim #00aaaa is under 4.5:1 on the blue. */
+  --accent-text: #55ffff;
+  --link: #55ffff;
   --on-accent: #000000;
   --on-danger: #000000;
   --on-success: #000000;
@@ -11392,6 +11401,8 @@ html[data-theme="msdos"] {
   --nav-item-fg: #000000;
   --overlay-bg: rgba(0, 0, 0, 0.6);
   --indicator-fg: var(--accent-2);
+  /* Text mode has no translucency: a dragged card stays solid. */
+  --kanban-drag-opacity: 1;
 }
 
 html[data-theme="msdos"] .input,
@@ -11425,7 +11436,22 @@ html[data-theme="msdos"] .modal {
   --table-head-rule: #000000;
   outline: 3px double #ffffff;
   outline-offset: -0.6em;
+  /* Code chips stay blue (surface-2) inside the dialog: white ink. */
+  --code-fg: #ffffff;
+  --input-addon-fg: #aaaaaa;
 }
+/* Sheets and the command palette are grey dialog boxes too: black ink. */
+html[data-theme="msdos"] :is(.sheet, .command) {
+  --on-surface: #000000;
+  --text: #000000;
+  --muted: #000000;
+  --input-fg: #000000;
+  --list-bg: transparent;
+}
+/* A nav rail sits on the blue, not on the grey bar. */
+html[data-theme="msdos"] .nav-rail { --nav-item-fg: #ffffff; }
+/* Outlined buttons letter in the bright cyan, like links. */
+html[data-theme="msdos"] :where(.btn-secondary) { --btn-fg: var(--accent-text); }  /* :where keeps the app bar's own button ink winning */
 html[data-theme="msdos"] .modal .btn:not(.btn-primary):not(.btn-danger) { --btn-bg: #ffffff; --btn-fg: #000000; }
 /* A blue box inside a dialog (panel, card, drawer) is the screen again,
    not the grey dialog: it takes the screen's white-on-blue inks back.
@@ -11526,10 +11552,23 @@ html[data-theme="msdos"] .panel-header {
   text-transform: uppercase;
   font-weight: 400;
   line-height: 1;
+  /* Everything in the reverse-video tab is black on cyan (VGA greys and
+     brights are 1.2-2.2:1 here). */
+  --muted: #000000;
+  --success-text: #000000;
+  --warning-text: #000000;
+  --danger-text: #000000;
   display: flex;
   flex-wrap: wrap;
   gap: 1ch;
   align-items: center;
+}
+/* A badge in the tab keeps its own blue chip and the screen's inks. */
+html[data-theme="msdos"] .panel-header .badge {
+  --muted: #aaaaaa;
+  --success-text: var(--success);
+  --warning-text: var(--warning);
+  --danger-text: #ff7e7e;
 }
 /* A titled box nested in another box needs headroom for its title tab,
    which stands half a line above its frame: without it the tab sat on the
@@ -11593,6 +11632,7 @@ html[data-theme="msdos"] .app-bar {
   --nav-item-bg-active: #000000;
   --nav-item-fg-active: #aaaaaa;
   --nav-item-radius: 0;
+  --breadcrumb-current-fg: #000000;
 }
 html[data-theme="msdos"] .app-bar .nav { padding: 0; }
 html[data-theme="msdos"] .app-bar .nav-item { padding: 0.1em 1ch; }

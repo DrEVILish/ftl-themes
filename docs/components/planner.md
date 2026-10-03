@@ -105,7 +105,7 @@ Shared conventions:
 | `--kanban-card-border-hover`, `--kanban-card-border-focus` | `var(--accent)`, `var(--focus)` |
 | `--kanban-card-radius`, `--kanban-card-shadow` | `var(--radius)`, `none` |
 | `--kanban-drag-ring`, `--kanban-drag-shadow` | `var(--accent)`, a soft drop shadow |
-| `--kanban-drag-tilt`, `--kanban-drag-opacity` | `2deg`, `0.92` |
+| `--kanban-drag-tilt`, `--kanban-drag-opacity` | `2deg`, `1` |
 | `--kanban-placeholder-bg`, `--kanban-placeholder-border`, `--kanban-placeholder-size` | accent 10%, `var(--accent)`, `4.5rem` |
 | `--kanban-empty-size` | `3.5rem` |
 | `--kanban-due-soon` | `var(--warning-text, var(--text))` |

@@ -59,6 +59,14 @@ changes are called out explicitly here.
     target), status role on spinners. blue-future gains `--danger-text`.
     axe on blue-future: 50 of 52 page runs failing → 4.
   - `scripts/v5_audit.mjs` covers the kit and template pages.
+  - Core contrast fixes found by the axe sweep: `.btn-secondary` and
+    `.schedule` read `--accent-text`; striped tables keep `--row-active-bg`
+    on active rows; ghost buttons in table heads follow `--table-head-fg`;
+    `--pending-opacity` 0.6 → 0.8; `--table-drag-opacity` (0.8) and
+    `--kanban-drag-opacity` (1) defaults; a disabled tag input no longer
+    fades its tags; live-cursor labels pick black or white by lightness;
+    `.countdown` reads `--readout-bg`; the default code `function` colour
+    leans on `--text`.
   - Themed transactional emails: `scripts/build_emails.py` writes six
     table-based, inline-styled emails per theme to `dist/email/<slug>/`
     (HTML + plain text), run by `build.sh`.
