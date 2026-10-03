@@ -61,7 +61,7 @@ def menu(current, exists):
     for i, (title, pages) in enumerate(sections):
         here = any(p == current for p, _ in pages)
         end = " is-end" if i >= len(sections) - 2 else ""
-        out.append(f'        <li class="has-submenu{end}"><button role="menuitem" aria-haspopup="menu"'
+        out.append(f'        <li role="none" class="has-submenu{end}"><button role="menuitem" aria-haspopup="menu"'
                    + (' class="is-active"' if here else "") + f'>{title}</button>')
         out.append('          <ul role="menu">')
         for page, label in pages:

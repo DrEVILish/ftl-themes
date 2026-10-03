@@ -72,17 +72,17 @@ holding only tabs in the Tab order.
 
 ```html
 <ul class="menubar" role="menubar" aria-label="Editor">
-  <li class="has-submenu">
+  <li role="none" class="has-submenu">
     <button role="menuitem" aria-haspopup="menu" aria-expanded="false">File</button>
     <ul role="menu">
-      <li><button role="menuitem">New file <kbd>Ctrl+N</kbd></button></li>
-      <li class="has-submenu"><button role="menuitem" aria-haspopup="menu">Open recent</button>
-        <ul role="menu"><li><button role="menuitem">index.html</button></li></ul></li>
+      <li role="none"><button role="menuitem">New file <kbd>Ctrl+N</kbd></button></li>
+      <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Open recent</button>
+        <ul role="menu"><li role="none"><button role="menuitem">index.html</button></li></ul></li>
       <li role="separator"></li>
-      <li><button role="menuitem" aria-disabled="true">Save all</button></li>
+      <li role="none"><button role="menuitem" aria-disabled="true">Save all</button></li>
     </ul>
   </li>
-  <li class="has-submenu is-end">…</li>
+  <li role="none" class="has-submenu is-end">…</li>
 </ul>
 ```
 

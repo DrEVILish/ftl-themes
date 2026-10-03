@@ -5,6 +5,26 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Demo apps rebuilt as v5 showcases.**
+  - Dashboard: SVG `.chart`, sparklines, donut, heatmap, an editable orders
+    table that stacks into cards on phones with a `.bulk-bar`, and a popover
+    `.command` palette.
+  - Power station: dial, arc and linear gauges, a lamp annunciator, a
+    timeline and `dl.props`.
+  - Support desk and team chat: presence, mentions, the notification centre,
+    `.tag-input`, a native-datalist combobox, `.progress-ring`, checkbox
+    reactions and a nested popover context menu.
+  - Sound mixer: a `.waveform`/`.scrubber` deck and toggle groups. Marketing:
+    `.card.has-media`, a `.prose` teaser and pricing links.
+  - Page JavaScript removed: `carousel.js` (dashboard, marketing) and the
+    inline scripts; only the mixer keeps `controls.js` for its knobs.
+  - Every example page shares one sectioned `ul.menubar` written by
+    `scripts/demo_nav.py`.
+- **CSS-only row selection:** a table row is selected (every theme's
+  selected look) when the checkbox in its first cell is checked, and a
+  `.bulk-bar` before the table shows while any is. Stacked tables keep the
+  selection cell full width. Menubar docs use `role="none"` on every `li`.
+
 - **Theme identity: favicons, share cards, icon coverage.**
   - `scripts/build_favicons.py`: per-theme SVG favicon, maskable icon and
     PNG app icons (180/192/512) in `dist/favicons/`; the demo loader swaps

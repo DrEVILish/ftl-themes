@@ -253,16 +253,16 @@ the label through and dims the swatch (not colour alone). Tokens: `--legend-size
 
 ```html
 <ol class="heatmap" role="img" aria-label="Commits per day, 12 weeks. See the data table.">
-  <li style="--v:.4" title="Week 1, Mon: 6 commits"></li>…   <!-- column by column, 7 rows -->
+  <li role="none" style="--v:.4" title="Week 1, Mon: 6 commits"></li>…   <!-- column by column, 7 rows -->
 </ol>
-<ol class="heatmap is-diverging" style="--heatmap-rows:3"><li style="--v:-.6"></li>…</ol>
+<ol class="heatmap is-diverging" style="--heatmap-rows:3"><li role="none" style="--v:-.6"></li>…</ol>
 ```
 
 `--v` 0–1 mixes `--chart-seq-0` → `--chart-seq-8`; `.is-diverging` takes −1…1 across
 `--chart-div-neg` / `-mid` / `-pos`. `.is-empty` = no data (dashed). Cells flow down
 `--heatmap-rows` (7) then across; the grid scrolls sideways inside itself. Tokens:
 `--heatmap-cell` (`0.85rem`), `--heatmap-gap` (`3px`), `--heatmap-radius` (`2px`). Colour
-is the only encoding inside the grid, so a data table is required; give focusable cells
+is the only encoding inside the grid, so a data table is required (the cells are `role="none"` inside the `role="img"` list); give focusable cells
 `tabindex="0"` if the app shows per-cell detail.
 
 ## Timeline `.timeline`

@@ -330,6 +330,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
     letter-spacing: var(--table-head-tracking, 0.06em);
   }
   .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr > :first-child { inline-size: auto; }
   .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
 }
 @container (max-width: 480px) {
@@ -368,6 +369,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
     letter-spacing: var(--table-head-tracking, 0.06em);
   }
   .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr > :first-child { inline-size: auto; }
   .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
 }
 
@@ -481,7 +483,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
  * Rows select with core's tr.is-selected (add aria-selected="true" in a
  * grid). A checkbox-only first column shrinks to its content. A .bulk-bar
  * placed before the table (or its .table-wrap) shows only while a row in it
- * is selected; elsewhere, the app shows and hides it. */
+ * is selected (tr.is-selected, or the checkbox in its first cell checked); elsewhere, the app shows and hides it. */
 /* :where() so .is-frozen-2's fixed first-column width wins. */
 :where(.table tr > :first-child:has(> :is(.checkbox, .check):only-child)) { inline-size: 1px; text-align: center; }
 /* A row checkbox wrapped in a label with a hidden name (CONTRACT.md "Touch
@@ -499,7 +501,8 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   border-radius: var(--bulk-bar-radius, var(--radius));
 }
 .bulk-bar-count { margin-inline-end: auto; font-weight: 600; }
-.bulk-bar:has(~ :is(.table, .table-wrap)):not(:has(~ .table tr.is-selected, ~ .table-wrap tr.is-selected)) { display: none; }
+.bulk-bar:has(~ :is(.table, .table-wrap)):not(:has(~ .table tr.is-selected, ~ .table-wrap tr.is-selected,
+  ~ .table td:first-child input[type="checkbox"]:checked, ~ .table-wrap td:first-child input[type="checkbox"]:checked)) { display: none; }
 
 /* --- Loading, empty and load-more rows (§18) ----------------------------
  * .table.is-loading (with aria-busy="true") turns every body cell into a

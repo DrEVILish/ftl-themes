@@ -1030,13 +1030,13 @@ dialog.modal:modal {
 /* "Happening now", as distinct from "happened and succeeded" (.is-on). The
    pulse only runs for users who haven't asked the OS to reduce motion; for
    everyone else the lamp is simply lit in the accent. */
-.lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--lamp-active, var(--accent));
   border-color: var(--lamp-active, var(--accent));
   box-shadow: var(--lamp-glow, 0 0 0.4rem var(--lamp-active, var(--accent)));
 }
 @media (prefers-reduced-motion: no-preference) {
-  .lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { animation: lamp-pulse var(--lamp-pulse-duration, 1.2s) ease-in-out infinite; }
+  .lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { animation: lamp-pulse var(--lamp-pulse-duration, 1.2s) ease-in-out infinite; }
 }
 @keyframes lamp-pulse { 50% { opacity: 0.4; } }
 
@@ -1431,7 +1431,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
 @media (hover: hover) {
 .segmented-item:hover { color: var(--segmented-item-fg-hover, var(--text)); }
 }
-.segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--segmented-item-bg-active, var(--accent));
   color: var(--segmented-item-fg-active, var(--on-accent));
 }
@@ -1458,28 +1458,28 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
 }
 /* Row states carry BOTH a background and a left marker, so a theme that
    flattens one language still communicates the state through the other. */
-.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) td {
+.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) td {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
 }
-.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) td {
+.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) td {
   background: var(--row-active-bg, transparent);
 }
 /* The marker belongs to the row, so only its leading cell draws it — on
    every cell it read as a column divider repeated across the row. */
-.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) td:first-child {
+.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) td:first-child {
   box-shadow: var(--row-active-marker, inset 0.25rem 0 0 var(--accent));
 }
 /* A theme with a solid selection fill declares --row-selected-fg for
    it; state-colored text in that row has to follow it too, or a green
    "Connected" lands on a blue highlight at ~1:1. Themes with a translucent
    highlight leave the token unset and keep the state color. */
-.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) .status,
-.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) .stat-trend {
+.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) .status,
+.table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) .stat-trend {
   color: var(--row-selected-fg, var(--state-fg));
 }
 @supports (color: color-mix(in srgb, red 50%, transparent)) {
-  .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) td {
+  .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) td {
     background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
   }
 }
@@ -1500,7 +1500,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   }
 }
 /* Selected rows keep their own fill under the pointer. */
-.table tbody tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))):focus-within td {
+.table tbody tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))):focus-within td {
   background: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
 @media (hover: hover) {
@@ -1544,7 +1544,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
 .table.is-striped tbody tr.is-selected:nth-child(even) td {
   background: var(--row-selected-bg, var(--row-alt-bg, var(--surface-2)));
 }
-.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(even) td {
+.table.is-striped tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):nth-child(even) td {
   background: var(--row-active-bg, var(--row-alt-bg, var(--surface-2)));
 }
 
@@ -1606,7 +1606,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   background: var(--nav-item-bg, transparent);
   color: var(--nav-item-fg, var(--muted));
 }
-:is(.nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), .nav-item[aria-current="page"]) {
+:is(.nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .nav-item[aria-current="page"]) {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
 }
@@ -1648,7 +1648,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
 @media (hover: hover) {
 .tab:hover { color: var(--tab-fg-hover, var(--text)); background: var(--tab-bg-hover, var(--tab-bg, transparent)); border-color: var(--tab-border-hover, transparent); }
 }
-.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--tab-bg-active, transparent);
   color: var(--tab-fg-active, var(--accent));
   border-color: var(--tab-border-active, transparent);
@@ -1676,7 +1676,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   border-bottom-color: transparent;
   border-radius: var(--tab-radius, var(--radius));
 }
-.tabs[aria-orientation="vertical"] > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.tabs[aria-orientation="vertical"] > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   border-color: var(--tab-border-active, transparent);
   border-inline-end: 2px solid var(--tab-underline-active, var(--accent));
 }
@@ -1992,7 +1992,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   font: inherit;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.badge-button:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.badge-button:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--badge-bg-active, var(--accent));
   color: var(--badge-fg-active, var(--on-accent));
 }
@@ -2166,7 +2166,7 @@ a.list-item { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 a.list-item:hover,
 button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 }
-.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
@@ -2261,7 +2261,7 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
 @media (hover: hover) {
 .scrollspy-link:hover { color: var(--text); }
 }
-.scrollspy-link:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.scrollspy-link:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   color: var(--scrollspy-link-active-fg, var(--accent));
   box-shadow: var(--scrollspy-link-active-marker, inset 0 -2px 0 var(--accent));
 }
@@ -2363,7 +2363,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.taskbar-task:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.taskbar-task:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--taskbar-task-bg-active, var(--taskbar-task-bg, transparent));
   border-color: var(--taskbar-task-border-active, var(--taskbar-task-border, transparent));
   box-shadow: var(--taskbar-task-shadow-active, var(--taskbar-task-shadow, none));
@@ -2428,7 +2428,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   color: var(--pagination-item-fg-hover, var(--text));
 }
 }
-.pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--pagination-item-bg-active, var(--accent));
   color: var(--pagination-item-fg-active, var(--on-accent));
   font-weight: 600;
@@ -3177,8 +3177,8 @@ html[data-motion="reduced"] .typing::before { animation: none; }
 }
 /* On a selected row the meta line follows the row's own (selected) text
    colour; muted grey would vanish into an accent fill. */
-.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) .list-item-meta,
-.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) .list-item-meta .status { color: var(--list-item-meta-fg-active, inherit); }
+.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) .list-item-meta,
+.list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) .list-item-meta .status { color: var(--list-item-meta-fg-active, inherit); }
 
 /* .bar-chart — a CSS column chart; each child is a bar of height --value (0–1).
  *   <div class="bar-chart" role="img" aria-label="Revenue, 12 weeks, rising">
@@ -4290,7 +4290,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     outline-offset: -1px;
   }
   :is(.btn, .toggle-btn, .badge-button, .key):disabled { color: GrayText; outline-color: GrayText; }
-  :is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), .toggle-btn-on, .key-on, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-pressed="true"],
+  :is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .toggle-btn-on, .key-on, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-pressed="true"],
       [aria-current]:not([aria-current="false"])):is(.btn, .tab, .nav-item, .segmented-item,
       .pagination-item, .toggle-btn, .badge-button, .dropdown-item, .list-item, .key, .scrollspy-link),
   .prefs .segmented-item:has(> input:checked) {
@@ -4678,7 +4678,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   text-decoration: line-through;
   cursor: not-allowed;
 }
-.calendar-day:is([aria-pressed="true"], :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+.calendar-day:is([aria-pressed="true"], :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   background: var(--calendar-selected-bg, var(--accent));
   color: var(--calendar-selected-fg, var(--on-accent));
   font-weight: 700;
@@ -4766,15 +4766,15 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   translate: 0 -50%;
   visibility: hidden;
 }
-.listbox [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { font-weight: 600; }
-.listbox [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))::after { visibility: visible; }
-.listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.listbox [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { font-weight: 600; }
+.listbox [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))::after { visibility: visible; }
+.listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--listbox-option-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
 }
 @media (hover: hover) {
   .listbox [role="option"]:not([aria-disabled="true"]):hover { background: var(--listbox-option-bg-hover, var(--row-hover-bg, rgb(128 128 128 / 0.15))); }
-  .listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
+  .listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
 }
 .listbox [role="option"][aria-disabled="true"] { color: var(--muted); cursor: not-allowed; }
 .listbox mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; }
@@ -5498,14 +5498,14 @@ kbd.hud-slot-key {
   text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg);
 }
 .hud-slot.is-empty { border-style: dashed; background: var(--hud-slot-empty-bg, color-mix(in srgb, var(--surface) 50%, transparent)); }
-.hud-slot:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+.hud-slot:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   border-color: var(--hud-slot-selected, var(--accent));
   box-shadow:
     0 0 0 var(--hud-slot-selected-width, 2px) var(--hud-slot-selected, var(--accent)),
     inset 0 0 var(--hud-slot-glow, 0.9rem) color-mix(in srgb, var(--rarity, var(--hud-slot-selected, var(--accent))) 50%, transparent);
 }
 /* Selected also lifts the slot and marks it, so the state isn't colour alone. */
-.hud-slot:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) > kbd.hud-slot-key {
+.hud-slot:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) > kbd.hud-slot-key {
   background: var(--hud-slot-selected, var(--accent));
   color: var(--hud-slot-selected-fg, var(--on-accent));
   border-color: var(--hud-slot-selected, var(--accent));
@@ -5783,7 +5783,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   stroke-width: 2;
   stroke-dasharray: none;
 }
-.chart-point:is(:focus-visible, :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { stroke: var(--chart-highlight, var(--text)); }
+.chart-point:is(:focus-visible, :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { stroke: var(--chart-highlight, var(--text)); }
 @media (hover: hover) {
   .chart-point:hover { stroke: var(--chart-highlight, var(--text)); }
 }
@@ -6342,7 +6342,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   background: radial-gradient(circle, var(--map-pin-dot, var(--surface)) 0 22%, var(--series, var(--map-pin-bg, var(--accent))) 26%);
   box-shadow: var(--map-pin-shadow, 0 1px 3px rgba(0, 0, 0, 0.45));
 }
-.map-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-current]:not([aria-current="false"])) {
+.map-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])) {
   z-index: calc(var(--z-raised) + 1);
   --map-pin-size: 1.8rem;
   --map-pin-border: var(--map-pin-border-active, var(--text));
@@ -6488,7 +6488,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
     color-mix(in oklab, var(--chart-div-neg) calc(max(var(--v, 0) * -1, 0) * 100%), var(--chart-div-mid)));
 }
 .heatmap > .is-empty { background: transparent; outline: 1px dashed var(--hairline); outline-offset: -1px; }
-.heatmap > :is(:focus-visible, :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
+.heatmap > :is(:focus-visible, :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
 @media (hover: hover) {
   .heatmap > :hover { outline: 2px solid var(--chart-highlight, var(--text)); outline-offset: 1px; }
 }
@@ -6762,7 +6762,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   .track:hover { background: var(--track-bg-hover, var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent))); }
 }
 .track:focus-within { background: var(--track-bg-hover, var(--row-hover-bg, color-mix(in srgb, var(--text) 6%, transparent))); }
-.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   background: var(--track-bg-selected, var(--row-selected-bg, color-mix(in srgb, var(--text) 14%, transparent)));
   box-shadow: var(--track-selected-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
   color: var(--row-selected-fg, var(--track-fg, var(--text)));
@@ -6829,7 +6829,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 }
 :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg, var(--muted)); }
 /* On a selected row's fill, muted can drop under 4.5:1: follow the row ink. */
-.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
+.track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) :is(.track-artist, .track-album, .track-time) { color: var(--track-meta-fg-active, var(--row-selected-fg, var(--text))); }
 .track-artist { font-size: 0.875em; }
 .track-album { flex: 1 1 0; font-size: 0.875em; }
 .track-time {
@@ -7479,14 +7479,14 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 .tree details[open] > summary::before { transform: rotate(90deg); }
 .tree .icon { color: var(--tree-icon-fg, var(--muted)); }
 :is(.tree :is(summary, li > a, li > button, li > span):is(.is-selected, [aria-current]:not([aria-current="false"])),
-    .tree [role="treeitem"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > :is(a, button, span, details > summary)) {
+    .tree [role="treeitem"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) > :is(a, button, span, details > summary)) {
   background: var(--tree-item-bg-selected, var(--row-selected-bg, rgba(128, 128, 128, 0.25)));
   color: var(--tree-item-fg-selected, var(--row-selected-fg, inherit));
   box-shadow: var(--tree-selected-marker, inset 0.2rem 0 0 var(--accent));
   font-weight: 600;
 }
 :is(.tree :is(summary, li > a, li > button, li > span):is(.is-selected, [aria-current]:not([aria-current="false"])),
-    .tree [role="treeitem"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > :is(a, button, span, details > summary)) .icon { color: inherit; }
+    .tree [role="treeitem"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) > :is(a, button, span, details > summary)) .icon { color: inherit; }
 @media (hover: hover) {
   .tree :is(summary, li > a, li > button):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 }
@@ -7538,7 +7538,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.tabbar > :is([aria-current]:not([aria-current="false"]), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+.tabbar > :is([aria-current]:not([aria-current="false"]), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   color: var(--tabbar-fg-active, var(--accent-text, var(--accent)));
   border-top-color: var(--tabbar-indicator, currentColor);
   font-weight: 600;
@@ -7654,7 +7654,7 @@ dialog.sheet:modal,
 }
 .nav-rail > .nav-item > :not(.icon, .badge) { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
 .nav-rail > .nav-item > .badge { margin-inline-start: auto; }
-.nav-rail > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-current]:not([aria-current="false"])) {
+.nav-rail > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])) {
   background: var(--nav-item-bg-active, var(--surface-2));
   color: var(--nav-item-fg-active, var(--text));
   border-inline-start-color: var(--nav-rail-marker, var(--accent));
@@ -7908,15 +7908,15 @@ dialog.command:modal,
 .command-list [role="option"] > :is(kbd, .command-hint) { margin-inline-start: auto; }
 .command-list [role="option"] > .command-hint { color: var(--muted); font-size: 0.8em; white-space: nowrap; }
 .command-list [role="option"] > .command-hint + kbd { margin-inline-start: 0; }
-.command-list [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) {
+.command-list [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--command-item-bg-active, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--command-item-fg-active, var(--dropdown-item-fg-hover, var(--on-accent)));
   border-inline-start-color: currentColor;
 }
-.command-list [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > .command-hint { color: inherit; }
+.command-list [role="option"]:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) > .command-hint { color: inherit; }
 .command-list [role="option"]:is([aria-disabled="true"]) { opacity: 0.5; }
 @media (hover: hover) {
-  .command-list [role="option"]:not(:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
+  .command-list [role="option"]:not(:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))):hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.12)); }
 }
 .command mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 0.15em; }
 .command-footer {
@@ -8415,7 +8415,7 @@ kbd kbd { font-size: 0.9em; }
   background: var(--calendar-outside-bg, color-mix(in srgb, var(--surface-2) 70%, transparent));
   color: var(--calendar-outside-fg, var(--muted));
 }
-.calendar-cell:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) {
+.calendar-cell:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   box-shadow: inset 0 0 0 2px var(--calendar-selected-bg, var(--accent));
 }
 
@@ -8741,7 +8741,7 @@ kbd kbd { font-size: 0.9em; }
 .gantt-task:dir(rtl) { box-shadow: inset 1px 0 0 var(--gantt-border, var(--border)), inset 0 -1px 0 var(--_line); }
 .gantt-task > :is(span, a) { overflow: hidden; text-overflow: ellipsis; }
 .gantt-row.is-group > .gantt-task { font-weight: 700; }
-.gantt-row:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) > .gantt-task,
+.gantt-row:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) > .gantt-task,
 .gantt-row.is-selected > .gantt-task { background: var(--gantt-selected-bg, color-mix(in srgb, var(--accent) 16%, var(--gantt-bg, var(--surface)))); }
 
 .gantt-track {
@@ -9917,7 +9917,7 @@ button.presence:is(:focus-visible, [aria-expanded="true"]) > .avatar { box-shado
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-.comment-anchor:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))), [aria-current]:not([aria-current="false"])) {
+.comment-anchor:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])) {
   background: var(--comment-anchor-bg-active, color-mix(in srgb, var(--warning) 40%, transparent));
   text-decoration-style: solid;
 }
@@ -9960,8 +9960,8 @@ button.presence:is(:focus-visible, [aria-expanded="true"]) > .avatar { box-shado
   top: var(--y, 0);
   translate: calc(-50% + var(--comment-pin-size, 1.6rem) / 2) calc(-50% - var(--comment-pin-size, 1.6rem) / 2);
 }
-.comment-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { --comment-pin-size: 2rem; --comment-pin-ring: var(--comment-pin-ring-active, var(--text)); }
-.collab-layer > .comment-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { z-index: calc(var(--z-raised) + 1); }
+.comment-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { --comment-pin-size: 2rem; --comment-pin-ring: var(--comment-pin-ring-active, var(--text)); }
+.collab-layer > .comment-pin:is([aria-expanded="true"], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { z-index: calc(var(--z-raised) + 1); }
 .comment-pin.is-resolved {
   --user-color: var(--comment-pin-resolved-bg, var(--surface-2));
   --user-fg: var(--comment-pin-resolved-fg, var(--muted));
@@ -9984,7 +9984,7 @@ button.presence:is(:focus-visible, [aria-expanded="true"]) > .avatar { box-shado
   box-shadow: var(--comment-thread-shadow, none);
   overflow-wrap: anywhere;
 }
-.comment-thread:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { border-color: var(--comment-thread-border-active, var(--accent)); box-shadow: 0 0 0 1px var(--comment-thread-border-active, var(--accent)); }
+.comment-thread:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-color: var(--comment-thread-border-active, var(--accent)); box-shadow: 0 0 0 1px var(--comment-thread-border-active, var(--accent)); }
 .comment-thread.is-resolved { --comment-thread-bg: var(--comment-thread-resolved-bg, var(--surface)); border-style: dashed; }
 .comment-thread-summary {
   display: flex;
@@ -10756,7 +10756,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table tbody tr:nth-child(n):is(:hover, :focus-within):not(.table-empty, .table-more) {
   --_row-tint: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
-.table tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))):nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
+.table tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
 .table tbody tr.is-selected:nth-child(n) {
   --_row-tint: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
@@ -10870,6 +10870,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
     letter-spacing: var(--table-head-tracking, 0.06em);
   }
   .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr > :first-child { inline-size: auto; }
   .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
 }
 @container (max-width: 480px) {
@@ -10908,6 +10909,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
     letter-spacing: var(--table-head-tracking, 0.06em);
   }
   .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
+  .table.is-stacked > * > tr > :first-child { inline-size: auto; }
   .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
 }
 
@@ -11021,7 +11023,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
  * Rows select with core's tr.is-selected (add aria-selected="true" in a
  * grid). A checkbox-only first column shrinks to its content. A .bulk-bar
  * placed before the table (or its .table-wrap) shows only while a row in it
- * is selected; elsewhere, the app shows and hides it. */
+ * is selected (tr.is-selected, or the checkbox in its first cell checked); elsewhere, the app shows and hides it. */
 /* :where() so .is-frozen-2's fixed first-column width wins. */
 :where(.table tr > :first-child:has(> :is(.checkbox, .check):only-child)) { inline-size: 1px; text-align: center; }
 /* A row checkbox wrapped in a label with a hidden name (CONTRACT.md "Touch
@@ -11039,7 +11041,8 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   border-radius: var(--bulk-bar-radius, var(--radius));
 }
 .bulk-bar-count { margin-inline-end: auto; font-weight: 600; }
-.bulk-bar:has(~ :is(.table, .table-wrap)):not(:has(~ .table tr.is-selected, ~ .table-wrap tr.is-selected)) { display: none; }
+.bulk-bar:has(~ :is(.table, .table-wrap)):not(:has(~ .table tr.is-selected, ~ .table-wrap tr.is-selected,
+  ~ .table td:first-child input[type="checkbox"]:checked, ~ .table-wrap td:first-child input[type="checkbox"]:checked)) { display: none; }
 
 /* --- Loading, empty and load-more rows (§18) ----------------------------
  * .table.is-loading (with aria-busy="true") turns every body cell into a
@@ -11490,8 +11493,8 @@ html[data-theme="windows-live"] .avatar {
 /* Ribbon tabs: one row, the selected tab white and joined to the page. */
 html[data-theme="windows-live"] .tabs { border-bottom-color: #b6bccc; gap: 0.15rem; }
 html[data-theme="windows-live"] .tab { border: 1px solid transparent; border-bottom: 0; }
-html[data-theme="windows-live"] .tab:hover:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { border-color: #d5dde8; background: linear-gradient(180deg, #ffffff, #eef4fb); }
-html[data-theme="windows-live"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { position: relative; bottom: -1px; border-bottom: 0; }
+html[data-theme="windows-live"] .tab:hover:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { border-color: #d5dde8; background: linear-gradient(180deg, #ffffff, #eef4fb); }
+html[data-theme="windows-live"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { position: relative; bottom: -1px; border-bottom: 0; }
 
 /* --- Layout ------------------------------------------------------------ *
  * A Live app window: the Scenic Ribbon's tab strip across the top with
@@ -11564,8 +11567,8 @@ html[data-theme="windows-live"] .app-bar .nav-item {
   position: relative;
   bottom: -1px;
 }
-html[data-theme="windows-live"] .app-bar .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked))) { border-color: #b6bccc; }
-html[data-theme="windows-live"] .app-bar .nav-item:hover:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked)))) { background: linear-gradient(180deg, #ffffff, #eef4fb); border-color: #d5dde8; }
+html[data-theme="windows-live"] .app-bar .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-color: #b6bccc; }
+html[data-theme="windows-live"] .app-bar .nav-item:hover:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { background: linear-gradient(180deg, #ffffff, #eef4fb); border-color: #d5dde8; }
 html[data-theme="windows-live"] .app-bar :is(.select, .btn, .avatar) { align-self: center; }
 
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------

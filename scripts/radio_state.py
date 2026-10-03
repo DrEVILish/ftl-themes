@@ -15,7 +15,9 @@ specificity changes. Occurrences already inside a :has(…) are left alone
 import re
 import sys
 
-CHECKED = ':where(:has(> input:is([type="radio"], [type="checkbox"]):checked))'
+# A table row is selected by the checkbox in its first cell (selection column).
+CHECKED = (':where(:has(> input:is([type="radio"], [type="checkbox"]):checked,'
+           ' > td:first-child input[type="checkbox"]:checked))')
 TOKENS = re.compile(r'\.is-active(?![\w-])|\[aria-selected="true"\]')
 
 
