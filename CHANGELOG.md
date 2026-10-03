@@ -5,6 +5,14 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- New theme `teenage-engineering` (inspired by the OP-1 / OP-1 field / OP-Z;
+  no marks): off-white aluminium keys around one dark display window
+  (readouts, meters, gauges, charts, code, toasts, status strip), the four
+  encoder colours cycling through knobs, tab dots, slider thumbs and chart
+  series; `.knob` is a flat slotted encoder cap. Grille-and-encoder rail,
+  black selected states and close key, XL gutters continue the key bed.
+  10 Commons references in `references/teenage-engineering/`.
+
 - New theme `motorsport-telemetry`: pit-wall and broadcast timing graphics on
   carbon, with a painted timing-tower rail, rev-light strip, sector-coloured
   selection, tyre-compound badge chips, a rev-counter dial gauge, a

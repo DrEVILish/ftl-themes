@@ -2002,6 +2002,7 @@ for what, if anything, it cites.
 | `silo` | Silo | Teal phosphor inside a steel CRT bezel, PACT-style numbered nav between pale-yellow double rules, pale-teal title plates, and a yellow-green fill reserved for "granted/selected". | |
 | `skyrim` | Skyrim | Smoke-black menus in thin silver rules with knotwork corners; SkyUI tables whose selected row is a fading white band ending in an arrow tip. | |
 | `steampunk` | Steampunk | Brass and stitched leather with riveted copper panels and needle-gauge readouts. | |
+| `teenage-engineering` | Teenage Engineering | Off-white aluminium keys around one dark display window; four encoder colours (blue, green, white, orange) drive the knobs, which are flat slotted cylinder caps, plus tab dots, slider thumbs and chart series. | |
 | `teletext` | Teletext | The exact 8-colour broadcast palette, flat, on solid black — zero gradients or rounding. | ✓ |
 | `tokie` | Tokie | Black pebble-grain leather with a saddle stitch inside every panel edge; brushed gold for rails, polished mirror gold only for what you press or focus. | |
 | `tron` | Tron | Electric cyan line-grid on black with `clip-path`-cut angular corners. | |
