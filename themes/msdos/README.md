@@ -56,6 +56,15 @@ DOS blue.
 - **No proportional font.** No smooth weights.
 - **No white cursor bar:** the selection is cyan with black text.
 
+## Icons
+
+`themes/msdos/icons.svg` covers the full core set (178/178). Style rules:
+24 grid; uniform 2.5px stroke, square caps, miter joins, `fill: none`;
+no arcs anywhere, like a text-mode character cell: circles become squares,
+curves become stepped or 45 degree runs (the cloud and moon are stepped
+outlines, reused by cloud-bolt, cloud-off and moon-stars); dots are 2x2
+stroked cells; nothing is filled. Colour is `currentColor` only.
+
 ## Typography
 
 `--font` and `--font-mono` are **Px437 IBM VGA 9x16**, vendored (`assets/fonts/Web437_IBM_VGA_9x16.woff2`): VileR's pixel-exact reproduction of the IBM VGA ROM font in the 9x16 cell that 720x400 text mode actually drew, from the Ultimate Oldschool PC Font Pack. Licensed **CC BY-SA 4.0** (not OFL like most of `assets/fonts/`) — attribution in `assets/fonts/NOTICE.md`. It renders crisply at 16px and its multiples.

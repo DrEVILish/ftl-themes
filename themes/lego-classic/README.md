@@ -62,6 +62,17 @@ top of it.
 - **No pastel or tinted primaries**; keep red, yellow, blue, green as flat primaries.
 - **No modern booklet-promo styling**; the reference is the 1979 Classic Space instruction booklet.
 
+## Icons
+
+`themes/lego-classic/icons.svg` covers the full core set (178/178). Style
+rules: 24 grid; a thick uniform 3px stroke with round caps and joins,
+`fill: none`, so each glyph reads as an outlined moulded piece; rects rx
+1.5; true curves; dots and small marks (more-horizontal, sand in the
+hourglass, gamepad buttons) are filled `currentColor` circles, the
+"stud" accent the set also puts on grid, trash and music. Dense glyphs
+(file-type-png, file-spreadsheet, invoice, thermometer) drop inner frames
+so the heavy stroke does not close them up. Colour is `currentColor` only.
+
 ## Typography
 
 `--font` is `"Futura", "Century Gothic", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. Futura and Century Gothic are **system fonts, not vendored**: Futura is on macOS, Century Gothic on Windows/Office, and most Linux installs fall to Arial. `RESEARCH.md` names no face, and the booklet captures show a geometric sans that Futura only approximates. Buttons use weight 800.

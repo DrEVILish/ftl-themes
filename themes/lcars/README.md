@@ -100,7 +100,13 @@ block fills — never naturalistic iconography. Settings becomes a plus of
 pill segments around a dot (a targeting-reticle abstraction, not a gear),
 and close is two pill bars crossed at 45°, matching the on-screen UI's
 habit of representing every control as an abstract colour block rather
-than a picture of the thing it does. The sprite ships 136 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+than a picture of the thing it does. The sprite ships 181 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described in detail. The sprite now covers the full core set (178/178). Style rules for the
+whole file, followed by the 45 ids added in the 2026-10 top-up: 24 grid;
+line work is a 2.6 round-cap, round-join stroke; anything that is a
+silhouette (bookmark, filter, pin, heart, moon, cloud, play triangle,
+microphone capsule, record label, note head) is a solid `currentColor`
+block; rects are rounded (rx about 2, never sharp); dots are filled
+circles; colour is `currentColor` only.
 
 ## Layout — this theme moves the furniture
 

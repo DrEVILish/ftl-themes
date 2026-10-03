@@ -40,7 +40,11 @@ stroke with square terminal caps in place of the generic sprite's 2px
 rounded default, so they read as hairline character strokes rather than
 a UI icon set. Settings becomes an eight-point asterisk glyph instead of
 a naturalistic gear, matching a terminal's habit of representing controls
-as punctuation rather than pictures. The sprite ships 136 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+as punctuation rather than pictures. The sprite ships 181 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described in detail. The sprite now covers the full core set (178/178). Style rules for the
+whole file, followed by the 45 ids added in the 2026-10 top-up: 24 grid;
+1px hairline stroke, square caps, miter joins; never filled (the sprite
+inherits `fill: none`); true curves allowed; rects rx 1.5 when 6+ wide,
+sharp below; dots are r1.2 hairline rings; colour is `currentColor` only.
 
 ## Layout
 
