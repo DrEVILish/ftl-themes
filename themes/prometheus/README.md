@@ -78,6 +78,15 @@ is decoration under the panels and carries no text.
 
 Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On touch tiers the brand tab stays as wide as its text, so it doesn't stretch across the first line. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
 
+## Icons
+
+`icons.svg` draws the core set as holographic HUD line glyphs (no studio or Weyland marks).
+
+- **Grid and weight.** 24 grid, ultra-thin 1.25px line, round caps and joins, true curves and arcs; boxes have a 1-unit corner radius.
+- **Reticles.** Every circle of radius 6 or more (clock, compass, info, globe, disc) carries four short tick marks outside it, like the film's ring readouts.
+- **Glass, not ink.** Silhouettes are a 30% `fill-opacity` holo-glass wash under the line instead of a solid fill; only small markers and carets are solid.
+- Generated from one shared 24-grid geometry, so every core-set id (178/178) is drawn; everything uses `currentColor`, so icons follow text, accent and selected states (and every variant) with no hard-coded colour. The `suit` variant's amber comes through the same way.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

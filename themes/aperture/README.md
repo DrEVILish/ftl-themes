@@ -57,6 +57,15 @@ the panel sits in the room rather than filling it.
   catalogue by design.
 - Saturated colour anywhere except the two accents.
 
+## Icons
+
+`icons.svg` draws the core set as test-chamber sign pictograms (no Aperture or Valve marks).
+
+- **Plate.** Every icon is a sign plate: a 1.25px rounded-square outline (radius 3.5) filling the 24 box, with the pictogram inside it at 78% scale.
+- **Pictogram.** Bold 1.9px line with round caps and joins, true curves; silhouettes (bookmark, play, filter, pin, star) are solid fills; small solid dots for markers.
+- **Scaling.** The 78% is done by zooming the symbol's `viewBox` out to 30.77 units, so the attributes read `stroke-width="2.44"` and `1.6` for the 1.9px and 1.25px rendered widths.
+- Generated from one shared 24-grid geometry, so every core-set id (178/178) is drawn; everything uses `currentColor`, so icons follow text, accent and selected states (and every variant) with no hard-coded colour.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -50,6 +50,15 @@ into that frame.
 
 Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.0:1).
 
+## Icons
+
+`icons.svg` draws the core set as emergency-terminal glyphs (no NERV or studio marks).
+
+- **Grid and weight.** 24 grid, heavy 2.4px line, square caps, mitred joins, hard corners (radius 0).
+- **Geometry.** Every circle is a flat-top hexagon (the MAGI hex motif); curves are rebuilt as angular runs; silhouettes are solid fills; marker dots are solid squares.
+- **Condensed.** Each glyph is squeezed to 86% width by a wider `viewBox` with `preserveAspectRatio="none"`, like condensed stencil type. This also makes vertical strokes 0.86x the width of horizontal ones, which is not visible at 2.4px.
+- Generated from one shared 24-grid geometry, so every core-set id (178/178) is drawn; everything uses `currentColor`, so icons follow text, accent and selected states (and every variant) with no hard-coded colour.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:
