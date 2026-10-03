@@ -119,7 +119,7 @@ For an app that keeps its own markup and only wants a theme's palette,
 `dist/tokens.css` holds every theme's tokens in one file: each theme's own
 `html[data-theme="slug"]` token blocks (palette variants included), its
 `@font-face` rules and its element-level rules (heading treatments and the
-like), scoped so 26 themes' worth of rules never collide. It contains **no
+like), scoped so 45 themes' worth of rules never collide. It contains **no
 component or app-shell rules**, so the whole file is still smaller
 than a handful of full bundles.
 
