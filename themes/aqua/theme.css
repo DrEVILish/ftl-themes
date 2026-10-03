@@ -292,3 +292,107 @@ html[data-theme="aqua"] .modal-header > .btn-close {
   transform: translate(-50%, -50%);
 }
 html[data-theme="aqua"] .modal-header > .btn-close:is(:hover, :focus-visible) { --btn-close-glyph: "\00d7"; }
+
+/* --- Desktop shell (v5 §23) ----------------------------------------------- *
+ * core/components/desktop.css drawn as Mac OS X: the app bar becomes the
+ * menu bar across the top (a generic mark opens the Start menu as its
+ * first menu; the clock sits at its right end), the desktop is the blue
+ * Aqua wallpaper with its icons down the right edge, windows keep their
+ * traffic lights (grey when inactive) and lose their menu bars, and the
+ * Dock is a translucent shelf of gel tiles that magnify under the pointer,
+ * with a black triangle under each running app. */
+html[data-theme="aqua"] {
+  --desktop-shell: dock;
+  --desktop-bg:
+    radial-gradient(ellipse 120% 70% at 85% 115%, rgba(120, 190, 255, 0.55), transparent 60%),
+    radial-gradient(ellipse 90% 40% at 20% 35%, rgba(110, 170, 245, 0.45), transparent 70%),
+    linear-gradient(160deg, #0f3a8c 0%, #2a68c4 45%, #1d4fa6 70%, #0b2a6b 100%);
+  --desktop-menubar-height: max(1.55rem, var(--tap-min));
+  --desktop-tray-room: 8rem;
+  --desktop-icon-fg: #ffffff;
+  --desktop-icon-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  --desktop-icon-glyph: #e8edf3;
+  --desktop-icon-filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45));
+  --desktop-icon-size: 3rem;
+  --desktop-icon-cell: 6.5rem;
+  --desktop-icon-row: 5.75rem;
+  --desktop-icon-label-bg-selected: #3069c9;
+  --desktop-icon-label-radius: 0.6rem;
+  --desktop-icon-glyph-selected: #ffffff;
+  --desktop-icon-filter-selected: drop-shadow(0 0 0.15rem rgba(0, 0, 0, 0.7)) brightness(0.8);
+  --window-pad: 0px;
+  --window-header-pad: 0.3rem 0.5rem;
+  --window-header-filter-inactive: grayscale(1) opacity(0.85);
+  --window-pane-bg: #ffffff;
+  --window-pane-border: var(--border);
+  --dock-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(225, 232, 240, 0.4));
+  --dock-border: rgba(255, 255, 255, 0.75);
+  --dock-radius: 0.55rem 0.55rem 0 0;
+  --dock-gap-below: 0;
+  --dock-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 -2px 10px rgba(0, 0, 0, 0.18);
+  --dock-tile-gloss: radial-gradient(ellipse 85% 55% at 50% 0%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%);
+  --dock-glyph: #ffffff;
+  --dock-tile-radius: 24%;
+  --dock-indicator: #000000;
+  --dock-indicator-radius: 0;
+  --dock-indicator-shape: polygon(50% 0, 100% 100%, 0 100%);
+  --dock-label-bg: rgba(20, 20, 20, 0.75);
+  --home-dock-bg: var(--dock-bg);
+  --home-label-fg: #ffffff;
+}
+html[data-theme="aqua"]:has(.desktop-screen) {
+  --app-padding: 0;
+  --app-main-bg: transparent;
+  --app-main-padding: 0;
+  --app-status-bg: transparent;
+  --app-status-radius: 0;
+  --app-bar-radius: 0;
+  --app-bar-height: var(--desktop-menubar-height);
+  --app-bar-padding: 0 0.6rem;
+  --app-bar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 238, 241, 0.94));
+  --app-bar-rule: #8d9096;
+}
+html[data-theme="aqua"] .app:has(.desktop-screen) { box-shadow: none; border-radius: 0; }
+html[data-theme="aqua"] .desktop > .app-bar {
+  --nav-brand-fg: #000000;
+  --nav-item-fg: #000000;
+  --menubar-item-radius: 0;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+html[data-theme="aqua"] .desktop > .app-bar::before { content: none; }
+html[data-theme="aqua"] .desktop > .app-bar .select { padding-block: 0; min-block-size: 0; font-size: 0.8rem; }
+html[data-theme="aqua"] .desktop-bar > .taskbar-start { font-size: 1rem; }
+html[data-theme="aqua"] .desktop-bar > .taskbar-tray { font-size: 0.85rem; }
+html[data-theme="aqua"]:has(.desktop-screen) {
+  --app-bar-fg: #000000;
+  --taskbar-start-bg-open: #2a74d0;
+  --taskbar-start-fg-open: #ffffff;
+}
+/* Minimize and zoom sit on the yellow and green lights, as close sits on
+   the red one: clear until pointed at. */
+html[data-theme="aqua"] .desktop-window .modal-header { padding-left: 3.6rem; }
+html[data-theme="aqua"] .desktop-window .modal-header > :is(.btn-min, .btn-max) {
+  --btn-min-glyph: "";
+  --btn-max-glyph: "";
+  --btn-close-bg: transparent;
+  --btn-close-bg-hover: transparent;
+  --btn-close-radius: 50%;
+  --btn-close-glyph-size: 0.55rem;
+  --btn-close-fg-hover: #5a3a00;
+  position: absolute;
+  top: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+html[data-theme="aqua"] .desktop-window .modal-header > .btn-min { left: 2.05rem; }
+html[data-theme="aqua"] .desktop-window .modal-header > .btn-max { left: 2.8rem; --btn-close-fg-hover: #0d4a00; }
+html[data-theme="aqua"] .desktop-window .modal-header > .btn-min:is(:hover, :focus-visible) { --btn-min-glyph: "\2212"; }
+html[data-theme="aqua"] .desktop-window .modal-header > .btn-max:is(:hover, :focus-visible) { --btn-max-glyph: "+"; }
+html[data-theme="aqua"] .desktop-window .modal-header > .icon { display: none; }
+html[data-theme="aqua"] .desktop-window .window-title { padding-inline-end: 3.1rem; }
+html[data-theme="aqua"] .desktop-window .window-status { justify-content: center; text-align: center; border-color: var(--border); }
+html[data-theme="aqua"] .desktop-window .window-status > * { flex: none; border: 0; }
+html[data-theme="aqua"] .desktop-window > .modal { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
+html[data-theme="aqua"] .start-menu-header .avatar { border-radius: 0.35rem; }

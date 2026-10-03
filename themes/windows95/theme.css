@@ -493,3 +493,113 @@ html[data-theme="windows95"] :is(.hero, .band:not(.is-tinted), body > footer) :i
   --danger-text: #800000;
 }
 
+
+/* --- Desktop shell (v5 §23) ----------------------------------------------- *
+ * core/components/desktop.css drawn as Windows 95: the teal desktop with
+ * white-captioned icons, grey title bars on inactive windows, the taskbar
+ * (raised Start button with the four-pane mark, task buttons that sink and
+ * dither when active, the sunken tray clock), and the classic Start menu
+ * with its grey "Windows95" banner and 32px root icons. */
+html[data-theme="windows95"] {
+  --desktop-shell: taskbar;
+  --desktop-bg: #008080;
+  --desktop-icon-fg: #ffffff;
+  --desktop-icon-glyph: #ffffff;
+  --desktop-icon-filter: drop-shadow(1px 1px 0 #000000);
+  --desktop-icon-glyph-selected: #8080ff;
+  --desktop-icon-label-bg-selected: #000080;
+  --desktop-icon-label-fg-selected: #ffffff;
+  --desktop-icon-font-size: 0.75rem;
+  --window-icon-glyph: #000080;
+  --window-pad: 2px;
+  --window-header-pad: 0.1rem 0.15rem 0.1rem 0.25rem;
+  --window-header-bg-inactive: #757575;
+  --window-header-fg-inactive: #ffffff;
+  --window-header-filter-inactive: none;
+  --window-status-field-border: #808080 #ffffff #ffffff #808080;
+  --window-pane-bg: #ffffff;
+  --window-pane-border: #808080 #ffffff #ffffff #808080;
+  --taskbar-height: 1.9rem;
+  --taskbar-padding: 2px;
+  --taskbar-gap: 3px;
+  --taskbar-task-max: 10rem;
+  --taskbar-task-weight-active: 700;
+  --taskbar-task-bg-active: repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0 / 2px 2px;
+  --taskbar-start-bg-open: var(--surface);
+  --taskbar-start-border-open: #000000 #ffffff #ffffff #000000;
+  --taskbar-start-shadow-open: inset 1px 1px 0 #000000, inset -1px -1px 0 #dfdfdf;
+  --taskbar-start-outline-open: 1px dotted #000000;
+  --desktop-launchers-display: none;
+  --start-menu-layout: classic;
+  --start-menu-banner: "Windows95";
+  --start-menu-banner-bg: #808080;
+  --start-menu-banner-fg: #c0c0c0;
+  --start-menu-icon-size: 2rem;
+  --start-menu-sub-icon-size: 1rem;
+  --start-menu-font-size: 0.8rem;
+}
+/* The desktop fills the window: no teal gutter, no sunken well. */
+html[data-theme="windows95"]:has(.desktop-screen) {
+  --app-padding: 0;
+  --app-gap: 0;
+  --app-main-bg: transparent;
+  --app-main-padding: 0;
+}
+html[data-theme="windows95"] .desktop-screen { border: 0; box-shadow: none; }
+/* The taskbar: one raised strip, its parts drawn by the --taskbar tokens
+   rather than the status bar's sunken fields. */
+html[data-theme="windows95"] .desktop-bar {
+  border-width: 1px 0 0;
+  border-color: #dfdfdf;
+  box-shadow: inset 0 1px #ffffff;
+}
+html[data-theme="windows95"] .desktop-bar > :is(.taskbar-start, .desktop-dock) { border: 0; padding: 0; }
+html[data-theme="windows95"] .desktop-bar > .taskbar-start {
+  border: 2px solid;
+  border-color: var(--taskbar-start-border);
+  padding: 0 0.35rem 0 0.25rem;
+  gap: 0.25rem;
+}
+html[data-theme="windows95"] .desktop:has(.start-menu:popover-open) .desktop-bar > .taskbar-start { border-color: var(--taskbar-start-border-open); }
+html[data-theme="windows95"] .desktop-bar > .taskbar-tray { padding: 0 0.5rem; border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] .taskbar-tasks .taskbar-task { padding: 0 0.4rem; border-width: 2px; }
+/* The Start mark: four panes, red, green, blue, yellow. */
+html[data-theme="windows95"] .taskbar-start > .icon {
+  background:
+    linear-gradient(#ff0000, #ff0000) 0 0 / 46% 46% no-repeat,
+    linear-gradient(#00a000, #00a000) 100% 0 / 46% 46% no-repeat,
+    linear-gradient(#0000ff, #0000ff) 0 100% / 46% 46% no-repeat,
+    linear-gradient(#ffd800, #ffd800) 100% 100% / 46% 46% no-repeat;
+  transform: skewY(-8deg);
+}
+html[data-theme="windows95"] .taskbar-start > .icon > use { display: none; }
+/* Classic Start menu: one bevelled panel; the lists inside are flat. */
+html[data-theme="windows95"] .start-menu[popover] {
+  border: 2px solid;
+  border-color: #dfdfdf #000000 #000000 #dfdfdf;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+  padding: 2px;
+}
+html[data-theme="windows95"] .start-menu-header { font-family: "Arial Black", Arial, sans-serif; font-weight: 900; letter-spacing: -0.02em; }
+html[data-theme="windows95"] .start-menu > ul > li > :is(a, button, label) { min-block-size: 2.4rem; padding-block: 0.1rem; }
+html[data-theme="windows95"] .start-menu-footer { border-block-start: 0 !important; }
+html[data-theme="windows95"] .start-menu-footer::before {
+  content: "";
+  display: block;
+  margin: 0.15rem 0.1rem;
+  border-block: 1px solid;
+  border-color: #808080 transparent #ffffff;
+}
+@media (max-width: 480px) {
+  html[data-theme="windows95"] .desktop-bar > .taskbar-start { padding-inline: 0.5rem; }
+}
+html[data-theme="windows95"] :is(.start-menu, .desktop-window) { --submenu-glyph: "\25B6"; }
+html[data-theme="windows95"] .start-menu .has-submenu > :is(a, button)::after { font-size: 0.6em; opacity: 1; }
+/* On a phone the icons stay 95's own: white glyphs straight on the teal. */
+html[data-theme="windows95"] {
+  --home-tile: none;
+  --home-glyph: #ffffff;
+  --home-tile-shadow: none;
+  --home-label-fg: #ffffff;
+  --home-dock-glyph: #000080;
+}

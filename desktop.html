@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="windows95">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desktop — ftl-themes layout demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/windows95.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: the window bodies. Everything visual is the theme's. */
+  .explorer { display: grid; grid-template-columns: minmax(9rem, 34%) 1fr; gap: 2px; padding: 2px; min-block-size: 0; flex: 1; }
+  .explorer > * { min-inline-size: 0; overflow: auto; }
+  .notepad { flex: 1; min-block-size: 0; display: flex; }
+  .notepad > .textarea { flex: 1; resize: none; border-radius: 0; }
+  .display-preview { display: grid; place-items: center; padding-block: 0.5rem; }
+  @container (max-width: 30rem) { .explorer { grid-template-columns: 1fr; } .explorer > .tree { display: none; } }
+</style>
+</head>
+<body class="app desktop">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Desktop</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main desktop-screen">
+    <h1 class="visually-hidden">Desktop</h1>
+    <input type="radio" class="desktop-home" name="desk-app" id="app-home" checked aria-label="Show the desktop">
+
+    <div class="desktop-icons" role="radiogroup" aria-label="Desktop icons">
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span>My Computer</span></label>
+        <label class="desktop-icon-open" for="open-computer"></label><label class="desktop-icon-launch" for="app-computer"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>My Documents</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-network"/></svg><span>Network Neighborhood</span></label>
+      </div>
+      <div class="desktop-icon is-trash">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg><span>Recycle Bin</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span>The Internet</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mailbox"/></svg><span>Inbox</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>Notepad</span></label>
+        <label class="desktop-icon-open" for="open-notepad"></label><label class="desktop-icon-launch" for="app-notepad"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Control Panel</span></label>
+        <label class="desktop-icon-open" for="open-display"></label><label class="desktop-icon-launch" for="app-display"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-archive"/></svg><span>My Briefcase</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-image"/></svg><span>Pictures</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span>MS-DOS Prompt</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span>Calendar</span></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-disc"/></svg><span>CD Player</span></label>
+      </div>
+    </div>
+
+    <div class="desktop-pages" aria-hidden="true"><span class="is-active"></span><span></span><span></span></div>
+
+    <!-- Window 1: My Computer (Explorer) -->
+    <section class="desktop-window" aria-label="My Computer" style="--x: 9rem; --y: 1.5rem; --w: 36rem; --h: 23rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-computer" aria-label="Switch to My Computer">
+      <input type="radio" class="window-open" name="vis-computer" id="open-computer" checked aria-label="My Computer: open">
+      <input type="radio" class="window-minimize" name="vis-computer" id="min-computer" aria-label="My Computer: minimized">
+      <input type="radio" class="window-close" name="vis-computer" id="closed-computer" aria-label="My Computer: closed">
+      <input type="checkbox" class="window-max" id="max-computer" aria-label="Maximize My Computer">
+      <div class="modal" role="dialog" aria-labelledby="title-computer" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg>
+          <span class="window-title" id="title-computer">My Computer</span>
+          <label class="btn-min" for="min-computer"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-computer"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-computer"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="My Computer menu">
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">File</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem">Open</button></li>
+              <li role="none"><button role="menuitem">Explore</button></li>
+              <li role="none"><button role="menuitem">Find…</button></li>
+              <li role="separator"></li>
+              <li role="none"><button role="menuitem">Properties</button></li>
+              <li role="separator"></li>
+              <li role="none"><label role="menuitem" for="closed-computer">Close</label></li>
+            </ul></li>
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Edit</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem" aria-disabled="true">Undo <kbd>Ctrl+Z</kbd></button></li>
+              <li role="separator"></li>
+              <li role="none"><button role="menuitem">Select All <kbd>Ctrl+A</kbd></button></li>
+              <li role="none"><button role="menuitem">Invert Selection</button></li>
+            </ul></li>
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">View</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitemcheckbox" aria-checked="true">Toolbar</button></li>
+              <li role="none"><button role="menuitemcheckbox" aria-checked="true">Status Bar</button></li>
+              <li role="separator"></li>
+              <li role="none"><button role="menuitemradio" aria-checked="true">Large Icons</button></li>
+              <li role="none"><button role="menuitemradio" aria-checked="false">Small Icons</button></li>
+              <li role="none"><button role="menuitemradio" aria-checked="false">List</button></li>
+              <li role="none"><button role="menuitemradio" aria-checked="false">Details</button></li>
+            </ul></li>
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Help</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem">Help Topics</button></li>
+              <li role="none"><button role="menuitem">About</button></li>
+            </ul></li>
+        </ul>
+        <div class="window-body explorer">
+          <ul class="tree window-pane" aria-label="Folders" tabindex="0">
+            <li><details open><summary><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg>Desktop</summary>
+              <ul>
+                <li><details open><summary><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg>My Computer</summary>
+                  <ul>
+                    <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-save"/></svg>3½ Floppy (A:)</span></li>
+                    <li><details><summary><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-hard-drive"/></svg>(C:)</summary>
+                      <ul>
+                        <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg>Program Files</span></li>
+                        <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg>My Documents</span></li>
+                      </ul></details></li>
+                    <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-disc"/></svg>CD-ROM (D:)</span></li>
+                    <li><span class="is-selected"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg>Control Panel</span></li>
+                    <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-print"/></svg>Printers</span></li>
+                  </ul></details></li>
+                <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-network"/></svg>Network Neighborhood</span></li>
+                <li><span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg>Recycle Bin</span></li>
+              </ul></details></li>
+          </ul>
+          <div class="desktop-icons window-pane" role="radiogroup" aria-label="Contents of My Computer">
+            <div class="desktop-icon"><label><input type="radio" name="computer-item"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-save"/></svg><span>3½ Floppy (A:)</span></label></div>
+            <div class="desktop-icon"><label><input type="radio" name="computer-item" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-hard-drive"/></svg><span>(C:)</span></label></div>
+            <div class="desktop-icon"><label><input type="radio" name="computer-item"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-disc"/></svg><span>CD-ROM (D:)</span></label></div>
+            <div class="desktop-icon"><label><input type="radio" name="computer-item"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Control Panel</span></label>
+              <label class="desktop-icon-open" for="open-display"></label></div>
+            <div class="desktop-icon"><label><input type="radio" name="computer-item"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-print"/></svg><span>Printers</span></label></div>
+            <div class="desktop-icon"><label><input type="radio" name="computer-item"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-network"/></svg><span>Dial-Up Networking</span></label></div>
+          </div>
+        </div>
+        <div class="window-status"><span>6 object(s)</span><span>(C:) 1.2 GB free</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+
+    <!-- Window 2: Display Properties (tabbed dialog) -->
+    <section class="desktop-window is-dialog" aria-label="Display Properties" style="--x: 55%; --y: 3rem; --w: 29rem; --h: 31rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-display" aria-label="Switch to Display Properties">
+      <input type="radio" class="window-open" name="vis-display" id="open-display" checked aria-label="Display Properties: open">
+      <input type="radio" class="window-minimize" name="vis-display" id="min-display" aria-label="Display Properties: minimized">
+      <input type="radio" class="window-close" name="vis-display" id="closed-display" aria-label="Display Properties: closed">
+      <input type="checkbox" class="window-max" id="max-display" aria-label="Maximize Display Properties">
+      <div class="modal" role="dialog" aria-labelledby="title-display" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg>
+          <span class="window-title" id="title-display">Display Properties</span>
+          <label class="btn-min" for="min-display"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-display"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-display"><span class="visually-hidden">Close</span></label>
+        </div>
+        <div class="window-body">
+          <div class="tabset">
+            <div class="tabs">
+              <label class="tab"><input type="radio" name="display-tab" checked>Background</label>
+              <label class="tab"><input type="radio" name="display-tab">Screen Saver</label>
+              <label class="tab"><input type="radio" name="display-tab">Appearance</label>
+              <label class="tab"><input type="radio" name="display-tab">Settings</label>
+            </div>
+            <div class="tab-panel">
+              <div class="display-preview" aria-hidden="true"><div class="desktop-monitor"><div class="desktop-monitor-screen"></div></div></div>
+              <fieldset class="field">
+                <legend class="field-label">Wallpaper</legend>
+                <div class="list scroll" tabindex="0" style="--scroll-max: 5.5rem" role="radiogroup" aria-label="Wallpaper">
+                  <label class="list-item"><input type="radio" name="wallpaper" checked> (None)</label>
+                  <label class="list-item"><input type="radio" name="wallpaper"> Clouds</label>
+                  <label class="list-item"><input type="radio" name="wallpaper"> Hills</label>
+                  <label class="list-item"><input type="radio" name="wallpaper"> Pinstripe</label>
+                  <label class="list-item"><input type="radio" name="wallpaper"> Tiles</label>
+                </div>
+              </fieldset>
+              <div class="field">
+                <label class="field-label" for="display-mode">Display</label>
+                <select class="select is-auto" id="display-mode"><option>Tile</option><option selected>Center</option><option>Stretch</option></select>
+              </div>
+            </div>
+            <div class="tab-panel">
+              <div class="field">
+                <label class="field-label" for="saver">Screen saver</label>
+                <select class="select" id="saver"><option>(None)</option><option selected>Starfield</option><option>Flying Windows</option><option>Mystify</option></select>
+              </div>
+              <div class="field">
+                <label class="field-label" for="saver-wait">Wait (minutes)</label>
+                <input class="input" type="number" id="saver-wait" value="10" min="1" max="60" style="max-inline-size: 6rem">
+              </div>
+              <label class="check"><input type="checkbox" class="checkbox"> Password protected</label>
+            </div>
+            <div class="tab-panel">
+              <div class="field">
+                <label class="field-label" for="scheme">Scheme</label>
+                <select class="select" id="scheme"><option selected>Standard</option><option>High Contrast Black</option><option>Rainy Day</option><option>Desert</option></select>
+              </div>
+              <label class="check"><input type="checkbox" class="checkbox" checked> Show window contents while dragging</label>
+            </div>
+            <div class="tab-panel">
+              <div class="field">
+                <label class="field-label" for="colors">Color palette</label>
+                <select class="select" id="colors"><option>16 Color</option><option>256 Color</option><option selected>High Color (16 bit)</option><option>True Color (24 bit)</option></select>
+              </div>
+              <div class="field">
+                <label class="field-label" for="desk-area">Desktop area: 800 by 600 pixels</label>
+                <input type="range" class="slider" id="desk-area" min="0" max="3" value="1">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <label class="btn btn-primary btn-sm" for="closed-display">OK</label>
+            <label class="btn btn-secondary btn-sm" for="closed-display">Cancel</label>
+            <button class="btn btn-secondary btn-sm" type="button">Apply</button>
+          </div>
+        </div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+
+    <!-- Window 3: Notepad (topmost by default) -->
+    <section class="desktop-window" aria-label="Notepad" style="--x: 15rem; --y: 13rem; --w: 27rem; --h: 17rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-notepad" aria-label="Switch to Notepad">
+      <input type="radio" class="window-open" name="vis-notepad" id="open-notepad" checked aria-label="Notepad: open">
+      <input type="radio" class="window-minimize" name="vis-notepad" id="min-notepad" aria-label="Notepad: minimized">
+      <input type="radio" class="window-close" name="vis-notepad" id="closed-notepad" aria-label="Notepad: closed">
+      <input type="checkbox" class="window-max" id="max-notepad" aria-label="Maximize Notepad">
+      <div class="modal" role="dialog" aria-labelledby="title-notepad" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg>
+          <span class="window-title" id="title-notepad">readme.txt - Notepad</span>
+          <label class="btn-min" for="min-notepad"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-notepad"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-notepad"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="Notepad menu">
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">File</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem">New</button></li>
+              <li role="none"><button role="menuitem">Open… <kbd>Ctrl+O</kbd></button></li>
+              <li role="none"><button role="menuitem">Save <kbd>Ctrl+S</kbd></button></li>
+              <li role="none"><button role="menuitem">Save As…</button></li>
+              <li role="separator"></li>
+              <li role="none"><button role="menuitem">Print</button></li>
+              <li role="separator"></li>
+              <li role="none"><label role="menuitem" for="closed-notepad">Exit</label></li>
+            </ul></li>
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Edit</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem">Undo <kbd>Ctrl+Z</kbd></button></li>
+              <li role="separator"></li>
+              <li role="none"><button role="menuitem">Cut <kbd>Ctrl+X</kbd></button></li>
+              <li role="none"><button role="menuitem">Copy <kbd>Ctrl+C</kbd></button></li>
+              <li role="none"><button role="menuitem">Paste <kbd>Ctrl+V</kbd></button></li>
+              <li role="separator"></li>
+              <li role="none"><button role="menuitemcheckbox" aria-checked="true">Word Wrap</button></li>
+            </ul></li>
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Search</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem">Find…</button></li>
+              <li role="none"><button role="menuitem">Find Next <kbd>F3</kbd></button></li>
+            </ul></li>
+          <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Help</button>
+            <ul role="menu">
+              <li role="none"><button role="menuitem">Help Topics</button></li>
+              <li role="none"><button role="menuitem">About Notepad</button></li>
+            </ul></li>
+        </ul>
+        <div class="window-body notepad">
+          <label class="visually-hidden" for="notepad-text">Document text</label>
+          <textarea class="textarea mono" id="notepad-text" spellcheck="false">One markup, every desktop.
+
+This page is plain HTML and CSS. The windows open, close, minimize and come to the front with radios and :has(), and the Start menu is a popover holding nested lists.
+
+Pick another theme and the same markup becomes another operating system's shell.</textarea>
+        </div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-status taskbar desktop-bar">
+    <button class="taskbar-start" type="button" popovertarget="start-menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-grid"/></svg><span class="taskbar-start-label">Start</span></button>
+
+    <div class="start-menu" popover id="start-menu" aria-label="Start menu">
+      <div class="start-menu-header"><span class="avatar">AL</span><span>Ada Lovelace</span></div>
+      <ul class="context-menu start-menu-programs" role="menu" aria-label="Programs">
+        <li role="none" class="is-columns-only"><a role="menuitem" href="marketing.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span><b>Internet</b><small>Web Browser</small></span></a></li>
+        <li role="none" class="is-columns-only"><a role="menuitem" href="inbox.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mail"/></svg><span><b>E-mail</b><small>Inbox</small></span></a></li>
+        <li role="separator" class="is-columns-only"></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>Notepad</span></label></li>
+        <li role="none" class="is-columns-only"><a role="menuitem" href="player.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span>Media Player</span></a></li>
+        <li role="none" class="is-columns-only"><a role="menuitem" href="livechat.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span>Messenger</span></a></li>
+        <li role="none" class="is-columns-only"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span>Command Prompt</span></button></li>
+        <li role="separator" class="is-columns-only"></li>
+        <li role="none" class="has-submenu start-menu-all"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span><span class="is-columns-only">All </span>Programs</span></button>
+          <ul role="menu">
+            <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Accessories</span></button>
+              <ul role="menu">
+                <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Multimedia</span></button>
+                  <ul role="menu">
+                    <li role="none"><a role="menuitem" href="player.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-disc"/></svg><span>CD Player</span></a></li>
+                    <li role="none"><a role="menuitem" href="soundmixer.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-microphone"/></svg><span>Sound Recorder</span></a></li>
+                    <li role="none"><a role="menuitem" href="soundmixer.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><span>Volume Control</span></a></li>
+                  </ul></li>
+                <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>System Tools</span></button>
+                  <ul role="menu">
+                    <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-hard-drive"/></svg><span>Disk Defragmenter</span></button></li>
+                    <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-search"/></svg><span>ScanDisk</span></button></li>
+                  </ul></li>
+                <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-table"/></svg><span>Calculator</span></button></li>
+                <li role="none"><label role="menuitem" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>Notepad</span></label></li>
+                <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg><span>Paint</span></button></li>
+                <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-edit"/></svg><span>WordPad</span></button></li>
+              </ul></li>
+            <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Games</span></button>
+              <ul role="menu">
+                <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-gamepad"/></svg><span>FreeCell</span></button></li>
+                <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-gamepad"/></svg><span>Minesweeper</span></button></li>
+                <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-gamepad"/></svg><span>Solitaire</span></button></li>
+              </ul></li>
+            <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>StartUp</span></button>
+              <ul role="menu">
+                <li role="none"><button role="menuitem" aria-disabled="true"><span>(Empty)</span></button></li>
+              </ul></li>
+            <li role="none"><a role="menuitem" href="marketing.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span>Internet Explorer</span></a></li>
+            <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span>MS-DOS Prompt</span></button></li>
+            <li role="none"><a role="menuitem" href="inbox.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mail"/></svg><span>Outlook Express</span></a></li>
+            <li role="none"><label role="menuitem" for="open-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Windows Explorer</span></label></li>
+          </ul></li>
+      </ul>
+      <ul class="context-menu start-menu-places" role="menu" aria-label="Places">
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span><b>My Documents</b></span></label></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-files"/></svg><span><span class="is-columns-only">My Recent </span>Documents</span></button>
+          <ul role="menu">
+            <li role="none"><label role="menuitem" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>readme.txt</span></label></li>
+            <li role="none"><a role="menuitem" href="planner.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-spreadsheet"/></svg><span>Budget 1996.xls</span></a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Letter.doc</span></a></li>
+          </ul></li>
+        <li role="none" class="is-columns-only"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-image"/></svg><span><b>My Pictures</b></span></button></li>
+        <li role="none" class="is-columns-only"><a role="menuitem" href="player.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span><b>My Music</b></span></a></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span><b>My Computer</b></span></label></li>
+        <li role="separator" class="is-columns-only"></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Settings</span></button>
+          <ul role="menu">
+            <li role="none"><label role="menuitem" for="open-display"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Control Panel</span></label></li>
+            <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-print"/></svg><span>Printers</span></button></li>
+            <li role="none"><a role="menuitem" href="settings.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-layout"/></svg><span>Taskbar…</span></a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-search"/></svg><span><span class="is-classic-only">Find</span><span class="is-columns-only">Search</span></span></button>
+          <ul role="menu">
+            <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-files"/></svg><span>Files or Folders…</span></button></li>
+            <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span>Computer…</span></button></li>
+          </ul></li>
+        <li role="none"><a role="menuitem" href="components.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-help-circle"/></svg><span>Help<span class="is-columns-only"> and Support</span></span></a></li>
+        <li role="none"><button role="menuitem"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-external-link"/></svg><span>Run…</span></button></li>
+      </ul>
+      <ul class="context-menu start-menu-footer" role="menu" aria-label="Session">
+        <li role="none" class="is-columns-only"><a role="menuitem" href="auth.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-logout"/></svg><span>Log Off</span></a></li>
+        <li role="none"><button role="menuitem" popovertarget="shutdown"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-power"/></svg><span><span class="is-classic-only">Shut Down…</span><span class="is-columns-only">Turn Off Computer</span></span></button></li>
+      </ul>
+    </div>
+
+    <nav class="desktop-dock" aria-label="Quick launch and open windows">
+      <ul class="desktop-launchers" aria-label="Quick launch">
+        <li><a class="dock-item" href="marketing.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span class="visually-hidden">Browser</span></a></li>
+        <li><a class="dock-item" href="inbox.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mail"/></svg><span class="visually-hidden">Mail</span></a></li>
+        <li><a class="dock-item" href="player.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span class="visually-hidden">Music</span></a></li>
+        <li><a class="dock-item" href="livechat.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span class="visually-hidden">Messages</span></a></li>
+        <li><a class="dock-item" href="planner.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-calendar"/></svg><span class="visually-hidden">Calendar</span></a></li>
+        <li><a class="dock-item" href="settings.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span class="visually-hidden">Settings</span></a></li>
+        <li class="is-trash"><a class="dock-item" href="inbox.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg><span class="visually-hidden">Trash</span></a></li>
+      </ul>
+      <ul class="taskbar-tasks" aria-label="Open windows">
+        <li><label class="taskbar-task" for="app-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span>My Computer</span></label><label class="taskbar-restore" for="open-computer"><span class="visually-hidden">Restore My Computer</span></label></li>
+        <li><label class="taskbar-task" for="app-display"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Display Properties</span></label><label class="taskbar-restore" for="open-display"><span class="visually-hidden">Restore Display Properties</span></label></li>
+        <li><label class="taskbar-task" for="app-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>readme.txt - Notepad</span></label><label class="taskbar-restore" for="open-notepad"><span class="visually-hidden">Restore Notepad</span></label></li>
+      </ul>
+    </nav>
+
+    <div class="taskbar-tray" data-audit-edge="ignore">
+      <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-wifi"/></svg>
+      <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg>
+      <svg class="icon is-battery" aria-hidden="true"><use href="assets/icons/icons.svg#icon-battery"/></svg>
+      <time datetime="09:41">9:41 AM</time>
+    </div>
+  </footer>
+
+  <div class="modal modal-sm" popover id="shutdown" aria-labelledby="shutdown-title">
+    <div class="modal-header"><span id="shutdown-title">Shut Down</span><button class="btn-close" type="button" popovertarget="shutdown" popovertargetaction="hide" aria-label="Close"></button></div>
+    <fieldset class="field">
+      <legend class="field-label">Are you sure you want to:</legend>
+      <label class="check"><input type="radio" class="radio" name="shutdown-mode" checked> Shut down the computer?</label>
+      <label class="check"><input type="radio" class="radio" name="shutdown-mode"> Restart the computer?</label>
+      <label class="check"><input type="radio" class="radio" name="shutdown-mode"> Close all programs and log on as a different user?</label>
+    </fieldset>
+    <div class="modal-footer">
+      <a class="btn btn-primary btn-sm" href="index.html">Yes</a>
+      <button class="btn btn-secondary btn-sm" type="button" popovertarget="shutdown" popovertargetaction="hide">No</button>
+    </div>
+  </div>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>
