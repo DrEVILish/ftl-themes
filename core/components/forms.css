@@ -534,13 +534,18 @@
   flex: none;
   display: grid;
   place-items: center;
-  inline-size: 1.25em;
-  block-size: 1.25em;
-  margin: 0;
-  padding: 0;
+  /* A real 24px box (WCAG 2.5.8 counts the box, not ::before), pulled back
+     by negative margins so the tag keeps its 1.25em footprint; the hover
+     fill stays 1.25em via content-box clipping. */
+  --_tag-x: max(1.25em, 24px);
+  inline-size: var(--_tag-x);
+  block-size: var(--_tag-x);
+  margin: calc((1.25em - var(--_tag-x)) / 2);
+  padding: calc((var(--_tag-x) - 1.25em) / 2);
   border: 0;
   border-radius: var(--tag-radius, var(--radius));
   background: transparent;
+  background-clip: content-box;
   color: var(--tag-remove-fg, var(--muted));
   font: inherit;
   line-height: 1;
@@ -549,7 +554,7 @@
 .tag-remove::before {
   content: "";
   position: absolute;
-  inset: calc((1.25em - var(--tap-min)) / 2);
+  inset: calc((var(--_tag-x) - var(--tap-min)) / 2);
 }
 .tag-remove:not(:has(.icon))::after { content: var(--input-clear-glyph, "\00d7"); font-size: 1.2em; }
 .tag-remove:focus-visible { color: var(--text); outline-offset: 0; }

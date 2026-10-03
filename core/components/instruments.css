@@ -321,7 +321,13 @@
   color: var(--gauge-readout-fg, var(--muted));
   text-align: center;
 }
-.gauge-readout .readout { --readout-size: 11cqi; padding: 0; }
+.gauge-readout .readout {
+  --readout-size: 11cqi;
+  /* A theme's boxed readout (an LCD window) keeps 4px round its digits. */
+  padding: max(4px, 0.1em) max(4px, 0.25em);
+}
+/* The arc's readout sits between its end labels: a size smaller. */
+.gauge-arc .gauge-readout .readout { --readout-size: 9.5cqi; }
 
 /* Arc gauge: the top half of the same face, no needle. */
 .gauge-arc {
@@ -334,7 +340,7 @@
   aspect-ratio: 100 / 64;
   border-radius: 50% 50% var(--radius) var(--radius) / 78% 78% var(--radius) var(--radius);
 }
-.gauge-arc .gauge-readout { inset: auto 0 2cqi; }
+.gauge-arc .gauge-readout { inset: auto 0 max(5px, 3cqi); }
 .gauge-arc .gauge-ticks > li { --gauge-label-r: 25cqi; }
 
 /* --- .compass (§9 #4): a rose turned by --heading (degrees). The needle

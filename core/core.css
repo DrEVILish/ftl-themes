@@ -2170,6 +2170,60 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
   text-align: center;
   font-size: 0.85em;
 }
+/* Where CSS carousels ship (::scroll-marker, ::scroll-button(); Chrome
+   135+), the browser draws the dots and arrows itself: they scroll only the
+   carousel, track the slide in view (:target-current) and need no script,
+   so the fragment-link .carousel-nav (and carousel.js) is the fallback. */
+@supports selector(::scroll-marker) and selector(::scroll-button(*)) {
+  .carousel {
+    scroll-marker-group: after;
+    anchor-scope: --carousel-markers;
+    counter-reset: carousel-slide;
+  }
+  .carousel + .carousel-nav { display: none; }
+  .carousel::scroll-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    block-size: var(--tap-min);
+    margin-block-start: 0.6rem;
+    anchor-name: --carousel-markers;
+    padding-inline: calc(var(--tap-min) + 0.5em);
+  }
+  .carousel > .carousel-slide { counter-increment: carousel-slide; }
+  .carousel > .carousel-slide::scroll-marker {
+    content: "" / "Slide " counter(carousel-slide);
+    display: block;
+    box-sizing: border-box;
+    inline-size: var(--tap-min);
+    block-size: var(--tap-min);
+    padding: calc((var(--tap-min) - 0.7em * 0.7) / 2);
+    border-radius: 999px;
+    background: var(--carousel-dot, var(--muted)) content-box;
+  }
+  .carousel > .carousel-slide::scroll-marker:target-current { background-color: var(--carousel-dot-active, var(--accent)); }
+  .carousel > .carousel-slide::scroll-marker:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: -0.5em; }
+  .carousel::scroll-button(*) {
+    position: absolute;
+    /* At the two ends of the marker row (its inline padding leaves room). */
+    position-anchor: --carousel-markers;
+    inset-block-start: anchor(start);
+    inset-inline-start: anchor(start);
+    z-index: var(--z-raised);
+    inline-size: var(--tap-min);
+    block-size: var(--tap-min);
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    color: var(--carousel-arrow-fg, var(--text));
+    background: var(--carousel-arrow-bg, var(--surface-2));
+    font: inherit;
+    font-size: 0.85em;
+  }
+  .carousel::scroll-button(left) { content: "\2039" / "Previous"; }
+  .carousel::scroll-button(right) { content: "\203a" / "Next"; inset-inline: auto anchor(end); }
+  .carousel::scroll-button(*):disabled { opacity: 0.4; }
+}
 
 /* .scrollspy — a sticky section nav beside long content (docs,
    settings reference). The nav, the smooth scroll and the scroll offset
@@ -3353,7 +3407,9 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button) {
+/* Short labels ("EQ", "L1") too: toggles, tabs and segments. */
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button,
+    .toggle-btn, .tab, .segmented-item) {
   min-inline-size: var(--tap-min);
 }
 :is(.input, .select) { min-block-size: var(--tap-min); }
@@ -3392,8 +3448,12 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 .breadcrumb-item:not(.is-current) {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-block-size: var(--tap-min);
+  min-inline-size: var(--tap-min);
 }
+/* A native colour well (e.g. a theme-tint picker) is a target too. */
+input[type="color"] { min-block-size: var(--tap-min); min-inline-size: var(--tap-min); }
 
 /* iOS Safari zooms the page when a focused field's text is under 16px. */
 @media (any-pointer: coarse) {
@@ -3534,7 +3594,9 @@ html[data-pointer="touch"] { --tap-min: 44px; }
    one letter per line (a squeezed title beside header controls, a button
    label in a narrow cell or toast). */
 :is(.table td, .table th, .panel-header:has(:is(.input, .select, .btn, .input-group))) { overflow-wrap: break-word; }
-.badge { max-inline-size: 100%; min-inline-size: 0; }
+.badge { max-inline-size: 100%; }
+/* A badge-button keeps its tap-min width (it is a target, not a label). */
+.badge:not(.badge-button) { min-inline-size: 0; }
 .btn { max-inline-size: 100%; overflow-wrap: break-word; }
 
 /* --- v5 nested menus (PLAN.md §8) ----------------------------------------
