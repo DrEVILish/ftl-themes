@@ -66,7 +66,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 - **LCD green `#00ff00` (`--accent`)** is 12.42:1 on `--bg` and 8.29:1 on `--surface`. `RESEARCH.md` records no hex for the real skin's green, so that value is the theme's own, unverified against captures.
 - **Yellow fader deviation.** The reference has yellow EQ faders (`RESEARCH.md`). The theme's slider thumb is `--accent-2` lime `#a4ff30` (13.74:1 on `--bg`), not yellow. The only yellow is `--warning` `#ffcc00` (11.27:1), used for warning states. This is a colour deviation, not a contrast lift: yellow would also pass.
-- **Muted lifted:** `#9a9a8c` (3.1:1) to `#bbbbb2` (8.82:1 on `--bg`, 5.88:1 on `--surface`, 4.58:1 on `--surface-2`).
+- **Muted lifted:** `#9a9a8c` (3.1:1) to `#c2c2ba` (clears 4.5:1 on `--surface-2` and on the planner's series tints). User, series and highlight tints mix into `--bg`, not `--surface`, so the beige text keeps 4.5:1 on them.
 - **Nav items lifted** from `--muted` (4.1:1 on the bar's lighter top stop) to `#c8c8b8` (6.72:1 on `--surface`, 5.24:1 on `--surface-2`).
 - **State text:** `--success-text` `#00d900` (5.92:1 on `--surface`) and `--danger-text` `#f1a8a8` (5.91:1); the raw `--danger` `#cc2020` is 3.08:1 on `--bg` (fill only, white text 5.53:1).
 

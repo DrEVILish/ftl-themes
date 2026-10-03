@@ -198,7 +198,7 @@ and `columnheader` to the markup.
   for keyboard resizing (arrow keys, handled by the app); it replaces the
   drawn grip. `.is-resizing` on the `th` while dragging.
 - `th[draggable="true"]` gets the grab cursor. While dragging, `.is-dragging`
-  on the source column's cells (dimmed to `--table-drag-opacity`, 0.8, with a dashed outline) and `.is-drop-before`
+  on the source column's cells (a dashed outline; `--table-drag-opacity` dims them, default 1 so header text keeps its contrast) and `.is-drop-before`
   / `.is-drop-after` on the target column's cells (a 3px accent bar). The
   browser draws the drag ghost.
 

@@ -62,11 +62,16 @@ changes are called out explicitly here.
   - Core contrast fixes found by the axe sweep: `.btn-secondary` and
     `.schedule` read `--accent-text`; striped tables keep `--row-active-bg`
     on active rows; ghost buttons in table heads follow `--table-head-fg`;
-    `--pending-opacity` 0.6 → 0.8; `--table-drag-opacity` (0.8) and
+    `--pending-opacity` 0.6 → 0.8; `--table-drag-opacity` (1) and
     `--kanban-drag-opacity` (1) defaults; a disabled tag input no longer
     fades its tags; live-cursor labels pick black or white by lightness;
     `.countdown` reads `--readout-bg`; the default code `function` colour
     leans on `--text`.
+  - Breadcrumbs in the app bar take the bar's ink (`--app-bar-fg`);
+    footnote back-links in `.prose` are underlined like other text links.
+  - Contrast sweep: every theme's own colour-contrast failures fixed through
+    tokens (muted, status text, accent text, selected rows, tints), keeping
+    each theme's palette; READMEs note changed hexes.
   - Themed transactional emails: `scripts/build_emails.py` writes six
     table-based, inline-styled emails per theme to `dist/email/<slug>/`
     (HTML + plain text), run by `build.sh`.

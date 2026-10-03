@@ -98,7 +98,7 @@ Core's tiers do the work; the theme has no breakpoints of its own.
 ## Contrast honesty
 
 - **Palette is exact; the deviations are two.** `--muted` `#b3b3b3` (10.02:1 on black) is not in the 8-colour set and exists only because the design system needs a secondary-text role; `--hairline` `#4d4d4d` is a rule colour, not text.
-- **White-on-red lifted to black-on-red.** Real teletext printed white on red, which is 4.0:1, under the 4.5:1 floor. `--on-danger` is black on `#ff0000` (5.25:1), still inside the 8-colour set. Black on cyan 16.75:1, on green 15.30:1.
+- **White-on-red lifted to black-on-red.** Real teletext printed white on red, which is 4.0:1, under the 4.5:1 floor. `--on-danger` and the active header nav item are black on `#ff0000` (5.25:1), still inside the 8-colour set. Black on cyan 16.75:1, on green 15.30:1.
 - **On black:** cyan 16.75:1, yellow 19.56:1, magenta `#ff00ff` 6.70:1, red 5.25:1, green 15.30:1, white 21:1. So all eight clear AA on black; red is the tightest.
 - In the ARTE capture, red text sits on a white ground and white on blue; the theme is black-ground only, so those pairings (red on white ~4:1) are not reproduced.
 

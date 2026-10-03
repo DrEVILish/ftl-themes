@@ -62,7 +62,9 @@ back to whatever light weight is available.
 
 ## Contrast honesty
 
-- `--accent` `#1e6fbf` (links, active states) is 5.0:1 on white.
+- `--accent` `#1e6fbf` (links, active states) is 5.0:1 on white. Text on
+  tints uses `--accent-text` `#1b63ab` and `--success-text` `#287028`,
+  which clear 4.5:1 on the badge tints and code diff rows.
 - `--muted` `#5b6878` is 5.6:1 on white.
 - The application button's white label is checked against its own blue
   gradient (`--nav-brand-bg`), deepened from the reference's brighter

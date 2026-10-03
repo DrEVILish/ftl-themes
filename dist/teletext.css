@@ -2943,6 +2943,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
 }
 .app-bar .text-muted { color: var(--app-bar-text); }
+.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
 .app-bar .btn-secondary,
 .app-bar .btn-ghost {
   --btn-fg: var(--app-bar-text);
@@ -9215,7 +9216,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
 :root .prose h6 { font-size: var(--prose-h6-size, 0.9em); }
 .prose h6 { color: var(--muted); }
 
-.prose a:not([class]) {
+.prose :is(a:not([class]), a.footnote-back, a.data-footnote-backref, [role="doc-backlink"]) {
   color: var(--link, var(--accent));
   text-decoration: underline;
   text-decoration-thickness: from-font;
@@ -9724,7 +9725,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10941,7 +10942,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: var(--table-drag-opacity, 0.8);
+  opacity: var(--table-drag-opacity, 1);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11400,6 +11401,8 @@ html[data-theme="teletext"] {
   --tab-underline-active: transparent;
   --row-selected-bg: var(--accent);
   --row-selected-fg: #000000;
+  /* Resolved comment pins: white on black, not the grey. */
+  --comment-pin-resolved-fg: #ffffff;
   --nav-bg: #000000;
   --nav-rule-width: 0;
   --badge-radius: 0;
@@ -11436,6 +11439,8 @@ html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+2) { --tt-band: #00f
 html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+3) { --tt-band: #ff00ff; --tt-band-fg: #000000; --tt-ink: #ff00ff; }
 html[data-theme="teletext"] :is(.panel, .card):nth-child(4n+4) { --tt-band: #ffff00; --tt-band-fg: #000000; --tt-ink: #ffff00; }
 html[data-theme="teletext"] .panel-header {
+  /* No grey on a colour band: secondary text takes the band's own ink. */
+  --muted: var(--tt-band-fg);
   background: var(--tt-band);
   color: var(--tt-band-fg);
   border: 0;
@@ -11447,6 +11452,7 @@ html[data-theme="teletext"] .card { border: 0; border-top: 0.35rem solid var(--t
    under the parent's, just the title in its colour (blue reads as cyan
    ink on black) over a thin band, the way a card is marked. */
 html[data-theme="teletext"] :is(.panel, .card, .modal, .drawer, .popover) .panel > .panel-header {
+  --muted: #b3b3b3;
   background: transparent;
   color: var(--tt-ink, #00ffff);
   border-top: 0.35rem solid var(--tt-band, #0000ff);
@@ -11497,7 +11503,8 @@ html[data-theme="teletext"] {
 html[data-theme="teletext"] .app-bar {
   --nav-brand-fg: #ffffff;
   --nav-item-fg: var(--accent);
-  --nav-item-fg-active: #ffffff;
+  /* Black on red, as --on-danger: white on #ff0000 is 4.0:1. */
+  --nav-item-fg-active: #000000;
   --nav-item-bg-active: var(--danger);
 }
 /* Fastext: the bottom row of a Ceefax page — four words in red, green,

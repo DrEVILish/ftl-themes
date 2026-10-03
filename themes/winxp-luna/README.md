@@ -107,10 +107,10 @@ Luna background filling the well between them.
 Luna's greens and blues sit on tan/white, and several needed adjustment:
 
 - **Start green lifted.** The community-recreation green `#3d9f1e` is 3.4:1 under white text; shipped `--success` is `#2e7a14` (5.37:1). No official hex exists (`luna.msstyles` is a compiled resource), so this is a documented departure from folk consensus, not from a published value.
-- **Success text on tan:** `--success` itself is only 4.40:1 on the `#ece9d8` background, so text uses `--success-text` `#2c7613` (4.64:1 on tan, 5.66:1 on white).
+- **Success text on tan:** `--success` itself is only 4.40:1 on the `#ece9d8` background, so text uses `--success-text` `#296e12` (5.1:1 on tan, 6.2:1 on white; deepened from `#2c7613` so it also clears 4.5:1 on badge, callout and diff tints).
 - **Blue on tan:** `--accent` `#0054e3` is 5.10:1 on tan and 6.22:1 on white/under white text. The selection blue `--accent-2` `#316ac5` is 4.31:1 on tan, so use it as a fill with white text (5.25:1), not as text on the tan well.
-- **Warning:** `--warning` `#ff8c00` is 1.91:1 on tan and is a lamp/fill only; text uses `--warning-text` `#9e5700` (4.51:1 on tan, a narrow pass).
-- `--danger` `#cc0000` is 4.83:1 on tan, 5.89:1 under white text. `--muted` `#5a5a5a` is 5.65:1 on tan.
+- **Warning:** `--warning` `#ff8c00` is 1.91:1 on tan and is a lamp/fill only; text uses `--warning-text` `#955200` (4.95:1 on tan; deepened from `#9e5700` for the warning callout tint).
+- `--danger` `#cc0000` is 4.83:1 on tan, 5.89:1 under white text; as text on its own badge tint it uses `--danger-text` `#bb0000`. `--muted` `#5a5a5a` is 5.65:1 on tan.
 - The app-bar nav text uses pale tints because the black tokens tuned for the tan area measured 1.0:1 on the blue bar.
 
 ## Reference status

@@ -85,8 +85,8 @@ openly-licensed pixel face is vendored yet.
 - **`--bg` teal is lifted from the reference.** `references/windows95/RESEARCH.md` records the desktop as `#008080`. Shipped is `#008282` (2/255 more green and blue). Black text on `#008080` is 4.40:1; on `#008282` it is 4.52:1, just over the 4.5:1 floor. The desktop never carried body text on the real system, so the shift is invisible in practice, but it is a deviation.
 - **AAA is not met on the teal pair, on purpose.** `--text` on `--bg` is ~4.5:1, below the 7:1 AAA target. Every readable surface in the real OS was the grey dialog (`--surface` `#c0c0c0`, black text 11.54:1), so the teal pair is decorative by construction. Brightening the teal further would be the inauthentic fix.
 - Navy `#000080` under white is 16.01:1; navy on the teal desktop is 3.44:1 (chrome only, no text).
-- `--muted` `#444444` is 5.35:1 on grey but only 2.09:1 on teal: never put muted text on the desktop.
-- `--success` `#008000` and `--warning` `#808000` are lamp/fill colours only; text uses `--success-text` `#005c00` and `--warning-text` `#4d4d00`.
+- `--muted` `#3a3a3a` is 6.2:1 on grey and 4.9:1 on the planner/notification tints, but fails on teal: text straight on the desktop (marketing hero, untinted bands) takes black for muted, link and trend text.
+- `--success` `#008000` and `--warning` `#808000` are lamp/fill colours only; text uses `--success-text` `#004d00` and `--warning-text` `#4d4d00`.
 
 ## Reference status
 

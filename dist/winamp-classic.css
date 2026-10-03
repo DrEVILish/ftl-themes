@@ -2943,6 +2943,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
 }
 .app-bar .text-muted { color: var(--app-bar-text); }
+.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
 .app-bar .btn-secondary,
 .app-bar .btn-ghost {
   --btn-fg: var(--app-bar-text);
@@ -9215,7 +9216,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
 :root .prose h6 { font-size: var(--prose-h6-size, 0.9em); }
 .prose h6 { color: var(--muted); }
 
-.prose a:not([class]) {
+.prose :is(a:not([class]), a.footnote-back, a.data-footnote-backref, [role="doc-backlink"]) {
   color: var(--link, var(--accent));
   text-decoration: underline;
   text-decoration-thickness: from-font;
@@ -9724,7 +9725,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10941,7 +10942,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: var(--table-drag-opacity, 0.8);
+  opacity: var(--table-drag-opacity, 1);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11333,7 +11334,7 @@ html[data-theme="winamp-classic"] {
   --hairline: #2a2a2a;
   --text: #d9d9c8;
   /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #9a9a8c, 3.1:1. */
-  --muted: #bbbbb2;
+  --muted: #c2c2ba;
   --accent: #00ff00;
   --accent-2: #a4ff30;
   --danger: #cc2020;
@@ -11561,4 +11562,19 @@ html[data-theme="winamp-classic"] .modal-header > .btn-close {
   --modal-header-close-fg: #222;
   --btn-close-fg-hover: #000;
 }
+
+/* --- Contrast (a11y sweep) -------------------------------------------------
+ * The skin's colours are full-brightness LED greens and amber; a tint of
+ * them mixed into the mid-grey --surface came out mid-tone, and the beige
+ * text sank to ~3.2-4.2:1 on it. Tints here mix into the near-black --bg
+ * instead, so they read as dim LED glow behind the text. */
+html[data-theme="winamp-classic"] {
+  --mark-bg: color-mix(in srgb, var(--warning) 35%, var(--bg));
+  --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 32%, var(--bg));
+  --mention-self-bg: color-mix(in srgb, var(--warning) 30%, var(--bg));
+  --btn-clear-bg-active: color-mix(in srgb, var(--accent) 28%, var(--bg));
+}
+html[data-theme="winamp-classic"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--bg)); }
+html[data-theme="winamp-classic"] .kanban-labels .badge[data-series] { --badge-bg: color-mix(in srgb, var(--series) 24%, var(--bg)); }
+html[data-theme="winamp-classic"] .calendar-event { --calendar-event-bg: color-mix(in srgb, var(--_ev) 24%, var(--bg)); }
 }

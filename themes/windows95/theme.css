@@ -21,7 +21,7 @@ html[data-theme="windows95"] {
   --border: #808080;
   --hairline: #808080;
   --text: #000000;
-  --muted: #444444;
+  --muted: #3a3a3a;
   --accent: #000080;
   --accent-2: #0a246a;
   --danger: #800000;
@@ -30,7 +30,7 @@ html[data-theme="windows95"] {
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --success-text: #005c00;
+  --success-text: #004d00;
   --warning-text: #4d4d00;
   /* Light-ish theme, so filled controls need explicit white foregrounds —
      the dark-theme habit of painting them --bg would put teal text on
@@ -117,6 +117,10 @@ html[data-theme="windows95"] {
   --badge-radius: 0;
   --badge-border: #808080;
   --badge-bg: var(--surface-2);
+  /* Diff lines in a code block: light tints, so state-coloured tokens on
+     them keep 4.5:1 (14% over the grey face sank them to ~3.5:1). */
+  --code-inserted-bg: #cfe0cf;
+  --code-deleted-bg: #e6cfcf;
   --progress-radius: 0;
   --progress-fill: var(--accent);
   --switch-radius: 0;
@@ -255,9 +259,9 @@ html[data-theme="windows95"] .panel-header {
 /* Controls sitting in a caption bar keep the dialog's own tokens: the
    light tints above are for the caption's text, and a search field's
    addon icon drawn in #dfdfdf on its grey face vanished. */
-html[data-theme="windows95"] .panel-header :is(.input-group, .input, .select, .dropdown, .popover, .context-menu) {
-  --muted: #444444;
-  --success-text: #005c00;
+html[data-theme="windows95"] .panel-header :is(.input-group, .input, .select, .dropdown, .popover, .context-menu, .badge) {
+  --muted: #3a3a3a;
+  --success-text: #004d00;
   --warning-text: #4d4d00;
   --danger-text: #800000;
 }
@@ -273,8 +277,8 @@ html[data-theme="windows95"] .panel-header:has(.input, .select, .btn) {
 html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
   --panel-header-bg: transparent;
   --panel-header-fg: var(--text);
-  --muted: #444444;
-  --success-text: #005c00;
+  --muted: #3a3a3a;
+  --success-text: #004d00;
   --warning-text: #4d4d00;
   --danger-text: #800000;
   border-bottom: 1px solid #808080;
@@ -464,3 +468,28 @@ html[data-theme="windows95"] {
   --bar-chart-radius: 0;
   --bar-chart-gap: 4px;
 }
+
+/* --- Contrast (a11y sweep) -------------------------------------------------
+ * 95 had no tinted chips: every coloured badge is the plain grey face with
+ * coloured text (core's per-variant tint sits on the element, so the root
+ * --badge-bg alone never reached them). */
+html[data-theme="windows95"] :is(.badge-accent, .badge-danger, .badge-success, .badge-warning) { --badge-bg: var(--surface-2); }
+/* No outline buttons in 95: a secondary button is the ordinary grey push
+   button (transparent, its navy label sank into the teal desktop). */
+html[data-theme="windows95"] .btn-secondary { --btn-bg: var(--surface); --btn-fg: var(--text); }
+/* Text straight on the teal desktop (marketing hero, untinted bands, page footer):
+   only black clears 4.5:1 there, so muted, link and trend text take it.
+   Windows and cards on the desktop get the dialog tokens back. */
+html[data-theme="windows95"] :is(.hero, .band:not(.is-tinted), body > footer) {
+  --muted: #000000;
+  --link: #000000;
+  --success-text: #000000;
+  --danger-text: #000000;
+}
+html[data-theme="windows95"] :is(.hero, .band:not(.is-tinted), body > footer) :is(.panel, .card, .modal, .drawer, .popover, .alert, .toast, .list, .table-wrap, .tabs, .accordion) {
+  --muted: #3a3a3a;
+  --link: var(--accent);
+  --success-text: #004d00;
+  --danger-text: #800000;
+}
+

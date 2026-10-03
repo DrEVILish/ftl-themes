@@ -2943,6 +2943,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
 }
 .app-bar .text-muted { color: var(--app-bar-text); }
+.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
 .app-bar .btn-secondary,
 .app-bar .btn-ghost {
   --btn-fg: var(--app-bar-text);
@@ -9215,7 +9216,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
 :root .prose h6 { font-size: var(--prose-h6-size, 0.9em); }
 .prose h6 { color: var(--muted); }
 
-.prose a:not([class]) {
+.prose :is(a:not([class]), a.footnote-back, a.data-footnote-backref, [role="doc-backlink"]) {
   color: var(--link, var(--accent));
   text-decoration: underline;
   text-decoration-thickness: from-font;
@@ -9724,7 +9725,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10941,7 +10942,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: var(--table-drag-opacity, 0.8);
+  opacity: var(--table-drag-opacity, 1);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11352,8 +11353,10 @@ html[data-theme="winxp-luna"] {
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --success-text: #2c7613;
-  --warning-text: #9e5700;
+  --success-text: #296e12;
+  --warning-text: #955200;
+  /* Deep enough for 4.5:1 on the 20% badge tints and callout/diff fills. */
+  --danger-text: #bb0000;
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
@@ -11439,7 +11442,7 @@ html[data-theme="winxp-luna"] {
   /* Same for the taskbar's bright upper band. */
   --luna-taskbar-lip: inset 0 1px #1f2f86, inset 0 4px #4490e6;
   --luna-frame: #0831d9;
-  --luna-heading: #0058c8;
+  --luna-heading: #0056c4;
   /* Minimize / maximize / close caption buttons, one inline SVG. */
   --luna-caption: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='67' height='21'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236d9bfb'/%3E%3Cstop offset='.45' stop-color='%232f6cf3'/%3E%3Cstop offset='1' stop-color='%23104bd9'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f0a080'/%3E%3Cstop offset='.45' stop-color='%23e0582c'/%3E%3Cstop offset='1' stop-color='%23c1370f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke='%23fff'%3E%3Crect x='.5' y='.5' width='20' height='20' rx='3' fill='url(%23b)'/%3E%3Crect x='23.5' y='.5' width='20' height='20' rx='3' fill='url(%23b)'/%3E%3Crect x='46.5' y='.5' width='20' height='20' rx='3' fill='url(%23r)'/%3E%3C/g%3E%3Crect x='5' y='13' width='7' height='3' fill='%23fff'/%3E%3Crect x='28.5' y='5.5' width='10' height='10' fill='none' stroke='%23fff'/%3E%3Crect x='28' y='5' width='11' height='3' fill='%23fff'/%3E%3Cpath d='M51.5 5.5l10 10M61.5 5.5l-10 10' stroke='%23fff' stroke-width='2.2'/%3E%3C/svg%3E");
   --nav-item-bg-active: var(--accent);

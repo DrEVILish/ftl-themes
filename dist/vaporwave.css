@@ -2943,6 +2943,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
 }
 .app-bar .text-muted { color: var(--app-bar-text); }
+.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
 .app-bar .btn-secondary,
 .app-bar .btn-ghost {
   --btn-fg: var(--app-bar-text);
@@ -9215,7 +9216,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
 :root .prose h6 { font-size: var(--prose-h6-size, 0.9em); }
 .prose h6 { color: var(--muted); }
 
-.prose a:not([class]) {
+.prose :is(a:not([class]), a.footnote-back, a.data-footnote-backref, [role="doc-backlink"]) {
   color: var(--link, var(--accent));
   text-decoration: underline;
   text-decoration-thickness: from-font;
@@ -9724,7 +9725,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
    calls for (relative colour syntax; older engines keep the fallback). */
 :is(.live-cursor, .comment-pin)[data-color] {
   --user-fg: var(--live-cursor-fg, #fff);
-  --user-fg: oklch(from var(--user-color) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+  --user-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
 }
 .avatar[data-color] {
   --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--surface));
@@ -10941,7 +10942,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table th[draggable="true"] { cursor: grab; }
 .table th[draggable="true"]:active { cursor: grabbing; }
 .table :is(th, td).is-dragging {
-  opacity: var(--table-drag-opacity, 0.8);
+  opacity: var(--table-drag-opacity, 1);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
   outline-offset: -1px;
 }
@@ -11626,4 +11627,9 @@ html[data-theme="vaporwave"] .modal-header > :is(h1, h2, h3, h4, h5, h6) {
   background: none;
   -webkit-text-fill-color: currentColor;
 }
+
+/* An open comment's anchor: core's 40% of the pale-yellow --warning turned
+   the purple into a mid-tone khaki the lilac text could not clear (4.1:1);
+   30% keeps it clearly brighter than the idle 22%. */
+html[data-theme="vaporwave"] { --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 30%, transparent); }
 }

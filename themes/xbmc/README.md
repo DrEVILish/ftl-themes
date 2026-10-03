@@ -58,7 +58,7 @@ toward the edges.
 
 ## Contrast honesty
 
-- **Blue on near-black is comfortable:** `--accent` `#1e90ff` is 5.98:1 on `--bg` `#0a0e14` and 5.61:1 on `--surface`; `--on-accent` `#04101f` is 5.90:1 on it. No lift was needed.
+- **Blue on near-black is comfortable:** `--accent` `#1e90ff` is 5.98:1 on `--bg` `#0a0e14` and 5.61:1 on `--surface`; `--on-accent` `#04101f` is 5.90:1 on it. Accent as text (`--accent-text` `#2d98ff`) is lifted a touch so it clears 4.5:1 on its own 20% badge tint.
 - **Muted** `#93a7c7` is 7.43:1 on `--surface`; text `#dbe6f5` is 14.4:1.
 - **Reference vs shipped colour (uncertain).** `RESEARCH.md` says "dark blue-grey" blades; the two 2007-skin captures show neutral charcoal/black brushed panels with a lime-green selection LED, and only `xbmc-confluence-14.jpg` shows the blue (a blue bokeh backdrop with a black horizontal strip). So `#1e90ff` follows the Kodi/Confluence-era brand blue for the selection glow, not the 2007 blade colours, and the blue-tinted `#0a0e14` is a compromise between them. The hexes were not sampled.
 
