@@ -1,0 +1,836 @@
+/* ftl-themes: Cyberpunk 2077
+ * Theme-Name: Cyberpunk 2077
+ * Description: Night City menus and HUD: coral-red condensed caps on near-black maroon, cyan for whatever is live or selected, yellow tags, angled cut corners, scanlines, glitch offsets, and netrunner breach-grid tables.
+ *
+ * Inspired by the in-game menus and HUD of Cyberpunk 2077 (CD PROJEKT RED,
+ * 2020). No logo, wordmark, corporate mark or game art ships here; see
+ * references/cyberpunk-2077/RESEARCH.md for the frames each rule follows.
+ *
+ * Note on fonts: the game's menus are set in a squared, condensed
+ * technical sans (community-identified as Blender Pro, a commercial face,
+ * not verified from the game files). It is not vendored and not named.
+ * The theme vendors Rajdhani (Indian Type Foundry, SIL OFL 1.1) Medium and
+ * Bold, which has the same squared counters and short descenders, and
+ * reuses the already-vendored Share Tech Mono for code and readouts.
+ *
+ * Component look is set through --<component>-* properties at root scope
+ * (CONTRACT.md "How a theme overrides a component"). Cut corners on
+ * panels, cards, modals and menus are drawn as background layers (frame +
+ * cut fill), not clip-path, so nothing inside them (focus rings, anchored
+ * menus, tooltips) is clipped. Only .btn and .badge use clip-path.
+ */
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("assets/fonts/Rajdhani-Medium.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rajdhani";
+  src: url("assets/fonts/Rajdhani-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+html[data-theme="cyberpunk-2077"] {
+  color-scheme: dark;
+  /* Sampled from references/cyberpunk-2077 (RESEARCH.md "Sampled palette"). */
+  --bg: #0e0d12;          /* menu backdrop, sampled #0e0e13 */
+  --surface: #1a1119;     /* panel plate: the slider-track navy pulled warm */
+  --surface-2: #110d15;   /* recessed: inputs, tracks, menus */
+  --border: #a8383d;      /* the long red rule, dimmed for structure */
+  --hairline: #3b1a21;
+  --text: #ff8a82;        /* menu red: labels, item names, descriptions */
+  --muted: #e3645d;       /* inactive tabs, column heads: dimmer red */
+  --accent: #5ef6ff;      /* live / selected / ON / values: the cyan */
+  --accent-2: #fcee0a;    /* the yellow: NEW tags, quest marks */
+  --danger: #ff2a3d;      /* hostile red, hotter than the menu red */
+  --success: #2bd97c;     /* street-cred green */
+  --warning: #fcee0a;
+  --danger-text: #ff4d7a;
+  --success-text: #2bd97c;
+  --warning-text: #fcee0a;
+  --accent-text: #5ef6ff;
+  --on-accent: #0b0a0f;
+  --on-danger: #0b0a0f;
+  --on-success: #0b0a0f;
+  --on-surface: var(--text);
+  --radius: 0;
+  --font: "Rajdhani", "Arial Narrow", "Roboto Condensed", "Nimbus Sans Narrow", sans-serif;
+  --font-mono: "Share Tech Mono", "DejaVu Sans Mono", "Consolas", monospace;
+  --flare: #cfec58;       /* breach-protocol yellow-green */
+  --density: 1;
+
+  /* Theme flourishes. */
+  --cp-red: #ff5f58;
+  --cp-line: rgba(255, 95, 88, 0.62);
+  --cp-cyan: #5ef6ff;
+  --cp-yellow: #fcee0a;
+  --cp-breach: #cfec58;
+  --cp-breach-bg: #121f1f;
+  --cp-breach-band: #29353d;
+  --cp-pink: #ff2a6d;
+  --cp-cut: 14px;
+  /* A surface: 1px frame drawn in the background with the bottom-right
+     corner cut on a diagonal, a short thick tab top-left, and a red wash
+     falling from the top edge. */
+  --cp-frame:
+    linear-gradient(var(--cp-red), var(--cp-red)) left top / 2.75rem 3px no-repeat,
+    linear-gradient(var(--cp-line), var(--cp-line)) left top / 100% 1px no-repeat,
+    linear-gradient(var(--cp-line), var(--cp-line)) left top / 1px 100% no-repeat,
+    linear-gradient(var(--cp-line), var(--cp-line)) right top / 1px calc(100% - var(--cp-cut)) no-repeat,
+    linear-gradient(var(--cp-line), var(--cp-line)) left bottom / calc(100% - var(--cp-cut)) 1px no-repeat,
+    linear-gradient(to top left, transparent calc(50% - 1px), var(--cp-line) calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px)) right bottom / var(--cp-cut) var(--cp-cut) no-repeat;
+  --cp-fill:
+    linear-gradient(180deg, rgba(255, 95, 88, 0.08), transparent 5rem),
+    linear-gradient(315deg, transparent calc(var(--cp-cut) * 0.7071), var(--surface) calc(var(--cp-cut) * 0.7071));
+  /* A quieter surface for nesting: no tab, no wash, a smaller cut. */
+  --cp-frame-sm:
+    linear-gradient(var(--hairline), var(--hairline)) left top / 100% 1px no-repeat,
+    linear-gradient(var(--hairline), var(--hairline)) left top / 1px 100% no-repeat,
+    linear-gradient(var(--hairline), var(--hairline)) right top / 1px calc(100% - 8px) no-repeat,
+    linear-gradient(var(--hairline), var(--hairline)) left bottom / calc(100% - 8px) 1px no-repeat,
+    linear-gradient(to top left, transparent calc(50% - 1px), var(--hairline) calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px)) right bottom / 8px 8px no-repeat,
+    linear-gradient(315deg, transparent 5.7px, var(--surface-2) 5.7px);
+  /* Cyan corner brackets (the breach screen and the HUD cursor). */
+  --cp-brackets:
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 10px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 2px 10px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 10px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 2px 10px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 10px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 2px 10px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 10px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 2px 10px no-repeat;
+  --cp-scanlines: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+
+  --label-transform: uppercase;
+  --label-tracking: 0.04em;
+  --focus: var(--cp-cyan);
+  --focus-ring: 0 0 0.6rem rgba(94, 246, 255, 0.45);
+  --link: var(--cp-cyan);
+  --selection-bg: var(--cp-cyan);
+  --selection-fg: #0b0a0f;
+  --scrollbar-thumb: #8a2c31;
+  --scrollbar-thumb-hover: var(--cp-red);
+  --scrollbar-track: #110d15;
+  --scrollbar-size: 6px;
+  --scrollbar-radius: 0;
+  --submenu-glyph: "\25B8";
+
+  /* Buttons: a dark red plate in a red rule, bottom-right corner cut.
+     Hover goes cyan (the game's cursor colour). Primary is a solid red
+     slab, like the CRAFT / CONFIRM highlight. */
+  --btn-bg: rgba(255, 95, 88, 0.1);
+  --btn-fg: var(--text);
+  --btn-border: var(--cp-line);
+  --btn-bg-hover: rgba(94, 246, 255, 0.1);
+  --btn-border-hover: var(--cp-cyan);
+  --btn-shadow-hover: inset 0 0 0.9rem rgba(94, 246, 255, 0.18);
+  --btn-radius: 0;
+  --btn-weight: 700;
+  --btn-tracking: 0.06em;
+  --btn-transform: uppercase;
+  --btn-padding: calc(0.45em * var(--density)) calc(1.3em * var(--density)) calc(0.4em * var(--density)) calc(1.1em * var(--density));
+  --btn-icon-radius: 0;
+  --toggle-btn-bg: rgba(255, 95, 88, 0.08);
+  --toggle-btn-bg-on: rgba(94, 246, 255, 0.14);
+  --toggle-btn-border: var(--cp-line);
+  --toggle-btn-border-on: var(--cp-cyan);
+  --toggle-btn-fg-on: var(--cp-cyan);
+  --toggle-btn-radius: 0;
+  --go-bg: rgba(255, 95, 88, 0.12);
+  --go-border: var(--cp-red);
+  --go-fg: var(--text);
+  --go-radius: 0;
+  --go-bg-hover: rgba(94, 246, 255, 0.12);
+  --go-shadow-hover: inset 0 0 1rem rgba(94, 246, 255, 0.35);
+
+  /* Close: cyan glyph everywhere; in a title bar it becomes the ESC key
+     cap (see the .modal-header > .btn-close block below). */
+  --btn-close-radius: 0;
+  --btn-close-fg: var(--cp-cyan);
+  --btn-close-bg-hover: rgba(94, 246, 255, 0.15);
+  --btn-close-fg-hover: var(--cp-cyan);
+  --modal-header-close-fg: var(--cp-cyan);
+  --btn-min-glyph: "\2013";
+  --btn-max-glyph: "\25A2";
+
+  /* Inputs: the settings track, deep navy in a red rule, cyan value. */
+  --input-bg: #16111f;
+  --input-fg: var(--cp-cyan);
+  --input-border: #6f2a30;
+  --input-radius: 0;
+  --input-placeholder: #b0555a;
+  --input-caret: var(--cp-cyan);
+  --input-addon-bg: #24111a;
+  --input-addon-fg: var(--text);
+  --select-arrow-fg: var(--text);
+  --field-group-title-fg: var(--text);
+
+  /* Surfaces. */
+  --panel-bg: var(--cp-frame), var(--cp-fill);
+  --panel-border: var(--cp-line);
+  --panel-border-width: 0;
+  --panel-radius: 0;
+  --panel-shadow: none;
+  --panel-header-bg: transparent;
+  --panel-header-fg: var(--text);
+  --card-bg: var(--cp-frame), var(--cp-fill);
+  --card-border-width: 0;
+  --card-radius: 0;
+  --card-shadow: none;
+  --modal-bg: var(--cp-frame), var(--cp-scanlines), linear-gradient(180deg, rgba(255, 95, 88, 0.14), transparent 7rem), linear-gradient(315deg, transparent calc(var(--cp-cut) * 0.7071), #1d1119 calc(var(--cp-cut) * 0.7071));
+  --modal-border: transparent;
+  --modal-radius: 0;
+  --modal-shadow: none;
+  --modal-header-bg: transparent;
+  --modal-header-fg: var(--text);
+  --overlay-bg: rgba(8, 6, 10, 0.82);
+  --drawer-bg: var(--cp-scanlines), linear-gradient(90deg, #1d1119, #140e17);
+  --drawer-border: var(--cp-line);
+  --drawer-shadow: 0 0 2rem rgba(0, 0, 0, 0.7);
+  --dropdown-bg: var(--cp-frame-sm);
+  --dropdown-border-width: 0;
+  --dropdown-radius: 0;
+  --dropdown-item-bg-hover: rgba(94, 246, 255, 0.12);
+  --dropdown-item-fg-hover: var(--cp-cyan);
+  --context-menu-bg: var(--cp-frame-sm);
+  --context-menu-border-width: 0;
+  --context-menu-radius: 0;
+  --context-menu-item-bg-hover: rgba(94, 246, 255, 0.12);
+  --context-menu-item-fg-hover: var(--cp-cyan);
+  --popover-bg: var(--cp-frame-sm);
+  --popover-border-width: 0;
+  --popover-radius: 0;
+  --popover-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.6);
+  --tooltip-bg: #0b0a0f;
+  --tooltip-fg: var(--cp-cyan);
+  --tooltip-border: var(--cp-cyan);
+  --tooltip-radius: 0;
+  /* Toasts: the cyan tutorial / LEVEL UP plate. */
+  --toast-bg: linear-gradient(90deg, rgba(94, 246, 255, 0.16), rgba(94, 246, 255, 0.05)), #0f1a1f;
+  --toast-fg: #d7fbff;
+  --toast-border: var(--cp-cyan);
+  --toast-radius: 0;
+  --toast-shadow: 0 0 1.2rem rgba(94, 246, 255, 0.2);
+  --alert-bg: rgba(255, 95, 88, 0.08);
+  --alert-fg: var(--text);
+  --alert-radius: 0;
+  --alert-border-width: 1px;
+
+  /* Tables: the netrunner breach grid. A breach-yellow head bar, a dark
+     teal matrix, faint grid lines, a steel band on the row under the
+     cursor and cyan for the selected one. */
+  --table-bg: var(--cp-breach-bg);
+  --table-head-bg: var(--cp-breach);
+  --table-head-fg: #000000;
+  --table-head-fg-hover: #000000;
+  --table-head-transform: uppercase;
+  --table-head-tracking: 0.08em;
+  --table-head-rule: var(--cp-breach);
+  --table-head-rule-width: 0;
+  --table-sort-fg: #10140a;
+  --table-rule: rgba(207, 236, 88, 0.14);
+  --row-hover-bg: rgba(255, 95, 88, 0.1);   /* lists, trees, menus; tables get the steel band below */
+  --row-selected-bg: rgba(94, 246, 255, 0.16);
+  --row-selected-fg: var(--cp-cyan);
+  --row-active-bg: rgba(255, 95, 88, 0.08);
+  --row-active-marker: inset 3px 0 0 var(--cp-cyan);
+  --row-alt-bg: rgba(207, 236, 88, 0.03);
+  --table-group-bg: #182828;
+  --table-group-fg: var(--cp-breach);
+  --table-card-bg: var(--cp-breach-bg);
+  --table-card-border: rgba(207, 236, 88, 0.3);
+  --table-card-radius: 0;
+  --cell-input-bg: #0b1414;
+  --cell-input-radius: 0;
+  --cell-editing-border: var(--cp-cyan);
+  --cell-dirty-marker: var(--cp-yellow);
+  --cell-saved-fg: var(--success-text);
+
+  /* Nav and tabs: the top menu strip. Inactive red, active cyan with a
+     cyan underline; no boxes. */
+  --nav-bg: transparent;
+  --nav-brand-fg: var(--text);
+  --nav-item-fg: var(--text);
+  --nav-item-fg-active: var(--cp-cyan);
+  --nav-item-bg: transparent;
+  --nav-item-bg-active: rgba(94, 246, 255, 0.08);
+  --nav-item-radius: 0;
+  --nav-rule: var(--cp-line);
+  --tab-fg: var(--muted);
+  --tab-fg-active: var(--cp-cyan);
+  --tab-fg-hover: var(--cp-cyan);
+  --tab-bg-active: transparent;
+  --tab-bg-hover: rgba(94, 246, 255, 0.06);
+  --tab-underline-active: var(--cp-cyan);
+  --tab-radius: 0;
+  /* Segmented: the OFF / ON pair. Off is the red slab, on is cyan. */
+  --segmented-bg: #110d15;
+  --segmented-border: #4a1c22;
+  --segmented-radius: 0;
+  --segmented-item-radius: 0;
+  --segmented-item-fg: var(--muted);
+  --segmented-item-bg-active: var(--cp-cyan);
+  --segmented-item-fg-active: #0b0a0f;
+  --segmented-item-fg-hover: var(--cp-cyan);
+  --pagination-item-radius: 0;
+  --pagination-item-bg-active: var(--cp-cyan);
+  --pagination-item-fg-active: #0b0a0f;
+  --pagination-item-fg: var(--text);
+  --pagination-item-fg-hover: var(--cp-cyan);
+  --breadcrumb-separator: "\25B8";
+  --breadcrumb-current-fg: var(--cp-cyan);
+  --scrollspy-link-active-fg: var(--cp-cyan);
+  --scrollspy-link-active-marker: var(--cp-cyan);
+  --list-bg: transparent;
+  --list-border: var(--hairline);
+  --list-radius: 0;
+  --list-rule: var(--hairline);
+  --list-item-bg-hover: rgba(255, 95, 88, 0.1);
+  --list-active-marker: inset 3px 0 0 var(--cp-cyan);
+  --accordion-trigger-bg-hover: rgba(255, 95, 88, 0.08);
+
+  /* Badges: the yellow NEW tag; colour variants keep their own fills. */
+  --badge-bg: rgba(255, 95, 88, 0.14);
+  --badge-fg: var(--text);
+  --badge-border: var(--cp-line);
+  --badge-radius: 0;
+  --badge-bg-active: var(--cp-cyan);
+  --badge-fg-active: #0b0a0f;
+  --status-dot-radius: 0;
+  --avatar-radius: 0;
+  --avatar-bg: #24111a;
+  --avatar-fg: var(--cp-cyan);
+
+  /* Switch: the OFF/ON block toggle. Square, red when off, cyan when on. */
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --switch-bg: #3a1418;
+  --switch-border: #8a2c31;
+  --switch-thumb-bg: var(--cp-red);
+  --switch-bg-on: rgba(94, 246, 255, 0.2);
+  --switch-border-on: var(--cp-cyan);
+  --switch-thumb-bg-on: var(--cp-cyan);
+  /* Slider: dark track, a red slab thumb. */
+  --slider-radius: 0;
+  --slider-height: 0.55rem;
+  --slider-bg: linear-gradient(90deg, rgba(255, 95, 88, 0.35), rgba(255, 95, 88, 0.1)), #16111f;
+  --slider-border: #6f2a30;
+  --slider-border-width: 1px;
+  --slider-thumb-radius: 0;
+  --slider-thumb-bg: var(--cp-red);
+  --slider-thumb-size: 1rem;
+  --slider-thumb-shadow: 0 0 0.6rem rgba(255, 95, 88, 0.6);
+
+  /* Bars and meters: flat red fill with a glow, angled end. */
+  --progress-height: 0.55rem;
+  --progress-radius: 0;
+  --progress-bg: rgba(255, 95, 88, 0.12);
+  --progress-border: transparent;
+  --progress-fill: var(--cp-red);
+  --meter-track: #16111f;
+  --meter-border: #4a1c22;
+  --meter-radius: 0;
+  --meter-low: var(--cp-cyan);
+  --meter-mid: var(--cp-yellow);
+  --meter-high: var(--cp-red);
+  --meter-peak-fg: #ffffff;
+  --indicator-fg: var(--cp-cyan);
+  --indicator-track: #3b1a21;
+  --spinner-fg: var(--cp-cyan);
+  --spinner-track: #3b1a21;
+  --skeleton-bg: rgba(255, 95, 88, 0.1);
+  --skeleton-radius: 0;
+
+  /* Readouts are the cyan values beside red labels. */
+  --readout-bg: #110d15;
+  --readout-fg: var(--cp-cyan);
+  --readout-border: #4a1c22;
+  --readout-radius: 0;
+  --readout-padding: calc(0.1em + 4px) 0.6em;
+  --readout-font: var(--font);
+  --readout-weight: 600;
+  --readout-glow: 0 0 0.6rem rgba(94, 246, 255, 0.4);
+  --readout-unit-fg: var(--muted);
+  --lamp-radius: 0;
+  --lamp-off: #3b1a21;
+  --lamp-on: var(--cp-cyan);
+  --lamp-glow: 0 0 0.5rem currentColor;
+  --transport-bg: var(--cp-frame), var(--cp-fill);
+  --transport-border: transparent;
+  --transport-radius: 0;
+
+  /* Key hints: [ESC] Close, cyan outline key caps. */
+  --kbd-bg: transparent;
+  --kbd-fg: var(--cp-cyan);
+  --kbd-border: var(--cp-cyan);
+  --kbd-radius: 0;
+  --kbd-shadow: none;
+
+  /* Code: a shard readout. Keywords cyan, strings yellow, numbers green. */
+  --code-bg: #110d15;
+  --code-fg: #ffb3ad;
+  --code-block-bg: #0d0b11;
+  --code-block-border: #4a1c22;
+  --code-block-header-bg: #1d1119;
+  --code-block-header-fg: var(--text);
+  --code-keyword: #5ef6ff;
+  --code-string: #fcee0a;
+  --code-number: #2bd97c;
+  --code-comment: #c97376;
+  --code-function: #ff8a80;
+  --code-type: #cfec58;
+  --code-variable: #ffd2ce;
+  --code-attr: #5ef6ff;
+  --code-tag: #ff6f66;
+  --code-punctuation: #c9868a;
+  --code-inserted: #2bd97c;
+  --code-inserted-bg: rgba(43, 217, 124, 0.12);
+  --code-deleted: #ff4d7a;
+  --code-deleted-bg: rgba(255, 42, 61, 0.14);
+  --code-line-number: #8f474c;
+  --code-gutter-rule: #3b1a21;
+  --code-highlight-bg: rgba(94, 246, 255, 0.08);
+  --code-highlight-bar: var(--cp-cyan);
+  --mark-bg: var(--cp-yellow);
+  --mark-fg: #0b0a0f;
+  --prose-quote-rule: var(--cp-red);
+  --prose-rule: var(--cp-line);
+  --prose-marker: var(--cp-cyan);
+  --callout-radius: 0;
+
+  /* Conversation: the phone's message thread, cyan for your side. */
+  --message-bg: #1d1119;
+  --message-border: #4a1c22;
+  --message-radius: 0;
+  --message-own-bg: #0f1a1f;
+  --message-own-border: rgba(94, 246, 255, 0.5);
+  --message-own-fg: #d7fbff;
+  --attachment-bg: #110d15;
+  --attachment-border: #4a1c22;
+  --attachment-radius: 0;
+  --dropzone-radius: 0;
+  --dropzone-border: var(--cp-line);
+  --dropzone-border-active: var(--cp-cyan);
+  --dropzone-bg-active: rgba(94, 246, 255, 0.08);
+  --log-bg: #0d0b11;
+  --log-border: #4a1c22;
+  --log-radius: 0;
+
+  /* Charts: validated categorical palette (dataviz validator, dark mode
+     on --surface #1a1119: lightness band, chroma, CVD and contrast pass).
+     Cyan, red, yellow, violet, orange, green, in that order. */
+  --chart-series-1: #15a8ae;
+  --chart-series-2: #d02a3a;
+  --chart-series-3: #a19705;
+  --chart-series-4: #8f3dc0;
+  --chart-series-5: #be6b0b;
+  --chart-series-6: #15af66;
+  --chart-grid: #3b1a21;
+  --bar-chart-bar: var(--cp-red);
+  --bar-chart-bar-alt: var(--cp-cyan);
+  --bar-chart-radius: 0;
+  --bar-chart-axis: var(--cp-line);
+
+  /* Planner and media kits. */
+  --kanban-column-bg: rgba(26, 17, 25, 0.7);
+  --kanban-column-border: #4a1c22;
+  --kanban-column-radius: 0;
+  --kanban-column-accent: var(--cp-red);
+  --kanban-card-bg: #1d1119;
+  --kanban-card-border: #4a1c22;
+  --kanban-card-border-hover: var(--cp-cyan);
+  --kanban-card-radius: 0;
+  --calendar-today-ring: var(--cp-cyan);
+  --calendar-range-bg: rgba(94, 246, 255, 0.12);
+  --calendar-today-fg: var(--cp-cyan);
+  --calendar-now: var(--cp-yellow);
+  --calendar-event-radius: 0;
+  --calendar-date-radius: 0;
+  --calendar-grid-line: #3b1a21;
+  --gantt-bar-radius: 0;
+  --gantt-today: var(--cp-yellow);
+  --gantt-grid-line: #3b1a21;
+  --scrubber-fill: var(--cp-red);
+  --scrubber-thumb: var(--cp-cyan);
+  --scrubber-thumb-radius: 0;
+  --waveform-played: var(--cp-red);
+  --waveform-unplayed: #4a1c22;
+  --waveform-head: var(--cp-cyan);
+  --waveform-radius: 0;
+  --track-radius: 0;
+  --track-art-radius: 0;
+  --track-playing-fg: var(--cp-cyan);
+  --now-playing-art-radius: 0;
+  --equaliser-color: var(--cp-cyan);
+
+  /* Game HUD (core/components/hud.css): the health bar is a flat red
+     slab with a glow and an angled end, RAM is cyan pips, slots glow
+     in the game's rarity colours. */
+  --hud-fg: var(--text);
+  --hud-font: var(--font);
+  --hud-radius: 0;
+  --hud-border: var(--cp-line);
+  --hud-scene-bg: radial-gradient(ellipse at 30% 20%, #3a1418, transparent 60%), linear-gradient(#141019, #070609);
+  --hud-panel-bg: rgba(20, 13, 19, 0.88);
+  --hud-panel-border: rgba(255, 95, 88, 0.45);
+  --hud-panel-radius: 0;
+  --hud-health: var(--cp-red);
+  --hud-mana: var(--cp-cyan);
+  --hud-stamina: var(--cp-yellow);
+  --hud-bar-fill: var(--cp-cyan);
+  --hud-bar-track: rgba(255, 95, 88, 0.12);
+  --hud-bar-border-width: 0;
+  --hud-bar-radius: 0;
+  --hud-bar-height: 0.75rem;
+  --hud-bar-sheen: linear-gradient(rgba(255, 255, 255, 0.18), transparent 45%);
+  --hud-bar-gap: 4px;
+  --hud-bar-clip: polygon(-1rem -1rem, 100% -1rem, 100% 0, calc(100% - 0.55rem) 100%, calc(100% - 0.55rem) calc(100% + 1rem), -1rem calc(100% + 1rem));
+  --hud-bar-low: var(--cp-pink);
+  --hud-bar-low-fg: var(--danger-text);
+  --hud-bar-label-transform: uppercase;
+  --hud-bar-label-spacing: 0.06em;
+  --hud-bar-fg: var(--text);
+  --hud-slot-bg: rgba(26, 17, 25, 0.9);
+  --hud-slot-bg-hover: rgba(94, 246, 255, 0.1);
+  --hud-slot-border: #6f2a30;
+  --hud-slot-radius: 0;
+  --hud-slot-glow: 1.25rem;
+  --hud-slot-selected: var(--cp-cyan);
+  --hud-slot-selected-fg: #0b0a0f;
+  --hud-quests-title-fg: var(--cp-yellow);
+  --hud-quests-title-transform: uppercase;
+  --hud-quests-title-spacing: 0.06em;
+  --hud-objective-current: var(--cp-yellow);
+  --hud-objective-current-glyph: "\25C6";
+  --hud-count-fg: var(--cp-cyan);
+  --hud-minimap-player: var(--cp-cyan);
+  --hud-minimap-shadow: inset 0 0 1.5rem rgba(0, 0, 0, 0.6), 0 0 0.8rem rgba(94, 246, 255, 0.25);
+  --hud-prompt-fg: var(--text);
+  --hud-achievement-icon-bg: var(--cp-cyan);
+  --hud-achievement-icon-fg: #0b0a0f;
+  --hud-achievement-icon-radius: 0;
+  --hud-float-damage: var(--cp-red);
+  --hud-float-crit: var(--cp-yellow);
+  --hud-float-heal: var(--success);
+  --hud-float-mana: var(--cp-cyan);
+  --mention-self-bg: color-mix(in srgb, var(--cp-yellow) 16%, transparent);
+  --mention-self-fg: var(--cp-yellow);
+  --presence-color-3: #d6c80a;   /* series 3 lifted so a cursor label reads in black */
+  --rarity-common: #a7a9b0;
+  --rarity-uncommon: #3fcf5c;
+  --rarity-rare: #3a9bff;
+  --rarity-epic: #b65cff;
+  --rarity-legendary: #ffa31a;
+}
+
+/* --- Page: maroon wash over near-black, with scanlines ------------------ */
+html[data-theme="cyberpunk-2077"] {
+  background-color: var(--bg);
+  background-image:
+    var(--cp-scanlines),
+    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(120, 28, 38, 0.55), transparent 75%),
+    linear-gradient(180deg, #1c0d12, var(--bg) 22rem);
+  background-attachment: fixed;
+  font-family: var(--font);
+}
+html[data-theme="cyberpunk-2077"] body { font-weight: 500; letter-spacing: 0.01em; }
+
+/* --- Voice: condensed caps, red; display titles carry a static glitch
+   split (cyan / pink offset), no motion needed. ------------------------- */
+html[data-theme="cyberpunk-2077"] :is(h1, h2, h3, h4) {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+html[data-theme="cyberpunk-2077"] h1 {
+  text-shadow: -2px 0 rgba(94, 246, 255, 0.55), 2px 0 rgba(255, 42, 109, 0.45);
+}
+html[data-theme="cyberpunk-2077"] :is(.stat-value, .price) { color: var(--cp-cyan); font-weight: 600; }
+html[data-theme="cyberpunk-2077"] :is(code, kbd, samp, pre) { font-family: var(--font-mono); }
+html[data-theme="cyberpunk-2077"] kbd { font-family: var(--font); font-weight: 700; }
+
+/* --- Cut corners --------------------------------------------------------- *
+ * Buttons cut their bottom-right corner; the diagonal border is a
+ * background-image layer in the button's own border colour. clip-path
+ * would eat the focus outline, so focus becomes a drop-shadow (tron). */
+html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go) {
+  --cp-btn-cut: 9px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cp-btn-cut)), calc(100% - var(--cp-btn-cut)) 100%, 0 100%);
+  background-image: linear-gradient(to top left, transparent calc(50% - 1px), var(--btn-border, var(--cp-line)) calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  background-position: right bottom;
+  background-size: var(--cp-btn-cut) var(--cp-btn-cut);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+}
+html[data-theme="cyberpunk-2077"] :is(.btn-sm, .btn-icon) { --cp-btn-cut: 6px; }
+html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go):focus-visible {
+  filter: drop-shadow(0 0 1px var(--focus)) drop-shadow(0 0 1px var(--focus)) drop-shadow(0 0 5px var(--focus));
+}
+html[data-theme="cyberpunk-2077"] .btn-primary {
+  --btn-bg: var(--cp-red);
+  --btn-fg: #0b0a0f;
+  --btn-border: var(--cp-red);
+  --btn-bg-hover: var(--cp-cyan);
+  --btn-border-hover: var(--cp-cyan);
+  --btn-shadow-hover: inset 0 0 0.8rem rgba(255, 255, 255, 0.35);
+}
+@media (hover: hover) {
+  html[data-theme="cyberpunk-2077"] .btn-primary:hover { --btn-fg: #0b0a0f; }
+  html[data-theme="cyberpunk-2077"] .btn:not(.btn-primary, .btn-danger, .btn-success):hover { color: var(--cp-cyan); }
+}
+html[data-theme="cyberpunk-2077"] .btn-danger { --btn-bg-hover: #ff4d5c; --btn-border-hover: #ffffff; }
+html[data-theme="cyberpunk-2077"] .btn-success { --btn-bg-hover: #5cf09e; --btn-border-hover: #ffffff; }
+html[data-theme="cyberpunk-2077"] .btn-secondary { --btn-fg: var(--cp-cyan); --btn-border: rgba(94, 246, 255, 0.55); }
+html[data-theme="cyberpunk-2077"] .btn-ghost { --btn-border: transparent; }
+
+/* Badges: angled tags (the yellow NEW chip). */
+html[data-theme="cyberpunk-2077"] .badge {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+/* A badge-button keeps square corners so core's focus outline isn't clipped. */
+html[data-theme="cyberpunk-2077"] .badge:not(.badge-button) {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%);
+}
+html[data-theme="cyberpunk-2077"] .badge-warning { --badge-border: var(--cp-yellow); }
+
+/* Surfaces: the frame sits in the background, so a header pulled to the
+   edges must clear the 3px tab; panel titles read as section titles. */
+html[data-theme="cyberpunk-2077"] :is(.panel-header, .modal-header) {
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+html[data-theme="cyberpunk-2077"] .panel-header { border-bottom-color: var(--hairline); padding-top: max(var(--space-xs), 0.45rem); }
+html[data-theme="cyberpunk-2077"] .modal-header {
+  border-bottom: 1px solid var(--cp-line);
+  font-size: 1.15em;
+}
+/* Close (v5): the game's key hint "[ESC] Close" as a cyan key cap, in
+   every title bar (modal, window, sheet, drawer header). Tabs and toasts
+   keep the plain cross. */
+html[data-theme="cyberpunk-2077"] .modal-header > .btn-close {
+  --btn-close-glyph: "ESC";
+  --btn-close-width: auto;
+  --btn-close-height: 1.6em;
+  --btn-close-pad: 0 0.45em;
+  --btn-close-font-size: 0.85em;
+  --btn-close-glyph-size: 0.85em;
+  --btn-close-border: var(--cp-cyan);
+  --btn-close-border-width: 1px;
+  --btn-close-bg: transparent;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+html[data-theme="cyberpunk-2077"] .modal-header > :is(.btn-min, .btn-max) {
+  border: 1px solid var(--cp-cyan);
+  border-radius: 0;
+  color: var(--cp-cyan);
+}
+
+/* Nesting steps down: an inner panel or card loses the tab, the wash and
+   the red frame, and gets the small hairline cut on the recessed tone. */
+html[data-theme="cyberpunk-2077"] :is(.panel, .card, .modal, .drawer, .popover, .tab-panel) :is(.panel, .card) {
+  --panel-bg: var(--cp-frame-sm);
+  --card-bg: var(--cp-frame-sm);
+  --panel-border: var(--hairline);
+}
+html[data-theme="cyberpunk-2077"] :is(.panel, .card) :is(.panel, .card) :is(.panel, .card) {
+  --panel-bg: linear-gradient(var(--hairline), var(--hairline)) left top / 2px 100% no-repeat, rgba(255, 95, 88, 0.04);
+  --card-bg: linear-gradient(var(--hairline), var(--hairline)) left top / 2px 100% no-repeat, rgba(255, 95, 88, 0.04);
+}
+
+/* Inputs show the value in cyan and light the rule on focus. */
+html[data-theme="cyberpunk-2077"] :is(.input, .select, .textarea):focus-visible { border-color: var(--cp-cyan); }
+html[data-theme="cyberpunk-2077"] .checkbox,
+html[data-theme="cyberpunk-2077"] .radio { accent-color: var(--cp-cyan); }
+
+/* Accent tags read cyan on their cyan tint; schedule blocks take a
+   lighter series tint so the red meta text keeps its contrast; a tag's
+   remove button is never under the 24px target. */
+html[data-theme="cyberpunk-2077"] .tag.is-accent { --tag-fg: var(--cp-cyan); }
+html[data-theme="cyberpunk-2077"] .schedule-item {
+  --schedule-item-bg: color-mix(in srgb, var(--series, var(--cp-yellow)) 7%, var(--surface));
+}
+/* User-coloured avatars take a lighter tint than core's 28%, so the red
+   initials still read on the yellow user. */
+html[data-theme="cyberpunk-2077"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 18%, var(--surface)); }
+html[data-theme="cyberpunk-2077"] .tag-remove { min-inline-size: 24px; min-block-size: 24px; }
+/* Dimmed states (a dragged column, a disabled tag field) dim less than
+   core's 0.5: red on near-black has less luminance headroom than white. */
+html[data-theme="cyberpunk-2077"] .table :is(th, td).is-dragging { opacity: 0.75; }
+html[data-theme="cyberpunk-2077"] .tag-input:has(.tag-input-field:disabled) { opacity: 0.7; }
+
+/* Tabs and nav: tracked caps, cyan for the active one. */
+/* The condensed face makes two-letter tabs narrower than a touch target;
+   they keep the target's width, not just its height. */
+html[data-theme="cyberpunk-2077"] :is(.tab, .segmented-item, .pagination-item, .breadcrumb-item, .badge-button) { min-inline-size: var(--tap-min, 24px); }
+html[data-theme="cyberpunk-2077"] :is(.tab, .nav-item) { font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+html[data-theme="cyberpunk-2077"] .tabs { border-bottom-color: var(--cp-line); }
+html[data-theme="cyberpunk-2077"] .nav-item.is-active { text-shadow: 0 0 0.6rem rgba(94, 246, 255, 0.55); }
+html[data-theme="cyberpunk-2077"] .list-item.is-active { color: var(--cp-cyan); }
+
+/* --- Breach grid tables ---------------------------------------------------- */
+html[data-theme="cyberpunk-2077"] .table {
+  --row-hover-bg: var(--cp-breach-band);
+  --row-active-bg: var(--cp-breach-band);
+  color: var(--cp-breach);
+  font-variant-numeric: tabular-nums;
+  background: var(--cp-breach-bg);
+  outline: 1px solid rgba(207, 236, 88, 0.45);
+  outline-offset: 0;
+}
+html[data-theme="cyberpunk-2077"] .table th { font-weight: 700; }
+html[data-theme="cyberpunk-2077"] .table :is(td, th) + :is(td, th) { border-inline-start: 1px solid rgba(207, 236, 88, 0.1); }
+html[data-theme="cyberpunk-2077"] .table th + th { border-inline-start-color: rgba(16, 20, 10, 0.25); }
+html[data-theme="cyberpunk-2077"] .table :is(a, .text-muted) { color: inherit; }
+html[data-theme="cyberpunk-2077"] .table-wrap:has(> .table) { background: var(--cp-brackets); padding: 4px; }
+/* A stacked table hides its head (core visually-hides the thead on narrow
+   boxes); its cards take the breach plate, so the head bar goes unfilled. */
+@media (max-width: 480px) {
+  html[data-theme="cyberpunk-2077"] .table.is-stacked > thead { --table-head-bg: transparent; }
+}
+@container (max-width: 480px) {
+  html[data-theme="cyberpunk-2077"] .table.is-stacked > thead { --table-head-bg: transparent; }
+}
+
+/* --- Alerts and toasts: a hard left bar in the state colour. ------------ */
+html[data-theme="cyberpunk-2077"] :is(.alert, .toast) { border-inline-start-width: 4px; }
+html[data-theme="cyberpunk-2077"] .alert-danger { --alert-bg: rgba(255, 42, 61, 0.12); }
+html[data-theme="cyberpunk-2077"] .toast-danger { --toast-bg: linear-gradient(90deg, rgba(255, 42, 61, 0.22), rgba(255, 42, 61, 0.06)), #1d0d12; --toast-fg: var(--text); --toast-border: var(--danger); }
+html[data-theme="cyberpunk-2077"] .toast-warning { --toast-bg: linear-gradient(90deg, rgba(252, 238, 10, 0.16), rgba(252, 238, 10, 0.04)), #17150a; --toast-fg: #fff6a6; --toast-border: var(--cp-yellow); }
+
+/* --- Bars: angled ends. --------------------------------------------------- */
+html[data-theme="cyberpunk-2077"] :is(.progress, .meter:not(.meter-v)) {
+  clip-path: polygon(0 0, 100% 0, calc(100% - 0.4rem) 100%, 0 100%);
+}
+html[data-theme="cyberpunk-2077"] .hud-bar {
+  --hud-bar-shadow: 0 0 0.75rem color-mix(in srgb, var(--hud-bar-fill, var(--cp-cyan)) 70%, transparent);
+}
+html[data-theme="cyberpunk-2077"] .hud-bar-value { color: var(--hud-bar-fill, var(--cp-cyan)); font-size: 1.15em; }
+
+/* --- Glitch: hover and alerts, only with full motion ------------------- *
+ * A short RGB split and jitter (≤ 0.3s, two steps) when a button is
+ * hovered or focused; danger alerts and toasts glitch once on arrival and
+ * then flicker briefly every 7s. Nothing carries state by motion alone:
+ * the colours and borders above say the same thing standing still. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="cyberpunk-2077"]:not([data-motion="reduced"]):not([data-motion="none"]) :is(.alert-danger, .toast-danger, .hud-bar.is-low) {
+    animation: cyberpunk-2077-glitch 0.35s steps(3, end) 1, cyberpunk-2077-flicker 7s steps(1, end) 1s infinite;
+  }
+  html[data-theme="cyberpunk-2077"]:not([data-motion="reduced"]):not([data-motion="none"]) .btn:focus-visible {
+    animation: cyberpunk-2077-glitch 0.28s steps(2, end) 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  html[data-theme="cyberpunk-2077"]:not([data-motion="reduced"]):not([data-motion="none"]) :is(.btn, .nav-item, .tab):hover {
+    animation: cyberpunk-2077-glitch 0.28s steps(2, end) 1;
+  }
+}
+@keyframes cyberpunk-2077-glitch {
+  0% { transform: translate(-2px, 0); text-shadow: -2px 0 #ff2a6d, 2px 0 #5ef6ff; }
+  50% { transform: translate(2px, -1px); text-shadow: 2px 0 #ff2a6d, -2px 0 #5ef6ff; }
+  100% { transform: none; text-shadow: none; }
+}
+@keyframes cyberpunk-2077-flicker {
+  0%, 96%, 100% { transform: none; text-shadow: none; }
+  97% { transform: translateX(-3px); text-shadow: -2px 0 #ff2a6d, 2px 0 #5ef6ff; }
+  98.5% { transform: translateX(2px); text-shadow: 2px 0 #ff2a6d, -2px 0 #5ef6ff; }
+}
+
+/* --- Layout -------------------------------------------------------------- *
+ * The menu screen: a transparent top HUD bar over the maroon wash, cut off
+ * by one long red rule (LEVEL / tabs / eddies in the game); a thin data
+ * strip down the left edge (tick marks and code bars, as the game prints
+ * along its screen edge); content on the dark field; key hints along the
+ * bottom. */
+html[data-theme="cyberpunk-2077"] {
+  --app-bg: transparent;
+  --app-columns: 1.5rem minmax(0, 1fr);
+  --app-gap: 0;
+  --app-padding: 0;
+  --app-bar-bg: linear-gradient(180deg, rgba(48, 18, 24, 0.92), rgba(30, 12, 17, 0.88));
+  --app-bar-fg: var(--text);
+  --app-bar-rule: var(--cp-red);
+  --app-bar-rule-width: 2px;
+  --app-bar-height: 3.25rem;
+  --app-bar-padding: 0.35rem 1.75rem;
+  --app-bar-font: var(--font);
+  --app-rail-display: flex;
+  --app-rail-empty-display: flex;
+  --app-rail-bg:
+    repeating-linear-gradient(180deg, rgba(255, 95, 88, 0.55) 0 1px, transparent 1px 12px) right 6px top 0 / 5px 100% no-repeat,
+    repeating-linear-gradient(180deg, rgba(255, 95, 88, 0.55) 0 1px, transparent 1px 60px) right 6px top 0 / 10px 100% no-repeat,
+    linear-gradient(rgba(255, 95, 88, 0.35), rgba(255, 95, 88, 0.35)) right 4px top 0 / 1px 100% no-repeat,
+    repeating-linear-gradient(180deg, rgba(255, 95, 88, 0.22) 0 3px, transparent 3px 5px, rgba(255, 95, 88, 0.14) 5px 7px, transparent 7px 19px) left 4px top 3rem / 4px 40% no-repeat,
+    linear-gradient(90deg, rgba(0, 0, 0, 0.35), transparent);
+  --app-main-bg: transparent;
+  --app-main-padding: 1.5rem 2rem 2rem 1.25rem;
+  --app-main-padding-tablet: 1.25rem 1.25rem 1.5rem;
+  --app-main-padding-mobile: 0.9rem 0.75rem 1.25rem;
+  --app-status-bg: linear-gradient(0deg, rgba(14, 13, 18, 0.96), rgba(22, 12, 17, 0.92));
+  --app-status-fg: var(--text);
+  --app-status-rule: var(--cp-line);
+  --app-status-padding: 0.4rem 1.75rem;
+}
+html[data-theme="cyberpunk-2077"] .app-bar {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 0.9rem rgba(255, 95, 88, 0.35);
+}
+html[data-theme="cyberpunk-2077"] .app-bar .nav-brand { font-weight: 700; font-size: 1.2em; color: var(--cp-cyan); }
+html[data-theme="cyberpunk-2077"] .app-status kbd { font-size: 0.85em; }
+
+/* XL gutters (v5, PLAN.md §3): Night City in the dark beyond the menu.
+   Faint red scanlines, a column of edge tick marks either side, and the
+   ghost of a cut-corner frame, all a few percent over --bg (about 1.1:1).
+   The scanlines crawl down one band every 40s, only with motion. */
+html[data-theme="cyberpunk-2077"] {
+  --app-gutter-art:
+    repeating-linear-gradient(180deg, rgba(255, 95, 88, 0.05) 0 1px, transparent 1px 4px) 0 0 / 100% 64px,
+    repeating-linear-gradient(180deg, rgba(255, 95, 88, 0.12) 0 1px, transparent 1px 16px) 64px 0 / 14px 100% no-repeat,
+    repeating-linear-gradient(180deg, rgba(255, 95, 88, 0.12) 0 1px, transparent 1px 16px) right 64px top 0 / 14px 100% no-repeat,
+    linear-gradient(rgba(94, 246, 255, 0.07), rgba(94, 246, 255, 0.07)) 120px 18% / 1px 40% no-repeat,
+    linear-gradient(rgba(94, 246, 255, 0.07), rgba(94, 246, 255, 0.07)) right 120px top 42% / 1px 40% no-repeat,
+    linear-gradient(135deg, transparent 47%, rgba(255, 95, 88, 0.08) 47% 53%, transparent 53%) 150px 70% / 120px 120px no-repeat,
+    linear-gradient(315deg, transparent 47%, rgba(255, 95, 88, 0.08) 47% 53%, transparent 53%) right 150px top 20% / 120px 120px no-repeat,
+    var(--bg);
+}
+@media (min-width: 1801px) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="cyberpunk-2077"]:not([data-motion="reduced"])::before {
+    animation: cyberpunk-2077-crawl 40s linear infinite;
+  }
+}
+@keyframes cyberpunk-2077-crawl {
+  to { background-position: 0 64px, 64px 0, right 64px top 0, 120px 18%, right 120px top 42%, 150px 70%, right 150px top 20%, 0 0; }
+}
+
+/* --- Print ----------------------------------------------------------------- */
+@media print {
+  html[data-theme="cyberpunk-2077"] { background: #ffffff; }
+  html[data-theme="cyberpunk-2077"] {
+    --panel-bg: #ffffff;
+    --card-bg: #ffffff;
+    --modal-bg: #ffffff;
+    --app-bar-bg: #ffffff;
+    --app-rail-bg: none;
+    --app-status-bg: #ffffff;
+    --table-bg: #ffffff;
+  }
+  html[data-theme="cyberpunk-2077"] :is(.btn, .badge, .progress, .meter) { clip-path: none; }
+  html[data-theme="cyberpunk-2077"] .table { color: #000000; }
+  html[data-theme="cyberpunk-2077"] :is(h1, .app-bar) { text-shadow: none !important; box-shadow: none !important; }
+}

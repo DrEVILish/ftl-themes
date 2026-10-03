@@ -127,7 +127,7 @@ files are vendored unmodified.
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs)
 
 ## DSEG7 Classic
 
@@ -150,10 +150,22 @@ files are vendored unmodified.
 - **Used by:** `motorsport-telemetry` (UI, timing figures and readouts; its
   digits are tabular by default, all 560 units wide)
 
+## Rajdhani
+
+- **Family:** Rajdhani (weights vendored: Medium 500, Bold 700 —
+  `Rajdhani-Medium.woff2`, `Rajdhani-Bold.woff2`; Latin subset as served
+  by Google Fonts)
+- **Designer:** Indian Type Foundry
+- **License:** SIL Open Font License, version 1.1 (verified in the
+  `google/fonts` repo, `ofl/rajdhani/OFL.txt` and `METADATA.pb`
+  `license: "OFL"`)
+- **Source:** https://fonts.google.com/specimen/Rajdhani
+- **Used by:** `cyberpunk-2077` (all UI text; stand-in for the game's
+  commercial condensed face)
 
 ## Bottom line
 
-Thirteen files, twelve families: ten SIL OFL 1.1, Bedstead CC0 and Px437
+Eighteen files, fourteen families: twelve SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same

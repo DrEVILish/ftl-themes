@@ -5,6 +5,13 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- New theme `cyberpunk-2077` (inspired by the game's menus and HUD): coral-red
+  condensed caps on near-black maroon, cyan for live and selected state,
+  cut-corner frames drawn in the background, netrunner breach-grid tables,
+  glowing angled HUD bars, an [ESC] key-cap modal close, glitch only under
+  full motion. Vendors Rajdhani Medium and Bold (OFL). 15 references in
+  `references/cyberpunk-2077/`.
+
 - New theme `teenage-engineering` (inspired by the OP-1 / OP-1 field / OP-Z;
   no marks): off-white aluminium keys around one dark display window
   (readouts, meters, gauges, charts, code, toasts, status strip), the four

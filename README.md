@@ -11,7 +11,7 @@
 An app-agnostic design system and theme library for Go + HTMX (or any
 server-rendered, htmx-swapped) applications: a small component
 class vocabulary, a `--*` design-token contract, and a growing catalog
-of 44 fully switchable themes — from LCARS to Windows 95 to a Matrix
+of 45 fully switchable themes — from LCARS to Windows 95 to a Matrix
 terminal, Skyrim, Liquid Glass and black leather with gold.
 
 **Live examples:** https://drevilish.github.io/ftl-themes/ — the gallery,

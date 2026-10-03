@@ -1982,6 +1982,7 @@ for what, if anything, it cites.
 | `cassette-futurism` | Cassette Futurism | Beige moulded-plastic housing with dark recessed seven-segment/VFD windows, sculpted colour-coded keycaps, and a chrome bat-handle toggle for `.switch`. | |
 | `cue-lab` | Cue Lab | A flat, glow-free show-control console: hairline grids and a single amber accent. | |
 | `cyber-goth` | Cyber-Goth | Toxic neon green and hot purple sharing the accent role on black vinyl gloss. | |
+| `cyberpunk-2077` | Cyberpunk 2077 | Coral-red caps on near-black maroon with cyan for whatever is live or selected; cut-corner frames, an [ESC] key-cap close, and netrunner breach-grid tables (yellow-green head bar, teal matrix, cyan corner brackets). | |
 | `death-star` | Death Star Terminal | True `#000000`, solid glowing indicator blocks, zero borders or shadows anywhere. | |
 | `hot-wheels` | Hot Wheels | A single diagonal flame-gradient band cut across the app bar. | |
 | `imac-g3` | iMac G3 | Translucent *ribbed* plastic — four swappable fruit-colour variants via `data-variant`. | |
