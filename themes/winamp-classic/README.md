@@ -31,6 +31,24 @@ green LCD-style readout. It really whips the llama's ass.
 - Sliders are square-thumbed with a llama-green cap.
 - The status strip repeats the chassis gradient, framing the window.
 
+## Icons
+
+`icons.svg` redraws the whole core set (178/178, 182 `<symbol>`s) as thin
+LCD-segment line work with a hardware readout feel:
+
+- 24×24 grid, outline only. The stroke comes from the theme's
+  `--icon-stroke-width: 1.5`. Symbols set no stroke or fill of their own,
+  so caps and joins stay core's round default.
+- Geometric and blocky, never curvy. Circles become octagons (vertices at
+  22.5° + k·45°), ellipses become six-sided lozenges, and arcs become
+  straight angled segments (moon, clouds, rainbow, coins).
+- `currentColor` only, so icons read green-on-black and in the selected
+  state alike.
+- From "Round 2" on, shapes share geometry with `windows95` (same
+  octagons, thinner line). The last 47 ids ("Round 3", core-set top-up)
+  came from a generator that reproduces that rendering.
+  `icon-player-play` copies `icon-play`.
+
 ## Layout
 
 The shell is a **player window**: 0.25rem outer padding, a 1.8rem beveled

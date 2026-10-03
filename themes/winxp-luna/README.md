@@ -53,14 +53,34 @@ someone says "Windows XP."
 - Progress is XP's segmented green block bar; the status strip is the
   taskbar's own gradient.
 
-### Icons
+## Icons
 
-`themes/winxp-luna/icons.svg` redraws six icons (home, settings, search,
-close, user, bell) as glossy, two-tone glyphs: a `currentColor` fill for
-the base shape, a soft white highlight band across the top for the gloss
-line Luna put on every filled surface, and a thin `currentColor` outline
-to keep edges crisp — the same three-layer recipe as the title bar and
-buttons, just applied at icon scale. The sprite ships 135 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+`themes/winxp-luna/icons.svg` redraws the whole core set (178/178, 182
+`<symbol>`s) as glossy two-tone glyphs: a `currentColor` fill for the base
+shape, a soft white highlight band across the top for the gloss line Luna
+put on every filled surface, and a thin `currentColor` outline to keep
+edges crisp. That is the same three-layer recipe as the title bar and
+buttons, applied at icon scale. Style rules:
+
+- 24×24 grid. Closed shapes (rects, circles, closed paths) are filled
+  `currentColor` at 0.85 opacity with a 1-unit `currentColor` outline and
+  round joins.
+- Open strokes are `currentColor`, 1.4 wide, with round caps and joins.
+- Details that sit on a filled body (file text lines, fold corners, clock
+  hands, envelope flaps, film perforations) are white strokes 1.4 wide,
+  and small dots are filled white, like the white X on the close button.
+  A slash across a filled body (eye-off, cloud-off) has a white gap under
+  it.
+- Gloss: one white ellipse at 0.3 opacity over the top-left of the
+  icon's bounding box (centre 35%/22%, radii 28%/14% of the box). Glyphs
+  that are only open lines get no gloss band.
+- Shapes from "Round 2" on use the same straight-segment geometry as
+  `windows95`, `winamp-classic` and `wmp11`, with real circles. The last
+  47 ids ("Round 3", core-set top-up) came from a generator that applies
+  these rules. `icon-player-play` copies `icon-play`.
+- Known limit: in the selected state (`currentColor` turns white on
+  blue), the white details merge into the fill, as on the original
+  Round 1 icons.
 
 ## Variants
 

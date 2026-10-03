@@ -36,16 +36,29 @@ poster.
 - Tables draw a full 1px grid — Explorer's details view, not a modern
   borderless list.
 
-### Icons
+## Icons
 
-`themes/windows95/icons.svg` redraws six of the most-used icons (home,
-settings, search, close, user, bell) in the chunky, low-detail pixel-art
-style of the real 95 icon set: large flat rectangular shapes, hard
-corners (`stroke-linecap: square` / `stroke-linejoin: miter` on every
-path, overriding the generic sprite's rounded default), and no curves
-where a straight edge will do — the settings glyph is a plus of tabs
-around a square rather than a circular gear, the same low-res
-simplification the real icon set used at 16×16/32×32. The sprite ships 135 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+`themes/windows95/icons.svg` redraws the whole core set (178/178, 182
+`<symbol>`s) in the chunky, low-detail pixel-art style of the real 95
+icon set. Style rules:
+
+- 24×24 grid, outline only (no fills), stroke from the theme's heavy
+  `--icon-stroke-width: 2.6`, so details stay at least ~3.5 units apart.
+- Hard corners everywhere: `stroke-linecap: square` and
+  `stroke-linejoin: miter` on every shape (per element, or on a wrapping
+  `<g>` in the last batch), overriding the generic sprite's rounded
+  default.
+- Straight segments only. Circles become octagons (vertices at 22.5° +
+  k·45°), ellipses become six-sided lozenges, curves (moon, clouds,
+  rainbow, coins) become polylines through octagon vertices. The settings
+  glyph is a plus of tabs around a square, not a gear: the same low-res
+  simplification the real set used at 16×16/32×32.
+- `currentColor` only, so icons follow text colour and every state.
+- Shared geometry: from "Round 2" on, the shapes are the same as
+  `winamp-classic`, `winxp-luna` and `wmp11`; only the rendering differs.
+  The last 47 ids ("Round 3", core-set top-up) were drawn by a small
+  generator that reproduces the Round 2 renderers exactly.
+  `icon-player-play` copies this theme's `icon-play`.
 
 ## Layout
 

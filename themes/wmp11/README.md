@@ -59,6 +59,24 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
   against the neutral glass base button.
 - The slider thumb glows — the volume/seek control is the lit part.
 
+## Icons
+
+`icons.svg` redraws the whole core set (178/178, 182 `<symbol>`s) as sleek
+dark-glass icons:
+
+- 24×24 grid, thin outline at the default stroke width, with round caps
+  and joins (per element, or on a wrapping `<g>` in the last batch). No
+  fills.
+- Real circles and ellipses. The first round shape in each icon gets a
+  short specular arc in white at 0.45 opacity, 1 wide, across its upper
+  left (a quadratic curve from (−.55r, −.15r) to (−.15r, −.75r)). That is
+  a small echo of the glass buttons, never an accent hue.
+- `currentColor` only otherwise, so icons follow every state.
+- From "Round 2" on, shapes share straight-segment geometry with
+  `windows95`, `winamp-classic` and `winxp-luna`. The last 47 ids
+  ("Round 3", core-set top-up) came from a generator that reproduces that
+  rendering. `icon-player-play` copies `icon-play`.
+
 ## Layout
 
 The shell becomes **one player window**: tab strip on top, blue-silk
