@@ -12,6 +12,9 @@ changes are called out explicitly here.
   - `share-card.html`: a 1200×630 Open Graph image template in any theme.
   - `assets/icons/core-set.txt` defines the 178-icon core UI set;
     `build_icons.py` reports each theme's coverage ("icon complete").
+    **All 45 themes are now icon complete**: 21 themes got full sets drawn
+    in their own style, 24 had their partial sets topped up to match. Each
+    theme README has an "Icons" section with its style rules.
 
 - New theme `cyberpunk-2077` (inspired by the game's menus and HUD): coral-red
   condensed caps on near-black maroon, cyan for live and selected state,

@@ -37,14 +37,27 @@ background, never from introducing a new colour.
 - Bold, chunky text with no smoothing — this is a low-resolution segment
   display, not a modern hinted font.
 
-### Icons
+## Icons
 
-`themes/nokia-3310/icons.svg` redraws six icons (home, settings, search,
-close, user, bell) as coarse, low-resolution monochrome LCD segment
-shapes: big flat `currentColor` polygons and rects with minimal internal
-detail, no anti-aliasing and almost no curves — the kind of menu glyph a
-real feature-phone screen could actually render at its native
-resolution. The sprite ships 123 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+`themes/nokia-3310/icons.svg` redraws the full core icon set (178/178,
+plus `sun-moon`) as coarse monochrome LCD glyphs. Style rules, taken from
+the original hand-drawn subset and followed by every later addition:
+
+- **Grid:** 24×24 viewBox, integer coordinates (half units only where a
+  shape must centre); no fine detail below 2 units.
+- **Fill vs line:** mostly flat `currentColor` rects and polygons. Frames
+  (file, mail, clipboard, coin, screen) are outline rects or octagons,
+  `fill="none" stroke="currentColor" stroke-width="3"`; open strokes
+  (checks, slashes, axes, wheels) are 2.5–3 wide.
+- **No curves:** circles become octagons (coin, album, disc, gps), arcs
+  become stepped or angular runs (rainbow, storm, cloud).
+- **Inherited outline:** the core `.icon` outline (2 units, round joins)
+  also strokes every filled shape, so blocks look slightly soft and grow
+  1 unit per side. Gaps between filled parts are therefore at least 3
+  units. The one exception is the pixel lettering on `file-type-pdf` and
+  `file-type-png`, whose 2-unit blocks turn the stroke off so the letters
+  stay legible.
+- **Palette:** `currentColor` only, single tone.
 
 ## Tell-tales of an inauthentic result
 

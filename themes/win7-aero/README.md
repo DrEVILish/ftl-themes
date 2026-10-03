@@ -47,6 +47,19 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   raised gloss tabs, the selected one white; progress is the glossy
   green bar.
 
+## Icons
+
+`themes/win7-aero/icons.svg` covers the full core icon set (178/178, plus
+`sun-moon`) as soft glassy line work on the generic 24×24 grid. It uses
+the inherited outline stroke, `fill="none"` and `currentColor`; boxes get
+generous radii (`rx` 2.5, 5 on square buttons, pill bars) and triangles
+get round joins. Most enclosed shapes (box, circle, page, cloud, bubble,
+triangle) also carry the **catch-light**: a heavier
+`stroke-width="2.2"`–`"3"`, `opacity="0.5"` stroke traced along their top
+edge only, echoing the glass highlight on every panel and button. Pure
+line glyphs (arrows, chevrons, carets, sort, shuffle, hash, frame, road,
+repeat, dots) have no highlight.
+
 ## Layout
 
 The shell becomes **one glass window**: title bar, a near-white frosted

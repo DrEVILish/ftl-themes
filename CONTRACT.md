@@ -1816,6 +1816,13 @@ as:
 <svg class="icon"><use href="assets/icons/icons.svg#icon-name"/></svg>
 ```
 
+**Core set (v5):** `assets/icons/core-set.txt` lists the 178 icons the
+components and pages use. Every theme redraws all of them in its own style
+(`themes/<slug>/icons.svg`, rules in the theme README's "Icons" section);
+`scripts/build_icons.py` reports each theme's coverage and a new theme is
+not finished until it reads `core set 178/178 (icon complete)`. Theme
+icons use `currentColor` only; a highlight shape must set `stroke="none"`.
+
 `.icon` (in `core/core.css`) sets `stroke: currentColor`, so every
 icon inherits whatever text/foreground color surrounds it. The generic
 sprite ships 1,000+ ids (all 24×24, stroke-based, no fill by default):

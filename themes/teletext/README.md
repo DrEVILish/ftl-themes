@@ -53,16 +53,29 @@ a limitation to soften.
   (`--row-selected-bg`), not a tint or outline — real teletext has no
   concept of a translucent highlight.
 
-### Icons
+## Icons
 
-`themes/teletext/icons.svg` redraws six icons (home, settings, search,
-close, user, bell) as solid colour-cell block graphics on a coarse pixel
-grid, exactly like the real service's character-cell display: every
-shape is a union of filled rectangles snapped to a 4-unit grid, with zero
-strokes, zero curves and zero anti-aliasing — a hollow square-and-handle
-stands in for the search icon's usual circle, and settings is abstracted
-to a plus of blocks rather than a naturalistic gear, since real teletext
-graphics were never skeuomorphic. The sprite ships 123 `<symbol>`s in total (`grep -c '<symbol'`), and each differs from the generic outline sprite in `assets/icons/icons.svg`; only the six above are described here, and the rest were not audited one by one for style.
+`themes/teletext/icons.svg` redraws the full core icon set (178/178,
+plus `sun-moon`) as solid colour-cell block graphics, like the real
+service's character-cell display. Style rules, taken from the original
+subset and followed by every later addition:
+
+- **Cells, not lines:** each glyph is a union of filled axis-aligned
+  rectangles in `<g fill="currentColor" stroke="none">`, with no strokes,
+  curves, diagonals or anti-aliasing. Circles, slashes and arcs are
+  stair-stepped cells.
+- **Grid:** 24×24 viewBox. The original subset uses whole-unit blocks
+  (mostly 2–4 units). The later additions sit on a 12×12 grid of 2-unit
+  cells (strokes 1–2 cells thick, gaps of at least 1 cell) and pack each
+  glyph's cells into one path per tone to keep the sprite small.
+- **Second tone:** a dimmed cell (`fill-opacity` 0.3–0.5) marks secondary
+  detail such as map folds, a pie slice or disc glare. A dim cell must
+  never sit on top of a solid one, because it would vanish. A few
+  original glyphs (coin, compass, layout and others) do stack them, so
+  their inner mark is invisible.
+- **Lettering:** the `PDF`/`PNG` labels are 3×5-cell block letters, not
+  text.
+- **Palette:** `currentColor` only.
 
 ## v5 layout
 

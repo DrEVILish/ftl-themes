@@ -1117,8 +1117,9 @@ new themes `teenage-engineering`, `cyberpunk-2077` and
 `motorsport-telemetry` (45 themes). In progress: the per-theme
 colour-contrast sweep from the axe audit. Still to do: theme families
 (§16), fidelity scoring (§17), live-data states and the dashboard grid
-(§18), the docs site (§20), easter eggs, and the §23 identity work (icon
-sets, fonts, favicons and share cards, signature navigation).
+(§18), the docs site (§20), easter eggs, and the rest of the §23 identity work (fonts,
+signature navigation). Done in §23: every theme icon complete (178-icon
+core set), per-theme favicons and app icons, share-card template.
 
 | Phase | Work | Done when |
 |---|---|---|

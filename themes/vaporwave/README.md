@@ -42,6 +42,20 @@ HUD.
 - Danger is one step darker than the "hot" reference red-pink — the
   literal value fails 4.5:1 against white button text.
 
+## Icons
+
+`themes/vaporwave/icons.svg` covers the full core icon set (178/178, plus
+`sun-moon`) in clean geometric line work. It keeps the generic set's
+24×24 grid, `fill="none"`, inherited `currentColor` stroke at the shared
+`--icon-stroke-width`, and round caps and joins; no stroke width is baked
+in. Forms are simplified toward pure geometry, for example straight
+3→21 rules, spoked rather than toothed settings, and a crisper check. A
+few ground or motion icons (home, folder, star, logout, refresh, cloud, map,
+globe, plane, car, bus, road, rainbow) add the horizon cue: a pair of
+short diagonal floor lines in the bottom corners
+(`M2 22.5l4-2.4M18 20.1l4 2.4`, `stroke-width="1"`). Never put it on
+every icon.
+
 ## Layout
 
 The shell becomes an **outrun horizon**: a gradient sunset bar on top, a
