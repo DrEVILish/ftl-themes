@@ -2,7 +2,7 @@
 
 Status: **in progress** (started 2026-10-02). Baseline 2026; new theme names agreed. v4 stays the base: the
 token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
-42 themes all carry forward. v5 is about three things v4 does not do well:
+42 themes all carry forward (45 with the three new v5 themes). v5 is about three things v4 does not do well:
 
 1. **Fluid mobile, tablet, desktop and wide-screen layouts**, natively, in
    core, so every theme gets them.
@@ -1103,13 +1103,22 @@ are recorded so they can be revisited:
 
 ## 26. Rollout
 
-**Progress (2026-10-02):** phase 0 done (`nesting.html`,
-`scripts/v5_audit.mjs`). Phase 1 core layout done for the shell, tiers, XL
-cap and gutter art, spacing tokens and the `--z-*` scale; container queries
-and top-layer popovers next. Phase 2 touch sizing and the arrow cursor are
-in; hover gating is still to do. The nesting page's findings (popover and
-toast top-layer conflicts, clipped dropdowns, unstyled nested menus,
-tables in modals on phones, the drawer header) are the next work items.
+**Progress (2026-10-03):** phases 0–4b done and on the live site: harness,
+core layout (tiers, XL cap and gutter art, spacing, `--z-*`, container
+queries, top-layer popovers), touch and hover gating, tables and nested
+menus, the six component groups, the experience layer, CSS-only tabs,
+panes and selection. All 41 themes rolled out to v5 layout. Phase 4d/4e
+partly done: social/collaboration, game HUD (`hud.html`), media
+(`player.html`) and productivity (`planner.html`) kits; `.prose`, code
+palettes and six page templates; themed emails (`dist/email/`); theme
+scheduling; Firefox/WebKit switches, axe (`a11y_audit.mjs`), budgets,
+render cost and `theme-ready.sh` with the contribution kit; and the three
+new themes `teenage-engineering`, `cyberpunk-2077` and
+`motorsport-telemetry` (45 themes). In progress: the per-theme
+colour-contrast sweep from the axe audit. Still to do: theme families
+(§16), fidelity scoring (§17), live-data states and the dashboard grid
+(§18), the docs site (§20), easter eggs, and the §23 identity work (icon
+sets, fonts, favicons and share cards, signature navigation).
 
 | Phase | Work | Done when |
 |---|---|---|
