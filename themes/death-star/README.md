@@ -63,6 +63,15 @@ as the page, distinguished only by the content sitting on them.
 - **No filled red panels**; red is a lamp, a rule or a brand word.
 - **No red as body text** — `--accent` fails as text on black.
 
+## Icons
+
+`icons.svg` redraws the full core set (178/178). Rules: 24 grid, 1px hairline
+stroke (overrides core's 2px), `square` caps and `miter` joins, sharp
+right-angled rects, true circles only where the concept is round. Minimal
+marks per glyph; a few sit inside a hexagonal bulkhead frame (home, check,
+play, player-play, bell, user) or a square panel (close, menu, download, pause). Line only: nothing is filled, marker dots are
+r1.1 rings, colour is always `currentColor`.
+
 ## Typography
 
 `--font` is `"Eurostile", "Michroma", sans-serif`; `--font-mono` is `Consolas, monospace`. Neither Eurostile (commercial) nor Michroma is vendored, so on most machines the generic sans-serif renders. **The stance is deliberate: this theme has no signature face.** `references/death-star/` shows control-room panels, indicator lamps and console details, but no on-screen lettering that pins down a typeface, and the film UI type is not something to fake with a Star Wars display font. The identity is carried by black, hairline white segments and red lamps; type stays neutral and small.

@@ -85,6 +85,16 @@ content area carrying the same vinyl-gloss panels throughout.
 - **No smooth bevels or soft glows alone**; the fang cut and riveted shadow carry the silhouette.
 - **No lowercase, corporate sans headings.**
 
+## Icons
+
+`icons.svg` redraws the full core set (178/178). Rules: 24 grid, core 2px
+stroke, `stroke-linecap="square"` / `stroke-linejoin="miter"` forced on every
+symbol. Every framed box is a polygon with ONE top-right "fang cut" (the
+`.btn` clip-path), cut about a third of the short side, never two corners.
+Circles become octagons, small marker dots are 1.4px stroked squares. Line
+only: nothing is filled, so icons follow `currentColor` in every state. Curves
+survive only where the concept needs them (cloud, moon, heart, droplet).
+
 ## Typography
 
 `--font` is `"Eurostile", "IBM Plex Sans", sans-serif`; `--font-mono` is `Consolas, monospace`. **Neither named face is vendored**: Eurostile is a commercial face, IBM Plex Sans only renders if installed, so on most machines the generic sans-serif is what shows. Headings are uppercase and geometric by CSS (case and tracking), not by the face. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows tube-letterform construction that no web font reproduces, so the theme does not try.

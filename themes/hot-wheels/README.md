@@ -62,6 +62,14 @@ well, and a checkered-flag status strip along the bottom.
 - **No vertical gradients on buttons;** the flame runs at `135deg`.
 - **No second brand colour beyond orange/yellow** (with blue only where the blister pack calls for it).
 
+## Icons
+
+`icons.svg` redraws the full core set (178/178). Rules: 24 grid, heavy 2.6px
+stroke with core's round caps/joins, plain sharp rects, a few boxy shapes
+leaning into a slanted parallelogram edge, and short 1.4px speed lines
+trailing motion icons (play, check, download, upload). Line only: nothing is
+filled, marker dots are r1.2 rings, colour is always `currentColor`.
+
 ## Typography
 
 `--font` is `"Arial Black", Impact, Arial, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. All **system fonts, none vendored** — Arial Black and Impact are near-universal on Windows/macOS but missing on many Linux installs, where plain Arial renders and loses the heavy weight. The reference is an italic chrome-style wordmark (the game menu capture); the theme approximates it with heavy weight plus `font-style: italic` and uppercase, not the real logo lettering.

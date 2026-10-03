@@ -52,6 +52,15 @@ toward the edges.
 - **No second brand colour.** One blue, used as light.
 - **No saturated pure black**; the shell is a blue-tinted near-black.
 
+## Icons
+
+`icons.svg` redraws the full core set (178/178). Rules: 24 grid, core 2px
+stroke, `square` caps and `miter` joins set on each `<symbol>`, flat
+rectangular geometry with no circles (round things become squares, the cloud
+is stepped). Solid accents (note heads, dots, sand, pause bars, chart bars)
+are `fill="currentColor" stroke="none"` rects; several nav/media icons carry
+the 1px glowing-underline accent bar. Colour is always `currentColor`.
+
 ## Typography
 
 `--font` is `"Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** The captures show wide-tracked bold/condensed caps on the menu (`xbmc-confluence-14.jpg`: grey all-caps blade labels; the 2007 skins: bold sans labels) (the theme sets some menu text at weight 300 instead). No face was identified from the captures, so the stack is a neutral sans, not a match.

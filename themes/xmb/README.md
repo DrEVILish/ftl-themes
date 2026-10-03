@@ -66,6 +66,14 @@ which doesn't translate to a general-purpose page background.
 - **No stadium/pill info panels**; only buttons, nav items and badges are pills.
 - **No warm or neutral grey backdrop**; the wave is a deep blue gradient.
 
+## Icons
+
+`icons.svg` redraws the full core set (178/178). Rules: 24 grid, core 2px
+stroke with round caps/joins, open line silhouettes, rounded rects (rx 1 to 3
+by size) and true circles. The only solids are small dots and badges
+(`fill="currentColor" stroke="none"`, r0.9 to 1.2). Colour is always
+`currentColor`.
+
 ## Typography
 
 `--font` is `"Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** Some text is set at weight 300 (see `theme.css`). The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation), which the stack approximates with a light weight; the actual PS3 system face is not identified and not vendored.

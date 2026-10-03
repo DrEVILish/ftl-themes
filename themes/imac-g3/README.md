@@ -77,6 +77,14 @@ on a radial vignette of its own colour.
 - **No neutral grey backdrop.** The vignette is always the case's own colour.
 - **Do not present this as the Platinum OS look.** The reference software UI (`references/imac-g3/`) is light grey Platinum; this theme is the hardware-inspired shell, not that UI.
 
+## Icons
+
+`icons.svg` redraws the full core set (178/178). Rules: 24 grid, 2.4px stroke,
+`round` caps and joins forced, and generous radii on every rect (about 0.3x
+the short side, max 4.5; bars 4px or narrower become full pills). Line only:
+nothing is filled, marker dots are r1.1 rings, colour is always
+`currentColor`.
+
 ## Typography
 
 `--font` is `"Chicago", "Charcoal", "Helvetica Neue", Helvetica, Arial, sans-serif`; `--font-mono` is `Monaco, Consolas, monospace`. Chicago (System 7) and Charcoal (Mac OS 8/9 Platinum's system face) are the reference faces; neither is vendored nor present on modern systems, so in practice **Helvetica Neue/Helvetica/Arial renders**. The Platinum captures show Charcoal-style type; the fallback is a lookalike at best. Headings carry a 1px white 40% `text-shadow` as an "embossed" cue.
