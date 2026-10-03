@@ -436,6 +436,9 @@ a { color: var(--link, var(--accent)); }
   color: var(--check-fg, var(--text));
 }
 .check:has(:disabled) { opacity: 0.5; cursor: not-allowed; }
+/* A hidden name (a table's select column) is positioned against its own
+   label, so it can't escape a scrolling table and widen the page. */
+.check:has(> .visually-hidden) { position: relative; }
 
 /* .radio-group — a <fieldset> of .check rows with a <legend>. */
 .radio-group {
@@ -959,6 +962,7 @@ dialog.modal:modal {
  * every theme here treats it as a signature element. */
 .transport {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   padding: var(--transport-padding, 0.6rem 0.9rem);
@@ -1365,7 +1369,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 0.2rem 0.35rem;
+  padding: 0.35rem 0.4rem;
   background: var(--scribble-bg, var(--surface-2));
   color: var(--scribble-fg, var(--text));
   border-top: var(--scribble-bar-width, 0.3rem) solid var(--strip-color, var(--accent));
@@ -2248,7 +2252,7 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
   display: flex;
   flex-wrap: wrap;
   gap: 0.15rem 0.9rem;
-  padding-block: 0.5rem;
+  padding: 0.5rem var(--space-2xs);
   background: var(--scrollspy-nav-bg, var(--surface));
   border-block-end: 1px solid var(--scrollspy-nav-rule, var(--hairline));
 }
@@ -2996,6 +3000,9 @@ pre code { padding: 0; background: none; border-radius: 0; }
 
 /* .divide-y — hairlines between stacked children (lists, menus). */
 .divide-y > * + * { border-block-start: 1px solid var(--hairline); }
+/* Text never sits on the hairline. Zero specificity, so a child with its
+   own padding (a list item, a menu entry) keeps it. */
+:where(.divide-y > *) { padding-block: var(--divide-y-pad, var(--space-2xs)); }
 
 /* .ratio — an aspect-ratio box for video/embeds; children fill it.
    Set `--ratio` directly or use a modifier (default 16/9). */
@@ -3415,8 +3422,21 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button) {
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button,
+    .scrollspy-link, .key) {
   min-inline-size: var(--tap-min);
+}
+/* Links and buttons in a toast are actions, not running text. */
+:where(.toast) :is(a, button):not(.btn, .btn-icon, .btn-close) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--tap-min);
+  min-inline-size: var(--tap-min);
+}
+/* Touch tiers: keys and reaction chips sit 8px apart (WCAG 2.5.8 spacing). */
+@media (max-width: 900px), (any-pointer: coarse) {
+  .strip-section, .message-reactions { gap: max(0.3rem, 8px); }
 }
 :is(.input, .select) { min-block-size: var(--tap-min); }
 /* Checkboxes and radios: the label is the target. */
@@ -3447,6 +3467,13 @@ html[data-pointer="touch"] { --tap-min: 44px; }
     padding-block: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
     background-clip: content-box;
     border-color: transparent;
+  }
+  /* The same, sideways, for a vertical slider. */
+  .slider.is-vertical:not(.is-range > .slider) {
+    width: var(--tap-min);
+    height: var(--slider-length, 4.5rem);
+    padding-block: 0;
+    padding-inline: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
   }
 }
 /* Inline text links inside running text are exempt (WCAG 2.5.8); links
@@ -3596,7 +3623,8 @@ html[data-pointer="touch"] { --tap-min: 44px; }
    one letter per line (a squeezed title beside header controls, a button
    label in a narrow cell or toast). */
 :is(.table td, .table th, .panel-header:has(:is(.input, .select, .btn, .input-group))) { overflow-wrap: break-word; }
-.badge { max-inline-size: 100%; min-inline-size: 0; }
+.badge:not(.badge-button) { max-inline-size: 100%; min-inline-size: 0; }
+.badge-button { max-inline-size: 100%; }
 .btn { max-inline-size: 100%; overflow-wrap: break-word; }
 
 /* --- v5 nested menus (PLAN.md §8) ----------------------------------------

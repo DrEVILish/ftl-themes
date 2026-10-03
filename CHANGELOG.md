@@ -5,6 +5,38 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **winxp-luna: round radios and a true XP default button.** Radios and
+  checkboxes are 13px Luna glyphs again (the v5 touch sizing stretched
+  them into ovals; the wrapping `.check` label keeps the hit area), and a primary
+  button is XP's default button: the plain Luna face and navy border with
+  the blue inner glow, not a bold label and bright border.
+
+- **win7-aero: title-bar menus open above the page.** The glass title
+  bar now has a z-index, so dropdowns and notification popovers that open
+  out of it are no longer painted under the blurred content area.
+
+- **Touch targets and spacing fixes from the blue-future v5 audit**
+  (failing page runs 30 → 4):
+  - Reaction chips and other `.badge-button`s reach `--tap-min` wide again
+    (a later `.badge { min-inline-size: 0 }` had undone it); scrollspy
+    links and console `.key`s get the minimum width too.
+  - On touch tiers, channel-strip keys and reaction chips sit 8px apart,
+    and vertical sliders grow to the touch width like horizontal ones.
+  - Links and buttons inside a `.toast` are full-size targets.
+  - A `.check` holding a `.visually-hidden` name is positioned, so the
+    hidden name can't escape a scrolling table and widen the page.
+  - `.transport` wraps instead of pushing readouts past its edge;
+    `.divide-y` children get padding off the hairline; scribble strips
+    and `.scrollspy-nav` get inner padding.
+  - Demo pages: the ticket list's select-all and the nesting page's table
+    checkboxes use `label.check` with a hidden name; the marketing top bar
+    has inline padding.
+  - Still flagged on blue-future: a deliberately unbreakable button label
+    on `nesting.html`, a taskbar tray on a phone-width demo, and text in a
+    sideways-scrolling nav.
+
+- **Manifest `contract` is 5.** See `docs/MIGRATING-v5.md`.
+
 - New theme `motorsport-telemetry`: pit-wall and broadcast timing graphics on
   carbon, with a painted timing-tower rail, rev-light strip, sector-coloured
   selection, tyre-compound badge chips, a rev-counter dial gauge, a

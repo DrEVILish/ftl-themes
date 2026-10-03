@@ -34,7 +34,7 @@ import cssparse
 
 # Major version of the class/token contract the bundles implement. Bumped
 # when a rename or removal would break a consumer's markup or CSS.
-CONTRACT = 4
+CONTRACT = 5
 
 HEX_RE = re.compile(r"^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 RGBA_RE = re.compile(r"^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+)(%)?)?\s*\)$")
