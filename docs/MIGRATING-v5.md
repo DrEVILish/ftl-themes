@@ -5,8 +5,7 @@ levels and every theme slug. Class names and custom properties are **not**
 renamed, so there is no codemod. What changes is layout and sizing: the shell
 gains screen tiers, controls grow to touch size on phones and tablets, and
 controls keep the arrow cursor. Re-check your app at a phone width and at a
-wide-screen width after upgrading. The last v4 release is the `v4` branch
-(v4.1.0); pin it if you cannot upgrade yet.
+wide-screen width after upgrading. v4 lives on the `v4` branch; pin it if you cannot upgrade yet.
 
 ## What changed
 
@@ -56,5 +55,5 @@ emails and `schedule.js`. See CHANGELOG.md and `docs/components/`.
 
 ```sh
 git submodule update --remote third_party/ftl-themes   # or however you pin it
-git -C third_party/ftl-themes checkout v5.0.0
+git -C third_party/ftl-themes checkout v5.0.0   # once the tag exists; main also works
 ```

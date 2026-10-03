@@ -1,6 +1,6 @@
 # ftl-themes v5.0 plan
 
-Status: **in progress** (started 2026-10-02). Baseline 2026; new theme names agreed. v4 stays the base: the
+Status: **v5.0.0 released 2026-10-03** with phases 0–4 as far as built; the items under "Not in 5.0.0" in [Rollout](#26-rollout) are v5.x work. Started 2026-10-02. Baseline 2026; new theme names agreed. v4 stays the base: the
 token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
 42 themes all carry forward. v5 is about three things v4 does not do well:
 
@@ -1110,6 +1110,16 @@ and top-layer popovers next. Phase 2 touch sizing and the arrow cursor are
 in; hover gating is still to do. The nesting page's findings (popover and
 toast top-layer conflicts, clipped dropdowns, unstyled nested menus,
 tables in modals on phones, the drawer header) are the next work items.
+
+**Not in 5.0.0 (v5.x):** the `teenage-engineering` and `cyberpunk-2077`
+themes; theme families (§16); window controls for installed apps (§15);
+cursor packs (§11); per-theme splash and motion tokens (§11, §13); the
+dashboard widget grid and live-data `.connection` states (§18);
+favicons and share cards (§23); and the phase 5 per-theme rollout. On
+2026-10-03, 23 of 43 themes had a themed close button, 9 a code palette,
+3 accent swatches, and none per-theme motion or splash. Outside
+blue-future, `v5_audit.mjs` still reports failures for most themes; they
+switch to failing per theme as each is ported.
 
 | Phase | Work | Done when |
 |---|---|---|

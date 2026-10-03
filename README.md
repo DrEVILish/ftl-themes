@@ -1,5 +1,10 @@
 # ftl-themes
 
+> **v5.0.0** adds screen tiers (mobile, tablet, desktop, xl), touch-size
+> controls, nested menus and the v5 component groups. No names changed;
+> see [`docs/MIGRATING-v5.md`](docs/MIGRATING-v5.md) for what to re-check.
+> v4 lives on the `v4` branch.
+
 > **v4.0.0 — BREAKING.** The `ftl-` prefix is gone from every class name,
 > custom property, keyframe and id (`.ftl-btn` → `.btn`, `--ftl-text` →
 > `--text`), every bundle now sits in `@layer ui`, and there is **no

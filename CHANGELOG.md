@@ -3,7 +3,18 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
-## Unreleased
+## v5.0.0 — screen tiers, touch, nesting and the v5 component groups (2026-10-03)
+
+Upgrading from v4: read `docs/MIGRATING-v5.md`. No class or token was
+renamed, so there is no codemod; the shell gains four screen tiers,
+controls grow to touch size on phones and tablets, `.app` stops at
+1800px, and controls keep the arrow cursor. The manifest's `contract` is
+5. New themes since v4.1 (nine): `cassette-futurism`, `ios-flat`,
+`ios-skeuomorphic`, `liquid-glass`, `silo`, `skyrim`, `tokie`, `westworld`,
+`motorsport-telemetry`. Parts of
+PLAN.md not built yet (two more themes, theme families, window controls,
+cursor packs, per-theme splash and motion, the dashboard grid, and the
+per-theme rollout) are listed there as v5.x work.
 
 - **winxp-luna: round radios and a true XP default button.** Radios and
   checkboxes are 13px Luna glyphs again (the v5 touch sizing stretched
