@@ -34,6 +34,15 @@
   }
   window.applyIconTheme = applyIcons;
 
+  // The tab icon and home-screen icon follow the theme
+  // (dist/favicons/<slug>.svg and -180.png, built by build_favicons.py).
+  function setIcon(rel, href, type) {
+    var l = document.querySelector('link[rel="' + rel + '"]');
+    if (!l) { l = document.createElement("link"); l.rel = rel; document.head.appendChild(l); }
+    if (type) l.type = type;
+    l.href = href;
+  }
+
   // A slug is only ever spliced into a path, so accept nothing but a
   // known theme name: ?theme=../x or a stale localStorage value must not
   // become a stylesheet URL.
@@ -66,6 +75,8 @@
       link.href = href;
     }).then(function () { document.dispatchEvent(new CustomEvent("themechange")); });
     applyIcons(slug);
+    setIcon("icon", "dist/favicons/" + slug + ".svg", "image/svg+xml");
+    setIcon("apple-touch-icon", "dist/favicons/" + slug + "-180.png");
     // Links between the demo pages carry the theme along, so a theme that
     // arrived via ?theme= (not persisted) survives the click.
     var query = "?theme=" + slug + (document.documentElement.dataset.variant ? "&variant=" + variant : "");

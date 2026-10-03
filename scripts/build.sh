@@ -86,3 +86,6 @@ python3 scripts/build_icons.py
 # Themed transactional emails: tokens resolved to literal colours in
 # table-based, inline-styled HTML + plain text (dist/email/<slug>/).
 python3 scripts/build_emails.py
+
+# Per-theme favicons and app icons (SVG + PNG) — see scripts/build_favicons.py.
+python3 scripts/build_favicons.py

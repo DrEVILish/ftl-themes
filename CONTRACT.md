@@ -471,6 +471,25 @@ start of the title bar. Minimise, maximise and close travel together at the
 end. Every theme's close is now period-correct (Aqua's red light, Mac OS 9's
 close box, Win7's red caption, DOS `[■]`, iOS "Done", XMB "○ Back"…).
 
+### Favicons and share cards (v5)
+
+`scripts/build_favicons.py` (run by `build.sh`) writes per-theme icons to
+`dist/favicons/` from one SVG template filled with the theme's resolved
+tokens (title-bar colour tile, accent window mark, `--radius` corners):
+`<slug>.svg` (favicon), `<slug>-maskable.svg`, `<slug>-180.png`
+(apple-touch-icon), `<slug>-192.png`, `<slug>-512.png` and
+`<slug>-maskable-512.png` (PWA manifest). PNGs need `rsvg-convert`.
+
+```html
+<link rel="icon" type="image/svg+xml" href="dist/favicons/lcars.svg">
+<link rel="apple-touch-icon" href="dist/favicons/lcars-180.png">
+```
+
+The demo `theme-loader.js` swaps both with the theme. `share-card.html` is
+a 1200×630 Open Graph image template in the current theme:
+`share-card.html?theme=<slug>&title=…&subtitle=…&site=…&tag=…`; render it
+headless and screenshot `.share-card`.
+
 ### Theme scheduling (v5)
 
 `assets/js/schedule.js` (a reference snippet) switches theme, palette

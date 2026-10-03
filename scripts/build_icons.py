@@ -40,6 +40,13 @@ def main():
     if not generic_symbols:
         raise SystemExit(f"{generic_path}: no <symbol id=\"...\"> entries found")
 
+    # The core UI set (assets/icons/core-set.txt): the icons components and
+    # pages use. A theme is "icon complete" when it redraws all of them.
+    core = ["icon-" + l.strip() for l in open("assets/icons/core-set.txt", encoding="utf-8") if l.strip()]
+    missing_core = [c for c in core if c not in generic_symbols]
+    if missing_core:
+        raise SystemExit(f"assets/icons/core-set.txt: not in {generic_path}: {missing_core}")
+
     os.makedirs("dist/icons", exist_ok=True)
     for path in glob.glob("dist/icons/*.svg"):
         os.remove(path)
@@ -78,7 +85,9 @@ def main():
         )
         with open(f"dist/icons/{slug}.svg", "w", encoding="utf-8") as f:
             f.write(out)
-        print(f"built dist/icons/{slug}.svg" + (f" ({len(overridden)} override(s))" if overridden else ""))
+        have = sum(c in overridden for c in core)
+        print(f"built dist/icons/{slug}.svg" + (f" ({len(overridden)} override(s))" if overridden else "")
+              + f", core set {have}/{len(core)}" + (" (icon complete)" if have == len(core) else ""))
 
 
 if __name__ == "__main__":

@@ -5,6 +5,14 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Theme identity: favicons, share cards, icon coverage.**
+  - `scripts/build_favicons.py`: per-theme SVG favicon, maskable icon and
+    PNG app icons (180/192/512) in `dist/favicons/`; the demo loader swaps
+    the tab icon with the theme.
+  - `share-card.html`: a 1200×630 Open Graph image template in any theme.
+  - `assets/icons/core-set.txt` defines the 178-icon core UI set;
+    `build_icons.py` reports each theme's coverage ("icon complete").
+
 - New theme `cyberpunk-2077` (inspired by the game's menus and HUD): coral-red
   condensed caps on near-black maroon, cyan for live and selected state,
   cut-corner frames drawn in the background, netrunner breach-grid tables,
