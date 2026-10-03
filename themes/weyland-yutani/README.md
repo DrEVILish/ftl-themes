@@ -64,11 +64,15 @@ outlines, and headings and readouts glow.
 
 ### Icons
 
-`themes/weyland-yutani/icons.svg` redraws 60 icons as blocky, machined
-glyphs: `stroke-linecap: square` and `stroke-linejoin: miter` on every
-symbol, circles replaced by squares and chamfered polygons, `currentColor`
-only. Everything else falls back to the generic set, thickened by
-`--icon-stroke-width: 2.2`.
+`themes/weyland-yutani/icons.svg` redraws the full core set (178/178) as
+blocky, machined stencil glyphs:
+- 24 grid, stroke only at 2.2 (`--icon-stroke-width`), with
+  `stroke-linecap="square"` and `stroke-linejoin="miter"` on every symbol.
+- Radius 0 everywhere. Circles become squares (small) or chamfered octagons
+  (r >= 5); curves become straight 45-degree runs (bell, cloud, lock shackle).
+  The power arc is the one curve kept.
+- Nothing is filled; dots are short square-cap ticks (`v1`).
+- `currentColor` only.
 
 ## Typography
 

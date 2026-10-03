@@ -55,9 +55,16 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 
 ### Icons
 
-`icons.svg` overrides 54 ids in a bold pictogram style: 2.8 stroke
-(`--icon-stroke-width`), round caps/joins from core, circle and rounded-rect
-enclosures (close, check, plus, minus, info), no fills and no colours.
+`icons.svg` redraws the full core set (178/178) as bold 1960s pictograms:
+- 24 grid, stroke only at 2.8 (`--icon-stroke-width`), round caps/joins from
+  core; nothing is filled, solid shapes (play, bookmark, caret) are outlines.
+- True circles and curves; boxes always rounded, rx about 30% of the short
+  side (max 3, min 0.8). Circle enclosures for state marks (close, check,
+  plus, minus, info).
+- Dots are `r=".6"` circles that the heavy stroke turns into round blobs.
+- The stroke closes up fine detail, so dense glyphs are simplified: bars are
+  single fat strokes, at most 3 keys/lines inside a frame, wide tubes.
+- `currentColor` only, no hard-coded colours.
 
 ## Typography (honest)
 
