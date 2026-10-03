@@ -88,6 +88,20 @@ reads as another data row rather than a conventional status bar.
 
 `references/bloomberg/` has 4 captures plus `RESEARCH.md`. `bloomberg-keyboard-function-keys.jpg` (real keyboard, red/yellow/green function-key rows, green GO key) backs the function-key strip and the colour-coded `<kbd>`. `EngineeringValue_EP3_Preview.webp` backs amber-on-black screen type and the function-key row. `images.jpg` is a third-party dense data-grid dashboard, and `1_ka17MqtycuFqVq5i28WB2w.png` is a third-party clone ("FincepT Terminal"), not real Bloomberg — the weakest of the set per `RESEARCH.md`. No captured hex values.
 
+## Icons
+
+`themes/bloomberg/icons.svg` redraws the whole core set (178/178) as blocky
+character-cell glyphs:
+
+- 24×24 grid, line only: no fills, colour from `currentColor`; weight comes
+  from the theme's global `--icon-stroke-width: 1.4`, never per symbol.
+- Every symbol wraps its paths in `stroke-linecap="square"` +
+  `stroke-linejoin="miter"`.
+- Zero curves: no `<circle>`, no arc/bezier commands. Circles become plain
+  squares, arcs become straight or pixel-staircase runs, boxes are plain
+  right-angle rects (no rounding, no chamfers).
+- Dots are 1×1 stroked squares; weather icons reuse the two-rect cloud.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

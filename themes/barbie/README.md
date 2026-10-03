@@ -93,6 +93,20 @@ card in the middle pop — box art, not a dashboard.
 
 `references/barbie/` has 5 files plus `RESEARCH.md`: three PD logo files (`barbie-wordmark-2023-logo.png`, `barbie-the-movie-logo.png`, `barbie-mattel-seal-logo.png`) plus `Barbie_Logo.svg` and `s-l1200.png`, which `RESEARCH.md` does not describe (provenance unverified). The logos back the gloss-pink pill/script identity and rounded type. `RESEARCH.md` states an honest gap: no people-free pink product or packaging photo exists in the set, so packaging colour beyond the logo (gold sparkle, backdrop pinks, mint) is design judgement, not sampled. The 2023-era pink fill in the logos is not measured against `#c81b7a`.
 
+## Icons
+
+`themes/barbie/icons.svg` redraws the whole core set (178/178) as soft,
+rounded line icons:
+
+- 24×24 grid, line only: no fills, colour from `currentColor` (the pink comes
+  from the theme tokens, never the file).
+- Uniform `stroke-width="2.6"` set per symbol with round caps and joins.
+- True curves kept; rectangles get generous radii (rx up to 4–5), pages use
+  the rounded dog-ear outline of `icon-file`.
+- Dots are small stroked rings; a few icons carry a tiny accent dot. Dense
+  glyphs (PDF/PNG pages, histogram, thermometer) are opened up so the heavy
+  stroke does not clog at 16px.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -100,6 +100,21 @@ well — hardware, not a HUD.
 
 `references/alienware/` has 8 captures plus `RESEARCH.md`. Per its audit, most are third-party icon-pack and desktop-skin images (Invader/XP-era), not the Dell AlienFX zone editor or Command Center in the capture targets: **this is the weakest-relevance set in the repo** and proper Dell captures remain a gap. They loosely back the matte black plus single cyan glow and the angular vent/cut language. The angle-cut corners, the corner brackets and the rail are the theme's interpretation of the RESEARCH text.
 
+## Icons
+
+`themes/alienware/icons.svg` redraws the whole core set (178/178) as
+angular chassis geometry:
+
+- 24×24 grid, line only: no fills anywhere, colour from `currentColor`,
+  weight inherited from `--icon-stroke-width` (never set per symbol).
+- Every symbol wraps its paths in `stroke-linecap="square"` +
+  `stroke-linejoin="miter"`.
+- No curves: circles become cut-corner octagons (r≈9 is the
+  `M7 3h10l4 4v10l-4 4H7l-4-4V7z` shape used by info/clock), boxes get a
+  ~2-unit 45° chamfer on all four corners, arcs become straight diagonal runs.
+- Dots are tiny stroked octagons; weather icons reuse the two-block cloud,
+  night icons reuse the faceted moon.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

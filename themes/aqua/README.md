@@ -84,6 +84,20 @@ fill without checking the contrast floor.
 
 `references/aqua/` has 6 captures plus `RESEARCH.md` (one Leopard icon grid with people in icons was removed): a Panther Finder window, a Leopard Guest Finder window, a Snow Leopard widget gallery, Aqua toolbar controls, a Leopard icon set (`leopard-huge-iconpack-650-screenshot.avif`) and a Leopard app-icon grid. They back the gel buttons, pinstripes, brushed metal and traffic-light controls. Gaps: no dedicated Dock-reflection capture, and the folder is Panther/Leopard-heavy rather than 10.6 Snow Leopard (the theme's stated target). `RESEARCH.md` gives no hex values.
 
+## Icons
+
+`themes/aqua/icons.svg` redraws the whole core set (178/178) as pillowy
+candy-UI line icons:
+
+- 24×24 grid, line only: no fills, colour from `currentColor`, weight and
+  round caps/joins inherited from `.icon` (no `<g>` wrapper, no cap overrides).
+- True curves kept; rectangles get generous radii (rx 2–4), pages use the
+  rounded dog-ear outline of `icon-file`.
+- Dots are r 0.7 stroked rings.
+- Gloss: on about one icon in six, a short `stroke-width="3"` arc rides the
+  top-left inside of the lead circle or box (info, clock, search, lock…),
+  only where that corner is empty. It is the only hard-coded weight.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:
