@@ -194,3 +194,16 @@ Deliberately NOT themed (app-owned, do not add hooks for these):
 - uPlot chart internals: the app reads bridge tokens via
   `getComputedStyle` with identical fallbacks.
 - Brand logo and modal sheet layout.
+
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as instrument-panel
+legends:
+
+- 24×24 grid, 1.5px hairline stroke, butt caps, mitred joins.
+- Square corners on every box (no rounding, like the panels); true circles
+  and arcs stay round, like the theme's lamps.
+- Line only. Solid marks are reserved for indicators: a dot, a level bar,
+  a list marker.
+- `currentColor` everywhere, so icons follow text, `--accent` and selected
+  states; no hard-coded colours.

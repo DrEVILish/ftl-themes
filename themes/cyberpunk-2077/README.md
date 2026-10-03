@@ -164,3 +164,17 @@ stats, job objectives and the driving HUD). Unverified: the exact
 typeface, the quickhack wheel and the full combat HUD (only the
 health/XP bar and RAM pips are covered), and any controller-only
 widgets. See `references/cyberpunk-2077/RESEARCH.md` "Gaps".
+
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) in the style of the
+in-game menu tab glyphs (see `references/cyberpunk-2077/`):
+
+- 24×24 grid, 2px stroke, square caps, mitred joins; angles, not curves.
+- Every box has its bottom-right corner cut at 45°, like the panels.
+- Simple silhouettes (heart, bell, bookmark, folder, user, play, shield)
+  are solid fills. Containers are a frame with solid inner bars (the
+  table's head bar, the card stripe). Only things that are really round
+  (clock, disc, coin) keep circles.
+- `currentColor` everywhere, so the red ink and the cyan selection both
+  apply. No game marks or logos.

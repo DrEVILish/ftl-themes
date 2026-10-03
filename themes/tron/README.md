@@ -65,3 +65,16 @@ recolored, but as the shell's *default* arrangement — not its intended
 layout. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status` shell
 (CONTRACT.md "The app shell" / "Adoption levels") to get this theme's real
 layout at **L1**.
+
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as lines drawn in light:
+
+- 24×24 grid, 2px stroke, square caps, mitred joins.
+- Every box is chamfered top-left and bottom-right like the theme's
+  clip-path, and every circle becomes an octagon. Curves are rebuilt as
+  45° runs (bell, cloud, lock shackle, wifi).
+- Outline only, with no filled surfaces. The only solids are small marks:
+  square nodes, carets and level indicators.
+- `currentColor` everywhere, with no hard-coded cyan or orange, so state
+  colours still apply.
