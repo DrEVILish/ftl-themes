@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nerv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fighter cockpit — ftl-themes vehicle demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/nerv.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: every colour comes from the theme. */
+  .jet-pad { padding: var(--space-m); }
+  .jet-row { display: grid; gap: var(--space-m); align-items: start; }
+  .jet-displays { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .jet-centre { display: grid; justify-items: center; gap: var(--space-m); }
+  .jet-centre .radar { --radar-size: 13rem; }
+  .jet-centre .gauge-dial { --gauge-size: 10rem; }
+  .jet-consoles { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; }
+  .jet-mfd-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-s); }
+  .mfd-page .radar { --radar-size: 100%; }
+  .mfd-page .compass { --gauge-size: min(100%, 15rem); display: block; margin-inline: auto; }
+  .jet-arm { display: flex; flex-wrap: wrap; gap: var(--space-m); align-items: flex-start; }
+  .jet-fuel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-s); }
+
+  /* Master mode and master arm change the HUD symbology. */
+  .jet-aa, .jet-ag, .jet-armed { display: none; }
+  body:has(#mm-aa:checked) .jet-aa,
+  body:has(#mm-ag:checked) .jet-ag { display: block; }
+  body:has(#mm-aa:checked) .jet-nav,
+  body:has(#mm-ag:checked) .jet-nav { display: none; }
+  body:has(#master-arm:checked) .jet-armed { display: inline; }
+  body:has(#master-arm:checked) .jet-safe { display: none; }
+
+  @media (max-width: 1200px) {
+    .jet-displays { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .jet-displays > .jet-centre { grid-column: 1 / -1; grid-row: 1; grid-template-columns: auto auto; }
+    .jet-consoles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .jet-consoles > :last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 900px) {
+    .jet-displays, .jet-consoles { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .jet-displays > .jet-centre { grid-template-columns: minmax(0, 1fr); }
+    .jet-pad { padding: var(--space-s); }
+    .jet-fuel { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Strike cockpit</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Strike cockpit</h1>
+      <p class="text-muted">A single-seat fighter: head-up display over a CSS sky, two multi-function displays with soft keys round the glass, radar warning receiver, G meter, guarded master arm, warning panel and throttle. Switch master mode, lift the guard and arm, page the displays: all native radios and checkboxes. Try it in NERV, Tron, Matrix and Alienware.</p>
+      <div class="cluster">
+        <div class="toggle-group" role="radiogroup" aria-label="Master mode">
+          <label class="toggle-btn"><input type="radio" name="master-mode" id="mm-nav">NAV</label>
+          <label class="toggle-btn"><input type="radio" name="master-mode" id="mm-aa" checked>A-A</label>
+          <label class="toggle-btn"><input type="radio" name="master-mode" id="mm-ag">A-G</label>
+        </div>
+        <span class="badge badge-danger jet-armed">Armed</span><span class="badge jet-safe">Safe</span>
+      </div>
+    </div>
+
+    <!-- ======================================================= HUD -->
+    <div class="flight-hud" role="img" aria-label="Head-up display: heading 274°, 452 knots, 18,250 feet, 4° nose up, banked 8° right">
+      <div class="attitude is-hud" style="--pitch:4; --roll:8">
+        <div class="attitude-horizon">
+          <ol class="attitude-ladder" aria-hidden="true"><li style="--at:20"></li><li style="--at:15"></li><li style="--at:10"></li><li style="--at:5"></li><li style="--at:-5"></li><li style="--at:-10"></li><li style="--at:-15"></li></ol>
+        </div>
+      </div>
+      <ol data-audit-edge="ignore" class="compass-strip" style="--heading:274" aria-hidden="true">
+        <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+        <li class="is-marker" style="--at:288"><svg class="icon"><use href="assets/icons/icons.svg#icon-caret-down"/></svg></li>
+      </ol>
+      <div class="tape" aria-hidden="true" style="--value:452; --tape-span:160; --tape-major:50; --tape-minor:10">
+        <span class="tape-unit">KCAS</span>
+        <ol data-audit-edge="ignore" class="tape-scale"><li style="--at:350">350</li><li style="--at:400">400</li><li style="--at:450">450</li><li style="--at:500">500</li><li style="--at:550">550</li></ol>
+        <span class="tape-bug" style="--at:480"></span>
+        <span class="tape-readout">452</span>
+      </div>
+      <div class="tape is-end" aria-hidden="true" style="--value:18250; --tape-span:2000; --tape-major:500; --tape-minor:100">
+        <span class="tape-unit">ALT</span>
+        <ol data-audit-edge="ignore" class="tape-scale"><li style="--at:17000">17.0</li><li style="--at:17500">17.5</li><li style="--at:18000">18.0</li><li style="--at:18500">18.5</li><li style="--at:19000">19.0</li><li style="--at:19500">19.5</li></ol>
+        <span class="tape-readout">18250</span>
+      </div>
+      <span class="flight-hud-gun"></span>
+      <span class="flight-hud-fpm" style="--x:53%; --y:46%"></span>
+      <span class="flight-hud-target is-locked jet-aa" style="--x:68%; --y:26%">TD 4.2</span>
+      <span class="flight-hud-target jet-ag" style="--x:44%; --y:72%">CCIP</span>
+      <div class="flight-hud-data">
+        <span>M 0.86</span><span>G 2.4</span><span>MAX 6.1</span>
+      </div>
+      <div class="flight-hud-data is-end">
+        <span class="jet-nav">NAV · WP 3</span><span class="jet-aa">SRM 4 · RNG 4.2</span><span class="jet-ag">BOMB 2 · CCIP</span>
+        <span><span class="jet-armed">ARM</span><span class="jet-safe">SAFE</span></span>
+      </div>
+    </div>
+
+    <!-- ======================================================= Displays -->
+    <div class="jet-row jet-displays">
+      <div class="mfd" role="group" aria-label="Left display">
+        <div class="mfd-keys is-top" role="radiogroup" aria-label="Left display format">
+          <label class="mfd-key"><input type="radio" name="mfd-l" checked>RDR</label>
+          <label class="mfd-key"><input type="radio" name="mfd-l">SMS</label>
+          <label class="mfd-key"><input type="radio" name="mfd-l">SYS</label>
+          <label class="mfd-key"><input type="radio" name="mfd-l">FUEL</label>
+        </div>
+        <div class="mfd-keys is-start">
+          <button class="mfd-key" type="button" aria-label="Range up">RNG+</button>
+          <button class="mfd-key" type="button" aria-label="Range down">RNG−</button>
+          <label class="mfd-key"><input type="checkbox">STT</label>
+        </div>
+        <div class="mfd-screen">
+          <section class="mfd-page" aria-label="Radar">
+            <div class="radar is-sector" style="--sweep:-30" role="img" aria-label="Radar, 40 mile scale: hostile locked bearing 14° right at 4.2 miles, wingman left, one unknown">
+              <span class="radar-blip is-foe" style="--bearing:14; --range:.3">B1 4.2</span>
+              <span class="radar-blip is-foe is-faint" style="--bearing:22; --range:.74">B2</span>
+              <span class="radar-blip is-friend" style="--bearing:-38; --range:.18">#2</span>
+              <span class="radar-blip is-unknown" style="--bearing:-12; --range:.6">U</span>
+            </div>
+            <p>RWS · 40 nm · bars 4</p>
+          </section>
+          <section class="mfd-page" aria-label="Stores">
+            <ul class="annunciator" aria-label="Weapon stations">
+              <li class="is-on">1 · SRM</li><li>2 · MRM</li><li>3 · Tank</li><li>4 · Pod</li><li>5 · Tank</li><li>6 · MRM</li><li class="is-on">7 · SRM</li><li class="is-advisory">Gun 510</li>
+            </ul>
+          </section>
+          <section class="mfd-page" aria-label="Systems">
+            <dl class="props"><dt>Engine</dt><dd>96% · 712 °C</dd><dt>Hydraulics</dt><dd>3000 / 3000 psi</dd><dt>Oxygen</dt><dd>8.2 l</dd><dt>Cabin</dt><dd>8 000 ft</dd></dl>
+          </section>
+          <section class="mfd-page" aria-label="Fuel">
+            <div class="stack stack-sm">
+              <div class="gauge-linear"><div class="meter" style="--meter-level:62%" role="meter" aria-label="Internal fuel, kg" aria-valuenow="3100" aria-valuemin="0" aria-valuemax="5000"><div class="meter-fill"></div></div><span class="gauge-mark" style="--at:0%">0</span><span class="gauge-mark is-target" style="--at:30%">Bingo</span><span class="gauge-mark" style="--at:100%">5 t</span></div>
+              <p>Internal 3 100 kg · tanks 1 200 kg</p>
+            </div>
+          </section>
+        </div>
+        <div class="mfd-keys is-end">
+          <button class="mfd-key" type="button">TWS</button>
+          <button class="mfd-key" type="button">RWS</button>
+          <button class="mfd-key" type="button">VS</button>
+        </div>
+        <div class="mfd-keys is-bottom">
+          <button class="mfd-key" type="button">SWAP</button>
+          <button class="mfd-key" type="button">DCLT</button>
+          <button class="mfd-key" type="button">MENU</button>
+        </div>
+      </div>
+
+      <div class="jet-centre">
+        <div class="stack stack-sm" style="justify-items:center">
+          <span class="stat-label">Threat warning</span>
+          <div class="radar is-rwr is-static" role="img" aria-label="Radar warning: search radar at 2 o'clock far, tracking radar at 10 o'clock close, unknown at 6 o'clock">
+            <span class="radar-blip is-unknown" style="--bearing:60; --range:.75">S</span>
+            <span class="radar-blip is-foe" style="--bearing:-55; --range:.35">15</span>
+            <span class="radar-blip" style="--bearing:180; --range:.65">U</span>
+          </div>
+        </div>
+        <div class="stack stack-sm" style="justify-items:center">
+          <span class="stat-label">Load factor</span>
+          <div class="gauge-dial" style="--value:.45; --gauge-redline:.92; --gauge-ticks:6; --gauge-minor:2">
+            <meter min="-3" max="9" value="2.4">2.4 g</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>−3</li><li>−1</li><li>1</li><li>3</li><li>5</li><li>7</li><li class="is-redline">9</li></ol>
+            <div class="gauge-readout"><span class="readout">2.4</span>g · max 6.1</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mfd" role="group" aria-label="Right display">
+        <div class="mfd-keys is-top" role="radiogroup" aria-label="Right display format">
+          <label class="mfd-key"><input type="radio" name="mfd-r" checked>HSI</label>
+          <label class="mfd-key"><input type="radio" name="mfd-r">CHK</label>
+          <label class="mfd-key"><input type="radio" name="mfd-r">FCS</label>
+        </div>
+        <div class="mfd-keys is-start">
+          <button class="mfd-key" type="button">WP+</button>
+          <button class="mfd-key" type="button">WP−</button>
+        </div>
+        <div class="mfd-screen">
+          <section class="mfd-page" aria-label="Horizontal situation">
+            <div class="compass" style="--heading:274" role="img" aria-label="Heading 274°">
+              <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>3</li><li>6</li><li>E</li><li>12</li><li>15</li><li>S</li><li>21</li><li>24</li><li>W</li><li>30</li><li>33</li></ol>
+              <span class="gauge-needle"></span>
+            </div>
+            <p>WP 3 · 288° · 36 nm · 4:41</p>
+          </section>
+          <section class="mfd-page" aria-label="Checklist">
+            <ol class="checklist">
+              <li><label><input class="checkbox" type="checkbox" checked><span>IFF</span><b>On</b></label></li>
+              <li><label><input class="checkbox" type="checkbox" checked><span>Radar</span><b>Opr</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Master arm</span><b>Arm</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Lights</span><b>Off</b></label></li>
+            </ol>
+          </section>
+          <section class="mfd-page" aria-label="Flight controls">
+            <div class="attitude" style="--pitch:4; --roll:8; --attitude-size:12rem" role="img" aria-label="Standby attitude: 4° up, 8° right">
+              <div class="attitude-horizon"><ol class="attitude-ladder" aria-hidden="true"><li style="--at:10"></li><li style="--at:-10"></li></ol></div>
+            </div>
+          </section>
+        </div>
+        <div class="mfd-keys is-end">
+          <button class="mfd-key" type="button">CRS</button>
+          <button class="mfd-key" type="button">HDG</button>
+        </div>
+        <div class="mfd-keys is-bottom">
+          <button class="mfd-key" type="button">SWAP</button>
+          <button class="mfd-key" type="button">MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================= Consoles -->
+    <div class="jet-row jet-consoles">
+      <section class="panel" aria-labelledby="arm-h">
+        <header class="panel-header"><strong id="arm-h">Armament</strong></header>
+        <div class="jet-pad stack">
+          <div class="jet-arm">
+            <div class="guard">
+              <label class="guard-cover"><input type="checkbox" aria-label="Master arm guard"><span class="guard-closed">Safe · lift guard</span><span class="guard-open">Close guard</span></label>
+              <label class="toggle-btn is-danger"><input type="checkbox" id="master-arm">Master arm</label>
+            </div>
+            <div class="toggle-group" role="radiogroup" aria-label="Weapon">
+              <label class="toggle-btn"><input type="radio" name="wpn">Gun</label>
+              <label class="toggle-btn"><input type="radio" name="wpn" checked>SRM</label>
+              <label class="toggle-btn"><input type="radio" name="wpn">MRM</label>
+            </div>
+          </div>
+          <div class="cluster">
+            <label class="toggle-btn"><input type="checkbox" checked>Chaff</label>
+            <label class="toggle-btn"><input type="checkbox" checked>Flare</label>
+            <label class="toggle-btn"><input type="checkbox">Jammer</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="warn-h">
+        <header class="panel-header"><strong id="warn-h">Warning panel</strong></header>
+        <div class="jet-pad stack">
+          <div class="cluster"><label class="annunciator-master is-warning"><input type="checkbox" checked>Master warn</label><label class="annunciator-master is-caution"><input type="checkbox">Master caution</label></div>
+          <ul class="annunciator" aria-label="Cautions and warnings">
+            <li>Eng fire</li><li>Hyd</li><li class="is-caution is-blinking">Bingo <span class="visually-hidden">(lit)</span></li><li>Oxy low</li>
+            <li>Gen</li><li class="is-advisory">Jfs run <span class="visually-hidden">(lit)</span></li><li>Canopy</li><li class="is-on">Nws <span class="visually-hidden">(on)</span></li>
+          </ul>
+          <div class="jet-fuel">
+            <div><span class="stat-label">Fuel</span><span class="readout">4 300<span class="readout-unit">kg</span></span></div>
+            <div><span class="stat-label">Bingo</span><span class="readout">1 500<span class="readout-unit">kg</span></span></div>
+            <div><span class="stat-label">Joker</span><span class="readout">2 400<span class="readout-unit">kg</span></span></div>
+          </div>
+          <ul class="annunciator is-gear" aria-label="Landing gear: up">
+            <li>Nose</li><li>Left</li><li>Right</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="thr-h">
+        <header class="panel-header"><strong id="thr-h">Throttle</strong></header>
+        <div class="jet-pad">
+          <div class="throttle" role="group" aria-labelledby="thr-h">
+            <div class="scale"><span style="--at:1">MAX AB</span><span style="--at:.78" class="is-unity">MIL</span><span style="--at:.2">IDLE</span><span style="--at:0">OFF</span></div>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="100" value="74" aria-label="Throttle"><span aria-hidden="true">THR</span></label>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Strike cockpit · CAP station 2</span>
+    <span class="status status-warn">Bingo fuel in 9 min</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

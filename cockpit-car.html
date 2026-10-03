@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="motorsport-telemetry">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Car cockpit — ftl-themes vehicle demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/motorsport-telemetry.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: every colour comes from the theme. */
+  .car-cluster { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: var(--space-m); padding: var(--space-m); }
+  .car-cluster > .gauge-dial { --gauge-size: 15rem; justify-self: center; }
+  .car-telltales { --telltale-size: 2.3rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem; padding: var(--space-xs) var(--space-m) 0; }
+  .car-telltales .is-end { margin-inline-start: auto; }
+  .car-telltales .is-start { margin-inline-end: auto; }
+  .car-centre { display: grid; justify-items: center; gap: var(--space-s); text-align: center; min-inline-size: 0; }
+  .car-centre .readout-lg { --readout-size: 4.5rem; }
+  .car-gear > span { display: none; }
+  .car-strip { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-s) var(--space-m); padding: 0 var(--space-m) var(--space-m); }
+  .car-strip > .gauge-arc { --gauge-size: 8rem; }
+  .car-strip dl.props { min-inline-size: 12rem; flex: 1; }
+  .car-shift { inline-size: min(100%, 16rem); }
+  .car-mode-only { display: none; }
+  .car-console { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-m); align-items: start; }
+  .car-nav { display: grid; grid-template-columns: minmax(0, 1fr) 14rem; gap: var(--space-m); }
+  .car-nav .map { --map-ratio: 16 / 11; }
+  .car-climate { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-m); }
+  .car-vehicle { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--space-l); align-items: start; }
+  .car-pad { padding: var(--space-m); }
+  .car-turn { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+
+  /* Drive mode, gear, lights and indicators switch what the cluster shows. */
+  body:has(#dm-track:checked) .car-mode-track,
+  body:has(#dm-eco:checked) .car-mode-eco { display: block; }
+  body:has(#dm-track:checked) .car-mode-road { display: none; }
+  body:has(#g-p:checked) .car-gear > [data-g="p"],
+  body:has(#g-r:checked) .car-gear > [data-g="r"],
+  body:has(#g-n:checked) .car-gear > [data-g="n"],
+  body:has(#g-d:checked) .car-gear > [data-g="d"],
+  body:has(#g-s:checked) .car-gear > [data-g="s"] { display: inline; }
+  .car-lamp-on { display: none; }
+  body:has(#lt-low:checked) .car-lamp-low > .car-lamp-on,
+  body:has(#lt-high:checked) .car-lamp-high > .car-lamp-on,
+  body:has(#lt-auto:checked) .car-lamp-low > .car-lamp-on,
+  body:has(#ind-left:checked) .car-lamp-left > .car-lamp-on,
+  body:has(#ind-right:checked) .car-lamp-right > .car-lamp-on,
+  body:has(#ind-hazard:checked) :is(.car-lamp-left, .car-lamp-right) > .car-lamp-on,
+  body:has(#pbrake:checked) .car-lamp-park > .car-lamp-on { display: inline-grid; }
+  body:has(#lt-low:checked) .car-lamp-low > .car-lamp-off,
+  body:has(#lt-high:checked) .car-lamp-high > .car-lamp-off,
+  body:has(#lt-auto:checked) .car-lamp-low > .car-lamp-off,
+  body:has(#ind-left:checked) .car-lamp-left > .car-lamp-off,
+  body:has(#ind-right:checked) .car-lamp-right > .car-lamp-off,
+  body:has(#ind-hazard:checked) :is(.car-lamp-left, .car-lamp-right) > .car-lamp-off,
+  body:has(#pbrake:checked) .car-lamp-park > .car-lamp-off { display: none; }
+  .car-lamp { display: contents; }
+
+  @media (max-width: 1100px) {
+    .car-console { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .car-cluster { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .car-centre { grid-column: 1 / -1; grid-row: 1; }
+    .car-cluster > .gauge-dial { --gauge-size: 13rem; }
+    .car-nav, .car-vehicle { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .car-cluster { gap: var(--space-xs); padding: var(--space-s); }
+    .car-cluster > .gauge-dial { --gauge-size: 10.5rem; }
+    .car-strip > .gauge-arc { --gauge-size: 6.5rem; }
+    .car-centre .readout-lg { --readout-size: 3rem; }
+    .car-climate { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Coupé</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Car cockpit</h1>
+      <p class="text-muted">A two-seat coupé: instrument cluster, centre display and console. Every switch is a native radio or checkbox: pick a drive mode, a gear, the lights or an indicator and the cluster follows, with no JavaScript. Try it in Motorsport Telemetry, Teenage Engineering, Cyberpunk 2077 and Hot Wheels.</p>
+      <div class="cluster">
+        <div class="toggle-group" role="radiogroup" aria-label="Drive mode">
+          <label class="toggle-btn"><input type="radio" name="drive-mode" id="dm-eco">Eco</label>
+          <label class="toggle-btn"><input type="radio" name="drive-mode" id="dm-comfort" checked>Comfort</label>
+          <label class="toggle-btn"><input type="radio" name="drive-mode" id="dm-sport">Sport</label>
+          <label class="toggle-btn"><input type="radio" name="drive-mode" id="dm-track">Track</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================== Instrument cluster -->
+    <section class="panel" aria-labelledby="cluster-h">
+      <header class="panel-header"><strong id="cluster-h">Instrument cluster</strong><span class="badge badge-accent">Ready</span></header>
+
+      <div class="car-telltales" role="group" aria-label="Warning lamps">
+        <span class="car-lamp car-lamp-left"><span class="telltale is-start car-lamp-off" role="img" aria-label="Left indicator, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg></span><span class="telltale is-start is-on is-blinking car-lamp-on" role="img" aria-label="Left indicator, flashing"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg></span></span>
+        <span class="car-lamp car-lamp-low"><span class="telltale car-lamp-off" role="img" aria-label="Dipped beam, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-sun"/></svg></span><span class="telltale is-on car-lamp-on" role="img" aria-label="Dipped beam, on"><svg class="icon"><use href="assets/icons/icons.svg#icon-sun"/></svg></span></span>
+        <span class="car-lamp car-lamp-high"><span class="telltale car-lamp-off" role="img" aria-label="Main beam, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-eye"/></svg></span><span class="telltale is-on is-info car-lamp-on" role="img" aria-label="Main beam, on"><svg class="icon"><use href="assets/icons/icons.svg#icon-eye"/></svg></span></span>
+        <span class="telltale is-on is-danger" role="img" aria-label="Passenger seat belt unfastened"><svg class="icon"><use href="assets/icons/icons.svg#icon-user"/></svg></span>
+        <span class="car-lamp car-lamp-park"><span class="telltale car-lamp-off" role="img" aria-label="Parking brake, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-parking"/></svg></span><span class="telltale is-on is-danger car-lamp-on" role="img" aria-label="Parking brake, on"><svg class="icon"><use href="assets/icons/icons.svg#icon-parking"/></svg></span></span>
+        <span class="telltale" role="img" aria-label="Engine check, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-settings"/></svg></span>
+        <span class="telltale" role="img" aria-label="Charging fault, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-battery"/></svg></span>
+        <span class="telltale is-on is-warning" role="img" aria-label="Tyre pressure low"><svg class="icon"><use href="assets/icons/icons.svg#icon-warning"/></svg></span>
+        <span class="telltale" role="img" aria-label="Coolant temperature, normal"><svg class="icon"><use href="assets/icons/icons.svg#icon-thermometer"/></svg></span>
+        <span class="telltale is-on is-info" role="img" aria-label="Frost risk"><svg class="icon"><use href="assets/icons/icons.svg#icon-snowflake"/></svg></span>
+        <span class="car-lamp car-lamp-right"><span class="telltale is-end car-lamp-off" role="img" aria-label="Right indicator, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-right"/></svg></span><span class="telltale is-end is-on is-blinking car-lamp-on" role="img" aria-label="Right indicator, flashing"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-right"/></svg></span></span>
+      </div>
+
+      <div class="car-cluster">
+        <div class="gauge-dial" style="--value:.39; --gauge-ticks:7; --gauge-minor:4">
+          <meter min="0" max="280" value="109">109 km/h</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>40</li><li>80</li><li>120</li><li>160</li><li>200</li><li>240</li><li>280</li></ol>
+          <div class="gauge-readout"><span class="readout">109</span>km/h</div>
+        </div>
+
+        <div class="car-centre">
+          <span class="stat-label">Gear</span>
+          <span class="readout readout-lg car-gear" aria-live="polite"><span data-g="p">P</span><span data-g="r">R</span><span data-g="n">N</span><span data-g="d">D4</span><span data-g="s">S3</span></span>
+          <div class="car-mode-only car-mode-track car-shift">
+            <div class="meter is-segmented" style="--meter-level:82%; --meter-warn-at:60%; --meter-peak-at:85%" role="meter" aria-label="Shift lights" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+          </div>
+          <dl class="props car-mode-road">
+            <dt>Trip A</dt><dd class="mono">212.4 km</dd>
+            <dt>Average</dt><dd class="mono">6.8 l/100 km</dd>
+            <dt>Range</dt><dd class="mono">418 km</dd>
+          </dl>
+          <dl class="props car-mode-only car-mode-track">
+            <dt>Lap</dt><dd class="mono">7 / 12</dd>
+            <dt>Current</dt><dd class="mono">1:41.882</dd>
+            <dt>Best</dt><dd class="mono">1:39.507</dd>
+            <dt>Delta</dt><dd><span class="status status-error">+0.214</span></dd>
+          </dl>
+          <div class="car-mode-only car-mode-eco stack stack-sm">
+            <span class="stat-label">Efficiency</span>
+            <div class="meter" style="--meter-level:74%" role="meter" aria-label="Driving efficiency" aria-valuenow="74" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="gauge-dial" style="--value:.43; --gauge-redline:.75; --gauge-ticks:8; --gauge-minor:2">
+          <meter min="0" max="8000" low="5500" high="6000" value="3420">3,420 rpm</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li class="is-redline">6</li><li class="is-redline">7</li><li class="is-redline">8</li></ol>
+          <div class="gauge-readout"><span class="readout">3.4</span>×1000 rpm</div>
+        </div>
+      </div>
+
+      <div class="car-strip">
+        <div class="gauge-arc" style="--value:.62">
+          <meter min="0" max="58" low="8" value="36">36 of 58 litres</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>E</li><li>½</li><li>F</li></ol>
+          <div class="gauge-readout"><span class="readout">36</span>litres</div>
+        </div>
+        <dl class="props">
+          <dt>Outside</dt><dd class="mono">3 °C</dd>
+          <dt>Odometer</dt><dd class="mono">24 806 km</dd>
+          <dt>Time</dt><dd class="mono">18:42</dd>
+        </dl>
+        <div class="gauge-arc" style="--value:.5; --gauge-redline:.8">
+          <meter min="50" max="130" value="90">Coolant 90 °C</meter>
+          <ol class="gauge-ticks" aria-hidden="true"><li>C</li><li>90</li><li class="is-redline">H</li></ol>
+          <div class="gauge-readout"><span class="readout">90</span>°C</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== Centre console -->
+    <div class="car-console">
+      <section class="panel" aria-labelledby="display-h">
+        <header class="panel-header"><strong id="display-h">Centre display</strong></header>
+        <div class="tabset car-pad">
+          <div class="tabs">
+            <label class="tab"><input type="radio" name="car-screen" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-map"/></svg> Navigation</label>
+            <label class="tab"><input type="radio" name="car-screen"><svg class="icon"><use href="assets/icons/icons.svg#icon-music"/></svg> Media</label>
+            <label class="tab"><input type="radio" name="car-screen"><svg class="icon"><use href="assets/icons/icons.svg#icon-temperature"/></svg> Climate</label>
+            <label class="tab"><input type="radio" name="car-screen"><svg class="icon"><use href="assets/icons/icons.svg#icon-car"/></svg> Vehicle</label>
+          </div>
+
+          <div class="tab-panel">
+            <div class="car-nav">
+              <figure class="map">
+                <svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Route along the ring road to the harbour, 12 minutes">
+                  <rect width="320" height="220" style="fill: var(--surface-2)"/>
+                  <path d="M-10 160 Q90 120 160 140 T330 90" style="fill:none; stroke: var(--border); stroke-width: 10"/>
+                  <path d="M60 -10 L90 230 M200 -10 Q180 100 230 230 M-10 50 L330 70" style="fill:none; stroke: var(--hairline); stroke-width: 6"/>
+                  <path d="M20 200 Q60 120 120 135 T200 120 L224 52" class="chart-series" data-series="1" style="stroke-width: 5"/>
+                  <circle cx="20" cy="200" r="6" class="chart-point" data-series="1"/>
+                </svg>
+                <button class="map-pin" style="--x:70%; --y:24%" data-series="2" popovertarget="pin-harbour"><span class="map-pin-label">Harbour car park</span></button>
+                <button class="map-pin" style="--x:44%; --y:58%" data-series="3" popovertarget="pin-charge" aria-label="Charging point, 2 free"></button>
+                <span class="map-north" role="img" aria-label="North">N</span>
+                <span class="map-scale" style="--map-scale-width:4rem">500 m</span>
+              </figure>
+              <div class="stack stack-sm">
+                <div class="card">
+                  <span class="stat-label">Next turn</span>
+                  <div class="row is-items-center is-gap-xs"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-right"/></svg><span class="readout">350<span class="readout-unit">m</span></span></div>
+                  <p class="field-hint">Right onto Quay Street</p>
+                </div>
+                <dl class="props">
+                  <dt>Arrive</dt><dd class="mono">18:54</dd>
+                  <dt>Distance</dt><dd class="mono">7.8 km</dd>
+                  <dt>Traffic</dt><dd><span class="status status-warn">Slow, +2 min</span></dd>
+                </dl>
+                <span class="visually-hidden">Heading 62°, destination at 22°</span><ol data-audit-edge="ignore" class="compass-strip" style="--heading:62" aria-hidden="true">
+                  <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+                  <li class="is-marker" data-series="2" style="--at:22"><svg class="icon"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel">
+            <div class="stack">
+              <div class="toggle-group" role="radiogroup" aria-label="Source">
+                <label class="toggle-btn"><input type="radio" name="car-src">FM</label>
+                <label class="toggle-btn"><input type="radio" name="car-src">DAB</label>
+                <label class="toggle-btn"><input type="radio" name="car-src" checked>Phone</label>
+                <label class="toggle-btn"><input type="radio" name="car-src">USB</label>
+              </div>
+              <section class="now-playing is-mini" aria-label="Now playing">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x2='1' y2='1'><stop offset='0' stop-color='%230f2a4a'/><stop offset='1' stop-color='%23f2a65a'/></linearGradient></defs><rect width='64' height='64' fill='url(%23g)'/><circle cx='44' cy='22' r='9' fill='%23ffe8b0'/><path d='M0 46h64v18H0z' fill='%23081a30'/><path d='M8 46v-8h3v8M20 46V34h3v12M50 46V30h2v16' stroke='%23ffd27a' stroke-width='2'/></svg>" alt="" width="56" height="56">
+                <span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Coastline Static</span></span>
+                <label class="btn btn-ghost btn-icon media-toggle is-like"><input type="checkbox" aria-label="Like Night Drive" checked><svg class="icon"><use href="assets/icons/icons.svg#icon-heart"/></svg></label>
+                <div class="transport is-play" role="group" aria-label="Playback">
+                  <label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle"><svg class="icon"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label>
+                  <button class="btn btn-ghost btn-icon" aria-label="Previous"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-back"/></svg></button>
+                  <button class="btn btn-go btn-icon" aria-label="Pause"><svg class="icon"><use href="assets/icons/icons.svg#icon-pause"/></svg></button>
+                  <button class="btn btn-ghost btn-icon" aria-label="Next"><svg class="icon"><use href="assets/icons/icons.svg#icon-skip-forward"/></svg></button>
+                </div>
+                <div class="scrubber">
+                  <time>1:12</time>
+                  <input type="range" min="0" max="254" value="72" aria-label="Seek" aria-valuetext="1:12 of 4:14">
+                  <time>-3:02</time>
+                </div>
+              </section>
+              <div class="value-row"><label class="label" for="car-vol">Volume</label><input class="slider" id="car-vol" type="range" value="34"><span class="readout readout-sm">34</span></div>
+            </div>
+          </div>
+
+          <div class="tab-panel">
+            <div class="car-climate">
+              <fieldset class="stack stack-sm">
+                <legend>Driver</legend>
+                <div class="field"><label class="label" for="t-drv">Temperature, °C</label><input class="input" id="t-drv" type="number" min="16" max="28" step="0.5" value="21.5"></div>
+                <div class="toggle-group" role="radiogroup" aria-label="Driver seat heating">
+                  <label class="toggle-btn"><input type="radio" name="seat-d" checked>Off</label>
+                  <label class="toggle-btn"><input type="radio" name="seat-d">1</label>
+                  <label class="toggle-btn"><input type="radio" name="seat-d">2</label>
+                  <label class="toggle-btn"><input type="radio" name="seat-d">3</label>
+                </div>
+              </fieldset>
+              <fieldset class="stack stack-sm">
+                <legend>Passenger</legend>
+                <div class="field"><label class="label" for="t-pas">Temperature, °C</label><input class="input" id="t-pas" type="number" min="16" max="28" step="0.5" value="22"></div>
+                <div class="toggle-group" role="radiogroup" aria-label="Passenger seat heating">
+                  <label class="toggle-btn"><input type="radio" name="seat-p">Off</label>
+                  <label class="toggle-btn"><input type="radio" name="seat-p" checked>1</label>
+                  <label class="toggle-btn"><input type="radio" name="seat-p">2</label>
+                  <label class="toggle-btn"><input type="radio" name="seat-p">3</label>
+                </div>
+              </fieldset>
+              <div class="value-row"><label class="label" for="fan">Fan</label><input class="slider" id="fan" type="range" min="0" max="7" value="3"><span class="readout readout-sm">3</span></div>
+              <div class="cluster">
+                <label class="toggle-btn"><input type="checkbox" checked>Auto</label>
+                <label class="toggle-btn"><input type="checkbox" checked>A/C</label>
+                <label class="toggle-btn"><input type="checkbox">Recirculate</label>
+                <label class="toggle-btn"><input type="checkbox">Front demist</label>
+                <label class="toggle-btn"><input type="checkbox" checked>Rear demist</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel">
+            <div class="car-vehicle">
+              <div class="stack stack-sm">
+                <span class="stat-label">Tyre pressure, bar</span>
+                <ul class="tyres" aria-label="Tyre pressures">
+                  <li>Front left <span class="readout readout-sm">2.4</span></li>
+                  <li>Front right <span class="readout readout-sm">2.4</span></li>
+                  <li>Rear left <span class="readout readout-sm">2.6</span></li>
+                  <li class="is-low">Rear right <span class="readout readout-sm">1.9</span><span class="visually-hidden">, low</span></li>
+                </ul>
+                <div class="alert alert-warning">Rear right tyre is 0.7 bar under. Check it at the next stop.</div>
+              </div>
+              <div class="stack">
+                <div class="stack stack-sm">
+                  <span class="stat-label">Hybrid battery</span>
+                  <div class="row is-items-center is-gap-xs"><span class="battery is-charging" role="img" aria-label="Battery 68%, regenerating" style="--value:.68"></span><span class="readout readout-sm">68<span class="readout-unit">%</span></span></div>
+                  <div class="gauge-linear">
+                    <div class="meter" style="--meter-level:68%" role="meter" aria-label="Electric range, km" aria-valuenow="41" aria-valuemin="0" aria-valuemax="60"><div class="meter-fill"></div></div>
+                    <span class="gauge-mark" style="--at:0%">0</span>
+                    <span class="gauge-mark" style="--at:100%">60 km</span>
+                    <span class="gauge-mark is-target" style="--at:50%">Home 30</span>
+                  </div>
+                </div>
+                <div class="field-row"><label class="label" for="lka">Lane keeping</label><label class="switch"><input id="lka" type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+                <div class="field-row"><label class="label" for="acc">Adaptive cruise</label><label class="switch"><input id="acc" type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+                <div class="field-row"><label class="label" for="esc">Stability control</label><label class="switch"><input id="esc" type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="stack">
+        <section class="panel" aria-labelledby="gear-h">
+          <header class="panel-header"><strong id="gear-h">Selector</strong></header>
+          <div class="car-pad stack stack-sm">
+            <div class="toggle-group" role="radiogroup" aria-label="Gear">
+              <label class="toggle-btn"><input type="radio" name="gear" id="g-p">P</label>
+              <label class="toggle-btn"><input type="radio" name="gear" id="g-r">R</label>
+              <label class="toggle-btn"><input type="radio" name="gear" id="g-n">N</label>
+              <label class="toggle-btn"><input type="radio" name="gear" id="g-d" checked>D</label>
+              <label class="toggle-btn"><input type="radio" name="gear" id="g-s">S</label>
+            </div>
+            <div class="cluster">
+              <label class="toggle-btn is-danger"><input type="checkbox" id="pbrake">Parking brake</label>
+              <label class="toggle-btn"><input type="checkbox">Hill hold</label>
+            </div>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="lights-h">
+          <header class="panel-header"><strong id="lights-h">Lights and indicators</strong></header>
+          <div class="car-pad stack stack-sm">
+            <div class="toggle-group" role="radiogroup" aria-label="Headlights">
+              <label class="toggle-btn"><input type="radio" name="lights" id="lt-off">Off</label>
+              <label class="toggle-btn"><input type="radio" name="lights" id="lt-auto" checked>Auto</label>
+              <label class="toggle-btn"><input type="radio" name="lights" id="lt-low">Dip</label>
+              <label class="toggle-btn"><input type="radio" name="lights" id="lt-high">Main</label>
+            </div>
+            <div class="toggle-group" role="radiogroup" aria-label="Indicators">
+              <label class="toggle-btn"><input type="radio" name="ind" id="ind-left"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg><span class="visually-hidden">Left</span></label>
+              <label class="toggle-btn"><input type="radio" name="ind" id="ind-off" checked>Off</label>
+              <label class="toggle-btn"><input type="radio" name="ind" id="ind-right"><svg class="icon"><use href="assets/icons/icons.svg#icon-arrow-right"/></svg><span class="visually-hidden">Right</span></label>
+              <label class="toggle-btn is-danger"><input type="radio" name="ind" id="ind-hazard"><svg class="icon"><use href="assets/icons/icons.svg#icon-warning"/></svg><span class="visually-hidden">Hazard</span></label>
+            </div>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="trip-h">
+          <header class="panel-header"><strong id="trip-h">This drive</strong></header>
+          <div class="car-pad">
+            <svg class="sparkline is-down" style="--sparkline-width:100%; --sparkline-height:3rem" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Fuel use falling over the last 20 minutes"><polygon class="sparkline-area" points="0,24 0,6 15,8 30,5 45,10 60,12 75,15 90,16 100,18 100,24"/><polyline points="0,6 15,8 30,5 45,10 60,12 75,15 90,16 100,18"/></svg>
+            <dl class="props">
+              <dt>Duration</dt><dd class="mono">0:24</dd>
+              <dt>Distance</dt><dd class="mono">18.2 km</dd>
+              <dt>Electric</dt><dd class="mono">46%</dd>
+            </dl>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Coupé · drive</span>
+    <span class="status status-warn">Tyre pressure low</span>
+  </footer>
+
+<div class="popover" popover id="pin-harbour"><strong>Harbour car park</strong><p class="field-hint">Destination · 84 spaces free</p></div>
+<div class="popover" popover id="pin-charge"><strong>Charging point</strong><p class="field-hint">2 of 4 free · 50 kW</p></div>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

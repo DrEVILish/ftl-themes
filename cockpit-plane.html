@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airliner flight deck — ftl-themes vehicle demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: every colour comes from the theme. */
+  .deck-pad { padding: var(--space-m); }
+  .deck-summary { min-block-size: var(--tap-min); }
+  .deck-row { display: grid; gap: var(--space-m); align-items: start; }
+  .deck-overhead { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .deck-glare { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-m); align-items: center; }
+  .deck-glare > .annunciator-master { min-inline-size: 7rem; }
+  .deck-mcp { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: var(--space-s); }
+  .deck-main { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 0.9fr); }
+  .deck-nd { display: grid; justify-items: center; gap: var(--space-s); }
+  .deck-nd > .radar { --radar-size: 100%; }
+  .deck-nd > .compass-strip { inline-size: 100%; }
+  .deck-eicas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-s); justify-items: center; text-align: center; }
+  .deck-eicas > .gauge-dial { --gauge-size: 8.5rem; }
+  .deck-eicas > .gauge-arc { --gauge-size: 7.5rem; }
+  .deck-eicas > .wide { grid-column: 1 / -1; justify-self: stretch; text-align: start; }
+  .deck-pedestal { grid-template-columns: auto auto minmax(0, 1fr); }
+  .deck-levers { display: flex; flex-wrap: wrap; gap: var(--space-m); align-items: flex-start; }
+  .deck-gear-up, .deck-gear-down { display: none; }
+  body:not(:has(#gear-lever:checked)) .deck-gear-up,
+  body:has(#gear-lever:checked) .deck-gear-down { display: grid; }
+  @media (max-width: 1200px) {
+    .deck-main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .deck-main > :first-child { grid-column: 1 / -1; }
+    .deck-pedestal { grid-template-columns: auto minmax(0, 1fr); }
+    .deck-pedestal > :last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 900px) {
+    .deck-overhead, .deck-main, .deck-pedestal { grid-template-columns: minmax(0, 1fr); }
+    .deck-glare { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .deck-glare > .panel { grid-column: 1 / -1; grid-row: 2; }
+    .deck-glare > .annunciator-master { min-inline-size: 0; }
+  }
+  @media (max-width: 480px) {
+    .deck-pfd-pad { padding: var(--space-2xs); }
+    .deck-eicas > .gauge-dial { --gauge-size: 7.5rem; }
+    .deck-eicas > .gauge-arc { --gauge-size: 6.5rem; }
+  }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Flight deck</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Flight deck</h1>
+      <p class="text-muted">A twin-jet airliner's glass cockpit, overhead panel to pedestal: primary flight display, navigation display, engine indications, autopilot panel, annunciators, thrust levers and checklists. Every switch is native: no JavaScript. Try it in Blue Future, Bloomberg, Material and Aperture.</p>
+      <p class="cluster"><span class="badge badge-accent">Cruise FL116</span><span class="badge">Leg 4 of 9</span><span class="badge badge-warning">1 caution</span></p>
+    </div>
+
+    <!-- ======================================================= Overhead panel -->
+    <details class="panel" open>
+      <summary class="panel-header deck-summary"><strong>Overhead panel</strong></summary>
+      <div class="deck-row deck-overhead deck-pad">
+        <ul class="annunciator" aria-label="Systems annunciators">
+          <li>Fuel pump L1</li><li>Fuel pump L2</li><li class="is-caution">Fuel pump R1 <span class="visually-hidden">(fault, lit)</span></li><li>Fuel pump R2</li>
+          <li>Pack 1</li><li>Pack 2</li><li class="is-advisory">APU avail <span class="visually-hidden">(lit)</span></li><li>Bleed fault</li>
+          <li>Hyd green</li><li>Hyd blue</li><li>Hyd yellow</li><li class="is-on">Wing anti-ice <span class="visually-hidden">(on)</span></li>
+          <li>Gen 1</li><li>Gen 2</li><li>Smoke</li><li class="is-on">Seat belts <span class="visually-hidden">(on)</span></li>
+        </ul>
+        <div class="stack stack-sm">
+          <div class="cluster" role="group" aria-label="Fuel pumps">
+            <label class="toggle-btn"><input type="checkbox" checked>L1</label>
+            <label class="toggle-btn"><input type="checkbox" checked>L2</label>
+            <label class="toggle-btn"><input type="checkbox">R1</label>
+            <label class="toggle-btn"><input type="checkbox" checked>R2</label>
+            <label class="toggle-btn"><input type="checkbox" checked>X-feed</label>
+          </div>
+          <div class="cluster" role="group" aria-label="Anti-ice and packs">
+            <label class="toggle-btn"><input type="checkbox" checked>Wing A/I</label>
+            <label class="toggle-btn"><input type="checkbox">Eng A/I</label>
+            <label class="toggle-btn"><input type="checkbox" checked>Pack 1</label>
+            <label class="toggle-btn"><input type="checkbox" checked>Pack 2</label>
+          </div>
+          <div class="toggle-group" role="radiogroup" aria-label="Seat belt signs">
+            <label class="toggle-btn"><input type="radio" name="belts">Off</label>
+            <label class="toggle-btn"><input type="radio" name="belts">Auto</label>
+            <label class="toggle-btn"><input type="radio" name="belts" checked>On</label>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- ======================================================= Glareshield -->
+    <div class="deck-glare">
+      <label class="annunciator-master is-warning"><input type="checkbox" checked>Master warn</label>
+      <section class="panel" aria-labelledby="mcp-h">
+        <header class="panel-header"><strong id="mcp-h">Autopilot</strong><span class="status status-ok push">AP1 engaged</span></header>
+        <div class="deck-pad stack stack-sm">
+          <div class="deck-mcp">
+            <div class="field"><label class="label" for="mcp-spd">Speed, kt</label><input class="input mono" id="mcp-spd" type="number" min="100" max="350" value="270"></div>
+            <div class="field"><label class="label" for="mcp-hdg">Heading, °</label><input class="input mono" id="mcp-hdg" type="number" min="0" max="359" value="274"></div>
+            <div class="field"><label class="label" for="mcp-alt">Altitude, ft</label><input class="input mono" id="mcp-alt" type="number" min="0" max="41000" step="100" value="12000"></div>
+            <div class="field"><label class="label" for="mcp-vs">V/S, ft/min</label><input class="input mono" id="mcp-vs" type="number" min="-6000" max="6000" step="100" value="1200"></div>
+          </div>
+          <div class="cluster" role="group" aria-label="Autopilot modes">
+            <label class="toggle-btn"><input type="checkbox" checked>AP1</label>
+            <label class="toggle-btn"><input type="checkbox">AP2</label>
+            <label class="toggle-btn"><input type="checkbox" checked>A/THR</label>
+            <label class="toggle-btn"><input type="checkbox">LOC</label>
+            <label class="toggle-btn"><input type="checkbox">APPR</label>
+            <label class="toggle-btn"><input type="checkbox">EXPED</label>
+          </div>
+        </div>
+      </section>
+      <label class="annunciator-master is-caution"><input type="checkbox">Master caution</label>
+    </div>
+
+    <!-- ======================================================= Main panel -->
+    <div class="deck-row deck-main">
+      <section class="panel" aria-labelledby="pfd-h">
+        <header class="panel-header"><strong id="pfd-h">Primary flight display</strong></header>
+        <div class="deck-pad deck-pfd-pad">
+          <div class="pfd" role="group" aria-labelledby="pfd-h">
+            <ul class="annunciator is-fma" aria-label="Flight modes">
+              <li class="is-advisory">Speed</li><li class="is-advisory">HDG</li><li class="is-advisory">V/S</li><li>CAT 3</li><li class="is-on">AP1 A/THR</li>
+            </ul>
+            <div class="tape" role="meter" aria-label="Airspeed, knots" aria-valuenow="262" aria-valuemin="0" aria-valuemax="400" style="--value:262; --tape-span:80; --tape-major:20; --tape-minor:10">
+              <ol data-audit-edge="ignore" class="tape-scale" aria-hidden="true"><li style="--at:200">200</li><li style="--at:220">220</li><li style="--at:240">240</li><li style="--at:260">260</li><li style="--at:280">280</li><li style="--at:300">300</li><li style="--at:320">320</li></ol>
+              <span class="tape-band is-danger" style="--from:292; --to:400"></span>
+              <span class="tape-band is-caution" style="--from:180; --to:228"></span>
+              <span class="tape-bug" style="--at:270"></span>
+              <span class="tape-readout">262</span>
+            </div>
+            <div class="attitude" style="--pitch:3.5; --roll:-12" role="img" aria-label="Pitch 3.5° nose up, banked 12° left">
+              <div class="attitude-horizon">
+                <ol class="attitude-ladder" aria-hidden="true"><li style="--at:20"></li><li style="--at:10"></li><li style="--at:-10"></li><li style="--at:-20"></li></ol>
+              </div>
+            </div>
+            <div class="tape is-end" role="meter" aria-label="Altitude, feet" aria-valuenow="11640" aria-valuemin="0" aria-valuemax="41000" style="--value:11640; --tape-span:1000; --tape-major:200; --tape-minor:100">
+              <ol data-audit-edge="ignore" class="tape-scale" aria-hidden="true"><li style="--at:11000">11000</li><li style="--at:11200">11200</li><li style="--at:11400">11400</li><li style="--at:11600">11600</li><li style="--at:11800">11800</li><li style="--at:12000">12000</li><li style="--at:12200">12200</li></ol>
+              <span class="tape-bug" style="--at:12000"></span>
+              <span class="tape-readout">11640</span>
+            </div>
+            <div class="tape is-end" role="meter" aria-label="Vertical speed, feet per minute" aria-valuenow="1200" aria-valuemin="-6000" aria-valuemax="6000" style="--value:1.2; --tape-span:6; --tape-major:1; --tape-minor:.5">
+              <ol data-audit-edge="ignore" class="tape-scale" aria-hidden="true"><li style="--at:-2">2</li><li style="--at:-1">1</li><li style="--at:0">0</li><li style="--at:1">1</li><li style="--at:2">2</li><li style="--at:3">3</li><li style="--at:4">4</li></ol>
+              <span class="tape-readout">+12</span>
+            </div>
+            <span class="visually-hidden">Heading 274°, selected 274°</span><ol data-audit-edge="ignore" class="compass-strip" style="--heading:274" aria-hidden="true">
+              <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="nd-h">
+        <header class="panel-header"><strong id="nd-h">Navigation display</strong></header>
+        <div class="tabset deck-pad">
+          <div class="tabs">
+            <label class="tab"><input type="radio" name="nd-mode" checked>Arc</label>
+            <label class="tab"><input type="radio" name="nd-mode">Map</label>
+            <label class="tab"><input type="radio" name="nd-mode">Plan</label>
+          </div>
+          <div class="tab-panel">
+            <div class="deck-nd">
+              <span class="visually-hidden">Track 274°, next waypoint at 281°</span><ol data-audit-edge="ignore" class="compass-strip" style="--heading:274" aria-hidden="true">
+                <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+                <li class="is-marker" data-series="2" style="--at:281"><svg class="icon"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+              </ol>
+              <div class="radar is-sector" style="--sweep:20; --radar-rings:4" role="img" aria-label="Weather radar, 40 nautical mile range: waypoint KAREL ahead, traffic 2 o'clock 1,200 ft below, unknown echo left">
+                <span class="radar-blip" style="--bearing:7; --range:.55">KAREL</span>
+                <span class="radar-blip" style="--bearing:-24; --range:.88">ODLOM</span>
+                <span class="radar-blip is-friend" style="--bearing:38; --range:.4">−12</span>
+                <span class="radar-blip is-unknown" style="--bearing:-40; --range:.7">WX</span>
+              </div>
+              <dl class="props"><dt>Next</dt><dd class="mono">KAREL 281° 22 nm</dd><dt>ETA</dt><dd class="mono">14:36z</dd></dl>
+            </div>
+          </div>
+          <div class="tab-panel">
+            <figure class="map">
+              <svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Route map: departure, three waypoints, destination">
+                <rect width="320" height="220" style="fill: var(--surface-2)"/>
+                <path d="M0 150 Q80 120 140 160 T320 140 L320 220 L0 220 Z" style="fill: var(--surface)"/>
+                <path d="M30 190 L95 120 L170 95 L240 60 L292 34" class="chart-series" data-series="1" style="stroke-width: 3"/>
+                <g class="chart-series" data-series="2"><circle class="chart-point" cx="95" cy="120" r="5"/><circle class="chart-point" cx="170" cy="95" r="5"/><circle class="chart-point" cx="240" cy="60" r="5"/></g>
+              </svg>
+              <button class="map-pin" style="--x:9%; --y:86%" data-series="1" popovertarget="pin-dep" aria-label="Departure airport"></button>
+              <button class="map-pin" style="--x:91%; --y:15%" data-series="2" popovertarget="pin-arr"><span class="map-pin-label">Destination</span></button>
+              <span class="map-north" role="img" aria-label="North">N</span>
+              <span class="map-scale" style="--map-scale-width:4rem">20 nm</span>
+            </figure>
+          </div>
+          <div class="tab-panel">
+            <div class="table-wrap" tabindex="0" role="region" aria-label="Flight plan">
+              <table class="table">
+                <thead><tr><th>Waypoint</th><th>Track</th><th>Dist</th><th>Alt</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">BELTO</td><td class="mono">262°</td><td class="mono">—</td><td class="mono">FL110</td></tr>
+                  <tr class="is-selected"><td class="mono">KAREL</td><td class="mono">281°</td><td class="mono">22</td><td class="mono">FL120</td></tr>
+                  <tr><td class="mono">ODLOM</td><td class="mono">248°</td><td class="mono">41</td><td class="mono">FL120</td></tr>
+                  <tr><td class="mono">RW27L</td><td class="mono">271°</td><td class="mono">96</td><td class="mono">450</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="eicas-h">
+        <header class="panel-header"><strong id="eicas-h">Engines</strong><span class="badge push">EICAS</span></header>
+        <div class="deck-eicas deck-pad">
+          <div class="gauge-dial" style="--value:.84; --gauge-redline:.94; --gauge-ticks:5; --gauge-minor:2">
+            <meter min="0" max="110" value="92.4">Engine 1 N1 92.4%</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li></li><li>50</li><li></li><li>100</li><li></li></ol>
+            <div class="gauge-readout"><span class="readout">92.4</span>N1 %</div>
+          </div>
+          <div class="gauge-dial" style="--value:.84; --gauge-redline:.94; --gauge-ticks:5; --gauge-minor:2">
+            <meter min="0" max="110" value="92.1">Engine 2 N1 92.1%</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li></li><li>50</li><li></li><li>100</li><li></li></ol>
+            <div class="gauge-readout"><span class="readout">92.1</span>N1 %</div>
+          </div>
+          <div class="gauge-arc" style="--value:.66; --gauge-redline:.9">
+            <meter min="0" max="1000" value="662">Engine 1 EGT 662 °C</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li></li><li class="is-redline">1k</li></ol>
+            <div class="gauge-readout"><span class="readout">662</span>EGT °C</div>
+          </div>
+          <div class="gauge-arc is-warn" style="--value:.78; --gauge-redline:.9">
+            <meter min="0" max="1000" value="781">Engine 2 EGT 781 °C, high</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li></li><li class="is-redline">1k</li></ol>
+            <div class="gauge-readout"><span class="readout">781</span>EGT °C</div>
+          </div>
+          <dl class="props wide">
+            <dt>N2</dt><dd class="mono">96.8 / 97.0 %</dd>
+            <dt>Fuel flow</dt><dd class="mono">2 840 / 2 910 kg/h</dd>
+            <dt>Fuel on board</dt><dd class="mono">9 420 kg</dd>
+          </dl>
+          <ul class="stack stack-sm wide" aria-label="Engine messages">
+            <li><span class="status status-warn">14:12 Fuel R1 pump lo pr</span></li>
+            <li><span class="status status-ok">14:02 Wing anti-ice on</span></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Pedestal -->
+    <div class="deck-row deck-pedestal">
+      <section class="panel" aria-labelledby="thr-h">
+        <header class="panel-header"><strong id="thr-h">Thrust</strong></header>
+        <div class="deck-pad">
+          <div class="throttle" role="group" aria-labelledby="thr-h">
+            <div class="scale"><span style="--at:1">TOGA</span><span style="--at:.82">FLX</span><span style="--at:.62" class="is-unity">CL</span><span style="--at:.2">IDLE</span><span style="--at:0">REV</span></div>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="100" value="62" aria-label="Thrust lever 1"><span aria-hidden="true">1</span></label>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="100" value="62" aria-label="Thrust lever 2"><span aria-hidden="true">2</span></label>
+          </div>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="cfg-h">
+        <header class="panel-header"><strong id="cfg-h">Configuration</strong></header>
+        <div class="deck-pad deck-levers">
+          <div class="throttle" role="group" aria-label="Flaps and speed brake" style="--throttle-height: 11rem">
+            <div class="scale"><span style="--at:1">FULL</span><span style="--at:.75">3</span><span style="--at:.5">2</span><span style="--at:.25">1</span><span style="--at:0" class="is-unity">0</span></div>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="4" value="0" aria-label="Flaps" aria-valuetext="Flaps up"><span aria-hidden="true">FLAP</span></label>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="100" value="0" aria-label="Speed brake"><span aria-hidden="true">SPD BRK</span></label>
+          </div>
+          <div class="stack stack-sm">
+            <label class="toggle-btn"><input type="checkbox" id="gear-lever">Gear down</label>
+            <ul class="annunciator is-gear deck-gear-up" aria-label="Landing gear: up and locked">
+              <li>Nose</li><li>Left</li><li>Right</li>
+            </ul>
+            <ul class="annunciator is-gear deck-gear-down" aria-label="Landing gear: down and locked">
+              <li class="is-advisory">Nose ▼</li><li class="is-advisory">Left ▼</li><li class="is-advisory">Right ▼</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="chk-h">
+        <header class="panel-header"><strong id="chk-h">Checklists</strong></header>
+        <div class="tabset deck-pad">
+          <div class="tabs">
+            <label class="tab"><input type="radio" name="chk">Before start</label>
+            <label class="tab"><input type="radio" name="chk" checked>Descent</label>
+            <label class="tab"><input type="radio" name="chk">Landing</label>
+          </div>
+          <div class="tab-panel">
+            <ol class="checklist">
+              <li><label><input class="checkbox" type="checkbox" checked><span>Cockpit prep</span><b>Done</b></label></li>
+              <li><label><input class="checkbox" type="checkbox" checked><span>Fuel quantity</span><b>Checked</b></label></li>
+              <li><label><input class="checkbox" type="checkbox" checked><span>Beacon</span><b>On</b></label></li>
+              <li><label><input class="checkbox" type="checkbox" checked><span>Parking brake</span><b>Set</b></label></li>
+            </ol>
+          </div>
+          <div class="tab-panel">
+            <ol class="checklist">
+              <li><label><input class="checkbox" type="checkbox" checked><span>Approach briefing</span><b>Complete</b></label></li>
+              <li><label><input class="checkbox" type="checkbox" checked><span>Landing elevation</span><b>450 ft</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Minimums</span><b>Set</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Seat belts</span><b>On</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Altimeters</span><b>1013 · set</b></label></li>
+            </ol>
+          </div>
+          <div class="tab-panel">
+            <ol class="checklist">
+              <li><label><input class="checkbox" type="checkbox"><span>Cabin crew</span><b>Advised</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Auto thrust</span><b>Speed</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Landing gear</span><b>Down · 3 green</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Flaps</span><b>Full</b></label></li>
+              <li><label><input class="checkbox" type="checkbox"><span>Spoilers</span><b>Armed</b></label></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Flight deck · cruise</span>
+    <span class="status status-warn">Fuel pump R1 low pressure</span>
+  </footer>
+
+<div class="popover" popover id="pin-dep"><strong>Departure</strong><p class="field-hint">Runway 09R · off blocks 13:41z</p></div>
+<div class="popover" popover id="pin-arr"><strong>Destination</strong><p class="field-hint">Runway 27L · ILS · 450 ft</p></div>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>
