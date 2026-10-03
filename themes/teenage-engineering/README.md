@@ -83,6 +83,18 @@ to its right.
 - Touch targets are core's; segmented items get `min-inline-size:
   var(--tap-min)` so one-word segments stay full size.
 
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as OP-1 silkscreen
+pictograms (see the key legends in `references/teenage-engineering/`):
+
+- 24×24 grid, 1.5 monoline stroke, round caps and round joins.
+- True circles and arcs; boxes get soft 2-unit corners like the keys.
+- Outline only. Tiny dots, level bars and the caret triangles are the
+  only solids.
+- `currentColor` everywhere, so icons follow the key-face ink, the blue
+  selection and the dark display window. No product marks.
+
 ## Tell-tales of an inauthentic result
 
 - Dark panels or a dark page: the body is light aluminium.

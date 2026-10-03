@@ -85,6 +85,20 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 - No logos or wordmarks of any series, team, tyre-maker or broadcaster.
 - Don't brighten the carbon or the XL gutter traces.
 
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as broadcast / pit-wall
+pictograms (see `references/motorsport-telemetry/`):
+
+- 24×24 grid, 2.25 stroke, square caps, mitred joins, sharp corners.
+- Every glyph leans -8° (`skewX`) like the italic broadcast type; marks
+  that must stay symmetric (plus, close, minus, grid, stop, pause, sun,
+  settings, snowflake, hash, frame, maximize, minimize, more) stay upright.
+- Simple silhouettes (bookmark, play, filter, bar chart, phone, star) are
+  solid fills; arrows get solid heads. Small lettering (PDF, PNG) drops to
+  1.6 so it survives inside the heavy page outline.
+- `currentColor` everywhere. No team, series or tyre-maker marks.
+
 ## Tell-tales of an inauthentic result
 
 - Proportional digits in tables or readouts (columns of times that don't

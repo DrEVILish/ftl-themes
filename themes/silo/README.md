@@ -116,6 +116,21 @@ and the rail collapses per core.
 - Don't spend the yellow-green on decoration, or the pale-yellow outline
   on anything but selection and focus.
 
+## Icons
+
+`icons.svg` redraws the whole core set (178/178) as stencilled terminal
+glyphs, after the outlined document glyphs on the file grids (see
+`references/silo/`):
+
+- 24×24 grid, 1.8 stroke (same as `--icon-stroke-width`), butt caps,
+  round joins; boxes have round corners like the squared techno type.
+- Stencil bridges: outlined boxes 9+ units wide and circles of radius 5+
+  are broken at top and bottom.
+- Outline only, except small solid plates (stop, pause, grid cells) and
+  square pixel dots.
+- `currentColor` everywhere, so both the green glass and the gold `legacy` variant
+  apply. No show marks.
+
 ## Tell-tales of an inauthentic result
 
 - Free-floating green text on black with no boxes: a generic DOS terminal,
