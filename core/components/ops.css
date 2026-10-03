@@ -9,7 +9,7 @@
  *   .map .map-land …       token-filled hooks for a schematic map drawn in
  *                          inline SVG (water, park, block, road, major road)
  *   .map-route             a route line in a map SVG (.is-planned, .is-done)
- *   .feed                  a camera/video feed frame: placeholder scene,
+ *   .camera-feed                  a camera/video feed frame: placeholder scene,
  *                          scanlines, a corner badge and a caption strip
  *   .barcode               a CSS-drawn 1D barcode with its human-readable text
  * Everything reads tokens with core fallbacks. See docs/components/ops.md. */
@@ -86,39 +86,39 @@
 .map-route.is-done { stroke-opacity: var(--map-route-done-opacity, 0.45); }
 
 /* --- Feed ------------------------------------------------------------------
- *   <div class="card-media feed" role="img" aria-label="Front door camera, live">
+ *   <div class="card-media camera-feed" role="img" aria-label="Front door camera, live">
  *     <svg …>silhouettes in currentColor</svg>
- *     <span class="badge badge-danger feed-badge">Live</span>
- *     <span class="feed-caption">Front door <time>14:22:07</time></span>
+ *     <span class="badge badge-danger camera-feed-badge">Live</span>
+ *     <span class="camera-feed-caption">Front door <time>14:22:07</time></span>
  *   </div> */
-.feed {
+.camera-feed {
   position: relative;
   overflow: hidden;
-  aspect-ratio: var(--feed-ratio, 16 / 9);
-  color: var(--feed-fg, color-mix(in oklab, var(--text) 30%, var(--surface-2)));
-  background: var(--feed-bg,
+  aspect-ratio: var(--camera-feed-ratio, 16 / 9);
+  color: var(--camera-feed-fg, color-mix(in oklab, var(--text) 30%, var(--surface-2)));
+  background: var(--camera-feed-bg,
     linear-gradient(color-mix(in oklab, var(--muted) 30%, var(--surface-2)) 0 58%,
                     color-mix(in oklab, var(--text) 14%, var(--surface-2)) 58%));
 }
-.feed > svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
-.feed::after {
+.camera-feed > svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+.camera-feed::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    repeating-linear-gradient(transparent 0 2px, var(--feed-scanline, rgb(0 0 0 / 0.07)) 2px 3px),
-    radial-gradient(ellipse at center, transparent 55%, var(--feed-vignette, rgb(0 0 0 / 0.35)));
+    repeating-linear-gradient(transparent 0 2px, var(--camera-feed-scanline, rgb(0 0 0 / 0.07)) 2px 3px),
+    radial-gradient(ellipse at center, transparent 55%, var(--camera-feed-vignette, rgb(0 0 0 / 0.35)));
 }
-.feed.is-offline { filter: grayscale(1); }
-.feed.is-offline > svg { opacity: 0.25; }
-.feed-badge {
+.camera-feed.is-offline { filter: grayscale(1); }
+.camera-feed.is-offline > svg { opacity: 0.25; }
+.camera-feed-badge {
   position: absolute;
   z-index: var(--z-raised);
   inset-block-start: var(--space-xs);
   inset-inline-start: var(--space-xs);
 }
-.feed-caption {
+.camera-feed-caption {
   position: absolute;
   z-index: var(--z-raised);
   inset-inline: 0;
@@ -127,13 +127,13 @@
   justify-content: space-between;
   gap: var(--space-xs);
   padding: var(--space-2xs) var(--space-xs);
-  background: var(--feed-caption-bg, rgb(0 0 0 / 0.6));
-  color: var(--feed-caption-fg, #fff);
+  background: var(--camera-feed-caption-bg, rgb(0 0 0 / 0.6));
+  color: var(--camera-feed-caption-fg, #fff);
   font-family: var(--font-mono);
   font-size: 0.75rem;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .feed-badge.is-live::before {
+  .camera-feed-badge.is-live::before {
     content: "";
     display: inline-block;
     inline-size: 0.5em;
@@ -141,11 +141,11 @@
     margin-inline-end: 0.35em;
     border-radius: 50%;
     background: currentColor;
-    animation: feed-rec 1.4s steps(2, jump-none) infinite;
+    animation: camera-feed-rec 1.4s steps(2, jump-none) infinite;
   }
 }
-html[data-motion="reduced"] .feed-badge.is-live::before { animation: none; }
-@keyframes feed-rec { 50% { opacity: 0.15; } }
+html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none; }
+@keyframes camera-feed-rec { 50% { opacity: 0.15; } }
 
 /* --- Barcode ---------------------------------------------------------------
  *   <span class="barcode" role="img" aria-label="Barcode INV-00421">INV-00421</span>

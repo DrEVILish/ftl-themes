@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- New apps, all JavaScript-free: `smart-home.html` (tablet-first wall
+  panel: scenes and room filter via `:has()`, alarm confirm, cameras,
+  energy), `inventory.html` (location tree, asset table with kit rows,
+  CSS-only selection and bulk bar, barcode, check-out, maintenance,
+  purchase-order kanban) and `fleet.html` (map with shaped status pins and
+  routes, vehicle master-detail, runs gantt, deliveries kanban, exceptions,
+  dispatch notes). New group `core/components/ops.css`
+  ([docs](docs/components/ops.md)). Aqua's zebra stripe no longer covers a
+  checkbox-selected row.
+
 - **Live data and dashboards** (`core/components/live.css`,
   [docs](docs/components/live.md)): the PLAN §18 live-data states
   (`.is-updated`, `.is-up`/`.is-down`, `.is-stale` + `data-age`,

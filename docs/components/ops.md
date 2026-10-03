@@ -107,33 +107,33 @@ A path in the map SVG, coloured by `data-series` or `data-status` (`--map-route`
 differ by pattern as well as colour. Width `--map-route-width` (`4px`). Forced colours:
 `CanvasText`. Describe routes in text too (the vehicle list, a run table).
 
-## Feed `.feed`
+## Camera feed `.camera-feed`
 
 A camera or video feed frame: a placeholder scene until the stream paints, scanlines and
 a vignette, a corner badge and a caption strip.
 
 ```html
 <article class="card has-media">
-  <div class="card-media feed" role="img" aria-label="Front door camera, live: porch with a parcel">
+  <div class="card-media camera-feed" role="img" aria-label="Front door camera, live: porch with a parcel">
     <svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" fill="currentColor">…shapes…</svg>
-    <span class="badge badge-danger feed-badge is-live">Live</span>
-    <span class="feed-caption"><span>Front door</span><time>19:42:07</time></span>
+    <span class="badge badge-danger camera-feed-badge is-live">Live</span>
+    <span class="camera-feed-caption"><span>Front door</span><time>19:42:07</time></span>
   </div>
   <div class="card-body">…</div>
 </article>
-<div class="card-media feed is-offline" …><span class="badge feed-badge">Offline</span>…</div>
+<div class="card-media camera-feed is-offline" …><span class="badge camera-feed-badge">Offline</span>…</div>
 ```
 
 - The first `<svg>` (or `<img>`/`<video>`) fills the frame. Placeholder shapes drawn in
-  `currentColor` take `--feed-fg`, so they read in every theme.
-- `.feed-badge.is-live` adds a blinking record dot (motion allowed only); the word "Live"
+  `currentColor` take `--camera-feed-fg`, so they read in every theme.
+- `.camera-feed-badge.is-live` adds a blinking record dot (motion allowed only); the word "Live"
   is the state. `.is-offline` greys the frame and fades the scene; say "Offline" in the
   badge.
-- Tokens: `--feed-ratio` (`16 / 9`; inside a `.card.has-media` the card's
-  `--card-media-ratio` wins), `--feed-bg` (a two-tone wall/floor gradient from `--muted`,
-  `--text` and `--surface-2`), `--feed-fg`, `--feed-scanline` (`rgb(0 0 0 / .07)`),
-  `--feed-vignette` (`rgb(0 0 0 / .35)`), `--feed-caption-bg` (`rgb(0 0 0 / .6)`),
-  `--feed-caption-fg` (`#fff`; video overlays stay light-on-dark in every theme).
+- Tokens: `--camera-feed-ratio` (`16 / 9`; inside a `.card.has-media` the card's
+  `--card-media-ratio` wins), `--camera-feed-bg` (a two-tone wall/floor gradient from `--muted`,
+  `--text` and `--surface-2`), `--camera-feed-fg`, `--camera-feed-scanline` (`rgb(0 0 0 / .07)`),
+  `--camera-feed-vignette` (`rgb(0 0 0 / .35)`), `--camera-feed-caption-bg` (`rgb(0 0 0 / .6)`),
+  `--camera-feed-caption-fg` (`#fff`; video overlays stay light-on-dark in every theme).
 - Accessibility: `role="img"` and a label that says what the camera sees and whether it
   is live.
 

@@ -9404,6 +9404,190 @@ kbd kbd { font-size: 0.9em; }
 .list-item[tabindex] { min-block-size: var(--tap-min); }
 .table :is(td, th):focus-visible,
 [role="row"]:focus-visible { outline-offset: -2px; }
+/* --- v5 operations kit: status pins, sketch maps, routes, feeds, barcodes ---
+ * Small additions the operations pages (smart home, inventory, fleet) need
+ * on top of instruments.css and surfaces.css:
+ *   [data-status]          ok | warn | error | idle | info → --series, so a
+ *                          map pin, legend item or chart series takes a
+ *                          status colour instead of a chart colour
+ *   .map-pin[data-shape]   circle | square | diamond | triangle markers, so
+ *                          status reads by shape as well as colour
+ *   .map .map-land …       token-filled hooks for a schematic map drawn in
+ *                          inline SVG (water, park, block, road, major road)
+ *   .map-route             a route line in a map SVG (.is-planned, .is-done)
+ *   .camera-feed                  a camera/video feed frame: placeholder scene,
+ *                          scanlines, a corner badge and a caption strip
+ *   .barcode               a CSS-drawn 1D barcode with its human-readable text
+ * Everything reads tokens with core fallbacks. See docs/components/ops.md. */
+
+/* --- Status colours ------------------------------------------------------- */
+[data-status="ok"] { --series: var(--status-ok, var(--success)); }
+[data-status="warn"] { --series: var(--status-warn, var(--warning)); }
+[data-status="error"] { --series: var(--status-error, var(--danger)); }
+[data-status="idle"] { --series: var(--status-idle, var(--muted)); }
+[data-status="info"] { --series: var(--status-info, var(--accent)); }
+
+/* --- Shaped map pins -------------------------------------------------------
+ * A shaped pin is a marker centred on its point (not a teardrop above it).
+ * The triangle draws its outline with ::after under the fill (clip-path
+ * would cut a border off). Legend items take the same shapes. */
+.map-pin[data-shape] { translate: -50% -50%; place-items: center; }
+.map-pin[data-shape]::before { margin: 0; rotate: none; grid-area: 1 / 1; }
+.map-pin[data-shape="circle"]::before { border-radius: 50%; }
+.map-pin[data-shape="square"]::before { border-radius: var(--map-pin-square-radius, 3px); }
+.map-pin[data-shape="diamond"]::before { border-radius: var(--map-pin-square-radius, 3px); rotate: 45deg; scale: 0.85; }
+.map-pin[data-shape="triangle"]::before,
+.map-pin[data-shape="triangle"]::after {
+  clip-path: polygon(50% 4%, 100% 92%, 0 92%);
+  border: 0;
+  border-radius: 0;
+}
+.map-pin[data-shape="triangle"]::before {
+  z-index: var(--z-raised);
+  scale: 0.72;
+  translate: 0 8%;
+  background: var(--series, var(--map-pin-bg, var(--accent)));
+}
+.map-pin[data-shape="triangle"]::after {
+  content: "";
+  grid-area: 1 / 1;
+  inline-size: calc(var(--map-pin-size, 1.4rem) * 1.25);
+  block-size: calc(var(--map-pin-size, 1.4rem) * 1.25);
+  background: var(--map-pin-border, var(--surface));
+}
+:is(.legend, .chart-legend) > li[data-shape="circle"]::before { border-radius: 50%; }
+:is(.legend, .chart-legend) > li[data-shape="diamond"]::before { rotate: 45deg; scale: 0.8; }
+:is(.legend, .chart-legend) > li[data-shape="triangle"]::before { border-radius: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+/* --- Sketch map hooks ------------------------------------------------------
+ * For a schematic map drawn as the .map's inline <svg> (no tiles). */
+.map .map-land { fill: var(--map-land, var(--surface-2)); }
+.map .map-water { fill: var(--map-water, color-mix(in oklab, var(--chart-series-1, var(--accent)) 28%, var(--surface-2))); }
+.map .map-park { fill: var(--map-park, color-mix(in oklab, var(--success) 22%, var(--surface-2))); }
+.map .map-block { fill: var(--map-block, color-mix(in oklab, var(--text) 9%, var(--surface-2))); }
+.map .map-road {
+  fill: none;
+  stroke: var(--map-road, color-mix(in oklab, var(--muted) 40%, var(--surface-2)));
+  stroke-width: var(--map-road-width, 6px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.map .map-road.is-major {
+  stroke: var(--map-road-major, color-mix(in oklab, var(--warning) 45%, var(--surface-2)));
+  stroke-width: var(--map-road-major-width, 10px);
+}
+.map .map-label { fill: var(--map-label-fg, var(--muted)); font-size: var(--map-label-size, 11px); font-family: var(--font); }
+
+/* --- Route lines ----------------------------------------------------------- */
+.map-route {
+  fill: none;
+  stroke: var(--series, var(--map-route, var(--accent)));
+  stroke-width: var(--map-route-width, 4px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.map-route.is-planned { stroke-dasharray: var(--map-route-dash, 2px 7px); }
+.map-route.is-done { stroke-opacity: var(--map-route-done-opacity, 0.45); }
+
+/* --- Feed ------------------------------------------------------------------
+ *   <div class="card-media camera-feed" role="img" aria-label="Front door camera, live">
+ *     <svg …>silhouettes in currentColor</svg>
+ *     <span class="badge badge-danger camera-feed-badge">Live</span>
+ *     <span class="camera-feed-caption">Front door <time>14:22:07</time></span>
+ *   </div> */
+.camera-feed {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--camera-feed-ratio, 16 / 9);
+  color: var(--camera-feed-fg, color-mix(in oklab, var(--text) 30%, var(--surface-2)));
+  background: var(--camera-feed-bg,
+    linear-gradient(color-mix(in oklab, var(--muted) 30%, var(--surface-2)) 0 58%,
+                    color-mix(in oklab, var(--text) 14%, var(--surface-2)) 58%));
+}
+.camera-feed > svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+.camera-feed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(transparent 0 2px, var(--camera-feed-scanline, rgb(0 0 0 / 0.07)) 2px 3px),
+    radial-gradient(ellipse at center, transparent 55%, var(--camera-feed-vignette, rgb(0 0 0 / 0.35)));
+}
+.camera-feed.is-offline { filter: grayscale(1); }
+.camera-feed.is-offline > svg { opacity: 0.25; }
+.camera-feed-badge {
+  position: absolute;
+  z-index: var(--z-raised);
+  inset-block-start: var(--space-xs);
+  inset-inline-start: var(--space-xs);
+}
+.camera-feed-caption {
+  position: absolute;
+  z-index: var(--z-raised);
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--camera-feed-caption-bg, rgb(0 0 0 / 0.6));
+  color: var(--camera-feed-caption-fg, #fff);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .camera-feed-badge.is-live::before {
+    content: "";
+    display: inline-block;
+    inline-size: 0.5em;
+    block-size: 0.5em;
+    margin-inline-end: 0.35em;
+    border-radius: 50%;
+    background: currentColor;
+    animation: camera-feed-rec 1.4s steps(2, jump-none) infinite;
+  }
+}
+html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none; }
+@keyframes camera-feed-rec { 50% { opacity: 0.15; } }
+
+/* --- Barcode ---------------------------------------------------------------
+ *   <span class="barcode" role="img" aria-label="Barcode INV-00421">INV-00421</span>
+ * The stripes are decorative (ponytail: one fixed pattern, not an encoding;
+ * render real codes as an SVG from a generator and keep this frame). */
+.barcode {
+  display: inline-grid;
+  justify-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-m);
+  background: var(--barcode-bg, var(--surface));
+  color: var(--barcode-fg, var(--text));
+  border: 1px solid var(--barcode-border, var(--border));
+  border-radius: var(--barcode-radius, var(--radius));
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+}
+.barcode::before {
+  content: "";
+  inline-size: var(--barcode-width, 12rem);
+  max-inline-size: 100%;
+  block-size: var(--barcode-height, 3.5rem);
+  background: repeating-linear-gradient(90deg,
+    currentColor 0 2px, transparent 0 4px, currentColor 0 5px, transparent 0 8px,
+    currentColor 0 11px, transparent 0 12px, currentColor 0 13px, transparent 0 16px,
+    currentColor 0 18px, transparent 0 19px, currentColor 0 22px, transparent 0 24px,
+    currentColor 0 25px, transparent 0 28px, currentColor 0 29px, transparent 0 30px,
+    currentColor 0 33px, transparent 0 35px, currentColor 0 36px, transparent 0 39px,
+    currentColor 0 41px, transparent 0 43px, currentColor 0 44px, transparent 0 47px);
+}
+
+@media (forced-colors: active) {
+  .map-route { stroke: CanvasText; }
+  .barcode { forced-color-adjust: none; background: Canvas; color: CanvasText; }
+}
 /* --- v5 productivity kit (PLAN.md §22 "Productivity kit") -------------------
  * Kanban board, planner calendar (month, week and day views, agenda),
  * Gantt timeline, and the schedule list (extends core's .schedule badge).
