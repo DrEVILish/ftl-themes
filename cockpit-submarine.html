@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="silo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submarine control room — ftl-themes vehicle demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/silo.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: every colour comes from the theme. */
+  .toggle-group > .toggle-btn { white-space: nowrap; }
+  @media (max-width: 480px) { .toggle-group { flex-wrap: wrap; } }
+  .sub-pad { padding: var(--space-m); }
+  .panel-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2xs) var(--space-s); }
+  .sub-row { display: grid; gap: var(--space-m); align-items: start; }
+  .sub-sonar { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+  .sub-sonar .radar { --radar-size: 17rem; --radar-speed: 8s; }
+  .sub-bearing { display: grid; justify-items: center; gap: var(--space-s); }
+  .sub-control { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .sub-scope { --flight-hud-boresight: 50%; --flight-hud-min-height: 22rem; }
+  .sub-scope .attitude { --attitude-rung: 0px; }
+  .sub-ship { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: var(--space-m); align-items: start; }
+  .sub-ship .tape { --tape-height: 15rem; }
+  .sub-ship .attitude { --attitude-size: 9rem; }
+  .sub-ship .gauge-dial { --gauge-size: 9rem; }
+  .sub-ship-dials { display: grid; justify-items: center; gap: var(--space-s); }
+  .sub-boards { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .sub-tube { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: var(--space-xs) var(--space-s); align-items: center; }
+  .sub-tube > .toggle-group { grid-column: 1 / -1; grid-row: 2; }
+  .sub-tube > .annunciator { --annunciator-cell-height: 2.2rem; }
+  .sub-reactor { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-s); }
+  .sub-reactor .gauge-dial { --gauge-size: 10rem; }
+  .sub-reactor .gauge-arc { --gauge-size: 8rem; }
+  .sub-log { --log-height: 15rem; }
+
+  /* Orders, the hull-opening board, tube states and firing are all native
+     radios and checkboxes; :has() picks what the boards show. */
+  .sub-order > span, .sub-ready-on, .sub-fired, .sub-straight, .sub-blown { display: none; }
+  body:has(#d-surf:checked) .sub-order > [data-d="surf"],
+  body:has(#d-pd:checked) .sub-order > [data-d="pd"],
+  body:has(#d-150:checked) .sub-order > [data-d="150"],
+  body:has(#d-400:checked) .sub-order > [data-d="400"],
+  body:has(#d-800:checked) .sub-order > [data-d="800"] { display: inline; }
+  body:not(:has(.sub-board input:not(:checked))) .sub-straight { display: inline-flex; }
+  body:not(:has(.sub-board input:not(:checked))) .sub-red { display: none; }
+  body:has(#t1-open:checked) .sub-t1 .sub-ready-on,
+  body:has(#t2-open:checked) .sub-t2 .sub-ready-on,
+  body:has(#t3-open:checked) .sub-t3 .sub-ready-on,
+  body:has(#t4-open:checked) .sub-t4 .sub-ready-on { display: grid; }
+  body:has(#t1-open:checked) .sub-t1 .sub-ready-off,
+  body:has(#t2-open:checked) .sub-t2 .sub-ready-off,
+  body:has(#t3-open:checked) .sub-t3 .sub-ready-off,
+  body:has(#t4-open:checked) .sub-t4 .sub-ready-off { display: none; }
+  body:has(#fire:checked) .sub-fired { display: flex; }
+  body:has(#emerg-blow:checked) .sub-blown { display: block; }
+
+  @media (max-width: 1200px) {
+    .sub-sonar, .sub-control { grid-template-columns: minmax(0, 1fr); }
+    .sub-boards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sub-boards > :last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .sub-boards { grid-template-columns: minmax(0, 1fr); }
+    .sub-ship { grid-template-columns: auto minmax(0, 1fr); }
+    .sub-ship > :last-child { grid-column: 1 / -1; }
+    .sub-pad { padding: var(--space-s); }
+  }
+  @media (max-width: 480px) {
+    .sub-ship .tape { --tape-height: 12rem; --tape-width: 4rem; }
+  }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Control</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Vehicles</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link>Car</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link>Airliner</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link>Fighter jet</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link>Boat</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link aria-current="page">Submarine</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link>Spaceship</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Attack submarine control room</h1>
+      <p class="text-muted">Rigged for ultra-quiet at 400 feet: a sonar waterfall and passive bearing display tracking three contacts, the periscope, depth and trim, the ballast &ldquo;Christmas tree&rdquo; board, four torpedo tubes, reactor and propulsion, and the deck log. Give depth orders, shut the hull openings for a straight board, flood a tube and open its outer door: radios and checkboxes only. Try it in Silo, Weyland-Yutani, Pip-Boy and MS-DOS.</p>
+      <div class="cluster">
+        <div class="toggle-group" role="radiogroup" aria-label="Condition">
+          <label class="toggle-btn"><input type="radio" name="cond">Normal</label>
+          <label class="toggle-btn"><input type="radio" name="cond" checked>Ultra-quiet</label>
+          <label class="toggle-btn is-danger"><input type="radio" name="cond">Battle stations</label>
+        </div>
+        <span class="badge badge-warning">Contact Sierra-1 · hostile</span>
+      </div>
+    </div>
+
+    <!-- ======================================================= Sonar -->
+    <div class="sub-row sub-sonar">
+      <section class="panel" aria-labelledby="wf-h">
+        <header class="panel-header"><strong id="wf-h">Sonar · broadband waterfall</strong><span class="text-muted">Towed array · 30 min</span></header>
+        <div class="sub-pad stack">
+          <div>
+            <div class="waterfall" role="img" aria-label="Waterfall, bearing across, time down: Sierra-1 at 042° drawing right, Sierra-2 at 191° drawing left, Sierra-3 faint at 281°, biologics at 320°">
+              <span class="waterfall-trace is-foe" style="--at:.117; --drift:-.03">S1</span>
+              <span class="waterfall-trace is-unknown" style="--at:.53; --drift:.05">S2</span>
+              <span class="waterfall-trace is-friend is-faint" style="--at:.78; --drift:0">S3</span>
+              <span class="waterfall-trace is-faint" style="--at:.89; --drift:-.06">Bio</span>
+            </div>
+            <ol class="waterfall-scale" aria-hidden="true"><li>000</li><li>090</li><li>180</li><li>270</li><li>360</li></ol>
+          </div>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Sonar contacts">
+            <table class="table">
+              <caption class="visually-hidden">Sonar contacts</caption>
+              <thead><tr><th scope="col">Contact</th><th scope="col">Brg</th><th scope="col">Class</th><th scope="col">Range</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+                <tr><td>Sierra-1</td><td class="mono">042°</td><td>Submarine, 5-blade</td><td class="mono">8 400 yd</td><td><span class="status status-error">Hostile</span></td></tr>
+                <tr><td>Sierra-2</td><td class="mono">191°</td><td>Merchant, 2 shafts</td><td class="mono">14 000 yd</td><td><span class="status status-warn">Unknown</span></td></tr>
+                <tr><td>Sierra-3</td><td class="mono">281°</td><td>Frigate (friendly)</td><td class="mono">22 000 yd</td><td><span class="status status-ok">Friend</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="brg-h">
+        <header class="panel-header"><strong id="brg-h">Passive bearings</strong><span class="text-muted">Ship's head 090°</span></header>
+        <div class="sub-pad sub-bearing">
+          <div class="radar is-static" style="--radar-rings:3" role="img" aria-label="Passive sonar, north up: Sierra-1 hostile bearing 042°, Sierra-2 unknown 191°, Sierra-3 friendly 281°; own heading 090°, cursor on Sierra-1">
+            <span class="radar-line" style="--bearing:90"></span>
+            <span class="radar-line is-dashed" style="--bearing:42"></span>
+            <span class="radar-blip is-foe" style="--bearing:42; --range:.62">S1</span>
+            <span class="radar-blip is-unknown" style="--bearing:191; --range:.8">S2</span>
+            <span class="radar-blip is-friend" style="--bearing:281; --range:.9">S3</span>
+            <span class="radar-blip is-faint" style="--bearing:320; --range:.5">bio</span>
+            <span class="ownship" style="--heading:90; --ownship-size:4%" aria-hidden="true"></span>
+          </div>
+          <div class="toggle-group" role="radiogroup" aria-label="Array">
+            <label class="toggle-btn"><input type="radio" name="arr">Sphere</label>
+            <label class="toggle-btn"><input type="radio" name="arr" checked>Towed</label>
+            <label class="toggle-btn"><input type="radio" name="arr">Wide aperture</label>
+          </div>
+          <dl class="props">
+            <dt>Sierra-1</dt><dd class="mono">042° · drift 0.4°/min R</dd>
+            <dt>Solution</dt><dd class="mono">Crs 250 · 12 kn · 8 400 yd</dd>
+          </dl>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Scope and ship control -->
+    <div class="sub-row sub-control">
+      <section class="panel" aria-labelledby="scope-h">
+        <header class="panel-header"><strong id="scope-h">Periscope</strong><span class="text-muted">Type 18 · low power</span></header>
+        <div class="sub-pad stack">
+          <div class="flight-hud sub-scope" role="img" aria-label="Periscope view bearing 042°: horizon level, Sierra-2's mast on the horizon at 040°, stadimeter range 6,400 yards">
+            <div class="attitude is-hud" style="--pitch:0; --roll:0; --attitude-hud-ground: color-mix(in oklab, var(--accent) 30%, var(--bg)); --attitude-hud-ground-bottom: var(--bg); --attitude-hud-sky: color-mix(in oklab, var(--text) 18%, var(--bg)); --attitude-hud-sky-top: color-mix(in oklab, var(--text) 6%, var(--bg))">
+              <div class="attitude-horizon"></div>
+            </div>
+            <ol data-audit-edge="ignore" class="compass-strip" style="--heading:42; --compass-strip-span:90" aria-hidden="true">
+              <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+              <li class="is-marker" style="--at:40"><svg class="icon"><use href="assets/icons/icons.svg#icon-caret-down"/></svg></li>
+            </ol>
+            <span class="flight-hud-gun"></span>
+            <span class="flight-hud-target is-locked" style="--x:46%; --y:47%">S2 · 040°</span>
+            <div class="flight-hud-data"><span>BRG 042</span><span>RNG 6 400</span><span>AOB 30 S</span></div>
+            <div class="flight-hud-data is-end"><span>MAST 2.1 FT</span><span>LOW PWR</span><span>STADI</span></div>
+          </div>
+          <div class="cluster">
+            <div class="toggle-group" role="radiogroup" aria-label="Periscope power">
+              <label class="toggle-btn"><input type="radio" name="pwr" checked>Low power</label>
+              <label class="toggle-btn"><input type="radio" name="pwr">High power</label>
+            </div>
+            <label class="toggle-btn"><input type="checkbox">Thermal</label>
+            <label class="toggle-btn"><input type="checkbox" checked>Stadimeter</label>
+            <label class="toggle-btn"><input type="checkbox">Raise mast</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="ship-h">
+        <header class="panel-header"><strong id="ship-h">Ship control</strong><span class="text-muted">Diving officer</span></header>
+        <div class="sub-pad stack">
+          <div class="sub-ship">
+            <div class="tape" role="meter" aria-label="Keel depth, feet" aria-valuenow="400" aria-valuemin="0" aria-valuemax="1000" style="--value:-400; --tape-span:200; --tape-major:50; --tape-minor:10">
+              <ol data-audit-edge="ignore" class="tape-scale" aria-hidden="true"><li style="--at:-300">300</li><li style="--at:-350">350</li><li style="--at:-400">400</li><li style="--at:-450">450</li><li style="--at:-500">500</li></ol>
+              <span class="tape-bug" style="--at:-400"></span>
+              <span class="tape-readout">400</span>
+            </div>
+            <div class="sub-ship-dials">
+              <div class="attitude" style="--pitch:-3; --roll:2" role="img" aria-label="Trim: 3° down angle, 2° list to starboard">
+                <div class="attitude-horizon"><ol class="attitude-ladder" aria-hidden="true"><li style="--at:10"></li><li style="--at:-10"></li></ol></div>
+              </div>
+              <span class="stat-label">Angle · list</span>
+            </div>
+            <div class="stack stack-sm">
+              <div class="gauge-dial" style="--value:.4; --gauge-redline:.8; --gauge-ticks:5; --gauge-minor:4">
+                <meter min="0" max="1000" value="400">400 feet</meter>
+                <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>2</li><li>4</li><li>6</li><li class="is-redline">8</li><li class="is-redline">10</li></ol>
+                <div class="gauge-readout"><span class="readout">400</span>ft ×100</div>
+              </div>
+              <dl class="props">
+                <dt>Speed</dt><dd class="mono">6 kn</dd>
+                <dt>Course</dt><dd class="mono">090°</dd>
+                <dt>Planes</dt><dd class="mono">fwd 2° rise · aft 1° dive</dd>
+              </dl>
+            </div>
+          </div>
+          <fieldset class="stack stack-sm">
+            <legend>Depth order</legend>
+            <div class="toggle-group" role="radiogroup" aria-label="Ordered depth">
+              <label class="toggle-btn"><input type="radio" name="depth" id="d-surf">Surface</label>
+              <label class="toggle-btn"><input type="radio" name="depth" id="d-pd">PD</label>
+              <label class="toggle-btn"><input type="radio" name="depth" id="d-150">150</label>
+              <label class="toggle-btn"><input type="radio" name="depth" id="d-400" checked>400</label>
+              <label class="toggle-btn is-danger"><input type="radio" name="depth" id="d-800">800</label>
+            </div>
+            <p class="sub-order mono" aria-live="polite"><span data-d="surf">“Surface, surface, surface!”</span><span data-d="pd">“Make your depth six-two feet.”</span><span data-d="150">“Make your depth one-five-zero feet.”</span><span data-d="400">“Make your depth four hundred feet.”</span><span data-d="800">“Make your depth eight hundred feet. Test depth.”</span></p>
+          </fieldset>
+          <div class="toggle-group" role="radiogroup" aria-label="Engine order">
+            <label class="toggle-btn"><input type="radio" name="bell">Stop</label>
+            <label class="toggle-btn"><input type="radio" name="bell" checked>⅓</label>
+            <label class="toggle-btn"><input type="radio" name="bell">⅔</label>
+            <label class="toggle-btn"><input type="radio" name="bell">Std</label>
+            <label class="toggle-btn"><input type="radio" name="bell">Full</label>
+            <label class="toggle-btn"><input type="radio" name="bell">Flank</label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Boards -->
+    <div class="sub-row sub-boards">
+      <section class="panel" aria-labelledby="bal-h">
+        <header class="panel-header"><strong id="bal-h">Ballast control · hull openings</strong></header>
+        <div class="sub-pad stack">
+          <div class="cluster">
+            <span class="badge badge-success sub-straight">— Straight board</span>
+            <span class="badge badge-danger sub-red">○ Red board: hull opening open</span>
+          </div>
+          <ul class="annunciator sub-board" aria-label="Hull openings; press to shut or open">
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>MBT 1 vent <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>MBT 2 vent <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>MBT 3 vent <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>MBT 4 vent <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>Fwd hatch <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>Aft hatch <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox">Snorkel <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+            <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>Induction <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+          </ul>
+          <div class="cluster">
+            <label class="toggle-btn"><input type="checkbox">Vent MBTs</label>
+            <label class="toggle-btn"><input type="checkbox">Pump trim fwd</label>
+            <div class="guard">
+              <label class="guard-cover"><input type="checkbox" aria-label="Emergency blow cover"><span class="guard-closed">Emergency blow · lift</span><span class="guard-open">Close cover</span></label>
+              <label class="toggle-btn is-danger"><input type="checkbox" id="emerg-blow">Emergency blow</label>
+            </div>
+          </div>
+          <div class="alert alert-danger sub-blown" role="alert">Emergency blow: high-pressure air to all main ballast tanks. Full rise on the planes.</div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="torp-h">
+        <header class="panel-header"><strong id="torp-h">Weapons · tubes 1–4</strong></header>
+        <div class="sub-pad stack">
+          <div class="sub-tube sub-t1">
+            <span class="stat-label">Tube 1</span>
+            <div class="toggle-group" role="radiogroup" aria-label="Tube 1">
+              <label class="toggle-btn"><input type="radio" name="t1">Load</label>
+              <label class="toggle-btn"><input type="radio" name="t1" checked>Flood</label>
+              <label class="toggle-btn"><input type="radio" name="t1" id="t1-open">Door</label>
+            </div>
+            <ul class="annunciator" aria-label="Tube 1 ready"><li class="sub-ready-off">Not ready</li><li class="sub-ready-on is-advisory">Ready <span class="visually-hidden">(lit)</span></li></ul>
+          </div>
+          <div class="sub-tube sub-t2">
+            <span class="stat-label">Tube 2</span>
+            <div class="toggle-group" role="radiogroup" aria-label="Tube 2">
+              <label class="toggle-btn"><input type="radio" name="t2">Load</label>
+              <label class="toggle-btn"><input type="radio" name="t2">Flood</label>
+              <label class="toggle-btn"><input type="radio" name="t2" id="t2-open" checked>Door</label>
+            </div>
+            <ul class="annunciator" aria-label="Tube 2 ready"><li class="sub-ready-off">Not ready</li><li class="sub-ready-on is-advisory">Ready <span class="visually-hidden">(lit)</span></li></ul>
+          </div>
+          <div class="sub-tube sub-t3">
+            <span class="stat-label">Tube 3</span>
+            <div class="toggle-group" role="radiogroup" aria-label="Tube 3">
+              <label class="toggle-btn"><input type="radio" name="t3" checked>Load</label>
+              <label class="toggle-btn"><input type="radio" name="t3">Flood</label>
+              <label class="toggle-btn"><input type="radio" name="t3" id="t3-open">Door</label>
+            </div>
+            <ul class="annunciator" aria-label="Tube 3 ready"><li class="sub-ready-off">Not ready</li><li class="sub-ready-on is-advisory">Ready <span class="visually-hidden">(lit)</span></li></ul>
+          </div>
+          <div class="sub-tube sub-t4">
+            <span class="stat-label">Tube 4</span>
+            <div class="toggle-group" role="radiogroup" aria-label="Tube 4">
+              <label class="toggle-btn"><input type="radio" name="t4">Load</label>
+              <label class="toggle-btn"><input type="radio" name="t4">Flood</label>
+              <label class="toggle-btn"><input type="radio" name="t4" id="t4-open">Door</label>
+            </div>
+            <ul class="annunciator" aria-label="Tube 4 ready"><li class="sub-ready-off">Empty</li><li class="sub-ready-on is-advisory">Ready <span class="visually-hidden">(lit)</span></li></ul>
+          </div>
+          <dl class="props"><dt>Solution</dt><dd class="mono">Sierra-1 · run 6 200 yd · 4 min 10 s</dd></dl>
+          <div class="cluster">
+            <div class="guard">
+              <label class="guard-cover"><input type="checkbox" aria-label="Firing key cover"><span class="guard-closed">Weapons safe · lift</span><span class="guard-open">Close cover</span></label>
+              <label class="toggle-btn is-danger"><input type="checkbox" id="fire">Fire tube 2</label>
+            </div>
+            <span class="badge badge-danger sub-fired">Tube 2 fired · weapon running</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="rx-h">
+        <header class="panel-header"><strong id="rx-h">Reactor and propulsion</strong></header>
+        <div class="sub-pad stack">
+          <span class="status status-ok">Critical · stable</span>
+          <div class="sub-reactor">
+            <div class="gauge-dial" style="--value:.22; --gauge-redline:.92; --gauge-ticks:5; --gauge-minor:4">
+              <meter min="0" max="125" value="28">Reactor power 28%</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>25</li><li>50</li><li>75</li><li>100</li><li class="is-redline">125</li></ol>
+              <div class="gauge-readout"><span class="readout">28</span>% power</div>
+            </div>
+            <div class="gauge-arc" style="--value:.62; --gauge-redline:.9">
+              <meter min="500" max="600" value="562">Tave 562 °F</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>500</li><li>550</li><li class="is-redline">600</li></ol>
+              <div class="gauge-readout"><span class="readout">562</span>Tave °F</div>
+            </div>
+          </div>
+          <dl class="props">
+            <dt>Pressurizer</dt><dd class="mono">2 210 psi</dd>
+            <dt>Turbine gens</dt><dd class="mono">1 and 2 on line</dd>
+            <dt>Shaft</dt><dd class="mono">62 rpm · ⅓ ahead</dd>
+            <dt>Battery</dt><dd><span class="cluster is-gap-xs"><span class="battery" role="img" aria-label="Battery 94%" style="--value:.94"></span><span class="mono">94%</span></span></dd>
+          </dl>
+          <ul class="annunciator" aria-label="Reactor alarms">
+            <li>Scram</li><li>Rx coolant</li><li class="is-on">Main coolant pumps slow <span class="visually-hidden">(on)</span></li><li>Steam leak</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="log-h">
+      <header class="panel-header"><strong id="log-h">Deck log</strong><span class="text-muted">Officer of the deck</span></header>
+      <div class="sub-pad">
+        <div class="log sub-log" tabindex="0" role="log" aria-label="Orders and reports">
+          <div class="log-line"><span class="log-time">0412</span><span>OOD: “Dive, dive.” Diving officer: “Make your depth one-five-zero feet.”</span></div>
+          <div class="log-line"><span class="log-time">0413</span><span>Chief of the watch: “Straight board, sir. Pressure in the boat.”</span></div>
+          <div class="log-line" data-level="debug"><span class="log-time">0420</span><span>Rig for ultra-quiet. Secure all non-essential machinery.</span></div>
+          <div class="log-line"><span class="log-time">0431</span><span>Sonar: “New contact, bearing zero-four-two, designate Sierra-1.”</span></div>
+          <div class="log-line" data-level="warn"><span class="log-time">0436</span><span>Sonar: “Sierra-1 classified submarine, five-blade screw. Possible hostile.”</span></div>
+          <div class="log-line"><span class="log-time">0438</span><span>Captain: “Make your depth four hundred feet. All ahead one-third.”</span></div>
+          <div class="log-line"><span class="log-time">0441</span><span>Weapons: “Tube two flooded and equalised.”</span></div>
+          <div class="log-line" data-level="error"><span class="log-time">0444</span><span>Captain: “Man battle stations torpedo. Open outer door, tube two.”</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>SSN Mako · 400 ft · ultra-quiet</span>
+    <span class="status status-warn">Sierra-1 bearing 042°, 8 400 yd</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cassette-futurism">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spacecraft flight deck — ftl-themes vehicle demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/cassette-futurism.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: every colour comes from the theme. */
+  .toggle-group > .toggle-btn { white-space: nowrap; }
+  @media (max-width: 480px) { .toggle-group { flex-wrap: wrap; } }
+  .sc-pad { padding: var(--space-m); }
+  .panel-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2xs) var(--space-s); }
+  .sc-row { display: grid; gap: var(--space-m); align-items: start; }
+  .sc-nav { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+  .sc-orbit { display: grid; grid-template-columns: minmax(0, 1fr) 13rem; gap: var(--space-m); align-items: start; }
+  .sc-orbit .orbit { --orbit-ratio: 4 / 3; --orbit-body: .16; }
+  .sc-gnc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-m); align-items: start; }
+  .sc-gnc .attitude { --attitude-size: 13rem; }
+  .sc-rcs { display: flex; flex-wrap: wrap; gap: var(--space-s); }
+  .sc-rcs fieldset { flex: 1 1 auto; min-inline-size: 0; }
+  .sc-rcs .toggle-btn { min-inline-size: var(--tap-min); justify-content: center; }
+  .sc-dock { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .sc-cam { --flight-hud-boresight: 50%; --flight-hud-min-height: 24rem; }
+  .sc-cam .attitude { --attitude-rung: 0px; }
+  .sc-systems { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sc-crew { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--space-2xs) var(--space-s); align-items: center; }
+  .sc-crew .sparkline { --sparkline-width: 100%; --sparkline-height: 1.8rem; }
+  .sc-power { display: flex; flex-wrap: wrap; gap: var(--space-m); }
+  .sc-power > div { display: grid; justify-items: center; gap: var(--space-3xs); }
+  .sc-power .battery { font-size: 1.6rem; }
+  .sc-comms .timeline { inline-size: 100%; }
+
+  /* Flight phase and the abort switch change the deck. */
+  .sc-phase > span, .sc-aborted { display: none; }
+  body:has(#ph-coast:checked) .sc-phase > [data-p="coast"],
+  body:has(#ph-burn:checked) .sc-phase > [data-p="burn"],
+  body:has(#ph-rndz:checked) .sc-phase > [data-p="rndz"],
+  body:has(#ph-dock:checked) .sc-phase > [data-p="dock"] { display: inline; }
+  body:has(#abort-arm:checked) .sc-aborted { display: block; }
+
+  @media (max-width: 1200px) {
+    .sc-nav, .sc-dock { grid-template-columns: minmax(0, 1fr); }
+    .sc-systems { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sc-systems > :last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 760px) {
+    .sc-orbit, .sc-gnc, .sc-systems { grid-template-columns: minmax(0, 1fr); }
+    .sc-systems > :last-child { grid-column: auto; }
+    .sc-gnc .attitude { justify-self: center; }
+    .sc-pad { padding: var(--space-s); }
+  }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Flight deck</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Vehicles</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link>Car</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link>Airliner</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link>Fighter jet</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link>Boat</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link>Submarine</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link aria-current="page">Spaceship</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Crew vehicle flight deck</h1>
+      <p class="text-muted">A four-seat capsule chasing a space station: orbit display with apoapsis, periapsis and the planned transfer, the 8-ball, RCS quads, the docking camera with range and closure tapes, the burn timer and delta-v budget, a guarded abort-mode switch, caution and warning, ground-station passes and crew biomedical data. All native controls. Try it in Cassette Futurism, Aperture, NERV and Death Star.</p>
+      <div class="cluster">
+        <div class="toggle-group" role="radiogroup" aria-label="Flight phase">
+          <label class="toggle-btn"><input type="radio" name="phase" id="ph-coast">Coast</label>
+          <label class="toggle-btn"><input type="radio" name="phase" id="ph-burn">Burn</label>
+          <label class="toggle-btn"><input type="radio" name="phase" id="ph-rndz" checked>Rendezvous</label>
+          <label class="toggle-btn"><input type="radio" name="phase" id="ph-dock">Docking</label>
+        </div>
+        <span class="badge sc-phase" aria-live="polite"><span data-p="coast">Coast · next burn in 41 min</span><span data-p="burn">TI burn · prograde 12.4 m/s</span><span data-p="rndz">Rendezvous · station 2.1 km ahead</span><span data-p="dock">Final approach · 0.1 m/s</span></span>
+      </div>
+    </div>
+
+    <!-- ======================================================= Orbit and GNC -->
+    <div class="sc-row sc-nav">
+      <section class="panel" aria-labelledby="orb-h">
+        <header class="panel-header"><strong id="orb-h">Orbit</strong><span class="text-muted">Rev 7 · MET 10:42:16</span></header>
+        <div class="sc-pad sc-orbit">
+          <div class="orbit" role="img" aria-label="Orbit display: our orbit 212 by 418 kilometres, station in a near-circular 420 kilometre orbit ahead of us, planned transfer burn at apoapsis">
+            <div class="orbit-path is-target" data-series="2" style="--a:.36; --e:.012; --tilt:-25">
+              <span class="orbit-mark is-node" style="--at:118">Station</span>
+            </div>
+            <div class="orbit-path is-planned" data-series="3" style="--a:.33; --e:.09; --tilt:155"></div>
+            <div class="orbit-path" data-series="1" style="--a:.29; --e:.19; --tilt:-25">
+              <span class="orbit-mark is-start" style="--at:0">Pe 212</span>
+              <span class="orbit-mark" style="--at:180">Ap 418</span>
+              <span class="orbit-mark is-craft" style="--at:72">Crew</span>
+            </div>
+          </div>
+          <div class="stack stack-sm">
+            <dl class="props">
+              <dt>Apoapsis</dt><dd class="mono">418.2 km</dd>
+              <dt>Periapsis</dt><dd class="mono">212.6 km</dd>
+              <dt>Inclination</dt><dd class="mono">51.64°</dd>
+              <dt>Period</dt><dd class="mono">90:41</dd>
+              <dt>Phase angle</dt><dd class="mono">+4.2°</dd>
+            </dl>
+            <ul class="legend is-vertical">
+              <li data-series="1">Our orbit</li><li data-series="2">Station (dashed)</li><li data-series="3">Planned (dotted)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="gnc-h">
+        <header class="panel-header"><strong id="gnc-h">Attitude and RCS</strong><span class="text-muted">LVLH</span></header>
+        <div class="sc-pad stack">
+          <div class="sc-gnc">
+            <div class="attitude" style="--pitch:-8; --roll:14" role="img" aria-label="Flight director attitude indicator: pitch 8° down, roll 14° right">
+              <div class="attitude-horizon"><ol class="attitude-ladder" aria-hidden="true"><li style="--at:30"></li><li style="--at:20"></li><li style="--at:10"></li><li style="--at:-10"></li><li style="--at:-20"></li><li style="--at:-30"></li></ol></div>
+            </div>
+            <dl class="props">
+              <dt>Pitch</dt><dd class="mono">−8.0° · −0.1°/s</dd>
+              <dt>Yaw</dt><dd class="mono">+1.2° · 0.0°/s</dd>
+              <dt>Roll</dt><dd class="mono">+14.0° · +0.4°/s</dd>
+              <dt>Error</dt><dd class="mono">0.3° · deadband 0.5°</dd>
+            </dl>
+          </div>
+          <div class="sc-rcs">
+            <fieldset class="stack stack-sm">
+              <legend>RCS quads</legend>
+              <div class="cluster">
+                <label class="toggle-btn"><input type="checkbox" checked>A</label>
+                <label class="toggle-btn"><input type="checkbox" checked>B</label>
+                <label class="toggle-btn"><input type="checkbox" checked>C</label>
+                <label class="toggle-btn is-danger"><input type="checkbox">D <span class="visually-hidden">(isolated)</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="stack stack-sm">
+              <legend>Control mode</legend>
+              <div class="toggle-group" role="radiogroup" aria-label="Control mode">
+                <label class="toggle-btn"><input type="radio" name="cm">Auto</label>
+                <label class="toggle-btn"><input type="radio" name="cm" checked>Rate</label>
+                <label class="toggle-btn"><input type="radio" name="cm">Pulse</label>
+              </div>
+            </fieldset>
+          </div>
+          <ul class="annunciator is-fma" aria-label="Thruster firing: quads A and C">
+            <li class="is-on">A <span class="visually-hidden">(firing)</span></li><li>B</li><li class="is-on">C <span class="visually-hidden">(firing)</span></li><li class="is-caution">D iso <span class="visually-hidden">(lit)</span></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Docking and burn -->
+    <div class="sc-row sc-dock">
+      <section class="panel" aria-labelledby="cam-h">
+        <header class="panel-header"><strong id="cam-h">Docking camera</strong><span class="text-muted">Centreline · forward port</span></header>
+        <div class="sc-pad stack">
+          <div class="flight-hud sc-cam" role="img" aria-label="Docking camera: target 1.2° right and 0.8° high of centreline, range 38 metres, closing at 0.12 metres per second">
+            <div class="attitude is-hud" style="--attitude-hud-sky: color-mix(in oklab, var(--accent) 8%, var(--bg)); --attitude-hud-sky-top: var(--bg); --attitude-hud-ground: color-mix(in oklab, var(--accent) 8%, var(--bg)); --attitude-hud-ground-bottom: var(--bg); --attitude-horizon-width: 0px">
+              <div class="attitude-horizon"></div>
+            </div>
+            <ol data-audit-edge="ignore" class="compass-strip" style="--heading:2; --compass-strip-span:60; --compass-step:15" aria-hidden="true">
+              <li>0</li><li>15</li><li>30</li><li>45</li><li>60</li><li>75</li><li>90</li><li>105</li><li>120</li><li>135</li><li>150</li><li>165</li><li>180</li>
+            </ol>
+            <div class="tape" aria-hidden="true" style="--value:38; --tape-span:40; --tape-major:10; --tape-minor:2">
+              <span class="tape-unit">RNG m</span>
+              <ol data-audit-edge="ignore" class="tape-scale"><li style="--at:20">20</li><li style="--at:30">30</li><li style="--at:40">40</li><li style="--at:50">50</li><li style="--at:60">60</li></ol>
+              <span class="tape-band is-caution" style="--from:0; --to:30"></span>
+              <span class="tape-readout">38.0</span>
+            </div>
+            <div class="tape is-end" aria-hidden="true" style="--value:-12; --tape-span:40; --tape-major:10; --tape-minor:5">
+              <span class="tape-unit">ṘNG cm/s</span>
+              <ol data-audit-edge="ignore" class="tape-scale"><li style="--at:-30">−30</li><li style="--at:-20">−20</li><li style="--at:-10">−10</li><li style="--at:0">0</li><li style="--at:10">+10</li></ol>
+              <span class="tape-band is-danger" style="--from:-60; --to:-25"></span>
+              <span class="tape-bug" style="--at:-10"></span>
+              <span class="tape-readout">−12</span>
+            </div>
+            <span class="flight-hud-gun"></span>
+            <span class="flight-hud-target is-locked" style="--x:56%; --y:34%">Port · 1.2 R 0.8 U</span>
+            <div class="flight-hud-data"><span>Y +0.18 m</span><span>Z −0.11 m</span></div>
+            <div class="flight-hud-data is-end"><span>ROLL +0.4°</span><span>CAPTURE 05:16</span></div>
+          </div>
+          <div class="cluster">
+            <div class="toggle-group" role="radiogroup" aria-label="Camera">
+              <label class="toggle-btn"><input type="radio" name="cam" checked>Centreline</label>
+              <label class="toggle-btn"><input type="radio" name="cam">Wide</label>
+              <label class="toggle-btn"><input type="radio" name="cam">Lidar</label>
+            </div>
+            <label class="toggle-btn"><input type="checkbox" checked>Docking lights</label>
+            <label class="toggle-btn"><input type="checkbox">Soft capture ring extend</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="burn-h">
+        <header class="panel-header"><strong id="burn-h">Burn</strong><span class="text-muted">TI · prograde</span></header>
+        <div class="sc-pad stack">
+          <span class="stat-label">Time to ignition</span>
+          <div class="countdown" role="timer" aria-label="Ignition in 4 minutes 12 seconds">
+            <span data-unit="min">04</span><span data-unit="sec">12</span>
+          </div>
+          <dl class="props">
+            <dt>Δv</dt><dd class="mono">12.4 m/s</dd>
+            <dt>Burn time</dt><dd class="mono">0:38</dd>
+            <dt>Attitude</dt><dd class="mono">P 0.0 · Y 180.0 · R 0.0</dd>
+          </dl>
+          <div class="stack stack-sm">
+            <span class="stat-label">Delta-v budget, m/s</span>
+            <div class="gauge-linear">
+              <div class="meter" style="--meter-level:58%" role="meter" aria-label="Delta-v remaining, metres per second" aria-valuenow="290" aria-valuemin="0" aria-valuemax="500"><div class="meter-fill"></div></div>
+              <span class="gauge-mark" style="--at:0%">0</span>
+              <span class="gauge-mark is-warn" style="--at:24%">Deorbit 120</span>
+              <span class="gauge-mark is-target" style="--at:56%">After TI</span>
+              <span class="gauge-mark" style="--at:100%">500</span>
+            </div>
+          </div>
+          <fieldset class="stack stack-sm">
+            <legend>Abort mode</legend>
+            <div class="guard">
+              <label class="guard-cover"><input type="checkbox" aria-label="Abort switch cover"><span class="guard-closed">Abort · lift cover</span><span class="guard-open">Close cover</span></label>
+              <div class="cluster">
+                <div class="toggle-group" role="radiogroup" aria-label="Abort mode">
+                  <label class="toggle-btn"><input type="radio" name="abort" checked>Off</label>
+                  <label class="toggle-btn"><input type="radio" name="abort">Separate</label>
+                  <label class="toggle-btn"><input type="radio" name="abort">Deorbit</label>
+                </div>
+                <label class="toggle-btn is-danger"><input type="checkbox" id="abort-arm">Execute</label>
+              </div>
+            </div>
+          </fieldset>
+          <div class="alert alert-danger sc-aborted" role="alert">Abort executed: back away from the station on +R bar, then deorbit at the next opportunity.</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Systems -->
+    <div class="sc-row sc-systems">
+      <section class="panel" aria-labelledby="cw-h">
+        <header class="panel-header"><strong id="cw-h">Caution and warning</strong></header>
+        <div class="sc-pad stack">
+          <div class="cluster"><label class="annunciator-master is-warning"><input type="checkbox" checked>Master alarm</label><label class="annunciator-master is-caution"><input type="checkbox">Caution</label></div>
+          <ul class="annunciator" aria-label="Caution and warning: cabin pressure normal, RCS quad D isolated, CO2 high">
+            <li>Cabin press</li><li>Fire</li><li class="is-caution is-blinking">RCS D iso <span class="visually-hidden">(lit)</span></li><li>Fuel cell</li>
+            <li class="is-caution">CO₂ high <span class="visually-hidden">(lit)</span></li><li>Gimbal lock</li><li class="is-advisory">GPS lock <span class="visually-hidden">(lit)</span></li><li class="is-on">Docking tgt <span class="visually-hidden">(on)</span></li>
+          </ul>
+          <div class="stack stack-sm">
+            <span class="stat-label">Propellant</span>
+            <div class="gauge-linear">
+              <div class="meter" style="--meter-level:61%" role="meter" aria-label="Fuel, kilograms" aria-valuenow="732" aria-valuemin="0" aria-valuemax="1200"><div class="meter-fill"></div></div>
+              <span class="gauge-mark" style="--at:0%">Fuel</span><span class="gauge-mark is-warn" style="--at:20%">Reserve</span><span class="gauge-mark" style="--at:100%">1200 kg</span>
+            </div>
+            <div class="gauge-linear">
+              <div class="meter" style="--meter-level:63%" role="meter" aria-label="Oxidiser, kilograms" aria-valuenow="1210" aria-valuemin="0" aria-valuemax="1920"><div class="meter-fill"></div></div>
+              <span class="gauge-mark" style="--at:0%">Ox</span><span class="gauge-mark is-warn" style="--at:20%">Reserve</span><span class="gauge-mark" style="--at:100%">1920 kg</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="eps-h">
+        <header class="panel-header"><strong id="eps-h">Power and life support</strong></header>
+        <div class="sc-pad stack">
+          <div class="sc-power">
+            <div><span class="battery" role="img" aria-label="Battery 1, 88%" style="--value:.88"></span><span class="mono">B1 88%</span></div>
+            <div><span class="battery is-charging" role="img" aria-label="Battery 2, 71%, charging" style="--value:.71"></span><span class="mono">B2 71%</span></div>
+            <div><span class="battery is-low" role="img" aria-label="Battery 3, 18%, low" style="--value:.18"></span><span class="mono">B3 18%</span></div>
+          </div>
+          <div class="stack stack-sm">
+            <span class="stat-label">Oxygen, kPa</span>
+            <div class="meter" style="--meter-level:82%" role="meter" aria-label="Oxygen tank pressure, percent" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+            <span class="stat-label">CO₂ scrubber load</span>
+            <div class="meter" style="--meter-level:71%; --meter-warn-at:60%; --meter-peak-at:85%" role="meter" aria-label="CO2 scrubber load, percent" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div></div>
+          </div>
+          <dl class="props">
+            <dt>Solar arrays</dt><dd class="mono">2.84 kW · sun</dd>
+            <dt>Bus</dt><dd class="mono">28.1 V · 61 A</dd>
+            <dt>Cabin</dt><dd class="mono">101.2 kPa · 22.4 °C</dd>
+          </dl>
+          <div class="cluster">
+            <label class="toggle-btn"><input type="checkbox" checked>Scrubber B</label>
+            <label class="toggle-btn"><input type="checkbox">Cabin fan 2</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="com-h">
+        <header class="panel-header"><strong id="com-h">Comms and crew</strong><span class="cluster is-gap-xs"><span class="signal" role="img" aria-label="Signal 3 of 4" data-bars="3"></span><span class="mono">S-band</span></span></header>
+        <div class="sc-pad stack sc-comms">
+          <ol class="timeline">
+            <li class="is-done"><time>10:31</time><strong>LOS Hawaii</strong></li>
+            <li aria-current="step"><time>10:38</time><strong>AOS relay sat · 22 min</strong></li>
+            <li><time>11:02</time><strong>LOS · 6 min gap</strong></li>
+            <li><time>11:08</time><strong>AOS Wallops</strong></li>
+          </ol>
+          <div class="sc-crew" role="table" aria-label="Crew biomedical">
+            <div role="row" class="visually-hidden"><span role="columnheader">Heart rate trend</span><span role="columnheader">Heart rate</span><span role="columnheader">SpO₂</span></div>
+            <div role="row" style="display: contents"><span role="cell"><span class="stat-label">CDR Okafor</span><svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Commander heart rate steady"><polyline points="0,12 10,11 20,13 30,12 40,10 50,12 60,11 70,13 80,12 90,11 100,12"/></svg></span><span role="cell" class="readout readout-sm">72</span><span role="cell" class="mono">98%</span></div>
+            <div role="row" style="display: contents"><span role="cell"><span class="stat-label">PLT Varga</span><svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Pilot heart rate rising"><polyline points="0,18 10,17 20,16 30,16 40,13 50,12 60,10 70,9 80,7 90,6 100,5"/></svg></span><span role="cell" class="readout readout-sm">96</span><span role="cell" class="mono">97%</span></div>
+            <div role="row" style="display: contents"><span role="cell"><span class="stat-label">MS Lindqvist</span><svg class="sparkline" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Mission specialist heart rate steady"><polyline points="0,14 10,13 20,14 30,15 40,13 50,14 60,13 70,14 80,15 90,14 100,14"/></svg></span><span role="cell" class="readout readout-sm">64</span><span role="cell" class="mono">99%</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>Crew vehicle · rendezvous · MET 10:42:16</span>
+    <span class="status status-warn">CO₂ high · RCS quad D isolated</span>
+  </footer>
+
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

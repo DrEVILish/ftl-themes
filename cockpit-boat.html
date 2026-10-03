@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="international-rescue">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motor yacht bridge — ftl-themes vehicle demo</title>
+<link id="theme-link" rel="stylesheet" href="dist/international-rescue.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Layout glue only: every colour comes from the theme. */
+  .toggle-group > .toggle-btn { white-space: nowrap; }
+  @media (max-width: 480px) { .toggle-group { flex-wrap: wrap; } }
+  .boat-pad { padding: var(--space-m); }
+  .panel-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2xs) var(--space-s); }
+  .boat-row { display: grid; gap: var(--space-m); align-items: start; }
+  .boat-nav { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+  .boat-nav .map { --map-ratio: 16 / 10; }
+  .boat-radar { display: grid; justify-items: center; gap: var(--space-s); }
+  .boat-radar .radar { --radar-size: 19rem; }
+  .boat-inst { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .boat-inst .panel { block-size: 100%; }
+  .boat-dial { display: grid; justify-items: center; gap: var(--space-s); text-align: center; }
+  .boat-dial :is(.compass, .gauge-dial) { --gauge-size: 12rem; }
+  .boat-depth { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-s); align-items: start; }
+  .boat-depth .tape { --tape-height: 12rem; }
+  .boat-engines { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+  .boat-engine { display: grid; justify-items: center; gap: var(--space-s); }
+  .boat-engine .gauge-dial { --gauge-size: 11rem; }
+  .boat-engine-arcs { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-s); }
+  .boat-engine-arcs .gauge-arc { --gauge-size: 6.5rem; }
+  .boat-engine .gauge-linear { inline-size: 100%; }
+  .boat-consoles { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .boat-anchor .radar { --radar-size: 12rem; }
+  .boat-vhf-ch { --readout-size: 3.2rem; }
+  .boat-ais { inline-size: 100%; }
+
+  /* Autopilot mode, DSC and anchor watch switch what the bridge shows. */
+  .boat-ap-auto, .boat-ap-track, .boat-dsc-sent, .boat-anchor-on, .boat-dw-on { display: none; }
+  body:has(#ap-auto:checked) .boat-ap-auto,
+  body:has(#ap-track:checked) .boat-ap-track { display: inline; }
+  body:has(#ap-auto:checked) .boat-ap-sby,
+  body:has(#ap-track:checked) .boat-ap-sby { display: none; }
+  body:has(#dsc-send:checked) .boat-dsc-sent { display: block; }
+  body:has(#anchor-watch:checked) .boat-anchor-on { display: inline; }
+  body:has(#anchor-watch:checked) .boat-anchor-off { display: none; }
+  body:has(#dual-watch:checked) .boat-dw-on { display: inline; }
+  body:has(#dual-watch:checked) .boat-dw-off { display: none; }
+
+  @media (max-width: 1200px) {
+    .boat-inst { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .boat-consoles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .boat-consoles > :first-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 1000px) {
+    .boat-nav { grid-template-columns: minmax(0, 1fr); }
+    .boat-engines { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .boat-engines > :last-child { grid-column: 1 / -1; justify-self: center; }
+  }
+  @media (max-width: 700px) {
+    .boat-inst, .boat-consoles, .boat-engines { grid-template-columns: minmax(0, 1fr); }
+    .boat-nav .map { --map-ratio: 4 / 3; }
+    .boat-pad { padding: var(--space-s); }
+  }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Bridge</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Vehicles</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link>Car</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link>Airliner</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link>Fighter jet</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link aria-current="page">Boat</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link>Submarine</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link>Spaceship</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main">
+  <div class="stack stack-lg">
+    <div class="stack stack-sm">
+      <h1>Motor yacht bridge</h1>
+      <p class="text-muted">A 24-metre motor yacht on passage: chart plotter with route and AIS targets, head-up radar with bearing line and range marker, wind, depth and heading, twin engines and throttles, autopilot, the switch panel, a VHF with a guarded DSC distress button, and an anchor watch. Every switch is a native radio or checkbox. Try it in International Rescue, Material, Aqua and Pip-Boy.</p>
+      <div class="cluster">
+        <div class="toggle-group" role="radiogroup" aria-label="Autopilot">
+          <label class="toggle-btn"><input type="radio" name="ap" id="ap-sby">Standby</label>
+          <label class="toggle-btn"><input type="radio" name="ap" id="ap-auto">Auto</label>
+          <label class="toggle-btn"><input type="radio" name="ap" id="ap-track" checked>Track</label>
+        </div>
+        <span class="badge boat-ap-sby">Hand steering</span>
+        <span class="badge badge-success boat-ap-auto">Holding 062°</span>
+        <span class="badge badge-success boat-ap-track">Track to WP 4 · XTE 0.02 nm</span>
+      </div>
+    </div>
+
+    <!-- ======================================================= Navigation -->
+    <div class="boat-row boat-nav">
+      <section class="panel" aria-labelledby="plot-h">
+        <header class="panel-header"><strong id="plot-h">Chart plotter</strong><span class="text-muted">1 : 25 000</span></header>
+        <div class="boat-pad stack">
+          <figure class="map">
+            <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Chart: route from the marina north-east past the headland to waypoint 4, two vessels crossing ahead">
+              <rect width="400" height="250" style="fill: color-mix(in oklab, var(--accent) 14%, var(--surface-2))"/>
+              <path d="M260 0 Q270 40 300 60 T340 120 Q360 150 400 160 L400 0 Z" style="fill: color-mix(in oklab, var(--warning) 32%, var(--surface)); stroke: var(--border)"/>
+              <path d="M0 210 Q60 190 90 220 T150 250 L0 250 Z" style="fill: color-mix(in oklab, var(--warning) 32%, var(--surface)); stroke: var(--border)"/>
+              <path d="M230 0 Q245 50 280 80 T320 150 Q350 180 400 185" style="fill:none; stroke: var(--hairline); stroke-width: 1.5; stroke-dasharray: 4 3"/>
+              <path d="M0 180 Q70 160 120 200 T180 250" style="fill:none; stroke: var(--hairline); stroke-width: 1.5; stroke-dasharray: 4 3"/>
+              <g style="fill: var(--muted); font: 9px var(--font-mono)"><text x="190" y="40">12</text><text x="120" y="120">18</text><text x="300" y="215">9</text><text x="40" y="60">24</text><text x="238" y="150">6</text></g>
+              <polyline class="chart-series" data-series="1" points="60,200 140,150 220,110 290,95 360,40" style="fill:none; stroke-width:3"/>
+              <g class="chart-series" data-series="1"><circle class="chart-point" cx="140" cy="150" r="5"/><circle class="chart-point" cx="220" cy="110" r="5"/><circle class="chart-point" cx="290" cy="95" r="5"/><circle class="chart-point" cx="360" cy="40" r="5"/></g>
+              <g style="fill: var(--muted); font: 600 10px var(--font-mono)"><text x="146" y="166">WP2</text><text x="222" y="128">WP3</text><text x="292" y="112">WP4</text><text x="336" y="34">WP5</text></g>
+              <path d="M310 70 l6 -12 l6 12 Z" style="fill: var(--success)"/><path d="M250 160 l6 12 l6 -12 Z" style="fill: var(--danger)"/>
+            </svg>
+            <span class="ownship is-arrow" style="--x:44%; --y:56%; --heading:62; --ownship-size:4.5%" aria-hidden="true"></span>
+            <button class="map-pin" style="--x:58%; --y:30%" data-series="4" popovertarget="ais-1"><span class="map-pin-label">Nordic Star</span></button>
+            <button class="map-pin" style="--x:30%; --y:28%" data-series="3" popovertarget="ais-2"><span class="map-pin-label">Fishing</span></button>
+            <button class="map-pin" style="--x:80%; --y:72%" data-series="2" popovertarget="ais-3" aria-label="Sailing yacht Aurora, CPA 2.8 nautical miles"></button>
+            <span class="map-north" role="img" aria-label="North">N</span>
+            <span class="map-scale" style="--map-scale-width:4rem">0.5 nm</span>
+          </figure>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="AIS targets">
+            <table class="table boat-ais">
+              <caption class="visually-hidden">AIS targets by closest point of approach</caption>
+              <thead><tr><th scope="col">Vessel</th><th scope="col">Brg</th><th scope="col">Rng</th><th scope="col">CPA</th><th scope="col">TCPA</th></tr></thead>
+              <tbody>
+                <tr><td>Nordic Star (cargo)</td><td class="mono">048°</td><td class="mono">2.1 nm</td><td><span class="status status-error">0.3 nm</span></td><td class="mono">11 min</td></tr>
+                <tr><td>Fishing vessel</td><td class="mono">331°</td><td class="mono">2.6 nm</td><td><span class="status status-warn">1.4 nm</span></td><td class="mono">19 min</td></tr>
+                <tr><td>Aurora (sail)</td><td class="mono">112°</td><td class="mono">3.0 nm</td><td><span class="status status-ok">2.8 nm</span></td><td class="mono">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="radar-h">
+        <header class="panel-header"><strong id="radar-h">Radar</strong><span class="text-muted">Head up · 3 nm</span></header>
+        <div class="boat-pad boat-radar">
+          <div class="radar" style="--sweep:40; --radar-speed:2.5s; --radar-rings:3" role="img" aria-label="Radar, head up, 3 mile range: large target 14° right at 2.1 miles closing, fishing vessel 30° left, yacht 50° right; bearing line 048°, range marker 1.5 miles">
+            <span class="radar-line" style="--bearing:0"></span>
+            <span class="radar-line is-dashed" style="--bearing:48"></span>
+            <span class="radar-vrm" style="--range:.5">1.5</span>
+            <span class="radar-blip is-foe" style="--bearing:-14; --range:.7">Nordic Star</span>
+            <span class="radar-blip is-unknown" style="--bearing:-91; --range:.86">FV</span>
+            <span class="radar-blip is-friend" style="--bearing:50; --range:.95">Aurora</span>
+            <span class="radar-blip is-faint" style="--bearing:118; --range:.4"></span>
+            <span class="radar-blip is-faint" style="--bearing:128; --range:.45"></span>
+            <span class="ownship" style="--ownship-size:5%" aria-hidden="true"></span>
+          </div>
+          <div class="toggle-group" role="radiogroup" aria-label="Radar range">
+            <label class="toggle-btn"><input type="radio" name="rng">0.75</label>
+            <label class="toggle-btn"><input type="radio" name="rng">1.5</label>
+            <label class="toggle-btn"><input type="radio" name="rng" checked>3 nm</label>
+            <label class="toggle-btn"><input type="radio" name="rng">6</label>
+          </div>
+          <dl class="props">
+            <dt>EBL</dt><dd class="mono">048° R</dd>
+            <dt>VRM</dt><dd class="mono">1.50 nm</dd>
+            <dt>Gain</dt><dd class="mono">Auto · sea 40 · rain 10</dd>
+          </dl>
+          <div class="cluster">
+            <label class="toggle-btn"><input type="checkbox" checked>MARPA</label>
+            <label class="toggle-btn"><input type="checkbox" checked>AIS overlay</label>
+            <label class="toggle-btn"><input type="checkbox">Guard zone</label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Instruments -->
+    <div class="boat-row boat-inst">
+      <section class="panel" aria-labelledby="hdg-h">
+        <header class="panel-header"><strong id="hdg-h">Heading</strong></header>
+        <div class="boat-pad boat-dial">
+          <div class="compass" style="--heading:62" role="img" aria-label="Heading 062°, autopilot set 062°">
+            <ol class="gauge-ticks" aria-hidden="true"><li>N</li><li>3</li><li>6</li><li>E</li><li>12</li><li>15</li><li>S</li><li>21</li><li>24</li><li>W</li><li>30</li><li>33</li></ol>
+            <span class="gauge-needle"></span>
+          </div>
+          <dl class="props">
+            <dt>COG</dt><dd class="mono">064° T</dd>
+            <dt>SOG</dt><dd class="mono">18.4 kn</dd>
+            <dt>Rate of turn</dt><dd class="mono">0.4°/min</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="wind-h">
+        <header class="panel-header"><strong id="wind-h">Wind</strong></header>
+        <div class="boat-pad boat-dial">
+          <div class="compass is-north-up" style="--heading:38; --gauge-hub-size:0%" role="img" aria-label="Apparent wind 38° to starboard at 22 knots; true wind 52° to starboard at 11.8 knots">
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>30</li><li>60</li><li>90</li><li>120</li><li>150</li><li>180</li><li>150</li><li>120</li><li>90</li><li>60</li><li>30</li></ol>
+            <span class="gauge-needle"></span>
+            <span class="ownship" style="--ownship-size:16%" aria-hidden="true"></span>
+            <span class="dial-bug is-hollow" style="--at:52" aria-hidden="true">T</span>
+          </div>
+          <dl class="props">
+            <dt>Apparent</dt><dd class="mono">38° S · 22.0 kn</dd>
+            <dt>True <span aria-hidden="true">(T)</span></dt><dd class="mono">52° S · 11.8 kn</dd>
+            <dt>Direction</dt><dd class="mono">114° T</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="depth-h">
+        <header class="panel-header"><strong id="depth-h">Depth</strong></header>
+        <div class="boat-pad stack">
+          <div class="boat-depth">
+            <div class="tape" role="meter" aria-label="Depth below keel, metres" aria-valuenow="8.4" aria-valuemin="0" aria-valuemax="100" style="--value:-8.4; --tape-span:16; --tape-major:5; --tape-minor:1">
+              <ol data-audit-edge="ignore" class="tape-scale" aria-hidden="true"><li style="--at:0">0</li><li style="--at:-5">5</li><li style="--at:-10">10</li><li style="--at:-15">15</li><li style="--at:-20">20</li></ol>
+              <span class="tape-band is-danger" style="--from:-3; --to:0"></span>
+              <span class="tape-band is-caution" style="--from:-5; --to:-3"></span>
+              <span class="tape-readout">8.4</span>
+            </div>
+            <figure class="chart">
+              <svg viewBox="0 0 240 200" role="img" aria-label="Depth over the last 10 minutes: shoaling from 18 to 8 metres">
+                <rect width="240" height="200" style="fill: var(--surface-2)"/>
+                <g class="chart-grid"><line x1="0" x2="240" y1="80" y2="80"/><line x1="0" x2="240" y1="140" y2="140"/></g>
+                <line x1="0" x2="240" y1="30" y2="30" class="chart-annotation" style="stroke-dasharray: 5 4"/>
+                <g class="chart-series" data-series="1"><polygon class="is-area" points="0,200 0,160 30,154 60,156 90,134 120,120 150,110 180,100 210,88 240,84 240,200"/><polyline points="0,160 30,154 60,156 90,134 120,120 150,110 180,100 210,88 240,84"/></g>
+                <text class="chart-label" x="6" y="24">Shallow 3 m</text>
+                <g class="chart-axis"><text x="234" y="76" text-anchor="end">8 m</text><text x="6" y="194">−10 min</text></g>
+              </svg>
+            </figure>
+          </div>
+          <div class="field"><label class="label" for="shallow">Shallow alarm, m</label><input class="input" id="shallow" type="number" min="0" max="30" step="0.5" value="3"></div>
+          <div class="cluster"><span class="readout readout-sm">18.4<span class="readout-unit">kn STW</span></span><span class="readout readout-sm">16.2<span class="readout-unit">°C sea</span></span></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="aplt-h">
+        <header class="panel-header"><strong id="aplt-h">Autopilot</strong></header>
+        <div class="boat-pad stack">
+          <ul class="annunciator is-fma" aria-label="Autopilot steering source">
+            <li class="is-advisory">GPS <span class="visually-hidden">(lit)</span></li><li>Wind</li><li>Compass</li>
+          </ul>
+          <span class="visually-hidden">Heading 062°, waypoint 4 at 068°</span><ol data-audit-edge="ignore" class="compass-strip" style="--heading:62" aria-hidden="true">
+            <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
+            <li class="is-marker" data-series="1" style="--at:68"><svg class="icon"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+          </ol>
+          <dl class="props">
+            <dt>Next WP</dt><dd class="mono">WP 4 · 2.6 nm</dd>
+            <dt>ETA</dt><dd class="mono">14:22 (8 min)</dd>
+            <dt>Rudder</dt><dd class="mono">2° S</dd>
+          </dl>
+          <div class="field"><label class="label" for="ap-resp">Response, 1–9</label><input class="slider" id="ap-resp" type="range" min="1" max="9" value="4"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Engines -->
+    <div class="boat-row boat-engines">
+      <section class="panel" aria-labelledby="port-h">
+        <header class="panel-header"><strong id="port-h">Port engine</strong></header>
+        <div class="boat-pad boat-engine">
+          <span class="status status-ok">Running</span>
+          <div class="gauge-dial" style="--value:.58; --gauge-redline:.84; --gauge-ticks:5; --gauge-minor:5">
+            <meter min="0" max="2500" value="1450">1,450 rpm</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>5</li><li>10</li><li>15</li><li>20</li><li class="is-redline">25</li></ol>
+            <div class="gauge-readout"><span class="readout">1450</span>rpm</div>
+          </div>
+          <div class="boat-engine-arcs">
+            <div class="gauge-arc" style="--value:.55">
+              <meter min="0" max="8" value="4.4">Oil 4.4 bar</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>4</li><li>8</li></ol>
+              <div class="gauge-readout"><span class="readout">4.4</span>oil bar</div>
+            </div>
+            <div class="gauge-arc" style="--value:.6; --gauge-redline:.85">
+              <meter min="40" max="120" value="84">Coolant 84 °C</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>40</li><li>80</li><li class="is-redline">120</li></ol>
+              <div class="gauge-readout"><span class="readout">84</span>°C</div>
+            </div>
+          </div>
+          <div class="gauge-linear">
+            <div class="meter" style="--meter-level:64%" role="meter" aria-label="Port fuel tank, litres" aria-valuenow="1920" aria-valuemin="0" aria-valuemax="3000"><div class="meter-fill"></div></div>
+            <span class="gauge-mark" style="--at:0%">E</span><span class="gauge-mark is-warn" style="--at:15%">Reserve</span><span class="gauge-mark" style="--at:100%">3000 l</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="stbd-h">
+        <header class="panel-header"><strong id="stbd-h">Starboard engine</strong></header>
+        <div class="boat-pad boat-engine">
+          <span class="status status-warn">Temp high</span>
+          <div class="gauge-dial" style="--value:.592; --gauge-redline:.84; --gauge-ticks:5; --gauge-minor:5">
+            <meter min="0" max="2500" value="1480">1,480 rpm</meter>
+            <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>5</li><li>10</li><li>15</li><li>20</li><li class="is-redline">25</li></ol>
+            <div class="gauge-readout"><span class="readout">1480</span>rpm</div>
+          </div>
+          <div class="boat-engine-arcs">
+            <div class="gauge-arc" style="--value:.52">
+              <meter min="0" max="8" value="4.2">Oil 4.2 bar</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>0</li><li>4</li><li>8</li></ol>
+              <div class="gauge-readout"><span class="readout">4.2</span>oil bar</div>
+            </div>
+            <div class="gauge-arc is-warn" style="--value:.8; --gauge-redline:.85">
+              <meter min="40" max="120" value="104">Coolant 104 °C, high</meter>
+              <ol class="gauge-ticks" aria-hidden="true"><li>40</li><li>80</li><li class="is-redline">120</li></ol>
+              <div class="gauge-readout"><span class="readout">104</span>°C</div>
+            </div>
+          </div>
+          <div class="gauge-linear">
+            <div class="meter" style="--meter-level:61%" role="meter" aria-label="Starboard fuel tank, litres" aria-valuenow="1830" aria-valuemin="0" aria-valuemax="3000"><div class="meter-fill"></div></div>
+            <span class="gauge-mark" style="--at:0%">E</span><span class="gauge-mark is-warn" style="--at:15%">Reserve</span><span class="gauge-mark" style="--at:100%">3000 l</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="thr-h">
+        <header class="panel-header"><strong id="thr-h">Throttles</strong></header>
+        <div class="boat-pad stack">
+          <div class="throttle" role="group" aria-labelledby="thr-h">
+            <div class="scale"><span style="--at:1">FULL</span><span style="--at:.75">HALF</span><span style="--at:.5" class="is-unity">N</span><span style="--at:0">ASTERN</span></div>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="100" value="82" aria-label="Port throttle" aria-valuetext="Ahead, 64%"><span aria-hidden="true">P</span></label>
+            <label class="throttle-lever"><input class="fader" type="range" min="0" max="100" value="83" aria-label="Starboard throttle" aria-valuetext="Ahead, 66%"><span aria-hidden="true">S</span></label>
+          </div>
+          <div class="cluster">
+            <label class="toggle-btn"><input type="checkbox" checked>Sync</label>
+            <label class="toggle-btn"><input type="checkbox">Trolling</label>
+          </div>
+          <div class="toggle-group" role="radiogroup" aria-label="Trim tabs">
+            <label class="toggle-btn"><input type="radio" name="tabs">Up</label>
+            <label class="toggle-btn"><input type="radio" name="tabs" checked>Auto</label>
+            <label class="toggle-btn"><input type="radio" name="tabs">Down</label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================= Consoles -->
+    <div class="boat-row boat-consoles">
+      <section class="panel" aria-labelledby="sw-h">
+        <header class="panel-header"><strong id="sw-h">Switch panel</strong></header>
+        <div class="boat-pad stack">
+          <ul class="annunciator" aria-label="Lights and pumps; press to switch">
+            <li><label class="annunciator-switch is-advisory"><input type="checkbox" checked>Nav lights</label></li>
+            <li><label class="annunciator-switch is-advisory"><input type="checkbox">Anchor light</label></li>
+            <li><label class="annunciator-switch is-advisory"><input type="checkbox" checked>Steaming</label></li>
+            <li><label class="annunciator-switch"><input type="checkbox">Deck flood</label></li>
+            <li><label class="annunciator-switch"><input type="checkbox">Searchlight</label></li>
+            <li><label class="annunciator-switch is-caution"><input type="checkbox">Horn</label></li>
+            <li><label class="annunciator-switch is-advisory"><input type="checkbox" checked>Bilge fwd <span class="annunciator-on">auto</span><span class="annunciator-off">off</span></label></li>
+            <li><label class="annunciator-switch is-advisory"><input type="checkbox" checked>Bilge aft <span class="annunciator-on">auto</span><span class="annunciator-off">off</span></label></li>
+            <li><label class="annunciator-switch is-advisory"><input type="checkbox">Bilge eng <span class="annunciator-on">run</span><span class="annunciator-off">off</span></label></li>
+          </ul>
+          <ul class="annunciator" aria-label="Alarms">
+            <li>High water</li><li class="is-caution">Stbd temp <span class="visually-hidden">(lit)</span></li><li>Fire</li><li class="is-on">Shore power <span class="visually-hidden">(on)</span></li>
+          </ul>
+          <div class="cluster" role="group" aria-label="Status lamps">
+            <span class="telltale is-on" role="img" aria-label="Navigation lights on"><svg class="icon"><use href="assets/icons/icons.svg#icon-sun"/></svg></span>
+            <span class="telltale is-on is-info" role="img" aria-label="Fresh water pump on"><svg class="icon"><use href="assets/icons/icons.svg#icon-droplet-heart"/></svg></span>
+            <span class="telltale is-on is-warning" role="img" aria-label="Starboard engine temperature high"><svg class="icon"><use href="assets/icons/icons.svg#icon-thermometer"/></svg></span>
+            <span class="telltale" role="img" aria-label="Battery charge fault, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-battery"/></svg></span>
+            <span class="telltale" role="img" aria-label="Fire, off"><svg class="icon"><use href="assets/icons/icons.svg#icon-warning"/></svg></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="vhf-h">
+        <header class="panel-header"><strong id="vhf-h">VHF radio</strong><span class="text-muted">25 W</span></header>
+        <div class="boat-pad stack">
+          <div class="cluster">
+            <span class="readout readout-lg boat-vhf-ch">16</span>
+            <div class="stack stack-sm">
+              <span class="stat-label">Channel</span>
+              <span class="boat-dw-off text-muted">Single watch</span><span class="boat-dw-on">Dual watch 16 + 72</span>
+            </div>
+          </div>
+          <div class="input-group stepper" role="group" aria-label="Working channel">
+            <span class="input-addon">Ch</span>
+            <input class="input" type="number" value="72" min="1" max="88" aria-label="Working channel">
+          </div>
+          <div class="toggle-group" role="radiogroup" aria-label="Quick channel">
+            <label class="toggle-btn"><input type="radio" name="vhf" checked>16</label>
+            <label class="toggle-btn"><input type="radio" name="vhf">9</label>
+            <label class="toggle-btn"><input type="radio" name="vhf">13</label>
+            <label class="toggle-btn"><input type="radio" name="vhf">72</label>
+          </div>
+          <div class="cluster">
+            <label class="toggle-btn"><input type="checkbox" id="dual-watch" checked>16 dual watch</label>
+            <label class="toggle-btn"><input type="checkbox">Low power</label>
+          </div>
+          <div class="value-row"><label class="label" for="sq">Squelch</label><input class="slider" id="sq" type="range" min="0" max="10" value="3"><span class="readout readout-sm">3</span></div>
+          <div class="guard">
+            <label class="guard-cover"><input type="checkbox" aria-label="DSC distress cover"><span class="guard-closed">Distress · lift cover</span><span class="guard-open">Close cover</span></label>
+            <label class="toggle-btn is-danger"><input type="checkbox" id="dsc-send">Send DSC distress</label>
+          </div>
+          <div class="alert alert-danger boat-dsc-sent" role="alert">DSC distress sent: MMSI 235 012 345, 50°41.2′N 001°17.8′W, undesignated. Listen on channel 16.</div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="anc-h">
+        <header class="panel-header"><strong id="anc-h">Anchor watch</strong></header>
+        <div class="boat-pad stack boat-anchor">
+          <label class="toggle-btn"><input type="checkbox" id="anchor-watch">Anchor watch</label>
+          <div class="radar is-static" style="--radar-rings:2" role="img" aria-label="Anchor watch: boat 18 metres north-east of the anchor, alarm circle 40 metres">
+            <span class="radar-vrm" style="--range:.8">40 m</span>
+            <span class="radar-blip is-friend" style="--bearing:0; --range:0">⚓</span>
+            <span class="radar-blip is-faint" style="--bearing:30; --range:.3"></span>
+            <span class="radar-blip is-faint" style="--bearing:38; --range:.34"></span>
+            <span class="radar-blip is-faint" style="--bearing:52; --range:.38"></span>
+            <span class="ownship" style="--x:68%; --y:36%; --heading:225; --ownship-size:8%" aria-hidden="true"></span>
+          </div>
+          <dl class="props">
+            <dt>Status</dt><dd><span class="boat-anchor-off text-muted">Off</span><span class="boat-anchor-on status status-ok">Watching</span></dd>
+            <dt>Drift</dt><dd class="mono">18 m of 40 m</dd>
+            <dt>Chain out</dt><dd class="mono">45 m</dd>
+          </dl>
+          <div class="field"><label class="label" for="anc-r">Alarm radius, m</label><input class="input" id="anc-r" type="number" min="10" max="200" value="40"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  </main>
+
+  <footer class="app-status">
+    <span>MY Halcyon · passage to Yarmouth</span>
+    <span class="status status-warn">Nordic Star CPA 0.3 nm in 11 min</span>
+  </footer>
+
+<div class="popover" popover id="ais-1"><strong>Nordic Star · cargo</strong><p class="field-hint">MMSI 244 820 000 · COG 238° · 12.1 kn<br>CPA 0.3 nm in 11 min: give way</p></div>
+<div class="popover" popover id="ais-2"><strong>Fishing vessel</strong><p class="field-hint">Engaged in fishing · 3.2 kn · CPA 1.4 nm</p></div>
+<div class="popover" popover id="ais-3"><strong>Aurora · sailing yacht</strong><p class="field-hint">COG 190° · 6.0 kn · CPA 2.8 nm</p></div>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

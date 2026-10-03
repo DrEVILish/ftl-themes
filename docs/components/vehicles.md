@@ -1,7 +1,8 @@
 # Vehicle instruments (v5)
 
 Source: `core/components/vehicles.css`. Example pages: `cockpit-car.html`,
-`cockpit-plane.html`, `cockpit-jet.html`.
+`cockpit-plane.html`, `cockpit-jet.html`, `cockpit-boat.html`,
+`cockpit-submarine.html`, `cockpit-spaceship.html`.
 
 Generic cockpit parts for any vehicle: cars, airliners, fighters, boats,
 submarines, spacecraft. A new cockpit page should need **no new CSS**: compose
@@ -371,3 +372,152 @@ Tokens: `--pfd-bg`, `--pfd-border`, `--pfd-radius`, `--pfd-gap`, `--pfd-pad`.
   `--attitude-hud-*` scene tokens.
 - **Accessibility:** one `role="img"` with a summary label; the parts are
   decorative (`aria-hidden`).
+
+---
+
+# Additions: marine, submarine and spacecraft parts
+
+Appended for `cockpit-boat.html`, `cockpit-submarine.html` and
+`cockpit-spaceship.html`; the parts above are unchanged. Same conventions:
+inline values, `--<component>-*` tokens with base fallbacks, no JavaScript.
+
+| Need | Use |
+|---|---|
+| Radar heading line, EBL, VRM | `.radar-line`, `.radar-vrm` inside `.radar` |
+| Own boat/ship in a dial, scope or map | `.ownship` |
+| True wind, set heading or target bug on a dial | `.dial-bug` |
+| Lighted push-button, hull-opening "Christmas tree" board | `.annunciator-switch` (`.is-dual`) |
+| Sonar waterfall, spectrogram | `.waterfall` + `.waterfall-trace` |
+| Orbit display (Ap, Pe, target orbit) | `.orbit` + `.orbit-path` + `.orbit-mark` |
+| Periscope, docking camera | `.flight-hud` over an `.attitude.is-hud` with scene tokens set inline and `--attitude-rung: 0px` |
+| Depth sounder, depth, range and closure rate | `.tape` (feed depth as a negative value) |
+| Trim and list bubble, 8-ball / FDAI | `.attitude` |
+
+## Radar lines and range ring `.radar-line`, `.radar-vrm`
+
+```html
+<div class="radar" …>
+  <span class="radar-line" style="--bearing:0"></span>                <!-- heading line -->
+  <span class="radar-line is-dashed" style="--bearing:48"></span>     <!-- EBL -->
+  <span class="radar-vrm" style="--range:.5">1.5</span>               <!-- VRM, label on the ring -->
+</div>
+```
+
+- From the scope's origin (as `.radar-blip`): `.radar-line` runs out at
+  `--bearing` for `--range` (1 = to the rim); `.is-dashed` for a bearing
+  line. `.radar-vrm` is a dashed ring of radius `--range` (0–1), its text
+  printed at the top of the ring. Neither is interactive.
+- **Tokens:** `--radar-line` (`--radar-fg`); label size follows
+  `--radar-label-size`.
+- **Accessibility:** decorative; state EBL/VRM values in the scope's
+  `aria-label` or beside it.
+
+## Own vehicle `.ownship`
+
+```html
+<span class="ownship" style="--heading:62; --ownship-size:16%" aria-hidden="true"></span>
+<span class="ownship is-arrow" style="--x:44%; --y:56%; --heading:62" aria-hidden="true"></span>
+```
+
+A hull outline (bow up) at `--x`/`--y` (default centre) of its positioned
+parent (`.compass`, `.gauge-dial`, `.radar`, `.map`), turned by `--heading`.
+`.is-arrow` is a chevron (a position on a chart plotter). Tokens:
+`--ownship-size` (14% of the parent), `--ownship-fill` (`--surface`),
+`--ownship-edge` (`--text`, drawn as an outline round the shape).
+Decorative: `aria-hidden="true"`.
+
+## Dial bug `.dial-bug`
+
+```html
+<div class="compass is-north-up" style="--heading:38; --gauge-hub-size:0%" role="img" aria-label="Apparent wind 38° starboard; true 52°">
+  <ol class="gauge-ticks" aria-hidden="true">…</ol><span class="gauge-needle"></span>
+  <span class="ownship" style="--ownship-size:16%" aria-hidden="true"></span>
+  <span class="dial-bug is-hollow" style="--at:52" aria-hidden="true">T</span>
+</div>
+```
+
+A triangle on the rim at `--at` degrees clockwise from up, with its text
+(one or two characters) printed under it. `.is-hollow` draws an outline,
+so a second pointer differs by shape, not colour. With `.compass.is-north-up`
+and an `.ownship` it makes a wind instrument (needle = apparent wind, bug =
+true wind). Token: `--dial-bug` (`--flare`, then `--accent`).
+
+## Lighted push-button `.annunciator-switch`
+
+```html
+<ul class="annunciator" aria-label="Hull openings; press to shut or open">
+  <li><label class="annunciator-switch is-advisory is-dual"><input type="checkbox" checked>
+    MBT 1 vent <span class="annunciator-on">— shut</span><span class="annunciator-off">○ open</span></label></li>
+  <li><label class="annunciator-switch is-advisory"><input type="checkbox">Nav lights</label></li>
+</ul>
+```
+
+- A caption cell that is also a checkbox. Checked = lit in its state colour
+  (`.is-caution`, `.is-warning`, `.is-advisory`, default `--accent`);
+  unchecked = dark. `.is-dual` lights the unchecked state as a warning: the
+  submarine "Christmas tree" (red ○ open, green — shut).
+- `.annunciator-on` / `.annunciator-off` spans print the state in words and
+  show one at a time, so state is never colour alone.
+- Inside `.annunciator > li` the cell fills the grid cell. At least
+  `--tap-min` tall; the native checkbox keeps keyboard and focus (ring on the
+  cell). A page can read the whole board with `:has()` (e.g. show "straight
+  board" when no input is unchecked).
+- **Tokens:** the `--annunciator-*` cell and state tokens above.
+
+## Sonar waterfall `.waterfall`
+
+```html
+<div class="waterfall" role="img" aria-label="Waterfall: Sierra-1 at 042° drawing right, …">
+  <span class="waterfall-trace is-foe" style="--at:.117; --drift:-.03">S1</span>
+  <span class="waterfall-trace is-faint" style="--at:.89">Bio</span>
+</div>
+<ol class="waterfall-scale" aria-hidden="true"><li>000</li><li>090</li><li>180</li><li>270</li><li>360</li></ol>
+```
+
+- Across = bearing (or frequency), down = time, now at the top. A trace
+  starts at `--at` (0–1 of the width) and ends `--drift` further across at
+  the bottom; its text labels it at the top. `.is-foe`, `.is-friend`,
+  `.is-unknown` take the radar contact colours, `.is-faint` dims a weak one;
+  pair colour with the label.
+- Noise rows and trace segments roll down under motion (one cycle per
+  `--waterfall-speed`, 3s); static otherwise.
+- `.waterfall-scale` is an evenly spread axis below it.
+- **Tokens:** `--waterfall-fg` (`--radar-fg`, accent), `--waterfall-bg`,
+  `--waterfall-trace`, `--waterfall-trace-width` (3px), `--waterfall-label-fg`,
+  `--waterfall-height` (14rem), `--waterfall-border`, `-border-width`,
+  `-radius`, `-font`, `--waterfall-speed`, `--waterfall-roll` (48px).
+- **Accessibility:** `role="img"` with the picture in words, plus a contact
+  table.
+
+## Orbit display `.orbit`
+
+```html
+<div class="orbit" role="img" aria-label="Orbit 212 × 418 km; station ahead in a 420 km orbit">
+  <div class="orbit-path is-target" data-series="2" style="--a:.36; --e:.012; --tilt:-25">
+    <span class="orbit-mark is-node" style="--at:118">Station</span></div>
+  <div class="orbit-path" data-series="1" style="--a:.29; --e:.19; --tilt:-25">
+    <span class="orbit-mark" style="--at:0">Pe 212</span>
+    <span class="orbit-mark" style="--at:180">Ap 418</span>
+    <span class="orbit-mark is-craft" style="--at:72">Crew</span>
+  </div>
+</div>
+```
+
+- The body (`::before`) sits at the centre, which is the focus of every
+  path. `--a` is the semi-major axis as a fraction of the width (keep the
+  ellipse inside the box: `--a` × √(1−e²) ≤ half the height), `--e` the
+  eccentricity, `--tilt` turns the line of apsides (degrees). Periapsis is
+  `--at:0`, apoapsis `--at:180` (eccentric anomaly); marks stay upright.
+- Paths: solid (own orbit), `.is-target` dashed, `.is-planned` dotted;
+  `data-series` colours a path to match a `.legend`. Marks: diamond (apsis),
+  `.is-craft` glowing dot, `.is-node` hollow diamond. `.is-start` prints the label on the
+  other side of its marker (for a mark near the right edge).
+- **Tokens:** `--orbit-size` (100%), `--orbit-ratio` (1), `--orbit-body`
+  (0.22 of the width), `--orbit-body-light`, `-body-fill`, `-body-dark`,
+  `--orbit-atmosphere`, `--orbit-bg`, `--orbit-fg`, `--orbit-line`,
+  `--orbit-line-width` (2px), `--orbit-target` (`--success`),
+  `--orbit-planned` (`--warning`), `--orbit-mark` (`--text`), `--orbit-craft`
+  (`--flare`), `--orbit-label-fg`, `--orbit-border`, `-border-width`,
+  `-radius`, `-font`.
+- **Accessibility:** `role="img"` with an `aria-label`; give the orbital
+  elements as text (`dl.props`) beside it.
