@@ -23,7 +23,7 @@
 // spacing, edgeText, xl, error) is reported as a warning instead.
 import fs from 'fs';
 import path from 'path';
-import { ROOT as root, takeEngines, launch, contextOptions, knownIssues, serveRoot, openThemed, themeEntries, FREEZE_CSS } from './_harness.mjs';
+import { ROOT as root, examplePages, takeEngines, launch, contextOptions, knownIssues, serveRoot, openThemed, themeEntries, FREEZE_CSS } from './_harness.mjs';
 
 const DEVICES = {
   'iphone-15-pro': { width: 393, height: 852, tier: 'mobile' },
@@ -32,11 +32,8 @@ const DEVICES = {
   'macbook-air': { width: 1280, height: 800, tier: 'desktop' },
   'desktop-1440p': { width: 2560, height: 1440, tier: 'xl' },
 };
-const PAGES = ['components', 'dashboard', 'marketing', 'ticketsystem', 'powerstation', 'soundmixer', 'livechat', 'nesting',
-  'player', 'hud', 'planner', 'auth', 'settings', 'master-detail', 'inbox', 'onboarding', 'pricing',
-  // v5 component pages (components-<group>.html), whichever exist.
-  ...fs.readdirSync(root).filter(f => /^components-[a-z]+\.html$/.test(f)).map(f => f.replace(/\.html$/, '')).sort()]
-  .filter(p => fs.existsSync(path.join(root, p + '.html')));
+// Every example page (as a11y_audit), except the fixed-size share card.
+const PAGES = examplePages().filter(p => p !== 'share-card');
 // Palette variants only repaint, so (as in _pw_shot.mjs) they run on one page.
 const VARIANT_PAGES = ['dashboard'];
 

@@ -5,6 +5,18 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Vehicle cockpits** (CSS only, all 45 themes): `cockpit-car.html`
+  (cluster, centre display, gear selector), `cockpit-plane.html` (overhead
+  annunciators, autopilot, PFD, ND, EICAS, levers, checklists) and
+  `cockpit-jet.html` (HUD, soft-key MFDs, radar warning, guarded master
+  arm). New group `core/components/vehicles.css`
+  ([docs](docs/components/vehicles.md)): `.attitude`, `.tape`, `.radar`,
+  `.annunciator`, `.telltale`, `.tyres`, `.mfd`, `.guard`, `.checklist`,
+  `.throttle`, `.pfd`, `.flight-hud`.
+- Demo pages open in their own `data-theme` when no theme was picked
+  (they used to fall back to the first theme alphabetically), and
+  `v5_audit.mjs` covers every example page.
+
 - **Demo apps rebuilt as v5 showcases.**
   - Dashboard: SVG `.chart`, sparklines, donut, heatmap, an editable orders
     table that stacks into cards on phones with a `.bulk-bar`, and a popover

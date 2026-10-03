@@ -11105,4 +11105,889 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   min-block-size: 0;
   overflow: auto;
 }
+/* --- v5 vehicle instruments (cockpit-car/-plane/-jet.html) -----------------
+ * Generic cockpit parts for cars, aircraft, boats, submarines, spacecraft:
+ *   .attitude      artificial horizon (--pitch, --roll in degrees), pitch
+ *                  ladder, roll scale, aircraft symbol; .is-hud = see-through
+ *                  combiner style that fills its positioned parent
+ *   .tape          moving vertical scale with a boxed readout (--value),
+ *                  labels/bugs/bands at --at (speed, altitude, depth, V/S)
+ *   .radar         scope with rings and a sweep; .radar-blip at
+ *                  --bearing/--range (or --x/--y), friend/foe/unknown
+ *                  shapes; .is-sector fan, .is-static (RWR, passive sonar)
+ *   .annunciator   caption-light panel (caution/warning/advisory/on), the
+ *                  .annunciator-master push-to-reset light, .is-gear and
+ *                  .is-fma layouts
+ *   .telltale      icon warning lamp (car cluster), .is-blinking
+ *   .tyres         four-corner pressure diagram round a body outline
+ *   .mfd           multi-function display: screen ringed by soft keys; top
+ *                  keys (radios) switch .mfd-page
+ *   .guard         guarded switch: a cover checkbox that must be lifted
+ *   .checklist     challenge/response list with leader dots
+ *   .throttle      quadrant housing core .fader levers and .scale detents
+ *   .pfd           primary-flight-display layout (FMA, speed, attitude,
+ *                  altitude, V/S, heading)
+ *   .flight-hud    head-up display over an .attitude.is-hud scene: heading
+ *                  strip, tapes, gun cross, flight-path marker, designator
+ * Reuse the rest: .gauge-dial (+ --gauge-redline) for speedo/tacho/N1/G,
+ * .gauge-arc for fuel, .compass/.compass-strip for heading, .map for nav,
+ * .fader for levers, .toggle-group/.toggle-btn for switches.
+ *
+ * Colours read --<component>-* tokens with base-token fallbacks; values come
+ * in through inline custom properties. No JavaScript. Motion runs only under
+ * prefers-reduced-motion: no-preference (core's data-motion="reduced"
+ * pauses it). Docs: docs/components/vehicles.md. */
+
+@property --vehicles-sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes vehicles-sweep { to { --vehicles-sweep: 360deg; } }
+@keyframes vehicles-blink { 50% { opacity: var(--vehicles-blink-dim, 0.25); } }
+
+/* ---- .attitude: artificial horizon --------------------------------------
+ * <div class="attitude" style="--pitch:4; --roll:-12" role="img" aria-label="…">
+ *   <div class="attitude-horizon">
+ *     <ol class="attitude-ladder" aria-hidden="true"><li style="--at:10"></li>…</ol>
+ *   </div>
+ * </div>
+ * ::before = fixed roll scale, ::after = aircraft symbol, the horizon layer
+ * (sky, ground, ladder, roll pointer) turns by --roll and slides by --pitch.
+ * Everything is in cqi, so --attitude-size scales the lot. */
+.attitude {
+  --_deg: var(--attitude-pitch-scale, 1.6cqi);
+  --_ink: var(--attitude-ink, var(--text));
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--attitude-size, 16rem);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  background: var(--attitude-ground, color-mix(in oklab, var(--warning) 42%, var(--bg)));
+  border: var(--attitude-border-width, 1px) solid var(--attitude-border, var(--border));
+  border-radius: var(--attitude-radius, calc(var(--radius) * 2));
+  box-shadow: var(--attitude-shadow, none);
+  font-family: var(--attitude-font, var(--font-mono));
+  font-variant-numeric: tabular-nums;
+}
+.attitude-horizon {
+  position: absolute;
+  inset: -100cqi;
+  transform: rotate(calc(var(--roll, 0) * -1deg)) translateY(calc(var(--pitch, 0) * var(--_deg)));
+  background:
+    linear-gradient(var(--attitude-horizon-line, var(--_ink)), var(--attitude-horizon-line, var(--_ink))) center / 100% var(--attitude-horizon-width, 2px) no-repeat,
+    linear-gradient(
+      var(--attitude-sky-top, color-mix(in oklab, var(--attitude-sky, color-mix(in oklab, var(--accent) 50%, var(--bg))) 55%, var(--bg))) calc(50% - 70cqi),
+      var(--attitude-sky, color-mix(in oklab, var(--accent) 50%, var(--bg))) 50%,
+      var(--attitude-ground, color-mix(in oklab, var(--warning) 42%, var(--bg))) 50%,
+      var(--attitude-ground-bottom, color-mix(in oklab, var(--attitude-ground, color-mix(in oklab, var(--warning) 42%, var(--bg))) 60%, var(--bg))) calc(50% + 70cqi));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .attitude-horizon { transition: transform var(--attitude-speed, 0.4s) ease-out; }
+}
+/* Ladder rungs every 10° (long) and 5° (short), ±90°. */
+.attitude-horizon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  inline-size: var(--attitude-rung, 30cqi);
+  block-size: calc(180 * var(--_deg));
+  background:
+    linear-gradient(var(--_ink) 0 2px, transparent 0) center calc(-1px) / 100% calc(10 * var(--_deg)) repeat-y,
+    linear-gradient(var(--_ink) 0 1px, transparent 0) center calc(5 * var(--_deg) - 0.5px) / 45% calc(10 * var(--_deg)) repeat-y;
+  mask: var(--attitude-rung-mask, none);
+}
+/* Roll pointer: rides the horizon, cancelling the pitch shift. */
+.attitude-horizon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% - var(--pitch, 0) * var(--_deg) - 38.5cqi);
+  translate: -50% 0;
+  inline-size: 5cqi;
+  block-size: 4cqi;
+  background: var(--attitude-pointer, var(--_ink));
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.attitude-ladder {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Rung labels: --at (integer degrees) prints on both ends of the rung. */
+.attitude-ladder > li {
+  counter-reset: attitude-pitch var(--at, 0);
+  position: absolute;
+  left: 50%;
+  top: calc(50% - var(--at, 0) * var(--_deg));
+  translate: -50% -50%;
+  display: flex;
+  justify-content: space-between;
+  inline-size: calc(var(--attitude-rung, 30cqi) + 2 * var(--attitude-label-room, 9cqi));
+  color: var(--_ink);
+  font-size: var(--attitude-label-size, 4.5cqi);
+  line-height: 1;
+}
+.attitude-ladder > li::before,
+.attitude-ladder > li::after { content: counter(attitude-pitch); }
+/* Fixed roll scale: ticks at 0, ±10, ±20, ±30, ±45, ±60 on a ring. */
+.attitude::before,
+.attitude::after {
+  content: "";
+  position: absolute;
+  z-index: var(--z-raised);
+  pointer-events: none;
+}
+.attitude::before {
+  inset: 6cqi;
+  border-radius: 50%;
+  --_t: var(--attitude-scale-ink, var(--_ink));
+  background: conic-gradient(from -61deg,
+    var(--_t) 0 2deg, transparent 0 15.4deg, var(--_t) 0 16.6deg, transparent 0 30.4deg,
+    var(--_t) 0 31.6deg, transparent 0 40.4deg, var(--_t) 0 41.6deg, transparent 0 50.4deg,
+    var(--_t) 0 51.6deg, transparent 0 59deg, var(--_t) 0 63deg, transparent 0 70.4deg,
+    var(--_t) 0 71.6deg, transparent 0 80.4deg, var(--_t) 0 81.6deg, transparent 0 90.4deg,
+    var(--_t) 0 91.6deg, transparent 0 105.4deg, var(--_t) 0 106.6deg, transparent 0 120deg,
+    var(--_t) 0 122deg, transparent 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 5cqi), #000 calc(100% - 5cqi + 0.5px));
+}
+/* Aircraft symbol: two wings and a centre dot, fixed. */
+.attitude::after {
+  inset: 0;
+  --_s: var(--attitude-symbol, var(--warning));
+  background:
+    linear-gradient(var(--_s), var(--_s)) center / 3.2cqi 3.2cqi no-repeat,
+    linear-gradient(var(--_s), var(--_s)) left 14cqi center / 22cqi 2.6cqi no-repeat,
+    linear-gradient(var(--_s), var(--_s)) right 14cqi center / 22cqi 2.6cqi no-repeat,
+    linear-gradient(var(--_s), var(--_s)) left 33.4cqi top calc(50% + 1.3cqi) / 2.6cqi 5cqi no-repeat,
+    linear-gradient(var(--_s), var(--_s)) right 33.4cqi top calc(50% + 1.3cqi) / 2.6cqi 5cqi no-repeat;
+  filter: drop-shadow(0 0 1px var(--attitude-symbol-edge, var(--bg)));
+}
+/* HUD style: fills its positioned parent, the scene behind the glass. */
+.attitude.is-hud {
+  --_deg: var(--attitude-pitch-scale, 1.2cqi);
+  --_ink: var(--attitude-ink, var(--flight-hud-ink, var(--accent-text, var(--accent))));
+  --attitude-sky: var(--attitude-hud-sky, color-mix(in oklab, var(--accent) 24%, var(--bg)));
+  --attitude-sky-top: var(--attitude-hud-sky-top, var(--bg));
+  --attitude-ground: var(--attitude-hud-ground, color-mix(in oklab, var(--text) 16%, var(--bg)));
+  --attitude-ground-bottom: var(--attitude-hud-ground-bottom, var(--bg));
+  --attitude-horizon-line: var(--_ink);
+  --attitude-rung: 26cqi;
+  --attitude-rung-mask: linear-gradient(90deg, #000 0 32%, transparent 0 68%, #000 0);
+  --attitude-label-size: clamp(0.7rem, 1.6cqi, 1.05rem);
+  --attitude-label-room: 4.5rem;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: auto;
+  max-inline-size: none;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.attitude.is-hud::before,
+.attitude.is-hud::after,
+.attitude.is-hud .attitude-horizon::after { display: none; }
+.attitude.is-hud .attitude-ladder > li { text-shadow: var(--flight-hud-glow, 0 0 0.35em color-mix(in srgb, currentColor 55%, transparent)); }
+
+/* ---- .tape: moving vertical scale ----------------------------------------
+ * <div class="tape" role="meter" aria-label="Airspeed, knots" aria-valuenow="248"
+ *      aria-valuemin="0" aria-valuemax="400" style="--value:248; --tape-span:80; --tape-major:20; --tape-minor:10">
+ *   <ol class="tape-scale" aria-hidden="true"><li style="--at:220">220</li>…</ol>
+ *   <span class="tape-band is-danger" style="--from:340; --to:400"></span>
+ *   <span class="tape-bug" style="--at:250"></span>
+ *   <span class="tape-readout">248</span>
+ * </div>
+ * The scale slides so --value sits at the readout; --tape-span units are
+ * visible. Ticks on the end edge; .is-end puts them on the start edge
+ * (altitude on the right of a PFD). */
+.tape {
+  --_u: calc(100cqb / var(--tape-span, 100));
+  --_y: calc(50cqb + var(--value, 0) * var(--_u));
+  --_tick: var(--tape-tick, var(--text));
+  container-type: size;
+  position: relative;
+  overflow: hidden;
+  flex: none;
+  inline-size: var(--tape-width, 4.75rem);
+  block-size: var(--tape-height, 16rem);
+  background: var(--tape-bg, var(--surface-2));
+  color: var(--tape-fg, var(--text));
+  border: var(--tape-border-width, 1px) solid var(--tape-border, var(--border));
+  border-radius: var(--tape-radius, var(--radius));
+  font-family: var(--tape-font, var(--font-mono));
+  font-size: var(--tape-label-size, 0.75rem);
+  font-variant-numeric: tabular-nums;
+}
+.tape::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 0.8rem;
+  background:
+    linear-gradient(var(--_tick) 0 1px, transparent 0) right calc(var(--_y) - 0.5px) / 100% calc(var(--tape-major, 20) * var(--_u)) repeat-y,
+    linear-gradient(var(--_tick) 0 1px, transparent 0) right calc(var(--_y) - 0.5px) / 50% calc(var(--tape-minor, 10) * var(--_u)) repeat-y;
+}
+.tape.is-end::before {
+  inset-inline: 0 auto;
+  background-position-x: left, left;
+}
+.tape-scale { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.tape-scale > li {
+  position: absolute;
+  inset-inline: 0.35rem 1.1rem;
+  top: calc(50% + (var(--value, 0) - var(--at, 0)) * var(--_u));
+  translate: 0 -50%;
+  line-height: 1;
+  text-align: end;
+  white-space: nowrap;
+}
+.tape.is-end .tape-scale > li { inset-inline: 1.1rem 0.35rem; text-align: start; }
+/* A unit label hides the scale passing under it (tapes on a see-through face). */
+.tape:has(> .tape-unit) .tape-scale { mask: linear-gradient(transparent 1.5rem, #000 2.2rem); }
+/* Coloured range (flap limits, overspeed, shallows). .is-danger = barber pole. */
+.tape-band {
+  --_c: var(--tape-band, var(--success));
+  position: absolute;
+  inset-inline-end: 0;
+  inline-size: 0.3rem;
+  top: calc(50% + (var(--value, 0) - var(--to, 0)) * var(--_u));
+  block-size: calc((var(--to, 0) - var(--from, 0)) * var(--_u));
+  background: var(--_c);
+}
+.tape.is-end .tape-band { inset-inline: 0 auto; }
+.tape-band.is-caution { --_c: var(--tape-band-caution, var(--warning)); }
+.tape-band.is-danger {
+  --_c: repeating-linear-gradient(180deg, var(--tape-band-danger, var(--danger)) 0 0.4rem, var(--tape-band-danger-alt, var(--bg)) 0 0.8rem);
+  inline-size: 0.45rem;
+}
+/* Selected value (speed bug, target altitude); parks at the edge off-scale. */
+.tape-bug {
+  position: absolute;
+  z-index: var(--z-raised);
+  inset-inline-end: 0;
+  top: clamp(0px, calc(50% + (var(--value, 0) - var(--at, 0)) * var(--_u)), 100cqb);
+  translate: 0 -50%;
+  inline-size: 0.6rem;
+  block-size: 1.1rem;
+  background: var(--tape-bug, var(--flare, var(--accent)));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 70%, 60% 50%, 0 30%);
+}
+.tape.is-end .tape-bug { inset-inline: 0 auto; scale: -1 1; }
+.tape-readout {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset-inline: 0.15rem 0.5rem;
+  top: 50%;
+  translate: 0 -50%;
+  padding: 0.3rem 0.4rem;
+  background: var(--tape-readout-bg, var(--bg));
+  color: var(--tape-readout-fg, var(--readout-fg, var(--accent-text, var(--accent))));
+  border: var(--tape-readout-border-width, 1px) solid var(--tape-readout-border, var(--text));
+  border-radius: var(--tape-readout-radius, 2px);
+  font-size: min(var(--tape-readout-size, 1.05rem), 19cqi);
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: end;
+  white-space: nowrap;
+}
+.tape.is-end .tape-readout { inset-inline: 0.5rem 0.15rem; text-align: start; }
+/* Unit or label printed at the top edge of the tape. */
+.tape-unit {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset: 0 0 auto;
+  padding: 0.2rem 0.35rem;
+  background: var(--tape-bg, var(--surface-2));
+  color: var(--tape-unit-fg, var(--muted));
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+/* ---- .radar: scope with range rings and a sweep --------------------------
+ * <div class="radar" role="img" aria-label="Radar, 3 contacts …" style="--sweep:40">
+ *   <span class="radar-blip is-foe" style="--bearing:35; --range:.62">B1</span>
+ * </div>
+ * --bearing in degrees clockwise from up, --range 0–1 of the radius (or
+ * --x/--y as percentages). .is-sector draws a --radar-span fan with its
+ * origin at the bottom centre; .is-static drops the sweep; .is-rwr prints
+ * the label inside the symbol. */
+.radar {
+  --_ring: var(--radar-ring, color-mix(in srgb, var(--radar-fg, var(--accent)) 38%, transparent));
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  inline-size: var(--radar-size, 14rem);
+  max-inline-size: 100%;
+  aspect-ratio: 1;
+  background: var(--radar-bg, color-mix(in oklab, var(--radar-fg, var(--accent)) 7%, var(--bg)));
+  color: var(--radar-fg, var(--accent-text, var(--accent)));
+  border: var(--radar-border-width, 1px) solid var(--radar-border, var(--border));
+  border-radius: 50%;
+  box-shadow: var(--radar-shadow, none);
+  font-family: var(--radar-font, var(--font-mono));
+}
+.radar::before,
+.radar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mask: var(--_fan, none);
+}
+/* Scope: --radar-rings range rings and a cross, centred 50cqi down. */
+.radar::before {
+  --_step: calc(50cqi / var(--radar-rings, 4));
+  background:
+    radial-gradient(circle at 50% 50cqi, var(--_ring) 0 0.6cqi, transparent 0.7cqi),
+    repeating-radial-gradient(circle at 50% 50cqi, transparent 0 calc(var(--_step) - 1px), var(--_ring) 0 var(--_step)),
+    linear-gradient(var(--_ring), var(--_ring)) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--_ring), var(--_ring)) 0 50cqi / 100% 1px no-repeat;
+}
+.radar::after {
+  z-index: -1;
+  --vehicles-sweep: calc(var(--sweep, 0) * 1deg);
+  background: conic-gradient(from calc(var(--vehicles-sweep) - var(--radar-trail, 70deg)) at 50% 50cqi,
+    transparent, color-mix(in srgb, var(--radar-sweep, var(--radar-fg, var(--accent))) 45%, transparent) var(--radar-trail, 70deg),
+    transparent 0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .radar:not(.is-static)::after { animation: vehicles-sweep var(--radar-speed, 4s) linear infinite; }
+}
+.radar.is-static::after { display: none; }
+.radar.is-sector {
+  --_fan: conic-gradient(from calc(var(--radar-span, 120deg) / -2) at 50% 100%, #000 0 var(--radar-span, 120deg), transparent 0);
+  aspect-ratio: 2 / 1;
+  border-radius: 50% 50% var(--radius) var(--radius) / 100% 100% var(--radius) var(--radius);
+}
+.radar-blip {
+  --_c: var(--radar-blip, var(--radar-fg, var(--accent-text, var(--accent))));
+  --_size: var(--radar-blip-size, max(0.55rem, 3.6cqi));
+  position: absolute;
+  z-index: var(--z-raised);
+  left: var(--x, calc(50% + sin(var(--bearing, 0) * 1deg) * var(--range, 0) * 50cqi));
+  top: var(--y, calc(50cqi - cos(var(--bearing, 0) * 1deg) * var(--range, 0) * 50cqi));
+  padding-inline-start: calc(var(--_size) / 2 + 0.25em);
+  translate: 0 -50%;
+  color: var(--radar-label-fg, var(--radar-fg, var(--text)));
+  font-size: var(--radar-label-size, max(0.65rem, 3.4cqi));
+  line-height: 1;
+  white-space: nowrap;
+}
+.radar-blip::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: -50% -50%;
+  inline-size: var(--_size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--_c);
+  box-shadow: 0 0 0.35rem var(--_c);
+}
+/* Not colour alone: friend = ring, foe = diamond, unknown = square. */
+.radar-blip.is-friend { --_c: var(--radar-friend, var(--success)); }
+.radar-blip.is-friend::before { background: none; border: 2px solid var(--_c); }
+.radar-blip.is-foe { --_c: var(--radar-foe, var(--danger)); }
+.radar-blip.is-foe::before { border-radius: 0; rotate: 45deg; scale: 0.85; }
+.radar-blip.is-unknown { --_c: var(--radar-unknown, var(--warning)); }
+.radar-blip.is-unknown::before { border-radius: 0; background: none; border: 2px solid var(--_c); }
+.radar-blip.is-faint { opacity: 0.55; }
+/* RWR / contact codes: the label sits inside the symbol. */
+.radar.is-rwr .radar-blip { padding: 0.25em 0.3em; translate: -50% -50%; color: var(--_c); font-weight: 700; }
+.radar.is-rwr .radar-blip::before { inset: 0; left: 0; top: 0; translate: none; inline-size: auto; aspect-ratio: auto; background: none; border: 2px solid var(--_c); box-shadow: none; }
+.radar.is-rwr .radar-blip.is-foe::before { rotate: none; scale: none; clip-path: none; border-radius: 0; border-style: solid; }
+.radar.is-rwr .radar-blip:not(.is-foe, .is-unknown, .is-friend)::before { border-color: transparent; }
+
+/* ---- .annunciator: caption lights ----------------------------------------
+ * <ul class="annunciator" aria-label="Caution panel">
+ *   <li>Fuel press</li> <li class="is-caution">Hyd 2 <span class="visually-hidden">(lit)</span></li>
+ *   <li class="is-warning">Eng fire</li> <li class="is-advisory">APU run</li> <li class="is-on">Seat belts</li>
+ * </ul>
+ * <label class="annunciator-master is-caution"><input type="checkbox"> Master caution</label>
+ * Unlit captions are dim and etched; lit ones take a tint, border and glow in
+ * the state colour and full-contrast text (--annunciator-lit-fg). The state
+ * text colours fail contrast on the tint in many themes.
+ * The master light flashes until its checkbox (push to reset) is checked. */
+.annunciator {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--annunciator-min, 6.5rem)), 1fr));
+  gap: var(--annunciator-gap, 3px);
+  margin: 0;
+  padding: var(--annunciator-pad, 3px);
+  list-style: none;
+  background: var(--annunciator-bg, var(--bg));
+  border: var(--annunciator-border-width, 1px) solid var(--annunciator-border, var(--border));
+  border-radius: var(--annunciator-radius, var(--radius));
+}
+:where(.annunciator > li, .annunciator-master) {
+  --_c: var(--annunciator-on, var(--accent));
+  display: grid;
+  place-items: center;
+  min-block-size: var(--annunciator-cell-height, 2.6rem);
+  padding: 0.3rem 0.45rem;
+  background: var(--annunciator-off, var(--surface-2));
+  color: var(--annunciator-off-fg, var(--muted));
+  border: 1px solid var(--annunciator-cell-border, var(--hairline));
+  border-radius: var(--annunciator-cell-radius, 2px);
+  font-family: var(--annunciator-font, var(--font-mono));
+  font-size: var(--annunciator-size, 0.7rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+}
+:is(.annunciator > li, .annunciator-master).is-caution { --_c: var(--annunciator-caution, var(--warning)); }
+:is(.annunciator > li, .annunciator-master).is-warning { --_c: var(--annunciator-warning, var(--danger)); }
+:is(.annunciator > li, .annunciator-master).is-advisory { --_c: var(--annunciator-advisory, var(--success)); }
+.annunciator > li:is(.is-caution, .is-warning, .is-advisory, .is-on),
+.annunciator-master:not(:has(input:checked)) {
+  background: color-mix(in srgb, var(--_c) var(--annunciator-lit-mix, 12%), var(--annunciator-off, var(--surface-2)));
+  color: var(--annunciator-lit-fg, var(--text));
+  border-color: var(--_c);
+  box-shadow: var(--annunciator-glow, inset 0 0 0.7rem color-mix(in srgb, var(--_c) 35%, transparent), 0 0 0.45rem color-mix(in srgb, var(--_c) 40%, transparent));
+}
+.annunciator-master {
+  position: relative;
+  display: inline-grid;
+  min-inline-size: var(--tap-min);
+  min-block-size: max(var(--tap-min), var(--annunciator-cell-height, 2.6rem));
+  padding-inline: 0.7rem;
+  user-select: none;
+}
+.annunciator-master input { position: absolute; inline-size: 1px; block-size: 1px; margin: 0; opacity: 0; clip-path: inset(50%); }
+.annunciator-master:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .annunciator > li.is-blinking:is(.is-caution, .is-warning, .is-advisory, .is-on),
+  .annunciator-master:not(:has(input:checked)) { animation: vehicles-blink 1s steps(1, end) infinite; }
+}
+/* Landing gear: nose on top, mains below. */
+.annunciator.is-gear { grid-template-columns: repeat(2, minmax(0, 1fr)); max-inline-size: 14rem; }
+.annunciator.is-gear > li:first-child { grid-column: 1 / -1; justify-self: center; inline-size: calc(50% - var(--annunciator-gap, 3px) / 2); }
+/* Flight mode annunciator: one row of equal boxes. */
+.annunciator.is-fma { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.annunciator.is-fma > li { min-block-size: 2rem; padding-inline: 0.25rem; }
+@media (forced-colors: active) {
+  .annunciator > li:is(.is-caution, .is-warning, .is-advisory, .is-on),
+  .annunciator-master:not(:has(input:checked)) { border: 3px solid Highlight; }
+}
+
+/* ---- .telltale: icon warning lamp ----------------------------------------
+ * <span class="telltale is-on is-warning" role="img" aria-label="Check engine, on">
+ *   <svg class="icon"><use href="…#icon-warning"/></svg></span>
+ * Off = dim; .is-on lights it (green by default; .is-info, .is-warning,
+ * .is-danger), .is-blinking flashes (turn signals, hazards). */
+.telltale {
+  --_c: var(--telltale-on, var(--success-text, var(--success)));
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--telltale-size, 1.9rem);
+  aspect-ratio: 1;
+  color: var(--telltale-off, color-mix(in srgb, var(--muted) 45%, transparent));
+}
+.telltale .icon { --icon-size: 72%; inline-size: 72%; block-size: 72%; }
+.telltale.is-info { --_c: var(--telltale-info, var(--accent-text, var(--accent))); }
+.telltale.is-warning { --_c: var(--telltale-warning, var(--warning-text, var(--warning))); }
+.telltale.is-danger { --_c: var(--telltale-danger, var(--danger-text, var(--danger))); }
+.telltale.is-on { color: var(--_c); filter: var(--telltale-glow, drop-shadow(0 0 0.3rem color-mix(in srgb, var(--_c) 70%, transparent))); }
+@media (prefers-reduced-motion: no-preference) {
+  .telltale.is-on.is-blinking { animation: vehicles-blink 0.8s steps(1, end) infinite; --vehicles-blink-dim: 0.12; }
+}
+
+/* ---- .tyres: pressure per wheel round a body outline ---------------------
+ * <ul class="tyres" aria-label="Tyre pressures">
+ *   <li>FL <span class="readout readout-sm">2.4</span></li> FR, RL, RR …
+ *   <li class="is-low">RR <span class="readout readout-sm">1.9</span></li>
+ * </ul>
+ * Order: front-left, front-right, rear-left, rear-right. .is-low (caution),
+ * .is-flat (warning) recolour the tyre and its text. */
+.tyres {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--tyres-body-width, 5.5rem) minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(var(--tyres-row, 4.5rem), auto));
+  column-gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+.tyres::before {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / 3;
+  border: 2px solid var(--tyres-body-border, var(--border));
+  border-radius: 42% 42% 30% 30% / 18% 18% 12% 12%;
+  background:
+    linear-gradient(var(--tyres-glass, color-mix(in srgb, var(--accent) 22%, var(--surface-2))), var(--tyres-glass, color-mix(in srgb, var(--accent) 22%, var(--surface-2)))) center 22% / 74% 16% no-repeat,
+    linear-gradient(var(--tyres-glass, color-mix(in srgb, var(--accent) 22%, var(--surface-2))), var(--tyres-glass, color-mix(in srgb, var(--accent) 22%, var(--surface-2)))) center 82% / 70% 10% no-repeat,
+    var(--tyres-body, var(--surface-2));
+}
+.tyres > li {
+  --_c: var(--tyres-ok, var(--muted));
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  font-size: 0.8rem;
+}
+.tyres > li:nth-child(odd) { grid-column: 1; justify-content: flex-end; text-align: end; }
+.tyres > li:nth-child(even) { grid-column: 3; flex-direction: row-reverse; justify-content: flex-end; }
+.tyres > li:nth-child(-n + 2) { grid-row: 1; }
+.tyres > li:nth-child(n + 3) { grid-row: 2; }
+.tyres > li::after {
+  content: "";
+  flex: none;
+  inline-size: 0.8rem;
+  block-size: 2.4rem;
+  border-radius: 0.3rem;
+  background: var(--_c);
+}
+.tyres > li.is-low { --_c: var(--tyres-low, var(--warning)); color: var(--warning-text, var(--warning)); }
+.tyres > li.is-flat { --_c: var(--tyres-flat, var(--danger)); color: var(--danger-text, var(--danger)); }
+.tyres > li:is(.is-low, .is-flat) .readout { --readout-fg: currentColor; }
+
+/* ---- .mfd: multi-function display with soft keys -------------------------
+ * <div class="mfd">
+ *   <div class="mfd-keys is-top" role="radiogroup" aria-label="Format">
+ *     <label class="mfd-key"><input type="radio" name="mfd-l" checked>RDR</label> … (≤ 6)
+ *   </div>
+ *   <div class="mfd-keys is-start"> <button class="mfd-key" type="button">RNG+</button> … </div>
+ *   <div class="mfd-screen"> <section class="mfd-page">…</section> … </div>
+ *   <div class="mfd-keys is-end">…</div>  <div class="mfd-keys is-bottom">…</div>
+ * </div>
+ * Top key n shows page n (no checked key = page 1). Other keys are
+ * buttons or checkbox labels (.mfd-key, pressed = checked/aria-pressed). */
+.mfd {
+  display: grid;
+  grid-template:
+    ". top ." auto
+    "start screen end" minmax(0, 1fr)
+    ". bottom ." auto / auto minmax(0, 1fr) auto;
+  gap: var(--mfd-gap, 0.5rem);
+  min-inline-size: 0;
+  padding: var(--mfd-pad, 0.6rem);
+  background: var(--mfd-bezel, var(--surface-2));
+  border: var(--mfd-border-width, 1px) solid var(--mfd-border, var(--border));
+  border-radius: var(--mfd-radius, calc(var(--radius) * 2));
+  box-shadow: var(--mfd-shadow, none);
+}
+.mfd-keys { display: flex; justify-content: space-evenly; gap: max(8px, var(--mfd-key-gap, 0.4rem)); min-inline-size: 0; }
+.mfd-keys.is-top { grid-area: top; }
+.mfd-keys.is-bottom { grid-area: bottom; }
+.mfd-keys.is-start { grid-area: start; flex-direction: column; }
+.mfd-keys.is-end { grid-area: end; flex-direction: column; }
+.mfd-key {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: max(var(--tap-min), 2.75rem);
+  min-block-size: var(--tap-min);
+  padding: 0.35rem 0.45rem;
+  background: var(--mfd-key-bg, var(--surface));
+  color: var(--mfd-key-fg, var(--text));
+  border: 1px solid var(--mfd-key-border, var(--border));
+  border-radius: var(--mfd-key-radius, var(--radius));
+  box-shadow: var(--mfd-key-shadow, none);
+  font: 700 0.7rem/1.1 var(--mfd-font, var(--font-mono));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.mfd-key input { position: absolute; inline-size: 1px; block-size: 1px; margin: 0; opacity: 0; clip-path: inset(50%); }
+.mfd-key:is(:has(input:checked), [aria-pressed="true"]) {
+  color: var(--mfd-key-on-fg, var(--accent-text, var(--accent)));
+  border-color: var(--mfd-key-on, var(--accent));
+  box-shadow: inset 0 0 0 1px var(--mfd-key-on, var(--accent));
+}
+.mfd-key:is(:has(input:focus-visible), :focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.mfd-screen {
+  grid-area: screen;
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  min-inline-size: 0;
+  min-block-size: var(--mfd-screen-min, 14rem);
+  padding: var(--mfd-screen-pad, var(--space-s));
+  background: var(--mfd-screen-bg, var(--bg));
+  color: var(--mfd-screen-fg, var(--text));
+  border: 1px solid var(--mfd-screen-border, var(--hairline));
+  border-radius: var(--mfd-screen-radius, var(--radius));
+  font-family: var(--mfd-font, var(--font-mono));
+  font-size: 0.8rem;
+}
+.mfd-screen > .mfd-page:not(:is(
+  .mfd:not(:has(> .mfd-keys.is-top input:checked)) > .mfd-screen > .mfd-page:nth-child(1),
+  .mfd:has(> .mfd-keys.is-top > :nth-child(1) input:checked) > .mfd-screen > .mfd-page:nth-child(1),
+  .mfd:has(> .mfd-keys.is-top > :nth-child(2) input:checked) > .mfd-screen > .mfd-page:nth-child(2),
+  .mfd:has(> .mfd-keys.is-top > :nth-child(3) input:checked) > .mfd-screen > .mfd-page:nth-child(3),
+  .mfd:has(> .mfd-keys.is-top > :nth-child(4) input:checked) > .mfd-screen > .mfd-page:nth-child(4),
+  .mfd:has(> .mfd-keys.is-top > :nth-child(5) input:checked) > .mfd-screen > .mfd-page:nth-child(5),
+  .mfd:has(> .mfd-keys.is-top > :nth-child(6) input:checked) > .mfd-screen > .mfd-page:nth-child(6)
+)) { display: none; }
+
+/* ---- .guard: guarded switch ----------------------------------------------
+ * <div class="guard">
+ *   <label class="guard-cover"><input type="checkbox"><span class="guard-closed">Safe · lift guard</span><span class="guard-open">Close guard</span></label>
+ *   <label class="toggle-btn is-danger"><input type="checkbox">Master arm</label>
+ * </div>
+ * Closed, the striped cover hides the switch (it can't be reached, by
+ * pointer or keyboard); lifted, the switch shows under the open cover. */
+.guard {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  gap: 0.4rem;
+  min-inline-size: 0;
+}
+.guard > * { grid-column: 1; grid-row: 2; }
+.guard-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: var(--tap-min);
+  padding: 0.4rem 0.6rem;
+  border: 2px solid var(--guard-color, var(--danger));
+  border-radius: var(--guard-radius, var(--radius));
+  font: 700 0.72rem/1.15 var(--guard-font, var(--font-mono));
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+}
+.guard > .guard-cover { grid-row: 1; }
+.guard:not(:has(> .guard-cover input:checked)) > .guard-cover {
+  grid-row: 1 / 3;
+  background: var(--guard-stripes, repeating-linear-gradient(-45deg, var(--guard-color, var(--danger)) 0 0.55rem, color-mix(in srgb, var(--guard-color, var(--danger)) 55%, var(--bg)) 0 1.1rem));
+}
+.guard-cover > span { padding: 0.3rem 0.5rem; background: var(--guard-label-bg, var(--bg)); color: var(--guard-label-fg, var(--text)); border-radius: 2px; }
+.guard-cover input { position: absolute; inline-size: 1px; block-size: 1px; margin: 0; opacity: 0; clip-path: inset(50%); }
+.guard-cover:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.guard:not(:has(> .guard-cover input:checked)) > :not(.guard-cover) { visibility: hidden; }
+.guard-cover:has(input:checked) .guard-closed,
+.guard-cover:not(:has(input:checked)) .guard-open { display: none; }
+
+/* ---- .checklist: challenge … response ------------------------------------
+ * <ol class="checklist">
+ *   <li><label><input class="checkbox" type="checkbox"><span>Parking brake</span><b>Set</b></label></li>
+ * </ol>
+ * Leader dots join challenge and response; done items take the done colour. */
+.checklist { margin: 0; padding: 0; list-style: none; font-family: var(--checklist-font, var(--font-mono)); font-size: 0.85rem; }
+.checklist > li + li { border-block-start: 1px solid var(--checklist-rule, var(--hairline)); }
+.checklist label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-block-size: max(var(--tap-min), 2.25rem);
+}
+.checklist label > span { display: flex; flex: 1; align-items: baseline; gap: 0.4rem; min-inline-size: 0; }
+.checklist label > span::after { content: ""; flex: 1; min-inline-size: 1rem; border-block-end: 2px dotted var(--checklist-leader, var(--muted)); }
+.checklist label > :is(b, strong) { text-transform: uppercase; color: var(--checklist-response, var(--accent-text, var(--accent))); }
+.checklist > li:has(input:checked) { color: var(--checklist-done, var(--success-text, var(--success))); }
+.checklist > li:has(input:checked) :is(b, strong) { color: inherit; }
+
+/* ---- .throttle: lever quadrant -------------------------------------------
+ * <div class="throttle" role="group" aria-label="Thrust levers">
+ *   <div class="scale"><span style="--at:1">TOGA</span>…</div>
+ *   <label class="throttle-lever"><input class="fader" type="range" …><span>1</span></label> …
+ * </div>
+ * Core .fader levers (vertical, native) with a .scale of detents. */
+.throttle {
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--throttle-gap, 0.75rem);
+  block-size: var(--throttle-height, 14rem);
+  padding: 0.75rem;
+  background: var(--throttle-bg, var(--surface-2));
+  border: 1px solid var(--throttle-border, var(--border));
+  border-radius: var(--throttle-radius, var(--radius));
+  --fader-cap-width: var(--throttle-handle-width, 2.75rem);
+  --fader-cap-height: var(--throttle-handle-height, 1.4rem);
+  --fader-cap: var(--throttle-handle, var(--muted));
+  --scale-width: 2.6rem;
+}
+.throttle > .scale { padding-block-end: 1.6rem; font-size: 0.62rem; }
+.throttle-lever {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: center;
+  gap: 0.35rem;
+  font: 700 0.7rem var(--font-mono);
+  color: var(--muted);
+}
+.throttle-lever > .fader { min-block-size: 0; block-size: 100%; }
+
+/* ---- .pfd: primary flight display layout ---------------------------------
+ * <div class="pfd">
+ *   <ul class="annunciator is-fma">…</ul>        (row of modes)
+ *   <div class="tape">…</div>                     speed, left
+ *   <div class="attitude">…</div>                 centre
+ *   <div class="tape is-end">…</div>              altitude
+ *   <div class="tape is-end">…</div>              (second is-end tape: V/S)
+ *   <ol class="compass-strip">…</ol>              heading, below
+ * </div>
+ * Tapes stretch to the attitude's height. */
+.pfd {
+  container: pfd / inline-size;
+  display: grid;
+  grid-template-columns: auto minmax(0, var(--pfd-attitude-max, 22rem)) auto auto;
+  grid-template-areas: "fma fma fma fma" "speed att alt vs" ". hdg hdg .";
+  justify-content: center;
+  gap: var(--pfd-gap, 0.5rem);
+  padding: var(--pfd-pad, 0.6rem);
+  background: var(--pfd-bg, var(--bg));
+  border: 1px solid var(--pfd-border, var(--border));
+  border-radius: var(--pfd-radius, var(--radius));
+}
+.pfd > .annunciator { grid-area: fma; }
+.pfd > .attitude { grid-area: att; inline-size: 100%; }
+.pfd > .tape { grid-area: speed; block-size: auto; }
+.pfd > .tape.is-end { grid-area: alt; }
+.pfd > .tape.is-end ~ .tape.is-end { grid-area: vs; --tape-width: 3rem; }
+.pfd > .tape.is-end ~ .tape.is-end .tape-readout { inset-inline: 0; padding-inline: 0.25rem; font-size: min(0.7rem, 30cqi); text-align: center; }
+.pfd > :is(.compass-strip, .compass) { grid-area: hdg; }
+@container pfd (max-width: 26rem) {
+  .pfd { gap: 0.25rem; padding: 0.3rem; }
+  .pfd > .tape { --tape-width: 3.4rem; --tape-readout-size: 0.85rem; --tape-label-size: 0.65rem; }
+  .pfd > .tape.is-end ~ .tape.is-end { --tape-width: 2.1rem; }
+}
+
+/* ---- .flight-hud: head-up display ----------------------------------------
+ * <div class="flight-hud" role="img" aria-label="HUD: …">
+ *   <div class="attitude is-hud" style="--pitch:3; --roll:-8">…</div>  scene + ladder
+ *   <ol class="compass-strip" style="--heading:274">…</ol>             top
+ *   <div class="tape">…</div>  <div class="tape is-end">…</div>       speed, altitude
+ *   <span class="flight-hud-gun"></span>                              gun cross (waterline)
+ *   <span class="flight-hud-fpm" style="--x:52%; --y:47%"></span>     flight-path marker
+ *   <span class="flight-hud-target is-locked" style="--x:63%; --y:32%">TGT 4.2</span>
+ *   <div class="flight-hud-data">…</div> <div class="flight-hud-data is-end">…</div>
+ * </div>
+ * Symbology wears --flight-hud-ink and a glow; the instruments inside are
+ * made see-through. */
+.flight-hud {
+  --_ink: var(--flight-hud-ink, var(--accent-text, var(--accent)));
+  container: flight-hud / inline-size;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template:
+    "head head head" auto
+    "speed . alt" minmax(var(--flight-hud-center-min, 15rem), 1fr)
+    "data . data-end" auto / auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-s);
+  min-inline-size: 0;
+  min-block-size: var(--flight-hud-min-height, 26rem);
+  padding: var(--flight-hud-pad, var(--space-m));
+  color: var(--_ink);
+  border: var(--flight-hud-border-width, 1px) solid var(--flight-hud-border, var(--border));
+  border-radius: var(--flight-hud-radius, var(--radius));
+  font-family: var(--flight-hud-font, var(--font-mono));
+  font-size: 0.85rem;
+  text-shadow: var(--flight-hud-glow, 0 0 0.35em color-mix(in srgb, currentColor 55%, transparent));
+}
+.flight-hud > .compass-strip {
+  grid-area: head;
+  justify-self: center;
+  inline-size: min(30rem, 72%);
+  --compass-strip-bg: transparent;
+  --compass-strip-fg: var(--_ink);
+  --compass-strip-border: transparent;
+  --compass-tick: var(--_ink);
+  --compass-tick-minor: var(--_ink);
+  --compass-lubber: var(--_ink);
+  --compass-north: var(--_ink);
+}
+.flight-hud > .tape {
+  grid-area: speed;
+  --tape-height: min(16rem, 52cqi);
+  --tape-bg: transparent;
+  --tape-fg: var(--_ink);
+  --tape-tick: var(--_ink);
+  --tape-border: transparent;
+  --tape-readout-bg: color-mix(in srgb, var(--bg) 55%, transparent);
+  --tape-readout-fg: var(--_ink);
+  --tape-readout-border: var(--_ink);
+  --tape-unit-fg: var(--_ink);
+}
+.flight-hud > .tape .tape-unit { background: none; }
+.flight-hud > .tape.is-end { grid-area: alt; }
+.flight-hud-data { grid-area: data; display: grid; gap: 0.15rem; line-height: 1.2; }
+.flight-hud-data.is-end { grid-area: data-end; text-align: end; }
+:is(.flight-hud-gun, .flight-hud-fpm, .flight-hud-target) { position: absolute; z-index: var(--z-raised); pointer-events: none; }
+/* Gun cross: a fixed cross on the boresight. */
+.flight-hud-gun {
+  left: 50%;
+  top: var(--flight-hud-boresight, 36%);
+  translate: -50% -50%;
+  inline-size: 2.4rem;
+  aspect-ratio: 1;
+  background:
+    linear-gradient(var(--_ink), var(--_ink)) center / 100% 2px no-repeat,
+    linear-gradient(var(--_ink), var(--_ink)) center / 2px 100% no-repeat;
+  mask: radial-gradient(circle, transparent 0.35rem, #000 0.36rem);
+  filter: drop-shadow(0 0 2px var(--_ink));
+}
+/* Flight-path marker: a ring with wings and a tail at --x/--y. */
+.flight-hud-fpm {
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  translate: -50% -50%;
+  inline-size: 3.2rem;
+  block-size: 1.6rem;
+  background:
+    radial-gradient(circle, transparent 0.42rem, var(--_ink) 0.44rem 0.56rem, transparent 0.58rem),
+    linear-gradient(var(--_ink), var(--_ink)) left center / 0.95rem 2px no-repeat,
+    linear-gradient(var(--_ink), var(--_ink)) right center / 0.95rem 2px no-repeat,
+    linear-gradient(var(--_ink), var(--_ink)) center top / 2px 0.3rem no-repeat;
+  filter: drop-shadow(0 0 2px var(--_ink));
+}
+/* Target designator box (.is-locked: a diamond inside). Its text is the label. */
+.flight-hud-target {
+  left: var(--x, 50%);
+  top: var(--y, 40%);
+  translate: -50% -1.2rem;
+  padding-block-start: 2.8rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.flight-hud-target::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
+  inline-size: 2.4rem;
+  aspect-ratio: 1;
+  border: 2px solid var(--_ink);
+  box-shadow: 0 0 4px var(--_ink);
+}
+.flight-hud-target.is-locked::before {
+  background: linear-gradient(var(--_ink), var(--_ink)) center / 0.4rem 0.4rem no-repeat;
+  outline: 2px solid var(--_ink);
+  outline-offset: -0.7rem;
+}
+@container flight-hud (max-width: 34rem) {
+  .flight-hud { gap: var(--space-2xs); padding: var(--space-xs); font-size: 0.75rem; }
+  .flight-hud > .compass-strip { inline-size: 92%; }
+  .flight-hud > .attitude.is-hud { --attitude-pitch-scale: 2.6cqi; --attitude-rung: 40cqi; --attitude-label-room: 1.6rem; --attitude-label-size: 0.65rem; }
+  .flight-hud > .tape { --tape-width: 3.6rem; --tape-readout-size: 0.85rem; --tape-label-size: 0.65rem; }
+}
 }

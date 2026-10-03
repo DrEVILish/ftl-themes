@@ -115,7 +115,8 @@
     var stored;
     try { stored = localStorage.getItem("example-theme"); } catch (e) {}
     var wanted = params.get("theme") && params.get("variant") ? params.get("theme") + ":" + params.get("variant") : params.get("theme");
-    var initial = [wanted, stored, known[0]].filter(function (v) { return v && valid(String(v).split(":")[0]); })[0];
+    // Page default (its own data-theme) before the first theme alphabetically.
+    var initial = [wanted, stored, document.documentElement.dataset.theme, known[0]].filter(function (v) { return v && valid(String(v).split(":")[0]); })[0];
     if (picker) {
       picker.textContent = "";
       list.forEach(function (t) {
