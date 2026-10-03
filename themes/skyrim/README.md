@@ -151,6 +151,17 @@ partial crop is referenced) and the dialogue menu. See
 
 Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The rail is hidden up to 900px. On touch tiers the chevron-capped bar is shallower and less inset. On a phone the `h1` steps down, and panels use smaller corner knots and a full 1rem padding, so text clears them. Nested panels drop the knotwork and the drop shadow. Panel titles clear the corner knot, and a header holding controls wraps with the title kept whole. On XL the gutters show knotwork border bands: a woven lattice between silver rules with a chain of diamonds, a few percent over `--bg` (about 1.0:1).
 
+## Icons
+
+`themes/skyrim/icons.svg` redraws all 178 core icons as rune-cut glyphs,
+carved rather than drawn. No SkyUI icon art, emblem or game artwork is used.
+
+- 24×24 grid, line only, `stroke="currentColor"`: 1.6 stroke, butt caps, miter joins.
+- No curves. Every circle and arc is cut into straight facets on hexagon
+  angles (pointy top). Small rings become the menu diamond.
+- Rounded corners become chamfers. Dots are solid diamonds (the ◈ vocabulary).
+- Solid fills only for carets and the filled play glyph.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

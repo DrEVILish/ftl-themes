@@ -50,6 +50,19 @@ green rule, content filling the frame, scanlines over the whole shell.
 
 Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. The scanline overlay now sits just under the modal layer (`--z-modal` − 1), not at a literal 999. On XL the gutters show the MAP tab with the lamp turned down: a world graticule and scattered location pips in dim phosphor (about 1.0:1).
 
+## Icons
+
+`themes/pipboy/icons.svg` redraws all 178 core icons as monochrome CRT
+pictograms. No Vault Boy, Vault-Tec or other franchise marks are used.
+
+- 24×24 grid. Every vertex sits on the integer grid. `shape-rendering="crispEdges"`.
+- Chunky line: 2px stroke, square caps, miter joins, `currentColor` only (one phosphor hue).
+- Curves are faceted to flat-sided octagons, and rounded corners become 2px
+  chamfers. Dots are square pixels (2×2 or 3×3).
+- Dense glyphs are simplified so they still read at 16px: accessible,
+  discount, disc, coin, network, cpu, thermometer, temperature, file-zip,
+  fingerprint, invoice, device-watch and map-question.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:

@@ -117,6 +117,18 @@ debossing on black leather, gilt tooling and leather case hardware. No
 luxury *software* UI was found under a usable licence, so the component
 mapping is an interpretation of physical objects. See RESEARCH.md.
 
+## Icons
+
+`themes/tokie/icons.svg` redraws all 178 core icons as fine gold-tooling
+line glyphs, like a binder's fillet laid into leather.
+
+- 24×24 grid, line only, `stroke="currentColor"` (gold foil on leather, dark
+  engraved ink on polished gold): 1.4 hairline, round caps and joins.
+- True curves and circles. Corners keep small radii.
+- Dots are small solid round stamps. Fills only for carets, play and small
+  status marks.
+- No deboss shadow or second colour. The glyph stays one ink so it follows every state.
+
 ## Adoption
 
 This theme sets `--app-*` layout properties (manifest `shellAware:
