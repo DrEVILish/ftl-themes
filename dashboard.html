@@ -11,6 +11,7 @@
   .demo-pad { padding: 0.9rem; }
   .demo-stat-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
   .demo-stat-foot .sparkline { --sparkline-width: 7em; --sparkline-height: 1.8em; }
+  .demo-metric.is-error { border-color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); }
   .demo-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem 1.5rem; }
   .demo-heat { display: flex; gap: 0.4rem; min-inline-size: 0; --heatmap-cell: 1.35rem; }
   .demo-heat .heatmap { flex: 1; min-inline-size: 0; }
@@ -96,28 +97,38 @@
     </nav>
 
     <h1>Overview</h1>
-    <p>Last 30 days, compared with the previous period. <span class="badge badge-accent">Live</span></p>
+    <p>Last 30 days, compared with the previous period. <span class="connection" id="dashboard-connection" data-state="live" role="status">Analytics feed live</span></p>
+    <div class="cluster mb-m" aria-label="Dashboard example controls">
+      <label class="label" for="dashboard-scenario">Preview live-data state</label>
+      <select class="select" id="dashboard-scenario">
+        <option value="live">Live</option><option value="stale">Stale feed</option>
+        <option value="offline">Offline</option><option value="alert">Alert</option>
+        <option value="recovering">Recovering</option>
+      </select>
+      <span class="text-muted" id="dashboard-scenario-note">Live metrics are current.</span>
+      <span class="text-muted">Missing: <code>&mdash;</code> &middot; real zero: <code>0</code></span>
+    </div>
 
-    <div class="grid" style="margin: 1rem 0;">
-      <div class="card">
+    <div class="grid" id="dashboard-demo" style="margin: 1rem 0;">
+      <div class="card demo-metric">
         <span class="stat-label">Revenue</span>
         <span class="stat-value">$84,210</span>
         <span class="demo-stat-foot"><span class="stat-trend is-up">&uarr; 8.4%</span>
         <svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Revenue, 12 weeks: rising"><polygon class="sparkline-area" points="0,24 0.0,22.0 9.1,17.7 18.2,19.8 27.3,13.3 36.4,14.2 45.5,11.1 54.5,9.0 63.6,10.7 72.7,7.2 81.8,4.6 90.9,5.5 100.0,2.0 100,24"/><polyline points="0.0,22.0 9.1,17.7 18.2,19.8 27.3,13.3 36.4,14.2 45.5,11.1 54.5,9.0 63.6,10.7 72.7,7.2 81.8,4.6 90.9,5.5 100.0,2.0"/></svg></span>
       </div>
-      <div class="card">
+      <div class="card demo-metric">
         <span class="stat-label">Active users</span>
         <span class="stat-value">12,904</span>
         <span class="demo-stat-foot"><span class="stat-trend is-up">&uarr; 3.1%</span>
         <svg class="sparkline is-up" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Active users, 12 weeks: rising"><polygon class="sparkline-area" points="0,24 0.0,22.0 9.1,19.2 18.2,20.6 27.3,15.1 36.4,13.0 45.5,14.4 54.5,9.6 63.6,8.2 72.7,6.1 81.8,7.5 90.9,4.1 100.0,2.0 100,24"/><polyline points="0.0,22.0 9.1,19.2 18.2,20.6 27.3,15.1 36.4,13.0 45.5,14.4 54.5,9.6 63.6,8.2 72.7,6.1 81.8,7.5 90.9,4.1 100.0,2.0"/></svg></span>
       </div>
-      <div class="card">
+      <div class="card demo-metric">
         <span class="stat-label">Conversion rate</span>
         <span class="stat-value">4.62%</span>
         <span class="demo-stat-foot"><span class="stat-trend is-down">&darr; 0.3%</span>
         <svg class="sparkline is-down" viewBox="0 0 100 24" preserveAspectRatio="none" role="img" aria-label="Conversion rate, 12 weeks: falling"><polygon class="sparkline-area" points="0,24 0.0,2.0 9.1,6.2 18.2,4.1 27.3,10.3 36.4,8.2 45.5,14.5 54.5,12.4 63.6,16.6 72.7,18.7 81.8,17.8 90.9,20.7 100.0,22.0 100,24"/><polyline points="0.0,2.0 9.1,6.2 18.2,4.1 27.3,10.3 36.4,8.2 45.5,14.5 54.5,12.4 63.6,16.6 72.7,18.7 81.8,17.8 90.9,20.7 100.0,22.0"/></svg></span>
       </div>
-      <div class="card">
+      <div class="card demo-metric">
         <span class="stat-label">Error rate</span>
         <span class="stat-value">0.08%</span>
         <span class="demo-stat-foot"><span class="stat-trend is-up">&uarr; 0.02%</span>
@@ -464,5 +475,6 @@
 </ul>
 <script src="assets/js/tint.js"></script>
 <script src="assets/js/theme-loader.js"></script>
+<script src="assets/js/dashboard-demo.js"></script>
 </body>
 </html>

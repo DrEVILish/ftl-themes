@@ -92,12 +92,15 @@ mark the widget's title or values instead of the widget.
 <span class="connection" data-state="live" role="status">Market data live</span>
 <span class="connection" data-state="reconnecting">Madrid DSS-63</span>
 <span class="connection" data-state="offline">Goldstone DSS-14</span>
+<span class="connection" data-state="degraded">Replica feed degraded</span>
 ```
 
-A lamp plus the element's own text (translatable; never generated). Each state has its
-own shape: live = filled lamp (slow pulse), reconnecting = dotted ring (turning),
-offline = crossed ring. Fits a bar, a status strip (`.app-status`) or a panel header.
-Put `role="status"` on the one that should announce changes.
+A lamp plus the element's own text (translatable; never generated). `live`,
+`reconnecting` and `offline` keep their established treatment. `initializing`,
+`delayed`, `degraded`, `maintenance` and `recovering` use a static warning lamp
+with dashed or dotted outlines; apps provide the human-readable status text.
+Fits a bar, a status strip (`.app-status`) or a panel header. Put `role="status"`
+on the one that should announce meaningful changes, not every streamed update.
 
 Tokens: `--connection-live` (`var(--lamp-on, var(--success))`), `--connection-reconnecting`
 (`var(--warning)`), `--connection-offline` (`var(--danger)`), `--connection-fg`,

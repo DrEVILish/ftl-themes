@@ -239,15 +239,18 @@ season. A theme without that season simply ignores the attribute.
 ## `.splash` — boot and loading screen (§13)
 
 ```html
-<!-- Real loading (default): remove it, or set hidden, the moment the app is ready -->
-<div class="splash" role="status" aria-live="polite">
+<!-- Render before the app content; load boot.js after this markup -->
+<div class="splash" data-boot-screen role="status" aria-live="polite">
   <div class="splash-art" aria-hidden="true"></div>
-  <p class="splash-title">Telemetry</p>
-  <progress class="progress" max="100" value="45" aria-label="Loading"></progress>
-  <p class="splash-message">Initialising channel 3 of 8…</p>
+  <p class="splash-title">Northwind Analytics</p>
+  <progress class="progress" aria-label="Loading"></progress>
+  <p class="splash-message">Starting…</p>
 </div>
+<main class="app-main">…app or login screen…</main>
+<script src="assets/js/boot.js"></script>
+<script>/* Call after the app or login screen is usable: */ window.ftlAppReady();</script>
 
-<!-- Timed intro: prefs.js hides it after 2s or on any key, click or tap, once per session -->
+<!-- Optional legacy theme intro; loading overlays should use data-boot-screen -->
 <div class="splash" data-intro="2s" role="status" aria-live="polite">
   …
   <p class="splash-skip">Press any key to skip</p>
@@ -262,11 +265,22 @@ season. A theme without that season simply ignores the attribute.
 | `.splash-title`, `.splash-message`, `.splash-skip` | Text lines. Update `.splash-message` as loading progresses; `aria-live` announces it. |
 | `<progress>` | With `value`: determinate. Without: an indeterminate sweep (a static centred segment without motion). |
 | `[hidden]` | Fades out over `--motion-duration-l` where motion is allowed. |
-| `[data-intro="2s"]` | Timed intro (`s` or `ms`). Children enter with `--motion-enter`, staggered. Skippable; remembered in `sessionStorage`; `window.playSplash(el)` replays one. Under reduced motion it is a static frame for the same time. |
+| `[data-boot-screen]` | Visible immediately. `boot.js` holds it until the app calls `window.ftlAppReady()`, then clears `aria-busy` and hides the cover. No timeout or skip can reveal an app that is not ready. |
+| `[data-intro="2s"]` | Optional timed theme intro (`s` or `ms`). Children enter with `--motion-enter`, staggered. Skippable; remembered in `sessionStorage`; `window.playSplash(el)` replays one. Under reduced motion it is a static frame. |
 
-Real-load mode never adds delay. If your page can render without the app's
-script, hide the splash for no-JS visitors:
+The boot animation is CSS-only and stops under reduced motion. If your page
+can render without the app's script, hide the splash for no-JS visitors:
 `<noscript><style>.splash { display: none }</style></noscript>`.
+
+## Foldable PWAs
+
+In standalone display mode only, `core/layout.css` uses the viewport-segment
+media features to reserve the hinge gap and keep shell regions within their
+segments. `assets/js/foldable.js` is optional and exposes `data-fold-mode`
+(`book` or `tabletop`) plus `data-fold-posture` for app decisions. Segment
+support is progressive enhancement; unsupported browsers and windowed apps
+use the ordinary responsive tiers. Load the detector only where the app
+needs the metadata.
 
 **Tokens:** `--splash-bg` (`--surface`), `--splash-fg` (`--text`),
 `--splash-font`, `--splash-gap` (`--space-m`), `--splash-art` (background

@@ -11,9 +11,10 @@ with one attribute. No JavaScript framework is needed.
 **Live examples:** https://drevilish.github.io/ftl-themes/ (the gallery, the
 component QA pages, demo apps and page templates, published from `main`).
 
-> **Versions.** `main` follows the latest work. v5 (screen tiers, touch,
-> CSS-only state, 50+ new components, templates, icons, favicons, emails)
-> is on `main` and listed under "Unreleased" in [`CHANGELOG.md`](CHANGELOG.md).
+> **Versions.** `main` follows the latest work. v5.1.0 adds screen tiers,
+> touch support, CSS-only state, component groups, templates, icons,
+> favicons, emails, and the feature extensions documented in
+> [`CHANGELOG.md`](CHANGELOG.md).
 > v4.0.0 was **breaking**: the `ftl-` prefix was removed everywhere and
 > every bundle sits in `@layer ui`. Migrate with `scripts/migrate-v4.py`
 > ([`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md)). The last v3 release

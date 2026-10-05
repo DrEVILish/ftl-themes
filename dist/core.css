@@ -7711,6 +7711,17 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
   background: linear-gradient(45deg, transparent 42%, var(--connection-lamp) 42% 58%, transparent 58%);
   box-shadow: none;
 }
+.connection:is([data-state="initializing"], [data-state="delayed"], [data-state="degraded"], [data-state="maintenance"], [data-state="recovering"]) {
+  --connection-lamp: var(--connection-attention, var(--warning));
+}
+.connection:is([data-state="initializing"], [data-state="delayed"], [data-state="degraded"], [data-state="maintenance"])::before {
+  background: transparent;
+  border-style: dashed;
+}
+.connection[data-state="recovering"]::before {
+  background: transparent;
+  border-style: dotted;
+}
 @media (prefers-reduced-motion: no-preference) {
   :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="live"]::before {
     animation: lamp-pulse var(--lamp-pulse-duration, 2.4s) ease-in-out infinite;

@@ -7707,6 +7707,17 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
   background: linear-gradient(45deg, transparent 42%, var(--connection-lamp) 42% 58%, transparent 58%);
   box-shadow: none;
 }
+.connection:is([data-state="initializing"], [data-state="delayed"], [data-state="degraded"], [data-state="maintenance"], [data-state="recovering"]) {
+  --connection-lamp: var(--connection-attention, var(--warning));
+}
+.connection:is([data-state="initializing"], [data-state="delayed"], [data-state="degraded"], [data-state="maintenance"])::before {
+  background: transparent;
+  border-style: dashed;
+}
+.connection[data-state="recovering"]::before {
+  background: transparent;
+  border-style: dotted;
+}
 @media (prefers-reduced-motion: no-preference) {
   :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="live"]::before {
     animation: lamp-pulse var(--lamp-pulse-duration, 2.4s) ease-in-out infinite;
@@ -14067,6 +14078,44 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
       transparent var(--gutter),
       transparent calc(100vw - var(--gutter)),
       #000 calc(100vw - var(--gutter) + var(--app-gutter-fade, 8rem)), #000 100%);
+  }
+}
+
+/* Foldable enhancement: segment geometry is only applied to installed PWAs.
+   Unsupported browsers and ordinary windows retain the Mobile/Tablet shell.
+   The hinge remains an actual grid gap, so controls and panels cannot paint
+   across it. Themes may tune these layouts with --app-fold-* properties. */
+@media (display-mode: standalone) and (horizontal-viewport-segments: 2) {
+  :root { --folding-mode: book; }
+  .app {
+    grid-template-areas: var(--app-fold-book-areas, "bar main");
+    grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: max(0px, calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)));
+  }
+  .app-rail { display: none !important; }
+  .app-status { position: fixed; inset-inline-start: env(viewport-segment-left 1 0); inset-block-end: 0; inline-size: env(viewport-segment-width 1 0); }
+  .app-main { padding-block-end: var(--app-fold-status-space, 3rem); }
+  .app:not(:has(> .app-rail)) {
+    grid-template-areas: var(--app-fold-book-areas, "bar main");
+    grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);
+  }
+}
+@media (display-mode: standalone) and (vertical-viewport-segments: 2) {
+  :root { --folding-mode: tabletop; }
+  .app {
+    grid-template-areas: var(--app-fold-tabletop-areas, "bar" "main");
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: env(viewport-segment-height 0 0) env(viewport-segment-height 0 1);
+    row-gap: max(0px, calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0)));
+  }
+  .app-rail { display: none !important; }
+  .app-status { position: fixed; inset-inline-start: 0; inset-block-end: 0; inline-size: 100%; }
+  .app-main { padding-block-end: var(--app-fold-status-space, 3rem); }
+  .app:not(:has(> .app-rail)) {
+    grid-template-areas: var(--app-fold-tabletop-areas, "bar" "main");
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: env(viewport-segment-height 0 0) env(viewport-segment-height 0 1);
   }
 }
 /* ftl-themes: Cassette Futurism

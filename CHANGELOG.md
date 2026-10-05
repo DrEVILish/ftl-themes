@@ -3,6 +3,25 @@
 Consuming apps pin `ftl-themes` as a git submodule, so breaking contract
 changes are called out explicitly here.
 
+## v5.1.0 — screen-aware layouts and expanded theme system (2026-10-05)
+
+Major release of the v5 layout and component work. The class/token contract
+remains contract v4; v5 is the library release number. Existing v4 breaking
+changes are documented in [`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md), and
+v5 migration notes are in [`docs/MIGRATING-v5.md`](docs/MIGRATING-v5.md).
+
+- Four screen tiers, touch sizing, shell layout updates, CSS-only selection,
+  tabs and panes, floating surfaces, and expanded component groups across
+  the theme catalogue.
+- New experience patterns for foldable installed PWAs, app-signaled boot
+  readiness, and reduced-motion loading states.
+- Dashboard state scenarios, signature navigation comparisons, generated
+  component discovery data, theme authoring reports, and validated local
+  theme packs.
+- Rebuilt theme bundles and manifests; all HTML examples use the current
+  generated theme styles. See §29 of [`PLAN.md`](PLAN.md) for the delivered
+  feature extensions and remaining follow-up work.
+
 ## Unreleased
 
 - Hardened theme build tools against invalid slugs, path traversal, and shell

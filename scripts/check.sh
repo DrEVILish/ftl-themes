@@ -4,4 +4,7 @@
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-exec python3 scripts/check.py "$@"
+python3 scripts/check.py "$@"
+python3 scripts/build_component_index.py --check
+python3 test/feature_extensions.py
+node test/feature_extensions_browser.mjs

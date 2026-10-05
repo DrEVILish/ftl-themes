@@ -29,6 +29,7 @@ import json
 import os
 import re
 import subprocess
+import xml.etree.ElementTree as ET
 
 import cssparse
 
@@ -125,6 +126,19 @@ def header_field(src, field):
     return m.group(1) if m else ""
 
 
+def component_classes(src):
+    return set(re.findall(r"(?<![\w-])\.([a-z][a-z0-9-]*)", cssparse.strip_comments(src)))
+
+
+def icon_ids(path):
+    if not os.path.isfile(path):
+        return set()
+    try:
+        return {el.get("id") for el in ET.parse(path).iter() if el.get("id")}
+    except ET.ParseError:
+        return set()
+
+
 def version():
     """Build identity from the bundles themselves: changes iff they change."""
     blob = b"".join(open(f, "rb").read() for f in sorted(glob.glob("dist/*.css")))
@@ -151,6 +165,10 @@ def write_manifest():
     version_ = version()
     categories = load_categories()
     entries = []
+    core_classes = set()
+    for component_path in glob.glob("core/components/*.css"):
+        core_classes.update(component_classes(open(component_path, encoding="utf-8").read()))
+    core_icons = {"icon-" + x.strip() for x in open("assets/icons/core-set.txt", encoding="utf-8") if x.strip()}
     for path in sorted(glob.glob("themes/*/theme.css")):
         slug = os.path.basename(os.path.dirname(path))
         src = open(path).read()
@@ -164,6 +182,15 @@ def write_manifest():
         # Theme tint (CONTRACT.md "Theme tint"): `Tint: --token #default Label`.
         tm = re.match(r"(--[a-z0-9-]+)\s+(#[0-9a-fA-F]{6})\s*(.*)$", header_field(src, "Tint"))
         tint = {"token": tm.group(1), "default": tm.group(2).lower(), "label": tm.group(3) or "Tint"} if tm else None
+        full_src = src
+        chrome_path = os.path.join(os.path.dirname(path), "chrome.css")
+        if os.path.isfile(chrome_path):
+            full_src += "\n" + open(chrome_path, encoding="utf-8").read()
+        own_classes = component_classes(full_src)
+        overrides = icon_ids(os.path.join(os.path.dirname(path), "icons.svg"))
+        references = [p for p in glob.glob("references/%s/**/*" % slug, recursive=True) if os.path.isfile(p)]
+        fonts = sorted(set(re.findall(r"url\(['\"]?assets/fonts/([^)'\"]+)", full_src)))
+        navigation = [x.strip() for x in header_field(src, "Navigation-Patterns").split(",") if x.strip()]
         entries.append({
             "slug": slug,
             "dataTheme": slug,
@@ -176,6 +203,12 @@ def write_manifest():
             "contract": CONTRACT,
             "scheme": scheme,
             "luminance": luminance,
+            "tokens": sorted(root_tokens(src, slug)),
+            "fonts": fonts,
+            "iconCoverage": {"overrides": len(overrides & core_icons), "total": len(core_icons), "allOverrides": len(overrides)},
+            "references": {"files": len(references), "research": os.path.isfile("references/%s/RESEARCH.md" % slug)},
+            "componentCoverage": {"styledSelectors": len(own_classes & core_classes), "coreDefaults": len(core_classes - own_classes), "total": len(core_classes)},
+            "navigationPatterns": navigation,
             "category": meta.get("category"),
             "era": meta.get("era"),
             **({"variants": variants} if variants else {}),

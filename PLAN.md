@@ -1,6 +1,6 @@
-# ftl-themes v5.0 plan
+# ftl-themes v5.1 release plan
 
-Status: **in progress** (started 2026-10-02). Baseline 2026; new theme names agreed. v4 stays the base: the
+Status: **v5.1.0 shipped** (2026-10-05); remaining work is follow-up. Baseline 2026; new theme names agreed. v4 stays the base: the
 token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
 42 themes all carry forward (45 with the three new v5 themes). v5 is about three things v4 does not do well:
 
@@ -22,6 +22,13 @@ other 41 themes in batches (see [Rollout](#26-rollout)).
 **Rule that does not change:** markup stays declarative and as plain as
 possible: native elements, a class or two, standard attributes. Apps add
 behaviour; ftl-themes styles states.
+
+**CSS-first rule:** use CSS for styling, state presentation, interactions,
+transitions and animations whenever Baseline 2024 CSS can handle them. Use
+native HTML behavior where it fits. Keep JavaScript for app logic, data,
+persistence and behavior CSS cannot provide; do not add JS to reproduce a
+CSS capability. Newer CSS features need a fallback or must remain progressive
+enhancement under the browser support policy (§24).
 
 ---
 
@@ -645,9 +652,11 @@ site has a themed 404 too.
   Luna buttons, Aqua traffic lights on the left, LCARS pills, Liquid Glass
   traffic lights. These reuse the existing `.btn-min`/`.btn-max`/`.btn-close`
   so in-page windows and the real app window match.
-- Which side the controls sit on follows the theme (Aqua and Liquid Glass
-  on the left, Windows themes on the right), overridable by the app to
-  match the host OS.
+- The host application places native wrapper controls on the operating
+  system's default side and passes that order in its markup. CSS themes style
+  their appearance; CSS cannot discover native wrapper conventions.
+  Browser-only previews use the trailing side. Simulated in-page windows may
+  retain a theme's historical control layout.
 - The wrapper wires the buttons to the native window API; ftl-themes
   only provides the markup contract and styles.
 
@@ -670,7 +679,7 @@ copies structure and drifts independently.
   still sets every required token, directly or through the parent).
 - Each theme's README gains a "Family" line, and the gallery groups
   families together.
-- First candidates: the Windows line and the iOS line. Each family's base
+- First candidates: the Windows line, then the iOS line. Each family's base
   theme is refactored so that structure lives in the base and
   period-specific paint in the children.
 
@@ -854,7 +863,9 @@ accessibility notes. Generated from one source per component, so docs,
   (`schedule: [{ from: "19:00", variant: "night" }, …]`), and the user's own
   `.prefs` choice always wins.
 - **Easter eggs: off unless the app opts in**
-  (`<html data-easter-eggs>`). Harmless, skippable, and never block input.
+  (`<html data-easter-eggs>`). The app owns the behaviors and should expose
+  an enable/disable toggle in its About section. Harmless, skippable, and
+  never block input; persistence is app-owned too.
   Ideas: the Konami code turns on `lcars` red alert; a Windows 95 "It looks
   like you're writing a letter" helper on long text areas; the Matrix
   digital rain behind an idle screen; a Skyrim "arrow to the knee" toast
@@ -1058,6 +1069,7 @@ Statuses below come from the `web-features` data (checked 2026-10-02):
 | Customizable `<select>` (`appearance: base-select`) | not yet | Fully themed select lists | v4's styled native select. |
 | `interpolate-size` / `calc-size()` | not yet | Animating to `height: auto` (accordions) | Instant open. |
 | Scroll-driven animations | not yet | Scroll-linked effects | None (static). |
+| Viewport segments API | not Baseline | Foldable installed-PWA layout (§28) | Existing Mobile/Tablet shell; never infer a fold from model or UA. |
 
 The rendered checks run in all three engines (above), so a feature that
 isn't Baseline is caught by its fallback being tested.
@@ -1103,23 +1115,16 @@ are recorded so they can be revisited:
 
 ## 26. Rollout
 
-**Progress (2026-10-03):** phases 0–4b done and on the live site: harness,
-core layout (tiers, XL cap and gutter art, spacing, `--z-*`, container
-queries, top-layer popovers), touch and hover gating, tables and nested
-menus, the six component groups, the experience layer, CSS-only tabs,
-panes and selection. All 41 themes rolled out to v5 layout. Phase 4d/4e
-partly done: social/collaboration, game HUD (`hud.html`), media
-(`player.html`) and productivity (`planner.html`) kits; `.prose`, code
-palettes and six page templates; themed emails (`dist/email/`); theme
-scheduling; Firefox/WebKit switches, axe (`a11y_audit.mjs`), budgets,
-render cost and `theme-ready.sh` with the contribution kit; and the three
-new themes `teenage-engineering`, `cyberpunk-2077` and
-`motorsport-telemetry` (45 themes). In progress: the per-theme
-colour-contrast sweep from the axe audit. Still to do: theme families
-(§16), fidelity scoring (§17), live-data states and the dashboard grid
-(§18), the docs site (§20), easter eggs, and the rest of the §23 identity work (fonts,
-signature navigation). Done in §23: every theme icon complete (178-icon
-core set), per-theme favicons and app icons, share-card template.
+**Release status (2026-10-05):** v5.1.0 ships the screen tiers, layout and
+spacing work, touch behavior, component groups, experience patterns, CSS-only
+selection/tabs/panes, and updated bundles for all 45 themes. It also includes
+the dashboard scenarios, navigation comparison, component index, theme
+reports and local theme-pack validator in §29. Follow-up work remains for
+theme-family consolidation (§16), fidelity scoring and the full contrast
+sweep (§17/§24), a published docs site (§20), app-owned Easter egg controls,
+and some theme identity refinements (§23). Those are not release blockers.
+The 178-icon core set, per-theme favicons/app icons and share-card template
+are complete.
 
 | Phase | Work | Done when |
 |---|---|---|
@@ -1132,10 +1137,13 @@ core set), per-theme favicons and app icons, share-card template.
 | **4c. Personality and installed apps** | `.splash` (§13), themed empty/error/404 states (§14), cursor packs (§11), PWA and wrapper title bars with `.window-controls` (§15). | `blue-future` and three contrasting themes (`windows95`, `liquid-glass`, `lcars`) ship all of them. |
 | **4d. Data, kits and tooling** | Theme families (§16), advanced tables, the library-neutral `.chart` contract and `charts.html`, live-data states, the dashboard grid (§18), the four kits with `player.html` and `hud.html` (§19), the keyboard layer, budgets and scheduling (§20). The fidelity tool (§17) and docs site (§20) run from here on. | `blue-future` passes every check; Playlist Lab can build its player and tables from the music kit. |
 | **4e. Content, identity and quality** | `.prose` and code palettes, the page templates, the productivity kit and the email build (§22); icon redraws, signature navigation, font replacements, favicons and share cards (§23); Firefox and WebKit, axe, the support policy and the contribution kit (§24). The three new themes (§21) are built with the contribution kit, which proves it. | `teenage-engineering`, `cyberpunk-2077` and `motorsport-telemetry` ship v5-ready, and all checks run in three engines. |
-| **5. Theme rollout** | Port the other 41 themes in batches of about 8, most-used first. Each batch: spacing tokens, gutter art, close button, motion tokens, accent swatches, chart palette, code palette, full icon set, signature navigation (where the source has one), font review, favicon, email template, splash, empty states, cursors (where the source had distinctive ones), window controls, per-tier check, fidelity score. | Each theme is "v5 ready" in the gallery. The checks switch from reporting to failing per theme once it's ported. |
-| **6. Release** | MIGRATING-v5.md, CHANGELOG, and a `v4` branch kept for apps that pin it, as `v3` was. | Tagged v5.0.0. |
+| **5. Theme rollout** | Port the remaining themes in batches: spacing tokens, gutter art, close button, motion tokens, accent swatches, chart palette, code palette, icons, signature navigation, font review, favicon, email template, splash, empty states, cursors, window controls and per-tier review. | Complete for the current 45-theme catalogue; check reports cover all themes. Further fidelity improvements continue as follow-up. |
+| **6. Release** | Publish migration notes and changelog; retain `v4` branch for apps pinned to v4. | v5.1.0 release documented on 2026-10-05. |
 
-## 27. Breaking changes to expect (for MIGRATING-v5.md)
+## 27. v5 migration notes
+
+These are compatibility changes for apps that overrode the affected behavior.
+The actionable checklist is in [docs/MIGRATING-v5.md](docs/MIGRATING-v5.md).
 
 - The 720px breakpoint becomes four tiers. Apps that wrote their own
   `@media (max-width: 720px)` overrides around the shell must re-check
@@ -1158,32 +1166,188 @@ core set), per-theme favicons and app icons, share-card template.
   contexts. Apps positioning things relative to the viewport from inside
   a panel should check for side effects.
 
-## 28. Open questions
+## 28. Decisions
 
-1. **"iPhone Duo":** a book foldable or a hinged dual-screen device?
-   (Decides whether viewport-segment support is in scope.)
-2. **Brand buttons (#50):** which companies does Playlist Lab actually
-   need? The licensing rules mean each one is added individually.
-3. **Dial gauge (#1):** values from `<meter>` (semantic, but no decimals
-   in the needle angle) or from a `--value` custom property (precise,
-   needs an inline style)? The plan supports both, with `<meter>` as the
-   documented default.
-4. **Bottom tab bar on Mobile:** should every L1 theme's status strip
-   become a tab bar on phones, or only themes whose source had one (iOS,
-   Liquid Glass)? Proposed: every theme gets the layout, and each theme
-   styles it in its own language.
-5. **Accessibility panel storage:** is `localStorage` in the reference
-   script enough, or does Playlist Lab want the preferences saved to the
-   user's account (so they follow them between devices)?
-6. **Timed intros:** should there be a global cap on intro length (e.g.
-   3s), even when an app asks for longer?
-7. **Cursor packs:** which themes have cursors distinctive enough to be
-   worth it? Proposed first set: `windows95`, `winxp-luna`, `aqua`,
-   `msdos`, `skyrim`, `steampunk`.
-8. **Window controls side:** follow the theme (Aqua left, Windows right)
-   or the user's actual OS by default?
-9. **Families:** which family first, the Windows line or the iOS line?
-10. **Easter eggs:** any you specifically want, or any themes that must
-    never have them (for example themes used in professional dashboards)?
-11. **Emails:** which email templates does Playlist Lab send today, so
-    those come first?
+- **#1 Foldables:** Support book-style foldables and hinged dual-screen devices. In an
+   installed PWA, expose the detected segment layout and posture to the
+   shell/theme CSS; keep interactive controls out of the hinge. In a
+   browser window, retain the regular Mobile/Tablet layout.
+- **#3 Dial values:** Use semantic `<meter>` markup by default; `--value` remains
+   available where finer needle precision is needed.
+- **#4 Mobile tab bar:** Every L1 theme gets the Mobile bottom-tab-bar layout, styled in its own
+   visual language. Check the shared component across the current theme
+   catalogue and contrasting theme families.
+- **#5 Preference storage:** The reference `.prefs` script keeps preferences in `localStorage`;
+   consuming apps can replace persistence when account sync is required.
+- **#6 Boot flow:** Start with an instant static boot frame, show its loading
+   animation only while the app reports not-ready, then reveals the app or
+   login screen. Under reduced motion, keep the same boot/loading sequence
+   static. The app owns the ready signal; no global intro timer is imposed.
+- **#7 Cursor packs:** First set: `windows95`, `winxp-luna`, `aqua`, `msdos`,
+   `skyrim` and `steampunk`.
+- **#8 Window controls:** The host app supplies OS-default placement for
+   native wrapper controls in markup; themes style their appearance. CSS
+   cannot detect native wrapper conventions. Browser-only examples use the
+   trailing side; simulated in-page windows may keep their historical layout.
+- **#9 Theme families:** Build the Windows family first, then the iOS family. This choice affects
+   sequencing, not the family contract.
+- **#10 Easter eggs:** Opt in per app and expose a toggle in the About section.
+   They remain harmless, skippable and disabled by default.
+
+## 29. Feature extensions
+
+These extend shipped v5 foundations: live-data states and the dashboard
+grid (§18), desktop shells and navigation patterns (§23), and the existing
+gallery, component pages and theme checks (§20, §24). The initial
+implementations are in `dashboard.html`, `navigation-patterns.html`,
+`docs/components/index.json`, `scripts/theme_report.py` and
+`scripts/validate_theme_pack.py`. Keep app behavior in consuming apps; this
+library defines markup, styling, examples and validation.
+
+### 29.1 Live-data and dashboard kit
+
+**Goal:** make the existing live-data and dashboard patterns easier to
+adopt in production apps, especially through meaningful failure and
+recovery states.
+
+- Extend the state vocabulary only where real examples need it: initializing,
+  delayed, degraded, maintenance and recovering. Reuse `.connection`,
+  `.is-stale`, `.is-updated`, `.feed` and widget states where they fit.
+- Add reference dashboard patterns for KPI cards, sparklines, chart-plus-table
+  panels, event feeds, service health and alert summaries. Charts remain
+  library-neutral.
+- Expand the examples to show transitions between connected, stale, offline,
+  alerting and recovered states, including the difference between missing
+  data and a real zero value.
+- Document the app's responsibility for state attributes, `aria-busy`, and
+  announcing meaningful changes without announcing every streaming update.
+- Demonstrate saved layouts, empty slots, add-widget flows and customized
+  spans. Fetching, dragging, resizing and persistence remain app behavior.
+- Add scenario controls to `mission-control.html` or `trading.html` so every
+  state can be inspected without waiting for a live data source.
+
+**Done when:** an app can copy a reference dashboard and implement its own
+data while preserving accessible loading, stale, disconnected, alert and
+recovery states in every theme.
+
+**Implemented:** `dashboard.html` has a native scenario selector for live,
+stale, offline, alert and recovering states. Its small demo script only
+changes app data/state; component appearance remains CSS-driven.
+
+### 29.2 Signature navigation patterns
+
+**Goal:** let themes present the same app destinations through distinct
+navigation idioms without making apps duplicate route or content markup.
+
+- Document a shared input contract for destinations, labels, icons, active
+  state and nested items.
+- Extend the existing desktop-shell patterns with focused examples for
+  cross-media-bar navigation, section constellations and category/subcategory
+  navigation. Record which themes opt in; themes without a signature pattern
+  keep the standard navigation.
+- Define touch-friendly Mobile equivalents, including current-location and
+  Back behavior.
+- Document keyboard focus order, arrow-key behavior where used, accessible
+  names and active-page semantics for every pattern.
+- Add a comparison example that renders one destination set in multiple
+  navigation styles.
+
+**Done when:** changing theme changes navigation presentation without
+requiring an app to change its route model or duplicate page content.
+
+**Implemented:** `navigation-patterns.html` compares XMB, constellation and
+category navigation using nested lists, ordinary links and `aria-current`.
+Theme metadata advertises patterns through `Navigation-Patterns` in the
+theme header and `dist/themes.json`.
+
+### 29.3 Component docs and playground
+
+**Goal:** make component guidance usable by people and coding agents, with
+one reviewable source for examples and constraints.
+
+- Add a small structured record per component with a stable ID, markup
+  example, supported states, tokens, accessibility requirements and links
+  to source CSS and prose documentation. JSON or YAML is sufficient; do not
+  introduce a schema framework unless validation proves it necessary.
+- Generate component reference pages from those records with live examples,
+  selectable theme/state, and copyable markup.
+- Publish an index of component IDs, categories, classes and source links so
+  agents can discover the right primitive before generating markup.
+- Validate records and examples for missing source links, malformed markup,
+  undeclared states and unknown component classes. Reuse existing checks
+  where possible.
+- Keep `CONTRACT.md` and current QA pages authoritative until a migration
+  proves the generated pages cover their content; do not maintain duplicate
+  manually edited catalogs.
+
+**Done when:** a person or agent can discover a component, read its actual
+constraints and produce a valid example without inferring behavior from a
+screenshot.
+
+**Implemented:** `docs/components/index.json` is generated from component
+CSS and links component groups to tokens, source files, prose docs and live
+examples. Existing component pages remain the interactive playground and
+CONTRACT.md remains the behavior reference.
+
+### 29.4 Theme authoring workbench
+
+**Goal:** give theme contributors and developer agents actionable evidence
+about theme coverage and the next concrete gap.
+
+- Emit a machine-readable theme manifest for identity, tokens, variants,
+  fonts, icon coverage, references and supported signature patterns.
+- Extend existing checks with a coverage report listing component selectors
+  a theme styles and where it uses core defaults.
+- Report validation findings with stable rule IDs, file/line locations and
+  concise repair guidance that an agent can follow.
+- Generate a short gap list from available evidence, such as missing
+  references or undeclared font assets; label visual judgments as human
+  review rather than pretending they are machine-verified.
+- Link reports to existing gallery previews and screenshots. A separate
+  visual editor is optional and should wait until the report workflow proves
+  insufficient.
+
+**Done when:** an agent can inspect the manifest and report, identify a
+specific theme gap, make a targeted change and run the existing checks to
+verify it.
+
+**Implemented:** `dist/themes.json` now includes font, icon, reference,
+component-selector and navigation-pattern coverage. `scripts/theme_report.py`
+prints JSON findings with stable rule IDs and source locations where
+available; visual fidelity remains explicitly marked for human review.
+
+### 29.5 Theme packs
+
+**Goal:** support optional, independently previewable themes without making
+the core catalog or build depend on a hosted marketplace.
+
+- Define a versioned pack format for metadata, theme CSS, optional icon
+  overrides, variants, fonts and license notices.
+- Validate metadata, paths, declared assets, CSS scope, compatibility and
+  licensing fields before preview.
+- Start with local pack loading and gallery preview. Do not build a hosted
+  registry, accounts or publishing service until local packs see real use.
+- Record the minimum compatible library version and the contract version
+  each pack targets.
+- Document contributor ownership and attribution rules; third-party assets
+  remain subject to their own licenses and brand restrictions.
+- Consider a token-only recipe export as a smaller sharing format, but do
+  not require it for the first pack format.
+
+**Done when:** a contributor can package an optional theme, validate it,
+preview it locally and determine its compatibility and licensing status.
+
+**Implemented:** `docs/theme-pack.schema.json` and
+`scripts/validate_theme_pack.py` validate local metadata, paths, CSS scope,
+external resources and license notices. `--preview` writes a standalone
+HTML component preview beside the pack.
+
+### 29.6 Delivery status
+
+The five initial deliverables above are included in v5.1.0. The sections say
+what each implementation covers; their broader "Done when" statements remain
+acceptance targets for future refinement, not a claim that all optional ideas
+in each section have shipped.
+
+Remote registries, custom agent protocols and a bespoke visual editor remain
+deferred until local workflows show they are needed.

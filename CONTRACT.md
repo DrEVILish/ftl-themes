@@ -11,6 +11,50 @@ This file contains no references to any specific application. If you're
 integrating `ftl-themes` into an app and need integration notes, write
 them in that app's own repo — they don't belong here.
 
+## CSS-first implementation
+
+Prefer CSS over JavaScript for presentation and interaction. If a style,
+state, action, transition or animation can be handled with CSS using
+features available at the Baseline 2024 support level, implement it in CSS.
+Use HTML semantics and native browser behavior where they fit; keep
+JavaScript for application logic, data updates, persistence, and behavior
+CSS cannot provide. New JavaScript should not duplicate a CSS capability.
+When using newer CSS features, provide a tested fallback or treat them as
+progressive enhancement under the browser support policy in `PLAN.md`.
+
+## Foldable PWA enhancement
+
+The shell detects segmented viewport geometry in CSS only when running as an
+installed PWA. Two side-by-side segments use `--folding-mode: book`; two
+stacked segments use `--folding-mode: tabletop`. The hinge is a grid gap,
+so shell regions do not paint over it. A PWA may also load
+`assets/js/foldable.js` to expose `data-fold-mode` and
+`data-fold-posture` on `<html>` to app logic and themes. This is progressive
+enhancement: browsers without viewport-segment support, and ordinary
+browser windows, keep the normal Mobile/Tablet layout. Apps should place
+interactive controls inside a segment and should not infer posture from the
+device model.
+
+## App readiness and boot screens
+
+Apps that need a boot/loading cover can render a `.splash[data-boot-screen]`
+before the app content and load `assets/js/boot.js`. The screen is visible
+immediately; CSS supplies its themed loading animation. The app calls
+`window.ftlAppReady()` after the app or login screen is usable. This removes
+`aria-busy` from the main region and hides the cover with the CSS exit
+transition. Reduced-motion preferences keep the boot and loading screen
+static. Readiness and loading progress belong to the app, not the theme.
+
+## Agent discovery and local packs
+
+[`docs/components/index.json`](docs/components/index.json) maps component
+groups to their class names, tokens, source CSS, prose docs, and live examples.
+Run `python3 scripts/build_component_index.py` after changing component
+sources. For theme authoring evidence, run
+`python3 scripts/theme_report.py --theme <slug>` (or omit `--theme` for the
+catalogue); machine findings are separate from human visual review.
+Local theme packs use the format and validator in [`docs/theme-packs.md`](docs/theme-packs.md).
+
 ## Loading a theme
 
 Each theme ships as a single compiled file at `dist/<theme-name>.css`
@@ -44,7 +88,10 @@ attribute together. Themes are mutually exclusive: load exactly one
 }]
 ```
 
-`variants` and `tint` are present only on themes that have them.
+`variants` and `tint` are present only on themes that have them. The build
+also includes `tokens` (root token names), `fonts`, `iconCoverage`,
+`references`, `componentCoverage`, and `navigationPatterns` for authoring and
+agent discovery.
 
 Read it to populate a theme picker (embed it, or serve it) instead of
 hardcoding a list or scraping CSS comments.
@@ -82,6 +129,12 @@ hardcoding a list or scraping CSS comments.
 - **`tint` describes the theme's user-chosen colour**, if it has one —
   see "Theme tint". When present, your appearance settings **must**
   offer it.
+- **`navigationPatterns` lists the theme's optional shell idioms.** Empty
+  means use standard navigation; routes and active destination state stay
+  app-owned.
+- **`componentCoverage` and `iconCoverage` are authoring signals**, not
+  conformance scores. Core defaults are valid coverage; use references and
+  rendered checks for visual review.
 
 ### Serving the assets
 

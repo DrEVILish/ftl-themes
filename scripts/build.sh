@@ -75,6 +75,7 @@ done
 # and check.py imports them from this script rather than re-implementing.
 python3 scripts/build_bundles.py >/dev/null
 python3 scripts/build_manifest.py
+python3 scripts/build_component_index.py
 
 # Per-theme icon sprites: dist/icons/<slug>.svg merges the generic sprite
 # (assets/icons/icons.svg) with that theme's own themes/<slug>/icons.svg
