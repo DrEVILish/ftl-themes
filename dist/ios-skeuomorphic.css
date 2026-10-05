@@ -2233,6 +2233,60 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
   text-align: center;
   font-size: 0.85em;
 }
+/* Where CSS carousels ship (::scroll-marker, ::scroll-button(); Chrome
+   135+), the browser draws the dots and arrows itself: they scroll only the
+   carousel, track the slide in view (:target-current) and need no script,
+   so the fragment-link .carousel-nav (and carousel.js) is the fallback. */
+@supports selector(::scroll-marker) and selector(::scroll-button(*)) {
+  .carousel {
+    scroll-marker-group: after;
+    anchor-scope: --carousel-markers;
+    counter-reset: carousel-slide;
+  }
+  .carousel + .carousel-nav { display: none; }
+  .carousel::scroll-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    block-size: var(--tap-min);
+    margin-block-start: 0.6rem;
+    anchor-name: --carousel-markers;
+    padding-inline: calc(var(--tap-min) + 0.5em);
+  }
+  .carousel > .carousel-slide { counter-increment: carousel-slide; }
+  .carousel > .carousel-slide::scroll-marker {
+    content: "" / "Slide " counter(carousel-slide);
+    display: block;
+    box-sizing: border-box;
+    inline-size: var(--tap-min);
+    block-size: var(--tap-min);
+    padding: calc((var(--tap-min) - 0.7em * 0.7) / 2);
+    border-radius: 999px;
+    background: var(--carousel-dot, var(--muted)) content-box;
+  }
+  .carousel > .carousel-slide::scroll-marker:target-current { background-color: var(--carousel-dot-active, var(--accent)); }
+  .carousel > .carousel-slide::scroll-marker:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: -0.5em; }
+  .carousel::scroll-button(*) {
+    position: absolute;
+    /* At the two ends of the marker row (its inline padding leaves room). */
+    position-anchor: --carousel-markers;
+    inset-block-start: anchor(start);
+    inset-inline-start: anchor(start);
+    z-index: var(--z-raised);
+    inline-size: var(--tap-min);
+    block-size: var(--tap-min);
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    color: var(--carousel-arrow-fg, var(--text));
+    background: var(--carousel-arrow-bg, var(--surface-2));
+    font: inherit;
+    font-size: 0.85em;
+  }
+  .carousel::scroll-button(left) { content: "\2039" / "Previous"; }
+  .carousel::scroll-button(right) { content: "\203a" / "Next"; inset-inline: auto anchor(end); }
+  .carousel::scroll-button(*):disabled { opacity: 0.4; }
+}
 
 /* .scrollspy — a sticky section nav beside long content (docs,
    settings reference). The nav, the smooth scroll and the scroll offset
@@ -3416,7 +3470,9 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   min-block-size: var(--tap-min);
   touch-action: manipulation;
 }
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button) {
+/* Short labels ("EQ", "L1") too: toggles, tabs and segments. */
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button,
+    .toggle-btn, .tab, .segmented-item) {
   min-inline-size: var(--tap-min);
 }
 :is(.input, .select) { min-block-size: var(--tap-min); }
@@ -3455,8 +3511,12 @@ html[data-pointer="touch"] { --tap-min: 44px; }
 .breadcrumb-item:not(.is-current) {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-block-size: var(--tap-min);
+  min-inline-size: var(--tap-min);
 }
+/* A native colour well (e.g. a theme-tint picker) is a target too. */
+input[type="color"] { min-block-size: var(--tap-min); min-inline-size: var(--tap-min); }
 
 /* iOS Safari zooms the page when a focused field's text is under 16px. */
 @media (any-pointer: coarse) {
@@ -3597,7 +3657,9 @@ html[data-pointer="touch"] { --tap-min: 44px; }
    one letter per line (a squeezed title beside header controls, a button
    label in a narrow cell or toast). */
 :is(.table td, .table th, .panel-header:has(:is(.input, .select, .btn, .input-group))) { overflow-wrap: break-word; }
-.badge { max-inline-size: 100%; min-inline-size: 0; }
+.badge { max-inline-size: 100%; }
+/* A badge-button keeps its tap-min width (it is a target, not a label). */
+.badge:not(.badge-button) { min-inline-size: 0; }
 .btn { max-inline-size: 100%; overflow-wrap: break-word; }
 
 /* --- v5 nested menus (PLAN.md §8) ----------------------------------------
@@ -5742,13 +5804,18 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   flex: none;
   display: grid;
   place-items: center;
-  inline-size: 1.25em;
-  block-size: 1.25em;
-  margin: 0;
-  padding: 0;
+  /* A real 24px box (WCAG 2.5.8 counts the box, not ::before), pulled back
+     by negative margins so the tag keeps its 1.25em footprint; the hover
+     fill stays 1.25em via content-box clipping. */
+  --_tag-x: max(1.25em, 24px);
+  inline-size: var(--_tag-x);
+  block-size: var(--_tag-x);
+  margin: calc((1.25em - var(--_tag-x)) / 2);
+  padding: calc((var(--_tag-x) - 1.25em) / 2);
   border: 0;
   border-radius: var(--tag-radius, var(--radius));
   background: transparent;
+  background-clip: content-box;
   color: var(--tag-remove-fg, var(--muted));
   font: inherit;
   line-height: 1;
@@ -5757,7 +5824,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
 .tag-remove::before {
   content: "";
   position: absolute;
-  inset: calc((1.25em - var(--tap-min)) / 2);
+  inset: calc((var(--_tag-x) - var(--tap-min)) / 2);
 }
 .tag-remove:not(:has(.icon))::after { content: var(--input-clear-glyph, "\00d7"); font-size: 1.2em; }
 .tag-remove:focus-visible { color: var(--text); outline-offset: 0; }
@@ -6911,7 +6978,13 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   color: var(--gauge-readout-fg, var(--muted));
   text-align: center;
 }
-.gauge-readout .readout { --readout-size: 11cqi; padding: 0; }
+.gauge-readout .readout {
+  --readout-size: 11cqi;
+  /* A theme's boxed readout (an LCD window) keeps 4px round its digits. */
+  padding: max(4px, 0.1em) max(4px, 0.25em);
+}
+/* The arc's readout sits between its end labels: a size smaller. */
+.gauge-arc .gauge-readout .readout { --readout-size: 9.5cqi; }
 
 /* Arc gauge: the top half of the same face, no needle. */
 .gauge-arc {
@@ -6924,7 +6997,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   aspect-ratio: 100 / 64;
   border-radius: 50% 50% var(--radius) var(--radius) / 78% 78% var(--radius) var(--radius);
 }
-.gauge-arc .gauge-readout { inset: auto 0 2cqi; }
+.gauge-arc .gauge-readout { inset: auto 0 max(5px, 3cqi); }
 .gauge-arc .gauge-ticks > li { --gauge-label-r: 25cqi; }
 
 /* --- .compass (§9 #4): a rose turned by --heading (degrees). The needle
@@ -7976,74 +8049,6 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
   .is-updated { text-decoration-color: Highlight; }
   .connection::before, .depth-bar::before { forced-color-adjust: none; }
 }
-/* Physical media transports. The SVG drawings are presentational; apps own
-   playback/recording and set one state class on .media-deck. */
-.media-decks { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)); gap:var(--space-m,1rem); }
-.media-deck {
-  --deck-highlight:var(--accent);
-  color:var(--text);
-  background:var(--surface);
-  border:1px solid var(--deck-trim,var(--border));
-  border-radius:var(--radius);
-  padding:var(--space-m,1rem);
-  box-shadow:var(--panel-shadow,none);
-}
-.media-deck h2 { margin:0 0 .75rem; font-size:1rem; }
-.media-deck-visual { display:block; width:100%; height:auto; }
-.media-deck .plate { fill:var(--deck-face,var(--surface-2)); }
-.media-deck .plate-bezel,.media-deck .deck-frame { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:2; }
-.media-deck .deck-grid,.media-deck .head-edge,.media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.45; }
-.media-deck .deck-screw { fill:var(--deck-well,var(--surface)); stroke:var(--deck-trim,var(--border)); }
-.media-deck .device-guide { fill:var(--deck-well,var(--surface)); stroke:var(--deck-highlight); stroke-width:1.5; }
-.media-deck .deck-text { fill:var(--muted); font:700 12px var(--font-mono,monospace); letter-spacing:.16em; }
-.media-deck .reel-disc,.media-deck .spool-disc { fill:var(--deck-face,var(--surface-2)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
-.media-deck .reel-ring { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1.5; }
-.media-deck .reel-wind { fill:none; stroke:var(--deck-highlight); stroke-width:2; opacity:.38; }
-.media-deck .reel-hub { fill:var(--deck-hub,var(--surface)); stroke:var(--deck-highlight); stroke-width:1.5; }
-.media-deck .reel-center { fill:var(--deck-well,var(--surface)); }
-.media-deck .reel-spoke { fill:var(--deck-spoke,var(--surface-2)); stroke:var(--deck-highlight); stroke-width:1.2; }
-.media-deck .tape-shadow { fill:none; stroke:var(--deck-shadow,var(--bg)); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
-.media-deck .tape { fill:none; stroke:var(--deck-tape,var(--deck-trim,var(--border))); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
-.media-deck .head-plate { fill:var(--deck-face,var(--surface-2)); stroke:var(--border); stroke-width:1.5; }
-.media-deck .head-window,.media-deck .lcd { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:1.5; }
-.media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.35; }
-.media-deck .head-gap { fill:none; stroke:var(--deck-highlight); stroke-width:3; stroke-linecap:round; }
-.media-deck .device-counter { fill:var(--accent); font:italic 700 24px var(--font-mono,monospace); }
-.media-deck .tonearm { fill:none; stroke:var(--deck-highlight); stroke-width:5; stroke-linecap:round; }
-.media-deck .platter { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
-.media-deck .groove { fill:none; stroke:var(--deck-spoke,var(--border)); stroke-width:1; opacity:.8; }
-.media-deck .record-label { fill:var(--deck-highlight); }
-.media-deck .disc { fill:var(--deck-face,var(--surface-2)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
-.media-deck .disc-groove { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.75; }
-.media-deck .disc-hole { fill:var(--deck-well,var(--bg)); }
-.media-deck .device-lamp { fill:var(--muted); }
-.media-deck .device-controls { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:.75rem; }
-.media-deck .device-controls .status { margin-left:auto; }
-.media-deck.device-vinyl .tonearm { transform-box:view-box; transform-origin:430px 74px; }
-
-@media (prefers-reduced-motion:no-preference) {
-  html:not([data-motion="reduced"]) .media-deck.is-playing :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
-  html:not([data-motion="reduced"]) .media-deck.is-playing .reel-supply .reel-spin { animation-direction:reverse; }
-  html:not([data-motion="reduced"]) .media-deck.is-playing .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
-  html:not([data-motion="reduced"]) .media-deck.is-playing .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording .reel-supply .reel-spin { animation-direction:reverse; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
-}
-.media-deck.is-recording .device-counter { fill:var(--danger); }
-.media-deck.is-recording .head-gap { stroke:var(--danger); }
-.media-deck.is-recording .device-lamp { fill:var(--danger); }
-.media-deck.is-playing .device-lamp { fill:var(--success); }
-.media-deck :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { transform-box:fill-box; transform-origin:center; }
-.media-deck.is-paused :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { animation:none !important; }
-@keyframes media-deck-spin { to { transform:rotate(360deg); } }
-@keyframes media-tape-flow { to { stroke-dashoffset:-36; } }
-@keyframes media-tonearm { to { transform:rotate(4deg); } }
-
-@media (prefers-reduced-motion:reduce) {
-  .media-deck * { animation:none !important; transition:none !important; }
-}
 /* --- v5 music and media kit (PLAN.md §19 "Music and media") -------------
  * Track rows, the playing equaliser glyph, media toggles (shuffle, repeat,
  * like, mute), the seek scrubber and volume, the now-playing bar and its
@@ -8599,6 +8604,74 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 @media (prefers-reduced-motion: no-preference) {
   .lyrics > li { transition: color 0.3s ease, box-shadow 0.3s ease; }
 }
+/* Physical media transports. The SVG drawings are presentational; apps own
+   playback/recording and set one state class on .media-deck. */
+.media-decks { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)); gap:var(--space-m,1rem); }
+.media-deck {
+  --deck-highlight:var(--accent);
+  color:var(--text);
+  background:var(--surface);
+  border:1px solid var(--deck-trim,var(--border));
+  border-radius:var(--radius);
+  padding:var(--space-m,1rem);
+  box-shadow:var(--panel-shadow,none);
+}
+.media-deck h2 { margin:0 0 .75rem; font-size:1rem; }
+.media-deck-visual { display:block; width:100%; height:auto; }
+.media-deck .plate { fill:var(--deck-face,var(--surface-2)); }
+.media-deck .plate-bezel,.media-deck .deck-frame { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .deck-grid,.media-deck .head-edge,.media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.45; }
+.media-deck .deck-screw { fill:var(--deck-well,var(--surface)); stroke:var(--deck-trim,var(--border)); }
+.media-deck .device-guide { fill:var(--deck-well,var(--surface)); stroke:var(--deck-highlight); stroke-width:1.5; }
+.media-deck .deck-text { fill:var(--muted); font:700 12px var(--font-mono,monospace); letter-spacing:.16em; }
+.media-deck .reel-disc,.media-deck .spool-disc { fill:var(--deck-face,var(--surface-2)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .reel-ring { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1.5; }
+.media-deck .reel-wind { fill:none; stroke:var(--deck-highlight); stroke-width:2; opacity:.38; }
+.media-deck .reel-hub { fill:var(--deck-hub,var(--surface)); stroke:var(--deck-highlight); stroke-width:1.5; }
+.media-deck .reel-center { fill:var(--deck-well,var(--surface)); }
+.media-deck .reel-spoke { fill:var(--deck-spoke,var(--surface-2)); stroke:var(--deck-highlight); stroke-width:1.2; }
+.media-deck .tape-shadow { fill:none; stroke:var(--deck-shadow,var(--bg)); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+.media-deck .tape { fill:none; stroke:var(--deck-tape,var(--deck-trim,var(--border))); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.media-deck .head-plate { fill:var(--deck-face,var(--surface-2)); stroke:var(--border); stroke-width:1.5; }
+.media-deck .head-window,.media-deck .lcd { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:1.5; }
+.media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.35; }
+.media-deck .head-gap { fill:none; stroke:var(--deck-highlight); stroke-width:3; stroke-linecap:round; }
+.media-deck .device-counter { fill:var(--accent); font:italic 700 24px var(--font-mono,monospace); }
+.media-deck .tonearm { fill:none; stroke:var(--deck-highlight); stroke-width:5; stroke-linecap:round; }
+.media-deck .platter { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .groove { fill:none; stroke:var(--deck-spoke,var(--border)); stroke-width:1; opacity:.8; }
+.media-deck .record-label { fill:var(--deck-highlight); }
+.media-deck .disc { fill:var(--deck-face,var(--surface-2)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .disc-groove { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.75; }
+.media-deck .disc-hole { fill:var(--deck-well,var(--bg)); }
+.media-deck .device-lamp { fill:var(--muted); }
+.media-deck .device-controls { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:.75rem; }
+.media-deck .device-controls .status { margin-left:auto; }
+.media-deck.device-vinyl .tonearm { transform-box:view-box; transform-origin:430px 74px; }
+
+@media (prefers-reduced-motion:no-preference) {
+  html:not([data-motion="reduced"]) .media-deck.is-playing :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck.is-playing .reel-supply .reel-spin { animation-direction:reverse; }
+  html:not([data-motion="reduced"]) .media-deck.is-playing .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
+  html:not([data-motion="reduced"]) .media-deck.is-playing .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording .reel-supply .reel-spin { animation-direction:reverse; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+}
+.media-deck.is-recording .device-counter { fill:var(--danger); }
+.media-deck.is-recording .head-gap { stroke:var(--danger); }
+.media-deck.is-recording .device-lamp { fill:var(--danger); }
+.media-deck.is-playing .device-lamp { fill:var(--success); }
+.media-deck :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { transform-box:fill-box; transform-origin:center; }
+.media-deck.is-paused :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { animation:none !important; }
+@keyframes media-deck-spin { to { transform:rotate(360deg); } }
+@keyframes media-tape-flow { to { stroke-dashoffset:-36; } }
+@keyframes media-tonearm { to { transform:rotate(4deg); } }
+
+@media (prefers-reduced-motion:reduce) {
+  .media-deck * { animation:none !important; transition:none !important; }
+}
 /* ftl-themes v5: navigation and structure (PLAN.md §9 #37, #39–#46) and
  * the keyboard layer (§20). Built into every bundle after core.css, so it
  * reuses .tabs/.tab, .btn-close, .nav-item, the nested-ul menu rules and
@@ -8699,13 +8772,16 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   color: var(--menubar-fg, var(--text));
   border-bottom: var(--menubar-rule-width, 1px) solid var(--menubar-rule, var(--border));
 }
-.app-bar .menubar { --menubar-bg: transparent; --menubar-rule-width: 0; }
+/* In the bar, items take the bar's text colour as .nav-item does (core.css). */
+.app-bar .menubar { --menubar-bg: transparent; --menubar-rule-width: 0; --menubar-fg: var(--app-bar-text); }
 .menubar li { position: relative; }
 .menubar > li > :is(button, a) {
   display: flex;
   align-items: center;
+  justify-content: center;
   block-size: 100%;
   min-block-size: var(--tap-min);
+  min-inline-size: var(--tap-min);
   padding: 0.3em 0.75em;
   border-radius: var(--menubar-item-radius, var(--radius));
   color: inherit;
@@ -11614,6 +11690,15 @@ button.presence:is(:focus-visible, [aria-expanded="true"]) > .avatar { box-shado
   color: var(--mention-self-fg, var(--text));
   box-shadow: inset 0 -2px 0 var(--mention-self-line, var(--warning-text, var(--warning)));
 }
+/* On the user's own bubble (often an accent fill, where accent text on an
+   accent tint drops to ~1.5:1) a mention takes the bubble's own ink, with
+   an underline in place of the chip fill. */
+.message.is-own .mention:not(.is-self) {
+  background: var(--mention-own-bg, transparent);
+  color: var(--mention-own-fg, inherit);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 @media (hover: hover) {
   a.mention:hover { text-decoration: underline; }
 }
@@ -12300,7 +12385,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
   --_row-tint: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
 .table tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
-.table tbody tr.is-selected:nth-child(n) {
+.table tbody tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))):nth-child(n) {
   --_row-tint: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }
 
@@ -12414,7 +12499,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   }
   .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
   .table.is-stacked > * > tr > :first-child { inline-size: auto; }
-  .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
+  .table.is-stacked > * > tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
 }
 @container (max-width: 480px) {
   .table.is-stacked,
@@ -12453,7 +12538,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   }
   .table.is-stacked > * > tr > [data-label] > * { min-inline-size: 0; }
   .table.is-stacked > * > tr > :first-child { inline-size: auto; }
-  .table.is-stacked > * > tr.is-selected { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
+  .table.is-stacked > * > tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { --table-label-fg: var(--row-selected-fg, color-mix(in srgb, currentColor 75%, transparent)); }
 }
 
 /* --- Column resize and reorder (§18) ------------------------------------
@@ -15052,5 +15137,11 @@ html[data-theme="ios-skeuomorphic"] .desktop-window > .modal {
   text-shadow: none;
 }
 html[data-theme="ios-skeuomorphic"] .desktop-window .modal-header { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5); }
+
+/* Frozen first-column header: core layers --table-head-bg over the cell's
+   opaque base as linear-gradient(colour 0 0), which can't wrap this theme's
+   gradient (the whole background drops out). The gradient is opaque, so it
+   paints the corner on its own. */
+html[data-theme="ios-skeuomorphic"] .table:not(.is-stacked) > thead > tr > th:is(:first-child, :nth-child(2)) { background: var(--table-head-bg); }
 
 }

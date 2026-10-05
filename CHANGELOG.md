@@ -5,6 +5,17 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Cross-theme polish** from the showcase pages: `.tag-remove` gets a real
+  24px target; mention and avatar ink meet 4.5:1 in every theme; menubar
+  items, toggles, tabs, segments, breadcrumbs, badge buttons and colour
+  wells reach the touch minimum; boxed gauge readouts are padded and LCARS
+  readouts are no longer oversized; an app-bar menubar takes the bar's text
+  colour; stacked and frozen selected rows follow checked rows; hot-wheels
+  toggles, windows95/win7 tabs and nav-brand chips fixed; `.carousel` gets a
+  CSS `::scroll-marker` / `::scroll-button()` enhancement where supported.
+- The demo menu lists Audio components, Media decks and Signature navigation
+  patterns on every page.
+
 ## v5.2.0 — theme families and authoring tools (2026-10-05)
 
 Compatible feature release; the theme contract remains v4.
