@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio components — ftl-themes</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  .audio-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr)); gap:1rem; }
+  .audio-card { padding:1rem; }
+  .audio-card > h2 { font-size:1.1rem; margin:0 0 .75rem; }
+  .audio-row { display:flex; align-items:center; flex-wrap:wrap; gap:.75rem; }
+  .audio-spectrum { display:flex; align-items:end; gap:3px; height:5rem; padding:.5rem; background:var(--surface-2); border-radius:var(--radius); }
+  .audio-spectrum > i { flex:1; height:var(--h); min-width:3px; background:var(--accent); border-radius:2px 2px 0 0; }
+  .audio-scale { display:flex; justify-content:space-between; color:var(--muted); font: .75rem var(--font-mono,monospace); }
+  .audio-timeline-demo { --lane-label-width:8rem; overflow:auto; }
+  .audio-ruler { display:grid; grid-template-columns:repeat(5,1fr); margin-inline-start:var(--lane-label-width); color:var(--muted); font: .75rem var(--font-mono,monospace); }
+  .audio-ruler > :not(:first-child) { text-align:center; }
+  .audio-lanes { border-block:1px solid var(--border); }
+  .audio-lane { display:grid; grid-template-columns:var(--lane-label-width) minmax(18rem,1fr); min-height:4.5rem; border-block-end:1px solid var(--border); }
+  .audio-lane:last-child { border:0; }
+  .audio-lane-label { display:flex; align-items:center; justify-content:space-between; gap:.25rem; padding:.35rem; border-inline-end:1px solid var(--border); }
+  .audio-lane-label .cluster { gap:.2rem; }
+  .audio-lane-label .key { min-width:1.7rem; min-height:1.7rem; padding:.1rem; }
+  .audio-lane-track { position:relative; min-width:0; background:repeating-linear-gradient(90deg,transparent 0 calc(25% - 1px),var(--border) calc(25% - 1px) 25%); }
+  .audio-clip { position:absolute; inset-block:4px; inset-inline-start:var(--clip-start); inline-size:var(--clip-width); overflow:hidden; border:1px solid var(--accent); border-radius:var(--radius); background:var(--surface-2); }
+  .audio-clip.is-selected { outline:2px solid var(--focus); outline-offset:-2px; }
+  .audio-clip .waveform { --waveform-height:100%; height:100%; background:linear-gradient(90deg,var(--waveform-played,var(--accent)) 45%,var(--waveform-unplayed,var(--muted)) 45%); }
+  .audio-timeline-seek { margin-block-start:.6rem; }
+</style>
+</head>
+<body class="app">
+<header class="app-bar demo-topbar">
+  <span class="nav-brand">Audio UI</span>
+  <nav aria-label="Examples"><a class="nav-item" href="soundmixer.html" data-demo-link>Sound mixer</a><a class="nav-item" href="player.html" data-demo-link>Media player</a><a class="nav-item" href="components-instruments.html" data-demo-link>Instruments</a></nav>
+  <div class="cluster push"><select class="select is-auto" id="theme-picker" aria-label="Theme"></select></div>
+</header>
+<aside class="app-rail" aria-hidden="true"></aside>
+<main class="app-main stack stack-lg">
+  <header class="stack stack-sm">
+    <h1>Audio components</h1>
+    <p class="text-muted">AudioCN’s component catalogue mapped onto ftl-themes’ plain HTML and themed CSS. Values and audio-engine state come from your app; these controls never request a microphone or create an audio graph.</p>
+    <p><a href="docs/components/audio.md">Integration guide and full component map</a></p>
+  </header>
+  <div class="audio-grid">
+    <section class="panel audio-card"><h2>Meter, scale and clip</h2>
+      <div class="audio-row"><div class="meter meter-v is-segmented" style="height:7rem;--meter-level:78%;--meter-peak:91%" role="meter" aria-label="Master output" aria-valuenow="-6" aria-valuemin="-60" aria-valuemax="0"><div class="meter-fill"></div><div class="meter-peak"></div></div><div class="stack"><span class="readout">-6.2<span class="readout-unit">dBFS</span></span><div class="audio-scale" style="width:9rem"><span>-60</span><span>-18</span><span>0</span></div><span class="status status-error" role="status">Clip held · 2</span></div></div>
+      <p class="field-hint">Drive meter levels and peak holds from your audio callback; update text readouts at a human-readable rate.</p>
+    </section>
+    <section class="panel audio-card"><h2>Frequency spectrum</h2>
+      <div class="audio-spectrum" role="img" aria-label="Illustrative frequency spectrum, strongest in low and mid frequencies"><i style="--h:24%"></i><i style="--h:48%"></i><i style="--h:82%"></i><i style="--h:65%"></i><i style="--h:42%"></i><i style="--h:70%"></i><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:26%"></i><i style="--h:45%"></i><i style="--h:18%"></i><i style="--h:33%"></i><i style="--h:12%"></i></div>
+      <p class="field-hint">Static illustration; replace bar heights from analyser data. See the instruments page for SVG charts and EQ curves.</p>
+    </section>
+    <section class="panel audio-card"><h2>Knob, fader and parameter</h2>
+      <div class="audio-row"><label class="knob knob-lg" style="--value:.64"><input type="range" min="20" max="20000" value="12000" aria-label="Filter cutoff"><span class="knob-dial"></span><span class="knob-label">Cutoff</span></label><span class="readout readout-sm">12<span class="readout-unit">kHz</span></span></div>
+      <label class="field"><span class="label">Resonance</span><input class="slider" type="range" min="0" max="100" value="38" aria-label="Resonance"></label>
+      <p class="field-hint">Use native range inputs for keyboard and assistive technology support. <code>controls.js</code> syncs knob position from its range input.</p>
+    </section>
+    <section class="panel audio-card"><h2>Pan, mute and solo</h2>
+      <div class="audio-row"><label class="knob knob-sm is-bipolar" style="--value:.5"><input type="range" min="-1" max="1" step=".01" value="0" aria-label="Pan"><span class="knob-dial"></span><span class="knob-label">Pan</span></label><label class="key key-mute"><input type="checkbox">Mute</label><label class="key key-solo"><input type="checkbox">Solo</label><button class="key key-sel" aria-pressed="true">Monitor</button></div>
+      <p class="field-hint">The bipolar knob has a centre detent; keys expose checked or pressed state without extra JavaScript.</p>
+    </section>
+    <section class="panel audio-card"><h2>Device selection</h2>
+      <label class="field"><span class="label">Audio input</span><select class="select"><option>USB interface · Input 1–2</option><option>Built-in microphone</option><option>Disconnected device</option></select></label>
+      <p class="field-hint">Populate from the app’s device enumeration and show permission/disconnected states in the surrounding form.</p>
+    </section>
+    <section class="panel audio-card"><h2>Trigger pad</h2>
+      <div class="audio-row"><button class="key key-on" aria-label="Trigger kick sample">KICK</button><button class="key key-solo" aria-label="Trigger snare sample">SNARE</button><button class="key" aria-label="Trigger closed hi-hat">CLOSED HAT</button><button class="key key-sel" aria-label="Trigger open hi-hat">OPEN HAT</button></div>
+      <p class="field-hint">Use buttons for momentary triggers and labels with checkboxes for latched states. Add hotkeys in the app when needed.</p>
+    </section>
+  </div>
+  <section class="panel audio-card" aria-labelledby="timeline-title">
+    <h2 id="timeline-title">Waveform timeline</h2>
+    <p class="field-hint">A multi-track layout composed from the existing waveform, range, transport and mute/solo controls. Clip editing, zoom, snapping and playback synchronization belong to the host app.</p>
+    <div class="audio-timeline-demo" role="group" aria-label="Two-track audio timeline, four minutes">
+      <div class="transport" role="group" aria-label="Timeline transport"><button class="btn btn-go" type="button">Play</button><button class="btn" type="button">Stop</button><label class="toggle-btn is-danger"><input type="checkbox"><span class="toggle-btn-off">Rec</span><span class="toggle-btn-on">Recording</span></label><span class="readout">01:24<span class="readout-unit">tc</span></span></div>
+      <div class="audio-ruler" aria-hidden="true"><span>0:00</span><span>1:00</span><span>2:00</span><span>3:00</span><span>4:00</span></div>
+      <div class="audio-lanes">
+        <div class="audio-lane">
+          <div class="audio-lane-label"><strong>Drums</strong><span class="cluster"><label class="key key-mute"><input type="checkbox" aria-label="Mute drums">M</label><label class="key key-solo"><input type="checkbox" aria-label="Solo drums">S</label></span></div>
+          <div class="audio-lane-track"><div class="audio-clip" style="--clip-start:4%;--clip-width:48%"><span class="waveform" role="img" aria-label="Drum waveform, 0:10 to 2:05"><span class="waveform-bars" aria-hidden="true"><i style="--level:.32"></i><i style="--level:.76"></i><i style="--level:.58"></i><i style="--level:.9"></i><i style="--level:.38"></i><i style="--level:.7"></i><i style="--level:.96"></i><i style="--level:.5"></i><i style="--level:.82"></i><i style="--level:.43"></i><i style="--level:.68"></i><i style="--level:.92"></i><i style="--level:.35"></i><i style="--level:.74"></i><i style="--level:.57"></i><i style="--level:.88"></i><i style="--level:.4"></i><i style="--level:.72"></i><i style="--level:.94"></i><i style="--level:.49"></i></span></span></div></div>
+        </div>
+        <div class="audio-lane">
+          <div class="audio-lane-label"><strong>Vocals</strong><span class="cluster"><label class="key key-mute"><input type="checkbox" aria-label="Mute vocals">M</label><label class="key key-solo"><input type="checkbox" aria-label="Solo vocals">S</label></span></div>
+          <div class="audio-lane-track"><div class="audio-clip is-selected" style="--clip-start:18%;--clip-width:64%"><span class="waveform" role="img" aria-label="Vocal waveform, 0:43 to 3:16"><span class="waveform-bars" aria-hidden="true"><i style="--level:.18"></i><i style="--level:.28"></i><i style="--level:.64"></i><i style="--level:.83"></i><i style="--level:.45"></i><i style="--level:.7"></i><i style="--level:.9"></i><i style="--level:.54"></i><i style="--level:.34"></i><i style="--level:.76"></i><i style="--level:.98"></i><i style="--level:.6"></i><i style="--level:.39"></i><i style="--level:.7"></i><i style="--level:.86"></i><i style="--level:.51"></i><i style="--level:.33"></i><i style="--level:.69"></i><i style="--level:.88"></i><i style="--level:.42"></i></span></span></div></div>
+        </div>
+      </div>
+      <div class="scrubber audio-timeline-seek"><time>1:24</time><input type="range" min="0" max="240" value="84" aria-label="Timeline playback position" aria-valuetext="1 minute 24 seconds of 4 minutes"><time>-2:36</time></div>
+    </div>
+  </section>
+  <section class="panel audio-card"><h2>How the pieces fit</h2><p>For a console, start with <a href="soundmixer.html" data-demo-link>.mixer and .strip</a>; for playback, compose <a href="player.html" data-demo-link>.tracklist, .waveform, .scrubber and .transport</a>. Add your engine separately and feed its values into the markup. The <a href="docs/components/audio.md">audio integration guide</a> maps every AudioCN component and its hooks to an existing class or an app-owned responsibility.</p></section>
+</main>
+<script src="assets/js/controls.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

@@ -13,6 +13,9 @@ every other component token. Everything on the page works without
 JavaScript (toggles, repeat cycling, scrubber fill, waveform played colour)
 except the waveform hover preview, which needs the pointer position.
 
+For the wider audio-control map (meters, mixers, devices and trigger pads), see
+the [audio component guide](audio.md) and [audio showcase](../../audio-components.html).
+
 ---
 
 ## Track rows `.tracklist` > `.track`
@@ -303,6 +306,13 @@ wf.addEventListener("pointerleave", () => wf.style.removeProperty("--hover"));
 Accessibility: the input is the control (`aria-label`, `aria-valuetext`
 with times); the bars are `aria-hidden`. Focus draws the ring around the
 whole waveform.
+
+For a multitrack waveform timeline, compose one decorative `.waveform` clip
+per region with `.key` mute/solo controls, `.transport`, and a labelled
+`.scrubber` for the playhead. [The audio showcase](../../audio-components.html)
+includes a two-lane example. This library styles the controls and clip
+presentation; the consuming app owns clip editing, zoom, selection, snapping,
+and synchronization.
 
 ---
 

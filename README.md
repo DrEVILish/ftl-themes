@@ -231,6 +231,8 @@ theme.
   - [`ticketsystem.html`](ticketsystem.html)
   - [`powerstation.html`](powerstation.html)
   - [`soundmixer.html`](soundmixer.html)
+  - [`media-decks.html`](media-decks.html), transport devices and animation states from reel-to-reel to MiniDisc
+  - [`audio-components.html`](audio-components.html), with the [AudioCN component map and usage guide](docs/components/audio.md)
   - [`livechat.html`](livechat.html)
 - **Templates to copy:**
   - [`auth.html`](auth.html)

@@ -5,6 +5,17 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Media decks.** Added a theme-token `.media-deck` component with Pi9696's
+  reel-to-reel plate and reel/tape motion, plus vinyl, portable cassette and
+  MiniDisc examples. Play/record/pause states honor reduced motion; see
+  `media-decks.html`, `docs/components/media-devices.md` and
+  `THIRD_PARTY_NOTICES.md`.
+
+- **Audio control coverage.** AudioCN's audio showcase now includes a
+  two-track waveform timeline composed from existing waveform, transport,
+  scrubber and mute/solo controls. The guide marks editing gestures and
+  timeline synchronization as app responsibilities.
+
 - More cockpits: `cockpit-boat.html` (chart plotter with AIS, radar with
   EBL/VRM, wind, depth, twin engines, VHF with guarded DSC),
   `cockpit-submarine.html` (sonar waterfall, passive bearings, periscope,

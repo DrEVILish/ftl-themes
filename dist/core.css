@@ -7969,6 +7969,74 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
   .is-updated { text-decoration-color: Highlight; }
   .connection::before, .depth-bar::before { forced-color-adjust: none; }
 }
+/* Physical media transports. The SVG drawings are presentational; apps own
+   playback/recording and set one state class on .media-deck. */
+.media-decks { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)); gap:var(--space-m,1rem); }
+.media-deck {
+  --deck-highlight:var(--accent);
+  color:var(--text);
+  background:var(--surface);
+  border:1px solid var(--deck-trim,var(--border));
+  border-radius:var(--radius);
+  padding:var(--space-m,1rem);
+  box-shadow:var(--panel-shadow,none);
+}
+.media-deck h2 { margin:0 0 .75rem; font-size:1rem; }
+.media-deck-visual { display:block; width:100%; height:auto; }
+.media-deck .plate { fill:var(--deck-face,var(--surface-2)); }
+.media-deck .plate-bezel,.media-deck .deck-frame { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .deck-grid,.media-deck .head-edge,.media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.45; }
+.media-deck .deck-screw { fill:var(--deck-well,var(--surface)); stroke:var(--deck-trim,var(--border)); }
+.media-deck .device-guide { fill:var(--deck-well,var(--surface)); stroke:var(--deck-highlight); stroke-width:1.5; }
+.media-deck .deck-text { fill:var(--muted); font:700 12px var(--font-mono,monospace); letter-spacing:.16em; }
+.media-deck .reel-disc,.media-deck .spool-disc { fill:var(--deck-face,var(--surface-2)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .reel-ring { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1.5; }
+.media-deck .reel-wind { fill:none; stroke:var(--deck-highlight); stroke-width:2; opacity:.38; }
+.media-deck .reel-hub { fill:var(--deck-hub,var(--surface)); stroke:var(--deck-highlight); stroke-width:1.5; }
+.media-deck .reel-center { fill:var(--deck-well,var(--surface)); }
+.media-deck .reel-spoke { fill:var(--deck-spoke,var(--surface-2)); stroke:var(--deck-highlight); stroke-width:1.2; }
+.media-deck .tape-shadow { fill:none; stroke:var(--deck-shadow,var(--bg)); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+.media-deck .tape { fill:none; stroke:var(--deck-tape,var(--deck-trim,var(--border))); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.media-deck .head-plate { fill:var(--deck-face,var(--surface-2)); stroke:var(--border); stroke-width:1.5; }
+.media-deck .head-window,.media-deck .lcd { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:1.5; }
+.media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.35; }
+.media-deck .head-gap { fill:none; stroke:var(--deck-highlight); stroke-width:3; stroke-linecap:round; }
+.media-deck .device-counter { fill:var(--accent); font:italic 700 24px var(--font-mono,monospace); }
+.media-deck .tonearm { fill:none; stroke:var(--deck-highlight); stroke-width:5; stroke-linecap:round; }
+.media-deck .platter { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .groove { fill:none; stroke:var(--deck-spoke,var(--border)); stroke-width:1; opacity:.8; }
+.media-deck .record-label { fill:var(--deck-highlight); }
+.media-deck .disc { fill:var(--deck-face,var(--surface-2)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
+.media-deck .disc-groove { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.75; }
+.media-deck .disc-hole { fill:var(--deck-well,var(--bg)); }
+.media-deck .device-lamp { fill:var(--muted); }
+.media-deck .device-controls { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-top:.75rem; }
+.media-deck .device-controls .status { margin-left:auto; }
+.media-deck.device-vinyl .tonearm { transform-box:view-box; transform-origin:430px 74px; }
+
+@media (prefers-reduced-motion:no-preference) {
+  html:not([data-motion="reduced"]) .media-deck.is-playing :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck.is-playing .reel-supply .reel-spin { animation-direction:reverse; }
+  html:not([data-motion="reduced"]) .media-deck.is-playing .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
+  html:not([data-motion="reduced"]) .media-deck.is-playing .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording .reel-supply .reel-spin { animation-direction:reverse; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
+  html:not([data-motion="reduced"]) .media-deck.is-recording .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+}
+.media-deck.is-recording .device-counter { fill:var(--danger); }
+.media-deck.is-recording .head-gap { stroke:var(--danger); }
+.media-deck.is-recording .device-lamp { fill:var(--danger); }
+.media-deck.is-playing .device-lamp { fill:var(--success); }
+.media-deck :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { transform-box:fill-box; transform-origin:center; }
+.media-deck.is-paused :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { animation:none !important; }
+@keyframes media-deck-spin { to { transform:rotate(360deg); } }
+@keyframes media-tape-flow { to { stroke-dashoffset:-36; } }
+@keyframes media-tonearm { to { transform:rotate(4deg); } }
+
+@media (prefers-reduced-motion:reduce) {
+  .media-deck * { animation:none !important; transition:none !important; }
+}
 /* --- v5 music and media kit (PLAN.md §19 "Music and media") -------------
  * Track rows, the playing equaliser glyph, media toggles (shuffle, repeat,
  * like, mute), the seek scrubber and volume, the now-playing bar and its
