@@ -18,9 +18,16 @@ coverage = json.loads(report.stdout)["themes"]
 assert {row["slug"] for row in coverage} == set(themes)
 assert all(row["componentCoverage"]["total"] > 0 for row in coverage)
 catalogue = json.loads((ROOT / "dist/themes.json").read_text())
-assert all({"tokens", "fonts", "iconCoverage", "references", "componentCoverage", "navigationPatterns"} <= set(row) for row in catalogue)
+assert all({"tokens", "fonts", "iconCoverage", "references", "componentCoverage", "navigationPatterns", "family", "extends"} <= set(row) for row in catalogue)
 assert all(row["iconCoverage"]["total"] == 178 for row in catalogue)
 assert all(".app-status.tabbar" in (ROOT / "dist" / (row["slug"] + ".css")).read_text() for row in catalogue)
+by_slug = {row["slug"]: row for row in catalogue}
+assert by_slug["win7-aero"]["family"] == "windows95" and by_slug["win7-aero"]["extends"] == "winxp-luna"
+assert by_slug["liquid-glass"]["family"] == "ios-skeuomorphic" and by_slug["liquid-glass"]["extends"] == "ios-flat"
+assert 'html[data-theme="windows95"]' not in (ROOT / "dist/winxp-luna.css").read_text()
+assert 'html[data-theme="win7-aero"]' in (ROOT / "dist/tokens.css").read_text()
+assert "--cursor-default" in (ROOT / "core/cursors.css").read_text()
+assert '"theme-feedback-v1"' in (ROOT / "theme-feedback.html").read_text()
 
 with tempfile.TemporaryDirectory(prefix="ftl-theme-pack-") as temp:
     pack = pathlib.Path(temp)
@@ -42,6 +49,8 @@ with tempfile.TemporaryDirectory(prefix="ftl-theme-pack-") as temp:
 layout = (ROOT / "core/layout.css").read_text()
 assert "(display-mode: standalone)" in layout and "--folding-mode: book" in layout and "--folding-mode: tabletop" in layout
 assert "foldMode" in (ROOT / "assets/js/foldable.js").read_text()
+assert "getComputedStyle(html)" in (ROOT / "assets/js/foldable.js").read_text()
+assert "window.viewport" not in (ROOT / "assets/js/foldable.js").read_text()
 assert "window.ftlAppReady" in (ROOT / "assets/js/boot.js").read_text()
 assert "prefers-reduced-motion" in (ROOT / "core/components/experience.css").read_text()
 print("feature extension checks passed (Windows and iOS theme families)")

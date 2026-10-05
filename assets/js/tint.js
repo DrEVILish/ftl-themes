@@ -37,7 +37,6 @@
       input = document.createElement("input");
       input.type = "color";
       input.className = "tint-picker";
-      input.style.cssText = "inline-size:2.4rem;block-size:2rem;padding:0;flex:none;cursor:pointer;";
       picker.insertAdjacentElement("afterend", input);
       input.addEventListener("input", function () {
         if (!entry || !entry.tint) return;

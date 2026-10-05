@@ -284,8 +284,8 @@ between "8.5+" and "3.4-6.9."
 
 ## Revision log
 
-- **All 18 shipping themes**: the strict independent panel (18 agents, one
-  per theme) came back below the 7.0 floor on every single one — a real
+- **The 18 themes shipping during this review**: an independent panel
+  (18 agents, one per theme) came back below the 7.0 floor on every one — a real
   calibration gap against an earlier, more lenient self-review pass, not
   just harsher wording. Every theme's specific "biggest tell" was fixed;
   see the tables above. Three of those fixes introduced their own lint

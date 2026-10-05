@@ -4,6 +4,8 @@
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
+**Family:** Windows desktop; extends [Windows 95](../windows95/README.md).
+
 ## What this theme is trying to achieve
 
 The **Windows XP desktop as it shipped**, before anyone changed a setting:

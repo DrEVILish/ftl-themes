@@ -164,7 +164,7 @@ These follow each company's **published** button or logo guidelines and are
 deliberately **not re-themed**. Colours, height, radius, font, padding, gap
 and logo size are literal values held in private `--_bb-*` properties on the
 button itself, so no theme token reaches them, and the button doesn't carry
-`.btn`, so no theme's `.btn` rules apply. They render identically in all 42
+`.btn`, so no theme's `.btn` rules apply. They render identically in all 45
 themes (checked: computed colours, font, sizes and logo placement match in
 every theme). Only the focus ring (`--focus`) and the hit area (`--tap-min`)
 follow the library. Hover, focus and press add a light tint of the text

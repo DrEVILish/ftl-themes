@@ -127,6 +127,7 @@
     background: var(--bg-elevated);
     color: var(--text);
   }
+  .tint-picker { inline-size: 2.4rem; block-size: 2rem; padding: 0; flex: none; cursor: default; }
 
   #count {
     color: var(--text-muted);
@@ -243,6 +244,7 @@
     <a href="audio-components.html">Audio components</a>
     <a href="livechat.html">Live chat</a>
     <a href="nesting.html">Nesting QA</a>
+    <a href="theme-feedback.html">Report a theme issue</a>
   </nav>
   <nav class="example-links" aria-label="v5 component pages">
     <span>v5 components:</span>
@@ -402,6 +404,12 @@
       eraChip.textContent = theme.era;
       chips.appendChild(eraChip);
     }
+    if (theme.extends) {
+      var familyChip = document.createElement("span");
+      familyChip.className = "chip";
+      familyChip.textContent = "family: " + theme.family;
+      chips.appendChild(familyChip);
+    }
 
     var actions = document.createElement("div");
     actions.className = "card-actions";
@@ -532,6 +540,9 @@
   fetch("dist/themes.json")
     .then(function (r) { return r.json(); })
     .then(function (list) {
+      list.sort(function (a, b) {
+        return (a.family || a.slug).localeCompare(b.family || b.slug) || a.label.localeCompare(b.label);
+      });
       var seenCategories = [];
       list.forEach(function (theme) {
         var c = buildCard(theme);

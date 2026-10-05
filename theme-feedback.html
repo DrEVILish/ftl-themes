@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theme feedback</title>
+<style>
+:root{color-scheme:light dark;font:16px/1.5 system-ui,sans-serif;--bg:Canvas;--fg:CanvasText;--line:color-mix(in srgb,CanvasText 22%,transparent);--accent:#526bea}*{box-sizing:border-box}body{margin:0;padding:1rem;max-width:1100px;margin-inline:auto;background:var(--bg);color:var(--fg)}h1{font-size:1.5rem}p{max-width:75ch}label{display:grid;gap:.25rem}select,input,textarea,button{font:inherit;padding:.5rem;border:1px solid var(--line);border-radius:.4rem;background:var(--bg);color:var(--fg)}button{cursor:pointer}.fields{display:flex;flex-wrap:wrap;gap:.75rem;margin-block:1rem}.stage{height:min(70vh,780px);min-height:400px;position:relative;border:1px solid var(--line);overflow:hidden}.stage iframe{width:100%;height:100%;border:0}.stage.drawing{cursor:crosshair}.stage.drawing iframe{pointer-events:none}.box{position:absolute;border:2px solid #f04438;background:#f0443826;pointer-events:none;display:none}.box.visible{display:block}.comment{width:100%}.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-block:1rem}.reports{padding:0;list-style:none}.reports li{border-top:1px solid var(--line);padding:.6rem 0}.hint{opacity:.75;font-size:.9rem}
+</style></head>
+<body>
+<h1>Theme feedback</h1>
+<p>Choose the theme and example, draw around the part that needs attention, and describe what feels wrong. Reports stay in this browser until you download them.</p>
+<div class="fields">
+<label>Theme<select id="theme"></select></label>
+<label>Example<select id="page"><option value="components-instruments.html">Instruments &amp; charts</option><option value="components-navigation.html">Navigation</option><option value="components-surfaces.html">Surfaces</option><option value="components-tables.html">Tables</option><option value="dashboard.html">Dashboard</option><option value="desktop.html">Desktop</option><option value="nesting.html">Nesting</option></select></label>
+<label>Issue<select id="kind"><option>Visual mismatch</option><option>Hard to read</option><option>Spacing or alignment</option><option>Interaction or state</option><option>Accessibility</option><option>Other</option></select></label>
+<label>Severity<select id="severity"><option>Minor</option><option selected>Needs attention</option><option>Blocking</option></select></label>
+</div>
+<div class="stage" id="stage"><iframe title="Theme preview" id="preview"></iframe><div class="box" id="box"></div></div>
+<div class="actions"><button id="draw" type="button">Draw a box</button></div>
+<label>What should be fixed?<textarea id="comment" class="comment" rows="3" placeholder="Describe what you expected to see."></textarea></label>
+<div class="actions"><button id="save" type="button">Save feedback</button><button id="download" type="button">Download report JSON</button></div>
+<p class="hint">Reports include the theme, example, viewport, selected element and box coordinates. Share the JSON file with the next review or agent run.</p>
+<h2>Saved in this browser</h2><ul class="reports" id="reports"></ul>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)}, theme=$("theme"),page=$("page"),frame=$("preview"),stage=$("stage"),box=$("box"),rect=null,drawing=false;
+  function load(){frame.src=page.value+"?theme="+encodeURIComponent(theme.value)}
+  fetch("dist/themes.json").then(function(r){return r.json()}).then(function(list){list.forEach(function(t){var o=document.createElement("option");o.value=t.slug;o.textContent=t.label;theme.appendChild(o)});theme.value="windows95";load()}).catch(function(){theme.innerHTML='<option value="windows95">Windows 95</option>';load()});
+  theme.addEventListener("change",load);page.addEventListener("change",load);
+  function paint(x,y,w,h){box.style.left=x+"px";box.style.top=y+"px";box.style.width=w+"px";box.style.height=h+"px";box.classList.add("visible")}
+  $("draw").addEventListener("click",function(){drawing=true;rect=null;box.classList.remove("visible");stage.classList.add("drawing");stage.setAttribute("aria-label","Drag a rectangle around the issue")});
+  stage.addEventListener("pointerdown",function(e){if(!drawing)return;var r=stage.getBoundingClientRect();stage.setPointerCapture(e.pointerId);rect={x:e.clientX-r.left,y:e.clientY-r.top};paint(rect.x,rect.y,0,0)});
+  stage.addEventListener("pointermove",function(e){if(!drawing||!rect||!stage.hasPointerCapture(e.pointerId))return;var r=stage.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;paint(Math.min(x,rect.x),Math.min(y,rect.y),Math.abs(x-rect.x),Math.abs(y-rect.y))});
+  stage.addEventListener("pointerup",function(e){if(!drawing||!rect)return;var r=stage.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;rect={x:Math.min(x,rect.x),y:Math.min(y,rect.y),width:Math.abs(x-rect.x),height:Math.abs(y-rect.y),stageWidth:r.width,stageHeight:r.height};drawing=false;stage.classList.remove("drawing")});
+  function read(){try{return JSON.parse(localStorage.getItem("theme-feedback-v1")||"[]")}catch(e){return[]}}
+  function render(){var list=$("reports"),items=read();list.replaceChildren();items.slice().reverse().forEach(function(item){var li=document.createElement("li");li.textContent=item.theme+" · "+item.page+" · "+item.issue+" — "+(item.comment||"No description");list.appendChild(li)});if(!items.length){var li=document.createElement("li");li.textContent="No reports saved yet.";list.appendChild(li)}}
+  $("save").addEventListener("click",function(){if(!rect||rect.width<3||rect.height<3){alert("Draw a box around the item first.");return}if(!$("comment").value.trim()){alert("Add a short description so the report is actionable.");$("comment").focus();return}var el=null,selector="",sample="";try{var px=(rect.x+rect.width/2)/rect.stageWidth*frame.contentWindow.innerWidth,py=(rect.y+rect.height/2)/rect.stageHeight*frame.contentWindow.innerHeight;el=frame.contentDocument.elementFromPoint(px,py);if(el){selector=el.tagName.toLowerCase()+(el.id?"#"+el.id:"")+Array.from(el.classList||[]).slice(0,2).map(function(c){return"."+c}).join("");sample=(el.innerText||el.getAttribute("aria-label")||"").trim().slice(0,160)}}catch(e){}
+    var items=read();items.push({schemaVersion:1,createdAt:new Date().toISOString(),theme:theme.value,page:page.value,viewport:{width:frame.clientWidth,height:frame.clientHeight},selection:{x:+(rect.x/rect.stageWidth).toFixed(4),y:+(rect.y/rect.stageHeight).toFixed(4),width:+(rect.width/rect.stageWidth).toFixed(4),height:+(rect.height/rect.stageHeight).toFixed(4)},element:{selector:selector,text:sample},issue:$("kind").value,severity:$("severity").value,comment:$("comment").value.trim()});try{localStorage.setItem("theme-feedback-v1",JSON.stringify(items))}catch(e){alert("The report could not be saved in this browser. Enable browser storage and try again.");return}rect=null;box.classList.remove("visible");$("comment").value="";render()});
+  $("download").addEventListener("click",function(){var data=JSON.stringify({format:"theme-feedback",version:1,reports:read()},null,2),url=URL.createObjectURL(new Blob([data],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download="theme-feedback.json";a.click();URL.revokeObjectURL(url)});render();
+})();
+</script></body></html>

@@ -4,6 +4,8 @@
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
+**Family:** iOS; extends [iOS (Flat)](../ios-flat/README.md).
+
 ## What this theme is trying to achieve
 
 **Liquid Glass** as shipped at WWDC 2025. Apple separates the UI into two

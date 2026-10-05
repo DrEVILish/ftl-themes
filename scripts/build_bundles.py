@@ -18,13 +18,15 @@ import re
 from pathlib import Path
 
 import cssparse
+import theme_inheritance
 
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 
 
 def rewrite_urls(css):
-    return css.replace('url("assets/', 'url("../assets/').replace("url(assets/", "url(../assets/")
+    css = css.replace('url("assets/', 'url("../assets/').replace("url(assets/", "url(../assets/")
+    return "\n".join(line.rstrip() for line in css.splitlines()) + "\n"
 
 
 def has_class(selector):
@@ -64,7 +66,7 @@ def main():
         if not src.exists():
             continue
         parts.append(f"\n/* --- {d.name} --- */\n")
-        parts.append(tokens_only(src.read_text()))
+        parts.append(tokens_only(theme_inheritance.rules(d.name)))
         parts.append("\n")
     (DIST / "tokens.css").write_text(rewrite_urls("".join(parts)))
     print("built dist/tokens.css")

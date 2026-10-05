@@ -21,7 +21,7 @@ the newest `chromium_headless_shell-*` or `chromium-*` in
 | Script | What it checks |
 |---|---|
 | `scripts/theme-ready.sh <slug>` | Every gate below for one theme, with a PASS/FAIL/WARN summary |
-| `scripts/check.sh` (`check.py`) | Contract lint and size budgets |
+| `scripts/check.sh` (`check.py`) | Contract lint; optional `--budgets` size report |
 | `scripts/core_regressions.mjs` | Core layout bugs reported by adopting apps |
 | `scripts/v5_audit.mjs` | Overflow, touch targets, spacing, text-to-edge, XL cap |
 | `scripts/a11y_audit.mjs` | axe-core on every example page |
@@ -35,13 +35,15 @@ scripts/theme-ready.sh westworld                    # chromium
 scripts/theme-ready.sh westworld --engine webkit    # add engines (repeatable)
 ```
 
-Runs, in order: `build.sh`; `check.py --theme <slug> --budgets`;
+Runs, in order: `build.sh`; `check.py --theme <slug>`;
 `core_regressions.mjs <slug>`; `v5_audit.mjs` on the theme and its
 variants (dashboard, components, nesting; all five devices; `--strict`);
 `a11y_audit.mjs` on the theme and a reference theme with `--blame <slug>`
 (fails only on serious/critical rules the theme causes, not ones every theme
-shares); the budget numbers; and `render_cost.mjs`. Budgets and render cost
-are WARN gates until v5 ships. Logs go to `$TMPDIR/theme-ready-<slug>/`
+shares); and `render_cost.mjs`. Render cost is a WARN gate. Budgets are
+deferred and excluded from the default gate; run `python3 scripts/check.py
+--budgets` when doing a later optimization pass. Logs go to
+`$TMPDIR/theme-ready-<slug>/`
 (default `/tmp`). Exit 1 when any gate FAILs.
 
 # Engines and known issues
@@ -73,12 +75,11 @@ one), and delete them when the engine is fixed.
 
 # Visual regression testing
 
-`scripts/screenshot_themes.py` replaces the ad-hoc, throwaway Playwright
-screenshot scripts this project used to spin up by hand for every "did I
-break something" check. It screenshots every theme in `dist/themes.json`
+`scripts/screenshot_themes.py` screenshots every theme in `dist/themes.json`
 against every `example*.html` QA page at a fixed 1280x900 viewport, and
-either accepts those screenshots as the new baseline or diffs them
-against the committed one.
+either accepts those screenshots as the new baseline or diffs them against
+the committed one. `v5_audit.mjs` separately checks five device sizes;
+`a11y_audit.mjs` checks Mobile and Desktop.
 
 ## Usage
 
@@ -173,10 +174,10 @@ in the run. Full report: `test/a11y/report.json` (gitignored).
 
 # Performance budgets
 
-`check.py` warns (until v5 ships, then fails) when a theme's bundle is over
-its gzipped budget, its own `theme.css` + `chrome.css` are, or its vendored
-fonts are (per file and in total). The numbers and the reasoning behind
-them are the `BUDGET_*` constants at the top of `scripts/check.py`.
+`check.py --budgets` reports when a theme's bundle is over its gzipped budget,
+its own CSS exceeds the theme threshold, or vendored fonts exceed the
+per-file/total thresholds. This diagnostic is intentionally outside the
+default lint and theme-ready gates while optimization is deferred.
 `python3 scripts/check.py --budgets` prints the table; `--theme <slug>`
 (repeatable) limits the lint to those themes, and failures outside them
 (core, stale dist, other themes) become notes that don't affect the exit

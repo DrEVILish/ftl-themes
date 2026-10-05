@@ -4,6 +4,8 @@
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
+**Family:** Windows desktop; extends [Windows XP (Luna)](../winxp-luna/README.md).
+
 ## What this theme is trying to achieve
 
 **Windows 7's Aero Glass**: translucent, blurred window chrome over the
@@ -137,4 +139,3 @@ The token is declared as this theme's **tint** (`Tint:` header →
 `tint` in `dist/themes.json`), so apps must offer it as a colour control
 alongside the theme and sub-theme choice — any colour, not only the
 presets, as Win7's colour mixer allowed. See CONTRACT.md "Theme tint".
-

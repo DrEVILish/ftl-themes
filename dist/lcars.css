@@ -36,7 +36,7 @@ button {
    web's hand pointer (PLAN.md §4). Text fields keep the I-beam. */
 a[href], button, summary, label, select,
 [role="button"], [role="tab"], [role="menuitem"], [role="option"], [role="switch"] {
-  cursor: default;
+  cursor: var(--cursor-default, default);
 }
 
 a {
@@ -187,7 +187,7 @@ a { color: var(--link, var(--accent)); }
 }
 .btn:active { transform: translateY(1px); }
 .btn:disabled,
-.btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn[aria-disabled="true"] { opacity: 0.45; cursor: var(--cursor-not-allowed, not-allowed); transform: none; }
 .btn-sm { padding: var(--btn-padding-sm, 0.3em 0.8em); font-size: 0.78em; }
 
 .btn-primary {
@@ -248,7 +248,7 @@ a { color: var(--link, var(--accent)); }
 }
 .input:disabled,
 .select:disabled,
-.textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+.textarea:disabled { opacity: 0.5; cursor: var(--cursor-not-allowed, not-allowed); }
 
 /* Readonly: a value the user can select and copy but not edit. Flatter and
    quieter than an editable field; no not-allowed cursor (it is not
@@ -263,7 +263,7 @@ a { color: var(--link, var(--accent)); }
 .input.is-mirror {
   background: var(--input-mirror-bg, var(--surface-2));
   color: var(--input-mirror-fg, var(--muted));
-  cursor: default;
+  cursor: var(--cursor-default, default);
   box-shadow: none;
 }
 .input.is-mirror:focus-visible { border-color: var(--input-border, var(--border)); box-shadow: none; }
@@ -433,7 +433,7 @@ a { color: var(--link, var(--accent)); }
   gap: 0.5em;
   color: var(--check-fg, var(--text));
 }
-.check:has(:disabled) { opacity: 0.5; cursor: not-allowed; }
+.check:has(:disabled) { opacity: 0.5; cursor: var(--cursor-not-allowed, not-allowed); }
 
 /* .radio-group — a <fieldset> of .check rows with a <legend>. */
 .radio-group {
@@ -535,7 +535,7 @@ button.switch:focus-visible {
   outline-offset: 2px;
   border-radius: var(--switch-radius, 999px);
 }
-button.switch:disabled { opacity: 0.5; cursor: not-allowed; }
+button.switch:disabled { opacity: 0.5; cursor: var(--cursor-not-allowed, not-allowed); }
 .switch-label { font-size: 0.9em; line-height: 1.2; }
 
 .slider {
@@ -1130,15 +1130,15 @@ dialog.modal:modal {
   height: 100%;
   margin: 0;
   opacity: 0;
-  cursor: ns-resize;
+  cursor: var(--cursor-resize-y, ns-resize);
   /* controls.js turns knobs by vertical drag; this stops a swipe that
      starts on a knob from scrolling the page instead. */
   touch-action: none;
 }
 /* Values that drag-adjust a control (controls.js): the knob's own label
    and any [data-for] readout. */
-:is([data-for], [data-fader-readout]) { cursor: ns-resize; touch-action: none; user-select: none; }
-html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important; user-select: none; }
+:is([data-for], [data-fader-readout]) { cursor: var(--cursor-resize-y, ns-resize); touch-action: none; user-select: none; }
+html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y, ns-resize) !important; user-select: none; }
 .knob-dial {
   position: relative;
   width: var(--knob-size, calc(2.1rem * var(--density)));
@@ -1210,7 +1210,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: ns-resize !important;
     var(--fader-slot, var(--bg)) 0 calc(50% + var(--fader-slot-width, 4px) / 2),
     transparent 0));
   border-radius: 2px;
-  cursor: ns-resize;
+  cursor: var(--cursor-resize-y, ns-resize);
 }
 .fader::-webkit-slider-runnable-track { background: transparent; }
 .fader::-moz-range-track { background: transparent; }
@@ -2579,7 +2579,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   --toggle-btn-border-on: var(--danger);
 }
 .toggle-btn:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
-.toggle-btn:has(input:disabled) { opacity: 0.45; cursor: not-allowed; }
+.toggle-btn:has(input:disabled) { opacity: 0.45; cursor: var(--cursor-not-allowed, not-allowed); }
 /* Both labels share one grid cell and the hidden one keeps its space, so
    the button is always as wide as its longer label: toggling "Rec" to
    "Recording" doesn't change its width or move anything beside it. */
@@ -3928,7 +3928,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   min-block-size: var(--tap-min);
   padding: 0.25rem 0.15rem;
   text-align: center;
-  cursor: default;
+  cursor: var(--cursor-default, default);
   user-select: none;
 }
 .desktop-icon .icon {
@@ -3977,7 +3977,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   position: absolute;
   inset: 0;
   display: none;
-  cursor: default;
+  cursor: var(--cursor-default, default);
 }
 .desktop-icon:has(input:checked) > .desktop-icon-open { display: block; }
 
@@ -4181,14 +4181,14 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .desktop-bar .taskbar-task {
   flex: 1 1 auto;
   max-width: none;
-  cursor: default;
+  cursor: var(--cursor-default, default);
 }
 .taskbar-task .icon { flex: none; width: 1.1em; height: 1.1em; }
 .taskbar-restore {
   position: absolute;
   inset: 0;
   display: none;
-  cursor: default;
+  cursor: var(--cursor-default, default);
 }
 .desktop-bar .taskbar-tray { align-self: stretch; }
 .taskbar-tray .icon { width: 1.05em; height: 1.05em; }
@@ -4282,7 +4282,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   padding: 0.45em 0.7em;
   border-radius: var(--context-menu-radius, var(--radius));
   color: var(--context-menu-item-fg, var(--text));
-  cursor: default;
+  cursor: var(--cursor-default, default);
 }
 @media (hover: hover) {
   .start-menu li > label:hover,
@@ -5572,7 +5572,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   color: var(--muted);
   opacity: 0.55;
   text-decoration: line-through;
-  cursor: not-allowed;
+  cursor: var(--cursor-not-allowed, not-allowed);
 }
 .calendar-day:is([aria-pressed="true"], :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   background: var(--calendar-selected-bg, var(--accent));
@@ -5672,7 +5672,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   .listbox [role="option"]:not([aria-disabled="true"]):hover { background: var(--listbox-option-bg-hover, var(--row-hover-bg, rgb(128 128 128 / 0.15))); }
   .listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):hover { background: var(--listbox-option-bg-active, var(--dropdown-item-bg-hover, var(--accent))); }
 }
-.listbox [role="option"][aria-disabled="true"] { color: var(--muted); cursor: not-allowed; }
+.listbox [role="option"][aria-disabled="true"] { color: var(--muted); cursor: var(--cursor-not-allowed, not-allowed); }
 .listbox mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; }
 .listbox-empty { padding: 0.6em 0.7em; color: var(--muted); font-style: italic; }
 
@@ -5694,7 +5694,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   border-radius: var(--input-radius, var(--radius));
   box-shadow: var(--input-shadow, none);
   font-size: 0.9em;
-  cursor: text;
+  cursor: var(--cursor-text, text);
 }
 @media (any-pointer: coarse) {
   .tag-input { font-size: max(16px, 1em); }
@@ -5706,7 +5706,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   box-shadow: var(--focus-ring, var(--input-shadow, none));
 }
 .tag-input:has(.tag-input-field:is([aria-invalid="true"], .is-invalid)) { border-color: var(--danger); outline-color: var(--danger); }
-.tag-input:has(.tag-input-field:disabled) { border-style: dashed; cursor: not-allowed; }
+.tag-input:has(.tag-input-field:disabled) { border-style: dashed; cursor: var(--cursor-not-allowed, not-allowed); }
 .tag-input-field {
   flex: 1 1 6ch;
   min-inline-size: 6ch;
@@ -5734,7 +5734,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   font-size: 0.85em;
   line-height: 1.4;
   overflow-wrap: anywhere;
-  cursor: default;
+  cursor: var(--cursor-default, default);
 }
 .tag:has(> .tag-remove) { padding-inline-end: 0.2em; }
 .tag-remove {
@@ -5887,7 +5887,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
 }
 .rating > label:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--radius); }
 .rating:disabled { opacity: 0.5; }
-.rating:disabled > label { cursor: not-allowed; }
+.rating:disabled > label { cursor: var(--cursor-not-allowed, not-allowed); }
 
 /* --- .swatches — radio colour picker ------------------------------------------
  *   <fieldset class="swatches"><legend class="label">Accent</legend>
@@ -5944,7 +5944,7 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
 }
 .swatch:has(input:checked)::after { content: var(--swatch-check-glyph, "\2713"); }
 .swatch:has(input:focus-visible)::before { outline: 2px solid var(--focus); outline-offset: 5px; }
-.swatch:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+.swatch:has(input:disabled) { opacity: 0.4; cursor: var(--cursor-not-allowed, not-allowed); }
 
 /* --- .file-list — an upload queue (pairs with .dropzone) ---------------------
  *   <ul class="list file-list">
@@ -7901,7 +7901,7 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
 .dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) > .widget {
   outline: 2px dashed var(--widget-edit-line);
   outline-offset: 2px;
-  cursor: grab;
+  cursor: var(--cursor-grab, grab);
 }
 /* Grab handle: a dotted grip centred on the top edge. */
 .dashboard:is(.is-editing, :has(input.dashboard-edit:checked)) > .widget::before {
@@ -7926,14 +7926,14 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
   aspect-ratio: 1;
   background: repeating-linear-gradient(135deg, transparent 0 3px, var(--widget-edit-line) 3px 5px);
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  cursor: nwse-resize;
+  cursor: var(--cursor-resize-diagonal, nwse-resize);
   z-index: var(--z-raised);
 }
 .widget.is-dragging {
   box-shadow: var(--shadow-lg, 0 1rem 2rem color-mix(in srgb, var(--text) 25%, transparent));
   rotate: -1deg;
   scale: 1.02;
-  cursor: grabbing;
+  cursor: var(--cursor-grabbing, grabbing);
   z-index: var(--z-sticky);
 }
 .widget-placeholder, .widget-add {
@@ -8229,13 +8229,13 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   background-origin: content-box;
   background-clip: content-box;
   color: var(--track-handle-fg, var(--muted));
-  cursor: grab;
+  cursor: var(--cursor-grab, grab);
   touch-action: none;
 }
 .track.is-dragging {
   background: var(--track-drag-bg, var(--surface-2));
   box-shadow: var(--track-drag-shadow, 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35));
-  cursor: grabbing;
+  cursor: var(--cursor-grabbing, grabbing);
 }
 .track.is-drop-target { box-shadow: inset 0 var(--track-drop-width, 2px) 0 var(--track-drop-color, var(--accent)); }
 
@@ -8779,7 +8779,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
    aria-checked) that show a tick, not just a colour. */
 :is(.context-menu, .menubar) li > :is(button, a):is(:disabled, [aria-disabled="true"]) {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: var(--cursor-not-allowed, not-allowed);
 }
 :is(.context-menu, .menubar) li > :is([role="menuitemcheckbox"], [role="menuitemradio"])::before {
   content: "";
@@ -9320,7 +9320,7 @@ dialog.command:modal,
   inline-size: var(--split-handle-size, 0.5rem);
   background: var(--split-handle-bg, var(--surface-2));
   border-inline: 1px solid var(--split-rule, var(--border));
-  cursor: col-resize;
+  cursor: var(--cursor-resize-x, col-resize);
   touch-action: none;
 }
 /* The grip mark, and a hit area at least --tap-min wide. */
@@ -9366,7 +9366,7 @@ dialog.command:modal,
   block-size: var(--split-handle-size, 0.5rem);
   border-inline: 0;
   border-block: 1px solid var(--split-rule, var(--border));
-  cursor: row-resize;
+  cursor: var(--cursor-resize-y, row-resize);
 }
 .split.is-vertical > .split-handle::after { inline-size: 1.5rem; block-size: 2px; }
 .split.is-vertical > .split-handle::before {
@@ -9784,7 +9784,7 @@ html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none
   overflow-wrap: anywhere;
   touch-action: manipulation;
 }
-.kanban-card[draggable="true"] { cursor: grab; }
+.kanban-card[draggable="true"] { cursor: var(--cursor-grab, grab); }
 .kanban-card:focus-within { border-color: var(--kanban-card-border-focus, var(--focus)); }
 @media (hover: hover) {
   .kanban-card:hover { border-color: var(--kanban-card-border-hover, var(--accent)); }
@@ -9796,7 +9796,7 @@ html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none
 /* The card being dragged: lifted, tilted and accent-ringed. The app keeps
    it in the DOM (or uses it as the drag image) and adds .is-dragging. */
 .kanban-card.is-dragging {
-  cursor: grabbing;
+  cursor: var(--cursor-grabbing, grabbing);
   border-color: var(--kanban-drag-ring, var(--accent));
   box-shadow: var(--kanban-drag-shadow, 0 0.6rem 1.4rem color-mix(in srgb, #000 35%, transparent));
   rotate: var(--kanban-drag-tilt, 2deg);
@@ -10782,7 +10782,7 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
 .prose abbr[title] {
   text-decoration: underline dotted;
   text-underline-offset: 0.2em;
-  cursor: help;
+  cursor: var(--cursor-help, help);
 }
 .prose :is(del, s) { color: var(--muted); }
 .prose ins { text-decoration: underline; text-decoration-color: var(--success); }
@@ -11881,13 +11881,13 @@ html[data-motion="reduced"] .card.has-media > * { animation: none; }
  * handle: grab cursor, and touch-action: none on it only, so a touch drag
  * moves the window while the body still scrolls. */
 .modal[data-drag] > .modal-header {
-  cursor: grab;
+  cursor: var(--cursor-grab, grab);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
 .modal[data-drag].is-dragging { box-shadow: var(--window-drag-shadow, var(--modal-shadow, var(--panel-shadow, 0 0.75rem 2rem rgba(0, 0, 0, 0.35)))); }
-.modal[data-drag].is-dragging > .modal-header { cursor: grabbing; }
+.modal[data-drag].is-dragging > .modal-header { cursor: var(--cursor-grabbing, grabbing); }
 /* A focusable header (tabindex="0", for Alt+Arrow moves) keeps its ring
    inside the window edge, where overflow can't clip it. */
 .modal[data-drag] > .modal-header:focus-visible {
@@ -11902,7 +11902,7 @@ html[data-motion="reduced"] .card.has-media > * { animation: none; }
   margin: 0 !important;
   width: 100% !important;
 }
-.modal[data-drag]:is(.is-maximized, .window-max:checked + *) > .modal-header { cursor: default; }
+.modal[data-drag]:is(.is-maximized, .window-max:checked + *) > .modal-header { cursor: var(--cursor-default, default); }
 
 /* ---- #50 Brand sign-in and connect buttons -------------------------------
  * <button class="btn-brand is-google">
@@ -11979,7 +11979,7 @@ html[data-motion="reduced"] .card.has-media > * { animation: none; }
   .btn-brand:hover { background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 8%, transparent) 0 0); }
 }
 .btn-brand:active { background-image: linear-gradient(color-mix(in srgb, var(--_bb-fg) 14%, transparent) 0 0); }
-.btn-brand:is(:disabled, [aria-disabled="true"]) { opacity: 0.38; cursor: not-allowed; background-image: none; }
+.btn-brand:is(:disabled, [aria-disabled="true"]) { opacity: 0.38; cursor: var(--cursor-not-allowed, not-allowed); background-image: none; }
 /* Full width (a sign-in stack): content stays centred, like the providers' own. */
 .btn-brand.is-block { display: flex; inline-size: 100%; }
 /* Icon-only (Google, Apple and Microsoft allow logo-only buttons): square. */
@@ -12131,7 +12131,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 /* Idle: editable on double-click (desktop) or tap (touch). A dotted
    underline on hover and focus; a pencil on touch tiers, where there is no
    hover. */
-.table td.is-editable { cursor: text; }
+.table td.is-editable { cursor: var(--cursor-text, text); }
 .table td.is-editable:focus-visible,
 .table td.is-editable:focus-within {
   text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
@@ -12152,7 +12152,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 }
 /* Read-only: no affordance, quieter text, the arrow cursor. */
 .table td:is(.is-readonly, [aria-readonly="true"]) {
-  cursor: default;
+  cursor: var(--cursor-default, default);
   color: var(--cell-readonly-fg, var(--muted));
   text-decoration: none;
 }
@@ -12470,7 +12470,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   inset-inline-end: 0;
   inline-size: var(--table-resizer-size, var(--tap-min));
   border-inline-end: 2px solid var(--table-resizer-fg, var(--hairline));
-  cursor: col-resize;
+  cursor: var(--cursor-resize-x, col-resize);
   touch-action: none;
 }
 .table th.is-resizable:has(> .table-resizer)::before { content: none; }
@@ -12486,8 +12486,8 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 /* Reorder: a draggable header, the column being dragged (.is-dragging) and
    the drop indicator between columns (.is-drop-before / .is-drop-after on
    the header, or on every cell of the target column). */
-.table th[draggable="true"] { cursor: grab; }
-.table th[draggable="true"]:active { cursor: grabbing; }
+.table th[draggable="true"] { cursor: var(--cursor-grab, grab); }
+.table th[draggable="true"]:active { cursor: var(--cursor-grabbing, grabbing); }
 .table :is(th, td).is-dragging {
   opacity: var(--table-drag-opacity, 1);
   outline: 1px dashed var(--table-drop-marker, var(--accent));
@@ -14118,6 +14118,31 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
     grid-template-rows: env(viewport-segment-height 0 0) env(viewport-segment-height 0 1);
   }
 }
+/* Optional theme cursor artwork. Every URL has a native CSS fallback. */
+:root {
+  --cursor-default: default;
+  --cursor-text: text;
+  --cursor-progress: progress;
+  --cursor-grab: grab;
+  --cursor-grabbing: grabbing;
+  --cursor-not-allowed: not-allowed;
+  --cursor-resize-x: col-resize;
+  --cursor-resize-y: row-resize;
+  --cursor-resize-diagonal: nwse-resize;
+  --cursor-resize-diagonal-alt: nesw-resize;
+  --cursor-help: help;
+}
+:where(.is-loading) { cursor: var(--cursor-progress, progress); }
+:disabled, [aria-disabled="true"] { cursor: var(--cursor-not-allowed); }
+.table td.is-editable, .tag-input-field, .textarea { cursor: var(--cursor-text); }
+.table th[draggable="true"], .kanban-card[draggable="true"], .modal[data-drag] > .modal-header { cursor: var(--cursor-grab); }
+.table th[draggable="true"]:active, .kanban-card[draggable="true"]:active, .modal[data-drag].is-dragging > .modal-header { cursor: var(--cursor-grabbing); }
+.table th.is-resizable { cursor: var(--cursor-resize-x); }
+html[data-contrast="high"] { --cursor-default: default !important; --cursor-text: text !important; --cursor-progress: progress !important; --cursor-grab: grab !important; --cursor-grabbing: grabbing !important; --cursor-not-allowed: not-allowed !important; --cursor-resize-x: col-resize !important; --cursor-resize-y: row-resize !important; --cursor-resize-diagonal: nwse-resize !important; --cursor-resize-diagonal-alt: nesw-resize !important; --cursor-help: help !important; }
+@media (forced-colors: active) {
+  html[data-theme] { --cursor-default: default !important; --cursor-text: text !important; --cursor-progress: progress !important; --cursor-grab: grab !important; --cursor-grabbing: grabbing !important; --cursor-not-allowed: not-allowed !important; --cursor-resize-x: col-resize !important; --cursor-resize-y: row-resize !important; --cursor-resize-diagonal: nwse-resize !important; --cursor-resize-diagonal-alt: nesw-resize !important; --cursor-help: help !important; }
+}
+/* theme source: lcars */
 /* ftl-themes: LCARS
  * Theme-Name: LCARS
  * Navigation-Patterns: category-rail
@@ -15008,6 +15033,7 @@ html[data-theme="lcars"] .panel-header:has(.input, .select, .input-group) > .inp
    --table-head-fg, a colour tuned for this theme's filled header row and
    unreadable on the plain cell. Labels take --muted instead. */
 html[data-theme="lcars"] .table.is-stacked { --table-label-fg: var(--muted); }
+
 /* ftl-themes: LCARS chrome — the OPTIONAL, richer frame.
  *
  * Most apps do not need this file: adopting the shared app shell
@@ -15143,4 +15169,5 @@ html[data-theme="lcars"] .lcars-chrome-corner {
 @media (prefers-reduced-motion: reduce) {
   html[data-theme="lcars"] .lcars-chrome * { transition: none !important; animation: none !important; }
 }
+
 }

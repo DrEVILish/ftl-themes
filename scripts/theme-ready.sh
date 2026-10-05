@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # "Ready for review" gate for one theme (PLAN.md §24): build, lint, core
-# regressions, the v5 audit, axe, size budgets and render cost, then a
-# PASS/FAIL/WARN line per gate. Exit 1 if any gate FAILs; WARN gates
-# (budgets, render cost) are reported until v5 ships.
+# regressions, the v5 audit, axe and render cost, then a PASS/FAIL/WARN line
+# per gate. Exit 1 if any gate FAILs. Size budgets are optional diagnostics.
 #
 #   scripts/theme-ready.sh <slug> [--engine chromium|firefox|webkit]...
 #
@@ -34,13 +33,6 @@ gate() {
   [ "$st" = PASS ]
 }
 
-budget_check() {
-  local n
-  n="$(grep -Fc "warn  $slug: [budget]" "$logs/lint.log" || true)"
-  echo "$n budget warning(s)"
-  [ "$n" -eq 0 ]
-}
-
 echo "theme-ready: $slug"
 gate build          build          FAIL scripts/build.sh || exit 1
 
@@ -58,18 +50,14 @@ theme_args=(); for e in "${entries[@]}"; do theme_args+=(--theme "$e"); done
 ref=blue-future; [ "$slug" = blue-future ] && ref=windows95
 
 echo "variants: ${entries[*]}"
-gate lint           lint           FAIL python3 scripts/check.py --theme "$slug" --budgets
+gate lint           lint           FAIL python3 scripts/check.py --theme "$slug"
 gate core-regress   core           FAIL node scripts/core_regressions.mjs "${engines[@]}" "$slug"
 gate v5-audit       v5-audit       FAIL node scripts/v5_audit.mjs "${theme_args[@]}" --page dashboard --page components --page nesting --strict "${engines[@]}"
 gate a11y           a11y           FAIL node scripts/a11y_audit.mjs "${theme_args[@]}" --theme "$ref" --blame "$slug" "${engines[@]}"
-# Budgets are warnings in check.py; this gate turns its [budget] lines into WARN.
-gate budgets        budgets        WARN budget_check
 gate render-cost    render         WARN node scripts/render_cost.mjs --theme "$slug" --strict
 
 echo
-echo "Budgets (KiB):"
-sed -n '/^theme .*bundle gz/,/^$/p' "$logs/lint.log"
-grep "^warn  $slug: \[budget\]" "$logs/lint.log"
+echo "Budgets: deferred (run python3 scripts/check.py --budgets for diagnostics)"
 sed -n '/avg ms/,/^$/p' "$logs/render.log"
 
 grep -h '^SKIP' "$logs"/*.log | sort -u

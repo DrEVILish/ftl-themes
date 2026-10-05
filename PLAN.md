@@ -1,8 +1,9 @@
-# ftl-themes v5.1 release plan
+# ftl-themes v5.2 release plan
 
-Status: **v5.1.0 shipped** (2026-10-05); remaining work is follow-up. Baseline 2026; new theme names agreed. v4 stays the base: the
+Status: **v5.2.0 shipped** (2026-10-05); remaining work is follow-up. Baseline 2026; new theme names agreed. v4 stays the base: the
 token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
-42 themes all carry forward (45 with the three new v5 themes). v5 is about three things v4 does not do well:
+42-theme catalogue all carry forward (45 themes after the three v5 additions).
+The release addresses four areas where v4 fell short:
 
 1. **Fluid mobile, tablet, desktop and wide-screen layouts**, natively, in
    core, so every theme gets them.
@@ -29,6 +30,38 @@ native HTML behavior where it fits. Keep JavaScript for app logic, data,
 persistence and behavior CSS cannot provide; do not add JS to reproduce a
 CSS capability. Newer CSS features need a fallback or must remain progressive
 enhancement under the browser support policy (§24).
+
+## Verified status and reading guide
+
+Implementation status was checked against source code and generated output on
+2026-10-05; the historical completion labels below are not treated as proof.
+
+| Area | Verified status |
+|---|---|
+| Responsive shell, spacing, nesting, editable tables, nested menus, component groups, settings and boot states | Shipped; see §§2–10, 13–14 |
+| Foldables | CSS detects PWA segments and reserves the hinge; JS only exposes CSS mode and optional OS posture. Desktop wrappers/WCO remain host-app integration work (§15). |
+| Cursor packs | CSS role contract and pack format are implemented; theme-specific artwork remains unshipped (§11). |
+| Theme families | Build-time inheritance is implemented for Windows and iOS chains; other related themes remain independent (§16). |
+| Theme feedback | Box-selection reports can be saved locally and exported; visual assessment and triage remain human tasks (§17, §24). |
+| Fidelity score | No numeric score exists. Reports cover tokens/assets/component coverage and mark visual review as human (§17, §29.4). |
+| Charts and dashboards | Styling and demo states exist; the chart contract and real data behavior are app-owned, and automated palette checks remain incomplete (§18). |
+| Component documentation | A generated discovery index and group QA pages exist; generated page-per-component documentation is not shipped (§20, §29.3). |
+| Seasonal styling | Scheduling can expose a season value; complete season palettes are not shipped (§12, §20). |
+| Quality and budgets | Contract checks and selected browser audits exist. Whole-catalogue cross-browser visual review is not proven; budgets are optional diagnostics, deferred for later optimization (§20, §24). |
+
+The plan is grouped by implementation flow: foundations and layout (§§1–8),
+components and experience (§§9–15), shared theme systems and data (§§16–19),
+tooling and catalogue work (§§20–24), decisions and rollout (§§25–28), and
+feature extensions (§29). Section numbers remain stable for existing links.
+
+### Contents
+
+- [Foundation and layout](#1-what-v4-does-today-the-starting-point): §§1–8
+- [Components and experience](#9-50-new-components): §§9–15
+- [Theme systems and data](#16-theme-families): §§16–19
+- [Tooling and catalogue](#20-tooling-and-docs): §§20–24
+- [Decisions and rollout](#25-considered-and-not-planned): §§25–28
+- [Feature extensions](#29-feature-extensions): §29
 
 ---
 
@@ -94,19 +127,18 @@ so on), so there is one mental model.
 | Device | Viewport (CSS px) | Tier | What to verify |
 |---|---|---|---|
 | iPhone 15 Pro | 393 × 852 | Mobile | Touch targets, bottom bar clears the home indicator (`env(safe-area-inset-bottom)`), and no horizontal scroll. |
-| "iPhone Duo", folded | 466 × 678 | Mobile | Close to the tier edge, with a short screen: the modal and the bottom bar must both fit. |
-| "iPhone Duo", unfolded | 890 × 626 | Tablet | Landscape-ish and short: check that the bar plus content plus status fit in 626px. |
+| Book-style foldable, folded | 466 × 678 | Mobile | Close to the tier edge, with a short screen: the modal and the bottom bar must both fit. |
+| Book-style foldable, unfolded | 890 × 626 | Tablet | Landscape-ish and short: check that the bar plus content plus status fit in 626px. |
 | MacBook Air | 1280 × 800 | Desktop | The v4 baseline. Nothing should regress. |
 | 1440p desktop | 2560 × 1440 | XL | Content capped at 1800px and centred, with 380px gutters of theme art each side. |
 
-> **Open question:** "iPhone Duo" isn't a shipping Apple device. The sizes
-> given look like a book-style foldable. If it really is a dual-screen
-> device (Surface Duo style, with a hinge), v5 should also handle
-> `@media (horizontal-viewport-segments: 2)` and keep content off the hinge
-> with `env(viewport-segment-*)`. Planned as optional unless confirmed.
+**Foldable decision:** In an installed PWA, detect book or tabletop folding
+mode from viewport segments and keep interactive controls inside a segment.
+In a regular browser window, retain the Mobile/Tablet layout. The viewport
+segments API remains progressive enhancement; see §28 and CONTRACT.md.
 
-These five sizes become the viewports of `core_regressions.mjs` and of
-`screenshot_themes.py`, replacing the current single 1280 × 900.
+`v5_audit.mjs` checks all five sizes. Screenshot baselines remain at
+1280 × 900; `a11y_audit.mjs` checks Mobile and Desktop.
 
 ---
 
@@ -118,7 +150,7 @@ These five sizes become the viewports of `core_regressions.mjs` and of
   It comes from a new theme property, `--app-gutter-art`: one or more
   background layers, CSS only (gradients, SVG data URIs), no bitmaps.
 
-Gutter art rules (to be written into `authoring-a-theme.md` and linted):
+Gutter art rules for theme authors:
 
 1. **Never behind content.** It paints on `body` outside `.app`, and
    `.app` stays opaque.
@@ -453,7 +485,7 @@ components:
   enforced by the check.
 - ✱ **Theme-accurate, working modal close (×) button.** The first pass
   shipped in a94ea93 (title-bar colour, plus XP, LCARS, MS-DOS and
-  Prometheus placements). v5 audits all 42 themes for a
+  Prometheus placements). v5 audits all 45 themes for a
   period-correct close control: the Windows 95 bevelled grey square, the
   Aqua red traffic light, the XMB "○ Back" hint and so on, through
   `--btn-close-glyph` and the existing `--btn-close-*` tokens.
@@ -544,9 +576,13 @@ under reduced motion, the switch is instant, as today.
 
 ### Cursor packs
 
-Optional per-theme cursors, shipped as small SVG cursors in
-`themes/<slug>/cursors/` (or `assets/cursors/` when shared), referenced with
-a fallback: `cursor: url(…) 0 0, default`.
+**Implemented foundation:** `core/cursors.css` exposes cursor-role custom
+properties, and optional artwork belongs at
+`assets/cursors/<theme>/<role>.png`. Use transparent static PNGs up to 32×32
+pixels, declare hotspot coordinates, and always end the CSS value with its
+native fallback keyword. See [`assets/cursors/README.md`](assets/cursors/README.md).
+Static PNG is the simplest pack source format. Actual theme artwork packs
+remain follow-up work.
 
 | Role | Native fallback | Example (windows95) |
 |---|---|---|
@@ -557,11 +593,15 @@ a fallback: `cursor: url(…) 0 0, default`.
 | Not allowed | `not-allowed` | The 95 circle-slash. |
 | Resize | `*-resize` | The 95 double arrows. |
 
-Cursors are off under `data-contrast="high"` and `forced-colors` (where
-the OS cursor size and colour settings must win), and all cursor art stays
-within the 32×32px that browsers reliably accept.
+Cursors revert to native keywords under `data-contrast="high"` and
+`forced-colors`; all cursor art stays within 32×32px for broad acceptance.
 
 ## 12. Accent and seasonal tinting
+
+**Status:** accents and tint controls are implemented. Scheduling may expose a
+`data-season` value, but the catalogue does not yet ship complete named
+seasonal palettes; the details below remain a proposal, not a completed
+feature.
 
 - **Who chooses:** the app sets a default accent; the end user can pick
   from the swatches the theme allows (in the `.prefs` panel).
@@ -631,6 +671,11 @@ site has a themed 404 too.
 
 ### PWA (`display-mode: standalone` / `window-controls-overlay`)
 
+**Status:** standalone safe-area and fold-segment layout are implemented.
+Fold geometry is CSS-owned; `assets/js/foldable.js` only exposes CSS mode and
+optional OS posture. Window Controls Overlay title-bar integration is a
+progressive host-integration proposal and is not implemented by the library.
+
 - Detect installed mode with `@media (display-mode: standalone)` and
   adjust: no browser chrome, so the app bar becomes the title bar.
 - Safe areas: `env(safe-area-inset-*)` on the bar, the bottom tab bar
@@ -643,6 +688,9 @@ site has a themed 404 too.
   (a reference snippet updates the meta tag on theme switch).
 
 ### Desktop wrappers (Electron, Tauri)
+
+**Status:** host-app guidance only. The library does not implement native
+window controls or wrapper APIs.
 
 - Frameless windows: the same title-bar layout as the PWA overlay, with
   `-webkit-app-region: drag` regions.
@@ -664,6 +712,13 @@ site has a themed 404 too.
 
 ### Families (theme inheritance)
 
+**Status:** `Extends:` and build-time flattening are implemented for
+`windows95 → winxp-luna → win7-aero` and
+`ios-skeuomorphic → ios-flat → liquid-glass`. Parent rules are selector-scoped
+to the child; `dist/themes.json` records family and parent. These chains
+provide cascading fixes, while consolidating duplicated source rules remains
+follow-up work.
+
 Several themes are generations of one design: `windows95` → `winxp-luna` →
 `win7-aero`; `ios-skeuomorphic` → `ios-flat` → `liquid-glass`; `lcars` and
 the `star-trek-*` reference sets; `aqua` and `imac-g3`. Today each one
@@ -683,10 +738,28 @@ copies structure and drifts independently.
   theme is refactored so that structure lives in the base and
   period-specific paint in the children.
 
-## 17. Fidelity scoring
+## 17. Fidelity review and feedback
 
-A tool that measures how close each theme is to its references, and
-reports it. It does **not** fail the build.
+**Status:** numeric palette/fidelity scoring is not implemented. Current
+reports describe measurable coverage and explicitly label visual review as
+human. The feedback flow at `theme-feedback.html` lets reviewers draw a box,
+record issue details and export JSON for the next agent/review run. Reports
+stay in browser storage until downloaded; no server upload or shared database
+is part of this static library.
+
+### Visual feedback intake
+
+Use [the feedback page](theme-feedback.html) and the schema/workflow in
+[`docs/theme-feedback.md`](docs/theme-feedback.md). Reports capture theme,
+example, viewport, normalized box, best-effort element details, issue category,
+severity and comment. Agents should reproduce the issue and inspect a
+contrasting theme family before changing shared styles. A box report is
+evidence to investigate, not an automatic visual verdict.
+
+### Deferred quantitative scoring proposal
+
+A future tool could measure how close each theme is to its references, and
+report it. It must **not** fail the build.
 
 - **Inputs:** each theme's `references/<theme>/` images and RESEARCH.md
   (which already list sampled hex values, fonts and component mappings).
@@ -720,6 +793,11 @@ reports it. It does **not** fail the build.
 | Density | `.table.is-compact` / `.is-comfortable` | Ties into `data-density` (§10). |
 
 ### Charts: a library-neutral styling contract
+
+**Status:** chart styling tokens and examples exist in
+`core/components/instruments.css` and `components-instruments.html`. No
+chart-library adapter or dedicated palette validation is shipped yet. Keep
+data, chart rendering and accessibility announcements in the consuming app.
 
 ftl-themes doesn't pick or bundle a chart library. It defines how a chart
 *looks* in each theme, through tokens and plain SVG/HTML hooks that any
@@ -827,6 +905,11 @@ the bell (§9 #23).
 
 ## 20. Tooling and docs
 
+**Status:** the generated component discovery index and group QA pages ship;
+the generated page-per-component docs site and keyboard shortcut layer below
+remain proposals. Performance budgets are explicitly deferred: run
+`python3 scripts/check.py --budgets` only during an optimization review.
+
 ### Component docs site
 
 The Pages site gains a page per component: live example, every state, a
@@ -840,15 +923,19 @@ accessibility notes. Generated from one source per component, so docs,
   the theme's style.
 - `<kbd>` hints in menus, tooltips and buttons, with platform-aware
   symbols (⌘ vs Ctrl) chosen by the app.
-- Roving-focus styles for grids, lists, toolbars, tabs and menus, so arrow
-  -key navigation shows clearly where focus is.
+- Roving-focus styles for grids, lists, toolbars, tabs and menus, so
+  arrow-key navigation shows clearly where focus is.
 - Visible focus is checked on every new component.
 
 ### Performance budgets
 
-- `check.py` gains size budgets: per theme bundle (gzipped), per font file
-  and total fonts per theme. A theme over budget is reported, then fails
-  once v5 ships.
+**Status:** optional diagnostics only; not part of the default lint or
+theme-ready gate. The bundle/font thresholds below are provisional and do not
+block feature work.
+
+- `check.py` enforces size budgets: per theme bundle (gzipped), per font
+  file and total fonts per theme. Over-budget results currently warn; make
+  them blocking after thresholds are calibrated against the shipped themes.
 - Fonts subset to the characters each theme uses (Latin plus the theme's
   glyphs), done by `build.sh`.
 - Render cost: the rendered check measures frame time with heavy effects
@@ -1030,20 +1117,26 @@ Futura-like face for `skyrim`.
 
 ## 24. Quality and contributing
 
+**Status:** contract lint, static feature checks, targeted browser audits,
+accessibility review and render-cost tooling are available. Some rendered
+checks skip when browsers or Playwright are unavailable. No whole-catalogue,
+all-engine visual guarantee is claimed; use the report page and record human
+review alongside automated results.
+
 ### Firefox and WebKit testing
 
 The rendered checks (`core_regressions.mjs`, the tier and overflow checks)
-and the screenshot baselines run in **Chromium, Firefox and WebKit**
-through Playwright. WebKit matters most: every iPhone browser uses it.
-Engine-specific differences get a known-issue list rather than silent
-failures.
+and screenshot baselines support **Chromium, Firefox and WebKit** through
+Playwright. Chromium is the default; other engines run only when requested
+and available. WebKit matters for iPhone coverage. Engine-specific differences
+use a known-issue list rather than silent failures.
 
 ### Automated accessibility audits
 
-**axe-core** runs on every example page, in every theme, at the Mobile and
-Desktop tiers, alongside the existing contrast and target-size checks.
-Results are reported per theme in the gallery and in the check output;
-serious and critical issues fail the check once v5 ships.
+**axe-core** can run on every example page, theme and Mobile/Desktop tier.
+The `theme-ready.sh` flow compares the selected theme with a reference theme;
+it does not constitute a completed whole-catalogue run. Serious and critical
+issues fail that audit when it runs.
 
 ### Browser support policy
 
@@ -1069,10 +1162,12 @@ Statuses below come from the `web-features` data (checked 2026-10-02):
 | Customizable `<select>` (`appearance: base-select`) | not yet | Fully themed select lists | v4's styled native select. |
 | `interpolate-size` / `calc-size()` | not yet | Animating to `height: auto` (accordions) | Instant open. |
 | Scroll-driven animations | not yet | Scroll-linked effects | None (static). |
-| Viewport segments API | not Baseline | Foldable installed-PWA layout (§28) | Existing Mobile/Tablet shell; never infer a fold from model or UA. |
+| Viewport segments API | not Baseline | Foldable installed-PWA layout (§15) | Existing Mobile/Tablet shell; never infer a fold from model or UA. |
 
-The rendered checks run in all three engines (above), so a feature that
-isn't Baseline is caught by its fallback being tested.
+The browser scripts can check each supported engine when requested and
+installed, but default runs do not cover every engine. Test progressive
+features in fallback and enhanced modes in the engines available to the
+review; record what was actually run.
 
 ### Theme contribution kit
 
@@ -1086,9 +1181,9 @@ built:
 3. **The agent brief** used for `tokie`, `silo`, `westworld` and `skyrim`,
    cleaned up as a reusable template, including the rule to vendor fonts in
    `assets/fonts/`.
-4. **`scripts/theme-ready.sh <slug>`:** runs the lint, the rendered checks
-   at all tiers, axe, the budgets and the fidelity score, and prints a
-   "ready for review" report.
+4. **`scripts/theme-ready.sh <slug>`:** runs lint, selected rendered pages,
+   axe against a reference, and render-cost review. Performance budgets are
+   an optional separate diagnostic. Visual review remains human.
 5. The gallery's "references wanted" list as the place contributors can
    help without building a theme.
 
@@ -1115,30 +1210,24 @@ are recorded so they can be revisited:
 
 ## 26. Rollout
 
-**Release status (2026-10-05):** v5.1.0 ships the screen tiers, layout and
-spacing work, touch behavior, component groups, experience patterns, CSS-only
-selection/tabs/panes, and updated bundles for all 45 themes. It also includes
-the dashboard scenarios, navigation comparison, component index, theme
-reports and local theme-pack validator in §29. Follow-up work remains for
-theme-family consolidation (§16), fidelity scoring and the full contrast
-sweep (§17/§24), a published docs site (§20), app-owned Easter egg controls,
-and some theme identity refinements (§23). Those are not release blockers.
-The 178-icon core set, per-theme favicons/app icons and share-card template
-are complete.
+**Release status (2026-10-05):** v5.2.0 includes the v5.1.0 screen tiers,
+layout and spacing work, touch behavior, component groups, experience
+patterns, CSS-only selection/tabs/panes, dashboard scenarios, navigation
+comparison, component index, theme reports, local theme-pack validator,
+rebuilt styles for all 45 themes, plus cursor role tokens, Windows/iOS family
+inheritance, box-selection theme feedback and a CSS-led foldable posture
+bridge. The 178-icon core set, per-theme favicons/app icons and share-card
+template are complete. The verified status table records remaining work and
+corrections to older completion claims.
 
-| Phase | Work | Done when |
-|---|---|---|
-| **0. Harness** | `nesting.html`. The five target viewports in `screenshot_themes.py` and `core_regressions.mjs`. The overflow, target-size and spacing checks (§5) reporting only, not failing yet. | A report shows every theme × viewport × page, and how far each is from passing. |
-| **1. Core layout** | Tier media queries, container queries, the 1800px cap, the `--z-*` scale, top-layer popovers and the spacing scale with component `--*-pad` tokens. Proven on `blue-future` only. | `blue-future` passes every check at all five viewports, and its README documents the tiers. |
-| **2. Touch** | `--tap-min`/`--hit-min`, `any-pointer: coarse`, hover gating and `touch-action`. | `blue-future` passes the target-size check on Mobile and Tablet. |
-| **3. Tables and menus** | Editable cells (§7), stacked tables and nested menus, menubar and tree (§8). | Those sections of `nesting.html` pass on `blue-future`. |
-| **4. New components** | The 50 components, in the order of the tables above: instruments first, because they carry the most theme personality. | Each one is on `components.html`, documented in CONTRACT.md, and passes on `blue-future`. |
-| **4b. Experience layer** | Accessibility attributes and the `.prefs` panel (§10), forced-colors support, motion tokens and theme-switch transitions (§11), the arrow-cursor change (§4), accent swatches (§12). Proven on `blue-future`. | `blue-future` passes the checks in every `.prefs` combination and under forced colors. |
-| **4c. Personality and installed apps** | `.splash` (§13), themed empty/error/404 states (§14), cursor packs (§11), PWA and wrapper title bars with `.window-controls` (§15). | `blue-future` and three contrasting themes (`windows95`, `liquid-glass`, `lcars`) ship all of them. |
-| **4d. Data, kits and tooling** | Theme families (§16), advanced tables, the library-neutral `.chart` contract and `charts.html`, live-data states, the dashboard grid (§18), the four kits with `player.html` and `hud.html` (§19), the keyboard layer, budgets and scheduling (§20). The fidelity tool (§17) and docs site (§20) run from here on. | `blue-future` passes every check; Playlist Lab can build its player and tables from the music kit. |
-| **4e. Content, identity and quality** | `.prose` and code palettes, the page templates, the productivity kit and the email build (§22); icon redraws, signature navigation, font replacements, favicons and share cards (§23); Firefox and WebKit, axe, the support policy and the contribution kit (§24). The three new themes (§21) are built with the contribution kit, which proves it. | `teenage-engineering`, `cyberpunk-2077` and `motorsport-telemetry` ship v5-ready, and all checks run in three engines. |
-| **5. Theme rollout** | Port the remaining themes in batches: spacing tokens, gutter art, close button, motion tokens, accent swatches, chart palette, code palette, icons, signature navigation, font review, favicon, email template, splash, empty states, cursors, window controls and per-tier review. | Complete for the current 45-theme catalogue; check reports cover all themes. Further fidelity improvements continue as follow-up. |
-| **6. Release** | Publish migration notes and changelog; retain `v4` branch for apps pinned to v4. | v5.1.0 release documented on 2026-10-05. |
+Current follow-up priorities are:
+
+- Consolidate implemented family sources and add other related themes (§16).
+- Triage structured feedback and continue the contrast review (§17, §24).
+- Decide whether generated per-component docs are worth maintaining (§20).
+- Keep Easter-egg enablement and its About-section toggle app-owned (§20,
+  §28).
+- Optimize bundle and render cost later; budgets remain optional diagnostics (§20).
 
 ## 27. v5 migration notes
 

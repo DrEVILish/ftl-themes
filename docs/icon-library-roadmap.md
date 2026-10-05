@@ -1,22 +1,21 @@
 # Icon library roadmap
 
-## Current state (as of this doc)
+## Current state (2026-10-05)
 
 - `assets/icons/icons.svg` — **1,020 generic icons**, stroke-based outline
   style: 24x24 `viewBox`, `stroke="currentColor"`, `fill="none"` by
   default, sized/weighted entirely through `--icon-fill` and
   `--icon-stroke-width` (`core/core.css`, `.icon`). No per-icon
   color or stroke-width is ever baked into a symbol — that's what lets one
-  sprite reskin across 22 very different themes with zero per-theme icon
-  variants required. The original 100 are in-house line drawings; the
-  other 920 are bulk-vendored, unmodified-artwork icons from **Tabler
-  Icons** (MIT license, v3.48.0) — see `assets/icons/NOTICE.md` for the
-  full attribution, exact commit/version, and exactly what was
+  sprite reskin across the 45-theme catalogue. The original 100 are in-house
+  line drawings; the other 920 are bulk-vendored, unmodified-artwork icons
+  from **Tabler Icons** (MIT license, v3.48.0) — see `assets/icons/NOTICE.md`
+  for the full attribution, exact commit/version, and exactly what was
   mechanically normalized (symbol wrapper, stripped presentation
   attributes) versus left untouched (all path data).
-- Per-theme overrides exist for **6 of 22 themes** (`windows95`,
-  `teletext`, `matrix`, `winxp-luna`, `lcars`, `nokia-3310`), each
-  redefining **6 icon ids** in `themes/<slug>/icons.svg`.
+- All **45 themes** provide the 178-icon core set. Twenty-one have full
+  icon sets drawn in their own style; the other 24 have completed partial
+  sets topped up to core coverage. See the changelog and each theme README.
 - `scripts/build_icons.py` merges generic + override by id into
   `dist/icons/<slug>.svg` per theme, plus `dist/icons/generic.svg` as the
   fallback sprite. `scripts/check.py` validates every override only
@@ -30,16 +29,13 @@
   visualization, security, dev tooling, directional/arrows, status/emoji
   faces, and seasonal/misc, without a consuming app ever needing to draw
   its own icon for a common concept.
-- **100+ unique icons per theme, for all 22 themes** — enough that a
-  theme's signature visual language (Windows 95's chunky pixel bevels,
-  LCARS' swept panel shapes, Nokia 3310's 1-bit dot-matrix look, etc.)
-  shows up not just in 5-6 flagship icons but across most of the icons an
-  app actually uses day to day.
+- **Per-theme core coverage is complete** for the current 45-theme
+  catalogue. Further theme-specific icons are optional extensions, not a
+  coverage requirement.
 
-This is a **large, multi-year content-production effort** (2,000 generic
-icons alone is a ~20x expansion from today's 100; 100 icons x 22 themes
-is 2,200 more themed drawings on top of that). It is explicitly **not**
-attempted in one pass. What follows is the phased plan.
+The longer-term target of **2,000 generic icons** remains; the current set
+contains 1,020. The original phased plan and optional future directions
+follow.
 
 ## Phased plan
 
@@ -127,16 +123,14 @@ removes an existing id (per-theme overrides and consumer apps' `<use
 href="...#icon-name">` references must never break), and gets verified
 with `scripts/check.py` before merging.
 
-### Phase 3 — Per-theme expansion: 6 -> 22 themes, ~10-15 -> 100 icons each
+### Phase 3 — Per-theme core coverage (COMPLETE for 45 themes)
 
-For each theme, the plan is: identify the theme's 10-15 most-recognizable
-real-world icon categories (the ones its target aesthetic is actually
-"about"), draw those first, and let the rest continue falling back to the
-generic set indefinitely — that fallback is not a stopgap, it is the
-permanent, correct behavior for icons a theme has no signature take on.
+The original plan identified each theme's recognizable icon categories,
+then drew or adapted enough theme-style icons to cover the 178-icon core
+set. Additional ids may continue to fall back to the generic sprite.
 
-Starter category lists per theme (illustrative, refine per-theme when the
-work starts):
+The starter category lists below are historical planning notes; use them
+only to guide optional future additions:
 
 - **windows95** — folder (manila), file, computer/my-computer, trash
   (recycle bin), floppy-disk (save), control-panel, wallpaper, taskbar,
@@ -231,8 +225,8 @@ in consuming apps.
   `cutepi` already credits it).
 - **Font Awesome is not a source for this library.** Its glyphs are CC BY
   4.0 (Free tier), which requires attribution — workable for a single
-  app, but a bad fit for 2,000+ icons reused across 22 themes and
-  N consuming apps, where tracking and rendering attribution correctly at
+  app, but a bad fit for 2,000+ icons reused across the theme catalogue and
+  consuming apps, where tracking and rendering attribution correctly at
   that scale is real ongoing overhead. No Font Awesome path data is used
   here.
 - **Hard exclusion: no third-party company logos or trademarks.** Real

@@ -48,7 +48,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 /* Idle: editable on double-click (desktop) or tap (touch). A dotted
    underline on hover and focus; a pencil on touch tiers, where there is no
    hover. */
-.table td.is-editable { cursor: text; }
+.table td.is-editable { cursor: var(--cursor-text, text); }
 .table td.is-editable:focus-visible,
 .table td.is-editable:focus-within {
   text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
@@ -69,7 +69,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 }
 /* Read-only: no affordance, quieter text, the arrow cursor. */
 .table td:is(.is-readonly, [aria-readonly="true"]) {
-  cursor: default;
+  cursor: var(--cursor-default, default);
   color: var(--cell-readonly-fg, var(--muted));
   text-decoration: none;
 }
@@ -387,7 +387,7 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   inset-inline-end: 0;
   inline-size: var(--table-resizer-size, var(--tap-min));
   border-inline-end: 2px solid var(--table-resizer-fg, var(--hairline));
-  cursor: col-resize;
+  cursor: var(--cursor-resize-x, col-resize);
   touch-action: none;
 }
 .table th.is-resizable:has(> .table-resizer)::before { content: none; }
@@ -403,8 +403,8 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 /* Reorder: a draggable header, the column being dragged (.is-dragging) and
    the drop indicator between columns (.is-drop-before / .is-drop-after on
    the header, or on every cell of the target column). */
-.table th[draggable="true"] { cursor: grab; }
-.table th[draggable="true"]:active { cursor: grabbing; }
+.table th[draggable="true"] { cursor: var(--cursor-grab, grab); }
+.table th[draggable="true"]:active { cursor: var(--cursor-grabbing, grabbing); }
 .table :is(th, td).is-dragging {
   opacity: var(--table-drag-opacity, 1);
   outline: 1px dashed var(--table-drop-marker, var(--accent));

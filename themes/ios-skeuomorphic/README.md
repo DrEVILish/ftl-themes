@@ -5,6 +5,8 @@
 
 **Requires: L1.** The theme sets `--app-*` layout properties. At L0 (tokens only) it recolors correctly, but you only get the iPhone layout (status strip, nav bar, tab bar) once the app shell is adopted. See "Adoption" below.
 
+**Family:** iOS, root theme.
+
 ## What this theme is trying to achieve
 
 The iPhone before iOS 7: every control is a physical object with a light

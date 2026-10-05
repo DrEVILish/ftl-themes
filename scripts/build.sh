@@ -19,7 +19,7 @@ rm -f dist/*.css dist/themes.json
 # v5 component groups (core/components/*.css), in name order, after core.css
 # so they can build on its components and tokens.
 cat_components() { for f in core/components/*.css; do [ -f "$f" ] && cat "$f"; done; return 0; }
-rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../assets/#g'; }
+rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../assets/#g; s/[[:space:]]*$//'; }
 # CSS-only selection: .is-active / [aria-selected="true"] also match an item
 # whose own radio or checkbox is checked (scripts/radio_state.py).
 radio_state() { python3 "$root/scripts/radio_state.py"; }
@@ -41,6 +41,7 @@ radio_state() { python3 "$root/scripts/radio_state.py"; }
   cat core/reset.css
   cat core/core.css
   cat_components
+  cat core/cursors.css
   echo "}"
 } | rewrite_urls | radio_state > dist/core.css
 echo "built dist/core.css"
@@ -63,8 +64,8 @@ for dir in themes/*/; do
     cat core/core.css
     cat_components
     cat core/layout.css
-    cat "$src"
-    if [ -f "themes/${name}/chrome.css" ]; then cat "themes/${name}/chrome.css"; fi
+    cat core/cursors.css
+    python3 scripts/theme_inheritance.py "$name"
     echo "}"
   } | rewrite_urls | radio_state > "$out"
   echo "built $out"

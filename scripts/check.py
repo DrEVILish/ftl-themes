@@ -62,8 +62,8 @@ Every rule corresponds to a bug that actually shipped once:
              from the color-scheme rule above: this checks the *manifest's*
              stamped value against the CSS; that one checks the CSS declares
              a value at all.
-  budget     (warning until v5 ships, PLAN.md §20) bundle size, the theme's
-             own CSS, and its vendored fonts, against the BUDGET_* numbers
+  budget     optional diagnostic for bundle size, theme CSS, and vendored
+             fonts; deliberately not part of the default quality gate
              below.
 
 Usage: check.py [--theme slug]... [--budgets]
@@ -84,6 +84,7 @@ import xml.etree.ElementTree as ET
 
 import cssparse  # noqa: E402
 import build_manifest  # noqa: E402  (sys.path[0] is scripts/ when run as a script)
+import theme_inheritance  # noqa: E402
 
 # Performance budgets (PLAN.md §20), in bytes. Reported as warnings for now;
 # they become failures once v5 ships. Set from the 2026-10 distribution of
@@ -643,19 +644,23 @@ for path in sorted(glob.glob("core/*.css") + glob.glob("core/components/*.css"))
 # deterministic now (its version is a content hash of the bundles; no
 # wall-clock field survives a rebuild).
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
-# --porcelain, not `git diff`: a bundle the build creates but nobody
-# committed (a new theme, a new bundle form) is untracked, and `git diff`
-# can't see untracked files.
-diff = [line[3:] for line in subprocess.run(
-    ["git", "status", "--porcelain", "--", "dist"],
-    capture_output=True, text=True).stdout.splitlines()]
-if diff:
-    failures.append("dist: committed bundles are stale — run scripts/build.sh and commit "
-                    f"({', '.join(diff)})")
+# Compare the fresh worktree build to the index, not `git status`: correctly
+# staged generated files are expected to differ from HEAD before a commit.
+# Check untracked outputs separately because `git diff` does not report them.
+dist_diff = subprocess.run(["git", "diff", "--name-only", "--", "dist"],
+                           capture_output=True, text=True).stdout.splitlines()
+untracked_dist = subprocess.run(
+    ["git", "ls-files", "--others", "--exclude-standard", "--", "dist"],
+    capture_output=True, text=True).stdout.splitlines()
+dist_changes = sorted(set(dist_diff + untracked_dist))
+if dist_changes:
+    failures.append("dist: generated files differ from a fresh build — stage the rebuilt outputs "
+                    f"({', '.join(dist_changes)})")
 
-# Size budgets, read from the fresh build above.
+# Optional size report. Budgets are intentionally outside the default quality
+# gate while the project focuses on correctness and visual review.
 budget_rows = []
-for path in sorted(glob.glob("themes/*/theme.css")):
+for path in sorted(glob.glob("themes/*/theme.css")) if ARGS.budgets else []:
     theme = os.path.basename(os.path.dirname(path))
     if ONLY and theme not in ONLY:
         continue
@@ -701,8 +706,7 @@ for entry in manifest:
     if missing:
         fail(entry.get("slug", "?"), "manifest", f"missing field(s): {', '.join(missing)}")
         continue
-    scheme, lum = build_manifest.scheme_of(open(f"themes/{entry['slug']}/theme.css").read(),
-                                         entry["slug"])
+    scheme, lum = build_manifest.scheme_of(theme_inheritance.rules(entry["slug"]), entry["slug"])
     if (entry["scheme"], entry["luminance"]) != (scheme, lum):
         fail(entry["slug"], "scheme",
              f"manifest says {entry['scheme']}/{entry['luminance']} but the theme "

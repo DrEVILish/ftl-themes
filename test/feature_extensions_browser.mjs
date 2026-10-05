@@ -42,6 +42,23 @@ try {
   await page.evaluate(() => window.ftlAppReady());
   assert.equal(await page.locator('.app-main').getAttribute('aria-busy'), null);
   assert.equal(await page.locator('.splash').evaluate(el => el.hidden), true);
+  await page.goto(`${server.base}/theme-feedback.html`, { waitUntil: 'networkidle' });
+  await page.locator('#theme').selectOption('winxp-luna');
+  await page.locator('#page').selectOption('components-instruments.html');
+  await page.frameLocator('#preview').locator('body').waitFor();
+  await page.locator('#draw').click();
+  const stage = await page.locator('#stage').boundingBox();
+  await page.mouse.move(stage.x + 30, stage.y + 30);
+  await page.mouse.down();
+  await page.mouse.move(stage.x + 190, stage.y + 140, { steps: 4 });
+  await page.mouse.up();
+  await page.locator('#comment').fill('The chart labels overlap on a narrow screen.');
+  await page.locator('#save').click();
+  const feedback = await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')));
+  assert.equal(feedback.length, 1);
+  assert.equal(feedback[0].theme, 'winxp-luna');
+  assert.equal(feedback[0].page, 'components-instruments.html');
+  assert(feedback[0].selection.width > 0 && feedback[0].selection.height > 0);
   console.log('browser feature checks passed (Windows and iOS theme families; reduced motion)');
 } finally {
   await browser.close();

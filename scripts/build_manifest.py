@@ -32,6 +32,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 import cssparse
+import theme_inheritance
 
 # Major version of the class/token contract the bundles implement. Bumped
 # when a rename or removal would break a consumer's markup or CSS.
@@ -173,7 +174,8 @@ def write_manifest():
         slug = os.path.basename(os.path.dirname(path))
         src = open(path).read()
         label = header_field(src, "Theme-Name") or slug
-        scheme, luminance = scheme_of(src, slug)
+        inherited = theme_inheritance.rules(slug)
+        scheme, luminance = scheme_of(inherited, slug)
         meta = categories.get(slug, {})
         # Palette variants (CONTRACT.md "Palette variants") are listed in the
         # header as `Variants: id=Label, id=Label` so pickers can offer them.
@@ -182,15 +184,13 @@ def write_manifest():
         # Theme tint (CONTRACT.md "Theme tint"): `Tint: --token #default Label`.
         tm = re.match(r"(--[a-z0-9-]+)\s+(#[0-9a-fA-F]{6})\s*(.*)$", header_field(src, "Tint"))
         tint = {"token": tm.group(1), "default": tm.group(2).lower(), "label": tm.group(3) or "Tint"} if tm else None
-        full_src = src
-        chrome_path = os.path.join(os.path.dirname(path), "chrome.css")
-        if os.path.isfile(chrome_path):
-            full_src += "\n" + open(chrome_path, encoding="utf-8").read()
+        full_src = inherited
         own_classes = component_classes(full_src)
         overrides = icon_ids(os.path.join(os.path.dirname(path), "icons.svg"))
         references = [p for p in glob.glob("references/%s/**/*" % slug, recursive=True) if os.path.isfile(p)]
         fonts = sorted(set(re.findall(r"url\(['\"]?assets/fonts/([^)'\"]+)", full_src)))
         navigation = [x.strip() for x in header_field(src, "Navigation-Patterns").split(",") if x.strip()]
+        family_chain = [item[0] for item in theme_inheritance.chain(slug)]
         entries.append({
             "slug": slug,
             "dataTheme": slug,
@@ -209,6 +209,8 @@ def write_manifest():
             "references": {"files": len(references), "research": os.path.isfile("references/%s/RESEARCH.md" % slug)},
             "componentCoverage": {"styledSelectors": len(own_classes & core_classes), "coreDefaults": len(core_classes - own_classes), "total": len(core_classes)},
             "navigationPatterns": navigation,
+            "family": family_chain[0],
+            "extends": family_chain[-2] if len(family_chain) > 1 else None,
             "category": meta.get("category"),
             "era": meta.get("era"),
             **({"variants": variants} if variants else {}),

@@ -28,12 +28,39 @@ The shell detects segmented viewport geometry in CSS only when running as an
 installed PWA. Two side-by-side segments use `--folding-mode: book`; two
 stacked segments use `--folding-mode: tabletop`. The hinge is a grid gap,
 so shell regions do not paint over it. A PWA may also load
-`assets/js/foldable.js` to expose `data-fold-mode` and
-`data-fold-posture` on `<html>` to app logic and themes. This is progressive
+`assets/js/foldable.js` to reflect the CSS mode in `data-fold-mode` and expose
+the optional OS posture as `data-fold-posture` on `<html>`. CSS remains the
+source of truth for segment detection and layout; JS only bridges metadata to
+apps. This is progressive
 enhancement: browsers without viewport-segment support, and ordinary
 browser windows, keep the normal Mobile/Tablet layout. Apps should place
 interactive controls inside a segment and should not infer posture from the
 device model.
+
+## Cursor packs
+
+Core cursor roles use `--cursor-*` properties in `core/cursors.css`, each
+falling back to a native cursor keyword. Optional static artwork goes under
+`assets/cursors/<theme>/<role>.png`; keep PNGs transparent and at most 32×32
+pixels, and include a hotspot and mandatory native fallback in each CSS value.
+See [`assets/cursors/README.md`](assets/cursors/README.md). High contrast and
+forced-colors modes use native cursors.
+
+## Theme families
+
+Add `* Extends: <slug>` to a theme's header to inherit a parent at build time.
+The child bundle contains the parent rules rewritten to the child theme scope,
+followed by the child's rules. Chains must be acyclic and every parent must
+exist. The family is flattened into CSS at build time; there is no runtime
+inheritance. Current family metadata is available in `dist/themes.json`.
+
+## Theme feedback
+
+Use [`theme-feedback.html`](theme-feedback.html) to preview a theme, draw a
+box around an issue and save a structured report. Reports are local to the
+browser until downloaded as JSON. Review and triage them using
+[`docs/theme-feedback.md`](docs/theme-feedback.md); visual judgments remain
+human reviewed.
 
 ## App readiness and boot screens
 
@@ -81,6 +108,7 @@ attribute together. Themes are mutually exclusive: load exactly one
 [{
   "slug": "lcars", "dataTheme": "lcars", "label": "LCARS",
   "description": "…", "hasChrome": true, "shellAware": true,
+  "family": "lcars", "extends": null,
   "version": "1f7c1589aa66",
   "scheme": "dark", "luminance": 0.049,
   "variants": [{"id": "voyager", "label": "Voyager / DS9"}, …],
@@ -91,7 +119,8 @@ attribute together. Themes are mutually exclusive: load exactly one
 `variants` and `tint` are present only on themes that have them. The build
 also includes `tokens` (root token names), `fonts`, `iconCoverage`,
 `references`, `componentCoverage`, and `navigationPatterns` for authoring and
-agent discovery.
+agent discovery, plus `family` (the root theme slug) and `extends` (the
+immediate parent slug or null).
 
 Read it to populate a theme picker (embed it, or serve it) instead of
 hardcoding a list or scraping CSS comments.
@@ -132,6 +161,10 @@ hardcoding a list or scraping CSS comments.
 - **`navigationPatterns` lists the theme's optional shell idioms.** Empty
   means use standard navigation; routes and active destination state stay
   app-owned.
+- **`family` and `extends` describe build-time theme inheritance** (see
+  "Theme families"). `family` equals the root slug; `extends` is null for a
+  root. The compiled theme bundle and token-only bundle both include inherited
+  base rules. Parent variant/accent/tint selectors do not leak into children.
 - **`componentCoverage` and `iconCoverage` are authoring signals**, not
   conformance scores. Core defaults are valid coverage; use references and
   rendered checks for visual review.
