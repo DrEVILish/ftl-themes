@@ -12,7 +12,7 @@
     var c = nav.previousElementSibling;
     return c && c.matches(".carousel") ? c : nav.parentElement.querySelector(".carousel");
   }
-  function current(c) { return Math.round(c.scrollLeft / c.clientWidth); }
+  function current(c) { return c.clientWidth ? Math.round(c.scrollLeft / c.clientWidth) : 0; }
   function mark(c, nav) {
     var slide = c.children[current(c)];
     nav.querySelectorAll("a:not(.carousel-prev):not(.carousel-next)").forEach(function (a) {
@@ -26,10 +26,12 @@
     var nav = a.closest(".carousel-nav"), c = carouselFor(nav);
     if (!c) return;
     e.preventDefault();
+    var n = c.children.length;
+    if (!n) return;
     var step = a.matches(".carousel-prev") ? -1 : a.matches(".carousel-next") ? 1 : 0;
-    var n = c.children.length, i = step ? (current(c) + step + n) % n
+    var i = step ? (current(c) + step + n) % n
       : Array.prototype.indexOf.call(c.children, document.getElementById(a.hash.slice(1)));
-    if (i < 0) return;
+    if (i < 0 || i >= n) return;
     c.scrollTo({ left: c.scrollLeft + c.children[i].getBoundingClientRect().left - c.getBoundingClientRect().left });
   });
   document.querySelectorAll(".carousel-nav").forEach(function (nav) {

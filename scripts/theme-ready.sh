@@ -13,14 +13,40 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
 slug="${1:-}"
-[ -n "$slug" ] && [ -f "themes/$slug/theme.css" ] || { echo "usage: scripts/theme-ready.sh <slug> [--engine name]..." >&2; exit 2; }
+[[ "$slug" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ && -f "themes/$slug/theme.css" ]] || { echo "usage: scripts/theme-ready.sh <slug> [--engine name]..." >&2; exit 2; }
 shift
 engines=("$@")
-logs="${TMPDIR:-/tmp}/theme-ready-$slug"
-rm -rf "$logs" && mkdir -p "$logs"
+if ! logs="$(mktemp -d "${TMPDIR:-/tmp}/theme-ready-$slug.XXXXXX")"; then
+  echo "could not create theme-ready log directory" >&2
+  exit 1
+fi
+
+summary=()
+# gate <name> <log> <fail-status> <command...>: runs it, keeps the log,
+# records PASS or <fail-status> with the log's last line.
+gate() {
+  local name="$1" log="$logs/$2.log" bad="$3"; shift 3
+  [ -t 1 ] && printf '%-18s running…\r' "$name"
+  if "$@" >"$log" 2>&1; then st=PASS; else st="$bad"; fi
+  local last; last="$(awk 'NF {line=$0} END {print line}' "$log" | cut -c1-110)"
+  summary+=("$(printf '%-5s %-18s %s' "$st" "$name" "$last")")
+  printf '%-5s %-18s %s\n' "$st" "$name" "$last"
+  [ "$st" = PASS ]
+}
+
+budget_check() {
+  local n
+  n="$(grep -Fc "warn  $slug: [budget]" "$logs/lint.log" || true)"
+  echo "$n budget warning(s)"
+  [ "$n" -eq 0 ]
+}
+
+echo "theme-ready: $slug"
+gate build          build          FAIL scripts/build.sh || exit 1
 
 # The theme plus its palette variants (variants run on the dashboard only).
-mapfile -t entries < <(python3 -c '
+entries=()
+while IFS= read -r entry; do entries+=("$entry"); done < <(python3 -c '
 import json, sys
 for t in json.load(open("dist/themes.json")):
     if t["slug"] == sys.argv[1]:
@@ -31,26 +57,13 @@ theme_args=(); for e in "${entries[@]}"; do theme_args+=(--theme "$e"); done
 # axe attributes a rule to the theme by comparing it with a reference theme.
 ref=blue-future; [ "$slug" = blue-future ] && ref=windows95
 
-summary=()
-# gate <name> <log> <fail-status> <command...>: runs it, keeps the log,
-# records PASS or <fail-status> with the log's last line.
-gate() {
-  local name="$1" log="$logs/$2.log" bad="$3"; shift 3
-  [ -t 1 ] && printf '%-18s running…\r' "$name"
-  if "$@" >"$log" 2>&1; then st=PASS; else st="$bad"; fi
-  local last; last="$(grep -v '^\s*$' "$log" | tail -n 1 | cut -c1-110)"
-  summary+=("$(printf '%-5s %-18s %s' "$st" "$name" "$last")")
-  printf '%-5s %-18s %s\n' "$st" "$name" "$last"
-}
-
-echo "theme-ready: $slug (${entries[*]})"
-gate build          build          FAIL scripts/build.sh
+echo "variants: ${entries[*]}"
 gate lint           lint           FAIL python3 scripts/check.py --theme "$slug" --budgets
 gate core-regress   core           FAIL node scripts/core_regressions.mjs "${engines[@]}" "$slug"
 gate v5-audit       v5-audit       FAIL node scripts/v5_audit.mjs "${theme_args[@]}" --page dashboard --page components --page nesting --strict "${engines[@]}"
 gate a11y           a11y           FAIL node scripts/a11y_audit.mjs "${theme_args[@]}" --theme "$ref" --blame "$slug" "${engines[@]}"
 # Budgets are warnings in check.py; this gate turns its [budget] lines into WARN.
-gate budgets        budgets        WARN bash -c "n=\$(grep -c '^warn  $slug: \[budget\]' '$logs/lint.log'); echo \"\$n budget warning(s)\"; [ \$n = 0 ]"
+gate budgets        budgets        WARN budget_check
 gate render-cost    render         WARN node scripts/render_cost.mjs --theme "$slug" --strict
 
 echo

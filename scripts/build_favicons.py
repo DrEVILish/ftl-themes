@@ -58,7 +58,10 @@ def main(slugs):
     OUT.mkdir(parents=True, exist_ok=True)
     has_convert = shutil.which("rsvg-convert") is not None
     for slug in slugs:
-        p = palette(slug)
+        try:
+            p = palette(slug)
+        except ValueError as exc:
+            raise SystemExit(str(exc))
         fav, mask = OUT / f"{slug}.svg", OUT / f"{slug}-maskable.svg"
         fav.write_text(svg(p))
         mask.write_text(svg(p, maskable=True))

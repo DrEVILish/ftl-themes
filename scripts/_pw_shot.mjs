@@ -10,7 +10,7 @@
 // up before invoking this).
 import fs from 'fs';
 import path from 'path';
-import { ROOT as root, launch, themeReady, FREEZE_CSS } from './_harness.mjs';
+import { ROOT as root, launch, themeEntries, openThemed, FREEZE_CSS } from './_harness.mjs';
 
 const args = process.argv.slice(2);
 const opt = (name, dflt) => { const i = args.indexOf(name); return i >= 0 ? args.splice(i, 2)[1] : dflt; };
@@ -25,8 +25,7 @@ const VARIANT_PAGES = ['dashboard.html'];
 const VIEWPORT = { width: 1280, height: 900 };
 
 // Each palette variant is shot as its own "theme": <slug>~<variant>.
-const themes = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'themes.json'), 'utf8'))
-  .flatMap(t => [t.slug, ...(t.variants || []).map(v => `${t.slug}~${v.id}`)])
+const themes = themeEntries()
   .filter(s => !only || only.split(',').includes(s.split('~')[0]))
   .sort();
 
@@ -36,9 +35,8 @@ const page = await browser.newPage({ viewport: VIEWPORT });
 
 // FREEZE_CSS stops anything time-based (animations, transitions, carets)
 // so repeated runs of the same markup produce byte-identical screenshots.
-// themeReady (scripts/_harness.mjs) waits until the theme stylesheet has
-// actually applied and fonts are done, so a screenshot never silently
-// captures an unstyled page; the navigation is retried up to three times.
+// openThemed waits until the stylesheet and fonts are ready, retrying navigation
+// up to three times so screenshots don't silently capture an unstyled page.
 
 let shots = 0;
 const failures = [];
@@ -51,12 +49,7 @@ for (const entry of themes) {
   for (const pageName of variant ? VARIANT_PAGES : EXAMPLE_PAGES) {
     const url = `${base}/${pageName}?theme=${slug}` + (variant ? `&variant=${variant}` : '');
     try {
-      let ready = false;
-      for (let attempt = 0; attempt < 3 && !ready; attempt++) {
-        await page.goto(url, { waitUntil: 'networkidle' });
-        ready = await themeReady(page, slug);
-        if (!ready && process.env.SHOT_DEBUG) console.error(`retrying ${slug} ${pageName} (attempt ${attempt + 1})`);
-      }
+      const ready = await openThemed(page, url, slug);
       await page.addStyleTag({ content: FREEZE_CSS });
       await page.waitForTimeout(30);
       const dest = path.join(dir, pageName.replace(/\.html$/, '') + '.png');

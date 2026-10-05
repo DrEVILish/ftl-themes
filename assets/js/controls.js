@@ -9,7 +9,7 @@
   function sync(input) {
     var host = input.closest(".knob") || input;
     var min = +input.min || 0, max = input.max === "" ? 100 : +input.max;
-    host.style.setProperty("--value", ((input.value - min) / (max - min)).toFixed(4));
+    host.style.setProperty("--value", max > min ? ((input.value - min) / (max - min)).toFixed(4) : "0");
   }
   document.addEventListener("input", function (e) { if (e.target.matches(SEL)) sync(e.target); });
   document.querySelectorAll(SEL).forEach(sync);
@@ -36,9 +36,10 @@
     if (e.button !== 0) return;
     var input = targetOf(e.target);
     if (!input || input.disabled) return;
+    var min = +input.min || 0, max = input.max === "" ? 100 : +input.max;
+    if (!(max > min)) return;
     e.preventDefault();
     input.focus({ preventScroll: true });
-    var min = +input.min || 0, max = input.max === "" ? 100 : +input.max;
     var step = input.step === "any" ? 0 : (+input.step || 1);
     var y0 = e.clientY, v0 = +input.value, host = e.target;
     host.setPointerCapture(e.pointerId);
@@ -65,4 +66,3 @@
     host.addEventListener("pointercancel", up);
   });
 })();
-

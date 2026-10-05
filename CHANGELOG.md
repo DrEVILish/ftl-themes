@@ -5,6 +5,11 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- Hardened theme build tools against invalid slugs, path traversal, and shell
+  interpolation; the review gate now builds before reading variant metadata
+  and runs under macOS's system Bash. Guarded empty carousels and zero-span
+  mixer controls.
+
 - **Media decks.** Added a theme-token `.media-deck` component with Pi9696's
   reel-to-reel plate and reel/tape motion, plus vinyl, portable cassette and
   MiniDisc examples. Play/record/pause states honor reduced motion; see

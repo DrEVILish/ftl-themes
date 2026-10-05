@@ -91,7 +91,12 @@ def font_stack(tokens):
 
 
 def palette(slug):
-    t = root_tokens((ROOT / "themes" / slug / "theme.css").read_text(), slug)
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        raise ValueError(f"invalid theme slug: {slug!r}")
+    theme_css = ROOT / "themes" / slug / "theme.css"
+    if not theme_css.is_file():
+        raise ValueError(f"unknown theme: {slug!r}")
+    t = root_tokens(theme_css.read_text(), slug)
     bg = solid(t, t.get("--bg")) or "#ffffff"
     base = tuple(int(bg[i:i + 2], 16) for i in (1, 3, 5)) + (1.0,)
     surface = solid(t, t.get("--surface"), base) or bg
@@ -111,8 +116,8 @@ def palette(slug):
                 font=font_stack(t), radius=radius)
 
 
-def render(slug, name, spec, app="Playlist Lab", url="https://app.example.com"):
-    p = palette(slug)
+def render(slug, name, spec, app="Playlist Lab", url="https://app.example.com", colors=None):
+    p = colors or palette(slug)
     fill = lambda s: s.format(app=app, url=url)
     esc = lambda s: html.escape(fill(s))
     tone_bg, tone_fg = (p["danger"], p["on_danger"]) if spec.get("tone") == "danger" else (p["accent"], p["on_accent"])
@@ -152,10 +157,14 @@ You're getting this because you have a {esc(app)} account. <a href="{html.escape
 
 def main(slugs):
     for slug in slugs:
+        try:
+            colors = palette(slug)
+        except ValueError as exc:
+            raise SystemExit(str(exc))
         d = OUT / slug
         d.mkdir(parents=True, exist_ok=True)
         for name, spec in EMAILS.items():
-            doc, txt = render(slug, name, spec)
+            doc, txt = render(slug, name, spec, colors=colors)
             (d / f"{name}.html").write_text(doc)
             (d / f"{name}.txt").write_text(txt)
     print(f"built dist/email for {len(slugs)} theme(s), {len(EMAILS)} templates each")
