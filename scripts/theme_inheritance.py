@@ -14,7 +14,7 @@ def chain(slug):
     result, seen = [], set()
     while slug:
         if slug in seen:
-            raise ValueError("theme inheritance cycle: " + " -> ".join(result + [slug]))
+            raise ValueError("theme inheritance cycle: " + " -> ".join([name for name, _ in result] + [slug]))
         seen.add(slug)
         path = ROOT / "themes" / slug / "theme.css"
         if not path.is_file():

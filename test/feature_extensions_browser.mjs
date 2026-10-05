@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Rendered checks for the dashboard states and boot readiness across families.
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 let harness;
 try { harness = await import('../scripts/_harness.mjs'); }
 catch (error) {
@@ -43,15 +44,36 @@ try {
   assert.equal(await page.locator('.app-main').getAttribute('aria-busy'), null);
   assert.equal(await page.locator('.splash').evaluate(el => el.hidden), true);
   await page.goto(`${server.base}/theme-feedback.html`, { waitUntil: 'networkidle' });
+  // Corrupt saved JSON is ignored instead of preventing the feedback tool from opening.
+  await page.evaluate(() => localStorage.setItem('theme-feedback-v1', '{broken'));
+  await page.reload({ waitUntil: 'networkidle' });
+  assert.equal(await page.locator('#reports').innerText(), 'No reports saved yet.');
   await page.locator('#theme').selectOption('winxp-luna');
   await page.locator('#page').selectOption('components-instruments.html');
   await page.frameLocator('#preview').locator('body').waitFor();
+  const dialogs = [];
+  page.on('dialog', async dialog => { dialogs.push(dialog.message()); await dialog.accept(); });
+  // Saving without a drawn region or description must not create a report.
+  await page.locator('#save').click();
+  assert.match(dialogs.at(-1), /Draw a box/);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 0);
   await page.locator('#draw').click();
   const stage = await page.locator('#stage').boundingBox();
-  await page.mouse.move(stage.x + 30, stage.y + 30);
+  await page.mouse.move(stage.x + 50, stage.y + 50);
   await page.mouse.down();
-  await page.mouse.move(stage.x + 190, stage.y + 140, { steps: 4 });
   await page.mouse.up();
+  await page.locator('#save').click();
+  assert.match(dialogs.at(-1), /Draw a box/);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 0);
+  await page.locator('#draw').click();
+  // Drag bottom-right to top-left: coordinates must normalize to positive bounds.
+  await page.mouse.move(stage.x + 190, stage.y + 140);
+  await page.mouse.down();
+  await page.mouse.move(stage.x + 30, stage.y + 30, { steps: 4 });
+  await page.mouse.up();
+  await page.locator('#save').click();
+  assert.match(dialogs.at(-1), /description/);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 0);
   await page.locator('#comment').fill('The chart labels overlap on a narrow screen.');
   await page.locator('#save').click();
   const feedback = await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')));
@@ -59,6 +81,35 @@ try {
   assert.equal(feedback[0].theme, 'winxp-luna');
   assert.equal(feedback[0].page, 'components-instruments.html');
   assert(feedback[0].selection.width > 0 && feedback[0].selection.height > 0);
+  assert(feedback[0].selection.x > 0 && feedback[0].selection.y > 0);
+  // Storage quota/privacy failures leave the existing report intact and tell
+  // the user the save failed instead of silently discarding it.
+  await page.evaluate(() => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key === 'theme-feedback-v1') throw new DOMException('blocked', 'QuotaExceededError');
+      return original.call(this, key, value);
+    };
+  });
+  await page.locator('#draw').click();
+  const updatedStage = await page.locator('#stage').boundingBox();
+  await page.mouse.move(updatedStage.x + 220, updatedStage.y + 170);
+  await page.mouse.down();
+  await page.mouse.move(updatedStage.x + 80, updatedStage.y + 60, { steps: 3 });
+  await page.mouse.up();
+  await page.locator('#comment').fill('A second issue that cannot be persisted.');
+  await page.locator('#save').click();
+  assert.match(dialogs.at(-1), /could not be saved/);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 1);
+  const download = page.waitForEvent('download');
+  await page.locator('#download').click();
+  const reportFile = await download;
+  assert.equal(reportFile.suggestedFilename(), 'theme-feedback.json');
+  const reportText = await readFile(await reportFile.path(), 'utf8');
+  const exported = JSON.parse(reportText);
+  assert.equal(exported.format, 'theme-feedback');
+  assert.equal(exported.version, 1);
+  assert.equal(exported.reports.length, 1);
   console.log('browser feature checks passed (Windows and iOS theme families; reduced motion)');
 } finally {
   await browser.close();
