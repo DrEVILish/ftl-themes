@@ -1320,7 +1320,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: var(--key-width, 2.3rem);
+  min-width: max(var(--key-width, 2.3rem), var(--tap-min));
   height: calc(1.55rem * var(--density));
   padding: 0 0.45em;
   font: inherit;
@@ -8721,9 +8721,9 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   }
   html:not([data-motion="reduced"]) .is-demo-live :is(.vu-needle, .ledbar, .ledarc):nth-of-type(2n) { --metering-live: 1.3s; animation-delay: -0.4s; }
   html:not([data-motion="reduced"]) .is-demo-live :is(.vu-needle, .ledbar, .ledarc):nth-of-type(3n) { --metering-live: 2.1s; animation-delay: -1.1s; }
-  html:not([data-motion="reduced"]) .is-demo-live .rta > li { animation: rta-live 0.9s ease-in-out infinite alternate; }
-  html:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(2n) { animation-duration: 0.7s; animation-delay: -0.3s; }
-  html:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(3n) { animation-duration: 1.15s; animation-delay: -0.6s; }
+  html:not([data-motion="reduced"]) .is-demo-live .rta > li { animation: rta-live calc(0.9s * var(--rta-live-speed, 1)) ease-in-out infinite alternate; }
+  html:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(2n) { animation-duration: calc(0.7s * var(--rta-live-speed, 1)); animation-delay: -0.3s; }
+  html:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(3n) { animation-duration: calc(1.15s * var(--rta-live-speed, 1)); animation-delay: -0.6s; }
 }
 @keyframes metering-live {
   0% { --metering-v: clamp(0, var(--_target) * 0.8, 1); }
@@ -9326,36 +9326,88 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
       calc(var(--_dec) * -0.30103) 0 / var(--_dec) 100% repeat-x;
 }
 .eq-graph > :is(.spectrogram, .rta, .eq-graph-curve) { position: absolute; inset: 0; margin: 0; padding: 0; }
+/* Spectrogram colour scale, quiet to loud: floor (no signal), signal
+   detected, low, medium, high, peak. Each theme's default is built from its
+   own palette (accent, then success → warning → danger); a theme sets
+   --spectro-* to choose its own, and data-spectro radios in the
+   .eq-editor pick a preset (theme / scale / mono / thermal). */
+.eq-graph {
+  --_s-floor: var(--spectro-floor, transparent);
+  --_s-signal: var(--spectro-signal, var(--accent));
+  --_s-low: var(--spectro-low, var(--success));
+  --_s-mid: var(--spectro-mid, color-mix(in oklab, var(--warning) 55%, var(--success)));
+  --_s-high: var(--spectro-high, var(--warning));
+  --_s-peak: var(--spectro-peak, var(--danger));
+}
+.eq-editor:has([data-spectro="scale"]:checked) .eq-graph {
+  --_s-signal: var(--chart-seq-2); --_s-low: var(--chart-seq-4); --_s-mid: var(--chart-seq-6);
+  --_s-high: var(--chart-seq-7); --_s-peak: var(--chart-seq-8);
+}
+.eq-editor:has([data-spectro="mono"]:checked) .eq-graph {
+  --_s-signal: color-mix(in oklab, var(--accent) 30%, transparent); --_s-low: color-mix(in oklab, var(--accent) 50%, transparent);
+  --_s-mid: color-mix(in oklab, var(--accent) 72%, transparent); --_s-high: var(--accent);
+  --_s-peak: color-mix(in oklab, var(--accent) 45%, #fff);
+}
+.eq-editor:has([data-spectro="thermal"]:checked) .eq-graph {
+  --_s-signal: #2a0a5e; --_s-low: #8a1f8c; --_s-mid: #e0333c; --_s-high: #ff9a1f; --_s-peak: #fff3b0;
+}
 .spectrogram {
   display: grid;
   grid-template-columns: repeat(var(--spectrogram-cols, 31), 1fr);
   grid-auto-rows: 1fr;
-  opacity: var(--spectrogram-opacity, 0.35);
+  opacity: var(--spectrogram-opacity, 0.45);
   pointer-events: none;
 }
-.spectrogram > * { background: color-mix(in oklab, var(--chart-seq-8) calc(var(--v, 0) * 100%), var(--chart-seq-0)); }
+/* Each cell shows the slice of a tall scale gradient at its --v (0–1), so
+   any five colours map without per-colour rules. */
+.spectrogram > :not(canvas, img, video) {
+  background: linear-gradient(to bottom,
+      var(--_s-floor) 0%, var(--_s-floor) 18%, var(--_s-signal) 30%, var(--_s-low) 48%,
+      var(--_s-mid) 66%, var(--_s-high) 84%, var(--_s-peak) 100%)
+    0 calc(var(--v, 0) * 100%) / 100% 4000% no-repeat;
+}
 .spectrogram > :is(canvas, img, video) { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: fill; }
+
+/* RTA: one bar per band. Each <li> carries --v (RMS), --avg and --peak, all
+   0–1 over a 60 dB window (1 = 0 dBFS). The detector, range and decay come
+   from the .eq-editor's controls (below) or the --rta-* tokens. */
+@property --rta-h { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --rta-pk { syntax: "<number>"; inherits: false; initial-value: 0; }
 .rta {
   --_rta: var(--rta-color, var(--chart-series-2, var(--accent)));
-  --rta-fill: 7%;
   display: flex;
   gap: var(--rta-gap, 1px);
   list-style: none;
   pointer-events: none;
+  opacity: var(--rta-opacity, 0.75);
 }
-.rta.is-pre { --_rta: var(--rta-pre-color, var(--muted)); --rta-fill: 8%; }
+.rta.is-pre { --_rta: var(--rta-pre-color, var(--chart-series-3, var(--muted))); }
 .rta > li {
-  --_h: calc(clamp(0, var(--v, 0) * var(--rta-l), 1));
-  --_cap: var(--rta-peak, color-mix(in oklab, var(--text) 55%, transparent));
+  --_src: var(--v, 0);
+  --rta-h: clamp(0, 1 - (1 - var(--_src) * var(--rta-l)) * var(--rta-k, 1), 1);
+  --rta-pk: clamp(0, 1 - (1 - var(--peak, 0)) * var(--rta-k, 1), 1);
+  --_cap: var(--rta-peak, color-mix(in oklab, var(--_rta) 55%, var(--text)));
   flex: 1;
   background:
-    linear-gradient(var(--_cap), var(--_cap)) 0 calc((1 - var(--peak, 0)) * 100%) / 100% 2px no-repeat,
-    linear-gradient(var(--_rta), var(--_rta)) 0 calc((1 - var(--_h)) * 100%) / 100% 2px no-repeat,
-    linear-gradient(to top, color-mix(in oklab, var(--_rta) var(--rta-fill), transparent), color-mix(in oklab, var(--_rta) calc(var(--rta-fill) * 3), transparent)) 0 100% / 100% calc(var(--_h) * 100%) no-repeat;
+    linear-gradient(var(--_cap), var(--_cap)) 0 calc((1 - var(--rta-pk)) * 100%) / 100% var(--_cap-size, 2px) no-repeat,
+    linear-gradient(var(--_rta), var(--_rta)) 0 calc((1 - var(--rta-h)) * 100%) / 100% 2px no-repeat,
+    linear-gradient(to top, color-mix(in oklab, var(--_rta) var(--rta-fill, 30%), transparent), color-mix(in oklab, var(--_rta) var(--rta-fill-top, 60%), transparent)) 0 100% / 100% calc(var(--rta-h) * 100%) no-repeat;
 }
-.rta.is-pre > li { background-image: none, linear-gradient(var(--_rta), var(--_rta)), linear-gradient(transparent, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .rta > li { transition: --rta-h var(--rta-decay, 0.45s) ease-out, --rta-pk var(--rta-decay, 0.45s) ease-out; }
+}
 /* .is-line: just the band tops, a stepped trace. */
-.rta.is-line > li { background-size: 100% 2px, 100% 2px, 100% calc(var(--_h) * 100%); --rta-fill: 5%; }
+.rta.is-line > li { --rta-fill: 0%; --rta-fill-top: 0%; }
+/* Right-hand RTA level scale: each li prints data-r60 or, at 30 dB, data-r30. */
+.eq-graph > .eq-levels {
+  position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; pointer-events: none;
+  font-size: var(--eq-label-size, 0.62rem); line-height: 1; color: var(--eq-label-fg, var(--muted));
+}
+.eq-levels > li { position: absolute; inset-inline-end: 0.4rem; inset-block-start: calc((1 - var(--l, 0)) * 100%); translate: 0 calc((1 - var(--l, 0)) * -100%); }
+.eq-levels > li:last-child { margin-block-start: -1.1rem; }
+.eq-levels > li::before { content: attr(data-r60); }
+.eq-editor:has([data-rta-range="30"]:checked) .eq-levels > li::before { content: attr(data-r30); }
+
 .eq-graph-curve { inline-size: 100%; block-size: 100%; pointer-events: none; overflow: visible; }
 .eq-graph-curve path {
   fill: var(--eq-fill, color-mix(in srgb, var(--eq-line, var(--accent)) 20%, transparent));
@@ -9413,10 +9465,28 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 }
 .eq-node:has(input:focus-visible)::before { outline: 2px solid var(--focus); outline-offset: 3px; }
 .eq-node.is-off::before { border-style: dashed; opacity: 0.6; }
-/* Show/hide layers: checkboxes with data-eq-show="rta|pre|spectrogram". */
+/* Analyser controls, all radios or checkboxes inside the .eq-editor:
+   - data-rta-view="pre|both|post": a linked three-way selector;
+   - data-rta-range="30|60": the RTA window (60 dB default);
+   - data-rta-decay="slow|med|fast": how fast bars fall;
+   - data-rta-mode="peak|rms|avg|peak-rms|peak-avg": the detector — bars
+     from --peak, --v or --avg, with or without peak-hold caps;
+   - data-spectro-src (a switch): spectrogram from the pre signal when on;
+   - data-eq-show="rta|pre|spectrogram": v5.2 on/off checkboxes, kept. */
+.eq-editor:has([data-rta-view="pre"]:checked) .rta:not(.is-pre),
+.eq-editor:has([data-rta-view="post"]:checked) .rta.is-pre,
 .eq-editor:has([data-eq-show="rta"]:not(:checked)) .rta:not(.is-pre),
 .eq-editor:has([data-eq-show="pre"]:not(:checked)) .rta.is-pre,
-.eq-editor:has([data-eq-show="spectrogram"]:not(:checked)) .spectrogram { display: none; }
+.eq-editor:has([data-eq-show="spectrogram"]:not(:checked)) .spectrogram,
+.eq-editor:has([data-spectro-src]:checked) .spectrogram:not(.is-pre):has(~ .spectrogram.is-pre),
+.eq-editor:not(:has([data-spectro-src]:checked)) .spectrogram.is-pre { display: none; }
+.eq-editor:has([data-rta-range="30"]:checked) { --rta-k: 2; }
+.eq-editor:has([data-rta-decay="slow"]:checked) { --rta-decay: 1.2s; --rta-live-speed: 2; }
+.eq-editor:has([data-rta-decay="fast"]:checked) { --rta-decay: 0.12s; --rta-live-speed: 0.45; }
+.eq-editor:has([data-rta-mode="rms"]:checked) .rta > li { --_cap-size: 0px; }
+.eq-editor:has([data-rta-mode="avg"]:checked) .rta > li { --_src: var(--avg, var(--v, 0)); --_cap-size: 0px; }
+.eq-editor:has([data-rta-mode="peak"]:checked) .rta > li { --_src: var(--peak, 0); --_cap-size: 0px; }
+.eq-editor:has([data-rta-mode="peak-avg"]:checked) .rta > li { --_src: var(--avg, var(--v, 0)); }
 /* Band panels: the Nth .eq-band shows while the Nth .eq-node is checked. */
 .eq-bands > .eq-band { display: none; }
 .eq-editor:has(.eq-node:nth-of-type(1) input:checked) .eq-band:nth-of-type(1),
@@ -15026,6 +15096,13 @@ html[data-theme="blue-future"] {
   --danger-text: #ff5577; /* danger as text on tinted fills: 4.9:1 */
   --success: #2bffb0;
   --warning: #ff8c1a;
+  /* Spectrogram scale (metering.css): cyan signal, green low, yellow
+     medium, amber high, red peak. */
+  --spectro-signal: #22d3ee;
+  --spectro-low: #2bd96b;
+  --spectro-mid: #f5e04a;
+  --spectro-high: #ff9f1a;
+  --spectro-peak: #ff3355;
   --on-accent: #001018;
   --on-danger: #1a0007;
   --on-success: #001a10;

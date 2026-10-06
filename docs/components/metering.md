@@ -143,17 +143,30 @@ Peak / Overs / Meter-mode keys are radios inside `.key` labels; the panel redraw
 
 ```html
 <div class="eq-editor">
-  <label class="toggle-btn"><input type="checkbox" data-eq-show="rta" checked>RTA</label>
-  <label class="toggle-btn"><input type="checkbox" data-eq-show="pre">Pre</label>
-  <label class="toggle-btn"><input type="checkbox" data-eq-show="spectrogram" checked>Spectrogram</label>
+  <!-- Analyser controls: radios and checkboxes anywhere inside .eq-editor -->
+  <div class="segmented" role="radiogroup" aria-label="RTA source">
+    <label class="segmented-item"><input type="radio" name="rta-view" data-rta-view="pre">Pre</label>
+    <label class="segmented-item"><input type="radio" name="rta-view" data-rta-view="both" checked>Pre + Post</label>
+    <label class="segmented-item"><input type="radio" name="rta-view" data-rta-view="post">Post</label>
+  </div>
+  <!-- data-rta-range="30|60", data-rta-decay="slow|med|fast",
+       data-rta-mode="peak|rms|avg|peak-rms|peak-avg", data-spectro="theme|scale|mono|thermal"
+       follow the same pattern -->
+  <label class="key key-on"><input type="checkbox" data-eq-show="spectrogram" checked>On</label>
+  <span>Post <label class="switch"><input type="checkbox" data-spectro-src aria-label="Spectrogram from the pre-EQ signal">
+    <span class="switch-track"><span class="switch-thumb"></span></span></label> Pre</span>
+
   <div class="eq-graph">
     <div class="spectrogram" aria-hidden="true"><i style="--v:.4"></i>… or <canvas></canvas></div>
-    <ol class="rta is-pre" aria-hidden="true">…</ol>
-    <ol class="rta" aria-hidden="true"><li style="--v:.6;--peak:.7"></li>…×31</ol>
+    <div class="spectrogram is-pre" aria-hidden="true">…</div>
+    <ol class="rta is-pre" aria-hidden="true"><li style="--v:.6;--avg:.55;--peak:.7"></li>…×31</ol>
+    <ol class="rta" aria-hidden="true"><li style="--v:.6;--avg:.55;--peak:.7"></li>…×31</ol>
     <svg class="eq-graph-curve" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
       <path class="is-band" data-series="3" d="…"/><path d="…"/></svg>
     <ol class="eq-freqs" aria-hidden="true"><li style="--f:0">20</li>…<li style="--f:1">20k</li></ol>
     <ol class="eq-gains" aria-hidden="true"><li style="--g:.667">+12</li>…</ol>
+    <ol class="eq-levels" aria-hidden="true"><li style="--l:1" data-r60="0" data-r30="0"></li>…
+      <li style="--l:0" data-r60="-60 dB" data-r30="-30 dB"></li></ol>
     <fieldset class="eq-nodes"><legend class="visually-hidden">Selected band</legend>
       <label class="eq-node" style="--f:.42;--g:-.25" data-series="3"><input type="radio" name="band" checked>
         <span class="visually-hidden">Band 3, bell, 380 Hz, −4.5 dB</span><span aria-hidden="true">3</span></label>
@@ -165,20 +178,40 @@ Peak / Overs / Meter-mode keys are radios inside `.key` labels; the panel redraw
 
 - **Grid:** log frequency 20 Hz–20 kHz (one decade pattern repeated three times) and dB lines every
   1/`--eq-gain-lines` (6) with a stronger 0 dB line. `--f` = `log10(f / 20) / 3`; `--g` is −1…1 of the
-  displayed range (the app picks the range and prints `.eq-gains`).
-- **Layers, back to front:** `.spectrogram` (time × frequency cells, `--v` 0–1 on the theme's
-  `--chart-seq-*` scale; grid columns `--spectrogram-cols`, 31; an app may put a `<canvas>`, `<img>` or
-  `<video>` inside instead), `.rta.is-pre`, `.rta` (bars with a top edge and peak-hold cap; `.is-line` for a
-  stepped trace), the curve (styled like `.eq-curve`; `path.is-band` dashed per band in `--series`),
-  labels, then `.eq-node` handles.
+  displayed EQ range (the app prints `.eq-gains`). `.eq-levels` prints the RTA scale on the right edge
+  and switches its text with the range.
+- **Layers, back to front:** `.spectrogram`, `.rta.is-pre`, `.rta` (both drawn as bars with a top edge
+  and peak-hold caps, both at `--rta-opacity` 0.75), the EQ curve (`path.is-band` dashed per band in
+  `--series`), labels, then the `.eq-node` handles, always on top.
+- **RTA data:** each band `<li>` carries `--v` (RMS), `--avg` and `--peak`, all 0–1 over a 60 dB window
+  (1 = 0 dBFS). `.is-line` draws only the band tops.
+- **RTA controls** (radios inside `.eq-editor`):
+  - `data-rta-view="pre|both|post"`: a linked three-way selector; Pre + Post shows both layers.
+  - `data-rta-range="30|60"`: the window; at 30 dB the bars and caps show the top half
+    (`--rta-k: 2`).
+  - `data-rta-decay="slow|med|fast"`: bars and caps ease to new values over `--rta-decay`
+    (1.2 s / 0.45 s / 0.12 s) when the app updates them. No easing under reduced motion.
+  - `data-rta-mode`: `peak` (bars from `--peak`), `rms` (`--v`), `avg` (`--avg`), `peak-rms`
+    (default: RMS bars + peak caps) or `peak-avg` (average bars + peak caps).
+- **Spectrogram:** cells' `--v` (0–1) picks a colour on a five-step scale, floor → signal detected →
+  low → medium → high → peak. A cell under ~0.2 shows the floor (`--spectro-floor`, transparent).
+  - **Theme colours:** `--spectro-signal`, `--spectro-low`, `--spectro-mid`, `--spectro-high`,
+    `--spectro-peak`. The default per theme is its own palette: `--accent`, then `--success` →
+    `--warning` → `--danger`. blue-future sets cyan, green, yellow, amber and red.
+  - **Presets:** `data-spectro="theme|scale|mono|thermal"` radios switch to the theme's
+    `--chart-seq-*` scale, an accent ramp, or a fixed thermal scale.
+  - **Source:** a `data-spectro-src` switch shows `.spectrogram.is-pre` instead of the post one; the
+    spectrogram is always one or the other. `data-eq-show="spectrogram"` turns it off.
+  - An app may put a `<canvas>`, `<img>` or `<video>` inside `.spectrogram` instead of cells.
 - **Selection:** nodes are radios; the checked one is highlighted and the Nth `.eq-band` shows while the
   Nth `.eq-node` is checked (up to 8). `.eq-node.is-off` dashes a bypassed band.
-- **Toggles:** an unchecked `data-eq-show="rta|pre|spectrogram"` checkbox anywhere in `.eq-editor` hides
-  that layer.
+- **v5.2 toggles still work:** an unchecked `data-eq-show="rta|pre|spectrogram"` checkbox hides that
+  layer.
 - **Tokens:** `--eq-graph-aspect` (5/2), `--eq-bg`, `--eq-border`, `--eq-radius`, `--eq-grid`,
   `--eq-grid-major`, `--eq-zero`, `--eq-gain-lines`, `--eq-line`, `--eq-fill`, `--eq-graph-line-width`,
-  `--eq-label-fg`, `--eq-label-size`, `--spectrogram-opacity` (0.35), `--rta-color`, `--rta-pre-color`,
-  `--rta-peak`, `--rta-fill`, `--rta-gap`, `--eq-node-bg`, `--eq-node-active`, `--eq-node-active-fg`.
+  `--eq-label-fg`, `--eq-label-size`, `--spectrogram-opacity` (0.45), `--spectro-*`, `--rta-color`,
+  `--rta-pre-color`, `--rta-peak`, `--rta-fill` / `--rta-fill-top`, `--rta-opacity`, `--rta-gap`,
+  `--rta-decay`, `--rta-k`, `--eq-node-bg`, `--eq-node-active`, `--eq-node-active-fg`.
 - **Touch:** each node's hit area is `max(--tap-min, 1.9rem)`; the drawn handle is 1.6rem.
 - **Accessibility:** the drawing is `aria-hidden`; each node's radio carries the band in text. Band
   controls are labelled native ranges and selects (`.knob`, `.select`, `.key`).

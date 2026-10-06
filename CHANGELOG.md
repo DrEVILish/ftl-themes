@@ -5,6 +5,15 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **EQ analyser controls** (`.eq-editor`, all radios and checkboxes): a
+  linked Pre / Pre + Post / Post RTA selector, 30 / 60 dB range, slow /
+  med / fast decay (bars ease over `--rta-decay`), and Peak, RMS, Avg,
+  Peak/RMS and Peak/Avg detectors (`--v`, `--avg`, `--peak` per band). The
+  pre RTA now draws bars and peak caps too; both RTA layers sit at 75%
+  behind the EQ curve and handles. The spectrogram shows the pre or post
+  signal (a switch) on a five-step colour scale (signal, low, medium,
+  high, peak) from each theme's own palette (`--spectro-*`; blue-future:
+  cyan, green, yellow, amber, red), with Scale, Mono and Thermal presets.
 - **Metering and EQ** (`core/components/metering.css`,
   [docs](docs/components/metering.md), `metering.html`): `.vu` analogue
   VU/PPM needle meters (backlit paper or theme face, peak LED, 300 ms
