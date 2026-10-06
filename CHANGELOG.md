@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Metering and EQ** (`core/components/metering.css`,
+  [docs](docs/components/metering.md), `metering.html`): `.vu` analogue
+  VU/PPM needle meters (backlit paper or theme face, peak LED, 300 ms
+  ballistics via `@property`), `.ledbar` segmented bargraphs (ghosted unlit
+  segments, reference band, peak hold, overs) and `.ledarc` arc loudness
+  meters with a CSS-only Peak/Overs/Mode panel; a VFD look (`.is-vfd`,
+  `.vfd`, theme opt-in `--meter-style: vfd`, set in blue-future); and
+  `.eq-graph`, a parametric EQ with log grid, spectrogram and 31-band RTA
+  overlays and selectable band handles. The sound mixer's EQ and master
+  strip use them.
 - **Cross-theme polish** from the showcase pages: `.tag-remove` gets a real
   24px target; mention and avatar ink meet 4.5:1 in every theme; menubar
   items, toggles, tabs, segments, breadcrumbs, badge buttons and colour

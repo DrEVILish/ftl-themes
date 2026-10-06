@@ -17,7 +17,12 @@ ftl-themes is a server-rendered HTML/CSS design system, not a React package or a
 | Live Waveform | App-fed SVG/canvas; `.waveform` is the seekable clip control |
 | Waveform | `.waveform` + native range input, played fill and playhead; see [media](media.md) |
 | Waveform timeline | Compose `.waveform` clips, `.scrubber`, `.transport`, `.track`/`.strip`, and mute/solo `.key` controls; see the multi-track example below |
-| Spectrum | SVG chart primitives or app-fed bars; see [instruments](instruments.md) |
+| Spectrum / RTA | `.rta` in `.eq-graph` (31 third-octave bands, peak caps, `.is-pre`, `.is-line`); see [metering](metering.md) |
+| Spectrogram | `.spectrogram` cells on `--chart-seq-*`, or an app `<canvas>`/`<img>`, behind the EQ curve |
+| VU meter | `.vu` needle meter (−20…+3 scale, peak LED, 300 ms ballistics), `.vu.is-pair` stereo, `.vu.is-ppm` |
+| LED bargraph | `.ledbar` / `.ledbar-pair` + `.ledbar-scale`: zones, reference band, peak hold, overs |
+| Loudness arc | `.ledarc` with upper/lower scales; `.meter-panel` for Peak / Overs / Meter-mode keys |
+| VFD display | `.is-vfd` on `.vu`, `.ledbar`, `.ledarc`, `.readout`; `.vfd` window; theme opt-in `--meter-style: vfd` |
 | Fader | `.fader` native range input; app supplies the dB taper |
 | Parameter Slider | `.slider` + `.field`, optional adjacent `.readout` |
 | Knob | `.knob` wrapping a labelled native range input |
