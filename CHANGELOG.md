@@ -5,6 +5,11 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **blue-future buttons are tinted:** text and border in the button's own
+  colour over a 25% fill of it (40% and a matching glow on hover). Primary
+  uses the cyan accent, danger red (text lifted to `#ff7a8f` for 4.5:1),
+  success green, plain buttons the text colour; secondary keeps the accent
+  outline with no fill until hover.
 - **EQ analyser controls** (`.eq-editor`, all radios and checkboxes): a
   linked Pre / Pre + Post / Post RTA selector, 30 / 60 dB range, slow /
   med / fast decay (bars ease over `--rta-decay`), and Peak, RMS, Avg,

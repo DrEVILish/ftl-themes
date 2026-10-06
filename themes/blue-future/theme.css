@@ -77,12 +77,16 @@ html[data-theme="blue-future"] {
   --panel-radius: 0.25rem;
 
   /* Buttons: dark cell, tracked label, glow on hover. */
-  --btn-bg: var(--surface-2);
+  /* Buttons are tinted: text and border in the button's colour over a 25%
+     fill of it (40% on hover, with a glow). Plain buttons use --text; the
+     variants re-point --bf-tone below. */
   --btn-fg: var(--text);
-  --btn-border: var(--border);
-  --btn-border-hover: var(--accent);
+  --btn-border: var(--text);
+  --btn-bg: color-mix(in srgb, var(--text) 25%, transparent);
+  --btn-bg-hover: color-mix(in srgb, var(--text) 40%, transparent);
+  --btn-border-hover: var(--text);
   --btn-tracking: 0.05em;
-  --btn-shadow-hover: 0 0 8px var(--accent);
+  --btn-shadow-hover: 0 0 0.6rem color-mix(in srgb, var(--text) 45%, transparent);
 
   /* Inputs */
   --input-bg: #08192b;
@@ -160,12 +164,20 @@ html[data-theme="blue-future"] h4 {
 }
 
 /* Buttons */
-html[data-theme="blue-future"] .btn-primary {
-  --btn-shadow: 0 0 0.7rem rgba(47, 214, 255, 0.3);
-  --btn-shadow-hover: 0 0 1rem rgba(0, 217, 255, 0.55);
+html[data-theme="blue-future"] :is(.btn-primary, .btn-danger, .btn-success, .btn-secondary) {
+  --btn-fg: var(--bf-ink, var(--bf-tone));
+  --btn-border: var(--bf-tone);
+  --btn-bg: color-mix(in srgb, var(--bf-tone) 25%, transparent);
+  --btn-bg-hover: color-mix(in srgb, var(--bf-tone) 40%, transparent);
+  --btn-border-hover: var(--bf-tone);
+  --btn-shadow-hover: 0 0 0.7rem color-mix(in srgb, var(--bf-tone) 55%, transparent);
 }
-html[data-theme="blue-future"] .btn-danger { --btn-shadow-hover: 0 0 8px var(--danger); }
-html[data-theme="blue-future"] .btn-success { --btn-shadow-hover: 0 0 8px var(--success); }
+html[data-theme="blue-future"] .btn-primary { --bf-tone: var(--accent); --btn-shadow: 0 0 0.7rem rgba(47, 214, 255, 0.3); }
+/* Red text is lifted a little so it holds 4.5:1 on tinted bars too. */
+html[data-theme="blue-future"] .btn-danger { --bf-tone: var(--danger); --bf-ink: #ff7a8f; }
+html[data-theme="blue-future"] .btn-success { --bf-tone: var(--success); }
+/* Secondary keeps the accent outline but no fill until hover. */
+html[data-theme="blue-future"] .btn-secondary { --bf-tone: var(--accent); --btn-bg: transparent; }
 html[data-theme="blue-future"] .btn-ghost { --btn-shadow-hover: none; }
 html[data-theme="blue-future"] .btn:disabled,
 html[data-theme="blue-future"] .btn[aria-disabled="true"] {

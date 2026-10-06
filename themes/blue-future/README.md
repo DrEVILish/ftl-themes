@@ -55,6 +55,7 @@ Changing them is a change to the reference, not a matter of taste.
 | `--font` | Consolas | Monospace as the *primary* UI font, not just for values. This single choice does more for the "spacecraft computer" feel than any color. |
 | `--radius` | `0.25rem` | Almost square. Rounded corners read as consumer software. |
 | `--flare` | `#d85cff` | Magenta, used almost nowhere. Held in reserve for a single rare emphasis so it keeps its force. |
+| `--btn-*` | tinted | Buttons are tinted, not painted: text and border in the button's colour over a 25% fill of the same colour (40% and a glow on hover). Primary is cyan, danger red, success green, plain buttons the text colour; secondary has no fill until hover. A lit outline on dark glass, in keeping with "a flat fill plus a glow". |
 
 ## Instruments
 
