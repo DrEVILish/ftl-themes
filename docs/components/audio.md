@@ -15,7 +15,10 @@ ftl-themes is a server-rendered HTML/CSS design system, not a React package or a
 | Electric Waveform | `.waveform` for seekable media; custom SVG/canvas when the electric treatment is required |
 | Smooth Waveform | `.waveform` for stored peaks, or SVG/canvas for a live trace |
 | Live Waveform | App-fed SVG/canvas; `.waveform` is the seekable clip control |
-| Waveform | `.waveform` + native range input, played fill and playhead; see [media](media.md) |
+| Waveform | `.waveform` + native range input (seconds), played fill and playhead, `.is-bottom` / `.is-envelope` variants, `.is-loading`, disabled; see [media](media.md) |
+| Waveform hover | `--hover` + `data-hover-time` on `.waveform` (set by `controls.js`) |
+| Waveform region | `.waveform-region` with two edge range inputs, `--start`/`--end`, label, `data-color`, body drag (`controls.js`), `.is-static`, fixed highlights |
+| Waveform marker | `.waveform-marker` (`button` seeks via `data-time`, `span` labels), `--at`, `.is-end`, `data-color` |
 | Waveform timeline | Compose `.waveform` clips, `.scrubber`, `.transport`, `.track`/`.strip`, and mute/solo `.key` controls; see the multi-track example below |
 | Spectrum / RTA | `.rta` in `.eq-graph` (31 third-octave bands, peak caps, `.is-pre`, `.is-line`); see [metering](metering.md) |
 | Spectrogram | `.spectrogram` cells on `--chart-seq-*`, or an app `<canvas>`/`<img>`, behind the EQ curve |

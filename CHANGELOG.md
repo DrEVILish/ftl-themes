@@ -6,6 +6,12 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Waveform regions and markers: `.waveform-region` (two native range inputs as draggable,
+  keyboard-nudgeable edges, a tint and label, body drag, `.is-static`, fixed highlights) and
+  `.waveform-marker` (seeking buttons or labels, `.is-end`), both with `data-color`; hover time
+  (`data-hover-time`); `.is-bottom`, `.is-envelope` and `.is-loading` waveforms.
+  `assets/js/controls.js` syncs regions, drags them, seeks markers and sets the hover preview, so
+  `player.html` drops its inline script (docs/components/media.md).
 - Themed exits: a theme names how it leaves with `--motion-leave` (`power-off`, `bsod`, `rain`,
   `warp`, `shatter`, `drop`, `iris`, `genie`), and 40 themes do. `theme-loader.js` copies it to
   `data-leaving` so the theme switch plays it (docs/components/experience.md).

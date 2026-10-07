@@ -66,3 +66,90 @@
     host.addEventListener("pointercancel", up);
   });
 })();
+
+/* Waveform regions (docs/components/media.md): each region's two range
+ * inputs are its edges, in seconds over the whole clip. This keeps
+ * --start/--end (0–1) in step, keeps the edges in order with at least
+ * data-min-length seconds between them (default: one step), labels each
+ * edge with its time, and moves the whole region when its body is dragged
+ * (not on .is-static). Both inputs fire "input" and "change" as usual.
+ * A button.waveform-marker with data-time seeks the waveform's input there.
+ * Over any .waveform it also sets the hover preview: --hover (0–1) and
+ * data-hover-time ("m:ss", from the seek input's min and max). */
+(function () {
+  var SEL = ".waveform-region > input[type=range]";
+  function time(s) {
+    s = Math.max(0, Math.round(+s));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+  function edges(region) { return region.querySelectorAll(":scope > input[type=range]"); }
+  function sync(region, moved) {
+    var e = edges(region), a = e[0], b = e[1];
+    if (!a || !b) return;
+    var min = +a.min || 0, max = a.max === "" ? 100 : +a.max, span = max - min || 1;
+    var gap = +region.dataset.minLength || +a.step || 0;
+    if (moved === a && +a.value > +b.value - gap) a.value = Math.max(min, +b.value - gap);
+    if (moved === b && +b.value < +a.value + gap) b.value = Math.min(max, +a.value + gap);
+    region.style.setProperty("--start", ((a.value - min) / span).toFixed(4));
+    region.style.setProperty("--end", ((b.value - min) / span).toFixed(4));
+    a.setAttribute("aria-valuetext", time(a.value));
+    b.setAttribute("aria-valuetext", time(b.value));
+  }
+  document.addEventListener("input", function (e) {
+    if (e.target.matches(SEL)) sync(e.target.parentElement, e.target);
+  });
+  document.querySelectorAll(".waveform-region").forEach(function (r) { sync(r); });
+  // A marker button with data-time (seconds) seeks there.
+  document.addEventListener("click", function (e) {
+    var m = e.target.closest && e.target.closest("button.waveform-marker[data-time]");
+    var seek = m && m.parentElement.querySelector(":scope > input[type=range]");
+    if (!seek) return;
+    seek.value = m.dataset.time;
+    seek.dispatchEvent(new Event("input", { bubbles: true }));
+    seek.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  // Hover preview: --hover (0–1) and data-hover-time from the seek input.
+  document.addEventListener("pointermove", function (e) {
+    var wf = e.target.closest && e.target.closest(".waveform");
+    document.querySelectorAll(".waveform[data-hover-time]").forEach(function (w) {
+      if (w !== wf) { w.style.removeProperty("--hover"); w.removeAttribute("data-hover-time"); }
+    });
+    var seek = wf && wf.querySelector(":scope > input[type=range]");
+    if (!seek) return;
+    var r = wf.getBoundingClientRect(), f = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    var min = +seek.min || 0, max = seek.max === "" ? 100 : +seek.max;
+    wf.style.setProperty("--hover", f.toFixed(3));
+    wf.setAttribute("data-hover-time", time(min + f * (max - min)));
+  });
+  document.addEventListener("pointerdown", function (e) {
+    var region = e.target;
+    if (e.button !== 0 || !region.matches(".waveform-region:not(.is-static)")) return;
+    var e2 = edges(region), a = e2[0], b = e2[1];
+    if (!a || !b || a.disabled) return;
+    e.preventDefault();
+    var min = +a.min || 0, max = a.max === "" ? 100 : +a.max;
+    var perPx = (max - min) / region.getBoundingClientRect().width;
+    var x0 = e.clientX, a0 = +a.value, len = b.value - a.value;
+    region.setPointerCapture(e.pointerId);
+    region.classList.add("is-dragging");
+    function move(ev) {
+      var start = Math.min(max - len, Math.max(min, a0 + (ev.clientX - x0) * perPx));
+      a.value = start;
+      b.value = +a.value + len;
+      sync(region);
+      a.dispatchEvent(new Event("input", { bubbles: true }));
+      b.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    function up() {
+      region.removeEventListener("pointermove", move);
+      region.removeEventListener("pointerup", up);
+      region.removeEventListener("pointercancel", up);
+      region.classList.remove("is-dragging");
+      a.dispatchEvent(new Event("change", { bubbles: true }));
+      b.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    region.addEventListener("pointermove", move);
+    region.addEventListener("pointerup", up);
+    region.addEventListener("pointercancel", up);
+  });
+})();

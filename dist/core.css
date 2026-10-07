@@ -8670,10 +8670,177 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   border-block: calc((1 - var(--level, 0.5)) * var(--_h) / 2) solid var(--waveform-bg, var(--surface-2));
   border-inline-end: var(--waveform-gap, 2px) solid var(--waveform-bg, var(--surface-2));
 }
+/* Variants: bars rising from the bottom edge, or a solid envelope. */
+.waveform.is-bottom .waveform-bars > * {
+  border-block-start-width: calc((1 - var(--level, 0.5)) * var(--_h));
+  border-block-end-width: 0;
+}
+.waveform.is-envelope { --waveform-gap: 0px; }
+/* Loading: a shimmer where the bars will be; disabled: dimmed. */
+.waveform.is-loading .waveform-bars { visibility: hidden; }
+.waveform.is-loading::before {
+  inline-size: 100%;
+  background: linear-gradient(90deg, transparent 30%, color-mix(in srgb, var(--text) 10%, transparent) 50%, transparent 70%) 0 0 / 200% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .waveform.is-loading::before { animation: waveform-shimmer 1.4s linear infinite; }
+}
+@keyframes waveform-shimmer { to { background-position: -200% 0; } }
+.waveform:has(> input:disabled) { opacity: 0.5; }
+
+/* ---- Waveform regions, markers and hover time -------------------------------
+ * <div class="waveform" data-hover-time="0:41" style="--hover: .68">
+ *   <input type="range" …seek…>
+ *   <span class="waveform-bars" aria-hidden="true">…</span>
+ *   <div class="waveform-region" role="group" aria-label="Chorus" style="--start: .15; --end: .37">
+ *     <input type="range" min="0" max="60" step="0.1" value="9" aria-label="Chorus start">
+ *     <input type="range" min="0" max="60" step="0.1" value="22" aria-label="Chorus end">
+ *     <span class="waveform-region-label">Chorus</span>
+ *   </div>
+ *   <button class="waveform-marker" type="button" style="--at: .66">Intro ends</button>
+ * </div>
+ * A region's two inputs are its edges: both span the whole clip (same min
+ * and max as the seek input, in seconds) so each thumb lines up with the
+ * waveform; --start/--end are the same values as 0–1 fractions (controls.js
+ * keeps them in step and the edges in order). Drag the region's body to
+ * move it (controls.js), unless it is .is-static. A region without inputs is
+ * a fixed highlight. Markers are buttons when they seek, spans otherwise;
+ * .is-end puts the label on the left. data-color="1..6" picks a per-user
+ * colour for a region or marker. --hover and data-hover-time are the
+ * app's (the pointer position as 0–1 and its time as text). */
+.waveform { position: relative; isolation: isolate; }
+.waveform-bars { position: relative; z-index: var(--z-raised); }
+.waveform-region {
+  --_c: var(--user-color, var(--waveform-region, var(--accent)));
+  --_hw: var(--waveform-handle-width, 0.5rem);
+  position: relative;
+  z-index: calc(var(--z-raised) + 1);
+  display: grid;
+  pointer-events: none;
+}
+/* The tint: from the start thumb's centre to the end thumb's centre. */
+.waveform-region::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--_hw) / 2 + var(--start, 0) * (100% - var(--_hw)));
+  inline-size: calc((var(--end, 1) - var(--start, 0)) * (100% - var(--_hw)));
+  background: color-mix(in srgb, var(--_c) var(--waveform-region-alpha, 22%), transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_c) 55%, transparent);
+  pointer-events: auto;
+  cursor: var(--cursor-grab, grab);
+}
+.waveform-region.is-static::before,
+.waveform-region:not(:has(> input))::before { pointer-events: none; cursor: auto; }
+.waveform-region.is-dragging::before { cursor: var(--cursor-grabbing, grabbing); }
+.waveform-region > input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  grid-area: 1 / 1;
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  background: none;
+  pointer-events: none;
+  touch-action: none;
+}
+.waveform-region > input[type="range"]::-webkit-slider-runnable-track { background: none; }
+.waveform-region > input[type="range"]::-moz-range-track { background: none; }
+.waveform-region > input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  inline-size: var(--_hw);
+  block-size: var(--_h);
+  border: 0;
+  border-radius: var(--waveform-handle-radius, 2px);
+  background: var(--_c);
+  pointer-events: auto;
+  cursor: var(--cursor-resize-x, ew-resize);
+}
+.waveform-region > input[type="range"]::-moz-range-thumb {
+  inline-size: var(--_hw);
+  block-size: var(--_h);
+  border: 0;
+  border-radius: var(--waveform-handle-radius, 2px);
+  background: var(--_c);
+  pointer-events: auto;
+  cursor: var(--cursor-resize-x, ew-resize);
+}
+.waveform-region > input[type="range"]:focus-visible { outline: none; z-index: var(--z-raised); }
+.waveform-region > input[type="range"]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--focus); outline-offset: 1px; }
+.waveform-region > input[type="range"]:focus-visible::-moz-range-thumb { outline: 2px solid var(--focus); outline-offset: 1px; }
+@media (any-pointer: coarse) {
+  .waveform-region { --_hw: var(--waveform-handle-width-touch, 1.25rem); }
+}
+.waveform-region-label {
+  position: absolute;
+  inset-block-start: 0.15rem;
+  inset-inline-start: calc(var(--_hw) + var(--start, 0) * (100% - var(--_hw)) + 0.15rem);
+  max-inline-size: calc((var(--end, 1) - var(--start, 0)) * (100% - var(--_hw)) - var(--_hw) - 0.3rem);
+  overflow: hidden;
+  padding-inline: 0.25rem;
+  border-radius: var(--radius-sm, 2px);
+  background: var(--_c);
+  color: var(--waveform-region-fg, var(--on-accent));
+  font-size: 0.7rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+/* A marker is a chip at the top with its line running down from it. */
+.waveform-marker {
+  --_c: var(--user-color, var(--waveform-marker, var(--warning)));
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset-block-start: 0;
+  inset-inline-start: calc(var(--at, 0) * 100%);
+  margin: 0;
+  padding: 0 0.3rem;
+  border: 0;
+  border-radius: 0 var(--radius-sm, 2px) var(--radius-sm, 2px) 0;
+  background: color-mix(in srgb, var(--_c) 30%, var(--waveform-bg, var(--surface-2)));
+  color: var(--waveform-marker-fg, var(--text));
+  font: 600 0.7rem/1.4 var(--font);
+  white-space: nowrap;
+}
+.waveform-marker::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  block-size: var(--_h);
+  border-inline-start: var(--waveform-marker-width, 2px) solid var(--_c);
+  pointer-events: none;
+}
+.waveform-marker:empty { padding: 0; }
+.waveform-marker.is-end { translate: -100%; border-radius: var(--radius-sm, 2px) 0 0 var(--radius-sm, 2px); }
+.waveform-marker.is-end::before { inset-inline: auto 0; }
+span.waveform-marker { pointer-events: none; }
+button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+/* Hover time: a chip at the pointer, text from the app. */
+.waveform[data-hover-time]::after {
+  content: attr(data-hover-time);
+  position: absolute;
+  z-index: calc(var(--z-raised) + 2);
+  inset-block-end: 0.15rem;
+  inset-inline-start: clamp(0px, calc(var(--hover, 0) * 100% - 1.5rem), calc(100% - 3rem));
+  padding: 0 0.3rem;
+  border-radius: var(--radius-sm, 2px);
+  background: var(--text);
+  color: var(--bg);
+  font: 0.7rem/1.4 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
 
 /* Forced colours drop the painted track: fall back to the native slider. */
 @media (forced-colors: active) {
   :is(.scrubber, .volume, .waveform) > input[type="range"] { appearance: auto; overflow: visible; }
+  .waveform-region::before { background: none; box-shadow: inset 0 0 0 2px Highlight; }
+  .waveform-region > input[type="range"]::-webkit-slider-thumb { forced-color-adjust: none; background: Highlight; }
+  .waveform-region > input[type="range"]::-moz-range-thumb { forced-color-adjust: none; background: Highlight; }
+  .waveform-marker::before { border-color: CanvasText; }
 }
 
 /* ---- Now-playing bar ---------------------------------------------------------

@@ -29,6 +29,26 @@ try {
     assert(look[3] !== look[2] && look[2] === look[1], `${theme}: only the error-rate card is in alert`);
     assert.equal(await page.locator('[data-scenario]:visible').count(), 2, theme);
   }
+  // Waveform regions: edges stay in order, --start/--end follow, the body drags, markers seek.
+  await page.goto(`${server.base}/audio-components.html?theme=blue-future`, { waitUntil: 'networkidle' });
+  const region = page.locator('.waveform-region').nth(1);
+  const edges = region.locator('input');
+  await edges.nth(0).evaluate(el => { el.value = 999; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.deepEqual(await edges.evaluateAll(i => i.map(e => +e.value)), [94.9, 95]);
+  assert.equal(await region.evaluate(r => r.style.getPropertyValue('--start')), String((94.9 / 180).toFixed(4)));
+  assert.equal(await edges.nth(0).getAttribute('aria-valuetext'), '1:35');
+  await edges.nth(0).evaluate(el => { el.value = 62; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await region.scrollIntoViewIfNeeded();
+  const wave = await page.locator('.waveform').first().boundingBox();
+  const grabX = wave.x + wave.width * (78 / 180), grabY = wave.y + wave.height * 0.7;
+  await page.mouse.move(grabX, grabY);
+  await page.mouse.down();
+  await page.mouse.move(grabX + wave.width * 0.1, grabY, { steps: 4 });
+  await page.mouse.up();
+  const moved = await edges.evaluateAll(i => i.map(e => +e.value));
+  assert(moved[0] > 70 && Math.abs(moved[1] - moved[0] - 33) < 0.2, `region drag keeps its length: ${moved}`);
+  await page.locator('button.waveform-marker[data-time="110"]').click();
+  assert.equal(await page.locator('.waveform').first().locator(':scope > input').inputValue(), '110');
   // Themed exit: the outgoing theme's --motion-leave plays on the old snapshot.
   assert(await openThemed(page, `${server.base}/components-experience.html?theme=msdos`, 'msdos'), 'msdos failed to load');
   await page.selectOption('#theme-picker', 'lcars');

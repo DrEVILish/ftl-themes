@@ -11,7 +11,8 @@ scrubber, the album grid and lyrics. Builds on core's `.btn` /
 Tokens are listed as `token: default`. Set them on `html[data-theme="x"]` like
 every other component token. Everything on the page works without
 JavaScript (toggles, repeat cycling, scrubber fill, waveform played colour)
-except the waveform hover preview, which needs the pointer position.
+except the waveform hover preview, region dragging and marker seeking,
+which `assets/js/controls.js` handles.
 
 For the wider audio-control map (meters, mixers, devices and trigger pads), see
 the [audio component guide](audio.md) and [audio showcase](../../audio-components.html).
@@ -274,8 +275,9 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
 ```
 
 - **Value APIs** (inline styles): `--level` (0–1) on each bar, from the
-  app's peak data; `--hover` (0–1) on `.waveform`, the pointer position,
-  set on `pointermove` and removed on `pointerleave`.
+  app's peak data; `--hover` (0–1) on `.waveform`, the pointer position.
+- **Units:** the seek input (and every region edge) uses **seconds** as its
+  `min`/`max`/`value`, so times line up across the whole control.
 - **How it paints:** the range input sits underneath and paints played /
   unplayed (the same thumb trick as `.scrubber`, full height), so dragging
   or arrow keys recolour the bars live with no script. The bars on top are
@@ -283,14 +285,55 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
   own filled box. `--hover` tints from the start to the pointer
   (`--waveform-preview`) under the mask: the hover preview.
 - Bars don't take pointer events; the input gets every click and drag.
+- **Variants and states:** `.is-bottom` (bars rise from the bottom edge),
+  `.is-envelope` (no gaps: a solid outline), `.is-loading` (a shimmer in
+  place of the bars), and a disabled seek input dims the whole waveform.
+- **Hover time:** with `data-hover-time="1:55"` on `.waveform`, a chip
+  shows that text at `--hover`. `assets/js/controls.js` sets both from the
+  pointer and the seek input's range; without it, set them yourself.
 
-```js
-wf.addEventListener("pointermove", (e) => {
-  const r = wf.getBoundingClientRect();
-  wf.style.setProperty("--hover", ((e.clientX - r.left) / r.width).toFixed(3));
-});
-wf.addEventListener("pointerleave", () => wf.style.removeProperty("--hover"));
+### Regions and markers
+
+```html
+<div class="waveform">
+  <input type="range" min="0" max="180" step="0.1" value="12" aria-label="Seek" aria-valuetext="0:12 of 3:00">
+  <span class="waveform-bars" aria-hidden="true">…</span>
+  <div class="waveform-region" role="group" aria-label="Ad break" data-color="2" style="--start:.3444;--end:.5278">
+    <input type="range" min="0" max="180" step="0.1" value="62" aria-label="Ad break start">
+    <input type="range" min="0" max="180" step="0.1" value="95" aria-label="Ad break end">
+    <span class="waveform-region-label">Ad break</span>
+  </div>
+  <button class="waveform-marker" type="button" data-time="110" style="--at:.6111">Chapter 2</button>
+  <span class="waveform-marker is-end" style="--at:.9333">Outro</span>
+</div>
 ```
+
+- **Region** `.waveform-region`: a tinted span from `--start` to `--end`
+  (0–1) with an optional label. Its two range inputs are the edges: drag a
+  handle or focus it and use the arrow keys. Both inputs span the **whole
+  clip** (the seek input's `min`/`max`), which is what keeps each handle
+  over the right moment: don't narrow one edge's `min`/`max` to the other
+  edge's value, clamp instead.
+- **Moving a region:** drag its body. `.is-static` keeps the edges
+  draggable but not the body (clicks inside then seek). A region with no
+  inputs is a fixed highlight; mark it `aria-hidden` and describe it
+  elsewhere, or keep the label as visible text.
+- **Markers** `.waveform-marker`: a chip at the top with a line down the
+  waveform at `--at` (0–1). A `<button>` marker seeks (with `data-time` in
+  seconds, `controls.js` does it); a `<span>` is a label only; an empty
+  marker is just the line. `.is-end` puts the chip on the left, for
+  markers near the end.
+- **Colour:** `data-color="1..6"` on a region or marker picks one of the
+  six per-user colours (social.css), so overlapping regions stay apart.
+- **What `controls.js` does:** keeps `--start`/`--end` in step with the
+  edges, keeps the edges in order at least `data-min-length` seconds apart
+  (default: one `step`), sets each edge's `aria-valuetext` to `m:ss`, moves
+  the region when its body is dragged (firing `input` then `change` on both
+  edges), seeks for marker buttons, and sets the hover preview. Listen for
+  `change` on the edges to save a region. Without the script, set the
+  values and custom properties server-side.
+- **What the app owns:** creating and deleting regions, snapping, looping
+  playback inside a region, zoom, and saving.
 
 | Token | Default |
 |---|---|
@@ -302,10 +345,21 @@ wf.addEventListener("pointerleave", () => wf.style.removeProperty("--hover"));
 | `--waveform-head` / `--waveform-head-width` | `var(--waveform-played)` / `2px` |
 | `--waveform-gap` | `2px` |
 | `--waveform-radius` | `var(--radius)` |
+| `--waveform-region` | `var(--accent)` (region tint and handles, unless `data-color`) |
+| `--waveform-region-alpha` | `22%` (tint strength) |
+| `--waveform-region-fg` | `var(--on-accent)` (region label text) |
+| `--waveform-handle-width` / `-touch` | `0.5rem` / `1.25rem` on coarse pointers |
+| `--waveform-handle-radius` | `2px` |
+| `--waveform-marker` | `var(--warning)` (unless `data-color`) |
+| `--waveform-marker-fg` / `--waveform-marker-width` | `var(--text)` / `2px` |
 
-Accessibility: the input is the control (`aria-label`, `aria-valuetext`
-with times); the bars are `aria-hidden`. Focus draws the ring around the
-whole waveform.
+Accessibility: the seek input is the control (`aria-label`,
+`aria-valuetext` with times); the bars are `aria-hidden`. Focus draws the
+ring around the whole waveform, or around a region handle. Give each
+region a `role="group"` and `aria-label`, and each edge its own label
+("Ad break start"). Marker buttons need an accessible name that includes
+the time when the chip text alone doesn't say it. In forced-colours mode
+regions draw as outlines and handles in the system highlight colour.
 
 For a multitrack waveform timeline, compose one decorative `.waveform` clip
 per region with `.key` mute/solo controls, `.transport`, and a labelled
