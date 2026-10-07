@@ -8,9 +8,15 @@ changes are called out explicitly here.
 ### Changed
 - The v4 codemod (`scripts/migrate-v4.py`, `scripts/v4-rename-map.json`) is retired;
   `docs/MIGRATING-v4.md` shows how to run it from the v5.3.0 tag.
+- `dashboard.html` previews its live-data scenarios with a `.toggle-group` of radios and `:has()`;
+  `assets/js/dashboard-demo.js` is gone, so the page loads only `theme-loader.js` and `tint.js`.
 - `components-tables.html` selects rows from their checkboxes with CSS alone; its row-selection script is gone.
 - Scripts share one copy of the colour helpers: `check.py` and `build_emails.py` use
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
+
+### Fixed
+- `test/feature_extensions_browser.mjs` passes again: scoped splash locators, cleared the
+  corrupt-storage fixture, and reset scroll before each drag on the feedback stage.
 
 ### Removed
 - `data-eq-show="pre"`: superseded by the `data-rta-view` radios.

@@ -11,7 +11,20 @@
   .demo-pad { padding: 0.9rem; }
   .demo-stat-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
   .demo-stat-foot .sparkline { --sparkline-width: 7em; --sparkline-height: 1.8em; }
-  .demo-metric.is-error { border-color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); }
+  /* Scenario preview, CSS only: the checked [name=scenario] radio shows its
+     [data-scenario] texts and restyles the cards. An app sets .is-stale /
+     data-state itself; these rules copy live.css's .is-stale look. */
+  :root:has([name="scenario"][value="live"]:checked) [data-scenario]:not([data-scenario="live"]),
+  :root:has([name="scenario"][value="stale"]:checked) [data-scenario]:not([data-scenario="stale"]),
+  :root:has([name="scenario"][value="offline"]:checked) [data-scenario]:not([data-scenario="offline"]),
+  :root:has([name="scenario"][value="alert"]:checked) [data-scenario]:not([data-scenario="alert"]),
+  :root:has([name="scenario"][value="recovering"]:checked) [data-scenario]:not([data-scenario="recovering"]) { display: none; }
+  :root:has([name="scenario"]:is([value="stale"], [value="offline"]):checked) .demo-metric {
+    color: var(--live-stale-fg, var(--muted));
+    outline: var(--live-stale-border-width, 1px) dashed var(--live-stale-border, var(--muted));
+    outline-offset: -2px;
+  }
+  :root:has([name="scenario"][value="alert"]:checked) .demo-metric:nth-child(4) { border-color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); }
   .demo-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem 1.5rem; }
   .demo-heat { display: flex; gap: 0.4rem; min-inline-size: 0; --heatmap-cell: 1.35rem; }
   .demo-heat .heatmap { flex: 1; min-inline-size: 0; }
@@ -101,19 +114,17 @@
     </nav>
 
     <h1>Overview</h1>
-    <p>Last 30 days, compared with the previous period. <span class="connection" id="dashboard-connection" data-state="live" role="status">Analytics feed live</span></p>
+    <p>Last 30 days, compared with the previous period. <span role="status"><span class="connection" data-state="live" data-scenario="live">Analytics feed live</span><span class="connection" data-state="delayed" data-scenario="stale">Analytics feed delayed</span><span class="connection" data-state="offline" data-scenario="offline">Analytics feed offline</span><span class="connection" data-state="live" data-scenario="alert">Analytics feed live; Error rate alert</span><span class="connection" data-state="recovering" data-scenario="recovering">Analytics feed recovering</span></span></p>
     <div class="cluster mb-m" aria-label="Dashboard example controls">
-      <label class="label" for="dashboard-scenario">Preview live-data state</label>
-      <select class="select" id="dashboard-scenario">
-        <option value="live">Live</option><option value="stale">Stale feed</option>
-        <option value="offline">Offline</option><option value="alert">Alert</option>
-        <option value="recovering">Recovering</option>
-      </select>
-      <span class="text-muted" id="dashboard-scenario-note">Live metrics are current.</span>
+      <span class="label" id="dashboard-scenario">Preview live-data state</span>
+      <div class="toggle-group" role="radiogroup" aria-labelledby="dashboard-scenario">
+        <label class="toggle-btn"><input type="radio" name="scenario" value="live" checked>Live</label><label class="toggle-btn"><input type="radio" name="scenario" value="stale">Stale feed</label><label class="toggle-btn"><input type="radio" name="scenario" value="offline">Offline</label><label class="toggle-btn"><input type="radio" name="scenario" value="alert">Alert</label><label class="toggle-btn"><input type="radio" name="scenario" value="recovering">Recovering</label>
+      </div>
+      <span class="text-muted"><span data-scenario="live">Live metrics are current.</span><span data-scenario="stale">Showing the last received values; the feed is delayed.</span><span data-scenario="offline">Values are unavailable until the connection returns.</span><span data-scenario="alert">One metric is in alert; zero and missing values remain distinct.</span><span data-scenario="recovering">Connection restored; fresh values are arriving.</span></span>
       <span class="text-muted">Missing: <code>&mdash;</code> &middot; real zero: <code>0</code></span>
     </div>
 
-    <div class="grid" id="dashboard-demo" style="margin: 1rem 0;">
+    <div class="grid" style="margin: 1rem 0;">
       <div class="card demo-metric">
         <span class="stat-label">Revenue</span>
         <span class="stat-value">$84,210</span>
@@ -479,6 +490,5 @@
 </ul>
 <script src="assets/js/tint.js"></script>
 <script src="assets/js/theme-loader.js"></script>
-<script src="assets/js/dashboard-demo.js"></script>
 </body>
 </html>

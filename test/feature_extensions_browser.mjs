@@ -21,12 +21,13 @@ try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   for (const theme of themes) {
     assert(await openThemed(page, `${server.base}/dashboard.html?theme=${theme}`, theme), `${theme} failed to load`);
-    await page.locator('#dashboard-scenario').selectOption('offline');
-    assert.equal(await page.locator('#dashboard-connection').getAttribute('data-state'), 'offline', theme);
-    assert.equal(await page.locator('#dashboard-demo .demo-metric.is-stale').count(), 4, theme);
-    await page.locator('#dashboard-scenario').selectOption('alert');
-    assert.equal(await page.locator('#dashboard-demo .demo-metric.is-error').count(), 1, theme);
-    assert.equal(await page.locator('#dashboard-scenario').inputValue(), 'alert', theme);
+    await page.check('[name="scenario"][value="offline"]', { force: true });
+    assert.equal(await page.locator('.connection:visible').getAttribute('data-state'), 'offline', theme);
+    assert.equal(await page.locator('.demo-metric').evaluateAll(cs => cs.filter(c => getComputedStyle(c).outlineStyle === 'dashed').length), 4, theme);
+    await page.check('[name="scenario"][value="alert"]', { force: true });
+    const look = await page.locator('.demo-metric').evaluateAll(cs => cs.map(c => getComputedStyle(c).boxShadow + getComputedStyle(c).borderTopColor));
+    assert(look[3] !== look[2] && look[2] === look[1], `${theme}: only the error-rate card is in alert`);
+    assert.equal(await page.locator('[data-scenario]:visible').count(), 2, theme);
   }
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(`${server.base}/components-experience.html?theme=ios-flat`, { waitUntil: 'networkidle' });
@@ -39,15 +40,16 @@ try {
   });
   await page.addScriptTag({ url: `${server.base}/assets/js/boot.js` });
   assert.equal(await page.locator('.app-main').getAttribute('aria-busy'), 'true');
-  assert.equal(await page.locator('.splash-art').evaluate(el => getComputedStyle(el).animationName), 'none');
+  assert.equal(await page.locator('[data-boot-screen] > .splash-art').evaluate(el => getComputedStyle(el).animationName), 'none');
   await page.evaluate(() => window.ftlAppReady());
   assert.equal(await page.locator('.app-main').getAttribute('aria-busy'), null);
-  assert.equal(await page.locator('.splash').evaluate(el => el.hidden), true);
+  assert.equal(await page.locator('[data-boot-screen]').evaluate(el => el.hidden), true);
   await page.goto(`${server.base}/theme-feedback.html`, { waitUntil: 'networkidle' });
   // Corrupt saved JSON is ignored instead of preventing the feedback tool from opening.
   await page.evaluate(() => localStorage.setItem('theme-feedback-v1', '{broken'));
   await page.reload({ waitUntil: 'networkidle' });
   assert.equal(await page.locator('#reports').innerText(), 'No reports saved yet.');
+  await page.evaluate(() => localStorage.removeItem('theme-feedback-v1'));
   await page.locator('#theme').selectOption('winxp-luna');
   await page.locator('#page').selectOption('components-instruments.html');
   await page.frameLocator('#preview').locator('body').waitFor();
@@ -56,27 +58,29 @@ try {
   // Saving without a drawn region or description must not create a report.
   await page.locator('#save').click();
   assert.match(dialogs.at(-1), /Draw a box/);
-  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 0);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1') || '[]').length), 0);
   await page.locator('#draw').click();
-  const stage = await page.locator('#stage').boundingBox();
+  let stage = await page.locator('#stage').boundingBox();
   await page.mouse.move(stage.x + 50, stage.y + 50);
   await page.mouse.down();
   await page.mouse.up();
   await page.locator('#save').click();
   assert.match(dialogs.at(-1), /Draw a box/);
-  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 0);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1') || '[]').length), 0);
   await page.locator('#draw').click();
   // Drag bottom-right to top-left: coordinates must normalize to positive bounds.
+  await page.evaluate(() => scrollTo(0, 0)); // #save scrolled the page
+  stage = await page.locator('#stage').boundingBox();
   await page.mouse.move(stage.x + 190, stage.y + 140);
   await page.mouse.down();
   await page.mouse.move(stage.x + 30, stage.y + 30, { steps: 4 });
   await page.mouse.up();
   await page.locator('#save').click();
   assert.match(dialogs.at(-1), /description/);
-  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 0);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1') || '[]').length), 0);
   await page.locator('#comment').fill('The chart labels overlap on a narrow screen.');
   await page.locator('#save').click();
-  const feedback = await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')));
+  const feedback = await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1') || '[]'));
   assert.equal(feedback.length, 1);
   assert.equal(feedback[0].theme, 'winxp-luna');
   assert.equal(feedback[0].page, 'components-instruments.html');
@@ -92,6 +96,7 @@ try {
     };
   });
   await page.locator('#draw').click();
+  await page.evaluate(() => scrollTo(0, 0));
   const updatedStage = await page.locator('#stage').boundingBox();
   await page.mouse.move(updatedStage.x + 220, updatedStage.y + 170);
   await page.mouse.down();
@@ -100,7 +105,7 @@ try {
   await page.locator('#comment').fill('A second issue that cannot be persisted.');
   await page.locator('#save').click();
   assert.match(dialogs.at(-1), /could not be saved/);
-  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1')).length), 1);
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('theme-feedback-v1') || '[]').length), 1);
   const download = page.waitForEvent('download');
   await page.locator('#download').click();
   const reportFile = await download;
