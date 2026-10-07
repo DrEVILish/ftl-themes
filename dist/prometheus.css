@@ -2230,7 +2230,7 @@ html[dir="rtl"] .drawer.is-start { transform: translateX(105%); }
   transition: transform 0.15s ease;
 }
 .accordion-item[open] > .accordion-trigger::after { transform: rotate(45deg); }
-.accordion-panel { padding: 0 0.25em 1em; color: var(--muted); }
+.accordion-panel { padding: 0 0.25em 1em; color: var(--accordion-panel-fg, var(--text)); }
 
 /* .list — a bordered stack of rows (queues, menus, activity): the
    thing between a table (columns) and a menu (overlay). Items can be
@@ -2268,6 +2268,27 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
   color: var(--row-selected-fg, var(--text));
   box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent)));
 }
+/* .list.list-cards — each item is its own card (the theme's card tokens),
+   the list itself has no box; items sit --list-gap apart. .is-featured
+   takes a thick accent border; .is-success/-warning/-danger/-info a status
+   border and tint. */
+.list.list-cards { display: grid; gap: var(--list-gap, 0.6rem); background: none; border: 0; border-radius: 0; overflow: visible; }
+.list-cards > .list-item {
+  background: var(--list-card-bg, var(--card-bg, var(--panel-bg, var(--surface))));
+  border: var(--list-card-border-width, var(--card-border-width, 1px)) solid var(--list-card-border, var(--card-border, var(--panel-border, var(--border))));
+  border-radius: var(--list-card-radius, var(--card-radius, var(--panel-radius, var(--radius))));
+  box-shadow: var(--list-card-shadow, var(--card-shadow, var(--panel-shadow, none)));
+}
+.list-cards > .list-item.is-featured { border-width: var(--list-featured-border-width, 4px); border-color: var(--list-featured-border, var(--accent)); }
+.list-cards > .list-item.is-success { --_list-tone: var(--success); }
+.list-cards > .list-item.is-warning { --_list-tone: var(--warning); }
+.list-cards > .list-item.is-danger { --_list-tone: var(--danger); }
+.list-cards > .list-item.is-info { --_list-tone: var(--info, var(--accent)); }
+.list-cards > .list-item:is(.is-success, .is-warning, .is-danger, .is-info) {
+  border-color: var(--_list-tone);
+  background: color-mix(in srgb, var(--_list-tone) var(--list-tone-tint, 16%), var(--list-card-bg, var(--card-bg, var(--panel-bg, var(--surface)))));
+}
+.list-cards > .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { box-shadow: var(--list-active-marker, var(--row-active-marker, inset 0.25rem 0 0 var(--accent))), var(--list-card-shadow, var(--card-shadow, var(--panel-shadow, 0 0 transparent))); }
 
 /* .carousel — a no-JS slide strip: a scroll-snap track plus plain
    anchor links, so swipe, keyboard, dots and prev/next all work with zero
@@ -3349,6 +3370,10 @@ html[data-motion="reduced"] .typing::before { animation: none; }
   align-items: stretch;
   gap: 0.2rem;
 }
+/* .list-item-body stacks a title and meta line while the row's trailing
+   buttons stay beside it: <li class="list-item"><div class="list-item-body">
+   <span class="list-item-title">…</span><span class="list-item-meta">…</span></div><button …></li> */
+.list-item-body { display: flex; flex: 1; flex-direction: column; gap: 0.2rem; min-inline-size: 0; }
 .list-item-title { font-weight: var(--list-item-title-weight, 600); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .list-item-meta {
   display: flex;

@@ -1737,6 +1737,11 @@ edge). Works for `.popover`, `.context-menu` and `.dropdown`.
   links/buttons; `.is-active` carries a background *and* a leading
   marker (same two-language state as table rows), hover reuses
   `--row-hover-bg`.
+  `.list.list-cards` drops the outer box and makes each item a card
+  (the card tokens) `--list-gap` apart; `.list-item.is-featured` takes a
+  thick accent border, `.is-success/-warning/-danger/-info` a status border
+  and tint. A row whose title and meta should stack beside trailing buttons
+  wraps them in `.list-item-body`.
 - **Utilities** — `.ratio` (`--ratio`, default 16/9, plus
   `-1x1`/`-4x3`/`-16x9`/`-21x9` modifiers; children fill and cover),
   `.text-truncate`, `.clamp-2`/`-3`, `.stretched-link`
@@ -1910,6 +1915,7 @@ tokens.
 | `.thread`, `.thread-divider`, `.typing` | `--thread-gap`, `--thread-divider-fg`, `--thread-divider-rule`, `--typing-dot` |
 | `.attachment` | `--attachment-bg`, `--attachment-fg`, `--attachment-border`, `--attachment-radius`, `--attachment-padding` |
 | `.list-item-title` / `-meta` | `--list-item-title-weight`, `--list-item-meta-fg`, `--list-item-meta-fg-active` |
+| `.list.list-cards` | `--list-gap`, `--list-card-bg`, `--list-card-border`, `--list-card-border-width`, `--list-card-radius`, `--list-card-shadow` (each defaults to the `--card-*` token), `--list-featured-border`, `--list-featured-border-width` (4px), `--list-tone-tint` (16%) |
 | `.bar-chart` | `--bar-chart-bar`, `--bar-chart-bar-alt` (`.is-highlight`), `--bar-chart-radius`, `--bar-chart-gap`, `--bar-chart-height`, `--bar-chart-axis`, `--bar-chart-axis-width`, `--bar-chart-shadow`; defaults read the Chart palette |
 | `.value-row` | `--value-row-label`, `--value-row-value` (column widths) |
 | `.meter-bank` | `--meter-bank-height` |

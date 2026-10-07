@@ -6,6 +6,9 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- `.list.list-cards`: each item is a card with the theme's card tokens, the list has no box; items
+  take `.is-featured` (thick accent border) and `.is-success/-warning/-danger/-info` (status border and
+  tint). `.list-item-body` stacks a title and meta line beside a row's trailing buttons (#67, #68 M-A6).
 - `proseries` theme: a Pro Series live-console touch screen (navy desk, blue strips, bevelled keys,
   tick-ring knobs, ribbed fader caps). References in `references/proseries/`.
 - Console: `.led-list` (options chosen by a lit LED), sixteen channel tag colours (`.scribble[data-tag]`
@@ -83,6 +86,7 @@ changes are called out explicitly here.
   arrow in the knee) and each theme draws its own. Demo: `components-experience.html`.
 
 ### Changed
+- `.accordion-panel` text is `--text` (was `--muted`); `--accordion-panel-fg` sets it (#68 M-A7).
 - The v4 codemod (`scripts/migrate-v4.py`, `scripts/v4-rename-map.json`) is retired;
   `docs/MIGRATING-v4.md` shows how to run it from the v5.3.0 tag.
 - `dashboard.html` previews its live-data scenarios with a `.toggle-group` of radios and `:has()`;
