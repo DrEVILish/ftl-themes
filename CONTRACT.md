@@ -987,6 +987,7 @@ The demo pages build their pickers from `themes.json` in JS anyway, so
 ```html
 <button class="btn btn-primary">Primary</button>
 <button class="btn btn-secondary">Secondary</button>
+<button class="btn btn-tertiary">Tertiary</button>
 <button class="btn btn-danger">Delete</button>
 <button class="btn btn-success">Confirm</button>
 <button class="btn btn-ghost">Ghost</button>
@@ -994,6 +995,12 @@ The demo pages build their pickers from `themes.json` in JS anyway, so
 ```
 `:disabled`, `:hover`, `:active`, `:focus-visible` are handled — no extra
 classes needed.
+
+Three levels of emphasis: `.btn-primary` (the one main action), `.btn-secondary`
+(supporting actions) and `.btn-tertiary` (the quietest accent action: text with
+no fill or border until hover). A theme restyles each through the `--btn-*`
+tokens on that class; `--btn-font-size` (default `0.9em`) sizes the label, and
+`.btn-sm` always wins over it.
 
 ### Form controls
 ```html

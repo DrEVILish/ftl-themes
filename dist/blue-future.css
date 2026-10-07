@@ -171,7 +171,7 @@ a { color: var(--link, var(--accent)); }
   background: var(--btn-bg, var(--surface-2));
   color: var(--btn-fg, var(--text));
   font-family: inherit;
-  font-size: 0.9em;
+  font-size: var(--btn-font-size, 0.9em);
   font-weight: var(--btn-weight, 400);
   letter-spacing: var(--btn-tracking, normal);
   text-transform: var(--btn-transform, none);
@@ -211,6 +211,15 @@ a { color: var(--link, var(--accent)); }
   --btn-bg: transparent;
   --btn-fg: var(--accent-text, var(--accent));
   --btn-border: var(--border);
+}
+/* Tertiary: the quietest action that is still accent-coloured — text with
+   no fill or border until hover. */
+.btn-tertiary {
+  --btn-bg: transparent;
+  --btn-fg: var(--accent-text, var(--accent));
+  --btn-border: transparent;
+  --btn-bg-hover: color-mix(in srgb, var(--accent) 12%, transparent);
+  --btn-border-hover: transparent;
 }
 .btn-ghost {
   --btn-bg: transparent;
@@ -2999,13 +3008,14 @@ pre code { padding: 0; background: none; border-radius: 0; }
 .app-bar .text-muted { color: var(--app-bar-text); }
 .app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
 .app-bar .btn-secondary,
+.app-bar .btn-tertiary,
 .app-bar .btn-ghost {
   --btn-fg: var(--app-bar-text);
   --btn-border: color-mix(in srgb, var(--app-bar-text) 45%, transparent);
   --btn-bg-hover: color-mix(in srgb, var(--app-bar-text) 14%, transparent);
   --btn-border-hover: var(--app-bar-text);
 }
-.app-bar .btn-ghost { --btn-border: transparent; }
+.app-bar :is(.btn-tertiary, .btn-ghost) { --btn-border: transparent; }
 
 /* Screen-reader-only content — the standard visually-hidden-but-announced
    clip-rect pattern, not display:none (which screen readers also skip). */
@@ -15230,7 +15240,11 @@ html[data-theme="blue-future"] h4 {
 }
 
 /* Buttons */
-html[data-theme="blue-future"] :is(.btn-primary, .btn-danger, .btn-success, .btn-secondary) {
+/* Button hierarchy: primary is a solid 80% accent with black text and a
+   larger label; secondary is the tinted style (accent text and border over
+   a 25% fill); tertiary is the accent outline with no fill until hover.
+   Danger and success are tinted in their own colours. */
+html[data-theme="blue-future"] :is(.btn-secondary, .btn-tertiary, .btn-danger, .btn-success) {
   --btn-fg: var(--bf-ink, var(--bf-tone));
   --btn-border: var(--bf-tone);
   --btn-bg: color-mix(in srgb, var(--bf-tone) 25%, transparent);
@@ -15238,12 +15252,21 @@ html[data-theme="blue-future"] :is(.btn-primary, .btn-danger, .btn-success, .btn
   --btn-border-hover: var(--bf-tone);
   --btn-shadow-hover: 0 0 0.7rem color-mix(in srgb, var(--bf-tone) 55%, transparent);
 }
-html[data-theme="blue-future"] .btn-primary { --bf-tone: var(--accent); --btn-shadow: 0 0 0.7rem rgba(47, 214, 255, 0.3); }
+html[data-theme="blue-future"] .btn-primary {
+  --btn-bg: color-mix(in srgb, var(--accent) 80%, transparent);
+  --btn-bg-hover: var(--accent);
+  --btn-fg: #000;
+  --btn-border: var(--accent);
+  --btn-border-hover: var(--accent);
+  --btn-font-size: 1.1em;
+  --btn-shadow: 0 0 0.7rem rgba(47, 214, 255, 0.3);
+  --btn-shadow-hover: 0 0 1rem rgba(0, 217, 255, 0.55);
+}
+html[data-theme="blue-future"] .btn-secondary { --bf-tone: var(--accent); }
+html[data-theme="blue-future"] .btn-tertiary { --bf-tone: var(--accent); --btn-bg: transparent; }
 /* Red text is lifted a little so it holds 4.5:1 on tinted bars too. */
 html[data-theme="blue-future"] .btn-danger { --bf-tone: var(--danger); --bf-ink: #ff7a8f; }
 html[data-theme="blue-future"] .btn-success { --bf-tone: var(--success); }
-/* Secondary keeps the accent outline but no fill until hover. */
-html[data-theme="blue-future"] .btn-secondary { --bf-tone: var(--accent); --btn-bg: transparent; }
 html[data-theme="blue-future"] .btn-ghost { --btn-shadow-hover: none; }
 html[data-theme="blue-future"] .btn:disabled,
 html[data-theme="blue-future"] .btn[aria-disabled="true"] {

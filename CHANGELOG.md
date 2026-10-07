@@ -5,6 +5,13 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **`.btn-tertiary`**: a third emphasis level in core (accent text, no fill
+  or border until hover), and `--btn-font-size` for the label size. In the
+  app bar it follows the bar's text colour like secondary.
+- **blue-future button hierarchy:** primary is now a solid 80% accent with
+  black text at 1.1em; the tinted style (accent text and border over a 25%
+  fill) moves to secondary; the accent outline with no fill moves to
+  tertiary.
 - **blue-future buttons are tinted:** text and border in the button's own
   colour over a 25% fill of it (40% and a matching glow on hover). Primary
   uses the cyan accent, danger red (text lifted to `#ff7a8f` for 4.5:1),
