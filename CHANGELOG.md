@@ -5,6 +5,31 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+## v5.3.0 — metering, tape-deck components and button hierarchy (2026-10-07)
+
+Compatible feature release; the theme contract remains v4.
+
+### Added
+
+- **Metering and EQ** (`core/components/metering.css`,
+  [docs](docs/components/metering.md), `metering.html`): `.vu` analogue
+  VU/PPM needle meters (backlit paper or theme face, peak LED, 300 ms
+  ballistics via `@property`), `.ledbar` segmented bargraphs (ghosted unlit
+  segments, reference band, peak hold, overs) and `.ledarc` arc loudness
+  meters with a CSS-only Peak/Overs/Mode panel; a VFD look (`.is-vfd`,
+  `.vfd`, theme opt-in `--meter-style: vfd`, set in blue-future); and
+  `.eq-graph`, a parametric EQ with log grid, spectrogram and 31-band RTA
+  overlays and selectable band handles. The sound mixer's EQ and master
+  strip use them.
+- **EQ analyser controls** (`.eq-editor`, all radios and checkboxes): a
+  linked Pre / Pre + Post / Post RTA selector, 30 / 60 dB range, slow /
+  med / fast decay (bars ease over `--rta-decay`), and Peak, RMS, Avg,
+  Peak/RMS and Peak/Avg detectors (`--v`, `--avg`, `--peak` per band). The
+  pre RTA now draws bars and peak caps too; both RTA layers sit at 75%
+  behind the EQ curve and handles. The spectrogram shows the pre or post
+  signal (a switch) on a five-step colour scale (signal, low, medium,
+  high, peak) from each theme's own palette (`--spectro-*`; blue-future:
+  cyan, green, yellow, amber, red), with Scale, Mono and Thermal presets.
 - **Tape-recorder components (#66, for pi9696):**
   - `.seg7` seven-segment digits (`<i data-d="3">`, ghost segments,
     `--seg7-skew`, lit/unlit tokens), standalone, in the `.media-deck` head
@@ -24,34 +49,20 @@ changes are called out explicitly here.
 - **`.btn-tertiary`**: a third emphasis level in core (accent text, no fill
   or border until hover), and `--btn-font-size` for the label size. In the
   app bar it follows the bar's text colour like secondary.
-- **blue-future button hierarchy:** primary is now a solid 80% accent with
-  black text at 1.1em; the tinted style (accent text and border over a 25%
-  fill) moves to secondary; the accent outline with no fill moves to
-  tertiary.
-- **blue-future buttons are tinted:** text and border in the button's own
-  colour over a 25% fill of it (40% and a matching glow on hover). Primary
-  uses the cyan accent, danger red (text lifted to `#ff7a8f` for 4.5:1),
-  success green, plain buttons the text colour; secondary keeps the accent
-  outline with no fill until hover.
-- **EQ analyser controls** (`.eq-editor`, all radios and checkboxes): a
-  linked Pre / Pre + Post / Post RTA selector, 30 / 60 dB range, slow /
-  med / fast decay (bars ease over `--rta-decay`), and Peak, RMS, Avg,
-  Peak/RMS and Peak/Avg detectors (`--v`, `--avg`, `--peak` per band). The
-  pre RTA now draws bars and peak caps too; both RTA layers sit at 75%
-  behind the EQ curve and handles. The spectrogram shows the pre or post
-  signal (a switch) on a five-step colour scale (signal, low, medium,
-  high, peak) from each theme's own palette (`--spectro-*`; blue-future:
-  cyan, green, yellow, amber, red), with Scale, Mono and Thermal presets.
-- **Metering and EQ** (`core/components/metering.css`,
-  [docs](docs/components/metering.md), `metering.html`): `.vu` analogue
-  VU/PPM needle meters (backlit paper or theme face, peak LED, 300 ms
-  ballistics via `@property`), `.ledbar` segmented bargraphs (ghosted unlit
-  segments, reference band, peak hold, overs) and `.ledarc` arc loudness
-  meters with a CSS-only Peak/Overs/Mode panel; a VFD look (`.is-vfd`,
-  `.vfd`, theme opt-in `--meter-style: vfd`, set in blue-future); and
-  `.eq-graph`, a parametric EQ with log grid, spectrogram and 31-band RTA
-  overlays and selectable band handles. The sound mixer's EQ and master
-  strip use them.
+
+### Changed
+
+- **blue-future button hierarchy:** primary is a solid 80% accent with
+  black text at 1.1em; secondary is tinted (accent text and border over a
+  25% fill, 40% and a matching glow on hover); tertiary is the accent
+  outline with no fill until hover. Danger and success are tinted in red
+  (text lifted to `#ff7a8f` for 4.5:1) and green; plain buttons use the
+  text colour.
+- The demo menu lists Audio components, Media decks and Signature navigation
+  patterns on every page.
+
+### Fixed
+
 - **Cross-theme polish** from the showcase pages: `.tag-remove` gets a real
   24px target; mention and avatar ink meet 4.5:1 in every theme; menubar
   items, toggles, tabs, segments, breadcrumbs, badge buttons and colour
@@ -60,8 +71,6 @@ changes are called out explicitly here.
   colour; stacked and frozen selected rows follow checked rows; hot-wheels
   toggles, windows95/win7 tabs and nav-brand chips fixed; `.carousel` gets a
   CSS `::scroll-marker` / `::scroll-button()` enhancement where supported.
-- The demo menu lists Audio components, Media decks and Signature navigation
-  patterns on every page.
 
 ## v5.2.0 — theme families and authoring tools (2026-10-05)
 

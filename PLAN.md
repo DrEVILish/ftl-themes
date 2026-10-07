@@ -1,6 +1,6 @@
-# ftl-themes v5.2 release plan
+# ftl-themes v5 release plan
 
-Status: **v5.2.0 shipped** (2026-10-05); remaining work is follow-up. Baseline 2026; new theme names agreed. v4 stays the base: the
+Status: **v5.3.0 shipped** (2026-10-07); remaining work is follow-up. Baseline 2026; new theme names agreed. v4 stays the base: the
 token contract, the `@layer ui` bundles, the L0/L1 adoption levels and the
 42-theme catalogue all carry forward (45 themes after the three v5 additions).
 The release addresses four areas where v4 fell short:
@@ -1210,7 +1210,10 @@ are recorded so they can be revisited:
 
 ## 26. Rollout
 
-**Release status (2026-10-05):** v5.2.0 includes the v5.1.0 screen tiers,
+**Release status (2026-10-07):** v5.3.0 adds metering (`.vu`, `.ledbar`,
+`.ledarc`, VFD, `.eq-graph` with RTA and spectrogram), the tape-deck
+components from #66 (`.seg7`, `.transport-keys`, deck lamps, `graphs.css`) and
+`.btn-tertiary`. v5.2.0 included the v5.1.0 screen tiers,
 layout and spacing work, touch behavior, component groups, experience
 patterns, CSS-only selection/tabs/panes, dashboard scenarios, navigation
 comparison, component index, theme reports, local theme-pack validator,

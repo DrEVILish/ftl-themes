@@ -11,7 +11,10 @@ with one attribute. No JavaScript framework is needed.
 **Live examples:** https://drevilish.github.io/ftl-themes/ (the gallery, the
 component QA pages, demo apps and page templates, published from `main`).
 
-> **Versions.** `main` follows the latest work. v5.2.0 adds cursor role
+> **Versions.** `main` follows the latest work. v5.3.0 adds metering (VU,
+> LED and arc meters, VFD, an EQ with RTA and spectrogram), tape-deck
+> components (seven-segment, transport keys, deck lamps, telemetry graphs)
+> and a tertiary button level. v5.2.0 added cursor role
 > tokens, build-time Windows and iOS theme families, box-selection feedback
 > reports, and CSS-led foldable metadata. v5.1.0 added screen tiers, touch
 > support, CSS-only state, component groups, templates, icons, favicons,
