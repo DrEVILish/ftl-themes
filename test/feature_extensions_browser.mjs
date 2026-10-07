@@ -29,6 +29,27 @@ try {
     assert(look[3] !== look[2] && look[2] === look[1], `${theme}: only the error-rate card is in alert`);
     assert.equal(await page.locator('[data-scenario]:visible').count(), 2, theme);
   }
+  // ProSeries console: pages switch by radio, the compressor curve bends at
+  // its threshold, the PEQ curve moves with a band's gain, linked knobs follow.
+  await page.goto(`${server.base}/proseries.html`, { waitUntil: 'networkidle' });
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'proseries');
+  await page.evaluate(() => { document.getElementById('pg-channel').checked = true; });
+  assert(await page.locator('.ps-page[data-page="channel"]').isVisible());
+  const comp = page.locator('.ps-dyn-panel[data-dyn="comp"]');
+  const curve = () => comp.locator('.dyn-graph-line').getAttribute('d');
+  await comp.locator('[data-param="threshold"]').evaluate(el => { el.value = -30; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await comp.locator('[data-param="ratio"]').evaluate(el => { el.value = 4; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  // At 0 dB in, a 4:1 compressor at -30 dB outputs -22.5 dB: y = 100 - 62.5.
+  assert.match(await curve(), /L100\.00 37\.50$/);
+  const peq = page.locator('.ps-peq .eq-graph-curve path');
+  const before = await peq.getAttribute('d');
+  await page.locator('.ps-peq [data-band="3"][data-param="g"]').evaluate(el => { el.value = -12; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.notEqual(await peq.getAttribute('d'), before);
+  assert.equal(await page.locator('.eq-node[data-band="3"]').evaluate(el => el.style.getPropertyValue('--g')), '-0.8000');
+  await page.evaluate(() => { document.getElementById('pg-effects').checked = true; document.querySelector('[name=fx-unit][value=chamber]').checked = true; });
+  const twins = page.locator('[data-link="chamber-decay"]');
+  await twins.first().evaluate(el => { el.value = 90; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.equal(await twins.nth(1).inputValue(), '90');
   // Gallery desktop: boots as XP, clears its boot screen once themes load,
   // lists every theme, and Apply restyles the whole desktop.
   await page.goto(`${server.base}/gallery.html`, { waitUntil: 'networkidle' });

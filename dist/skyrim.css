@@ -4385,6 +4385,335 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 /* --- .rta.is-area — a filled spectrum without gaps --------------------------
  * The third spectrum style beside bars (default) and .is-line. */
 .rta.is-area { --rta-gap: 0px; --rta-fill: 45%; --rta-fill-top: 75%; }
+/* --- v5 console: the parts of a digital mixing desk core didn't have ------
+ * Aux send blocks, dynamics transfer curves, colour name tags, an effects
+ * rack of faceplates with the assignable-controls panel, a graphic EQ and
+ * a patchbay. Builds on core's mixer primitives (.mixer, .strip, .knob,
+ * .fader, .key, .meter, .scribble) and metering.css's .eq-graph.
+ * assets/js/console.js redraws transfer curves and EQ responses from their
+ * controls and shows control values in <output>s; everything else is
+ * radios and checkboxes. Every look reads a --<component>-* token that
+ * falls back to the base palette. See docs/components/console.md. */
+
+/* --- Name tags: a scribble strip filled with the channel colour ----------
+ *   <div class="scribble" data-color="3"><span class="scribble-name">Mic3</span></div>
+ * With data-color the whole tag takes the per-user colour and dark text, as
+ * console channel names do. */
+.scribble[data-color] {
+  background: var(--user-color);
+  color: var(--scribble-tag-fg, #111111);
+  border-top-color: transparent;
+  text-align: center;
+}
+.scribble[data-color] .scribble-num { color: inherit; opacity: 0.75; }
+
+/* --- .sends — a channel's aux send levels --------------------------------
+ *   <div class="sends" role="group" aria-label="Mic1 aux sends">
+ *     <p class="sends-title">Auxes 1-8</p>
+ *     <ol><li style="--send:.6"><span>1</span></li>…<li class="is-active" style="--send:.4">…</li></ol>
+ *   </div>
+ * Each row is a wedge as long as its --send (0–1). .is-active marks the aux
+ * being edited; .is-pre a pre-fader send. Put a range input in a row to
+ * make it adjustable (controls.js keeps --value; use style="--send: var(--value)"). */
+.sends {
+  display: grid;
+  gap: 1px;
+  padding: 0.2rem;
+  background: var(--sends-bg, #0c0c12);
+  border: 1px solid var(--sends-border, var(--border));
+  color: var(--sends-fg, #ffffff);
+  font-size: 0.6rem;
+  line-height: 1.25;
+}
+.sends-title { margin: 0 0 0.1rem; text-align: center; font-weight: 700; }
+.sends ol { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
+.sends li { display: grid; grid-template-columns: 0.9rem 1fr; align-items: center; gap: 0.2rem; }
+.sends li::after {
+  content: "";
+  block-size: 0.45rem;
+  inline-size: calc(var(--send, 0) * 100%);
+  background: var(--sends-bar, #d8dde8);
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+.sends li.is-pre::after { background: var(--sends-bar-pre, var(--accent-2)); }
+.sends li:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { color: var(--sends-active, var(--accent)); }
+.sends li:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))::after { background: var(--sends-active, var(--accent)); }
+
+/* --- .dyn-graph — a dynamics transfer curve -------------------------------
+ *   <svg class="dyn-graph" viewBox="0 0 100 100" role="img" aria-label="Compressor curve">
+ *     <path class="dyn-graph-line" d="M0 100 L60 40 L100 25"/>
+ *   </svg>
+ * Input level across, output up; a 1:1 diagonal under the curve. console.js
+ * redraws the path from the controls in the same [data-dyn] group (see the
+ * docs). Small as a strip thumbnail, large on a detail page. */
+.dyn-graph {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 1;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 0.5px), var(--dyn-graph-unity, rgba(255, 255, 255, 0.25)) 0 calc(50% + 0.5px), transparent 0),
+    repeating-linear-gradient(0deg, transparent 0 calc(25% - 1px), var(--dyn-graph-grid, rgba(255, 255, 255, 0.14)) 0 25%),
+    repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--dyn-graph-grid, rgba(255, 255, 255, 0.14)) 0 25%),
+    var(--dyn-graph-bg, linear-gradient(180deg, #3a6bd0, #1d3f96));
+  border: 1px solid var(--dyn-graph-border, var(--border));
+  overflow: visible;
+}
+.dyn-graph-line {
+  fill: none;
+  stroke: var(--dyn-graph-line, #ffffff);
+  stroke-width: var(--dyn-graph-line-width, 2px);
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+.dyn-graph-threshold { stroke: var(--dyn-graph-threshold, var(--accent)); stroke-width: 1px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+[data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-line { stroke: var(--dyn-graph-line-off, rgba(255, 255, 255, 0.45)); }
+
+/* --- .rack — an equipment rack of .rack-units ------------------------------
+ *   <div class="rack" aria-label="Effects rack">
+ *     <label class="rack-unit" data-finish="teal" style="--u: 2">
+ *       <input type="radio" name="fx" value="reverb"><span class="rack-unit-name">Chamber Reverb</span>…
+ *     </label>
+ *   </div>
+ * A flight case with rails; each unit is --u rack units high (1–4) on a
+ * finish: data-finish="silver|black|blue|teal|red|purple|green|grey". A unit
+ * holding a radio is selectable (outlined when chosen); a .rack-unit.is-empty
+ * is a blank panel. */
+.rack {
+  --_u: var(--rack-u, 2.1rem);
+  display: grid;
+  gap: 2px;
+  padding: 0.6rem 1.4rem;
+  background:
+    radial-gradient(circle at 0.7rem 0.55rem, #000 0 2px, transparent 2.5px) 0 0 / 100% var(--_u) repeat-y,
+    radial-gradient(circle at calc(100% - 0.7rem) 0.55rem, #000 0 2px, transparent 2.5px) 0 0 / 100% var(--_u) repeat-y,
+    linear-gradient(90deg, var(--rack-rail, #b08a50) 0 1.4rem, transparent 1.4rem calc(100% - 1.4rem), var(--rack-rail, #b08a50) calc(100% - 1.4rem)),
+    var(--rack-bg, radial-gradient(80% 60% at 50% 40%, #1d1d1d, #050505));
+  border: var(--rack-frame-width, 0.9rem) solid var(--rack-frame, #121212);
+  border-radius: var(--rack-radius, 6px);
+  box-shadow: 0 0 0 2px var(--rack-trim, #9a9a9a), 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+.rack-unit {
+  --_finish: var(--rack-finish, #2a2a2a);
+  --_finish-fg: #ffffff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-block-size: calc(var(--_u) * var(--u, 1) + 2px * (var(--u, 1) - 1));
+  padding: 0.25rem 1.6rem;
+  background:
+    radial-gradient(circle at 0.65rem 0.55rem, #000 0 2.5px, #888 3px 4px, transparent 4.5px),
+    radial-gradient(circle at calc(100% - 0.65rem) 0.55rem, #000 0 2.5px, #888 3px 4px, transparent 4.5px),
+    radial-gradient(circle at 0.65rem calc(100% - 0.55rem), #000 0 2.5px, #888 3px 4px, transparent 4.5px),
+    radial-gradient(circle at calc(100% - 0.65rem) calc(100% - 0.55rem), #000 0 2.5px, #888 3px 4px, transparent 4.5px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 35%, rgba(0, 0, 0, 0.25)),
+    var(--_finish);
+  color: var(--_finish-fg);
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 2px;
+  font-size: 0.68rem;
+  overflow: hidden;
+}
+.rack-unit[data-finish="silver"] { --_finish: linear-gradient(180deg, #e9e9e9, #bdbdbd); --_finish-fg: #111111; }
+.rack-unit[data-finish="black"] { --_finish: #161616; }
+.rack-unit[data-finish="grey"] { --_finish: linear-gradient(180deg, #4a4a4a, #2b2b2b); }
+.rack-unit[data-finish="blue"] { --_finish: linear-gradient(180deg, #34428d, #1d2860); }
+.rack-unit[data-finish="teal"] { --_finish: linear-gradient(180deg, #2f6a74, #163c44); }
+.rack-unit[data-finish="red"] { --_finish: linear-gradient(180deg, #8e2a1e, #5c140c); }
+.rack-unit[data-finish="purple"] { --_finish: linear-gradient(180deg, #6a2f8c, #3b1150); }
+.rack-unit[data-finish="green"] { --_finish: linear-gradient(180deg, #2f8a2f, #145214); }
+.rack-unit > input[type="radio"] { position: absolute; inset: 0; margin: 0; opacity: 0; }
+.rack-unit:has(> input:checked) { outline: 2px solid var(--rack-selected, #ffe33b); outline-offset: -2px; }
+.rack-unit:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
+.rack-unit.is-empty { --_finish: linear-gradient(180deg, #2b2b2b, #151515); justify-content: center; color: #8a8a8a; }
+.rack-unit-name {
+  font: 800 1.05rem/1 var(--font);
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+.rack-unit[data-finish="silver"] .rack-unit-name { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
+.rack-unit-body { display: flex; flex: 1; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 0.3rem 0.6rem; min-inline-size: 0; }
+/* The thin "Change device / Store / Load preset" strip at the top of the rack. */
+.rack-head { display: flex; justify-content: center; gap: 0.6rem; padding: 0.4rem; background: linear-gradient(180deg, #f2f2f2, #c9c9c9); border-radius: 2px; }
+
+/* A unit's faceplate seen up close: a bigger .rack-unit inside .faceplate,
+   above its .assignable panel. */
+.faceplate {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.5rem;
+  background: var(--faceplate-bg, #050505);
+  border: 1px solid var(--faceplate-border, #2a2a2a);
+  border-radius: 4px;
+}
+.faceplate > .rack-unit { --_u: 2.6rem; align-items: stretch; padding-block: 0.8rem; font-size: 0.75rem; }
+.faceplate-group {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--faceplate-group-border, rgba(255, 255, 255, 0.35));
+  border-radius: 6px;
+}
+.faceplate-group:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-color: var(--faceplate-group-active, #ffffff); box-shadow: 0 0 0 1px var(--faceplate-group-active, #ffffff); }
+.faceplate-title { margin: 0; font-weight: 800; }
+.faceplate-knobs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 0.8rem; }
+.faceplate-display {
+  min-inline-size: 7rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--faceplate-display-bg, #000000);
+  color: var(--faceplate-display-fg, #e0e0e0);
+  border-radius: 4px;
+  font: 800 1.2rem/1.1 var(--font);
+  text-align: center;
+}
+
+/* --- .assignable — the blue soft-key panel under every unit -------------
+ *   <div class="assignable" role="group" aria-label="Assignable controls">
+ *     <div class="assignable-col"><span>faders 1</span>
+ *       <label class="assignable-key"><input type="checkbox"><span class="visually-hidden">…</span></label>
+ *       <label class="knob">…</label><span>dB 20Hz</span></div>…
+ *     <p class="assignable-caption">assignable controls</p>
+ *   </div>
+ * Eight columns: a caption, a square soft key (lit when on), a knob, and
+ * its unit and name. */
+.assignable {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.2rem, 1fr));
+  gap: 0.4rem 0.3rem;
+  padding: 0.5rem 0.6rem 0.3rem;
+  background: var(--assignable-bg, linear-gradient(180deg, #5560ab, #434d98));
+  color: var(--assignable-fg, #ffffff);
+  border: 1px solid var(--assignable-border, #2a3274);
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  font-size: 0.68rem;
+  text-align: center;
+}
+.assignable-col { display: grid; justify-items: center; align-content: start; gap: 0.25rem; }
+.assignable-key {
+  position: relative;
+  display: block;
+  inline-size: 2.6rem;
+  block-size: 2.4rem;
+  background: var(--assignable-key-bg, linear-gradient(180deg, #4a54a0, #3a438b));
+  border: 2px solid var(--assignable-key-border, #6a74c0);
+  box-shadow: inset 0 0 0 2px #2b3274;
+}
+.assignable-key > input { position: absolute; inset: 0; margin: 0; opacity: 0; }
+.assignable-key:has(> input:checked) { background: var(--assignable-key-on, linear-gradient(180deg, #e9ecff, #b5bce8)); }
+.assignable-key:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.assignable-caption { grid-column: 1 / -1; margin: 0; font-weight: 700; opacity: 0.9; }
+
+/* --- .geq — a graphic EQ faceplate -----------------------------------------
+ *   <div class="geq" role="group" aria-label="GEQ A">
+ *     <div class="geq-scale" aria-hidden="true"><span>+12</span><span>0</span><span>-12</span></div>
+ *     <div class="geq-group is-active"><label class="geq-band"><input type="range" min="-12" max="12" step="0.5" value="0" aria-label="20 Hz"><span>20</span></label>…</div>…
+ *   </div>
+ * Bands in groups (the console's eight fader groups). Each band is a native
+ * vertical range input; a group marked .is-active is the one on the
+ * assignable controls. */
+.geq {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 0.5rem;
+  background: var(--geq-bg, linear-gradient(180deg, #a9a9a9, #8a8a8a));
+  border-radius: 3px;
+  color: var(--geq-fg, #111111);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.geq-scale { display: flex; flex-direction: column; justify-content: space-between; padding-block: 0.2rem 1.1rem; text-align: end; }
+.geq-group {
+  display: flex;
+  flex: 1;
+  gap: 1px;
+  padding: 0.15rem;
+  background:
+    linear-gradient(transparent calc(50% - 0.6rem), var(--geq-zero, #111111) 0 calc(50% - 0.6rem + 1px), transparent 0),
+    var(--geq-group-bg, #9a9a9a);
+  border: 1px solid var(--geq-group-border, #1f2a8a);
+}
+.geq-group:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --geq-group-bg: var(--geq-group-active, #e6e6e6); }
+.geq-band { display: grid; flex: 1; justify-items: center; gap: 0.15rem; min-inline-size: 0; }
+.geq-band > input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  /* Physical sizes: in vertical writing mode the logical axes swap. */
+  width: 100%;
+  min-width: 0.9rem;
+  height: var(--geq-height, 7rem);
+  margin: 0;
+  background: linear-gradient(90deg, transparent calc(50% - 3px), var(--geq-slot, #000000) 0 calc(50% + 3px), transparent 0);
+}
+.geq-band > input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  inline-size: 0.9rem;
+  block-size: 0.55rem;
+  background: var(--geq-cap, linear-gradient(180deg, #ffffff, #b0b0b0));
+  border: 1px solid #000000;
+  border-radius: 1px;
+}
+.geq-band > input::-moz-range-thumb {
+  inline-size: 0.9rem;
+  block-size: 0.55rem;
+  background: var(--geq-cap, linear-gradient(180deg, #ffffff, #b0b0b0));
+  border: 1px solid #000000;
+  border-radius: 1px;
+}
+.geq-band > input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.geq-band > span { white-space: nowrap; }
+
+/* --- .patchbay — device blocks of patch points ------------------------------
+ *   <section class="patch-device" aria-labelledby="dl251a">
+ *     <header><span class="patch-id">ID 1</span><span class="patch-name" id="dl251a">DL251A 1</span></header>
+ *     <div class="patch-grid"><label class="patch-point"><input type="checkbox" checked><span class="visually-hidden">A1</span></label>…</div>
+ *   </section>
+ * A checked point is patched (green, or data-kind="aes" yellow); grey is
+ * free. .patch-grid takes --patch-cols (default 8). */
+.patchbay { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0.6rem; }
+.patch-device {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  background: var(--patch-device-bg, linear-gradient(180deg, #4f8ad0, #2f62ae));
+  border: 1px solid var(--patch-device-border, #12285e);
+  border-radius: 8px;
+  color: #ffffff;
+}
+.patch-device > header { display: flex; align-items: center; gap: 0.4rem; font-weight: 800; }
+.patch-name { flex: 1; padding: 0.15rem 0.4rem; background: #000000; border-radius: 2px; }
+.patch-group-label { grid-column: 1 / -1; margin: 0.2rem 0 0; font-size: 0.75rem; font-weight: 800; text-align: center; }
+.patch-grid { display: grid; grid-template-columns: repeat(var(--patch-cols, 8), minmax(1.4rem, 1fr)); gap: 3px; }
+.patch-point {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--patch-free, linear-gradient(180deg, #f0f0f0, #c8c8c8));
+  border: 1px solid #333333;
+  border-radius: 2px;
+}
+/* The jack: a small ring in the middle of each point. */
+.patch-point::after {
+  content: "";
+  position: absolute;
+  inset: 28%;
+  border: 2px solid rgba(0, 0, 0, 0.45);
+  border-radius: 50%;
+}
+.patch-point > input { position: absolute; inset: 0; margin: 0; opacity: 0; }
+.patch-point:has(> input:checked) { background: var(--patch-on, linear-gradient(180deg, #8ad35a, #4e9a2a)); }
+.patch-point[data-kind="aes"]:has(> input:checked) { background: var(--patch-aes, linear-gradient(180deg, #ffe46b, #d6b21a)); }
+.patch-point:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 1px; }
+@media (forced-colors: active) {
+  .patch-point:has(> input:checked), .assignable-key:has(> input:checked) { background: Highlight; }
+  .rack-unit:has(> input:checked) { outline-color: Highlight; }
+}
+/* Light faceplates take dark knob captions. */
+.rack-unit[data-finish="silver"] { --knob-label-fg: #111111; --scale-fg: #111111; }
 /* ==========================================================================
  * Desktop shell (v5, PLAN.md §23 "Signature navigation per theme")
  *

@@ -6,6 +6,16 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- `proseries` theme: a Pro Series live-console touch screen (navy desk, blue strips, bevelled keys,
+  tick-ring knobs, ribbed fader caps). References in `references/proseries/`.
+- Console group (`core/components/console.css`): channel name tags, aux `.sends`, `.dyn-graph`
+  transfer curves, `.rack` of `.rack-unit` faceplates, `.faceplate`, the `.assignable` soft-key
+  panel, a `.geq` graphic EQ and a `.patchbay`. `assets/js/console.js` draws parametric EQ responses
+  and gate/compressor curves, shows values and links twin controls.
+- `proseries.html`: a working console with input channels, channel detail (4-band PEQ, gate,
+  compressor, filters, direct out, safes, delay, processing order), an effects rack with reverb,
+  matrix mixer, chorus, 3-band compressor, dual delay and 8-channel dynamics faceplates, a stereo
+  31-band GEQ, patching and meters.
 - `gallery.html` is now a desktop: Windows XP Luna by default, built only from ftl-themes markup,
   with a boot screen, a logon screen, desktop icons, a Start menu and eleven windows (Theme
   Browser, Media Player, Messenger, Volume Control, an online shop, Task Manager, every example,

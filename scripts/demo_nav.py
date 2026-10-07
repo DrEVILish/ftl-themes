@@ -44,6 +44,7 @@ SECTIONS = [
         ("gallery", "Theme gallery"), ("components", "Core components"),
         ("components-tables", "Tables"), ("components-instruments", "Instruments"),
         ("audio-components", "Audio components"), ("audio-blocks", "Audio blocks"),
+        ("proseries", "ProSeries console"),
         ("metering", "Metering & EQ"),
         ("media-decks", "Media decks"),
         ("components-forms", "Buttons & forms"), ("components-navigation", "Navigation"),

@@ -3,7 +3,7 @@
 An app-agnostic design system and theme library for Go + HTMX (or any
 server-rendered, htmx-swapped) application. It is a small component class
 vocabulary plus a `--*` design-token contract, and it ships a catalogue of
-45 fully switchable themes, from LCARS to Windows 95 to a Matrix terminal,
+46 fully switchable themes, from LCARS to Windows 95 to a Matrix terminal,
 Skyrim, Liquid Glass and black leather with gold. You write one set of
 markup, link one stylesheet, and switch the whole look (layout included)
 with one attribute. No JavaScript framework is needed.
@@ -239,6 +239,7 @@ theme.
   - [`ticketsystem.html`](ticketsystem.html)
   - [`powerstation.html`](powerstation.html)
   - [`soundmixer.html`](soundmixer.html)
+  - [`proseries.html`](proseries.html), a live sound console (channel strips, PEQ, gate and compressor, effects rack, 31-band GEQ, patching, meters) for the `proseries` theme
   - [`audio-blocks.html`](audio-blocks.html), AudioCN's mixer, mic setup, system audio, quick controls, soundboard and music player blocks
   - [`media-decks.html`](media-decks.html), transport devices and animation states from reel-to-reel to MiniDisc
   - [`audio-components.html`](audio-components.html), with the [AudioCN component map and usage guide](docs/components/audio.md)
@@ -254,7 +255,7 @@ theme.
 - **[`gallery.html`](gallery.html)**: start here. A whole desktop in
   Windows XP Luna (or any theme via `?theme=`), built only from ftl-themes
   markup: an XP boot screen and logon screen, desktop icons, a Start menu,
-  and eleven windows (a Theme Browser that applies any of the 45 themes to
+  and eleven windows (a Theme Browser that applies any of the 46 themes to
   the whole desktop, a media player with waveform regions, Messenger, a
   volume mixer, an online shop, Task Manager, every example page, and a
   readme of what's new and what's missing). Aqua turns it into a Dock, iOS
@@ -376,6 +377,9 @@ every class, token and source file for tools and agents.
 - **Operations** ([docs](docs/components/ops.md)): `[data-status]`
   colours, shaped `.map-pin`s, sketch map hooks, `.map-route`,
   `.camera-feed`, `.barcode`.
+- **Console** ([docs](docs/components/console.md)): channel name tags,
+  `.sends`, `.dyn-graph`, `.rack`/`.rack-unit`, `.faceplate`, `.assignable`,
+  `.geq`, `.patchbay`; `assets/js/console.js` draws EQ and dynamics curves.
 - **Page sections** ([docs](docs/components/sections.md)):
   `.page-heading`, `.section-heading`, `.action-panel`, `.media-object`,
   `.features`, `.banner`, `.bento`, `.faq`, `.logo-cloud`, `.testimonial`,

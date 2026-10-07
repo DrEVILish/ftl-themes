@@ -19,7 +19,7 @@ DEMOS = {
     "prose": "components-prose.html", "social": "components-social.html",
     "surfaces": "components-surfaces.html", "tables": "components-tables.html",
     "live": "mission-control.html", "desktop": "desktop.html",
-    "audio": "audio-components.html", "sections": "components-sections.html", "shop": "components-shop.html",
+    "audio": "audio-components.html", "console": "proseries.html", "sections": "components-sections.html", "shop": "components-shop.html",
 }
 
 records = []
