@@ -4014,6 +4014,377 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .drawer[popover]::backdrop { background: var(--overlay-bg, rgba(0, 0, 0, 0.6)); }
 
 .drawer.is-start[popover] { inset-inline-start: 0; inset-inline-end: auto; border-inline-end: var(--drawer-border-width, 1px) solid var(--drawer-border, var(--border)); border-inline-start: 0; }
+/* --- v5 audio controls and visualisers (AudioCN parity) ---------------------
+ * Meter RMS and gradient, stereo meter pairs, a clip indicator, bar and
+ * electric visualisers, live / smooth / electric traces, a parameter
+ * slider, a centre-fill pan slider, device-select states, channel rows,
+ * sound pads and a soundboard, scrubber buffering and an area spectrum.
+ * Builds on core's .meter, .readout, .key, .knob, .fader, .strip, .mixer,
+ * .slider and .lamp, media.css's .scrubber and .waveform, and metering.css's
+ * .rta. Values arrive as 0–1 custom properties the app sets (--level,
+ * --progress, --value, --buffered); assets/js/controls.js keeps the ones
+ * tied to inputs in step. Every look reads a --<component>-* token that
+ * falls back to the base palette. See docs/components/audio.md. */
+
+/* --- .meter extras: RMS layer, smooth gradient, stereo pair ----------------
+ *   <div class="meter" style="--meter-level:78%; --meter-rms:52%; --meter-peak:90%">
+ *     <div class="meter-fill"></div><div class="meter-rms"></div><div class="meter-peak"></div>
+ *   </div>
+ * .meter-rms is the average level drawn as a solid core inside the peak
+ * fill. .is-gradient blends the zones instead of hard bands. .meter-pair
+ * stacks a left and right meter (or sits them side by side with .meter-v). */
+.meter-rms {
+  position: absolute;
+  inset: 30% auto 30% 0;
+  width: var(--meter-rms, 0%);
+  background: var(--meter-rms-fg, color-mix(in srgb, var(--text) 55%, transparent));
+  transition: width 0.12s linear;
+}
+.meter-v .meter-rms {
+  inset: auto 30% 0 30%;
+  width: auto;
+  height: var(--meter-rms, 0%);
+  transition: height 0.12s linear;
+}
+.meter.is-gradient {
+  --meter-fill-image: linear-gradient(90deg, var(--meter-low, var(--success)) var(--meter-warn-at, 70%), var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%), var(--meter-high, var(--danger)));
+  --meter-fill-image-v: linear-gradient(0deg, var(--meter-low, var(--success)) var(--meter-warn-at, 70%), var(--meter-mid, var(--warning)) var(--meter-peak-at, 90%), var(--meter-high, var(--danger)));
+}
+.meter-pair { display: grid; gap: var(--meter-pair-gap, 2px); }
+.meter-pair:has(> .meter-v) { grid-auto-flow: column; justify-content: start; block-size: 100%; }
+
+/* --- .clip — a clip light that holds, with a count -------------------------
+ *   <button class="clip" type="button" aria-pressed="true" aria-label="Clipped 3 times, reset">CLIP <span class="clip-count">3</span></button>
+ * aria-pressed="true" (or .is-clipped) lights it; the app holds it after a
+ * clip and clears it when the user presses it. */
+.clip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+  min-inline-size: var(--clip-width, 3.2rem);
+  min-block-size: 24px;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--clip-border, var(--border));
+  border-radius: var(--clip-radius, var(--radius));
+  background: var(--clip-off, var(--surface-2));
+  color: var(--clip-off-fg, var(--muted));
+  font: 700 0.7rem/1 var(--font-mono);
+  letter-spacing: 0.06em;
+}
+.clip:is([aria-pressed="true"], .is-clipped) {
+  border-color: var(--clip-on, var(--danger));
+  background: var(--clip-on, var(--danger));
+  color: var(--clip-on-fg, var(--on-danger, #fff));
+  box-shadow: 0 0 var(--clip-glow, 0.5rem) color-mix(in srgb, var(--clip-on, var(--danger)) 60%, transparent);
+}
+.clip-count { font-variant-numeric: tabular-nums; }
+.clip-count:empty { display: none; }
+
+/* --- .visualizer — bars driven by frequency bands --------------------------
+ *   <div class="visualizer" role="img" aria-label="Microphone level">
+ *     <i style="--level:.4"></i><i style="--level:.7"></i>…
+ *   </div>
+ * Bars rise from the bottom (--level 0–1); .is-mirror grows them from the
+ * centre. .is-idle breathes gently while there is no signal, .is-loading
+ * runs a wave across them, .is-electric draws them as glowing filaments.
+ * Give it a text alternative; the bars are decoration. */
+.visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--visualizer-gap, 3px);
+  block-size: var(--visualizer-height, 4rem);
+  color: var(--visualizer-fg, var(--accent));
+}
+.visualizer > * {
+  flex: 1 1 0;
+  min-inline-size: 1px;
+  block-size: max(var(--visualizer-min, 3px), calc(var(--level, 0) * 100%));
+  border-radius: var(--visualizer-radius, 2px);
+  background: currentColor;
+  transition: block-size var(--visualizer-smoothing, 80ms) linear;
+}
+.visualizer.is-mirror { align-items: center; }
+.visualizer:is(.is-idle, .is-loading) > * { --level: 0.12; }
+@keyframes visualizer-idle { 50% { opacity: 0.35; } }
+@keyframes visualizer-wave { 0%, 100% { block-size: var(--visualizer-min, 3px); } 50% { block-size: 60%; } }
+@media (prefers-reduced-motion: no-preference) {
+  .visualizer.is-idle > * { animation: visualizer-idle 2.4s ease-in-out infinite; }
+  .visualizer.is-loading > * { animation: visualizer-wave 1.1s ease-in-out infinite; }
+  .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 2) { animation-delay: 0.15s; }
+  .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 3) { animation-delay: 0.3s; }
+  .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 4) { animation-delay: 0.45s; }
+}
+/* Electric: a white-hot core in a coloured glow that crackles. */
+.visualizer.is-electric > * {
+  flex-grow: 0;
+  flex-basis: var(--visualizer-filament, 2px);
+  margin-inline: auto;
+  background: var(--visualizer-core, #fff);
+  box-shadow: 0 0 3px currentColor, 0 0 9px currentColor, 0 0 18px color-mix(in srgb, currentColor 60%, transparent);
+}
+.visualizer.is-electric { justify-content: space-around; }
+@keyframes visualizer-crackle { 0%, 100% { opacity: 1; } 47% { opacity: 0.8; } 50% { opacity: 1; } 52% { opacity: 0.6; } }
+@media (prefers-reduced-motion: no-preference) {
+  .visualizer.is-electric > * { animation: visualizer-crackle 0.9s steps(1) infinite; }
+  .visualizer.is-electric > :nth-child(3n) { animation-duration: 1.3s; }
+  .visualizer.is-electric > :nth-child(5n) { animation-delay: 0.2s; }
+}
+
+/* --- .trace — a live, smooth or electric line -------------------------------
+ *   <svg class="trace" viewBox="0 0 200 40" preserveAspectRatio="none" role="img" aria-label="Live input">
+ *     <line class="trace-axis" x1="0" y1="20" x2="200" y2="20"/>
+ *     <path class="trace-fill" d="…closed shape…"/>
+ *     <path class="trace-line" d="…"/>
+ *   </svg>
+ * The app draws the path from its samples (each frame for a live
+ * waveform, a smoothed curve through the bands for a smooth one); core
+ * only styles it. .is-electric adds the white-hot core and glow. */
+.trace {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--trace-height, 4rem);
+  overflow: visible;
+  color: var(--trace-fg, var(--accent));
+}
+.trace :is(.trace-line, .trace-fill, .trace-axis) { vector-effect: non-scaling-stroke; }
+.trace-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--trace-width, 2px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.trace-fill { fill: color-mix(in srgb, currentColor var(--trace-fill-alpha, 22%), transparent); stroke: none; }
+.trace-axis { stroke: var(--trace-axis, var(--border)); stroke-width: 1px; stroke-dasharray: var(--trace-axis-dash, 3 3); }
+.trace.is-electric .trace-line {
+  stroke: var(--trace-core, #fff);
+  stroke-width: var(--trace-width, 1.5px);
+  filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .trace.is-electric .trace-line { animation: visualizer-crackle 0.7s steps(1) infinite; }
+}
+@media (forced-colors: active) { .trace-line { stroke: CanvasText; filter: none; } }
+
+/* --- .param — a labelled parameter slider ----------------------------------
+ *   <div class="param">
+ *     <label class="param-label" for="dly">Delay</label>
+ *     <span class="param-value"><input class="input" type="number" min="0" max="500" value="120" aria-label="Delay, milliseconds"><span>ms</span></span>
+ *     <button class="btn btn-ghost btn-sm param-reset" type="button" aria-label="Reset delay">Reset</button>
+ *     <input class="slider" id="dly" type="range" min="0" max="500" value="120" list="dly-marks">
+ *     <datalist id="dly-marks"><option value="0" label="0"></option><option value="250" label="250"></option><option value="500" label="500"></option></datalist>
+ *   </div>
+ * controls.js keeps the slider and number in step and resets both to their
+ * defaultValue (the value attribute) from the reset button or a
+ * double-click. A log scale is the app's (map the slider's 0–1 itself). */
+.param {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+.param-label { color: var(--label-fg, var(--muted)); font-size: 0.85em; }
+.param-value { display: inline-flex; align-items: center; gap: 0.25em; color: var(--muted); font-size: 0.85em; }
+.param-value > .input {
+  inline-size: var(--param-value-width, 5.5ch);
+  padding: 0.15em 0.35em;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+.param-value > .input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.param > .slider,
+.param > datalist { grid-column: 1 / -1; }
+.param > datalist {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: -0.15rem;
+  color: var(--muted);
+  font-size: 0.7em;
+}
+.param > datalist > option { padding: 0; }
+
+/* --- .slider.is-bipolar — fills from the centre (pan, balance, trim) -------
+ *   <input class="slider is-bipolar" type="range" min="-1" max="1" step="0.01" value="0" aria-label="Pan" aria-valuetext="Centre">
+ * --value (0–1, from controls.js) fills the track from the middle to the
+ * thumb, with a centre tick; controls.js also snaps to the centre near it. */
+.slider.is-bipolar {
+  --_v: calc(var(--value, 0.5) * 100%);
+  background:
+    linear-gradient(var(--slider-centre, var(--text)), var(--slider-centre, var(--text))) 50% 50% / 1px 100% no-repeat,
+    linear-gradient(90deg, transparent min(50%, var(--_v)), var(--slider-fill, var(--accent)) 0 max(50%, var(--_v)), transparent 0),
+    var(--slider-bg, var(--surface-2));
+}
+
+/* --- .device-select — a device picker with its state ------------------------
+ *   <div class="device-select" data-state="ready">
+ *     <label class="label" for="mic">Microphone</label>
+ *     <div class="device-select-row"><select class="select" id="mic">…</select>
+ *       <div class="meter" role="meter" aria-label="Microphone level" aria-valuenow="-18" aria-valuemin="-60" aria-valuemax="0" style="--meter-level:40%"><div class="meter-fill"></div></div></div>
+ *     <p class="device-select-status" role="status">Built-in microphone</p>
+ *   </div>
+ * data-state: ready, loading (finding devices), prompt (needs permission),
+ * denied (blocked), none (no device) or disconnected (the chosen device
+ * went away). The status text says what to do; the state adds a glyph and
+ * colour, never colour alone. */
+.device-select { display: grid; gap: 0.3rem; }
+.device-select > .label { margin: 0; }
+.device-select-row { display: flex; align-items: center; gap: 0.6rem; }
+.device-select-row > .select { flex: 1 1 auto; min-inline-size: 0; }
+.device-select-row > .meter { flex: 0 0 var(--device-meter-width, 5rem); }
+.device-select-status { display: flex; align-items: center; gap: 0.4em; margin: 0; color: var(--muted); font-size: 0.8em; }
+.device-select-status::before { flex: none; inline-size: 1.2em; text-align: center; font-weight: 700; }
+.device-select[data-state="ready"] .device-select-status::before { content: "●" / ""; color: var(--success); }
+.device-select[data-state="loading"] .device-select-status::before {
+  content: "" / "";
+  block-size: 0.8em;
+  inline-size: 0.8em;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spinner-rotate 0.7s linear infinite;
+}
+.device-select[data-state="prompt"] .device-select-status::before { content: "?" / ""; color: var(--accent); }
+.device-select[data-state="denied"] .device-select-status { color: var(--danger-text, var(--danger)); }
+.device-select[data-state="denied"] .device-select-status::before { content: "✕" / ""; }
+.device-select[data-state="none"] .device-select-status::before { content: "–" / ""; }
+.device-select[data-state="disconnected"] .select { border-color: var(--warning); }
+.device-select[data-state="disconnected"] .device-select-status { color: var(--warning-text, var(--text)); }
+.device-select[data-state="disconnected"] .device-select-status::before { content: "!" / ""; color: var(--warning); }
+.device-select:is([data-state="loading"], [data-state="denied"], [data-state="none"]) .device-select-row > .meter { opacity: 0.4; }
+
+/* --- .channel — a channel as a row (OBS / call-app style) ------------------
+ *   <div class="channel" data-color="2">
+ *     <div class="channel-head"><strong>Microphone</strong><span class="status status-ok">Live</span></div>
+ *     <div class="channel-body"><div class="meter">…</div><input class="slider" type="range" aria-label="Microphone volume"></div>
+ *     <output class="readout channel-value">−6 dB</output>
+ *     <div class="channel-keys"><label class="key key-mute"><input type="checkbox">M</label>…</div>
+ *     <p class="channel-notice">Your microphone is muted in system settings.</p>
+ *   </div>
+ * The console form is core's .strip in a .mixer; this is the same channel
+ * laid out in one row, stacking on narrow screens. data-color tints the
+ * name rule. .is-muted dims the meter. */
+.channel {
+  display: grid;
+  grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr) auto auto;
+  grid-template-areas: "head body value keys" "notice notice notice notice";
+  align-items: center;
+  gap: 0.35rem 0.9rem;
+  padding: var(--channel-padding, 0.6rem 0.8rem);
+  background: var(--channel-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: 1px solid var(--channel-border, var(--border));
+  border-inline-start: 3px solid var(--user-color, var(--channel-accent, var(--border)));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.channel-head { grid-area: head; display: grid; gap: 0.15rem; min-inline-size: 0; }
+.channel-head > strong { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.channel-body { grid-area: body; display: grid; gap: 0.35rem; }
+.channel-value { grid-area: value; min-inline-size: 6ch; font-size: 0.9em; text-align: end; font-variant-numeric: tabular-nums; }
+.channel-keys { grid-area: keys; display: flex; gap: 0.25rem; }
+.channel-notice { grid-area: notice; margin: 0; color: var(--warning-text, var(--muted)); font-size: 0.8em; }
+.channel-notice:empty { display: none; }
+.channel.is-muted .channel-body > .meter { opacity: 0.35; }
+/* Stacks when its list is narrow (a card, a popover) or the screen is. */
+.channel-list { container-type: inline-size; display: grid; gap: 0.5rem; }
+@container (max-width: 34rem) {
+  .channel { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head keys" "body value" "notice notice"; }
+}
+@media (max-width: 600px) {
+  .channel { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head keys" "body value" "notice notice"; }
+}
+
+/* --- .pad and .soundboard — trigger pads -----------------------------------
+ *   <div class="soundboard">
+ *     <button class="pad" data-mode="one-shot" data-color="1" aria-pressed="true" style="--progress:.4">
+ *       <span class="pad-name">Airhorn</span><kbd>Q</kbd></button>
+ *     <label class="pad" data-mode="loop"><input type="checkbox"><span class="pad-name">Rain</span><kbd>W</kbd></label>
+ *   </div>
+ * Modes (data-mode): one-shot and hold are buttons (hold is lit while
+ * pressed), toggle and loop are checkboxes in a label, so their state needs
+ * no script. Playing is aria-pressed="true", a checked input, :active for
+ * hold, or .is-playing. --progress (0–1) fills the bar along the bottom;
+ * data-color="1..6" or --pad-color picks the pad's colour. The app plays
+ * the sound and binds the hotkey shown in the kbd. */
+.soundboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--pad-min, 7.5rem), 1fr));
+  gap: var(--soundboard-gap, 0.6rem);
+}
+.pad {
+  --_c: var(--user-color, var(--pad-color, var(--accent)));
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-content: space-between;
+  gap: 0.4rem;
+  min-block-size: var(--pad-height, 5.5rem);
+  padding: 0.6rem 0.7rem 0.75rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--_c) 45%, var(--border));
+  border-radius: var(--pad-radius, var(--radius));
+  background: var(--pad-bg, var(--surface-2));
+  color: var(--pad-fg, var(--text));
+  text-align: start;
+  font: inherit;
+  user-select: none;
+  touch-action: manipulation;
+}
+.pad > input { position: absolute; inset: 0; opacity: 0; margin: 0; }
+.pad-name { font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+.pad > kbd { justify-self: start; }
+.pad[data-mode]::before {
+  position: absolute;
+  inset-block-start: 0.45rem;
+  inset-inline-end: 0.55rem;
+  color: var(--muted);
+  font-size: 0.75em;
+}
+.pad[data-mode="toggle"]::before { content: "⏻" / ""; }
+.pad[data-mode="hold"]::before { content: "⏵⏵" / ""; letter-spacing: -0.2em; }
+.pad[data-mode="loop"]::before { content: "⟲" / ""; }
+/* The progress bar along the bottom edge. */
+.pad::after {
+  content: "";
+  position: absolute;
+  inset: auto auto 0 0;
+  inline-size: calc(var(--progress, 0) * 100%);
+  block-size: var(--pad-progress-height, 4px);
+  background: var(--_c);
+}
+.pad:is([aria-pressed="true"], .is-playing, :has(> input:checked)),
+.pad[data-mode="hold"]:active {
+  border-color: var(--_c);
+  background: color-mix(in srgb, var(--_c) var(--pad-lit-alpha, 30%), var(--pad-bg, var(--surface-2)));
+  box-shadow: 0 0 0 1px var(--_c), 0 0 var(--pad-glow, 0.9rem) color-mix(in srgb, var(--_c) 45%, transparent);
+}
+.pad:is(:focus-visible, :has(> input:focus-visible)) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.pad:is(:disabled, :has(> input:disabled)) { opacity: 0.5; }
+@media (forced-colors: active) {
+  .pad:is([aria-pressed="true"], .is-playing, :has(> input:checked)) { border: 3px solid Highlight; }
+  .pad::after { background: Highlight; }
+}
+
+/* --- .scrubber.has-buffer — how much of the stream has loaded -------------
+ *   <div class="scrubber has-buffer" style="--buffered:.62"><time>…</time><input type="range" …><time>…</time></div>
+ * The buffered part of the track shows in --scrubber-buffer between the
+ * played fill and the plain track. */
+.scrubber.has-buffer > input[type="range"] {
+  background:
+    linear-gradient(90deg, var(--scrubber-buffer, color-mix(in srgb, var(--text) 45%, transparent)) calc(var(--buffered, 0) * 100%), var(--scrubber-track, color-mix(in srgb, var(--text) 25%, transparent)) 0)
+    50% 50% / 100% var(--_track) no-repeat;
+}
+.scrubber.has-buffer > input[type="range"]::-webkit-slider-thumb {
+  border-image: linear-gradient(90deg, var(--scrubber-fill, var(--accent)) 50%, transparent 0) 0 1 / calc(50% - var(--_track) / 2) 100vw / 0 100vw;
+}
+.scrubber.has-buffer > input[type="range"]::-moz-range-thumb {
+  border-image: linear-gradient(90deg, var(--scrubber-fill, var(--accent)) 50%, transparent 0) 0 1 / calc(50% - var(--_track) / 2) 100vw / 0 100vw;
+}
+
+/* --- .rta.is-area — a filled spectrum without gaps --------------------------
+ * The third spectrum style beside bars (default) and .is-line. */
+.rta.is-area { --rta-gap: 0px; --rta-fill: 45%; --rta-fill-top: 75%; }
 /* ==========================================================================
  * Desktop shell (v5, PLAN.md §23 "Signature navigation per theme")
  *

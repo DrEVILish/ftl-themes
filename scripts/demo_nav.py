@@ -43,7 +43,8 @@ SECTIONS = [
     ("Components", [
         ("gallery", "Theme gallery"), ("components", "Core components"),
         ("components-tables", "Tables"), ("components-instruments", "Instruments"),
-        ("audio-components", "Audio components"), ("metering", "Metering & EQ"),
+        ("audio-components", "Audio components"), ("audio-blocks", "Audio blocks"),
+        ("metering", "Metering & EQ"),
         ("media-decks", "Media decks"),
         ("components-forms", "Buttons & forms"), ("components-navigation", "Navigation"),
         ("navigation-patterns", "Signature navigation patterns"),

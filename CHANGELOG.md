@@ -6,6 +6,13 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Audio controls group (`core/components/audio.css`) for AudioCN parity: meter RMS core, gradient
+  meters and stereo pairs, `.clip` indicator, `.visualizer` bars (mirror, idle, loading, electric),
+  `.trace` lines (live, smooth, electric), `.param` sliders, centre-fill `.slider.is-bipolar`,
+  `.device-select` states, `.channel` rows, `.pad`/`.soundboard`, scrubber buffering and an area
+  spectrum. `controls.js` mirrors parameter sliders and numbers, resets on double-click or
+  `.param-reset`, and snaps pan sliders to centre. `audio-blocks.html` composes AudioCN's six
+  blocks; `docs/components/audio.md` maps every AudioCN component, block and hook.
 - Bootstrap gaps in core: `.is-valid` + `.field-valid`, native `:user-valid`/`:user-invalid` in
   `.is-validated` forms, floating labels (`.field.is-floating`), `.spinner.is-grow`,
   `.progress-stack`, `.sticky-top`/`-bottom`, `.fixed-top`/`-bottom`, `.figure`, `.img-thumbnail`, `.vr`.

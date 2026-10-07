@@ -1,11 +1,11 @@
-/* ftl-themes: keeps each .knob's and .fader's --value (0-1) in step with
+/* ftl-themes: keeps each .knob's, .fader's and .slider.is-bipolar's --value (0-1) in step with
  * its range input, which is the one thing CSS cannot read for itself: a
  * knob turns by it, and a theme can draw a fader track that fills to it.
  * Optional: an app that renders --value server-side (or has its own
  * control code) can leave this out. See CONTRACT.md "Mixing-console
  * primitives". */
 (function () {
-  var SEL = ".knob input, input.fader";
+  var SEL = ".knob input, input.fader, input.is-bipolar";
   function sync(input) {
     var host = input.closest(".knob") || input;
     var min = +input.min || 0, max = input.max === "" ? 100 : +input.max;
@@ -151,5 +151,41 @@
     region.addEventListener("pointermove", move);
     region.addEventListener("pointerup", up);
     region.addEventListener("pointercancel", up);
+  });
+})();
+
+/* Parameter controls (docs/components/audio.md): a .param's slider and
+ * number input mirror each other; its .param-reset button, or a
+ * double-click on a knob, fader or parameter slider, returns the control
+ * to its default (the value attribute). A .slider.is-bipolar snaps to its
+ * centre within 2% of it, the detent a pan control has. */
+(function () {
+  function set(input, v) {
+    if (String(input.value) === String(v)) return;
+    input.value = v;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  document.addEventListener("input", function (e) {
+    var t = e.target, param = t.closest && t.closest(".param");
+    if (t.matches("input.is-bipolar")) {
+      var min = +t.min || 0, max = t.max === "" ? 100 : +t.max, mid = (min + max) / 2;
+      if (+t.value !== mid && Math.abs(t.value - mid) < (max - min) * 0.02) set(t, mid);
+    }
+    if (!param) return;
+    var slider = param.querySelector("input[type=range]"), num = param.querySelector("input[type=number]");
+    if (slider && num) (t === slider ? num : slider).value = t.value;
+  });
+  function reset(root) {
+    root.querySelectorAll("input[type=range], input[type=number]").forEach(function (i) { set(i, i.defaultValue); });
+  }
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest(".param-reset");
+    if (btn) reset(btn.closest(".param"));
+  });
+  document.addEventListener("dblclick", function (e) {
+    var host = e.target.closest && e.target.closest(".knob, .param, input.fader");
+    if (host && host.matches("input")) set(host, host.defaultValue);
+    else if (host) reset(host);
   });
 })();

@@ -239,6 +239,7 @@ theme.
   - [`ticketsystem.html`](ticketsystem.html)
   - [`powerstation.html`](powerstation.html)
   - [`soundmixer.html`](soundmixer.html)
+  - [`audio-blocks.html`](audio-blocks.html), AudioCN's mixer, mic setup, system audio, quick controls, soundboard and music player blocks
   - [`media-decks.html`](media-decks.html), transport devices and animation states from reel-to-reel to MiniDisc
   - [`audio-components.html`](audio-components.html), with the [AudioCN component map and usage guide](docs/components/audio.md)
   - [`livechat.html`](livechat.html)
@@ -330,6 +331,11 @@ every class, token and source file for tools and agents.
   `.waveform` (bars, bottom and envelope variants, loading, hover time)
   with `.waveform-region`s and `.waveform-marker`s, `.now-playing`,
   `.album-grid`, `.lyrics`.
+- **Audio controls** ([docs](docs/components/audio.md), AudioCN parity):
+  `.meter-rms`, `.meter.is-gradient`, `.meter-pair`, `.clip`,
+  `.visualizer` (mirror, idle, loading, electric), `.trace` (live, smooth,
+  electric), `.param`, `.slider.is-bipolar`, `.device-select`, `.channel`
+  rows, `.pad` and `.soundboard`, `.scrubber.has-buffer`, `.rta.is-area`.
 - **Media devices** ([docs](docs/components/media-devices.md)):
   `.media-deck` reels and states, `[data-when]` state text, deck lamps and
   HUD band, `.transport-keys`, `.seg7` seven-segment digits.

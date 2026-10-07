@@ -49,6 +49,15 @@ try {
   assert(moved[0] > 70 && Math.abs(moved[1] - moved[0] - 33) < 0.2, `region drag keeps its length: ${moved}`);
   await page.locator('button.waveform-marker[data-time="110"]').click();
   assert.equal(await page.locator('.waveform').first().locator(':scope > input').inputValue(), '110');
+  // Parameter slider mirrors its number and resets; a bipolar slider snaps to centre.
+  await page.locator('#p-delay').evaluate(el => { el.value = 50; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.equal(await page.inputValue('[aria-label="Delay, milliseconds"]'), '50');
+  await page.click('[aria-label="Reset delay"]');
+  assert.equal(await page.inputValue('#p-delay'), '120');
+  const balance = page.locator('input.slider.is-bipolar');
+  await balance.evaluate(el => { el.value = 3; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.equal(await balance.inputValue(), '0');
+  assert.equal(await balance.evaluate(el => el.style.getPropertyValue('--value')), '0.5000');
   // Themed exit: the outgoing theme's --motion-leave plays on the old snapshot.
   assert(await openThemed(page, `${server.base}/components-experience.html?theme=msdos`, 'msdos'), 'msdos failed to load');
   await page.selectOption('#theme-picker', 'lcars');
