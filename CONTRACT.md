@@ -546,6 +546,8 @@ v5 adds component groups, each in its own `core/components/<group>.css`
 | Vehicles | [`docs/components/vehicles.md`](docs/components/vehicles.md) | `cockpit-car.html`, `cockpit-plane.html`, `cockpit-jet.html`, `cockpit-boat.html`, `cockpit-submarine.html`, `cockpit-spaceship.html` | `.attitude` horizon (`--pitch`/`--roll`), `.tape` speed/altitude tapes, `.radar` (sweep, sector, RWR, friend/foe/unknown blips; also sonar), `.annunciator` caption lights + master caution/warning, `.telltale`, `.tyres`, `.mfd` soft-key displays, `.guard` covered switch, `.checklist`, `.throttle`, `.pfd`, `.flight-hud`, `.radar-line`/`.radar-vrm`, `.ownship`, `.dial-bug`, `.annunciator-switch`, `.waterfall` (sonar), `.orbit` |
 | Desktop shell | [`docs/components/desktop.md`](docs/components/desktop.md) | `desktop.html` | One markup becomes each OS's shell (PLAN §23 signature navigation): `--desktop-shell: taskbar` (Windows 95/XP/7 taskbar, Start menu popover from nested `ul`s, `--start-menu-layout: classic|columns`), `dock` (Mac OS X menu bar + magnifying Dock) or `home` (iOS home grid + dock; every theme on phones). `.desktop-window`s open, minimise, maximise, close and come to the front with radios and `:has()` |
 | Live data and dashboards | [`docs/components/live.md`](docs/components/live.md) | `mission-control.html`, `trading.html` | PLAN §18: `.is-updated` flash (static marker under reduced motion), `.is-up`/`.is-down`/`.is-flat` with arrows, `.is-stale` + `data-age`, `.connection[data-state=live\|reconnecting\|offline]`, `time.updated`, `.feed` (+ paused marker), `.depth-bar`; `<html data-alert="yellow|red">` page alert level; `.dashboard` of `.widget`s (`--cols`/`--rows`, 12/2/1 columns per tier, container-query widgets) with a styled edit mode (`.is-editing` or a CSS-only `input.dashboard-edit`) |
+| Page sections | [`docs/components/sections.md`](docs/components/sections.md) | `components-sections.html` | `.page-heading`, `.section-heading`, `.action-panel`, `.media-object`, `.features`, `.banner` (CSS-only dismiss), `.bento`, `.faq`, `.logo-cloud`, `.testimonial`, `.newsletter`, `.people`/`.person`, `.post-meta`, `.contact-list`, `.site-footer`, `.menu-feature` + `.mega-menu` |
+| Shop | [`docs/components/shop.md`](docs/components/shop.md) | `components-shop.html` | `.product-grid`/`.product`, `.price.is-sm` + `.price-was`/`.price-sale`, `.stars`, `.review-summary`, `.review`, `.product-detail` + `.product-gallery`/`.product-thumbs`, `.choice-card`s, `.filters`, `.cart`/`.cart-line`, `.order-summary`, `.order` history, `.shop-layout` |
 | Operations | [`docs/components/ops.md`](docs/components/ops.md) | `smart-home.html`, `inventory.html`, `fleet.html` | `[data-status=ok\|warn\|error\|idle\|info]` status colours, shaped `.map-pin[data-shape]` with matching legend, inline-SVG map hooks (`.map-land`, `.map-water`, `.map-road`…), `.map-route` (`.is-planned`/`.is-done`), `.camera-feed` frame with live badge, CSS `.barcode` |
 | Metering and EQ | [`docs/components/metering.md`](docs/components/metering.md) | `metering.html`, `soundmixer.html` | `.vu` analogue VU/PPM needle meter (backlit or theme face, peak LED, `@property` ballistics), `.ledbar`/`.ledbar-pair`/`.ledbar-scale` segmented bargraphs (ghosted unlit segments, reference band, peak hold, overs), `.ledarc` arc loudness meter, `.meter-panel` (Peak/Overs/Mode via radios), VFD look (`.is-vfd`, `.vfd`, theme token `--meter-style: vfd`), `.eq-graph` parametric EQ with `.spectrogram` and `.rta` overlays and `.eq-node` band handles; values `--value`/`--peak` 0–1, zones `--zone-*` |
 | Tape deck and telemetry | [`docs/components/media-devices.md`](docs/components/media-devices.md), [`docs/components/graphs.md`](docs/components/graphs.md) | `media-decks.html` | `.media-deck` reels and states (from classes or checked transport radios), `.seg7` seven-segment digits, `.transport-keys` (`.key-rec/-stop/-play/-pause`, paused Play flashes, steady dashed under reduced motion), `[data-lamp]` lamps + `.deck-hud`, `[data-when]` state text; `.graph-grid`/`.graph-card` telemetry graphs with a uPlot bridge and a `.system-pane` |
@@ -1425,7 +1427,24 @@ from `.tabs` (navigates, usually changes the URL) and
 <div class="progress"><div class="progress-bar" style="width:60%"></div></div>
 <span class="status status-ok">Connected</span>
 <span class="mono">00:12:04</span>
+<!-- v5.4: segments in one bar, coloured by chart series or data-color -->
+<div class="progress progress-stack" role="group" aria-label="Storage">
+  <div class="progress-bar" role="progressbar" aria-label="Photos" aria-valuenow="40" style="--value:40%"></div>
+  <div class="progress-bar" role="progressbar" aria-label="Apps" aria-valuenow="22" style="--value:22%"></div>
+</div>
+<span class="spinner is-grow" role="status" aria-label="Loading"></span>  <!-- a swelling dot -->
 ```
+
+### Helpers (v5.4)
+```html
+<header class="sticky-top">…</header>   <!-- also .sticky-bottom, .fixed-top, .fixed-bottom (z: --z-sticky) -->
+<figure class="figure"><img src="…" alt="…"><figcaption>Caption</figcaption></figure>
+<img class="img-thumbnail" src="…" alt="…">
+<span class="vr"></span>                <!-- a vertical rule in a .cluster or toolbar -->
+<input class="input is-valid">          <!-- + .field-valid; .is-validated forms use :user-valid/:user-invalid -->
+<div class="field is-floating"><input class="input" id="e" placeholder=" "><label class="label" for="e">Email</label></div>
+```
+Tokens: `--figure-radius`, `--figure-caption-fg`, `--thumbnail-padding/-bg/-border/-border-width/-radius`, `--vr-width`, `--vr-color`, `--input-valid-bg`. See [`docs/components/forms.md`](docs/components/forms.md) for validation and floating labels.
 
 ### htmx state
 

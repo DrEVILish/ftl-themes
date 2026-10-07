@@ -1,0 +1,387 @@
+/* --- v5 page sections: marketing and app UI ---------------------------------
+ * Page and section headings, action panels, media objects, feature grids,
+ * an announcement banner, a bento grid, FAQs, a logo cloud, testimonials,
+ * a newsletter signup, people cards, post meta, a contact list, a site
+ * footer and rich menu items for flyout and mega menus.
+ * Builds on core's .hero / .band / .price / .feature-list, .card, .avatar,
+ * .btn, .input, .grid and [popover] menus; every look reads a
+ * --<component>-* token that falls back to the base palette.
+ * See docs/components/sections.md. */
+
+/* --- .page-heading — the title row at the top of a page --------------------
+ *   <header class="page-heading">
+ *     <div class="page-heading-main">
+ *       <nav class="breadcrumbs">…</nav>
+ *       <h1>Back end developer</h1>
+ *       <p class="page-heading-meta"><span>Full-time</span><span>Remote</span></p>
+ *     </div>
+ *     <div class="page-heading-actions"><button class="btn">Edit</button>…</div>
+ *   </header> */
+.page-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-block-end: var(--page-heading-gap, 1.5rem);
+  padding-block-end: var(--page-heading-pad, 1rem);
+  border-block-end: var(--page-heading-border-width, 1px) solid var(--page-heading-border, var(--hairline, var(--border)));
+}
+.page-heading-main { display: grid; gap: 0.35rem; min-inline-size: 0; }
+.page-heading-main > :is(h1, h2) { margin: 0; overflow-wrap: anywhere; }
+.page-heading-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875em;
+}
+.page-heading-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+/* .section-heading — a smaller heading over one section of a page, with an
+ * optional description and actions. */
+.section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-block-end: 1rem;
+  padding-block-end: 0.6rem;
+  border-block-end: 1px solid var(--section-heading-border, var(--hairline, var(--border)));
+}
+.section-heading > div:first-child { min-inline-size: 0; }
+.section-heading :is(h2, h3) { margin: 0; }
+.section-heading p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.875em; }
+
+/* --- .action-panel — a titled box with one decision in it ------------------
+ *   <section class="action-panel">
+ *     <div><h3>Delete your account</h3><p>Once you delete it, it's gone.</p></div>
+ *     <button class="btn btn-danger">Delete account</button>
+ *   </section>
+ * The action sits beside the text when there is room, under it when not.
+ * .is-danger edges it in the danger colour. */
+.action-panel {
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: var(--action-panel-padding, 1.25rem);
+  background: var(--action-panel-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--panel-border-width, 1px) solid var(--action-panel-border, var(--border));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.action-panel > div:first-child { flex: 1 1 18rem; min-inline-size: 0; }
+.action-panel :is(h2, h3) { margin: 0 0 0.25rem; font-size: 1.05em; }
+.action-panel p { margin: 0; color: var(--muted); }
+.action-panel.is-danger { border-color: var(--danger); }
+
+/* --- .media-object — an image beside a body --------------------------------
+ *   <div class="media-object"><img class="avatar" src="…" alt=""><div>…</div></div>
+ * .is-center aligns the image to the body's middle, .is-reverse puts it on
+ * the far side. Nests for threaded replies. */
+.media-object { display: flex; gap: var(--media-object-gap, 0.9rem); align-items: flex-start; }
+.media-object > :first-child { flex: none; }
+.media-object > :last-child { flex: 1 1 0; min-inline-size: 0; }
+.media-object.is-center { align-items: center; }
+.media-object.is-reverse { flex-direction: row-reverse; }
+.media-object :is(h3, h4) { margin: 0 0 0.2rem; }
+.media-object p { margin: 0; }
+
+/* --- .features — a grid of icon, title and text ----------------------------
+ * Feature sections and shop incentives (free shipping, returns…).
+ *   <ul class="features">
+ *     <li><svg class="icon">…</svg><h3>Push to deploy</h3><p>…</p></li>
+ *   </ul>
+ * .is-centered centres each item; --features-min sets the column width. */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--features-min, 14rem)), 1fr));
+  gap: var(--features-gap, 1.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.features > * { display: grid; gap: 0.4rem; align-content: start; }
+.features > * > .icon,
+.features > * > img {
+  inline-size: var(--features-icon-size, 2.5rem);
+  block-size: var(--features-icon-size, 2.5rem);
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  background: var(--features-icon-bg, color-mix(in srgb, var(--accent) 16%, var(--surface)));
+  color: var(--features-icon-fg, var(--accent));
+}
+.features :is(h3, h4) { margin: 0; font-size: 1em; }
+.features p { margin: 0; color: var(--muted); }
+.features.is-centered > * { justify-items: center; text-align: center; }
+
+/* --- .banner — an announcement bar across the top or bottom ---------------
+ *   <div class="banner" role="region" aria-label="Announcement">
+ *     <p><strong>Conf 2026</strong> is on 12 June. <a href="…">Get tickets</a></p>
+ *     <label class="btn-close"><input type="checkbox" class="banner-dismiss" aria-label="Dismiss"></label>
+ *   </div>
+ * A checked .banner-dismiss hides the banner with no script (remember the
+ * choice server-side, or let the app remove it). Add .sticky-top or
+ * .fixed-bottom to pin it. .is-accent fills it with the accent. */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: var(--banner-padding, 0.55rem 1rem);
+  background: var(--banner-bg, var(--surface-2));
+  color: var(--banner-fg, var(--text));
+  border-block-end: 1px solid var(--banner-border, var(--border));
+  font-size: 0.9em;
+  text-align: center;
+}
+.banner > p { flex: 1 1 auto; margin: 0; }
+.banner > .btn-close { flex: none; }
+.banner.is-accent { --banner-bg: var(--accent); --banner-fg: var(--on-accent); --link: var(--on-accent); }
+.banner.is-accent a { color: inherit; text-decoration-line: underline; }
+.banner-dismiss { position: absolute; opacity: 0; inline-size: 100%; block-size: 100%; margin: 0; }
+label.btn-close:has(> .banner-dismiss) { position: relative; }
+.banner:has(.banner-dismiss:checked) { display: none; }
+
+/* --- .bento — a mosaic of cards in a fixed grid ----------------------------
+ *   <div class="bento"><article class="card is-wide is-tall">…</article>…</div>
+ * Four columns (two on tablets, one on phones); a child spans more with
+ * .is-wide / .is-tall or --span-cols / --span-rows. */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(var(--bento-cols, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(var(--bento-row, 10rem), auto);
+  grid-auto-flow: dense;
+  gap: var(--bento-gap, 1rem);
+}
+.bento > * {
+  grid-column: span min(var(--span-cols, 1), var(--bento-cols, 4));
+  grid-row: span var(--span-rows, 1);
+  margin: 0;
+}
+.bento > .is-wide { --span-cols: 2; }
+.bento > .is-tall { --span-rows: 2; }
+@media (max-width: 900px) { .bento { --bento-cols: 2; } }
+@media (max-width: 600px) { .bento { --bento-cols: 1; } .bento > * { --span-rows: 1; } }
+
+/* --- .faq — questions and answers ------------------------------------------
+ *   <dl class="faq"><div><dt>How do I pay?</dt><dd>By card or invoice.</dd></div>…</dl>
+ * Open by default, in two columns when there is room. For a collapsible
+ * list use .accordion (core) with the same text. */
+.faq {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--faq-min, 22rem)), 1fr));
+  gap: var(--faq-gap, 1.5rem 2.5rem);
+  margin: 0;
+}
+.faq > div { margin: 0; }
+.faq dt { font-weight: 600; }
+.faq dd { margin: 0.35rem 0 0; color: var(--muted); }
+
+/* --- .logo-cloud — a row of partner or customer logos ----------------------
+ *   <ul class="logo-cloud"><li><img src="acme.svg" alt="Acme"></li>…</ul>
+ * Logos are muted to one tone so no brand shouts; .is-color keeps their
+ * colours. Every logo needs alt text (the company name). */
+.logo-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--logo-cloud-gap, 1.5rem 3rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.logo-cloud > * { display: flex; align-items: center; }
+.logo-cloud :is(img, svg) {
+  max-block-size: var(--logo-cloud-height, 2rem);
+  inline-size: auto;
+  opacity: var(--logo-cloud-opacity, 0.7);
+  filter: grayscale(1);
+}
+.logo-cloud.is-color :is(img, svg) { opacity: 1; filter: none; }
+
+/* --- .testimonial — a quote with its author --------------------------------
+ *   <figure class="testimonial">
+ *     <blockquote><p>“It changed how we ship.”</p></blockquote>
+ *     <figcaption><img class="avatar" src="…" alt=""><span><strong>Ana Ruiz</strong><span>CTO, Acme</span></span></figcaption>
+ *   </figure>
+ * .is-featured makes it large and centred (a single hero quote). */
+.testimonial {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: var(--testimonial-padding, 1.5rem);
+  background: var(--testimonial-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--panel-border-width, 1px) solid var(--testimonial-border, var(--border));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.testimonial blockquote { margin: 0; font-size: 1.05em; }
+.testimonial blockquote > p { margin: 0; }
+.testimonial figcaption { display: flex; align-items: center; gap: 0.75rem; }
+.testimonial figcaption > span { display: grid; }
+.testimonial figcaption > span > span { color: var(--muted); font-size: 0.875em; }
+.testimonial.is-featured {
+  justify-items: center;
+  padding: var(--testimonial-featured-padding, 2.5rem 1.5rem);
+  text-align: center;
+  background: none;
+  border: 0;
+}
+.testimonial.is-featured blockquote { max-inline-size: 42rem; font-size: 1.35em; }
+
+/* --- .newsletter — a heading, text and an inline signup form --------------
+ *   <section class="newsletter">
+ *     <div><h2>Stay in the loop</h2><p>One email a month.</p></div>
+ *     <form class="newsletter-form"><label class="visually-hidden" for="nl">Email</label>
+ *       <input class="input" id="nl" type="email" required autocomplete="email" placeholder="you@example.com">
+ *       <button class="btn btn-primary">Subscribe</button></form>
+ *   </section>
+ * Side by side when there is room, stacked when not. */
+.newsletter {
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+}
+.newsletter > div { flex: 1 1 18rem; }
+.newsletter :is(h2, h3) { margin: 0 0 0.3rem; }
+.newsletter p { margin: 0; color: var(--muted); }
+.newsletter-form { display: flex; flex: 1 1 22rem; flex-wrap: wrap; gap: 0.5rem; }
+.newsletter-form > .input { flex: 1 1 14rem; inline-size: auto; }
+
+/* --- .person — a team member card ------------------------------------------
+ *   <ul class="people"><li class="person"><img src="…" alt="">
+ *     <h3>Leo Park</h3><p>Designer</p><ul class="person-links">…</ul></li></ul> */
+.people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--people-min, 11rem)), 1fr));
+  gap: var(--people-gap, 2rem 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.person { display: grid; justify-items: center; gap: 0.25rem; text-align: center; }
+.person > img:not(.avatar) { inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+.person :is(h3, h4) { margin: 0.5rem 0 0; font-size: 1em; }
+.person > p { margin: 0; color: var(--muted); font-size: 0.875em; }
+.person-links { display: flex; gap: 0.5rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+
+/* --- .post-meta — the byline under a blog card's title --------------------
+ *   <p class="post-meta"><time datetime="2026-10-01">1 Oct 2026</time><span>6 min read</span></p> */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+.post-meta > * + *::before { content: "·"; margin-inline-end: 0.5rem; }
+.post-meta > .avatar + *::before { content: none; }
+
+/* --- .contact-list — ways to get in touch ---------------------------------
+ *   <dl class="contact-list"><div><dt><svg class="icon">…</svg><span class="visually-hidden">Email</span></dt>
+ *     <dd><a href="mailto:hi@acme.dev">hi@acme.dev</a></dd></div>…</dl> */
+.contact-list { display: grid; gap: 0.75rem; margin: 0; }
+.contact-list > div { display: flex; gap: 0.75rem; align-items: baseline; }
+.contact-list dt { flex: none; color: var(--contact-icon-fg, var(--accent)); }
+.contact-list dt .icon { vertical-align: -0.15em; }
+.contact-list dd { margin: 0; }
+
+/* --- .site-footer — the page footer with link columns ----------------------
+ *   <footer class="site-footer">
+ *     <div class="site-footer-brand">…</div>
+ *     <nav aria-label="Product"><h2>Product</h2><ul><li><a href="…">Pricing</a></li>…</ul></nav>
+ *     …
+ *     <div class="site-footer-bottom"><p>© 2026 Acme</p><ul class="cluster">…</ul></div>
+ *   </footer> */
+.site-footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--site-footer-min, 9rem)), 1fr));
+  gap: 2rem 1.5rem;
+  padding: var(--site-footer-padding, 2.5rem 1.5rem 1.5rem);
+  background: var(--site-footer-bg, var(--surface));
+  color: var(--site-footer-fg, var(--text));
+  border-block-start: 1px solid var(--site-footer-border, var(--border));
+  font-size: 0.9em;
+}
+.site-footer-brand { grid-column: 1 / -1; display: grid; gap: 0.5rem; max-inline-size: 28rem; }
+.site-footer-brand p { margin: 0; color: var(--muted); }
+.site-footer nav h2 {
+  margin: 0 0 0.6rem;
+  color: var(--site-footer-heading-fg, var(--text));
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.site-footer nav ul { display: grid; gap: 0.15rem; margin: 0; padding: 0; list-style: none; }
+.site-footer nav a { display: inline-block; min-block-size: 24px; line-height: 24px; color: var(--site-footer-link, var(--muted)); text-decoration: none; }
+.site-footer nav a:hover { color: var(--text); text-decoration: underline; }
+.site-footer-bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--hairline, var(--border));
+  color: var(--muted);
+}
+.site-footer-bottom > * { margin: 0; }
+.site-footer-bottom ul { padding: 0; list-style: none; }
+@media (min-width: 900px) { .site-footer-brand { grid-column: span 2; } }
+
+/* --- .menu-feature and .mega-menu — rich menu items -----------------------
+ * A flyout is a core [popover] .dropdown whose items are .menu-feature
+ * links (icon, title, one line of help). A mega menu is the same popover
+ * with .mega-menu: a wide grid of them, plus an optional .mega-menu-footer.
+ *   <div class="dropdown mega-menu" popover id="products">
+ *     <a class="menu-feature" href="…"><svg class="icon">…</svg>
+ *       <span><strong>Analytics</strong><span>See where traffic comes from</span></span></a>
+ *     …
+ *     <div class="mega-menu-footer"><a href="…">Watch demo</a>…</div>
+ *   </div> */
+.menu-feature {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+}
+.menu-feature:is(:hover, :focus-visible) { background: var(--menu-feature-hover, var(--surface-2)); }
+.menu-feature > .icon { flex: none; margin-block-start: 0.15em; color: var(--accent); }
+.menu-feature > span { display: grid; gap: 0.1rem; }
+.menu-feature > span > span { color: var(--muted); font-size: 0.85em; }
+.mega-menu {
+  inline-size: min(var(--mega-menu-width, 44rem), calc(100vw - 2rem));
+  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+.mega-menu:popover-open { display: grid; }
+.mega-menu-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0.25rem -0.5rem -0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--mega-menu-footer-bg, var(--surface-2));
+  border-block-start: 1px solid var(--border);
+}
+
+/* Icons inside meta lines sit inline with their text. */
+:is(.page-heading-meta, .post-meta) > * { display: inline-flex; align-items: center; gap: 0.3em; }

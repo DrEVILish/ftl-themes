@@ -6,6 +6,16 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Bootstrap gaps in core: `.is-valid` + `.field-valid`, native `:user-valid`/`:user-invalid` in
+  `.is-validated` forms, floating labels (`.field.is-floating`), `.spinner.is-grow`,
+  `.progress-stack`, `.sticky-top`/`-bottom`, `.fixed-top`/`-bottom`, `.figure`, `.img-thumbnail`, `.vr`.
+- Page sections group (`core/components/sections.css`, `components-sections.html`): page and
+  section headings, action panels, media objects, feature grids, a CSS-only dismissable banner,
+  bento grid, FAQ, logo cloud, testimonials, newsletter signup, team cards, post bylines, contact
+  list, site footer, flyout and mega menu items.
+- Shop group (`core/components/shop.css`, `components-shop.html`): product cards and grid, sale
+  prices, read-only stars, review summaries and reviews, product detail with gallery, choice cards,
+  filters, cart lines, order summary, order history and a two-column shop layout.
 - Waveform regions and markers: `.waveform-region` (two native range inputs as draggable,
   keyboard-nudgeable edges, a tint and label, body drag, `.is-static`, fixed highlights) and
   `.waveform-marker` (seeking buttons or labels, `.is-end`), both with `data-color`; hover time

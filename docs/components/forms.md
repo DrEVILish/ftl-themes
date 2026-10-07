@@ -190,6 +190,45 @@ It uses `::after`; an element whose theme already draws an `::after` (silo's
 `.tab`) will need a theme override. On an `overflow: hidden` element such as
 `.avatar` the corner badge is clipped: put `.has-badge` on a wrapper.
 
+## Validation states `.is-valid`, `.field-valid`, `.is-validated`
+
+```html
+<div class="field">
+  <label class="label" for="u">Username</label>
+  <input class="input is-valid" id="u" value="ada" aria-describedby="u-ok">
+  <p class="field-valid" id="u-ok">Username is available.</p>
+</div>
+<form class="is-validated">
+  <div class="field"><label class="label" for="e">Email</label>
+    <input class="input" id="e" type="email" required aria-describedby="e-ok e-err">
+    <p class="field-valid" id="e-ok">Looks good.</p>
+    <p class="field-error" id="e-err">Enter an email address.</p></div>
+</form>
+```
+
+- `.is-valid` on a control draws it in `--success` (the mirror of core's
+  `.is-invalid`); `.field-valid` under it shows only while it is valid.
+- In a form with `.is-validated`, the browser's own checks drive the state
+  once the user has touched a field (`:user-valid` / `:user-invalid`): only
+  **required** fields turn green, so optional blanks stay neutral, and a
+  `.field-error` stays hidden until its control is actually invalid.
+- Tokens: `--input-valid-bg` (default: 10% `--success` mixed into the input).
+- Core (`core/core.css`), so every bundle has it.
+
+## Floating labels `.field.is-floating`
+
+```html
+<div class="field is-floating">
+  <input class="input" id="email" type="email" placeholder=" ">
+  <label class="label" for="email">Email address</label>
+</div>
+```
+
+The label sits inside the control and floats up, smaller, on focus or once
+there is a value. The control comes first and needs `placeholder=" "` (a
+single space) so CSS can tell when it is empty; a `.select` always floats.
+Works with `.input`, `.select` and `.textarea`. Core (`core/core.css`).
+
 ## Leading icon and clear button `.input-icon`, `.input-clear`
 
 ```html

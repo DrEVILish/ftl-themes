@@ -227,6 +227,8 @@ theme.
     - [`components-experience.html`](components-experience.html)
     - [`components-social.html`](components-social.html)
     - [`components-prose.html`](components-prose.html)
+    - [`components-sections.html`](components-sections.html)
+    - [`components-shop.html`](components-shop.html)
   - [`hud.html`](hud.html), [`planner.html`](planner.html) and
     [`player.html`](player.html) (game HUD, productivity and media).
   - [`nesting.html`](nesting.html), for menus, tables and surfaces inside
@@ -265,8 +267,10 @@ every class, token and source file for tools and agents.
 - **Buttons:** `.btn` (primary, secondary, tertiary, ghost, danger, sizes),
   `.btn-icon`, `.btn-close`, `.toggle-btn`, `.badge-button`, `.segmented`.
 - **Forms:** `.field`, `.label`, `.field-hint`, `.field-error`,
-  `.field-row`, `.field-group`, `.input`, `.select`, `.textarea`
-  (readonly, mirror, invalid and size states), `.input-group`, `.check`,
+  `.field-row`, `.field-group`, `.field-valid`, `.input`, `.select`,
+  `.textarea` (readonly, mirror, valid, invalid and size states; native
+  `:user-valid` in `.is-validated` forms), floating labels
+  (`.field.is-floating`), `.input-group`, `.check`,
   `.radio-group`, `.switch`, `.slider` (and `.is-vertical`), `.dropzone`.
 - **Surfaces:** `.panel`, `.card`, `.modal` (dialog and popover, sizes,
   window states: maximise, minimise, resize, focus stacking), `.drawer`,
@@ -279,19 +283,20 @@ every class, token and source file for tools and agents.
 - **Tables and lists:** `.table` (sticky header, zebra, blank rows, sort
   indicator, row hover and selection, `.is-matrix`), `.list` and
   two-line `.list-item`s, `.log`.
-- **Status and feedback:** `.badge`, `.status`, `.progress`, `.meter`,
-  `.spinner`, `.skeleton`, `.empty-state`, `.schedule`, htmx request
+- **Status and feedback:** `.badge`, `.status`, `.progress` and
+  `.progress-stack`, `.meter`, `.spinner` (and `.is-grow`), `.skeleton`, `.empty-state`, `.schedule`, htmx request
   states (`.htmx-request`, `.indicator`).
 - **Content:** `.avatar`, `.stat`, `.divider`, `.icon`, `.carousel`,
   `.thread`/`.message`, `.thread-divider`, `.typing`, `.attachment`,
   `.bar-chart`, `.value-row`, `.meter-bank`, `.hero`, `.band`, `.price`,
-  `kbd`.
+  `.figure`, `.img-thumbnail`, `.vr`, `kbd`.
 - **Instruments:** `.meter` (vertical, segmented LED ladder, gain
   reduction), `.readout`, `.transport`, `.lamp`.
 - **Mixing console:** `.mixer`, `.strip`, `.knob`, `.fader`, `.scale`,
   `.key`, `.scribble`, `.eq-curve`.
 - **Layout:** `.stack`, `.cluster`, `.grid`, `.container`, `.anchor`,
-  `.ratio`, `.divide-y`, `.stretched-link`, gap and margin steps,
+  `.ratio`, `.divide-y`, `.stretched-link`, `.sticky-top`/`-bottom`,
+  `.fixed-top`/`-bottom`, gap and margin steps,
   truncation, `.visually-hidden`, themed scrollbars.
 
 ### v5 component groups
@@ -322,7 +327,9 @@ every class, token and source file for tools and agents.
   `.vfd`, EQ display (`.eq-graph`, `.rta`, `.spectrogram`, `.eq-node`).
 - **Media** ([docs](docs/components/media.md)): `.tracklist`/`.track`,
   play queue, `.equaliser`, `.media-toggle`, `.scrubber`, `.volume`,
-  `.waveform`, `.now-playing`, `.album-grid`, `.lyrics`.
+  `.waveform` (bars, bottom and envelope variants, loading, hover time)
+  with `.waveform-region`s and `.waveform-marker`s, `.now-playing`,
+  `.album-grid`, `.lyrics`.
 - **Media devices** ([docs](docs/components/media-devices.md)):
   `.media-deck` reels and states, `[data-when]` state text, deck lamps and
   HUD band, `.transport-keys`, `.seg7` seven-segment digits.
@@ -357,6 +364,15 @@ every class, token and source file for tools and agents.
 - **Operations** ([docs](docs/components/ops.md)): `[data-status]`
   colours, shaped `.map-pin`s, sketch map hooks, `.map-route`,
   `.camera-feed`, `.barcode`.
+- **Page sections** ([docs](docs/components/sections.md)):
+  `.page-heading`, `.section-heading`, `.action-panel`, `.media-object`,
+  `.features`, `.banner`, `.bento`, `.faq`, `.logo-cloud`, `.testimonial`,
+  `.newsletter`, `.people`/`.person`, `.post-meta`, `.contact-list`,
+  `.site-footer`, `.menu-feature` and `.mega-menu`.
+- **Shop** ([docs](docs/components/shop.md)): `.product-grid`/`.product`,
+  sale prices, `.stars`, `.review-summary`, `.review`, `.product-detail`
+  with gallery, `.choice-card`s, `.filters`, `.cart`/`.cart-line`,
+  `.order-summary`, `.order` history, `.shop-layout`.
 - **Desktop** ([docs](docs/components/desktop.md)): `.desktop` shells
   (icons, dock, launchers, monitor), `.start-menu`, taskbar tasks and
   tray, `.desktop-window`s.

@@ -300,6 +300,25 @@ a { color: var(--link, var(--accent)); }
 }
 .input-group > :is(.is-invalid, [aria-invalid="true"]) { z-index: var(--z-raised); }
 
+/* Valid state: `.is-valid` on the control, or native :user-valid inside a
+   form marked .is-validated (only required fields go green, so an optional
+   blank stays neutral). .is-validated also shows :user-invalid controls in
+   the error state once the user has touched them. */
+:is(.input, .select, .textarea):is(.is-valid, .is-validated :user-valid[required]) {
+  border-color: var(--success);
+  background-color: var(--input-valid-bg, var(--input-bg, var(--surface)));
+}
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  :is(.input, .select, .textarea):is(.is-valid, .is-validated :user-valid[required]) {
+    background-color: var(--input-valid-bg, color-mix(in srgb, var(--success) 10%, var(--input-bg, var(--surface))));
+  }
+}
+:is(.input, .select, .textarea):is(.is-valid, .is-validated :user-valid[required]):focus-visible { border-color: var(--success); outline-color: var(--success); }
+.is-validated :is(.input, .select, .textarea):user-invalid {
+  border-color: var(--danger);
+  background-color: var(--input-error-bg, color-mix(in srgb, var(--danger) 12%, var(--input-bg, var(--surface))));
+}
+
 /* Sizes: on .input, .select or .textarea. */
 .input-sm {
   padding: var(--input-padding-sm, 0.3em 0.6em);
@@ -364,6 +383,44 @@ a { color: var(--link, var(--accent)); }
    after load) put role="alert" or aria-live="polite" on it. */
 .field-error { margin-block-start: 0.3em; font-size: 0.78em; color: var(--danger-text, var(--danger)); }
 .field-error:empty { display: none; }
+/* .field-valid — the confirmation under a control, shown only while the
+   control is valid (.is-valid, or :user-valid in an .is-validated form). */
+.field-valid { display: none; margin-block-start: 0.3em; font-size: 0.78em; color: var(--success-text, var(--success)); }
+.field:has(> .is-valid, > * > .is-valid) > .field-valid,
+.is-validated .field:has(:user-valid[required]) > .field-valid { display: block; }
+/* .is-validated hides a server-rendered .field-error until the control is
+   actually invalid. */
+.is-validated .field:not(:has(:user-invalid, .is-invalid, [aria-invalid="true"])) > .field-error { display: none; }
+
+/* .field.is-floating — the label sits inside the control and floats up
+   once it has focus or a value. The control needs placeholder=" " (a
+   space) so CSS can tell when it is empty; a .select always floats.
+     <div class="field is-floating">
+       <input class="input" id="e" type="email" placeholder=" ">
+       <label class="label" for="e">Email</label>
+     </div> */
+.field.is-floating { position: relative; }
+.field.is-floating > :is(.input, .select, .textarea) { padding: 1.5em 0.75em 0.45em; }
+.field.is-floating > .label {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  max-inline-size: 100%;
+  margin: 0;
+  padding: 1.05em calc(0.75em + var(--input-border-width, 1px));
+  overflow: hidden;
+  color: var(--label-fg, var(--muted));
+  font-size: 0.9em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transform-origin: 0 0;
+  pointer-events: none;
+  transition: transform var(--motion-duration-s, 120ms) var(--motion-ease, ease);
+}
+.field.is-floating > :is(.input, .textarea):is(:focus, :not(:placeholder-shown)) + .label,
+.field.is-floating > .select + .label { transform: translateY(-0.6em) scale(0.8); }
+.field.is-floating > .label:dir(rtl) { transform-origin: 100% 0; }
+.field.is-floating > :is(.input, .select, .textarea)::placeholder { color: transparent; }
 
 /* .field-row — a labelled control in a bordered card: the settings-sheet
  * row pattern from the blue-future reference implementation (a recorder's
@@ -1731,6 +1788,26 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
   height: 100%;
   background: var(--progress-fill, var(--accent));
 }
+/* .progress-stack — several segments in one bar (disk usage, a budget).
+   Each .progress-bar takes its share as --value (a percentage) and a
+   chart series colour in turn, or data-color="1..6". Label each segment
+   (aria-label + aria-valuenow) or give the stack a legend.
+     <div class="progress progress-stack" role="group" aria-label="Storage">
+       <div class="progress-bar" role="progressbar" aria-label="Photos" aria-valuenow="40" style="--value: 40%"></div>
+       <div class="progress-bar" role="progressbar" aria-label="Apps" aria-valuenow="25" style="--value: 25%"></div>
+     </div> */
+.progress-stack { display: flex; }
+.progress-stack > .progress-bar {
+  flex: 0 0 var(--value, 0%);
+  background: var(--user-color, var(--_seg, var(--progress-fill, var(--accent))));
+}
+.progress-stack > .progress-bar + .progress-bar { box-shadow: inset 1px 0 0 var(--progress-bg, var(--surface-2)); }
+.progress-stack > :nth-child(6n + 1) { --_seg: var(--chart-series-1); }
+.progress-stack > :nth-child(6n + 2) { --_seg: var(--chart-series-2); }
+.progress-stack > :nth-child(6n + 3) { --_seg: var(--chart-series-3); }
+.progress-stack > :nth-child(6n + 4) { --_seg: var(--chart-series-4); }
+.progress-stack > :nth-child(6n + 5) { --_seg: var(--chart-series-5); }
+.progress-stack > :nth-child(6n + 6) { --_seg: var(--chart-series-6); }
 
 /* Native <progress class="progress" value="60" max="100">: the value
    lives in attributes, so no inline style is needed. */
@@ -1873,6 +1950,17 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   border-top-color: var(--spinner-fg, var(--accent));
   border-radius: 50%;
   animation: spinner-rotate 0.7s linear infinite;
+}
+/* .spinner.is-grow — a dot that swells and fades instead of a ring. */
+.spinner.is-grow {
+  border: 0;
+  background: var(--spinner-fg, var(--accent));
+  animation: spinner-grow 0.9s ease-in-out infinite;
+}
+@keyframes spinner-grow {
+  0% { transform: scale(0); }
+  50% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
 }
 
 /* .context-menu — same surface language as .dropdown, meant to be
@@ -3055,6 +3143,37 @@ pre code { padding: 0; background: none; border-radius: 0; }
 }
 @media (hover: hover) {
 .scroll::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover, var(--accent)); }
+}
+
+/* Position helpers: pin a bar to the top or bottom of its scroller
+   (sticky) or the viewport (fixed). Fixed bars cover content; pad the page
+   by their height. */
+.sticky-top { position: sticky; inset-block-start: 0; z-index: var(--z-sticky); }
+.sticky-bottom { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
+.fixed-top { position: fixed; inset: 0 0 auto; z-index: var(--z-sticky); }
+.fixed-bottom { position: fixed; inset: auto 0 0; z-index: var(--z-sticky); }
+
+/* .figure — an image with its caption; .img-thumbnail — a framed image. */
+.figure { display: inline-block; margin: 0 0 1rem; max-inline-size: 100%; }
+.figure > :is(img, svg, video, picture) { border-radius: var(--figure-radius, var(--radius)); }
+.figure > figcaption, .figure-caption { margin-block-start: 0.4em; font-size: 0.85em; color: var(--figure-caption-fg, var(--muted)); }
+.img-thumbnail {
+  max-inline-size: 100%;
+  block-size: auto;
+  padding: var(--thumbnail-padding, 0.25rem);
+  background: var(--thumbnail-bg, var(--surface));
+  border: var(--thumbnail-border-width, 1px) solid var(--thumbnail-border, var(--border));
+  border-radius: var(--thumbnail-radius, var(--radius));
+}
+
+/* .vr — a vertical rule between inline items (a .cluster, a toolbar). */
+.vr {
+  display: inline-block;
+  align-self: stretch;
+  flex: none;
+  inline-size: var(--vr-width, 1px);
+  min-block-size: 1em;
+  background: var(--vr-color, var(--border));
 }
 
 /* .container — a centered max-width column for sheets and readers. */
@@ -8817,6 +8936,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 .waveform-marker.is-end { translate: -100%; border-radius: var(--radius-sm, 2px) 0 0 var(--radius-sm, 2px); }
 .waveform-marker.is-end::before { inset-inline: auto 0; }
 span.waveform-marker { pointer-events: none; }
+/* A seeking marker is a target: at least 24px tall (WCAG 2.5.8). */
+button.waveform-marker:not(:empty) { min-block-size: 24px; }
 button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 /* Hover time: a chip at the pointer, text from the app. */
 .waveform[data-hover-time]::after {
@@ -12714,6 +12835,678 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
   .otp:has(> .otp-input:focus-visible) > span { border-color: Highlight; }
   .card.is-featured { outline-color: Highlight; }
 }
+/* --- v5 page sections: marketing and app UI ---------------------------------
+ * Page and section headings, action panels, media objects, feature grids,
+ * an announcement banner, a bento grid, FAQs, a logo cloud, testimonials,
+ * a newsletter signup, people cards, post meta, a contact list, a site
+ * footer and rich menu items for flyout and mega menus.
+ * Builds on core's .hero / .band / .price / .feature-list, .card, .avatar,
+ * .btn, .input, .grid and [popover] menus; every look reads a
+ * --<component>-* token that falls back to the base palette.
+ * See docs/components/sections.md. */
+
+/* --- .page-heading — the title row at the top of a page --------------------
+ *   <header class="page-heading">
+ *     <div class="page-heading-main">
+ *       <nav class="breadcrumbs">…</nav>
+ *       <h1>Back end developer</h1>
+ *       <p class="page-heading-meta"><span>Full-time</span><span>Remote</span></p>
+ *     </div>
+ *     <div class="page-heading-actions"><button class="btn">Edit</button>…</div>
+ *   </header> */
+.page-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-block-end: var(--page-heading-gap, 1.5rem);
+  padding-block-end: var(--page-heading-pad, 1rem);
+  border-block-end: var(--page-heading-border-width, 1px) solid var(--page-heading-border, var(--hairline, var(--border)));
+}
+.page-heading-main { display: grid; gap: 0.35rem; min-inline-size: 0; }
+.page-heading-main > :is(h1, h2) { margin: 0; overflow-wrap: anywhere; }
+.page-heading-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875em;
+}
+.page-heading-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+/* .section-heading — a smaller heading over one section of a page, with an
+ * optional description and actions. */
+.section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-block-end: 1rem;
+  padding-block-end: 0.6rem;
+  border-block-end: 1px solid var(--section-heading-border, var(--hairline, var(--border)));
+}
+.section-heading > div:first-child { min-inline-size: 0; }
+.section-heading :is(h2, h3) { margin: 0; }
+.section-heading p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.875em; }
+
+/* --- .action-panel — a titled box with one decision in it ------------------
+ *   <section class="action-panel">
+ *     <div><h3>Delete your account</h3><p>Once you delete it, it's gone.</p></div>
+ *     <button class="btn btn-danger">Delete account</button>
+ *   </section>
+ * The action sits beside the text when there is room, under it when not.
+ * .is-danger edges it in the danger colour. */
+.action-panel {
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: var(--action-panel-padding, 1.25rem);
+  background: var(--action-panel-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--panel-border-width, 1px) solid var(--action-panel-border, var(--border));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.action-panel > div:first-child { flex: 1 1 18rem; min-inline-size: 0; }
+.action-panel :is(h2, h3) { margin: 0 0 0.25rem; font-size: 1.05em; }
+.action-panel p { margin: 0; color: var(--muted); }
+.action-panel.is-danger { border-color: var(--danger); }
+
+/* --- .media-object — an image beside a body --------------------------------
+ *   <div class="media-object"><img class="avatar" src="…" alt=""><div>…</div></div>
+ * .is-center aligns the image to the body's middle, .is-reverse puts it on
+ * the far side. Nests for threaded replies. */
+.media-object { display: flex; gap: var(--media-object-gap, 0.9rem); align-items: flex-start; }
+.media-object > :first-child { flex: none; }
+.media-object > :last-child { flex: 1 1 0; min-inline-size: 0; }
+.media-object.is-center { align-items: center; }
+.media-object.is-reverse { flex-direction: row-reverse; }
+.media-object :is(h3, h4) { margin: 0 0 0.2rem; }
+.media-object p { margin: 0; }
+
+/* --- .features — a grid of icon, title and text ----------------------------
+ * Feature sections and shop incentives (free shipping, returns…).
+ *   <ul class="features">
+ *     <li><svg class="icon">…</svg><h3>Push to deploy</h3><p>…</p></li>
+ *   </ul>
+ * .is-centered centres each item; --features-min sets the column width. */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--features-min, 14rem)), 1fr));
+  gap: var(--features-gap, 1.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.features > * { display: grid; gap: 0.4rem; align-content: start; }
+.features > * > .icon,
+.features > * > img {
+  inline-size: var(--features-icon-size, 2.5rem);
+  block-size: var(--features-icon-size, 2.5rem);
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  background: var(--features-icon-bg, color-mix(in srgb, var(--accent) 16%, var(--surface)));
+  color: var(--features-icon-fg, var(--accent));
+}
+.features :is(h3, h4) { margin: 0; font-size: 1em; }
+.features p { margin: 0; color: var(--muted); }
+.features.is-centered > * { justify-items: center; text-align: center; }
+
+/* --- .banner — an announcement bar across the top or bottom ---------------
+ *   <div class="banner" role="region" aria-label="Announcement">
+ *     <p><strong>Conf 2026</strong> is on 12 June. <a href="…">Get tickets</a></p>
+ *     <label class="btn-close"><input type="checkbox" class="banner-dismiss" aria-label="Dismiss"></label>
+ *   </div>
+ * A checked .banner-dismiss hides the banner with no script (remember the
+ * choice server-side, or let the app remove it). Add .sticky-top or
+ * .fixed-bottom to pin it. .is-accent fills it with the accent. */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: var(--banner-padding, 0.55rem 1rem);
+  background: var(--banner-bg, var(--surface-2));
+  color: var(--banner-fg, var(--text));
+  border-block-end: 1px solid var(--banner-border, var(--border));
+  font-size: 0.9em;
+  text-align: center;
+}
+.banner > p { flex: 1 1 auto; margin: 0; }
+.banner > .btn-close { flex: none; }
+.banner.is-accent { --banner-bg: var(--accent); --banner-fg: var(--on-accent); --link: var(--on-accent); }
+.banner.is-accent a { color: inherit; text-decoration-line: underline; }
+.banner-dismiss { position: absolute; opacity: 0; inline-size: 100%; block-size: 100%; margin: 0; }
+label.btn-close:has(> .banner-dismiss) { position: relative; }
+.banner:has(.banner-dismiss:checked) { display: none; }
+
+/* --- .bento — a mosaic of cards in a fixed grid ----------------------------
+ *   <div class="bento"><article class="card is-wide is-tall">…</article>…</div>
+ * Four columns (two on tablets, one on phones); a child spans more with
+ * .is-wide / .is-tall or --span-cols / --span-rows. */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(var(--bento-cols, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(var(--bento-row, 10rem), auto);
+  grid-auto-flow: dense;
+  gap: var(--bento-gap, 1rem);
+}
+.bento > * {
+  grid-column: span min(var(--span-cols, 1), var(--bento-cols, 4));
+  grid-row: span var(--span-rows, 1);
+  margin: 0;
+}
+.bento > .is-wide { --span-cols: 2; }
+.bento > .is-tall { --span-rows: 2; }
+@media (max-width: 900px) { .bento { --bento-cols: 2; } }
+@media (max-width: 600px) { .bento { --bento-cols: 1; } .bento > * { --span-rows: 1; } }
+
+/* --- .faq — questions and answers ------------------------------------------
+ *   <dl class="faq"><div><dt>How do I pay?</dt><dd>By card or invoice.</dd></div>…</dl>
+ * Open by default, in two columns when there is room. For a collapsible
+ * list use .accordion (core) with the same text. */
+.faq {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--faq-min, 22rem)), 1fr));
+  gap: var(--faq-gap, 1.5rem 2.5rem);
+  margin: 0;
+}
+.faq > div { margin: 0; }
+.faq dt { font-weight: 600; }
+.faq dd { margin: 0.35rem 0 0; color: var(--muted); }
+
+/* --- .logo-cloud — a row of partner or customer logos ----------------------
+ *   <ul class="logo-cloud"><li><img src="acme.svg" alt="Acme"></li>…</ul>
+ * Logos are muted to one tone so no brand shouts; .is-color keeps their
+ * colours. Every logo needs alt text (the company name). */
+.logo-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--logo-cloud-gap, 1.5rem 3rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.logo-cloud > * { display: flex; align-items: center; }
+.logo-cloud :is(img, svg) {
+  max-block-size: var(--logo-cloud-height, 2rem);
+  inline-size: auto;
+  opacity: var(--logo-cloud-opacity, 0.7);
+  filter: grayscale(1);
+}
+.logo-cloud.is-color :is(img, svg) { opacity: 1; filter: none; }
+
+/* --- .testimonial — a quote with its author --------------------------------
+ *   <figure class="testimonial">
+ *     <blockquote><p>“It changed how we ship.”</p></blockquote>
+ *     <figcaption><img class="avatar" src="…" alt=""><span><strong>Ana Ruiz</strong><span>CTO, Acme</span></span></figcaption>
+ *   </figure>
+ * .is-featured makes it large and centred (a single hero quote). */
+.testimonial {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: var(--testimonial-padding, 1.5rem);
+  background: var(--testimonial-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--panel-border-width, 1px) solid var(--testimonial-border, var(--border));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.testimonial blockquote { margin: 0; font-size: 1.05em; }
+.testimonial blockquote > p { margin: 0; }
+.testimonial figcaption { display: flex; align-items: center; gap: 0.75rem; }
+.testimonial figcaption > span { display: grid; }
+.testimonial figcaption > span > span { color: var(--muted); font-size: 0.875em; }
+.testimonial.is-featured {
+  justify-items: center;
+  padding: var(--testimonial-featured-padding, 2.5rem 1.5rem);
+  text-align: center;
+  background: none;
+  border: 0;
+}
+.testimonial.is-featured blockquote { max-inline-size: 42rem; font-size: 1.35em; }
+
+/* --- .newsletter — a heading, text and an inline signup form --------------
+ *   <section class="newsletter">
+ *     <div><h2>Stay in the loop</h2><p>One email a month.</p></div>
+ *     <form class="newsletter-form"><label class="visually-hidden" for="nl">Email</label>
+ *       <input class="input" id="nl" type="email" required autocomplete="email" placeholder="you@example.com">
+ *       <button class="btn btn-primary">Subscribe</button></form>
+ *   </section>
+ * Side by side when there is room, stacked when not. */
+.newsletter {
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+}
+.newsletter > div { flex: 1 1 18rem; }
+.newsletter :is(h2, h3) { margin: 0 0 0.3rem; }
+.newsletter p { margin: 0; color: var(--muted); }
+.newsletter-form { display: flex; flex: 1 1 22rem; flex-wrap: wrap; gap: 0.5rem; }
+.newsletter-form > .input { flex: 1 1 14rem; inline-size: auto; }
+
+/* --- .person — a team member card ------------------------------------------
+ *   <ul class="people"><li class="person"><img src="…" alt="">
+ *     <h3>Leo Park</h3><p>Designer</p><ul class="person-links">…</ul></li></ul> */
+.people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--people-min, 11rem)), 1fr));
+  gap: var(--people-gap, 2rem 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.person { display: grid; justify-items: center; gap: 0.25rem; text-align: center; }
+.person > img:not(.avatar) { inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }
+.person :is(h3, h4) { margin: 0.5rem 0 0; font-size: 1em; }
+.person > p { margin: 0; color: var(--muted); font-size: 0.875em; }
+.person-links { display: flex; gap: 0.5rem; margin: 0.25rem 0 0; padding: 0; list-style: none; }
+
+/* --- .post-meta — the byline under a blog card's title --------------------
+ *   <p class="post-meta"><time datetime="2026-10-01">1 Oct 2026</time><span>6 min read</span></p> */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+.post-meta > * + *::before { content: "·"; margin-inline-end: 0.5rem; }
+.post-meta > .avatar + *::before { content: none; }
+
+/* --- .contact-list — ways to get in touch ---------------------------------
+ *   <dl class="contact-list"><div><dt><svg class="icon">…</svg><span class="visually-hidden">Email</span></dt>
+ *     <dd><a href="mailto:hi@acme.dev">hi@acme.dev</a></dd></div>…</dl> */
+.contact-list { display: grid; gap: 0.75rem; margin: 0; }
+.contact-list > div { display: flex; gap: 0.75rem; align-items: baseline; }
+.contact-list dt { flex: none; color: var(--contact-icon-fg, var(--accent)); }
+.contact-list dt .icon { vertical-align: -0.15em; }
+.contact-list dd { margin: 0; }
+
+/* --- .site-footer — the page footer with link columns ----------------------
+ *   <footer class="site-footer">
+ *     <div class="site-footer-brand">…</div>
+ *     <nav aria-label="Product"><h2>Product</h2><ul><li><a href="…">Pricing</a></li>…</ul></nav>
+ *     …
+ *     <div class="site-footer-bottom"><p>© 2026 Acme</p><ul class="cluster">…</ul></div>
+ *   </footer> */
+.site-footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--site-footer-min, 9rem)), 1fr));
+  gap: 2rem 1.5rem;
+  padding: var(--site-footer-padding, 2.5rem 1.5rem 1.5rem);
+  background: var(--site-footer-bg, var(--surface));
+  color: var(--site-footer-fg, var(--text));
+  border-block-start: 1px solid var(--site-footer-border, var(--border));
+  font-size: 0.9em;
+}
+.site-footer-brand { grid-column: 1 / -1; display: grid; gap: 0.5rem; max-inline-size: 28rem; }
+.site-footer-brand p { margin: 0; color: var(--muted); }
+.site-footer nav h2 {
+  margin: 0 0 0.6rem;
+  color: var(--site-footer-heading-fg, var(--text));
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.site-footer nav ul { display: grid; gap: 0.15rem; margin: 0; padding: 0; list-style: none; }
+.site-footer nav a { display: inline-block; min-block-size: 24px; line-height: 24px; color: var(--site-footer-link, var(--muted)); text-decoration: none; }
+.site-footer nav a:hover { color: var(--text); text-decoration: underline; }
+.site-footer-bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--hairline, var(--border));
+  color: var(--muted);
+}
+.site-footer-bottom > * { margin: 0; }
+.site-footer-bottom ul { padding: 0; list-style: none; }
+@media (min-width: 900px) { .site-footer-brand { grid-column: span 2; } }
+
+/* --- .menu-feature and .mega-menu — rich menu items -----------------------
+ * A flyout is a core [popover] .dropdown whose items are .menu-feature
+ * links (icon, title, one line of help). A mega menu is the same popover
+ * with .mega-menu: a wide grid of them, plus an optional .mega-menu-footer.
+ *   <div class="dropdown mega-menu" popover id="products">
+ *     <a class="menu-feature" href="…"><svg class="icon">…</svg>
+ *       <span><strong>Analytics</strong><span>See where traffic comes from</span></span></a>
+ *     …
+ *     <div class="mega-menu-footer"><a href="…">Watch demo</a>…</div>
+ *   </div> */
+.menu-feature {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+}
+.menu-feature:is(:hover, :focus-visible) { background: var(--menu-feature-hover, var(--surface-2)); }
+.menu-feature > .icon { flex: none; margin-block-start: 0.15em; color: var(--accent); }
+.menu-feature > span { display: grid; gap: 0.1rem; }
+.menu-feature > span > span { color: var(--muted); font-size: 0.85em; }
+.mega-menu {
+  inline-size: min(var(--mega-menu-width, 44rem), calc(100vw - 2rem));
+  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+.mega-menu:popover-open { display: grid; }
+.mega-menu-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0.25rem -0.5rem -0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--mega-menu-footer-bg, var(--surface-2));
+  border-block-start: 1px solid var(--border);
+}
+
+/* Icons inside meta lines sit inline with their text. */
+:is(.page-heading-meta, .post-meta) > * { display: inline-flex; align-items: center; gap: 0.3em; }
+/* --- v5 shop: products, cart, checkout and orders ---------------------------
+ * Product cards and grids, a product detail layout with a gallery, sale
+ * prices, read-only star ratings and review summaries, choice cards
+ * (delivery or payment options), category filters, cart lines, an order
+ * summary and order history headers.
+ * Builds on core's .card, .price, .badge, .btn, .stepper (forms.css),
+ * .swatches, .rating, .progress and .list; every look reads a
+ * --<component>-* token that falls back to the base palette.
+ * Payment, stock, totals and validation are the app's.
+ * See docs/components/shop.md. */
+
+/* --- .product-grid and .product — a product card ---------------------------
+ *   <ul class="product-grid">
+ *     <li class="product">
+ *       <img src="…" alt="Basic tee in black">
+ *       <h3><a href="…" class="stretched-link">Basic tee</a></h3>
+ *       <p class="product-meta">Black</p>
+ *       <p class="price is-sm">$35</p>
+ *     </li>
+ *   </ul>
+ * The image is square (--product-ratio), the whole card is one link via
+ * core's .stretched-link, and a .badge in the card sits on the image. */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--product-min, 13rem)), 1fr));
+  gap: var(--product-gap, 2rem 1.25rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.product { position: relative; display: grid; gap: 0.3rem; align-content: start; }
+.product > img,
+.product > picture > img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--product-ratio, 1);
+  object-fit: cover;
+  background: var(--product-image-bg, var(--surface-2));
+  border-radius: var(--product-radius, var(--radius));
+}
+.product :is(h3, h4) { margin: 0.4rem 0 0; font-size: 0.95em; font-weight: 500; }
+.product :is(h3, h4) a { color: inherit; text-decoration: none; }
+.product-meta { display: flex; align-items: center; gap: 0.3em; margin: 0; color: var(--muted); font-size: 0.85em; }
+.product > .badge { position: absolute; inset: 0.5rem auto auto 0.5rem; z-index: var(--z-raised); }
+.product > .btn { position: relative; z-index: var(--z-raised); justify-self: start; }
+
+/* Sale and small prices, on core's .price. */
+.price.is-sm { font-size: 1.1em; }
+.price-was { color: var(--muted); font-size: 0.7em; font-weight: 400; text-decoration-line: line-through; }
+.price-sale { color: var(--danger-text, var(--danger)); }
+
+/* --- .stars — a read-only star rating --------------------------------------
+ *   <span class="stars" style="--rating: 4.5" role="img" aria-label="4.5 out of 5 stars"></span>
+ * Five glyphs filled to --rating (0–5) in --stars-fg. A theme can swap the
+ * glyph with --stars-glyph. For a rating the user sets, use .rating. */
+.stars {
+  --_p: calc(var(--rating, 0) / 5 * 100%);
+  display: inline-block;
+  font-size: var(--stars-size, 1em);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  background: linear-gradient(90deg, var(--stars-fg, var(--warning)) var(--_p), var(--stars-empty, var(--border)) var(--_p));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.stars::before { content: var(--stars-glyph, "★★★★★") / ""; }
+@media (forced-colors: active) { .stars { color: CanvasText; background: none; } }
+
+/* --- .review-summary and .review -------------------------------------------
+ *   <div class="review-summary">
+ *     <p><span class="stars" style="--rating:4.2" role="img" aria-label="4.2 out of 5"></span> Based on 1,624 reviews</p>
+ *     <dl><div><dt>5 stars</dt><dd><progress class="progress" max="100" value="63"></progress> 63%</dd></div>…</dl>
+ *   </div>
+ *   <article class="review"><header>…avatar, name, stars, date…</header><p>…</p></article> */
+.review-summary { display: grid; gap: 0.75rem; }
+.review-summary > p { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0; color: var(--muted); }
+.review-summary dl { display: grid; gap: 0.35rem; margin: 0; }
+.review-summary dl > div { display: grid; grid-template-columns: 4.5rem 1fr 3rem; gap: 0.75rem; align-items: center; }
+.review-summary dd { display: contents; }
+.review-summary dd > .progress { margin: 0; }
+.review { display: grid; gap: 0.5rem; padding-block: 1.25rem; border-block-start: 1px solid var(--hairline, var(--border)); }
+.review > header { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; }
+.review > header > :is(h3, h4, strong) { margin: 0; font-size: 1em; }
+.review > header time { color: var(--muted); font-size: 0.85em; }
+.review > p { margin: 0; }
+
+/* --- .product-detail and .product-gallery ----------------------------------
+ *   <div class="product-detail">
+ *     <div class="product-gallery">
+ *       <img src="front.jpg" alt="…">
+ *       <div class="product-thumbs" role="radiogroup" aria-label="Images">…radio labels with thumbnails…</div>
+ *     </div>
+ *     <div class="product-info"><h1>…</h1><p class="price">…</p>…options…<button class="btn btn-primary">Add to bag</button></div>
+ *   </div>
+ * Gallery and info sit side by side from tablet width. The thumbnails are
+ * .toggle-btn-style radios; the app (or a CSS :has() rule per image) swaps
+ * the main image. */
+.product-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--product-detail-gap, 2rem);
+  align-items: start;
+}
+.product-gallery { display: grid; gap: 0.75rem; }
+.product-gallery > img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--product-ratio, 1);
+  object-fit: cover;
+  background: var(--product-image-bg, var(--surface-2));
+  border-radius: var(--product-radius, var(--radius));
+}
+.product-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr)); gap: 0.5rem; }
+.product-thumbs > label { position: relative; display: block; border-radius: var(--radius); }
+.product-thumbs > label > input { position: absolute; opacity: 0; inset: 0; margin: 0; }
+.product-thumbs > label > img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: cover; border-radius: inherit; }
+.product-thumbs > label:has(:checked) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.product-thumbs > label:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.product-info { display: grid; gap: 1rem; align-content: start; }
+.product-info > * { margin: 0; }
+
+/* --- .choice-card — a radio or checkbox drawn as a card --------------------
+ * Delivery methods, payment options, plans.
+ *   <div class="choice-cards" role="radiogroup" aria-label="Delivery">
+ *     <label class="choice-card"><input type="radio" name="d" value="std" checked>
+ *       <span><strong>Standard</strong><span>4–10 business days</span></span><span class="choice-card-aside">$5.00</span></label>
+ *   </div> */
+.choice-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--choice-card-min, 12rem)), 1fr));
+  gap: 0.75rem;
+}
+.choice-card {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-block-size: var(--tap-min, 44px);
+  padding: var(--choice-card-padding, 0.9rem 1rem);
+  background: var(--choice-card-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--choice-card-border-width, 1px) solid var(--choice-card-border, var(--border));
+  border-radius: var(--choice-card-radius, var(--radius));
+}
+.choice-card > input { flex: none; margin: 0.2em 0 0; accent-color: var(--accent); }
+.choice-card > span:not(.choice-card-aside) { display: grid; flex: 1 1 auto; gap: 0.15rem; }
+.choice-card > span > span { color: var(--muted); font-size: 0.875em; }
+.choice-card-aside { flex: none; font-weight: 600; }
+.choice-card:has(> input:checked) {
+  border-color: var(--choice-card-checked, var(--accent));
+  box-shadow: inset 0 0 0 1px var(--choice-card-checked, var(--accent));
+}
+.choice-card:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.choice-card:has(> input:disabled) { opacity: 0.5; }
+
+/* --- .filters — a category filter rail --------------------------------------
+ *   <form class="filters" aria-label="Filters">
+ *     <details open><summary>Colour</summary>
+ *       <label class="check"><input type="checkbox" name="c" value="white"> White</label>…
+ *     </details>…
+ *   </form>
+ * Each group collapses; checked filters can repeat above the results as
+ * .badge-button chips. On phones put the form in a core .drawer. */
+.filters { display: grid; align-content: start; }
+.filters > details { padding-block: 0.75rem; border-block-end: 1px solid var(--hairline, var(--border)); }
+.filters > details > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-block-size: var(--tap-min, 44px);
+  font-weight: 600;
+  list-style: none;
+  cursor: default;
+}
+.filters > details > summary::-webkit-details-marker { display: none; }
+.filters > details > summary::after { content: "+"; color: var(--muted); }
+.filters > details[open] > summary::after { content: "−"; }
+.filters > details > :not(summary) { margin-block-start: 0.35rem; }
+.filters .check { display: flex; }
+
+/* --- .cart-line — one line in a cart or order ------------------------------
+ *   <ul class="cart"><li class="cart-line">
+ *     <img src="…" alt="">
+ *     <div><h3><a href="…">Basic tee</a></h3><p class="product-meta">Black · L</p></div>
+ *     <div class="stepper">…</div>
+ *     <p class="price is-sm">$35</p>
+ *     <button class="btn-close" aria-label="Remove Basic tee"></button>
+ *   </li></ul> */
+.cart { display: grid; margin: 0; padding: 0; list-style: none; }
+.cart-line {
+  display: grid;
+  grid-template-columns: var(--cart-image, 5rem) minmax(0, 1fr) auto auto auto;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  padding-block: 1rem;
+  border-block-end: 1px solid var(--hairline, var(--border));
+}
+.cart-line > img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--product-image-bg, var(--surface-2));
+  border-radius: var(--radius);
+}
+.cart-line :is(h3, h4) { margin: 0; font-size: 1em; font-weight: 500; }
+.cart-line :is(h3, h4) a { color: inherit; text-decoration: none; }
+.cart-line > :is(.price, p) { margin: 0; }
+/* Phones: image | details over the quantity | the action over the price. */
+@media (max-width: 600px) {
+  .cart-line { grid-template-columns: var(--cart-image, 4.5rem) minmax(0, 1fr) auto; }
+  .cart-line > img { grid-row: 1 / span 2; }
+  .cart-line > :nth-child(3) { grid-area: 2 / 2; justify-self: start; }
+  .cart-line > :nth-child(4) { grid-area: 2 / 3; justify-self: end; }
+  .cart-line > :nth-child(5) { grid-area: 1 / 3; justify-self: end; align-self: start; }
+}
+
+/* --- .order-summary — line totals with a grand total -----------------------
+ *   <section class="order-summary" aria-labelledby="sum"><h2 id="sum">Order summary</h2>
+ *     <dl><div><dt>Subtotal</dt><dd>$99.00</dd></div>…<div class="is-total"><dt>Total</dt><dd>$112.32</dd></div></dl>
+ *     <button class="btn btn-primary">Checkout</button></section> */
+.order-summary {
+  display: grid;
+  gap: 1rem;
+  padding: var(--order-summary-padding, 1.25rem);
+  background: var(--order-summary-bg, var(--surface-2));
+  color: var(--text);
+  border-radius: var(--panel-radius, var(--radius));
+}
+.order-summary > :is(h2, h3) { margin: 0; font-size: 1.1em; }
+.order-summary dl { display: grid; margin: 0; }
+.order-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.6rem;
+  border-block-end: 1px solid var(--hairline, var(--border));
+}
+.order-summary dl > div:last-child { border-block-end: 0; }
+.order-summary dt { color: var(--muted); }
+.order-summary dd { margin: 0; font-variant-numeric: tabular-nums; }
+.order-summary .is-total :is(dt, dd) { color: var(--text); font-weight: 700; }
+.order-summary .is-discount dd { color: var(--success-text, var(--success)); }
+.order-summary > .btn { inline-size: 100%; justify-content: center; }
+
+/* --- .order — one past order in an order history ---------------------------
+ *   <article class="order">
+ *     <header class="order-header">
+ *       <dl><div><dt>Order number</dt><dd>WU88191111</dd></div><div><dt>Date placed</dt><dd><time …>Jan 6, 2026</time></dd></div>…</dl>
+ *       <div class="cluster"><a class="btn btn-sm" href="…">View order</a></div>
+ *     </header>
+ *     <ul class="cart">…cart-lines without steppers…</ul>
+ *   </article> */
+.order {
+  background: var(--order-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--panel-border-width, 1px) solid var(--order-border, var(--border));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.order > .cart { padding-inline: 1rem; }
+.order > .cart > .cart-line:last-child { border-block-end: 0; }
+.order-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 1rem;
+  border-block-end: 1px solid var(--border);
+}
+.order-header dl { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin: 0; }
+.order-header dt { color: var(--muted); font-size: 0.8em; }
+.order-header dd { margin: 0; font-weight: 600; }
+
+/* --- .shop-layout — filters beside results, or a form beside its summary --
+ * Two columns from tablet width, one on phones. .is-summary puts a
+ * narrower column (an .order-summary) at the end instead of the start. */
+.shop-layout {
+  display: grid;
+  grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr);
+  gap: var(--shop-layout-gap, 2rem);
+  align-items: start;
+}
+.shop-layout.is-summary { grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 1fr); }
+@media (max-width: 760px) { .shop-layout, .shop-layout.is-summary { grid-template-columns: minmax(0, 1fr); } }
 /* --- v5 social group (PLAN.md §19 "Collaboration", "Notifications and
  * activity") ------------------------------------------------------------------
  * Presence: .presence avatar stack, status on any .avatar[data-status],

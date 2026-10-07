@@ -1,0 +1,285 @@
+/* --- v5 shop: products, cart, checkout and orders ---------------------------
+ * Product cards and grids, a product detail layout with a gallery, sale
+ * prices, read-only star ratings and review summaries, choice cards
+ * (delivery or payment options), category filters, cart lines, an order
+ * summary and order history headers.
+ * Builds on core's .card, .price, .badge, .btn, .stepper (forms.css),
+ * .swatches, .rating, .progress and .list; every look reads a
+ * --<component>-* token that falls back to the base palette.
+ * Payment, stock, totals and validation are the app's.
+ * See docs/components/shop.md. */
+
+/* --- .product-grid and .product — a product card ---------------------------
+ *   <ul class="product-grid">
+ *     <li class="product">
+ *       <img src="…" alt="Basic tee in black">
+ *       <h3><a href="…" class="stretched-link">Basic tee</a></h3>
+ *       <p class="product-meta">Black</p>
+ *       <p class="price is-sm">$35</p>
+ *     </li>
+ *   </ul>
+ * The image is square (--product-ratio), the whole card is one link via
+ * core's .stretched-link, and a .badge in the card sits on the image. */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--product-min, 13rem)), 1fr));
+  gap: var(--product-gap, 2rem 1.25rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.product { position: relative; display: grid; gap: 0.3rem; align-content: start; }
+.product > img,
+.product > picture > img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--product-ratio, 1);
+  object-fit: cover;
+  background: var(--product-image-bg, var(--surface-2));
+  border-radius: var(--product-radius, var(--radius));
+}
+.product :is(h3, h4) { margin: 0.4rem 0 0; font-size: 0.95em; font-weight: 500; }
+.product :is(h3, h4) a { color: inherit; text-decoration: none; }
+.product-meta { display: flex; align-items: center; gap: 0.3em; margin: 0; color: var(--muted); font-size: 0.85em; }
+.product > .badge { position: absolute; inset: 0.5rem auto auto 0.5rem; z-index: var(--z-raised); }
+.product > .btn { position: relative; z-index: var(--z-raised); justify-self: start; }
+
+/* Sale and small prices, on core's .price. */
+.price.is-sm { font-size: 1.1em; }
+.price-was { color: var(--muted); font-size: 0.7em; font-weight: 400; text-decoration-line: line-through; }
+.price-sale { color: var(--danger-text, var(--danger)); }
+
+/* --- .stars — a read-only star rating --------------------------------------
+ *   <span class="stars" style="--rating: 4.5" role="img" aria-label="4.5 out of 5 stars"></span>
+ * Five glyphs filled to --rating (0–5) in --stars-fg. A theme can swap the
+ * glyph with --stars-glyph. For a rating the user sets, use .rating. */
+.stars {
+  --_p: calc(var(--rating, 0) / 5 * 100%);
+  display: inline-block;
+  font-size: var(--stars-size, 1em);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  background: linear-gradient(90deg, var(--stars-fg, var(--warning)) var(--_p), var(--stars-empty, var(--border)) var(--_p));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.stars::before { content: var(--stars-glyph, "★★★★★") / ""; }
+@media (forced-colors: active) { .stars { color: CanvasText; background: none; } }
+
+/* --- .review-summary and .review -------------------------------------------
+ *   <div class="review-summary">
+ *     <p><span class="stars" style="--rating:4.2" role="img" aria-label="4.2 out of 5"></span> Based on 1,624 reviews</p>
+ *     <dl><div><dt>5 stars</dt><dd><progress class="progress" max="100" value="63"></progress> 63%</dd></div>…</dl>
+ *   </div>
+ *   <article class="review"><header>…avatar, name, stars, date…</header><p>…</p></article> */
+.review-summary { display: grid; gap: 0.75rem; }
+.review-summary > p { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0; color: var(--muted); }
+.review-summary dl { display: grid; gap: 0.35rem; margin: 0; }
+.review-summary dl > div { display: grid; grid-template-columns: 4.5rem 1fr 3rem; gap: 0.75rem; align-items: center; }
+.review-summary dd { display: contents; }
+.review-summary dd > .progress { margin: 0; }
+.review { display: grid; gap: 0.5rem; padding-block: 1.25rem; border-block-start: 1px solid var(--hairline, var(--border)); }
+.review > header { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; }
+.review > header > :is(h3, h4, strong) { margin: 0; font-size: 1em; }
+.review > header time { color: var(--muted); font-size: 0.85em; }
+.review > p { margin: 0; }
+
+/* --- .product-detail and .product-gallery ----------------------------------
+ *   <div class="product-detail">
+ *     <div class="product-gallery">
+ *       <img src="front.jpg" alt="…">
+ *       <div class="product-thumbs" role="radiogroup" aria-label="Images">…radio labels with thumbnails…</div>
+ *     </div>
+ *     <div class="product-info"><h1>…</h1><p class="price">…</p>…options…<button class="btn btn-primary">Add to bag</button></div>
+ *   </div>
+ * Gallery and info sit side by side from tablet width. The thumbnails are
+ * .toggle-btn-style radios; the app (or a CSS :has() rule per image) swaps
+ * the main image. */
+.product-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--product-detail-gap, 2rem);
+  align-items: start;
+}
+.product-gallery { display: grid; gap: 0.75rem; }
+.product-gallery > img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--product-ratio, 1);
+  object-fit: cover;
+  background: var(--product-image-bg, var(--surface-2));
+  border-radius: var(--product-radius, var(--radius));
+}
+.product-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr)); gap: 0.5rem; }
+.product-thumbs > label { position: relative; display: block; border-radius: var(--radius); }
+.product-thumbs > label > input { position: absolute; opacity: 0; inset: 0; margin: 0; }
+.product-thumbs > label > img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: cover; border-radius: inherit; }
+.product-thumbs > label:has(:checked) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.product-thumbs > label:has(:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.product-info { display: grid; gap: 1rem; align-content: start; }
+.product-info > * { margin: 0; }
+
+/* --- .choice-card — a radio or checkbox drawn as a card --------------------
+ * Delivery methods, payment options, plans.
+ *   <div class="choice-cards" role="radiogroup" aria-label="Delivery">
+ *     <label class="choice-card"><input type="radio" name="d" value="std" checked>
+ *       <span><strong>Standard</strong><span>4–10 business days</span></span><span class="choice-card-aside">$5.00</span></label>
+ *   </div> */
+.choice-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--choice-card-min, 12rem)), 1fr));
+  gap: 0.75rem;
+}
+.choice-card {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-block-size: var(--tap-min, 44px);
+  padding: var(--choice-card-padding, 0.9rem 1rem);
+  background: var(--choice-card-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--choice-card-border-width, 1px) solid var(--choice-card-border, var(--border));
+  border-radius: var(--choice-card-radius, var(--radius));
+}
+.choice-card > input { flex: none; margin: 0.2em 0 0; accent-color: var(--accent); }
+.choice-card > span:not(.choice-card-aside) { display: grid; flex: 1 1 auto; gap: 0.15rem; }
+.choice-card > span > span { color: var(--muted); font-size: 0.875em; }
+.choice-card-aside { flex: none; font-weight: 600; }
+.choice-card:has(> input:checked) {
+  border-color: var(--choice-card-checked, var(--accent));
+  box-shadow: inset 0 0 0 1px var(--choice-card-checked, var(--accent));
+}
+.choice-card:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.choice-card:has(> input:disabled) { opacity: 0.5; }
+
+/* --- .filters — a category filter rail --------------------------------------
+ *   <form class="filters" aria-label="Filters">
+ *     <details open><summary>Colour</summary>
+ *       <label class="check"><input type="checkbox" name="c" value="white"> White</label>…
+ *     </details>…
+ *   </form>
+ * Each group collapses; checked filters can repeat above the results as
+ * .badge-button chips. On phones put the form in a core .drawer. */
+.filters { display: grid; align-content: start; }
+.filters > details { padding-block: 0.75rem; border-block-end: 1px solid var(--hairline, var(--border)); }
+.filters > details > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-block-size: var(--tap-min, 44px);
+  font-weight: 600;
+  list-style: none;
+  cursor: default;
+}
+.filters > details > summary::-webkit-details-marker { display: none; }
+.filters > details > summary::after { content: "+"; color: var(--muted); }
+.filters > details[open] > summary::after { content: "−"; }
+.filters > details > :not(summary) { margin-block-start: 0.35rem; }
+.filters .check { display: flex; }
+
+/* --- .cart-line — one line in a cart or order ------------------------------
+ *   <ul class="cart"><li class="cart-line">
+ *     <img src="…" alt="">
+ *     <div><h3><a href="…">Basic tee</a></h3><p class="product-meta">Black · L</p></div>
+ *     <div class="stepper">…</div>
+ *     <p class="price is-sm">$35</p>
+ *     <button class="btn-close" aria-label="Remove Basic tee"></button>
+ *   </li></ul> */
+.cart { display: grid; margin: 0; padding: 0; list-style: none; }
+.cart-line {
+  display: grid;
+  grid-template-columns: var(--cart-image, 5rem) minmax(0, 1fr) auto auto auto;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  padding-block: 1rem;
+  border-block-end: 1px solid var(--hairline, var(--border));
+}
+.cart-line > img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--product-image-bg, var(--surface-2));
+  border-radius: var(--radius);
+}
+.cart-line :is(h3, h4) { margin: 0; font-size: 1em; font-weight: 500; }
+.cart-line :is(h3, h4) a { color: inherit; text-decoration: none; }
+.cart-line > :is(.price, p) { margin: 0; }
+/* Phones: image | details over the quantity | the action over the price. */
+@media (max-width: 600px) {
+  .cart-line { grid-template-columns: var(--cart-image, 4.5rem) minmax(0, 1fr) auto; }
+  .cart-line > img { grid-row: 1 / span 2; }
+  .cart-line > :nth-child(3) { grid-area: 2 / 2; justify-self: start; }
+  .cart-line > :nth-child(4) { grid-area: 2 / 3; justify-self: end; }
+  .cart-line > :nth-child(5) { grid-area: 1 / 3; justify-self: end; align-self: start; }
+}
+
+/* --- .order-summary — line totals with a grand total -----------------------
+ *   <section class="order-summary" aria-labelledby="sum"><h2 id="sum">Order summary</h2>
+ *     <dl><div><dt>Subtotal</dt><dd>$99.00</dd></div>…<div class="is-total"><dt>Total</dt><dd>$112.32</dd></div></dl>
+ *     <button class="btn btn-primary">Checkout</button></section> */
+.order-summary {
+  display: grid;
+  gap: 1rem;
+  padding: var(--order-summary-padding, 1.25rem);
+  background: var(--order-summary-bg, var(--surface-2));
+  color: var(--text);
+  border-radius: var(--panel-radius, var(--radius));
+}
+.order-summary > :is(h2, h3) { margin: 0; font-size: 1.1em; }
+.order-summary dl { display: grid; margin: 0; }
+.order-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.6rem;
+  border-block-end: 1px solid var(--hairline, var(--border));
+}
+.order-summary dl > div:last-child { border-block-end: 0; }
+.order-summary dt { color: var(--muted); }
+.order-summary dd { margin: 0; font-variant-numeric: tabular-nums; }
+.order-summary .is-total :is(dt, dd) { color: var(--text); font-weight: 700; }
+.order-summary .is-discount dd { color: var(--success-text, var(--success)); }
+.order-summary > .btn { inline-size: 100%; justify-content: center; }
+
+/* --- .order — one past order in an order history ---------------------------
+ *   <article class="order">
+ *     <header class="order-header">
+ *       <dl><div><dt>Order number</dt><dd>WU88191111</dd></div><div><dt>Date placed</dt><dd><time …>Jan 6, 2026</time></dd></div>…</dl>
+ *       <div class="cluster"><a class="btn btn-sm" href="…">View order</a></div>
+ *     </header>
+ *     <ul class="cart">…cart-lines without steppers…</ul>
+ *   </article> */
+.order {
+  background: var(--order-bg, var(--panel-bg, var(--surface)));
+  color: var(--on-surface, var(--text));
+  border: var(--panel-border-width, 1px) solid var(--order-border, var(--border));
+  border-radius: var(--panel-radius, var(--radius));
+}
+.order > .cart { padding-inline: 1rem; }
+.order > .cart > .cart-line:last-child { border-block-end: 0; }
+.order-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 1rem;
+  border-block-end: 1px solid var(--border);
+}
+.order-header dl { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin: 0; }
+.order-header dt { color: var(--muted); font-size: 0.8em; }
+.order-header dd { margin: 0; font-weight: 600; }
+
+/* --- .shop-layout — filters beside results, or a form beside its summary --
+ * Two columns from tablet width, one on phones. .is-summary puts a
+ * narrower column (an .order-summary) at the end instead of the start. */
+.shop-layout {
+  display: grid;
+  grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr);
+  gap: var(--shop-layout-gap, 2rem);
+  align-items: start;
+}
+.shop-layout.is-summary { grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 1fr); }
+@media (max-width: 760px) { .shop-layout, .shop-layout.is-summary { grid-template-columns: minmax(0, 1fr); } }

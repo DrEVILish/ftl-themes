@@ -233,6 +233,25 @@ a { color: var(--link, var(--accent)); }
 }
 .input-group > :is(.is-invalid, [aria-invalid="true"]) { z-index: var(--z-raised); }
 
+/* Valid state: `.is-valid` on the control, or native :user-valid inside a
+   form marked .is-validated (only required fields go green, so an optional
+   blank stays neutral). .is-validated also shows :user-invalid controls in
+   the error state once the user has touched them. */
+:is(.input, .select, .textarea):is(.is-valid, .is-validated :user-valid[required]) {
+  border-color: var(--success);
+  background-color: var(--input-valid-bg, var(--input-bg, var(--surface)));
+}
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  :is(.input, .select, .textarea):is(.is-valid, .is-validated :user-valid[required]) {
+    background-color: var(--input-valid-bg, color-mix(in srgb, var(--success) 10%, var(--input-bg, var(--surface))));
+  }
+}
+:is(.input, .select, .textarea):is(.is-valid, .is-validated :user-valid[required]):focus-visible { border-color: var(--success); outline-color: var(--success); }
+.is-validated :is(.input, .select, .textarea):user-invalid {
+  border-color: var(--danger);
+  background-color: var(--input-error-bg, color-mix(in srgb, var(--danger) 12%, var(--input-bg, var(--surface))));
+}
+
 /* Sizes: on .input, .select or .textarea. */
 .input-sm {
   padding: var(--input-padding-sm, 0.3em 0.6em);
@@ -297,6 +316,44 @@ a { color: var(--link, var(--accent)); }
    after load) put role="alert" or aria-live="polite" on it. */
 .field-error { margin-block-start: 0.3em; font-size: 0.78em; color: var(--danger-text, var(--danger)); }
 .field-error:empty { display: none; }
+/* .field-valid — the confirmation under a control, shown only while the
+   control is valid (.is-valid, or :user-valid in an .is-validated form). */
+.field-valid { display: none; margin-block-start: 0.3em; font-size: 0.78em; color: var(--success-text, var(--success)); }
+.field:has(> .is-valid, > * > .is-valid) > .field-valid,
+.is-validated .field:has(:user-valid[required]) > .field-valid { display: block; }
+/* .is-validated hides a server-rendered .field-error until the control is
+   actually invalid. */
+.is-validated .field:not(:has(:user-invalid, .is-invalid, [aria-invalid="true"])) > .field-error { display: none; }
+
+/* .field.is-floating — the label sits inside the control and floats up
+   once it has focus or a value. The control needs placeholder=" " (a
+   space) so CSS can tell when it is empty; a .select always floats.
+     <div class="field is-floating">
+       <input class="input" id="e" type="email" placeholder=" ">
+       <label class="label" for="e">Email</label>
+     </div> */
+.field.is-floating { position: relative; }
+.field.is-floating > :is(.input, .select, .textarea) { padding: 1.5em 0.75em 0.45em; }
+.field.is-floating > .label {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  max-inline-size: 100%;
+  margin: 0;
+  padding: 1.05em calc(0.75em + var(--input-border-width, 1px));
+  overflow: hidden;
+  color: var(--label-fg, var(--muted));
+  font-size: 0.9em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transform-origin: 0 0;
+  pointer-events: none;
+  transition: transform var(--motion-duration-s, 120ms) var(--motion-ease, ease);
+}
+.field.is-floating > :is(.input, .textarea):is(:focus, :not(:placeholder-shown)) + .label,
+.field.is-floating > .select + .label { transform: translateY(-0.6em) scale(0.8); }
+.field.is-floating > .label:dir(rtl) { transform-origin: 100% 0; }
+.field.is-floating > :is(.input, .select, .textarea)::placeholder { color: transparent; }
 
 /* .field-row — a labelled control in a bordered card: the settings-sheet
  * row pattern from the blue-future reference implementation (a recorder's
@@ -1664,6 +1721,26 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
   height: 100%;
   background: var(--progress-fill, var(--accent));
 }
+/* .progress-stack — several segments in one bar (disk usage, a budget).
+   Each .progress-bar takes its share as --value (a percentage) and a
+   chart series colour in turn, or data-color="1..6". Label each segment
+   (aria-label + aria-valuenow) or give the stack a legend.
+     <div class="progress progress-stack" role="group" aria-label="Storage">
+       <div class="progress-bar" role="progressbar" aria-label="Photos" aria-valuenow="40" style="--value: 40%"></div>
+       <div class="progress-bar" role="progressbar" aria-label="Apps" aria-valuenow="25" style="--value: 25%"></div>
+     </div> */
+.progress-stack { display: flex; }
+.progress-stack > .progress-bar {
+  flex: 0 0 var(--value, 0%);
+  background: var(--user-color, var(--_seg, var(--progress-fill, var(--accent))));
+}
+.progress-stack > .progress-bar + .progress-bar { box-shadow: inset 1px 0 0 var(--progress-bg, var(--surface-2)); }
+.progress-stack > :nth-child(6n + 1) { --_seg: var(--chart-series-1); }
+.progress-stack > :nth-child(6n + 2) { --_seg: var(--chart-series-2); }
+.progress-stack > :nth-child(6n + 3) { --_seg: var(--chart-series-3); }
+.progress-stack > :nth-child(6n + 4) { --_seg: var(--chart-series-4); }
+.progress-stack > :nth-child(6n + 5) { --_seg: var(--chart-series-5); }
+.progress-stack > :nth-child(6n + 6) { --_seg: var(--chart-series-6); }
 
 /* Native <progress class="progress" value="60" max="100">: the value
    lives in attributes, so no inline style is needed. */
@@ -1806,6 +1883,17 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   border-top-color: var(--spinner-fg, var(--accent));
   border-radius: 50%;
   animation: spinner-rotate 0.7s linear infinite;
+}
+/* .spinner.is-grow — a dot that swells and fades instead of a ring. */
+.spinner.is-grow {
+  border: 0;
+  background: var(--spinner-fg, var(--accent));
+  animation: spinner-grow 0.9s ease-in-out infinite;
+}
+@keyframes spinner-grow {
+  0% { transform: scale(0); }
+  50% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
 }
 
 /* .context-menu — same surface language as .dropdown, meant to be
@@ -2988,6 +3076,37 @@ pre code { padding: 0; background: none; border-radius: 0; }
 }
 @media (hover: hover) {
 .scroll::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover, var(--accent)); }
+}
+
+/* Position helpers: pin a bar to the top or bottom of its scroller
+   (sticky) or the viewport (fixed). Fixed bars cover content; pad the page
+   by their height. */
+.sticky-top { position: sticky; inset-block-start: 0; z-index: var(--z-sticky); }
+.sticky-bottom { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
+.fixed-top { position: fixed; inset: 0 0 auto; z-index: var(--z-sticky); }
+.fixed-bottom { position: fixed; inset: auto 0 0; z-index: var(--z-sticky); }
+
+/* .figure — an image with its caption; .img-thumbnail — a framed image. */
+.figure { display: inline-block; margin: 0 0 1rem; max-inline-size: 100%; }
+.figure > :is(img, svg, video, picture) { border-radius: var(--figure-radius, var(--radius)); }
+.figure > figcaption, .figure-caption { margin-block-start: 0.4em; font-size: 0.85em; color: var(--figure-caption-fg, var(--muted)); }
+.img-thumbnail {
+  max-inline-size: 100%;
+  block-size: auto;
+  padding: var(--thumbnail-padding, 0.25rem);
+  background: var(--thumbnail-bg, var(--surface));
+  border: var(--thumbnail-border-width, 1px) solid var(--thumbnail-border, var(--border));
+  border-radius: var(--thumbnail-radius, var(--radius));
+}
+
+/* .vr — a vertical rule between inline items (a .cluster, a toolbar). */
+.vr {
+  display: inline-block;
+  align-self: stretch;
+  flex: none;
+  inline-size: var(--vr-width, 1px);
+  min-block-size: 1em;
+  background: var(--vr-color, var(--border));
 }
 
 /* .container — a centered max-width column for sheets and readers. */

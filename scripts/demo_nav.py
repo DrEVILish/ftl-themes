@@ -49,6 +49,7 @@ SECTIONS = [
         ("navigation-patterns", "Signature navigation patterns"),
         ("components-surfaces", "Surfaces"), ("components-experience", "Display settings"),
         ("components-social", "Collaboration"), ("components-prose", "Prose & code"),
+        ("components-sections", "Page sections"), ("components-shop", "Shop"),
         ("nesting", "Nesting"),
     ]),
 ]
