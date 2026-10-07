@@ -547,6 +547,7 @@ v5 adds component groups, each in its own `core/components/<group>.css`
 | Desktop shell | [`docs/components/desktop.md`](docs/components/desktop.md) | `desktop.html` | One markup becomes each OS's shell (PLAN §23 signature navigation): `--desktop-shell: taskbar` (Windows 95/XP/7 taskbar, Start menu popover from nested `ul`s, `--start-menu-layout: classic|columns`), `dock` (Mac OS X menu bar + magnifying Dock) or `home` (iOS home grid + dock; every theme on phones). `.desktop-window`s open, minimise, maximise, close and come to the front with radios and `:has()` |
 | Live data and dashboards | [`docs/components/live.md`](docs/components/live.md) | `mission-control.html`, `trading.html` | PLAN §18: `.is-updated` flash (static marker under reduced motion), `.is-up`/`.is-down`/`.is-flat` with arrows, `.is-stale` + `data-age`, `.connection[data-state=live\|reconnecting\|offline]`, `time.updated`, `.feed` (+ paused marker), `.depth-bar`; `<html data-alert="yellow|red">` page alert level; `.dashboard` of `.widget`s (`--cols`/`--rows`, 12/2/1 columns per tier, container-query widgets) with a styled edit mode (`.is-editing` or a CSS-only `input.dashboard-edit`) |
 | Audio controls | [`docs/components/audio.md`](docs/components/audio.md) | `audio-components.html`, `audio-blocks.html` | AudioCN parity: `.meter-rms`, `.meter.is-gradient`, `.meter-pair`, `.clip`, `.visualizer` (`.is-mirror`/`-idle`/`-loading`/`-electric`), `.trace` (live, smooth, `.is-electric`), `.param`, `.slider.is-bipolar`, `.device-select[data-state]`, `.channel` rows + `.channel-list`, `.pad` + `.soundboard`, `.scrubber.has-buffer`, `.rta.is-area`; `controls.js` param sync, reset and centre detent. Waveform regions and markers are in Media |
+| Event displays and signage | [`docs/components/signage.md`](docs/components/signage.md) | `signage.html` | `.countdown[data-state]` timer states, `.timeline-bar` day bar, `.stage-edge`, `.is-attention`/`.is-urgent`, `.lower-third`, `.qr-card`, `.word-cloud`, `.ranked-list`, `.count` count-up, `[data-enter]`/`[data-exit]`, `html[data-surface="signage"]` + `.safe-area`, and `html[data-motion="always"]` for unattended screens |
 | Console | [`docs/components/console.md`](docs/components/console.md) | `proseries.html` | `.scribble[data-color]` name tags, `.sends` aux blocks, `.dyn-graph` transfer curves, `.rack`/`.rack-unit` (finishes, 1–6U, selectable), `.faceplate` + `.faceplate-group`, `.assignable` soft-key panel, `.geq` graphic EQ, `.patchbay`/`.patch-device`/`.patch-point`; `assets/js/console.js` draws PEQ responses and dynamics curves, readouts and linked controls |
 | Page sections | [`docs/components/sections.md`](docs/components/sections.md) | `components-sections.html` | `.page-heading`, `.section-heading`, `.action-panel`, `.media-object`, `.features`, `.banner` (CSS-only dismiss), `.bento`, `.faq`, `.logo-cloud`, `.testimonial`, `.newsletter`, `.people`/`.person`, `.post-meta`, `.contact-list`, `.site-footer`, `.menu-feature` + `.mega-menu` |
 | Shop | [`docs/components/shop.md`](docs/components/shop.md) | `components-shop.html` | `.product-grid`/`.product`, `.price.is-sm` + `.price-was`/`.price-sale`, `.stars`, `.review-summary`, `.review`, `.product-detail` + `.product-gallery`/`.product-thumbs`, `.choice-card`s, `.filters`, `.cart`/`.cart-line`, `.order-summary`, `.order` history, `.shop-layout` |
@@ -675,7 +676,18 @@ panes with **no JavaScript**:
 - **Toasts over a modal:** `<div class="toast-region" popover="manual">`
   sits in the top layer above an open modal (the v4 fixed region sits
   under the modal's backdrop). On XL screens toasts line up with the
-  content edge.
+  content edge. Inside the `.app` shell the region starts below the app
+  bar (anchored to it, else `--app-bar-height`), so toasts never cover its
+  buttons; `--toast-offset-top` (1rem) adds room for more sticky chrome.
+- **One popover, many triggers:** when the triggers are made per render
+  (thirty colour dots in a table), skip `popovertarget` and open it with
+  `popover.showPopover({ source: trigger })` (Chromium 133+): the trigger
+  becomes the implicit anchor and the popover opens beside it like any
+  other. Browsers without the argument ignore it and open it centred.
+- **Small forms in a dropdown:** a `.dropdown[popover]` may hold a `.field`
+  (a label and a `<select>`, a search box) as well as `.dropdown-item`s; it
+  keeps its padding, surface and anchoring. For anything longer use a
+  `.popover`.
 - **Nested menus** are nested lists:
   ```html
   <ul class="context-menu" role="menu" popover id="row-menu">
@@ -1006,6 +1018,22 @@ Three levels of emphasis: `.btn-primary` (the one main action), `.btn-secondary`
 no fill or border until hover). A theme restyles each through the `--btn-*`
 tokens on that class; `--btn-font-size` (default `0.9em`) sizes the label, and
 `.btn-sm` always wins over it.
+
+```html
+<button class="btn btn-primary btn-lg btn-block">Continue</button>   <!-- big, full width -->
+<button class="btn btn-danger is-armed" aria-describedby="del-help">
+  <span class="btn-idle-label">Delete</span><span class="btn-armed-label">Tap again to delete</span></button>
+<button class="btn btn-danger" aria-pressed="true" aria-busy="true">Blank screens</button>
+```
+`.btn-lg` (`--btn-min-height-lg`, `--btn-padding-lg`, `--btn-font-size-lg`)
+and `.btn-block`. **Two-tap delete:** the app adds `.is-armed` on the first
+tap and removes it after ~2.5s; it shows a double ring, a danger tint
+(`--btn-armed-ring`, `--btn-armed-bg`), swaps the label and runs a bar out
+over `--armed-ms`; point `aria-describedby` at live "Tap again" text.
+**Server-confirmed toggles:** any `.btn` with `aria-pressed` shows a lamp
+dot (lit when pressed) and, pressed, a sunken look and a ring
+(`--btn-pressed-shadow`, `--btn-pressed-ring`); `aria-busy="true"` turns
+the dot into a spinner while the app waits for the server.
 
 ### Form controls
 ```html
@@ -1435,7 +1463,15 @@ from `.tabs` (navigates, usually changes the URL) and
   <div class="progress-bar" role="progressbar" aria-label="Apps" aria-valuenow="22" style="--value:22%"></div>
 </div>
 <span class="spinner is-grow" role="status" aria-label="Loading"></span>  <!-- a swelling dot -->
+<span class="badge badge-solid badge-danger">Overtime</span>   <!-- filled; .badge-outline: a ring -->
+<div class="meter is-solid">…</div>                            <!-- one colour, no level bands -->
+<span class="status status-rec">On air</span>                 <!-- recording: bold, a pulsing dot -->
+<p class="text-danger">2 screens offline</p>                 <!-- also .text-warning/-success/-info -->
+<span class="color-dot" style="--swatch:#e8a33d"></span>       <!-- small; as a button, a 44px hit area -->
 ```
+`.badge-solid` fills with the accent or, with `.badge-danger/-warning/-success`,
+the status colour (`--on-*` text). `.meter.is-solid` paints `--meter-fill`
+(default the accent). Text tones read the `--*-text` tokens.
 
 ### Helpers (v5.4)
 ```html
@@ -1446,6 +1482,21 @@ from `.tabs` (navigates, usually changes the URL) and
 <input class="input is-valid">          <!-- + .field-valid; .is-validated forms use :user-valid/:user-invalid -->
 <div class="field is-floating"><input class="input" id="e" placeholder=" "><label class="label" for="e">Email</label></div>
 ```
+```html
+<div class="container container-narrow is-page">…</div>   <!-- 32rem; .container-wide 72rem; block padding -->
+<div class="ratio ratio-16x9 is-canvas"><span class="ratio-item" style="--x:0;--y:0;--w:50;--h:30">Clock</span></div>
+<img class="thumb" src="map.png" alt="Venue map">           <!-- contained, framed; .is-cover, -sm, -lg -->
+<ul class="glyph-legend"><li><kbd aria-hidden="true">⠿</kbd>drag to move</li></ul>
+<nav class="tabs is-sticky">…</nav>                          <!-- --sticky-top, --tabs-sticky-bg -->
+<article class="card"><button class="btn-close is-danger card-dismiss" aria-label="Forget Main hall"></button>…</article>
+```
+`.container` takes `--container-pad` (1rem) and `--container-narrow-max` /
+`--container-wide-max`. `.ratio.is-canvas` is a scaled layout preview:
+children are not stretched; `.ratio-item`s sit at `--x`/`--y` and are
+`--w`/`--h` big, in percent (`--ratio-item-bg/-border/-fg`); `.ratio-9x16`
+with `--ratio-max-block` for portrait. `.thumb` (`--thumb-size`,
+`--thumb-border`, `--thumb-radius`, `--thumb-bg`). `.card-dismiss` puts a
+close button in the top-end corner (RTL-safe) and pads the header for it.
 Tokens: `--figure-radius`, `--figure-caption-fg`, `--thumbnail-padding/-bg/-border/-border-width/-radius`, `--vr-width`, `--vr-color`, `--input-valid-bg`. See [`docs/components/forms.md`](docs/components/forms.md) for validation and floating labels.
 
 ### htmx state
@@ -1620,9 +1671,13 @@ app CSS; every gap scales with `--density`.
   </div>
 </main>
 ```
-`-sm`/`-lg` tighten or loosen the gap (`.stack-sm`, `.cluster-lg`,
-`.grid-sm`); `--grid-min` sets the minimum column width
-(default 16rem). Inline-sized components (buttons, badges, segmented
+`-sm`/`-lg` tighten or loosen the gap of a stack or cluster
+(`.stack-sm`, `.cluster-lg`). On a grid, `.grid-sm` / `.grid-lg` change
+the minimum column width (11rem / 22rem; `--grid-min`, default 16rem) and
+`.grid-gap-sm` / `.grid-gap-lg` change the gap (`--grid-gap`). A grid
+stretches its columns to fill the row (auto-fit: right for dashboards);
+`.grid.is-fill` (`--grid-repeat: auto-fill`) keeps empty tracks, so a lone
+card stays one column wide (galleries). Inline-sized components (buttons, badges, segmented
 controls) keep their own width inside a stack.
 
 **Levels without inline styles.** Use the native elements; the value is in

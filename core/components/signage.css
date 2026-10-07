@@ -1,0 +1,367 @@
+/* --- v5 event displays and signage ------------------------------------------
+ * The pieces an event timer, a stage display or a room screen needs:
+ * .countdown states (a live timer), .timeline-bar (the day as segments with a now
+ * needle), .stage-edge (an alert ring round the screen), .is-attention /
+ * .is-urgent, .lower-third (a message band), .qr-card, .word-cloud,
+ * .ranked-list (a live Q&A wall), .count (a number that counts up), the
+ * [data-enter] / [data-exit] motion vocabulary and the signage surface
+ * (html[data-surface="signage"], .safe-area, data-fit).
+ *
+ * Unattended screens set html[data-motion="always"]: every animation in the
+ * library then runs even when the device reports reduced motion (the build
+ * copies each motion block for it). Never set it on an interactive page.
+ * See docs/components/signage.md. */
+
+/* --- .countdown states ------------------------------------------------------
+ * Extends instruments.css's .countdown (parts with unit labels) for a live
+ * timer, either form: <time class="countdown countdown-xl" data-state="running">09:59</time>
+ * States: running (default), armed (cued, not started), paused, held (at 0),
+ * alert1 (warning), alert2 (critical), overtime. Per-item colours are inline
+ * --countdown-alert1/-alert2. A .countdown-sign ("+") and .countdown-tenths
+ * (".4") sit smaller. It is never a live region: announce state changes in
+ * a sibling .visually-hidden[role=status]. Not colour alone: paused shows a
+ * pause glyph, overtime a "+", alert2 and overtime go heavier and pulse. */
+.countdown[data-state] { white-space: nowrap; }
+.countdown-xl { --countdown-size: var(--countdown-xl-size, clamp(3rem, 18vw, 14rem)); font-size: var(--countdown-size); font-weight: 700; line-height: 1; }
+.countdown > :is(.countdown-sign, .countdown-tenths) { font-size: calc(var(--countdown-size, 1.75rem) * 0.55); }
+.countdown-tenths { opacity: 0.75; }
+.countdown[data-state="armed"] { --countdown-fg: var(--countdown-armed-fg, var(--muted)); --countdown-glow: none; }
+.countdown[data-state="held"] { --countdown-fg: var(--countdown-held-fg, var(--muted)); --countdown-glow: none; }
+.countdown[data-state="paused"] { --countdown-fg: var(--countdown-paused-fg, var(--warning-text, var(--warning))); }
+.countdown[data-state="paused"]::before { content: "\23F8\FE0E" / ""; margin-inline-end: 0.15em; font-size: calc(var(--countdown-size, 1.75rem) * 0.45); align-self: center; }
+.countdown[data-state="alert1"] { --countdown-fg: var(--countdown-alert1, var(--warning-text, var(--warning))); }
+.countdown[data-state="alert2"] { --countdown-fg: var(--countdown-alert2, var(--danger-text, var(--danger))); }
+.countdown[data-state="overtime"] { --countdown-fg: var(--countdown-overtime, var(--countdown-alert2, var(--danger-text, var(--danger)))); }
+.countdown:is([data-state="paused"], [data-state="alert1"], [data-state="alert2"], [data-state="overtime"]) { --countdown-glow: 0 0 0.12em color-mix(in srgb, var(--countdown-fg) 55%, transparent); }
+.countdown:is([data-state="alert2"], [data-state="overtime"]) { font-weight: 800; }
+.countdown:is([data-state="alert2"], [data-state="overtime"]) > * { font-weight: 800; }
+@keyframes countdown-pulse { 50% { opacity: var(--countdown-pulse-opacity, 0.72); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .countdown:is([data-state="alert2"], [data-state="overtime"]) {
+    animation: countdown-pulse var(--countdown-pulse-period, 1s) steps(2, jump-none) infinite;
+  }
+}
+
+/* --- .timeline-bar: the day as proportional segments ------------------------
+ * <div class="timeline-bar" role="img" aria-label="Day 09:00–17:30, now 11:06, in Coffee">
+ *   <span class="timeline-seg is-done" style="--start:0%; --size:12%">Welcome</span>
+ *   <span class="timeline-seg" data-kind="break" style="--start:12%; --size:6%">Coffee</span>
+ *   <span class="timeline-now" style="--at:15%"></span>
+ * </div>
+ * <div class="timeline-scale"><time>09:00</time><time>17:30</time></div>
+ * Breaks are striped (not colour alone); --seg-color tints a segment. The
+ * app keeps the bar's aria-label current; segments are decorative unless
+ * they are links or buttons. Labels hide when the bar is under 30rem. */
+.timeline-bar {
+  position: relative;
+  container-type: inline-size;
+  block-size: var(--timeline-height, 2.6rem);
+  overflow: hidden;
+  background: var(--timeline-bg, var(--surface-2));
+  border: 1px solid var(--timeline-border, var(--border));
+  border-radius: var(--timeline-radius, var(--radius));
+}
+.timeline-seg {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--start, 0%);
+  inline-size: var(--size, 0%);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0.3em 0.45em;
+  border-inline-start: 1px solid var(--timeline-rule, var(--hairline));
+  background: color-mix(in srgb, var(--seg-color, var(--accent)) var(--timeline-seg-alpha, 26%), transparent);
+  color: var(--timeline-seg-fg, var(--text));
+  font-size: var(--timeline-label-size, 0.75rem);
+  line-height: 1.2;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.timeline-seg[data-kind="break"] {
+  background: var(--timeline-break-pattern, repeating-linear-gradient(45deg, color-mix(in srgb, var(--border) 55%, transparent) 0 0.5rem, transparent 0.5rem 1rem));
+}
+.timeline-seg.is-done { filter: var(--timeline-done-filter, saturate(0.4) brightness(0.75)); }
+.timeline-seg.is-active { box-shadow: inset 0 -3px 0 var(--seg-color, var(--accent)); font-weight: 600; }
+:is(a, button).timeline-seg { border-block: 0; border-inline-end: 0; }
+:is(a, button).timeline-seg:focus-visible { z-index: var(--z-raised); outline: 2px solid var(--focus); outline-offset: -2px; }
+.timeline-now {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset-block: 0;
+  inset-inline-start: var(--at, 0%);
+  inline-size: 2px;
+  translate: -50% 0;
+  background: var(--timeline-now-color, var(--accent));
+  box-shadow: 0 0 0 1px var(--timeline-bg, var(--surface-2));
+  pointer-events: none;
+}
+.timeline-now::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  inline-size: 0.7rem;
+  block-size: 0.45rem;
+  translate: -50% 0;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.timeline-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 0.2rem;
+  color: var(--timeline-scale-fg, var(--muted));
+  font: 0.75rem/1.2 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+@container (inline-size < 30rem) {
+  .timeline-seg { padding: 0; font-size: 0; }
+}
+
+/* --- .stage-edge, .is-attention, .is-urgent ---------------------------------
+ * .stage-edge[data-level="warn|danger"] rings the element (the whole screen
+ * on a stage display) inside its edge, sized in vmin so it reads in
+ * peripheral vision; --stage-alert sets the colour (an operator's choice).
+ * .is-attention blinks (1 Hz, steps) and .is-urgent pulses; without motion
+ * both show a steady outline instead. Carry the state in text too. */
+.stage-edge { position: relative; }
+.stage-edge[data-level="warn"] { --_edge: var(--stage-alert, var(--warning)); --_edge-w: var(--stage-edge-warn-width, 0.45vmin); }
+.stage-edge[data-level="danger"] { --_edge: var(--stage-alert, var(--danger)); --_edge-w: var(--stage-edge-danger-width, 0.7vmin); }
+.stage-edge:is([data-level="warn"], [data-level="danger"])::after {
+  content: "";
+  position: absolute;
+  z-index: var(--z-overlay, 30);
+  inset: 0;
+  box-shadow: inset 0 0 0 var(--_edge-w) var(--_edge);
+  pointer-events: none;
+}
+:is(.is-attention, .is-urgent) { outline: 0.12em solid currentColor; outline-offset: 0.12em; }
+@keyframes attention-blink { 50% { opacity: var(--attention-low, 0.12); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-attention { outline: none; animation: attention-blink var(--attention-period, 1s) steps(1) infinite; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-urgent { outline: none; animation: countdown-pulse var(--countdown-pulse-period, 1s) ease-in-out infinite; }
+}
+
+/* --- .lower-third: a message band over a display ---------------------------
+ * <div class="lower-third" role="status" style="--banner-edge: #ff8a00"><p>Wrap up</p></div>
+ * Sits over the lower third of its positioned parent (.is-center: the
+ * middle; .is-fixed: the viewport). The operator's colour is the leading
+ * edge only; the text carries the meaning. */
+.lower-third {
+  position: absolute;
+  z-index: var(--z-overlay, 30);
+  inset-inline: 0;
+  inset-block-end: var(--lower-third-bottom, max(12vh, env(safe-area-inset-bottom, 0px)));
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--space-l);
+  pointer-events: none;
+}
+.lower-third.is-fixed { position: fixed; }
+.lower-third.is-center { inset-block: 0; align-items: center; }
+.lower-third > * {
+  max-inline-size: 92%;
+  margin: 0;
+  padding: 0.35em 0.8em;
+  border-inline-start: var(--banner-edge-width, 0.3em) solid var(--banner-edge, var(--accent));
+  border-radius: var(--lower-third-radius, var(--radius));
+  background: var(--lower-third-bg, color-mix(in srgb, var(--surface) 94%, transparent));
+  color: var(--lower-third-fg, var(--text));
+  box-shadow: var(--lower-third-shadow, 0 0.4rem 1.6rem rgb(0 0 0 / 0.45));
+  font-size: var(--banner-size, clamp(1.7rem, 6vh, 6rem));
+  font-weight: 700;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+/* --- .qr-card: a scannable join card ---------------------------------------
+ * <div class="qr-card"><img class="qr-card-code" src="join.svg" alt="QR code: join at timerpi.local/j">
+ *   <span class="qr-card-label">Join the Q&amp;A</span><span class="qr-card-url">timerpi.local/j</span></div>
+ * The code always sits on a light quiet zone with crisp pixels, whatever
+ * the theme does to images; the URL is always printed beside it.
+ * .is-corner pins it bottom-end inside the safe area. */
+.qr-card {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: 0.2em 0.8em;
+  padding: var(--qr-card-pad, var(--space-s));
+  background: var(--qr-card-bg, var(--surface));
+  color: var(--qr-card-fg, var(--text));
+  border: 1px solid var(--qr-card-border, var(--border));
+  border-radius: var(--qr-card-radius, var(--radius));
+}
+.qr-card-code {
+  grid-row: span 3;
+  inline-size: var(--qr-size, 7rem);
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: var(--qr-quiet, 0.45rem);
+  background: var(--qr-bg, #ffffff);
+  color: var(--qr-fg, #000000);
+  border-radius: 2px;
+  image-rendering: pixelated;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+.qr-card-label { font-weight: 700; }
+.qr-card-url { font: 0.9em/1.3 var(--font-mono); overflow-wrap: anywhere; }
+.qr-card.is-corner {
+  position: fixed;
+  z-index: var(--z-overlay, 30);
+  inset-block-end: max(var(--safe-inset-block, 1rem), env(safe-area-inset-bottom, 0px));
+  inset-inline-end: max(var(--safe-inset-inline, 1rem), env(safe-area-inset-right, 0px));
+}
+@media (forced-colors: active) { .qr-card-code { forced-color-adjust: none; } }
+
+/* --- .word-cloud ------------------------------------------------------------
+ * <ul class="word-cloud" aria-label="Audience words">
+ *   <li class="word-cloud-word" style="--weight:.8; --x:-.2; --y:.1; --rotate:-90deg" data-tone="2">
+ *     coffee <span class="visually-hidden">, 14 votes</span></li>
+ * The app places each word (--x/--y from -1 to 1 around the centre) and
+ * weights it (--weight 0–1 maps to --word-cloud-min…-max); this paints and
+ * moves it. data-tone="1..6" picks a chart colour; .is-top glows; .is-new
+ * fades in. */
+.word-cloud {
+  position: relative;
+  min-block-size: var(--word-cloud-height, 18rem);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+.word-cloud-word {
+  position: absolute;
+  inset-inline-start: calc(50% + var(--x, 0) * 45%);
+  inset-block-start: calc(50% + var(--y, 0) * 45%);
+  translate: -50% -50%;
+  rotate: var(--rotate, 0deg);
+  --_tone: var(--chart-series-1, var(--accent));
+  /* Mixed toward the text colour so every tone keeps 3:1 at word size. */
+  color: color-mix(in oklab, var(--_tone) var(--word-cloud-tone-strength, 35%), var(--text));
+  font-size: calc(var(--word-cloud-min, 1rem) + var(--weight, 0.5) * (var(--word-cloud-max, 4rem) - var(--word-cloud-min, 1rem)));
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.word-cloud-word[data-tone="2"] { --_tone: var(--chart-series-2, var(--accent-2, var(--accent))); }
+.word-cloud-word[data-tone="3"] { --_tone: var(--chart-series-3, var(--accent)); }
+.word-cloud-word[data-tone="4"] { --_tone: var(--chart-series-4, var(--accent)); }
+.word-cloud-word[data-tone="5"] { --_tone: var(--chart-series-5, var(--accent)); }
+.word-cloud-word[data-tone="6"] { --_tone: var(--chart-series-6, var(--accent)); }
+.word-cloud-word.is-top { --_tone: var(--word-cloud-top, var(--accent)); text-shadow: 0 0 0.4em color-mix(in srgb, currentColor 45%, transparent); }
+
+/* --- .ranked-list: a live ranked wall ---------------------------------------
+ * <ol class="ranked-list is-positioned" style="--ranked-height: 30rem">
+ *   <li class="ranked-item is-spotlight" aria-current="true" style="--slot-y: 0px">… <span class="ranked-votes">12</span></li>
+ * The DOM order is the rank order (screen readers hear the rank); with
+ * .is-positioned the app also sets each item's --slot-y and the item slides
+ * there, so a reorder animates. .is-spotlight (a heavy accent border),
+ * .is-answered (success; say so in text), .is-leaving (fades out), .is-new
+ * (rises in). Without motion the order just changes. */
+.ranked-list { position: relative; display: grid; gap: var(--ranked-gap, 0.6rem); margin: 0; padding: 0; list-style: none; }
+.ranked-list.is-positioned { display: block; block-size: var(--ranked-height, auto); overflow: hidden; }
+.ranked-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  box-sizing: border-box;
+  padding: var(--ranked-item-pad, 0.5em 0.8em);
+  background: var(--ranked-item-bg, var(--card-bg, var(--panel-bg, var(--surface))));
+  color: var(--ranked-item-fg, var(--text));
+  border: var(--ranked-border-width, 2px) solid var(--ranked-border, var(--card-border, var(--border)));
+  border-radius: var(--ranked-radius, var(--card-radius, var(--radius)));
+}
+.ranked-list.is-positioned > .ranked-item { position: absolute; inset-inline: 0; inset-block-start: 0; translate: 0 var(--slot-y, 0px); }
+.ranked-item.is-spotlight { border-width: var(--ranked-spot-width, 6px); border-color: var(--ranked-spot, var(--accent)); }
+.ranked-item.is-answered {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 18%, var(--ranked-item-bg, var(--card-bg, var(--panel-bg, var(--surface)))));
+}
+.ranked-item.is-leaving { opacity: 0; }
+.ranked-votes { margin-inline-start: auto; font: 700 1.2em/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+@keyframes ranked-rise { from { opacity: 0; translate: 0 calc(var(--slot-y, 0px) + 2rem); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .ranked-item {
+    transition: translate var(--ranked-move, 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)), opacity 1s ease, border-color 0.4s, background-color 0.4s;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .ranked-item.is-new { animation: ranked-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+}
+
+/* --- Count-up: .count and .is-counting -------------------------------------
+ * <data class="count" value="42" style="--count:42; --stagger-index:1"><span class="visually-hidden">42</span></data>
+ * <div class="meter is-counting" …><div class="meter-fill" style="--meter-level:42%"></div></div>
+ * The number counts up from 0 (or --count-from) to --count, and a meter's
+ * or progress bar's fill grows from empty, over --count-duration, each
+ * --stagger-index later than the last. The final value is visually-hidden
+ * text inside (what assistive tech reads); the digits you see are drawn,
+ * in a box --count-digits (3) wide. Without motion they show the result. */
+@property --count { syntax: "<integer>"; inherits: true; initial-value: 0; }
+.count {
+  display: inline-block;
+  min-inline-size: calc(var(--count-digits, 3) * 1ch);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  counter-reset: count-up var(--count);
+}
+.count::after { content: counter(count-up) / ""; }
+@keyframes count-up { from { --count: var(--count-from, 0); } }
+@keyframes count-fill { from { width: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .count {
+    animation: count-up var(--count-duration, 900ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger, 120ms));
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-counting :is(.meter-fill, .progress-bar) {
+    animation: count-fill var(--count-duration, 900ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger, 120ms));
+  }
+}
+
+/* --- Enter and exit: [data-enter] / [data-exit] -----------------------------
+ * <section class="widget is-entering" data-enter="pop" data-exit="slide">
+ * The app adds .is-entering when the element appears and .is-exiting before
+ * it removes it (after --motion-exit-duration). fade | slide | pop.
+ * Durations: --motion-enter-duration, --motion-exit-duration. */
+[data-enter="fade"] { --_enter: enter-fade; }
+[data-enter="slide"] { --_enter: enter-slide; }
+[data-enter="pop"] { --_enter: enter-pop; }
+[data-exit="fade"] { --_exit: exit-fade; }
+[data-exit="slide"] { --_exit: exit-slide; }
+[data-exit="pop"] { --_exit: exit-pop; }
+@keyframes enter-fade { from { opacity: 0; } }
+@keyframes enter-slide { from { opacity: 0; translate: 0 1.5rem; } }
+@keyframes enter-pop { from { opacity: 0; scale: 0.85; } 70% { scale: 1.03; } }
+@keyframes exit-fade { to { opacity: 0; } }
+@keyframes exit-slide { to { opacity: 0; translate: 0 1.5rem; } }
+@keyframes exit-pop { to { opacity: 0; scale: 0.85; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) [data-enter].is-entering { animation: var(--_enter) var(--motion-enter-duration, 450ms) var(--motion-ease, ease-out) both; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) [data-exit].is-exiting { animation: var(--_exit) var(--motion-exit-duration, 400ms) ease-in forwards; }
+}
+
+/* --- The signage surface -----------------------------------------------------
+ * html[data-surface="signage"]: rem sizes scale with the screen (the root
+ * is --signage-root, 1.5vh; 1.5vw in portrait), so 720p, 1080p and 4K look
+ * the same, and nothing scrolls. .safe-area keeps content inside the TV's
+ * overscan (--safe-inset-block/-inline, 4vh/4vw, or the device's own
+ * inset if larger); data-fit="cover" drops the inset, "shadow" vignettes
+ * the edge. Signage is read-only: operator pages keep the OS root size. */
+html[data-surface="signage"] { font-size: var(--signage-root, 1.5vh); overflow: hidden; scrollbar-width: none; }
+@media (orientation: portrait) {
+  html[data-surface="signage"] { font-size: var(--signage-root-portrait, 1.5vw); }
+}
+html[data-surface="signage"] body { overflow: hidden; }
+.safe-area {
+  box-sizing: border-box;
+  padding:
+    max(var(--safe-inset-block, 4vh), env(safe-area-inset-top, 0px))
+    max(var(--safe-inset-inline, 4vw), env(safe-area-inset-right, 0px))
+    max(var(--safe-inset-block, 4vh), env(safe-area-inset-bottom, 0px))
+    max(var(--safe-inset-inline, 4vw), env(safe-area-inset-left, 0px));
+}
+.safe-area[data-fit="cover"] { --safe-inset-block: 0px; --safe-inset-inline: 0px; }
+.safe-area[data-fit="shadow"] { box-shadow: inset 0 0 6vmin 2vmin rgb(0 0 0 / 0.6); }

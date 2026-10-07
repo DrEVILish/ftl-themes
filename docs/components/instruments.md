@@ -468,3 +468,9 @@ g.call(d3.axisLeft(y)).attr('class', 'chart-axis');   // d3 axes draw with curre
 ### CSS-only charts
 
 `.bar-chart` (core) and `.donut` (above) cover bar, column and donut with no JS.
+
+## Linear gauge sizing and a now needle
+
+`--gauge-linear-label-room` now defaults to 1.8 × `--gauge-linear-label-size`, so scaling
+the label size (in `cqi`, say) scales the gauge's room for labels with it. A
+`.gauge-mark.is-needle` is a "now" line with a head and no label (`--gauge-needle`).

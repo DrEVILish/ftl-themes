@@ -324,3 +324,42 @@ has zero specificity and applies only while the modal is shown, so
 `.is-minimized`, closed popovers and dialogs, and theme rules still win.
 A table placed directly in the modal (no wrap) keeps v4 behaviour: the whole
 modal scrolls and core's `--sticky-top` handles the header.
+
+## Ordered rows, drag to reorder and the NOW line
+
+```html
+<tr class="is-past"><td class="drag-handle"><button aria-label="Move Doors"></button></td>
+  <td><span class="row-title">Doors</span> <span class="visually-hidden">(done)</span></td>…</tr>
+<tr aria-current="time">…</tr>
+<tr class="table-now" aria-hidden="true"><td colspan="4">Now · 10:12</td></tr>
+<tr class="is-next has-row-color" style="--row-color:#e8a33d">…</tr>
+```
+
+- **`tr.is-past`**: muted text (`--row-past-fg`) and the `.row-title` (or the first text
+  cell) struck through (`--row-past-strike`), never just opacity. **`tr.is-next`**: a
+  dashed leading marker (`--row-next-marker`). **`tr.is-current`** or
+  `aria-current="time"`: bold with the active marker. Give past and next a text
+  equivalent; strike-through isn't announced.
+- **`tr.has-row-color`** with `--row-color`: a 3px leading bar and a light tint
+  (`--row-color-tint`, 7%), painted over the row so hover and selection still show.
+- **Drag to reorder:** `td.drag-handle` (a grip, `--drag-handle-glyph`, tap-sized, holding
+  a `<button>`), `tr.is-dragging` (lifted: dashed outline, dimmed), `tr.is-drop-before` /
+  `-after` (the drop line, `--drop-line-color`, `--drop-line-size`, drawn on the row, so
+  nothing is positioned inside the scroller), `.table.is-dragging` or `body.is-dragging`
+  (grabbing cursor, no text selection). Never drag-only: the handle button also takes
+  Alt+Up/Down (or a "Move to…" menu), and a live region says "Moved Coffee to position 3".
+- **`tr.table-now`**: a NOW divider row (`--table-now-rule`, `--table-now-fg`);
+  `aria-hidden`, since the current row carries `aria-current="time"`.
+- **`.table.is-daysheet`** prints black on white, the current row still shaded.
+
+## Editing outside a table and compact editors
+
+- **`.editable`** gives any element (a card title, a label) the editable-cell states:
+  the dotted underline and pencil, `.is-dirty`, `.is-saving`, `.is-saved` and
+  `aria-invalid`.
+- **Compact editors:** `--cell-editor-font-size` (default `inherit`),
+  `--cell-editor-pad-x` (default `--cell-pad-x`) and `--cell-editor-arrow-space` (1.5em,
+  the room for a select's arrow) size the controls in an editing cell, at class
+  specificity.
+- **An addon beside the control:** wrap them in an `.input-group`; the group fills the
+  editing cell and its control gets the same treatment.

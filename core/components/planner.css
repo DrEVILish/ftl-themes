@@ -768,7 +768,7 @@
   grid-template-columns: var(--schedule-time-width, 4.25em) minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-2xs) var(--space-s);
-  min-block-size: max(var(--tap-min), calc(var(--duration, 0) * var(--schedule-hour, 3rem)));
+  min-block-size: calc(var(--duration, 0) * var(--schedule-hour, 3rem));
   box-sizing: border-box;
   padding: var(--schedule-item-pad, var(--space-xs) var(--space-s));
   background: var(--schedule-item-bg, color-mix(in srgb, var(--_ev) 12%, var(--surface)));
@@ -777,6 +777,10 @@
   border-radius: var(--schedule-item-radius, var(--radius));
   overflow-wrap: anywhere;
 }
+/* A row is a touch target only when it holds something to press. Keep one
+   text node out of the gap between <time class="schedule"> and
+   .schedule-body: a stray character becomes its own grid item. */
+.schedule-item:has(a, button, .stretched-link, input) { min-block-size: max(var(--tap-min), calc(var(--duration, 0) * var(--schedule-hour, 3rem))); }
 .schedule-item > .schedule {
   --schedule-font-size: 0.85em;
   flex-direction: column;

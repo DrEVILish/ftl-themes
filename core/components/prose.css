@@ -575,6 +575,9 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
   position: relative;
   display: flex;
   gap: var(--_otp-gap);
+  /* Its natural size anywhere (a container has no intrinsic width), shrinking on narrow screens. */
+  inline-size: calc(var(--_otp-n) * var(--otp-cell-size, 2.75rem) + (var(--_otp-n) - 1) * var(--_otp-gap));
+  max-inline-size: 100%;
   block-size: var(--otp-height, 3.25rem);
   overflow: hidden;
   direction: ltr;
@@ -585,6 +588,10 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
   border-radius: var(--otp-radius, var(--input-radius, var(--radius)));
   background: var(--input-bg, var(--surface-2));
 }
+/* A separator cell (XXXX-XXXX): an .otp-sep counts in --otp-length and
+   holds the dash the app inserts into the value. .is-alnum upper-cases. */
+.otp > .otp-sep { border-color: transparent; background: none; }
+.otp.is-alnum .otp-input { text-transform: uppercase; }
 .otp-input {
   position: absolute;
   inset-block: 0;

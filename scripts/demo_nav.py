@@ -22,6 +22,7 @@ SECTIONS = [
         ("trading", "Trading terminal"), ("inventory", "Inventory & assets"),
         ("fleet", "Fleet dispatch"), ("planner", "Planner"),
         ("player", "Media player"), ("hud", "Game HUD"), ("desktop", "Desktop"),
+        ("signage", "Event displays"),
     ]),
     ("Vehicles", [
         ("cockpit-car", "Car"), ("cockpit-plane", "Airliner"),

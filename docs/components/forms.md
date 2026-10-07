@@ -590,3 +590,22 @@ colour only reinforces it. The name truncates with an ellipsis. Follows a
 - Themes with a signature glyph can set `--rating-glyph`, `--swatch-check-glyph`,
   `--listbox-check-glyph` and `--input-clear-glyph`, and swap the date/time
   indicator masks.
+
+## Block and stacked toggle groups, colour dots
+
+```html
+<div class="toggle-group is-block">
+  <label class="toggle-btn"><input type="radio" name="kind" checked>
+    <span class="toggle-btn-title">Stage</span><span class="toggle-btn-hint">Timer for the speaker</span></label>
+  …
+</div>
+<button class="color-dot" type="button" style="--swatch:#e8a33d" aria-label="Alert 1 colour: amber"></button>
+```
+
+- **`.toggle-group.is-block`**: full width, equal items, multi-line content aligned to
+  the start. **`.is-stacked`**: joined top to bottom (use it on phones). The
+  `.toggle-btn-hint` follows the button's own text colour, so it stays readable on the
+  checked fill.
+- **`.color-dot`**: a small colour indicator for dense rows (`--color-dot-size`, .85em;
+  `--swatch`). As a `<button>` its visible size stays small but its hit area grows to
+  `--tap-min`. Name it by the colour, not just the hue.

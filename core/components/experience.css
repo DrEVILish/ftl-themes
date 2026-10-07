@@ -413,6 +413,45 @@
 }
 .splash.is-contained { position: absolute; z-index: var(--z-raised); }
 html[data-splash-seen] .splash[data-intro] { display: none; }
+/* .is-stage: black on every theme (a waiting screen in a dark room), with
+   light ink checked against black; a theme may set --splash-stage-bg/-fg/
+   -muted/-accent. .is-standby: an operator blackout, dimmer still, still. */
+.splash:is(.is-stage, .is-standby) {
+  --splash-bg: var(--splash-stage-bg, #000000);
+  --splash-fg: var(--splash-stage-fg, #f2f2f2);
+  --splash-title-fg: var(--splash-stage-fg, #f2f2f2);
+  --splash-message-fg: var(--splash-stage-muted, #a0a0ac);
+  --text: var(--splash-stage-fg, #f2f2f2);
+  --muted: var(--splash-stage-muted, #a0a0ac);
+  --accent-text: var(--splash-stage-accent, #8cc8ff);
+  --readout-fg: var(--splash-stage-fg, #f2f2f2);
+  color-scheme: dark;
+}
+.splash.is-standby { --splash-fg: var(--splash-standby-fg, #8a8a94); --splash-title-fg: var(--splash-standby-fg, #8a8a94); --splash-art-motion: none; }
+.splash.is-standby > .splash-art { opacity: var(--splash-standby-art-opacity, 0.3); }
+/* A logo as the mark: <img class="splash-art"> or .splash-art.is-image with
+   --splash-art: url(…). No ring mask, no radius, no spin. */
+:is(img.splash-art, .splash-art.is-image) { --splash-art-motion: none; aspect-ratio: auto; border-radius: 0; mask: none; }
+img.splash-art { block-size: auto; background: none; object-fit: contain; }
+.splash-art.is-image { aspect-ratio: 1; background: var(--splash-art, none) center / contain no-repeat; }
+
+/* .overlay — lays content (an .empty-state.is-offline, a message) over the
+   viewport behind a scrim; toggle it with [hidden], like .splash.
+   .is-contained covers the nearest positioned ancestor instead.
+   .empty-state.is-overlay is the same without a wrapper. */
+:is(.overlay, .empty-state.is-overlay) {
+  position: fixed;
+  z-index: var(--overlay-z, calc(var(--z-window) + 1));
+  inset: 0;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  padding: var(--space-l);
+  background: var(--overlay-scrim, color-mix(in srgb, var(--surface) 92%, transparent));
+  color: var(--text);
+}
+:is(.overlay, .empty-state.is-overlay).is-contained { position: absolute; z-index: var(--z-raised); }
+:is(.overlay, .empty-state.is-overlay)[hidden] { display: none; }
 /* The theme's mark: any background layers (gradients, SVG data URIs). */
 .splash-art {
   inline-size: var(--splash-art-size, 5rem);
@@ -513,6 +552,10 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
       display var(--motion-duration-l) allow-discrete;
   }
   :root:not([data-motion="reduced"], [data-motion="none"]) .splash[hidden] { opacity: 0; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) :is(.overlay, .empty-state.is-overlay) {
+    transition: opacity var(--motion-duration-m, 0.25s) var(--motion-ease), display var(--motion-duration-m, 0.25s) allow-discrete;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) :is(.overlay, .empty-state.is-overlay)[hidden] { opacity: 0; }
   :root:not([data-motion="reduced"], [data-motion="none"]) .splash[data-intro] > * {
     animation: var(--motion-enter);
     animation-delay: calc(sibling-index() * 150ms);

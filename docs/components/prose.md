@@ -219,3 +219,14 @@ template in [`docs/templates.md`](../templates.md).
 
 Forced colours: callouts, highlighted/diff lines, OTP boxes and the
 featured card map to system colours.
+
+## Code inputs: width, groups and letters
+
+- `.otp` now has its natural width anywhere (it is a container, so it had none): the
+  cells at `--otp-cell-size` and their gaps, shrinking on narrow screens.
+- **Grouped codes (XXXX-XXXX):** add an `<span class="otp-sep">` cell where the dash
+  goes and count it in `--otp-length` (9); the app inserts the dash into the value as the
+  user types. **`.otp.is-alnum`** upper-cases (pair it with `inputmode="text"` and
+  `autocapitalize="characters"`).
+- **Pasting:** with `maxlength="6"` a pasted "123 456" is cut to "123 45" before any
+  script sees it. Leave room in `maxlength` (or drop it) and strip separators on `input`.

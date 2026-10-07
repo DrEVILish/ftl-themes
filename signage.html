@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue-future">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event displays — ftl-themes</title>
+<link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<style>
+  /* Page layout glue only; every colour comes from the theme. */
+  .ev-page { max-inline-size: 1200px; margin-inline: auto; display: grid; gap: var(--space-l, 1.5rem); }
+  .ev-page > header > * { margin-block: 0 .5rem; }
+  .ev-stage { position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 1rem; padding: 1.2rem 1.4rem; aspect-ratio: 16 / 9; max-block-size: 70vh; overflow: hidden; background: #000; color: #f2f2f2; border-radius: var(--radius);
+    --text: #f2f2f2; --muted: #a0a0ac; --surface: #1a1a1f; --surface-2: #26262c; --border: #4a4a52; --hairline: #33333a; --card-bg: #15151a; --card-border: #3a3a42; --readout-fg: #f2f2f2; --accent-text: #8cc8ff; color-scheme: dark; }
+  .ev-stage .countdown { place-self: center; font-size: clamp(3rem, 13vw, 10rem); }
+  .ev-stage .qr-card { position: absolute; inset: 1rem 1rem auto auto; --qr-size: 4.5rem; font-size: .8rem; }
+  .ev-stage .lower-third { inset-block-end: 22%; --banner-size: clamp(1.2rem, 3.5vw, 2.6rem); }
+  .ev-stage .timeline-bar { --timeline-height: 2rem; }
+  .ev-cols { display: grid; gap: var(--space-l, 1.5rem); grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); align-items: start; }
+  .ev-board { block-size: 22rem; padding: .6rem; background: var(--surface-2); border-radius: var(--radius); }
+  .ev-board .widget { padding: .5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  .ev-board .widget b { font-size: 12cqh; line-height: 1; }
+  .ev-splashes { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .ev-splashes > div { position: relative; block-size: 12rem; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border); }
+  .ev-cloud { --word-cloud-height: 16rem; --word-cloud-max: 3.2rem; background: var(--surface-2); border-radius: var(--radius); }
+  .ev-poll { display: grid; gap: .5rem; }
+  .ev-poll > div { display: grid; grid-template-columns: 7rem 1fr 3.5rem; gap: .6rem; align-items: center; }
+  @media print { .app-bar, .app-status, .ev-page > :not(.ev-cols), .ev-cols > :not(.ev-print) { display: none !important; } }
+</style>
+</head>
+<body class="app">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Event displays</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="mission-control.html" data-demo-link>Mission control</a></li>
+            <li role="none"><a role="menuitem" href="smart-home.html" data-demo-link>Smart home</a></li>
+            <li role="none"><a role="menuitem" href="trading.html" data-demo-link>Trading terminal</a></li>
+            <li role="none"><a role="menuitem" href="inventory.html" data-demo-link>Inventory &amp; assets</a></li>
+            <li role="none"><a role="menuitem" href="fleet.html" data-demo-link>Fleet dispatch</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+            <li role="none"><a role="menuitem" href="desktop.html" data-demo-link>Desktop</a></li>
+            <li role="none"><a role="menuitem" href="signage.html" data-demo-link aria-current="page">Event displays</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Vehicles</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link>Car</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link>Airliner</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link>Fighter jet</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link>Boat</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link>Submarine</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link>Spaceship</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="audio-components.html" data-demo-link>Audio components</a></li>
+            <li role="none"><a role="menuitem" href="audio-blocks.html" data-demo-link>Audio blocks</a></li>
+            <li role="none"><a role="menuitem" href="proseries.html" data-demo-link>ProSeries console</a></li>
+            <li role="none"><a role="menuitem" href="metering.html" data-demo-link>Metering &amp; EQ</a></li>
+            <li role="none"><a role="menuitem" href="media-decks.html" data-demo-link>Media decks</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="navigation-patterns.html" data-demo-link>Signature navigation patterns</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="components-sections.html" data-demo-link>Page sections</a></li>
+            <li role="none"><a role="menuitem" href="components-shop.html" data-demo-link>Shop</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main ev-page">
+  <header>
+    <h1>Event displays</h1>
+    <p class="text-muted">A stage display, an operator's run sheet and an audience wall, built from the signage components: <code>.countdown</code>, <code>.timeline-bar</code>, <code>.stage-edge</code>, <code>.lower-third</code>, <code>.qr-card</code>, <code>.word-cloud</code>, <code>.ranked-list</code>, count-up, and the row, button and badge states an operator needs.</p>
+    <div class="cluster">
+      <div class="cluster"><label class="switch"><input type="checkbox" role="switch" id="ev-always" aria-labelledby="ev-always-l"><span class="switch-track"><span class="switch-thumb"></span></span></label><label id="ev-always-l" for="ev-always">Unattended screen: animate even with reduced motion (<code>data-motion="always"</code>)</label></div>
+      <span class="connection" data-state="connecting" role="status" id="ev-link">Connecting</span>
+      <span class="status status-rec">On air</span>
+    </div>
+  </header>
+
+  <section class="panel stack" aria-labelledby="ev-stage-h">
+    <header class="panel-header"><h2 id="ev-stage-h">Stage display</h2></header>
+    <div class="segmented" role="radiogroup" aria-label="Timer state"><label class="segmented-item"><input type="radio" name="ev-state" value="running" checked>running</label><label class="segmented-item"><input type="radio" name="ev-state" value="armed">armed</label><label class="segmented-item"><input type="radio" name="ev-state" value="paused">paused</label><label class="segmented-item"><input type="radio" name="ev-state" value="held">held</label><label class="segmented-item"><input type="radio" name="ev-state" value="alert1">alert1</label><label class="segmented-item"><input type="radio" name="ev-state" value="alert2">alert2</label><label class="segmented-item"><input type="radio" name="ev-state" value="overtime">overtime</label></div>
+    <div class="ev-stage stage-edge" id="ev-stage">
+      <div class="cluster"><span class="badge badge-solid" id="ev-chip">Running</span><span class="connection" data-state="live" style="--connection-size:1rem">Live</span></div>
+      <time class="countdown countdown-xl" id="ev-clock" data-state="running" aria-live="off"><span class="countdown-sign" hidden>+</span><span class="ev-digits">09:59</span></time>
+      <div><div class="timeline-bar" role="img" aria-label="Day 09:00 to 17:30, now 10:12, in the keynote"><span class="timeline-seg is-done" style="--start:0%;--size:6%">Doors</span><span class="timeline-seg is-done" style="--start:6%;--size:3%">Welcome</span><span class="timeline-seg is-active" style="--start:9%;--size:12%">Keynote</span><span class="timeline-seg" data-kind="break" style="--start:21%;--size:6%">Coffee</span><span class="timeline-seg" style="--start:27%;--size:14%">Panel</span><span class="timeline-seg" data-kind="break" style="--start:41%;--size:12%">Lunch</span><span class="timeline-seg" style="--start:53%;--size:47%">Workshops</span><span class="timeline-now" style="--at:18%"></span></div><div class="timeline-scale"><time>09:00</time><time>13:00</time><time>17:30</time></div></div>
+      <div class="lower-third" role="status" id="ev-msg" style="--banner-edge:#ff8a00" hidden><p>Wrap up: two minutes</p></div>
+      <div class="qr-card"><svg class="qr-card-code" role="img" aria-label="QR code: open this page" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h33v33H0z"/><path stroke="#000000" d="M0 0.5h7m4 0h1m2 0h1m1 0h1m1 0h4m1 0h1m2 0h7M0 1.5h1m5 0h1m2 0h3m3 0h1m2 0h1m3 0h1m3 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h1m1 0h1m3 0h3m1 0h1m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h3m1 0h1m2 0h1m2 0h1m3 0h3m1 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h4m2 0h1m2 0h1m2 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h1m3 0h1m1 0h1m3 0h2m1 0h2m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h1m1 0h1m3 0h1m1 0h4m2 0h1M0 8.5h1m1 0h5m2 0h3m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1m1 0h5M2 9.5h1m4 0h2m3 0h2m2 0h2m1 0h3m1 0h1m2 0h2m1 0h2m1 0h1M0 10.5h2m1 0h2m1 0h1m1 0h1m2 0h7m2 0h3m1 0h3m1 0h1m1 0h2M0 11.5h2m1 0h2m2 0h2m2 0h3m2 0h3m2 0h3m1 0h2m1 0h3M0 12.5h1m3 0h4m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m4 0h2m1 0h3m1 0h1M1 13.5h1m1 0h2m2 0h2m2 0h2m2 0h1m2 0h1m4 0h1m1 0h3m3 0h2M1 14.5h2m3 0h8m1 0h2m4 0h1m2 0h3m1 0h1m1 0h2M0 15.5h2m1 0h1m1 0h1m2 0h1m2 0h2m2 0h1m4 0h4m1 0h3m1 0h2M6 16.5h3m1 0h1m2 0h3m1 0h1m1 0h1m2 0h2m1 0h1m1 0h2m3 0h1M0 17.5h1m4 0h1m2 0h2m8 0h3m1 0h2m2 0h2m1 0h4M0 18.5h1m2 0h2m1 0h1m1 0h3m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m4 0h2m1 0h2M0 19.5h1m3 0h2m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m2 0h3m3 0h7M0 20.5h1m2 0h2m1 0h3m2 0h4m3 0h1m3 0h1m1 0h2m2 0h2m1 0h2M0 21.5h1m2 0h1m1 0h1m2 0h2m1 0h1m2 0h3m2 0h3m1 0h1m2 0h1m2 0h2m1 0h1M0 22.5h1m1 0h1m2 0h2m1 0h2m1 0h1m5 0h2m1 0h1m4 0h1m3 0h3M0 23.5h1m3 0h2m2 0h1m1 0h4m2 0h1m1 0h1m1 0h4m5 0h4M0 24.5h1m3 0h1m1 0h2m2 0h1m1 0h3m2 0h3m2 0h1m1 0h5M8 25.5h1m1 0h4m2 0h5m3 0h1m3 0h1m1 0h1m1 0h1M0 26.5h7m8 0h3m3 0h1m1 0h2m1 0h1m1 0h1m1 0h1M0 27.5h1m5 0h1m1 0h1m3 0h1m1 0h2m1 0h5m1 0h2m3 0h3M0 28.5h1m1 0h3m1 0h1m1 0h1m3 0h1m3 0h1m2 0h1m2 0h1m1 0h6m1 0h2M0 29.5h1m1 0h3m1 0h1m1 0h2m1 0h3m1 0h1m1 0h4m1 0h1m2 0h1m2 0h2m1 0h2M0 30.5h1m1 0h3m1 0h1m1 0h3m3 0h4m3 0h1m2 0h4m1 0h2M0 31.5h1m5 0h1m2 0h3m1 0h1m1 0h1m2 0h1m1 0h2m4 0h1m1 0h3M0 32.5h7m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m5 0h3m1 0h1m3 0h1"/></svg>
+<span class="qr-card-label">Ask a question</span><span class="qr-card-url">ftl.local/q</span></div>
+    </div>
+    <p class="visually-hidden" role="status" id="ev-announce"></p>
+    <div class="cluster">
+      <button class="btn" type="button" id="ev-send">Send "Wrap up"</button>
+      <button class="btn btn-danger" type="button" aria-pressed="false" id="ev-blank">Blank screens</button>
+      <button class="btn" type="button" id="ev-flash">Flash the timer</button>
+      <span class="badge badge-outline badge-warning">Held</span>
+      <span class="badge badge-solid badge-danger">Overtime +0:12</span>
+      <span class="badge badge-solid badge-warning">Wrap up</span>
+    </div>
+  </section>
+
+  <div class="ev-cols">
+    <section class="panel stack ev-print" aria-labelledby="ev-run-h">
+      <header class="panel-header"><h2 id="ev-run-h">Run sheet</h2></header>
+      <p class="field-hint" id="ev-move-help">Drag a row by its grip, or focus the grip and press Alt+Up or Alt+Down.</p>
+      <div class="table-wrap"><table class="table is-daysheet" id="ev-run">
+        <thead><tr><th scope="col"><span class="visually-hidden">Move</span></th><th scope="col">Cue</th><th scope="col">Start</th><th scope="col">Colour</th></tr></thead>
+        <tbody><tr class="is-past"><td class="drag-handle"><button type="button" aria-label="Move Doors" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Doors</span> <span class="visually-hidden">(done)</span></td><td class="mono">09:00</td><td><button class="color-dot" type="button" style="--swatch:#7f7f8a" aria-label="Doors colour: grey"></button></td></tr><tr class="is-past"><td class="drag-handle"><button type="button" aria-label="Move Welcome" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Welcome</span> <span class="visually-hidden">(done)</span></td><td class="mono">09:30</td><td><button class="color-dot" type="button" style="--swatch:#7f7f8a" aria-label="Welcome colour: grey"></button></td></tr><tr class="is-current" aria-current="time"><td class="drag-handle"><button type="button" aria-label="Move Keynote" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Keynote</span> <span class="visually-hidden">(now)</span></td><td class="mono">09:45</td><td><button class="color-dot" type="button" style="--swatch:#7f7f8a" aria-label="Keynote colour: grey"></button></td></tr><tr class="table-now" aria-hidden="true"><td colspan="4">Now · 10:12</td></tr><tr class="is-next has-row-color" style="--row-color:#e8a33d"><td class="drag-handle"><button type="button" aria-label="Move Coffee" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Coffee</span> <span class="visually-hidden">(next)</span></td><td class="mono">10:45</td><td><button class="color-dot" type="button" style="--swatch:#e8a33d" aria-label="Coffee colour: amber"></button></td></tr><tr class=""><td class="drag-handle"><button type="button" aria-label="Move Panel: tools" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Panel: tools</span></td><td class="mono">11:15</td><td><button class="color-dot" type="button" style="--swatch:#7f7f8a" aria-label="Panel: tools colour: grey"></button></td></tr><tr class="has-row-color" style="--row-color:#e8a33d"><td class="drag-handle"><button type="button" aria-label="Move Lunch" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Lunch</span></td><td class="mono">12:30</td><td><button class="color-dot" type="button" style="--swatch:#e8a33d" aria-label="Lunch colour: amber"></button></td></tr><tr class="has-row-color" style="--row-color:#5b8def"><td class="drag-handle"><button type="button" aria-label="Move Workshops" aria-describedby="ev-move-help"></button></td><td><span class="row-title">Workshops</span></td><td class="mono">13:30</td><td><button class="color-dot" type="button" style="--swatch:#5b8def" aria-label="Workshops colour: blue"></button></td></tr></tbody></table></div>
+      <p class="visually-hidden" role="status" id="ev-moved"></p>
+      <div class="cluster">
+        <button class="btn btn-danger" type="button" id="ev-del" aria-describedby="ev-del-help"><span class="btn-idle-label">Delete cue</span><span class="btn-armed-label">Tap again to delete</span></button>
+        <span class="visually-hidden" id="ev-del-help" aria-live="polite"></span>
+        <button class="btn" type="button" onclick="window.print()">Print daysheet</button>
+      </div>
+      <p class="field-hint">Done rows are struck through, the next row has a dashed marker, breaks carry a row colour, and the NOW line sits under the current cue. Printed, the table is black on white.</p>
+    </section>
+
+    <section class="panel stack" aria-labelledby="ev-aud-h">
+      <header class="panel-header"><h2 id="ev-aud-h">Audience wall</h2></header>
+      <ul class="word-cloud ev-cloud" aria-label="Audience words"><li class="word-cloud-word is-top" data-tone="1" style="--weight:0.95;--x:0;--y:0;--rotate:0deg">coffee<span class="visually-hidden">, 19 votes</span></li><li class="word-cloud-word " data-tone="2" style="--weight:0.6;--x:-0.5;--y:-0.5;--rotate:0deg">demos<span class="visually-hidden">, 12 votes</span></li><li class="word-cloud-word " data-tone="3" style="--weight:0.45;--x:0.45;--y:0.45;--rotate:0deg">community<span class="visually-hidden">, 9 votes</span></li><li class="word-cloud-word " data-tone="4" style="--weight:0.6;--x:0.78;--y:-0.25;--rotate:-90deg">AI<span class="visually-hidden">, 12 votes</span></li><li class="word-cloud-word " data-tone="5" style="--weight:0.4;--x:-0.55;--y:0.45;--rotate:0deg">tooling<span class="visually-hidden">, 8 votes</span></li><li class="word-cloud-word " data-tone="2" style="--weight:0.35;--x:0;--y:0.8;--rotate:0deg">accessibility<span class="visually-hidden">, 7 votes</span></li><li class="word-cloud-word " data-tone="6" style="--weight:0.3;--x:0.3;--y:-0.75;--rotate:0deg">speed<span class="visually-hidden">, 6 votes</span></li><li class="word-cloud-word " data-tone="1" style="--weight:0.3;--x:-0.62;--y:0.62;--rotate:0deg">open source<span class="visually-hidden">, 6 votes</span></li><li class="word-cloud-word is-new" data-tone="3" style="--weight:0.55;--x:-0.88;--y:-0.05;--rotate:-90deg">themes<span class="visually-hidden">, 11 votes</span></li><li class="word-cloud-word " data-tone="4" style="--weight:0.3;--x:0.55;--y:-0.6;--rotate:20deg">fun<span class="visually-hidden">, 6 votes</span></li></ul>
+      <ol class="ranked-list is-positioned" id="ev-qa" style="--ranked-height:14.4rem" aria-label="Questions by votes"><li class="ranked-item is-spotlight" aria-current="true" style="--slot-y:0.0rem"><span>When do the slides go up?</span><span class="ranked-votes">14</span></li><li class="ranked-item is-answered" style="--slot-y:3.6rem"><span>Is the keynote recorded? <span class="badge badge-solid badge-success">Answered</span></span><span class="ranked-votes">11</span></li><li class="ranked-item " style="--slot-y:7.2rem"><span>Where is the workshop room?</span><span class="ranked-votes">7</span></li><li class="ranked-item " style="--slot-y:10.8rem"><span>Will there be vegan lunch?</span><span class="ranked-votes">5</span></li></ol>
+      <div class="cluster"><button class="btn btn-sm" type="button" id="ev-vote">Vote for the last question</button></div>
+      <h3>Poll: when should the social be?</h3>
+      <div class="ev-poll" id="ev-poll"><div><span>Morning</span><div class="meter is-solid is-counting" role="meter" aria-label="Morning" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" style="--stagger-index:0"><div class="meter-fill" style="--meter-level:42%"></div></div><data class="count mono" value="42" style="--count:42;--stagger-index:0"><span class="visually-hidden">42</span></data></div><div><span>Afternoon</span><div class="meter is-solid is-counting" role="meter" aria-label="Afternoon" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="--stagger-index:1"><div class="meter-fill" style="--meter-level:35%"></div></div><data class="count mono" value="35" style="--count:35;--stagger-index:1"><span class="visually-hidden">35</span></data></div><div><span>Evening</span><div class="meter is-solid is-counting" role="meter" aria-label="Evening" aria-valuenow="23" aria-valuemin="0" aria-valuemax="100" style="--stagger-index:2"><div class="meter-fill" style="--meter-level:23%"></div></div><data class="count mono" value="23" style="--count:23;--stagger-index:2"><span class="visually-hidden">23</span></data></div></div>
+      <div class="cluster"><button class="btn btn-sm" type="button" id="ev-reveal">Reveal again</button></div>
+    </section>
+  </div>
+
+  <section class="panel stack" aria-labelledby="ev-scr-h">
+    <header class="panel-header"><h2 id="ev-scr-h">Screens</h2></header>
+    <div class="ev-splashes">
+      <div><div class="splash is-stage is-contained" role="status"><div class="splash-art"></div><p class="splash-title">Pair this screen</p><p class="splash-message">Code <span class="readout">K7QP-M3XB</span></p></div></div>
+      <div><div class="splash is-standby is-contained" role="status"><div class="splash-art"></div><p class="splash-title">Standby</p></div></div>
+      <div><div class="overlay is-contained"><div class="empty-state is-offline"><p class="empty-state-title">Link down</p><p class="empty-state-hint">Reconnecting to the control room…</p></div></div></div>
+    </div>
+    <h3>Board layout (fixed placement)</h3>
+    <div class="dashboard is-fixed ev-board" style="--dashboard-rows:6"><section class="widget" style="--x:0;--y:0;--cols:4;--rows:2" aria-label="Clock"><b>Clock</b></section><section class="widget" style="--x:4;--y:0;--cols:8;--rows:2" aria-label="Now"><b>Now</b></section><section class="widget" style="--x:0;--y:2;--cols:6;--rows:2" aria-label="Next"><b>Next</b></section><section class="widget" style="--x:6;--y:2;--cols:6;--rows:4" aria-label="Q&amp;A"><b>Q&amp;A</b></section><section class="widget" style="--x:0;--y:4;--cols:3;--rows:2" aria-label="QR"><b>QR</b></section><section class="widget" style="--x:3;--y:4;--cols:3;--rows:2" aria-label="Ticker"><b>Ticker</b></section></div>
+    <div class="grid is-fill" style="--grid-min:16rem">
+      <article class="card stack-sm"><button class="btn-close is-danger card-dismiss" type="button" aria-label="Forget screen Main hall"></button>
+        <h3><span class="editable is-saved" tabindex="0">Main hall</span></h3>
+        <div class="ratio ratio-16x9 is-canvas" aria-hidden="true"><span class="ratio-item" style="--x:0.00;--y:0.00;--w:33.33;--h:33.33">Clock</span><span class="ratio-item" style="--x:33.33;--y:0.00;--w:66.67;--h:33.33">Now</span><span class="ratio-item" style="--x:0.00;--y:33.33;--w:50.00;--h:33.33">Next</span><span class="ratio-item" style="--x:50.00;--y:33.33;--w:50.00;--h:66.67">Q&amp;A</span><span class="ratio-item" style="--x:0.00;--y:66.67;--w:25.00;--h:33.33">QR</span><span class="ratio-item" style="--x:25.00;--y:66.67;--w:25.00;--h:33.33">Ticker</span></div>
+        <ul class="glyph-legend"><li><span class="glyph-legend-mark" aria-hidden="true">⠿</span>drag to move</li><li><kbd aria-hidden="true">←</kbd>nudge</li><li><span class="glyph-legend-mark" aria-hidden="true">⚙</span>settings</li></ul>
+      </article>
+    </div>
+    <p class="field-hint">A lone card in <code>.grid.is-fill</code> keeps its column width.</p>
+    <h3>Day progress</h3>
+    <div class="gauge-linear"><div class="meter is-solid" role="meter" aria-label="Day progress" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill" style="--meter-level:18%"></div></div><span class="gauge-mark is-min" style="--at:0%">09:00</span><span class="gauge-mark is-needle" style="--at:18%">Now</span><span class="gauge-mark is-max" style="--at:100%">17:30</span></div>
+  </section>
+
+  <section class="panel stack container-narrow" aria-labelledby="ev-join-h">
+    <header class="panel-header"><h2 id="ev-join-h">Join a room</h2></header>
+    <div class="field"><label class="label" for="ev-code">Event code</label>
+      <div class="otp is-alnum" style="--otp-length:9"><input class="otp-input" id="ev-code" inputmode="text" autocapitalize="characters" autocomplete="one-time-code" spellcheck="false" maxlength="9" placeholder="XXXX-XXXX"><span></span><span></span><span></span><span></span><span class="otp-sep"></span><span></span><span></span><span></span><span></span></div></div>
+    <fieldset class="field"><legend class="label">What is this screen?</legend>
+      <div class="toggle-group is-block">
+        <label class="toggle-btn"><input type="radio" name="ev-kind" checked><span class="toggle-btn-title">Stage</span><span class="toggle-btn-hint">Timer for the speaker</span></label>
+        <label class="toggle-btn"><input type="radio" name="ev-kind"><span class="toggle-btn-title">Room</span><span class="toggle-btn-hint">Agenda by the door</span></label>
+        <label class="toggle-btn"><input type="radio" name="ev-kind"><span class="toggle-btn-title">Audience</span><span class="toggle-btn-hint">Q&amp;A and polls</span></label>
+      </div></fieldset>
+    <ul class="list list-cards"><li class="list-item"><div class="list-item-body"><span class="list-item-title">Spring summit</span><span class="list-item-meta"><span>Yesterday</span><span class="text-danger">2 screens offline</span></span></div><button class="btn btn-sm" type="button">Open</button></li></ul>
+    <button class="btn btn-primary btn-lg btn-block" type="button">Continue</button>
+  </section>
+</main>
+
+  <footer class="app-status">
+    <span>Spring summit · Room A</span>
+    <span class="connection" data-state="live">Control room linked</span>
+  </footer>
+<script>
+/* Demo wiring only: a timer, the operator's buttons and the audience wall.
+   The components need none of it to render. */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var clock = $("ev-clock"), digits = clock.querySelector(".ev-digits"), sign = clock.querySelector(".countdown-sign");
+  var stage = $("ev-stage"), chip = $("ev-chip"), t = 599;
+  var LEVEL = { alert1: "warn", alert2: "danger", overtime: "danger" };
+  var CHIP = { running: ["Running", ""], armed: ["Cued", "badge-outline"], paused: ["Paused", "badge-outline badge-warning"], held: ["Held", "badge-outline"],
+    alert1: ["Wrap up", "badge-warning"], alert2: ["Alert", "badge-danger"], overtime: ["Overtime", "badge-danger"] };
+  function show() {
+    var s = Math.abs(t);
+    digits.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+  function state(v) {
+    clock.dataset.state = v; sign.hidden = v !== "overtime";
+    if (v === "overtime") t = -12;
+    if (LEVEL[v]) stage.dataset.level = LEVEL[v]; else delete stage.dataset.level;
+    chip.textContent = CHIP[v][0]; chip.className = "badge badge-solid " + CHIP[v][1];
+    $("ev-announce").textContent = "Timer " + CHIP[v][0].toLowerCase();
+    show();
+  }
+  document.addEventListener("change", function (e) { if (e.target.name === "ev-state") state(e.target.value); });
+  setInterval(function () { var v = clock.dataset.state; if (v === "running" || v === "alert1" || v === "alert2") t = Math.max(0, t - 1); if (v === "overtime") t--; show(); }, 1000);
+  $("ev-send").onclick = function () { var m = $("ev-msg"); m.hidden = !m.hidden; this.textContent = m.hidden ? 'Send "Wrap up"' : "Clear message"; };
+  $("ev-flash").onclick = function () { clock.classList.toggle("is-attention"); };
+  // A server-confirmed toggle: pending until the "server" answers.
+  $("ev-blank").onclick = function () {
+    var b = this, next = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-busy", "true");
+    setTimeout(function () { b.removeAttribute("aria-busy"); b.setAttribute("aria-pressed", String(next)); }, 900);
+  };
+  // Two-tap delete.
+  var armed;
+  $("ev-del").onclick = function () {
+    var b = this;
+    if (b.classList.contains("is-armed")) { clearTimeout(armed); b.classList.remove("is-armed"); $("ev-del-help").textContent = "Cue deleted (demo: nothing removed)"; return; }
+    b.classList.add("is-armed"); $("ev-del-help").textContent = "Tap again to delete";
+    armed = setTimeout(function () { b.classList.remove("is-armed"); $("ev-del-help").textContent = ""; }, 2500);
+  };
+  // Keyboard reorder for the run sheet (the drag look is .is-dragging / .is-drop-*).
+  $("ev-run").addEventListener("keydown", function (e) {
+    var btn = e.target.closest(".drag-handle button"); if (!btn || !e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+    e.preventDefault();
+    var tr = btn.closest("tr"), sib = e.key === "ArrowUp" ? tr.previousElementSibling : tr.nextElementSibling;
+    while (sib && sib.classList.contains("table-now")) sib = e.key === "ArrowUp" ? sib.previousElementSibling : sib.nextElementSibling;
+    if (!sib) return;
+    if (e.key === "ArrowUp") sib.before(tr); else sib.after(tr);
+    btn.focus();
+    var rowsNow = [].filter.call(tr.parentNode.children, function (r) { return !r.classList.contains("table-now"); });
+    $("ev-moved").textContent = "Moved " + tr.querySelector(".row-title").textContent + " to position " + (rowsNow.indexOf(tr) + 1);
+  });
+  // Q&A: the last question gets votes and moves up; DOM order = rank order.
+  $("ev-vote").onclick = function () {
+    var ol = $("ev-qa"), items = [].slice.call(ol.children), last = items[items.length - 1], v = last.querySelector(".ranked-votes");
+    v.textContent = +v.textContent + 5;
+    items.sort(function (a, b) { return b.querySelector(".ranked-votes").textContent - a.querySelector(".ranked-votes").textContent; });
+    items.forEach(function (li, i) { ol.appendChild(li); li.style.setProperty("--slot-y", (i * 3.6) + "rem"); });
+  };
+  $("ev-reveal").onclick = function () { var p = $("ev-poll"), c = p.cloneNode(true); p.replaceWith(c); };
+  $("ev-always").addEventListener("change", function (e) {
+    if (e.target.checked) document.documentElement.dataset.motion = "always"; else delete document.documentElement.dataset.motion;
+  });
+  setTimeout(function () { var l = $("ev-link"); l.dataset.state = "live"; l.textContent = "Live"; }, 2500);
+  // The event code: upper-case, Crockford-ish letters, dash after four.
+  $("ev-code").addEventListener("input", function (e) {
+    var raw = e.target.value.toUpperCase().replace(/[^0-9A-HJKMNP-TV-Z]/g, "").slice(0, 8);
+    e.target.value = raw.length > 4 ? raw.slice(0, 4) + "-" + raw.slice(4) : raw;
+  });
+})();
+</script>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
+</body>
+</html>

@@ -23,6 +23,9 @@ rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../ass
 # CSS-only selection: .is-active / [aria-selected="true"] also match an item
 # whose own radio or checkbox is checked (scripts/radio_state.py).
 radio_state() { python3 "$root/scripts/radio_state.py"; }
+# html[data-motion="always"]: every motion block also applies on unattended
+# screens that report reduced motion (scripts/motion_always.py).
+motion_always() { python3 "$root/scripts/motion_always.py"; }
 
 # core/reset.css + core.css alone, with no theme and no layout
 # shell — for an app that wants the --* token contract and component
@@ -43,7 +46,7 @@ radio_state() { python3 "$root/scripts/radio_state.py"; }
   cat_components
   cat core/cursors.css
   echo "}"
-} | rewrite_urls | radio_state > dist/core.css
+} | rewrite_urls | radio_state | motion_always > dist/core.css
 echo "built dist/core.css"
 
 for dir in themes/*/; do
@@ -67,7 +70,7 @@ for dir in themes/*/; do
     cat core/cursors.css
     python3 scripts/theme_inheritance.py "$name"
     echo "}"
-  } | rewrite_urls | radio_state > "$out"
+  } | rewrite_urls | radio_state | motion_always > "$out"
   echo "built $out"
 done
 

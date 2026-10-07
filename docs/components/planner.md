@@ -422,3 +422,11 @@ The badge's own tokens (`--schedule-gap`, `--schedule-font-size`) still apply.
 - **Accessibility.** An ordered list in time order; `<time datetime>` on each start;
   `aria-current="time"` is announced. Don't rely on the past dimming alone: past rows
   are also plain-weight.
+
+## Read-only schedules
+
+A `.schedule-item` is a `--tap-min` touch target only when it holds something to press
+(a link, a button, a `.stretched-link`, an input), so a read-only schedule on a short
+signage tile doesn't overflow. Keep text out of the gap between `<time class="schedule">`
+and `.schedule-body`: a stray character (even an en space) becomes its own grid item and
+pushes the body into the third column.

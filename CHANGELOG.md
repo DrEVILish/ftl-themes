@@ -6,6 +6,24 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Event displays and signage (#68), new group `core/components/signage.css` and demo `signage.html`:
+  `.countdown[data-state]` timer states (armed, paused, held, alert1/2, overtime with sign and
+  tenths), `.timeline-bar` day bar with a now needle, `.stage-edge` alert ring, `.is-attention` and
+  `.is-urgent`, `.lower-third` message band, `.qr-card`, `.word-cloud`, `.ranked-list` live wall,
+  `.count` count-up with `.is-counting` bars, `[data-enter]`/`[data-exit]` motion, the signage
+  surface (`html[data-surface="signage"]`, `.safe-area`, `data-fit`).
+- `html[data-motion="always"]` for unattended screens: every animation runs even when the device
+  reports reduced motion (`scripts/motion_always.py` in the build).
+- Operator and admin pieces (#68): `.btn-lg`, `.btn-block`, two-tap `.btn.is-armed`, pressed and
+  pending looks for any `.btn[aria-pressed]` (`aria-busy`), `.color-dot`, `.badge-solid`,
+  `.badge-outline`, `.meter.is-solid`, `.status-rec` in core, text tones, `.grid.is-fill` and gap
+  steps, `.container-narrow`/`-wide`/`.is-page`, `.ratio.is-canvas` + `.ratio-item`, `.thumb`,
+  `.glyph-legend`, `.tabs.is-sticky`, `.card-dismiss` + `.btn-close.is-danger`,
+  `.toggle-group.is-block`/`.is-stacked` with title and hint, `.otp` separator cells and
+  `.is-alnum`, `.editable` outside tables, table row states (`.is-past`, `.is-next`,
+  `.is-current`, `.has-row-color`), drag-to-reorder rows, a `tr.table-now` line and
+  `.table.is-daysheet` print, `.connection[data-state="connecting"]`, `.dashboard.is-fixed`,
+  `.splash.is-stage`/`.is-standby`, logo `.splash-art`, `.overlay`, `.gauge-mark.is-needle`.
 - Waveform fades (#69): `--gain` per bar (visible height `--level × --gain`), `.waveform.has-ghost`
   (the full level as a faint ghost), `.waveform-region.is-fade-in/-out` with
   `data-curve="linear|smooth|log|exp"` drawn as the fade's shape, one-input fade regions whose free
@@ -94,6 +112,15 @@ changes are called out explicitly here.
   arrow in the knee) and each theme draws its own. Demo: `components-experience.html`.
 
 ### Changed
+- In the `.app` shell the toast region starts below the app bar (#68 R-A7).
+- Breadcrumb separators use `--muted` and follow the app bar's text colour (#68 R-A1).
+- Editing cells take `--cell-editor-font-size/-pad-x/-arrow-space` and style controls inside an
+  `.input-group` (#68 R-A2, R-A3).
+- `.otp` has its natural width in a flex row (#68 M-A3); `.connection` lamps scale with the
+  text (`--connection-lamp-size`, #68 D-A4); a read-only `.schedule-item` is no longer a touch
+  target (#68 D-A9); `--gauge-linear-label-room` follows the label size (#68 D-A8).
+- CONTRACT: `.grid-sm`/`.grid-lg` set the column minimum (the docs said gap), popovers shared
+  by many triggers (`showPopover({ source })`), small forms in a `.dropdown`.
 - `.accordion-panel` text is `--text` (was `--muted`); `--accordion-panel-fg` sets it (#68 M-A7).
 - The v4 codemod (`scripts/migrate-v4.py`, `scripts/v4-rename-map.json`) is retired;
   `docs/MIGRATING-v4.md` shows how to run it from the v5.3.0 tag.

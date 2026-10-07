@@ -475,7 +475,7 @@
 .gauge-linear {
   position: relative;
   min-inline-size: 0;
-  padding-block: var(--gauge-linear-label-room, 1.35rem);
+  padding-block: var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem)));
   font-size: var(--gauge-linear-label-size, 0.75rem);
   font-variant-numeric: tabular-nums;
   /* The bands of a .meter-fill are sized to the fill, not the track; inside
@@ -499,14 +499,14 @@
   content: "";
   position: absolute;
   left: var(--at, 0%);
-  top: calc(var(--gauge-linear-label-room, 1.35rem) + var(--meter-thickness, 0.6rem));
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) + var(--meter-thickness, 0.6rem));
   inline-size: 1px;
   block-size: 0.35rem;
   translate: -50% 0;
   background: currentColor;
 }
 .gauge-mark:is(.is-target, .is-warn, .is-min, .is-max)::before {
-  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.3rem);
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.3rem);
   inline-size: 2px;
   block-size: calc(var(--meter-thickness, 0.6rem) + 0.6rem);
 }
@@ -516,7 +516,7 @@
   content: "";
   position: absolute;
   left: var(--at, 0%);
-  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.75rem);
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.75rem);
   inline-size: 0.6rem;
   block-size: 0.45rem;
   translate: -50% 0;
@@ -526,6 +526,24 @@
 .gauge-mark.is-warn { color: var(--gauge-warn, var(--warning-text, var(--warning))); }
 .gauge-mark.is-warn::before { background: repeating-linear-gradient(currentColor 0 3px, transparent 3px 5px); }
 .gauge-mark:is(.is-min, .is-max) { align-items: flex-start; color: var(--gauge-minmax, var(--muted)); }
+/* .is-needle: a "now" line with a head and no label. */
+.gauge-mark.is-needle { color: var(--gauge-needle, var(--accent)); font-size: 0; }
+.gauge-mark.is-needle::before {
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.3rem);
+  inline-size: 2px;
+  block-size: calc(var(--meter-thickness, 0.6rem) + 0.6rem);
+}
+.gauge-mark.is-needle::after {
+  content: "";
+  position: absolute;
+  left: var(--at, 0%);
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.75rem);
+  inline-size: 0.6rem;
+  block-size: 0.45rem;
+  translate: -50% 0;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
 
 /* --- .map (§9 #5–7): a themed frame for an <img>, <svg>, <iframe> or
    <canvas> map. Overlays sit in a grid: .map-north top-start,

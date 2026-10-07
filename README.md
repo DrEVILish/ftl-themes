@@ -241,6 +241,7 @@ theme.
   - [`soundmixer.html`](soundmixer.html)
   - [`proseries.html`](proseries.html), a live sound console (channel strips, PEQ, gate and compressor, effects rack, 31-band GEQ, patching, meters) for the `proseries` theme
   - [`audio-blocks.html`](audio-blocks.html), AudioCN's mixer, mic setup, system audio, quick controls, soundboard and music player blocks
+  - [`signage.html`](signage.html), event displays: a stage timer, a run sheet and an audience wall
   - [`media-decks.html`](media-decks.html), transport devices and animation states from reel-to-reel to MiniDisc
   - [`audio-components.html`](audio-components.html), with the [AudioCN component map and usage guide](docs/components/audio.md)
   - [`livechat.html`](livechat.html)
@@ -272,8 +273,9 @@ every class, token and source file for tools and agents.
 
 ### Core
 
-- **Buttons:** `.btn` (primary, secondary, tertiary, ghost, danger, sizes),
-  `.btn-icon`, `.btn-close`, `.toggle-btn`, `.badge-button`, `.segmented`.
+- **Buttons:** `.btn` (primary, secondary, tertiary, ghost, danger, sizes
+  incl. `.btn-lg` and `.btn-block`, two-tap `.is-armed`, server-confirmed
+  `aria-pressed` with `aria-busy`), `.btn-icon`, `.btn-close`, `.toggle-btn`, `.badge-button`, `.segmented`.
 - **Forms:** `.field`, `.label`, `.field-hint`, `.field-error`,
   `.field-row`, `.field-group`, `.field-valid`, `.input`, `.select`,
   `.textarea` (readonly, mirror, valid, invalid and size states; native
@@ -290,20 +292,23 @@ every class, token and source file for tools and agents.
   `.toolbar`.
 - **Tables and lists:** `.table` (sticky header, zebra, blank rows, sort
   indicator, row hover and selection, `.is-matrix`), `.list` and
-  two-line `.list-item`s, `.log`.
-- **Status and feedback:** `.badge`, `.status`, `.progress` and
+  two-line `.list-item`s (`.list-item-body`), card lists (`.list-cards`
+  with featured and status tones), `.log`.
+- **Status and feedback:** `.badge` (`.badge-solid`, `.badge-outline`), `.status` (`.status-rec`), `.progress` and
   `.progress-stack`, `.meter`, `.spinner` (and `.is-grow`), `.skeleton`, `.empty-state`, `.schedule`, htmx request
   states (`.htmx-request`, `.indicator`).
 - **Content:** `.avatar`, `.stat`, `.divider`, `.icon`, `.carousel`,
   `.thread`/`.message`, `.thread-divider`, `.typing`, `.attachment`,
   `.bar-chart`, `.value-row`, `.meter-bank`, `.hero`, `.band`, `.price`,
-  `.figure`, `.img-thumbnail`, `.vr`, `kbd`.
+  `.figure`, `.img-thumbnail`, `.thumb`, `.glyph-legend`, `.color-dot`, `.vr`, `kbd`,
+  text tones (`.text-danger/-warning/-success/-info`).
 - **Instruments:** `.meter` (vertical, segmented LED ladder, gain
   reduction), `.readout`, `.transport`, `.lamp`.
 - **Mixing console:** `.mixer`, `.strip`, `.knob`, `.fader`, `.scale`,
   `.key`, `.scribble`, `.eq-curve`.
-- **Layout:** `.stack`, `.cluster`, `.grid`, `.container`, `.anchor`,
-  `.ratio`, `.divide-y`, `.stretched-link`, `.sticky-top`/`-bottom`,
+- **Layout:** `.stack`, `.cluster`, `.grid` (`.is-fill`, gap steps), `.container`
+  (`-narrow`, `-wide`, `.is-page`), `.anchor`, `.ratio` (`.is-canvas` layout previews),
+  `.tabs.is-sticky`, `.card-dismiss`, `.divide-y`, `.stretched-link`, `.sticky-top`/`-bottom`,
   `.fixed-top`/`-bottom`, gap and margin steps,
   truncation, `.visually-hidden`, themed scrollbars.
 
@@ -377,6 +382,11 @@ every class, token and source file for tools and agents.
 - **Operations** ([docs](docs/components/ops.md)): `[data-status]`
   colours, shaped `.map-pin`s, sketch map hooks, `.map-route`,
   `.camera-feed`, `.barcode`.
+- **Event displays and signage** ([docs](docs/components/signage.md)):
+  `.countdown` timer states, `.timeline-bar`, `.stage-edge`, `.lower-third`,
+  `.qr-card`, `.word-cloud`, `.ranked-list`, `.count` count-up,
+  `[data-enter]`/`[data-exit]`, the signage surface (`html[data-surface]`,
+  `.safe-area`) and `html[data-motion="always"]` for unattended screens.
 - **Console** ([docs](docs/components/console.md)): channel name tags,
   `.sends`, `.dyn-graph`, `.rack`/`.rack-unit`, `.faceplate`, `.assignable`,
   `.geq`, `.patchbay`; `assets/js/console.js` draws EQ and dynamics curves.

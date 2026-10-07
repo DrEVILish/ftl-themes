@@ -749,6 +749,58 @@ dialog.modal:modal {
    it recedes into the header; hover/focus lift it to full text color.
    Pair with aria-label="Close" (or similar) in markup — the glyph alone
    isn't accessible. */
+/* .btn.is-armed — the first tap of a two-tap destructive action: a double
+   ring and a danger tint; .btn-armed-label replaces the label while armed
+   (put the idle text in .btn-idle-label). A bar along the bottom runs out
+   over --armed-ms. Set aria-describedby to a live "Tap again to delete". */
+.btn.is-armed {
+  --_armed: var(--btn-armed-ring, var(--danger-text, var(--danger)));
+  --btn-bg: var(--btn-armed-bg, color-mix(in srgb, var(--_armed) 18%, var(--surface)));
+  --btn-fg: var(--btn-armed-fg, var(--text));
+  position: relative;
+  overflow: hidden;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--_armed);
+}
+.btn-armed-label, .btn.is-armed .btn-idle-label { display: none; }
+.btn.is-armed .btn-armed-label { display: inline; }
+.btn.is-armed::after { content: ""; position: absolute; inset: auto 0 0; block-size: 3px; background: var(--_armed); transform-origin: 0 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .btn.is-armed::after { animation: btn-armed-sweep var(--armed-ms, 2500ms) linear forwards; }
+}
+@keyframes btn-armed-sweep { to { transform: scaleX(0); } }
+/* A toggle whose state is the server's: any .btn with aria-pressed shows it
+   pressed (sunken, a ring and a lit dot, so not by colour alone);
+   aria-busy="true" beside it is "sent, waiting": the dot turns into a spinner. */
+.btn[aria-pressed="true"] {
+  box-shadow: var(--btn-pressed-shadow, inset 0 2px 0 rgb(0 0 0 / 0.35));
+  outline: 2px solid var(--btn-pressed-ring, currentColor);
+  outline-offset: 2px;
+}
+.btn[aria-pressed]::before {
+  content: "";
+  flex: none;
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.55;
+}
+.btn[aria-pressed="true"]::before { background: currentColor; box-shadow: 0 0 0.35em currentColor; opacity: 1; }
+.btn[aria-pressed][aria-busy="true"]::before { background: none; border-block-start-color: transparent; box-shadow: none; opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .btn[aria-pressed][aria-busy="true"]::before { animation: spinner-rotate 0.7s linear infinite; }
+}
+:is(.btn-clear, .btn-icon, .key, .toggle-btn)[aria-pressed]::before { content: none; }
+
+/* .btn-lg — one big primary action; .btn-block fills its row. */
+.btn.btn-lg {
+  min-block-size: var(--btn-min-height-lg, max(var(--tap-min), 2.9rem));
+  padding: var(--btn-padding-lg, calc(0.6em * var(--density)) calc(1.4em * var(--density)));
+  font-size: var(--btn-font-size-lg, 1.05rem);
+}
+.btn.btn-block { display: flex; inline-size: 100%; justify-content: center; }
 .btn-close,
 .btn-min,
 .btn-max {
@@ -792,6 +844,16 @@ dialog.modal:modal {
   line-height: 1;
 }
 .btn-close::before { content: var(--btn-close-glyph, "\00d7"); }
+/* .btn-close.is-danger: a remove/forget ×. .card-dismiss places a close
+   button in the top-end corner of a .card or .panel (RTL-safe), and the
+   card's header leaves room for it. */
+.btn-close.is-danger { --btn-close-fg: var(--danger-text, var(--danger)); --btn-close-fg-hover: var(--on-danger, #ffffff); --btn-close-bg-hover: var(--danger); }
+/* A heading in a panel header takes the header's own colour (a theme's
+   heading colour can match the header band). */
+.panel > .panel-header > :is(h1, h2, h3, h4, h5, h6) { margin-block: 0; color: inherit; }
+:is(.card, .panel):has(> .card-dismiss) { position: relative; }
+.card-dismiss { position: absolute; inset-block-start: var(--card-dismiss-inset, 0.4rem); inset-inline-end: var(--card-dismiss-inset, 0.4rem); z-index: var(--z-raised); }
+:is(.card, .panel):has(> .card-dismiss) > :is(.panel-header, .card-header, h2, h3, h4):first-of-type { padding-inline-end: calc(var(--tap-min) + 0.25rem); }
 /* Min/max double as <label> controls for the checkbox-hack window states
    below as well as plain <button>s — same box, either wiring. */
 .btn-min::before { content: var(--btn-min-glyph, "_"); }
@@ -865,6 +927,8 @@ dialog.modal:modal {
   border: var(--meter-border-width, 1px) solid var(--meter-border, var(--hairline));
   border-radius: var(--meter-radius, var(--radius));
 }
+/* .meter.is-solid: one colour (--meter-fill), no level bands: progress-like meters. */
+.meter.is-solid > .meter-fill { background: var(--meter-fill, var(--accent)); }
 .meter-fill {
   position: absolute;
   inset: 0 auto 0 0;
@@ -1620,6 +1684,8 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
 }
 }
 
+/* .tabs.is-sticky stays at the top while the page scrolls (an opaque background). */
+.tabs.is-sticky { position: sticky; inset-block-start: var(--sticky-top, 0); z-index: var(--z-sticky); background: var(--tabs-sticky-bg, var(--bg)); }
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1700,6 +1766,12 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
 .badge-danger { --badge-bg: var(--surface-2); --badge-fg: var(--danger-text, var(--danger)); }
 .badge-success { --badge-bg: var(--surface-2); --badge-fg: var(--success-text, var(--success)); }
 .badge-warning { --badge-bg: var(--surface-2); --badge-fg: var(--warning-text, var(--warning)); }
+/* .badge-solid: a filled chip that reads at distance; .badge-outline: a ring. */
+.badge.badge-solid { --badge-bg: var(--accent); --badge-fg: var(--on-accent); }
+.badge.badge-solid.badge-danger { --badge-bg: var(--danger); --badge-fg: var(--on-danger, #ffffff); }
+.badge.badge-solid.badge-warning { --badge-bg: var(--warning); --badge-fg: var(--on-warning, #000000); }
+.badge.badge-solid.badge-success { --badge-bg: var(--success); --badge-fg: var(--on-success, #000000); }
+.badge.badge-outline { --badge-bg: transparent; --badge-border: currentColor; }
 /* The tint is mixed into the opaque surface, not into transparent: a
    translucent badge inside a tinted row stacked on the row color, so its
    text contrast depended on where the badge happened to sit. */
@@ -1800,6 +1872,13 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 .status-warn { --state-fg: var(--warning-text, var(--warning)); color: var(--state-fg); }
 .status-error { --state-fg: var(--danger-text, var(--danger)); color: var(--state-fg); }
 .status-idle { --state-fg: var(--muted); color: var(--state-fg); }
+/* .status-rec: recording or on air. A bold danger label whose dot has a
+   halo; the dot pulses when motion is allowed. */
+.status-rec { --state-fg: var(--danger-text, var(--danger)); color: var(--state-fg); font-weight: 700; }
+.status-rec::before { box-shadow: 0 0 0 0.15em color-mix(in srgb, currentColor 35%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .status-rec::before { animation: lamp-pulse var(--status-rec-pulse, 1.2s) ease-in-out infinite; }
+}
 
 /* --- htmx state ------------------------------------------------------- *
  * htmx sets these classes around every swap. Handling them here means an
@@ -2507,7 +2586,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 .breadcrumb-item:not(:last-child)::after {
   content: "/";
   margin-inline-start: 0.4em;
-  color: var(--breadcrumb-separator, var(--hairline));
+  color: var(--breadcrumb-separator, var(--muted));
 }
 .breadcrumb-item.is-current {
   color: var(--breadcrumb-current-fg, var(--text));
@@ -2786,7 +2865,7 @@ html[data-motion="reduced"] * {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-min, 16rem)), 1fr));
+  grid-template-columns: repeat(var(--grid-repeat, auto-fit), minmax(min(100%, var(--grid-min, 16rem)), 1fr));
   gap: var(--grid-gap, calc(1rem * var(--density)));
   align-items: start;
 }
@@ -2796,6 +2875,11 @@ html[data-motion="reduced"] * {
 .cluster-lg { --cluster-gap: calc(1.2rem * var(--density)); }
 .grid-sm { --grid-min: 11rem; }
 .grid-lg { --grid-min: 22rem; }
+/* .is-fill keeps empty tracks, so a lone card stays one column wide (galleries);
+   the default auto-fit stretches it (dashboards). Gap: .grid-gap-sm / -lg. */
+.grid.is-fill { --grid-repeat: auto-fill; }
+.grid-gap-sm { --grid-gap: calc(0.5rem * var(--density)); }
+.grid-gap-lg { --grid-gap: calc(2rem * var(--density)); }
 /* Children of a stack/cluster/grid own no margins of their own. */
 :is(.stack, .cluster, .grid) > * { margin-block: 0; }
 /* Inline-sized components keep their own width in a stack instead of
@@ -3044,6 +3128,10 @@ pre code { padding: 0; background: none; border-radius: 0; }
 /* Muted text — an alias onto the same --muted token .field-hint
    already uses, for body copy that isn't a field hint. */
 .text-muted { color: var(--muted); }
+.text-danger { color: var(--danger-text, var(--danger)); }
+.text-warning { color: var(--warning-text, var(--warning)); }
+.text-success { color: var(--success-text, var(--success)); }
+.text-info { color: var(--info-text, var(--info, var(--accent-text, var(--accent)))); }
 /* In the app bar, transparent buttons and muted text sit on the bar's own
    fill, not --surface, so they take the bar's text colour (--app-bar-fg),
    falling back to the bar nav colour (--nav-item-fg) for themes that only
@@ -3053,7 +3141,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
 }
 .app-bar .text-muted { color: var(--app-bar-text); }
-.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
+.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); --breadcrumb-separator: color-mix(in srgb, var(--app-bar-text) 55%, transparent); }
 .app-bar .btn-secondary,
 .app-bar .btn-tertiary,
 .app-bar .btn-ghost {
@@ -3133,9 +3221,13 @@ pre code { padding: 0; background: none; border-radius: 0; }
 
 /* .container — a centered max-width column for sheets and readers. */
 .container {
-  width: min(100% - 2rem, var(--container-max, 64rem));
+  width: min(100% - 2 * var(--container-pad, 1rem), var(--container-max, 64rem));
   margin-inline: auto;
 }
+.container-narrow { --container-max: var(--container-narrow-max, 32rem); }
+.container-wide { --container-max: var(--container-wide-max, 72rem); }
+/* .container.is-page adds the page's block padding. */
+.container.is-page { padding-block: var(--container-pad-block, calc(1.5rem * var(--density))); }
 
 /* .divide-y — hairlines between stacked children (lists, menus). */
 .divide-y > * + * { border-block-start: 1px solid var(--hairline); }
@@ -3158,6 +3250,52 @@ pre code { padding: 0; background: none; border-radius: 0; }
 .ratio-4x3 { --ratio: 4 / 3; }
 .ratio-16x9 { --ratio: 16 / 9; }
 .ratio-21x9 { --ratio: 21 / 9; }
+.ratio-9x16 { --ratio: 9 / 16; max-block-size: var(--ratio-max-block, none); margin-inline: auto; }
+/* .ratio.is-canvas — a scaled layout preview: children are not stretched;
+   each .ratio-item sits at --x/--y and is --w/--h big, all in percent. */
+.ratio.is-canvas > * { position: static; inset: auto; width: auto; height: auto; object-fit: initial; }
+.ratio.is-canvas { background: var(--ratio-canvas-bg, var(--surface-2)); border: 1px solid var(--ratio-canvas-border, var(--hairline)); border-radius: var(--radius); }
+.ratio.is-canvas > .ratio-item {
+  position: absolute;
+  inset-inline-start: calc(var(--x, 0) * 1%);
+  inset-block-start: calc(var(--y, 0) * 1%);
+  inline-size: calc(var(--w, 25) * 1%);
+  block-size: calc(var(--h, 25) * 1%);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0.15em 0.3em;
+  border: 1px solid var(--ratio-item-border, var(--accent));
+  border-radius: var(--radius-sm, 2px);
+  background: var(--ratio-item-bg, color-mix(in srgb, var(--accent) 14%, var(--surface)));
+  color: var(--ratio-item-fg, var(--text));
+  font-size: var(--ratio-item-font-size, 0.65rem);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* .thumb — a small framed preview image (a map, a logo, an upload). It is
+   contained, not cropped; .is-cover crops to fill. -sm / -lg sizes. */
+.thumb {
+  display: inline-block;
+  max-inline-size: var(--thumb-size, 8rem);
+  max-block-size: calc(var(--thumb-size, 8rem) / 2);
+  object-fit: contain;
+  background: var(--thumb-bg, var(--surface-2));
+  border: 1px solid var(--thumb-border, var(--border));
+  border-radius: var(--thumb-radius, var(--radius));
+  vertical-align: middle;
+}
+.thumb.is-cover { inline-size: var(--thumb-size, 8rem); block-size: calc(var(--thumb-size, 8rem) / 2); object-fit: cover; }
+.thumb-sm { --thumb-size: 4rem; }
+.thumb-lg { --thumb-size: 14rem; }
+
+/* .glyph-legend — a wrapping row of glyph + word pairs (shortcut strips,
+   editor affordances; .legend is the chart legend). The glyph is
+   decorative: a <kbd> or .glyph-legend-mark, aria-hidden; words carry it. */
+.glyph-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em 1.1em; margin: 0; padding: 0; list-style: none; color: var(--glyph-legend-fg, var(--muted)); font-size: 0.85em; }
+.glyph-legend > li { display: inline-flex; align-items: center; gap: 0.4em; }
+.glyph-legend-mark { color: var(--glyph-legend-mark-fg, var(--accent-text, var(--accent))); font-weight: 700; }
 
 /* Single- and multi-line truncation for cells, titles and log lines. */
 .text-truncate {
@@ -3701,6 +3839,16 @@ input[type="color"] { min-block-size: var(--tap-min); min-inline-size: var(--tap
   border: 0;
   background: transparent;
   overflow: visible;
+}
+/* In the .app shell the region starts below the app bar, so toasts don't
+   cover its buttons: anchored to the bar where anchor positioning works,
+   else --app-bar-height (themes that fix the bar's height publish it).
+   --toast-offset-top adds room for extra sticky chrome. */
+.app .app-bar { anchor-name: --app-bar-anchor; }
+.app .toast-region,
+.app .toast-region[popover] {
+  top: calc(var(--app-bar-height, 3.5rem) + env(safe-area-inset-top, 0px) + var(--toast-offset-top, 1rem));
+  top: max(var(--toast-offset-top, 1rem), calc(anchor(--app-bar-anchor bottom, var(--app-bar-height, 3.5rem)) + var(--toast-offset-top, 1rem)));
 }
 /* XL: toasts line up with the content's edge, not the far screen edge. */
 @media (min-width: 1801px) {

@@ -43,24 +43,26 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table :is(td, th):focus-visible { outline-offset: -2px; }
 .table td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { height: var(--tap-min); }
 
-/* --- Editable cells (§7) ----------------------------------------------- */
+/* --- Editable cells (§7) -----------------------------------------------
+   The same idle/dirty/saving/saved/invalid states work outside a table on
+   any element with .editable (a card title, a label): */
 
 /* Idle: editable on double-click (desktop) or tap (touch). A dotted
    underline on hover and focus; a pencil on touch tiers, where there is no
    hover. */
-.table td.is-editable { cursor: var(--cursor-text, text); }
-.table td.is-editable:focus-visible,
-.table td.is-editable:focus-within {
+:is(.table td.is-editable, .editable) { cursor: var(--cursor-text, text); }
+:is(.table td.is-editable, .editable):focus-visible,
+:is(.table td.is-editable, .editable):focus-within {
   text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
   text-underline-offset: 0.25em;
 }
 @media (hover: hover) {
-  .table td.is-editable:hover {
+  :is(.table td.is-editable, .editable):hover {
     text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
     text-underline-offset: 0.25em;
   }
 }
-.table td.is-editable::after {
+:is(.table td.is-editable, .editable)::after {
   display: var(--_cell-pencil);
   content: var(--cell-edit-glyph, "\270E") / "";
   margin-inline-start: 0.5em;
@@ -80,15 +82,17 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
    and field-sizing keeps its intrinsic width at its content, so neither the
    row height nor the column width jumps. Works for a single cell
    (td.is-editing) and a whole row (tr.is-editing). */
-.table :is(td.is-editing, tr.is-editing > td):has(> :is(.input, .select, .textarea)) { padding: 0; }
-.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea) {
+.table :is(td.is-editing, tr.is-editing > td):has(> :is(.input, .select, .textarea, .input-group)) { padding: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea),
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > :is(.input, .select) {
   display: block;
   width: 100%;
   min-inline-size: 0;
   margin: 0;
   padding: calc(var(--cell-pad-y, calc(0.5em * var(--density))) - var(--input-border-width, 1px))
-    calc(var(--cell-pad-x, calc(0.75em * var(--density))) - var(--input-border-width, 1px));
+    calc(var(--cell-editor-pad-x, var(--cell-pad-x, calc(0.75em * var(--density)))) - var(--input-border-width, 1px));
   font: inherit;
+  font-size: var(--cell-editor-font-size, inherit);
   line-height: inherit;
   letter-spacing: inherit;
   border-radius: var(--cell-input-radius, 0);
@@ -100,11 +104,17 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit,
 .table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit-fields-wrapper { padding-block: 0; }
 .table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-calendar-picker-indicator { block-size: 1em; padding-block: 0; margin-block: 0; }
-.table :is(td.is-editing, tr.is-editing > td) > .select {
-  padding-inline-end: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + 1.5em);
+.table :is(td.is-editing, tr.is-editing > td) > .select,
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > .select {
+  padding-inline-end: calc(var(--cell-editor-pad-x, var(--cell-pad-x, calc(0.75em * var(--density)))) + var(--cell-editor-arrow-space, 1.5em));
 }
+/* An addon beside an editing control (.input-group): the group fills the cell
+   and its controls get the same treatment; the inner control flexes. */
+.table :is(td.is-editing, tr.is-editing > td) > .input-group { display: flex; align-items: center; inline-size: 100%; }
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > :is(.input, .select) { flex: 1 1 auto; inline-size: auto; }
 .table :is(td.is-editing, tr.is-editing > td) > .textarea { min-height: 0; resize: none; }
-.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea):not(.is-invalid, [aria-invalid="true"]) {
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea):not(.is-invalid, [aria-invalid="true"]),
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > :is(.input, .select):not(.is-invalid, [aria-invalid="true"]) {
   background-color: var(--cell-input-bg, var(--input-bg, var(--surface)));
   border-color: var(--cell-editing-border, var(--accent));
 }
@@ -123,7 +133,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
    hover/stripe/selection fill, so a state always shows whatever the row is
    doing. Each state also has a non-colour signal: a bar, a glyph, a ring or
    the error text. */
-.table tr > td:is(.is-dirty, .is-saving, .htmx-request, .is-saved, [aria-invalid="true"], :has(> [aria-invalid="true"])),
+:is(.table tr > td, .editable):is(.is-dirty, .is-saving, .htmx-request, .is-saved, [aria-invalid="true"], :has(> [aria-invalid="true"])),
 .table tr.is-editing > td {
   box-shadow: var(--_cell-paint);
 }
@@ -141,16 +151,16 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 }
 
 /* Dirty: changed, not saved. A bar on the leading edge plus a tint. */
-.table tr > td.is-dirty {
-  --_cell-paint: inset calc(var(--_dir) * 0.2rem) 0 0 var(--cell-dirty-marker, var(--warning)),
+:is(.table tr > td, .editable).is-dirty {
+  --_cell-paint: inset calc(var(--_dir, 1) * 0.2rem) 0 0 var(--cell-dirty-marker, var(--warning)),
     inset 0 0 0 100vmax var(--cell-dirty-bg, color-mix(in srgb, var(--warning) 14%, transparent));
 }
 /* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
    and a spinner; the app should also set aria-busy="true" on the cell. */
-.table tr > td:is(.is-saving, .htmx-request) {
+:is(.table tr > td, .editable):is(.is-saving, .htmx-request) {
   color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.8) * 100%), transparent);
 }
-.table tr > td:is(.is-saving, .htmx-request)::after {
+:is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after {
   content: "";
   display: inline-block;
   inline-size: 0.85em;
@@ -162,23 +172,23 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
   border-radius: 50%;
 }
 /* Saved: a tick and a success tint; the app removes .is-saved after a moment. */
-.table tr > td.is-saved {
+:is(.table tr > td, .editable).is-saved {
   --_cell-paint: inset 0 0 0 100vmax var(--cell-saved-bg, color-mix(in srgb, var(--success) 14%, transparent));
 }
-.table tr > td.is-saved::after {
+:is(.table tr > td, .editable).is-saved::after {
   content: var(--cell-saved-glyph, "\2713") / "";
   margin-inline-start: 0.5em;
   color: var(--cell-saved-fg, var(--success-text, var(--success)));
   font-weight: 700;
 }
 /* Error: aria-invalid on the cell or its control, plus a .field-error. */
-.table tr > td:is([aria-invalid="true"], :has(> [aria-invalid="true"])) {
+:is(.table tr > td, .editable):is([aria-invalid="true"], :has(> [aria-invalid="true"])) {
   --_cell-paint: inset 0 0 0 2px var(--cell-error-border, var(--danger)),
     inset 0 0 0 100vmax var(--cell-error-bg, color-mix(in srgb, var(--danger) 10%, transparent));
 }
 @media (prefers-reduced-motion: no-preference) {
-  .table tr > td:is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
-  .table tr > td.is-saved { animation: cell-saved 1.6s ease-out forwards; }
+  :is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
+  :is(.table tr > td, .editable).is-saved { animation: cell-saved 1.6s ease-out forwards; }
 }
 @keyframes cell-saved { from { box-shadow: inset 0 0 0 100vmax var(--cell-saved-flash, color-mix(in srgb, var(--success) 35%, transparent)); } }
 
@@ -412,6 +422,69 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 }
 .table :is(th, td).is-drop-before { box-shadow: inset calc(var(--_dir) * 3px) 0 0 var(--table-drop-marker, var(--accent)); }
 .table :is(th, td).is-drop-after { box-shadow: inset calc(var(--_dir) * -3px) 0 0 var(--table-drop-marker, var(--accent)); }
+
+/* Row drag-to-reorder: a grip cell (td.drag-handle, holding a <button> that
+   also takes Alt+Up/Down or opens "Move to…" — never drag-only), the lifted
+   row (tr.is-dragging) and the drop line drawn on the target row
+   (tr.is-drop-before / -after), with no extra element inside the scroller.
+   .table.is-dragging (or body) sets the grabbing cursor while dragging.
+   Announce the move in a live region ("Moved Coffee to position 3"). */
+.table td.drag-handle { inline-size: var(--tap-min); padding-inline: 0; text-align: center; color: var(--muted); cursor: var(--cursor-grab, grab); touch-action: none; }
+.table td.drag-handle:empty::before { content: var(--drag-handle-glyph, "\283F") / ""; }
+.table td.drag-handle > button { min-inline-size: var(--tap-min); min-block-size: var(--tap-min); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: inherit; touch-action: none; }
+.table td.drag-handle > button:empty::before { content: var(--drag-handle-glyph, "\283F") / ""; }
+.table tr.is-dragging { outline: 2px dashed var(--drop-line-color, var(--table-drop-marker, var(--accent))); outline-offset: -2px; }
+.table tr.is-dragging > td { opacity: var(--table-row-drag-opacity, 0.55); }
+.table tr.is-drop-before > td { box-shadow: inset 0 var(--drop-line-size, 3px) 0 var(--drop-line-color, var(--table-drop-marker, var(--accent))); }
+.table tr.is-drop-after > td { box-shadow: inset 0 calc(-1 * var(--drop-line-size, 3px)) 0 var(--drop-line-color, var(--table-drop-marker, var(--accent))); }
+:is(body, .table).is-dragging { cursor: var(--cursor-grabbing, grabbing); user-select: none; }
+
+/* Ordered rows (agendas, playlists, queues): tr.is-past is done (muted, the
+   .row-title — or the first cell — struck through; not by opacity, which
+   fails contrast); tr.is-next is up next (a dashed leading marker, unlike
+   .is-active's solid one); tr.is-current / aria-current="time" is now.
+   tr.has-row-color with --row-color paints a leading bar and a light tint
+   (a category, a user-picked colour). Give past and next a text
+   equivalent too (a visually-hidden "done", "next"). */
+.table tr.is-past > td { color: var(--row-past-fg, var(--muted)); }
+.table tr.is-past .row-title,
+.table tr.is-past:not(:has(.row-title)) > td:first-child:not(.drag-handle),
+.table tr.is-past:not(:has(.row-title)) > td.drag-handle + td {
+  text-decoration: line-through var(--row-past-strike, color-mix(in srgb, var(--muted) 60%, transparent)) 1px;
+}
+.table tr.is-next > td:first-child {
+  background-image: repeating-linear-gradient(180deg, var(--row-next-marker, var(--accent)) 0 0.35rem, transparent 0.35rem 0.6rem);
+  background-repeat: no-repeat;
+  background-size: 0.25rem 100%;
+  background-position: 0 0;
+}
+.table:dir(rtl) tr.is-next > td:first-child { background-position: 100% 0; }
+.table tr:is(.is-current, [aria-current="time"]) > td { font-weight: 600; }
+.table tr:is(.is-current, [aria-current="time"]) > td:first-child { box-shadow: var(--row-active-marker, inset 0.25rem 0 0 var(--accent)); }
+.table tr.has-row-color > td { box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--row-color, var(--accent)) var(--row-color-tint, 7%), transparent); }
+.table tr.has-row-color > td:first-child {
+  box-shadow: inset calc(var(--_dir, 1) * 3px) 0 0 var(--row-color, var(--accent)), inset 0 0 0 100vmax color-mix(in srgb, var(--row-color, var(--accent)) var(--row-color-tint, 7%), transparent);
+}
+
+/* A NOW divider row between two rows: <tr class="table-now" aria-hidden="true"><td colspan="6">Now · 11:06</td></tr>
+   (the current row carries aria-current="time"). .table.is-daysheet prints
+   black on white, the current row still shaded. */
+.table tr.table-now > td {
+  padding-block: 0.1rem;
+  border-block: 2px solid var(--table-now-rule, var(--accent));
+  background: color-mix(in srgb, var(--table-now-rule, var(--accent)) 8%, transparent);
+  color: var(--table-now-fg, var(--accent-text, var(--accent)));
+  font-size: 0.65em;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+@media print {
+  .table.is-daysheet { --row-past-fg: #444444; background: #ffffff; color: #000000; }
+  .table.is-daysheet :is(th, td) { background: #ffffff; color: #000000; border-color: #000000; box-shadow: none; }
+  .table.is-daysheet tr:is(.is-current, [aria-current="time"]) > td { background: #e6e6e6; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .table.is-daysheet tr.table-now > td { border-color: #000000; color: #000000; }
+}
 
 /* --- Row groups and tree rows (§18) --------------------------------------
  * <tbody class="table-group"> with a header row and an optional totals row.

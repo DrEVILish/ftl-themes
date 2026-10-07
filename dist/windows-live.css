@@ -812,6 +812,64 @@ dialog.modal:modal {
    it recedes into the header; hover/focus lift it to full text color.
    Pair with aria-label="Close" (or similar) in markup — the glyph alone
    isn't accessible. */
+/* .btn.is-armed — the first tap of a two-tap destructive action: a double
+   ring and a danger tint; .btn-armed-label replaces the label while armed
+   (put the idle text in .btn-idle-label). A bar along the bottom runs out
+   over --armed-ms. Set aria-describedby to a live "Tap again to delete". */
+.btn.is-armed {
+  --_armed: var(--btn-armed-ring, var(--danger-text, var(--danger)));
+  --btn-bg: var(--btn-armed-bg, color-mix(in srgb, var(--_armed) 18%, var(--surface)));
+  --btn-fg: var(--btn-armed-fg, var(--text));
+  position: relative;
+  overflow: hidden;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--_armed);
+}
+.btn-armed-label, .btn.is-armed .btn-idle-label { display: none; }
+.btn.is-armed .btn-armed-label { display: inline; }
+.btn.is-armed::after { content: ""; position: absolute; inset: auto 0 0; block-size: 3px; background: var(--_armed); transform-origin: 0 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .btn.is-armed::after { animation: btn-armed-sweep var(--armed-ms, 2500ms) linear forwards; }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .btn.is-armed::after { animation: btn-armed-sweep var(--armed-ms, 2500ms) linear forwards; }
+
+@keyframes btn-armed-sweep { to { transform: scaleX(0); } }
+/* A toggle whose state is the server's: any .btn with aria-pressed shows it
+   pressed (sunken, a ring and a lit dot, so not by colour alone);
+   aria-busy="true" beside it is "sent, waiting": the dot turns into a spinner. */
+.btn[aria-pressed="true"] {
+  box-shadow: var(--btn-pressed-shadow, inset 0 2px 0 rgb(0 0 0 / 0.35));
+  outline: 2px solid var(--btn-pressed-ring, currentColor);
+  outline-offset: 2px;
+}
+.btn[aria-pressed]::before {
+  content: "";
+  flex: none;
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.55;
+}
+.btn[aria-pressed="true"]::before { background: currentColor; box-shadow: 0 0 0.35em currentColor; opacity: 1; }
+.btn[aria-pressed][aria-busy="true"]::before { background: none; border-block-start-color: transparent; box-shadow: none; opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .btn[aria-pressed][aria-busy="true"]::before { animation: spinner-rotate 0.7s linear infinite; }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .btn[aria-pressed][aria-busy="true"]::before { animation: spinner-rotate 0.7s linear infinite; }
+
+:is(.btn-clear, .btn-icon, .key, .toggle-btn)[aria-pressed]::before { content: none; }
+
+/* .btn-lg — one big primary action; .btn-block fills its row. */
+.btn.btn-lg {
+  min-block-size: var(--btn-min-height-lg, max(var(--tap-min), 2.9rem));
+  padding: var(--btn-padding-lg, calc(0.6em * var(--density)) calc(1.4em * var(--density)));
+  font-size: var(--btn-font-size-lg, 1.05rem);
+}
+.btn.btn-block { display: flex; inline-size: 100%; justify-content: center; }
 .btn-close,
 .btn-min,
 .btn-max {
@@ -855,6 +913,16 @@ dialog.modal:modal {
   line-height: 1;
 }
 .btn-close::before { content: var(--btn-close-glyph, "\00d7"); }
+/* .btn-close.is-danger: a remove/forget ×. .card-dismiss places a close
+   button in the top-end corner of a .card or .panel (RTL-safe), and the
+   card's header leaves room for it. */
+.btn-close.is-danger { --btn-close-fg: var(--danger-text, var(--danger)); --btn-close-fg-hover: var(--on-danger, #ffffff); --btn-close-bg-hover: var(--danger); }
+/* A heading in a panel header takes the header's own colour (a theme's
+   heading colour can match the header band). */
+.panel > .panel-header > :is(h1, h2, h3, h4, h5, h6) { margin-block: 0; color: inherit; }
+:is(.card, .panel):has(> .card-dismiss) { position: relative; }
+.card-dismiss { position: absolute; inset-block-start: var(--card-dismiss-inset, 0.4rem); inset-inline-end: var(--card-dismiss-inset, 0.4rem); z-index: var(--z-raised); }
+:is(.card, .panel):has(> .card-dismiss) > :is(.panel-header, .card-header, h2, h3, h4):first-of-type { padding-inline-end: calc(var(--tap-min) + 0.25rem); }
 /* Min/max double as <label> controls for the checkbox-hack window states
    below as well as plain <button>s — same box, either wiring. */
 .btn-min::before { content: var(--btn-min-glyph, "_"); }
@@ -928,6 +996,8 @@ dialog.modal:modal {
   border: var(--meter-border-width, 1px) solid var(--meter-border, var(--hairline));
   border-radius: var(--meter-radius, var(--radius));
 }
+/* .meter.is-solid: one colour (--meter-fill), no level bands: progress-like meters. */
+.meter.is-solid > .meter-fill { background: var(--meter-fill, var(--accent)); }
 .meter-fill {
   position: absolute;
   inset: 0 auto 0 0;
@@ -1104,6 +1174,9 @@ dialog.modal:modal {
 @media (prefers-reduced-motion: no-preference) {
   .lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { animation: lamp-pulse var(--lamp-pulse-duration, 1.2s) ease-in-out infinite; }
 }
+
+  :root[data-motion="always"] .lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { animation: lamp-pulse var(--lamp-pulse-duration, 1.2s) ease-in-out infinite; }
+
 @keyframes lamp-pulse { 50% { opacity: 0.4; } }
 
 /* --- Mixing-console primitives ------------------------------------------ *
@@ -1683,6 +1756,8 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
 }
 }
 
+/* .tabs.is-sticky stays at the top while the page scrolls (an opaque background). */
+.tabs.is-sticky { position: sticky; inset-block-start: var(--sticky-top, 0); z-index: var(--z-sticky); background: var(--tabs-sticky-bg, var(--bg)); }
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1763,6 +1838,12 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
 .badge-danger { --badge-bg: var(--surface-2); --badge-fg: var(--danger-text, var(--danger)); }
 .badge-success { --badge-bg: var(--surface-2); --badge-fg: var(--success-text, var(--success)); }
 .badge-warning { --badge-bg: var(--surface-2); --badge-fg: var(--warning-text, var(--warning)); }
+/* .badge-solid: a filled chip that reads at distance; .badge-outline: a ring. */
+.badge.badge-solid { --badge-bg: var(--accent); --badge-fg: var(--on-accent); }
+.badge.badge-solid.badge-danger { --badge-bg: var(--danger); --badge-fg: var(--on-danger, #ffffff); }
+.badge.badge-solid.badge-warning { --badge-bg: var(--warning); --badge-fg: var(--on-warning, #000000); }
+.badge.badge-solid.badge-success { --badge-bg: var(--success); --badge-fg: var(--on-success, #000000); }
+.badge.badge-outline { --badge-bg: transparent; --badge-border: currentColor; }
 /* The tint is mixed into the opaque surface, not into transparent: a
    translucent badge inside a tinted row stacked on the row color, so its
    text contrast depended on where the badge happened to sit. */
@@ -1863,6 +1944,16 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 .status-warn { --state-fg: var(--warning-text, var(--warning)); color: var(--state-fg); }
 .status-error { --state-fg: var(--danger-text, var(--danger)); color: var(--state-fg); }
 .status-idle { --state-fg: var(--muted); color: var(--state-fg); }
+/* .status-rec: recording or on air. A bold danger label whose dot has a
+   halo; the dot pulses when motion is allowed. */
+.status-rec { --state-fg: var(--danger-text, var(--danger)); color: var(--state-fg); font-weight: 700; }
+.status-rec::before { box-shadow: 0 0 0 0.15em color-mix(in srgb, currentColor 35%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .status-rec::before { animation: lamp-pulse var(--status-rec-pulse, 1.2s) ease-in-out infinite; }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .status-rec::before { animation: lamp-pulse var(--status-rec-pulse, 1.2s) ease-in-out infinite; }
+
 
 /* --- htmx state ------------------------------------------------------- *
  * htmx sets these classes around every swap. Handling them here means an
@@ -2308,6 +2399,9 @@ button.list-item:hover { background: var(--row-hover-bg, rgba(128, 128, 128, 0.1
 @media (prefers-reduced-motion: no-preference) {
   .carousel { scroll-behavior: smooth; }
 }
+
+  :root[data-motion="always"] .carousel { scroll-behavior: smooth; }
+
 html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
 .carousel-slide {
   flex: 0 0 100%;
@@ -2442,6 +2536,9 @@ html[data-motion="reduced"] .carousel { scroll-behavior: auto; }
 @media (prefers-reduced-motion: no-preference) {
   .scrollspy-body { scroll-behavior: smooth; }
 }
+
+  :root[data-motion="always"] .scrollspy-body { scroll-behavior: smooth; }
+
 html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 
 /* .nav-collapse — a responsive nav toggler with no JS: a native
@@ -2570,7 +2667,7 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 .breadcrumb-item:not(:last-child)::after {
   content: "/";
   margin-inline-start: 0.4em;
-  color: var(--breadcrumb-separator, var(--hairline));
+  color: var(--breadcrumb-separator, var(--muted));
 }
 .breadcrumb-item.is-current {
   color: var(--breadcrumb-current-fg, var(--text));
@@ -2775,16 +2872,8 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
 .schedule .icon { width: 1em; height: 1em; flex: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn,
-  .drawer,
-  .switch-track,
-  .switch-thumb,
-  .toggle-btn,
-  .htmx-swapping,
-  .htmx-settling { transition: none; }
-  .indicator,
-  .spinner,
-  .skeleton { animation-duration: 2s; }
+  :root:not([data-motion="always"]) .btn,:root:not([data-motion="always"]) .drawer,:root:not([data-motion="always"]) .switch-track,:root:not([data-motion="always"]) .switch-thumb,:root:not([data-motion="always"]) .toggle-btn,:root:not([data-motion="always"]) .htmx-swapping,:root:not([data-motion="always"]) .htmx-settling { transition: none; }
+  :root:not([data-motion="always"]) .indicator,:root:not([data-motion="always"]) .spinner,:root:not([data-motion="always"]) .skeleton { animation-duration: 2s; }
 }
 
 /* --- User display options -----------------------------------------------
@@ -2849,7 +2938,7 @@ html[data-motion="reduced"] * {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-min, 16rem)), 1fr));
+  grid-template-columns: repeat(var(--grid-repeat, auto-fit), minmax(min(100%, var(--grid-min, 16rem)), 1fr));
   gap: var(--grid-gap, calc(1rem * var(--density)));
   align-items: start;
 }
@@ -2859,6 +2948,11 @@ html[data-motion="reduced"] * {
 .cluster-lg { --cluster-gap: calc(1.2rem * var(--density)); }
 .grid-sm { --grid-min: 11rem; }
 .grid-lg { --grid-min: 22rem; }
+/* .is-fill keeps empty tracks, so a lone card stays one column wide (galleries);
+   the default auto-fit stretches it (dashboards). Gap: .grid-gap-sm / -lg. */
+.grid.is-fill { --grid-repeat: auto-fill; }
+.grid-gap-sm { --grid-gap: calc(0.5rem * var(--density)); }
+.grid-gap-lg { --grid-gap: calc(2rem * var(--density)); }
 /* Children of a stack/cluster/grid own no margins of their own. */
 :is(.stack, .cluster, .grid) > * { margin-block: 0; }
 /* Inline-sized components keep their own width in a stack instead of
@@ -3107,6 +3201,10 @@ pre code { padding: 0; background: none; border-radius: 0; }
 /* Muted text — an alias onto the same --muted token .field-hint
    already uses, for body copy that isn't a field hint. */
 .text-muted { color: var(--muted); }
+.text-danger { color: var(--danger-text, var(--danger)); }
+.text-warning { color: var(--warning-text, var(--warning)); }
+.text-success { color: var(--success-text, var(--success)); }
+.text-info { color: var(--info-text, var(--info, var(--accent-text, var(--accent)))); }
 /* In the app bar, transparent buttons and muted text sit on the bar's own
    fill, not --surface, so they take the bar's text colour (--app-bar-fg),
    falling back to the bar nav colour (--nav-item-fg) for themes that only
@@ -3116,7 +3214,7 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --app-bar-text: var(--app-bar-fg, var(--nav-item-fg, var(--text)));
 }
 .app-bar .text-muted { color: var(--app-bar-text); }
-.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); }
+.app-bar .breadcrumbs { --muted: var(--app-bar-text); --breadcrumb-current-fg: var(--app-bar-text); --breadcrumb-separator: color-mix(in srgb, var(--app-bar-text) 55%, transparent); }
 .app-bar .btn-secondary,
 .app-bar .btn-tertiary,
 .app-bar .btn-ghost {
@@ -3196,9 +3294,13 @@ pre code { padding: 0; background: none; border-radius: 0; }
 
 /* .container — a centered max-width column for sheets and readers. */
 .container {
-  width: min(100% - 2rem, var(--container-max, 64rem));
+  width: min(100% - 2 * var(--container-pad, 1rem), var(--container-max, 64rem));
   margin-inline: auto;
 }
+.container-narrow { --container-max: var(--container-narrow-max, 32rem); }
+.container-wide { --container-max: var(--container-wide-max, 72rem); }
+/* .container.is-page adds the page's block padding. */
+.container.is-page { padding-block: var(--container-pad-block, calc(1.5rem * var(--density))); }
 
 /* .divide-y — hairlines between stacked children (lists, menus). */
 .divide-y > * + * { border-block-start: 1px solid var(--hairline); }
@@ -3221,6 +3323,52 @@ pre code { padding: 0; background: none; border-radius: 0; }
 .ratio-4x3 { --ratio: 4 / 3; }
 .ratio-16x9 { --ratio: 16 / 9; }
 .ratio-21x9 { --ratio: 21 / 9; }
+.ratio-9x16 { --ratio: 9 / 16; max-block-size: var(--ratio-max-block, none); margin-inline: auto; }
+/* .ratio.is-canvas — a scaled layout preview: children are not stretched;
+   each .ratio-item sits at --x/--y and is --w/--h big, all in percent. */
+.ratio.is-canvas > * { position: static; inset: auto; width: auto; height: auto; object-fit: initial; }
+.ratio.is-canvas { background: var(--ratio-canvas-bg, var(--surface-2)); border: 1px solid var(--ratio-canvas-border, var(--hairline)); border-radius: var(--radius); }
+.ratio.is-canvas > .ratio-item {
+  position: absolute;
+  inset-inline-start: calc(var(--x, 0) * 1%);
+  inset-block-start: calc(var(--y, 0) * 1%);
+  inline-size: calc(var(--w, 25) * 1%);
+  block-size: calc(var(--h, 25) * 1%);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0.15em 0.3em;
+  border: 1px solid var(--ratio-item-border, var(--accent));
+  border-radius: var(--radius-sm, 2px);
+  background: var(--ratio-item-bg, color-mix(in srgb, var(--accent) 14%, var(--surface)));
+  color: var(--ratio-item-fg, var(--text));
+  font-size: var(--ratio-item-font-size, 0.65rem);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* .thumb — a small framed preview image (a map, a logo, an upload). It is
+   contained, not cropped; .is-cover crops to fill. -sm / -lg sizes. */
+.thumb {
+  display: inline-block;
+  max-inline-size: var(--thumb-size, 8rem);
+  max-block-size: calc(var(--thumb-size, 8rem) / 2);
+  object-fit: contain;
+  background: var(--thumb-bg, var(--surface-2));
+  border: 1px solid var(--thumb-border, var(--border));
+  border-radius: var(--thumb-radius, var(--radius));
+  vertical-align: middle;
+}
+.thumb.is-cover { inline-size: var(--thumb-size, 8rem); block-size: calc(var(--thumb-size, 8rem) / 2); object-fit: cover; }
+.thumb-sm { --thumb-size: 4rem; }
+.thumb-lg { --thumb-size: 14rem; }
+
+/* .glyph-legend — a wrapping row of glyph + word pairs (shortcut strips,
+   editor affordances; .legend is the chart legend). The glyph is
+   decorative: a <kbd> or .glyph-legend-mark, aria-hidden; words carry it. */
+.glyph-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em 1.1em; margin: 0; padding: 0; list-style: none; color: var(--glyph-legend-fg, var(--muted)); font-size: 0.85em; }
+.glyph-legend > li { display: inline-flex; align-items: center; gap: 0.4em; }
+.glyph-legend-mark { color: var(--glyph-legend-mark-fg, var(--accent-text, var(--accent))); font-weight: 700; }
 
 /* Single- and multi-line truncation for cells, titles and log lines. */
 .text-truncate {
@@ -3341,6 +3489,9 @@ pre code { padding: 0; background: none; border-radius: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .typing::before { animation: typing-pulse 1.2s ease-in-out infinite; }
 }
+
+  :root[data-motion="always"] .typing::before { animation: typing-pulse 1.2s ease-in-out infinite; }
+
 html[data-motion="reduced"] .typing::before { animation: none; }
 @keyframes typing-pulse { 50% { opacity: 0.35; } }
 
@@ -3765,6 +3916,16 @@ input[type="color"] { min-block-size: var(--tap-min); min-inline-size: var(--tap
   background: transparent;
   overflow: visible;
 }
+/* In the .app shell the region starts below the app bar, so toasts don't
+   cover its buttons: anchored to the bar where anchor positioning works,
+   else --app-bar-height (themes that fix the bar's height publish it).
+   --toast-offset-top adds room for extra sticky chrome. */
+.app .app-bar { anchor-name: --app-bar-anchor; }
+.app .toast-region,
+.app .toast-region[popover] {
+  top: calc(var(--app-bar-height, 3.5rem) + env(safe-area-inset-top, 0px) + var(--toast-offset-top, 1rem));
+  top: max(var(--toast-offset-top, 1rem), calc(anchor(--app-bar-anchor bottom, var(--app-bar-height, 3.5rem)) + var(--toast-offset-top, 1rem)));
+}
 /* XL: toasts line up with the content's edge, not the far screen edge. */
 @media (min-width: 1801px) {
   .toast-region { inset-inline-end: calc((100vw - var(--app-max, 1800px)) / 2 + 1rem); }
@@ -3945,6 +4106,11 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
     animation: progress-sweep 1.4s ease-in-out infinite;
   }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"]) progress.progress:indeterminate {
+    animation: progress-sweep 1.4s ease-in-out infinite;
+  }
+
 @keyframes progress-sweep {
   from { background-position: -40% 0; }
   to { background-position: 140% 0; }
@@ -4141,6 +4307,13 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 3) { animation-delay: 0.3s; }
   .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 4) { animation-delay: 0.45s; }
 }
+
+  :root[data-motion="always"] .visualizer.is-idle > * { animation: visualizer-idle 2.4s ease-in-out infinite; }
+  :root[data-motion="always"] .visualizer.is-loading > * { animation: visualizer-wave 1.1s ease-in-out infinite; }
+  :root[data-motion="always"] .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 2) { animation-delay: 0.15s; }
+  :root[data-motion="always"] .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 3) { animation-delay: 0.3s; }
+  :root[data-motion="always"] .visualizer:is(.is-idle, .is-loading) > :nth-child(4n + 4) { animation-delay: 0.45s; }
+
 /* Electric: a white-hot core in a coloured glow that crackles. */
 .visualizer.is-electric > * {
   flex-grow: 0;
@@ -4156,6 +4329,11 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   .visualizer.is-electric > :nth-child(3n) { animation-duration: 1.3s; }
   .visualizer.is-electric > :nth-child(5n) { animation-delay: 0.2s; }
 }
+
+  :root[data-motion="always"] .visualizer.is-electric > * { animation: visualizer-crackle 0.9s steps(1) infinite; }
+  :root[data-motion="always"] .visualizer.is-electric > :nth-child(3n) { animation-duration: 1.3s; }
+  :root[data-motion="always"] .visualizer.is-electric > :nth-child(5n) { animation-delay: 0.2s; }
+
 
 /* --- .trace — a live, smooth or electric line -------------------------------
  *   <svg class="trace" viewBox="0 0 200 40" preserveAspectRatio="none" role="img" aria-label="Live input">
@@ -4191,6 +4369,9 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 @media (prefers-reduced-motion: no-preference) {
   .trace.is-electric .trace-line { animation: visualizer-crackle 0.7s steps(1) infinite; }
 }
+
+  :root[data-motion="always"] .trace.is-electric .trace-line { animation: visualizer-crackle 0.7s steps(1) infinite; }
+
 @media (forced-colors: active) { .trace-line { stroke: CanvasText; filter: none; } }
 
 /* --- .param — a labelled parameter slider ----------------------------------
@@ -5747,6 +5928,9 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     :is(.desktop-launchers, .taskbar-tasks) > li .icon { transition: width 0.15s ease-out, height 0.15s ease-out, padding 0.15s ease-out; }
   }
+@media (hover: hover) {
+    :root[data-motion="always"] :is(.desktop-launchers, .taskbar-tasks) > li .icon { transition: width 0.15s ease-out, height 0.15s ease-out, padding 0.15s ease-out; }
+  }
 }
 html[data-motion="reduced"] .desktop-dock .icon { transition: none !important; }
 
@@ -6323,6 +6507,45 @@ html[data-motion="reduced"] .desktop-dock .icon { transition: none !important; }
 }
 .splash.is-contained { position: absolute; z-index: var(--z-raised); }
 html[data-splash-seen] .splash[data-intro] { display: none; }
+/* .is-stage: black on every theme (a waiting screen in a dark room), with
+   light ink checked against black; a theme may set --splash-stage-bg/-fg/
+   -muted/-accent. .is-standby: an operator blackout, dimmer still, still. */
+.splash:is(.is-stage, .is-standby) {
+  --splash-bg: var(--splash-stage-bg, #000000);
+  --splash-fg: var(--splash-stage-fg, #f2f2f2);
+  --splash-title-fg: var(--splash-stage-fg, #f2f2f2);
+  --splash-message-fg: var(--splash-stage-muted, #a0a0ac);
+  --text: var(--splash-stage-fg, #f2f2f2);
+  --muted: var(--splash-stage-muted, #a0a0ac);
+  --accent-text: var(--splash-stage-accent, #8cc8ff);
+  --readout-fg: var(--splash-stage-fg, #f2f2f2);
+  color-scheme: dark;
+}
+.splash.is-standby { --splash-fg: var(--splash-standby-fg, #8a8a94); --splash-title-fg: var(--splash-standby-fg, #8a8a94); --splash-art-motion: none; }
+.splash.is-standby > .splash-art { opacity: var(--splash-standby-art-opacity, 0.3); }
+/* A logo as the mark: <img class="splash-art"> or .splash-art.is-image with
+   --splash-art: url(…). No ring mask, no radius, no spin. */
+:is(img.splash-art, .splash-art.is-image) { --splash-art-motion: none; aspect-ratio: auto; border-radius: 0; mask: none; }
+img.splash-art { block-size: auto; background: none; object-fit: contain; }
+.splash-art.is-image { aspect-ratio: 1; background: var(--splash-art, none) center / contain no-repeat; }
+
+/* .overlay — lays content (an .empty-state.is-offline, a message) over the
+   viewport behind a scrim; toggle it with [hidden], like .splash.
+   .is-contained covers the nearest positioned ancestor instead.
+   .empty-state.is-overlay is the same without a wrapper. */
+:is(.overlay, .empty-state.is-overlay) {
+  position: fixed;
+  z-index: var(--overlay-z, calc(var(--z-window) + 1));
+  inset: 0;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  padding: var(--space-l);
+  background: var(--overlay-scrim, color-mix(in srgb, var(--surface) 92%, transparent));
+  color: var(--text);
+}
+:is(.overlay, .empty-state.is-overlay).is-contained { position: absolute; z-index: var(--z-raised); }
+:is(.overlay, .empty-state.is-overlay)[hidden] { display: none; }
 /* The theme's mark: any background layers (gradients, SVG data URIs). */
 .splash-art {
   inline-size: var(--splash-art-size, 5rem);
@@ -6423,6 +6646,10 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
       display var(--motion-duration-l) allow-discrete;
   }
   :root:not([data-motion="reduced"], [data-motion="none"]) .splash[hidden] { opacity: 0; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) :is(.overlay, .empty-state.is-overlay) {
+    transition: opacity var(--motion-duration-m, 0.25s) var(--motion-ease), display var(--motion-duration-m, 0.25s) allow-discrete;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) :is(.overlay, .empty-state.is-overlay)[hidden] { opacity: 0; }
   :root:not([data-motion="reduced"], [data-motion="none"]) .splash[data-intro] > * {
     animation: var(--motion-enter);
     animation-delay: calc(sibling-index() * 150ms);
@@ -6441,6 +6668,33 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     transition: background var(--motion-duration-s) var(--motion-ease), color var(--motion-duration-s) var(--motion-ease);
   }
 }
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .splash {
+    transition: opacity var(--motion-duration-l) var(--motion-ease),
+      display var(--motion-duration-l) allow-discrete;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .splash[hidden] { opacity: 0; }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) :is(.overlay, .empty-state.is-overlay) {
+    transition: opacity var(--motion-duration-m, 0.25s) var(--motion-ease), display var(--motion-duration-m, 0.25s) allow-discrete;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) :is(.overlay, .empty-state.is-overlay)[hidden] { opacity: 0; }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .splash[data-intro] > * {
+    animation: var(--motion-enter);
+    animation-delay: calc(sibling-index() * 150ms);
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .splash-art {
+    animation: var(--splash-art-motion, splash-turn 2.4s linear infinite);
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .splash > progress:indeterminate {
+    animation: splash-sweep 1.4s ease-in-out infinite;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .empty-state.is-loading > svg.empty-state-icon {
+    animation: var(--empty-state-loading-motion, empty-state-flip 2s var(--motion-ease) infinite);
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .prefs .segmented-item,:root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .prefs-swatch::before {
+    transition: background var(--motion-duration-s) var(--motion-ease), color var(--motion-duration-s) var(--motion-ease);
+  }
+
 @keyframes splash-turn { to { transform: rotate(1turn); } }
 @keyframes splash-sweep { from { background-position: 100% 0, 0 0; } to { background-position: 0 0, 0 0; } }
 @keyframes empty-state-flip { 0%, 40% { transform: rotate(0); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
@@ -6601,6 +6855,18 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
 }
 .toggle-group > .toggle-btn:is(:hover, :has(input:checked), :has(input:focus-visible)) { z-index: var(--z-raised); }
 .toggle-group > .toggle-btn:has(input:focus-visible) { z-index: calc(var(--z-raised) + 1); }
+/* .is-block: full width, equal items, multi-line content aligned to the
+   start (a .toggle-btn-title over a .toggle-btn-hint). .is-stacked: joined
+   top to bottom instead of side by side. */
+.toggle-group:is(.is-block, .is-stacked) { display: flex; inline-size: 100%; }
+.toggle-group.is-block > .toggle-btn { flex: 1 1 0; min-inline-size: 0; }
+.toggle-group:is(.is-block, .is-stacked) > .toggle-btn { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 0.15em; text-align: start; }
+.toggle-group.is-stacked { flex-direction: column; }
+.toggle-group.is-stacked > .toggle-btn { margin: 0; border-radius: var(--toggle-btn-radius, var(--btn-radius, var(--radius))); }
+.toggle-group.is-stacked > .toggle-btn:not(:first-child) { margin-block-start: calc(-1 * var(--toggle-btn-border-width, 1px)); border-start-start-radius: 0; border-start-end-radius: 0; }
+.toggle-group.is-stacked > .toggle-btn:not(:last-child) { border-end-start-radius: 0; border-end-end-radius: 0; }
+.toggle-btn-title { font-weight: 600; }
+.toggle-btn-hint { font-size: 0.85em; font-weight: 400; }
 
 /* --- .has-badge — a dot or count on any button, tab or nav item ------------
  * <button class="btn btn-icon has-badge" data-count="3" aria-label="Alerts, 3 new">
@@ -7188,6 +7454,23 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
   border: 0;
   min-inline-size: 0;
 }
+/* .color-dot — a small colour indicator for dense rows. As a <button> its
+   visible size stays small but its hit area grows to --tap-min. Name it by
+   the colour ("Alert 1 colour: amber"). */
+.color-dot {
+  display: inline-block;
+  flex: none;
+  inline-size: var(--color-dot-size, 0.85em);
+  block-size: var(--color-dot-size, 0.85em);
+  border-radius: 50%;
+  background: var(--swatch, var(--accent));
+  box-shadow: inset 0 0 0 1px var(--swatch-border, rgb(128 128 128 / 0.5));
+  vertical-align: -0.1em;
+}
+button.color-dot { position: relative; margin: 0; padding: 0; border: 0; }
+button.color-dot::before { content: ""; position: absolute; inset-block-start: 50%; inset-inline-start: 50%; inline-size: var(--tap-min); block-size: var(--tap-min); translate: -50% -50%; }
+button.color-dot:dir(rtl)::before { translate: 50% -50%; }
+button.color-dot:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .swatch {
   position: relative;
   display: grid;
@@ -7270,6 +7553,12 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     transition: background-color 0.12s ease, color 0.12s ease;
   }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"]) :is(.btn-split-toggle > .icon) { transition: rotate 0.15s ease; }
+  html[data-motion="always"]:not([data-motion="reduced"]) :is(.calendar-day, .tag-remove, .input-clear, .rating > label) {
+    transition: background-color 0.12s ease, color 0.12s ease;
+  }
+
 /* --- Graphs (v5.3): small-multiple time-series grids --------------------
  *   <div class="graph-grid">
  *     <figure class="graph-card">
@@ -7978,6 +8267,33 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
     animation: hud-achievement-in 0.35s ease-out;
   }
 }
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .hud-bar {
+    transition:
+      --hud-bar-v var(--hud-bar-speed, 0.15s) ease-out,
+      --hud-bar-t var(--hud-bar-trail-speed, 0.6s) ease-in var(--hud-bar-trail-delay, 0.5s);
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .hud-bar.is-low::before {
+    animation: hud-bar-low 0.8s ease-in-out infinite alternate;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .hud-bar.is-regen::after {
+    content: "";
+    grid-area: track;
+    align-self: stretch;
+    inline-size: calc(var(--hud-bar-v) * 100%);
+    margin-inline-start: calc((1 - var(--hud-bar-v)) * var(--hud-bar-anchor, 0) * 100%);
+    background: linear-gradient(90deg, transparent, var(--hud-bar-regen-glow, rgba(255, 255, 255, 0.55)), transparent) -150% 0 / 40% 100% no-repeat;
+    clip-path: var(--hud-bar-clip, none);
+    animation: hud-bar-regen 1.8s linear infinite;
+    pointer-events: none;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .hud-float {
+    animation: hud-float-rise var(--hud-float-duration, 1.2s) ease-out var(--hud-float-delay, 0s) var(--hud-float-repeat, 1) both;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .hud-achievement {
+    animation: hud-achievement-in 0.35s ease-out;
+  }
+
 /* --- v5 instruments and data display (PLAN.md §9 #1–16, §18 Charts) -------
  * Dial, arc and linear gauges, compass and heading strip, map frame and
  * pins, legend, progress ring, sparkline, donut, heatmap, timeline,
@@ -8248,6 +8564,9 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
 @media (prefers-reduced-motion: no-preference) {
   :is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) { transition: --gauge-v var(--gauge-speed, 0.4s) ease-out; }
 }
+
+  :root[data-motion="always"] :is(.gauge-dial, .gauge-arc, .compass, .clock) > :is(meter, .gauge-needle) { transition: --gauge-v var(--gauge-speed, 0.4s) ease-out; }
+
 .gauge-dial.is-warn, .gauge-arc.is-warn { --gauge-fill: var(--gauge-fill-warn, var(--warning)); }
 .gauge-dial.is-error, .gauge-arc.is-error { --gauge-fill: var(--gauge-fill-error, var(--danger)); }
 
@@ -8455,7 +8774,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
 .gauge-linear {
   position: relative;
   min-inline-size: 0;
-  padding-block: var(--gauge-linear-label-room, 1.35rem);
+  padding-block: var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem)));
   font-size: var(--gauge-linear-label-size, 0.75rem);
   font-variant-numeric: tabular-nums;
   /* The bands of a .meter-fill are sized to the fill, not the track; inside
@@ -8479,14 +8798,14 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   content: "";
   position: absolute;
   left: var(--at, 0%);
-  top: calc(var(--gauge-linear-label-room, 1.35rem) + var(--meter-thickness, 0.6rem));
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) + var(--meter-thickness, 0.6rem));
   inline-size: 1px;
   block-size: 0.35rem;
   translate: -50% 0;
   background: currentColor;
 }
 .gauge-mark:is(.is-target, .is-warn, .is-min, .is-max)::before {
-  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.3rem);
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.3rem);
   inline-size: 2px;
   block-size: calc(var(--meter-thickness, 0.6rem) + 0.6rem);
 }
@@ -8496,7 +8815,7 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   content: "";
   position: absolute;
   left: var(--at, 0%);
-  top: calc(var(--gauge-linear-label-room, 1.35rem) - 0.75rem);
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.75rem);
   inline-size: 0.6rem;
   block-size: 0.45rem;
   translate: -50% 0;
@@ -8506,6 +8825,24 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
 .gauge-mark.is-warn { color: var(--gauge-warn, var(--warning-text, var(--warning))); }
 .gauge-mark.is-warn::before { background: repeating-linear-gradient(currentColor 0 3px, transparent 3px 5px); }
 .gauge-mark:is(.is-min, .is-max) { align-items: flex-start; color: var(--gauge-minmax, var(--muted)); }
+/* .is-needle: a "now" line with a head and no label. */
+.gauge-mark.is-needle { color: var(--gauge-needle, var(--accent)); font-size: 0; }
+.gauge-mark.is-needle::before {
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.3rem);
+  inline-size: 2px;
+  block-size: calc(var(--meter-thickness, 0.6rem) + 0.6rem);
+}
+.gauge-mark.is-needle::after {
+  content: "";
+  position: absolute;
+  left: var(--at, 0%);
+  top: calc(var(--gauge-linear-label-room, calc(1.8 * var(--gauge-linear-label-size, 0.75rem))) - 0.75rem);
+  inline-size: 0.6rem;
+  block-size: 0.45rem;
+  translate: -50% 0;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
 
 /* --- .map (§9 #5–7): a themed frame for an <img>, <svg>, <iframe> or
    <canvas> map. Overlays sit in a grid: .map-north top-start,
@@ -8685,6 +9022,9 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
 @media (prefers-reduced-motion: no-preference) {
   .progress-ring:is(.is-indeterminate, [role="progressbar"]:not([aria-valuenow]))::before { animation: spinner-rotate 1s linear infinite; }
 }
+
+  :root[data-motion="always"] .progress-ring:is(.is-indeterminate, [role="progressbar"]:not([aria-valuenow]))::before { animation: spinner-rotate 1s linear infinite; }
+
 .progress-ring.is-success { --progress-ring-fill: var(--success); }
 .progress-ring.is-error { --progress-ring-fill: var(--danger); }
 .progress-ring > * { position: relative; }
@@ -9022,6 +9362,19 @@ kbd.hud-pad[data-button="north"] { --hud-pad-ring: var(--hud-pad-north, var(--wa
   }
 }
 
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .is-updated {
+    text-decoration-line: none;
+    animation: live-flash var(--live-flash-duration, 1.2s) ease-out 1;
+  }
+  /* Demo / screenshot loop: re-trigger the flash forever, staggered by an
+     inline --tick-delay per value. Real apps toggle the class instead. */
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .is-demo-ticking .is-updated {
+    animation-duration: var(--live-tick, 5s);
+    animation-delay: var(--tick-delay, 0s);
+    animation-iteration-count: infinite;
+  }
+
+
 /* --- .is-up / .is-down: direction of change ------------------------------
  * Semantic colour plus an arrow, so it's never colour alone. .stat-trend
  * (core) keeps its own colour rule and its typed arrow; .sparkline (SVG)
@@ -9088,8 +9441,8 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
 .connection::before {
   content: "";
   flex: none;
-  inline-size: var(--lamp-size, 0.7rem);
-  block-size: var(--lamp-size, 0.7rem);
+  inline-size: var(--connection-lamp-size, 0.8em);
+  block-size: var(--connection-lamp-size, 0.8em);
   border-radius: var(--lamp-radius, 50%);
   border: 2px solid var(--connection-lamp, var(--muted));
   background: var(--connection-lamp, var(--muted));
@@ -9098,6 +9451,9 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
 .connection[data-state="live"] { --connection-lamp: var(--connection-live, var(--lamp-on, var(--success))); }
 .connection[data-state="reconnecting"] { --connection-lamp: var(--connection-reconnecting, var(--warning)); }
 .connection[data-state="reconnecting"]::before { background: transparent; border-style: dotted; }
+/* connecting: the first connect, neutral (not a fault): a muted dotted ring that turns. */
+.connection[data-state="connecting"] { --connection-lamp: var(--connection-connecting, var(--muted)); }
+.connection[data-state="connecting"]::before { background: transparent; border-style: dotted; box-shadow: none; }
 .connection[data-state="offline"] { --connection-lamp: var(--connection-offline, var(--danger)); }
 .connection[data-state="offline"]::before {
   background: linear-gradient(45deg, transparent 42%, var(--connection-lamp) 42% 58%, transparent 58%);
@@ -9118,10 +9474,18 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
   :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="live"]::before {
     animation: lamp-pulse var(--lamp-pulse-duration, 2.4s) ease-in-out infinite;
   }
-  :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="reconnecting"]::before {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .connection:is([data-state="reconnecting"], [data-state="connecting"])::before {
     animation: connection-spin 1.6s linear infinite;
   }
 }
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="live"]::before {
+    animation: lamp-pulse var(--lamp-pulse-duration, 2.4s) ease-in-out infinite;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .connection:is([data-state="reconnecting"], [data-state="connecting"])::before {
+    animation: connection-spin 1.6s linear infinite;
+  }
+
 @keyframes connection-spin { to { rotate: 1turn; } }
 
 /* --- time.updated: "Updated 5s ago" --------------------------------------
@@ -9182,6 +9546,14 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
     animation: feed-in-loop var(--live-tick, 5s) ease-out var(--tick-delay, 0s) infinite;
   }
 }
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .feed > li.is-new {
+    animation: feed-in var(--feed-in-duration, 0.35s) ease-out both;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .is-demo-ticking .feed > li.is-new {
+    animation: feed-in-loop var(--live-tick, 5s) ease-out var(--tick-delay, 0s) infinite;
+  }
+
 /* Paused: a sticky marker at the end of the scroller. */
 :is(.feed, .log).is-paused::after {
   content: "\2193\00a0" attr(data-new) " new \00b7 paused" / attr(data-new) " new items, auto-scroll paused";
@@ -9255,6 +9627,26 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
   .dashboard { --dashboard-cols: 1; }
   .widget { grid-column: 1 / -1; grid-row: auto; }
 }
+
+/* .dashboard.is-fixed — a fixed canvas (a TV board): 12 columns on every
+   screen, --dashboard-rows stretched rows, no back-filling, and each widget
+   placed at --x/--y (0-based) spanning --cols/--rows. Widgets keep the
+   app's own display and are size containers (type in cqh). The edit-mode
+   guides and placeholder follow the same grid. */
+.dashboard.is-fixed {
+  --dashboard-cols: 12;
+  grid-template-rows: repeat(var(--dashboard-rows, 8), minmax(0, 1fr));
+  grid-auto-flow: row;
+  --dashboard-row-min: 0px;
+}
+.dashboard.is-fixed > :is(.widget, .widget-placeholder) {
+  grid-column: calc(var(--x, 0) + 1) / span var(--cols, 3);
+  grid-row: calc(var(--y, 0) + 1) / span var(--rows, 1);
+}
+:where(.dashboard.is-fixed) > .widget { display: block; container-type: size; }
+/* The unsaved marker may sit outside the grid, e.g. in a toolbar: any
+   .is-editing ancestor (or an edit checkbox's container) shows it. */
+.is-editing :is(.dashboard-dirty) { display: flex; }
 
 /* Inside a widget: lay out for the widget's own size. .widget-split puts
    two parts side by side from 28rem of widget width; .widget-wide hides a
@@ -9394,6 +9786,9 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
 @media (prefers-reduced-motion: no-preference) {
   :root[data-alert="red"]::after { animation: alert-pulse 2s ease-in-out infinite; }
 }
+
+  :root[data-motion="always"][data-alert="red"]::after { animation: alert-pulse 2s ease-in-out infinite; }
+
 /* --- v5 music and media kit (PLAN.md §19 "Music and media") -------------
  * Track rows, the playing equaliser glyph, media toggles (shuffle, repeat,
  * like, mute), the seek scrubber and volume, the now-playing bar and its
@@ -9432,6 +9827,11 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
     animation: equaliser var(--equaliser-speed, 0.9s) ease-in-out infinite;
   }
 }
+
+  :root[data-motion="always"] .equaliser:not(.is-paused),:root[data-motion="always"] .track:is(.is-playing, [aria-current="true"]):not(.is-paused) > .track-play::before {
+    animation: equaliser var(--equaliser-speed, 0.9s) ease-in-out infinite;
+  }
+
 html[data-motion="reduced"] .equaliser,
 html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 
@@ -9799,6 +10199,9 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 @media (prefers-reduced-motion: no-preference) {
   .waveform.is-loading::before { animation: waveform-shimmer 1.4s linear infinite; }
 }
+
+  :root[data-motion="always"] .waveform.is-loading::before { animation: waveform-shimmer 1.4s linear infinite; }
+
 @keyframes waveform-shimmer { to { background-position: -200% 0; } }
 .waveform:has(> input:disabled) { opacity: 0.5; }
 
@@ -10003,6 +10406,9 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
 @media (prefers-reduced-motion: no-preference) {
   :root:not([data-motion="reduced"], [data-motion="none"]) .waveform { transition: --zoom-from 0.2s ease, --zoom-to 0.2s ease; }
 }
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .waveform { transition: --zoom-from 0.2s ease, --zoom-to 0.2s ease; }
+
 .waveform-region.is-before { --_arrow-start: var(--_c); }
 .waveform-region.is-after { --_arrow-end: var(--_c); }
 .waveform-region:is(.is-before, .is-after)::after {
@@ -10226,6 +10632,9 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
 @media (prefers-reduced-motion: no-preference) {
   .lyrics > li { transition: color 0.3s ease, box-shadow 0.3s ease; }
 }
+
+  :root[data-motion="always"] .lyrics > li { transition: color 0.3s ease, box-shadow 0.3s ease; }
+
 /* Physical media transports. The SVG drawings are presentational; apps own
    playback/recording and set one state class on .media-deck — or, with no
    JavaScript at all, check one radio in its .transport-keys
@@ -10289,6 +10698,13 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
   html:not([data-motion="reduced"]) .media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
   html:not([data-motion="reduced"]) .media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"]) .media-deck:is(.is-playing,.is-recording,:has(.transport-keys :is([value="playing"],[value="recording"]):checked)) :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .media-deck:is(.is-playing,.is-recording,:has(.transport-keys :is([value="playing"],[value="recording"]):checked)) .reel-supply .reel-spin { animation-direction:reverse; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .media-deck:is(.is-playing,.is-recording,:has(.transport-keys :is([value="playing"],[value="recording"]):checked)) .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+
 .media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .device-counter { fill:var(--danger); }
 .media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .device-counter-slot .seg7 { --seg7-lit:var(--deck-counter-rec,var(--danger)); }
 .media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .head-gap { stroke:var(--danger); }
@@ -10301,7 +10717,7 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
 @keyframes media-tonearm { to { transform:rotate(4deg); } }
 
 @media (prefers-reduced-motion:reduce) {
-  .media-deck * { animation:none !important; transition:none !important; }
+  :root:not([data-motion="always"]) .media-deck * { animation:none !important; transition:none !important; }
 }
 
 /* [data-when="playing recording"] — shown only in those states (stopped =
@@ -10383,11 +10799,14 @@ circle[data-lamp="rec"] { r:var(--deck-lamp-rec-r,calc(var(--deck-lamp-r,4px) * 
 @media (prefers-reduced-motion:no-preference) {
   html:not([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { animation:transport-key-flash var(--transport-key-flash,.5s) steps(1,end) infinite; }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { animation:transport-key-flash var(--transport-key-flash,.5s) steps(1,end) infinite; }
+
 @keyframes transport-key-flash {
   50% { --_tk-icon:currentColor; background:var(--key-bg,var(--surface-2)); color:var(--key-fg,var(--muted)); border-color:var(--key-border,var(--border)); box-shadow:none; }
 }
 @media (prefers-reduced-motion:reduce) {
-  :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { border-style:dashed; }
+  :root:not([data-motion="always"]) :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { border-style:dashed; }
 }
 html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { border-style:dashed; }
 @media (forced-colors:active) {
@@ -10518,6 +10937,20 @@ html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pau
   html:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(2n) { animation-duration: calc(0.7s * var(--rta-live-speed, 1)); animation-delay: -0.3s; }
   html:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(3n) { animation-duration: calc(1.15s * var(--rta-live-speed, 1)); animation-delay: -0.6s; }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"]) :is(.vu-needle, .ledbar, .ledarc) {
+    transition: --metering-v var(--metering-speed, 0.3s) cubic-bezier(0.3, 0.6, 0.4, 1);
+  }
+  /* Optional demo motion: levels breathe around their --value. */
+  html[data-motion="always"]:not([data-motion="reduced"]) .is-demo-live :is(.vu-needle, .ledbar, .ledarc) {
+    animation: metering-live var(--metering-live, 1.7s) ease-in-out infinite alternate;
+  }
+  html[data-motion="always"]:not([data-motion="reduced"]) .is-demo-live :is(.vu-needle, .ledbar, .ledarc):nth-of-type(2n) { --metering-live: 1.3s; animation-delay: -0.4s; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .is-demo-live :is(.vu-needle, .ledbar, .ledarc):nth-of-type(3n) { --metering-live: 2.1s; animation-delay: -1.1s; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .is-demo-live .rta > li { animation: rta-live calc(0.9s * var(--rta-live-speed, 1)) ease-in-out infinite alternate; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(2n) { animation-duration: calc(0.7s * var(--rta-live-speed, 1)); animation-delay: -0.3s; }
+  html[data-motion="always"]:not([data-motion="reduced"]) .is-demo-live .rta > li:nth-child(3n) { animation-duration: calc(1.15s * var(--rta-live-speed, 1)); animation-delay: -0.6s; }
+
 @keyframes metering-live {
   0% { --metering-v: clamp(0, var(--_target) * 0.8, 1); }
   30% { --metering-v: clamp(0, var(--_target) * 1.05, 1); }
@@ -11190,6 +11623,9 @@ html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pau
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="reduced"]) .rta > li { transition: --rta-h var(--rta-decay, 0.45s) ease-out, --rta-pk var(--rta-decay, 0.45s) ease-out; }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"]) .rta > li { transition: --rta-h var(--rta-decay, 0.45s) ease-out, --rta-pk var(--rta-decay, 0.45s) ease-out; }
+
 /* .is-line: just the band tops, a stepped trace. */
 .rta.is-line > li { --rta-fill: 0%; --rta-fill-top: 0%; }
 /* Right-hand RTA level scale: each li prints data-r60 or, at 30 dB, data-r30. */
@@ -11558,6 +11994,9 @@ html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pau
   .tree summary::before { transition: transform 0.15s ease; }
 }
 
+  :root[data-motion="always"] .tree summary::before { transition: transform 0.15s ease; }
+
+
 /* --- Bottom tab bar (#41) -----------------------------------------------------
  *   <nav class="tabbar" aria-label="Primary">
  *     <a href="/" aria-current="page"><svg class="icon">…</svg><span>Home</span></a>…
@@ -11685,6 +12124,12 @@ dialog.sheet:modal,
     .sheet[popover]:popover-open { translate: 0 100%; }
   }
 }
+
+  :root[data-motion="always"] dialog.sheet,:root[data-motion="always"] .sheet[popover] { transition: translate 0.25s ease, display 0.25s allow-discrete, overlay 0.25s allow-discrete; }
+  @starting-style {
+    :root[data-motion="always"] dialog.sheet[open],:root[data-motion="always"] .sheet[popover]:popover-open { translate: 0 100%; }
+  }
+
 
 /* --- Collapsible nav rail (#43) ------------------------------------------------
  * .app-rail stays decorative (themes paint it, LCARS even writes labels in
@@ -12330,6 +12775,18 @@ kbd kbd { font-size: 0.9em; }
     animation: camera-feed-rec 1.4s steps(2, jump-none) infinite;
   }
 }
+
+  :root[data-motion="always"] .camera-feed-badge.is-live::before {
+    content: "";
+    display: inline-block;
+    inline-size: 0.5em;
+    block-size: 0.5em;
+    margin-inline-end: 0.35em;
+    border-radius: 50%;
+    background: currentColor;
+    animation: camera-feed-rec 1.4s steps(2, jump-none) infinite;
+  }
+
 html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none; }
 @keyframes camera-feed-rec { 50% { opacity: 0.15; } }
 
@@ -13138,7 +13595,7 @@ html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none
   grid-template-columns: var(--schedule-time-width, 4.25em) minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-2xs) var(--space-s);
-  min-block-size: max(var(--tap-min), calc(var(--duration, 0) * var(--schedule-hour, 3rem)));
+  min-block-size: calc(var(--duration, 0) * var(--schedule-hour, 3rem));
   box-sizing: border-box;
   padding: var(--schedule-item-pad, var(--space-xs) var(--space-s));
   background: var(--schedule-item-bg, color-mix(in srgb, var(--_ev) 12%, var(--surface)));
@@ -13147,6 +13604,10 @@ html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none
   border-radius: var(--schedule-item-radius, var(--radius));
   overflow-wrap: anywhere;
 }
+/* A row is a touch target only when it holds something to press. Keep one
+   text node out of the gap between <time class="schedule"> and
+   .schedule-body: a stray character becomes its own grid item. */
+.schedule-item:has(a, button, .stretched-link, input) { min-block-size: max(var(--tap-min), calc(var(--duration, 0) * var(--schedule-hour, 3rem))); }
 .schedule-item > .schedule {
   --schedule-font-size: 0.85em;
   flex-direction: column;
@@ -13183,6 +13644,11 @@ html[data-motion="reduced"] .camera-feed-badge.is-live::before { animation: none
     transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.15s ease, rotate 0.15s ease;
   }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"]) :is(.kanban-card, .calendar-event, .calendar-more, .gantt-bar) {
+    transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.15s ease, rotate 0.15s ease;
+  }
+
 
 /* --- Forced colours ---------------------------------------------------------- */
 @media (forced-colors: active) {
@@ -13750,6 +14216,14 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
   }
 }
 
+  @container (max-width: 480px) {
+    html[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .master-detail > .master-detail-pane {
+      transition: translate var(--motion-duration-m, 200ms) var(--motion-ease, ease-out), opacity var(--motion-duration-m, 200ms) var(--motion-ease, ease-out);
+      @starting-style { translate: 2rem 0; opacity: 0; }
+    }
+  }
+
+
 /* --- .otp: a one-time code in per-digit boxes ------------------------------
  *   <div class="otp">
  *     <input class="otp-input" id="code" inputmode="numeric" autocomplete="one-time-code"
@@ -13767,6 +14241,9 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
   position: relative;
   display: flex;
   gap: var(--_otp-gap);
+  /* Its natural size anywhere (a container has no intrinsic width), shrinking on narrow screens. */
+  inline-size: calc(var(--_otp-n) * var(--otp-cell-size, 2.75rem) + (var(--_otp-n) - 1) * var(--_otp-gap));
+  max-inline-size: 100%;
   block-size: var(--otp-height, 3.25rem);
   overflow: hidden;
   direction: ltr;
@@ -13777,6 +14254,10 @@ pre.line-numbers > code:has(> .line-numbers-rows) { position: relative; }
   border-radius: var(--otp-radius, var(--input-radius, var(--radius)));
   background: var(--input-bg, var(--surface-2));
 }
+/* A separator cell (XXXX-XXXX): an .otp-sep counts in --otp-length and
+   holds the dash the app inserts into the value. .is-alnum upper-cases. */
+.otp > .otp-sep { border-color: transparent; background: none; }
+.otp.is-alnum .otp-input { text-transform: uppercase; }
 .otp-input {
   position: absolute;
   inset-block: 0;
@@ -14609,6 +15090,402 @@ label.btn-close:has(> .banner-dismiss) { position: relative; }
 }
 .shop-layout.is-summary { grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 1fr); }
 @media (max-width: 760px) { .shop-layout, .shop-layout.is-summary { grid-template-columns: minmax(0, 1fr); } }
+/* --- v5 event displays and signage ------------------------------------------
+ * The pieces an event timer, a stage display or a room screen needs:
+ * .countdown states (a live timer), .timeline-bar (the day as segments with a now
+ * needle), .stage-edge (an alert ring round the screen), .is-attention /
+ * .is-urgent, .lower-third (a message band), .qr-card, .word-cloud,
+ * .ranked-list (a live Q&A wall), .count (a number that counts up), the
+ * [data-enter] / [data-exit] motion vocabulary and the signage surface
+ * (html[data-surface="signage"], .safe-area, data-fit).
+ *
+ * Unattended screens set html[data-motion="always"]: every animation in the
+ * library then runs even when the device reports reduced motion (the build
+ * copies each motion block for it). Never set it on an interactive page.
+ * See docs/components/signage.md. */
+
+/* --- .countdown states ------------------------------------------------------
+ * Extends instruments.css's .countdown (parts with unit labels) for a live
+ * timer, either form: <time class="countdown countdown-xl" data-state="running">09:59</time>
+ * States: running (default), armed (cued, not started), paused, held (at 0),
+ * alert1 (warning), alert2 (critical), overtime. Per-item colours are inline
+ * --countdown-alert1/-alert2. A .countdown-sign ("+") and .countdown-tenths
+ * (".4") sit smaller. It is never a live region: announce state changes in
+ * a sibling .visually-hidden[role=status]. Not colour alone: paused shows a
+ * pause glyph, overtime a "+", alert2 and overtime go heavier and pulse. */
+.countdown[data-state] { white-space: nowrap; }
+.countdown-xl { --countdown-size: var(--countdown-xl-size, clamp(3rem, 18vw, 14rem)); font-size: var(--countdown-size); font-weight: 700; line-height: 1; }
+.countdown > :is(.countdown-sign, .countdown-tenths) { font-size: calc(var(--countdown-size, 1.75rem) * 0.55); }
+.countdown-tenths { opacity: 0.75; }
+.countdown[data-state="armed"] { --countdown-fg: var(--countdown-armed-fg, var(--muted)); --countdown-glow: none; }
+.countdown[data-state="held"] { --countdown-fg: var(--countdown-held-fg, var(--muted)); --countdown-glow: none; }
+.countdown[data-state="paused"] { --countdown-fg: var(--countdown-paused-fg, var(--warning-text, var(--warning))); }
+.countdown[data-state="paused"]::before { content: "\23F8\FE0E" / ""; margin-inline-end: 0.15em; font-size: calc(var(--countdown-size, 1.75rem) * 0.45); align-self: center; }
+.countdown[data-state="alert1"] { --countdown-fg: var(--countdown-alert1, var(--warning-text, var(--warning))); }
+.countdown[data-state="alert2"] { --countdown-fg: var(--countdown-alert2, var(--danger-text, var(--danger))); }
+.countdown[data-state="overtime"] { --countdown-fg: var(--countdown-overtime, var(--countdown-alert2, var(--danger-text, var(--danger)))); }
+.countdown:is([data-state="paused"], [data-state="alert1"], [data-state="alert2"], [data-state="overtime"]) { --countdown-glow: 0 0 0.12em color-mix(in srgb, var(--countdown-fg) 55%, transparent); }
+.countdown:is([data-state="alert2"], [data-state="overtime"]) { font-weight: 800; }
+.countdown:is([data-state="alert2"], [data-state="overtime"]) > * { font-weight: 800; }
+@keyframes countdown-pulse { 50% { opacity: var(--countdown-pulse-opacity, 0.72); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .countdown:is([data-state="alert2"], [data-state="overtime"]) {
+    animation: countdown-pulse var(--countdown-pulse-period, 1s) steps(2, jump-none) infinite;
+  }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .countdown:is([data-state="alert2"], [data-state="overtime"]) {
+    animation: countdown-pulse var(--countdown-pulse-period, 1s) steps(2, jump-none) infinite;
+  }
+
+
+/* --- .timeline-bar: the day as proportional segments ------------------------
+ * <div class="timeline-bar" role="img" aria-label="Day 09:00–17:30, now 11:06, in Coffee">
+ *   <span class="timeline-seg is-done" style="--start:0%; --size:12%">Welcome</span>
+ *   <span class="timeline-seg" data-kind="break" style="--start:12%; --size:6%">Coffee</span>
+ *   <span class="timeline-now" style="--at:15%"></span>
+ * </div>
+ * <div class="timeline-scale"><time>09:00</time><time>17:30</time></div>
+ * Breaks are striped (not colour alone); --seg-color tints a segment. The
+ * app keeps the bar's aria-label current; segments are decorative unless
+ * they are links or buttons. Labels hide when the bar is under 30rem. */
+.timeline-bar {
+  position: relative;
+  container-type: inline-size;
+  block-size: var(--timeline-height, 2.6rem);
+  overflow: hidden;
+  background: var(--timeline-bg, var(--surface-2));
+  border: 1px solid var(--timeline-border, var(--border));
+  border-radius: var(--timeline-radius, var(--radius));
+}
+.timeline-seg {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--start, 0%);
+  inline-size: var(--size, 0%);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0.3em 0.45em;
+  border-inline-start: 1px solid var(--timeline-rule, var(--hairline));
+  background: color-mix(in srgb, var(--seg-color, var(--accent)) var(--timeline-seg-alpha, 26%), transparent);
+  color: var(--timeline-seg-fg, var(--text));
+  font-size: var(--timeline-label-size, 0.75rem);
+  line-height: 1.2;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.timeline-seg[data-kind="break"] {
+  background: var(--timeline-break-pattern, repeating-linear-gradient(45deg, color-mix(in srgb, var(--border) 55%, transparent) 0 0.5rem, transparent 0.5rem 1rem));
+}
+.timeline-seg.is-done { filter: var(--timeline-done-filter, saturate(0.4) brightness(0.75)); }
+.timeline-seg:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { box-shadow: inset 0 -3px 0 var(--seg-color, var(--accent)); font-weight: 600; }
+:is(a, button).timeline-seg { border-block: 0; border-inline-end: 0; }
+:is(a, button).timeline-seg:focus-visible { z-index: var(--z-raised); outline: 2px solid var(--focus); outline-offset: -2px; }
+.timeline-now {
+  position: absolute;
+  z-index: calc(var(--z-raised) + 1);
+  inset-block: 0;
+  inset-inline-start: var(--at, 0%);
+  inline-size: 2px;
+  translate: -50% 0;
+  background: var(--timeline-now-color, var(--accent));
+  box-shadow: 0 0 0 1px var(--timeline-bg, var(--surface-2));
+  pointer-events: none;
+}
+.timeline-now::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  inline-size: 0.7rem;
+  block-size: 0.45rem;
+  translate: -50% 0;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.timeline-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 0.2rem;
+  color: var(--timeline-scale-fg, var(--muted));
+  font: 0.75rem/1.2 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+@container (inline-size < 30rem) {
+  .timeline-seg { padding: 0; font-size: 0; }
+}
+
+/* --- .stage-edge, .is-attention, .is-urgent ---------------------------------
+ * .stage-edge[data-level="warn|danger"] rings the element (the whole screen
+ * on a stage display) inside its edge, sized in vmin so it reads in
+ * peripheral vision; --stage-alert sets the colour (an operator's choice).
+ * .is-attention blinks (1 Hz, steps) and .is-urgent pulses; without motion
+ * both show a steady outline instead. Carry the state in text too. */
+.stage-edge { position: relative; }
+.stage-edge[data-level="warn"] { --_edge: var(--stage-alert, var(--warning)); --_edge-w: var(--stage-edge-warn-width, 0.45vmin); }
+.stage-edge[data-level="danger"] { --_edge: var(--stage-alert, var(--danger)); --_edge-w: var(--stage-edge-danger-width, 0.7vmin); }
+.stage-edge:is([data-level="warn"], [data-level="danger"])::after {
+  content: "";
+  position: absolute;
+  z-index: var(--z-overlay, 30);
+  inset: 0;
+  box-shadow: inset 0 0 0 var(--_edge-w) var(--_edge);
+  pointer-events: none;
+}
+:is(.is-attention, .is-urgent) { outline: 0.12em solid currentColor; outline-offset: 0.12em; }
+@keyframes attention-blink { 50% { opacity: var(--attention-low, 0.12); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-attention { outline: none; animation: attention-blink var(--attention-period, 1s) steps(1) infinite; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-urgent { outline: none; animation: countdown-pulse var(--countdown-pulse-period, 1s) ease-in-out infinite; }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .is-attention { outline: none; animation: attention-blink var(--attention-period, 1s) steps(1) infinite; }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .is-urgent { outline: none; animation: countdown-pulse var(--countdown-pulse-period, 1s) ease-in-out infinite; }
+
+
+/* --- .lower-third: a message band over a display ---------------------------
+ * <div class="lower-third" role="status" style="--banner-edge: #ff8a00"><p>Wrap up</p></div>
+ * Sits over the lower third of its positioned parent (.is-center: the
+ * middle; .is-fixed: the viewport). The operator's colour is the leading
+ * edge only; the text carries the meaning. */
+.lower-third {
+  position: absolute;
+  z-index: var(--z-overlay, 30);
+  inset-inline: 0;
+  inset-block-end: var(--lower-third-bottom, max(12vh, env(safe-area-inset-bottom, 0px)));
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--space-l);
+  pointer-events: none;
+}
+.lower-third.is-fixed { position: fixed; }
+.lower-third.is-center { inset-block: 0; align-items: center; }
+.lower-third > * {
+  max-inline-size: 92%;
+  margin: 0;
+  padding: 0.35em 0.8em;
+  border-inline-start: var(--banner-edge-width, 0.3em) solid var(--banner-edge, var(--accent));
+  border-radius: var(--lower-third-radius, var(--radius));
+  background: var(--lower-third-bg, color-mix(in srgb, var(--surface) 94%, transparent));
+  color: var(--lower-third-fg, var(--text));
+  box-shadow: var(--lower-third-shadow, 0 0.4rem 1.6rem rgb(0 0 0 / 0.45));
+  font-size: var(--banner-size, clamp(1.7rem, 6vh, 6rem));
+  font-weight: 700;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+/* --- .qr-card: a scannable join card ---------------------------------------
+ * <div class="qr-card"><img class="qr-card-code" src="join.svg" alt="QR code: join at timerpi.local/j">
+ *   <span class="qr-card-label">Join the Q&amp;A</span><span class="qr-card-url">timerpi.local/j</span></div>
+ * The code always sits on a light quiet zone with crisp pixels, whatever
+ * the theme does to images; the URL is always printed beside it.
+ * .is-corner pins it bottom-end inside the safe area. */
+.qr-card {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: 0.2em 0.8em;
+  padding: var(--qr-card-pad, var(--space-s));
+  background: var(--qr-card-bg, var(--surface));
+  color: var(--qr-card-fg, var(--text));
+  border: 1px solid var(--qr-card-border, var(--border));
+  border-radius: var(--qr-card-radius, var(--radius));
+}
+.qr-card-code {
+  grid-row: span 3;
+  inline-size: var(--qr-size, 7rem);
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: var(--qr-quiet, 0.45rem);
+  background: var(--qr-bg, #ffffff);
+  color: var(--qr-fg, #000000);
+  border-radius: 2px;
+  image-rendering: pixelated;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+.qr-card-label { font-weight: 700; }
+.qr-card-url { font: 0.9em/1.3 var(--font-mono); overflow-wrap: anywhere; }
+.qr-card.is-corner {
+  position: fixed;
+  z-index: var(--z-overlay, 30);
+  inset-block-end: max(var(--safe-inset-block, 1rem), env(safe-area-inset-bottom, 0px));
+  inset-inline-end: max(var(--safe-inset-inline, 1rem), env(safe-area-inset-right, 0px));
+}
+@media (forced-colors: active) { .qr-card-code { forced-color-adjust: none; } }
+
+/* --- .word-cloud ------------------------------------------------------------
+ * <ul class="word-cloud" aria-label="Audience words">
+ *   <li class="word-cloud-word" style="--weight:.8; --x:-.2; --y:.1; --rotate:-90deg" data-tone="2">
+ *     coffee <span class="visually-hidden">, 14 votes</span></li>
+ * The app places each word (--x/--y from -1 to 1 around the centre) and
+ * weights it (--weight 0–1 maps to --word-cloud-min…-max); this paints and
+ * moves it. data-tone="1..6" picks a chart colour; .is-top glows; .is-new
+ * fades in. */
+.word-cloud {
+  position: relative;
+  min-block-size: var(--word-cloud-height, 18rem);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+.word-cloud-word {
+  position: absolute;
+  inset-inline-start: calc(50% + var(--x, 0) * 45%);
+  inset-block-start: calc(50% + var(--y, 0) * 45%);
+  translate: -50% -50%;
+  rotate: var(--rotate, 0deg);
+  --_tone: var(--chart-series-1, var(--accent));
+  /* Mixed toward the text colour so every tone keeps 3:1 at word size. */
+  color: color-mix(in oklab, var(--_tone) var(--word-cloud-tone-strength, 35%), var(--text));
+  font-size: calc(var(--word-cloud-min, 1rem) + var(--weight, 0.5) * (var(--word-cloud-max, 4rem) - var(--word-cloud-min, 1rem)));
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.word-cloud-word[data-tone="2"] { --_tone: var(--chart-series-2, var(--accent-2, var(--accent))); }
+.word-cloud-word[data-tone="3"] { --_tone: var(--chart-series-3, var(--accent)); }
+.word-cloud-word[data-tone="4"] { --_tone: var(--chart-series-4, var(--accent)); }
+.word-cloud-word[data-tone="5"] { --_tone: var(--chart-series-5, var(--accent)); }
+.word-cloud-word[data-tone="6"] { --_tone: var(--chart-series-6, var(--accent)); }
+.word-cloud-word.is-top { --_tone: var(--word-cloud-top, var(--accent)); text-shadow: 0 0 0.4em color-mix(in srgb, currentColor 45%, transparent); }
+
+/* --- .ranked-list: a live ranked wall ---------------------------------------
+ * <ol class="ranked-list is-positioned" style="--ranked-height: 30rem">
+ *   <li class="ranked-item is-spotlight" aria-current="true" style="--slot-y: 0px">… <span class="ranked-votes">12</span></li>
+ * The DOM order is the rank order (screen readers hear the rank); with
+ * .is-positioned the app also sets each item's --slot-y and the item slides
+ * there, so a reorder animates. .is-spotlight (a heavy accent border),
+ * .is-answered (success; say so in text), .is-leaving (fades out), .is-new
+ * (rises in). Without motion the order just changes. */
+.ranked-list { position: relative; display: grid; gap: var(--ranked-gap, 0.6rem); margin: 0; padding: 0; list-style: none; }
+.ranked-list.is-positioned { display: block; block-size: var(--ranked-height, auto); overflow: hidden; }
+.ranked-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  box-sizing: border-box;
+  padding: var(--ranked-item-pad, 0.5em 0.8em);
+  background: var(--ranked-item-bg, var(--card-bg, var(--panel-bg, var(--surface))));
+  color: var(--ranked-item-fg, var(--text));
+  border: var(--ranked-border-width, 2px) solid var(--ranked-border, var(--card-border, var(--border)));
+  border-radius: var(--ranked-radius, var(--card-radius, var(--radius)));
+}
+.ranked-list.is-positioned > .ranked-item { position: absolute; inset-inline: 0; inset-block-start: 0; translate: 0 var(--slot-y, 0px); }
+.ranked-item.is-spotlight { border-width: var(--ranked-spot-width, 6px); border-color: var(--ranked-spot, var(--accent)); }
+.ranked-item.is-answered {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 18%, var(--ranked-item-bg, var(--card-bg, var(--panel-bg, var(--surface)))));
+}
+.ranked-item.is-leaving { opacity: 0; }
+.ranked-votes { margin-inline-start: auto; font: 700 1.2em/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+@keyframes ranked-rise { from { opacity: 0; translate: 0 calc(var(--slot-y, 0px) + 2rem); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .ranked-item {
+    transition: translate var(--ranked-move, 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)), opacity 1s ease, border-color 0.4s, background-color 0.4s;
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .ranked-item.is-new { animation: ranked-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .ranked-item {
+    transition: translate var(--ranked-move, 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)), opacity 1s ease, border-color 0.4s, background-color 0.4s;
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .ranked-item.is-new { animation: ranked-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+
+/* --- Count-up: .count and .is-counting -------------------------------------
+ * <data class="count" value="42" style="--count:42; --stagger-index:1"><span class="visually-hidden">42</span></data>
+ * <div class="meter is-counting" …><div class="meter-fill" style="--meter-level:42%"></div></div>
+ * The number counts up from 0 (or --count-from) to --count, and a meter's
+ * or progress bar's fill grows from empty, over --count-duration, each
+ * --stagger-index later than the last. The final value is visually-hidden
+ * text inside (what assistive tech reads); the digits you see are drawn,
+ * in a box --count-digits (3) wide. Without motion they show the result. */
+@property --count { syntax: "<integer>"; inherits: true; initial-value: 0; }
+.count {
+  display: inline-block;
+  min-inline-size: calc(var(--count-digits, 3) * 1ch);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  counter-reset: count-up var(--count);
+}
+.count::after { content: counter(count-up) / ""; }
+@keyframes count-up { from { --count: var(--count-from, 0); } }
+@keyframes count-fill { from { width: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .count {
+    animation: count-up var(--count-duration, 900ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger, 120ms));
+  }
+  :root:not([data-motion="reduced"], [data-motion="none"]) .is-counting :is(.meter-fill, .progress-bar) {
+    animation: count-fill var(--count-duration, 900ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger, 120ms));
+  }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .count {
+    animation: count-up var(--count-duration, 900ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger, 120ms));
+  }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .is-counting :is(.meter-fill, .progress-bar) {
+    animation: count-fill var(--count-duration, 900ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--stagger-index, 0) * var(--stagger, 120ms));
+  }
+
+
+/* --- Enter and exit: [data-enter] / [data-exit] -----------------------------
+ * <section class="widget is-entering" data-enter="pop" data-exit="slide">
+ * The app adds .is-entering when the element appears and .is-exiting before
+ * it removes it (after --motion-exit-duration). fade | slide | pop.
+ * Durations: --motion-enter-duration, --motion-exit-duration. */
+[data-enter="fade"] { --_enter: enter-fade; }
+[data-enter="slide"] { --_enter: enter-slide; }
+[data-enter="pop"] { --_enter: enter-pop; }
+[data-exit="fade"] { --_exit: exit-fade; }
+[data-exit="slide"] { --_exit: exit-slide; }
+[data-exit="pop"] { --_exit: exit-pop; }
+@keyframes enter-fade { from { opacity: 0; } }
+@keyframes enter-slide { from { opacity: 0; translate: 0 1.5rem; } }
+@keyframes enter-pop { from { opacity: 0; scale: 0.85; } 70% { scale: 1.03; } }
+@keyframes exit-fade { to { opacity: 0; } }
+@keyframes exit-slide { to { opacity: 0; translate: 0 1.5rem; } }
+@keyframes exit-pop { to { opacity: 0; scale: 0.85; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) [data-enter].is-entering { animation: var(--_enter) var(--motion-enter-duration, 450ms) var(--motion-ease, ease-out) both; }
+  :root:not([data-motion="reduced"], [data-motion="none"]) [data-exit].is-exiting { animation: var(--_exit) var(--motion-exit-duration, 400ms) ease-in forwards; }
+}
+
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) [data-enter].is-entering { animation: var(--_enter) var(--motion-enter-duration, 450ms) var(--motion-ease, ease-out) both; }
+  :root[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) [data-exit].is-exiting { animation: var(--_exit) var(--motion-exit-duration, 400ms) ease-in forwards; }
+
+
+/* --- The signage surface -----------------------------------------------------
+ * html[data-surface="signage"]: rem sizes scale with the screen (the root
+ * is --signage-root, 1.5vh; 1.5vw in portrait), so 720p, 1080p and 4K look
+ * the same, and nothing scrolls. .safe-area keeps content inside the TV's
+ * overscan (--safe-inset-block/-inline, 4vh/4vw, or the device's own
+ * inset if larger); data-fit="cover" drops the inset, "shadow" vignettes
+ * the edge. Signage is read-only: operator pages keep the OS root size. */
+html[data-surface="signage"] { font-size: var(--signage-root, 1.5vh); overflow: hidden; scrollbar-width: none; }
+@media (orientation: portrait) {
+  html[data-surface="signage"] { font-size: var(--signage-root-portrait, 1.5vw); }
+}
+html[data-surface="signage"] body { overflow: hidden; }
+.safe-area {
+  box-sizing: border-box;
+  padding:
+    max(var(--safe-inset-block, 4vh), env(safe-area-inset-top, 0px))
+    max(var(--safe-inset-inline, 4vw), env(safe-area-inset-right, 0px))
+    max(var(--safe-inset-block, 4vh), env(safe-area-inset-bottom, 0px))
+    max(var(--safe-inset-inline, 4vw), env(safe-area-inset-left, 0px));
+}
+.safe-area[data-fit="cover"] { --safe-inset-block: 0px; --safe-inset-inline: 0px; }
+.safe-area[data-fit="shadow"] { box-shadow: inset 0 0 6vmin 2vmin rgb(0 0 0 / 0.6); }
 /* --- v5 social group (PLAN.md §19 "Collaboration", "Notifications and
  * activity") ------------------------------------------------------------------
  * Presence: .presence avatar stack, status on any .avatar[data-status],
@@ -14821,6 +15698,14 @@ button.presence:is(:focus-visible, [aria-expanded="true"]) > .avatar { box-shado
     transition: rotate 0.15s ease;
   }
 }
+
+  html[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .live-cursor {
+    transition: left 0.12s linear, top 0.12s linear, opacity 0.3s ease;
+  }
+  html[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .comment-thread-summary::before,html[data-motion="always"]:not([data-motion="reduced"], [data-motion="none"]) .notification-summary::after {
+    transition: rotate 0.15s ease;
+  }
+
 
 /* --- Comments ---------------------------------------------------------------
  * mark.comment-anchor: the text a thread is about. Tinted and underlined
@@ -15227,6 +16112,11 @@ details[open] > .notification-summary::after { rotate: 90deg; }
     animation: skeleton-shimmer 1.4s ease-in-out infinite;
   }
 }
+
+  :root[data-motion="always"] .card.has-media[aria-busy="true"] > :is(img, video, picture, .card-media) {
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+
 html[data-motion="reduced"] .card.has-media > * { animation: none; }
 
 /* Overlay title: the body sits on the bottom of the media behind a scrim.
@@ -15512,24 +16402,26 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table :is(td, th):focus-visible { outline-offset: -2px; }
 .table td:is(.is-editable, .is-editing, [tabindex]:not([tabindex="-1"])) { height: var(--tap-min); }
 
-/* --- Editable cells (§7) ----------------------------------------------- */
+/* --- Editable cells (§7) -----------------------------------------------
+   The same idle/dirty/saving/saved/invalid states work outside a table on
+   any element with .editable (a card title, a label): */
 
 /* Idle: editable on double-click (desktop) or tap (touch). A dotted
    underline on hover and focus; a pencil on touch tiers, where there is no
    hover. */
-.table td.is-editable { cursor: var(--cursor-text, text); }
-.table td.is-editable:focus-visible,
-.table td.is-editable:focus-within {
+:is(.table td.is-editable, .editable) { cursor: var(--cursor-text, text); }
+:is(.table td.is-editable, .editable):focus-visible,
+:is(.table td.is-editable, .editable):focus-within {
   text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
   text-underline-offset: 0.25em;
 }
 @media (hover: hover) {
-  .table td.is-editable:hover {
+  :is(.table td.is-editable, .editable):hover {
     text-decoration: underline dotted var(--cell-editable-underline, var(--muted));
     text-underline-offset: 0.25em;
   }
 }
-.table td.is-editable::after {
+:is(.table td.is-editable, .editable)::after {
   display: var(--_cell-pencil);
   content: var(--cell-edit-glyph, "\270E") / "";
   margin-inline-start: 0.5em;
@@ -15549,15 +16441,17 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
    and field-sizing keeps its intrinsic width at its content, so neither the
    row height nor the column width jumps. Works for a single cell
    (td.is-editing) and a whole row (tr.is-editing). */
-.table :is(td.is-editing, tr.is-editing > td):has(> :is(.input, .select, .textarea)) { padding: 0; }
-.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea) {
+.table :is(td.is-editing, tr.is-editing > td):has(> :is(.input, .select, .textarea, .input-group)) { padding: 0; }
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea),
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > :is(.input, .select) {
   display: block;
   width: 100%;
   min-inline-size: 0;
   margin: 0;
   padding: calc(var(--cell-pad-y, calc(0.5em * var(--density))) - var(--input-border-width, 1px))
-    calc(var(--cell-pad-x, calc(0.75em * var(--density))) - var(--input-border-width, 1px));
+    calc(var(--cell-editor-pad-x, var(--cell-pad-x, calc(0.75em * var(--density)))) - var(--input-border-width, 1px));
   font: inherit;
+  font-size: var(--cell-editor-font-size, inherit);
   line-height: inherit;
   letter-spacing: inherit;
   border-radius: var(--cell-input-radius, 0);
@@ -15569,11 +16463,17 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit,
 .table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-datetime-edit-fields-wrapper { padding-block: 0; }
 .table :is(td.is-editing, tr.is-editing > td) > .input::-webkit-calendar-picker-indicator { block-size: 1em; padding-block: 0; margin-block: 0; }
-.table :is(td.is-editing, tr.is-editing > td) > .select {
-  padding-inline-end: calc(var(--cell-pad-x, calc(0.75em * var(--density))) + 1.5em);
+.table :is(td.is-editing, tr.is-editing > td) > .select,
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > .select {
+  padding-inline-end: calc(var(--cell-editor-pad-x, var(--cell-pad-x, calc(0.75em * var(--density)))) + var(--cell-editor-arrow-space, 1.5em));
 }
+/* An addon beside an editing control (.input-group): the group fills the cell
+   and its controls get the same treatment; the inner control flexes. */
+.table :is(td.is-editing, tr.is-editing > td) > .input-group { display: flex; align-items: center; inline-size: 100%; }
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > :is(.input, .select) { flex: 1 1 auto; inline-size: auto; }
 .table :is(td.is-editing, tr.is-editing > td) > .textarea { min-height: 0; resize: none; }
-.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea):not(.is-invalid, [aria-invalid="true"]) {
+.table :is(td.is-editing, tr.is-editing > td) > :is(.input, .select, .textarea):not(.is-invalid, [aria-invalid="true"]),
+.table :is(td.is-editing, tr.is-editing > td) > .input-group > :is(.input, .select):not(.is-invalid, [aria-invalid="true"]) {
   background-color: var(--cell-input-bg, var(--input-bg, var(--surface)));
   border-color: var(--cell-editing-border, var(--accent));
 }
@@ -15592,7 +16492,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
    hover/stripe/selection fill, so a state always shows whatever the row is
    doing. Each state also has a non-colour signal: a bar, a glyph, a ring or
    the error text. */
-.table tr > td:is(.is-dirty, .is-saving, .htmx-request, .is-saved, [aria-invalid="true"], :has(> [aria-invalid="true"])),
+:is(.table tr > td, .editable):is(.is-dirty, .is-saving, .htmx-request, .is-saved, [aria-invalid="true"], :has(> [aria-invalid="true"])),
 .table tr.is-editing > td {
   box-shadow: var(--_cell-paint);
 }
@@ -15610,16 +16510,16 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 }
 
 /* Dirty: changed, not saved. A bar on the leading edge plus a tint. */
-.table tr > td.is-dirty {
-  --_cell-paint: inset calc(var(--_dir) * 0.2rem) 0 0 var(--cell-dirty-marker, var(--warning)),
+:is(.table tr > td, .editable).is-dirty {
+  --_cell-paint: inset calc(var(--_dir, 1) * 0.2rem) 0 0 var(--cell-dirty-marker, var(--warning)),
     inset 0 0 0 100vmax var(--cell-dirty-bg, color-mix(in srgb, var(--warning) 14%, transparent));
 }
 /* Saving: a request in flight (htmx's .htmx-request works too). Dimmed text
    and a spinner; the app should also set aria-busy="true" on the cell. */
-.table tr > td:is(.is-saving, .htmx-request) {
+:is(.table tr > td, .editable):is(.is-saving, .htmx-request) {
   color: color-mix(in srgb, currentColor calc(var(--pending-opacity, 0.8) * 100%), transparent);
 }
-.table tr > td:is(.is-saving, .htmx-request)::after {
+:is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after {
   content: "";
   display: inline-block;
   inline-size: 0.85em;
@@ -15631,24 +16531,28 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
   border-radius: 50%;
 }
 /* Saved: a tick and a success tint; the app removes .is-saved after a moment. */
-.table tr > td.is-saved {
+:is(.table tr > td, .editable).is-saved {
   --_cell-paint: inset 0 0 0 100vmax var(--cell-saved-bg, color-mix(in srgb, var(--success) 14%, transparent));
 }
-.table tr > td.is-saved::after {
+:is(.table tr > td, .editable).is-saved::after {
   content: var(--cell-saved-glyph, "\2713") / "";
   margin-inline-start: 0.5em;
   color: var(--cell-saved-fg, var(--success-text, var(--success)));
   font-weight: 700;
 }
 /* Error: aria-invalid on the cell or its control, plus a .field-error. */
-.table tr > td:is([aria-invalid="true"], :has(> [aria-invalid="true"])) {
+:is(.table tr > td, .editable):is([aria-invalid="true"], :has(> [aria-invalid="true"])) {
   --_cell-paint: inset 0 0 0 2px var(--cell-error-border, var(--danger)),
     inset 0 0 0 100vmax var(--cell-error-bg, color-mix(in srgb, var(--danger) 10%, transparent));
 }
 @media (prefers-reduced-motion: no-preference) {
-  .table tr > td:is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
-  .table tr > td.is-saved { animation: cell-saved 1.6s ease-out forwards; }
+  :is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
+  :is(.table tr > td, .editable).is-saved { animation: cell-saved 1.6s ease-out forwards; }
 }
+
+  :root[data-motion="always"] :is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after { animation: spinner-rotate 0.7s linear infinite; }
+  :root[data-motion="always"] :is(.table tr > td, .editable).is-saved { animation: cell-saved 1.6s ease-out forwards; }
+
 @keyframes cell-saved { from { box-shadow: inset 0 0 0 100vmax var(--cell-saved-flash, color-mix(in srgb, var(--success) 35%, transparent)); } }
 
 /* Dropdown, date and combobox in a cell: give the list the popover
@@ -15882,6 +16786,69 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 .table :is(th, td).is-drop-before { box-shadow: inset calc(var(--_dir) * 3px) 0 0 var(--table-drop-marker, var(--accent)); }
 .table :is(th, td).is-drop-after { box-shadow: inset calc(var(--_dir) * -3px) 0 0 var(--table-drop-marker, var(--accent)); }
 
+/* Row drag-to-reorder: a grip cell (td.drag-handle, holding a <button> that
+   also takes Alt+Up/Down or opens "Move to…" — never drag-only), the lifted
+   row (tr.is-dragging) and the drop line drawn on the target row
+   (tr.is-drop-before / -after), with no extra element inside the scroller.
+   .table.is-dragging (or body) sets the grabbing cursor while dragging.
+   Announce the move in a live region ("Moved Coffee to position 3"). */
+.table td.drag-handle { inline-size: var(--tap-min); padding-inline: 0; text-align: center; color: var(--muted); cursor: var(--cursor-grab, grab); touch-action: none; }
+.table td.drag-handle:empty::before { content: var(--drag-handle-glyph, "\283F") / ""; }
+.table td.drag-handle > button { min-inline-size: var(--tap-min); min-block-size: var(--tap-min); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: inherit; touch-action: none; }
+.table td.drag-handle > button:empty::before { content: var(--drag-handle-glyph, "\283F") / ""; }
+.table tr.is-dragging { outline: 2px dashed var(--drop-line-color, var(--table-drop-marker, var(--accent))); outline-offset: -2px; }
+.table tr.is-dragging > td { opacity: var(--table-row-drag-opacity, 0.55); }
+.table tr.is-drop-before > td { box-shadow: inset 0 var(--drop-line-size, 3px) 0 var(--drop-line-color, var(--table-drop-marker, var(--accent))); }
+.table tr.is-drop-after > td { box-shadow: inset 0 calc(-1 * var(--drop-line-size, 3px)) 0 var(--drop-line-color, var(--table-drop-marker, var(--accent))); }
+:is(body, .table).is-dragging { cursor: var(--cursor-grabbing, grabbing); user-select: none; }
+
+/* Ordered rows (agendas, playlists, queues): tr.is-past is done (muted, the
+   .row-title — or the first cell — struck through; not by opacity, which
+   fails contrast); tr.is-next is up next (a dashed leading marker, unlike
+   .is-active's solid one); tr.is-current / aria-current="time" is now.
+   tr.has-row-color with --row-color paints a leading bar and a light tint
+   (a category, a user-picked colour). Give past and next a text
+   equivalent too (a visually-hidden "done", "next"). */
+.table tr.is-past > td { color: var(--row-past-fg, var(--muted)); }
+.table tr.is-past .row-title,
+.table tr.is-past:not(:has(.row-title)) > td:first-child:not(.drag-handle),
+.table tr.is-past:not(:has(.row-title)) > td.drag-handle + td {
+  text-decoration: line-through var(--row-past-strike, color-mix(in srgb, var(--muted) 60%, transparent)) 1px;
+}
+.table tr.is-next > td:first-child {
+  background-image: repeating-linear-gradient(180deg, var(--row-next-marker, var(--accent)) 0 0.35rem, transparent 0.35rem 0.6rem);
+  background-repeat: no-repeat;
+  background-size: 0.25rem 100%;
+  background-position: 0 0;
+}
+.table:dir(rtl) tr.is-next > td:first-child { background-position: 100% 0; }
+.table tr:is(.is-current, [aria-current="time"]) > td { font-weight: 600; }
+.table tr:is(.is-current, [aria-current="time"]) > td:first-child { box-shadow: var(--row-active-marker, inset 0.25rem 0 0 var(--accent)); }
+.table tr.has-row-color > td { box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--row-color, var(--accent)) var(--row-color-tint, 7%), transparent); }
+.table tr.has-row-color > td:first-child {
+  box-shadow: inset calc(var(--_dir, 1) * 3px) 0 0 var(--row-color, var(--accent)), inset 0 0 0 100vmax color-mix(in srgb, var(--row-color, var(--accent)) var(--row-color-tint, 7%), transparent);
+}
+
+/* A NOW divider row between two rows: <tr class="table-now" aria-hidden="true"><td colspan="6">Now · 11:06</td></tr>
+   (the current row carries aria-current="time"). .table.is-daysheet prints
+   black on white, the current row still shaded. */
+.table tr.table-now > td {
+  padding-block: 0.1rem;
+  border-block: 2px solid var(--table-now-rule, var(--accent));
+  background: color-mix(in srgb, var(--table-now-rule, var(--accent)) 8%, transparent);
+  color: var(--table-now-fg, var(--accent-text, var(--accent)));
+  font-size: 0.65em;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+@media print {
+  .table.is-daysheet { --row-past-fg: #444444; background: #ffffff; color: #000000; }
+  .table.is-daysheet :is(th, td) { background: #ffffff; color: #000000; border-color: #000000; box-shadow: none; }
+  .table.is-daysheet tr:is(.is-current, [aria-current="time"]) > td { background: #e6e6e6; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .table.is-daysheet tr.table-now > td { border-color: #000000; color: #000000; }
+}
+
 /* --- Row groups and tree rows (§18) --------------------------------------
  * <tbody class="table-group"> with a header row and an optional totals row.
  * A .table-toggle with aria-expanded collapses the group (the app flips the
@@ -15916,6 +16883,9 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 @media (prefers-reduced-motion: no-preference) {
   .table-toggle::before { transition: rotate 0.15s ease; }
 }
+
+  :root[data-motion="always"] .table-toggle::before { transition: rotate 0.15s ease; }
+
 
 .table .table-group-header > :is(th, td) {
   background: var(--table-group-bg, var(--surface-2));
@@ -16000,6 +16970,14 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
     animation: skeleton-shimmer 1.4s ease-in-out infinite;
   }
 }
+
+  :root[data-motion="always"] .table.is-loading tbody td::after {
+    background-image: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.08), transparent);
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+
 
 /* Two classes plus :nth-child(n) to outweigh core's striped-and-hovered
    cell rule: these rows never take a hover or stripe fill. */
@@ -16115,6 +17093,9 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 @media (prefers-reduced-motion: no-preference) {
   .attitude-horizon { transition: transform var(--attitude-speed, 0.4s) ease-out; }
 }
+
+  :root[data-motion="always"] .attitude-horizon { transition: transform var(--attitude-speed, 0.4s) ease-out; }
+
 /* Ladder rungs every 10° (long) and 5° (short), ±90°. */
 .attitude-horizon::before {
   content: "";
@@ -16394,6 +17375,9 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 @media (prefers-reduced-motion: no-preference) {
   .radar:not(.is-static)::after { animation: vehicles-sweep var(--radar-speed, 4s) linear infinite; }
 }
+
+  :root[data-motion="always"] .radar:not(.is-static)::after { animation: vehicles-sweep var(--radar-speed, 4s) linear infinite; }
+
 .radar.is-static::after { display: none; }
 .radar.is-sector {
   --_fan: conic-gradient(from calc(var(--radar-span, 120deg) / -2) at 50% 100%, #000 0 var(--radar-span, 120deg), transparent 0);
@@ -16503,6 +17487,9 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   .annunciator > li.is-blinking:is(.is-caution, .is-warning, .is-advisory, .is-on),
   .annunciator-master:not(:has(input:checked)) { animation: vehicles-blink 1s steps(1, end) infinite; }
 }
+
+  :root[data-motion="always"] .annunciator > li.is-blinking:is(.is-caution, .is-warning, .is-advisory, .is-on),:root[data-motion="always"] .annunciator-master:not(:has(input:checked)) { animation: vehicles-blink 1s steps(1, end) infinite; }
+
 /* Landing gear: nose on top, mains below. */
 .annunciator.is-gear { grid-template-columns: repeat(2, minmax(0, 1fr)); max-inline-size: 14rem; }
 .annunciator.is-gear > li:first-child { grid-column: 1 / -1; justify-self: center; inline-size: calc(50% - var(--annunciator-gap, 3px) / 2); }
@@ -16536,6 +17523,9 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
 @media (prefers-reduced-motion: no-preference) {
   .telltale.is-on.is-blinking { animation: vehicles-blink 0.8s steps(1, end) infinite; --vehicles-blink-dim: 0.12; }
 }
+
+  :root[data-motion="always"] .telltale.is-on.is-blinking { animation: vehicles-blink 0.8s steps(1, end) infinite; --vehicles-blink-dim: 0.12; }
+
 
 /* ---- .tyres: pressure per wheel round a body outline ---------------------
  * <ul class="tyres" aria-label="Tyre pressures">
@@ -17138,6 +18128,10 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   .waterfall { animation: vehicles-waterfall var(--waterfall-speed, 3s) linear infinite; }
   .waterfall-trace::before { animation: vehicles-waterfall-trace var(--waterfall-speed, 3s) linear infinite; }
 }
+
+  :root[data-motion="always"] .waterfall { animation: vehicles-waterfall var(--waterfall-speed, 3s) linear infinite; }
+  :root[data-motion="always"] .waterfall-trace::before { animation: vehicles-waterfall-trace var(--waterfall-speed, 3s) linear infinite; }
+
 @keyframes vehicles-waterfall-trace { to { background-position-y: var(--waterfall-roll, 48px); } }
 .waterfall-scale {
   display: flex;
@@ -17798,6 +18792,9 @@ html[data-theme="windows-live"] {
 @media (prefers-reduced-motion: no-preference) {
   html[data-theme="windows-live"] .btn { transition: background 0.15s ease, border-color 0.15s ease; }
 }
+
+  html[data-motion="always"][data-theme="windows-live"] .btn { transition: background 0.15s ease, border-color 0.15s ease; }
+
 
 /* --- Conversation, file chips, bar chart, hero (v4.1) --------------------- *
  * Messenger's conversation pane: white messages, yours in pale Live blue.

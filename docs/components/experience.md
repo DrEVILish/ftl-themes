@@ -376,3 +376,16 @@ A theme can also replace the icon shapes everywhere through its
 hint carry the meaning; state is shown by icon, tone and heading together,
 never colour alone. Use `role="status"` (or `role="alert"` for errors that
 appear after an action).
+
+## Stage and standby splashes, logo marks and overlays
+
+- **`.splash.is-stage`**: black on every theme (a white TV in a dark room is the bug)
+  with light ink checked against black; `--readout-fg`, `--accent-text`, `--text` and
+  `--muted` follow it. A theme may set `--splash-stage-bg/-fg/-muted/-accent`.
+- **`.splash.is-standby`**: the operator blackout: black, a dimmed still mark
+  (`--splash-standby-art-opacity`), muted text.
+- **A logo as the mark:** `<img class="splash-art">`, or `.splash-art.is-image` with
+  `--splash-art: url(logo.svg)`: no ring mask, no radius, no spin.
+- **`.overlay`** (or `.empty-state.is-overlay`) lays content over the viewport behind a
+  scrim (`--overlay-scrim`, `--overlay-z`); toggle it with `[hidden]` and it fades like
+  `.splash`. `.is-contained` covers the nearest positioned ancestor.

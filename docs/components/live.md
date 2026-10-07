@@ -237,3 +237,17 @@ toggles red alert.
   readers; offer keyboard move/resize commands (for example in a widget menu). Label
   each widget (`aria-labelledby` its title). Scroll regions inside widgets need
   `tabindex="0"` and a label.
+
+## Connecting, lamp size and fixed boards
+
+- **`data-state="connecting"`** is the very first connect: a muted dotted ring that turns
+  (neutral, not a fault). `initializing` keeps the warning dashed lamp for a start-up
+  that is taking too long. The lamp is `--connection-lamp-size` (default `0.8em`), so it
+  scales with `--connection-size`.
+- **`.dashboard.is-fixed`** is a fixed canvas for a TV board: 12 columns on every screen
+  (no tier collapse), `--dashboard-rows` stretched rows (default 8), no back-filling, and
+  each widget placed by `--x`/`--y` (0-based) spanning `--cols`/`--rows`. Widgets there
+  keep the app's own `display` and are size containers, so type can be sized in `cqh`;
+  the edit-mode guides and `.widget-placeholder` follow the same grid.
+- **`.dashboard-dirty` outside the grid:** inside any `.is-editing` ancestor (a toolbar
+  above the board) it shows too.

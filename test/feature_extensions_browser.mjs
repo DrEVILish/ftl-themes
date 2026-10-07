@@ -147,6 +147,22 @@ try {
   await page.evaluate(() => window.ftlAppReady());
   assert.equal(await page.locator('.app-main').getAttribute('aria-busy'), null);
   assert.equal(await page.locator('[data-boot-screen]').evaluate(el => el.hidden), true);
+  // Signage (still under reduced motion): nothing animates until data-motion="always";
+  // countdown states, fixed board placement and the two-tap delete.
+  await page.goto(`${server.base}/signage.html?theme=blue-future`, { waitUntil: 'networkidle' });
+  await page.click('label.segmented-item:has(input[value=overtime])');
+  const clockAnim = () => page.locator('#ev-clock').evaluate(el => getComputedStyle(el).animationName);
+  assert.equal(await clockAnim(), 'none');
+  assert.equal(await page.locator('#ev-stage').getAttribute('data-level'), 'danger');
+  await page.evaluate(() => { document.documentElement.dataset.motion = 'always'; });
+  assert.equal(await clockAnim(), 'countdown-pulse');
+  await page.evaluate(() => { delete document.documentElement.dataset.motion; });
+  const qa = await page.locator('.dashboard.is-fixed > .widget').nth(3).evaluate(el => [getComputedStyle(el).gridColumnStart, getComputedStyle(el).gridRowStart]);
+  assert.deepEqual(qa, ['7', '3']);
+  await page.click('#ev-del');
+  assert.equal(await page.locator('#ev-del .btn-armed-label').isVisible(), true);
+  await page.click('#ev-del');
+  assert.equal(await page.locator('#ev-del').evaluate(el => el.classList.contains('is-armed')), false);
   await page.goto(`${server.base}/theme-feedback.html`, { waitUntil: 'networkidle' });
   // Corrupt saved JSON is ignored instead of preventing the feedback tool from opening.
   await page.evaluate(() => localStorage.setItem('theme-feedback-v1', '{broken'));

@@ -109,8 +109,8 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
 .connection::before {
   content: "";
   flex: none;
-  inline-size: var(--lamp-size, 0.7rem);
-  block-size: var(--lamp-size, 0.7rem);
+  inline-size: var(--connection-lamp-size, 0.8em);
+  block-size: var(--connection-lamp-size, 0.8em);
   border-radius: var(--lamp-radius, 50%);
   border: 2px solid var(--connection-lamp, var(--muted));
   background: var(--connection-lamp, var(--muted));
@@ -119,6 +119,9 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
 .connection[data-state="live"] { --connection-lamp: var(--connection-live, var(--lamp-on, var(--success))); }
 .connection[data-state="reconnecting"] { --connection-lamp: var(--connection-reconnecting, var(--warning)); }
 .connection[data-state="reconnecting"]::before { background: transparent; border-style: dotted; }
+/* connecting: the first connect, neutral (not a fault): a muted dotted ring that turns. */
+.connection[data-state="connecting"] { --connection-lamp: var(--connection-connecting, var(--muted)); }
+.connection[data-state="connecting"]::before { background: transparent; border-style: dotted; box-shadow: none; }
 .connection[data-state="offline"] { --connection-lamp: var(--connection-offline, var(--danger)); }
 .connection[data-state="offline"]::before {
   background: linear-gradient(45deg, transparent 42%, var(--connection-lamp) 42% 58%, transparent 58%);
@@ -139,7 +142,7 @@ tr.is-stale > td { color: var(--live-stale-fg, var(--muted)); border-block-end-s
   :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="live"]::before {
     animation: lamp-pulse var(--lamp-pulse-duration, 2.4s) ease-in-out infinite;
   }
-  :root:not([data-motion="reduced"], [data-motion="none"]) .connection[data-state="reconnecting"]::before {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .connection:is([data-state="reconnecting"], [data-state="connecting"])::before {
     animation: connection-spin 1.6s linear infinite;
   }
 }
@@ -276,6 +279,26 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
   .dashboard { --dashboard-cols: 1; }
   .widget { grid-column: 1 / -1; grid-row: auto; }
 }
+
+/* .dashboard.is-fixed — a fixed canvas (a TV board): 12 columns on every
+   screen, --dashboard-rows stretched rows, no back-filling, and each widget
+   placed at --x/--y (0-based) spanning --cols/--rows. Widgets keep the
+   app's own display and are size containers (type in cqh). The edit-mode
+   guides and placeholder follow the same grid. */
+.dashboard.is-fixed {
+  --dashboard-cols: 12;
+  grid-template-rows: repeat(var(--dashboard-rows, 8), minmax(0, 1fr));
+  grid-auto-flow: row;
+  --dashboard-row-min: 0px;
+}
+.dashboard.is-fixed > :is(.widget, .widget-placeholder) {
+  grid-column: calc(var(--x, 0) + 1) / span var(--cols, 3);
+  grid-row: calc(var(--y, 0) + 1) / span var(--rows, 1);
+}
+:where(.dashboard.is-fixed) > .widget { display: block; container-type: size; }
+/* The unsaved marker may sit outside the grid, e.g. in a toolbar: any
+   .is-editing ancestor (or an edit checkbox's container) shows it. */
+.is-editing :is(.dashboard-dirty) { display: flex; }
 
 /* Inside a widget: lay out for the widget's own size. .widget-split puts
    two parts side by side from 28rem of widget width; .widget-wide hides a
