@@ -361,6 +361,138 @@
 }
 .knob.is-led .knob-dial::after { inset: calc(var(--knob-arc-width) + 3px); }
 
+/* --- Pointer styles: .knob[data-pointer] ------------------------------------
+ *   <label class="knob" data-pointer="chicken" style="--value:.3">…</label>
+ * The cap shapes a large-format console draws its knobs with. Colours come
+ * from --knob-color (cap), --knob-pointer (line or blade), --knob-hi
+ * (highlight), --knob-rim / --knob-rim-dark (ribs):
+ *   ribbed    black dome in a ribbed rim, long pointer line (the default look)
+ *   mini      the same, small, for dense panels
+ *   lobed     glossy seven-lobed cap (yellow line on the console's EQ pots)
+ *   clock     white fluted dome with a coloured hand
+ *   flat      an outline ring and line, no cap
+ *   sculpted  a silver disc with a raised bar and a coloured dot at its tip
+ *   chicken   a chicken-head blade over a round skirt (brass; .is-black: black
+ *             with a white tip)
+ *   ring      no cap: the value is a lit arc in a dark ring
+ *   dots      a flat pointerless disc; the value lights one dot of its scale */
+/* Each style's own colours, at zero specificity so a page class still wins
+   and a theme's --knob-color for plain knobs doesn't paint over them. */
+:where(.knob[data-pointer="lobed"]) { --knob-color: #2a2a2e; --knob-pointer: #f2e21a; --knob-hi: rgba(255, 255, 255, 0.6); }
+:where(.knob[data-pointer="clock"]) { --knob-color: #ececf0; --knob-pointer: #4b1a8a; }
+:where(.knob[data-pointer="flat"]) { --knob-pointer: #d9cfb2; }
+:where(.knob[data-pointer="sculpted"]) { --knob-color: #b4b4b8; --knob-pointer: #3b5bd6; }
+:where(.knob[data-pointer="chicken"]) { --knob-color: #a87224; --knob-hi: #f6d08a; --knob-blade: #f2d9a4; --knob-pointer: transparent; }
+:where(.knob[data-pointer="chicken"].is-black) { --knob-color: #151515; --knob-hi: #555555; --knob-blade: #2a2a2a; --knob-pointer: #ffffff; }
+:where(.knob[data-pointer="dots"]) { --knob-color: #bcbcbc; }
+:is(.knob[data-pointer="ribbed"], .knob[data-pointer="mini"]) .knob-dial::after {
+  background:
+    linear-gradient(var(--knob-pointer, #ffffff), var(--knob-pointer, #ffffff)) 50% 4% / 3px 42% no-repeat,
+    radial-gradient(circle at 40% 34%, var(--knob-hi, rgba(255, 255, 255, 0.4)) 0, transparent 34%),
+    radial-gradient(circle, transparent 0 50%, rgba(0, 0, 0, 0.45) 58%, transparent 61%),
+    radial-gradient(circle, var(--knob-color, #1b1b1f) 0 58%, transparent 60%),
+    repeating-conic-gradient(var(--knob-rim, #4a4a50) 0 7deg, var(--knob-rim-dark, #121214) 7deg 15deg);
+  border: 1px solid #000000;
+}
+.knob[data-pointer="mini"] { --knob-size: 1.15rem; --knob-arc-width: 2px; }
+.knob[data-pointer="mini"] .knob-dial::after { background-size: 2px 42%, auto, auto, auto, auto; }
+.knob[data-pointer="lobed"] .knob-dial::after {
+  inset: calc(var(--knob-arc-width, 3px) + 1px);
+  background:
+    linear-gradient(var(--knob-pointer, #f2e21a), var(--knob-pointer, #f2e21a)) 50% 6% / 3px 40% no-repeat,
+    radial-gradient(circle at 36% 28%, var(--knob-hi, rgba(255, 255, 255, 0.6)) 0, transparent 30%),
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--knob-color, #2a2a2e) 80%, #fff) 0, var(--knob-color, #2a2a2e) 45%, #050505 85%);
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(50.0% 0.0%, 55.5% 1.6%, 60.1% 5.6%, 64.0% 10.1%, 67.8% 13.1%, 72.5% 14.2%, 78.4% 14.4%, 84.4% 15.6%, 89.1% 18.8%, 91.2% 24.1%, 91.0% 30.3%, 89.9% 36.0%, 90.0% 40.9%, 92.1% 45.3%, 95.5% 50.0%, 98.4% 55.5%, 98.7% 61.1%, 96.0% 66.1%, 91.0% 69.7%, 85.8% 72.5%, 82.1% 75.6%, 79.9% 79.9%, 78.4% 85.6%, 75.9% 91.2%, 71.7% 95.0%, 66.1% 96.0%, 60.1% 94.4%, 54.7% 92.1%, 50.0% 91.0%, 45.3% 92.1%, 39.9% 94.4%, 33.9% 96.0%, 28.3% 95.0%, 24.1% 91.2%, 21.6% 85.6%, 20.1% 79.9%, 17.9% 75.6%, 14.2% 72.5%, 9.0% 69.7%, 4.0% 66.1%, 1.3% 61.1%, 1.6% 55.5%, 4.5% 50.0%, 7.9% 45.3%, 10.0% 40.9%, 10.1% 36.0%, 9.0% 30.3%, 8.8% 24.1%, 10.9% 18.8%, 15.6% 15.6%, 21.6% 14.4%, 27.5% 14.2%, 32.2% 13.1%, 36.0% 10.1%, 39.9% 5.6%, 44.5% 1.6%);
+}
+.knob[data-pointer="clock"] .knob-dial::after {
+  background:
+    linear-gradient(var(--knob-pointer, #4b1a8a), var(--knob-pointer, #4b1a8a)) 50% 2% / 3px 48% no-repeat,
+    radial-gradient(circle at 40% 32%, #ffffff 0, transparent 42%),
+    radial-gradient(circle, transparent 0 66%, rgba(0, 0, 0, 0.18) 70%, transparent 74%),
+    radial-gradient(circle, var(--knob-color, #ececf0) 0 68%, transparent 70%),
+    repeating-conic-gradient(#f4f4f6 0 6deg, #a8a8b0 6deg 15deg);
+  border: 1px solid #6a6a72;
+}
+.knob[data-pointer="flat"] .knob-dial::after {
+  background: linear-gradient(var(--knob-pointer, #d9cfb2), var(--knob-pointer, #d9cfb2)) 50% 0 / 3px 46% no-repeat;
+  border: 3px solid var(--knob-pointer, #d9cfb2);
+  box-shadow: none;
+}
+.knob[data-pointer="sculpted"] .knob-dial::after {
+  background:
+    radial-gradient(circle at 50% 20%, var(--knob-pointer, #3b5bd6) 0 9%, #10205a 10% 12%, transparent 13%),
+    linear-gradient(90deg, transparent 36%, rgba(0, 0, 0, 0.4) 36% 38%, #fbfbfb 38%, #d4d4d4 50%, #a4a4a4 62%, rgba(0, 0, 0, 0.45) 62% 64%, transparent 64%),
+    radial-gradient(circle at 38% 30%, #fafafa, var(--knob-color, #b4b4b8) 55%, #7a7a80);
+  border: 1px solid #4a4a50;
+}
+.knob[data-pointer="chicken"] .knob-dial::after {
+  inset: 0;
+  background:
+    linear-gradient(var(--knob-pointer, transparent), var(--knob-pointer, transparent)) 50% 0 / 2px 16% no-repeat,
+    conic-gradient(from 171deg at 50% -4%, color-mix(in srgb, var(--knob-blade, #f2d9a4) 65%, #fff) 0 5deg, var(--knob-blade, #f2d9a4) 0 12deg, color-mix(in srgb, var(--knob-blade, #f2d9a4) 60%, #000) 0 18deg, transparent 0),
+    radial-gradient(circle at 42% 38%, var(--knob-hi, #f6d08a), var(--knob-color, #a87224) 42%, color-mix(in srgb, var(--knob-color, #a87224) 45%, #000) 66%, transparent 67%);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-mask: conic-gradient(from 171deg at 50% -4%, #000 0 18deg, transparent 0), radial-gradient(circle, #000 66%, transparent 67%);
+  mask: conic-gradient(from 171deg at 50% -4%, #000 0 18deg, transparent 0), radial-gradient(circle, #000 66%, transparent 67%);
+}
+.knob[data-pointer="ring"] .knob-dial { --knob-arc-width: var(--knob-ring-width, 26%); }
+.knob[data-pointer="ring"] .knob-dial::before {
+  background: conic-gradient(from 225deg, var(--knob-ring-on, #22d322) 0 calc(var(--value, 0.5) * 270deg), var(--knob-ring-off, #050505) 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width)), #000 calc(100% - var(--knob-arc-width) + 0.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width)), #000 calc(100% - var(--knob-arc-width) + 0.5px));
+  clip-path: none;
+}
+.knob[data-pointer="ring"] .knob-dial::after { background: none; border: 0; box-shadow: none; }
+.knob[data-pointer="dots"] .knob-dial { --knob-arc-width: 4px; }
+.knob[data-pointer="dots"] .knob-dial::before {
+  background:
+    conic-gradient(from calc(219deg + round(var(--value, 0.5) * 10, 1) * 27deg), var(--knob-dot-on, #ff3b2f) 0 12deg, transparent 0),
+    repeating-conic-gradient(from 219deg, var(--knob-dot, rgba(255, 255, 255, 0.85)) 0 12deg, transparent 0 27deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width)), #000 calc(100% - var(--knob-arc-width) + 0.5px)), conic-gradient(from 219deg, #000 0 282deg, transparent 0);
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width)), #000 calc(100% - var(--knob-arc-width) + 0.5px)), conic-gradient(from 219deg, #000 0 282deg, transparent 0);
+  mask-composite: intersect;
+  clip-path: none;
+  filter: drop-shadow(0 0 2px var(--knob-dot-on, #ff3b2f));
+}
+.knob[data-pointer="dots"] .knob-dial::after {
+  inset: calc(var(--knob-arc-width) + 4px);
+  background: radial-gradient(circle at 44% 34%, color-mix(in srgb, var(--knob-color, #bcbcbc) 60%, #fff), var(--knob-color, #bcbcbc) 55%, color-mix(in srgb, var(--knob-color, #bcbcbc) 60%, #000));
+  border: 1px solid #000000;
+}
+
+/* --- Finishes: data-finish="brushed|steel|leather" --------------------------
+ * On a .rack-unit, or on any element with .finish. Brushed metal is fine
+ * horizontal scratches (three repeating gradients at co-prime periods, so
+ * they never line up) over a metallic gradient; --brushed-hi / --brushed-lo
+ * set the metal. Leather is a generated grain (an SVG noise lit from the top
+ * left, no image file) over --leather. .engraved presses text into it. */
+.finish { background: var(--_finish); color: var(--_finish-fg, inherit); }
+[data-finish="brushed"], [data-finish="steel"] {
+  --_finish:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(180deg, transparent 0 9px, rgba(255, 255, 255, 0.06) 9px 10px, transparent 10px 13px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.1) 22%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0.07) 70%, rgba(255, 255, 255, 0) 92%),
+    linear-gradient(180deg, var(--brushed-hi, #5e5e62), var(--brushed-lo, #2a2a2d));
+}
+[data-finish="steel"] { --brushed-hi: #e2e2e4; --brushed-lo: #a2a2a8; --_finish-fg: #111111; --knob-label-fg: #111111; --scale-fg: #111111; }
+[data-finish="leather"] {
+  --_finish:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='m' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.011' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 -.9'/%3E%3C/filter%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.42' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='2.4' lighting-color='%23fff'%3E%3CfeDistantLight azimuth='225' elevation='48'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.3 0 0 0 1.05'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23m)' opacity='.4'/%3E%3Crect width='100%' height='100%' filter='url(%23g)' opacity='.6'/%3E%3C/svg%3E") 0 0 / 220px 220px,
+    radial-gradient(130% 160% at 30% 15%, color-mix(in srgb, var(--leather, #8c1d16) 88%, #fff), var(--leather, #8c1d16) 45%, color-mix(in srgb, var(--leather, #8c1d16) 50%, #000));
+}
+.engraved {
+  color: var(--engraved-fg, rgba(205, 205, 205, 0.82));
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.75), 1px 1px 1px rgba(255, 255, 255, 0.28);
+}
+
 /* The area under a dynamics curve, filled (console.js closes the path). */
 .dyn-graph-fill { fill: var(--dyn-graph-fill, rgba(140, 190, 255, 0.45)); stroke: none; }
 [data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-fill { fill: var(--dyn-graph-fill-off, rgba(140, 190, 255, 0.18)); }

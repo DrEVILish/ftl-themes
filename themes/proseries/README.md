@@ -34,7 +34,7 @@ at arm's length in a dark room.
 - `--strip-bg`, `--strip-border`, `--strip-rule`: the strip gradient and its dark dividers.
 - `--key-*`: grey bevel unlit, each function key's own lit colour.
 - `--knob-*`: black cap, white pointer, white tick ring, yellow arc.
-- `--fader-cap-bg`: the ribbed grey cap; `--fader-slot`: the black slot.
+- `--fader-cap-bg`: the black hourglass cap with its grey disc; `--fader-slot`: the black slot.
 - `--meter-*`: green / yellow / red segments on black with dim unlit LEDs.
 - `--presence-color-1..6`: the console's name-tag colours (yellow, magenta,
   orange, blue, green, grey) for `data-color` tags.
@@ -43,7 +43,9 @@ at arm's length in a dark room.
 
 ## Signature details
 
-- Knob tick rings drawn with a repeating conic gradient behind the value arc.
+- Knob tick rings drawn with a repeating conic gradient behind the value arc; the console's other
+  pointer styles (chicken heads, clock, lobed, sculpted, LED ring, LED dot) are `data-pointer` values.
+- Brushed-metal and leather faceplates are drawn in CSS (`data-finish`), never copied from the console.
 - The home bar: a two-tone "home" tab, a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
 - The splash: a deep-blue sky with a gold "ProSeries" wordmark (no logos).

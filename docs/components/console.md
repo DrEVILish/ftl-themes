@@ -144,5 +144,20 @@ A checked point is patched (green, or data-kind="aes" yellow); grey is free. .pa
 - **`.knob.is-led`** — a gain pot in a ring of LED segments (red and yellow for too
   little gain, then green) lit to `--value`.
 - **`.dyn-graph-fill`** — the shaded area under a dynamics curve.
+- **`.knob[data-pointer]`** — the cap shapes a large-format console uses:
+  `ribbed` (black dome in a ribbed rim), `mini`, `lobed` (glossy seven-lobed
+  cap), `clock` (white fluted dome, coloured hand), `flat` (outline ring and
+  line), `sculpted` (silver disc with a raised bar and a dot), `chicken`
+  (chicken-head blade over a brass skirt; `.is-black` for black with a white
+  tip), `ring` (no cap, a lit arc in a dark ring) and `dots` (a flat
+  pointerless disc that lights the scale dot nearest its value). Each sets its
+  own `--knob-color`, `--knob-pointer`, `--knob-hi` and `--knob-blade`
+  defaults at zero specificity, so a page class recolours it.
+- **`data-finish="brushed|steel|leather"`** — finishes for a `.rack-unit`, or
+  any element with `.finish`. Brushed metal is fine repeating-gradient
+  scratches over a metallic gradient (`--brushed-hi`, `--brushed-lo`); leather
+  is a generated SVG grain over `--leather`. No image files.
+- **`.engraved`** — text pressed into a finish (a dark shadow up-left, a light
+  one down-right).
 - **`.assignable-page`**, **`.assignable-col.is-off`**, **`.assignable-nav`** — the
   panel's page counter, unassigned columns and its six navigation keys.

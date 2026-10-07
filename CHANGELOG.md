@@ -12,6 +12,15 @@ changes are called out explicitly here.
   with `--tag-*` tokens), an assignable panel page counter, unassigned columns and navigation keys.
   `console.js` adds tap tempo, radio-list next/previous, and undo/redo/checkpoint/restore/clear for
   a patch of checkboxes.
+- Console knobs take `data-pointer="ribbed|mini|lobed|clock|flat|sculpted|chicken|ring|dots"`: the
+  console's pointer styles drawn in CSS. Units and racks can take `data-finish="brushed|steel|leather"`
+  (CSS brushed metal; leather from a generated SVG grain), `.finish` paints any element with one, and
+  `.engraved` presses text into it.
+- `proseries.html`: a Pointer styles panel on Home with all twelve console pointers. The 3-band
+  compressor has LED-dot caps and bands you select by name. The dual stereo delay is brushed metal,
+  the dual stereo chorus is leather with an engraved title, and the flanger has brushed panels and its
+  own glossy lobed knobs. The mono GEQ uses mini pointers. New unit: Delay (the black tempo delay with
+  left/right rows, damping, EQ, rate, a Dig./Anlg. model switch and in/out meters).
 - Console keys can take `data-tone="cyan|blue|orange|brown|mauve|grey|white"`; `.knob.is-led` is a
   gain pot in a ring of LED segments; `.dyn-graph-fill` shades the area under a dynamics curve.
 - Console group (`core/components/console.css`): channel name tags, aux `.sends`, `.dyn-graph`
@@ -20,10 +29,10 @@ changes are called out explicitly here.
   and gate/compressor curves, shows values and links twin controls.
 - `proseries.html`: a working console with input channels (8 banks of names, 16 tag colours with a
   picker), channel detail (4-band PEQ, gate, compressor, filters, direct out, safes, delay, processing
-  order), an effects rack and device library of 20 units each drawn after its original faceplate over
+  order), an effects rack and device library of 21 units each drawn after its original faceplate over
   its assignable controls (chamber, hall, plate, ambience and vintage-room reverbs, DN780 reverb
   processor, dynamic EQ, mono and stereo GEQ, flanger, phaser, pitch shifter, dual stereo chorus,
-  dual stereo delay, 3-band compressor, SQ1 dynamics, 16 output comp./limiters, matrix mixer, and
+  dual stereo delay, delay, 3-band compressor, SQ1 dynamics, 16 output comp./limiters, matrix mixer, and
   rear-panel views for third-party units), patching with mode, checkpoint, restore, undo, redo,
   clear and a patch list, a Scenes page with next/previous/GO, Load Preset, Save File and Edit Scene
   dialogs, tap tempo, meters and home.
