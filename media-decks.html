@@ -7,32 +7,111 @@
 <link id="theme-link" rel="stylesheet" href="dist/blue-future.css">
 <link rel="stylesheet" href="assets/css/demo.css">
 <style>
-  .deck-page { max-width:1100px; margin-inline:auto; }
-  .media-deck-visual { max-height:18rem; }
-  .device-cassette { max-width:21rem; margin:auto; }
-  .device-minidisc { max-width:18rem; margin:auto; }
-  .device-controls .is-current { outline:2px solid var(--focus); outline-offset:2px; }
+  /* Page layout glue only; every colour comes from the theme. */
+  .deck-page { max-inline-size:1100px; margin-inline:auto; display:flex; flex-direction:column; gap:var(--space-l,1.5rem); }
+  .deck-page > header > * { margin-block:0 .5rem; }
+  .media-deck-visual { max-block-size:18rem; }
+  .device-cassette { max-inline-size:21rem; margin:auto; }
+  .device-minidisc { max-inline-size:18rem; margin:auto; }
+  .tape-recorder { grid-column:1 / -1; }
+  .tape-recorder .media-deck-visual { max-block-size:22rem; }
+  .deck-console { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.75rem 1.25rem; margin-block-start:.75rem; }
+  .deck-console .vfd { display:grid; gap:.35rem; justify-items:start; }
+  .deck-console .vfd > .cluster { display:flex; flex-wrap:wrap; gap:.3rem .9rem; }
+  .deck-console .vfd .seg7 { font-size:clamp(1.8rem, 7vw, 2.6rem); }
+  .deck-console .deck-remaining { display:grid; gap:.3rem; font-size:.75rem; color:var(--muted); }
+  .deck-console .deck-remaining .seg7 { font-size:1.6rem; }
+  .deck-console .controls { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1rem; }
   .deck-source { font-size:.8rem; color:var(--muted); }
+  .system-pane > summary .seg7 { font-size:1rem; }
 </style>
 </head>
 <body class="app">
-<header class="app-bar demo-topbar">
-  <span class="nav-brand">Media decks</span>
-  <nav aria-label="Examples"><a class="nav-item" href="player.html" data-demo-link>Media player</a><a class="nav-item" href="soundmixer.html" data-demo-link>Sound mixer</a><a class="nav-item" href="audio-components.html" data-demo-link>Audio components</a></nav>
-  <div class="cluster push"><select class="select is-auto" id="theme-picker" aria-label="Theme"></select></div>
-</header>
-<aside class="app-rail" aria-hidden="true"></aside>
-<main class="app-main stack stack-lg deck-page">
-  <header class="stack stack-sm">
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">Media decks</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu" class="is-active">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="mission-control.html" data-demo-link>Mission control</a></li>
+            <li role="none"><a role="menuitem" href="smart-home.html" data-demo-link>Smart home</a></li>
+            <li role="none"><a role="menuitem" href="trading.html" data-demo-link>Trading terminal</a></li>
+            <li role="none"><a role="menuitem" href="inventory.html" data-demo-link>Inventory &amp; assets</a></li>
+            <li role="none"><a role="menuitem" href="fleet.html" data-demo-link>Fleet dispatch</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+            <li role="none"><a role="menuitem" href="desktop.html" data-demo-link>Desktop</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Vehicles</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link>Car</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link>Airliner</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link>Fighter jet</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link>Boat</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link>Submarine</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link>Spaceship</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link>Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="audio-components.html" data-demo-link>Audio components</a></li>
+            <li role="none"><a role="menuitem" href="metering.html" data-demo-link>Metering &amp; EQ</a></li>
+            <li role="none"><a role="menuitem" href="media-decks.html" data-demo-link aria-current="page">Media decks</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="navigation-patterns.html" data-demo-link>Signature navigation patterns</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+    <div class="cluster push">
+      <select class="select is-auto" id="theme-picker" aria-label="Theme"></select>
+    </div>
+  </header>
+
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main deck-page">
+  <header>
     <h1>Physical media transports</h1>
-    <p class="text-muted">The reel-to-reel deck follows Pi9696’s original SVG and moving-reel/tape treatment, adapted to the library tokens. The vinyl, portable cassette and MiniDisc decks use the same play, record and pause states.</p>
-    <p class="deck-source">Play, record and pause below are visual states only; connect the component to your app’s own transport.</p>
+    <p class="text-muted">A tape recorder built entirely from system components: seven-segment counter, VFD display, lamp-style transport keys, a labelled lamp band and a telemetry pane. The reel-to-reel drawing follows Pi9696’s original SVG; the vinyl, cassette and MiniDisc decks share the same states.</p>
+    <p class="deck-source">The transport keys are radio buttons: no JavaScript runs on this page. Connect the component to your app’s own transport by setting a state class instead.</p>
   </header>
   <div class="media-decks">
-    <section class="media-deck is-playing" data-deck aria-labelledby="reel-title">
-      <h2 id="reel-title">Reel-to-reel · Pi9696 reference</h2>
+    <section class="media-deck tape-recorder" aria-labelledby="tape-title">
+      <h2 id="tape-title">Tape recorder · Pi9696 reference</h2>
+      <div class="deck-hud">
+        <span class="deck-lamp" data-lamp="sys">SYS</span>
+        <span class="deck-lamp is-on" data-lamp="link">Link</span>
+        <span class="deck-lamp" data-lamp="rec">Rec</span>
+        <span class="status status-error" data-when="recording">Recording</span><span class="status status-ok" data-when="playing">Playing</span><span class="status status-warn" data-when="paused">Paused</span><span class="status status-idle" data-when="stopped">Stopped</span>
+      </div>
       <svg class="media-deck-visual r2r" viewBox="0 0 820 265" role="img" aria-labelledby="reel-label reel-desc">
-        <title id="reel-label">Reel-to-reel tape transport</title><desc id="reel-desc">Two rotating tape reels feed tape across a recording head and elapsed-time display.</desc>
+        <title id="reel-label">Reel-to-reel tape transport</title><desc id="reel-desc">Two rotating tape reels feed tape across a recording head and seven-segment seven-segment elapsed-time display.</desc>
         <defs>
           <linearGradient id="deckBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--deck-face,#112842)"/><stop offset="55%" stop-color="var(--deck-well,#0d1c31)"/><stop offset="100%" stop-color="var(--bg,#0a1526)"/></linearGradient>
           <linearGradient id="headFace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--deck-face,#142f4d)"/><stop offset="100%" stop-color="var(--deck-well,#0a1a30)"/></linearGradient>
@@ -49,24 +128,32 @@
           <path class="reel-spoke" d="M650 105 L641 64 Q650 59 659 64 Z"/><path class="reel-spoke" d="M650 105 L641 64 Q650 59 659 64 Z" transform="rotate(120 650 105)"/><path class="reel-spoke" d="M650 105 L641 64 Q650 59 659 64 Z" transform="rotate(240 650 105)"/><circle class="reel-hub" cx="650" cy="105" r="13"/><circle class="reel-center" cx="650" cy="105" r="5"/></g></g>
         <text class="deck-text" x="410" y="122" text-anchor="middle">FTL · 15 IPS</text>
         <circle class="device-guide" cx="221" cy="162" r="7"/><circle class="device-guide" cx="599" cy="162" r="7"/><circle class="device-guide" cx="330" cy="194" r="7"/><circle class="device-guide" cx="490" cy="194" r="7"/>
-        <g><polygon class="head-plate" points="272,252 272,198 288,184 532,184 548,198 548,252" fill="url(#headFace)"/><path class="head-edge" d="M284 198 V246 M536 198 V246"/><path class="head-gap" d="M402 190 L418 190"/><rect class="head-window" x="300" y="198" width="220" height="48" rx="3"/><path class="head-grid" d="M304 210 H516 M304 222 H516 M304 234 H516 M304 246 H516 M324 198 V246 M348 198 V246 M372 198 V246 M396 198 V246 M420 198 V246 M444 198 V246 M468 198 V246 M492 198 V246"/><text class="device-counter" x="410" y="232" text-anchor="middle">00:12:34</text></g>
-        <text class="deck-text" x="146" y="24" text-anchor="middle">SUPPLY</text><text class="deck-text" x="650" y="24" text-anchor="middle">TAKE-UP</text>
-        <path class="plate-bezel" d="M40 249 H780"/><circle class="device-lamp" cx="54" cy="255" r="2.5"/><text class="deck-text" x="66" y="258">TRANSPORT</text><text class="deck-text" x="700" y="258" text-anchor="end">STEREO MASTER</text>
+        <g><polygon class="head-plate" points="272,252 272,198 288,184 532,184 548,198 548,252" fill="url(#headFace)"/><path class="head-edge" d="M284 198 V246 M536 198 V246"/><path class="head-gap" d="M402 190 L418 190"/><rect class="head-window" x="300" y="198" width="220" height="48" rx="3"/><path class="head-grid" d="M304 210 H516 M304 222 H516 M304 234 H516 M304 246 H516 M324 198 V246 M348 198 V246 M372 198 V246 M396 198 V246 M420 198 V246 M444 198 V246 M468 198 V246 M492 198 V246"/><foreignObject class="device-counter-slot" x="300" y="198" width="220" height="48"><div><span class="seg7" data-ghost><i data-d="0"></i><i data-d="0"></i><b></b><i data-d="1"></i><i data-d="2"></i><b></b><i data-d="3"></i><i data-d="4"></i></span></div></foreignObject></g>
+        <text class="deck-text" x="146" y="24" text-anchor="middle">SUPPLY</text><circle data-lamp="rec" cx="384" cy="20"/><text class="deck-text" x="398" y="24">REC</text><circle data-lamp="rec" cx="384" cy="20"/><text class="deck-text" x="398" y="24">REC</text><text class="deck-text" x="650" y="24" text-anchor="middle">TAKE-UP</text>
+        <path class="plate-bezel" d="M40 249 H780"/><circle data-lamp="sys" cx="54" cy="256"/><text class="deck-text" x="66" y="258">TRANSPORT</text><text class="deck-text" x="700" y="258" text-anchor="end">STEREO MASTER</text>
         <path class="plate-bezel" d="M14 30 V14 H30 M806 14 H790 V30 M14 235 V251 H30 M806 251 V235 H790"/>
       </svg>
-      <div class="device-controls" role="group" aria-label="Reel deck demo transport"><button class="btn btn-secondary" data-state="playing" aria-pressed="true">Play</button><button class="btn btn-secondary" data-state="recording" aria-pressed="false">Record</button><button class="btn btn-secondary" data-state="paused" aria-pressed="false">Pause</button><span class="status status-ok" data-status role="status">Playing</span></div>
+      <div class="deck-console">
+        <div class="vfd">
+          <div class="cluster" aria-hidden="true"><span class="vfd-label is-annunciator" data-when="recording">● Rec</span><span class="vfd-label is-annunciator" data-when="playing recording">▶ Run</span><span class="vfd-label is-annunciator" data-when="paused">❚❚ Pause</span><span class="vfd-label is-annunciator" data-when="stopped">■ Stop</span></div>
+          <span class="seg7" role="img" aria-label="Timecode 00:12:34, frame 17"><i data-d="0"></i><i data-d="0"></i><b></b><i data-d="1"></i><i data-d="2"></i><b></b><i data-d="3"></i><i data-d="4"></i><b></b><i data-d="1"></i><i data-d="7"></i></span>
+          <span class="vfd-label">Take 03 · 48 kHz / 24-bit · WAV</span>
+        </div>
+        <div class="deck-remaining">Remaining <span class="seg7" role="img" aria-label="Remaining 1 hour 47 minutes 26 seconds"><i data-d="0"></i><i data-d="1"></i><b></b><i data-d="4"></i><i data-d="7"></i><b></b><i data-d="2"></i><i data-d="6"></i></span></div>
+        <div class="controls"><div class="transport-keys" role="radiogroup" aria-label="Tape transport"><label class="key key-rec"><input type="radio" name="tape" value="recording"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-record"/></svg>Rec</label><label class="key key-stop"><input type="radio" name="tape" value="stopped"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-stop"/></svg>Stop</label><label class="key key-play"><input type="radio" name="tape" value="playing" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-play"/></svg>Play</label><label class="key key-pause"><input type="radio" name="tape" value="paused"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-pause"/></svg>Pause</label></div></div>
+      </div>
     </section>
 
-    <section class="media-deck device-vinyl is-playing" data-deck aria-labelledby="vinyl-title">
+    <section class="media-deck device-vinyl" aria-labelledby="vinyl-title">
       <h2 id="vinyl-title">Vinyl turntable</h2>
       <svg class="media-deck-visual" viewBox="0 0 560 320" role="img" aria-labelledby="vinyl-label vinyl-desc"><title id="vinyl-label">Vinyl record turntable</title><desc id="vinyl-desc">A grooved record rotates on a platter beneath a pivoting tonearm.</desc>
         <rect class="plate" x="4" y="4" width="552" height="312" rx="16"/><rect class="plate-bezel" x="4" y="4" width="552" height="312" rx="16"/><circle class="deck-screw" cx="24" cy="24" r="4"/><circle class="deck-screw" cx="536" cy="296" r="4"/>
         <circle class="platter" cx="218" cy="160" r="126"/><g class="vinyl-disc"><circle class="disc" cx="218" cy="160" r="112"/><circle class="groove" cx="218" cy="160" r="98"/><circle class="groove" cx="218" cy="160" r="88"/><circle class="groove" cx="218" cy="160" r="78"/><circle class="groove" cx="218" cy="160" r="68"/><circle class="groove" cx="218" cy="160" r="58"/><circle class="record-label" cx="218" cy="160" r="34"/><circle class="disc-hole" cx="218" cy="160" r="4"/><path d="M218 160 L232 132" stroke="var(--deck-trim,var(--border))" stroke-width="2"/></g>
         <circle class="platter" cx="430" cy="74" r="23"/><path class="tonearm" d="M430 74 L470 102 L458 226"/><circle class="disc-hole" cx="430" cy="74" r="8"/><rect class="deck-frame" x="442" y="218" width="36" height="12" rx="2"/><rect class="lcd" x="364" y="262" width="132" height="30" rx="4"/><text class="deck-text" x="430" y="281" text-anchor="middle">33⅓ RPM · STEREO</text><circle class="device-lamp" cx="520" cy="276" r="5"/><path class="plate-bezel" d="M24 42 V24 H42 M518 24 H536 V42 M24 278 V296 H42"/></svg>
-      <div class="device-controls" role="group" aria-label="Turntable demo transport"><button class="btn btn-secondary" data-state="playing" aria-pressed="true">Play</button><button class="btn btn-secondary" data-state="recording" aria-pressed="false">Record</button><button class="btn btn-secondary" data-state="paused" aria-pressed="false">Pause</button><span class="status status-ok" data-status role="status">Playing</span></div>
+      <div class="device-controls"><div class="transport-keys" role="radiogroup" aria-label="Turntable transport"><label class="key key-rec"><input type="radio" name="vinyl" value="recording"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-record"/></svg>Rec</label><label class="key key-stop"><input type="radio" name="vinyl" value="stopped"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-stop"/></svg>Stop</label><label class="key key-play"><input type="radio" name="vinyl" value="playing" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-play"/></svg>Play</label><label class="key key-pause"><input type="radio" name="vinyl" value="paused"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-pause"/></svg>Pause</label></div><span class="status status-error" data-when="recording">Recording</span><span class="status status-ok" data-when="playing">Playing</span><span class="status status-warn" data-when="paused">Paused</span><span class="status status-idle" data-when="stopped">Stopped</span></div>
     </section>
 
-    <section class="media-deck is-recording" data-deck aria-labelledby="cassette-title">
+    <section class="media-deck" aria-labelledby="cassette-title">
       <h2 id="cassette-title">Portable cassette · Walkman-style</h2>
       <svg class="media-deck-visual device-cassette" viewBox="0 0 360 250" role="img" aria-labelledby="cass-label cass-desc"><title id="cass-label">Portable cassette player</title><desc id="cass-desc">A compact cassette tape with two spools beneath a clear window and physical transport buttons.</desc>
         <rect class="plate" x="15" y="10" width="330" height="230" rx="30"/><rect class="plate-bezel" x="15" y="10" width="330" height="230" rx="30"/><rect class="head-window" x="42" y="34" width="276" height="126" rx="18"/>
@@ -74,39 +161,66 @@
         <g transform="translate(110 96)"><circle class="reel-ring" r="30"/><circle class="spool-disc" r="25"/><g class="spool-spin"><path class="reel-spoke" d="M0 0 L-4 -20 Q0 -24 4 -20Z"/><path class="reel-spoke" d="M0 0 L-4 -20 Q0 -24 4 -20Z" transform="rotate(120)"/><path class="reel-spoke" d="M0 0 L-4 -20 Q0 -24 4 -20Z" transform="rotate(240)"/><circle class="reel-hub" r="7"/></g></g>
         <g transform="translate(250 96)"><circle class="reel-ring" r="30"/><circle class="spool-disc" r="25"/><g class="spool-spin"><path class="reel-spoke" d="M0 0 L-4 -20 Q0 -24 4 -20Z"/><path class="reel-spoke" d="M0 0 L-4 -20 Q0 -24 4 -20Z" transform="rotate(120)"/><path class="reel-spoke" d="M0 0 L-4 -20 Q0 -24 4 -20Z" transform="rotate(240)"/><circle class="reel-hub" r="7"/></g></g>
         <text class="deck-text" x="180" y="53" text-anchor="middle">SIDE A · HIGH BIAS</text><rect class="lcd" x="83" y="177" width="194" height="28" rx="5"/><text class="deck-text" x="180" y="196" text-anchor="middle">AUTO REVERSE · 03:42</text><circle class="device-lamp" cx="305" cy="191" r="5"/><rect class="deck-frame" x="68" y="216" width="224" height="12" rx="6"/><circle class="deck-screw" cx="30" cy="27" r="3"/><circle class="deck-screw" cx="330" cy="223" r="3"/></svg>
-      <div class="device-controls" role="group" aria-label="Cassette demo transport"><button class="btn btn-secondary" data-state="playing" aria-pressed="false">Play</button><button class="btn btn-secondary" data-state="recording" aria-pressed="true">Record</button><button class="btn btn-secondary" data-state="paused" aria-pressed="false">Pause</button><span class="status status-error" data-status role="status">Recording</span></div>
+      <div class="device-controls"><div class="transport-keys" role="radiogroup" aria-label="Cassette transport"><label class="key key-rec"><input type="radio" name="cassette" value="recording" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-record"/></svg>Rec</label><label class="key key-stop"><input type="radio" name="cassette" value="stopped"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-stop"/></svg>Stop</label><label class="key key-play"><input type="radio" name="cassette" value="playing"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-play"/></svg>Play</label><label class="key key-pause"><input type="radio" name="cassette" value="paused"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-pause"/></svg>Pause</label></div><span class="status status-error" data-when="recording">Recording</span><span class="status status-ok" data-when="playing">Playing</span><span class="status status-warn" data-when="paused">Paused</span><span class="status status-idle" data-when="stopped">Stopped</span></div>
     </section>
 
-    <section class="media-deck is-paused" data-deck aria-labelledby="md-title">
+    <section class="media-deck" aria-labelledby="md-title">
       <h2 id="md-title">MiniDisc portable</h2>
       <svg class="media-deck-visual device-minidisc" viewBox="0 0 300 250" role="img" aria-labelledby="md-label md-desc"><title id="md-label">MiniDisc player</title><desc id="md-desc">A MiniDisc inside a protective cartridge with its shutter, LCD and playback controls.</desc>
         <rect class="plate" x="12" y="8" width="276" height="234" rx="28"/><rect class="plate-bezel" x="12" y="8" width="276" height="234" rx="28"/><rect class="lcd" x="40" y="27" width="220" height="38" rx="5"/><text class="deck-text" x="150" y="51" text-anchor="middle">PLAY · 01:24 · LP2</text>
         <rect class="head-window" x="53" y="82" width="194" height="112" rx="14"/><g class="md-disc"><circle class="disc" cx="150" cy="138" r="47"/><circle class="disc-groove" cx="150" cy="138" r="36"/><circle class="disc-groove" cx="150" cy="138" r="25"/><circle class="record-label" cx="150" cy="138" r="15"/><circle class="disc-hole" cx="150" cy="138" r="4"/></g><path class="deck-frame" d="M189 194h50v-18h-29l-10 8h-11z"/><circle class="device-lamp" cx="261" cy="106" r="4"/>
         <circle class="deck-screw" cx="150" cy="218" r="17"/><path d="M144 211l12 7-12 7z" fill="var(--accent)"/><text class="deck-text" x="150" y="239" text-anchor="middle">ATRAC · DIGITAL</text></svg>
-      <div class="device-controls" role="group" aria-label="MiniDisc demo transport"><button class="btn btn-secondary" data-state="playing" aria-pressed="false">Play</button><button class="btn btn-secondary" data-state="recording" aria-pressed="false">Record</button><button class="btn btn-secondary" data-state="paused" aria-pressed="true">Pause</button><span class="status status-idle" data-status role="status">Paused</span></div>
+      <div class="device-controls"><div class="transport-keys" role="radiogroup" aria-label="MiniDisc transport"><label class="key key-rec"><input type="radio" name="md" value="recording"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-record"/></svg>Rec</label><label class="key key-stop"><input type="radio" name="md" value="stopped"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-stop"/></svg>Stop</label><label class="key key-play"><input type="radio" name="md" value="playing"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-play"/></svg>Play</label><label class="key key-pause"><input type="radio" name="md" value="paused" checked><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-player-pause"/></svg>Pause</label></div><span class="status status-error" data-when="recording">Recording</span><span class="status status-ok" data-when="playing">Playing</span><span class="status status-warn" data-when="paused">Paused</span><span class="status status-idle" data-when="stopped">Stopped</span></div>
     </section>
+
   </div>
-  <p class="text-muted">All four designs inherit the selected theme. Deck-specific surface and metal colors use <code>--deck-face</code>, <code>--deck-trim</code>, <code>--deck-hub</code>, <code>--deck-well</code>, <code>--deck-spoke</code>, <code>--deck-tape</code> and <code>--deck-shadow</code>; accent, warning, success and danger colors follow the theme automatically.</p>
-  <p><a href="docs/components/media-devices.md">Component usage and state contract</a></p>
-</main>
-<script>
-document.querySelectorAll('[data-deck]').forEach(function(deck) {
-  deck.querySelectorAll('[data-state]').forEach(function(button) {
-    button.addEventListener('click', function() {
-      var state = button.dataset.state;
-      deck.classList.remove('is-playing', 'is-recording', 'is-paused');
-      deck.classList.add('is-' + state);
-      deck.querySelectorAll('[data-state]').forEach(function(option) {
-        option.setAttribute('aria-pressed', option === button ? 'true' : 'false');
-        option.classList.toggle('is-current', option === button);
-      });
-      var status = deck.querySelector('[data-status]');
-      status.textContent = state === 'playing' ? 'Playing' : state === 'recording' ? 'Recording' : 'Paused';
-      status.className = 'status ' + (state === 'recording' ? 'status-error' : state === 'playing' ? 'status-ok' : 'status-idle');
-    });
-  });
-});
-</script>
+  <p class="text-muted">Deck surfaces use <code>--deck-face</code>, <code>--deck-trim</code>, <code>--deck-hub</code>, <code>--deck-well</code>, <code>--deck-spoke</code>, <code>--deck-tape</code> and <code>--deck-shadow</code>; lamps, keys and digits take the theme’s accent, success, warning and danger colours. With reduced motion the reels stop and a paused Play key holds steady with a dashed edge.</p>
+  <p><a href="docs/components/media-devices.md">Media deck, keys and seven-segment docs</a> · <a href="docs/components/graphs.md">Graph grid and uPlot bridge docs</a></p>
+
+  <details class="system-pane">
+    <summary><strong>System</strong><span class="deck-lamp is-on" data-lamp="sys">Healthy</span><span>CPU 38%</span><span>RAM 1.9 GB</span><span>52 °C</span><span>Disk 212 GB free</span></summary>
+    <div class="system-pane-body" tabindex="0" role="region" aria-label="System telemetry graphs">
+      <div class="graph-grid">
+      <figure class="graph-card">
+        <figcaption class="graph-card-title">CPU per core <span class="graph-card-value">avg 38%</span></figcaption>
+        <div class="graph-card-plot chart"><svg viewBox="0 0 120 40" preserveAspectRatio="none" role="img" aria-label="CPU per core, last 4 minutes: four cores between 20 and 60 percent"><path class="chart-grid" d="M0 10.5H120M0 20H120M0 29.5H120"/><polyline class="chart-series" data-series="1" points="0.0,30.5 2.6,31.0 5.1,32.7 7.7,33.1 10.2,34.8 12.8,32.3 15.3,31.9 17.9,30.2 20.4,27.3 23.0,27.3 25.5,27.5 28.1,30.1 30.6,28.1 33.2,31.1 35.7,32.0 38.3,34.3 40.9,32.7 43.4,33.0 46.0,33.0 48.5,32.8 51.1,30.4 53.6,27.2 56.2,28.0 58.7,25.4 61.3,24.0 63.8,22.7 66.4,19.4 68.9,21.4 71.5,22.7 74.0,22.8 76.6,24.1 79.1,25.5 81.7,27.6 84.3,24.7 86.8,21.5 89.4,18.9 91.9,16.9 94.5,17.5 97.0,18.8 99.6,19.5 102.1,22.8 104.7,25.4 107.2,25.6 109.8,26.2 112.3,25.1 114.9,24.7 117.4,27.4 120.0,25.1"/><polyline class="chart-series" data-series="2" points="0.0,25.1 2.6,25.2 5.1,26.1 7.7,27.0 10.2,24.1 12.8,20.9 15.3,23.1 17.9,20.3 20.4,18.1 23.0,15.9 25.5,17.4 28.1,14.7 30.6,14.1 33.2,14.4 35.7,17.6 38.3,17.5 40.9,19.7 43.4,21.1 46.0,18.6 48.5,19.7 51.1,17.6 53.6,18.5 56.2,21.1 58.7,21.8 61.3,24.1 63.8,26.4 66.4,25.3 68.9,23.9 71.5,26.1 74.0,24.5 76.6,24.3 79.1,27.0 81.7,29.7 84.3,28.4 86.8,25.5 89.4,23.3 91.9,22.6 94.5,25.6 97.0,24.0 99.6,27.0 102.1,25.0 104.7,27.9 107.2,24.6 109.8,24.8 112.3,26.7 114.9,29.4 117.4,31.1 120.0,29.7"/><polyline class="chart-series" data-series="3" points="0.0,23.1 2.6,26.0 5.1,24.3 7.7,26.5 10.2,28.8 12.8,30.8 15.3,33.2 17.9,34.9 20.4,36.0 23.0,36.0 25.5,36.0 28.1,36.0 30.6,33.1 33.2,30.8 35.7,30.4 38.3,32.7 40.9,29.8 43.4,31.4 46.0,31.2 48.5,30.8 51.1,31.4 53.6,33.2 56.2,30.5 58.7,33.2 61.3,34.3 63.8,33.0 66.4,34.5 68.9,36.0 71.5,36.0 74.0,34.4 76.6,34.3 79.1,35.2 81.7,32.9 84.3,31.9 86.8,33.9 89.4,35.9 91.9,33.2 94.5,33.9 97.0,33.5 99.6,34.5 102.1,31.5 104.7,30.7 107.2,28.5 109.8,29.1 112.3,27.9 114.9,30.8 117.4,33.3 120.0,34.7"/><polyline class="chart-series" data-series="4" points="0.0,19.9 2.6,16.8 5.1,18.7 7.7,18.3 10.2,15.8 12.8,15.5 15.3,12.8 17.9,11.4 20.4,9.6 23.0,12.1 25.5,13.4 28.1,10.9 30.6,11.7 33.2,9.9 35.7,9.0 38.3,5.7 40.9,5.4 43.4,4.0 46.0,4.0 48.5,4.0 51.1,4.0 53.6,4.0 56.2,4.4 58.7,4.0 61.3,4.0 63.8,4.0 66.4,4.0 68.9,4.0 71.5,4.0 74.0,4.0 76.6,4.0 79.1,4.4 81.7,4.0 84.3,7.2 86.8,4.2 89.4,6.7 91.9,7.3 94.5,8.9 97.0,6.8 99.6,5.6 102.1,6.1 104.7,8.9 107.2,9.1 109.8,6.6 112.3,4.1 114.9,5.3 117.4,4.0 120.0,5.5"/></svg></div>
+        <ul class="chart-legend is-line"><li data-series="1">core 0</li><li data-series="2">core 1</li><li data-series="3">core 2</li><li data-series="4">core 3</li></ul>
+      </figure>
+      <figure class="graph-card">
+        <figcaption class="graph-card-title">App CPU by subsystem <span class="graph-card-value">31%</span></figcaption>
+        <div class="graph-card-plot chart"><svg viewBox="0 0 120 40" preserveAspectRatio="none" role="img" aria-label="Recorder CPU by subsystem: capture steady near 12 percent, encoder near 15, network near 4"><path class="chart-grid" d="M0 10.5H120M0 20H120M0 29.5H120"/><polyline class="chart-series" data-series="1" points="0.0,25.5 2.6,27.3 5.1,29.5 7.7,29.0 10.2,29.9 12.8,29.3 15.3,29.4 17.9,30.8 20.4,28.9 23.0,31.1 25.5,32.1 28.1,31.8 30.6,31.2 33.2,32.0 35.7,33.1 38.3,33.3 40.9,31.8 43.4,32.3 46.0,33.3 48.5,31.5 51.1,30.1 53.6,28.3 56.2,28.1 58.7,25.8 61.3,26.2 63.8,24.3 66.4,22.1 68.9,21.6 71.5,21.6 74.0,21.0 76.6,20.1 79.1,21.3 81.7,20.0 84.3,20.0 86.8,20.0 89.4,20.0 91.9,21.5 94.5,23.7 97.0,24.9 99.6,23.4 102.1,21.3 104.7,22.5 107.2,23.2 109.8,25.5 112.3,26.3 114.9,27.9 117.4,27.3 120.0,26.7"/><polyline class="chart-series" data-series="5" points="0.0,22.4 2.6,24.6 5.1,25.8 7.7,27.3 10.2,26.5 12.8,26.9 15.3,26.2 17.9,29.0 20.4,30.7 23.0,30.6 25.5,29.5 28.1,27.9 30.6,29.8 33.2,29.6 35.7,31.1 38.3,30.3 40.9,28.1 43.4,30.0 46.0,31.4 48.5,31.4 51.1,29.2 53.6,31.4 56.2,31.4 58.7,31.4 61.3,31.4 63.8,29.3 66.4,31.4 68.9,28.9 71.5,30.0 74.0,27.4 76.6,26.4 79.1,28.3 81.7,30.1 84.3,27.4 86.8,28.8 89.4,29.9 91.9,28.4 94.5,29.6 97.0,26.9 99.6,29.0 102.1,31.3 104.7,28.7 107.2,29.0 109.8,27.5 112.3,28.6 114.9,26.9 117.4,26.9 120.0,29.1"/><polyline class="chart-series" data-series="2" points="0.0,35.2 2.6,35.0 5.1,33.8 7.7,32.6 10.2,31.4 12.8,30.9 15.3,30.1 17.9,29.9 20.4,29.6 23.0,29.5 25.5,29.5 28.1,29.7 30.6,29.5 33.2,29.9 35.7,30.2 38.3,30.3 40.9,31.0 43.4,32.0 46.0,31.5 48.5,32.4 51.1,33.1 53.6,33.7 56.2,33.5 58.7,33.7 61.3,34.8 63.8,34.3 66.4,33.7 68.9,35.1 71.5,35.4 74.0,36.0 76.6,35.7 79.1,35.7 81.7,35.2 84.3,35.3 86.8,36.0 89.4,36.8 91.9,38.0 94.5,37.1 97.0,36.8 99.6,37.2 102.1,37.0 104.7,35.7 107.2,35.4 109.8,36.3 112.3,37.5 114.9,37.8 117.4,36.8 120.0,36.6"/></svg></div>
+        <ul class="chart-legend is-line"><li data-series="1">capture</li><li data-series="5">encoder</li><li data-series="2">network</li></ul>
+      </figure>
+      <figure class="graph-card">
+        <figcaption class="graph-card-title">Memory <span class="graph-card-value">1.9 / 4 GB</span></figcaption>
+        <div class="graph-card-plot chart"><svg viewBox="0 0 120 40" preserveAspectRatio="none" role="img" aria-label="Memory in use, last 4 minutes: steady near 1.9 of 4 gigabytes"><path class="chart-grid" d="M0 10.5H120M0 20H120M0 29.5H120"/><polygon class="chart-series is-area" data-series="1" points="0,40 0.0,21.1 2.6,21.5 5.1,21.4 7.7,21.6 10.2,21.9 12.8,22.1 15.3,22.2 17.9,22.6 20.4,22.9 23.0,22.8 25.5,22.8 28.1,22.7 30.6,22.8 33.2,22.3 35.7,22.5 38.3,22.9 40.9,23.0 43.4,23.0 46.0,22.6 48.5,23.0 51.1,22.6 53.6,22.2 56.2,22.0 58.7,22.1 61.3,21.7 63.8,21.4 66.4,21.5 68.9,21.5 71.5,21.5 74.0,21.9 76.6,21.5 79.1,21.9 81.7,22.3 84.3,22.1 86.8,21.9 89.4,21.7 91.9,22.2 94.5,22.3 97.0,21.9 99.6,22.1 102.1,22.4 104.7,22.6 107.2,22.3 109.8,22.5 112.3,22.8 114.9,22.8 117.4,22.7 120.0,22.8 120,40"/><polyline class="chart-series" data-series="1" points="0.0,21.1 2.6,21.5 5.1,21.4 7.7,21.6 10.2,21.9 12.8,22.1 15.3,22.2 17.9,22.6 20.4,22.9 23.0,22.8 25.5,22.8 28.1,22.7 30.6,22.8 33.2,22.3 35.7,22.5 38.3,22.9 40.9,23.0 43.4,23.0 46.0,22.6 48.5,23.0 51.1,22.6 53.6,22.2 56.2,22.0 58.7,22.1 61.3,21.7 63.8,21.4 66.4,21.5 68.9,21.5 71.5,21.5 74.0,21.9 76.6,21.5 79.1,21.9 81.7,22.3 84.3,22.1 86.8,21.9 89.4,21.7 91.9,22.2 94.5,22.3 97.0,21.9 99.6,22.1 102.1,22.4 104.7,22.6 107.2,22.3 109.8,22.5 112.3,22.8 114.9,22.8 117.4,22.7 120.0,22.8"/></svg></div>
+        
+      </figure>
+      <figure class="graph-card">
+        <figcaption class="graph-card-title">SoC temperature <span class="graph-card-value">52 °C</span></figcaption>
+        <div class="graph-card-plot chart"><svg viewBox="0 0 120 40" preserveAspectRatio="none" role="img" aria-label="SoC temperature, last 4 minutes: 49 to 55 degrees, below the 80 degree throttle line"><path class="chart-grid" d="M0 10.5H120M0 20H120M0 29.5H120"/><path class="chart-annotation" d="M0 8.6H120"/><polyline class="chart-series" data-series="3" points="0.0,26.2 2.6,26.2 5.1,26.7 7.7,26.3 10.2,26.0 12.8,26.0 15.3,25.8 17.9,25.8 20.4,25.4 23.0,25.3 25.5,25.0 28.1,25.4 30.6,25.5 33.2,25.5 35.7,25.2 38.3,25.6 40.9,25.5 43.4,25.0 46.0,25.2 48.5,25.3 51.1,25.1 53.6,24.7 56.2,24.9 58.7,25.0 61.3,24.7 63.8,24.3 66.4,24.8 68.9,24.7 71.5,24.6 74.0,25.1 76.6,25.3 79.1,25.4 81.7,25.3 84.3,25.7 86.8,25.6 89.4,25.7 91.9,25.4 94.5,24.9 97.0,24.7 99.6,25.1 102.1,25.3 104.7,25.6 107.2,25.4 109.8,25.6 112.3,25.2 114.9,25.6 117.4,26.0 120.0,25.7"/></svg></div>
+        
+      </figure>
+      <figure class="graph-card">
+        <figcaption class="graph-card-title">Free disk <span class="graph-card-value">212 GB</span></figcaption>
+        <div class="graph-card-plot chart"><svg viewBox="0 0 120 40" preserveAspectRatio="none" role="img" aria-label="Free disk space falling steadily from 214 to 212 gigabytes while recording"><path class="chart-grid" d="M0 10.5H120M0 20H120M0 29.5H120"/><polygon class="chart-series is-area" data-series="2" points="0,40 0.0,8.3 2.6,8.6 5.1,9.6 7.7,9.7 10.2,9.9 12.8,10.4 15.3,10.3 17.9,11.0 20.4,11.4 23.0,11.5 25.5,11.7 28.1,12.0 30.6,12.7 33.2,12.9 35.7,12.8 38.3,13.2 40.9,13.9 43.4,13.8 46.0,14.8 48.5,14.6 51.1,14.8 53.6,15.1 56.2,15.5 58.7,16.2 61.3,16.0 63.8,16.6 66.4,16.9 68.9,17.3 71.5,17.4 74.0,17.8 76.6,18.0 79.1,18.6 81.7,19.1 84.3,19.4 86.8,19.8 89.4,20.2 91.9,20.5 94.5,20.6 97.0,20.9 99.6,21.0 102.1,21.7 104.7,22.1 107.2,22.0 109.8,22.9 112.3,22.6 114.9,23.4 117.4,23.5 120.0,23.5 120,40"/><polyline class="chart-series" data-series="2" points="0.0,8.3 2.6,8.6 5.1,9.6 7.7,9.7 10.2,9.9 12.8,10.4 15.3,10.3 17.9,11.0 20.4,11.4 23.0,11.5 25.5,11.7 28.1,12.0 30.6,12.7 33.2,12.9 35.7,12.8 38.3,13.2 40.9,13.9 43.4,13.8 46.0,14.8 48.5,14.6 51.1,14.8 53.6,15.1 56.2,15.5 58.7,16.2 61.3,16.0 63.8,16.6 66.4,16.9 68.9,17.3 71.5,17.4 74.0,17.8 76.6,18.0 79.1,18.6 81.7,19.1 84.3,19.4 86.8,19.8 89.4,20.2 91.9,20.5 94.5,20.6 97.0,20.9 99.6,21.0 102.1,21.7 104.7,22.1 107.2,22.0 109.8,22.9 112.3,22.6 114.9,23.4 117.4,23.5 120.0,23.5"/></svg></div>
+        
+      </figure>
+      <figure class="graph-card">
+        <figcaption class="graph-card-title">Network <span class="graph-card-value">4.1 Mb/s</span></figcaption>
+        <div class="graph-card-plot chart"><svg viewBox="0 0 120 40" preserveAspectRatio="none" role="img" aria-label="Network throughput: uplink near 4 megabits per second, downlink below 1"><path class="chart-grid" d="M0 10.5H120M0 20H120M0 29.5H120"/><polyline class="chart-series" data-series="5" points="0.0,15.4 2.6,17.6 5.1,15.5 7.7,15.5 10.2,16.9 12.8,18.3 15.3,18.3 17.9,21.3 20.4,18.4 23.0,16.3 25.5,18.1 28.1,17.8 30.6,16.1 33.2,14.6 35.7,13.3 38.3,12.3 40.9,9.8 43.4,8.5 46.0,7.9 48.5,7.5 51.1,10.1 53.6,9.6 56.2,9.8 58.7,11.9 61.3,11.5 63.8,14.7 66.4,15.3 68.9,12.3 71.5,12.3 74.0,13.3 76.6,11.9 79.1,10.4 81.7,11.4 84.3,14.3 86.8,11.7 89.4,12.5 91.9,10.0 94.5,8.0 97.0,6.5 99.6,4.2 102.1,4.5 104.7,4.2 107.2,6.8 109.8,6.5 112.3,7.9 114.9,6.0 117.4,6.2 120.0,8.3"/><polyline class="chart-series" data-series="1" points="0.0,35.2 2.6,35.4 5.1,35.7 7.7,35.5 10.2,36.2 12.8,37.3 15.3,35.9 17.9,37.2 20.4,37.7 23.0,36.6 25.5,36.1 28.1,35.5 30.6,34.2 33.2,33.3 35.7,33.8 38.3,33.0 40.9,31.7 43.4,30.8 46.0,30.6 48.5,32.0 51.1,33.3 53.6,32.6 56.2,32.1 58.7,30.5 61.3,31.1 63.8,31.3 66.4,32.0 68.9,31.5 71.5,31.8 74.0,31.5 76.6,32.0 79.1,30.7 81.7,30.1 84.3,30.1 86.8,30.1 89.4,30.1 91.9,30.7 94.5,30.1 97.0,31.1 99.6,30.4 102.1,30.1 104.7,30.1 107.2,30.8 109.8,30.1 112.3,31.6 114.9,32.0 117.4,31.3 120.0,30.1"/></svg></div>
+        <ul class="chart-legend is-line"><li data-series="5">up</li><li data-series="1">down</li></ul>
+      </figure>
+      </div>
+    </div>
+  </details>
+  </main>
+
+  <footer class="app-status">
+    <span>Tape recorder · Take 03</span>
+    <span class="deck-lamp is-on" data-lamp="link">Link up</span>
+  </footer>
+<script src="assets/js/tint.js"></script>
 <script src="assets/js/theme-loader.js"></script>
 </body>
 </html>
