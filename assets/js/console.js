@@ -15,6 +15,8 @@
  * - <output for="id" data-unit="dB" data-format="hz">: shows that input's
  *   value as you move it ("hz" turns a 0–1 log position into Hz).
  *
+ * - A <label for> inside a [popover] (a device or preset menu) closes the
+ *   popover when chosen, as a menu item should.
  * - [data-link="name"]: every input sharing a link name follows the others
  *   (a faceplate knob and its twin on the assignable controls).
  *
@@ -116,6 +118,11 @@
     if (dyn) drawDyn(dyn);
     if (target.id) document.querySelectorAll('output[for~="' + target.id + '"]').forEach(show);
   }
+  document.addEventListener("click", function (e) {
+    var item = e.target.closest && e.target.closest("[popover] label[for]");
+    var pop = item && item.closest("[popover]");
+    if (pop && pop.hidePopover) pop.hidePopover();
+  });
   document.addEventListener("input", function (e) { update(e.target); });
   document.addEventListener("change", function (e) { if (e.target.type === "checkbox") update(e.target); });
   document.querySelectorAll("[data-peq]").forEach(drawPeq);

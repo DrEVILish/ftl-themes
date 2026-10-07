@@ -13,9 +13,10 @@ changes are called out explicitly here.
   panel, a `.geq` graphic EQ and a `.patchbay`. `assets/js/console.js` draws parametric EQ responses
   and gate/compressor curves, shows values and links twin controls.
 - `proseries.html`: a working console with input channels, channel detail (4-band PEQ, gate,
-  compressor, filters, direct out, safes, delay, processing order), an effects rack with reverb,
-  matrix mixer, chorus, 3-band compressor, dual delay and 8-channel dynamics faceplates, a stereo
-  31-band GEQ, patching and meters.
+  compressor, filters, direct out, safes, delay, processing order), an effects rack and a device
+  library of 14 faceplates (chamber, hall, plate, ambience and vintage-room reverbs, flanger,
+  phaser, pitch shifter, matrix mixer, stereo chorus, 3-band compressor, dual stereo delay, 8-channel
+  dynamics, stereo GEQ) each over its assignable controls, a stereo 31-band GEQ, patching and meters.
 - `gallery.html` is now a desktop: Windows XP Luna by default, built only from ftl-themes markup,
   with a boot screen, a logon screen, desktop icons, a Start menu and eleven windows (Theme
   Browser, Media Player, Messenger, Volume Control, an online shop, Task Manager, every example,
