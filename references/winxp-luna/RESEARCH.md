@@ -32,3 +32,21 @@ Audit 2026-09-26: inspected 7 files; removed 2 (xvksk31u5p391.jpg — fake Win10
 - `taskbar-properties-dialog.jpg`, `taskbar-tray-links.jpg` — taskbar
   toolbars, tray chevron, clock area.
 
+
+## Icons and wallpapers (added 2026-10-07)
+
+- `icons-original/` — 107 icons from the shipping Windows XP set (Explorer,
+  My Computer, Recycle Bin, drives, Control Panel applets, IE, WMP, MSN):
+  the 48px look to compare a theme's icon overrides against. Includes some
+  re-drawn "blur" variants (Cyrillic file names, from a Russian pack).
+- `icons-modern/` — 592 PNGs: a modern high-resolution redraw of the XP
+  set (named by function, e.g. `Accessibility.png`), useful for large
+  desktop icons where the originals pixelate.
+- `wallpapers/` — the shipped XP wallpapers: Bliss (full 4800px original
+  by Charles O'Rear), New Bliss, Autumn, Azul, Ascent, Full Moon Dunes,
+  Sunset, Yellow Tulips and the Professional edition wallpaper.
+  `embedded/Windows XP - Embedded.png` is the Embedded edition's.
+
+Audit 2026-10-07: all new icons and wallpapers inspected. No people; the
+generic user pictograms and the Search companion's wizard and dog are UI
+glyphs and were kept.

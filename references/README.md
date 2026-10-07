@@ -24,6 +24,13 @@ describing its files. Today's variant folders:
 - `winxp-luna/royale/`, `winxp-luna/royale-noir/`, `winxp-luna/zune/`, `winxp-luna/embedded/`
 - `prometheus/suit/`
 
+Non-variant subfolders hold asset sets rather than screenshots (each
+described in that theme's `RESEARCH.md`): `alienware/icon-packs/`,
+`winxp-luna/icons-original/`, `winxp-luna/icons-modern/`,
+`winxp-luna/wallpapers/` and `win7-aero/start-orbs/`. Icon packs keep their
+`.ico`/`.png`/`.bmp` files; packed resource binaries (7tsp `.res`) are not
+kept, since nobody can open them to compare.
+
 Four folders back no theme yet. They are the non-LCARS Star Trek interface
 languages from lcars.org.uk, kept for a future theme, each with its own
 `INDEX.md`: `star-trek-alien/` (Klingon, Romulan, Cardassian, Ferengi,

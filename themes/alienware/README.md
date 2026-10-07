@@ -32,6 +32,28 @@ controlled, not a rainbow of RGB.
    and `--flare`. (An earlier version of this README called the rail
    cyan-to-purple; the CSS never did that, and no capture attests it.)
 
+## Palette variants: the XP factory themes
+
+Alienware shipped its Windows XP machines with **AlienGUIse**, a theme
+manager with factory "suites" (references/alienware/RESEARCH.md has the
+full list and sources). Three of them are palette variants here
+(`data-variant`), on the same angular chassis:
+
+| Variant | Factory suite | Look |
+|---|---|---|
+| (default) | XenoMorph (Stardock, 2006) / today's Command Center | Matte black, one cyan glow |
+| `darkstar` | Darkstar (The Skins Factory, 2005) | Black with red LEDs and an amber second light; danger moves to magenta so errors still differ from the light |
+| `invader` | Invader (The Skins Factory, 2007–08) | Deep-space navy, silver-grey frames, blue LEDs, a starfield in the gutters |
+| `alx` | ALXMorph (The Skins Factory, 2004) | Light: grey brushed metal and silver gradients, dark text, small blue LEDs |
+
+The other suites (AlienMorph, and the Superman, Star Wars and Redskins
+co-branded editions) are recorded in the research notes but not built:
+AlienMorph has no verified capture, and the co-brands are licensed
+artwork rather than a palette.
+
+Every glow, the light strip and the bar-chart fill are mixed from
+`--accent`, so a new variant only needs its palette.
+
 ## Signature details
 
 - Buttons and panels have their corners angle-cut via `clip-path`, the

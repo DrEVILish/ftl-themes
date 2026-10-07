@@ -6,6 +6,11 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- `alienware` palette variants from Alienware's Windows XP factory themes (AlienGUIse):
+  `darkstar` (black and red), `invader` (navy, silver frames, blue LEDs) and `alx` (light grey
+  brushed metal). The theme's glows now mix from `--accent`, so variants only set a palette.
+- References: Alienware factory-theme research and icon packs, Windows XP original and modern icon
+  sets and wallpapers, and a Windows 7 start-orb collection (references/README.md).
 - Audio controls group (`core/components/audio.css`) for AudioCN parity: meter RMS core, gradient
   meters and stereo pairs, `.clip` indicator, `.visualizer` bars (mirror, idle, loading, electric),
   `.trace` lines (live, smooth, electric), `.param` sliders, centre-fill `.slider.is-bipolar`,

@@ -64,3 +64,15 @@ Files: `explorer-large-icons-annotated.png`, `explorer-details-view-menu.png`,
 - `start-search-restart.avif` — Start menu search box with clear ×, and
   the split "Restart ▸" button; taskbar with the orb and pinned icons.
 
+
+## Start orbs (added 2026-10-07)
+
+`start-orbs/` — 602 community Start orbs from a "Windows 7 StartButton
+MegaPack": each is a three-state strip (normal, hover, pressed) stacked
+vertically, mostly 54px wide BMP/PNG. Useful for the orb's glass sheen,
+the hover glow and the pressed darkening, and for themes that want a
+custom Start button. Many are third-party logos (sports teams, games,
+drinks brands) — reference only, never ship one.
+
+Audit 2026-10-07: nine files were not kept under the no-people rule
+(seven `OrbsOfOrbs1-*` nudes, and two photo orbs of people).
