@@ -10,6 +10,9 @@ and come to the front, and a bar with a Start menu, task buttons and a
 tray. No JavaScript. Every state is a radio or checkbox read with `:has()`,
 and the Start menu is a popover holding the same nested lists as any menu.
 
+The fullest example is [`gallery.html`](../../gallery.html): eleven windows,
+a two-column Start menu, tray popovers, a boot screen and a logon screen.
+
 Shared conventions:
 
 - The shell reuses the app shell: `body.app.desktop`, `main.app-main.desktop-screen`
@@ -122,7 +125,7 @@ out to stay usable at any width.
   `--window-header-filter-inactive` (a desaturate by default).
 - **Maximize.** The `.window-max` checkbox immediately before the `.modal` (core's
   maximize rule); the window fills the screen.
-- **Task buttons** pair with windows by position (window N, task N; up to 6): pressed
+- **Task buttons** pair with windows by position (window N, task N; up to 12): pressed
   for the active window, hidden for a closed one, and while a window is minimized its
   `.taskbar-restore` label covers the task button and restores it.
 - **Desktop icons.** The radio selects; a selected icon shows `.desktop-icon-open`

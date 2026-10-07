@@ -204,6 +204,10 @@ keyframes live in core and `theme-loader.js` copies the keyword to
 transition ends. An app with its own switcher does the same. Unset, the
 switch cross-fades; the reduced-motion rules above still apply.
 
+A page can start in its own theme rather than the visitor's last pick by
+adding `data-theme-default` to `<html>` (the gallery desktop always boots
+as Windows XP); `?theme=` still wins.
+
 After each theme loads, `theme-loader.js` fires a `themechange` event on
 `document` (prefs.js uses it to rebuild the accent swatches).
 

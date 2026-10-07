@@ -29,6 +29,17 @@ try {
     assert(look[3] !== look[2] && look[2] === look[1], `${theme}: only the error-rate card is in alert`);
     assert.equal(await page.locator('[data-scenario]:visible').count(), 2, theme);
   }
+  // Gallery desktop: boots as XP, clears its boot screen once themes load,
+  // lists every theme, and Apply restyles the whole desktop.
+  await page.goto(`${server.base}/gallery.html`, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => document.querySelector('[data-boot-screen]').hidden);
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'winxp-luna');
+  const themeCount = await page.evaluate(() => fetch('dist/themes.json').then(r => r.json()).then(t => t.length));
+  assert.equal(await page.locator('.theme-card').count(), themeCount);
+  await page.click('.logon-user >> nth=0');
+  await page.evaluate(() => { document.getElementById('open-themes').checked = true; document.getElementById('app-themes').checked = true; });
+  await page.click('button[aria-label="Apply LCARS"]');
+  await page.waitForFunction(() => document.documentElement.dataset.theme === 'lcars');
   // Waveform regions: edges stay in order, --start/--end follow, the body drags, markers seek.
   await page.goto(`${server.base}/audio-components.html?theme=blue-future`, { waitUntil: 'networkidle' });
   const region = page.locator('.waveform-region').nth(1);

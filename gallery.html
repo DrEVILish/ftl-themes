@@ -1,594 +1,862 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="winxp-luna" data-theme-default>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ftl-themes gallery</title>
+<title>ftl-themes — the desktop gallery</title>
+<link id="theme-link" rel="stylesheet" href="dist/winxp-luna.css">
+<link rel="stylesheet" href="assets/css/demo.css">
+<script src="assets/js/prefs.js"></script>
 <style>
-  /* This page is deliberately NOT skinned by any of the shipping
-     themes — it's a meta/documentation page for browsing the library, so
-     it gets its own small neutral design instead of loading a dist/<slug>.css.
-     Light/dark follows the OS preference only. */
-  :root {
-    --bg: #f5f5f7;
-    --bg-elevated: #ffffff;
-    --text: #1a1a1e;
-    --text-muted: #5a5a63;
-    --border: #dcdce2;
-    --accent: #3b5bfd;
-    --accent-text: #ffffff;
-    --shadow: 0 1px 2px rgba(20, 20, 30, 0.06), 0 4px 14px rgba(20, 20, 30, 0.06);
-    --chip-bg: #eceef4;
-    --code-bg: #ececf1;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #17171b;
-      --bg-elevated: #1f1f24;
-      --text: #eeeef2;
-      --text-muted: #9a9aa4;
-      --border: #303038;
-      --accent: #7f9bff;
-      --accent-text: #10121c;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 18px rgba(0, 0, 0, 0.35);
-      --chip-bg: #26262e;
-      --code-bg: #26262e;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-  body { padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 3rem; }
-
-  header.page-head { max-width: 74rem; margin: 0 auto 1.5rem; }
-  .example-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0 0 1rem; font-size: 0.9rem; }
-  .example-links span { color: var(--text-muted); margin-right: 0.2rem; }
-  .example-links a {
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
-    color: var(--text);
-    text-decoration: none;
-  }
-  .example-links a:hover { border-color: var(--accent); color: var(--accent); }
-  .example-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-  header.page-head h1 { font-size: 1.6rem; margin: 0 0 0.35rem; }
-  header.page-head p { margin: 0.25rem 0; color: var(--text-muted); max-width: 60ch; line-height: 1.5; }
-  header.page-head code {
-    background: var(--code-bg);
-    border-radius: 4px;
-    padding: 0.1em 0.35em;
-    font-size: 0.9em;
-  }
-
-  .controls {
-    max-width: 74rem;
-    margin: 0 auto 1.25rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    padding: 0.75rem 0;
-    z-index: 5;
-  }
-  #search {
-    flex: 1 1 16rem;
-    min-width: 12rem;
-    font-size: 1rem;
-    padding: 0.55rem 0.8rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
-    color: var(--text);
-  }
-  #search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-
-  .category-filter {
-    font: inherit;
-    font-size: 0.85rem;
-    padding: 0.5rem 0.6rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
-    color: var(--text);
-  }
-
-  .scheme-filter { display: flex; gap: 0.35rem; }
-  .scheme-filter button {
-    font: inherit;
-    font-size: 0.85rem;
-    padding: 0.5rem 0.8rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
-    color: var(--text);
-    cursor: pointer;
-  }
-  .scheme-filter button.is-active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-text);
-  }
-
-  .page-select {
-    font: inherit;
-    font-size: 0.85rem;
-    padding: 0.5rem 0.6rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
-    color: var(--text);
-  }
-  .tint-picker { inline-size: 2.4rem; block-size: 2rem; padding: 0; flex: none; cursor: default; }
-
-  #count {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-
-  .grid {
-    max-width: 74rem;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-    gap: 1.25rem;
-  }
-
-  .card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .card.is-hidden { display: none; }
-
-  .preview {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    background: var(--chip-bg);
-    border-bottom: 1px solid var(--border);
-  }
-  /* Static screenshot from test/visual-baseline/, regenerated with
-     scripts/screenshot_themes.py --baseline. */
-  .preview img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top left;
-  }
-  .preview .preview-fallback {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    padding: 0.5rem;
-    text-align: center;
-  }
-
-  .card-body { padding: 0.85rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
-  .card-title { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
-  .card-title h2 { font-size: 1.02rem; margin: 0; }
-  .card-slug { font-size: 0.72rem; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-  .card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin: 0; flex: 1; }
-
-  .card-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .chip {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    background: var(--chip-bg);
-    color: var(--text-muted);
-  }
-
-  .card-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
-  .card-actions select {
-    font: inherit;
-    font-size: 0.78rem;
-    padding: 0.3rem 0.4rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-  }
-  .card-actions a.view-link {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--accent);
-    text-decoration: none;
-    margin-left: auto;
-  }
-  .card-actions a.view-link:hover { text-decoration: underline; }
-
-  #empty-state {
-    max-width: 74rem;
-    margin: 3rem auto;
-    text-align: center;
-    color: var(--text-muted);
-    display: none;
-  }
-  #empty-state.is-visible { display: block; }
+  /* Layout glue for this page only; every look is the theme's. Window
+     bodies stack their parts so an app fills its window. */
+  .desktop-window .window-body { display: flex; flex-direction: column; gap: .4rem; }
+  .desktop-window .window-body > :is(.tabset, .welcome) { flex: 1; min-block-size: 0; overflow: auto; }
+  .explorer { display: grid; grid-template-columns: minmax(10rem, 13rem) 1fr; gap: 2px; padding: 2px; min-block-size: 0; flex: 1; }
+  .explorer > * { min-inline-size: 0; overflow: auto; }
+  .explorer-task h2, .explorer-group { margin: 0 0 .35rem; font-size: .85rem; }
+  .explorer-task + .explorer-task { margin-block-start: .75rem; }
+  .explorer-files { padding: .75rem; }
+  .example-grid, .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .25rem .5rem; margin: 0; padding: 0; list-style: none; }
+  .theme-grid { align-content: start; padding: .5rem; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); }
+  .theme-card { display: grid; gap: .3rem; align-content: start; }
+  .theme-card img { inline-size: 100%; block-size: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+  .theme-thumb-missing { display: grid; place-items: center; aspect-ratio: 16 / 10; padding: .5rem; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--muted); font-size: .8rem; text-align: center; }
+  #balloon { inset: auto 1rem calc(var(--taskbar-height, 2.5rem) + .75rem) auto; margin: 0; }
+  #balloon p { margin: .2rem 0 0; }
+  .theme-card h3 { margin: 0; font-size: .95rem; }
+  .theme-card p { margin: 0; color: var(--muted); font-size: .8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .theme-card .cluster { gap: .3rem; }
+  .explorer:has([name=theme-cat][value=os-shell]:checked) .theme-card:not([data-category=os-shell]) { display: none; }
+  .explorer:has([name=theme-cat][value=sci-fi]:checked) .theme-card:not([data-category=sci-fi]) { display: none; }
+  .explorer:has([name=theme-cat][value=game-ui]:checked) .theme-card:not([data-category=game-ui]) { display: none; }
+  .explorer:has([name=theme-cat][value=media-player]:checked) .theme-card:not([data-category=media-player]) { display: none; }
+  .explorer:has([name=theme-cat][value=handheld-device]:checked) .theme-card:not([data-category=handheld-device]) { display: none; }
+  .explorer:has([name=theme-cat][value=broadcast]:checked) .theme-card:not([data-category=broadcast]) { display: none; }
+  .explorer:has([name=theme-cat][value=toy-brand]:checked) .theme-card:not([data-category=toy-brand]) { display: none; }
+  .explorer:has([name=theme-cat][value=finance-terminal]:checked) .theme-card:not([data-category=finance-terminal]) { display: none; }
+  .explorer:has([name=theme-cat][value=design-system]:checked) .theme-card:not([data-category=design-system]) { display: none; }
+  .explorer:has([name=theme-cat][value=app-shell]:checked) .theme-card:not([data-category=app-shell]) { display: none; }
+  .welcome-hero { display: flex; gap: 1.25rem; align-items: center; }
+  .welcome-hero .splash-art { flex: none; }
+  .welcome-hero h1 { margin: 0 0 .4rem; }
+  .welcome-hero p { margin: 0; }
+  .welcome-kicker { color: var(--muted); font-size: .85rem; }
+  .welcome { padding: .5rem; overflow: auto; }
+  .welcome-tour { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: .25rem; margin: 0; padding: 0; list-style: none; }
+  .link-label { color: var(--link, var(--accent)); text-decoration: underline; cursor: pointer; }
+  .player-app { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2px; min-block-size: 0; flex: 1; }
+  .player-app > * { min-inline-size: 0; overflow: auto; }
+  .player-now { display: grid; align-content: center; gap: .5rem; padding: .75rem; }
+  .player-title { display: grid; margin: 0; text-align: center; }
+  .player-title span { color: var(--muted); font-size: .85rem; }
+  .messenger { display: grid; grid-template-columns: 11rem 1fr; gap: 2px; flex: 1; min-block-size: 0; }
+  .messenger > * { min-inline-size: 0; }
+  .messenger-contacts { overflow: auto; padding: .4rem; }
+  .messenger-me { display: flex; gap: .5rem; align-items: center; margin: 0 0 .5rem; }
+  .messenger-me > span:last-child { display: grid; }
+  .messenger-chat { display: flex; flex-direction: column; gap: .35rem; min-block-size: 0; }
+  .messenger-chat .thread { flex: 1 1 0; min-block-size: 0; overflow: auto; padding: .5rem; }
+  .messenger-chat > .input-group { flex: none; }
+  .window-body .mixer { flex: 1; min-block-size: 0; overflow: auto; }
+  .browser-bar { display: flex; gap: .25rem; align-items: center; }
+  .browser-bar .input-group { flex: 1; }
+  .browser-page { flex: 1; overflow: auto; padding: .75rem; }
+  .perf-row { display: grid; grid-template-columns: 5.5rem 1fr; gap: .5rem; margin-block-end: .5rem; }
+  .perf-gauge { display: grid; justify-items: center; gap: .25rem; padding: .4rem; }
+  .perf-gauge .meter-v { block-size: 4.5rem; }
+  .perf-graph { display: grid; gap: .25rem; padding: .4rem; }
+  .perf-graph .trace { --trace-height: 4.5rem; }
+  .cmd { flex: 1; margin: 0; overflow: auto; --log-bg: #000; background: #000; color: #c0c0c0; border-radius: 0; font-family: "Lucida Console", Consolas, monospace; }
+  @media (prefers-reduced-motion: no-preference) { .cmd-cursor { animation: cmd-blink 1s steps(1) infinite; } }
+  @keyframes cmd-blink { 50% { opacity: 0; } }
+  .notepad { flex: 1; min-block-size: 0; display: flex; }
+  .notepad > .textarea { flex: 1; resize: none; border-radius: 0; font-family: var(--font-mono); white-space: pre; }
+  .display-preview { display: grid; place-items: center; }
+  .splash-preview { position: relative; block-size: 13rem; overflow: hidden; border: 1px solid var(--border); }
+  @container (max-width: 30rem) { .explorer, .player-app, .messenger { grid-template-columns: 1fr; } .explorer-tasks, .messenger-contacts { display: none; } }
+  /* Wallpapers (Display Properties > Desktop). */
+  .desktop:has([name=wallpaper][value=hills]:checked) { --desktop-bg: radial-gradient(120% 60% at 30% 105%, #4f9a2d 0 55%, transparent 56%), radial-gradient(90% 55% at 85% 110%, #3f8a22 0 58%, transparent 59%), linear-gradient(180deg, #2f6fd6 0%, #6aa5ec 45%, #c8ddf7 70%, #8cc463 70.5%); }
+  .desktop:has([name=wallpaper][value=azure]:checked) { --desktop-bg: radial-gradient(80% 70% at 70% 30%, #6fb7ff, transparent 70%), linear-gradient(160deg, #003b8e, #0a6ad6 55%, #00285f); }
+  .desktop:has([name=wallpaper][value=dusk]:checked) { --desktop-bg: radial-gradient(60% 40% at 50% 80%, #ffb36b, transparent 70%), linear-gradient(180deg, #1b1747, #6a2f73 55%, #e0735a); }
+  .desktop:has([name=wallpaper][value=none]:checked) { --desktop-bg: var(--bg); }
+  /* The logon screen: shown until "Visitor" is picked; Log Off brings it back. */
+  .logon { position: fixed; inset: 0; z-index: calc(var(--z-window, 1500) + 1); display: grid; grid-template-rows: 4.5rem 1fr 4.5rem;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, #000) , color-mix(in srgb, var(--accent) 80%, #fff) 50%, color-mix(in srgb, var(--accent) 55%, #000));
+    color: #fff; font-family: var(--font); }
+  .logon::before, .logon::after { content: ""; background: color-mix(in srgb, var(--accent) 35%, #000); border-block-end: 2px solid color-mix(in srgb, var(--accent) 60%, #fff); }
+  .logon::after { border-block: 2px solid #f0a050 0; border-block-start-width: 2px; border-block-end-width: 0; }
+  .logon-body { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 2.5rem; align-items: center; padding: 1rem 2rem; }
+  .logon-brand { display: grid; justify-items: end; gap: .75rem; text-align: end; }
+  .logon-brand h2 { margin: 0; font-size: 2.2rem; color: #fff; }
+  .logon-brand p { margin: 0; max-inline-size: 18rem; }
+  .logon-rule { align-self: stretch; background: linear-gradient(transparent, rgba(255,255,255,.6), transparent); }
+  .logon-users { display: grid; gap: .75rem; justify-items: start; }
+  .logon-user { display: flex; gap: .9rem; align-items: center; padding: .5rem .9rem .5rem .5rem; border-radius: .5rem; color: #fff; font-size: 1.2rem; cursor: default; }
+  .logon-user:hover, .logon-user:focus-within { background: rgba(0, 0, 0, .25); }
+  .logon-user .avatar { --avatar-size: 3.4rem; border: 3px solid #fff; border-radius: .4rem; }
+  .logon-user small { display: block; font-size: .8rem; opacity: .85; }
+  #logged-on { position: fixed; opacity: 0; pointer-events: none; }
+  :root:has(#logged-on:checked) .logon { display: none; }
+  @media (max-width: 40rem) { .logon-body { grid-template-columns: 1fr; text-align: center; } .logon-brand { justify-items: center; text-align: center; } .logon-rule { display: none; } .logon-users { justify-items: center; } }
 </style>
 </head>
-<body>
-<header class="page-head">
-  <nav class="example-links" aria-label="Example pages">
-    <span>Example pages:</span>
-    <a href="components.html">Components</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="marketing.html">Marketing</a>
-    <a href="ticketsystem.html">Support desk</a>
-    <a href="powerstation.html">Power station</a>
-    <a href="soundmixer.html">Sound mixer</a>
-    <a href="media-decks.html">Media decks</a>
-    <a href="audio-components.html">Audio components</a>
-    <a href="metering.html">Metering &amp; EQ</a>
-    <a href="livechat.html">Live chat</a>
-    <a href="nesting.html">Nesting QA</a>
-    <a href="theme-feedback.html">Report a theme issue</a>
-  </nav>
-  <nav class="example-links" aria-label="Showcase apps">
-    <span>Showcase apps:</span>
-    <a href="desktop.html">Desktop (Windows, Mac, iOS)</a>
-    <a href="mission-control.html">Mission control</a>
-    <a href="trading.html">Trading terminal</a>
-    <a href="smart-home.html">Smart home</a>
-    <a href="inventory.html">Inventory &amp; assets</a>
-    <a href="fleet.html">Fleet dispatch</a>
-  </nav>
-  <nav class="example-links" aria-label="Vehicle cockpits">
-    <span>Vehicles:</span>
-    <a href="cockpit-car.html">Car</a>
-    <a href="cockpit-plane.html">Airliner</a>
-    <a href="cockpit-jet.html">Fighter jet</a>
-    <a href="cockpit-boat.html">Boat</a>
-    <a href="cockpit-submarine.html">Submarine</a>
-    <a href="cockpit-spaceship.html">Spaceship</a>
-  </nav>
-  <nav class="example-links" aria-label="v5 component pages">
-    <span>v5 components:</span>
-    <a href="components-tables.html">Tables</a>
-    <a href="components-instruments.html">Instruments &amp; charts</a>
-    <a href="components-forms.html">Buttons &amp; forms</a>
-    <a href="components-navigation.html">Navigation</a>
-    <a href="components-surfaces.html">Surfaces</a>
-    <a href="components-experience.html">Display settings</a>
-    <a href="components-social.html">Collaboration</a>
-    <a href="hud.html">Game HUD</a>
-    <a href="planner.html">Planner</a>
-    <a href="player.html">Media player</a>
-    <a href="components-prose.html">Prose &amp; code</a>
-  </nav>
-  <nav class="example-links" aria-label="Page templates">
-    <span>Templates:</span>
-    <a href="auth.html">Sign in</a>
-    <a href="settings.html">Settings</a>
-    <a href="master-detail.html">Master–detail</a>
-    <a href="inbox.html">Inbox</a>
-    <a href="onboarding.html">Onboarding</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="share-card.html">Share card</a>
-  </nav>
-  <h1>ftl-themes gallery</h1>
-  <p>
-    Every shipping theme at a glance, shown as a screenshot of
-    <code>components.html</code> (or another demo page — pick one per card).
-    Filter by name, category, and light/dark scheme — the three combine.
-    Click a card's preview or "View full page" to open it full-size.
-  </p>
-</header>
+<!-- The ftl-themes gallery: a whole desktop (Windows XP Luna unless ?theme=
+     says otherwise) whose every part, from the windows, Start menu and
+     taskbar to the media player and chat, is ftl-themes markup. Theme
+     Browser applies any of the 45 themes to the whole desktop. Generated
+     from a script; the boot screen waits for dist/themes.json. -->
+<body class="app desktop">
+  <input type="checkbox" id="logged-on" aria-label="Logged on">
+  <section class="logon" aria-labelledby="logon-title">
+    <div class="logon-body">
+      <div class="logon-brand"><div class="splash-art" aria-hidden="true"></div><h2 id="logon-title">ftl-themes</h2><p>To begin, click your user name</p></div>
+      <div class="logon-rule" aria-hidden="true"></div>
+      <div class="logon-users">
+        <label class="logon-user" for="logged-on"><span class="avatar" data-color="1">V</span><span>Visitor<small>45 themes to try</small></span></label>
+        <label class="logon-user" for="logged-on"><span class="avatar" data-color="3">D</span><span>Developer<small>Start with Command Prompt</small></span></label>
+      </div>
+    </div>
+  </section>
 
-<div class="controls">
-  <input id="search" type="search" placeholder="Filter by name or slug&hellip;" aria-label="Filter themes">
-  <select class="category-filter" id="category-filter" aria-label="Filter by category">
-    <option value="all">All categories</option>
-  </select>
-  <div class="scheme-filter" id="scheme-filter" role="group" aria-label="Filter by light/dark scheme">
-    <button type="button" class="is-active" data-scheme="all">All</button>
-    <button type="button" data-scheme="light">Light</button>
-    <button type="button" data-scheme="dark">Dark</button>
+  <div class="splash" data-boot-screen role="status" aria-live="polite">
+    <div class="splash-art" aria-hidden="true"></div>
+    <p class="splash-title">ftl-themes</p>
+    <progress class="progress" aria-label="Loading"></progress>
+    <p class="splash-message">Loading 45 themes…</p>
   </div>
-  <select class="page-select" id="global-page-select" aria-label="Preview page for every card">
-    <option value="">Preview: per-card</option>
-    <option value="components.html">Preview: components.html (components)</option>
-    <option value="dashboard.html">Preview: dashboard.html (dashboard)</option>
-    <option value="marketing.html">Preview: marketing.html (marketing)</option>
-    <option value="ticketsystem.html">Preview: ticketsystem.html (support desk)</option>
-    <option value="powerstation.html">Preview: powerstation.html (power station)</option>
-    <option value="soundmixer.html">Preview: soundmixer.html (sound mixer)</option>
-    <option value="media-decks.html">Preview: media-decks.html (media decks)</option>
-    <option value="audio-components.html">Preview: audio-components.html (audio components)</option>
-    <option value="livechat.html">Preview: livechat.html (live chat)</option>
-  </select>
-  <span id="count"></span>
-</div>
 
-<div class="grid" id="grid"></div>
-<p id="empty-state">No themes match "<span id="empty-query"></span>".</p>
+  <header class="app-bar demo-topbar">
+    <span class="nav-brand">ftl-themes</span>
+    <nav class="demo-nav" aria-label="Demo pages">
+      <ul class="menubar" role="menubar">
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Apps</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="dashboard.html" data-demo-link>Analytics dashboard</a></li>
+            <li role="none"><a role="menuitem" href="marketing.html" data-demo-link>Marketing site</a></li>
+            <li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link>Support desk</a></li>
+            <li role="none"><a role="menuitem" href="livechat.html" data-demo-link>Team chat</a></li>
+            <li role="none"><a role="menuitem" href="powerstation.html" data-demo-link>Power station</a></li>
+            <li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link>Sound mixer</a></li>
+            <li role="none"><a role="menuitem" href="mission-control.html" data-demo-link>Mission control</a></li>
+            <li role="none"><a role="menuitem" href="smart-home.html" data-demo-link>Smart home</a></li>
+            <li role="none"><a role="menuitem" href="trading.html" data-demo-link>Trading terminal</a></li>
+            <li role="none"><a role="menuitem" href="inventory.html" data-demo-link>Inventory &amp; assets</a></li>
+            <li role="none"><a role="menuitem" href="fleet.html" data-demo-link>Fleet dispatch</a></li>
+            <li role="none"><a role="menuitem" href="planner.html" data-demo-link>Planner</a></li>
+            <li role="none"><a role="menuitem" href="player.html" data-demo-link>Media player</a></li>
+            <li role="none"><a role="menuitem" href="hud.html" data-demo-link>Game HUD</a></li>
+            <li role="none"><a role="menuitem" href="desktop.html" data-demo-link>Desktop</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu">Vehicles</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link>Car</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link>Airliner</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link>Fighter jet</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link>Boat</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link>Submarine</a></li>
+            <li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link>Spaceship</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu">Templates</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="auth.html" data-demo-link>Sign in</a></li>
+            <li role="none"><a role="menuitem" href="settings.html" data-demo-link>Settings</a></li>
+            <li role="none"><a role="menuitem" href="master-detail.html" data-demo-link>Master–detail</a></li>
+            <li role="none"><a role="menuitem" href="inbox.html" data-demo-link>Inbox</a></li>
+            <li role="none"><a role="menuitem" href="onboarding.html" data-demo-link>Onboarding</a></li>
+            <li role="none"><a role="menuitem" href="pricing.html" data-demo-link>Pricing</a></li>
+            <li role="none"><a role="menuitem" href="404.html" data-demo-link>Not found</a></li>
+          </ul></li>
+        <li role="none" class="has-submenu is-end"><button role="menuitem" aria-haspopup="menu" class="is-active">Components</button>
+          <ul role="menu">
+            <li role="none"><a role="menuitem" href="gallery.html" data-demo-link aria-current="page">Theme gallery</a></li>
+            <li role="none"><a role="menuitem" href="components.html" data-demo-link>Core components</a></li>
+            <li role="none"><a role="menuitem" href="components-tables.html" data-demo-link>Tables</a></li>
+            <li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link>Instruments</a></li>
+            <li role="none"><a role="menuitem" href="audio-components.html" data-demo-link>Audio components</a></li>
+            <li role="none"><a role="menuitem" href="audio-blocks.html" data-demo-link>Audio blocks</a></li>
+            <li role="none"><a role="menuitem" href="metering.html" data-demo-link>Metering &amp; EQ</a></li>
+            <li role="none"><a role="menuitem" href="media-decks.html" data-demo-link>Media decks</a></li>
+            <li role="none"><a role="menuitem" href="components-forms.html" data-demo-link>Buttons &amp; forms</a></li>
+            <li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link>Navigation</a></li>
+            <li role="none"><a role="menuitem" href="navigation-patterns.html" data-demo-link>Signature navigation patterns</a></li>
+            <li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link>Surfaces</a></li>
+            <li role="none"><a role="menuitem" href="components-experience.html" data-demo-link>Display settings</a></li>
+            <li role="none"><a role="menuitem" href="components-social.html" data-demo-link>Collaboration</a></li>
+            <li role="none"><a role="menuitem" href="components-prose.html" data-demo-link>Prose &amp; code</a></li>
+            <li role="none"><a role="menuitem" href="components-sections.html" data-demo-link>Page sections</a></li>
+            <li role="none"><a role="menuitem" href="components-shop.html" data-demo-link>Shop</a></li>
+            <li role="none"><a role="menuitem" href="nesting.html" data-demo-link>Nesting</a></li>
+          </ul></li>
+      </ul>
+    </nav>
+  </header>
 
+  <aside class="app-rail" aria-hidden="true"></aside>
+
+  <main class="app-main desktop-screen">
+    <h1 class="visually-hidden">ftl-themes desktop gallery</h1>
+    <input type="radio" class="desktop-home" name="desk-app" id="app-home" checked aria-label="Show the desktop">
+
+    <div class="desktop-icons" role="radiogroup" aria-label="Desktop icons">
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span>My Computer</span></label><label class="desktop-icon-open" for="open-computer"></label><label class="desktop-icon-launch" for="app-computer"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg><span>Theme Browser</span></label><label class="desktop-icon-open" for="open-themes"></label><label class="desktop-icon-launch" for="app-themes"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span>Media Player</span></label><label class="desktop-icon-open" for="open-player"></label><label class="desktop-icon-launch" for="app-player"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span>Messenger</span></label><label class="desktop-icon-open" for="open-messenger"></label><label class="desktop-icon-launch" for="app-messenger"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span>Internet Explorer</span></label><label class="desktop-icon-open" for="open-ie"></label><label class="desktop-icon-launch" for="app-ie"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><span>Volume Control</span></label><label class="desktop-icon-open" for="open-volume"></label><label class="desktop-icon-launch" for="app-volume"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-activity"/></svg><span>Task Manager</span></label><label class="desktop-icon-open" for="open-taskmgr"></label><label class="desktop-icon-launch" for="app-taskmgr"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span>Command Prompt</span></label><label class="desktop-icon-open" for="open-cmd"></label><label class="desktop-icon-launch" for="app-cmd"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>readme.txt</span></label><label class="desktop-icon-open" for="open-notepad"></label><label class="desktop-icon-launch" for="app-notepad"></label>
+      </div>
+      <div class="desktop-icon">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg><span>Welcome</span></label><label class="desktop-icon-open" for="open-welcome"></label><label class="desktop-icon-launch" for="app-welcome"></label>
+      </div>
+      <div class="desktop-icon is-trash">
+        <label><input type="radio" name="desk-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg><span>Recycle Bin</span></label>
+      </div>
+    </div>
+    <div class="desktop-pages" aria-hidden="true"><span class="is-active"></span><span></span></div>
+
+    <!-- Window: Display Properties -->
+    <section class="desktop-window is-dialog" aria-label="Display Properties" style="--x: calc(50% - 15rem); --y: 2rem; --w: 30rem; --h: 33rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-display" aria-label="Switch to Display Properties">
+      <input type="radio" class="window-open" name="vis-display" id="open-display" aria-label="Display Properties: open">
+      <input type="radio" class="window-minimize" name="vis-display" id="min-display" aria-label="Display Properties: minimized">
+      <input type="radio" class="window-close" name="vis-display" id="closed-display" checked aria-label="Display Properties: closed">
+      <input type="checkbox" class="window-max" id="max-display" aria-label="Maximize Display Properties">
+      <div class="modal" role="dialog" aria-labelledby="title-display" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg>
+          <span class="window-title" id="title-display">Display Properties</span>
+          <label class="btn-min" for="min-display"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-display"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-display"><span class="visually-hidden">Close</span></label>
+        </div>
+        
+        <div class="window-body">
+          <div class="tabset">
+            <div class="tabs">
+              <label class="tab"><input type="radio" name="display-tab" checked>Themes</label>
+              <label class="tab"><input type="radio" name="display-tab">Desktop</label>
+              <label class="tab"><input type="radio" name="display-tab">Loading screens</label>
+              <label class="tab"><input type="radio" name="display-tab">Appearance</label>
+            </div>
+            <div class="tab-panel stack">
+              <div class="display-preview" aria-hidden="true"><div class="desktop-monitor"><div class="desktop-monitor-screen"></div></div></div>
+              <div class="field"><label class="label" for="theme-picker">Theme</label><select class="select" id="theme-picker"></select>
+                <p class="field-hint">Every theme and palette variant. Switching plays the outgoing theme's exit.</p></div>
+              <p><label class="btn btn-sm" for="open-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-layout-cards"/></svg> Browse themes with previews…</label></p>
+            </div>
+            <div class="tab-panel stack">
+              <fieldset class="field"><legend class="label">Wallpaper</legend>
+                <div class="list scroll" tabindex="0" style="--scroll-max: 9rem" role="radiogroup" aria-label="Wallpaper">
+                  <label class="list-item"><input type="radio" name="wallpaper" value="theme" checked> (Theme default)</label>
+                  <label class="list-item"><input type="radio" name="wallpaper" value="hills"> Green hills</label>
+                  <label class="list-item"><input type="radio" name="wallpaper" value="azure"> Azure</label>
+                  <label class="list-item"><input type="radio" name="wallpaper" value="dusk"> Dusk</label>
+                  <label class="list-item"><input type="radio" name="wallpaper" value="none"> (None)</label>
+                </div></fieldset>
+              <p class="field-hint">CSS-drawn wallpapers, so they suit any theme. The Windows XP originals are in <code>references/winxp-luna/wallpapers/</code> for comparison only.</p>
+            </div>
+            <div class="tab-panel stack">
+              <p class="field-hint">Each theme draws its own boot screen with <code>.splash</code>. This preview shows the current theme's; restart to watch it load for real.</p>
+              <div class="splash-preview">
+                <div class="splash is-contained" role="img" aria-label="Boot screen preview">
+                  <div class="splash-art" aria-hidden="true"></div><p class="splash-title">ftl-themes</p>
+                  <progress class="progress" aria-label="Loading preview"></progress><p class="splash-message">Starting up…</p>
+                </div>
+              </div>
+              <p><a class="btn btn-sm" href="gallery.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-refresh"/></svg> Restart</a></p>
+            </div>
+            <div class="tab-panel">
+              <form class="prefs" aria-label="Display settings">
+                <fieldset class="prefs-item"><legend class="prefs-label">Text size</legend><div class="segmented" role="radiogroup">
+                  <label class="segmented-item"><input type="radio" name="text-size" value="s">A</label><label class="segmented-item"><input type="radio" name="text-size" value="" checked>A</label><label class="segmented-item"><input type="radio" name="text-size" value="l">A</label><label class="segmented-item"><input type="radio" name="text-size" value="xl">A</label></div></fieldset>
+                <fieldset class="prefs-item"><legend class="prefs-label">Contrast</legend><div class="segmented" role="radiogroup">
+                  <label class="segmented-item"><input type="radio" name="contrast" value="" checked>Standard</label><label class="segmented-item"><input type="radio" name="contrast" value="high" data-media="(prefers-contrast: more)">High</label><label class="segmented-item"><input type="radio" name="contrast" value="more">More</label></div></fieldset>
+                <fieldset class="prefs-item"><legend class="prefs-label">Motion</legend><div class="segmented" role="radiogroup">
+                  <label class="segmented-item"><input type="radio" name="motion" value="full" checked>Full</label><label class="segmented-item"><input type="radio" name="motion" value="reduced" data-media="(prefers-reduced-motion: reduce)">Reduced</label><label class="segmented-item"><input type="radio" name="motion" value="none">Off</label></div></fieldset>
+              </form>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <label class="btn btn-primary btn-sm" for="closed-display">OK</label>
+            <label class="btn btn-secondary btn-sm" for="closed-display">Cancel</label>
+          </div>
+        </div>
+        
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Theme Browser -->
+    <section class="desktop-window" aria-label="Theme Browser" style="--x: 6rem; --y: 1rem; --w: 48rem; --h: 30rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-themes" aria-label="Switch to Theme Browser">
+      <input type="radio" class="window-open" name="vis-themes" id="open-themes" aria-label="Theme Browser: open">
+      <input type="radio" class="window-minimize" name="vis-themes" id="min-themes" aria-label="Theme Browser: minimized">
+      <input type="radio" class="window-close" name="vis-themes" id="closed-themes" checked aria-label="Theme Browser: closed">
+      <input type="checkbox" class="window-max" id="max-themes" aria-label="Maximize Theme Browser">
+      <div class="modal" role="dialog" aria-labelledby="title-themes" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg>
+          <span class="window-title" id="title-themes">Theme Browser</span>
+          <label class="btn-min" for="min-themes"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-themes"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-themes"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="Theme Browser menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">Edit</button></li><li role="none"><button role="menuitem" type="button">View</button></li><li role="none"><button role="menuitem" type="button">Favorites</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="explorer">
+            <aside class="explorer-tasks window-pane" aria-label="Theme tasks">
+              <section class="explorer-task"><h2>Show</h2><ul class="list" role="radiogroup" aria-label="Category"><li><label class="list-item"><input type="radio" name="theme-cat" value="all" checked> All themes</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="os-shell"> OS shells</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="sci-fi"> Sci-fi</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="game-ui"> Game UI</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="media-player"> Media players</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="handheld-device"> Handheld devices</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="broadcast"> Broadcast</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="toy-brand"> Toy brands</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="finance-terminal"> Finance terminals</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="design-system"> Design systems</label></li><li><label class="list-item"><input type="radio" name="theme-cat" value="app-shell"> App shells</label></li></ul></section>
+              <section class="explorer-task"><h2>Details</h2><p class="field-hint"><b id="theme-count">45</b> themes. Apply one to restyle this whole desktop: the taskbar becomes a Dock on Aqua and a home screen on iOS.</p></section>
+            </aside>
+            <div class="window-pane theme-grid" id="theme-grid" aria-live="polite">
+              <p class="field-hint">Loading themes…</p>
+            </div>
+          </div>
+        </div>
+        <div class="window-status"><span>Apply restyles this desktop</span><span>Screenshots from test/visual-baseline</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Windows Media Player -->
+    <section class="desktop-window" aria-label="Windows Media Player" style="--x: calc(100% - 44rem); --y: 1.5rem; --w: 42rem; --h: 30rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-player" aria-label="Switch to Windows Media Player">
+      <input type="radio" class="window-open" name="vis-player" id="open-player" aria-label="Windows Media Player: open">
+      <input type="radio" class="window-minimize" name="vis-player" id="min-player" aria-label="Windows Media Player: minimized">
+      <input type="radio" class="window-close" name="vis-player" id="closed-player" checked aria-label="Windows Media Player: closed">
+      <input type="checkbox" class="window-max" id="max-player" aria-label="Maximize Windows Media Player">
+      <div class="modal" role="dialog" aria-labelledby="title-player" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg>
+          <span class="window-title" id="title-player">Windows Media Player</span>
+          <label class="btn-min" for="min-player"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-player"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-player"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="Windows Media Player menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">View</button></li><li role="none"><button role="menuitem" type="button">Play</button></li><li role="none"><button role="menuitem" type="button">Tools</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="player-app">
+            <div class="player-now window-pane">
+              <div class="visualizer is-mirror" role="img" aria-label="Visualisation of Undertow" style="--visualizer-height: 6rem"><i style="--level:0.79"></i><i style="--level:0.53"></i><i style="--level:0.21"></i><i style="--level:0.26"></i><i style="--level:0.32"></i><i style="--level:0.24"></i><i style="--level:0.14"></i><i style="--level:0.21"></i><i style="--level:0.13"></i><i style="--level:0.33"></i><i style="--level:0.59"></i><i style="--level:0.76"></i><i style="--level:0.71"></i><i style="--level:0.43"></i><i style="--level:0.23"></i><i style="--level:0.64"></i><i style="--level:0.89"></i><i style="--level:0.89"></i><i style="--level:0.65"></i><i style="--level:0.29"></i><i style="--level:0.28"></i><i style="--level:0.45"></i><i style="--level:0.44"></i><i style="--level:0.29"></i><i style="--level:0.15"></i><i style="--level:0.13"></i><i style="--level:0.22"></i><i style="--level:0.43"></i><i style="--level:0.60"></i><i style="--level:0.63"></i><i style="--level:0.44"></i><i style="--level:0.16"></i><i style="--level:0.58"></i><i style="--level:0.88"></i><i style="--level:0.94"></i><i style="--level:0.74"></i><i style="--level:0.37"></i><i style="--level:0.27"></i><i style="--level:0.54"></i><i style="--level:0.61"></i></div>
+              <p class="player-title"><strong>Undertow</strong><span>Marisol Vega · Low Tide Radio</span></p>
+            </div>
+            <div class="player-list window-pane"><ol class="tracklist"><li class="track"><button class="track-play" type="button" aria-label="Play Night Drive"><span class="track-num">1</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span><time class="track-time">4:03</time></li><li class="track"><button class="track-play" type="button" aria-label="Play Signal Fires"><span class="track-num">2</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Signal Fires</span><span class="track-artist">The Quiet Orbit</span></span><time class="track-time">3:41</time></li><li class="track is-playing"><button class="track-play" type="button" aria-label="Pause Undertow"><span class="track-num">3</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-pause"/></svg></button><span class="track-main"><span class="track-title">Undertow</span><span class="track-artist">Marisol Vega</span></span><time class="track-time">5:12</time></li><li class="track"><button class="track-play" type="button" aria-label="Play Glass Hours"><span class="track-num">4</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Glass Hours</span><span class="track-artist">North Atlas</span></span><time class="track-time">3:58</time></li><li class="track"><button class="track-play" type="button" aria-label="Play Brass and Ember"><span class="track-num">5</span><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-play"/></svg></button><span class="track-main"><span class="track-title">Brass and Ember</span><span class="track-artist">Eddie Fenn Trio</span></span><time class="track-time">6:20</time></li></ol></div>
+          </div>
+          <div class="scrubber"><time>1:28</time><div class="waveform" style="--waveform-height:3.5rem"><input type="range" min="0" max="243" step="0.1" value="88" aria-label="Seek" aria-valuetext="1:28 of 4:03"><span class="waveform-bars" aria-hidden="true"><i style="--level:0.26"></i><i style="--level:0.47"></i><i style="--level:0.80"></i><i style="--level:0.93"></i><i style="--level:0.80"></i><i style="--level:0.49"></i><i style="--level:0.16"></i><i style="--level:0.41"></i><i style="--level:0.49"></i><i style="--level:0.40"></i><i style="--level:0.25"></i><i style="--level:0.15"></i><i style="--level:0.18"></i><i style="--level:0.33"></i><i style="--level:0.53"></i><i style="--level:0.65"></i><i style="--level:0.57"></i><i style="--level:0.30"></i><i style="--level:0.39"></i><i style="--level:0.76"></i><i style="--level:0.94"></i><i style="--level:0.88"></i><i style="--level:0.58"></i><i style="--level:0.19"></i><i style="--level:0.45"></i><i style="--level:0.62"></i><i style="--level:0.59"></i><i style="--level:0.42"></i><i style="--level:0.23"></i><i style="--level:0.16"></i><i style="--level:0.20"></i><i style="--level:0.35"></i><i style="--level:0.49"></i><i style="--level:0.49"></i><i style="--level:0.31"></i><i style="--level:0.32"></i><i style="--level:0.67"></i><i style="--level:0.90"></i><i style="--level:0.90"></i><i style="--level:0.65"></i><i style="--level:0.25"></i><i style="--level:0.45"></i><i style="--level:0.70"></i><i style="--level:0.74"></i><i style="--level:0.58"></i><i style="--level:0.34"></i><i style="--level:0.16"></i><i style="--level:0.21"></i><i style="--level:0.17"></i><i style="--level:0.30"></i><i style="--level:0.38"></i><i style="--level:0.30"></i><i style="--level:0.24"></i><i style="--level:0.56"></i><i style="--level:0.81"></i><i style="--level:0.87"></i><i style="--level:0.69"></i><i style="--level:0.31"></i><i style="--level:0.42"></i><i style="--level:0.74"></i><i style="--level:0.85"></i><i style="--level:0.73"></i><i style="--level:0.45"></i><i style="--level:0.17"></i><i style="--level:0.30"></i><i style="--level:0.31"></i><i style="--level:0.20"></i><i style="--level:0.22"></i><i style="--level:0.24"></i><i style="--level:0.19"></i><i style="--level:0.44"></i><i style="--level:0.68"></i><i style="--level:0.79"></i><i style="--level:0.69"></i><i style="--level:0.36"></i><i style="--level:0.36"></i><i style="--level:0.73"></i><i style="--level:0.91"></i><i style="--level:0.84"></i><i style="--level:0.57"></i><i style="--level:0.22"></i><i style="--level:0.35"></i><i style="--level:0.46"></i><i style="--level:0.39"></i><i style="--level:0.25"></i><i style="--level:0.16"></i><i style="--level:0.16"></i><i style="--level:0.31"></i><i style="--level:0.52"></i><i style="--level:0.67"></i><i style="--level:0.64"></i><i style="--level:0.39"></i><i style="--level:0.29"></i><i style="--level:0.68"></i><i style="--level:0.92"></i><i style="--level:0.91"></i><i style="--level:0.67"></i><i style="--level:0.29"></i><i style="--level:0.37"></i><i style="--level:0.57"></i><i style="--level:0.57"></i><i style="--level:0.43"></i><i style="--level:0.25"></i><i style="--level:0.15"></i><i style="--level:0.20"></i><i style="--level:0.35"></i><i style="--level:0.50"></i><i style="--level:0.54"></i><i style="--level:0.39"></i><i style="--level:0.23"></i></span><div class="waveform-region" role="group" aria-label="Chorus" data-color="2" style="--start:.33;--end:.52"><input type="range" min="0" max="243" step="0.1" value="80" aria-label="Chorus start"><input type="range" min="0" max="243" step="0.1" value="126" aria-label="Chorus end"><span class="waveform-region-label">Chorus</span></div><button class="waveform-marker" type="button" data-time="30" style="--at:.1235" aria-label="Verse, 0:30">Verse</button><button class="waveform-marker is-end" type="button" data-time="214" data-color="4" style="--at:.8807" aria-label="Outro, 3:34">Outro</button></div><time>-2:35</time></div>
+          <div class="cluster">
+            <div class="transport is-play" role="group" aria-label="Playback">
+              <label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Shuffle"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-shuffle"/></svg></label>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Previous"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-skip-back"/></svg></button>
+              <button class="btn btn-go btn-icon" type="button" aria-label="Pause"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-pause"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Next"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-skip-forward"/></svg></button>
+              <span class="btn btn-ghost btn-icon media-toggle" role="radiogroup" aria-label="Repeat"><input type="radio" name="wmp-rep" value="off" aria-label="Repeat off" checked><input type="radio" name="wmp-rep" value="all" aria-label="Repeat all"><input type="radio" name="wmp-rep" value="one" aria-label="Repeat one"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-repeat"/></svg></span>
+            </div>
+            <div class="volume push"><label class="btn btn-ghost btn-icon media-toggle"><input type="checkbox" aria-label="Mute"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume-mute"/></svg></label><input type="range" min="0" max="100" value="70" aria-label="Volume"></div>
+          </div>
+        </div>
+        <div class="window-status"><span>Playing</span><span>Undertow — 1:28 / 4:03</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Messenger -->
+    <section class="desktop-window" aria-label="Messenger" style="--x: calc(100% - 39rem); --y: 5rem; --w: 37rem; --h: 28rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-messenger" aria-label="Switch to Messenger">
+      <input type="radio" class="window-open" name="vis-messenger" id="open-messenger" aria-label="Messenger: open">
+      <input type="radio" class="window-minimize" name="vis-messenger" id="min-messenger" aria-label="Messenger: minimized">
+      <input type="radio" class="window-close" name="vis-messenger" id="closed-messenger" checked aria-label="Messenger: closed">
+      <input type="checkbox" class="window-max" id="max-messenger" aria-label="Maximize Messenger">
+      <div class="modal" role="dialog" aria-labelledby="title-messenger" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg>
+          <span class="window-title" id="title-messenger">Messenger</span>
+          <label class="btn-min" for="min-messenger"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-messenger"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-messenger"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="Messenger menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">Contacts</button></li><li role="none"><button role="menuitem" type="button">Actions</button></li><li role="none"><button role="menuitem" type="button">Tools</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="messenger">
+            <aside class="window-pane messenger-contacts" aria-label="Contacts">
+              <p class="messenger-me"><span class="avatar" data-color="1" data-status="online">ME</span><span><strong>Visitor</strong><span class="presence-status" data-status="online">Online</span></span></p>
+              <ul class="list" role="radiogroup" aria-label="Conversations">
+                <li><label class="list-item"><input type="radio" name="msn-contact" checked><span class="avatar avatar-sm" data-color="3" data-status="online">PN</span> Priya Nair</label></li>
+                <li><label class="list-item"><input type="radio" name="msn-contact"><span class="avatar avatar-sm" data-color="2" data-status="away">AT</span> Ava Thompson</label></li>
+                <li><label class="list-item"><input type="radio" name="msn-contact"><span class="avatar avatar-sm" data-color="5" data-status="busy">SM</span> Sam Morgan</label></li>
+                <li><label class="list-item"><input type="radio" name="msn-contact"><span class="avatar avatar-sm" data-color="4" data-status="offline">LK</span> Leo Kim</label></li>
+              </ul>
+            </aside>
+            <div class="messenger-chat">
+              <div class="thread window-pane" aria-label="Conversation with Priya Nair">
+                <div class="thread-divider">Today</div>
+                <div class="message"><span class="avatar" data-color="3">PN</span><div class="message-bubble"><div class="message-meta"><strong>Priya Nair</strong> <time>09:41</time></div><p>Did you try the LCARS theme on this desktop? The taskbar turns into elbows.</p></div></div>
+                <div class="message is-own"><div class="message-bubble"><div class="message-meta"><strong>You</strong> <time>09:42</time></div><p>Trying Aqua now: it became a Dock 😄</p></div></div>
+                <div class="message"><span class="avatar" data-color="3">PN</span><div class="message-bubble"><div class="message-meta"><strong>Priya Nair</strong> <time>09:43</time></div><p>And the iOS themes turn it into a home screen. Same markup!</p></div></div>
+              </div>
+              <div class="typing">Priya is typing&hellip;</div>
+              <div class="input-group"><input class="input" type="text" placeholder="Type a message" aria-label="Message to Priya Nair"><button class="btn btn-go" type="button">Send</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="window-status"><span>Priya Nair is online</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Volume Control -->
+    <section class="desktop-window" aria-label="Volume Control" style="--x: calc(50% - 6rem); --y: 2rem; --w: 30rem; --h: 32rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-volume" aria-label="Switch to Volume Control">
+      <input type="radio" class="window-open" name="vis-volume" id="open-volume" aria-label="Volume Control: open">
+      <input type="radio" class="window-minimize" name="vis-volume" id="min-volume" aria-label="Volume Control: minimized">
+      <input type="radio" class="window-close" name="vis-volume" id="closed-volume" checked aria-label="Volume Control: closed">
+      <input type="checkbox" class="window-max" id="max-volume" aria-label="Maximize Volume Control">
+      <div class="modal" role="dialog" aria-labelledby="title-volume" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg>
+          <span class="window-title" id="title-volume">Volume Control</span>
+          <label class="btn-min" for="min-volume"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-volume"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-volume"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="Volume Control menu"><li role="none"><button role="menuitem" type="button">Options</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="mixer" role="group" aria-label="Volume Control">
+          <section class="strip" aria-label="Volume">
+            <div class="strip-section"><span class="strip-label">Balance</span><label class="knob knob-sm is-bipolar" style="--value:.5"><input type="range" min="-1" max="1" step=".01" value="0" aria-label="Volume balance"><span class="knob-dial"></span></label></div>
+            <div class="strip-fader">
+              <input class="fader" type="range" min="0" max="100" value="70" aria-label="Volume volume" style="--value:0.7">
+              <div class="meter meter-v is-segmented" style="--meter-level:64%;--meter-peak:76%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+            </div>
+            <label class="key key-mute"><input type="checkbox">Mute</label>
+            <div class="scribble"><span class="scribble-name">Volume</span></div>
+          </section>
+          <section class="strip" aria-label="Wave">
+            <div class="strip-section"><span class="strip-label">Balance</span><label class="knob knob-sm is-bipolar" style="--value:.5"><input type="range" min="-1" max="1" step=".01" value="0" aria-label="Wave balance"><span class="knob-dial"></span></label></div>
+            <div class="strip-fader">
+              <input class="fader" type="range" min="0" max="100" value="80" aria-label="Wave volume" style="--value:0.8">
+              <div class="meter meter-v is-segmented" style="--meter-level:52%;--meter-peak:66%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+            </div>
+            <label class="key key-mute"><input type="checkbox">Mute</label>
+            <div class="scribble"><span class="scribble-name">Wave</span></div>
+          </section>
+          <section class="strip" aria-label="SW Synth">
+            <div class="strip-section"><span class="strip-label">Balance</span><label class="knob knob-sm is-bipolar" style="--value:.5"><input type="range" min="-1" max="1" step=".01" value="0" aria-label="SW Synth balance"><span class="knob-dial"></span></label></div>
+            <div class="strip-fader">
+              <input class="fader" type="range" min="0" max="100" value="50" aria-label="SW Synth volume" style="--value:0.5">
+              <div class="meter meter-v is-segmented" style="--meter-level:0%;--meter-peak:0%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+            </div>
+            <label class="key key-mute"><input type="checkbox" checked>Mute</label>
+            <div class="scribble"><span class="scribble-name">SW Synth</span></div>
+          </section>
+          <section class="strip" aria-label="CD Audio">
+            <div class="strip-section"><span class="strip-label">Balance</span><label class="knob knob-sm is-bipolar" style="--value:.5"><input type="range" min="-1" max="1" step=".01" value="0" aria-label="CD Audio balance"><span class="knob-dial"></span></label></div>
+            <div class="strip-fader">
+              <input class="fader" type="range" min="0" max="100" value="60" aria-label="CD Audio volume" style="--value:0.6">
+              <div class="meter meter-v is-segmented" style="--meter-level:30%;--meter-peak:44%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+            </div>
+            <label class="key key-mute"><input type="checkbox">Mute</label>
+            <div class="scribble"><span class="scribble-name">CD Audio</span></div>
+          </section>
+          <section class="strip" aria-label="Line In">
+            <div class="strip-section"><span class="strip-label">Balance</span><label class="knob knob-sm is-bipolar" style="--value:.5"><input type="range" min="-1" max="1" step=".01" value="0" aria-label="Line In balance"><span class="knob-dial"></span></label></div>
+            <div class="strip-fader">
+              <input class="fader" type="range" min="0" max="100" value="40" aria-label="Line In volume" style="--value:0.4">
+              <div class="meter meter-v is-segmented" style="--meter-level:12%;--meter-peak:20%"><div class="meter-fill"></div><div class="meter-peak"></div></div>
+            </div>
+            <label class="key key-mute"><input type="checkbox">Mute</label>
+            <div class="scribble"><span class="scribble-name">Line In</span></div>
+          </section>
+          </div>
+        </div>
+        <div class="window-status"><span>Realtek AC97 Audio</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: ftl Store — Internet Explorer -->
+    <section class="desktop-window" aria-label="ftl Store — Internet Explorer" style="--x: 7rem; --y: 3rem; --w: 46rem; --h: 31rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-ie" aria-label="Switch to ftl Store — Internet Explorer">
+      <input type="radio" class="window-open" name="vis-ie" id="open-ie" aria-label="ftl Store — Internet Explorer: open">
+      <input type="radio" class="window-minimize" name="vis-ie" id="min-ie" aria-label="ftl Store — Internet Explorer: minimized">
+      <input type="radio" class="window-close" name="vis-ie" id="closed-ie" checked aria-label="ftl Store — Internet Explorer: closed">
+      <input type="checkbox" class="window-max" id="max-ie" aria-label="Maximize ftl Store — Internet Explorer">
+      <div class="modal" role="dialog" aria-labelledby="title-ie" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg>
+          <span class="window-title" id="title-ie">ftl Store — Internet Explorer</span>
+          <label class="btn-min" for="min-ie"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-ie"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-ie"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="ftl Store — Internet Explorer menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">Edit</button></li><li role="none"><button role="menuitem" type="button">View</button></li><li role="none"><button role="menuitem" type="button">Favorites</button></li><li role="none"><button role="menuitem" type="button">Tools</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="browser-bar">
+            <button class="btn btn-ghost btn-icon btn-sm" type="button" aria-label="Back"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-left"/></svg></button>
+            <button class="btn btn-ghost btn-icon btn-sm" type="button" aria-label="Forward"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-arrow-right"/></svg></button>
+            <div class="input-group"><span class="input-addon">Address</span><input class="input" value="https://store.example/new" aria-label="Address"><a class="btn btn-sm" href="components-shop.html" data-demo-link>Go</a></div>
+          </div>
+          <div class="window-pane browser-page stack">
+            <div class="banner is-accent" role="region" aria-label="Announcement"><p>Autumn sale: 20% off everything this week.</p><label class="btn-close"><input type="checkbox" class="banner-dismiss" aria-label="Dismiss"></label></div>
+            <div class="section-heading"><div><h2>New arrivals</h2><p>Plain HTML, styled by whichever theme is on.</p></div><a class="btn btn-sm" href="components-shop.html" data-demo-link>All products</a></div>
+            <ul class="product-grid" style="--product-min: 9rem">
+              <li class="product"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231f2933'/><path d='M30 22l12-6h16l12 6 12 14-10 8-6-6v46H34V38l-6 6-10-8z' fill='%23e5e7eb'/></svg>" alt="Basic tee in Black" width="200" height="200"><h3><a href="components-shop.html" data-demo-link class="stretched-link">Basic tee</a></h3><p class="product-meta">Black</p><p class="price is-sm">$35</p></li>
+              <li class="product"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e9efe6'/><path d='M30 22l12-6h16l12 6 12 14-10 8-6-6v46H34V38l-6 6-10-8z' fill='%236b8f71'/></svg>" alt="Organic tee in Sage" width="200" height="200"><span class="badge badge-accent">New</span><h3><a href="components-shop.html" data-demo-link class="stretched-link">Organic tee</a></h3><p class="product-meta">Sage</p><p class="price is-sm">$32</p></li>
+              <li class="product"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232a1f1a'/><path d='M30 22l12-6h16l12 6 12 14-10 8-6-6v46H34V38l-6 6-10-8z' fill='%23c47a5a'/></svg>" alt="Pocket tee in Clay" width="200" height="200"><span class="badge badge-accent">Sale</span><h3><a href="components-shop.html" data-demo-link class="stretched-link">Pocket tee</a></h3><p class="product-meta">Clay</p><p class="price is-sm"><span class="price-sale">$24</span> <span class="price-was">$30</span></p></li>
+              <li class="product"><img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231d2b4f'/><path d='M30 22l12-6h16l12 6 12 14-10 8-6-6v46H34V38l-6 6-10-8z' fill='%239fb3d1'/></svg>" alt="Long sleeve in Navy" width="200" height="200"><h3><a href="components-shop.html" data-demo-link class="stretched-link">Long sleeve</a></h3><p class="product-meta">Navy</p><p class="price is-sm">$42</p></li>
+            </ul>
+            <ul class="features is-centered" style="--features-min: 9rem">
+              <li><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-gift"/></svg><h3>Free shipping</h3><p>On orders over $50.</p></li>
+              <li><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-refresh"/></svg><h3>Easy returns</h3><p>60 days, no questions.</p></li>
+              <li><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-shield"/></svg><h3>Secure checkout</h3><p>Card, PayPal or transfer.</p></li>
+            </ul>
+          </div>
+        </div>
+        <div class="window-status"><span>Done</span><span>Internet</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Task Manager -->
+    <section class="desktop-window" aria-label="Task Manager" style="--x: calc(50% - 6rem); --y: 5rem; --w: 31rem; --h: 31rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-taskmgr" aria-label="Switch to Task Manager">
+      <input type="radio" class="window-open" name="vis-taskmgr" id="open-taskmgr" aria-label="Task Manager: open">
+      <input type="radio" class="window-minimize" name="vis-taskmgr" id="min-taskmgr" aria-label="Task Manager: minimized">
+      <input type="radio" class="window-close" name="vis-taskmgr" id="closed-taskmgr" checked aria-label="Task Manager: closed">
+      <input type="checkbox" class="window-max" id="max-taskmgr" aria-label="Maximize Task Manager">
+      <div class="modal" role="dialog" aria-labelledby="title-taskmgr" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-activity"/></svg>
+          <span class="window-title" id="title-taskmgr">Task Manager</span>
+          <label class="btn-min" for="min-taskmgr"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-taskmgr"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-taskmgr"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="Task Manager menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">Options</button></li><li role="none"><button role="menuitem" type="button">View</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="tabset">
+            <div class="tabs">
+              <label class="tab"><input type="radio" name="tm-tab">Applications</label>
+              <label class="tab"><input type="radio" name="tm-tab" checked>Performance</label>
+              <label class="tab"><input type="radio" name="tm-tab">Processes</label>
+            </div>
+            <div class="tab-panel">
+              <table class="table is-striped"><thead><tr><th>Task</th><th>Status</th></tr></thead><tbody>
+                <tr><td>Welcome to ftl-themes</td><td><span class="status status-ok">Running</span></td></tr><tr><td>Theme Browser</td><td><span class="status status-ok">Running</span></td></tr><tr><td>Windows Media Player</td><td><span class="status status-ok">Running</span></td></tr><tr><td>Messenger</td><td><span class="status status-ok">Running</span></td></tr>
+              </tbody></table>
+            </div>
+            <div class="tab-panel perf">
+              <div class="perf-row"><div class="perf-gauge window-pane"><span class="label">CPU</span><div class="meter meter-v is-segmented" style="--meter-level:38%;--meter-peak:52%" role="meter" aria-label="CPU usage" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="readout readout-sm">38<span class="readout-unit">%</span></span></div>
+                <div class="window-pane perf-graph"><span class="label">CPU usage history</span><svg class="trace" viewBox="0 0 200 40" preserveAspectRatio="none" role="img" aria-label="CPU usage history"><path class="trace-fill" d="M0.0 23.6 L3.4 23.8 L6.8 25.4 L10.2 27.6 L13.6 29.4 L16.9 30.0 L20.3 29.3 L23.7 27.7 L27.1 25.8 L30.5 24.6 L33.9 25.0 L37.3 27.3 L40.7 28.9 L44.1 24.3 L47.5 20.2 L50.8 17.7 L54.2 17.8 L57.6 20.6 L61.0 25.6 L64.4 28.3 L67.8 22.4 L71.2 18.2 L74.6 16.6 L78.0 17.8 L81.4 21.5 L84.7 26.4 L88.1 28.6 L91.5 24.8 L94.9 22.9 L98.3 23.0 L101.7 24.8 L105.1 27.1 L108.5 29.2 L111.9 29.8 L115.3 29.8 L118.6 28.3 L122.0 26.6 L125.4 25.4 L128.8 25.7 L132.2 27.7 L135.6 28.7 L139.0 24.3 L142.4 20.4 L145.8 18.1 L149.2 18.3 L152.5 21.1 L155.9 26.1 L159.3 27.8 L162.7 22.0 L166.1 17.9 L169.5 16.4 L172.9 17.7 L176.3 21.5 L179.7 26.7 L183.1 28.2 L186.4 24.2 L189.8 22.2 L193.2 22.3 L196.6 24.1 L200.0 26.7 L200 40 L0 40 Z"/><path class="trace-line" d="M0.0 23.6 L3.4 23.8 L6.8 25.4 L10.2 27.6 L13.6 29.4 L16.9 30.0 L20.3 29.3 L23.7 27.7 L27.1 25.8 L30.5 24.6 L33.9 25.0 L37.3 27.3 L40.7 28.9 L44.1 24.3 L47.5 20.2 L50.8 17.7 L54.2 17.8 L57.6 20.6 L61.0 25.6 L64.4 28.3 L67.8 22.4 L71.2 18.2 L74.6 16.6 L78.0 17.8 L81.4 21.5 L84.7 26.4 L88.1 28.6 L91.5 24.8 L94.9 22.9 L98.3 23.0 L101.7 24.8 L105.1 27.1 L108.5 29.2 L111.9 29.8 L115.3 29.8 L118.6 28.3 L122.0 26.6 L125.4 25.4 L128.8 25.7 L132.2 27.7 L135.6 28.7 L139.0 24.3 L142.4 20.4 L145.8 18.1 L149.2 18.3 L152.5 21.1 L155.9 26.1 L159.3 27.8 L162.7 22.0 L166.1 17.9 L169.5 16.4 L172.9 17.7 L176.3 21.5 L179.7 26.7 L183.1 28.2 L186.4 24.2 L189.8 22.2 L193.2 22.3 L196.6 24.1 L200.0 26.7"/></svg></div></div>
+              <div class="perf-row"><div class="perf-gauge window-pane"><span class="label">Memory</span><div class="meter meter-v is-segmented" style="--meter-level:61%;--meter-peak:64%" role="meter" aria-label="Memory usage" aria-valuenow="61" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill"></div><div class="meter-peak"></div></div><span class="readout readout-sm">1.2<span class="readout-unit">GB</span></span></div>
+                <div class="window-pane perf-graph"><span class="label">Page file usage history</span><svg class="trace" viewBox="0 0 200 40" preserveAspectRatio="none" role="img" aria-label="Memory usage history" style="--trace-fg: var(--chart-series-2, var(--accent))"><path class="trace-fill" d="M0.0 25.1 L3.4 24.5 L6.8 25.4 L10.2 27.0 L13.6 28.8 L16.9 29.9 L20.3 29.8 L23.7 29.6 L27.1 28.4 L30.5 27.3 L33.9 27.0 L37.3 27.8 L40.7 29.9 L44.1 27.3 L47.5 24.3 L50.8 22.2 L54.2 21.5 L57.6 22.7 L61.0 25.7 L64.4 29.8 L67.8 25.8 L71.2 22.3 L74.6 20.4 L78.0 20.5 L81.4 22.6 L84.7 26.1 L88.1 29.9 L91.5 26.7 L94.9 24.6 L98.3 24.0 L101.7 24.9 L105.1 26.6 L108.5 28.6 L111.9 30.0 L115.3 29.5 L118.6 30.0 L122.0 29.0 L125.4 27.9 L128.8 27.5 L132.2 28.2 L135.6 30.0 L139.0 27.3 L142.4 24.5 L145.8 22.5 L149.2 21.9 L152.5 23.1 L155.9 26.1 L159.3 29.8 L162.7 25.5 L166.1 22.1 L169.5 20.2 L172.9 20.5 L176.3 22.7 L179.7 26.2 L183.1 29.8 L186.4 26.3 L189.8 24.1 L193.2 23.5 L196.6 24.4 L200.0 26.3 L200 40 L0 40 Z"/><path class="trace-line" d="M0.0 25.1 L3.4 24.5 L6.8 25.4 L10.2 27.0 L13.6 28.8 L16.9 29.9 L20.3 29.8 L23.7 29.6 L27.1 28.4 L30.5 27.3 L33.9 27.0 L37.3 27.8 L40.7 29.9 L44.1 27.3 L47.5 24.3 L50.8 22.2 L54.2 21.5 L57.6 22.7 L61.0 25.7 L64.4 29.8 L67.8 25.8 L71.2 22.3 L74.6 20.4 L78.0 20.5 L81.4 22.6 L84.7 26.1 L88.1 29.9 L91.5 26.7 L94.9 24.6 L98.3 24.0 L101.7 24.9 L105.1 26.6 L108.5 28.6 L111.9 30.0 L115.3 29.5 L118.6 30.0 L122.0 29.0 L125.4 27.9 L128.8 27.5 L132.2 28.2 L135.6 30.0 L139.0 27.3 L142.4 24.5 L145.8 22.5 L149.2 21.9 L152.5 23.1 L155.9 26.1 L159.3 29.8 L162.7 25.5 L166.1 22.1 L169.5 20.2 L172.9 20.5 L176.3 22.7 L179.7 26.2 L183.1 29.8 L186.4 26.3 L189.8 24.1 L193.2 23.5 L196.6 24.4 L200.0 26.3"/></svg></div></div>
+              <dl class="props"><dt>Processes</dt><dd>31</dd><dt>Uptime</dt><dd>0:04:12</dd><dt>Connection</dt><dd><span class="connection" data-state="live">Live</span></dd></dl>
+            </div>
+            <div class="tab-panel">
+              <table class="table"><thead><tr><th>Image name</th><th>CPU</th><th>Memory</th></tr></thead><tbody>
+                <tr><td>explorer.exe</td><td class="mono">02</td><td class="mono">18,404 K</td></tr><tr><td>wmplayer.exe</td><td class="mono">12</td><td class="mono">24,108 K</td></tr><tr><td>msnmsgr.exe</td><td class="mono">01</td><td class="mono">9,880 K</td></tr><tr><td>iexplore.exe</td><td class="mono">05</td><td class="mono">31,560 K</td></tr><tr><td>System Idle Process</td><td class="mono">80</td><td class="mono">16 K</td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+        <div class="window-status"><span>Processes: 31</span><span>CPU Usage: 38%</span><span>Commit Charge: 1.2 GB</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: My Computer — every example -->
+    <section class="desktop-window" aria-label="My Computer — every example" style="--x: 3rem; --y: 2rem; --w: 50rem; --h: 32rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-computer" aria-label="Switch to My Computer — every example">
+      <input type="radio" class="window-open" name="vis-computer" id="open-computer" aria-label="My Computer — every example: open">
+      <input type="radio" class="window-minimize" name="vis-computer" id="min-computer" aria-label="My Computer — every example: minimized">
+      <input type="radio" class="window-close" name="vis-computer" id="closed-computer" checked aria-label="My Computer — every example: closed">
+      <input type="checkbox" class="window-max" id="max-computer" aria-label="Maximize My Computer — every example">
+      <div class="modal" role="dialog" aria-labelledby="title-computer" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg>
+          <span class="window-title" id="title-computer">My Computer — every example</span>
+          <label class="btn-min" for="min-computer"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-computer"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-computer"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="My Computer — every example menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">Edit</button></li><li role="none"><button role="menuitem" type="button">View</button></li><li role="none"><button role="menuitem" type="button">Favorites</button></li><li role="none"><button role="menuitem" type="button">Tools</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="explorer">
+            <aside class="explorer-tasks window-pane" aria-label="System tasks">
+              <section class="explorer-task"><h2>System tasks</h2><ul class="list">
+                <li><label class="list-item" for="open-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg> View all themes</label></li>
+                <li><label class="list-item" for="open-display"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg> Change display settings</label></li>
+                <li><a class="list-item" href="components.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-grid"/></svg> Core components</a></li></ul></section>
+              <section class="explorer-task"><h2>Other places</h2><ul class="list">
+                <li><a class="list-item" href="desktop.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-layout"/></svg> The desktop shell demo</a></li>
+                <li><a class="list-item" href="https://github.com/DrEVILish/ftl-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-code"/></svg> Source on GitHub</a></li></ul></section>
+            </aside>
+            <div class="window-pane explorer-files stack"><section class="stack stack-sm"><h2 class="explorer-group">Apps</h2><ul class="example-grid" role="list"><li><a class="menu-feature" href="dashboard.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Analytics dashboard</strong><span>dashboard.html</span></span></a></li><li><a class="menu-feature" href="marketing.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Marketing site</strong><span>marketing.html</span></span></a></li><li><a class="menu-feature" href="ticketsystem.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Support desk</strong><span>ticketsystem.html</span></span></a></li><li><a class="menu-feature" href="livechat.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Team chat</strong><span>livechat.html</span></span></a></li><li><a class="menu-feature" href="powerstation.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Power station</strong><span>powerstation.html</span></span></a></li><li><a class="menu-feature" href="soundmixer.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Sound mixer</strong><span>soundmixer.html</span></span></a></li><li><a class="menu-feature" href="mission-control.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Mission control</strong><span>mission-control.html</span></span></a></li><li><a class="menu-feature" href="smart-home.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Smart home</strong><span>smart-home.html</span></span></a></li><li><a class="menu-feature" href="trading.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Trading terminal</strong><span>trading.html</span></span></a></li><li><a class="menu-feature" href="inventory.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Inventory & assets</strong><span>inventory.html</span></span></a></li><li><a class="menu-feature" href="fleet.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Fleet dispatch</strong><span>fleet.html</span></span></a></li><li><a class="menu-feature" href="planner.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Planner</strong><span>planner.html</span></span></a></li><li><a class="menu-feature" href="player.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Media player</strong><span>player.html</span></span></a></li><li><a class="menu-feature" href="hud.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Game HUD</strong><span>hud.html</span></span></a></li><li><a class="menu-feature" href="desktop.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Desktop</strong><span>desktop.html</span></span></a></li></ul></section><section class="stack stack-sm"><h2 class="explorer-group">Vehicles</h2><ul class="example-grid" role="list"><li><a class="menu-feature" href="cockpit-car.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Car</strong><span>cockpit-car.html</span></span></a></li><li><a class="menu-feature" href="cockpit-plane.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Airliner</strong><span>cockpit-plane.html</span></span></a></li><li><a class="menu-feature" href="cockpit-jet.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Fighter jet</strong><span>cockpit-jet.html</span></span></a></li><li><a class="menu-feature" href="cockpit-boat.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Boat</strong><span>cockpit-boat.html</span></span></a></li><li><a class="menu-feature" href="cockpit-submarine.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Submarine</strong><span>cockpit-submarine.html</span></span></a></li><li><a class="menu-feature" href="cockpit-spaceship.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Spaceship</strong><span>cockpit-spaceship.html</span></span></a></li></ul></section><section class="stack stack-sm"><h2 class="explorer-group">Sci-Fi</h2><ul class="example-grid" role="list"></ul></section><section class="stack stack-sm"><h2 class="explorer-group">Templates</h2><ul class="example-grid" role="list"><li><a class="menu-feature" href="auth.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Sign in</strong><span>auth.html</span></span></a></li><li><a class="menu-feature" href="settings.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Settings</strong><span>settings.html</span></span></a></li><li><a class="menu-feature" href="master-detail.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Master–detail</strong><span>master-detail.html</span></span></a></li><li><a class="menu-feature" href="inbox.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Inbox</strong><span>inbox.html</span></span></a></li><li><a class="menu-feature" href="onboarding.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Onboarding</strong><span>onboarding.html</span></span></a></li><li><a class="menu-feature" href="pricing.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Pricing</strong><span>pricing.html</span></span></a></li><li><a class="menu-feature" href="404.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Not found</strong><span>404.html</span></span></a></li></ul></section><section class="stack stack-sm"><h2 class="explorer-group">Components</h2><ul class="example-grid" role="list"><li><a class="menu-feature" href="components.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Core components</strong><span>components.html</span></span></a></li><li><a class="menu-feature" href="components-tables.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Tables</strong><span>components-tables.html</span></span></a></li><li><a class="menu-feature" href="components-instruments.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Instruments</strong><span>components-instruments.html</span></span></a></li><li><a class="menu-feature" href="audio-components.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Audio components</strong><span>audio-components.html</span></span></a></li><li><a class="menu-feature" href="audio-blocks.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Audio blocks</strong><span>audio-blocks.html</span></span></a></li><li><a class="menu-feature" href="metering.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Metering & EQ</strong><span>metering.html</span></span></a></li><li><a class="menu-feature" href="media-decks.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Media decks</strong><span>media-decks.html</span></span></a></li><li><a class="menu-feature" href="components-forms.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Buttons & forms</strong><span>components-forms.html</span></span></a></li><li><a class="menu-feature" href="components-navigation.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Navigation</strong><span>components-navigation.html</span></span></a></li><li><a class="menu-feature" href="navigation-patterns.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Signature navigation patterns</strong><span>navigation-patterns.html</span></span></a></li><li><a class="menu-feature" href="components-surfaces.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Surfaces</strong><span>components-surfaces.html</span></span></a></li><li><a class="menu-feature" href="components-experience.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Display settings</strong><span>components-experience.html</span></span></a></li><li><a class="menu-feature" href="components-social.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Collaboration</strong><span>components-social.html</span></span></a></li><li><a class="menu-feature" href="components-prose.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Prose & code</strong><span>components-prose.html</span></span></a></li><li><a class="menu-feature" href="components-sections.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Page sections</strong><span>components-sections.html</span></span></a></li><li><a class="menu-feature" href="components-shop.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Shop</strong><span>components-shop.html</span></span></a></li><li><a class="menu-feature" href="nesting.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span><strong>Nesting</strong><span>nesting.html</span></span></a></li></ul></section></div>
+          </div>
+        </div>
+        <div class="window-status"><span>Every page opens with the current theme</span><span>My Computer</span></div>
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Command Prompt -->
+    <section class="desktop-window" aria-label="Command Prompt" style="--x: 9rem; --y: 12rem; --w: 34rem; --h: 18rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-cmd" aria-label="Switch to Command Prompt">
+      <input type="radio" class="window-open" name="vis-cmd" id="open-cmd" aria-label="Command Prompt: open">
+      <input type="radio" class="window-minimize" name="vis-cmd" id="min-cmd" aria-label="Command Prompt: minimized">
+      <input type="radio" class="window-close" name="vis-cmd" id="closed-cmd" checked aria-label="Command Prompt: closed">
+      <input type="checkbox" class="window-max" id="max-cmd" aria-label="Maximize Command Prompt">
+      <div class="modal" role="dialog" aria-labelledby="title-cmd" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg>
+          <span class="window-title" id="title-cmd">Command Prompt</span>
+          <label class="btn-min" for="min-cmd"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-cmd"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-cmd"><span class="visually-hidden">Close</span></label>
+        </div>
+        
+        <div class="window-body">
+          <div class="log cmd" role="log" aria-label="Command Prompt">
+            <div class="log-line">Microsoft Windows XP [Version 5.1.2600]</div>
+            <div class="log-line">&nbsp;</div>
+            <div class="log-line">C:\&gt; git submodule add https://github.com/DrEVILish/ftl-themes</div>
+            <div class="log-line">C:\&gt; type quickstart.html</div>
+            <div class="log-line">&lt;html data-theme="winxp-luna"&gt;</div>
+            <div class="log-line">&lt;link rel="stylesheet" href="/static/themes/winxp-luna.css"&gt;</div>
+            <div class="log-line">&lt;body class="app"&gt; …plain HTML, any theme… &lt;/body&gt;</div>
+            <div class="log-line">&nbsp;</div>
+            <div class="log-line">C:\&gt; <span class="cmd-cursor" aria-hidden="true">_</span></div>
+          </div>
+        </div>
+        
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: readme.txt - Notepad -->
+    <section class="desktop-window" aria-label="readme.txt - Notepad" style="--x: calc(100% - 36rem); --y: 9rem; --w: 33rem; --h: 24rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-notepad" aria-label="Switch to readme.txt - Notepad">
+      <input type="radio" class="window-open" name="vis-notepad" id="open-notepad" aria-label="readme.txt - Notepad: open">
+      <input type="radio" class="window-minimize" name="vis-notepad" id="min-notepad" aria-label="readme.txt - Notepad: minimized">
+      <input type="radio" class="window-close" name="vis-notepad" id="closed-notepad" checked aria-label="readme.txt - Notepad: closed">
+      <input type="checkbox" class="window-max" id="max-notepad" aria-label="Maximize readme.txt - Notepad">
+      <div class="modal" role="dialog" aria-labelledby="title-notepad" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg>
+          <span class="window-title" id="title-notepad">readme.txt - Notepad</span>
+          <label class="btn-min" for="min-notepad"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-notepad"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-notepad"><span class="visually-hidden">Close</span></label>
+        </div>
+        <ul class="menubar" role="menubar" aria-label="readme.txt - Notepad menu"><li role="none"><button role="menuitem" type="button">File</button></li><li role="none"><button role="menuitem" type="button">Edit</button></li><li role="none"><button role="menuitem" type="button">Format</button></li><li role="none"><button role="menuitem" type="button">View</button></li><li role="none"><button role="menuitem" type="button">Help</button></li></ul>
+        <div class="window-body">
+          <div class="notepad"><textarea class="textarea" aria-label="readme.txt" spellcheck="false" readonly>ftl-themes desktop — readme.txt
+================================
+
+NEW IN THIS RELEASE
+- Waveform regions and markers, hover time.
+- Audio controls: visualisers, traces, parameter sliders,
+  sound pads, device states, channel rows.
+- Page sections and shop components; valid states and
+  floating labels.
+- Alienware factory variants: Darkstar, Invader, ALX.
+- Themed exits when you switch theme; a red-alert level.
+- This desktop: 11 windows (the shell now pairs up to 12
+  task buttons), an XP boot screen and a logon screen.
+
+GAPS THIS DESKTOP FOUND
+- No logon or lock-screen component: the Welcome screen
+  is page CSS on top of .splash parts.
+- Task buttons pair with windows by position only (now
+  up to 12); a bigger desktop needs the limit raised.
+- Windows open where the markup puts them and are not
+  draggable without script (window.js is modal-only).
+- The tray clock is static; no notification balloon
+  anchored to the tray (a toast stands in).
+- Theme previews are screenshots: no live thumbnail of
+  a theme inside another theme (themes are page-wide).
+- Only a few themes draw their own boot screen; the rest
+  show core's ring.
+- Wallpapers are CSS drawings: the real ones are
+  copyrighted and stay in references/.
+</textarea></div>
+        </div>
+        
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+    <!-- Window: Welcome to ftl-themes -->
+    <section class="desktop-window" aria-label="Welcome to ftl-themes" style="--x: calc(50% - 21rem); --y: 1.5rem; --w: 42rem; --h: 31rem">
+      <input type="radio" class="window-app" name="desk-app" id="app-welcome" aria-label="Switch to Welcome to ftl-themes">
+      <input type="radio" class="window-open" name="vis-welcome" id="open-welcome" checked aria-label="Welcome to ftl-themes: open">
+      <input type="radio" class="window-minimize" name="vis-welcome" id="min-welcome" aria-label="Welcome to ftl-themes: minimized">
+      <input type="radio" class="window-close" name="vis-welcome" id="closed-welcome" aria-label="Welcome to ftl-themes: closed">
+      <input type="checkbox" class="window-max" id="max-welcome" aria-label="Maximize Welcome to ftl-themes">
+      <div class="modal" role="dialog" aria-labelledby="title-welcome" tabindex="-1">
+        <div class="modal-header">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg>
+          <span class="window-title" id="title-welcome">Welcome to ftl-themes</span>
+          <label class="btn-min" for="min-welcome"><span class="visually-hidden">Minimize</span></label>
+          <label class="btn-max" for="max-welcome"><span class="visually-hidden">Maximize</span></label>
+          <label class="btn-close" for="closed-welcome"><span class="visually-hidden">Close</span></label>
+        </div>
+        
+        <div class="window-body">
+          <div class="welcome stack" tabindex="0" role="region" aria-label="Welcome">
+            <header class="welcome-hero">
+              <div class="splash-art" aria-hidden="true"></div>
+              <div><p class="welcome-kicker">Welcome to</p><h1>ftl-themes</h1>
+              <p>One set of plain HTML, 45 complete themes. Everything on this desktop, from the windows and Start menu to the media player and chat, is ordinary markup styled by ftl-themes. Pick something to explore:</p></div>
+            </header>
+            <ul class="welcome-tour" role="list"><li><label class="menu-feature" for="open-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg><span><strong>45 themes, one markup</strong><span>Browse every theme and apply it to this whole desktop. Windows 95 to LCARS, Aqua to Skyrim.</span></span></label></li><li><label class="menu-feature" for="open-display"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span><strong>Display settings</strong><span>Wallpapers, text size, contrast and motion, and the loading screens.</span></span></label></li><li><label class="menu-feature" for="open-player"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span><strong>Media player</strong><span>Waveform regions and markers, visualisers, track lists and transport.</span></span></label></li><li><label class="menu-feature" for="open-messenger"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span><strong>Messenger</strong><span>Presence, conversation threads, typing and mentions.</span></span></label></li><li><label class="menu-feature" for="open-volume"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><span><strong>Volume control</strong><span>Mixer strips, faders, meters, pan knobs and mute keys.</span></span></label></li><li><label class="menu-feature" for="open-ie"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span><strong>The web</strong><span>Shop and marketing sections: products, prices, banners and footers.</span></span></label></li><li><label class="menu-feature" for="open-taskmgr"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-activity"/></svg><span><strong>Task manager</strong><span>Live data: meters, telemetry traces, tables and alert states.</span></span></label></li><li><label class="menu-feature" for="open-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span><strong>Every example</strong><span>All the demo apps, cockpits, templates and component pages.</span></span></label></li><li><label class="menu-feature" for="open-cmd"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span><strong>Quick start</strong><span>Two lines of HTML to adopt a theme.</span></span></label></li><li><label class="menu-feature" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span><strong>What's new and what's missing</strong><span>This release, and the gaps this desktop found.</span></span></label></li></ul>
+            <p class="field-hint">Double-click (or tap) a desktop icon to open it, or use the Start menu. Change the whole desktop's theme in <label class="link-label" for="open-themes">Theme Browser</label>.</p>
+          </div>
+        </div>
+        
+        <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-status taskbar desktop-bar">
+    <button class="taskbar-start" type="button" popovertarget="start-menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-grid"/></svg><span class="taskbar-start-label">start</span></button>
+
+    <div class="start-menu" popover id="start-menu" aria-label="Start menu">
+      <div class="start-menu-header"><span class="avatar" data-color="1">V</span><span>Visitor</span></div>
+      <ul class="context-menu start-menu-programs" role="menu" aria-label="Programs">
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-ie"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span><b>Internet</b><small>Internet Explorer</small></span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-messenger"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span><b>Messenger</b><small>Online</small></span></label></li>
+        <li role="separator" class="is-columns-only"></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-welcome"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg><span>Welcome to ftl-themes</span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg><span>Theme Browser</span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-player"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span>Windows Media Player</span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-volume"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><span>Volume Control</span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-taskmgr"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-activity"/></svg><span>Task Manager</span></label></li>
+        <li role="separator" class="is-columns-only"></li>
+        <li role="none" class="has-submenu start-menu-all"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span><span class="is-columns-only">All </span>Programs</span></button>
+          <ul role="menu">
+            <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Apps</span></button><ul role="menu"><li role="none"><a role="menuitem" href="dashboard.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Analytics dashboard</span></a></li><li role="none"><a role="menuitem" href="marketing.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Marketing site</span></a></li><li role="none"><a role="menuitem" href="ticketsystem.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Support desk</span></a></li><li role="none"><a role="menuitem" href="livechat.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Team chat</span></a></li><li role="none"><a role="menuitem" href="powerstation.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Power station</span></a></li><li role="none"><a role="menuitem" href="soundmixer.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Sound mixer</span></a></li><li role="none"><a role="menuitem" href="mission-control.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Mission control</span></a></li><li role="none"><a role="menuitem" href="smart-home.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Smart home</span></a></li><li role="none"><a role="menuitem" href="trading.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Trading terminal</span></a></li><li role="none"><a role="menuitem" href="inventory.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Inventory & assets</span></a></li><li role="none"><a role="menuitem" href="fleet.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Fleet dispatch</span></a></li><li role="none"><a role="menuitem" href="planner.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Planner</span></a></li><li role="none"><a role="menuitem" href="player.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Media player</span></a></li><li role="none"><a role="menuitem" href="hud.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Game HUD</span></a></li><li role="none"><a role="menuitem" href="desktop.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Desktop</span></a></li></ul></li><li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Vehicles</span></button><ul role="menu"><li role="none"><a role="menuitem" href="cockpit-car.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Car</span></a></li><li role="none"><a role="menuitem" href="cockpit-plane.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Airliner</span></a></li><li role="none"><a role="menuitem" href="cockpit-jet.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Fighter jet</span></a></li><li role="none"><a role="menuitem" href="cockpit-boat.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Boat</span></a></li><li role="none"><a role="menuitem" href="cockpit-submarine.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Submarine</span></a></li><li role="none"><a role="menuitem" href="cockpit-spaceship.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Spaceship</span></a></li></ul></li><li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Templates</span></button><ul role="menu"><li role="none"><a role="menuitem" href="auth.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Sign in</span></a></li><li role="none"><a role="menuitem" href="settings.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Settings</span></a></li><li role="none"><a role="menuitem" href="master-detail.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Master–detail</span></a></li><li role="none"><a role="menuitem" href="inbox.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Inbox</span></a></li><li role="none"><a role="menuitem" href="onboarding.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Onboarding</span></a></li><li role="none"><a role="menuitem" href="pricing.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Pricing</span></a></li><li role="none"><a role="menuitem" href="404.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Not found</span></a></li></ul></li><li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Components</span></button><ul role="menu"><li role="none"><a role="menuitem" href="components.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Core components</span></a></li><li role="none"><a role="menuitem" href="components-tables.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Tables</span></a></li><li role="none"><a role="menuitem" href="components-instruments.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Instruments</span></a></li><li role="none"><a role="menuitem" href="audio-components.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Audio components</span></a></li><li role="none"><a role="menuitem" href="audio-blocks.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Audio blocks</span></a></li><li role="none"><a role="menuitem" href="metering.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Metering & EQ</span></a></li><li role="none"><a role="menuitem" href="media-decks.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Media decks</span></a></li><li role="none"><a role="menuitem" href="components-forms.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Buttons & forms</span></a></li><li role="none"><a role="menuitem" href="components-navigation.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Navigation</span></a></li><li role="none"><a role="menuitem" href="navigation-patterns.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Signature navigation patterns</span></a></li><li role="none"><a role="menuitem" href="components-surfaces.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Surfaces</span></a></li><li role="none"><a role="menuitem" href="components-experience.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Display settings</span></a></li><li role="none"><a role="menuitem" href="components-social.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Collaboration</span></a></li><li role="none"><a role="menuitem" href="components-prose.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Prose & code</span></a></li><li role="none"><a role="menuitem" href="components-sections.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Page sections</span></a></li><li role="none"><a role="menuitem" href="components-shop.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Shop</span></a></li><li role="none"><a role="menuitem" href="nesting.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file"/></svg><span>Nesting</span></a></li></ul></li>
+            <li role="none" class="has-submenu"><button role="menuitem" aria-haspopup="menu"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span>Accessories</span></button>
+              <ul role="menu">
+                <li role="none"><label role="menuitem" for="open-cmd"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span>Command Prompt</span></label></li>
+                <li role="none"><label role="menuitem" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>Notepad</span></label></li>
+                <li role="none"><label role="menuitem" for="open-volume"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><span>Volume Control</span></label></li>
+              </ul></li>
+          </ul></li>
+      </ul>
+      <ul class="context-menu start-menu-places" role="menu" aria-label="Places">
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-folder"/></svg><span><b>My Documents</b></span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-player"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span><b>My Music</b></span></label></li>
+        <li role="none" class="is-columns-only"><label role="menuitem" for="open-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span><b>My Computer</b></span></label></li>
+        <li role="separator" class="is-columns-only"></li>
+        <li role="none"><label role="menuitem" for="open-display"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Control Panel</span></label></li>
+        <li role="none"><a role="menuitem" href="https://github.com/DrEVILish/ftl-themes#readme"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-help-circle"/></svg><span>Help<span class="is-columns-only"> and Support</span></span></a></li>
+        <li role="none"><label role="menuitem" for="open-cmd"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-external-link"/></svg><span>Run…</span></label></li>
+      </ul>
+      <ul class="context-menu start-menu-footer" role="menu" aria-label="Session">
+        <li role="none" class="is-columns-only"><label role="menuitem" for="logged-on"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-logout"/></svg><span>Log Off</span></label></li>
+        <li role="none"><button role="menuitem" type="button" popovertarget="shutdown"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-power"/></svg><span><span class="is-classic-only">Shut Down…</span><span class="is-columns-only">Turn Off Computer</span></span></button></li>
+      </ul>
+    </div>
+    <nav class="desktop-dock" aria-label="Quick launch and open windows">
+      <ul class="desktop-launchers" aria-label="Quick launch">
+        <li><label class="dock-item" for="open-ie"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span class="visually-hidden">Internet Explorer</span></label></li>
+        <li><label class="dock-item" for="open-player"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span class="visually-hidden">Media Player</span></label></li>
+        <li><label class="dock-item" for="open-messenger"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span class="visually-hidden">Messenger</span></label></li>
+        <li><label class="dock-item" for="open-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg><span class="visually-hidden">Theme Browser</span></label></li>
+        <li class="is-trash"><label class="dock-item" for="open-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg><span class="visually-hidden">Recycle Bin</span></label></li>
+      </ul>
+      <ul class="taskbar-tasks" aria-label="Open windows"><li><label class="taskbar-task" for="app-display"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-settings"/></svg><span>Display Properties</span></label><label class="taskbar-restore" for="open-display"><span class="visually-hidden">Restore Display Properties</span></label></li><li><label class="taskbar-task" for="app-themes"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-palette"/></svg><span>Theme Browser</span></label><label class="taskbar-restore" for="open-themes"><span class="visually-hidden">Restore Theme Browser</span></label></li><li><label class="taskbar-task" for="app-player"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-music"/></svg><span>Windows Media Player</span></label><label class="taskbar-restore" for="open-player"><span class="visually-hidden">Restore Windows Media Player</span></label></li><li><label class="taskbar-task" for="app-messenger"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span>Messenger</span></label><label class="taskbar-restore" for="open-messenger"><span class="visually-hidden">Restore Messenger</span></label></li><li><label class="taskbar-task" for="app-volume"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg><span>Volume Control</span></label><label class="taskbar-restore" for="open-volume"><span class="visually-hidden">Restore Volume Control</span></label></li><li><label class="taskbar-task" for="app-ie"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-globe"/></svg><span>ftl Store — Internet Explorer</span></label><label class="taskbar-restore" for="open-ie"><span class="visually-hidden">Restore ftl Store — Internet Explorer</span></label></li><li><label class="taskbar-task" for="app-taskmgr"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-activity"/></svg><span>Task Manager</span></label><label class="taskbar-restore" for="open-taskmgr"><span class="visually-hidden">Restore Task Manager</span></label></li><li><label class="taskbar-task" for="app-computer"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-device-desktop"/></svg><span>My Computer — every example</span></label><label class="taskbar-restore" for="open-computer"><span class="visually-hidden">Restore My Computer — every example</span></label></li><li><label class="taskbar-task" for="app-cmd"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-terminal"/></svg><span>Command Prompt</span></label><label class="taskbar-restore" for="open-cmd"><span class="visually-hidden">Restore Command Prompt</span></label></li><li><label class="taskbar-task" for="app-notepad"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-file-text"/></svg><span>readme.txt - Notepad</span></label><label class="taskbar-restore" for="open-notepad"><span class="visually-hidden">Restore readme.txt - Notepad</span></label></li><li><label class="taskbar-task" for="app-welcome"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-star"/></svg><span>Welcome to ftl-themes</span></label><label class="taskbar-restore" for="open-welcome"><span class="visually-hidden">Restore Welcome to ftl-themes</span></label></li></ul>
+    </nav>
+    <div class="taskbar-tray" data-audit-edge="ignore">
+      <button class="btn btn-ghost btn-icon btn-sm" type="button" popovertarget="tray-volume" aria-label="Volume"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-volume"/></svg></button>
+      <label class="btn btn-ghost btn-icon btn-sm" for="open-messenger"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-message"/></svg><span class="visually-hidden">Messenger: online</span></label>
+      <svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-wifi"/></svg>
+      <svg class="icon is-battery" aria-hidden="true"><use href="assets/icons/icons.svg#icon-battery"/></svg>
+      <time datetime="09:41">9:41 AM</time>
+    </div>
+  </footer>
+
+  <div class="popover" popover id="tray-volume" aria-label="Volume">
+    <div class="stack stack-sm" style="align-items:center">
+      <span class="label">Volume</span>
+      <input class="slider is-vertical" type="range" min="0" max="100" value="70" aria-label="Master volume" style="--slider-length: 6rem">
+      <label class="check"><input type="checkbox"> Mute</label>
+      <label class="btn btn-sm" for="open-volume">Mixer…</label>
+    </div>
+  </div>
+
+  <div class="toast-region" popover="manual" id="balloon">
+    <div class="toast" role="status">
+      <div><strong>New in ftl-themes</strong>
+      <p>Waveform regions, audio controls, a shop and this desktop. <label class="link-label" for="open-notepad">What's new</label></p></div>
+      <button class="btn-close" type="button" popovertarget="balloon" popovertargetaction="hide" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div class="modal modal-sm" popover id="shutdown" aria-labelledby="shutdown-title">
+    <div class="modal-header"><span id="shutdown-title">Turn off computer</span><button class="btn-close" type="button" popovertarget="shutdown" popovertargetaction="hide" aria-label="Close"></button></div>
+    <div class="cluster" style="justify-content:center; padding:1rem; gap:1.5rem">
+      <label class="btn" for="logged-on"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-moon"/></svg> Stand By</label>
+      <a class="btn btn-danger" href="index.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-power"/></svg> Turn Off</a>
+      <a class="btn btn-go" href="gallery.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-refresh"/></svg> Restart</a>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary btn-sm" type="button" popovertarget="shutdown" popovertargetaction="hide">Cancel</button></div>
+  </div>
+
+<script src="assets/js/boot.js"></script>
+<script src="assets/js/controls.js"></script>
+<script src="assets/js/tint.js"></script>
+<script src="assets/js/theme-loader.js"></script>
 <script>
-(function () {
-  var EXAMPLE_PAGES = [
-    { value: "components.html", label: "Components" },
-    { value: "dashboard.html", label: "Dashboard" },
-    { value: "marketing.html", label: "Marketing" },
-    { value: "ticketsystem.html", label: "Support desk" },
-    { value: "powerstation.html", label: "Power station" },
-    { value: "soundmixer.html", label: "Sound mixer" },
-    { value: "media-decks.html", label: "Media decks" },
-    { value: "audio-components.html", label: "Audio components" },
-    { value: "livechat.html", label: "Live chat" }
-  ];
-
-  var grid = document.getElementById("grid");
-  var search = document.getElementById("search");
-  var countEl = document.getElementById("count");
-  var emptyState = document.getElementById("empty-state");
-  var emptyQuery = document.getElementById("empty-query");
-  var schemeFilterEl = document.getElementById("scheme-filter");
-  var globalPageSelect = document.getElementById("global-page-select");
-  var categoryFilterEl = document.getElementById("category-filter");
-
-  // Human-readable labels for the fixed category taxonomy stamped into
-  // themes/categories.json (see CONTRACT.md's Theme index section). A
-  // category value with no entry here just gets shown as-is.
-  var CATEGORY_LABELS = {
-    "os-shell": "OS shell",
-    "media-player": "Media player",
-    "handheld-device": "Handheld device",
-    "broadcast": "Broadcast",
-    "sci-fi": "Sci-fi",
-    "toy-brand": "Toy brand",
-    "finance-terminal": "Finance terminal",
-    "game-ui": "Game UI",
-    "design-system": "Design system",
-    "app-shell": "App shell"
-  };
-
-  var schemeFilter = "all";
-  var categoryFilter = "all";
-  var cards = []; // { el, slug, label, scheme, category, pageSelect }
-
-  function buildCard(theme) {
-    var card = document.createElement("div");
-    card.className = "card";
-    card.dataset.slug = theme.slug.toLowerCase();
-    card.dataset.label = theme.label.toLowerCase();
-    card.dataset.scheme = theme.scheme || "";
-    card.dataset.category = theme.category || "";
-
-    var preview = document.createElement("div");
-    preview.className = "preview";
-
-    var body = document.createElement("div");
-    body.className = "card-body";
-
-    var titleRow = document.createElement("div");
-    titleRow.className = "card-title";
-    var h2 = document.createElement("h2");
-    h2.textContent = theme.label;
-    var slugEl = document.createElement("span");
-    slugEl.className = "card-slug";
-    slugEl.textContent = theme.slug;
-    titleRow.appendChild(h2);
-    titleRow.appendChild(slugEl);
-
-    var desc = document.createElement("p");
-    desc.className = "card-desc";
-    desc.textContent = theme.description || "";
-
-    var chips = document.createElement("div");
-    chips.className = "card-chips";
-    if (theme.scheme) {
-      var schemeChip = document.createElement("span");
-      schemeChip.className = "chip";
-      schemeChip.textContent = theme.scheme;
-      chips.appendChild(schemeChip);
-    }
-    if (theme.hasChrome) {
-      var chromeChip = document.createElement("span");
-      chromeChip.className = "chip";
-      chromeChip.textContent = "chrome";
-      chips.appendChild(chromeChip);
-    }
-    if (theme.category) {
-      var categoryChip = document.createElement("span");
-      categoryChip.className = "chip";
-      categoryChip.textContent = CATEGORY_LABELS[theme.category] || theme.category;
-      chips.appendChild(categoryChip);
-    }
-    if (theme.era) {
-      var eraChip = document.createElement("span");
-      eraChip.className = "chip";
-      eraChip.textContent = theme.era;
-      chips.appendChild(eraChip);
-    }
-    if (theme.extends) {
-      var familyChip = document.createElement("span");
-      familyChip.className = "chip";
-      familyChip.textContent = "family: " + theme.family;
-      chips.appendChild(familyChip);
-    }
-
-    var actions = document.createElement("div");
-    actions.className = "card-actions";
-    var pageSelect = document.createElement("select");
-    pageSelect.setAttribute("aria-label", "Preview page for " + theme.label);
-    EXAMPLE_PAGES.forEach(function (p) {
-      var o = document.createElement("option");
-      o.value = p.value;
-      o.textContent = p.label;
-      pageSelect.appendChild(o);
+// The Theme Browser: one card per theme from dist/themes.json, then the
+// desktop is ready. Apply switches the whole page through the picker.
+fetch("dist/themes.json").then(function (r) { return r.json(); }).then(function (themes) {
+  var grid = document.getElementById("theme-grid");
+  grid.textContent = "";
+  themes.forEach(function (t) {
+    var card = document.createElement("article");
+    card.className = "theme-card";
+    card.dataset.category = t.category || "";
+    card.innerHTML = '<img loading="lazy" width="320" height="200" alt=""><h3></h3><p></p><div class="cluster"><button class="btn btn-sm btn-primary" type="button">Apply</button><a class="btn btn-sm" data-demo-link>Dashboard</a></div>';
+    card.querySelector("img").src = "test/visual-baseline/" + t.slug + "/dashboard.png";
+    card.querySelector("img").alt = t.label + " dashboard";
+    card.querySelector("img").addEventListener("error", function () {
+      var none = document.createElement("div");
+      none.className = "theme-thumb-missing";
+      none.textContent = "No screenshot yet. Apply it to see it.";
+      this.replaceWith(none);
     });
-    var link = document.createElement("a");
-    link.className = "view-link";
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = "View full page →";
-
-    function currentPage() {
-      return globalPageSelect.value || pageSelect.value;
-    }
-    function targetUrl() {
-      return currentPage() + "?theme=" + encodeURIComponent(theme.slug);
-    }
-    function updateLink() { link.href = targetUrl(); }
-    pageSelect.addEventListener("change", function () {
-      updateLink();
-      loadShot(preview, targetUrl());
+    card.querySelector("h3").textContent = t.label + (t.variants && t.variants.length ? " (+" + t.variants.length + ")" : "");
+    card.querySelector("p").textContent = t.description || "";
+    card.querySelector("a").href = "dashboard.html?theme=" + t.slug;
+    card.querySelector("button").addEventListener("click", function () {
+      var picker = document.getElementById("theme-picker");
+      picker.value = t.slug;
+      picker.dispatchEvent(new Event("change"));
     });
-    updateLink();
-
-    actions.appendChild(pageSelect);
-    actions.appendChild(link);
-
-    body.appendChild(titleRow);
-    body.appendChild(desc);
-    if (chips.children.length) body.appendChild(chips);
-    body.appendChild(actions);
-
-    card.appendChild(preview);
-    card.appendChild(body);
-
-    return {
-      el: card,
-      slug: theme.slug,
-      label: theme.label,
-      scheme: theme.scheme || "",
-      category: theme.category || "",
-      preview: preview,
-      targetUrl: targetUrl,
-      loaded: false
-    };
-  }
-
-  // Swaps in the page's baseline screenshot: test/visual-baseline/<slug>/<page>.png
-  function loadShot(preview, url) {
-    var m = url.match(/^([^?]+)\.html\?theme=(.+)$/);
-    preview.innerHTML = "";
-    var img = document.createElement("img");
-    img.loading = "lazy";
-    img.alt = url;
-    img.src = "test/visual-baseline/" + m[2] + "/" + m[1] + ".png";
-    img.addEventListener("error", function () { showFallback(preview, url); });
-    preview.appendChild(img);
-  }
-
-  function showFallback(preview, url) {
-    preview.innerHTML = "";
-    var fallback = document.createElement("div");
-    fallback.className = "preview-fallback";
-    fallback.textContent = "Preview unavailable — open " + url + " directly.";
-    preview.appendChild(fallback);
-  }
-
-  // Only load the image once a card is actually visible.
-  var io = ("IntersectionObserver" in window)
-    ? new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var c = entry.target.__card;
-          if (c && !c.loaded) {
-            c.loaded = true;
-            loadShot(c.preview, c.targetUrl());
-          }
-          io.unobserve(entry.target);
-        });
-      }, { rootMargin: "200px 0px" })
-    : null;
-
-  function applyFilter() {
-    var q = search.value.trim().toLowerCase();
-    var visibleCount = 0;
-    cards.forEach(function (c) {
-      var matchesText = !q || c.slug.toLowerCase().indexOf(q) !== -1 || c.label.toLowerCase().indexOf(q) !== -1;
-      var matchesScheme = schemeFilter === "all" || c.scheme === schemeFilter;
-      var matchesCategory = categoryFilter === "all" || c.category === categoryFilter;
-      var visible = matchesText && matchesScheme && matchesCategory;
-      c.el.classList.toggle("is-hidden", !visible);
-      if (visible) visibleCount++;
-    });
-    countEl.textContent = visibleCount + " / " + cards.length + " themes";
-    emptyState.classList.toggle("is-visible", visibleCount === 0);
-    emptyQuery.textContent = q;
-  }
-
-  search.addEventListener("input", applyFilter);
-
-  schemeFilterEl.addEventListener("click", function (e) {
-    var btn = e.target.closest("button[data-scheme]");
-    if (!btn) return;
-    schemeFilter = btn.dataset.scheme;
-    schemeFilterEl.querySelectorAll("button").forEach(function (b) {
-      b.classList.toggle("is-active", b === btn);
-    });
-    applyFilter();
+    card.querySelector("button").setAttribute("aria-label", "Apply " + t.label);
+    grid.appendChild(card);
   });
-
-  categoryFilterEl.addEventListener("change", function () {
-    categoryFilter = categoryFilterEl.value;
-    applyFilter();
-  });
-
-  globalPageSelect.addEventListener("change", function () {
-    cards.forEach(function (c) {
-      if (c.loaded) loadShot(c.preview, c.targetUrl());
-    });
-  });
-
-  fetch("dist/themes.json")
-    .then(function (r) { return r.json(); })
-    .then(function (list) {
-      list.sort(function (a, b) {
-        return (a.family || a.slug).localeCompare(b.family || b.slug) || a.label.localeCompare(b.label);
-      });
-      var seenCategories = [];
-      list.forEach(function (theme) {
-        var c = buildCard(theme);
-        c.el.__card = c;
-        grid.appendChild(c.el);
-        cards.push(c);
-        if (io) io.observe(c.el);
-        else loadShot(c.preview, c.targetUrl());
-        if (theme.category && seenCategories.indexOf(theme.category) === -1) {
-          seenCategories.push(theme.category);
-        }
-      });
-      seenCategories.sort(function (a, b) {
-        return (CATEGORY_LABELS[a] || a).localeCompare(CATEGORY_LABELS[b] || b);
-      });
-      seenCategories.forEach(function (cat) {
-        var o = document.createElement("option");
-        o.value = cat;
-        o.textContent = CATEGORY_LABELS[cat] || cat;
-        categoryFilterEl.appendChild(o);
-      });
-      applyFilter();
-    })
-    .catch(function () {
-      grid.innerHTML = '<p style="color:var(--text-muted);">Could not load dist/themes.json &mdash; serve this folder over HTTP (e.g. <code>python3 -m http.server</code>), not file://.</p>';
-    });
-})();
+  document.getElementById("theme-count").textContent = themes.length;
+}).catch(function () {
+  document.getElementById("theme-grid").innerHTML = '<p class="field-hint">Could not load dist/themes.json.</p>';
+}).finally(function () {
+  window.ftlAppReady();
+  var balloon = document.getElementById("balloon");
+  if (balloon.showPopover) setTimeout(function () { balloon.showPopover(); }, 1200);
+});
 </script>
 </body>
 </html>

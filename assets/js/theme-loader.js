@@ -118,8 +118,10 @@
   }).then(function (list) {
     if (!list.length) throw new Error("themes.json is empty");
     known = list.map(function (t) { entries[t.slug] = t; return t.slug; });
+    // <html data-theme-default>: start in the page's own theme (the gallery
+    // desktop boots as XP), not the visitor's last pick; ?theme= still wins.
     var stored;
-    try { stored = localStorage.getItem("example-theme"); } catch (e) {}
+    try { if (!document.documentElement.hasAttribute("data-theme-default")) stored = localStorage.getItem("example-theme"); } catch (e) {}
     var wanted = params.get("theme") && params.get("variant") ? params.get("theme") + ":" + params.get("variant") : params.get("theme");
     // Page default (its own data-theme) before the first theme alphabetically.
     var initial = [wanted, stored, document.documentElement.dataset.theme, known[0]].filter(function (v) { return v && valid(String(v).split(":")[0]); })[0];

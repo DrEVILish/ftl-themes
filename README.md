@@ -251,8 +251,14 @@ theme.
   - [`onboarding.html`](onboarding.html)
   - [`pricing.html`](pricing.html)
   - [`404.html`](404.html)
-- **[`gallery.html`](gallery.html)**: every theme at once, filterable,
-  from the screenshots in `test/visual-baseline/`.
+- **[`gallery.html`](gallery.html)**: start here. A whole desktop in
+  Windows XP Luna (or any theme via `?theme=`), built only from ftl-themes
+  markup: an XP boot screen and logon screen, desktop icons, a Start menu,
+  and eleven windows (a Theme Browser that applies any of the 45 themes to
+  the whole desktop, a media player with waveform regions, Messenger, a
+  volume mixer, an online shop, Task Manager, every example page, and a
+  readme of what's new and what's missing). Aqua turns it into a Dock, iOS
+  into a home screen.
 - **[`share-card.html`](share-card.html)**: the Open Graph card template.
 
 ## Component list

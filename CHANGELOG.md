@@ -6,6 +6,15 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- `gallery.html` is now a desktop: Windows XP Luna by default, built only from ftl-themes markup,
+  with a boot screen, a logon screen, desktop icons, a Start menu and eleven windows (Theme
+  Browser, Media Player, Messenger, Volume Control, an online shop, Task Manager, every example,
+  Display Properties with wallpapers, loading screens and display settings, Command Prompt and a
+  readme of gaps). The Theme Browser applies any theme to the whole desktop.
+- `winxp-luna` boot screen: black, the four-pane flag and the marching blue blocks.
+- The desktop shell pairs up to 12 windows with task buttons (was 6).
+- `theme-loader.js`: `<html data-theme-default>` starts a page in its own theme instead of the
+  visitor's last pick.
 - `alienware` palette variants from Alienware's Windows XP factory themes (AlienGUIse):
   `darkstar` (black and red), `invader` (navy, silver frames, blue LEDs) and `alx` (light grey
   brushed metal). The theme's glows now mix from `--accent`, so variants only set a palette.
@@ -53,6 +62,7 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `ios-flat` toasts: white, shadowed text inherited from `ios-skeuomorphic` on the light banner.
 - `test/feature_extensions_browser.mjs` passes again: scoped splash locators, cleared the
   corrupt-storage fixture, and reset scroll before each drag on the feedback stage.
 

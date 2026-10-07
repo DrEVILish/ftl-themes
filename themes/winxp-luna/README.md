@@ -54,6 +54,9 @@ someone says "Windows XP."
   `#1c5180` frame, green tick / green dot, orange glow on hover.
 - Progress is XP's segmented green block bar; the status strip is the
   taskbar's own gradient.
+- **Boot screen** (`.splash`): black, the four-pane flag, and three blue
+  blocks marching through a rounded grey track (core's indeterminate
+  sweep). `gallery.html` shows it while the themes load.
 
 ## Icons
 
