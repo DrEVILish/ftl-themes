@@ -310,7 +310,7 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
 
 - **Region** `.waveform-region`: a tinted span from `--start` to `--end`
   (0–1) with an optional label. Its two range inputs are the edges: drag a
-  handle or focus it and use the arrow keys. Both inputs span the **whole
+  handle or focus it and use the arrow keys (one `step`), Page Up / Page Down (a tenth of the clip) or Home / End. Both inputs span the **whole
   clip** (the seek input's `min`/`max`), which is what keeps each handle
   over the right moment: don't narrow one edge's `min`/`max` to the other
   edge's value, clamp instead.
