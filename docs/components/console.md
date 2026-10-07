@@ -30,6 +30,14 @@ reference script (not part of the contract) does the maths:
 - **`data-link="name"`** keeps inputs with the same name in step (a
   faceplate knob and its twin on the assignable controls).
 
+- **`[data-tap-tempo]`** buttons set a tempo from taps; `[data-tempo-out="ms"|"s"]`
+  shows it and `<html>` gets `--tempo`.
+- **`[data-scene-step="1"|"-1"]`** moves to the next or previous radio in the group
+  named by `data-scene-group` (default `ps-scene`).
+- **`[data-history]`** on a container makes its checkboxes undoable; buttons with
+  `data-for="<id>"` and one of `data-undo`, `data-redo`, `data-checkpoint`,
+  `data-restore`, `data-clear` act on it.
+
 `assets/js/controls.js` turns knobs by dragging and keeps `--value`.
 Pages, units and tabs in the example switch with radios and `:has()`.
 
@@ -123,3 +131,18 @@ A checked point is patched (green, or data-kind="aes" yellow); grey is free. .pa
   checkboxes, so a screen reader hears which points are patched.
 - Forced colours: patched points, lit soft keys and the selected unit use
   the system highlight.
+
+## Also in console.css
+
+- **`.led-list`** — radios shown as a list with a small LED that lights when
+  chosen (`.is-green` for green LEDs): program lists, detector and display modes.
+- **`.scribble[data-tag]`** — the sixteen channel tag colours: `black`, `dblue`,
+  `dgreen`, `flesh`, `lblue`, `lgreen`, `lpurple`, `lyellow`, `mint`, `orange`,
+  `pink`, `purple`, `red`, `teal`, `white`, `yellow` (tokens `--tag-<name>`).
+- **`.key[data-tone]`** — extra lit colours `cyan`, `blue`, `orange`, `brown`,
+  `mauve`, `grey`, `white`.
+- **`.knob.is-led`** — a gain pot in a ring of LED segments (red and yellow for too
+  little gain, then green) lit to `--value`.
+- **`.dyn-graph-fill`** — the shaded area under a dynamics curve.
+- **`.assignable-page`**, **`.assignable-col.is-off`**, **`.assignable-nav`** — the
+  panel's page counter, unassigned columns and its six navigation keys.

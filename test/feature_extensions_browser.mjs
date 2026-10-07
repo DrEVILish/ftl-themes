@@ -45,11 +45,26 @@ try {
   const before = await peq.getAttribute('d');
   await page.locator('.ps-peq [data-band="3"][data-param="g"]').evaluate(el => { el.value = -12; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.notEqual(await peq.getAttribute('d'), before);
-  assert.equal(await page.locator('.eq-node[data-band="3"]').evaluate(el => el.style.getPropertyValue('--g')), '-0.8000');
+  assert.equal(await page.locator('.ps-peq .eq-node[data-band="3"]').evaluate(el => el.style.getPropertyValue('--g')), '-0.8000');
   await page.evaluate(() => { document.getElementById('pg-effects').checked = true; document.querySelector('[name=fx-unit][value=chamber]').checked = true; });
   const twins = page.locator('[data-link="chamber-decay"]');
   await twins.first().evaluate(el => { el.value = 90; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.equal(await twins.nth(1).inputValue(), '90');
+  // Bank keys swap channel names; scene next/previous move the scene shown
+  // in the home bar; patch points undo.
+  await page.evaluate(() => { document.getElementById('pg-inputs').checked = true; });
+  await page.click('.ps-bank >> nth=1');
+  assert.equal(await page.locator('.ps-strip .ps-tag').first().innerText(), 'Kick');
+  await page.click('.ps-bank >> nth=0');
+  await page.evaluate(() => { document.getElementById('pg-scenes').checked = true; });
+  await page.click('[data-scene-step="1"]');
+  assert.equal(await page.locator('.ps-scene').innerText(), 'Walk-in');
+  await page.evaluate(() => { document.getElementById('pg-patching').checked = true; });
+  const point = page.locator('#patch-from .patch-point').first();
+  const wasPatched = await point.locator('input').isChecked();
+  await point.click();
+  await page.click('[data-undo]');
+  assert.equal(await point.locator('input').isChecked(), wasPatched);
   // Gallery desktop: boots as XP, clears its boot screen once themes load,
   // lists every theme, and Apply restyles the whole desktop.
   await page.goto(`${server.base}/gallery.html`, { waitUntil: 'networkidle' });

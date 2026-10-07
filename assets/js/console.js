@@ -21,6 +21,14 @@
  * - [data-link="name"]: every input sharing a link name follows the others
  *   (a faceplate knob and its twin on the assignable controls).
  *
+ * - [data-tap-tempo] buttons: tap a tempo; every [data-tempo-out] shows the
+ *   average interval ("ms": "500 mS", "s": "0.50") and <html> gets --tempo.
+ * - [data-scene-step="1"|"-1"]: moves the checked [name=ps-scene] radio
+ *   (any radio group named in data-scene-group) to the next or previous one.
+ * - [data-history="id"]: the checkboxes inside are an undoable patch.
+ *   Buttons with data-undo, data-redo, data-checkpoint, data-restore or
+ *   data-clear and data-for="id" act on it.
+ *
  * Listens for "input" on the document, so controls.js's knob drags update
  * the curves too. Each group is drawn once on load. */
 (function () {
@@ -125,6 +133,57 @@
     var pop = item && item.closest("[popover]");
     if (pop && pop.hidePopover) pop.hidePopover();
   });
+  // Tap tempo: the average of the last four intervals, reset after 2 s.
+  var taps = [];
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-tap-tempo]");
+    if (!b) return;
+    var now = performance.now();
+    if (taps.length && now - taps[taps.length - 1] > 2000) taps = [];
+    taps.push(now);
+    taps = taps.slice(-5);
+    if (taps.length < 2) return;
+    var ms = (taps[taps.length - 1] - taps[0]) / (taps.length - 1);
+    document.documentElement.style.setProperty("--tempo", Math.round(ms) + "ms");
+    document.querySelectorAll("[data-tempo-out]").forEach(function (o) {
+      o.textContent = o.dataset.tempoOut === "s" ? (ms / 1000).toFixed(2) : Math.round(ms) + " mS";
+    });
+  });
+
+  // Next / previous in a radio list.
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-scene-step]");
+    if (!b) return;
+    var radios = [].slice.call(document.querySelectorAll('[name="' + (b.dataset.sceneGroup || "ps-scene") + '"]'));
+    var i = radios.findIndex(function (r) { return r.checked; }) + (+b.dataset.sceneStep);
+    if (radios[i]) { radios[i].checked = true; radios[i].dispatchEvent(new Event("change", { bubbles: true })); }
+  });
+
+  // Patch history: undo, redo, checkpoint, restore and clear.
+  var hist = {};
+  function scope(id) { return hist[id] || (hist[id] = { done: [], undone: [], mark: null }); }
+  function boxes(id) { var r = document.getElementById(id); return r ? [].slice.call(r.querySelectorAll("input[type=checkbox]")) : []; }
+  function snap(id) { return boxes(id).map(function (b) { return b.checked; }); }
+  function apply(id, state) { boxes(id).forEach(function (b, i) { b.checked = state[i]; }); }
+  document.addEventListener("change", function (e) {
+    var r = e.target.closest && e.target.closest("[data-history]");
+    if (!r || e.target.type !== "checkbox" || e.isTrusted === false) return;
+    var h = scope(r.id), before = snap(r.id);
+    before[boxes(r.id).indexOf(e.target)] = !e.target.checked;
+    h.done.push(before);
+    h.undone = [];
+  });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-for]:is([data-undo], [data-redo], [data-checkpoint], [data-restore], [data-clear])");
+    if (!b) return;
+    var id = b.dataset.for, h = scope(id), now = snap(id);
+    if (b.hasAttribute("data-undo") && h.done.length) { h.undone.push(now); apply(id, h.done.pop()); }
+    else if (b.hasAttribute("data-redo") && h.undone.length) { h.done.push(now); apply(id, h.undone.pop()); }
+    else if (b.hasAttribute("data-checkpoint")) h.mark = now;
+    else if (b.hasAttribute("data-restore") && h.mark) { h.done.push(now); apply(id, h.mark); }
+    else if (b.hasAttribute("data-clear")) { h.done.push(now); apply(id, now.map(function () { return false; })); }
+  });
+
   document.addEventListener("input", function (e) { update(e.target); });
   document.addEventListener("change", function (e) { if (e.target.type === "checkbox") update(e.target); });
   document.querySelectorAll("[data-peq]").forEach(drawPeq);

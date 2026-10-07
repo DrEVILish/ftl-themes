@@ -8,17 +8,25 @@ changes are called out explicitly here.
 ### Added
 - `proseries` theme: a Pro Series live-console touch screen (navy desk, blue strips, bevelled keys,
   tick-ring knobs, ribbed fader caps). References in `references/proseries/`.
+- Console: `.led-list` (options chosen by a lit LED), sixteen channel tag colours (`.scribble[data-tag]`
+  with `--tag-*` tokens), an assignable panel page counter, unassigned columns and navigation keys.
+  `console.js` adds tap tempo, radio-list next/previous, and undo/redo/checkpoint/restore/clear for
+  a patch of checkboxes.
 - Console keys can take `data-tone="cyan|blue|orange|brown|mauve|grey|white"`; `.knob.is-led` is a
   gain pot in a ring of LED segments; `.dyn-graph-fill` shades the area under a dynamics curve.
 - Console group (`core/components/console.css`): channel name tags, aux `.sends`, `.dyn-graph`
   transfer curves, `.rack` of `.rack-unit` faceplates, `.faceplate`, the `.assignable` soft-key
   panel, a `.geq` graphic EQ and a `.patchbay`. `assets/js/console.js` draws parametric EQ responses
   and gate/compressor curves, shows values and links twin controls.
-- `proseries.html`: a working console with input channels, channel detail (4-band PEQ, gate,
-  compressor, filters, direct out, safes, delay, processing order), an effects rack and a device
-  library of 14 faceplates (chamber, hall, plate, ambience and vintage-room reverbs, flanger,
-  phaser, pitch shifter, matrix mixer, stereo chorus, 3-band compressor, dual stereo delay, 8-channel
-  dynamics, stereo GEQ) each over its assignable controls, a stereo 31-band GEQ, patching and meters.
+- `proseries.html`: a working console with input channels (8 banks of names, 16 tag colours with a
+  picker), channel detail (4-band PEQ, gate, compressor, filters, direct out, safes, delay, processing
+  order), an effects rack and device library of 20 units each drawn after its original faceplate over
+  its assignable controls (chamber, hall, plate, ambience and vintage-room reverbs, DN780 reverb
+  processor, dynamic EQ, mono and stereo GEQ, flanger, phaser, pitch shifter, dual stereo chorus,
+  dual stereo delay, 3-band compressor, SQ1 dynamics, 16 output comp./limiters, matrix mixer, and
+  rear-panel views for third-party units), patching with mode, checkpoint, restore, undo, redo,
+  clear and a patch list, a Scenes page with next/previous/GO, Load Preset, Save File and Edit Scene
+  dialogs, tap tempo, meters and home.
 - `gallery.html` is now a desktop: Windows XP Luna by default, built only from ftl-themes markup,
   with a boot screen, a logon screen, desktop icons, a Start menu and eleven windows (Theme
   Browser, Media Player, Messenger, Volume Control, an online shop, Task Manager, every example,

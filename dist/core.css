@@ -4755,6 +4755,83 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 /* The area under a dynamics curve, filled (console.js closes the path). */
 .dyn-graph-fill { fill: var(--dyn-graph-fill, rgba(140, 190, 255, 0.45)); stroke: none; }
 [data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-fill { fill: var(--dyn-graph-fill-off, rgba(140, 190, 255, 0.18)); }
+
+/* --- .led-list — options chosen by a lit LED -------------------------------
+ *   <ul class="led-list" role="radiogroup" aria-label="Program">
+ *     <li><label><input type="radio" name="prog" checked>Hall</label></li>…
+ *   </ul>
+ * Each option has a small round LED that lights (red, or green with
+ * .is-green) when its radio is checked: program lists, detector modes,
+ * display modes. */
+.led-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; font-size: 0.62rem; font-weight: 700; }
+.led-list label { position: relative; display: flex; align-items: center; gap: 0.35rem; min-block-size: 0.95rem; white-space: nowrap; }
+.led-list input { position: absolute; inset: 0; margin: 0; opacity: 0; }
+.led-list label::before {
+  content: "";
+  flex: none;
+  inline-size: 0.55rem;
+  block-size: 0.55rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, var(--led-off-hi, #9a9a9a), var(--led-off, #333333) 70%);
+  box-shadow: 0 0 0 1px #000000;
+}
+.led-list label:has(input:checked)::before {
+  background: radial-gradient(circle at 40% 35%, #ffffff 0 15%, var(--led-on, #ff3b2f) 50%, color-mix(in srgb, var(--led-on, #ff3b2f) 50%, #000));
+  box-shadow: 0 0 0 1px #000000, 0 0 5px var(--led-on, #ff3b2f);
+}
+.led-list label:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 1px; }
+.led-list.is-green { --led-on: #3df05a; }
+@media (forced-colors: active) { .led-list label:has(input:checked)::before { background: Highlight; } }
+
+/* --- Channel tag colours: data-tag on a .scribble ---------------------------
+ * The sixteen name-tag colours a large console offers. Each reads a
+ * --tag-<name> token, so a theme can retune them. */
+.scribble[data-tag] { background: var(--_tag); color: var(--_tag-fg, #111111); border-top-color: transparent; text-align: center; }
+.scribble[data-tag="black"] { --_tag: var(--tag-black, #111111); --_tag-fg: #ffffff; }
+.scribble[data-tag="dblue"] { --_tag: var(--tag-dblue, #1f3fd0); --_tag-fg: #ffffff; }
+.scribble[data-tag="dgreen"] { --_tag: var(--tag-dgreen, #1e7a2a); --_tag-fg: #ffffff; }
+.scribble[data-tag="flesh"] { --_tag: var(--tag-flesh, #e8b48a); }
+.scribble[data-tag="lblue"] { --_tag: var(--tag-lblue, #4ab4ff); }
+.scribble[data-tag="lgreen"] { --_tag: var(--tag-lgreen, #6be06b); }
+.scribble[data-tag="lpurple"] { --_tag: var(--tag-lpurple, #a99cf0); }
+.scribble[data-tag="lyellow"] { --_tag: var(--tag-lyellow, #f4f0a0); }
+.scribble[data-tag="mint"] { --_tag: var(--tag-mint, #5ad6b8); }
+.scribble[data-tag="orange"] { --_tag: var(--tag-orange, #ff9a2a); }
+.scribble[data-tag="pink"] { --_tag: var(--tag-pink, #ff6ad6); }
+.scribble[data-tag="purple"] { --_tag: var(--tag-purple, #8a2ab8); --_tag-fg: #ffffff; }
+.scribble[data-tag="red"] { --_tag: var(--tag-red, #e0201a); --_tag-fg: #ffffff; }
+.scribble[data-tag="teal"] { --_tag: var(--tag-teal, #108a8a); --_tag-fg: #ffffff; }
+.scribble[data-tag="white"] { --_tag: var(--tag-white, #f2f2f2); }
+.scribble[data-tag="yellow"] { --_tag: var(--tag-yellow, #f2d22e); }
+
+/* --- Assignable panel: page counter, unassigned columns, navigation -------- */
+.assignable-page { position: absolute; inset-block-start: 0.3rem; inset-inline-start: 0.5rem; font-weight: 800; }
+.assignable { position: relative; }
+.assignable:has(> .assignable-page) { padding-inline-start: 2.2rem; }
+.assignable-col.is-off { opacity: 0.35; }
+.assignable-col.is-off :is(input, label) { pointer-events: none; }
+.assignable-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1.6rem);
+  grid-template-rows: repeat(4, 0.9rem);
+  gap: 0.3rem 0.2rem;
+  align-self: center;
+  justify-self: center;
+}
+.assignable-nav > button {
+  min-inline-size: 0;
+  padding: 0;
+  background: var(--assignable-key-bg, linear-gradient(180deg, #4a54a0, #3a438b));
+  border: 1px solid var(--assignable-key-border, #6a74c0);
+  border-radius: 2px;
+}
+.assignable-nav > button:active { background: var(--assignable-key-on, #b5bce8); }
+.assignable-nav > :nth-child(1) { grid-area: 1 / 1 / 2 / 3; inline-size: 1.6rem; }
+.assignable-nav > :nth-child(2) { grid-area: 1 / 2 / 2 / 4; inline-size: 1.6rem; justify-self: end; }
+.assignable-nav > :nth-child(3) { grid-area: 2 / 2; }
+.assignable-nav > :nth-child(4) { grid-area: 3 / 1; }
+.assignable-nav > :nth-child(5) { grid-area: 3 / 3; }
+.assignable-nav > :nth-child(6) { grid-area: 4 / 2; }
 /* ==========================================================================
  * Desktop shell (v5, PLAN.md §23 "Signature navigation per theme")
  *
