@@ -8,6 +8,8 @@ changes are called out explicitly here.
 ### Added
 - `proseries` theme: a Pro Series live-console touch screen (navy desk, blue strips, bevelled keys,
   tick-ring knobs, ribbed fader caps). References in `references/proseries/`.
+- Console keys can take `data-tone="cyan|blue|orange|brown|mauve|grey|white"`; `.knob.is-led` is a
+  gain pot in a ring of LED segments; `.dyn-graph-fill` shades the area under a dynamics curve.
 - Console group (`core/components/console.css`): channel name tags, aux `.sends`, `.dyn-graph`
   transfer curves, `.rack` of `.rack-unit` faceplates, `.faceplate`, the `.assignable` soft-key
   panel, a `.geq` graphic EQ and a `.patchbay`. `assets/js/console.js` draws parametric EQ responses

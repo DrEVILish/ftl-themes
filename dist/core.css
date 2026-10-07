@@ -4718,6 +4718,43 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 }
 /* Light faceplates take dark knob captions. */
 .rack-unit[data-finish="silver"] { --knob-label-fg: #111111; --scale-fg: #111111; }
+
+/* --- Key tones beyond core's four -------------------------------------------
+ *   <label class="key" data-tone="cyan"><input type="checkbox">ø</label>
+ * data-tone="cyan|blue|orange|brown|mauve|grey|white" picks a key's lit
+ * colour, for consoles that code more functions than on/mute/solo/select. */
+.key[data-tone="cyan"] { --key-lit: var(--key-cyan, #19c6ff); --key-lit-fg: var(--key-cyan-fg, #000000); }
+.key[data-tone="blue"] { --key-lit: var(--key-blue, #2f7dff); --key-lit-fg: var(--key-blue-fg, #ffffff); }
+.key[data-tone="orange"] { --key-lit: var(--key-orange, #ff8a1a); --key-lit-fg: var(--key-orange-fg, #000000); }
+.key[data-tone="brown"] { --key-lit: var(--key-brown, #b8862a); --key-lit-fg: var(--key-brown-fg, #000000); }
+.key[data-tone="mauve"] { --key-lit: var(--key-mauve, #c27ad6); --key-lit-fg: var(--key-mauve-fg, #000000); }
+.key[data-tone="grey"] { --key-lit: var(--key-grey, #a0a0a8); --key-lit-fg: var(--key-grey-fg, #000000); }
+.key[data-tone="white"] { --key-lit: var(--key-white, #f4f4f4); --key-lit-fg: var(--key-white-fg, #000000); }
+
+/* --- .knob.is-led — a gain pot inside a ring of LED segments ----------------
+ *   <label class="knob is-led" style="--value:.6"><input type="range" …><span class="knob-dial"></span></label>
+ * The segments light up to --value: the first two warn in yellow and red
+ * (too little gain), the rest green; unlit segments stay dim. */
+.knob.is-led .knob-dial { --knob-arc-width: var(--knob-led-width, 0.32rem); }
+.knob.is-led .knob-dial::before {
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width)), #000 calc(100% - var(--knob-arc-width) + 0.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--knob-arc-width)), #000 calc(100% - var(--knob-arc-width) + 0.5px));
+  background:
+    repeating-conic-gradient(from 225deg, transparent 0 11deg, #000 11deg 13.5deg),
+    conic-gradient(from 225deg,
+      var(--knob-led-low, #ff2a1a) 0 calc(min(var(--value, 0.5), 0.06) * 270deg),
+      var(--knob-led-warn, #ffe01a) 0 calc(min(var(--value, 0.5), 0.12) * 270deg),
+      var(--knob-led-on, #2cff3a) 0 calc(var(--value, 0.5) * 270deg),
+      var(--knob-led-off, #0c3a2a) 0 270deg,
+      transparent 0);
+  box-shadow: 0 0 0 1px #000;
+  clip-path: none;
+}
+.knob.is-led .knob-dial::after { inset: calc(var(--knob-arc-width) + 3px); }
+
+/* The area under a dynamics curve, filled (console.js closes the path). */
+.dyn-graph-fill { fill: var(--dyn-graph-fill, rgba(140, 190, 255, 0.45)); stroke: none; }
+[data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-fill { fill: var(--dyn-graph-fill-off, rgba(140, 190, 255, 0.18)); }
 /* ==========================================================================
  * Desktop shell (v5, PLAN.md §23 "Signature navigation per theme")
  *

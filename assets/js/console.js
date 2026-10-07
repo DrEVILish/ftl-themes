@@ -11,7 +11,8 @@
  * - [data-dyn="comp"|"gate"]: a compressor or gate. Inputs with
  *   data-param="threshold" (dB), "ratio" (n:1), "range" (dB, gate), or the
  *   same as data-* attributes on the group. Redraws every .dyn-graph-line
- *   (and a .dyn-graph-threshold line) inside it, over -60…0 dB.
+ *   and .dyn-graph-fill (the area under it) and a .dyn-graph-threshold
+ *   line inside it, over -60…0 dB.
  * - <output for="id" data-unit="dB" data-format="hz">: shows that input's
  *   value as you move it ("hz" turns a 0–1 log position into Hz).
  *
@@ -85,6 +86,7 @@
       d += (d ? " L" : "M") + px(i) + " " + (100 - px(out(i))).toFixed(2);
     }
     group.querySelectorAll(".dyn-graph-line").forEach(function (p) { p.setAttribute("d", d); });
+    group.querySelectorAll(".dyn-graph-fill").forEach(function (p) { p.setAttribute("d", d + " L100.00 100.00 L0.00 100.00 Z"); });
     group.querySelectorAll(".dyn-graph-threshold").forEach(function (l) {
       l.setAttribute("x1", px(thr)); l.setAttribute("x2", px(thr));
       l.setAttribute("y1", "0"); l.setAttribute("y2", "100");
