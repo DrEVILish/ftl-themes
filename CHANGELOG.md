@@ -6,6 +6,14 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Waveform fades (#69): `--gain` per bar (visible height `--level × --gain`), `.waveform.has-ghost`
+  (the full level as a faint ghost), `.waveform-region.is-fade-in/-out` with
+  `data-curve="linear|smooth|log|exp"` drawn as the fade's shape, one-input fade regions whose free
+  edge drags, and `data-row="2|3"` marker rows.
+- Waveform zoom (#70): `--zoom-from/--zoom-to` show part of the clip without changing any input's
+  min, max or value; `.waveform-zoom` buttons (in, out, fit, box zoom, reset), wheel pan, a
+  `.waveform-overview` with a draggable window, a `.waveform-ruler`, out-of-view edge arrows and
+  `waveform-view` events, all in `controls.js`. Demo: `audio-components.html`.
 - `.list.list-cards`: each item is a card with the theme's card tokens, the list has no box; items
   take `.is-featured` (thick accent border) and `.is-success/-warning/-danger/-info` (status border and
   tint). `.list-item-body` stacks a title and meta line beside a row's trailing buttons (#67, #68 M-A6).

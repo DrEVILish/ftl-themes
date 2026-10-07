@@ -333,7 +333,87 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
   `change` on the edges to save a region. Without the script, set the
   values and custom properties server-side.
 - **What the app owns:** creating and deleting regions, snapping, looping
-  playback inside a region, zoom, and saving.
+  playback inside a region, saving, and the bar data for a zoomed window.
+
+### Gain, ghost and fades
+
+- **`--gain`** (0–1) on a bar scales it: the visible height is `--level ×
+  --gain`. Set it to the engine's fade gain at that bar and the waveform
+  shows what will be heard. Outside a cue's trim, leave bars at full level
+  (that is the material you choose trim points from); where two fades
+  overlap, use the lower gain.
+- **`.waveform.has-ghost`** keeps each bar's full `--level` as a faint
+  ghost behind the gained bar (`--waveform-ghost`), so the gap is what the
+  fade removes.
+- **Fade regions:** `.waveform-region.is-fade-in` / `.is-fade-out` draw
+  their tint in the shape of the fade, from `data-curve`: `linear`
+  (default), `smooth` (t²(3−2t)), `log` (log10(1+9t)) or `exp`
+  ((e^3t−1)/(e³−1)). Mirror the engine's curve exactly; a picture that
+  differs from what plays is worse than none. Give a fade region one
+  range input to make its length draggable: on a fade-in the input is the
+  end, on a fade-out the start (`controls.js` sets `--end` / `--start`);
+  the app keeps the other edge on the trim point and recomputes `--gain`.
+- **Marker rows:** `data-row="2"` (or `3`) puts a marker's chip on a lower
+  row (`--waveform-marker-row`, 1.1rem each), so fade chips and time chips
+  don't collide. Its line still runs the full height.
+
+```html
+<div class="waveform has-ghost">
+  <input type="range" min="0" max="180" step="0.1" value="40" aria-label="Seek cue">
+  <span class="waveform-bars" aria-hidden="true"><i style="--level:.6;--gain:.35"></i>…</span>
+  <div class="waveform-region is-fade-in" data-curve="smooth" role="group" aria-label="Fade in, smooth" style="--start:.0333;--end:.0667">
+    <input type="range" min="0" max="180" step="0.1" value="12" aria-label="Fade in ends">
+  </div>
+  <span class="waveform-marker" data-row="2" style="--at:.0667">Fade in 6 s</span>
+</div>
+```
+
+### Zoom
+
+```html
+<div class="waveform" id="cue-wave">…seek input, bars, regions, markers…</div>
+<div class="waveform-ruler" data-for="cue-wave" aria-hidden="true"></div>
+<div class="waveform waveform-overview is-envelope" data-overview-for="cue-wave">
+  <span class="waveform-bars" aria-hidden="true">…whole clip…</span>
+  <div class="waveform-region waveform-window" role="group" aria-label="Visible part" style="--start:0;--end:1">
+    <input type="range" min="0" max="180" step="0.1" value="0" aria-label="Visible part starts">
+    <input type="range" min="0" max="180" step="0.1" value="180" aria-label="Visible part ends">
+  </div>
+</div>
+<div class="waveform-zoom btn-group" role="group" aria-label="Zoom" data-for="cue-wave">
+  <button class="btn btn-sm" type="button" data-zoom="in">Zoom in</button>
+  <button class="btn btn-sm" type="button" data-zoom="out">Zoom out</button>
+  <button class="btn btn-sm" type="button" data-zoom="fit">Zoom to selection</button>
+  <button class="btn btn-sm" type="button" data-zoom="select" aria-pressed="false">Box zoom</button>
+  <button class="btn btn-sm" type="button" data-zoom="reset">Show the whole clip</button>
+</div>
+```
+
+- **The window** is `--zoom-from` / `--zoom-to` on the `.waveform`, as
+  0–1 of the clip. CSS stretches the seek input, the regions and the bars
+  to the whole clip at that scale and slides them left, so **no input's
+  `min`, `max` or `value` ever changes**: the browser never clamps an edge
+  that is out of view, a save reads true times, and dragging a region's
+  body still works while zoomed. Markers map `--at` into the window; region
+  labels stay inside it. The change animates unless motion is reduced.
+- **`controls.js`** sets the window from the `.waveform-zoom` buttons
+  (`in` halves it around its centre, `out` doubles it, `fit` frames the
+  `.is-selected` or focused region, `select` arms a box zoom: drag across
+  the waveform to zoom into that span, `reset` shows the whole clip), the
+  mouse wheel (pans a zoomed waveform) and the overview's window region.
+  It fires **`waveform-view`** on the `.waveform` with `detail` `{from, to}`
+  in seconds and `{fromFraction, toFraction}`, so the app can fetch finer
+  peaks; `window.ftlWaveformView(waveform, from, to)` sets it from code
+  (fractions). Out-of-view region edges leave the tab order and get
+  `aria-description` "before/after the visible part"; the region draws an
+  arrow at that side (`.is-before` / `.is-after`). Out-of-view markers are
+  `hidden`. `.waveform-ruler[data-for]` gets labels whose step widens with
+  the window (0.1 s up to 1 h). `data-min-zoom` (default 0.005) limits how
+  far in it goes.
+- **Bars:** by default the clip's bars stretch with the window. For finer
+  detail, put bars for just the window in `.waveform-bars.is-window` on
+  each `waveform-view`, reusing the `<i>` nodes (set `--level` on them)
+  rather than rebuilding them, so the zoom stays smooth.
 
 | Token | Default |
 |---|---|
@@ -352,6 +432,13 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
 | `--waveform-handle-radius` | `2px` |
 | `--waveform-marker` | `var(--warning)` (unless `data-color`) |
 | `--waveform-marker-fg` / `--waveform-marker-width` | `var(--text)` / `2px` |
+| `--waveform-ghost` | 72% `--waveform-bg` (the ghost above a gained bar) |
+| `--waveform-fade` / `--waveform-fade-alpha` | `var(--waveform-region)` / `38%` |
+| `--waveform-marker-row` | `1.1rem` (height of a marker row) |
+| `--zoom-from` / `--zoom-to` | `0` / `1` (the visible window) |
+| `--waveform-select` | `var(--accent)` (box zoom span) |
+| `--waveform-ruler-fg` / `--waveform-ruler-rule` | `var(--muted)` / `var(--hairline)` |
+| `--waveform-overview-height` | `1.6rem` |
 
 Accessibility: the seek input is the control (`aria-label`,
 `aria-valuetext` with times); the bars are `aria-hidden`. Focus draws the

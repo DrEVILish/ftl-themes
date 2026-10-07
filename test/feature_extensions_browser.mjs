@@ -96,6 +96,22 @@ try {
   assert(moved[0] > 70 && Math.abs(moved[1] - moved[0] - 33) < 0.2, `region drag keeps its length: ${moved}`);
   await page.locator('button.waveform-marker[data-time="110"]').click();
   assert.equal(await page.locator('.waveform').first().locator(':scope > input').inputValue(), '110');
+  // Zoom: the window moves, inputs keep their values, out-of-view edges leave the tab order;
+  // a fade region's single input sets its end; the app's --gain follows.
+  const trim = page.locator('#wf-trim');
+  const trimValues = await trim.locator('input').evaluateAll(i => i.map(e => e.value));
+  await page.click('[data-for=wf-trim] [data-zoom=in]');
+  await page.click('[data-for=wf-trim] [data-zoom=in]');
+  assert.equal(await trim.evaluate(w => w.style.getPropertyValue('--zoom-from')), '0.37500');
+  assert.deepEqual(await trim.locator('input').evaluateAll(i => i.map(e => e.value)), trimValues);
+  assert.equal(await trim.locator('.is-trim > input').first().getAttribute('tabindex'), '-1');
+  assert.match(await trim.locator('.is-trim > input').first().getAttribute('aria-description'), /before/);
+  assert.equal(await page.locator('.waveform-window').evaluate(r => r.style.getPropertyValue('--start')), '0.3750');
+  await page.click('[data-for=wf-trim] [data-zoom=reset]');
+  assert.equal(await trim.locator('.is-trim > input').first().getAttribute('tabindex'), null);
+  await trim.locator('.is-fade-in > input').evaluate(el => { el.value = 24; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.equal(await trim.locator('.is-fade-in').evaluate(r => r.style.getPropertyValue('--end')), '0.1333');
+  assert.equal(await trim.locator('.waveform-bars > i').nth(15).evaluate(i => i.style.getPropertyValue('--gain')), '0.542');
   // Parameter slider mirrors its number and resets; a bipolar slider snaps to centre.
   await page.locator('#p-delay').evaluate(el => { el.value = 50; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.equal(await page.inputValue('[aria-label="Delay, milliseconds"]'), '50');

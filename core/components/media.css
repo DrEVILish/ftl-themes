@@ -357,7 +357,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   block-size: var(--_h);
   border: 0;
   background: var(--waveform-head, var(--waveform-played, var(--accent)));
-  border-image: linear-gradient(90deg, var(--waveform-played, var(--accent)) 50%, var(--waveform-unplayed, var(--muted)) 0) 0 1 / 0 100vw / 0 100vw;
+  /* The paint reaches past both ends however far the waveform is zoomed. */
+  border-image: linear-gradient(90deg, var(--waveform-played, var(--accent)) 50%, var(--waveform-unplayed, var(--muted)) 0) 0 1 / 0 calc(100vw / (var(--zoom-to, 1) - var(--zoom-from, 0))) / 0 calc(100vw / (var(--zoom-to, 1) - var(--zoom-from, 0)));
 }
 .waveform > input[type="range"]::-moz-range-thumb {
   inline-size: var(--waveform-head-width, 2px);
@@ -365,7 +366,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   border: 0;
   border-radius: 0;
   background: var(--waveform-head, var(--waveform-played, var(--accent)));
-  border-image: linear-gradient(90deg, var(--waveform-played, var(--accent)) 50%, var(--waveform-unplayed, var(--muted)) 0) 0 1 / 0 100vw / 0 100vw;
+  border-image: linear-gradient(90deg, var(--waveform-played, var(--accent)) 50%, var(--waveform-unplayed, var(--muted)) 0) 0 1 / 0 calc(100vw / (var(--zoom-to, 1) - var(--zoom-from, 0))) / 0 calc(100vw / (var(--zoom-to, 1) - var(--zoom-from, 0)));
 }
 /* Hover preview: a tint from the start to --hover, under the bar mask. */
 .waveform::before {
@@ -384,12 +385,12 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 .waveform-bars > * {
   flex: 1 1 0;
   box-sizing: border-box;
-  border-block: calc((1 - var(--level, 0.5)) * var(--_h) / 2) solid var(--waveform-bg, var(--surface-2));
+  border-block: calc((1 - var(--_l, var(--level, 0.5))) * var(--_h) / 2) solid var(--waveform-bg, var(--surface-2));
   border-inline-end: var(--waveform-gap, 2px) solid var(--waveform-bg, var(--surface-2));
 }
 /* Variants: bars rising from the bottom edge, or a solid envelope. */
 .waveform.is-bottom .waveform-bars > * {
-  border-block-start-width: calc((1 - var(--level, 0.5)) * var(--_h));
+  border-block-start-width: calc((1 - var(--_l, var(--level, 0.5))) * var(--_h));
   border-block-end-width: 0;
 }
 .waveform.is-envelope { --waveform-gap: 0px; }
@@ -492,7 +493,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 .waveform-region-label {
   position: absolute;
   inset-block-start: 0.15rem;
-  inset-inline-start: calc(var(--_hw) + var(--start, 0) * (100% - var(--_hw)) + 0.15rem);
+  inset-inline-start: max(calc(var(--_hw) + var(--start, 0) * (100% - var(--_hw)) + 0.15rem), calc(var(--zoom-from, 0) * 100% + 0.15rem));
   max-inline-size: calc((var(--end, 1) - var(--start, 0)) * (100% - var(--_hw)) - var(--_hw) - 0.3rem);
   overflow: hidden;
   padding-inline: 0.25rem;
@@ -511,7 +512,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   position: absolute;
   z-index: calc(var(--z-raised) + 1);
   inset-block-start: 0;
-  inset-inline-start: calc(var(--at, 0) * 100%);
+  inset-inline-start: calc((var(--at, 0) - var(--zoom-from, 0)) / (var(--zoom-to, 1) - var(--zoom-from, 0)) * 100%);
   margin: 0;
   padding: 0 0.3rem;
   border: 0;
@@ -537,6 +538,113 @@ span.waveform-marker { pointer-events: none; }
 /* A seeking marker is a target: at least 24px tall (WCAG 2.5.8). */
 button.waveform-marker:not(:empty) { min-block-size: 24px; }
 button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+/* ---- Gain, ghost and fades (#69) -------------------------------------------
+ * --gain (0–1) on a bar scales it: the visible height is --level × --gain,
+ * so the waveform shows what will be heard (a fade's gain at that bar).
+ * .waveform.has-ghost keeps each bar's full --level as a faint ghost behind
+ * the gained bar: the gap between them is what the fade removes.
+ * A .waveform-region.is-fade-in / .is-fade-out draws its tint in the shape
+ * of the fade: data-curve="linear" (default) | "smooth" | "log" | "exp",
+ * the curves smooth = t²(3−2t), log = log10(1+9t), exp = (e^3t−1)/(e^3−1).
+ * A fade region with one input is a draggable fade length: on .is-fade-in
+ * the input is the end (the start stays where the app put it), on
+ * .is-fade-out the start. Markers take data-row="2" (or "3") to sit on a
+ * lower row, so fade chips don't cover time chips. */
+.waveform-bars > * { --_l: calc(var(--level, 0.5) * var(--gain, 1)); }
+.waveform.has-ghost .waveform-bars > * {
+  --_l: var(--level, 0.5);
+  --_ghost: var(--waveform-ghost, color-mix(in srgb, var(--waveform-bg, var(--surface-2)) 72%, transparent));
+  background: linear-gradient(var(--_ghost) 0 calc((1 - var(--gain, 1)) * 50%), transparent 0 calc((1 + var(--gain, 1)) * 50%), var(--_ghost) 0);
+}
+.waveform.is-bottom.has-ghost .waveform-bars > * { background: linear-gradient(var(--_ghost) 0 calc((1 - var(--gain, 1)) * 100%), transparent 0); }
+.waveform-region:is(.is-fade-in, .is-fade-out) {
+  --_c: var(--user-color, var(--waveform-fade, var(--waveform-region, var(--accent))));
+}
+.waveform-region:is(.is-fade-in, .is-fade-out)::before {
+  background: color-mix(in srgb, var(--_c) var(--waveform-fade-alpha, 38%), transparent);
+  box-shadow: none;
+  pointer-events: none;
+}
+.waveform-region.is-fade-in::before { clip-path: polygon(0.00% 50.00%, 6.25% 46.88%, 12.50% 43.75%, 18.75% 40.62%, 25.00% 37.50%, 31.25% 34.38%, 37.50% 31.25%, 43.75% 28.12%, 50.00% 25.00%, 56.25% 21.88%, 62.50% 18.75%, 68.75% 15.62%, 75.00% 12.50%, 81.25% 9.38%, 87.50% 6.25%, 93.75% 3.12%, 100.00% 0.00%, 100.00% 100.00%, 93.75% 96.88%, 87.50% 93.75%, 81.25% 90.62%, 75.00% 87.50%, 68.75% 84.38%, 62.50% 81.25%, 56.25% 78.12%, 50.00% 75.00%, 43.75% 71.88%, 37.50% 68.75%, 31.25% 65.62%, 25.00% 62.50%, 18.75% 59.38%, 12.50% 56.25%, 6.25% 53.12%, 0.00% 50.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-in::before { clip-path: polygon(0.00% 100.00%, 6.25% 93.75%, 12.50% 87.50%, 18.75% 81.25%, 25.00% 75.00%, 31.25% 68.75%, 37.50% 62.50%, 43.75% 56.25%, 50.00% 50.00%, 56.25% 43.75%, 62.50% 37.50%, 68.75% 31.25%, 75.00% 25.00%, 81.25% 18.75%, 87.50% 12.50%, 93.75% 6.25%, 100.00% 0.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-out::before { clip-path: polygon(0.00% 0.00%, 6.25% 3.12%, 12.50% 6.25%, 18.75% 9.38%, 25.00% 12.50%, 31.25% 15.62%, 37.50% 18.75%, 43.75% 21.88%, 50.00% 25.00%, 56.25% 28.12%, 62.50% 31.25%, 68.75% 34.38%, 75.00% 37.50%, 81.25% 40.62%, 87.50% 43.75%, 93.75% 46.88%, 100.00% 50.00%, 100.00% 50.00%, 93.75% 53.12%, 87.50% 56.25%, 81.25% 59.38%, 75.00% 62.50%, 68.75% 65.62%, 62.50% 68.75%, 56.25% 71.88%, 50.00% 75.00%, 43.75% 78.12%, 37.50% 81.25%, 31.25% 84.38%, 25.00% 87.50%, 18.75% 90.62%, 12.50% 93.75%, 6.25% 96.88%, 0.00% 100.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-out::before { clip-path: polygon(0.00% 0.00%, 6.25% 6.25%, 12.50% 12.50%, 18.75% 18.75%, 25.00% 25.00%, 31.25% 31.25%, 37.50% 37.50%, 43.75% 43.75%, 50.00% 50.00%, 56.25% 56.25%, 62.50% 62.50%, 68.75% 68.75%, 75.00% 75.00%, 81.25% 81.25%, 87.50% 87.50%, 93.75% 93.75%, 100.00% 100.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-in[data-curve="smooth"]::before { clip-path: polygon(0.00% 50.00%, 6.25% 49.44%, 12.50% 47.85%, 18.75% 45.39%, 25.00% 42.19%, 31.25% 38.40%, 37.50% 34.18%, 43.75% 29.66%, 50.00% 25.00%, 56.25% 20.34%, 62.50% 15.82%, 68.75% 11.60%, 75.00% 7.81%, 81.25% 4.61%, 87.50% 2.15%, 93.75% 0.56%, 100.00% 0.00%, 100.00% 100.00%, 93.75% 99.44%, 87.50% 97.85%, 81.25% 95.39%, 75.00% 92.19%, 68.75% 88.40%, 62.50% 84.18%, 56.25% 79.66%, 50.00% 75.00%, 43.75% 70.34%, 37.50% 65.82%, 31.25% 61.60%, 25.00% 57.81%, 18.75% 54.61%, 12.50% 52.15%, 6.25% 50.56%, 0.00% 50.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-in[data-curve="smooth"]::before { clip-path: polygon(0.00% 100.00%, 6.25% 98.88%, 12.50% 95.70%, 18.75% 90.77%, 25.00% 84.38%, 31.25% 76.81%, 37.50% 68.36%, 43.75% 59.33%, 50.00% 50.00%, 56.25% 40.67%, 62.50% 31.64%, 68.75% 23.19%, 75.00% 15.62%, 81.25% 9.23%, 87.50% 4.30%, 93.75% 1.12%, 100.00% 0.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-out[data-curve="smooth"]::before { clip-path: polygon(0.00% 0.00%, 6.25% 0.56%, 12.50% 2.15%, 18.75% 4.61%, 25.00% 7.81%, 31.25% 11.60%, 37.50% 15.82%, 43.75% 20.34%, 50.00% 25.00%, 56.25% 29.66%, 62.50% 34.18%, 68.75% 38.40%, 75.00% 42.19%, 81.25% 45.39%, 87.50% 47.85%, 93.75% 49.44%, 100.00% 50.00%, 100.00% 50.00%, 93.75% 50.56%, 87.50% 52.15%, 81.25% 54.61%, 75.00% 57.81%, 68.75% 61.60%, 62.50% 65.82%, 56.25% 70.34%, 50.00% 75.00%, 43.75% 79.66%, 37.50% 84.18%, 31.25% 88.40%, 25.00% 92.19%, 18.75% 95.39%, 12.50% 97.85%, 6.25% 99.44%, 0.00% 100.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-out[data-curve="smooth"]::before { clip-path: polygon(0.00% 0.00%, 6.25% 1.12%, 12.50% 4.30%, 18.75% 9.23%, 25.00% 15.62%, 31.25% 23.19%, 37.50% 31.64%, 43.75% 40.67%, 50.00% 50.00%, 56.25% 59.33%, 62.50% 68.36%, 68.75% 76.81%, 75.00% 84.38%, 81.25% 90.77%, 87.50% 95.70%, 93.75% 98.88%, 100.00% 100.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-in[data-curve="log"]::before { clip-path: polygon(0.00% 50.00%, 6.25% 40.31%, 12.50% 33.63%, 18.75% 28.53%, 25.00% 24.41%, 31.25% 20.94%, 37.50% 17.95%, 43.75% 15.32%, 50.00% 12.98%, 56.25% 10.87%, 62.50% 8.94%, 68.75% 7.17%, 75.00% 5.53%, 81.25% 4.01%, 87.50% 2.59%, 93.75% 1.26%, 100.00% 0.00%, 100.00% 100.00%, 93.75% 98.74%, 87.50% 97.41%, 81.25% 95.99%, 75.00% 94.47%, 68.75% 92.83%, 62.50% 91.06%, 56.25% 89.13%, 50.00% 87.02%, 43.75% 84.68%, 37.50% 82.05%, 31.25% 79.06%, 25.00% 75.59%, 18.75% 71.47%, 12.50% 66.37%, 6.25% 59.69%, 0.00% 50.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-in[data-curve="log"]::before { clip-path: polygon(0.00% 100.00%, 6.25% 80.62%, 12.50% 67.26%, 18.75% 57.07%, 25.00% 48.81%, 31.25% 41.88%, 37.50% 35.90%, 43.75% 30.65%, 50.00% 25.96%, 56.25% 21.73%, 62.50% 17.88%, 68.75% 14.34%, 75.00% 11.07%, 81.25% 8.03%, 87.50% 5.18%, 93.75% 2.51%, 100.00% 0.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-out[data-curve="log"]::before { clip-path: polygon(0.00% 0.00%, 6.25% 1.26%, 12.50% 2.59%, 18.75% 4.01%, 25.00% 5.53%, 31.25% 7.17%, 37.50% 8.94%, 43.75% 10.87%, 50.00% 12.98%, 56.25% 15.32%, 62.50% 17.95%, 68.75% 20.94%, 75.00% 24.41%, 81.25% 28.53%, 87.50% 33.63%, 93.75% 40.31%, 100.00% 50.00%, 100.00% 50.00%, 93.75% 59.69%, 87.50% 66.37%, 81.25% 71.47%, 75.00% 75.59%, 68.75% 79.06%, 62.50% 82.05%, 56.25% 84.68%, 50.00% 87.02%, 43.75% 89.13%, 37.50% 91.06%, 31.25% 92.83%, 25.00% 94.47%, 18.75% 95.99%, 12.50% 97.41%, 6.25% 98.74%, 0.00% 100.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-out[data-curve="log"]::before { clip-path: polygon(0.00% 0.00%, 6.25% 2.51%, 12.50% 5.18%, 18.75% 8.03%, 25.00% 11.07%, 31.25% 14.34%, 37.50% 17.88%, 43.75% 21.73%, 50.00% 25.96%, 56.25% 30.65%, 62.50% 35.90%, 68.75% 41.88%, 75.00% 48.81%, 81.25% 57.07%, 87.50% 67.26%, 93.75% 80.62%, 100.00% 100.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-in[data-curve="exp"]::before { clip-path: polygon(0.00% 50.00%, 6.25% 49.46%, 12.50% 48.81%, 18.75% 48.02%, 25.00% 47.07%, 31.25% 45.93%, 37.50% 44.55%, 43.75% 42.89%, 50.00% 40.88%, 56.25% 38.46%, 62.50% 35.54%, 68.75% 32.01%, 75.00% 27.76%, 81.25% 22.64%, 87.50% 16.45%, 93.75% 9.00%, 100.00% 0.00%, 100.00% 100.00%, 93.75% 91.00%, 87.50% 83.55%, 81.25% 77.36%, 75.00% 72.24%, 68.75% 67.99%, 62.50% 64.46%, 56.25% 61.54%, 50.00% 59.12%, 43.75% 57.11%, 37.50% 55.45%, 31.25% 54.07%, 25.00% 52.93%, 18.75% 51.98%, 12.50% 51.19%, 6.25% 50.54%, 0.00% 50.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-in[data-curve="exp"]::before { clip-path: polygon(0.00% 100.00%, 6.25% 98.92%, 12.50% 97.62%, 18.75% 96.04%, 25.00% 94.15%, 31.25% 91.86%, 37.50% 89.10%, 43.75% 85.77%, 50.00% 81.76%, 56.25% 76.91%, 62.50% 71.07%, 68.75% 64.03%, 75.00% 55.53%, 81.25% 45.28%, 87.50% 32.91%, 93.75% 17.99%, 100.00% 0.00%, 100% 100%, 0% 100%); }
+.waveform-region.is-fade-out[data-curve="exp"]::before { clip-path: polygon(0.00% 0.00%, 6.25% 9.00%, 12.50% 16.45%, 18.75% 22.64%, 25.00% 27.76%, 31.25% 32.01%, 37.50% 35.54%, 43.75% 38.46%, 50.00% 40.88%, 56.25% 42.89%, 62.50% 44.55%, 68.75% 45.93%, 75.00% 47.07%, 81.25% 48.02%, 87.50% 48.81%, 93.75% 49.46%, 100.00% 50.00%, 100.00% 50.00%, 93.75% 50.54%, 87.50% 51.19%, 81.25% 51.98%, 75.00% 52.93%, 68.75% 54.07%, 62.50% 55.45%, 56.25% 57.11%, 50.00% 59.12%, 43.75% 61.54%, 37.50% 64.46%, 31.25% 67.99%, 25.00% 72.24%, 18.75% 77.36%, 12.50% 83.55%, 6.25% 91.00%, 0.00% 100.00%); }
+.waveform.is-bottom > .waveform-region.is-fade-out[data-curve="exp"]::before { clip-path: polygon(0.00% 0.00%, 6.25% 17.99%, 12.50% 32.91%, 18.75% 45.28%, 25.00% 55.53%, 31.25% 64.03%, 37.50% 71.07%, 43.75% 76.91%, 50.00% 81.76%, 56.25% 85.77%, 62.50% 89.10%, 68.75% 91.86%, 75.00% 94.15%, 81.25% 96.04%, 87.50% 97.62%, 93.75% 98.92%, 100.00% 100.00%, 100% 100%, 0% 100%); }
+.waveform-marker[data-row="2"] { --_row: 1; }
+.waveform-marker[data-row="3"] { --_row: 2; }
+.waveform-marker[data-row] { inset-block-start: calc(var(--_row) * var(--waveform-marker-row, 1.1rem)); }
+.waveform-marker[data-row]::before { inset-block-start: calc(var(--_row) * var(--waveform-marker-row, 1.1rem) * -1); }
+/* ---- Zoom: a window onto part of the clip (#70) -----------------------------
+ * <div class="waveform" id="wf" style="--zoom-from:.2; --zoom-to:.35">…</div>
+ * <div class="waveform-ruler" data-for="wf"></div>
+ * <div class="waveform-zoom btn-group" data-for="wf"><button data-zoom="in">…
+ * --zoom-from / --zoom-to are the visible part as 0–1 of the clip. The seek
+ * input, the regions and the bars are stretched to the whole clip at that
+ * scale and slid left, so every input keeps its full min, max and value
+ * (the browser never clamps one) and region dragging still works. Markers
+ * map --at into the window. controls.js drives the window (buttons, wheel
+ * pan, box zoom, the overview), marks regions running out of view
+ * (.is-before / .is-after: an arrow at that side) and fills the ruler.
+ * Bars swapped for finer data covering only the window take .is-window. */
+@property --zoom-from { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --zoom-to { syntax: "<number>"; inherits: true; initial-value: 1; }
+.waveform > :is(input[type="range"], .waveform-region, .waveform-bars:not(.is-window)) {
+  justify-self: start;
+  inline-size: calc(100% / (var(--zoom-to) - var(--zoom-from)));
+  margin-inline-start: calc(-100% * var(--zoom-from) / (var(--zoom-to) - var(--zoom-from)));
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"], [data-motion="none"]) .waveform { transition: --zoom-from 0.2s ease, --zoom-to 0.2s ease; }
+}
+.waveform-region.is-before { --_arrow-start: var(--_c); }
+.waveform-region.is-after { --_arrow-end: var(--_c); }
+.waveform-region:is(.is-before, .is-after)::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--zoom-from) * 100%);
+  inline-size: calc((var(--zoom-to) - var(--zoom-from)) * 100%);
+  background:
+    conic-gradient(from 45deg at 0 50%, var(--_arrow-start, transparent) 0 90deg, transparent 0) 0 50% / 0.55rem 1.1rem no-repeat,
+    conic-gradient(from 225deg at 100% 50%, var(--_arrow-end, transparent) 0 90deg, transparent 0) 100% 50% / 0.55rem 1.1rem no-repeat;
+  pointer-events: none;
+}
+.waveform.is-zoom-select { cursor: crosshair; }
+.waveform.is-zoom-select > * { pointer-events: none; }
+.waveform.is-zoom-select::before {
+  position: relative;
+  z-index: calc(var(--z-raised) + 3);
+  margin-inline-start: calc(var(--select-a, 0) * 100%);
+  inline-size: calc((var(--select-b, 0) - var(--select-a, 0)) * 100%);
+  background: color-mix(in srgb, var(--waveform-select, var(--accent)) 30%, transparent);
+  box-shadow: inset 0 0 0 1px var(--waveform-select, var(--accent));
+}
+.waveform-ruler {
+  position: relative;
+  block-size: 1.3em;
+  overflow: hidden;
+  border-block-start: 1px solid var(--waveform-ruler-rule, var(--hairline));
+  color: var(--waveform-ruler-fg, var(--muted));
+  font: 0.7rem/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.waveform-ruler > span { position: absolute; inset-block-start: 0; inset-inline-start: calc(var(--at, 0) * 100%); padding-block-start: 0.35em; translate: calc(var(--at, 0) * -100%) 0; white-space: nowrap; }
+.waveform-ruler > span::before { content: ""; position: absolute; inset-block-start: 0; inset-inline-start: calc(var(--at, 0) * 100%); block-size: 0.25em; border-inline-start: 1px solid currentColor; }
+/* The overview: the whole clip, small, with the window as a draggable region. */
+/* No seek input underneath, so the bars show the unplayed colour. */
+.waveform-overview { --waveform-height: var(--waveform-overview-height, 1.6rem); background: var(--waveform-unplayed, var(--muted)); }
+.waveform-overview .waveform-window { --waveform-region-alpha: 30%; --_hw: var(--waveform-handle-width, 0.4rem); }
 /* Hover time: a chip at the pointer, text from the app. */
 .waveform[data-hover-time]::after {
   content: attr(data-hover-time);
