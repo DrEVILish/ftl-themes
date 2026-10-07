@@ -6068,6 +6068,113 @@ html[data-splash-seen] .splash[data-intro] { display: none; }
     transition: background-color 0.12s ease, color 0.12s ease;
   }
 }
+/* --- Graphs (v5.3): small-multiple time-series grids --------------------
+ *   <div class="graph-grid">
+ *     <figure class="graph-card">
+ *       <figcaption class="graph-card-title">CPU per core <span class="graph-card-value">38%</span></figcaption>
+ *       <div class="graph-card-plot chart">…inline SVG (.chart hooks) or a uPlot root…</div>
+ *       <ul class="chart-legend is-line"><li data-series="1">core 0</li>…</ul>
+ *     </figure>
+ *   </div>
+ * .graph-grid wraps cards onto more rows instead of cramping them.
+ * uPlot bridge: uPlot draws on canvas (colours come from JS options — see
+ * docs/components/graphs.md for the token-reading snippet); this styles the
+ * DOM around it: title, legend, cursor and selection.
+ * .system-pane is a collapsible full-width <details> that sits in flow just
+ * above the status footer. */
+.graph-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--graph-card-min, 16rem)), 1fr));
+  gap: var(--graph-grid-gap, var(--space-s, 0.75rem));
+}
+.graph-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs, 0.35rem);
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--graph-card-padding, 0.6rem 0.75rem);
+  background: var(--graph-card-bg, var(--surface));
+  color: var(--text);
+  border: 1px solid var(--graph-card-border, var(--border));
+  border-radius: var(--graph-card-radius, var(--radius));
+  box-shadow: var(--graph-card-shadow, none);
+}
+.graph-card-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: var(--graph-card-title-size, 0.8rem);
+  font-weight: 700;
+  color: var(--graph-card-title-fg, var(--text));
+}
+.graph-card-value {
+  font-family: var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  color: var(--muted);
+}
+.graph-card-plot {
+  position: relative;
+  block-size: var(--graph-card-height, 6.5rem);
+  min-block-size: 0;
+  background: var(--graph-card-plot-bg, var(--chart-plot-bg, transparent));
+  border-radius: calc(var(--radius) * 0.5);
+}
+.graph-card .graph-card-plot > svg { display: block; inline-size: 100%; block-size: 100%; }
+.graph-card.is-tall { --graph-card-height: var(--graph-card-height-tall, 10rem); }
+.graph-card.is-full { grid-column: 1 / -1; }
+.graph-card > :is(.legend, .chart-legend) { --legend-size: 0.72rem; gap: 0.15rem 0.8rem; margin: 0; padding: 0; list-style: none; color: var(--muted); }
+
+/* --- uPlot bridge (DOM parts only; canvas colours come from options) ----- */
+:is(.graph-card, .chart) .uplot { inline-size: 100%; font-family: inherit; line-height: 1.3; color: var(--chart-text, var(--muted)); }
+:is(.graph-card, .chart) .u-title { font-size: var(--graph-card-title-size, 0.8rem); font-weight: 700; text-align: start; color: var(--text); }
+:is(.graph-card, .chart) .u-legend { font-size: 0.72rem; text-align: start; color: var(--legend-fg, var(--text)); }
+:is(.graph-card, .chart) .u-legend .u-series > * { padding: 0.1em 0.35em; }
+:is(.graph-card, .chart) .u-legend .u-marker { border-radius: var(--legend-swatch-radius, 2px); }
+:is(.graph-card, .chart) .u-legend .u-value { font-family: var(--font-mono, monospace); font-variant-numeric: tabular-nums; }
+:is(.graph-card, .chart) .u-legend .u-off > * { opacity: 0.4; }
+:is(.graph-card, .chart) .u-select { background: var(--chart-selection, color-mix(in srgb, var(--accent) 14%, transparent)); }
+:is(.graph-card, .chart) :is(.u-cursor-x, .u-cursor-y) { border-color: var(--chart-crosshair, var(--muted)); }
+
+/* --- .system-pane --------------------------------------------------------- */
+.system-pane {
+  background: var(--system-pane-bg, var(--surface));
+  color: var(--text);
+  border: 1px solid var(--system-pane-border, var(--border));
+  border-radius: var(--system-pane-radius, var(--radius));
+  box-shadow: var(--system-pane-shadow, var(--panel-shadow, none));
+}
+.system-pane > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  min-block-size: var(--tap-min);
+  padding: 0.35rem 0.75rem;
+  list-style: none;
+  font-size: 0.8rem;
+}
+.system-pane > summary::-webkit-details-marker { display: none; }
+.system-pane > summary::after {
+  content: "";
+  margin-inline-start: auto;
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  border-block-start: 2px solid currentColor;
+  border-inline-start: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 0.15em;
+}
+.system-pane[open] > summary::after { rotate: 225deg; translate: 0 -0.1em; }
+.system-pane > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.system-pane-body {
+  max-block-size: var(--system-pane-max, 60vh);
+  overflow: auto;
+  padding: 0 0.75rem 0.75rem;
+}
 /* --- v5 game HUD kit (PLAN.md §19 "Game HUD") ------------------------------
  * The overlay layer (.hud) and its six edge regions, resource bars
  * (.hud-bar), the minimap (.map.hud-minimap, built on instruments.css's
@@ -8619,7 +8726,15 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   .lyrics > li { transition: color 0.3s ease, box-shadow 0.3s ease; }
 }
 /* Physical media transports. The SVG drawings are presentational; apps own
-   playback/recording and set one state class on .media-deck. */
+   playback/recording and set one state class on .media-deck — or, with no
+   JavaScript at all, check one radio in its .transport-keys
+   (value="playing|recording|paused|stopped"); :has() reads it.
+     .media-deck          deck shell + SVG drawing hooks
+     [data-lamp]          deck lamps (SVG circle or HTML .deck-lamp), .deck-hud band
+     [data-when]          text/annunciators shown (or lit) in one state
+     .transport-keys      Rec / Stop / Play / Pause hardware keys
+     .seg7                seven-segment digits with ghost segments
+   See docs/components/media-devices.md. */
 .media-decks { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,30rem),1fr)); gap:var(--space-m,1rem); }
 .media-deck {
   --deck-highlight:var(--accent);
@@ -8651,6 +8766,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 .media-deck .head-grid { fill:none; stroke:var(--deck-trim,var(--border)); stroke-width:1; opacity:.35; }
 .media-deck .head-gap { fill:none; stroke:var(--deck-highlight); stroke-width:3; stroke-linecap:round; }
 .media-deck .device-counter { fill:var(--accent); font:italic 700 24px var(--font-mono,monospace); }
+/* A <foreignObject class="device-counter-slot"> in the head window holds an HTML .seg7. */
+.media-deck .device-counter-slot > * { display:flex; align-items:center; justify-content:center; block-size:100%; font-size:var(--deck-counter-size,30px); line-height:1; }
 .media-deck .tonearm { fill:none; stroke:var(--deck-highlight); stroke-width:5; stroke-linecap:round; }
 .media-deck .platter { fill:var(--deck-well,var(--bg)); stroke:var(--deck-trim,var(--border)); stroke-width:2; }
 .media-deck .groove { fill:none; stroke:var(--deck-spoke,var(--border)); stroke-width:1; opacity:.8; }
@@ -8663,20 +8780,19 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 .media-deck .device-controls .status { margin-left:auto; }
 .media-deck.device-vinyl .tonearm { transform-box:view-box; transform-origin:430px 74px; }
 
+/* --- State. Each state is the class OR the matching checked radio. -------- */
 @media (prefers-reduced-motion:no-preference) {
-  html:not([data-motion="reduced"]) .media-deck.is-playing :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
-  html:not([data-motion="reduced"]) .media-deck.is-playing .reel-supply .reel-spin { animation-direction:reverse; }
-  html:not([data-motion="reduced"]) .media-deck.is-playing .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
-  html:not([data-motion="reduced"]) .media-deck.is-playing .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording .reel-supply .reel-spin { animation-direction:reverse; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
-  html:not([data-motion="reduced"]) .media-deck.is-recording .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck:is(.is-playing,.is-recording,:has(.transport-keys :is([value="playing"],[value="recording"]):checked)) :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc) { animation:media-deck-spin 2.2s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck:is(.is-playing,.is-recording,:has(.transport-keys :is([value="playing"],[value="recording"]):checked)) .reel-supply .reel-spin { animation-direction:reverse; }
+  html:not([data-motion="reduced"]) .media-deck:is(.is-playing,.is-recording,:has(.transport-keys :is([value="playing"],[value="recording"]):checked)) .tonearm { animation:media-tonearm 2s ease-in-out infinite alternate; }
+  html:not([data-motion="reduced"]) .media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) .tape.is-moving { stroke:var(--deck-highlight); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
+  html:not([data-motion="reduced"]) .media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .tape.is-moving { stroke:var(--danger); stroke-dasharray:22 14; animation:media-tape-flow .55s linear infinite; }
 }
-.media-deck.is-recording .device-counter { fill:var(--danger); }
-.media-deck.is-recording .head-gap { stroke:var(--danger); }
-.media-deck.is-recording .device-lamp { fill:var(--danger); }
-.media-deck.is-playing .device-lamp { fill:var(--success); }
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .device-counter { fill:var(--danger); }
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .device-counter-slot .seg7 { --seg7-lit:var(--deck-counter-rec,var(--danger)); }
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .head-gap { stroke:var(--danger); }
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) .device-lamp { fill:var(--danger); }
+.media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) .device-lamp { fill:var(--success); }
 .media-deck :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { transform-box:fill-box; transform-origin:center; }
 .media-deck.is-paused :is(.reel-spin,.spool-spin,.vinyl-disc,.md-disc,.tonearm) { animation:none !important; }
 @keyframes media-deck-spin { to { transform:rotate(360deg); } }
@@ -8685,6 +8801,168 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 
 @media (prefers-reduced-motion:reduce) {
   .media-deck * { animation:none !important; transition:none !important; }
+}
+
+/* [data-when="playing recording"] — shown only in those states (stopped =
+   none of the others). An .is-annunciator stays in place and dims instead.
+   Don't mix a state class with a checked state radio on one deck. */
+.media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) [data-when]:not([data-when~="playing"]):not(.is-annunciator),
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) [data-when]:not([data-when~="recording"]):not(.is-annunciator),
+.media-deck:is(.is-paused,:has(.transport-keys [value="paused"]:checked)) [data-when]:not([data-when~="paused"]):not(.is-annunciator),
+.media-deck:not(.is-playing,.is-recording,.is-paused,:has(.transport-keys :is([value="playing"],[value="recording"],[value="paused"]):checked)) [data-when]:not([data-when~="stopped"]):not(.is-annunciator) { display:none; }
+.media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) [data-when]:not([data-when~="playing"]).is-annunciator,
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) [data-when]:not([data-when~="recording"]).is-annunciator,
+.media-deck:is(.is-paused,:has(.transport-keys [value="paused"]:checked)) [data-when]:not([data-when~="paused"]).is-annunciator,
+.media-deck:not(.is-playing,.is-recording,.is-paused,:has(.transport-keys :is([value="playing"],[value="recording"],[value="paused"]):checked)) [data-when]:not([data-when~="stopped"]).is-annunciator { opacity:var(--deck-annunciator-off,.18); text-shadow:none; }
+
+/* --- Lamps: <circle data-lamp="sys"> in the SVG, or
+   <span class="deck-lamp" data-lamp="sys">SYS</span> in a .deck-hud band.
+   sys: green while moving, red while recording, amber paused.
+   rec: red while recording, drawn larger and glowing.
+   Any other data-lamp: app-driven, .is-on / .is-warn / .is-error. */
+.media-deck { --deck-lamp-r:4px; }
+[data-lamp] { --_lamp:var(--deck-lamp-off,color-mix(in srgb,var(--muted) 40%,transparent)); --_lamp-glow:0px; }
+[data-lamp].is-on { --_lamp:var(--deck-lamp-on,var(--success)); --_lamp-glow:var(--deck-lamp-glow,4px); }
+[data-lamp].is-warn { --_lamp:var(--warning); --_lamp-glow:var(--deck-lamp-glow,4px); }
+[data-lamp].is-error { --_lamp:var(--danger); --_lamp-glow:var(--deck-lamp-glow,4px); }
+.media-deck:is(.is-playing,:has(.transport-keys [value="playing"]:checked)) [data-lamp="sys"] { --_lamp:var(--deck-lamp-on,var(--success)); --_lamp-glow:var(--deck-lamp-glow,4px); }
+.media-deck:is(.is-paused,:has(.transport-keys [value="paused"]:checked)) [data-lamp="sys"] { --_lamp:var(--warning); --_lamp-glow:var(--deck-lamp-glow,4px); }
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) :is([data-lamp="sys"],[data-lamp="rec"]) { --_lamp:var(--danger); --_lamp-glow:var(--deck-lamp-glow,4px); }
+.media-deck:is(.is-recording,:has(.transport-keys [value="recording"]:checked)) [data-lamp="rec"] { --_lamp-glow:var(--deck-lamp-rec-glow,9px); }
+circle[data-lamp] { r:var(--deck-lamp-r,4px); fill:var(--_lamp); filter:drop-shadow(0 0 var(--_lamp-glow) var(--_lamp)); }
+circle[data-lamp="rec"] { r:var(--deck-lamp-rec-r,calc(var(--deck-lamp-r,4px) * 1.6)); }
+.deck-hud { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem 1.1rem; margin-block-end:.6rem; padding:.4rem .7rem; background:var(--deck-hud-bg,var(--surface-2)); border:1px solid var(--deck-trim,var(--border)); border-radius:var(--radius); font:700 .72rem/1.2 var(--font-mono,monospace); letter-spacing:.14em; text-transform:uppercase; color:var(--deck-hud-fg,var(--text)); }
+.deck-hud > .status { margin-inline-start:auto; letter-spacing:normal; text-transform:none; font-family:var(--font); }
+.deck-lamp { display:inline-flex; align-items:center; gap:.45em; }
+.deck-lamp::before { content:""; flex:none; inline-size:calc(var(--deck-lamp-r,4px) * 2); block-size:calc(var(--deck-lamp-r,4px) * 2); border-radius:50%; background:var(--_lamp); box-shadow:0 0 var(--_lamp-glow) var(--_lamp); }
+.deck-lamp[data-lamp="rec"]::before { inline-size:calc(var(--deck-lamp-rec-r,calc(var(--deck-lamp-r,4px) * 1.6)) * 2); block-size:calc(var(--deck-lamp-rec-r,calc(var(--deck-lamp-r,4px) * 1.6)) * 2); }
+
+/* --- .transport-keys — hardware-lamp transport keys on core .key ---------
+     <div class="transport-keys" role="radiogroup" aria-label="Transport">
+       <label class="key key-rec"><input type="radio" name="t" value="recording"><svg class="icon">…player-record</svg>Rec</label>
+       …key-stop (stopped) · key-play (playing) · key-pause (paused)
+     </div>
+   or plain <button class="key key-play"> with the state class
+   (.is-recording/.is-rec, .is-playing/.is-play, .is-paused/.is-pause) on
+   the key set or any ancestor (the .media-deck). Unlit at rest; Rec lit red
+   while recording; Play lit green while playing and flashing ~2 Hz while
+   paused — steady with a dashed edge under reduced motion. */
+.transport-keys { display:flex; flex-wrap:wrap; align-items:center; gap:var(--transport-keys-gap,.5rem); }
+.transport-keys .key {
+  --_tk:var(--muted);
+  gap:.45em;
+  height:auto;
+  min-block-size:max(var(--transport-key-size,2.6rem),var(--tap-min));
+  min-inline-size:max(var(--transport-key-width,4.25rem),var(--tap-min));
+  padding:0 .8em;
+  font-size:var(--transport-key-font-size,.72rem);
+  border-width:var(--transport-key-border-width,2px);
+}
+.transport-keys .key > .icon { --icon-size:1.25em; color:var(--_tk-icon,currentColor); }
+/* Lit: the lamp colour is on the edge, glow and icon; the label stays in
+   --text so it reads on every theme's tint (WCAG text contrast). */
+.transport-keys .key-rec { --_tk:var(--transport-key-rec,var(--danger)); }
+.transport-keys .key-play { --_tk:var(--transport-key-play,var(--success)); }
+.transport-keys .key-pause { --_tk:var(--transport-key-pause,var(--warning)); }
+/* A checked radio is not "lit": keys light from the transport state. The
+   pressed key sits down a little so the selection still reads. */
+.transport-keys .key,
+.transport-keys .key:has(input:checked) { background:var(--key-bg,var(--surface-2)); color:var(--key-fg,var(--muted)); border-color:var(--key-border,var(--border)); box-shadow:var(--key-shadow,inset 0 -2px 0 rgba(0,0,0,.25)); }
+.transport-keys .key:has(input:checked),
+.transport-keys .key[aria-pressed="true"] { box-shadow:inset 0 2px 4px rgba(0,0,0,.35); color:var(--text); }
+:is(:is(.is-recording,.is-rec) .transport-keys,.transport-keys:is(.is-recording,.is-rec,:has([value="recording"]:checked))) .key-rec,
+:is(:is(.is-playing,.is-play,.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-playing,.is-play,.is-paused,.is-pause,:has(:is([value="playing"],[value="paused"]):checked))) .key-play,
+:is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-pause {
+  --_tk-icon:var(--_tk);
+  border-color:var(--_tk);
+  color:var(--transport-key-lit-fg,var(--text));
+  background:color-mix(in srgb,var(--_tk) var(--transport-key-tint,14%),var(--key-bg,var(--surface-2)));
+  box-shadow:0 0 var(--transport-key-glow,.8em) color-mix(in srgb,var(--_tk) 55%,transparent);
+}
+@media (prefers-reduced-motion:no-preference) {
+  html:not([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { animation:transport-key-flash var(--transport-key-flash,.5s) steps(1,end) infinite; }
+}
+@keyframes transport-key-flash {
+  50% { --_tk-icon:currentColor; background:var(--key-bg,var(--surface-2)); color:var(--key-fg,var(--muted)); border-color:var(--key-border,var(--border)); box-shadow:none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { border-style:dashed; }
+}
+html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pause) .transport-keys,.transport-keys:is(.is-paused,.is-pause,:has([value="paused"]:checked))) .key-play { border-style:dashed; }
+@media (forced-colors:active) {
+  .transport-keys .key:has(input:checked) { border-style:double; border-width:4px; }
+}
+
+/* --- .seg7 — seven-segment digits -----------------------------------------
+     <span class="seg7" role="img" aria-label="00:12:34">
+       <i data-d="0"></i><i data-d="0"></i><b></b><i data-d="1"></i>…
+     </span>
+   One <i> per digit; data-d is 0–9, "-" or "" (blank). <b> is a colon.
+   Each segment is a background layer coloured lit or ghost; a mask cuts the
+   seven bevelled shapes. The app updates a digit by changing data-d (and
+   the aria-label). */
+.seg7 {
+  --_on:var(--seg7-lit,var(--accent));
+  --_off:var(--seg7-unlit,color-mix(in srgb,var(--_on) var(--seg7-ghost,13%),transparent));
+  display:inline-flex;
+  align-items:stretch;
+  gap:var(--seg7-gap,.14em);
+  block-size:1em;
+  vertical-align:middle;
+  transform:skewX(var(--seg7-skew,-7deg));
+  filter:drop-shadow(0 0 var(--seg7-glow,.04em) var(--_on)) brightness(var(--seg7-brightness,1));
+  forced-color-adjust:none;
+}
+.seg7 > i {
+  --_a:var(--_off); --_b:var(--_off); --_c:var(--_off); --_d:var(--_off); --_e:var(--_off); --_f:var(--_off); --_g:var(--_off);
+  flex:none;
+  inline-size:.6em;
+  font-style:normal;
+  background:
+    linear-gradient(var(--_a),var(--_a)) 50% 0 / 66.667% 10%,
+    linear-gradient(var(--_b),var(--_b)) 100% 0 / 16.667% 50%,
+    linear-gradient(var(--_c),var(--_c)) 100% 100% / 16.667% 50%,
+    linear-gradient(var(--_d),var(--_d)) 50% 100% / 66.667% 10%,
+    linear-gradient(var(--_e),var(--_e)) 0 100% / 16.667% 50%,
+    linear-gradient(var(--_f),var(--_f)) 0 0 / 16.667% 50%,
+    linear-gradient(var(--_g),var(--_g)) 50% 50% / 66.667% 10%;
+  background-repeat:no-repeat;
+  --_mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' preserveAspectRatio='none'%3E%3Cpath d='M2.3 1 3.3 0h5.4l1 1-1 1H3.3zM2.3 10l1-1h5.4l1 1-1 1H3.3zM2.3 19l1-1h5.4l1 1-1 1H3.3zM1 1.3l1 1v5.4l-1 1-1-1V2.3zM11 1.3l1 1v5.4l-1 1-1-1V2.3zM1 11.3l1 1v5.4l-1 1-1-1v-5.4zM11 11.3l1 1v5.4l-1 1-1-1v-5.4z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  -webkit-mask:var(--_mask);
+  mask:var(--_mask);
+}
+.seg7 > i:is([data-d="0"],[data-d="2"],[data-d="3"],[data-d="5"],[data-d="6"],[data-d="7"],[data-d="8"],[data-d="9"]) { --_a:var(--_on); }
+.seg7 > i:is([data-d="0"],[data-d="1"],[data-d="2"],[data-d="3"],[data-d="4"],[data-d="7"],[data-d="8"],[data-d="9"]) { --_b:var(--_on); }
+.seg7 > i:is([data-d="0"],[data-d="1"],[data-d="3"],[data-d="4"],[data-d="5"],[data-d="6"],[data-d="7"],[data-d="8"],[data-d="9"]) { --_c:var(--_on); }
+.seg7 > i:is([data-d="0"],[data-d="2"],[data-d="3"],[data-d="5"],[data-d="6"],[data-d="8"],[data-d="9"]) { --_d:var(--_on); }
+.seg7 > i:is([data-d="0"],[data-d="2"],[data-d="6"],[data-d="8"]) { --_e:var(--_on); }
+.seg7 > i:is([data-d="0"],[data-d="4"],[data-d="5"],[data-d="6"],[data-d="8"],[data-d="9"]) { --_f:var(--_on); }
+.seg7 > i:is([data-d="2"],[data-d="3"],[data-d="4"],[data-d="5"],[data-d="6"],[data-d="8"],[data-d="9"],[data-d="-"]) { --_g:var(--_on); }
+.seg7 > b {
+  --_c:var(--_on);
+  flex:none;
+  inline-size:.16em;
+  background:
+    radial-gradient(circle closest-side,var(--_c) 92%,transparent) 50% 28% / .14em .14em no-repeat,
+    radial-gradient(circle closest-side,var(--_c) 92%,transparent) 50% 72% / .14em .14em no-repeat;
+}
+.seg7 > b.is-off { --_c:var(--_off); }
+/* Behind VFD glass (.vfd, .is-vfd, or a theme with --meter-style: vfd) the
+   digits take the phosphor ink and bloom. */
+:is(.vfd,.is-vfd) .seg7,
+.seg7.is-vfd {
+  --seg7-lit:var(--vfd-ink);
+  --seg7-ghost:var(--vfd-ghost,10%);
+  --seg7-glow:var(--vfd-glow,.1em);
+  --seg7-brightness:var(--vfd-brightness,1.1);
+}
+@container style(--meter-style: vfd) {
+  .seg7:not(.is-themed) {
+    --seg7-lit:var(--vfd-ink);
+    --seg7-ghost:var(--vfd-ghost,10%);
+    --seg7-glow:var(--vfd-glow,.1em);
+    --seg7-brightness:var(--vfd-brightness,1.1);
+  }
 }
 /* --- Metering (v5.2): broadcast and studio level meters --------------------
  * .vu         analogue needle meter (VU, .is-ppm), backlit face, peak LED
@@ -9176,7 +9454,8 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   border: 1px solid #000;
   border-radius: var(--vfd-radius, calc(var(--radius) * 0.6));
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 0.5rem 1.4rem rgb(0 0 0 / 0.7), var(--vfd-shadow, 0 0 0 1px var(--border));
-  text-shadow: 0 0 0.35em color-mix(in oklab, var(--vfd-ink) 70%, transparent);
+  text-shadow: 0 0 var(--vfd-glow, 0.35em) color-mix(in oklab, var(--vfd-ink) 70%, transparent);
+  filter: brightness(var(--vfd-brightness, 1));
   color-scheme: dark;
   /* Meters behind the glass print their scales in phosphor. */
   --ledarc-ink: var(--vfd-ink);
@@ -9256,7 +9535,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
   position: absolute;
   inset-block-start: var(--readout-ghost-top, 0.1em);
   inset-inline-start: var(--readout-ghost-start, 0.35em);
-  opacity: 0.12;
+  opacity: var(--vfd-ghost-opacity, 0.12);
   text-shadow: none;
   pointer-events: none;
 }

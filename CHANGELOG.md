@@ -5,6 +5,22 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+- **Tape-recorder components (#66, for pi9696):**
+  - `.seg7` seven-segment digits (`<i data-d="3">`, ghost segments,
+    `--seg7-skew`, lit/unlit tokens), standalone, in the `.media-deck` head
+    window, or behind VFD glass. The VFD gains `--vfd-glow`,
+    `--vfd-brightness` and `--vfd-ghost(-opacity)`; cassette-futurism and
+    steampunk glow amber.
+  - `.transport-keys` (Rec/Stop/Play/Pause lamp keys on `.key`): Play
+    flashes at 2 Hz while paused and is steady with a dashed edge under
+    reduced motion. `.media-deck` states also follow checked transport
+    radios, so decks need no JavaScript.
+  - `[data-lamp]` deck lamps with `--deck-lamp-r` and a larger, glowing
+    record lamp; the `.deck-hud` lamp band; `[data-when]` state text.
+  - `core/components/graphs.css` ([docs](docs/components/graphs.md)):
+    `.graph-grid`/`.graph-card` small-multiple telemetry graphs, uPlot DOM
+    hooks plus a token snippet, and a `.system-pane` above the status
+    footer. `media-decks.html` is now a JavaScript-free tape-recorder demo.
 - **`.btn-tertiary`**: a third emphasis level in core (accent text, no fill
   or border until hover), and `--btn-font-size` for the label size. In the
   app bar it follows the bar's text colour like secondary.
