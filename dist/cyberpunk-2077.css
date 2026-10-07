@@ -4828,6 +4828,95 @@ html[data-motion="reduced"] .desktop-dock .icon { transition: none !important; }
   animation-timing-function: var(--motion-ease);
 }
 
+/* Themed exits: a theme names how it leaves with --motion-leave (one of
+   the keywords below). The old theme's stylesheet is gone by the time the
+   transition plays, so theme-loader.js copies the keyword to
+   data-leaving on <html> before switching, and the keyframes live here.
+   The old snapshot plays on top of the new theme, which shows through
+   (with its own ::view-transition-new entrance, if it has one). */
+:root[data-leaving]::view-transition-old(root) {
+  z-index: var(--z-raised);
+  mix-blend-mode: normal;
+  animation: var(--leave-name) var(--leave-duration, 700ms) var(--leave-ease, ease-in) both;
+}
+:root[data-leaving]::view-transition-new(root) { mix-blend-mode: normal; }
+/* A screen that powers off or crashes goes dark before the new one comes up. */
+:root:is([data-leaving="power-off"], [data-leaving="bsod"])::view-transition-image-pair(root) { background: #000; }
+:where(:root:is([data-leaving="power-off"], [data-leaving="bsod"]))::view-transition-new(root) {
+  animation: leave-reveal var(--leave-duration, 700ms) linear both;
+}
+:root[data-leaving="power-off"] { --leave-name: leave-power-off; }
+:root[data-leaving="bsod"] { --leave-name: leave-bsod; --leave-duration: 900ms; --leave-ease: linear; }
+:root[data-leaving="rain"] { --leave-name: leave-rain; --leave-duration: 900ms; }
+:root[data-leaving="warp"] { --leave-name: leave-warp; --leave-duration: 550ms; }
+:root[data-leaving="shatter"] { --leave-name: leave-shatter; --leave-duration: 800ms; }
+:root[data-leaving="drop"] { --leave-name: leave-drop; }
+:root[data-leaving="iris"] { --leave-name: leave-iris; --leave-ease: ease-in-out; }
+:root[data-leaving="genie"] { --leave-name: leave-genie; --leave-duration: 600ms; }
+@property --leave-crack { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes leave-reveal { 0%, 70% { opacity: 0; } }
+/* A CRT: the picture collapses to a bright line, then a dot. */
+@keyframes leave-power-off {
+  45% { transform: scale(1, 0.006); filter: brightness(3); }
+  75% { transform: scale(0.006, 0.006); filter: brightness(5); opacity: 1; }
+  100% { transform: scale(0, 0); opacity: 0; }
+}
+/* The screen turns crash blue, then is wiped away top down in chunks. */
+@keyframes leave-bsod {
+  15%, 40% {
+    filter: brightness(0.45) sepia(1) hue-rotate(190deg) saturate(9); clip-path: inset(0);
+    animation-timing-function: steps(8, end);
+  }
+  70%, 100% { filter: brightness(0.45) sepia(1) hue-rotate(190deg) saturate(9); clip-path: inset(100% 0 0); }
+}
+/* Columns of green fall away. */
+@keyframes leave-rain {
+  0% { mask-position: 0 0, 0 0; }
+  20% { filter: sepia(1) hue-rotate(70deg) saturate(6); }
+  100% {
+    transform: translateY(35%); opacity: 0;
+    filter: sepia(1) hue-rotate(70deg) saturate(6) brightness(1.5);
+    mask-position: 0 0, 0 100%;
+  }
+}
+:root[data-leaving="rain"]::view-transition-old(root) {
+  mask-image: repeating-linear-gradient(90deg, #000 0 7px, #0006 7px 9px, transparent 9px 11px),
+    linear-gradient(#000 40%, transparent 70%);
+  mask-size: 100% 100%, 100% 300%;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+}
+/* Stretches into streaks and is gone. */
+@keyframes leave-warp {
+  25% { transform: scale(0.96); }
+  100% { transform: scale(5, 0.4); filter: blur(10px) brightness(2.5); opacity: 0; }
+}
+/* Cracks open into wedges that drift apart. */
+@keyframes leave-shatter {
+  15% { --leave-crack: 2deg; transform: none; }
+  100% { --leave-crack: 30deg; transform: scale(1.3) rotate(3deg); opacity: 0; }
+}
+:root[data-leaving="shatter"]::view-transition-old(root) {
+  mask-image: repeating-conic-gradient(from 11deg at 46% 54%, #000 0 calc(30deg - var(--leave-crack)), transparent 0 30deg);
+}
+/* Tips over and falls off the bottom. */
+@keyframes leave-drop {
+  25% { transform: rotate(4deg); }
+  100% { transform: translateY(110%) rotate(18deg); }
+}
+:root[data-leaving="drop"]::view-transition-old(root) { transform-origin: 0 100%; }
+/* A closing circle, as at the end of a film reel. */
+@keyframes leave-iris {
+  from { clip-path: circle(75% at 50% 50%); }
+  to { clip-path: circle(0 at 50% 50%); }
+}
+/* Pinches down into the bottom of the screen. */
+@keyframes leave-genie {
+  from { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  60% { clip-path: polygon(10% 30%, 90% 30%, 56% 100%, 44% 100%); opacity: 1; }
+  to { clip-path: polygon(46% 100%, 54% 100%, 51% 100%, 49% 100%); opacity: 0; }
+}
+
 /* --- §10 Text size ------------------------------------------------------
  * Every component is in rem, so the layout follows the root size. A theme
  * whose root size isn't the browser default declares it as
@@ -8165,6 +8254,28 @@ time.updated::before { content: "\21BB" / ""; font-size: 1.05em; }
 @media (forced-colors: active) {
   .is-updated { text-decoration-color: Highlight; }
   .connection::before, .depth-bar::before { forced-color-adjust: none; }
+}
+
+/* --- App alert level: <html data-alert="yellow|red"> ---------------------
+ * The app's whole-page condition (an incident, a failed deploy, red alert).
+ * Core frames the viewport in --warning or --danger, pulsing at red; a
+ * theme answers in its own idiom (LCARS strobes, Windows 95 blue-screens
+ * its panels). The frame never takes input. Announcing the reason is the
+ * app's job (a role="alert" message), not the frame's. */
+:root[data-alert="yellow"] { --alert-level: var(--warning); }
+:root[data-alert="red"] { --alert-level: var(--danger); }
+:root[data-alert]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-toast);
+  pointer-events: none;
+  box-shadow: inset 0 0 0 4px var(--alert-level),
+    inset 0 0 6rem color-mix(in srgb, var(--alert-level) 35%, transparent);
+}
+@keyframes alert-pulse { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-alert="red"]::after { animation: alert-pulse 2s ease-in-out infinite; }
 }
 /* --- v5 music and media kit (PLAN.md §19 "Music and media") -------------
  * Track rows, the playing equaliser glyph, media toggles (shuffle, repeat,
@@ -15394,6 +15505,7 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
 }
 
 html[data-theme="cyberpunk-2077"] {
+  --motion-leave: rain;
   color-scheme: dark;
   /* Sampled from references/cyberpunk-2077 (RESEARCH.md "Sampled palette"). */
   --bg: #0e0d12;          /* menu backdrop, sampled #0e0e13 */

@@ -26,6 +26,7 @@
 }
 
 html[data-theme="lcars"] {
+  --motion-leave: warp;
   color-scheme: dark;
   --bg: #000000;
   /* No grey cards: surfaces are black, so every panel is candy framing on
@@ -888,3 +889,22 @@ html[data-theme="lcars"] .panel-header:has(.input, .select, .input-group) > .inp
    --table-head-fg, a colour tuned for this theme's filled header row and
    unreadable on the plain cell. Labels take --muted instead. */
 html[data-theme="lcars"] .table.is-stacked { --table-label-fg: var(--muted); }
+
+/* Alert level (data-alert, docs/components/live.md): at red alert every
+   bar turns red and the frame strobes once a second, as on the bridge;
+   yellow alert turns the palette amber. Text keeps its tan. */
+html[data-theme="lcars"][data-alert="red"] {
+  --accent: #ff4d4d;
+  --lcars-peach: #ff3333;
+  --lcars-tan: #ff9999;
+  --lcars-lavender: #cc4444;
+  --lcars-periwinkle: #ff6666;
+}
+html[data-theme="lcars"][data-alert="yellow"] {
+  --accent: #ffcc33;
+  --lcars-peach: #ff9900;
+  --lcars-lavender: #ffcc66;
+  --lcars-periwinkle: #ffaa33;
+}
+html[data-theme="lcars"][data-alert]::after { box-shadow: inset 0 0 0 0.5rem var(--alert-level); }
+html[data-theme="lcars"][data-alert="red"]::after { animation-duration: 1s; animation-timing-function: steps(1); }

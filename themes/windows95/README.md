@@ -37,6 +37,7 @@ poster.
   the 3D language, not just the controls.
 - Tables draw a full 1px grid — Explorer's details view, not a modern
   borderless list.
+- **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): start a textarea with "Dear" and the Office assistant offers to help with the letter.
 
 ## Icons
 

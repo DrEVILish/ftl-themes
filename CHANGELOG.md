@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+### Added
+- Themed exits: a theme names how it leaves with `--motion-leave` (`power-off`, `bsod`, `rain`,
+  `warp`, `shatter`, `drop`, `iris`, `genie`), and 40 themes do. `theme-loader.js` copies it to
+  `data-leaving` so the theme switch plays it (docs/components/experience.md).
+- Alert level: `<html data-alert="yellow|red">` frames the page in every theme; LCARS, Windows 95,
+  Matrix, Skyrim and Nokia 3310 answer in their own way (docs/components/live.md).
+- Easter eggs (PLAN.md §20), off unless `<html data-easter-eggs>`: `assets/js/eggs.js` sets the
+  attributes (Konami code for red alert, a Windows 95 letter helper, Matrix idle rain, Skyrim's
+  arrow in the knee) and each theme draws its own. Demo: `components-experience.html`.
+
 ### Changed
 - The v4 codemod (`scripts/migrate-v4.py`, `scripts/v4-rename-map.json`) is retired;
   `docs/MIGRATING-v4.md` shows how to run it from the v5.3.0 tag.

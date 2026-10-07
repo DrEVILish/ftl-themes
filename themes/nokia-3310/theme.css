@@ -10,6 +10,7 @@
  */
 
 html[data-theme="nokia-3310"] {
+  --motion-leave: power-off;
   color-scheme: light;
   --bg: #9ead86;
   --surface: #a3b58c;
@@ -321,4 +322,15 @@ html[data-theme="nokia-3310"] .modal-header > .btn-close {
   --btn-close-width: auto;
   --btn-close-pad: 0 0.4em;
   --btn-close-glyph-size: 1em;
+}
+
+/* Alert level (data-alert): yellow switches the backlight off; red flashes
+   it once a second, like an incoming call. */
+html[data-theme="nokia-3310"][data-alert]::after {
+  box-shadow: none;
+  background: rgb(20 30 10 / 0.35);
+}
+@keyframes nokia-backlight { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="nokia-3310"][data-alert="red"]::after { animation: nokia-backlight 1s steps(1) infinite; }
 }

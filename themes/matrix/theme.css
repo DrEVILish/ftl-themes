@@ -4,6 +4,7 @@
  */
 
 html[data-theme="matrix"] {
+  --motion-leave: rain;
   color-scheme: dark;
   --bg: #000000;
   --surface: #020c02;
@@ -238,5 +239,38 @@ html[data-theme="matrix"] {
 @media print {
   html[data-theme="matrix"] {
     background: none !important;
+  }
+}
+
+/* Alert level (data-alert): the main view glitches, colour fringes
+   jumping every few seconds at red. */
+html[data-theme="matrix"][data-alert] .app-main {
+  text-shadow: -1px 0 rgb(255 0 60 / 0.6), 1px 0 rgb(0 200 255 / 0.5);
+}
+@keyframes matrix-glitch {
+  0%, 90%, 100% { text-shadow: -1px 0 rgb(255 0 60 / 0.6), 1px 0 rgb(0 200 255 / 0.5); }
+  92% { text-shadow: -4px 1px rgb(255 0 60 / 0.8), 3px -1px rgb(0 200 255 / 0.7); }
+  95% { text-shadow: 3px 0 rgb(255 0 60 / 0.8), -5px 1px rgb(0 200 255 / 0.7); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="matrix"][data-alert="red"] .app-main { animation: matrix-glitch 3s steps(1) infinite; }
+}
+
+/* Easter egg (data-easter-eggs + assets/js/eggs.js): after a minute idle,
+   digital rain falls over the page until the next key or pointer move. */
+@keyframes matrix-rain { to { background-position: 0 100vh, 9px 140vh, 17px 120vh; } }
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="matrix"][data-easter-eggs][data-egg-idle] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-toast);
+    pointer-events: none;
+    background:
+      linear-gradient(transparent 60%, #00ff41) 0 0 / 23px 50vh,
+      linear-gradient(transparent 70%, #00ff41cc) 9px 20vh / 31px 70vh,
+      linear-gradient(transparent 75%, #00ff4199) 17px 40vh / 41px 60vh;
+    mask-image: repeating-linear-gradient(90deg, #000 0 3px, transparent 3px 8px);
+    animation: matrix-rain 4s linear infinite;
   }
 }

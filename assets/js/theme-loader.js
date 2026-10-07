@@ -103,7 +103,13 @@
     var still = !document.startViewTransition || motion === "reduced" || motion === "none" ||
       (motion !== "full" && matchMedia("(prefers-reduced-motion: reduce)").matches);
     if (still) return apply(value, true);
-    document.startViewTransition(function () { return apply(value, true); });
+    // The outgoing theme's exit (--motion-leave) must be read now: its
+    // stylesheet is gone by the time the transition plays.
+    var root = document.documentElement;
+    var leave = getComputedStyle(root).getPropertyValue("--motion-leave").trim();
+    if (/^[a-z-]+$/.test(leave)) root.dataset.leaving = leave;
+    document.startViewTransition(function () { return apply(value, true); })
+      .finished.finally(function () { delete root.dataset.leaving; });
   }
 
   fetch("dist/themes.json").then(function (r) {

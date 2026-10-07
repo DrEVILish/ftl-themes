@@ -32,6 +32,7 @@
 }
 
 html[data-theme="skyrim"] {
+  --motion-leave: iris;
   color-scheme: dark;
   /* Sampled from references/skyrim (see RESEARCH.md "Palette"). */
   --bg: #101213;          /* cold slate night behind the menus */
@@ -513,4 +514,43 @@ html[data-theme="skyrim"] .modal-header > .btn-close {
   --btn-close-border: currentColor;
   --btn-close-border-width: 1px;
   --btn-close-radius: 0;
+}
+
+/* Alert level (data-alert): the screen edges darken like a dragon is
+   overhead, with the warning as a subtitle on a smoky band at the bottom. */
+html[data-theme="skyrim"][data-alert]::after {
+  content: "You hear a roar in the distance" / "";
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 1.25rem;
+  font: 1.4rem/1 var(--font);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ecebe6;
+  text-shadow: 0 0 6px #000;
+  box-shadow: none;
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.8)) bottom / 100% 5rem no-repeat,
+    radial-gradient(ellipse at center, transparent 50%, rgb(20 10 5 / 0.7) 100%);
+}
+html[data-theme="skyrim"][data-alert="red"]::after {
+  content: "A dragon approaches" / "";
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.8)) bottom / 100% 5rem no-repeat,
+    radial-gradient(ellipse at center, transparent 40%, rgb(90 10 0 / 0.75) 100%);
+}
+
+/* Easter egg (data-easter-eggs + assets/js/eggs.js): the tenth failed
+   form check earns the guard's line. */
+@keyframes skyrim-knee { 0%, 100% { opacity: 0; } 10%, 85% { opacity: 1; } }
+html[data-theme="skyrim"][data-easter-eggs][data-egg-knee] body::after {
+  content: "I used to be an adventurer like you. Then I took an arrow in the knee." / "";
+  position: fixed;
+  inset: auto 0 5rem;
+  z-index: var(--z-toast);
+  text-align: center;
+  font: 1.1rem var(--font);
+  color: #ecebe6;
+  text-shadow: 0 0 6px #000, 0 0 2px #000;
+  pointer-events: none;
+  animation: skyrim-knee 6s ease both;
 }

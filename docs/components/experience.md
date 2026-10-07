@@ -180,6 +180,30 @@ under `data-motion="reduced"`/`"none"`. A theme supplies its own entrance:
 html[data-theme="silo"]::view-transition-new(root) { animation: silo-crt-on 400ms steps(6) both; }
 ```
 
+**Themed exits.** A theme says how it *leaves* with `--motion-leave`, one
+keyword from core's set:
+
+| Keyword | Effect | Themes |
+|---|---|---|
+| `power-off` | A CRT collapses to a line, then a dot | MS-DOS, Teletext, Pip-Boy, Nokia 3310, Bloomberg… |
+| `bsod` | Crash blue, then wiped away top down | Windows 95, XP, 7 |
+| `rain` | Green columns fall away | Matrix, Tron, Cyberpunk 2077, Cyber Goth |
+| `warp` | Stretches into streaks | LCARS, Death Star, Blue Future… |
+| `shatter` | Cracks into drifting wedges | Liquid Glass |
+| `drop` | Tips over and falls off the screen | LEGO Classic |
+| `iris` | A closing circle | Skyrim, Aperture, Steampunk, XMB… |
+| `genie` | Pinches into the bottom of the screen | Aqua, iMac G3 |
+
+```css
+html[data-theme="msdos"] { --motion-leave: power-off; }
+```
+
+The outgoing stylesheet is gone by the time the transition plays, so the
+keyframes live in core and `theme-loader.js` copies the keyword to
+`data-leaving` on `<html>` before it switches, removing it when the
+transition ends. An app with its own switcher does the same. Unset, the
+switch cross-fades; the reduced-motion rules above still apply.
+
 After each theme loads, `theme-loader.js` fires a `themechange` event on
 `document` (prefs.js uses it to rebuild the accent swatches).
 

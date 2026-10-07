@@ -10,6 +10,7 @@
  */
 
 html[data-theme="windows95"] {
+  --motion-leave: bsod;
   color-scheme: light;
   /* #008282, not the pixel-authentic #008080 — 2/255 of extra green/blue is
      imperceptible against a desktop backdrop that never carries body text,
@@ -606,4 +607,31 @@ html[data-theme="windows95"] {
   --home-tile-shadow: none;
   --home-label-fg: #ffffff;
   --home-dock-glyph: #000080;
+}
+
+/* Alert level (data-alert): at red, panels and cards blue-screen. */
+html[data-theme="windows95"][data-alert="red"] :is(.panel, .card) {
+  --panel-bg: #0000aa;
+  --card-bg: #0000aa;
+  --on-surface: #ffffff;
+  --text: #ffffff;
+  --muted: #ffffff;
+  font-family: var(--font-mono);
+}
+
+/* Easter egg (data-easter-eggs + assets/js/eggs.js): start a textarea
+   with "Dear" and the Office assistant offers to help with the letter. */
+html[data-theme="windows95"][data-easter-eggs]:has(textarea[data-egg-letter]) body::after {
+  content: "📎 It looks like you're writing a letter. Would you like help?" / "";
+  position: fixed;
+  inset: auto 1rem 1rem auto;
+  z-index: var(--z-toast);
+  max-width: 16rem;
+  padding: 0.6rem 0.8rem;
+  background: #ffffe1;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 0.6rem;
+  box-shadow: 2px 2px 0 #000;
+  pointer-events: none;
 }

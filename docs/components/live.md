@@ -157,6 +157,28 @@ Tokens: `--depth-bid` (`var(--success)`), `--depth-ask` (`var(--danger)`),
 
 ---
 
+## Alert level `data-alert`
+
+`<html data-alert="yellow|red">` is the app's whole-page condition: an
+incident, a failed deploy, red alert. Core frames the viewport in
+`--warning` (yellow) or `--danger` (red), pulsing slowly at red; the frame
+is an `html::after` overlay that never takes input. Some themes answer in
+their own idiom:
+
+| Theme | Yellow | Red |
+|---|---|---|
+| LCARS | Amber palette | Every bar red; the frame strobes once a second |
+| Windows 95 (and XP, 7) | Frame only | Panels and cards blue-screen |
+| Matrix | Colour fringes on the main view | The fringes glitch every few seconds |
+| Skyrim | Darkened edges, "You hear a roar in the distance" | Red edges, "A dragon approaches" |
+| Nokia 3310 | Backlight off | Backlight flashes once a second |
+
+The theme text is decorative (hidden from assistive technology). Tell users
+why with your own `role="alert"` message. All motion stops under reduced
+motion, and nothing flashes more than once a second. Easter eggs
+(`data-easter-eggs`, `assets/js/eggs.js`) can also set it: the Konami code
+toggles red alert.
+
 ## Dashboard grid `.dashboard` and `.widget`
 
 ```html

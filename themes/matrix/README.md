@@ -45,6 +45,7 @@ whole file, followed by the 45 ids added in the 2026-10 top-up: 24 grid;
 1px hairline stroke, square caps, miter joins; never filled (the sprite
 inherits `fill: none`); true curves allowed; rects rx 1.5 when 6+ wide,
 sharp below; dots are r1.2 hairline rings; colour is `currentColor` only.
+- **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): after a minute idle, digital rain falls until the next key or pointer move.
 
 ## Layout
 

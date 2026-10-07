@@ -67,6 +67,7 @@ reproduced.
 - `kbd` is a key-hint box: white outline, black fill, white glyph.
 - The left rail is a smoke strip with one vertical silver rule and a
   diamond on it, like the vanilla category-column divider.
+- **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): the tenth failed form check earns the guard's line about an arrow in the knee.
 
 ## Typography
 

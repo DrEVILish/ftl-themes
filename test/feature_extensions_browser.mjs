@@ -29,6 +29,17 @@ try {
     assert(look[3] !== look[2] && look[2] === look[1], `${theme}: only the error-rate card is in alert`);
     assert.equal(await page.locator('[data-scenario]:visible').count(), 2, theme);
   }
+  // Themed exit: the outgoing theme's --motion-leave plays on the old snapshot.
+  assert(await openThemed(page, `${server.base}/components-experience.html?theme=msdos`, 'msdos'), 'msdos failed to load');
+  await page.selectOption('#theme-picker', 'lcars');
+  await page.waitForFunction(() => document.getAnimations().some(a => String(a.effect?.pseudoElement).includes('view-transition-old')));
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.leaving), 'power-off');
+  assert(await page.evaluate(() => document.getAnimations().some(a => a.animationName === 'leave-power-off')));
+  await page.waitForFunction(() => !document.documentElement.dataset.leaving);
+  // Alert level: the Konami easter egg sets red alert, which frames the page.
+  for (const key of ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']) await page.keyboard.press(key);
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.alert), 'red');
+  assert.notEqual(await page.evaluate(() => getComputedStyle(document.documentElement, '::after').boxShadow), 'none');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(`${server.base}/components-experience.html?theme=ios-flat`, { waitUntil: 'networkidle' });
   await page.evaluate(() => {

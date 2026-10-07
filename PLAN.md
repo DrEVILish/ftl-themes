@@ -958,6 +958,9 @@ block feature work.
   digital rain behind an idle screen; a Skyrim "arrow to the knee" toast
   after the 10th error. Each lives in the theme's own folder, with a list
   in its README.
+  **Implemented:** `assets/js/eggs.js` sets the attributes; Windows 95,
+  Matrix and Skyrim draw theirs, and the Konami code sets the core
+  `data-alert="red"` level (docs/components/live.md).
 
 ## 21. New themes for v5
 

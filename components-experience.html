@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="blue-future">
+<html lang="en" data-theme="blue-future" data-easter-eggs>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -164,7 +164,7 @@
     <!-- ================================================================ -->
     <section class="stack" id="c-motion">
       <h2>Motion tokens</h2>
-      <p class="text-muted">A theme describes how it moves with these. Every animation they drive runs only when the OS and <code>data-motion</code> allow it. Switching theme with the picker cross-fades through a view transition, and is instant under reduced motion.</p>
+      <p class="text-muted">A theme describes how it moves with these. Every animation they drive runs only when the OS and <code>data-motion</code> allow it. Switching theme with the picker plays the outgoing theme's exit (<code>--motion-leave</code>) through a view transition: MS-DOS powers off, Windows blue-screens, Matrix rains away, LCARS goes to warp, Liquid Glass shatters. It is instant under reduced motion.</p>
       <div tabindex="0" class="table-wrap">
         <table class="table">
           <thead><tr><th>Token</th><th>Default</th><th>Used for</th></tr></thead>
@@ -175,9 +175,27 @@
             <tr><td><code>--motion-ease</code></td><td>cubic-bezier(0.2, 0, 0, 1)</td><td>All of the above</td></tr>
             <tr><td><code>--motion-enter</code></td><td>motion-fade-in m ease both</td><td>An element arriving (splash intro)</td></tr>
             <tr><td><code>--motion-exit</code></td><td>motion-fade-out s ease both</td><td>An element leaving</td></tr>
+            <tr><td><code>--motion-leave</code></td><td>unset (cross-fade)</td><td>The theme leaving: <code>power-off</code>, <code>bsod</code>, <code>rain</code>, <code>warp</code>, <code>shatter</code>, <code>drop</code>, <code>iris</code> or <code>genie</code></td></tr>
           </tbody>
         </table>
       </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section class="stack" id="c-alert">
+      <h2>Alert level and easter eggs</h2>
+      <p class="text-muted">The app sets <code>data-alert="yellow|red"</code> on <code>&lt;html&gt;</code> for a whole-page condition. Every theme frames the screen; LCARS, Windows&nbsp;95, Matrix, Skyrim and Nokia&nbsp;3310 answer in their own way. This page opts in to <code>data-easter-eggs</code> (<code>assets/js/eggs.js</code>): the Konami code also sets red alert, Windows&nbsp;95 offers help with a letter, Matrix rains after a minute idle, and Skyrim remarks on the tenth failed form check.</p>
+      <span class="label" id="alert-demo">Alert level</span>
+      <div class="toggle-group" role="radiogroup" aria-labelledby="alert-demo">
+        <label class="toggle-btn"><input type="radio" name="alert-demo" value="" checked>None</label>
+        <label class="toggle-btn"><input type="radio" name="alert-demo" value="yellow">Yellow</label>
+        <label class="toggle-btn"><input type="radio" name="alert-demo" value="red">Red</label>
+      </div>
+      <form class="stack" onsubmit="return false">
+        <label class="field"><span class="label">Letter (start with “Dear”)</span><textarea class="textarea" rows="3"></textarea></label>
+        <label class="field"><span class="label">Required field (submit it empty ten times)</span><input class="input" required></label>
+        <div class="cluster"><button class="btn">Submit</button></div>
+      </form>
     </section>
 
     <!-- ================================================================ -->
@@ -359,6 +377,13 @@
     <span class="push text-muted">PLAN.md §10–§14</span>
   </footer>
 
+<script src="assets/js/eggs.js"></script>
+<script>
+  // Demo control: the app owns data-alert; here a radio group sets it.
+  document.addEventListener("change", function (e) {
+    if (e.target.name === "alert-demo") e.target.value ? document.documentElement.dataset.alert = e.target.value : delete document.documentElement.dataset.alert;
+  });
+</script>
 <script src="assets/js/tint.js"></script>
 <script src="assets/js/theme-loader.js"></script>
 </body>
