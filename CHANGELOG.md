@@ -36,7 +36,7 @@ changes are called out explicitly here.
   take `.is-featured` (thick accent border) and `.is-success/-warning/-danger/-info` (status border and
   tint). `.list-item-body` stacks a title and meta line beside a row's trailing buttons (#67, #68 M-A6).
 - `proseries` theme: a Pro Series live-console touch screen (navy desk, blue strips, bevelled keys,
-  tick-ring knobs, ribbed fader caps). References in `references/proseries/`.
+  tick-ring knobs, hourglass fader caps). References in `references/proseries/`.
 - Console: `.led-list` (options chosen by a lit LED), sixteen channel tag colours (`.scribble[data-tag]`
   with `--tag-*` tokens), an assignable panel page counter, unassigned columns and navigation keys.
   `console.js` adds tap tempo, radio-list next/previous, and undo/redo/checkpoint/restore/clear for
