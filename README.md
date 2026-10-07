@@ -252,13 +252,117 @@ theme.
   from the screenshots in `test/visual-baseline/`.
 - **[`share-card.html`](share-card.html)**: the Open Graph card template.
 
-Component groups beyond the core set: editable tables, gauges and charts,
-date pickers and comboboxes, menubars, trees and command palettes, image
-cards and windows, presence and comments, game HUD, kanban, calendar,
-gantt, media player, and prose/code. The "v5 component groups" table in
-CONTRACT.md maps each group to its docs and page. Instrument and
-mixing-console primitives (`.meter`, `.readout`, `.lamp`, `.knob`,
-`.fader`) are in CONTRACT.md too.
+## Component list
+
+Every component every theme styles. Core components are documented in
+[`CONTRACT.md`](CONTRACT.md) ("Component vocabulary", "Instrument
+primitives", "Mixing-console primitives"); each v5 group links its own
+docs. [`docs/components/index.json`](docs/components/index.json) lists
+every class, token and source file for tools and agents.
+
+### Core
+
+- **Buttons:** `.btn` (primary, secondary, tertiary, ghost, danger, sizes),
+  `.btn-icon`, `.btn-close`, `.toggle-btn`, `.badge-button`, `.segmented`.
+- **Forms:** `.field`, `.label`, `.field-hint`, `.field-error`,
+  `.field-row`, `.field-group`, `.input`, `.select`, `.textarea`
+  (readonly, mirror, invalid and size states), `.input-group`, `.check`,
+  `.radio-group`, `.switch`, `.slider` (and `.is-vertical`), `.dropzone`.
+- **Surfaces:** `.panel`, `.card`, `.modal` (dialog and popover, sizes,
+  window states: maximise, minimise, resize, focus stacking), `.drawer`,
+  `.popover`, `.dropdown`, `.context-menu`, `.accordion`, `.tooltip`
+  (`[data-tooltip]`), `.toast`, `.alert`.
+- **Navigation:** `.app` shell (`.app-bar`, `.app-rail`, `.app-main`,
+  `.app-status`), `.nav`, `.nav-item`, `.nav-brand`, `.nav-collapse`,
+  `.tabs`/`.tab`, `.breadcrumbs`, `.pagination`, `.scrollspy`, `.taskbar`,
+  `.toolbar`.
+- **Tables and lists:** `.table` (sticky header, zebra, blank rows, sort
+  indicator, row hover and selection, `.is-matrix`), `.list` and
+  two-line `.list-item`s, `.log`.
+- **Status and feedback:** `.badge`, `.status`, `.progress`, `.meter`,
+  `.spinner`, `.skeleton`, `.empty-state`, `.schedule`, htmx request
+  states (`.htmx-request`, `.indicator`).
+- **Content:** `.avatar`, `.stat`, `.divider`, `.icon`, `.carousel`,
+  `.thread`/`.message`, `.thread-divider`, `.typing`, `.attachment`,
+  `.bar-chart`, `.value-row`, `.meter-bank`, `.hero`, `.band`, `.price`,
+  `kbd`.
+- **Instruments:** `.meter` (vertical, segmented LED ladder, gain
+  reduction), `.readout`, `.transport`, `.lamp`.
+- **Mixing console:** `.mixer`, `.strip`, `.knob`, `.fader`, `.scale`,
+  `.key`, `.scribble`, `.eq-curve`.
+- **Layout:** `.stack`, `.cluster`, `.grid`, `.container`, `.anchor`,
+  `.ratio`, `.divide-y`, `.stretched-link`, gap and margin steps,
+  truncation, `.visually-hidden`, themed scrollbars.
+
+### v5 component groups
+
+- **Forms** ([docs](docs/components/forms.md)): `.btn-clear`,
+  `.btn-split`, `.fab`, `.toggle-group`, `.has-badge`, `.input-icon` and
+  `.input-clear`, search field, native date and time pickers, date range,
+  `.calendar`, `.combobox`/`.listbox`, `.tag-input`, `.stepper`, range
+  `.slider.is-range`, `.rating`, `.swatches`, `.file-list`.
+- **Tables** ([docs](docs/components/tables.md)): editable cells, small-screen
+  stacking, frozen columns, column resize and reorder, row groups, tree rows,
+  selection column and bulk-action bar, loading, empty and load-more rows,
+  density.
+- **Navigation** ([docs](docs/components/navigation.md)): closable and
+  scrolling tabs, `ul.menubar` with nested menus, `ul.tree`, `.tabbar`,
+  `.sheet`, `nav.nav-rail`, `ol.steps`, `.command` palette, `.split`
+  pane, keyboard layer.
+- **Surfaces** ([docs](docs/components/surfaces.md)): image cards
+  `.card.has-media`, draggable windows `.modal[data-drag]`, brand sign-in
+  buttons `.btn-brand`.
+- **Instruments** ([docs](docs/components/instruments.md)): `.gauge-dial`,
+  `.gauge-arc`, `.gauge-linear`, `.compass` and `.compass-strip`, `.map`
+  with pins and legend, `.progress-ring`, `.sparkline`, `.donut`,
+  `.legend`, `.heatmap`, `.timeline`, `dl.props`, `.battery`, `.signal`,
+  `.clock`, `.countdown`, the library-neutral chart contract.
+- **Metering** ([docs](docs/components/metering.md)): analogue `.vu`,
+  `.ledbar` bargraphs, `.ledarc` loudness meter, `.meter-panel`, VFD
+  `.vfd`, EQ display (`.eq-graph`, `.rta`, `.spectrogram`, `.eq-node`).
+- **Media** ([docs](docs/components/media.md)): `.tracklist`/`.track`,
+  play queue, `.equaliser`, `.media-toggle`, `.scrubber`, `.volume`,
+  `.waveform`, `.now-playing`, `.album-grid`, `.lyrics`.
+- **Media devices** ([docs](docs/components/media-devices.md)):
+  `.media-deck` reels and states, `[data-when]` state text, deck lamps and
+  HUD band, `.transport-keys`, `.seg7` seven-segment digits.
+- **Graphs** ([docs](docs/components/graphs.md)): `.graph-grid`/`.graph-card`,
+  uPlot bridge, `.system-pane`.
+- **Live data** ([docs](docs/components/live.md)): `.is-updated`,
+  `.is-up`/`.is-down`/`.is-flat`, `.is-stale`, `.connection`,
+  `time.updated`, `.feed`, `.depth-bar`, page alert level `data-alert`,
+  `.dashboard` of `.widget`s.
+- **Experience** ([docs](docs/components/experience.md)): display settings
+  (`data-text-size`, `-density`, `-contrast`, `-motion`, `-transparency`,
+  `-underline-links`), forced colours, the `.prefs` panel, motion tokens
+  and themed theme-switch exits (`--motion-leave`), accent swatches,
+  seasons, `.splash`, foldable layouts, themed empty, error, offline and
+  404 states.
+- **Social** ([docs](docs/components/social.md)): per-user colours,
+  avatar status, `.presence`, live cursors, comment anchors and
+  `details.comment-thread`, `.mention`, `.typing`, `.notifications`,
+  activity feed.
+- **Prose** ([docs](docs/components/prose.md)): `.prose`, code palette,
+  callouts, template pieces.
+- **Planner** ([docs](docs/components/planner.md)): `.kanban`,
+  `.calendar.is-planner`, `.gantt`, `.schedule-list`.
+- **Game HUD** ([docs](docs/components/hud.md)): `.hud`, `.hud-bar`,
+  `.hud-minimap`, `.hud-quests`, `.hud-slot`, `.hud-float`,
+  `.hud-achievement`, `.hud-prompt`.
+- **Vehicles** ([docs](docs/components/vehicles.md)): `.attitude`, `.tape`,
+  `.radar` (with `.radar-line`, `.radar-vrm`, `.ownship`),
+  `.annunciator` and `.annunciator-switch`, `.telltale`, `.tyres`,
+  `.mfd`, `.guard`, `.checklist`, `.throttle`, `.pfd`, `.flight-hud`,
+  `.dial-bug`, `.waterfall`, `.orbit`.
+- **Operations** ([docs](docs/components/ops.md)): `[data-status]`
+  colours, shaped `.map-pin`s, sketch map hooks, `.map-route`,
+  `.camera-feed`, `.barcode`.
+- **Desktop** ([docs](docs/components/desktop.md)): `.desktop` shells
+  (icons, dock, launchers, monitor), `.start-menu`, taskbar tasks and
+  tray, `.desktop-window`s.
+
+The "v5 component groups" table in CONTRACT.md maps each group to its
+docs and example page.
 
 ## Building a theme
 
