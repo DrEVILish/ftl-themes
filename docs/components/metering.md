@@ -205,7 +205,7 @@ Peak / Overs / Meter-mode keys are radios inside `.key` labels; the panel redraw
   - An app may put a `<canvas>`, `<img>` or `<video>` inside `.spectrogram` instead of cells.
 - **Selection:** nodes are radios; the checked one is highlighted and the Nth `.eq-band` shows while the
   Nth `.eq-node` is checked (up to 8). `.eq-node.is-off` dashes a bypassed band.
-- **v5.2 toggles still work:** an unchecked `data-eq-show="rta|pre|spectrogram"` checkbox hides that
+- **On/off toggles:** an unchecked `data-eq-show="rta|spectrogram"` checkbox hides that
   layer.
 - **Tokens:** `--eq-graph-aspect` (5/2), `--eq-bg`, `--eq-border`, `--eq-radius`, `--eq-grid`,
   `--eq-grid-major`, `--eq-zero`, `--eq-gain-lines`, `--eq-line`, `--eq-fill`, `--eq-graph-line-width`,

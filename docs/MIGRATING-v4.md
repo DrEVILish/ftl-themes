@@ -28,12 +28,14 @@ The product/repo name `ftl-themes`, the `html[data-theme="…"]` / `data-variant
 ```sh
 # from the root of YOUR app (templates, CSS, JS, docs):
 git submodule update --remote third_party/ftl-themes   # or however you pin it
-python3 third_party/ftl-themes/scripts/migrate-v4.py --dry-run  templates static
-python3 third_party/ftl-themes/scripts/migrate-v4.py            templates static
-python3 third_party/ftl-themes/scripts/migrate-v4.py --check    templates static   # exits 1 if any legacy name remains
+# the codemod was retired after v5.3.0; take it from that tag:
+git -C third_party/ftl-themes archive v5.3.0 scripts/migrate-v4.py scripts/v4-rename-map.json | tar -x -C /tmp
+python3 /tmp/scripts/migrate-v4.py --dry-run  templates static
+python3 /tmp/scripts/migrate-v4.py            templates static
+python3 /tmp/scripts/migrate-v4.py --check    templates static   # exits 1 if any legacy name remains
 ```
 
-The codemod uses the exact-name map in `scripts/v4-rename-map.json`, not a blind
+The codemod uses the exact-name map in `scripts/v4-rename-map.json` (at the v5.3.0 tag), not a blind
 regex, so an unrelated `ftl-…` string in your own code is left alone unless it is
 a name v3 shipped. It cannot see class names built at runtime (`"ftl-" + kind`);
 `--check` flags those, and a `git grep -n "ftl-"` afterwards is a sensible last step.

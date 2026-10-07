@@ -5,6 +5,16 @@ changes are called out explicitly here.
 
 ## Unreleased
 
+### Changed
+- The v4 codemod (`scripts/migrate-v4.py`, `scripts/v4-rename-map.json`) is retired;
+  `docs/MIGRATING-v4.md` shows how to run it from the v5.3.0 tag.
+- `components-tables.html` selects rows from their checkboxes with CSS alone; its row-selection script is gone.
+- Scripts share one copy of the colour helpers: `check.py` and `build_emails.py` use
+  `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
+
+### Removed
+- `data-eq-show="pre"`: superseded by the `data-rta-view` radios.
+
 ## v5.3.0 — metering, tape-deck components and button hierarchy (2026-10-07)
 
 Compatible feature release; the theme contract remains v4.

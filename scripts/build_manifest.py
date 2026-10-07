@@ -63,6 +63,20 @@ def parse_color(value):
     return None
 
 
+def luminance(rgb):
+    def chan(c):
+        c /= 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    r, g, b = (chan(c) for c in rgb[:3])
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast(a, b):
+    """WCAG ratio of two (r, g, b[, a]) colors."""
+    hi, lo = sorted((luminance(a), luminance(b)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
 def root_tokens(src, slug):
     """--name: value from the theme's root block(s) only, merged in
     source order as the cascade would. Palette variants

@@ -183,37 +183,13 @@ def variant_of(selector):
     return m.group(1) if m else None
 
 
-def luminance(rgb):
-    def chan(c):
-        c /= 255
-        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
-    r, g, b = (chan(c) for c in rgb)
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+contrast = build_manifest.contrast
 
 
-def contrast(a, b):
-    la, lb = luminance(a[:3]), luminance(b[:3])
-    hi, lo = max(la, lb), min(la, lb)
-    return (hi + 0.05) / (lo + 0.05)
-
-
-def resolve(tokens, value, depth=0):
-    """Resolve a token value down to (r, g, b, a), if it is a literal color
-    or a var() chain ending in one. A translucent result keeps its alpha:
-    whether it is legible depends on what it is measured against, so the
-    pair site composites it over its partner."""
-    value = value.strip()
-    if depth > 6:
-        return None
-    # One literal parser for both scripts, so the lint and the manifest's
-    # scheme stamp agree on which colors exist (8-digit hex, space syntax).
-    c = build_manifest.parse_color(value)
-    if c is not None:
-        return c
-    m = re.match(r"^var\(\s*--([a-z0-9-]+)", value)
-    if m and m.group(1) in tokens:
-        return resolve(tokens, tokens[m.group(1)], depth + 1)
-    return None
+def resolve(tokens, value):
+    """build_manifest.resolve_color over check.py's unprefixed token names.
+    A translucent result keeps its alpha: the pair site composites it."""
+    return build_manifest.resolve_color({"--" + k: v for k, v in tokens.items()}, value)
 
 
 def over(fg, bg):
@@ -273,20 +249,6 @@ def check_contrast(theme, tokens, exempt):
             (fail if hard else warn)(theme, "contrast", msg)
 
 
-def _split_top(text):
-    """Split on commas that are not inside parentheses."""
-    parts, depth, cur = [], 0, ""
-    for ch in text:
-        depth += ch == "("
-        depth -= ch == ")"
-        if ch == "," and depth == 0:
-            parts.append(cur.strip())
-            cur = ""
-        else:
-            cur += ch
-    return parts + [cur.strip()]
-
-
 def mix_colors(tokens, value):
     """Evaluate each `color-mix(in srgb, A p%, B [q%])` in value to a
     literal rgba(), so gradient stops built from a theme tint are measured
@@ -301,7 +263,7 @@ def mix_colors(tokens, value):
             depth += value[k] == "("
             depth -= value[k] == ")"
             k += 1
-        parts = _split_top(value[j + len("color-mix("):k - 1])
+        parts = cssparse.split_top(value[j + len("color-mix("):k - 1])
         mixed = None
         if len(parts) == 3 and parts[0].replace(" ", "") == "insrgb":
             def side(p):
@@ -616,7 +578,7 @@ for path in sorted(glob.glob("core/*.css") + glob.glob("core/components/*.css") 
         if LEGACY_RE.search(line):
             failures.append(f"prefix: [legacy-name] {path}:{n} uses a pre-v4 `ftl-` name "
                              f"(`{LEGACY_RE.search(line).group(0)}`) — v4 has no prefix; "
-                             f"run scripts/migrate-v4.py.")
+                             f"see docs/MIGRATING-v4.md.")
 
 # Remote URLs are also checked in core/ (themes/ is covered per-theme above)
 # — a field-offline consumer embeds dist/, so a remote reference anywhere in

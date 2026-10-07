@@ -21,8 +21,8 @@ component QA pages, demo apps and page templates, published from `main`).
 > emails, and the feature extensions documented in
 > [`CHANGELOG.md`](CHANGELOG.md).
 > v4.0.0 was **breaking**: the `ftl-` prefix was removed everywhere and
-> every bundle sits in `@layer ui`. Migrate with `scripts/migrate-v4.py`
-> ([`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md)). The last v3 release
+> every bundle sits in `@layer ui`. Migrate with the codemod described in
+> [`docs/MIGRATING-v4.md`](docs/MIGRATING-v4.md). The last v3 release
 > lives on the `v3` branch.
 
 ## Quick start

@@ -16,7 +16,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build_manifest import root_tokens, resolve_color  # noqa: E402
+import build_manifest  # noqa: E402
+from build_manifest import parse_color, root_tokens, resolve_color  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "dist" / "email"
@@ -63,15 +64,8 @@ def solid(tokens, value, base=(255, 255, 255, 1.0)):
     return "#%02x%02x%02x" % (r, g, b)
 
 
-def lum(hexc):
-    r, g, b = (int(hexc[i:i + 2], 16) / 255 for i in (1, 3, 5))
-    f = lambda v: v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
-    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
-
-
 def contrast(a, b):
-    x, y = sorted((lum(a), lum(b)), reverse=True)
-    return (x + 0.05) / (y + 0.05)
+    return build_manifest.contrast(parse_color(a), parse_color(b))
 
 
 def ink_on(bg, *cands):
