@@ -149,6 +149,9 @@ changes are called out explicitly here.
   Silver's active caption. Olive's active caption, which no capture shows, follows its sampled Start
   menu header the way Silver's does, with a matching frame. Text on these pale parts is dark: XP drew
   white with a shadow at under 2:1.
+- `winxp-luna` sliders are XP trackbars, sampled at 200% from a genuine Volume Control: a 4px
+  groove and an 11×21 thumb with a `#f3f3ef` face, `#778892` edge and green ends (turned for
+  `.is-vertical`).
 - `winxp-luna` Start menu at XP's size: 11px text, 32px program icons, 24px place and footer icons,
   two ~190px columns, a 64px header with a 48px picture.
 - `winxp-luna` inactive title bar and Explorer task pane sampled from a genuine XP capture: the
