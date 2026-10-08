@@ -31,7 +31,7 @@ poster.
 
 ## Signature details
 
-- Modal headers take the navy→blue title-bar gradient with white bold text.
+- Modal headers take the solid navy `#000080` title bar with white bold text (measured flat on `dialog-font.png`; the navy→blue gradient is Windows 98).
 - The content well is *sunken* (`#808080 #ffffff #ffffff #808080` plus an
   inner black line); the status strip is *raised*. The shell itself obeys
   the 3D language, not just the controls.
@@ -66,7 +66,7 @@ icon set. Style rules:
 ## Layout
 
 The app shell becomes a **desktop window**: the teal backdrop shows at the
-edges, a 1.6rem gradient title bar sits on top, the content is a sunken
+edges, a 1.6rem solid navy title bar sits on top, the content is a sunken
 well, and the status bar is raised. Switching to this theme visibly boxes
 the app up.
 
@@ -88,7 +88,7 @@ openly-licensed pixel face is vendored yet.
 - **No radius.** `--radius: 0`, `--badge-radius: 0`, `--progress-radius: 0`. Not "just 2px".
 - **No drop shadow, no blur, no glow.** Depth is the two-tone bevel only.
 - **No tints or in-between greys.** Stay on `#c0c0c0` / `#dfdfdf` / `#808080` / white / black plus navy and teal.
-- **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`.
+- **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`. The bevel is two 1px lines per side (a 1px border plus a 1px inset shadow), not a 2px border: raised is `#ffffff` then face on the top-left and `#808080` then `#000000` on the bottom-right; sunken is `#808080` then `#000000`, and `#c0c0c0` then `#ffffff`. Measured on `references/windows95/dialog-font.png`; see its `RESEARCH.md`.
 - **No transitions or fades.** Windows 95 repainted instantly.
 - **No modern-weight, anti-aliased title-bar type**, and no Segoe UI in place of Tahoma/MS Sans Serif when a system copy is available.
 

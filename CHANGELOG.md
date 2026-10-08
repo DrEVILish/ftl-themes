@@ -203,6 +203,11 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `windows95`: bevels now match a lossless Windows 95 capture (`references/windows95/dialog-font.png`,
+  measured pixel by pixel; table in its `RESEARCH.md`). Buttons, inputs, panels, cards, toasts, keys
+  and the content well draw 95's 2px edge (white then face on the top-left, `#808080` then black on
+  the bottom-right; sunken fields `#808080`/black over `#c0c0c0`/white) instead of 98's 3px edge
+  with a `#dfdfdf` inner line. The README no longer calls the title bar a gradient: it is flat navy.
 - `win7-aero` icons inside a window (not on the wallpaper) are black-labelled with blue glyphs, as in
   Windows 7's Explorer; their selected labels were white on pale blue (1.2:1).
 - `winxp-luna` Olive Green and Zune badges on their accent tint now pass 4.5:1 (`--accent-text`).

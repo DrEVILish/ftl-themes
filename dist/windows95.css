@@ -18671,7 +18671,7 @@ html[data-theme="windows95"] {
   --key-bg: var(--surface);
   --key-fg: var(--text);
   --key-radius: 0;
-  --key-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  --key-shadow: inset -1px -1px 0 #808080;
   --key-glow: inset 1px 1px 0 #000000;
   --key-solo: #ffff00;
   --key-sel: #000080;
@@ -18698,14 +18698,22 @@ html[data-theme="windows95"] {
 
   --btn-bg: var(--surface);
   --btn-fg: var(--text);
-  --btn-border-width: 2px;
-  --btn-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  /* The 95 push button, measured on references/windows95/dialog-font.png
+     (Cancel, column x=340): 1px #ffffff top/left then the face; 1px
+     #808080 then 1px #000000 bottom/right. 95's "3D light" was the face
+     colour itself, so there is no #dfdfdf inner line (that is 98). */
+  --btn-border-width: 1px;
+  --btn-shadow: inset -1px -1px 0 #808080;
   --input-bg: #ffffff;
-  --input-border-width: 2px;
-  --input-shadow: inset 1px 1px 0 #000000;
+  /* Sunken field, same capture (Font name box, x=80 / y=55): #808080
+     then #000000 top/left, #c0c0c0 then #ffffff bottom/right. */
+  --input-border-width: 1px;
+  --input-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
   --panel-bg: var(--surface);
-  --panel-border-width: 2px;
-  --panel-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  /* Window frame, same capture: a 2px edge (white, then face on the top
+     and left; #808080 then #000000 on the bottom and right). */
+  --panel-border-width: 1px;
+  --panel-shadow: inset -1px -1px 0 #808080;
   --modal-header-bg: var(--accent);
   --modal-header-fg: #ffffff;
   --dropdown-bg: var(--surface);
@@ -18747,17 +18755,17 @@ html[data-theme="windows95"] {
 html[data-theme="windows95"] {
   --toast-bg: var(--surface);
   --toast-border: #808080;
-  --toast-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  --toast-shadow: inset -1px -1px 0 #808080;
   --alert-bg: var(--surface);
   --alert-fg: var(--text);
   --alert-radius: 0;
   --card-radius: 0;
-  --card-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  --card-shadow: inset -1px -1px 0 #808080;
   /* .card's own border-width token, so the 2px chunky bevel comes from
      the token architecture (matching --btn-border-width /
      --panel-border-width above) instead of depending only on the
-     hardcoded `border: 2px solid` override below. */
-  --card-border-width: 2px;
+     hardcoded `border: 1px solid` override below. */
+  --card-border-width: 1px;
   --context-menu-bg: var(--surface);
   --context-menu-radius: 0;
   --dropzone-border: #808080;
@@ -18806,7 +18814,7 @@ html[data-theme="windows95"] .alert,
 html[data-theme="windows95"] .card,
 html[data-theme="windows95"] .context-menu,
 html[data-theme="windows95"] .popover {
-  border: 2px solid;
+  border: 1px solid;
   border-color: #ffffff #000000 #000000 #ffffff;
 }
 
@@ -18814,20 +18822,19 @@ html[data-theme="windows95"] .popover {
 html[data-theme="windows95"] .btn { border-color: #ffffff #000000 #000000 #ffffff; }
 html[data-theme="windows95"] .btn:active {
   border-color: #000000 #ffffff #ffffff #000000;
-  /* Full double concentric bevel, inverted — matches the resting state's
-     two-layer inset (outer 2px border + inner 1px highlight/shadow line)
-     instead of collapsing to a single flat inset on press. */
-  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #dfdfdf;
+  /* The resting 2px edge mirrored (derived, not measured: no pressed
+     capture): black then #808080 on the top and left. */
+  box-shadow: inset 1px 1px 0 #808080;
   transform: none;
 }
 html[data-theme="windows95"] .btn-primary { font-weight: 700; }
 /* The default push button gets 95's extra 1px black frame — the tell that
    separates "the dialog's default" from an ordinary button. */
 html[data-theme="windows95"] .btn-primary {
-  box-shadow: 0 0 0 1px #000000, inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+  box-shadow: 0 0 0 1px #000000, inset -1px -1px 0 #808080;
 }
 html[data-theme="windows95"] .btn-primary:active {
-  box-shadow: 0 0 0 1px #000000, inset 1px 1px 0 #000000, inset -1px -1px 0 #dfdfdf;
+  box-shadow: 0 0 0 1px #000000, inset 1px 1px 0 #808080;
 }
 
 html[data-theme="windows95"] .input,
@@ -18846,7 +18853,8 @@ html[data-theme="windows95"] .dropdown { border-color: #ffffff #000000 #000000 #
    this theme. */
 html[data-theme="windows95"] .panel-header {
   /* Pulled out by the panel's own --surface-pad (v5: it steps per tier),
-     less the 1px inner bevel, so the caption bar always meets the frame. */
+     less 1px of face, so the caption sits 2px inside the frame as on
+     dialog-font.png (navy starts at y=3 after #c0c0c0, #ffffff, #c0c0c0). */
   margin: calc(1px - var(--surface-pad, 1rem)) calc(1px - var(--surface-pad, 1rem)) calc(0.8rem * var(--density));
   /* 4px round the caption text: the v5 audit's text-to-edge floor. */
   padding: 0.25rem 0.35rem;
@@ -18950,7 +18958,7 @@ html[data-theme="windows95"] .app-status > * {
 html[data-theme="windows95"] .mixer { border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; }
 html[data-theme="windows95"] .strip { border: 2px solid; border-color: #ffffff #000000 #000000 #ffffff; }
 html[data-theme="windows95"] .strip.is-selected { border-color: #000080; box-shadow: 0 0 0 1px #000080; }
-html[data-theme="windows95"] .key { border: 2px solid; border-color: #ffffff #000000 #000000 #ffffff; }
+html[data-theme="windows95"] .key { border: 1px solid; border-color: #ffffff #000000 #000000 #ffffff; }
 html[data-theme="windows95"] :is(.key:has(input:checked), .key[aria-pressed="true"]) { border-color: #000000 #ffffff #ffffff #000000; }
 html[data-theme="windows95"] :is(.scribble, .eq-curve) { border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; }
 html[data-theme="windows95"] .scribble { border-top-width: 0.35rem; border-top-color: var(--strip-color); }
@@ -18990,9 +18998,10 @@ html[data-theme="windows95"] {
 /* Sunken content well, raised status bar — the 3D language applied to the
    shell itself, not just to controls. */
 html[data-theme="windows95"] .app-main {
-  border: 2px solid;
+  /* The sunken client edge, as the field bevel measured above. */
+  border: 1px solid;
   border-color: #808080 #ffffff #ffffff #808080;
-  box-shadow: inset 1px 1px 0 #000000;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
 }
 html[data-theme="windows95"] .app-status {
   border: 2px solid;

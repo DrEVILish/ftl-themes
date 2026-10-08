@@ -40,3 +40,30 @@ right-stacked dialog buttons, etched group boxes with caption-on-line,
 combo boxes as sunken field + raised arrow button, navy selection with
 white text, classic 3D scrollbars.
 
+
+## Measured bevels (2026-10-09)
+
+Sampled pixel by pixel with ImageMagick (`convert dialog-font.png -crop
+1x1+X+Y +repage txt:-`) on `dialog-font.png`, a lossless 401×344 PNG at
+native size, so the values are exact palette entries, not estimates.
+
+| What | Where in `dialog-font.png` | Measured (outside → inside) | Theme token / rule |
+|---|---|---|---|
+| Title bar | x=2–395, y=3–20 | flat `#000080` across the full width (18px tall); no gradient | `--app-bar-bg`, `--modal-header-bg`, `--panel-header-bg` |
+| Window frame | left edge y=150; bottom edge x=200 | top/left `#c0c0c0`, `#ffffff`; bottom/right `#000000`, `#808080`; caption starts after one more `#c0c0c0` row | `.panel`/`.card` 1px `#ffffff`/`#000000` border + `--panel-shadow: inset -1px -1px 0 #808080`; `.panel-header` 1px inside the frame |
+| Push button (Cancel) | column x=340, y=74–96; row y=85 | top/left `#ffffff` then face; bottom/right `#808080` then `#000000` | `--btn-border-width: 1px`, `--btn-shadow: inset -1px -1px 0 #808080` |
+| Default button (OK) | column x=340, y=48–70; row y=60 | an extra 1px `#000000` frame outside the push-button edge | `.btn-primary` `0 0 0 1px #000000` |
+| Sunken field (Font box) | column x=80, y=48–70; row y=55 | top/left `#808080`, `#000000`; bottom/right `#ffffff`, `#c0c0c0` | `--input-border-width: 1px`, `--input-shadow`, and the `.app-main` well |
+| Checkbox | row y=208, x=23–35 | the same four sunken lines round a white square | core checkbox (unchanged) |
+| Group box (Effects) | row y=230, x=14–15 | etched: `#808080` then `#ffffff` | nested `.panel-header` rule (unchanged) |
+
+What this changed: Windows 95's "3D light" system colour was the face
+colour `#c0c0c0`, so a 95 bevel has no `#dfdfdf` inner line; the theme had
+drawn 98's 3px edge (2px border plus a `#dfdfdf` line). Buttons, inputs,
+panels, cards, toasts, keys and the content well now draw the measured 2px
+edge.
+
+Derived, not measured (no capture shows them): the pressed button (the
+resting edge mirrored: `#000000`, then `#808080` on the top-left), and the
+default button keeping a navy fill with white text (README core value 4),
+where the real OK button is grey with the black frame.
