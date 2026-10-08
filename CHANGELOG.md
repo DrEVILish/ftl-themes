@@ -203,6 +203,12 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `aqua`: title bar, traffic lights and buttons now match a lossless Snow Leopard capture
+  (`references/aqua/31db2b68338d1ae9.png`, measured in its `RESEARCH.md`). The app bar is the grey
+  `#cdcdcd`→`#a8a8a8` title bar with near-black text; the traffic lights are 14px discs on a 21px
+  pitch with dark rims, a specular cap and bodies that lighten downward; push buttons are the
+  flat-topped grey gel that lightens to white at the bottom; the default button is the pale blue gel
+  with a black label instead of a saturated blue with white text.
 - `windows95`: bevels now match a lossless Windows 95 capture (`references/windows95/dialog-font.png`,
   measured pixel by pixel; table in its `RESEARCH.md`). Buttons, inputs, panels, cards, toasts, keys
   and the content well draw 95's 2px edge (white then face on the top-left, `#808080` then black on

@@ -18646,7 +18646,12 @@ html[data-theme="aqua"] {
   --font-mono: Monaco, Consolas, monospace;
   --flare: #5aa6ff;
 
-  --btn-bg: linear-gradient(180deg, #ffffff, #e2e5e9 55%, #cfd3d8);
+  /* The Snow Leopard push button, measured on
+     references/aqua/31db2b68338d1ae9.png (a 2x capture; column x=560):
+     a flat #f2f2f2 upper 37%, a hard step to #e5e5e5, then lighter to
+     white at the bottom (the gel's lit underside), in a #5d5d5d rim. */
+  --btn-bg: linear-gradient(180deg, #f2f2f2 0 37%, #e5e5e5 37%, #ffffff);
+  --btn-border: #5d5d5d;
   --btn-fg: var(--text);
   --btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(0, 0, 0, 0.15);
   --input-bg: #ffffff;
@@ -18667,6 +18672,31 @@ html[data-theme="aqua"] {
 }
 
 html[data-theme="aqua"] { background: linear-gradient(180deg, #eef1f4, #c9ced4); }
+
+/* The traffic lights, measured on references/aqua/31db2b68338d1ae9.png
+   (a 2x capture of a Snow Leopard window; red column x=143, yellow
+   x=185, green x=226): about 13-14px across on a 21px pitch, each a dark
+   rim (#680000 / #792800 / #0e5200), a white specular cap at the top, and
+   a body that lightens downward (red #de2a2a > #f66d6d > #fb9999 >
+   #efbfbf). Layers repeat in threes (red, yellow, green), so three
+   background-position values cover all nine; the mask cuts each tile to a
+   disc. */
+html[data-theme="aqua"] {
+  --aqua-lights:
+    radial-gradient(ellipse 42% 24% at 50% 22%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0)),
+    radial-gradient(ellipse 42% 24% at 50% 22%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0)),
+    radial-gradient(ellipse 42% 24% at 50% 22%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0)),
+    radial-gradient(circle closest-side, rgba(104, 0, 0, 0) 74%, rgba(104, 0, 0, 0.75)),
+    radial-gradient(circle closest-side, rgba(121, 40, 0, 0) 74%, rgba(121, 40, 0, 0.75)),
+    radial-gradient(circle closest-side, rgba(14, 82, 0, 0) 74%, rgba(14, 82, 0, 0.75)),
+    linear-gradient(#de2a2a 33%, #f66d6d 55%, #fb9999 70%, #efbfbf 88%),
+    linear-gradient(#d69928 33%, #f6cc5d 55%, #f6f282 78%, #e4e07f 90%),
+    linear-gradient(#89c648 33%, #baf07f 55%, #d6f69d 78%, #cee1a2 90%);
+  --aqua-lights-mask:
+    radial-gradient(circle closest-side, #000 calc(100% - 0.75px), transparent),
+    radial-gradient(circle closest-side, #000 calc(100% - 0.75px), transparent),
+    radial-gradient(circle closest-side, #000 calc(100% - 0.75px), transparent);
+}
 
 html[data-theme="aqua"] h1,
 html[data-theme="aqua"] h2,
@@ -18693,7 +18723,7 @@ html[data-theme="aqua"] .modal-header { text-align: center; border-bottom: 1px s
 html[data-theme="aqua"] .panel-header,
 html[data-theme="aqua"] .modal-header {
   position: relative;
-  padding-left: 3.4rem;
+  padding-left: 3.6rem;
 }
 html[data-theme="aqua"] .panel-header::before,
 html[data-theme="aqua"] .modal-header::before {
@@ -18702,21 +18732,17 @@ html[data-theme="aqua"] .modal-header::before {
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 2.1rem;
+  /* Smaller than the window's own set, on the same 2:3 size-to-pitch. */
+  width: 2.4rem;
   height: 0.6rem;
-  /* Each tile must fade to transparent WELL BEFORE its own edge — a plain
-     radial-gradient with no closing transparent stop instead paints its
-     final color out to the full square tile, so three adjacent tiles read
-     as one continuous smear rather than three dots (a hard-won lesson:
-     the border-radius below only rounds the OUTER box of all three tiles
-     combined into a single pill, it can never round each tile on its own). */
-  background-image:
-    radial-gradient(circle 0.27rem at 38% 38%, #ff8a7a, #ef5350 55%, #c0392b 88%, transparent 100%),
-    radial-gradient(circle 0.27rem at 38% 38%, #ffe08a, #f4bd3a 55%, #c78a12 88%, transparent 100%),
-    radial-gradient(circle 0.27rem at 38% 38%, #92e6a0, #61c454 55%, #3d8b2c 88%, transparent 100%);
+  background: var(--aqua-lights);
   background-size: 0.6rem 0.6rem;
   background-repeat: no-repeat;
-  background-position: 0 0, 0.75rem 0, 1.5rem 0;
+  background-position: 0 0, 0.9rem 0, 1.8rem 0;
+  mask: var(--aqua-lights-mask);
+  mask-size: 0.6rem 0.6rem;
+  mask-repeat: no-repeat;
+  mask-position: 0 0, 0.9rem 0, 1.8rem 0;
 }
 
 /* Nesting steps down to an Aqua group box: a panel or card inside another
@@ -18738,7 +18764,19 @@ html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) .panel > .panel-head
   content: none;
 }
 /* Glossy candy fills for the semantic variants. */
-html[data-theme="aqua"] .btn-primary { --btn-bg: linear-gradient(180deg, #006fee, #2a74d0 55%, #1f66c2); --btn-border: #1f66c2; }
+/* The default button, same capture (column x=760): pale Aqua blue with
+   black text, not a saturated fill with white text. #d8ecff to #c2e1fd
+   over the upper 37%, a hard step to #8bc5f9, then up to #d9fdfe at the
+   bottom; rim #212a95 at the top, #6d737b at the bottom (the side colour
+   is derived between them). */
+html[data-theme="aqua"] .btn-primary {
+  --btn-bg: linear-gradient(180deg, #d8ecff, #c2e1fd 37%, #8bc5f9 37%, #a5d6fe 65%, #d9fdfe);
+  --btn-bg-hover: linear-gradient(180deg, #cfe6ff, #b6daf9 37%, #7cbcf5 37%, #98cefb 65%, #cdf6fb);
+  --btn-border: #45508a;
+  --btn-fg: #000000;
+  --btn-weight: 400;
+  border-color: #212a95 #45508a #6d737b;
+}
 /* The pulsing default button — Aqua's own signature affordance for "the
    button Enter activates." A soft breathing halo, not a color change, so
    it reads as "this one" without vibrating the whole row; gated like
@@ -18774,8 +18812,10 @@ html[data-theme="aqua"] .table tr:nth-child(even):not(.is-selected, :is([aria-se
  * on the desktop gradient with a drop shadow. */
 html[data-theme="aqua"] {
   --app-padding: 0.75rem;
-  --app-bar-bg: linear-gradient(180deg, #f4f6f8, #d5d9de);
-  --app-bar-rule: var(--border);
+  /* The active title bar, same capture (column x=300): a 1px #e2e2e2
+     highlight, then #cdcdcd down to #a8a8a8, over a #5f5f5f rule. */
+  --app-bar-bg: linear-gradient(180deg, #e2e2e2 0 1px, #cdcdcd 1px, #a8a8a8);
+  --app-bar-rule: #5f5f5f;
   --app-bar-radius: 0.75rem 0.75rem 0 0;
   --app-bar-height: 2.75rem;
   --app-main-bg: #f7f8fa;
@@ -18793,38 +18833,36 @@ html[data-theme="aqua"] .app {
    (3.8:1) and muted items (4.0:1) sat under the floor against its lower
    gradient stop. */
 html[data-theme="aqua"] .app-bar {
-  --nav-brand-fg: #174f9c;
-  --nav-item-fg: #3a3c40;
+  /* Near-black on the measured grey title bar (the accent-blue brand fell
+     to 3.5:1 on its #a8a8a8 foot). */
+  --nav-brand-fg: #1c1c1e;
+  --nav-item-fg: #2a2b2e;
+  /* Accent text (a secondary button) on the bar: #20589d was 3.7:1. */
+  --accent-text: #0f3260;
   position: relative;
   /* Room for the traffic lights on the left, same as a real Mac window. */
-  padding-left: 4.5rem;
+  padding-left: 5.1rem;
 }
 /* The traffic lights: THE single most recognizable Aqua/OS X window-chrome
-   detail, drawn as three gloss buttons via layered radial-gradients so no
-   extra markup is needed in the app shell.
-   Each tile fades to transparent before its own edge — a radial-gradient
-   with no closing transparent stop instead paints its final color out to
-   the full square tile, so three adjacent tiles fuse into one continuous
-   smeared pill instead of reading as three distinct dots. The 50%
-   border-radius on this box only rounds the OUTER box of all three tiles
-   as a single shape; it cannot round each tile individually. Sized larger
-   than the panel-header version since it has to read clearly in the one
-   spot on the page that's guaranteed above the fold. */
+   detail, drawn from --aqua-lights (measured, see the top of this file)
+   so no extra markup is needed in the app shell. Full size here: 14px
+   discs on a 21px pitch, as on the reference window. */
 html[data-theme="aqua"] .app-bar::before {
   content: "";
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 2.9rem;
-  height: 0.8rem;
-  background-image:
-    radial-gradient(circle 0.36rem at 38% 38%, #ff8a7a, #ef5350 55%, #c0392b 88%, transparent 100%),
-    radial-gradient(circle 0.36rem at 38% 38%, #ffe08a, #f4bd3a 55%, #c78a12 88%, transparent 100%),
-    radial-gradient(circle 0.36rem at 38% 38%, #92e6a0, #61c454 55%, #3d8b2c 88%, transparent 100%);
-  background-size: 0.8rem 0.8rem;
+  width: 3.475rem;
+  height: 0.875rem;
+  background: var(--aqua-lights);
+  background-size: 0.875rem 0.875rem;
   background-repeat: no-repeat;
-  background-position: 0 0, 1.05rem 0, 2.1rem 0;
+  background-position: 0 0, 1.3rem 0, 2.6rem 0;
+  mask: var(--aqua-lights-mask);
+  mask-size: 0.875rem 0.875rem;
+  mask-repeat: no-repeat;
+  mask-position: 0 0, 1.3rem 0, 2.6rem 0;
 }
 
 /* --- v5 tiers --------------------------------------------------------------
@@ -18838,7 +18876,7 @@ html[data-theme="aqua"] .app-bar::before {
 @container style(--tier: mobile) {
   html[data-theme="aqua"] .app { padding: 0.35rem; }
   /* Panel-header-sized lights leave the brand room to show on a phone. */
-  html[data-theme="aqua"] .app-bar { padding-left: 3.1rem; }
+  html[data-theme="aqua"] .app-bar { padding-left: 3.6rem; }
   html[data-theme="aqua"] .app-bar::before {
     left: 0.75rem;
     transform: translateY(-50%) scale(0.75);
@@ -18983,7 +19021,7 @@ html[data-theme="aqua"]:has(.desktop-screen) {
 }
 /* Minimize and zoom sit on the yellow and green lights, as close sits on
    the red one: clear until pointed at. */
-html[data-theme="aqua"] .desktop-window .modal-header { padding-left: 3.6rem; }
+html[data-theme="aqua"] .desktop-window .modal-header { padding-left: 3.8rem; }
 html[data-theme="aqua"] .desktop-window .modal-header > :is(.btn-min, .btn-max) {
   --btn-min-glyph: "";
   --btn-max-glyph: "";
@@ -18997,8 +19035,8 @@ html[data-theme="aqua"] .desktop-window .modal-header > :is(.btn-min, .btn-max) 
   margin: 0;
   transform: translate(-50%, -50%);
 }
-html[data-theme="aqua"] .desktop-window .modal-header > .btn-min { left: 2.05rem; }
-html[data-theme="aqua"] .desktop-window .modal-header > .btn-max { left: 2.8rem; --btn-close-fg-hover: #0d4a00; }
+html[data-theme="aqua"] .desktop-window .modal-header > .btn-min { left: 2.2rem; }
+html[data-theme="aqua"] .desktop-window .modal-header > .btn-max { left: 3.1rem; --btn-close-fg-hover: #0d4a00; }
 html[data-theme="aqua"] .desktop-window .modal-header > .btn-min:is(:hover, :focus-visible) { --btn-min-glyph: "\2212"; }
 html[data-theme="aqua"] .desktop-window .modal-header > .btn-max:is(:hover, :focus-visible) { --btn-max-glyph: "+"; }
 html[data-theme="aqua"] .desktop-window .modal-header > .icon { display: none; }

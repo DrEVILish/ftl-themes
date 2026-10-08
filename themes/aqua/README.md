@@ -75,14 +75,14 @@ fill without checking the contrast floor.
 ## Contrast honesty
 
 - **`--muted` lifted:** `#6e7075` was 4.2:1; shipped `#58595e` is 5.16:1 on `--bg`, 5.91:1 on `--surface`, 6.99:1 on white. Checked against the darker panel gradient stop too.
-- **Accent blue as text is not free.** `--accent` `#2a74d0` is 4.66:1 under white text (filled controls fine) but only 3.44:1 on `--bg` and 3.94:1 on `--surface`, so accent-as-text (active tab, secondary button, links, readouts, `.schedule` stamps) uses the darker `--accent-text` `#20589d`, and the app-bar brand uses `#174f9c` (the accent measured 3.8:1 there; muted items 4.0:1).
-- **Gel button:** the primary gel's lower stop is deepened so its white label holds 4.5:1 across the whole button, at the cost of a slightly darker bottom than a raw Aqua screenshot.
+- **Accent blue as text is not free.** `--accent` `#2a74d0` is 4.66:1 under white text (filled controls fine) but only 3.44:1 on `--bg` and 3.94:1 on `--surface`, so accent-as-text (active tab, secondary button, links, readouts, `.schedule` stamps) uses the darker `--accent-text` `#20589d`. The app bar is the measured grey title bar (`#cdcdcd` to `#a8a8a8`), so its brand and items are near-black (`#1c1c1e`, `#2a2b2e`); the accent-blue brand measured 3.5:1 on its foot.
+- **Gel buttons, measured:** the default (`.btn-primary`) button is Snow Leopard's pale blue gel with a black label, and the push button is the flat-topped grey gel that lightens to white at the bottom, both sampled from `31db2b68338d1ae9.png` (see `RESEARCH.md`). Black on the palest stop of the blue gel is well over 7:1.
 - `--accent-2` `#5aa6ff` is 1.86:1 on `--bg`: decoration/flare only, never text. `--warning` `#b0741a` is 2.89:1 on `--bg`; text uses `--warning-text` `#764d10`.
 - **State text tokens** are dark enough for their own 20% badge tints and the diff-line tints: `--success-text` `#2c6024` (4.95:1 on the success badge), `--danger-text` `#a02818` (4.73:1), `--warning-text` `#764d10` (5.06:1). They were `#37762c`, raw `--danger` and `#915f15`, about 3.4–3.7:1 there.
 
 ## Reference status
 
-`references/aqua/` has 6 captures plus `RESEARCH.md` (one Leopard icon grid with people in icons was removed): a Panther Finder window, a Leopard Guest Finder window, a Snow Leopard widget gallery, Aqua toolbar controls, a Leopard icon set (`leopard-huge-iconpack-650-screenshot.avif`) and a Leopard app-icon grid. They back the gel buttons, pinstripes, brushed metal and traffic-light controls. Gaps: no dedicated Dock-reflection capture, and the folder is Panther/Leopard-heavy rather than 10.6 Snow Leopard (the theme's stated target). `RESEARCH.md` gives no hex values.
+`references/aqua/` has 6 captures plus `RESEARCH.md` (one Leopard icon grid with people in icons was removed): a Panther Finder window, a Leopard Guest Finder window, a Snow Leopard widget gallery, Aqua toolbar controls, a Leopard icon set (`leopard-huge-iconpack-650-screenshot.avif`) and a Leopard app-icon grid. They back the gel buttons, pinstripes, brushed metal and traffic-light controls. Gaps: no dedicated Dock-reflection capture, and the folder is Panther/Leopard-heavy rather than 10.6 Snow Leopard (the theme's stated target), apart from the Snow Leopard controls sheet `31db2b68338d1ae9.png`, which `RESEARCH.md` measures for the title bar, traffic lights and buttons.
 
 ## Icons
 
