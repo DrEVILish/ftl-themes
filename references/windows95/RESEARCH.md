@@ -63,6 +63,12 @@ drawn 98's 3px edge (2px border plus a `#dfdfdf` line). Buttons, inputs,
 panels, cards, toasts, keys and the content well now draw the measured 2px
 edge.
 
+Not applied (no capture of them in this folder): tabs, the taskbar and
+its buttons, the Start menu frame, the desktop bar and message bubbles keep
+their `#dfdfdf` lines (`.tab`, `--taskbar-*-shadow`,
+`--taskbar-start-shadow-open`, `--message-shadow`, `.start-menu[popover]`,
+`.desktop-bar`), as do `--surface-2` and `--skeleton-bg`.
+
 Derived, not measured (no capture shows them): the pressed button (the
 resting edge mirrored: `#000000`, then `#808080` on the top-left), and the
 default button keeping a navy fill with white text (README core value 4),

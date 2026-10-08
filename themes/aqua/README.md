@@ -12,9 +12,11 @@ tactile, unmistakably pre-flat-design.
 
 ## Core values
 
-1. **Everything is lit from above.** A control is a gradient from light to
-   dark with a bright top highlight inset. That single convention produces
-   most of the look.
+1. **Gel, lit from above and glowing below.** A push button is a flat
+   light upper third, a hard step darker, then lighter again to a lit
+   underside (measured on the Snow Leopard capture; see `RESEARCH.md`).
+   Panels and bars still run light to dark. That convention produces most
+   of the look.
 2. **Gloss on fills, gloss only.** Gradients belong on buttons, bars and
    panels — never on text or borders.
 3. **Depth is soft, not hard.** Large blurred shadows at low opacity; no

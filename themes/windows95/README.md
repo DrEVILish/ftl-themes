@@ -87,7 +87,7 @@ openly-licensed pixel face is vendored yet.
 
 - **No radius.** `--radius: 0`, `--badge-radius: 0`, `--progress-radius: 0`. Not "just 2px".
 - **No drop shadow, no blur, no glow.** Depth is the two-tone bevel only.
-- **No tints or in-between greys.** Stay on `#c0c0c0` / `#dfdfdf` / `#808080` / white / black plus navy and teal.
+- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in tabs, the taskbar and Start menu, and a few fills, where no 95 capture has been measured yet.
 - **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`. The bevel is two 1px lines per side (a 1px border plus a 1px inset shadow), not a 2px border: raised is `#ffffff` then face on the top-left and `#808080` then `#000000` on the bottom-right; sunken is `#808080` then `#000000`, and `#c0c0c0` then `#ffffff`. Measured on `references/windows95/dialog-font.png`; see its `RESEARCH.md`.
 - **No transitions or fades.** Windows 95 repainted instantly.
 - **No modern-weight, anti-aliased title-bar type**, and no Segoe UI in place of Tahoma/MS Sans Serif when a system copy is available.
