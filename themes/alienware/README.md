@@ -1,141 +1,91 @@
 # Alienware
 
-> Matte black gaming chrome — angular cuts, AlienFX cyan glow.
+> Alienware's AlienGUIse desktop suites for Windows XP: XP's structure, re-skinned per suite.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
+**Family:** Windows desktop; extends [Windows XP (Luna)](../winxp-luna/README.md).
+
 ## What this theme is trying to achieve
 
-**Alienware's gaming-rig identity**: matte black chassis, cut/angular
-edges instead of curves, and a single AlienFX accent color glowing along
-one edge — the light strip every Alienware machine has. Aggressive but
-controlled, not a rainbow of RGB.
+From 2004 to 2008 Alienware shipped its Windows XP machines with
+**AlienGUIse**, a theme manager built on Stardock's WindowBlinds and
+MyColors. Each "suite" re-skinned XP itself: the title bars and caption
+buttons, the two-column Start menu, the taskbar and Start button,
+Explorer's task pane and the push buttons, scroll bars and tabs, over
+light window contents. This theme is that: XP's structure (it extends
+`winxp-luna`) with each suite's own chrome, measured from the suite's
+surviving files.
+
+## The suites
+
+| Variant | Suite | Designer, year | Look | Measured from |
+|---|---|---|---|---|
+| (default) | XenoMorph | Stardock Design, 2006 | Glossy black title bars and taskbar, silver caption buttons, a blue-ringed Start orb; black programs and brushed-silver places in the Start menu; `#d7d7d7` dialog face, `#0093f0` highlight | The suite's own WindowBlinds files (`.uis` colours and bitmaps) |
+| `darkstar` | Darkstar | The Skins Factory, 2005 | Gunmetal chrome, grey programs and black places columns, black selection, red LED bars | Lossless AlienGUIse preview |
+| `invader` | Invader | The Skins Factory, 2007–08 | Pale silver title bars in black frames, a silver taskbar with a cyan START button | Lossless AlienGUIse preview |
+| `alx` | ALXMorph | The Skins Factory, 2004 | Brushed silver-grey chrome with a white lip, `#a8acb1` face | Lossless AlienGUIse preview |
+| `alienmorph` | AlienMorph | The Skins Factory, 2004 | Glossy white-to-pale-grey chrome, `#f1f3f3` face | Lossless AlienGUIse preview |
+| `area-51` | Alienware Area-51 Superman (TM) edition | The Skins Factory, 2006 | Glossy blue chrome and face, red Start menu columns and selection, yellow on red | Lossless AlienGUIse preview |
+| `aurora-dark` | Star Wars – Dark Side (Aurora Star Wars Edition) | The Skins Factory, 2006–07 | Gold-and-orange title bars over beige chrome, an orange Start-menu footer | The suite's own WindowBlinds files and the preview |
+| `aurora-light` | Star Wars – Light Side | The Skins Factory, 2006–07 | The same chrome as Dark Side; a teal wallpaper | The suite's own WindowBlinds files and the preview |
+
+The co-branded editions are named after the Alienware systems they shipped
+on (Area-51, Aurora), not the licensed properties: the theme reproduces
+their chrome, never the DC or Lucasfilm artwork. Every value, its source
+and what was derived rather than measured is in
+[`references/alienware/RESEARCH.md`](../../references/alienware/RESEARCH.md).
 
 ## Core values
 
-1. **Angles, never curves.** `--radius: 0.2rem` and every major
-   surface has its corners cut with `clip-path`, not rounded. This is the
-   catalog's deliberate contrast point against `aqua`/`barbie`'s gloss and
-   curves — a rounded Alienware is a contradiction.
-2. **One glow, not many.** The AlienFX cyan (`--accent`) is the only
-   thing allowed to glow. A version of this theme with every element
-   lit up in a different color has missed the "one light strip" idea.
-3. **Matte black, not gloss.** Flat fills, no gradients on the base chrome
-   — the shine belongs to `aqua`/`winxp-luna`, not here.
-4. **Uppercase, tracked-out headings.** The gamer-hardware branding voice:
-   wide letter-spacing, all caps, never soft title case.
-5. **The rail is the light strip.** The app shell's decorative rail is a
-   thin lit cyan strip (light cyan `#b6f5ff` fading through `--accent` to
-   a deeper `#0090b3`, with a multi-layer cyan bloom) — the physical
-   AlienFX edge light, not a navigation column. Purple (`--accent-2`)
-   does not appear on the rail; it is limited to the active-row marker
-   and `--flare`. (An earlier version of this README called the rail
-   cyan-to-purple; the CSS never did that, and no capture attests it.)
-
-## Palette variants: the XP factory themes
-
-Alienware shipped its Windows XP machines with **AlienGUIse**, a theme
-manager with factory "suites" (references/alienware/RESEARCH.md has the
-full list and sources). Three of them are palette variants here
-(`data-variant`), on the same angular chassis:
-
-| Variant | Factory suite | Look |
-|---|---|---|
-| (default) | XenoMorph (Stardock, 2006) / today's Command Center | Matte black, one cyan glow |
-| `darkstar` | Darkstar (The Skins Factory, 2005) | Black with red LEDs and an amber second light; danger moves to magenta so errors still differ from the light |
-| `invader` | Invader (The Skins Factory, 2007–08) | Deep-space navy, silver-grey frames, blue LEDs, a starfield in the gutters |
-| `alx` | ALXMorph (The Skins Factory, 2004) | Light: grey brushed metal and silver gradients, dark text, small blue LEDs |
-
-The other suites (AlienMorph, and the Superman, Star Wars and Redskins
-co-branded editions) are recorded in the research notes but not built:
-AlienMorph has no verified capture, and the co-brands are licensed
-artwork rather than a palette.
-
-Every glow, the light strip and the bar-chart fill are mixed from
-`--accent`, so a new variant only needs its palette.
+1. **XP underneath.** Window chrome, the Start menu, the taskbar and the
+   task pane are XP's (`winxp-luna`), re-skinned. Nothing invents a layout
+   AlienGUIse didn't have.
+2. **Measured, not guessed.** Each suite's colours come from its own skin
+   files or its lossless preview. Values that no source shows (task panes
+   outside XenoMorph, inactive captions outside XenoMorph) are derived from
+   that suite's measured chrome and marked as derived.
+3. **Dark chrome, light contents.** Even the black suites drew light
+   dialog faces and white panes; only the chrome is dark.
+4. **No borrowed artwork.** Wallpapers are CSS impressions of each suite's
+   wallpaper; the alien-head marks and co-brand logos are not reproduced.
 
 ## Signature details
 
-- Buttons and panels have their corners angle-cut via `clip-path`, the
-  same technique `tron` uses; focus indication uses a `drop-shadow`
-  filter instead of the clipped standard outline, for the same reason
-  tron's does — `clip-path` also clips `:focus-visible`'s outline.
-- The app bar carries a 2px lit cyan rule, not a full gradient fill —
-  restraint, not a wash of color.
-- Selected table rows get a faint cyan tint; the active-row marker uses
-  the secondary purple, so the two states stay visually distinct.
+- Captions use Arial Bold (XenoMorph's `.uis`: `FontName=Arial`,
+  `FontWeight=700`, `FontHeight=14`); XenoMorph's caption text glows blue.
+- Caption buttons are drawn per suite (`--luna-caption`): silver squares
+  with dark glyphs (XenoMorph, ALX, AlienMorph), dark with white or red
+  glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
+  (Area-51), beige with an orange close (Aurora).
+- The Start button follows the suite: XenoMorph's blue orb in a silver ring,
+  the light "START" rectangle (AlienMorph, ALX), Invader's cyan START,
+  Darkstar's dark button, Area-51's red, Aurora's gold pill.
 
-## Layout
+## Accessibility notes
 
-The shell becomes a **matte black gaming chassis**: a thin lit-edge bar,
-a narrow glowing AlienFX rail down the side, and a flush black content
-well — hardware, not a HUD.
+The suites' highlight colours were drawn for 2006 CRTs. Where a measured
+colour fails WCAG it is kept for fills and glows and a darker or darker-text
+companion carries text:
 
-## v5 layout
-
-- **Tiers.** Desktop and XL keep the full chassis. Tablet (481–900px)
-  keeps the AlienFX strip as a narrow column beside the content: at 0.65rem
-  it costs almost no width and it is the theme's signature light zone.
-  Phones (≤480px) drop the strip and let the bar's lit cyan edge carry the
-  light, with a thinner outer margin.
-- **Phone and tablet.** Brand and actions share the bar's first line (the
-  brand truncates) and the nav scrolls on its own line. On phones the
-  Orbitron `h1` steps down and the corner cuts shrink from 34px to 20px so
-  they don't clip the first letter of a headerless card.
-- **Nesting.** A panel or card inside another surface gets a 14px cut, not
-  the full 34px. Menus and popovers get a 10px cut, and none at all when
-  they hold a submenu (clip-path would cut the flyout off).
-- **XL gutter art.** The chassis continues past the screen: angled vent
-  slots in near-black and, out at the edge, the dim glow of a second
-  AlienFX strip. Still, and within about 1.3:1 of `--bg`.
-
-## Tell-tales of an inauthentic result
-
-- Rounded corners anywhere on chrome.
-- Multiple glow colors competing for attention.
-- A gradient or gloss fill on the base button/panel chrome.
-- Soft, title-case headings instead of tracked-out uppercase.
-
-## Don'ts
-
-- **No rounded chrome.** Corners are cut with `clip-path`; `--radius` is `0.2rem`.
-- **No second glowing colour.** Cyan is the one light; purple is a quiet secondary (row marker), never a glow.
-- **No gradient or gloss on base buttons/panels.**
-- **No soft title-case headings**; uppercase, tracked out.
-- **No purple on the rail** (see Core values).
-
-## Typography
-
-- **Headings:** Orbitron Bold (700/800), **vendored** (`assets/fonts/Orbitron-Bold.woff2`, SIL OFL, `assets/fonts/NOTICE.md`), uppercase and tracked. It is a stand-in for Alienware's angular brand lettering, not the actual logo face.
-- **Body:** `--font` is `"Segoe UI", Arial, sans-serif` (system, **not vendored**); `--font-mono` is `Consolas, monospace`. Only headings get the display face, so body copy looks like generic Windows on purpose.
-- The reference captures (`references/alienware/`) are mostly third-party icon/desktop skins, so no capture there confirms a face; the choice rests on brand knowledge.
-
-## Contrast honesty
-
-- **Cyan on black is safe:** `--accent` `#00d4ff` is 11.17:1 on `--bg`, 10.19:1 on `--surface`; `--on-accent` `#001318` is 10.72:1 on it. The hex itself is the theme's, not measured (`RESEARCH.md` records no value).
-- **Purple is the weak one:** `--accent-2` `#7a5cff` is 4.52:1 on `--bg` but 4.13:1 on `--surface`, so it is used only for the active-row marker and `--flare` (non-text), never for copy.
-- **Danger text lifted:** `--danger` `#ff3b5c` is 5.68:1 on `--bg`; `--danger-text` `#ff6b84` (6.61:1 on `--surface`) is the small-copy variant.
-- **Muted:** `#93939b` (was `#8a8a92`, 4.2:1 on the cyan-tinted own-message bubble and schedule blocks) is 6.0:1 on `--surface` and at least 4.7:1 on those tints.
-- **The rail is unattested.** The cyan strip, its `#b6f5ff`-to-`#0090b3` fade and its bloom are decoration drawn from the RESEARCH text ("single AlienFX cyan glow per lighting zone"); no capture in the folder shows an app rail, and there is no purple in it.
-
-## Reference status
-
-`references/alienware/` has 8 captures plus `RESEARCH.md`. Per its audit, most are third-party icon-pack and desktop-skin images (Invader/XP-era), not the Dell AlienFX zone editor or Command Center in the capture targets: **this is the weakest-relevance set in the repo** and proper Dell captures remain a gap. They loosely back the matte black plus single cyan glow and the angular vent/cut language. The angle-cut corners, the corner brackets and the rail are the theme's interpretation of the RESEARCH text.
+- `--accent-text` is a darker shade of each highlight for links, headings
+  and accent text; `--on-accent` is black where XP drew white on a light
+  highlight (XenoMorph `#0093f0`, AlienMorph/ALX `#12acfe`, Invader `#01bdfe`).
+- Area-51's headings and breadcrumbs are black: its page face is the
+  measured blue `#2877cb`, where dark red fails.
+- ALX's and Area-51's page app bars use a gentler cut of the caption
+  gradient so their text passes 4.5:1 against every stop; windows keep the
+  measured gradient. Aurora's status strip drops a 1px dark edge stop into
+  an inset line for the same reason.
+- The highlight colours stay under 3:1 as UI colour on the light faces
+  (`check.sh` warnings), as the originals were.
 
 ## Icons
 
-`themes/alienware/icons.svg` redraws the whole core set (178/178) as
-angular chassis geometry:
-
-- 24×24 grid, line only: no fills anywhere, colour from `currentColor`,
-  weight inherited from `--icon-stroke-width` (never set per symbol).
-- Every symbol wraps its paths in `stroke-linecap="square"` +
-  `stroke-linejoin="miter"`.
-- No curves: circles become cut-corner octagons (r≈9 is the
-  `M7 3h10l4 4v10l-4 4H7l-4-4V7z` shape used by info/clock), boxes get a
-  ~2-unit 45° chamfer on all four corners, arcs become straight diagonal runs.
-- Dots are tiny stroked octagons; weather icons reuse the two-block cloud,
-  night icons reuse the faceted moon.
+`themes/alienware/icons.svg` keeps the angular single-colour set for the
+less-used glyphs, and uses the full-colour XP-style drawings from
+`winxp-luna` for the 30 icons on the desktop, in the Start menu and in
+Explorer: the suites' previews show XP's colour icons there.
 
 ## Adoption
 

@@ -22,7 +22,11 @@ assert all({"tokens", "fonts", "iconCoverage", "references", "componentCoverage"
 assert all(row["iconCoverage"]["total"] == 178 for row in catalogue)
 assert all(".app-status.tabbar" in (ROOT / "dist" / (row["slug"] + ".css")).read_text() for row in catalogue)
 by_slug = {row["slug"]: row for row in catalogue}
-assert by_slug["win7-aero"]["family"] == "windows95" and by_slug["win7-aero"]["extends"] == "winxp-luna"
+# winxp-luna no longer extends windows95 (its bevels beat XP's tokens), so the
+# Windows family is rooted at winxp-luna; alienware re-skins XP.
+assert by_slug["win7-aero"]["family"] == "winxp-luna" and by_slug["win7-aero"]["extends"] == "winxp-luna"
+assert by_slug["alienware"]["family"] == "winxp-luna" and by_slug["alienware"]["extends"] == "winxp-luna"
+assert by_slug["winxp-luna"]["extends"] is None
 assert by_slug["liquid-glass"]["family"] == "ios-skeuomorphic" and by_slug["liquid-glass"]["extends"] == "ios-flat"
 assert 'html[data-theme="windows95"]' not in (ROOT / "dist/winxp-luna.css").read_text()
 assert 'html[data-theme="win7-aero"]' in (ROOT / "dist/tokens.css").read_text()

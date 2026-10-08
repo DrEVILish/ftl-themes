@@ -6,6 +6,12 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- `alienware` variants `alienmorph` (AlienMorph), `area-51` (the Area-51 Superman edition) and
+  `aurora-dark` / `aurora-light` (the Aurora Star Wars editions), named after the systems they
+  shipped on; the theme now covers all eight AlienGUIse suites.
+- `references/xbox-windowblinds/`: the Official Xbox WindowBlinds theme (The Skins Factory, 2002),
+  found alongside the Alienware suites, with its measured system colours, for a possible future
+  theme.
 - Collapsible task groups: a `<details class="window-task">` whose `<summary>` is the header, with a
   toggle at its end (`--window-task-toggle-*`; a chevron by default). `winxp-luna` draws XP's round
   double-chevron button.
@@ -119,6 +125,14 @@ changes are called out explicitly here.
   arrow in the knee) and each theme draws its own. Demo: `components-experience.html`.
 
 ### Changed
+- `alienware` rebuilt as Alienware's AlienGUIse suites for Windows XP: it now extends `winxp-luna`
+  and re-skins XP's title bars, caption buttons, Start menu, taskbar, task pane and controls per
+  suite, measured from the suites' own WindowBlinds files (XenoMorph, both Aurora editions) and
+  lossless AlienGUIse previews (the rest), all from archive.org. XenoMorph is the default; Darkstar,
+  Invader and ALX (now labelled ALXMorph) are re-measured. Window contents are light, as the suites
+  drew them; the angular clip-path cuts and AlienFX rail are gone. Each suite's highlight stays for
+  fills, with a darker `--accent-text` for text. The 30 most-used icons are the XP-style colour set.
+  Sources and every measurement: `references/alienware/RESEARCH.md`.
 - `winxp-luna` taskbar measured from a lossless 1:1 XP capture: the Start pill is brighter green
   (`#3a861d` → `#3cb03c` at 70% → `#2c8230`, border `#267544`, was `--success` → `#1f5c0a`), and the
   taskbar lip is `#3168d5` over a 3px `#4993e6` band (was a dark `#1f2f86` line over `#4490e6`).

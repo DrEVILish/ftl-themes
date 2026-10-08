@@ -22,6 +22,8 @@ describing its files. Today's variant folders:
   `lcars/INDEX.md` scores every LCARS image.
 - `weyland-yutani/mother/`, `weyland-yutani/emergency/`, `weyland-yutani/earth/`
 - `winxp-luna/royale/`, `winxp-luna/royale-noir/`, `winxp-luna/zune/`, `winxp-luna/embedded/`
+- `alienware/darkstar/`, `alienware/invader/`, `alienware/alx/`, `alienware/alienmorph/`,
+  `alienware/area-51/`, `alienware/aurora-dark/`, `alienware/aurora-light/` (the AlienGUIse suites)
 - `prometheus/suit/`
 
 Non-variant subfolders hold asset sets rather than screenshots (each
@@ -31,7 +33,9 @@ described in that theme's `RESEARCH.md`): `alienware/icon-packs/`,
 `.ico`/`.png`/`.bmp` files; packed resource binaries (7tsp `.res`) are not
 kept, since nobody can open them to compare.
 
-Four folders back no theme yet. They are the non-LCARS Star Trek interface
+Five folders back no theme yet. `xbox-windowblinds/` holds the Official Xbox
+WindowBlinds theme (The Skins Factory, 2002), found alongside the Alienware
+suites. The other four are the non-LCARS Star Trek interface
 languages from lcars.org.uk, kept for a future theme, each with its own
 `INDEX.md`: `star-trek-alien/` (Klingon, Romulan, Cardassian, Ferengi,
 Bajoran and others), `star-trek-enterprise/` (NX-01), `star-trek-tos/` (TOS
@@ -39,7 +43,7 @@ and TOS films) and `star-trek-kelvin/` (Star Trek 2009 and Into Darkness).
 
 | Theme | Reference | What to compare |
 |---|---|---|
-| `alienware` | [Alienware Command Center — AlienFX](https://www.dell.com/support/manuals/en-us/alienware-command-center/awcc_ug_6.x/alienfx?guid=guid-1938310a-dcbb-4751-9131-ddd2d9400d4a&lang=en-us) | Matte black chrome, one AlienFX accent colour per lighting zone |
+| `alienware` | [archive.org: AlienGUIse Theme Manager + all Alienware suites](https://archive.org/details/alien-guise) | Each suite's title bars, Start menu, taskbar and dialog face against its lossless preview in `references/alienware/` |
 | `aperture` | [Portal (video game)](https://en.wikipedia.org/wiki/Portal_(video_game)), [Aperture Science — Portal Wiki](https://theportalwiki.com/wiki/Aperture_Science) | Off-white test-chamber panels; blue and orange as the only saturated colours |
 | `aqua` | [Aqua (user interface)](https://en.wikipedia.org/wiki/Aqua_(user_interface)) | Gel buttons, pinstripes, the pulsing default button |
 | `barbie` | [Shades of pink — Barbie pink (Pantone 219C)](https://en.wikipedia.org/wiki/Shades_of_pink) | The brand pink, and how close hot pink can sit to white text |
