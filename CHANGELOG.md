@@ -116,6 +116,9 @@ changes are called out explicitly here.
   (`#3a861d` → `#3cb03c` at 70% → `#2c8230`, border `#267544`, was `--success` → `#1f5c0a`), and the
   taskbar lip is `#3168d5` over a 3px `#4993e6` band (was a dark `#1f2f86` line over `#4490e6`).
   `win7-aero` inherits both.
+- Gallery logon screen measured from a genuine XP logon: flat blue with a top-left glow, bands at
+  12.5% / 15.6% of the height, fading white and orange rules, a faint divider, a selected user tile
+  that fades out, and a "Turn off computer" footer. Other themes derive the colours from `--accent`.
 - In the `.app` shell the toast region starts below the app bar (#68 R-A7).
 - Breadcrumb separators use `--muted` and follow the app bar's text colour (#68 R-A1).
 - Editing cells take `--cell-editor-font-size/-pad-x/-arrow-space` and style controls inside an

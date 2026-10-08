@@ -80,25 +80,43 @@
   .desktop:has([name=wallpaper][value=azure]:checked) { --desktop-bg: radial-gradient(80% 70% at 70% 30%, #6fb7ff, transparent 70%), linear-gradient(160deg, #003b8e, #0a6ad6 55%, #00285f); }
   .desktop:has([name=wallpaper][value=dusk]:checked) { --desktop-bg: radial-gradient(60% 40% at 50% 80%, #ffb36b, transparent 70%), linear-gradient(180deg, #1b1747, #6a2f73 55%, #e0735a); }
   .desktop:has([name=wallpaper][value=none]:checked) { --desktop-bg: var(--bg); }
-  /* The logon screen: shown until "Visitor" is picked; Log Off brings it back. */
-  .logon { position: fixed; inset: 0; z-index: calc(var(--z-window, 1500) + 1); display: grid; grid-template-rows: 4.5rem 1fr 4.5rem;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, #000) , color-mix(in srgb, var(--accent) 80%, #fff) 50%, color-mix(in srgb, var(--accent) 55%, #000));
+  /* The logon screen: shown until "Visitor" is picked; Log Off brings it back.
+     Geometry and colours measured from a genuine XP logon (640x480): bands
+     12.5% / 15.6% of the height, flat blue with a top-left glow, a white
+     rule and a 2px orange rule that fade out at both ends, a faint centre
+     divider, and a selected user tile that fades into the background.
+     Other themes derive the same layout from --accent. */
+  .logon { --logon-bg: color-mix(in srgb, var(--accent) 80%, #fff); --logon-band: color-mix(in srgb, var(--accent) 35%, #000);
+    --logon-band-start: var(--logon-band); --logon-glow: color-mix(in srgb, var(--logon-bg) 55%, #fff);
+    --logon-rule-top: #fff; --logon-rule-bottom: #f0a050; --logon-tile: color-mix(in srgb, var(--accent) 60%, #000);
+    --logon-tile-mid: color-mix(in srgb, var(--accent) 80%, #000);
+    position: fixed; inset: 0; z-index: calc(var(--z-window, 1500) + 1); display: grid; grid-template-rows: 12.5% 1fr 15.6%;
+    background: radial-gradient(circle 32vh at 6% 20%, var(--logon-glow), transparent), var(--logon-bg);
     color: #fff; font-family: var(--font); }
-  .logon::before, .logon::after { content: ""; background: color-mix(in srgb, var(--accent) 35%, #000); border-block-end: 2px solid color-mix(in srgb, var(--accent) 60%, #fff); }
-  .logon::after { border-block: 2px solid #f0a050 0; border-block-start-width: 2px; border-block-end-width: 0; }
-  .logon-body { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 2.5rem; align-items: center; padding: 1rem 2rem; }
-  .logon-brand { display: grid; justify-items: end; gap: .75rem; text-align: end; }
-  .logon-brand h2 { margin: 0; font-size: 2.2rem; color: #fff; }
-  .logon-brand p { margin: 0; max-inline-size: 18rem; }
-  .logon-rule { align-self: stretch; background: linear-gradient(transparent, rgba(255,255,255,.6), transparent); }
-  .logon-users { display: grid; gap: .75rem; justify-items: start; }
-  .logon-user { display: flex; gap: .9rem; align-items: center; padding: .5rem .9rem .5rem .5rem; border-radius: .5rem; color: #fff; font-size: 1.2rem; cursor: default; }
-  .logon-user:hover, .logon-user:focus-within { background: rgba(0, 0, 0, .25); }
-  .logon-user .avatar { --avatar-size: 3.4rem; border: 3px solid #fff; border-radius: .4rem; }
+  html[data-theme="winxp-luna"] .logon { --logon-bg: #3f7cf9; --logon-band: #0a2ab3; --logon-band-start: #3327c7;
+    --logon-glow: #8ab8fd; --logon-rule-top: #c8ecff; --logon-rule-bottom: #ec913e; --logon-tile: #053cbf; --logon-tile-mid: #276eea; }
+  .logon::before { content: ""; background: linear-gradient(90deg, transparent, var(--logon-rule-top) 30%, transparent) bottom / 100% 2px no-repeat, var(--logon-band); }
+  .logon-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 5% 0 2.4%;
+    background: linear-gradient(90deg, transparent, var(--logon-rule-bottom) 25%, transparent 80%) top / 100% 2px no-repeat,
+      linear-gradient(90deg, var(--logon-band-start), var(--logon-band) 31%); font-size: .75rem; }
+  .logon-foot p { margin: 0; text-align: end; }
+  .logon-off { display: inline-flex; align-items: center; gap: .5rem; color: #fff; font-size: .95rem; text-decoration: none; }
+  .logon-off::before { content: "\23FB"; display: grid; place-items: center; inline-size: 1.4rem; block-size: 1.4rem; border: 1px solid #fff;
+    border-radius: .2rem; background: linear-gradient(135deg, #f0835b, #d4380c); font-size: 1rem; }
+  .logon-off:hover, .logon-off:focus-visible { text-decoration: underline; }
+  .logon-body { display: grid; grid-template-columns: 1fr 2px 1fr; gap: 1.25rem; align-items: center; padding: 1rem 0; }
+  .logon-brand { --splash-art-size: 3.4rem; display: grid; justify-items: end; gap: .6rem; text-align: end; }
+  .logon-brand h2 { margin: 0; font-size: 1.6rem; color: #fff; }
+  .logon-brand p { margin: 0; max-inline-size: 18rem; font-size: .9rem; }
+  .logon-rule { align-self: stretch; margin-block: 2.2vh; background: linear-gradient(transparent, rgba(255,255,255,.16), transparent); }
+  .logon-users { display: grid; gap: .75rem; justify-items: stretch; }
+  .logon-user { display: flex; gap: .9rem; align-items: center; min-block-size: 3.4rem; padding: .3rem .9rem .3rem .4rem; border-radius: .45rem 0 0 .45rem; color: #fff; font-size: 1rem; cursor: default; }
+  .logon-user:hover, .logon-user:focus-within { background: linear-gradient(90deg, var(--logon-tile), var(--logon-tile-mid) 75%, transparent 95%); }
+  .logon-user .avatar { --avatar-size: 2.7rem; border: 2px solid #fff; border-radius: .3rem; }
   .logon-user small { display: block; font-size: .8rem; opacity: .85; }
   #logged-on { position: fixed; opacity: 0; pointer-events: none; }
   :root:has(#logged-on:checked) .logon { display: none; }
-  @media (max-width: 40rem) { .logon-body { grid-template-columns: 1fr; text-align: center; } .logon-brand { justify-items: center; text-align: center; } .logon-rule { display: none; } .logon-users { justify-items: center; } }
+  @media (max-width: 30rem) { .logon-body { grid-template-columns: 1fr; text-align: center; } .logon-brand { justify-items: center; text-align: center; } .logon-rule { display: none; } .logon-users { justify-items: center; } .logon-foot p { display: none; } }
 </style>
 </head>
 <!-- The ftl-themes gallery: a whole desktop (Windows XP Luna unless ?theme=
@@ -117,6 +135,10 @@
         <label class="logon-user" for="logged-on"><span class="avatar" data-color="3">D</span><span>Developer<small>Start with Command Prompt</small></span></label>
       </div>
     </div>
+    <footer class="logon-foot">
+      <a class="logon-off" href="gallery.html">Turn off computer</a>
+      <p>After you log on, you can change the theme.<br>Open Theme Browser from the desktop.</p>
+    </footer>
   </section>
 
   <div class="splash" data-boot-screen role="status" aria-live="polite">
