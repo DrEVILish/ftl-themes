@@ -112,6 +112,10 @@ changes are called out explicitly here.
   arrow in the knee) and each theme draws its own. Demo: `components-experience.html`.
 
 ### Changed
+- `winxp-luna` taskbar measured from a lossless 1:1 XP capture: the Start pill is brighter green
+  (`#3a861d` → `#3cb03c` at 70% → `#2c8230`, border `#267544`, was `--success` → `#1f5c0a`), and the
+  taskbar lip is `#3168d5` over a 3px `#4993e6` band (was a dark `#1f2f86` line over `#4490e6`).
+  `win7-aero` inherits both.
 - In the `.app` shell the toast region starts below the app bar (#68 R-A7).
 - Breadcrumb separators use `--muted` and follow the app bar's text colour (#68 R-A1).
 - Editing cells take `--cell-editor-font-size/-pad-x/-arrow-space` and style controls inside an
