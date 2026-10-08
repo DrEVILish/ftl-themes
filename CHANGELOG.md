@@ -145,6 +145,13 @@ changes are called out explicitly here.
   white one; Quick Launch and tray icons at 16px.
 - Desktop: `--window-caption-opacity-inactive` (default `1`) fades an inactive window's caption
   buttons; `winxp-luna` uses `0.6`, which matches the sampled inactive close and minimise buttons.
+- `winxp-luna` desktop wallpaper re-fitted to the Bliss reference photograph: sky `#5186e1` to
+  `#99c0f3`, the hill crest at the measured 54% / 50% / 59% of the height, sunlit and shadow greens
+  and the shaded right slope matching the photo's colours, cumulus centre-right. Still CSS, not the
+  photograph.
+- `winxp-luna` inactive desktop windows' frames pale with their captions (`--luna-frame-inactive`,
+  `#718fe0` measured for Luna, `#bccd9c` Olive Green, `#bcbfcf` Silver, derived for the others);
+  `win7-aero` keeps its own glass edge.
 - `winxp-luna` Royale, Royale Noir, Zune and Embedded sampled from genuine captures of each scheme:
   active captions (dark at the top, lighter below), taskbars and task buttons (light upper, dark lower
   half), trays, Start menus with dark program and places columns and white text, and task panes with
@@ -196,6 +203,9 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `win7-aero` icons inside a window (not on the wallpaper) are black-labelled with blue glyphs, as in
+  Windows 7's Explorer; their selected labels were white on pale blue (1.2:1).
+- `winxp-luna` Olive Green and Zune badges on their accent tint now pass 4.5:1 (`--accent-text`).
 - Start menu: "All Programs" stays on one line in the two-column layout (its columns-only "All "
   span was stacked above "Programs").
 - `winxp-luna` no longer extends `windows95`. Since v5.2.0 the inherited 95 rules drew raised 95
