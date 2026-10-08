@@ -145,6 +145,13 @@ changes are called out explicitly here.
   white one; Quick Launch and tray icons at 16px.
 - Desktop: `--window-caption-opacity-inactive` (default `1`) fades an inactive window's caption
   buttons; `winxp-luna` uses `0.6`, which matches the sampled inactive close and minimise buttons.
+- `winxp-luna` Royale, Royale Noir, Zune and Embedded sampled from genuine captures of each scheme:
+  active captions (dark at the top, lighter below), taskbars and task buttons (light upper, dark lower
+  half), trays, Start menus with dark program and places columns and white text, and task panes with
+  square groups under saturated header bars (Zune's orange). Inactive captions, which no capture
+  shows, are the active caption desaturated. Royale's page app bar and status strip use the darker
+  half of its blues so white text passes 4.5:1; windows and the desktop taskbar keep the measured
+  gradients.
 - `winxp-luna` Olive Green and Silver sampled from genuine captures of both schemes. Their taskbars
   were upside down: XP's run from a dark top line and a darker band near the top to pale at the
   bottom. Taskbar, task buttons, tray (Olive's is khaki), Start menu header, places column and
