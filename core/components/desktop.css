@@ -237,6 +237,55 @@
   border-color: var(--window-pane-border, var(--input-border, var(--border)));
 }
 
+/* .window-tasks — the side pane of task groups beside a window's content
+   (XP's Explorer task pane). Each .window-task is a titled group: its
+   first child (a heading or <summary>) is the header, the rest the body. */
+.window-tasks {
+  display: grid;
+  align-content: start;
+  gap: var(--window-tasks-gap, var(--space-s, 0.75rem));
+  padding: var(--window-tasks-padding, var(--space-s, 0.75rem));
+  background: var(--window-tasks-bg, var(--surface-2));
+}
+.window-task {
+  border: 1px solid var(--window-task-border, var(--border));
+  border-radius: var(--window-task-radius, var(--radius));
+  background: var(--window-task-bg, var(--surface));
+  color: var(--window-task-fg, var(--text));
+  font-size: var(--window-task-font-size, inherit);
+  overflow: hidden;
+}
+.window-task > :first-child {
+  margin: 0;
+  padding: var(--window-task-header-pad, 0.35rem 0.6rem);
+  background: var(--window-task-header-bg, transparent);
+  color: var(--window-task-header-fg, inherit);
+  font-size: var(--window-task-header-font-size, 0.85rem);
+  font-weight: 700;
+}
+.window-task > :not(:first-child) { margin: 0; padding: var(--window-task-body-pad, 0.4rem 0.6rem); }
+.window-task > :not(:first-child) + :not(:first-child) { padding-block-start: 0; }
+.window-task a { color: var(--window-task-link-fg, var(--link, var(--accent))); }
+/* A .list inside a group is a plain column of task links, not a boxed list. */
+.window-task {
+  --list-bg: transparent;
+  --list-border-width: 0;
+  --list-radius: 0;
+  --list-rule: transparent;
+  --list-item-padding: var(--window-task-item-pad, 0.2em 0);
+  --list-item-fg: var(--window-task-link-fg, var(--link, var(--accent)));
+  --row-hover-bg: transparent;
+}
+@media (hover: hover) {
+  .window-task :is(a, label).list-item:hover { text-decoration: underline; color: var(--window-task-link-fg-hover, var(--window-task-link-fg, var(--link, var(--accent)))); }
+}
+/* The first, "special" group of a pane (XP: the place's own tasks). */
+.window-task.is-special > :first-child {
+  background: var(--window-task-special-header-bg, var(--window-task-header-bg, transparent));
+  color: var(--window-task-special-header-fg, var(--window-task-header-fg, inherit));
+}
+.window-task.is-special { background: var(--window-task-special-bg, var(--window-task-bg, var(--surface))); }
+
 /* Minimized and closed windows leave the screen (the inputs stay, so the
    task button and the Start menu can bring them back). */
 .desktop-window:has(> .window-minimize:checked, > .window-close:checked) > .modal { display: none; }
@@ -476,6 +525,9 @@
   height: var(--start-menu-sub-icon-size, 1rem);
 }
 .start-menu li > :is(a, button, label) > span { display: flex; flex-direction: column; text-align: start; }
+/* "All Programs" is one line of text (its "All " is a columns-only span), not
+   a title over a subtitle. */
+.start-menu li.start-menu-all > :is(a, button) > span { display: block; white-space: nowrap; }
 .start-menu li > :is(a, button, label) > span > b { font-weight: 700; }
 .start-menu li > :is(a, button, label) small { font-size: 0.8em; opacity: 0.75; }
 .start-menu .has-submenu > :is(a, button)::after { margin-inline-start: auto; }

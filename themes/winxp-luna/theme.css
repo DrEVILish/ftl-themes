@@ -836,15 +836,35 @@ html[data-theme="winxp-luna"] {
   --desktop-icon-fg: #ffffff;
   --desktop-icon-text-shadow: 1px 1px 1px #000000, 0 0 2px #000000;
   --desktop-icon-glyph: #ffffff;
-  --desktop-icon-filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.6));
+  /* The colour icons carry their own shading; XP only shadows the labels.
+     A selected icon is blended toward the selection blue. */
+  --desktop-icon-filter: none;
+  --desktop-icon-filter-selected: sepia(1) saturate(3) hue-rotate(185deg) brightness(0.85);
   --desktop-icon-glyph-selected: #a8c4f4;
   --desktop-icon-label-bg-selected: #316ac5;
   --desktop-icon-label-fg-selected: #ffffff;
-  --desktop-icon-size: 2.2rem;
+  --desktop-icon-size: 32px;
   --window-icon-glyph: #2456c4;
   --window-pad: 3px;
   --window-header-pad: 0.25rem 0.3rem 0.25rem 0.4rem;
-  --window-header-bg-inactive: linear-gradient(180deg, #7a96df 0%, #9db9eb 8%, #9eb6ec 40%, #a9c0f0 88%, #8aa4e3 100%);
+  /* Inactive caption and the Explorer task pane: flat colours sampled from a
+     genuine XP Luna capture (an inactive My Computer window behind the open
+     Start menu). */
+  --window-header-bg-inactive: linear-gradient(180deg, #9bb6ea 0%, #84a7e6 6%, #7a96df 22%, #7a96df 36%, #7d9be3 58%, #82a9e9 82%, #7c98e2 100%);
+  --window-tasks-bg: linear-gradient(180deg, #7ba2e7, #6375d6);
+  --window-tasks-gap: 12px;
+  --window-tasks-padding: 12px;
+  --window-task-bg: #d6dff7;
+  --window-task-border: #ffffff;
+  --window-task-radius: 3px 3px 0 0;
+  --window-task-header-bg: linear-gradient(90deg, #ffffff, #c6d3f7);
+  --window-task-header-fg: #215dc6;
+  --window-task-header-pad: 5px 12px;
+  --window-task-header-font-size: max(0.85rem, 11px);
+  --window-task-body-pad: 8px 12px;
+  --window-task-link-fg: #215dc6;
+  --window-task-link-fg-hover: #428eff;
+  --window-task-font-size: max(0.85rem, 11px);
   --window-header-fg-inactive: #d8e4f8;
   --window-header-filter-inactive: none;
   --window-status-field-border: transparent #d4d0c8 transparent transparent;
@@ -872,7 +892,9 @@ html[data-theme="winxp-luna"] {
   --start-menu-footer-fg: #ffffff;
   --start-menu-icon-size: 2rem;
   --start-menu-sub-icon-size: 1rem;
-  --start-menu-font-size: 0.8rem;
+  --start-menu-font-size: max(0.85rem, 11px);
+  --start-menu-icon-size: 32px;
+  --start-menu-sub-icon-size: 16px;
   --home-tile: linear-gradient(180deg, #ffffff, #dfe9fb 55%, #b9cdf2);
   --home-glyph: #1f55c6;
   --home-dock-glyph: #1f55c6;
@@ -925,16 +947,17 @@ html[data-theme="winxp-luna"] .taskbar-tasks .taskbar-task { padding: 0 0.5rem; 
 html[data-theme="winxp-luna"] .desktop-bar > .taskbar-tray { padding: 0 0.7rem; gap: 0.4rem; border: 0; border-left: 1px solid #092e8d; border-radius: 0; }
 /* The Start menu's parts. */
 html[data-theme="winxp-luna"] .start-menu-header {
-  min-block-size: 3.6rem;
+  min-block-size: 64px;
   padding: 0.4rem 0.6rem;
   font-family: "Trebuchet MS", var(--font);
-  font-size: 1.05rem;
+  font-size: 14px;
+  font-weight: 700;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
   border-block-end: 2px solid #f0a33a;
   box-shadow: inset 0 1px #6ba4f3;
 }
 html[data-theme="winxp-luna"] .start-menu-header .avatar {
-  --avatar-size: 2.8rem;
+  --avatar-size: 48px;
   border: 2px solid #ffffff;
   border-radius: 3px;
 }
@@ -944,8 +967,8 @@ html[data-theme="winxp-luna"] .start-menu-header {
 }
 html[data-theme="winxp-luna"] .start-menu-places { color: #0a246a; }
 html[data-theme="winxp-luna"] .start-menu-places > li > :is(a, button, label) { min-block-size: 1.9rem; padding-block: 0.15rem; }
-html[data-theme="winxp-luna"] .start-menu-places .icon { width: 1.5rem; height: 1.5rem; }
-html[data-theme="winxp-luna"] .start-menu-all > button { justify-content: center; font-weight: 700; }
+html[data-theme="winxp-luna"] .start-menu-places .icon { width: 24px; height: 24px; }
+html[data-theme="winxp-luna"] .start-menu-all > button { justify-content: flex-end; font-weight: 700; white-space: nowrap; }
 html[data-theme="winxp-luna"] .start-menu-all > button > .icon { display: none; }
 html[data-theme="winxp-luna"] .start-menu-all > button::after {
   content: "\25B6";
@@ -962,14 +985,12 @@ html[data-theme="winxp-luna"] .start-menu-all > button::after {
   opacity: 1;
 }
 html[data-theme="winxp-luna"] .start-menu-footer { box-shadow: inset 0 1px #72a8f0; }
-html[data-theme="winxp-luna"] .start-menu-footer .icon {
-  padding: 0.2rem;
-  border-radius: 3px;
-  border: 1px solid #ffffff;
-  color: #ffffff;
+/* XP's two columns are about 190px each, whatever the root size. */
+@container style(--start-menu-layout: columns) {
+  html[data-theme="winxp-luna"] .start-menu[popover] { grid-template-columns: minmax(min(190px, 50vw), auto) minmax(min(190px, 50vw), auto); }
 }
-html[data-theme="winxp-luna"] .start-menu-footer > li:first-child .icon { background: linear-gradient(180deg, #f7cf5b, #dd9a14); }
-html[data-theme="winxp-luna"] .start-menu-footer > li:last-child .icon { background: linear-gradient(180deg, #f08a5c, #d5401a); }
+/* The Log Off and Turn Off icons carry their own orange and red tiles. */
+html[data-theme="winxp-luna"] .start-menu-footer .icon { width: 24px; height: 24px; }
 html[data-theme="winxp-luna"] .start-menu-footer > li > :is(a, button):hover { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
 @media (max-width: 480px) {
   html[data-theme="winxp-luna"] .desktop-bar > .taskbar-start { padding-inline-end: 1rem; font-size: 1.05rem; }

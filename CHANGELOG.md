@@ -6,6 +6,10 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Window task pane: `.window-tasks` beside a window's content, holding titled `.window-task` groups
+  (`.is-special` for the first), with `--window-tasks-*` and `--window-task-*` tokens that fall back to
+  the base tokens. A `.list` inside a group becomes a plain column of task links. The gallery's My
+  Computer and Theme Browser windows use it.
 - Event displays and signage (#68), new group `core/components/signage.css` and demo `signage.html`:
   `.countdown[data-state]` timer states (armed, paused, held, alert1/2, overtime with sign and
   tenths), `.timeline-bar` day bar with a now needle, `.stage-edge` alert ring, `.is-attention` and
@@ -124,6 +128,17 @@ changes are called out explicitly here.
   horizontal sliders a 24px footprint, so targets stay at the 24px minimum.
 - `.waveform-overview` defaults to `max(1.6rem, 24px)` tall, so its zoom handles never drop under the
   24px target size on a theme with a small root.
+- `winxp-luna` icons: 31 of the most used (computer, folders, documents, Recycle Bin, globe, network,
+  Messenger, volume, Task Manager, Command Prompt, files, palette, settings, drives, CD, mail, music,
+  Favorites star, game controller, calendar, Log Off, Turn Off, help, search, printer, picture,
+  refresh, play, save) are full-colour XP-style drawings with their own gradients instead of one-colour
+  glyphs. Desktop icons are 32px with no added shadow, and a selected one is tinted toward the
+  selection blue.
+- `winxp-luna` Start menu at XP's size: 11px text, 32px program icons, 24px place and footer icons,
+  two ~190px columns, a 64px header with a 48px picture.
+- `winxp-luna` inactive title bar and Explorer task pane sampled from a genuine XP capture: the
+  inactive caption runs from a `#9bb6ea` lip through `#7a96df` to `#82a9e9`; the task pane is
+  `#7ba2e7` → `#6375d6` with `#d6dff7` groups, white-to-`#c6d3f7` headers and `#215dc6` links.
 - In the `.app` shell the toast region starts below the app bar (#68 R-A7).
 - Breadcrumb separators use `--muted` and follow the app bar's text colour (#68 R-A1).
 - Editing cells take `--cell-editor-font-size/-pad-x/-arrow-space` and style controls inside an
@@ -143,6 +158,8 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- Start menu: "All Programs" stays on one line in the two-column layout (its columns-only "All "
+  span was stacked above "Programs").
 - `winxp-luna` no longer extends `windows95`. Since v5.2.0 the inherited 95 rules drew raised 95
   bevels on every XP button, panel, card, alert, dropdown, menu, popover and close button, hid the
   Quick Launch area, and gave theme switches 95's BSOD exit. `win7-aero` still extends `winxp-luna`.

@@ -77,6 +77,11 @@ out to stay usable at any width.
         </div>
         <ul class="menubar" role="menubar">…</ul>
         <div class="window-body">… <div class="window-pane">…</div> …</div>
+        <!-- or, with a task pane beside the content: -->
+        <div class="window-body"><aside class="window-tasks" aria-label="Tasks">
+            <section class="window-task is-special"><h2>System Tasks</h2><ul>…</ul></section>
+            <section class="window-task"><h2>Other Places</h2><ul>…</ul></section>
+          </aside><div class="window-pane">…</div></div>
         <div class="window-status"><span>6 object(s)</span><span>1.2 GB free</span></div>
         <label class="window-home" for="app-home"><span class="visually-hidden">Home</span></label>
       </div>
@@ -160,6 +165,12 @@ out to stay usable at any width.
 | `--window-header-bg-inactive` / `--window-header-fg-inactive` / `--window-header-filter-inactive` | the active header / `saturate(.45) opacity(.85)` |
 | `--window-status-field-border` | transparent (1–4 colours) |
 | `--window-pane-bg` / `--window-pane-border` | `--input-bg` / `--input-border` |
+| `--window-tasks-bg` / `--window-tasks-gap` / `--window-tasks-padding` | `--surface-2` / `--space-s` / `--space-s` (the task pane) |
+| `--window-task-bg` / `-fg` / `-border` / `-radius` / `-body-pad` / `-link-fg` | `--surface` / `--text` / `--border` / `--radius` / `0.4rem 0.6rem` / `--link` |
+| `--window-task-font-size` | inherit |
+| `--window-task-link-fg-hover` / `--window-task-item-pad` | the link colour (underlined on hover) / `0.2em 0` (a `.list` in a group loses its box) |
+| `--window-task-header-bg` / `-header-fg` / `-header-pad` / `-header-font-size` | transparent / inherit / `0.35rem 0.6rem` / `0.85rem` |
+| `--window-task-special-bg` / `-special-header-bg` / `-special-header-fg` | the plain group's values (`.window-task.is-special`) |
 | `--taskbar-height` / `--taskbar-padding` / `--taskbar-gap` / `--taskbar-font-size` | `2.5rem` / `0.2rem 0.3rem` / `0.3rem` / `0.85rem` |
 | `--taskbar-task-max` / `--taskbar-task-weight-active` | `10.5rem` / inherit |
 | `--taskbar-start-bg-open` / `-border-open` / `-shadow-open` / `-outline-open` | the closed values |
