@@ -1,13 +1,14 @@
 # WinAmp Classic
 
-> Steel-gray skinned player — tiny caps, llama-green readouts.
+> Indigo-grey skinned player — silver keys, tiny caps, llama-green readouts.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
-A **skinned desktop media player** from the late 1990s: a compact steel
-window, brushed horizontal texture, tiny uppercase labels, and a bright
+A **skinned desktop media player** from the late 1990s: a compact
+indigo-grey window (the 2.x base skin's chassis, `#32324f`), brushed
+horizontal texture, pale silver-blue keys, tiny uppercase labels, and a bright
 green LCD-style readout. It really whips the llama's ass.
 
 ## Core values
@@ -71,7 +72,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Don'ts
 
-- **No LCD green as a general accent.** It is confined to readouts, meters and slider caps; headings, nav and buttons stay steel/khaki.
+- **No LCD green as a general accent.** It is confined to readouts, meters, slider caps, the playlist's selected row text and the default (`.btn-primary`) button, drawn as the LCD (green on black); headings, nav and other buttons stay khaki or silver.
 - **No radius above `0.1rem`, no gloss.** Chunky 2px bevels only.
 - **No body copy in the LCD face.** Only h1 and the readout/table digits use the mono stack.
 - **No yellow fader caps here** without knowing this deviates from the reference (see Contrast honesty).
@@ -90,7 +91,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Reference status
 
-`references/winamp-classic/` has 3 captures plus `RESEARCH.md`: `WinAmp_5.9.2,_Windows_10.png` (a Vista-glass skin showing main window, EQ and playlist), `ddbr1i4-….png` (a Classic Modern lite skin, full stack) and `winamp-classic-screenshot.avif`. They back the steel-grey bevelled buttons, green LCD readout and playlist editor. Note that two are modern-skin variants, not the 2.x classic skin the theme names; `RESEARCH.md` records no hex values.
+`references/winamp-classic/` has 3 captures plus `RESEARCH.md`: `WinAmp_5.9.2,_Windows_10.png` (the classic base skin: main window, EQ and playlist, slightly rescaled), `ddbr1i4-….png` (a Classic Modern lite skin, full stack) and `winamp-classic-screenshot.avif`. They back the indigo-grey chassis, the silver keys, the green LCD readout and the playlist editor; `RESEARCH.md` tables the colours sampled from the base-skin capture. `ddbr1i4-….png` is a modern remake of the classic skin, not the original.
 
 ## Adoption
 

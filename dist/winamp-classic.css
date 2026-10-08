@@ -18606,17 +18606,22 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
 /* theme source: winamp-classic */
 /* ftl-themes: WinAmp Classic
  * Theme-Name: WinAmp Classic
- * Description: The steel-gray Winamp 2.x skin: tiny uppercase labels and llama-green LCD-style readouts.
+ * Description: The indigo-grey Winamp 2.x base skin: silver keys, tiny uppercase labels and llama-green LCD-style readouts.
  */
 
 html[data-theme="winamp-classic"] {
   --motion-leave: power-off;
   color-scheme: dark;
-  --bg: #1c1c1c;
-  --surface: #3a3a3a;
-  --surface-2: #4a4a4a;
-  --border: #6b6b6b;
-  --hairline: #2a2a2a;
+  /* The base skin's chassis is an indigo grey, not a neutral steel: sampled
+     on references/winamp-classic/WinAmp_5.9.2,_Windows_10.png (the 2.x
+     base skin, slightly rescaled, so values are indicative): face #32324f,
+     shadow #1b1b2b, title-bar mid #484861, highlight #686883. Table in
+     RESEARCH.md. */
+  --bg: #1b1b2b;
+  --surface: #32324f;
+  --surface-2: #484861;
+  --border: #686883;
+  --hairline: #2f2f4b;
   --text: #d9d9c8;
   /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #9a9a8c, 3.1:1. */
   --muted: #c2c2ba;
@@ -18638,18 +18643,25 @@ html[data-theme="winamp-classic"] {
   --font-mono: "Fixedsys", "Courier New", Consolas, monospace;
   --flare: #00ff00;
 
-  --btn-bg: var(--surface-2);
-  --btn-fg: var(--text);
+  /* Push buttons are the base skin's pale silver-blue keys (transport,
+     SHUFFLE, EQ/PL, PRESETS), measured on the stop key: #f0ffff top
+     highlight, #deeff1 face, #d2dfe7 foot, #8e9cad then #414f61 lower
+     edge. Dark label on them. */
+  --btn-bg: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
+  --btn-fg: #1b1b2b;
+  --btn-shadow: inset -1px -1px 0 #8e9cad;
   --btn-transform: uppercase;
   --input-bg: #000;
   --input-fg: var(--accent);
   --panel-bg: var(--surface);
   --table-head-bg: var(--surface-2);
   --table-head-fg: var(--muted);
-  --row-selected-bg: var(--surface-2);
+  /* The playlist's selected row: base skin pledit SelectedBG #0000FF
+     (webamp's baseSkin.json), green text over it at 6.3:1. */
+  --row-selected-bg: #0000ff;
   --row-selected-fg: var(--accent);
-  --nav-bg: linear-gradient(180deg, #4a4a4a, #2a2a2a);
-  --nav-rule: #1c1c1c;
+  --nav-bg: linear-gradient(180deg, #484861, #2f2f4b);
+  --nav-rule: #1b1b2b;
   --badge-radius: 0;
   --progress-radius: 0;
   --progress-fill: var(--accent-2);
@@ -18664,16 +18676,15 @@ html[data-theme="winamp-classic"] {
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
 
-  /* Winamp's GEM skin reads as chunky hardware because its bevel is a full
-     2px light-top/dark-bottom groove, not a hairline — at 1px the same
-     border-color trick nearly disappears against a filled button. */
-  --btn-border-width: 2px;
+  /* Panels and fields keep a 2px groove; the silver keys draw their
+     2px edge as a 1px border plus a 1px inset shadow (see --btn-bg). */
+  --btn-border-width: 1px;
   --panel-border-width: 2px;
   --input-border-width: 2px;
 }
 
 html[data-theme="winamp-classic"] {
-  background: repeating-linear-gradient(180deg, #454545 0px, #3a3a3a 2px, #363636 2px, #363636 4px);
+  background: repeating-linear-gradient(180deg, #3c3c50 0px, #32324f 2px, #2f2f4b 2px, #2f2f4b 4px);
 }
 
 /* Headings, nav and default buttons stay steel/khaki — the LCD green is a
@@ -18702,42 +18713,46 @@ html[data-theme="winamp-classic"] h1 {
   font-family: var(--font-mono);
   letter-spacing: 0.08em;
   color: var(--text);
-  background: #0c0c0c;
+  background: #0d0e14;
   padding: 0.5em 0.9em;
   border: 2px solid;
-  border-color: #0c0c0c #a8a8a8 #a8a8a8 #0c0c0c;
+  border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
   box-shadow: inset 0 0 0 1px var(--accent), inset 0 0 10px rgba(0, 255, 0, 0.25);
 }
+/* The default action reads as the LCD: green on black, as the display
+   and playlist draw it. */
 html[data-theme="winamp-classic"] .btn-primary {
-  --btn-bg: var(--surface-2);
+  --btn-bg: #000000;
   --btn-fg: var(--accent);
   --btn-border: var(--accent);
+  --btn-shadow: none;
 }
 
 /* Hardware bevel, inverted on press. Raised (light top-left, dark
    bottom-right) for anything that reads as a control sitting proud of the
    surface; recessed (dark top-left, light bottom-right) for anything the
    surface has been punched into — an input field, or a button held down. */
-html[data-theme="winamp-classic"] .btn { border-color: #a8a8a8 #0c0c0c #0c0c0c #a8a8a8; }
-html[data-theme="winamp-classic"] .btn:active { border-color: #0c0c0c #a8a8a8 #a8a8a8 #0c0c0c; }
+html[data-theme="winamp-classic"] .btn { border-color: #f0ffff #414f61 #414f61 #f0ffff; }
+html[data-theme="winamp-classic"] .btn:active { border-color: #414f61 #f0ffff #f0ffff #414f61; box-shadow: inset 1px 1px 0 #8e9cad; }
+html[data-theme="winamp-classic"] :is(.btn-primary, .btn-danger, .btn-success) { border-color: var(--btn-border); }
 html[data-theme="winamp-classic"] .panel,
 html[data-theme="winamp-classic"] .modal,
-html[data-theme="winamp-classic"] .dropdown { border-color: #a8a8a8 #0c0c0c #0c0c0c #a8a8a8; }
+html[data-theme="winamp-classic"] .dropdown { border-color: #8e9cad #0d0e14 #0d0e14 #8e9cad; }
 html[data-theme="winamp-classic"] .input,
 html[data-theme="winamp-classic"] .select,
 html[data-theme="winamp-classic"] .textarea {
-  border-color: #0c0c0c #a8a8a8 #a8a8a8 #0c0c0c;
+  border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
   font-family: var(--font-mono);
 }
 /* Sliders and switches are physical hardware in the reference skin too —
    same recessed track, raised thumb logic as the controls above. */
 html[data-theme="winamp-classic"] .slider {
   border: 2px solid;
-  border-color: #0c0c0c #a8a8a8 #a8a8a8 #0c0c0c;
+  border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
 }
 html[data-theme="winamp-classic"] .switch-track {
   border: 2px solid;
-  border-color: #0c0c0c #a8a8a8 #a8a8a8 #0c0c0c;
+  border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
 }
 
 html[data-theme="winamp-classic"] .table td { font-family: var(--font-mono); font-size: 0.85em; }
@@ -18748,21 +18763,21 @@ html[data-theme="winamp-classic"] .table td { font-family: var(--font-mono); fon
 html[data-theme="winamp-classic"] {
   --app-padding: 0.25rem;
   --app-gap: 0.25rem;
-  --app-bar-bg: linear-gradient(180deg, #4a4a4a, #2a2a2a);
-  --app-bar-rule: #1c1c1c;
+  --app-bar-bg: linear-gradient(180deg, #484861, #2f2f4b);
+  --app-bar-rule: #1b1b2b;
   --app-bar-height: 1.8rem;
   /* Right padding clears the dotted grip, so the last action never sits
      on it. */
   --app-bar-padding: 0.2rem 1.7rem 0.2rem 0.5rem;
   --app-main-bg: var(--surface);
   --app-main-padding: 0.5rem;
-  --app-status-bg: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+  --app-status-bg: linear-gradient(180deg, #32324f, #2f2f4b);
   --app-status-fg: #c8c8b8;
-  --app-status-rule: #1c1c1c;
+  --app-status-rule: #1b1b2b;
 }
 html[data-theme="winamp-classic"] .app-main {
   border: 1px solid;
-  border-color: #1c1c1c #6b6b6b #6b6b6b #1c1c1c;
+  border-color: #1b1b2b #686883 #686883 #1b1b2b;
 }
 
 /* App-bar nav text. Items lifted from --muted (4.1:1 on the bar's lighter top
@@ -18779,16 +18794,16 @@ html[data-theme="winamp-classic"] .app-bar {
 html[data-theme="winamp-classic"] .app-bar {
   background-image:
     radial-gradient(circle, #9a9a9a 1.4px, transparent 1.5px),
-    radial-gradient(circle, #1c1c1c 1.4px, transparent 1.5px),
-    linear-gradient(180deg, #4a4a4a, #2a2a2a);
+    radial-gradient(circle, #1b1b2b 1.4px, transparent 1.5px),
+    linear-gradient(180deg, #484861, #2f2f4b);
   background-size: 6px 6px, 6px 6px, 100% 100%;
   background-position: right 0.9rem top calc(50% - 3px), right 0.6rem top calc(50% - 3px), 0 0;
   background-repeat: repeat-y, repeat-y, no-repeat;
 }
 html[data-theme="winamp-classic"] .slider {
   background-image:
-    repeating-linear-gradient(90deg, #1c1c1c 0, #1c1c1c 1px, transparent 1px, transparent 7px),
-    linear-gradient(180deg, #0c0c0c, #1c1c1c);
+    repeating-linear-gradient(90deg, #1b1b2b 0, #1b1b2b 1px, transparent 1px, transparent 7px),
+    linear-gradient(180deg, #0d0e14, #1b1b2b);
 }
 
 /* Thin, LCD-segment-style icon strokes to match the tiny numeric readouts. */
@@ -18802,7 +18817,7 @@ html[data-theme="winamp-classic"] {
   --message-own-bg: #000000;
   --message-own-fg: #ffffff;
   --message-meta-fg: #a4ff30;
-  --message-border: #6b6b6b;
+  --message-border: #686883;
   --message-radius: 0;
   --bar-chart-bar: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, 0.55) 3px 4px), linear-gradient(0deg, #00b400, #a4ff30 55%, #ffe000 80%, #ff3000) left bottom / 100% var(--bar-chart-height, 8rem);
   --bar-chart-bar-alt: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, 0.55) 3px 4px), linear-gradient(0deg, #c8c8c8, #ffffff) left bottom / 100% var(--bar-chart-height, 8rem);

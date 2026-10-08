@@ -203,6 +203,11 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `winamp-classic`: recoloured from neutral steel grey to the 2.x base skin's indigo-grey chassis
+  (`#32324f` face, `#1b1b2b` shadow), sampled from `references/winamp-classic/WinAmp_5.9.2,_Windows_10.png`.
+  Push buttons are the base skin's pale silver-blue keys with dark labels, the default button reads as
+  the LCD (green on black), and the selected table row is the playlist's `#0000FF` (webamp's base-skin
+  `pledit` values). The README no longer calls that capture a Vista-glass skin.
 - `aqua`: title bar, traffic lights and buttons now match a lossless Snow Leopard capture
   (`references/aqua/31db2b68338d1ae9.png`, measured in its `RESEARCH.md`). The app bar is the grey
   `#cdcdcd`→`#a8a8a8` title bar with near-black text; the traffic lights are 14px discs on a 21px
