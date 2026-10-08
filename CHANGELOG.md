@@ -120,6 +120,9 @@ changes are called out explicitly here.
   (`#3a861d` → `#3cb03c` at 70% → `#2c8230`, border `#267544`, was `--success` → `#1f5c0a`), and the
   taskbar lip is `#3168d5` over a 3px `#4993e6` band (was a dark `#1f2f86` line over `#4490e6`).
   `win7-aero` inherits both.
+- Gallery "Turn off computer" dialog in XP's layout, measured from a genuine capture: no window
+  chrome, `#003399` bands with a light rule, a body brightest in the middle, and Stand By / Turn Off
+  / Restart as big coloured tiles labelled below. Other themes derive the colours from `--accent`.
 - Gallery logon screen measured from a genuine XP logon: flat blue with a top-left glow, bands at
   12.5% / 15.6% of the height, fading white and orange rules, a faint divider, a selected user tile
   that fades out, and a "Turn off computer" footer. Other themes derive the colours from `--accent`.

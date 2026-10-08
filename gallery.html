@@ -79,6 +79,32 @@
   .desktop:has([name=wallpaper][value=azure]:checked) { --desktop-bg: radial-gradient(80% 70% at 70% 30%, #6fb7ff, transparent 70%), linear-gradient(160deg, #003b8e, #0a6ad6 55%, #00285f); }
   .desktop:has([name=wallpaper][value=dusk]:checked) { --desktop-bg: radial-gradient(60% 40% at 50% 80%, #ffb36b, transparent 70%), linear-gradient(180deg, #1b1747, #6a2f73 55%, #e0735a); }
   .desktop:has([name=wallpaper][value=none]:checked) { --desktop-bg: var(--bg); }
+  /* Turn off computer: XP's chrome-less dialog, measured from a genuine
+     capture: solid bands top and bottom (a light rule under the top one), a
+     body brightest in the middle, and big coloured tiles labelled below.
+     Other themes derive the colours from --accent. */
+  .shutdown { --sd-band: color-mix(in srgb, var(--accent) 45%, #000); --sd-rule: color-mix(in srgb, var(--accent) 20%, #fff);
+    --sd-mid: color-mix(in srgb, var(--accent) 45%, #fff); --sd-edge: color-mix(in srgb, var(--accent) 75%, #fff);
+    inline-size: min(25rem, calc(100vw - 2rem)); padding: 0; border: 1px solid #000; border-radius: 0; box-shadow: 0 6px 24px rgba(0, 0, 0, .5);
+    background: radial-gradient(ellipse 60% 120% at 50% 50%, var(--sd-mid), var(--sd-edge)); color: #fff; overflow: hidden; }
+  html[data-theme="winxp-luna"] .shutdown { --sd-band: #003399; --sd-rule: #d5e4f8; --sd-mid: #94b1f4; --sd-edge: #5a7dde; }
+  .shutdown > .modal-header { min-block-size: 3.4rem; padding: 0 1rem; background: var(--sd-band); border-block-end: 2px solid var(--sd-rule);
+    color: #fff; font: 400 1.45rem "Franklin Gothic Medium", "Trebuchet MS", var(--font); text-shadow: none; box-shadow: none; border-radius: 0; }
+  .shutdown > .modal-header::before, .shutdown > .modal-header::after { display: none; }
+  .shutdown > .modal-header .btn-close { display: none; }
+  .shutdown-choices { display: flex; justify-content: center; gap: 1.6rem; padding: 1.6rem 1rem 1.3rem; }
+  .shutdown-choice { display: grid; justify-items: center; gap: .45rem; min-inline-size: 4.5rem; color: #fff; text-decoration: none; font-weight: 700; cursor: default; }
+  .shutdown-tile { display: grid; place-items: center; inline-size: 33px; block-size: 33px; border: 1px solid #fff; border-radius: 4px; color: #fff; overflow: hidden; }
+  .shutdown-tile .icon { width: 21px; height: 21px; min-width: 21px; }
+  .is-standby .shutdown-tile { background: linear-gradient(180deg, #ffd56e, #e8a41c 55%, #c97a05); }
+  .is-restart .shutdown-tile { background: linear-gradient(180deg, #8de06a, #3cae2c 55%, #1d7d17); }
+  .is-restart .shutdown-tile .icon { filter: brightness(0) invert(1); }
+  /* The power icon brings its own red tile (18 of its 24 units): scale it so the tile fills. */
+  .is-off .shutdown-tile { border: 0; overflow: visible; }
+  .is-off .shutdown-tile .icon { width: 44px; height: 44px; min-width: 44px; margin: -5.5px; }
+  .shutdown-choice:hover .shutdown-tile, .shutdown-choice:focus-visible .shutdown-tile { filter: brightness(1.12); }
+  .shutdown-choice:focus-visible { outline: 1px dotted #fff; outline-offset: 2px; }
+  .shutdown > .modal-footer { margin: 0; padding: .6rem 1rem; justify-content: flex-end; background: var(--sd-band); border-block-start: 1px solid color-mix(in srgb, var(--sd-band) 70%, #fff); }
   /* The logon screen: shown until "Visitor" is picked; Log Off brings it back.
      Geometry and colours measured from a genuine XP logon (640x480): bands
      12.5% / 15.6% of the height, flat blue with a top-left glow, a white
@@ -828,12 +854,12 @@ GAPS THIS DESKTOP FOUND
     </div>
   </div>
 
-  <div class="modal modal-sm" popover id="shutdown" aria-labelledby="shutdown-title">
+  <div class="modal modal-sm shutdown" popover id="shutdown" aria-labelledby="shutdown-title">
     <div class="modal-header"><span id="shutdown-title">Turn off computer</span><button class="btn-close" type="button" popovertarget="shutdown" popovertargetaction="hide" aria-label="Close"></button></div>
-    <div class="cluster" style="justify-content:center; padding:1rem; gap:1.5rem">
-      <label class="btn" for="logged-on"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-moon"/></svg> Stand By</label>
-      <a class="btn btn-danger" href="index.html"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-power"/></svg> Turn Off</a>
-      <a class="btn btn-go" href="gallery.html" data-demo-link><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-refresh"/></svg> Restart</a>
+    <div class="shutdown-choices">
+      <label class="shutdown-choice is-standby" for="logged-on"><span class="shutdown-tile"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-moon"/></svg></span>Stand By</label>
+      <a class="shutdown-choice is-off" href="index.html"><span class="shutdown-tile"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-power"/></svg></span>Turn Off</a>
+      <a class="shutdown-choice is-restart" href="gallery.html" data-demo-link><span class="shutdown-tile"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-refresh"/></svg></span>Restart</a>
     </div>
     <div class="modal-footer"><button class="btn btn-secondary btn-sm" type="button" popovertarget="shutdown" popovertargetaction="hide">Cancel</button></div>
   </div>
