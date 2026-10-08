@@ -1,6 +1,5 @@
 /* ftl-themes: Windows XP (Luna)
  * Theme-Name: Windows XP (Luna)
- * Extends: windows95
  * Navigation-Patterns: start-menu
  * Description: The default Luna Blue XP desktop: glossy round-cornered blue chrome, with the Start-button green reserved for primary actions.
  * Variants: royale=Royale, royale-noir=Royale Noir, zune=Zune, embedded=Embedded, olive=Olive Green, silver=Silver
@@ -9,6 +8,14 @@
  * royal-blue glossy title bar, the round window corners, the tan/silver
  * "Luna" panel background, Tahoma everywhere.
  */
+
+/* XP draws its UI in 8pt Tahoma (11px) with 13px bold captions. With a
+   mouse, a 12px root (75% of the browser default, so user font settings
+   and data-text-size still scale it) brings every rem-sized part close to
+   that scale; touch screens keep the browser size so targets stay large. */
+@media (pointer: fine) {
+  html[data-theme="winxp-luna"] { --root-font-size: 81.25%; font-size: 81.25%; }
+}
 
 html[data-theme="winxp-luna"] {
   color-scheme: light;
@@ -908,7 +915,11 @@ html[data-theme="winxp-luna"] .taskbar-start > .icon {
 }
 html[data-theme="winxp-luna"] .taskbar-start > .icon > use { display: none; }
 html[data-theme="winxp-luna"] .desktop-launchers { color: #ffffff; padding-inline: 0.35rem; box-shadow: 1px 0 #3c81f3; }
-html[data-theme="winxp-luna"] .desktop-launchers .dock-item { min-inline-size: 1.5rem; border-radius: 3px; }
+html[data-theme="winxp-luna"] .desktop-launchers .dock-item { min-inline-size: max(1.5rem, 24px); border-radius: 3px; }
+/* An XP trackbar takes 24px of height around its thin track; the margin
+   keeps that footprint so stacked sliders stay 24px targets at the
+   smaller root size. */
+html[data-theme="winxp-luna"] .slider:not(.is-vertical) { margin-block: max(0px, calc((24px - var(--slider-height, 0.35rem)) / 2)); }
 html[data-theme="winxp-luna"] .taskbar-tasks { padding-block: 3px; }
 html[data-theme="winxp-luna"] .taskbar-tasks .taskbar-task { padding: 0 0.5rem; font-size: 0.8rem; }
 html[data-theme="winxp-luna"] .desktop-bar > .taskbar-tray { padding: 0 0.7rem; gap: 0.4rem; border: 0; border-left: 1px solid #092e8d; border-radius: 0; }

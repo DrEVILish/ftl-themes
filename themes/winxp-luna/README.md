@@ -4,7 +4,8 @@
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
-**Family:** Windows desktop; extends [Windows 95](../windows95/README.md).
+**Family:** Windows desktop; root of the XP → [Windows 7 Aero](../win7-aero/README.md) chain. It does not extend
+[Windows 95](../windows95/README.md): 95's bevel rules beat XP's own tokens.
 
 ## What this theme is trying to achieve
 

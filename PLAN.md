@@ -713,8 +713,11 @@ window controls or wrapper APIs.
 ### Families (theme inheritance)
 
 **Status:** `Extends:` and build-time flattening are implemented for
-`windows95 → winxp-luna → win7-aero` and
-`ios-skeuomorphic → ios-flat → liquid-glass`. Parent rules are selector-scoped
+`winxp-luna → win7-aero` and
+`ios-skeuomorphic → ios-flat → liquid-glass`. `winxp-luna` no longer extends
+`windows95`: 95's bevel rules are literal selectors, so they beat XP's own
+button, panel and dialog tokens (raised 95 bevels on every XP button since
+v5.2.0), and nothing else in 95 is something XP wants. Parent rules are selector-scoped
 to the child; `dist/themes.json` records family and parent. These chains
 provide cascading fixes, while consolidating duplicated source rules remains
 follow-up work.

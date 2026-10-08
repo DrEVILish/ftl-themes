@@ -438,7 +438,7 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
 | `--zoom-from` / `--zoom-to` | `0` / `1` (the visible window) |
 | `--waveform-select` | `var(--accent)` (box zoom span) |
 | `--waveform-ruler-fg` / `--waveform-ruler-rule` | `var(--muted)` / `var(--hairline)` |
-| `--waveform-overview-height` | `1.6rem` |
+| `--waveform-overview-height` | `max(1.6rem, 24px)` (never under the 24px target size) |
 
 Accessibility: the seek input is the control (`aria-label`,
 `aria-valuetext` with times); the bars are `aria-hidden`. Focus draws the

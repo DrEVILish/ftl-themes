@@ -119,6 +119,11 @@ changes are called out explicitly here.
 - Gallery logon screen measured from a genuine XP logon: flat blue with a top-left glow, bands at
   12.5% / 15.6% of the height, fading white and orange rules, a faint divider, a selected user tile
   that fades out, and a "Turn off computer" footer. Other themes derive the colours from `--accent`.
+- `winxp-luna` draws at XP's scale with a mouse: a 13px root (81.25%, declared as `--root-font-size` so
+  Text size still scales it; touch screens keep the browser size). Quick Launch buttons keep 24px and
+  horizontal sliders a 24px footprint, so targets stay at the 24px minimum.
+- `.waveform-overview` defaults to `max(1.6rem, 24px)` tall, so its zoom handles never drop under the
+  24px target size on a theme with a small root.
 - In the `.app` shell the toast region starts below the app bar (#68 R-A7).
 - Breadcrumb separators use `--muted` and follow the app bar's text colour (#68 R-A1).
 - Editing cells take `--cell-editor-font-size/-pad-x/-arrow-space` and style controls inside an
@@ -138,6 +143,9 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `winxp-luna` no longer extends `windows95`. Since v5.2.0 the inherited 95 rules drew raised 95
+  bevels on every XP button, panel, card, alert, dropdown, menu, popover and close button, hid the
+  Quick Launch area, and gave theme switches 95's BSOD exit. `win7-aero` still extends `winxp-luna`.
 - `ios-flat` toasts: white, shadowed text inherited from `ios-skeuomorphic` on the light banner.
 - `test/feature_extensions_browser.mjs` passes again: scoped splash locators, cleared the
   corrupt-storage fixture, and reset scroll before each drag on the feedback stage.
