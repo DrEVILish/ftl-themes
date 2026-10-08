@@ -139,6 +139,13 @@ changes are called out explicitly here.
   white one; Quick Launch and tray icons at 16px.
 - Desktop: `--window-caption-opacity-inactive` (default `1`) fades an inactive window's caption
   buttons; `winxp-luna` uses `0.6`, which matches the sampled inactive close and minimise buttons.
+- `winxp-luna` Olive Green and Silver sampled from genuine captures of both schemes. Their taskbars
+  were upside down: XP's run from a dark top line and a darker band near the top to pale at the
+  bottom. Taskbar, task buttons, tray (Olive's is khaki), Start menu header, places column and
+  footer (which were Luna blue), inactive captions and task panes now follow the captures, as does
+  Silver's active caption. Olive's active caption, which no capture shows, follows its sampled Start
+  menu header the way Silver's does, with a matching frame. Text on these pale parts is dark: XP drew
+  white with a shadow at under 2:1.
 - `winxp-luna` Start menu at XP's size: 11px text, 32px program icons, 24px place and footer icons,
   two ~190px columns, a 64px header with a 48px picture.
 - `winxp-luna` inactive title bar and Explorer task pane sampled from a genuine XP capture: the
