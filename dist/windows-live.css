@@ -5434,6 +5434,24 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   font-weight: 700;
 }
 .window-task > :not(:first-child) { margin: 0; padding: var(--window-task-body-pad, 0.4rem 0.6rem); }
+/* A collapsible group is a <details> whose <summary> is the header; the
+   toggle sits at its end (a chevron by default, a theme's button image via
+   --window-task-toggle / --window-task-toggle-closed). */
+details.window-task > summary { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; cursor: var(--cursor-pointer, pointer); list-style: none; }
+details.window-task > summary::-webkit-details-marker { display: none; }
+details.window-task > summary > :is(h2, h3) { margin: 0; font: inherit; color: inherit; }
+details.window-task > summary::after {
+  content: "";
+  flex: none;
+  inline-size: var(--window-task-toggle-size, 1em);
+  block-size: var(--window-task-toggle-size, 1em);
+  background: var(--window-task-toggle, none) center / contain no-repeat;
+  background-color: var(--window-task-toggle-fg, currentColor);
+  -webkit-mask: var(--window-task-toggle-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 10l4-4 4 4' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E")) center / contain no-repeat;
+  mask: var(--window-task-toggle-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 10l4-4 4 4' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E")) center / contain no-repeat;
+}
+details.window-task:not([open]) > summary::after { rotate: var(--window-task-toggle-rotate, 180deg); background-image: var(--window-task-toggle-closed, var(--window-task-toggle, none)); }
+details.window-task > summary:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: -2px; }
 .window-task > :not(:first-child) + :not(:first-child) { padding-block-start: 0; }
 .window-task a { color: var(--window-task-link-fg, var(--link, var(--accent))); }
 /* A .list inside a group is a plain column of task links, not a boxed list. */
@@ -5474,15 +5492,18 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   outline-offset: 2px;
 }
 /* Inactive title bars: every window but the active one, which is the one
-   holding focus, else the switched-to one, else the topmost (last). */
+   holding focus, else the switched-to one, else the topmost (last). While
+   the Start menu is open it holds focus, so every window is inactive. */
 .desktop:has(.desktop-window:focus-within) .desktop-window:not(:focus-within),
 .desktop:not(:has(.desktop-window:focus-within)):has(.window-app:checked) .desktop-window:not(:has(> .window-app:checked)),
-.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) {
+.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)),
+.desktop:has(.start-menu:popover-open) .desktop-window {
   --_inactive: 1;
 }
 .desktop:has(.desktop-window:focus-within) .desktop-window:not(:focus-within) > .modal > .modal-header,
 .desktop:not(:has(.desktop-window:focus-within)):has(.window-app:checked) .desktop-window:not(:has(> .window-app:checked)) > .modal > .modal-header,
-.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) > .modal > .modal-header {
+.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) > .modal > .modal-header,
+.desktop:has(.start-menu:popover-open) .desktop-window > .modal > .modal-header {
   background: var(--window-header-bg-inactive, var(--modal-header-bg, transparent));
   color: var(--window-header-fg-inactive, var(--modal-header-fg, inherit));
   filter: var(--window-header-filter-inactive, saturate(0.45) opacity(0.85));
@@ -5490,7 +5511,8 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 /* XP fades an inactive window's caption buttons into its paler title bar. */
 .desktop:has(.desktop-window:focus-within) .desktop-window:not(:focus-within) > .modal > .modal-header > :is(.btn-min, .btn-max, .btn-close),
 .desktop:not(:has(.desktop-window:focus-within)):has(.window-app:checked) .desktop-window:not(:has(> .window-app:checked)) > .modal > .modal-header > :is(.btn-min, .btn-max, .btn-close),
-.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) > .modal > .modal-header > :is(.btn-min, .btn-max, .btn-close) {
+.desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)) > .modal > .modal-header > :is(.btn-min, .btn-max, .btn-close),
+.desktop:has(.start-menu:popover-open) .desktop-window > .modal > .modal-header > :is(.btn-min, .btn-max, .btn-close) {
   opacity: var(--window-caption-opacity-inactive, 1);
 }
 

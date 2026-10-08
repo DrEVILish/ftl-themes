@@ -6,6 +6,9 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- Collapsible task groups: a `<details class="window-task">` whose `<summary>` is the header, with a
+  toggle at its end (`--window-task-toggle-*`; a chevron by default). `winxp-luna` draws XP's round
+  double-chevron button.
 - Window task pane: `.window-tasks` beside a window's content, holding titled `.window-task` groups
   (`.is-special` for the first), with `--window-tasks-*` and `--window-task-*` tokens that fall back to
   the base tokens. A `.list` inside a group becomes a plain column of task links. The gallery's My
@@ -152,6 +155,16 @@ changes are called out explicitly here.
 - `winxp-luna` sliders are XP trackbars, sampled at 200% from a genuine Volume Control: a 4px
   groove and an 11×21 thumb with a `#f3f3ef` face, `#778892` edge and green ends (turned for
   `.is-vertical`).
+- `winxp-luna` Start menu measured from a genuine 1:1 XP Start menu (282×354): 141px columns,
+  programs every 30px, places every 24px (XP: 22px; 24px is the minimum target size), a 48px header
+  with a 38px picture, a 30px footer; long names wrap as XP's do. Replaces the earlier ~380px menu,
+  which was sized from a capture of unknown scale.
+- Desktop: while the Start menu is open every window is inactive, as in XP, where the menu takes
+  focus.
+- Gallery Explorer windows from a genuine capture at 200%: the task pane and content run to the frame,
+  section headings are bold over a 1px rule fading from the light caption blue, items are Tiles (48px
+  icons in XP), and My Computer has XP's Standard Buttons band (round Back / Forward, Search) and an
+  Address bar. `winxp-luna` toolbars use XP's `#f0eee2` → `#efecdc` rebar band.
 - `winxp-luna` Start menu at XP's size: 11px text, 32px program icons, 24px place and footer icons,
   two ~190px columns, a 64px header with a 48px picture.
 - `winxp-luna` inactive title bar and Explorer task pane sampled from a genuine XP capture: the

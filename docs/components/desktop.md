@@ -80,6 +80,7 @@ out to stay usable at any width.
         <!-- or, with a task pane beside the content: -->
         <div class="window-body"><aside class="window-tasks" aria-label="Tasks">
             <section class="window-task is-special"><h2>System Tasks</h2><ul>…</ul></section>
+            <details class="window-task" open><summary><h2>Details</h2></summary><p>…</p></details>  <!-- collapsible -->
             <section class="window-task"><h2>Other Places</h2><ul>…</ul></section>
           </aside><div class="window-pane">…</div></div>
         <div class="window-status"><span>6 object(s)</span><span>1.2 GB free</span></div>
@@ -126,6 +127,7 @@ out to stay usable at any width.
 - **Focus.** A window holding focus (`.modal` has `tabindex="-1"`, so any click in it
   counts) comes to the very front and is the active one. With nothing focused or
   switched to, the last window in the markup is active, as it is topmost.
+  While the Start menu is open it holds focus, so every window is inactive.
 - **Inactive windows** draw `--window-header-bg-inactive` / `-fg-inactive` and
   `--window-header-filter-inactive` (a desaturate by default).
 - **Maximize.** The `.window-max` checkbox immediately before the `.modal` (core's
@@ -169,6 +171,8 @@ out to stay usable at any width.
 | `--window-tasks-bg` / `--window-tasks-gap` / `--window-tasks-padding` | `--surface-2` / `--space-s` / `--space-s` (the task pane) |
 | `--window-task-bg` / `-fg` / `-border` / `-radius` / `-body-pad` / `-link-fg` | `--surface` / `--text` / `--border` / `--radius` / `0.4rem 0.6rem` / `--link` |
 | `--window-task-font-size` | inherit |
+| `--window-task-toggle-size` / `-toggle-fg` / `-toggle-mask` / `-toggle-rotate` | `1em` / `currentColor` / a chevron / `180deg` (the toggle of a `<details class="window-task">`) |
+| `--window-task-toggle` / `--window-task-toggle-closed` | none / the open image (a theme's own button image; set `-toggle-mask: none`, `-toggle-fg: transparent`, `-toggle-rotate: 0deg`) |
 | `--window-task-link-fg-hover` / `--window-task-item-pad` | the link colour (underlined on hover) / `0.2em 0` (a `.list` in a group loses its box) |
 | `--window-task-header-bg` / `-header-fg` / `-header-pad` / `-header-font-size` | transparent / inherit / `0.35rem 0.6rem` / `0.85rem` |
 | `--window-task-special-bg` / `-special-header-bg` / `-special-header-fg` | the plain group's values (`.window-task.is-special`) |
