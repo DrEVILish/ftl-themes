@@ -134,6 +134,11 @@ changes are called out explicitly here.
   refresh, play, save) are full-colour XP-style drawings with their own gradients instead of one-colour
   glyphs. Desktop icons are 32px with no added shadow, and a selected one is tinted toward the
   selection blue.
+- `winxp-luna` taskbar buttons sampled from a genuine XP taskbar: a flat `#3980f4` body between a
+  lighter top band and a darker bottom edge, 160px wide, 11px text, a faint dark edge instead of a
+  white one; Quick Launch and tray icons at 16px.
+- Desktop: `--window-caption-opacity-inactive` (default `1`) fades an inactive window's caption
+  buttons; `winxp-luna` uses `0.6`, which matches the sampled inactive close and minimise buttons.
 - `winxp-luna` Start menu at XP's size: 11px text, 32px program icons, 24px place and footer icons,
   two ~190px columns, a 64px header with a 48px picture.
 - `winxp-luna` inactive title bar and Explorer task pane sampled from a genuine XP capture: the

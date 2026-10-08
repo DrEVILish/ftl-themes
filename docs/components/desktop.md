@@ -163,6 +163,7 @@ out to stay usable at any width.
 | `--window-icon-glyph` | `--accent` (icons inside windows) |
 | `--window-pad` / `--window-header-pad` / `--window-body-pad` | `3px` / `--modal-header-pad` / `--space-s` |
 | `--window-header-bg-inactive` / `--window-header-fg-inactive` / `--window-header-filter-inactive` | the active header / `saturate(.45) opacity(.85)` |
+| `--window-caption-opacity-inactive` | `1` (an inactive window's min / max / close buttons) |
 | `--window-status-field-border` | transparent (1–4 colours) |
 | `--window-pane-bg` / `--window-pane-border` | `--input-bg` / `--input-border` |
 | `--window-tasks-bg` / `--window-tasks-gap` / `--window-tasks-padding` | `--surface-2` / `--space-s` / `--space-s` (the task pane) |
