@@ -8,6 +8,12 @@ import cssparse
 
 ROOT = Path(__file__).resolve().parent.parent
 HEADER = re.compile(r"(?m)^\s*\*\s*Extends:\s*([a-z0-9-]+)\s*$")
+# `* Inherit: none` beside Extends keeps the family link (themes.json `family`
+# and `extends`) but copies none of the parent's rules, for a child that sets
+# every token and draws all of its own chrome. Otherwise the parent's
+# component rules sit under the child's, scoped to it, and leak through.
+INHERIT = re.compile(r"(?m)^\s*\*\s*Inherit:\s*([a-z-]+)\s*$")
+INHERIT_MODES = ("all", "none")
 
 
 def chain(slug):
@@ -49,9 +55,20 @@ def base_rules(css):
     return "\n".join(out)
 
 
+def inherit_mode(source):
+    match = INHERIT.search(source)
+    mode = match.group(1) if match else "all"
+    if mode not in INHERIT_MODES:
+        raise ValueError(f"unknown Inherit mode: {mode} (expected {' or '.join(INHERIT_MODES)})")
+    return mode
+
+
 def rules(slug):
     out = []
-    for ancestor, source in chain(slug):
+    links = chain(slug)
+    # A theme that says `Inherit: none` cuts off everything above it.
+    start = max((i for i, (_, source) in enumerate(links) if inherit_mode(source) == "none"), default=0)
+    for ancestor, source in links[start:]:
         folder = ROOT / "themes" / ancestor
         chrome = folder / "chrome.css"
         if chrome.exists():
@@ -69,6 +86,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 1 and sys.argv[1] == "--check":
             for path in sorted((ROOT / "themes").glob("*/theme.css")):
                 chain(path.parent.name)
+                inherit_mode(path.read_text())
             print("theme inheritance: valid")
         else:
             print(rules(sys.argv[1]))

@@ -1,6 +1,7 @@
 /* ftl-themes: Liquid Glass
  * Theme-Name: Liquid Glass
  * Extends: ios-flat
+ * Inherit: none
  * Navigation-Patterns: home-grid, bottom-tabs
  * Description: Apple's 2025 Liquid Glass (iOS 26 / macOS Tahoe 26): refractive capsule controls with specular rims floating over a vivid wallpaper, a full-height glass sidebar, and a floating tab bar the content scrolls under.
  * Variants: dark=Dark
@@ -555,13 +556,17 @@ html[data-theme="liquid-glass"] {
   --app-bar-height: 3rem;
   --app-bar-padding: 0.3rem 0.4rem 0.3rem 0.9rem;
   --app-rail-display: block;
-  --app-rail-empty-display: block;
   --app-rail-radius: 26px;
   /* The window pane: a white scrim heavy enough that body and muted text
      hold their contrast over the darkest wallpaper blue, light enough that
      the wallpaper still tints through it. */
   --app-main-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.74));
-  --app-main-padding: 4.6rem 1.25rem 5rem;
+  /* The window reaches up under the toolbar by the toolbar's own footprint
+     (its 0.6rem margin + 3rem), then pads that back plus 1rem. A bar that
+     wraps or grows pushes the window's row down, so content still starts
+     1rem below it instead of under it. */
+  --lg-bar-reach: 3.6rem;
+  --app-main-padding: calc(var(--lg-bar-reach) + 1rem) 1.25rem 5rem;
   --app-main-radius: 28px;
   --app-status-bg: var(--lg-clear);
   --app-status-fg: var(--text);
@@ -578,7 +583,8 @@ html[data-theme="liquid-glass"] .app-rail {
   z-index: var(--z-sticky);
 }
 html[data-theme="liquid-glass"] .app-main {
-  grid-row: bar-start / status-end;
+  grid-row: main-start / status-end;
+  margin-top: calc(-1 * var(--lg-bar-reach));
   -webkit-backdrop-filter: var(--lg-blur-heavy);
   backdrop-filter: var(--lg-blur-heavy);
   box-shadow: var(--lg-rim), var(--lg-lift-high);
@@ -621,6 +627,9 @@ html[data-theme="liquid-glass"] .app-status {
 /* The sidebar: clear glass, full height, with the three traffic lights
    in its top-left corner and a faint selected-row lens under them — the
    Tahoe sidebar silhouette, drawn because the rail is empty by contract. */
+/* Drawn even when empty, but an app can still drop it: --app-rail-display
+   set on .app (or an ancestor of the rail) hides an empty rail too. */
+html[data-theme="liquid-glass"] .app-rail { --app-rail-empty-display: var(--app-rail-display, block); }
 html[data-theme="liquid-glass"] .app-rail {
   position: sticky;
   top: 0.75rem;
@@ -643,7 +652,7 @@ html[data-theme="liquid-glass"] .app-rail {
 @media (max-width: 900px) {
   html[data-theme="liquid-glass"] .app-rail { display: none; }
   html[data-theme="liquid-glass"] { --app-padding: 0.5rem; --app-gap: 0.5rem; --app-bar-radius: 26px; }
-  html[data-theme="liquid-glass"] .app-main { grid-row: auto; padding: 1rem 0.75rem 4.8rem; }
+  html[data-theme="liquid-glass"] .app-main { grid-row: auto; margin-top: 0; padding: 1rem 0.75rem 4.8rem; }
   html[data-theme="liquid-glass"] .app-bar { margin: 0; top: 0.5rem; padding: 0.4rem 0.5rem 0.4rem 0.9rem; }
   html[data-theme="liquid-glass"] .app-bar .nav { flex: 1 0 100%; margin-block: 0 -2px; }
 }
