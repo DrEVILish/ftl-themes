@@ -51,7 +51,11 @@ forced-colors modes use native cursors.
 Add `* Extends: <slug>` to a theme's header to inherit a parent at build time.
 The child bundle contains the parent rules rewritten to the child theme scope,
 followed by the child's rules. Chains must be acyclic and every parent must
-exist. The family is flattened into CSS at build time; there is no runtime
+exist. A child that sets every token and draws all of its own chrome adds
+`* Inherit: none` beside `Extends`: it stays in the family (`family` and
+`extends` in `dist/themes.json`) but its bundle carries none of the
+ancestors' rules, which would otherwise sit under its own and leak through
+(`ios-flat` and `liquid-glass` do this). The family is flattened into CSS at build time; there is no runtime
 inheritance. Current family metadata is available in `dist/themes.json`.
 
 ## Theme feedback
@@ -2044,7 +2048,9 @@ sprite's symbols, with any id the theme's own `icons.svg` also defines
 change). Any icon id a theme doesn't override keeps the generic shape —
 that's the fallback, not a special case. `dist/icons/generic.svg` is the
 plain generic sprite, for an app that wants the fallback set with no
-theme applied yet. A theme's `icons.svg` may only override an id that
+theme applied yet; `dist/icons/core.svg` is the same file under the theme-less
+bundle's name, so an app that maps `dist/<name>.css` to
+`dist/icons/<name>.svg` also works with `dist/core.css`. A theme's `icons.svg` may only override an id that
 exists in `assets/icons/icons.svg`; overriding an unknown id fails
 `scripts/check.py`'s `icons` rule, since it would silently never apply.
 

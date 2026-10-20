@@ -4,7 +4,7 @@
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
-**Family:** iOS; extends [iOS (Skeuomorphic)](../ios-skeuomorphic/README.md).
+**Family:** iOS; extends [iOS (Skeuomorphic)](../ios-skeuomorphic/README.md) with `Inherit: none`, so its bundle carries none of the skeuomorphic chrome.
 
 ## What this theme is trying to achieve
 

@@ -38,6 +38,9 @@ overrides the user's own setting.
 - **`.safe-area`** pads the content inside the TV's overscan: `--safe-inset-block` /
   `--safe-inset-inline` (4vh / 4vw), or the device's `env(safe-area-inset-*)` if larger.
   `data-fit="cover"` drops the inset; `data-fit="shadow"` vignettes the edge.
+- **Theme art stands down:** a screen is all content, so the XL gutter art layer and any
+  corner emblem a theme fixes over the page (vaporwave's sun) are off. A theme that adds
+  page-level art hides it under `html[data-surface="signage"]` too.
 
 ## Countdown states `.countdown[data-state]`
 

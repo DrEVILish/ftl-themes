@@ -4,7 +4,7 @@
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
-**Family:** iOS; extends [iOS (Flat)](../ios-flat/README.md).
+**Family:** iOS; extends [iOS (Flat)](../ios-flat/README.md) with `Inherit: none`.
 
 ## What this theme is trying to achieve
 
@@ -156,6 +156,16 @@ with glass controls over the wallpaper, but without the window, sidebar
 and floating bars. Adopt the `.app`/`-bar`/`-rail`/`-main`/`-status`
 shell (CONTRACT.md "The app shell" / "Adoption levels") for the real
 layout at **L1**.
+
+The window starts below the toolbar's row and reaches up under it by the
+toolbar's single-line footprint (`--lg-bar-reach`, 3.6rem), so a toolbar
+that wraps pushes the content down instead of covering it. To give a
+dashboard the sidebar's 12rem back, mark the rail `hidden` (or leave it
+out): its column collapses. `--app-rail-display: none` on `.app` hides it
+too, but keeps the column.
+
+This theme is in the iOS family but declares `Inherit: none`: its bundle
+carries none of `ios-flat`'s or `ios-skeuomorphic`'s rules.
 
 `backdrop-filter` support: without it, every glass surface falls back to
 its translucent white (or smoked, in `dark`) fill: no blur, still legible.
