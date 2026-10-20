@@ -14,7 +14,8 @@ it, even when there is nothing to merge.
 
 dist/icons/generic.svg is also written, so an app can link the fallback
 sprite directly before any theme is picked (see CONTRACT.md "Icon
-system").
+system"), and the same sprite as dist/icons/core.svg, so an app that names
+the sprite after its bundle (dist/core.css) finds one too.
 """
 import glob
 import os
@@ -51,9 +52,10 @@ def main():
     for path in glob.glob("dist/icons/*.svg"):
         os.remove(path)
 
-    with open("dist/icons/generic.svg", "w", encoding="utf-8") as f:
-        f.write(generic_text)
-    print("built dist/icons/generic.svg")
+    for name in ("generic", "core"):
+        with open(f"dist/icons/{name}.svg", "w", encoding="utf-8") as f:
+            f.write(generic_text)
+        print(f"built dist/icons/{name}.svg")
 
     for theme_dir in sorted(glob.glob("themes/*/")):
         slug = os.path.basename(os.path.dirname(theme_dir))

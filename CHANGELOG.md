@@ -123,6 +123,12 @@ changes are called out explicitly here.
 - Easter eggs (PLAN.md §20), off unless `<html data-easter-eggs>`: `assets/js/eggs.js` sets the
   attributes (Konami code for red alert, a Windows 95 letter helper, Matrix idle rain, Skyrim's
   arrow in the knee) and each theme draws its own. Demo: `components-experience.html`.
+- `.status-ready` (#71): armed and waiting, the green of a recorder on standby (accent-2 in
+  `bloomberg`). `.status-idle` is neutral in every theme.
+- `* Inherit: none` theme header (#71): beside `Extends`, keeps the family link in `themes.json`
+  but copies none of the parent's rules, for a child that draws all of its own chrome.
+- `dist/icons/core.svg` (#71): the generic sprite under the theme-less bundle's name.
+- A `hidden` `.app-rail` is dropped and its column collapsed in every theme (#71).
 
 ### Changed
 - `alienware` rebuilt as Alienware's AlienGUIse suites for Windows XP: it now extends `winxp-luna`
@@ -242,6 +248,27 @@ changes are called out explicitly here.
   bevels on every XP button, panel, card, alert, dropdown, menu, popover and close button, hid the
   Quick Launch area, and gave theme switches 95's BSOD exit. `win7-aero` still extends `winxp-luna`.
 - `ios-flat` toasts: white, shadowed text inherited from `ios-skeuomorphic` on the light banner.
+- TimerPi end-to-end theme bugs (#71):
+  - `ios-flat` and `liquid-glass` no longer carry their parents' chrome (they use
+    `Inherit: none`): no black status-bar bezel, brand on its own row or overlapping nav
+    items in `liquid-glass`'s capsule bar; no navy alert inks, "Done" close pill or embossed
+    labels on its light modals; no white embossed breadcrumbs, steel panel headers, white
+    selected rows or black tab bar in `ios-flat`.
+  - `liquid-glass`: a toolbar that wraps or grows no longer covers the top of the page, and
+    `--app-rail-display: none` on `.app` hides the decorative sidebar.
+  - `ios-skeuomorphic`: the tab bar's white inks sit on its black `.tabs` bar, not the root.
+  - `blue-future`, `bloomberg`: `.status-idle` no longer reads as ready (green, accent-2).
+  - Tinted and black buttons labelled in the accent (`bloomberg`, `cyber-goth`, `matrix`,
+    `nerv`, `pipboy`, `prometheus`, `tron`, `winamp-classic`) read `--accent-text`, so an app
+    that sets its own `--accent` keeps legible labels.
+  - `imac-g3`: the default button label is white (it was ~2.3:1 dark teal on the clear gloss);
+    placeholders and floating labels in the white input well are dark teal, not white.
+  - `hot-wheels`: status text sits on solid black chips over the checkered strip.
+  - `steampunk`: the readout's dial needle is drawn in the left padding, not across the digits.
+  - On `html[data-surface="signage"]` the XL gutter art (teletext's edge blocks on a 1920px TV)
+    and `vaporwave`'s corner sun emblem stand down.
+- `scripts/build.sh` orders the component groups the same under every locale (a C-locale build
+  put `media-devices.css` before `media.css`).
 - `test/feature_extensions_browser.mjs` passes again: scoped splash locators, cleared the
   corrupt-storage fixture, and reset scroll before each drag on the feedback stage.
 

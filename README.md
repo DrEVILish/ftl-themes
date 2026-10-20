@@ -441,7 +441,7 @@ dist/<slug>.css             built bundle (reset + core + theme): the file apps l
 dist/core.css               reset + core, no theme (colour-only adoption)
 dist/tokens.css             every theme's tokens, for apps with their own markup
 dist/themes.json            theme index for pickers, incl. build version
-dist/icons/<slug>.svg       the theme's full icon sprite (generic.svg: no theme)
+dist/icons/<slug>.svg       the theme's full icon sprite (generic.svg, core.svg: no theme)
 dist/favicons/              per-theme favicons and app icons
 dist/email/<slug>/          themed transactional emails (.html + .txt)
 assets/fonts/, assets/icons/  vendored fonts (NOTICE.md), generic sprite, core-set.txt
