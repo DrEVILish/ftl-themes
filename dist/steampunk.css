@@ -15560,6 +15560,10 @@ html[data-surface="signage"] { font-size: var(--signage-root, 1.5vh); overflow: 
   html[data-surface="signage"] { font-size: var(--signage-root-portrait, 1.5vw); }
 }
 html[data-surface="signage"] body { overflow: hidden; }
+/* Every pixel of a screen is content, so page-level theme art stands down:
+   the XL gutter layer here, and any corner emblem a theme fixes over the
+   page (themes hide their own under the same selector). */
+html[data-surface="signage"]::before { content: none; }
 .safe-area {
   box-sizing: border-box;
   padding:
@@ -18749,7 +18753,11 @@ html[data-theme="steampunk"] .readout {
   position: relative;
   white-space: nowrap;
   padding: 0.15em 0.7em;
-  background: radial-gradient(circle at 30% 25%, #f0d9a0, #d9ab4a 55%, #a97a24);
+  /* The needle is a background layer in the left padding, canted down to
+     the dial's centre line: it never crosses the digits. */
+  background:
+    linear-gradient(to top right, transparent calc(50% - 0.04em), rgba(42, 28, 16, 0.8) calc(50% - 0.04em) calc(50% + 0.04em), transparent calc(50% + 0.04em)) left 0.12em top calc(50% - 0.2em) / 0.5em 0.2em no-repeat,
+    radial-gradient(circle at 30% 25%, #f0d9a0, #d9ab4a 55%, #a97a24);
   color: #2a1c10;
   border: 2px solid #5c3d15;
   border-radius: 999px;
@@ -18767,21 +18775,10 @@ html[data-theme="steampunk"] .readout::before {
   background: repeating-conic-gradient(from 0deg, #7a5416 0deg 3deg, transparent 3deg 30deg);
   opacity: 0.7;
 }
-/* A fixed needle, canted off-center: decorative (this readout still shows
-   real digits, the needle doesn't track a value), but it's what makes the
-   brass disc read as a dial rather than a coin. */
-html[data-theme="steampunk"] .readout::after {
-  content: "";
-  position: absolute;
-  bottom: 50%;
-  left: 12%;
-  width: 1.6em;
-  height: 2px;
-  background: linear-gradient(90deg, #2a1c10, transparent);
-  transform-origin: right center;
-  transform: rotate(20deg);
-  pointer-events: none;
-}
+/* The fixed needle (a background layer on .readout above) is decorative:
+   this readout still shows real digits and the needle doesn't track a
+   value, but it's what makes the brass disc read as a dial rather than a
+   coin. It used to be an ::after drawn over the digits. */
 
 /* The sight glass: brass end-caps bolted onto a glass tube, a curved
    highlight down the glass, and the copper "liquid" (--meter-*) fill
