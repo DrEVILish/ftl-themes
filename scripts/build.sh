@@ -17,8 +17,16 @@ rm -f dist/*.css dist/themes.json
 # from, so relative url() references (the LCARS @font-face) would 404 from
 # dist/. Apps serve assets/ next to dist/, so rewrite to ../assets/.
 # v5 component groups (core/components/*.css), in name order, after core.css
-# so they can build on its components and tokens.
-cat_components() { for f in core/components/*.css; do [ -f "$f" ] && cat "$f"; done; return 0; }
+# so they can build on its components and tokens. Sorted on the name without
+# ".css" under LC_ALL=C, so media.css comes before media-devices.css on every
+# machine (a bare glob follows the locale and reorders the cascade).
+cat_components() {
+  local f
+  for f in $(cd core/components && ls *.css | sed 's/\.css$//' | LC_ALL=C sort); do
+    cat "core/components/$f.css"
+  done
+  return 0
+}
 rewrite_urls() { sed 's#url("assets/#url("../assets/#g; s#url(assets/#url(../assets/#g; s/[[:space:]]*$//'; }
 # CSS-only selection: .is-active / [aria-selected="true"] also match an item
 # whose own radio or checkbox is checked (scripts/radio_state.py).
