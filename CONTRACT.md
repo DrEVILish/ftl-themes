@@ -1466,6 +1466,7 @@ from `.tabs` (navigates, usually changes the URL) and
 <span class="badge badge-solid badge-danger">Overtime</span>   <!-- filled; .badge-outline: a ring -->
 <div class="meter is-solid">…</div>                            <!-- one colour, no level bands -->
 <span class="status status-rec">On air</span>                 <!-- recording: bold, a pulsing dot -->
+<span class="status status-ready">Ready</span>                <!-- armed and waiting; .status-idle is neutral -->
 <p class="text-danger">2 screens offline</p>                 <!-- also .text-warning/-success/-info -->
 <span class="color-dot" style="--swatch:#e8a33d"></span>       <!-- small; as a button, a 44px hit area -->
 ```
