@@ -15560,6 +15560,10 @@ html[data-surface="signage"] { font-size: var(--signage-root, 1.5vh); overflow: 
   html[data-surface="signage"] { font-size: var(--signage-root-portrait, 1.5vw); }
 }
 html[data-surface="signage"] body { overflow: hidden; }
+/* Every pixel of a screen is content, so page-level theme art stands down:
+   the XL gutter layer here, and any corner emblem a theme fixes over the
+   page (themes hide their own under the same selector). */
+html[data-surface="signage"]::before { content: none; }
 .safe-area {
   box-sizing: border-box;
   padding:
@@ -18858,6 +18862,9 @@ html[data-theme="vaporwave"] body::after {
   html[data-theme="vaporwave"] body::before,
   html[data-theme="vaporwave"] body::after { display: none; }
 }
+/* On a signage screen the corner is content (a join QR, a clock): no emblem. */
+html[data-theme="vaporwave"][data-surface="signage"] body::before,
+html[data-theme="vaporwave"][data-surface="signage"] body::after { display: none; }
 
 /* XL gutters: the outrun floor. A perspective grid recedes to a vanishing
    point behind the app (rays in cyan from the centre of the screen,
