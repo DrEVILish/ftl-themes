@@ -223,6 +223,23 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- Console group in every theme, not only `proseries`: aux sends, dynamics curves, the assignable
+  panel, the graphic EQ, the patchbay, faceplate displays and the rack's head strip fell back to the
+  ProSeries navy, blue and grey, so they looked the same in all 46 themes (blue curves on Windows 95,
+  black sends on Barbie, light grey GEQ on Matrix). They now fall back to the theme's own surfaces,
+  input wells, keys, accent and `--eq-*` tokens; `proseries` sets the console's colours as tokens and
+  looks as before. New optional tokens: `--assignable-shadow`, `--assignable-key-shadow`,
+  `--patch-device-fg`, `--patch-name-bg`/`-fg`, `--patch-point-border`, `--patch-jack`,
+  `--rack-head-bg` (see [`docs/components/console.md`](docs/components/console.md)).
+- A channel tag's number (`.scribble[data-tag] .scribble-num`) takes the tag's own text colour instead
+  of the theme's muted grey, which was unreadable on light tags.
+- `proseries.html` in other themes: the active page key, title-bar scene and tap-tempo boxes, channel
+  sidebar, scene list, effect unit housings, home tiles, routing boxes and the big mute key now use the
+  theme's tokens (the active key had no colour at all outside ProSeries; the tap-tempo text was dark on
+  black in light themes). ProSeries keeps its own colours.
+- Console keys and badges in a panel header stay readable in `international-rescue`, `msdos`,
+  `teletext` and `ios-skeuomorphic` (they took the header's light caption colour on a light key, or
+  black on Teletext's black badges in the Sound mixer demo).
 - `winamp-classic`: recoloured from neutral steel grey to the 2.x base skin's indigo-grey chassis
   (`#32324f` face, `#1b1b2b` shadow), sampled from `references/winamp-classic/WinAmp_5.9.2,_Windows_10.png`.
   Push buttons are the base skin's pale silver-blue keys with dark labels, the default button reads as
