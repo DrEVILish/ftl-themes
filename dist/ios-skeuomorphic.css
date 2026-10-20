@@ -4630,9 +4630,9 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   display: grid;
   gap: 1px;
   padding: 0.2rem;
-  background: var(--sends-bg, #0c0c12);
+  background: var(--sends-bg, var(--input-bg, var(--surface)));
   border: 1px solid var(--sends-border, var(--border));
-  color: var(--sends-fg, #ffffff);
+  color: var(--sends-fg, var(--input-fg, var(--text)));
   font-size: 0.6rem;
   line-height: 1.25;
 }
@@ -4643,7 +4643,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   content: "";
   block-size: 0.45rem;
   inline-size: calc(var(--send, 0) * 100%);
-  background: var(--sends-bar, #d8dde8);
+  background: var(--sends-bar, var(--muted));
   clip-path: polygon(0 100%, 100% 0, 100% 100%);
 }
 .sends li.is-pre::after { background: var(--sends-bar-pre, var(--accent-2)); }
@@ -4662,22 +4662,22 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   inline-size: 100%;
   aspect-ratio: 1;
   background:
-    linear-gradient(to top right, transparent calc(50% - 0.5px), var(--dyn-graph-unity, rgba(255, 255, 255, 0.25)) 0 calc(50% + 0.5px), transparent 0),
-    repeating-linear-gradient(0deg, transparent 0 calc(25% - 1px), var(--dyn-graph-grid, rgba(255, 255, 255, 0.14)) 0 25%),
-    repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--dyn-graph-grid, rgba(255, 255, 255, 0.14)) 0 25%),
-    var(--dyn-graph-bg, linear-gradient(180deg, #3a6bd0, #1d3f96));
-  border: 1px solid var(--dyn-graph-border, var(--border));
+    linear-gradient(to top right, transparent calc(50% - 0.5px), var(--dyn-graph-unity, var(--eq-zero, var(--border))) 0 calc(50% + 0.5px), transparent 0),
+    repeating-linear-gradient(0deg, transparent 0 calc(25% - 1px), var(--dyn-graph-grid, var(--eq-grid, var(--hairline))) 0 25%),
+    repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--dyn-graph-grid, var(--eq-grid, var(--hairline))) 0 25%),
+    var(--dyn-graph-bg, var(--eq-bg, var(--bg)));
+  border: 1px solid var(--dyn-graph-border, var(--eq-border, var(--hairline)));
   overflow: visible;
 }
 .dyn-graph-line {
   fill: none;
-  stroke: var(--dyn-graph-line, #ffffff);
+  stroke: var(--dyn-graph-line, var(--eq-line, var(--accent)));
   stroke-width: var(--dyn-graph-line-width, 2px);
   vector-effect: non-scaling-stroke;
   stroke-linejoin: round;
 }
-.dyn-graph-threshold { stroke: var(--dyn-graph-threshold, var(--accent)); stroke-width: 1px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
-[data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-line { stroke: var(--dyn-graph-line-off, rgba(255, 255, 255, 0.45)); }
+.dyn-graph-threshold { stroke: var(--dyn-graph-threshold, var(--accent-2)); stroke-width: 1px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+[data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-line { stroke: var(--dyn-graph-line-off, var(--muted)); }
 
 /* --- .rack — an equipment rack of .rack-units ------------------------------
  *   <div class="rack" aria-label="Effects rack">
@@ -4734,7 +4734,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .rack-unit[data-finish="purple"] { --_finish: linear-gradient(180deg, #6a2f8c, #3b1150); }
 .rack-unit[data-finish="green"] { --_finish: linear-gradient(180deg, #2f8a2f, #145214); }
 .rack-unit > input[type="radio"] { position: absolute; inset: 0; margin: 0; opacity: 0; }
-.rack-unit:has(> input:checked) { outline: 2px solid var(--rack-selected, #ffe33b); outline-offset: -2px; }
+.rack-unit:has(> input:checked) { outline: 2px solid var(--rack-selected, var(--accent)); outline-offset: -2px; }
 .rack-unit:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .rack-unit.is-empty { --_finish: linear-gradient(180deg, #2b2b2b, #151515); justify-content: center; color: #8a8a8a; }
 .rack-unit-name {
@@ -4746,7 +4746,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .rack-unit[data-finish="silver"] .rack-unit-name { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
 .rack-unit-body { display: flex; flex: 1; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 0.3rem 0.6rem; min-inline-size: 0; }
 /* The thin "Change device / Store / Load preset" strip at the top of the rack. */
-.rack-head { display: flex; justify-content: center; gap: 0.6rem; padding: 0.4rem; background: linear-gradient(180deg, #f2f2f2, #c9c9c9); border-radius: 2px; }
+.rack-head { display: flex; justify-content: center; gap: 0.6rem; padding: 0.4rem; background: var(--rack-head-bg, var(--surface-2)); border-radius: 2px; }
 
 /* A unit's faceplate seen up close: a bigger .rack-unit inside .faceplate,
    above its .assignable panel. */
@@ -4754,8 +4754,8 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   display: grid;
   gap: 0.6rem;
   padding: 0.5rem;
-  background: var(--faceplate-bg, #050505);
-  border: 1px solid var(--faceplate-border, #2a2a2a);
+  background: var(--faceplate-bg, var(--surface-2));
+  border: 1px solid var(--faceplate-border, var(--border));
   border-radius: 4px;
 }
 .faceplate > .rack-unit { --_u: 2.6rem; align-items: stretch; padding-block: 0.8rem; font-size: 0.75rem; }
@@ -4773,8 +4773,8 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .faceplate-display {
   min-inline-size: 7rem;
   padding: 0.4rem 0.6rem;
-  background: var(--faceplate-display-bg, #000000);
-  color: var(--faceplate-display-fg, #e0e0e0);
+  background: var(--faceplate-display-bg, var(--input-bg, var(--surface)));
+  color: var(--faceplate-display-fg, var(--input-fg, var(--text)));
   border-radius: 4px;
   font: 800 1.2rem/1.1 var(--font);
   text-align: center;
@@ -4794,11 +4794,11 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   grid-template-columns: repeat(auto-fit, minmax(5.2rem, 1fr));
   gap: 0.4rem 0.3rem;
   padding: 0.5rem 0.6rem 0.3rem;
-  background: var(--assignable-bg, linear-gradient(180deg, #5560ab, #434d98));
-  color: var(--assignable-fg, #ffffff);
-  border: 1px solid var(--assignable-border, #2a3274);
+  background: var(--assignable-bg, var(--surface));
+  color: var(--assignable-fg, var(--text));
+  border: 1px solid var(--assignable-border, var(--border));
   border-radius: 3px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  box-shadow: var(--assignable-shadow, none);
   font-size: 0.68rem;
   text-align: center;
 }
@@ -4808,12 +4808,12 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   display: block;
   inline-size: 2.6rem;
   block-size: 2.4rem;
-  background: var(--assignable-key-bg, linear-gradient(180deg, #4a54a0, #3a438b));
-  border: 2px solid var(--assignable-key-border, #6a74c0);
-  box-shadow: inset 0 0 0 2px #2b3274;
+  background: var(--assignable-key-bg, var(--key-bg, var(--surface-2)));
+  border: 2px solid var(--assignable-key-border, var(--key-border, var(--border)));
+  box-shadow: var(--assignable-key-shadow, inset 0 0 0 2px rgba(0, 0, 0, 0.25));
 }
 .assignable-key > input { position: absolute; inset: 0; margin: 0; opacity: 0; }
-.assignable-key:has(> input:checked) { background: var(--assignable-key-on, linear-gradient(180deg, #e9ecff, #b5bce8)); }
+.assignable-key:has(> input:checked) { background: var(--assignable-key-on, var(--accent)); }
 .assignable-key:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
 .assignable-caption { grid-column: 1 / -1; margin: 0; font-weight: 700; opacity: 0.9; }
 
@@ -4830,9 +4830,9 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   align-items: stretch;
   gap: 2px;
   padding: 0.5rem;
-  background: var(--geq-bg, linear-gradient(180deg, #a9a9a9, #8a8a8a));
+  background: var(--geq-bg, var(--surface));
   border-radius: 3px;
-  color: var(--geq-fg, #111111);
+  color: var(--geq-fg, var(--text));
   font-size: 0.6rem;
   font-weight: 700;
 }
@@ -4843,11 +4843,11 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   gap: 1px;
   padding: 0.15rem;
   background:
-    linear-gradient(transparent calc(50% - 0.6rem), var(--geq-zero, #111111) 0 calc(50% - 0.6rem + 1px), transparent 0),
-    var(--geq-group-bg, #9a9a9a);
-  border: 1px solid var(--geq-group-border, #1f2a8a);
+    linear-gradient(transparent calc(50% - 0.6rem), var(--geq-zero, var(--border)) 0 calc(50% - 0.6rem + 1px), transparent 0),
+    var(--geq-group-bg, var(--surface-2));
+  border: 1px solid var(--geq-group-border, var(--hairline));
 }
-.geq-group:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --geq-group-bg: var(--geq-group-active, #e6e6e6); }
+.geq-group:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --geq-group-bg: var(--geq-group-active, color-mix(in srgb, var(--accent) 22%, var(--surface-2))); }
 .geq-band { display: grid; flex: 1; justify-items: center; gap: 0.15rem; min-inline-size: 0; }
 .geq-band > input[type="range"] {
   -webkit-appearance: none;
@@ -4859,7 +4859,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   min-width: 0.9rem;
   height: var(--geq-height, 7rem);
   margin: 0;
-  background: linear-gradient(90deg, transparent calc(50% - 3px), var(--geq-slot, #000000) 0 calc(50% + 3px), transparent 0);
+  background: linear-gradient(90deg, transparent calc(50% - 3px), var(--geq-slot, var(--fader-slot, var(--border))) 0 calc(50% + 3px), transparent 0);
 }
 .geq-band > input::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -4891,20 +4891,20 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   display: grid;
   gap: 0.4rem;
   padding: 0.5rem;
-  background: var(--patch-device-bg, linear-gradient(180deg, #4f8ad0, #2f62ae));
-  border: 1px solid var(--patch-device-border, #12285e);
+  background: var(--patch-device-bg, var(--surface));
+  border: 1px solid var(--patch-device-border, var(--border));
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--patch-device-fg, var(--text));
 }
 .patch-device > header { display: flex; align-items: center; gap: 0.4rem; font-weight: 800; }
-.patch-name { flex: 1; padding: 0.15rem 0.4rem; background: #000000; border-radius: 2px; }
+.patch-name { flex: 1; padding: 0.15rem 0.4rem; background: var(--patch-name-bg, var(--input-bg, var(--surface))); color: var(--patch-name-fg, var(--input-fg, var(--text))); border-radius: 2px; }
 .patch-group-label { grid-column: 1 / -1; margin: 0.2rem 0 0; font-size: 0.75rem; font-weight: 800; text-align: center; }
 .patch-grid { display: grid; grid-template-columns: repeat(var(--patch-cols, 8), minmax(1.4rem, 1fr)); gap: 3px; }
 .patch-point {
   position: relative;
   aspect-ratio: 1;
-  background: var(--patch-free, linear-gradient(180deg, #f0f0f0, #c8c8c8));
-  border: 1px solid #333333;
+  background: var(--patch-free, var(--surface-2));
+  border: 1px solid var(--patch-point-border, var(--border));
   border-radius: 2px;
 }
 /* The jack: a small ring in the middle of each point. */
@@ -4912,12 +4912,12 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
   content: "";
   position: absolute;
   inset: 28%;
-  border: 2px solid rgba(0, 0, 0, 0.45);
+  border: 2px solid var(--patch-jack, color-mix(in srgb, currentColor 45%, transparent));
   border-radius: 50%;
 }
 .patch-point > input { position: absolute; inset: 0; margin: 0; opacity: 0; }
-.patch-point:has(> input:checked) { background: var(--patch-on, linear-gradient(180deg, #8ad35a, #4e9a2a)); }
-.patch-point[data-kind="aes"]:has(> input:checked) { background: var(--patch-aes, linear-gradient(180deg, #ffe46b, #d6b21a)); }
+.patch-point:has(> input:checked) { background: var(--patch-on, var(--success)); }
+.patch-point[data-kind="aes"]:has(> input:checked) { background: var(--patch-aes, var(--warning)); }
 .patch-point:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 1px; }
 @media (forced-colors: active) {
   .patch-point:has(> input:checked), .assignable-key:has(> input:checked) { background: Highlight; }
@@ -5092,8 +5092,8 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 }
 
 /* The area under a dynamics curve, filled (console.js closes the path). */
-.dyn-graph-fill { fill: var(--dyn-graph-fill, rgba(140, 190, 255, 0.45)); stroke: none; }
-[data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-fill { fill: var(--dyn-graph-fill-off, rgba(140, 190, 255, 0.18)); }
+.dyn-graph-fill { fill: var(--dyn-graph-fill, color-mix(in srgb, var(--eq-line, var(--accent)) 30%, transparent)); stroke: none; }
+[data-dyn]:has(.dyn-bypass:not(:checked)) .dyn-graph-fill { fill: var(--dyn-graph-fill-off, color-mix(in srgb, var(--muted) 15%, transparent)); }
 
 /* --- .led-list — options chosen by a lit LED -------------------------------
  *   <ul class="led-list" role="radiogroup" aria-label="Program">
@@ -5126,6 +5126,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
  * The sixteen name-tag colours a large console offers. Each reads a
  * --tag-<name> token, so a theme can retune them. */
 .scribble[data-tag] { background: var(--_tag); color: var(--_tag-fg, #111111); border-top-color: transparent; text-align: center; }
+.scribble[data-tag] .scribble-num { color: inherit; opacity: 0.75; }
 .scribble[data-tag="black"] { --_tag: var(--tag-black, #111111); --_tag-fg: #ffffff; }
 .scribble[data-tag="dblue"] { --_tag: var(--tag-dblue, #1f3fd0); --_tag-fg: #ffffff; }
 .scribble[data-tag="dgreen"] { --_tag: var(--tag-dgreen, #1e7a2a); --_tag-fg: #ffffff; }
@@ -5160,11 +5161,11 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .assignable-nav > button {
   min-inline-size: 0;
   padding: 0;
-  background: var(--assignable-key-bg, linear-gradient(180deg, #4a54a0, #3a438b));
-  border: 1px solid var(--assignable-key-border, #6a74c0);
+  background: var(--assignable-key-bg, var(--key-bg, var(--surface-2)));
+  border: 1px solid var(--assignable-key-border, var(--key-border, var(--border)));
   border-radius: 2px;
 }
-.assignable-nav > button:active { background: var(--assignable-key-on, #b5bce8); }
+.assignable-nav > button:active { background: var(--assignable-key-on, var(--accent)); }
 .assignable-nav > :nth-child(1) { grid-area: 1 / 1 / 2 / 3; inline-size: 1.6rem; }
 .assignable-nav > :nth-child(2) { grid-area: 1 / 2 / 2 / 4; inline-size: 1.6rem; justify-self: end; }
 .assignable-nav > :nth-child(3) { grid-area: 2 / 2; }
@@ -19126,6 +19127,8 @@ html[data-theme="ios-skeuomorphic"] .panel-header {
   border-bottom-color: #4c5c71;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
+/* A console key on the bar is its own light cap: dark captions, as below it. */
+html[data-theme="ios-skeuomorphic"] .panel-header .key { --muted: #4c566c; text-shadow: none; }
 html[data-theme="ios-skeuomorphic"] .list-item { font-weight: 700; }
 html[data-theme="ios-skeuomorphic"] .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --list-item-fg: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))),
