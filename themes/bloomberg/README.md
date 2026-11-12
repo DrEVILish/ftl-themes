@@ -17,8 +17,10 @@ is the catalog's extreme-density stress test as much as a period theme.
    Tech, a narrow proportional sans like the modern terminal's labels,
    names, headers and figures ('British Pound Spot Curncy', 'DOW JONES'
    in `EngineeringValue_EP3_Preview.webp`), with `tabular-nums` so columns
-   of figures align. `--font-mono` (Share Tech Mono) stays for code and
-   readouts. An all-mono UI reads as a retro clone, not the real screen.
+   of figures align (Share Tech's digits are equal-width already). Stat
+   values and `td.mono` cells use it too, at regular weight, like the
+   reference's '36025.76' / '+17.78%'. `--font-mono` (Share Tech Mono)
+   stays for code and readouts. An all-mono UI reads as a retro clone, not the real screen.
 2. **Amber is the workhorse, yellow is the function key.** `--text` is
    amber; `--accent` is a brighter function-key yellow reserved for
    interactive elements. Losing that split makes everything read as one
@@ -32,7 +34,7 @@ is the catalog's extreme-density stress test as much as a period theme.
    wall rather than a spacious dashboard.
 5. **Zero radius, zero gloss.** Every corner is square, including core's
    round defaults (icon buttons, switches, avatars, status dots, slider
-   thumbs, carousel dots, `<kbd>` caps); every fill is flat, and skeletons
+   thumbs, presence dots, carousel dots, `<kbd>` caps); every fill is flat, and skeletons
    blink in steps instead of shimmering. Native checkboxes keep the
    browser's own slight rounding (squaring them would mean redrawing the
    control), and line-chart points stay circles (core draws them as SVG
@@ -44,13 +46,24 @@ is the catalog's extreme-density stress test as much as a period theme.
    grey `#2a2a2a` bar, and panel/modal headers are the crimson `#800414`
    section bar (sampled from the reference, rgb 129,4,19) with white text.
 7. **Amber window frames.** Panels, modals and desktop windows carry the
-   terminal window's thin amber outer frame (`#cc7a00`); inputs, cards and
-   hairlines stay grey `#3a3a3a`.
+   terminal window's thin amber outer frame (`#cc7a00`); cards and
+   hairlines stay grey `#3a3a3a`. Desktop window title rows are black with
+   amber titles and controls inside that frame; crimson is kept for
+   in-content section bars.
+8. **Blue is the command line.** Text inputs carry the reference's blue
+   command-line rule (`--input-border: #2a52c8`, 3.1:1 on black), the
+   screen's third structural colour; `.select` stays a filled amber field.
 
 ## Signature details
 
 - Buttons are outlined amber-on-black at rest and invert to filled yellow
-  with black text on hover — the terminal function-key press.
+  with black text on hover — the terminal function-key press. Secondary
+  buttons keep the outline a step down in dim amber (`--muted`).
+- Horizontal tabs are white labels on the crimson section bar (like the
+  reference's 'News / Settings' bar), the current tab a filled yellow key
+  with black text; no underline.
+- Diverging heatmaps code net change: green `#2ecc40` up, red `#ff3333`
+  down, `#141414` flat, never the yellow function-key colour.
 - Table cells get vertical rules between columns (`border-right`) and no
   visible horizontal row rules (`--table-rule: #0a0a0a`, 1.1:1 on black):
   the terminal's column grid, not boxed cells.

@@ -72,7 +72,9 @@ html[data-theme="bloomberg"] {
   --focus: #ffffff;
   --focus-ring: none;
   --input-bg: #000000;
-  --input-border: var(--border);
+  /* The command line's blue rule ('Enter all values and hit <GO>'): the
+     screen's third structural colour, at 3.1:1 on black. */
+  --input-border: #2a52c8;
   --panel-bg: #000000;
   /* Every terminal window has a thin amber outer frame; inputs, cards and
      hairlines stay grey. */
@@ -142,6 +144,11 @@ html[data-theme="bloomberg"] {
      series 1. The function-key purple from the reference's key row takes
      its place (white mixed into avatar tints left amber at 4.27:1). */
   --chart-series-3: #b05cff;
+  /* Diverging maps read as net change: green up, red down, never the
+     yellow function-key colour. */
+  --chart-div-pos: #2ecc40;
+  --chart-div-neg: #ff3333;
+  --chart-div-mid: #141414;
 
   /* Role colors from the terminal screen: grey column-header bar with
      light text, dark-red section bars with white text. */
@@ -167,8 +174,11 @@ html[data-theme="bloomberg"] {
    reads in a light tone instead. */
 html[data-theme="bloomberg"] :is(.panel-header, .modal-header) { --muted: #f0c8a0; }
 
-/* Data values are white on the terminal; amber stays for labels and names. */
+/* Data values are white on the terminal; amber stays for labels and names.
+   Figures are the same narrow sans as the labels at regular weight (Share
+   Tech's digits are already equal-width), not the mono. */
 html[data-theme="bloomberg"] .stat-value { --text: #e8e8e8; }
+html[data-theme="bloomberg"] :is(.stat-value, .table td.mono) { font-family: var(--font); font-weight: 400; }
 html[data-theme="bloomberg"] body { font-variant-numeric: tabular-nums; }
 /* Up/down cells keep core's green/red net-change colour. */
 html[data-theme="bloomberg"] .table td.mono:not(.is-up, .is-down) { color: #e8e8e8; }
@@ -206,6 +216,36 @@ html[data-theme="bloomberg"] .btn-group > .btn:not(.btn-primary, .btn-danger) {
   --btn-border: #2ecc40;
   --btn-bg-hover: var(--accent);
 }
+
+/* Secondary keys keep the outline, a step down in dim amber. */
+html[data-theme="bloomberg"] .btn-secondary { --btn-border: var(--muted); }
+
+/* Horizontal tabs are labels on the red section bar ('News / Settings'),
+   the current one a filled yellow key; no underline. */
+html[data-theme="bloomberg"] .tabs:not([aria-orientation="vertical"]) {
+  --tab-bg: #800414;
+  --tab-fg: #ffffff;
+  --tab-bg-hover: #a0061a;
+  --tab-fg-hover: #ffffff;
+  --tab-bg-active: var(--accent);
+  --tab-fg-active: #000000;
+  --tab-border-active: var(--accent);
+  --tab-underline-active: var(--accent);
+  gap: 2px;
+}
+
+/* Desktop windows: a black top row inside the amber frame with amber
+   title and controls; crimson stays for in-content section bars. */
+html[data-theme="bloomberg"] .desktop-window {
+  --modal-header-bg: #000000;
+  --modal-header-fg: var(--accent);
+}
+
+/* Presence dots are square like everything else (core hard-codes 50%). */
+html[data-theme="bloomberg"] :is(.avatar[data-status], .presence-status)::after { border-radius: 0; }
+/* Initials are data white, not amber on an amber tint, and never tiny. */
+html[data-theme="bloomberg"] .avatar { --avatar-fg: #e8e8e8; }
+html[data-theme="bloomberg"] .avatar-sm { font-size: max(0.7em, 0.7rem); }
 
 /* Carousel dots and arrows are hard-coded pills in core. */
 html[data-theme="bloomberg"] .carousel-nav > a,
@@ -300,7 +340,7 @@ html[data-theme="bloomberg"] {
   --nav-item-fg: var(--text);
   --nav-item-bg-active: #ffcc00;
   --nav-item-fg-active: #000000;
-  --desktop-icon-font-size: 0.72rem;
+  --desktop-icon-font-size: 0.8rem;
 }
 html[data-theme="bloomberg"] .app-bar { --nav-item-bg: #2ecc40; --nav-item-fg: #000000; }
 html[data-theme="bloomberg"] .app-bar .nav-item { padding: 0.25rem 0.45em; min-inline-size: var(--tap-min); justify-content: center; text-align: center; }
