@@ -27,9 +27,16 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
 3. **Cyan means live data; blue means interactive.** `--accent` (cyan)
    carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
-4. **Structure over ornament.** Headings are tracked, uppercase, *dim* —
-   they are labels on a panel, not titles on a page. The content is the
-   bright thing; the chrome recedes.
+   So a selected or pressed control (toggle, segment, current page, filter
+   or reaction chip, active tab, open menu item, selected desktop icon) is a blue-tinted cell
+   (`--accent-2` at 35% over the panel) with a blue edge and `--text`
+   label, never a solid cyan slab; solid cyan is kept for the primary
+   action and live readouts.
+4. **Structure over ornament.** Headings are tracked and uppercase. The
+   page and section titles (`h1`, `h2`) are bright and step up in size so
+   the panel has a title level; `h3`/`h4` are *dim* labels on a panel. The
+   content is the bright thing; the chrome recedes. Reading content
+   (`.prose`, `article`) keeps its own case.
 5. **No gradients on interactive surfaces.** A flat fill plus a glow reads
    as energized. A gradient reads as a web button from 2012.
 
@@ -55,7 +62,7 @@ Changing them is a change to the reference, not a matter of taste.
 | `--font` | Consolas | Monospace as the *primary* UI font, not just for values. This single choice does more for the "spacecraft computer" feel than any color. |
 | `--radius` | `0.25rem` | Almost square. Rounded corners read as consumer software. |
 | `--flare` | `#d85cff` | Magenta, used almost nowhere. Held in reserve for a single rare emphasis so it keeps its force. |
-| `--btn-*` | three levels | Primary is a solid 80% cyan with black text at 1.1em: the one bright action on the panel. Secondary is tinted: cyan text and border over a 25% fill (40% and a glow on hover). Tertiary is the cyan outline with no fill until hover. Danger and success are tinted in red and green; plain buttons in the text colour. A lit outline on dark glass, in keeping with "a flat fill plus a glow". |
+| `--btn-*` | three levels | Primary is a solid 80% cyan with black text at 1.1em: the one bright action on the panel. Secondary is tinted: cyan text and border over a 25% fill (40% and a glow on hover). Tertiary is the cyan outline with no fill until hover. Danger and success are tinted in red and green; plain buttons are blue-cast cells (`--accent-2` at 14% over the panel, blue border) because blue means interactive. A lit outline on dark glass, in keeping with "a flat fill plus a glow". |
 
 ## Instruments
 
@@ -86,23 +93,42 @@ the two should visibly move the furniture.
 1. **Backdrop.** A fixed radial vignette (ellipse at top, `#0a1a2e` to
    `#020509` at 70%) under a faint cyan 2rem grid (`rgba(47,214,255,0.04)`
    1px lines): the interface reads as a panel in a space, not wallpaper.
+   On touch screens (`pointer: coarse`) it scrolls with the page instead
+   of staying fixed, so phones do not repaint the viewport every frame.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
-   14px L-marks, 2px stroke, 0.55 opacity, top-left and bottom-right. They
+   14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right. They
    are painted as background layers (`--brackets` inside `--panel-bg`,
    `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
    surface gains a `position` and popovers, dropdowns and context menus
    keep anchoring to their true offset parent; they also stay put when a
-   modal scrolls.
-3. **Buttons** are dark cells with 0.05em tracking. Primary carries
+   modal scrolls. Cards (KPI tiles, pricing, slides) set `--card-bg` to a
+   plain surface: they are hairline cells, and the L-marks stay on the
+   instruments. The status bar and `.app-main` are isolated stacking
+   contexts so a menu spilling out of the page never covers the bar's
+   buttons.
+3. **Buttons** are dark blue-cast cells with 0.05em tracking (dropped to
+   0 on phones, where the wide mono face needs the room). Icon buttons are
+   square like everything else. Primary carries
    `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
-   border to the glow and adds `0 0 8px`; `:disabled` is flat at 0.35
-   opacity with no shadow. All via `--btn-*` tokens.
-4. **Inputs** are `#08192b` cells; focus recolours the border, keeps the
-   outline and adds `0 0 8px rgba(0,217,255,0.35)`.
+   border to the glow and adds `0 0 8px`; `:disabled` is an unlit cell: no
+   fill, `--muted` text and dashed `--muted` edge at 0.7 opacity, no
+   shadow (present but off, never a dimmed primary). All via
+   `--btn-*` tokens.
+4. **Inputs** are `#08192b` cells with a `#2a6a9a` edge (3:1 on the field,
+   so a field still shows inside a panel); focus recolours the border,
+   keeps the outline and adds `0 0 8px rgba(0,217,255,0.35)`.
 5. **Tables**: dim, 0.08em-tracked uppercase headers, hairline row rules,
    and an accent select bar (`inset 0.35rem`) on active and selected rows.
-6. **Headings** are 0.8em, 0.2em-tracked, uppercase and `--muted`.
-7. **Glow range inputs**: 4px `#0e3a5c` to cyan gradient track, 14px
+6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
+   in `--text`; `h3`/`h4` 0.8em, 0.2em-tracked and `--muted` (panel labels).
+   Headings inside `.prose`/`article` keep their case. Under 480px the
+   `h3`/`h4` tracking drops to 0.08em so panel labels do not wrap to
+   three lines.
+7. **Glow range inputs**: a dim 4px `#0e3a5c` to `#1d5c8f` rail (an
+   unlit scale: the rail cannot know the value, so the glow lives only
+   on the thumb) (a vertical
+   fader ramps bottom to top and keeps the same 4px rail inside its
+   full-size hit area), 14px
    near-square `#02050a` thumb with a glow border and glow shadow
    (`--slider-*`).
 8. **`.sci-switch`** (theme-scoped: `html[data-theme="blue-future"]
@@ -111,7 +137,15 @@ the two should visibly move the furniture.
    glowing cyan on), and a readout drawn from `data-off` / `data-on`
    (dim and recessed off, glowing on). Markup:
    `<label class="sci-switch" data-on="ONLINE" data-off="OFFLINE"><input type="checkbox"><span></span></label>`.
-   Slides only under `prefers-reduced-motion: no-preference`.
+   Slides only under `prefers-reduced-motion: no-preference`. Core's
+   `.switch` carries the same look through tokens: a square 3px track on
+   `#02050a`, a square thumb, cyan when on. Badges, chips and scrollbars
+   are squared to 2px too: nothing on the panel is a pill.
+   Meters sit in a `--deck-trim` (`#1d5c8f`) window edge, the same metal
+   as the transport. Tabs inside a window or dialog drop to 0.02em
+   tracking so a four-tab strip stays on one row.
+   On phones the bar is two 44px target rows with no padding between
+   them (brand and actions, then the nav), about 106px.
 9. **Status helpers**: `.status-ok` (success), `.status-error` (danger),
    `.status-rec` or `.status-error.is-rec` (bold danger plus glow),
    `.status-idle` (success, a ready recorder is green).
@@ -124,11 +158,14 @@ Also: the meters, readouts, lamps and transport described under
 
 ## Typography
 
-`Consolas, "IBM Plex Mono", "SFMono-Regular", monospace`. Consolas is the
-reference face but ships only with Windows and Microsoft Office; nothing is
-vendored. IBM Plex Mono and SFMono are used only if installed locally, so on
-most Linux/Android devices the final generic `monospace` (DejaVu Sans Mono,
-Roboto Mono, ...) renders. Metrics are close but not identical.
+`Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular",
+"Roboto Mono", "Noto Sans Mono", monospace` (`--font-mono` is the same
+stack). Consolas is the reference face but ships only with Windows and
+Microsoft Office; nothing is vendored. The fallbacks are the narrow,
+Consolas-like monos in the order they match it, all local only, so on a
+bare Linux/Android device the generic `monospace` (DejaVu Sans Mono, about
+9% wider) still renders. On phones the bar and joined toggles take
+-0.01em tracking to give that width back.
 
 ## Contrast note
 
