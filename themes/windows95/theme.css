@@ -4,8 +4,8 @@
  * Description: Classic beveled 3D gray dialog chrome on the #008080-ish teal desktop, bevels inverting light-to-dark on press.
  *
  * Note on fonts: the authentic face is MS Sans Serif, which isn't a web
- * font and isn't present on modern systems; the stack below falls back to
- * Tahoma, its closest ubiquitous relative, then Arial. Vendor a pixel font here if an
+ * font browsers render; the stack below starts with its TrueType cut,
+ * "Microsoft Sans Serif", then Tahoma, then Arial. Vendor a pixel font if an
  * exact match matters.
  */
 
@@ -43,7 +43,9 @@ html[data-theme="windows95"] {
   --radius: 0;
   /* Arial before the generic: where neither 95 face exists, a narrow
      neutral sans is closer than a wide humanist default. */
-  --font: Tahoma, "MS Sans Serif", Arial, "Liberation Sans", sans-serif;
+  /* "Microsoft Sans Serif" is the TrueType cut of the 95 dialog face and
+     ships with every Windows since; Tahoma is its nearest relative. */
+  --font: "Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
   /* Panels are child windows: each gets the active navy caption bar. */
   --panel-header-bg: #000080;
@@ -343,7 +345,7 @@ html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel
    glyphs, as on every 95 window (core's default follows the bar's text
    colour for close only, and leaves min/max in --muted: invisible on
    navy). */
-html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max) {
+html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max) {
   --btn-close-bg: var(--surface);
   --btn-close-bg-hover: var(--surface);
   --btn-close-fg: #000000;
@@ -360,11 +362,20 @@ html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max)
 }
 /* Minimize and maximize touch; close stands 2px apart. */
 html[data-theme="windows95"] .modal-header > .btn-min { margin-inline-start: auto; }
-html[data-theme="windows95"] .modal-header > .btn-min + .btn-max { margin-inline-start: -0.5rem; }
-html[data-theme="windows95"] .modal-header > :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: calc(2px - 0.5rem); }
-html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max):active {
+html[data-theme="windows95"] .modal-header .btn-min + .btn-max { margin-inline-start: -0.5rem; }
+html[data-theme="windows95"] .modal-header :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: calc(2px - 0.5rem); }
+/* Wrapped in their own group (a flex span with its own gap), the group
+   takes the header's 0.5rem gap so the margins above still close it up. */
+html[data-theme="windows95"] .modal-header :has(> .btn-min + .btn-max) { gap: 0.5rem !important; }
+html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max):active {
   border-color: #000000 #ffffff #ffffff #000000;
   box-shadow: inset 1px 1px 0 #808080;
+}
+/* One #c0c0c0 row and column between the frame and the caption, as on
+   the panel caption above (dialog-font.png). */
+html[data-theme="windows95"] .modal-header {
+  margin-block-start: calc(1px - var(--surface-pad, 1.5rem));
+  margin-inline: calc(1px - var(--surface-pad, 1.5rem));
 }
 html[data-theme="windows95"] .stat-value { font-family: var(--font); }
 
@@ -797,6 +808,208 @@ html[data-theme="windows95"][data-alert="red"] :is(.panel, .card) {
   --muted: #c0c0c0;
   --danger-text: #ff9999;
   font-family: var(--font-mono);
+}
+
+/* --- Polish round 2 -------------------------------------------------------- */
+
+/* Push buttons are all the grey face (dialog-font.png, dialog-run.jpg):
+   the default button keeps its black frame and bold label, danger and
+   success are grey buttons with coloured text, and disabled text is
+   embossed #808080 over a 1px white offset instead of an opacity wash. */
+html[data-theme="windows95"] .btn-primary { --btn-bg: var(--surface); --btn-fg: #000000; --btn-border: #000000; }
+html[data-theme="windows95"] .btn-danger { --btn-bg: var(--surface); --btn-fg: #800000; --btn-border: #000000; }
+html[data-theme="windows95"] .btn-success { --btn-bg: var(--surface); --btn-fg: #004d00; --btn-border: #000000; }
+html[data-theme="windows95"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: var(--surface);
+  --btn-fg: #808080;
+  opacity: 1;
+  text-shadow: 1px 1px 0 #ffffff;
+}
+
+/* Message-box glyphs: 95 marked a message's kind with an icon (i, !, X),
+   so each state gets its own 16px glyph, not just a colour. */
+html[data-theme="windows95"] {
+  --w95-icon-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23fff' stroke='%23000'/%3E%3Cpath d='M7 3h2v2H7zM6 6h3v6h1v1H6v-1h1V7H6z' fill='%23000080' shape-rendering='crispEdges'/%3E%3C/svg%3E");
+  --w95-icon-success: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23008000' stroke='%23000'/%3E%3Cpath d='M4.5 8l2.5 2.5L11.5 5.5' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+  --w95-icon-warning: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 .8L15.4 15.5H.6z' fill='%23ff0' stroke='%23000'/%3E%3Cpath d='M7 5h2v6H7zM7 12h2v2H7z' fill='%23000' shape-rendering='crispEdges'/%3E%3C/svg%3E");
+  --w95-icon-danger: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23f00' stroke='%23800000'/%3E%3Cpath d='M5 5l6 6M11 5l-6 6' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+}
+html[data-theme="windows95"] :is(.alert-info, .alert-success, .alert-warning, .alert-danger, .toast-success, .toast-warning, .toast-danger):not(:has(> .icon))::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-block-start: 0.05em;
+  background: var(--w95-state-icon) no-repeat center / 16px 16px;
+}
+html[data-theme="windows95"] :is(.alert-info) { --w95-state-icon: var(--w95-icon-info); }
+html[data-theme="windows95"] :is(.alert-success, .toast-success) { --w95-state-icon: var(--w95-icon-success); }
+html[data-theme="windows95"] :is(.alert-warning, .toast-warning) { --w95-state-icon: var(--w95-icon-warning); }
+html[data-theme="windows95"] :is(.alert-danger, .toast-danger) { --w95-state-icon: var(--w95-icon-danger); }
+
+/* The 95 scrollbar: 16px, raised square thumb and arrow buttons on a
+   50% white dither. Chromium only honours ::-webkit-scrollbar while
+   scrollbar-color/-width stay auto; Firefox keeps its native bar. */
+html[data-theme="windows95"] {
+  --scrollbar-width: auto;
+  --scrollbar-size: 16px;
+  --scrollbar-radius: 0;
+  --scrollbar-thumb: #c0c0c0;
+  --scrollbar-thumb-hover: #c0c0c0;
+  --scrollbar-track: repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0 / 2px 2px;
+  scrollbar-color: auto;
+  scrollbar-width: auto;
+}
+html[data-theme="windows95"] :is(.scroll, .table-wrap) { scrollbar-color: auto; scrollbar-width: auto; }
+html[data-theme="windows95"]::-webkit-scrollbar,
+html[data-theme="windows95"] ::-webkit-scrollbar { width: 16px; height: 16px; }
+html[data-theme="windows95"]::-webkit-scrollbar-track,
+html[data-theme="windows95"] ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+html[data-theme="windows95"]::-webkit-scrollbar-thumb,
+html[data-theme="windows95"] ::-webkit-scrollbar-thumb,
+html[data-theme="windows95"]::-webkit-scrollbar-button,
+html[data-theme="windows95"] ::-webkit-scrollbar-button {
+  background-color: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #808080;
+  background-clip: border-box;
+}
+html[data-theme="windows95"]::-webkit-scrollbar-button,
+html[data-theme="windows95"] ::-webkit-scrollbar-button { display: block; width: 16px; height: 16px; background-repeat: no-repeat; background-position: center; }
+html[data-theme="windows95"]::-webkit-scrollbar-button:active,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:active { border-color: #808080; box-shadow: none; }
+html[data-theme="windows95"]::-webkit-scrollbar-button:vertical:decrement,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M3 0h1v1h1v1h1v1h1v1H0V3h1V2h1V1h1z'/%3E%3C/svg%3E"); }
+html[data-theme="windows95"]::-webkit-scrollbar-button:vertical:increment,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M0 0h7v1H6v1H5v1H4v1H3V3H2V2H1V1H0z'/%3E%3C/svg%3E"); }
+html[data-theme="windows95"]::-webkit-scrollbar-button:horizontal:decrement,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:horizontal:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7'%3E%3Cpath d='M0 3h1V2h1V1h1V0h1v7H3V6H2V5H1V4H0z'/%3E%3C/svg%3E"); }
+html[data-theme="windows95"]::-webkit-scrollbar-button:horizontal:increment,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:horizontal:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7'%3E%3Cpath d='M0 0h1v1h1v1h1v1h1v1H3v1H2v1H1v1H0z'/%3E%3C/svg%3E"); }
+/* One button at each end, as 95 drew them (not the doubled pair). */
+html[data-theme="windows95"]::-webkit-scrollbar-button:start:increment,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:start:increment,
+html[data-theme="windows95"]::-webkit-scrollbar-button:end:decrement,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:end:decrement { display: none; }
+html[data-theme="windows95"]::-webkit-scrollbar-corner,
+html[data-theme="windows95"] ::-webkit-scrollbar-corner { background: #c0c0c0; }
+
+/* The combo box: a raised 16px grey drop button flush inside the sunken
+   field's right edge (dialog-font.png Color/Script), the 7x4 arrow on it.
+   Nested blocks draw the bevel: black, white, #808080, then the face. */
+html[data-theme="windows95"] .select {
+  padding-inline-end: 22px;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M0 0h7v1H6v1H5v1H4v1H3V3H2V2H1V1H0z'/%3E%3C/svg%3E"),
+    linear-gradient(#c0c0c0, #c0c0c0),
+    linear-gradient(#808080, #808080),
+    linear-gradient(#ffffff, #ffffff),
+    linear-gradient(#000000, #000000);
+  background-position:
+    right 6px center,
+    right 3px top 2px,
+    right 2px top 2px,
+    right 2px top 1px,
+    right 1px top 1px;
+  background-size:
+    7px 4px,
+    13px calc(100% - 5px),
+    14px calc(100% - 4px),
+    15px calc(100% - 3px),
+    16px calc(100% - 2px);
+  background-repeat: no-repeat;
+}
+html[data-theme="windows95"] .select:dir(rtl) {
+  background-position: left 6px center, left 2px top 2px, left 2px top 2px, left 1px top 1px, left 1px top 1px;
+}
+
+/* Nested panels are group boxes (dialog-font.png, Effects / Sample): an
+   etched #808080 + #ffffff frame, the caption on the face breaking its
+   top line. Measured in RESEARCH.md; the outer window keeps its bevel. */
+html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel {
+  border-color: #808080;
+  box-shadow: inset 1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+  margin-block-start: 0.9em;
+}
+html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  width: fit-content;
+  max-width: calc(100% - 12px);
+  margin: calc(-0.6em - var(--surface-pad, 1rem)) 0 calc(0.4rem * var(--density)) calc(6px - var(--surface-pad, 1rem));
+  padding: 0 3px;
+  background: var(--surface);
+  border-bottom: 0;
+  box-shadow: none;
+  font-weight: 400;
+  font-size: inherit;
+}
+
+/* Etched separators: #808080 with #ffffff under it, as every 95 rule. */
+html[data-theme="windows95"] :is(hr, .divider) {
+  border: 0;
+  border-top: 1px solid #808080;
+  box-shadow: 0 1px 0 #ffffff;
+}
+html[data-theme="windows95"] .divider-v {
+  border-inline-start-color: #808080;
+  box-shadow: 1px 0 0 #ffffff;
+}
+html[data-theme="windows95"] .accordion-item {
+  border-bottom-color: #808080;
+  box-shadow: 0 1px 0 #ffffff;
+}
+
+/* List views and table scrollers are white sunken wells with no row
+   rules, as Explorer's file list (dialog-save-as.png). */
+html[data-theme="windows95"] {
+  --list-bg: #ffffff;
+  --list-rule: transparent;
+}
+html[data-theme="windows95"] .list:not(.list-cards) {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000;
+}
+
+/* Carousel: square dots, raised square prev/next buttons. */
+html[data-theme="windows95"] .carousel-nav > a { border-radius: 0; }
+html[data-theme="windows95"] .carousel-nav > :is(.carousel-prev, .carousel-next) {
+  --carousel-arrow-bg: var(--surface);
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+
+@supports selector(::scroll-marker) and selector(::scroll-button(*)) {
+  html[data-theme="windows95"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+  html[data-theme="windows95"] .carousel::scroll-button(*) {
+    border: 1px solid;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    border-radius: 0;
+    box-shadow: inset -1px -1px 0 #808080;
+    background: var(--surface);
+  }
+  html[data-theme="windows95"] .carousel::scroll-button(*):disabled { opacity: 1; color: #808080; text-shadow: 1px 1px 0 #ffffff; }
+}
+
+/* Display Properties monitor: the square grey case, raised. */
+html[data-theme="windows95"] {
+  --desktop-monitor-radius: 0;
+  --desktop-monitor-bg: var(--surface);
+  --input-mirror-bg: var(--surface);
+  --field-row-bg: var(--surface);
+}
+html[data-theme="windows95"] .desktop-monitor { border-color: #ffffff #000000 #000000 #ffffff; }
+
+/* State list cards (an answered question): the plain face with a 4px
+   marker bar in the state colour, not a blended tint. */
+html[data-theme="windows95"] { --list-tone-tint: 0%; }
+html[data-theme="windows95"] .list-cards > .list-item:is(.is-success, .is-warning, .is-danger, .is-info) {
+  box-shadow: inset 4px 0 0 var(--_list-tone), inset -1px -1px 0 #808080;
+}
+html[data-theme="windows95"] .ranked-item.is-answered {
+  background: var(--ranked-item-bg, var(--surface));
+  box-shadow: inset 4px 0 0 #008000;
 }
 
 /* Easter egg (data-easter-eggs + assets/js/eggs.js): start a textarea
