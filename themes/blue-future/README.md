@@ -96,20 +96,28 @@ the two should visibly move the furniture.
    On touch screens (`pointer: coarse`) it scrolls with the page instead
    of staying fixed, so phones do not repaint the viewport every frame.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
-   14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right. They
+   14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right,
+   inset 4px from the corner like registration marks engraved on a bezel
+   (a desktop window's title bar pads its start so the icon clears the
+   mark). They
    are painted as background layers (`--brackets` inside `--panel-bg`,
    `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
    surface gains a `position` and popovers, dropdowns and context menus
    keep anchoring to their true offset parent; they also stay put when a
    modal scrolls. Cards (KPI tiles, pricing, slides) set `--card-bg` to a
-   plain surface: they are hairline cells, and the L-marks stay on the
-   instruments. The status bar and `.app-main` are isolated stacking
+   plain surface with no outer glow: they are hairline cells, and the
+   L-marks stay on the instruments. A featured list card or spotlighted
+   question takes a 1px cyan edge with an inner glow, not a heavy frame.
+   Bar charts are instrument bargraphs: a 30% tinted column under a 2px
+   bright cap, so bars never outshine the live readouts. On touch screens
+   panel, card and transport glows are dropped to keep scrolling smooth. The status bar and `.app-main` are isolated stacking
    contexts so a menu spilling out of the page never covers the bar's
    buttons.
 3. **Buttons** are dark blue-cast cells with 0.05em tracking (dropped to
    0 on phones, where the wide mono face needs the room). Icon buttons are
-   square like everything else. Primary carries
-   `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
+   square like everything else. Primary carries only a faint
+   `0 0 0.4rem rgba(47,214,255,0.2)` at rest (none on touch), its full
+   `0 0 1rem` glow on hover, so readouts and lamps stay brightest; secondary/outline hover recolours the
    border to the glow and adds `0 0 8px`; `:disabled` is an unlit cell: no
    fill, `--muted` text and dashed `--muted` edge at 0.7 opacity, no
    shadow (present but off, never a dimmed primary). All via
@@ -119,6 +127,11 @@ the two should visibly move the furniture.
    keeps the outline and adds `0 0 8px rgba(0,217,255,0.35)`.
 5. **Tables**: dim, 0.08em-tracked uppercase headers, hairline row rules,
    and an accent select bar (`inset 0.35rem`) on active and selected rows.
+   Selected rows and list items fill blue like every other selection
+   (`--accent-2` at 20% over the panel, quieter than a control's 35% so
+   red and amber status text on them holds 4.5:1); cyan stays for live data. The current page
+   is a roomier cell (2.4em, or the touch target) so its digit clears the blue edge; disabled
+   page and carousel arrows are dashed unlit cells.
 6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
    in `--text`; `h3`/`h4` 0.8em, 0.2em-tracked and `--muted` (panel labels).
    Headings inside `.prose`/`article` keep their case. Under 480px the
@@ -158,14 +171,15 @@ Also: the meters, readouts, lamps and transport described under
 
 ## Typography
 
-`Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular",
-"Roboto Mono", "Noto Sans Mono", monospace` (`--font-mono` is the same
-stack). Consolas is the reference face but ships only with Windows and
-Microsoft Office; nothing is vendored. The fallbacks are the narrow,
-Consolas-like monos in the order they match it, all local only, so on a
-bare Linux/Android device the generic `monospace` (DejaVu Sans Mono, about
-9% wider) still renders. On phones the bar and joined toggles take
--0.01em tracking to give that width back.
+`Consolas, "BF Inconsolata", "Cascadia Mono", Inconsolata, "IBM Plex Mono",
+"SFMono-Regular", "Roboto Mono", "Noto Sans Mono", monospace` (`--font-mono`
+is the same stack). Consolas is the reference face but ships only with
+Windows and Microsoft Office, so Inconsolata (SIL OFL, the open
+Consolas-inspired mono) is vendored as `BF Inconsolata`, regular and bold
+Latin woff2 (`assets/fonts/Inconsolata-*.woff2`), with `size-adjust: 110%`
+so its 0.5em cell matches Consolas's 0.55em advance and x-height. Every
+machine without Consolas renders the same compact instrument face instead
+of the ~9% wider DejaVu Sans Mono.
 
 ## Contrast note
 

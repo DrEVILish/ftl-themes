@@ -11,6 +11,24 @@
  * core's variant rules and erase them.
  */
 
+/* Inconsolata (OFL) stands in where Consolas is missing: the open face drawn
+   after it. Scaled 110% so its 0.5em advance matches Consolas's 0.55em cell
+   and x-height, keeping labels and columns at the reference width. */
+@font-face {
+  font-family: "BF Inconsolata";
+  src: url("assets/fonts/Inconsolata-Regular.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: swap;
+  size-adjust: 110%;
+}
+@font-face {
+  font-family: "BF Inconsolata";
+  src: url("assets/fonts/Inconsolata-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+  size-adjust: 110%;
+}
+
 html[data-theme="blue-future"] {
   --motion-leave: warp;
   color-scheme: dark;
@@ -42,9 +60,9 @@ html[data-theme="blue-future"] {
   --on-danger: #1a0007;
   --on-success: #001a10;
   --radius: 0.25rem;
-  /* Consolas first; then the narrow, Consolas-metric local monos, so a
-     machine without it keeps the compact instrument face before a generic. */
-  --font: Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular", "Roboto Mono", "Noto Sans Mono", monospace;
+  /* Consolas first; then the vendored Inconsolata at Consolas's cell width,
+     so every machine keeps the compact instrument face. */
+  --font: Consolas, "BF Inconsolata", "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular", "Roboto Mono", "Noto Sans Mono", monospace;
   --font-mono: var(--font);
   --flare: #d85cff;
   --density: 1;
@@ -64,21 +82,24 @@ html[data-theme="blue-future"] {
   --link: var(--accent);
 
   /* HUD corner brackets: 14px L-shapes, 2px stroke, 0.8 opacity, top-left
-     and bottom-right. Painted as background layers rather than positioned
+     and bottom-right, inset 4px from the corner like engraved registration
+     marks on a bezel. Painted as background layers rather than positioned
      ::before/::after: the surface needs no `position` of its own, so popovers,
      dropdowns and context menus inside it keep anchoring to their real
      offset parent, and the marks stay put when a .modal scrolls. */
   --bracket: rgba(0, 217, 255, 0.8);
   --brackets:
-    linear-gradient(var(--bracket), var(--bracket)) top left / 14px 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) top left / 2px 14px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) bottom right / 14px 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) bottom right / 2px 14px no-repeat;
+    linear-gradient(var(--bracket), var(--bracket)) 4px 4px / 14px 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 4px 4px / 2px 14px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) calc(100% - 4px) calc(100% - 4px) / 14px 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) calc(100% - 4px) calc(100% - 4px) / 2px 14px no-repeat;
   --panel-bg: var(--brackets), var(--surface);
   --modal-bg: var(--brackets), var(--surface);
   /* Cards (KPI tiles, pricing, slides) are plain hairline cells: the
      L-marks stay on the instruments (panel, modal, transport). */
   --card-bg: var(--surface);
+  /* Cards carry no outer glow: glow belongs to what is live. */
+  --card-shadow: inset 0 0 30px rgba(0, 180, 255, 0.03);
   --panel-shadow: 0 0 20px rgba(0, 180, 255, 0.08), inset 0 0 30px rgba(0, 180, 255, 0.03);
   --panel-radius: 0.25rem;
 
@@ -136,7 +157,9 @@ html[data-theme="blue-future"] {
   --table-head-rule: var(--hairline);
   --table-rule: var(--hairline);
   --row-hover-bg: rgba(0, 217, 255, 0.05);
-  --row-selected-bg: rgba(0, 217, 255, 0.24);
+  /* Selected rows and list items are interactive selection: blue, with the
+     cyan select bar as the cursor. */
+  --row-selected-bg: color-mix(in srgb, var(--accent-2) 20%, var(--surface)); /* quieter than a control: state text on it holds 4.5:1 */
   --row-active-marker: inset 0.35rem 0 0 var(--accent);
 
   /* Glow range: 4px gradient track, near-square thumb. */
@@ -168,6 +191,14 @@ html[data-theme="blue-future"] {
   --readout-fg: var(--accent);
   --readout-glow: 0 0 10px rgba(0, 217, 255, 0.55);
   --readout-tracking: 0.06em;
+  /* Bar chart: an instrument bargraph, a dim tinted column under a bright
+     2px cap, so the bars never outshine the live readouts. */
+  --bar-chart-bar: linear-gradient(var(--accent) 0 2px, color-mix(in srgb, var(--accent) 30%, var(--surface)) 2px);
+  --bar-chart-bar-alt: linear-gradient(var(--success) 0 2px, color-mix(in srgb, var(--success) 30%, var(--surface)) 2px);
+  --bar-chart-radius: 0;
+  /* Spotlighted question: a 1px cyan edge with an inner glow, not a slab. */
+  --ranked-spot-width: 1px;
+  --list-featured-border-width: 1px;
   --transport-bg: var(--brackets), #0a1526;
   --transport-border: #0f3a5c;
   --transport-radius: 0.25rem;
@@ -183,6 +214,8 @@ html[data-theme="blue-future"] {
      selected state; solid cyan is for live data only. */
   --desktop-icon-label-bg-selected: color-mix(in srgb, var(--accent-2) 35%, var(--surface));
   --desktop-icon-label-fg-selected: var(--text);
+  /* The title bar clears the inset top-left bracket. */
+  --window-header-pad: 0.3rem 0.4rem 0.3rem 0.8rem;
 }
 html[data-theme="blue-future"] .desktop-icon:has(input:checked) > label > span {
   box-shadow: inset 0 0 0 1px var(--accent-2);
@@ -201,7 +234,15 @@ html[data-theme="blue-future"] {
   background-size: 2rem 2rem, 2rem 2rem, auto;
 }
 @media (pointer: coarse) {
-  html[data-theme="blue-future"] { background-attachment: scroll; }
+  html[data-theme="blue-future"] {
+    background-attachment: scroll;
+    /* Blur shadows on every card repaint on scroll; touch keeps the glow
+       on what is live (readouts, lamps) only. */
+    --panel-shadow: none;
+    --card-shadow: none;
+    --transport-shadow: none;
+  }
+  html[data-theme="blue-future"] .btn-primary { --btn-shadow: none; }
 }
 
 /* Headings: tracked uppercase throughout. A page title (h1) and a section
@@ -258,7 +299,9 @@ html[data-theme="blue-future"] .btn-primary {
   --btn-border: var(--accent);
   --btn-border-hover: var(--accent);
   --btn-font-size: 1.1em;
-  --btn-shadow: 0 0 0.7rem rgba(47, 214, 255, 0.3);
+  /* At rest only a faint halo; the full glow is for hover and focus, so
+     readouts and lamps stay the brightest things on screen. */
+  --btn-shadow: 0 0 0.4rem rgba(47, 214, 255, 0.2);
   --btn-shadow-hover: 0 0 1rem rgba(0, 217, 255, 0.55);
 }
 html[data-theme="blue-future"] .btn-secondary { --bf-tone: var(--accent); }
@@ -286,6 +329,27 @@ html[data-theme="blue-future"] .btn[aria-disabled="true"] {
    draws its blue edge inset, matching the toggle and filter chip. */
 html[data-theme="blue-future"] :is(.segmented-item.is-active, .pagination-item.is-active, .badge-button.is-active, .message-reactions > .badge-button[aria-pressed="true"]) {
   box-shadow: inset 0 0 0 1px var(--accent-2);
+}
+
+/* The selected page is a visible cell, so give its digit room inside it. */
+html[data-theme="blue-future"] .pagination-item {
+  min-width: max(var(--tap-min), 2.4em);
+  height: auto;
+  min-height: max(var(--tap-min), 2.4em);
+  padding: 0.2em 0.5em;
+}
+/* The narrow mono gives a cell's field less intrinsic width; a squeezed
+   table column still keeps it a full target. */
+html[data-theme="blue-future"] td > :is(.input, .select) { min-inline-size: var(--tap-min); }
+/* Disabled arrows: an unlit cell (dashed dim edge), like a disabled button,
+   so the control's place is kept. */
+html[data-theme="blue-future"] .pagination-item.is-disabled,
+html[data-theme="blue-future"] .carousel::scroll-button(*):disabled {
+  border: 1px dashed var(--muted);
+  opacity: 0.7;
+}
+html[data-theme="blue-future"] :is(.ranked-item.is-spotlight, .list-cards > .list-item.is-featured) {
+  box-shadow: inset 0 0 0.6rem rgba(0, 217, 255, 0.3);
 }
 
 /* In a window or dialog the tab strip is short of room: tighter tracking
@@ -468,12 +532,10 @@ html[data-theme="blue-future"] :is(.app-main, .app-status) { isolation: isolate;
     --app-bar-padding: 0.15rem 0.6rem;
     --menubar-pad: 0;
     row-gap: 0;
-    letter-spacing: -0.01em;
   }
   /* A linked brand on a row of its own needs the target height itself now
      that the bar's padding is gone. */
   html[data-theme="blue-future"] .app-bar > .nav-brand { min-block-size: 24px; align-content: center; }
-  html[data-theme="blue-future"] :is(.toggle-btn, .segmented-item) { letter-spacing: -0.01em; }
   /* Nav items and the taskbar tray give back padding the mono text needs. */
   html[data-theme="blue-future"] .nav-item { padding-inline: 0.45em; }
   html[data-theme="blue-future"] .taskbar-tray { padding-inline: 0.35em; gap: 0.3em; }
