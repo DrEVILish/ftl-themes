@@ -3,8 +3,8 @@
  * Description: Gerry Anderson's Thunderbirds (1965): a cream 1960s atomic-age control console with navy IR bands, gold trim and flat Technicolor craft-colour lamps.
  *
  * Fonts: headings use Microgramma/Eurostile Extended when installed, else
- * Michroma (SIL OFL, vendored in assets/fonts); bar and GO keep a heavy
- * italic system stack. See README.
+ * Michroma (SIL OFL, vendored in assets/fonts); the bar brand and GO use
+ * the same face, upright. See README.
  * Palette, shape and type guidance only: no logo or insignia artwork.
  */
 
@@ -154,7 +154,7 @@ html[data-theme="international-rescue"] {
   --slider-bg: var(--ir-navy);
   --slider-thumb-bg: var(--ir-gold);
   --slider-thumb-size: 1.3rem;
-  --slider-thumb-shadow: 0 0 0 3px var(--ir-navy);
+  --slider-thumb-shadow: 0 0 0 1px var(--ir-navy);
   --slider-thumb-radius: 0.35rem;
   --progress-radius: 0.5rem;
   --progress-height: 1rem;
@@ -307,14 +307,17 @@ html[data-theme="international-rescue"] .btn-go:active {
   transform: translateY(5px);
   box-shadow: 0 1px 0 var(--ir-navy), inset 0 0 0 3px #ffe58a;
 }
-html[data-theme="international-rescue"] .btn-go { font-style: italic; font-weight: 900; }
+/* GO is captioned like the title cards: wide squared capitals, upright.
+   Michroma has no bold, so it reads big and widely tracked instead. */
+html[data-theme="international-rescue"] .btn-go { font-family: var(--ir-display); font-weight: 400; letter-spacing: 0.08em; }
 html[data-theme="international-rescue"] .btn-primary,
 html[data-theme="international-rescue"] .btn-danger,
 html[data-theme="international-rescue"] .btn-success { --btn-border: var(--ir-navy); }
 html[data-theme="international-rescue"] :focus-visible { outline-width: 3px; outline-offset: 2px; }
 
-/* Panel header: navy caption bar with a gold hazard band underneath. */
-html[data-theme="international-rescue"] .panel-header {
+/* Panel, modal and window headers: navy caption bar with a gold band
+   underneath, captioned in the display face. */
+html[data-theme="international-rescue"] :is(.panel-header, .modal-header) {
   font-family: var(--ir-display);
   font-weight: 400;
   border-bottom: 0.4rem solid var(--ir-gold);
@@ -368,6 +371,31 @@ html[data-theme="international-rescue"] .list-cards > .list-item { min-inline-si
 /* Folder rails sit on cream, not navy: navy ink. */
 html[data-theme="international-rescue"] .nav-rail { --nav-item-fg: var(--text); }
 html[data-theme="international-rescue"] .badge { border-width: 2px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+/* Filter chips are badges too: same navy outline and size (core's
+   `font: inherit` would otherwise blow them up to body size); an idle chip
+   is a cream key with navy ink, the active one fills TB1 blue. */
+html[data-theme="international-rescue"] .badge-button {
+  --badge-bg: var(--surface);
+  --badge-fg: var(--text);
+  border-style: solid;
+  font-size: 0.75em;
+  font-weight: 800;
+  padding-inline: 0.5em;
+}
+/* Toggle keys are keycaps like .btn: the same hard navy drop, pressed flat. */
+html[data-theme="international-rescue"] .toggle-btn { box-shadow: 0 4px 0 var(--ir-navy); }
+html[data-theme="international-rescue"] .toggle-btn:has(input:checked) { --toggle-btn-border-on: var(--ir-navy); }
+html[data-theme="international-rescue"] .toggle-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ir-navy); }
+/* Tabs sit on a 3px navy rail; the active tab is a key outlined on three sides. */
+html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"]) { border-bottom: 3px solid var(--ir-navy); }
+html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"]) > .tab.is-active {
+  border: 3px solid var(--ir-navy);
+  border-bottom: 0;
+}
+/* The fader knob: gold in a navy bezel, with no cream ring (core's thumb
+   border takes the bezel colour). */
+html[data-theme="international-rescue"] .slider::-webkit-slider-thumb { border-color: var(--ir-navy); }
+html[data-theme="international-rescue"] .slider::-moz-range-thumb { border-color: var(--ir-navy); }
 
 /* Everything painted navy re-points the text tokens for its descendants, so
    muted captions, ghost buttons, breadcrumbs and state text stay legible
@@ -445,8 +473,7 @@ html[data-theme="international-rescue"] .app-bar {
   --nav-brand-fg: #ffffff;
   --nav-item-fg: #f6f1e3;
   --focus: #f5b800;
-  font-style: italic;
-  font-weight: 900;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   background-image: var(--ir-band);
@@ -454,6 +481,12 @@ html[data-theme="international-rescue"] .app-bar {
   background-position: bottom;
   background-repeat: no-repeat;
   box-shadow: 0 5px 0 #06214f;
+}
+/* The brand is the title card: the display face, upright and wide. */
+html[data-theme="international-rescue"] .app-bar :is(.brand, .nav-brand) {
+  font-family: var(--ir-display);
+  font-weight: 400;
+  letter-spacing: 0.06em;
 }
 html[data-theme="international-rescue"] .app-status {
   --focus: #f5b800;
@@ -475,10 +508,10 @@ html[data-theme="international-rescue"] .app-rail {
   background-position:
     50% 1rem, 50% 4.6rem, 50% 8.2rem, 50% 11.8rem, 50% 15.4rem;
   background-image:
-    radial-gradient(circle, var(--ir-tb1) 0 44%, #fff 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb2) 0 44%, #fff 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb3) 0 44%, #fff 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb4) 0 44%, #fff 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
+    radial-gradient(circle, var(--ir-tb1) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
+    radial-gradient(circle, var(--ir-tb2) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
+    radial-gradient(circle, var(--ir-tb3) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
+    radial-gradient(circle, var(--ir-tb4) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
     radial-gradient(circle, var(--ir-tb5) 0 44%, var(--ir-gold) 44% 56%, var(--ir-navy) 56% 68%, transparent 70%);
 }
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
@@ -513,6 +546,10 @@ html[data-theme="international-rescue"] {
     --toggle-btn-padding: 0.5em 0.45em;
     --app-status-padding: 0.6rem 0.5rem;
   }
+  /* The wide brand takes its own line rather than truncate to "F..", and
+     the nav keys tighten so they share the next one. */
+  html[data-theme="international-rescue"] .app-bar > .nav-brand { flex: 1 0 100%; }
+  html[data-theme="international-rescue"] .app-bar .nav-item { padding-inline: 0.5em; letter-spacing: 0.02em; }
   /* The status tray's lamp shrinks so the tray readout stays in the strip. */
   html[data-theme="international-rescue"] .taskbar-tray .lamp { --lamp-size: 0.7rem; }
   /* A one-line code block wraps instead of turning into a scroll box. */

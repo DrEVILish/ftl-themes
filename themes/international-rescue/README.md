@@ -28,8 +28,9 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 3. **Craft colours are the status language.** Blue = TB1 = accent/info,
    green = TB2 = success/lamp-on, orange-red = TB3 = danger, yellow = TB4 =
    warning. Gold is IR trim and the GO key. Don't add other hues.
-4. **GO is the hero.** `.btn-go` is the biggest, gold, navy-outlined heavy
-   italic key with a deeper drop; it depresses 5px on `:active`.
+4. **GO is the hero.** `.btn-go` is the biggest, gold, navy-outlined key,
+   captioned upright in the wide display face, with a deeper drop; it
+   depresses 5px on `:active`.
 5. **Big round lamps with a bezel.** `.lamp` is a 1.3rem circle inside a navy
    ring; the rail carries five bezelled craft lamps.
 6. **The diagonal band and the sash are the only ornaments.** A gold/navy
@@ -37,8 +38,8 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
    sash with a diagonal end. Built from CSS only.
 7. **Rounded-rectangle, never pill, never sharp.** Radius 0.5-1.1rem.
 8. **Headlines are wide squared capitals.** Microgramma/Eurostile Extended
-   when installed, else the vendored Michroma; the heavy italic is kept for
-   the bar and the GO key.
+   when installed, else the vendored Michroma; the bar brand and GO key use
+   the same face, upright and widely tracked (Michroma has no bold).
 
 ## Signature details
 
@@ -50,11 +51,22 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 - **Segmented LED meters** (green to yellow to orange-red bands under a white
   slit mask), and a navy readout window with gold digits.
 - **Rocker switch**: square-shouldered thumb in a stout slot; gold slot when on.
-- Panel and modal headers: navy caption bar with a gold underline band.
+- Panel, modal and desktop-window headers: navy caption bar with a gold
+  underline band, captioned in the display face (a thinner band when nested).
+- Keys share one keycap: `.btn`, `.toggle-btn` and filter chips
+  (`.badge-button`, same size and 2px navy outline as `.badge`; idle chips are
+  cream with navy ink, the active one TB1 blue). Toggle keys carry the 4px
+  navy drop and press flat.
+- Tabs sit on a 3px navy rail; the active tab is a TB1-blue key outlined on
+  three sides.
+- Rail lamps have a TB1/TB5 silver ring inside the navy bezel.
 - Tables: navy head, gold rule, italic uppercase captions, cream zebra.
 - Alerts carry a 1rem tab in the craft status colour (TB1 blue info, TB2
   green success, TB4 yellow warning, TB3 orange-red danger; gold when plain).
-- Sliders are faders: a navy groove with a chunky gold knob in a navy bezel.
+- Sliders are faders: a navy groove with a chunky gold knob in a navy bezel
+  (the thumb border is navy, so no cream ring). The groove keeps square ends:
+  core paints it on the content box with `background-clip`, which a radius
+  does not reach.
 - Lists and chat bubbles keep the navy outline (3px, 2px inside a console);
   ghost and tertiary keys have no keycap drop until hovered.
 - Navy surfaces re-point `--text/--muted/--link` and state-text tokens locally
@@ -80,9 +92,10 @@ Headings and panel headers (`--ir-display`): Eurostile Extended, Microgramma
 D Extended, Microgramma, then **Michroma** (SIL OFL, already vendored in
 `assets/fonts/`, see `assets/fonts/NOTICE.md`), uppercase, upright, weight
 400. Microgramma is the reported credits/title-card face; Michroma is an
-open Microgramma-alike, not the original. Univers 59 (craft lettering) is
-not matched. The bar and GO keep a heavy italic system stack (Arial Rounded
-MT Bold, Trebuchet MS, Arial Black) as an interpretation.
+open Microgramma-alike, not the original. The bar brand, window titles and
+the GO key use the same face, upright (the earlier heavy italic was an
+invention and is gone). Univers 59 (craft lettering) is not matched; bar nav
+and key labels use the bold uppercase body stack.
 
 ## Contrast honesty
 
@@ -133,7 +146,7 @@ choices, not sampled. See RESEARCH.md.
 
 ## v5 layout
 
-- **Tiers.** Phones (up to 480px): the lamp rail becomes a horizontal strip of the five craft lamps under the bar. Tablets (481–900px, often a short landscape screen): the rail is hidden so the console keeps its full width and height. Both tighten the shell gap and padding, and the 44px nav keys centre their labels. On phones the segmented keys, the status strip and its tray lamp tighten so labels stay inside their boxes, and one-line code blocks wrap instead of scrolling.
+- **Tiers.** Phones (up to 480px): the lamp rail becomes a horizontal strip of the five craft lamps under the bar. Tablets (481–900px, often a short landscape screen): the rail is hidden so the console keeps its full width and height. Both tighten the shell gap and padding, and the 44px nav keys centre their labels. On phones the bar brand takes its own line (it never truncates) and the nav keys tighten; the segmented keys, the status strip and its tray lamp tighten so labels stay inside their boxes, and one-line code blocks wrap instead of scrolling.
 - **Nesting.** Panel headers read core's `--surface-pad`, so the navy caption bar sits flush in its panel at every tier. A panel or card inside another surface drops its hard drop shadow, takes a 2px outline and a thinner hazard band. Tables round their corner cells instead of clipping (`overflow: hidden` cut off row-action menus), readouts never wrap, and stacked-table labels use `--muted`.
 - **XL gutter art (1801px+).** Tracy Island's long-range radar: faint navy range rings spread in from both screen edges over the map-room graticule.
 
