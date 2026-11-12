@@ -255,6 +255,25 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `ios-flat` and `liquid-glass` (and the themes that extend them), the open
   stand-in for SF Pro after `-apple-system` and Helvetica Neue
 
+## Roboto and Roboto Mono
+
+- **Family:** Roboto (weights vendored: Regular 400, Medium 500 —
+  `Roboto-Regular.woff2`, `Roboto-Medium.woff2`) and Roboto Mono
+  (Regular 400 — `RobotoMono-Regular.woff2`); Latin subsets, unmodified
+- **Designer:** Christian Robertson, for Google
+- **License:** SIL Open Font License, version 1.1 (Roboto 3 moved to
+  `google/fonts` `ofl/roboto/`; verified in the files' own source
+  package, `@fontsource/roboto@5.2.5` and `@fontsource/roboto-mono@5.2.5`,
+  whose `LICENSE` is the OFL 1.1 text and `package.json` says
+  `"license": "OFL-1.1"`. Older 5.1.x packages still carried Roboto 2
+  under Apache 2.0, so those were not used.)
+- **Source:** https://fonts.google.com/specimen/Roboto,
+  https://fonts.google.com/specimen/Roboto+Mono (files from the
+  Fontsource npm packages above: `roboto-latin-400-normal.woff2`,
+  `roboto-latin-500-normal.woff2`, `roboto-mono-latin-400-normal.woff2`)
+- **Used by:** `material` (all UI text and the mono face; MD2's own type
+  family, Medium for button, tab and title roles)
+
 ## Selawik
 
 - **Family:** Selawik (weights vendored: Light 300, Regular 400, Semibold
@@ -286,6 +305,8 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 ## Bottom line
 
 Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
+
+Twenty-four files, seventeen families: fifteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
