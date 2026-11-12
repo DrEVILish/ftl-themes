@@ -141,7 +141,18 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `bloomberg` (Share Tech Mono: code and readouts)
+
+## Roboto Condensed
+
+- **Family:** Roboto Condensed (Latin subset, weights vendored: Regular 400,
+  Bold 700 — `RobotoCondensed-Regular.woff2`, `RobotoCondensed-Bold.woff2`,
+  taken unmodified from the `@fontsource/roboto-condensed` 5.0.14 package)
+- **Designer:** Christian Robertson (Google)
+- **License:** SIL Open Font License, version 1.1
+- **Source:** https://fonts.google.com/specimen/Roboto+Condensed
+- **Used by:** `bloomberg` (all UI text and figures; open stand-in for the
+  terminal's proprietary narrow screen sans, with a real bold)
 
 ## DSEG7 Classic
 

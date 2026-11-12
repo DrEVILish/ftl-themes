@@ -13,16 +13,22 @@ is the catalog's extreme-density stress test as much as a period theme.
 
 ## Core values
 
-1. **The screen's narrow sans, tabular figures.** `--font` is Share
-   Tech, a narrow proportional sans like the modern terminal's labels,
+1. **The screen's narrow sans, tabular figures.** `--font` names
+   the terminal's own face first, then vendored Roboto Condensed (400 and
+   a real 700), a narrow humanist sans like the modern terminal's labels,
    names, headers and figures ('British Pound Spot Curncy', 'DOW JONES'
    in `EngineeringValue_EP3_Preview.webp`), with `tabular-nums` so columns
-   of figures align. `--font-mono` (Share Tech Mono) stays for code and
-   readouts. An all-mono UI reads as a retro clone, not the real screen.
+   of figures align. Stat
+   values and `td.mono` cells use it too, at regular weight, like the
+   reference's '36025.76' / '+17.78%'. `--font-mono` (Share Tech Mono)
+   stays for code and readouts. An all-mono UI reads as a retro clone, not the real screen.
 2. **Amber is the workhorse, yellow is the function key.** `--text` is
    amber; `--accent` is a brighter function-key yellow reserved for
    interactive elements. Losing that split makes everything read as one
-   flat color.
+   flat color. Running and command text (`--input-fg`, `--prose-fg`,
+   plain paragraphs) is the terminal's light grey `#e0e0e0`, like
+   'Enter all values and hit <GO>'; amber stays for names, labels,
+   headings and options.
 3. **Cyan is the second data category.** `--accent-2` exists so a
    second kind of information (a different data feed, an idle state) can
    be color-coded distinctly from the primary amber — real terminals code
@@ -32,7 +38,7 @@ is the catalog's extreme-density stress test as much as a period theme.
    wall rather than a spacious dashboard.
 5. **Zero radius, zero gloss.** Every corner is square, including core's
    round defaults (icon buttons, switches, avatars, status dots, slider
-   thumbs, carousel dots, `<kbd>` caps); every fill is flat, and skeletons
+   thumbs, presence dots, carousel dots, `<kbd>` caps); every fill is flat, and skeletons
    blink in steps instead of shimmering. Native checkboxes keep the
    browser's own slight rounding (squaring them would mean redrawing the
    control), and line-chart points stay circles (core draws them as SVG
@@ -41,22 +47,46 @@ is the catalog's extreme-density stress test as much as a period theme.
    values (`.stat-value`, `td.mono`) are terminal white `#e8e8e8` except
    up/down cells, which keep the green-up / red-down net-change colour;
    column headers are mixed-case light grey `#c8c8c8` at data size on a
-   grey `#2a2a2a` bar, and panel/modal headers are the crimson `#800414`
+   near-black `#1a1a1a` bar (sampled from the reference), and panel/modal headers are the crimson `#800414`
    section bar (sampled from the reference, rgb 129,4,19) with white text.
 7. **Amber window frames.** Panels, modals and desktop windows carry the
-   terminal window's thin amber outer frame (`#cc7a00`); inputs, cards and
-   hairlines stay grey `#3a3a3a`.
+   terminal window's thin amber outer frame (`#e0983f`, near the
+   reference's sampled `#e39c47`); cards and
+   hairlines stay grey `#3a3a3a`. Window title rows (desktop and draggable
+   `.modal[data-drag]` windows) are black with a white title and white
+   min/max/close glyphs inside that frame, inactive ones muted amber with
+   no desaturating filter; crimson is kept for in-content section bars.
+8. **Blue is the command line.** Text inputs carry the reference's blue
+   command-line rule (`--input-border: #2a52c8`, 3.1:1 on black), the
+   screen's third structural colour; `.select` stays a filled amber field.
+   Sunken panes (explorer tree, file list) use the grey `--border` instead
+   (`--window-pane-border`), so blue stays on the command line.
 
 ## Signature details
 
 - Buttons are outlined amber-on-black at rest and invert to filled yellow
-  with black text on hover — the terminal function-key press.
+  with black text on hover — the terminal function-key press. Secondary
+  buttons keep the outline a step down in dim amber (`--muted`).
+- Horizontal tabs are white labels on one continuous crimson section bar
+  across the panel (like the reference's 'News / Settings' bar), split by
+  thin translucent-white dividers, the current tab a filled yellow key
+  with black text; no gaps, no underline.
+- The settings pane title and the inbox reading-pane subject become the
+  same crimson section bar with white text, so every content region sits
+  under one, as on the dashboard's panels.
+- Labels keep the terminal voice: stat labels, field-group titles and
+  strip labels are mixed case with no tracking (core uppercases them).
+- The selection marker on rows, list items and nav items is the yellow
+  function key (`--row-active-marker`), never cyan.
+- Diverging heatmaps code net change: green `#2ecc40` up, red `#ff3333`
+  down, `#141414` flat, never the yellow function-key colour.
 - Table cells get vertical rules between columns (`border-right`) and no
   visible horizontal row rules (`--table-rule: #0a0a0a`, 1.1:1 on black):
   the terminal's column grid, not boxed cells.
-- The status strip text is cyan, not amber — a second information channel,
+- The status strip text is cyan, not amber, including its right-hand meta — a second information channel,
   distinct at a glance from the primary data color. The colored
-  function-key strip sits in its flow (not over its text), and is left off
+  function-key strip (five 1.4rem x 0.9rem caps: red, yellow, green, cyan,
+  grey) sits in its flow (not over its text), and is left off
   taskbars so it never covers the Start button.
 - Grouped buttons (`.btn-group`) are filled function-key caps at rest:
   green navigation keys with black text, the selected/primary one yellow,
@@ -69,12 +99,23 @@ is the catalog's extreme-density stress test as much as a period theme.
   yellow cap, so green caps stay a horizontal key row.
 - Focus is white (`--focus: #ffffff`), so cyan stays a data colour and
   yellow the function key.
-- Badges never drop under 12px (`max(0.75em, 0.75rem)`).
+- Badges, `.status` pills, field hints and stat trends never drop under
+  12px (`max(0.75em, 0.75rem)`).
 - Dropdowns (`.select`) are filled amber fields with black text and a
-  black arrow, like the reference's "Standard" select (about 10:1).
-- Data rows are tight (`0.25rem` block padding, the 4px edge floor, line-height 1.25) and
+  black arrow, like the reference's "Standard" select (about 10:1). In
+  the app bar it is a small field at cap height (0.85rem text, thin
+  padding) so the green key row leads the bar.
+- Data rows are tight (`--cell-pad-y: 0.25rem`, the 4px text-to-edge
+  floor, line-height 1.15: about 25px per row, against the reference's
+  21px, which the edge floor and the 24px target minimum rule out; a row
+  checkbox overlaps the cell padding so the control alone sets the row) and
   panels inset only `0.25rem`, so grids run nearly edge to edge under the
   red section bar.
+- Section bars, window titles and list-row names are regular weight
+  (`--list-item-title-weight: 400`), as the reference's 'News' /
+  'Indices' bars; bold is left to emphasis and key caps.
+- Disabled pagination and carousel arrows are dim amber `#6b4400`
+  (about 2.6:1), not core's 40% opacity.
 - Screen titles are small and regular weight (h1 1.3rem, h2 1.1rem,
   h3 1rem): the terminal sets titles at about the size of the data.
 - Sliders draw a dim-amber `0.3rem` track (`#8a5c00`, 3.6:1 on black)
@@ -119,7 +160,7 @@ reads as another data row rather than a conventional status bar.
 
 ## Typography
 
-`--font` is `"Share Tech", "Arial Narrow", "Roboto Condensed", "Liberation Sans Narrow", sans-serif` with `font-variant-numeric: tabular-nums` on the body; `--font-mono` is `"Share Tech Mono", Consolas, "Liberation Mono", monospace` for code and readouts. Both Share Tech faces (SIL OFL, already vendored in `assets/fonts/`, Regular only, so bold is synthesized) load on every platform, keeping dense columns, the bar and table-cell inputs the same width everywhere. The real terminal's face is a proprietary screen font that no capture in `references/bloomberg/` lets us name, so Share Tech is a stand-in chosen for the same narrow, slightly squared proportional shape seen in `EngineeringValue_EP3_Preview.webp`. Column headers are mixed case at data size with no tracking, like the reference's 'Index' / '2 Day' / '%YTD' bar.
+`--font` is `"Bloomberg Terminal", "Roboto Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif` with `font-variant-numeric: tabular-nums` on the body; `--font-mono` is `"Share Tech Mono", Consolas, "Liberation Mono", monospace` for code and readouts. The real terminal face (Bloomberg's own proprietary screen font) is named first for machines that have it; Roboto Condensed (SIL OFL, Latin 400 and 700 vendored in `assets/fonts/`, see `NOTICE.md`) is the stand-in everywhere else, chosen for the same narrow humanist shape with open, rounded bowls seen in 'British Pound Spot Curncy' / 'DOW JONES' in `EngineeringValue_EP3_Preview.webp`, and for a real bold (the reference's 'BIO' / 'EC'), so emphasis is never synthesized. Share Tech Mono (SIL OFL, vendored) keeps code, the bar and table inputs the same width everywhere. Column headers are mixed case at data size with no tracking, like the reference's 'Index' / '2 Day' / '%YTD' bar.
 
 ## Contrast honesty
 
