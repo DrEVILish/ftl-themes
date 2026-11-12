@@ -81,7 +81,7 @@ html[data-theme="blue-future"] {
   --focus-ring: 0 0 8px rgba(0, 217, 255, 0.35);
   --link: var(--accent);
 
-  /* HUD corner brackets: 14px L-shapes, 2px stroke, 0.8 opacity, top-left
+  /* HUD corner brackets: 18px L-shapes, 2px stroke, 0.8 opacity, top-left
      and bottom-right, inset 4px from the corner like engraved registration
      marks on a bezel. Painted as background layers rather than positioned
      ::before/::after: the surface needs no `position` of its own, so popovers,
@@ -89,10 +89,10 @@ html[data-theme="blue-future"] {
      offset parent, and the marks stay put when a .modal scrolls. */
   --bracket: rgba(0, 217, 255, 0.8);
   --brackets:
-    linear-gradient(var(--bracket), var(--bracket)) 4px 4px / 14px 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) 4px 4px / 2px 14px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) calc(100% - 4px) calc(100% - 4px) / 14px 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) calc(100% - 4px) calc(100% - 4px) / 2px 14px no-repeat;
+    linear-gradient(var(--bracket), var(--bracket)) 4px 4px / 18px 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 4px 4px / 2px 18px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) calc(100% - 4px) calc(100% - 4px) / 18px 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) calc(100% - 4px) calc(100% - 4px) / 2px 18px no-repeat;
   --panel-bg: var(--brackets), var(--surface);
   --modal-bg: var(--brackets), var(--surface);
   /* Cards (KPI tiles, pricing, slides) are plain hairline cells: the
@@ -144,7 +144,7 @@ html[data-theme="blue-future"] {
 
   /* Cell edit states tint the panel, not the row, so a dirty cell on a
      selected row stays amber instead of mixing to olive. */
-  --cell-dirty-bg: color-mix(in srgb, var(--warning) 14%, var(--surface));
+  --cell-dirty-bg: color-mix(in srgb, var(--warning) 10%, var(--surface)); /* a tint on navy, not a warm slab; the amber edge carries it */
 
   /* Inputs */
   --input-bg: #08192b;
@@ -216,7 +216,34 @@ html[data-theme="blue-future"] {
   --desktop-icon-label-fg-selected: var(--text);
   /* The title bar clears the inset top-left bracket. */
   --window-header-pad: 0.3rem 0.4rem 0.3rem 0.8rem;
+  /* Only the focused window is energized: the others dim their title. */
+  --window-header-fg-inactive: var(--muted);
+  /* The mono face is wide: a slightly smaller caption in a slightly wider
+     cell, so "Neighborhood" wraps as a whole word. */
+  --desktop-icon-font-size: 0.75rem;
+  --desktop-icon-cell: 6.25rem;
+  /* Mono runs wide: hold reading copy to a terminal-like measure. */
+  --prose-measure: 66ch;
 }
+/* The energized window: a cyan hairline under its title bar. Core sets
+   --_inactive on every other window, which zeroes the rule's alpha. */
+html[data-theme="blue-future"] .desktop-window > .modal > .modal-header {
+  box-shadow: inset 0 -1px 0 rgb(0 217 255 / calc(0.75 * (1 - var(--_inactive, 0)))), 0 1px 6px -2px rgb(0 217 255 / calc(0.35 * (1 - var(--_inactive, 0))));
+}
+/* Instrument bezel: a panel title sits on a cyan hairline, and clears the
+   top-left L-mark (4px inset + 18px arm). Physical left: the mark is. */
+html[data-theme="blue-future"] .panel-header {
+  border-bottom-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  padding-left: max(var(--surface-pad, 1rem), 1.75rem);
+}
+html[data-theme="blue-future"] .modal-header { padding-left: max(var(--space-m), 1.75rem); }
+/* The current section is a selected control: blue cell, blue edge. */
+html[data-theme="blue-future"] .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) {
+  --nav-item-bg-active: var(--bf-selected-bg);
+  box-shadow: inset 0 0 0 1px var(--accent-2);
+}
+/* A field row's switch keeps its size; the label truncates instead. */
+html[data-theme="blue-future"] .field-row > .switch { flex-shrink: 0; }
 html[data-theme="blue-future"] .desktop-icon:has(input:checked) > label > span {
   box-shadow: inset 0 0 0 1px var(--accent-2);
 }
@@ -541,6 +568,7 @@ html[data-theme="blue-future"] :is(.app-main, .app-status) { isolation: isolate;
   html[data-theme="blue-future"] .taskbar-tray { padding-inline: 0.35em; gap: 0.3em; }
   /* Panel labels: 0.2em tracking wraps them to three lines here. */
   html[data-theme="blue-future"] :is(h3, h4) { letter-spacing: 0.08em; }
+  html[data-theme="blue-future"] .field-row > .label { --label-tracking: 0.02em; }
   /* A shortcut hint means nothing without a keyboard. */
   html[data-theme="blue-future"] .app-bar > .cluster kbd { display: none; }
 }

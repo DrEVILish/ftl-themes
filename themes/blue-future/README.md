@@ -28,7 +28,7 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
    carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
    So a selected or pressed control (toggle, segment, current page, filter
-   or reaction chip, active tab, open menu item, selected desktop icon) is a blue-tinted cell
+   or reaction chip, active tab, open menu item, current nav item, selected desktop icon) is a blue-tinted cell
    (`--accent-2` at 35% over the panel) with a blue edge and `--text`
    label, never a solid cyan slab; solid cyan is kept for the primary
    action and live readouts.
@@ -96,10 +96,13 @@ the two should visibly move the furniture.
    On touch screens (`pointer: coarse`) it scrolls with the page instead
    of staying fixed, so phones do not repaint the viewport every frame.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
-   14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right,
-   inset 4px from the corner like registration marks engraved on a bezel
-   (a desktop window's title bar pads its start so the icon clears the
-   mark). They
+   18px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right,
+   inset 4px from the corner like registration marks engraved on a bezel.
+   Panel and modal titles start 1.75rem in so they clear the mark (a
+   desktop window's title bar pads its start so the icon clears it), and a
+   panel title sits on a cyan-cast hairline, the bezel's engraved rule.
+   Only the focused desktop window is energized: a cyan hairline under its
+   title bar, while the others dim their title to `--muted`. They
    are painted as background layers (`--brackets` inside `--panel-bg`,
    `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
    surface gains a `position` and popovers, dropdowns and context menus
