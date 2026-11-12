@@ -17,10 +17,12 @@ push-buttons in red, blue, yellow, white and green.
 1. **One white outline box per zone.** `.panel`, `.card`, `.modal` and
    `.transport` draw a 3px `#e6e6e6` outline with a small 4px inlay corner;
    a surface nested in another steps down to 2px. Inner padding stays black.
-2. **Red is a band, not a tint.** Top-level panel and modal headers and the
-   bulk-action bar are solid brick red `#c4352a` (sampled from the
-   diorama's bands) with white text. Red stays about 15% of the surface, as
-   on the diorama: selected rows are not another red block.
+2. **Red is a band, not a tint.** Top-level panel and modal headers are
+   solid brick red `#c4352a` (sampled from the diorama's bands) with white
+   text. Red stays about 15% of the surface, as on the diorama, and bands
+   never stack: the bulk-action bar is a black bay with a 2px red outline
+   and 6px red leading block, selected rows are lit keys, and the danger
+   button is a black key framed in `--danger`, never a second red block.
 3. **Everything else is square.** Buttons, inputs, switches, avatars,
    badges, lamps, alerts, toasts, the slider and fader caps and carousel
    dots, lamps, the connection lamp and table status dots have zero radius
@@ -35,10 +37,10 @@ push-buttons in red, blue, yellow, white and green.
 - **Tile row.** The app bar carries a 2.5rem-tall row of pale green-grey
   `#d7e4df` tiles in bays of four, as on the diorama: portrait 1.75rem
   slabs (~0.7 w:h) with 4px black seams and a one-tile gap between bays,
-  running edge to edge (`repeat-x`, from 1rem), above the bar content and
+  ending on whole bays (`background-repeat: space`, 1rem margins), above the bar content and
   its 3px red rule.
 - **Push-button cluster.** A top-level panel header with no controls of its
-  own carries five 0.5rem square nubs at its right end (black, `#5281b8`
+  own carries five 0.75rem square nubs with 4px seams at its right end (black, `#5281b8`
   blue, `#ffcf2f`, `#e6e6e6`, `#5cc872`), one still SVG image layer.
 - **Red header bands.** `--panel-header-bg`/`--modal-header-bg` are the
   accent with white text (5.4:1); muted and success text on the band are
@@ -56,6 +58,11 @@ push-buttons in red, blue, yellow, white and green.
 - **Avatars** are pale `#d7e4df` chips with black caps; an avatar with a
   user colour is a solid chip in that colour with black or white caps
   (computed from its lightness), never a tint.
+- **Button hierarchy.** Primary is the solid red key; secondary a lit
+  `#1c1c1c` key with a 2px `#6a6a6a` inlay outline and red text; tertiary
+  bare red text; danger a `#1c1c1c` key with a 2px `--danger` frame and
+  text (4.8:1). Toolbar icon buttons are 2.5rem with ~22px glyphs so the
+  1px hairline icons stay legible.
 - **Disabled buttons** are an unlit `#1c1c1c` key with `#777` text, not a
   dimmed red one.
 - **Edit states** in tables keep only their non-colour signal (leading
@@ -100,7 +107,9 @@ The bar and status strip are black; the bar has the tile row on top and a
   push-button squares (blue matched to the reference paint, `#5281b8`) drawn
   as one SVG layer. Still.
 - **Phone brand.** At ≤480px the Michroma brand drops to 0.8rem with
-  0.02em tracking and keeps its natural width, so it reads in full.
+  0.02em tracking and keeps its natural width, so it reads in full; panel
+  and modal header bands drop to 0.75rem with 0.04em tracking so a title,
+  badge and icon buttons share one band line.
 
 ## Tell-tales of an inauthentic result
 
@@ -129,7 +138,7 @@ r1.1 rings, colour is always `currentColor`.
 
 ## Typography
 
-Headings (h1–h3), panel and modal headers and the nav brand use
+Page headings (h1–h3), panel and modal headers and the nav brand use
 **Michroma** (Vernon Adams, SIL OFL 1.1, already vendored as
 `assets/fonts/Michroma-Regular.woff2`) in uppercase with 0.08em tracking:
 the squared, extended labelling of a 1970s console. Michroma ships one
@@ -140,7 +149,11 @@ sans-serif`) and `--font-mono` is **Share Tech Mono** (SIL OFL, vendored
 as `assets/fonts/ShareTechMono-Regular.woff2`), squared console figures,
 then `Consolas, monospace`. `h1` tracks tighter (0.03em) so the widest
 heading does not outweigh the nearly text-free console. Code inside a
-heading keeps its case.
+heading keeps its case. Headings inside a panel, card, modal or drawer
+(a message subject, a settings section) are the body sans in bold tracked
+caps (0.06em), not Michroma: the diorama is nearly text-free, so the wide
+display face stays on the console labels and long titles do not become
+two lines of wide display type.
 
 ## Contrast honesty
 

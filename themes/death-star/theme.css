@@ -68,7 +68,9 @@ html[data-theme="death-star"] {
   --panel-header-fg: #ffffff;
   --modal-header-bg: var(--accent);
   --modal-header-fg: #ffffff;
-  --bulk-bar-bg: var(--accent);
+  /* Bulk bar sits under the red header band: a black bay with the red
+     outline and leading block (rule below), never a second red band. */
+  --bulk-bar-bg: #000000;
   --bulk-bar-fg: #ffffff;
   --bulk-bar-border: var(--accent);
 
@@ -198,8 +200,22 @@ html[data-theme="death-star"] :is(.panel-header, .modal-header) .badge {
   text-transform: none;
   letter-spacing: normal;
 }
-/* Phone: the wide tracked caps lost the whole brand to an ellipsis. */
+/* Content headings inside a bay are the sans in tracked caps: Michroma is
+   kept for the console labels (page title, header bands, brand), so a long
+   message subject does not become two lines of wide display type. */
+html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) :is(h1, h2, h3):not(:is(.panel-header, .modal-header) *) {
+  font-family: var(--font);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+/* Phone: the wide tracked caps lost the whole brand to an ellipsis, and
+   a header band with controls wrapped them onto a second red line. */
 @media (max-width: 480px) {
+  html[data-theme="death-star"] :is(.panel-header, .modal-header) {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    column-gap: 0.25rem;
+  }
   html[data-theme="death-star"] .app-bar > .nav-brand {
     flex: 0 1 auto;
     font-size: 0.8rem;
@@ -220,6 +236,23 @@ html[data-theme="death-star"] .avatar[data-color] {
   --avatar-fg: #000000;
   --avatar-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
 }
+/* Danger is a black key framed and lettered in the alert red, so it never
+   sits as a second red block beside the brick-red primary or on a red band.
+   Secondary is the lit key with the grey inlay outline; tertiary stays bare. */
+html[data-theme="death-star"] .btn-danger {
+  --btn-bg: #1c1c1c;
+  --btn-fg: var(--danger);
+  --btn-shadow: inset 0 0 0 2px var(--danger);
+}
+html[data-theme="death-star"] .btn-secondary {
+  --btn-bg: #1c1c1c;
+  --btn-shadow: inset 0 0 0 2px #6a6a6a;
+}
+/* Bulk bar: red outline plus the selected-row leading block. */
+html[data-theme="death-star"] .bulk-bar { border-width: 2px; border-inline-start-width: 6px; }
+/* Toolbar icons near the sprite's native 24px (core sizes them 1.1em of
+   the button font), so the 1px hairline strokes stay whole and legible. */
+html[data-theme="death-star"] .toolbar .btn-icon { --btn-font-size: 1.25rem; --btn-icon-size: 2.5rem; }
 /* Disabled: an unlit grey key, not a dimmed red one. */
 html[data-theme="death-star"] .btn:is(:disabled, [aria-disabled="true"]) {
   --btn-bg: #1c1c1c;
@@ -260,14 +293,17 @@ html[data-theme="death-star"] .app-bar {
   --nav-brand-fg: #ffffff;
   --app-bar-padding: calc(2.5rem + 0.6rem) 1rem 0.6rem;
   border-bottom: 3px solid var(--accent);
+  /* One bay with a 1rem margin each side; `space` fits whole bays only, so
+     the row never ends on a cut tile (round's scaling blurs the seams). */
   background-image: linear-gradient(90deg,
-    #d7e4df 0 1.75rem, transparent 0 calc(1.75rem + 4px),
-    #d7e4df 0 calc(3.5rem + 4px), transparent 0 calc(3.5rem + 8px),
-    #d7e4df 0 calc(5.25rem + 8px), transparent 0 calc(5.25rem + 12px),
-    #d7e4df 0 calc(7rem + 12px), transparent 0);
-  background-size: calc(8.75rem + 12px) 2.5rem;
-  background-position: 1rem 0;
-  background-repeat: repeat-x;
+    transparent 0 1rem,
+    #d7e4df 0 2.75rem, transparent 0 calc(2.75rem + 4px),
+    #d7e4df 0 calc(4.5rem + 4px), transparent 0 calc(4.5rem + 8px),
+    #d7e4df 0 calc(6.25rem + 8px), transparent 0 calc(6.25rem + 12px),
+    #d7e4df 0 calc(8rem + 12px), transparent 0);
+  background-size: calc(9rem + 12px) 2.5rem;
+  background-position: 0 0;
+  background-repeat: space no-repeat;
 }
 
 /* Text on the red header band: muted, success and close glyphs re-pointed
@@ -289,9 +325,10 @@ html[data-theme="death-star"] .pattern-nav a[aria-current="page"] { color: var(-
    right end of a top-level header band (the red one reads black on red),
    only where the band carries no controls of its own. */
 html[data-theme="death-star"] .panel:not(:has(> .card-dismiss)) > .panel-header:not(:has(button, .btn, input, select, a)) {
-  padding-inline-end: calc(var(--surface-pad, 1rem) + 4.5rem);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 6'%3E%3Crect width='6' height='6' fill='%23000'/%3E%3Crect x='10' width='6' height='6' fill='%235281b8'/%3E%3Crect x='20' width='6' height='6' fill='%23ffcf2f'/%3E%3Crect x='30' width='6' height='6' fill='%23e6e6e6'/%3E%3Crect x='40' width='6' height='6' fill='%235cc872'/%3E%3C/svg%3E");
-  background-size: 3.833rem 0.5rem;
+  padding-inline-end: calc(var(--surface-pad, 1rem) + 5.5rem);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 6'%3E%3Crect width='6' height='6' fill='%23000'/%3E%3Crect x='8' width='6' height='6' fill='%235281b8'/%3E%3Crect x='16' width='6' height='6' fill='%23ffcf2f'/%3E%3Crect x='24' width='6' height='6' fill='%23e6e6e6'/%3E%3Crect x='32' width='6' height='6' fill='%235cc872'/%3E%3C/svg%3E");
+  /* 12px caps, 4px seams: legible at a glance, as the diorama's clusters. */
+  background-size: 4.75rem 0.75rem;
   background-position: right var(--surface-pad, 1rem) center;
   background-repeat: no-repeat;
 }
