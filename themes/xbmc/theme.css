@@ -1,136 +1,243 @@
 /* ftl-themes: XBMC
  * Theme-Name: XBMC
- * Description: The original Xbox Media Center — a near-black home-theatre shell, a horizontal top menu, and a glowing blue underline marking the selected item.
+ * Description: XBMC in its Confluence skin — a deep blue bokeh backdrop, a black glass menu strip of bold grey caps, and a white label over a glowing blue underline marking the selected item.
  *
  * Named for the original open-source media centre (later renamed Kodi),
  * not the Xbox 360's own dashboard — XBMC's brand blue and horizontal
  * top-menu convention predate and differ from the 360's green "blades."
  */
 
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  /* Trim Titillium's 1.52em content area to the glyphs so tight chips keep their padding. */
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+/* Confluence era (Kodi 14, xbmc-confluence-14.jpg): the blue lives in the
+   bokeh backdrop; the chrome over it is neutral black glass with grey
+   labels, and #1e90ff is only light (focus, selection glow). */
 html[data-theme="xbmc"] {
   --motion-leave: power-off;
   color-scheme: dark;
-  --bg: #0a0e14;
-  --surface: #10161f;
-  --surface-2: #171f2c;
-  --border: #263349;
-  --hairline: #1a2231;
-  --text: #dbe6f5;
-  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces. */
-  --muted: #93a7c7;
+  /* --bg is the backdrop's mid tone; the page itself paints the gradient below. */
+  --bg: #061a3d;
+  --surface: #121314;
+  --surface-2: #1d1f22;
+  --border: #34383d;
+  --hairline: #26292d;
+  --text: #e8e8e8;
+  /* Grey labels as in the menu strip, light enough for 4.5:1 on the bright backdrop centre too. */
+  --muted: #aab0b6;
   --accent: #1e90ff;
   --accent-2: #7fc4ff;
   --danger: #ff5c5c;
   --success: #4ddb8a;
   --warning: #ffc857;
   /* Accent as text on its own 20% badge tint: a touch lighter than
-     #1e90ff (4.3:1) to clear 4.5:1. */
+     #1e90ff to clear 4.5:1. */
   --accent-text: #2d98ff;
   --on-accent: #04101f;
   --on-danger: #2a0505;
   --on-success: #032414;
   --radius: 0.2rem;
-  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  /* Titillium Web (OFL, vendored) stands in for Confluence's bold, slightly
+     condensed sans; the skin's own face is not named. */
+  --font: "Titillium Web", "Arial Narrow", "Segoe UI", sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #1e90ff;
 
-  /* Media-centre chrome: dark rectangular tiles, a glowing blue underline
-     for the active item rather than a filled highlight — the interaction
-     you drive with a remote from across the room, not a mouse cursor. */
-  --btn-bg: var(--surface-2);
+  --btn-bg: linear-gradient(180deg, #2a2d31, #141517);
   --btn-fg: var(--text);
-  --btn-border: var(--border);
-  --btn-shadow: none;
+  --btn-border: #000;
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   --btn-shadow-hover: 0 0 0 1px var(--accent), 0 0 14px rgba(30, 144, 255, 0.5);
   --focus: var(--accent);
   --focus-ring: 0 0 0 2px var(--accent);
-  --input-bg: #060a10;
+  --input-bg: #08090a;
   --input-border: var(--border);
-  --panel-bg: linear-gradient(180deg, #121a26, #0d131c);
-  --panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --modal-header-bg: var(--surface-2);
+  --panel-bg: linear-gradient(180deg, rgba(29, 31, 34, 0.94), rgba(10, 11, 12, 0.94));
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.55);
+  --modal-header-bg: linear-gradient(180deg, #2a2d31, #0b0c0e);
   --table-head-bg: var(--surface-2);
-  --table-head-fg: var(--accent-2);
+  --table-head-fg: var(--muted);
   --table-head-transform: uppercase;
   --table-head-tracking: 0.04em;
   --row-selected-bg: rgba(30, 144, 255, 0.14);
   --row-active-marker: inset 0.2rem 0 0 var(--accent);
-  --nav-bg: #05080d;
+  --nav-bg: #0b0c0e;
+  --nav-item-fg: #9aa0a6;
+  --nav-brand-fg: #ffffff;
   --nav-item-bg-active: transparent;
   --nav-item-fg-active: #ffffff;
-  --dropdown-bg: #0d131c;
-  --overlay-bg: rgba(2, 4, 8, 0.85);
+  --nav-item-radius: 0;
+  --menubar-item-radius: 0;
+  --menubar-item-bg-active: rgba(255, 255, 255, 0.07);
+  --menubar-item-fg-active: #ffffff;
+  --dropdown-bg: #0d0e10;
+  --overlay-bg: rgba(2, 6, 16, 0.85);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
+
+  /* Submenu shelf: black glass, white focused label, no blue block. */
+  --segmented-bg: linear-gradient(180deg, #1d1f22, #000);
+  --segmented-border: #000;
+  --segmented-padding: 0.2rem 0.75rem;
+  --segmented-radius: 0;
+  --segmented-item-radius: 0;
+  --segmented-item-fg: #9aa0a6;
+  --segmented-item-bg-active: linear-gradient(180deg, #3a3d41, #1d1f22);
+  --segmented-item-fg-active: #ffffff;
+  --tab-fg: #9aa0a6;
+  --tab-fg-active: #ffffff;
+  --tab-radius: 0;
+  --toggle-btn-bg-on: linear-gradient(180deg, #3a3d41, #1d1f22);
+  --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: var(--accent);
+
+  /* Flat rectangles, no circles: square thumb and switch, and a visible
+     grey track on the black glass (the core hit box is untouched). */
+  --slider-bg: #70767e;
+  --slider-thumb-radius: 0;
+  --slider-thumb-size: 0.9rem;
+  --switch-radius: var(--radius);
+  --switch-thumb-radius: var(--radius);
 }
 
-/* Home-theatre vignette: the frame darkens toward the edges, the way a
-   media-centre UI reads against a dim room rather than a lit desk. */
+/* The Confluence backdrop: deep blue, brighter above centre, with a few
+   soft out-of-focus bokeh discs. Darker edges keep the dim-room vignette. */
 html[data-theme="xbmc"] {
-  background: radial-gradient(ellipse 120% 90% at 50% 20%, #0d1520 0%, #05070b 100%);
+  background:
+    radial-gradient(circle at 22% 18%, rgba(120, 180, 255, 0.09) 0 7rem, transparent 7.5rem),
+    radial-gradient(circle at 72% 30%, rgba(90, 160, 255, 0.08) 0 9rem, transparent 9.5rem),
+    radial-gradient(circle at 48% 62%, rgba(140, 200, 255, 0.06) 0 5rem, transparent 5.5rem),
+    radial-gradient(ellipse 120% 90% at 50% 30%, #0b3a80 0%, #072659 45%, #020a1a 100%);
+  background-color: #020a1a;
+}
+
+/* Titillium is narrower than the fallback, so a squeezed table row now
+   shows its last column (a number field) instead of scrolling it out of
+   view; keep that field at least a tap target wide. */
+html[data-theme="xbmc"] .table td > .input[type="number"] {
+  min-inline-size: var(--tap-min);
 }
 
 html[data-theme="xbmc"] h1,
 html[data-theme="xbmc"] h2,
 html[data-theme="xbmc"] h3 {
-  font-weight: 300;
+  font-weight: 700;
   color: var(--text);
 }
 
-/* The selected top-menu item: a glowing blue underline sliding beneath the
-   label, not a filled pill — the theme's single most identifiable cue. */
-html[data-theme="xbmc"] .nav-item {
-  position: relative;
-  border-radius: 0;
+/* --- The menu strip ----------------------------------------------------- *
+ * The bar is Confluence's horizontal strip: a black glass gradient with a
+ * light top hairline, big grey bold caps split by faint separators, and the
+ * focused label turning white over a glowing blue underline. */
+html[data-theme="xbmc"] {
+  --app-bg: transparent;
+  --app-bar-bg: linear-gradient(180deg, #2a2d31 0, #0b0c0e 45%, #000 100%);
+  --app-bar-fg: var(--text);
+  --app-bar-rule-width: 1px;
+  --app-bar-rule: #000;
+  --app-bar-height: 3.25rem;
+  --app-main-padding: 1.5rem;
+  /* The bottom bar: lighter grey glass, as under the Confluence home screen. */
+  --app-status-bg: linear-gradient(180deg, #3a3d41, #141516);
+  --app-status-fg: #d0d3d6;
+  --app-status-rule: rgba(255, 255, 255, 0.18);
 }
-html[data-theme="xbmc"] .nav-item.is-active::after {
+html[data-theme="xbmc"] .app-bar {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+html[data-theme="xbmc"] .app-bar .menubar {
+  --menubar-fg: #9aa0a6;
+}
+html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)) {
+  position: relative;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) {
+  font-size: 1.1rem;
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Core already whitens an active .nav-item; the demo menubar's needs it here. */
+html[data-theme="xbmc"] .menubar > li > :is(button, a).is-active {
+  color: #fff;
+}
+html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)):is(.is-active, [aria-current="page"])::after {
   content: "";
   position: absolute;
   left: 0.6em;
   right: 0.6em;
-  bottom: -2px;
-  height: 2px;
+  bottom: -1px;
+  height: 3px;
   background: var(--accent);
-  box-shadow: 0 0 8px rgba(30, 144, 255, 0.8);
+  box-shadow: 0 0 12px 2px rgba(30, 144, 255, 0.9);
 }
 
-/* --- Layout ------------------------------------------------------------ *
- * A dark home-theatre shell: a wide horizontal top menu (Pictures, Music,
- * Videos, Weather, Programs, System) and a plain, quiet status strip. */
-html[data-theme="xbmc"] {
-  --app-bg: transparent;
-  --app-bar-bg: rgba(5, 8, 13, 0.9);
-  --app-bar-fg: var(--text);
-  --app-bar-rule-width: 1px;
-  --app-bar-rule: var(--border);
-  --app-bar-height: 3.25rem;
-  --app-main-padding: 1.5rem;
-  --app-status-bg: rgba(5, 8, 13, 0.9);
-  --app-status-fg: var(--muted);
-  --app-status-rule: var(--border);
+/* Tabs and segmented controls are the submenu shelf that drops under the
+   strip ('Dateien | Addons'): bold caps, dark separators, and a segmented
+   shelf whose bottom corners are cut away. */
+html[data-theme="xbmc"] :is(.tab, .segmented-item) {
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
+html[data-theme="xbmc"] .tab.is-active {
+  box-shadow: 0 6px 8px -6px rgba(30, 144, 255, 0.8);
+}
+html[data-theme="xbmc"] .segmented {
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 10px 100%);
+}
+html[data-theme="xbmc"] .segmented-item + .segmented-item {
+  border-inline-start: 1px solid #000;
+}
+html[data-theme="xbmc"] .segmented-item.is-active {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
 html[data-theme="xbmc"] .nav {
   gap: 2rem;
 }
+/* The demo pattern page fills its current link with --accent; here the
+   selection is the strip's white label over the glowing underline.
+   !important because the page's rule is unlayered and so beats layer ui. */
+html[data-theme="xbmc"] .pattern-nav a[aria-current="page"] {
+  background: transparent !important;
+  color: #fff !important;
+  box-shadow: inset 0 -3px 0 var(--accent), 0 6px 8px -6px rgba(30, 144, 255, 0.8);
+}
 
-/* Home-screen tiles: the real XBMC home screen was built from big flat
-   category tiles (Pictures, Music, Videos…) fanning out submenus below the
-   top bar, not from small content cards — the theme previously only
-   reached XBMC's color/underline language, never its tile composition.
-   Bigger padding and a centered label read closer to a category tile;
-   the glowing bottom edge reuses the same accent-underline convention as
-   the active top-menu item so the tile and nav languages visibly match. */
+/* Category tiles: black glass with the strip's light top edge, sitting
+   over the blue backdrop. Selection light (the blue glow) appears on
+   hover, as focus does on the home screen. */
 html[data-theme="xbmc"] {
-  --card-bg: linear-gradient(180deg, var(--surface-2), var(--surface));
+  --card-bg: linear-gradient(180deg, rgba(29, 31, 34, 0.94), rgba(10, 11, 12, 0.94));
 }
 html[data-theme="xbmc"] .card {
   padding: 2.25rem 1.5rem 1.75rem;
   text-align: center;
-  border-bottom: 3px solid var(--accent);
+  border-color: #000;
   box-shadow:
-    0 0 0 1px var(--border) inset,
-    0 10px 24px rgba(0, 0, 0, 0.45),
-    0 4px 14px rgba(30, 144, 255, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 10px 24px rgba(0, 0, 0, 0.45);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 @media (hover: hover) {
@@ -145,23 +252,20 @@ html[data-theme="xbmc"] .card h1,
 html[data-theme="xbmc"] .card h2,
 html[data-theme="xbmc"] .card h3 {
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 400;
+  letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
 }
 
 /* The tile treatment is for home-screen tiles, not every box. A card
    that carries a table, form or list keeps reading order (left-aligned),
    and a card nested in a panel, card, dialog or drawer steps down
-   (PLAN.md §6): normal padding, a hairline frame and a 1px accent edge
-   instead of the full glowing tile, and no hover lift. */
+   (PLAN.md §6): normal padding, a hairline frame, and no hover lift. */
 html[data-theme="xbmc"] .card:has(.table, .field, .field-row, .panel, .card, .list, form) {
   text-align: start;
 }
 html[data-theme="xbmc"] :is(.panel, .card, .modal, .drawer) .card {
   padding: var(--surface-pad);
   text-align: start;
-  border-bottom-width: 1px;
   box-shadow: 0 0 0 1px var(--border) inset;
   transform: none;
 }
@@ -181,17 +285,19 @@ html[data-theme="xbmc"] {
 }
 
 /* --- v5 tiers and XL gutters -------------------------------------------- *
- * Phones: the category tiles keep their centred label and blue edge but
- * lose the big home-screen padding, so four stats don't fill the screen.
- * Tablet keeps the desktop shell (no rail to drop). */
+ * Phones: the category tiles keep their centred label but lose the big
+ * home-screen padding, so four stats don't fill the screen, and the strip's
+ * caps step down so the bar still fits. Tablet keeps the desktop shell. */
 @media (max-width: 480px) {
   html[data-theme="xbmc"] .card { padding: 1.25rem 1rem 1rem; }
   html[data-theme="xbmc"] .nav { gap: 1rem; }
+  html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { font-size: 0.95rem; }
+  /* Keep the tray readout off the status bar's right edge (v5 edgeText). */
+  html[data-theme="xbmc"] .app-status.taskbar > .taskbar-tray { margin-inline-end: 0.25rem; }
 }
-/* XL: the home screen's category tiles, out of focus beyond the content:
-   a dim column of flat tiles, each with the glowing blue bottom edge of
-   the selected item turned right down, within ~1.2:1 of --bg. Still. */
+/* XL: more of the out-of-focus backdrop: faint bokeh discs beyond the
+   content, within ~1.2:1 of --bg. Still. */
 html[data-theme="xbmc"] {
   --app-gutter-art:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='160'%3E%3Crect x='24' y='24' width='192' height='112' fill='%230f1621'/%3E%3Crect x='24' y='134' width='192' height='2' fill='%231e90ff' fill-opacity='.2'/%3E%3C/svg%3E") 0 0 / 240px 160px;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='70' cy='80' r='54' fill='%2378b4ff' fill-opacity='.06'/%3E%3Ccircle cx='180' cy='180' r='34' fill='%2378b4ff' fill-opacity='.05'/%3E%3C/svg%3E") 0 0 / 240px 240px;
 }
