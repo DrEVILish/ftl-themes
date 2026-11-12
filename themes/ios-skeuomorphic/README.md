@@ -39,8 +39,16 @@ and the two must never converge.
   one is the brighter "Done" blue. A black iPhone status strip sits above
   it in the app shell, with a drawn signal row and battery and no text.
 - **The tab bar** is the black glossy `UITabBar`. It is used both for the
-  app shell's status strip and for `.tabs`. The selected tab is a lit
-  square whose label glows blue.
+  app shell's status strip and for `.tabs`. Tabs share the bar evenly
+  (icon over label when a tab has one). The selected tab is a lit square
+  whose label glows blue. Status text and ghost buttons on the black bars
+  (status strip, `.transport`) take light inks.
+- **The slider** is the `UISlider` groove: a blue track with a dark rim
+  and an inset shade along its top, painted inside the padded 24/44px hit
+  area, and a white pearl knob.
+- **A side rail** (`.nav-rail`) is Mail's mailbox list: one rounded white
+  cell group with bold black labels and hairline separators; the current
+  mailbox is the blue selected cell. Capsule bar buttons stay on bars.
 - **The switch** is a 4.1em pill: an "ON" in white on blue at the left, or
   an "OFF" in gray on white at the right, with a full-height white knob.
 - **The selected cell** is the `#058cf5` to `#015fe6` gradient with white
@@ -57,7 +65,9 @@ and the two must never converge.
 - **Small things:** `.badge-danger` is the SpringBoard red badge with a
   white ring. `kbd` is an iOS keyboard key. A popover gets the iPad's thick
   navy frame. Toasts are the iOS 5 black notification banner. Tappable
-  list rows get a disclosure chevron.
+  list rows (links, buttons and radio-select rows) get a grey disclosure
+  chevron; a row that draws its own trailing chevron icon shows it in
+  the same `#7b7b7b`.
 
 ## Layout
 
@@ -72,11 +82,15 @@ apart from `aqua`.
 
 - The real iOS 6 nav bar starts at `#bdcbdc`, where a white title is
   about 1.7:1. This theme starts it at `#5b779c`, so the title and bar
-  buttons hold 4.5:1 across the whole gradient. The gloss comes from the
-  inset highlight line, not from a pale top stop. Do not lighten the
-  gradient: `scripts/check.py` measures every stop.
+  buttons hold 4.5:1 across the whole gradient. The gloss split is kept
+  by a hard break at 50% to a darker lower half, plus the inset highlight
+  line, not by a pale top stop. Do not lighten the gradient:
+  `scripts/check.py` measures every stop.
 - The count badge (`#8795af` in the reference) and the plain section
-  header gradient are darkened for the same reason.
+  header gradient are darkened for the same reason: the header's white
+  0.95rem bold label is below WCAG's large-text size, so it needs 4.5:1.
+- Instrument readouts keep extra padding (`0.3em 0.5em`) inside their
+  black gloss box, so the figures never touch the painted edge.
 - The pinstripe contrast is raised slightly, so it still reads on a
   desktop panel.
 

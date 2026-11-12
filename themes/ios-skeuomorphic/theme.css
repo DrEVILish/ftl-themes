@@ -44,7 +44,8 @@ html[data-theme="ios-skeuomorphic"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0.6rem;
-  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  /* Nimbus Sans / TeX Gyre Heros / FreeSans: Helvetica-metric clones on Linux. */
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", "Nimbus Sans L", "TeX Gyre Heros", FreeSans, sans-serif;
   --font-mono: Menlo, "DejaVu Sans Mono", Consolas, "Courier New", monospace;
   --flare: #e3101a;        /* the SpringBoard unread badge */
 
@@ -59,7 +60,9 @@ html[data-theme="ios-skeuomorphic"] {
     repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 5px),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 11px),
     #434852;
-  --ios-navbar: linear-gradient(180deg, #5b779c 0%, #4f6a90 50%, #435d83 100%);
+  /* Gloss split by darkening the lower half: a pale top would drop the
+     white bar text under 4.5:1 (see Deliberate deviations). */
+  --ios-navbar: linear-gradient(180deg, #5b779c 0%, #52709a 50%, #3f5a82 50%, #3a5379 100%);
   --ios-navbar-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 #2d405c;
   --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
   --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
@@ -108,7 +111,11 @@ html[data-theme="ios-skeuomorphic"] {
   /* --- Slider / progress: UISlider and UIProgressView ------------------- */
   --slider-height: 0.55rem;
   --slider-radius: 999px;
-  --slider-bg: linear-gradient(180deg, #3b7fe0 0%, #7cb3f6 100%);
+  /* The groove's dark rim and inset shade are painted inside the content
+     box: core keeps the border transparent so the hit area reaches --tap-min. */
+  --slider-bg:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22), transparent 3px),
+    linear-gradient(180deg, #2b5fae 0 1px, #3b7fe0 1px, #7cb3f6 calc(100% - 1px), #2b5fae calc(100% - 1px));
   --slider-border: #2b5fae;
   --slider-thumb-size: 1.45rem;
   --slider-thumb-bg: radial-gradient(circle at 50% 35%, #ffffff 0%, #f1f1f1 45%, #c9c9c9 100%);
@@ -260,6 +267,7 @@ html[data-theme="ios-skeuomorphic"] {
   --readout-border: #000000;
   --readout-unit-fg: #c7c7c7;
   --readout-glow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+  --readout-padding: 0.3em 0.5em;
   --meter-track: linear-gradient(180deg, #c7c7c7 0%, #f5f5f5 100%);
   --meter-border: #8e9299;
   --meter-radius: 999px;
@@ -428,7 +436,7 @@ html[data-theme="ios-skeuomorphic"] .nav-brand {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55);
 }
 /* Bar buttons: the capsule UIBarButtonItem, a recessed glossy pill. */
-html[data-theme="ios-skeuomorphic"] .nav-item {
+html[data-theme="ios-skeuomorphic"] .nav-item:not(.nav-rail > *) {
   font-size: 0.8rem;
   font-weight: 700;
   padding: 0.35em 0.75em;
@@ -437,7 +445,31 @@ html[data-theme="ios-skeuomorphic"] .nav-item {
   border: 1px solid #2d405c;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 0 rgba(255, 255, 255, 0.25);
 }
-html[data-theme="ios-skeuomorphic"] .nav-item.is-active { border-color: #193f7d; }
+html[data-theme="ios-skeuomorphic"] .nav-item.is-active:not(.nav-rail > *) { border-color: #193f7d; }
+/* A side rail is Mail's mailbox list: one rounded white cell group, bold
+   black labels, hairline separators, the blue selected-cell gradient. */
+html[data-theme="ios-skeuomorphic"] .nav-rail {
+  --nav-rail-bg: transparent;
+  --nav-rail-rule: transparent;
+  --nav-rail-marker: transparent;
+  --nav-item-fg: var(--text);
+  --nav-item-bg: var(--surface);
+  --nav-item-bg-active: var(--ios-select);
+  --nav-item-fg-active: #ffffff;
+  --nav-item-radius: 0;
+  gap: 0;
+}
+html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item {
+  font-weight: 700;
+  padding-block: 0.7em;
+  border: 1px solid var(--border);
+  border-block-start-color: var(--hairline);
+  text-shadow: var(--ios-emboss-light);
+}
+html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item + .nav-item { border-block-start-width: 0; box-shadow: inset 0 1px 0 var(--hairline); }
+html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:first-of-type { border-block-start-color: var(--border); border-start-start-radius: var(--radius); border-start-end-radius: var(--radius); }
+html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:last-of-type { border-end-start-radius: var(--radius); border-end-end-radius: var(--radius); }
+html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) { text-shadow: var(--ios-emboss-dark); --muted: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .toolbar:not(.is-plain) { border-color: #2d405c; }
 
 /* Bar buttons inside blue bars: the plain .btn picks up the capsule. */
@@ -474,12 +506,28 @@ html[data-theme="ios-skeuomorphic"] .tab {
   text-shadow: 0 -1px 0 #000;
 }
 html[data-theme="ios-skeuomorphic"] .tabs .tab:hover { color: #ffffff; }
+/* UITabBar items share the bar evenly, icon over label. */
+html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  min-block-size: max(2.75rem, var(--tap-min));
+  text-align: center;
+}
+html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab:has(> .icon) { flex-direction: column; }
+html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab > .icon { width: 1.4em; height: 1.4em; }
 /* The selected item: a lit square with the label in glow-blue light. */
 html[data-theme="ios-skeuomorphic"] .tab.is-active {
   border-bottom-width: 1px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
   text-shadow: 0 0 6px rgba(70, 160, 255, 0.95), 0 0 2px rgba(70, 160, 255, 0.9);
 }
+
+/* --- Slider: the UISlider groove ---------------------------------------- */
+/* Size the groove gradient to the drawn track, not the padded hit area. */
+html[data-theme="ios-skeuomorphic"] .slider { background-origin: content-box; }
 
 /* --- Segmented control (bordered style) ---------------------------------- */
 html[data-theme="ios-skeuomorphic"] .segmented {
@@ -518,12 +566,11 @@ html[data-theme="ios-skeuomorphic"] .list-item.is-active { --list-item-fg: #ffff
 html[data-theme="ios-skeuomorphic"] .list-item.is-active,
 html[data-theme="ios-skeuomorphic"] .table tr.is-selected td { text-shadow: var(--ios-emboss-dark); }
 /* The disclosure chevron: every tappable cell in a grouped table had one. */
-html[data-theme="ios-skeuomorphic"] :is(a, button).list-item {
+html[data-theme="ios-skeuomorphic"] :is(a, button, label:has(> input[type="radio"]):not(:has(> .icon:last-child))).list-item {
   position: relative;
   padding-inline-end: 2.1em;
 }
-html[data-theme="ios-skeuomorphic"] a.list-item::after,
-html[data-theme="ios-skeuomorphic"] button.list-item::after {
+html[data-theme="ios-skeuomorphic"] :is(a, button, label:has(> input[type="radio"]):not(:has(> .icon:last-child))).list-item::after {
   content: "";
   position: absolute;
   inset-inline-end: 0.95em;
@@ -536,6 +583,9 @@ html[data-theme="ios-skeuomorphic"] button.list-item::after {
   opacity: 0.55;
   pointer-events: none;
 }
+/* A row that draws its own trailing chevron icon gets the cell's grey. */
+html[data-theme="ios-skeuomorphic"] .list-item > .icon:last-child:not(:first-child) { display: block; margin-inline-start: auto; color: #7b7b7b; }
+html[data-theme="ios-skeuomorphic"] .list-item.is-active > .icon:last-child { color: inherit; }
 html[data-theme="ios-skeuomorphic"] .field-row > .label { font-weight: 700; }
 
 /* --- Tables ------------------------------------------------------------- */
@@ -649,6 +699,7 @@ html[data-theme="ios-skeuomorphic"] .modal-header {
   font-size: 1.1rem;
   font-weight: 700;
   text-align: center;
+  justify-content: center;
 }
 html[data-theme="ios-skeuomorphic"] .modal-footer { justify-content: stretch; }
 html[data-theme="ios-skeuomorphic"] .modal-footer > .btn { flex: 1; }
@@ -779,17 +830,31 @@ html[data-theme="ios-skeuomorphic"] .app-bar::after {
   height: 0.5rem;
   background: radial-gradient(circle, #e8e8e8 0 0.18rem, transparent 0.2rem) 0 50% / 0.5rem 0.5rem repeat-x;
 }
-html[data-theme="ios-skeuomorphic"] .app-status {
+html[data-theme="ios-skeuomorphic"] .app-status:not(.taskbar) {
   justify-content: center;
   gap: 2rem;
-  font-weight: 700;
-  font-size: 0.75em;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  text-shadow: 0 -1px 0 #000000;
+}
+@media (max-width: 480px) {
+  html[data-theme="ios-skeuomorphic"] .app-status:not(.taskbar) { gap: 1rem; }
+}
+/* The black bars (status strip, transport) carry light inks and white
+   ghost buttons; the dark-on-white defaults vanish on black. */
+html[data-theme="ios-skeuomorphic"] :is(.app-status, .transport) {
   --success-text: #6fd65c;
   --warning-text: #f4c04a;
   --danger-text: #ff6a70;
   --muted: #b3b3b3;
+}
+html[data-theme="ios-skeuomorphic"] :is(.app-status, .transport) .btn-ghost {
+  --btn-fg: #ffffff;
+  --link: #ffffff;
+  --ios-btn-text-shadow: 0 -1px 0 #000000;
+}
+html[data-theme="ios-skeuomorphic"] .app-status {
+  font-weight: 700;
+  font-size: 0.75em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  text-shadow: 0 -1px 0 #000000;
 }
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
  * Phone and tablet: core puts the title and the bar buttons on line 1 and
