@@ -70,7 +70,7 @@ html[data-theme="silo"] {
   --silo-glow: rgba(40, 198, 170, 0.3);
   --silo-tint: rgba(159, 202, 110, 0.12);
   --silo-num: #f0c060;      /* amber countdown numerals */
-  --silo-field: #33735c;    /* field-box outline, olive-teal (3.1:1 on the glass) */
+  --silo-field: #4a7a4c;    /* field-box outline, olive (sampled #477544; 3.6:1 on the glass) */
   --silo-haze: rgba(40, 198, 170, 0.1);
 
   --density: 0.9;
@@ -123,7 +123,7 @@ html[data-theme="silo"] {
   --modal-header-bg: var(--silo-plate);
   --modal-header-fg: var(--silo-plate-fg);
   --modal-radius: 6px;
-  --modal-shadow: 0 0 1.5rem var(--silo-glow), 0 0 0 1rem rgba(0, 0, 0, 0.35);
+  --modal-shadow: 0 0 1.5rem var(--silo-glow);
   --overlay-bg: rgba(0, 6, 4, 0.82);
   --dropdown-bg: var(--bg);
   --dropdown-border: var(--border);
@@ -350,10 +350,11 @@ html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-men
 /* Header cells keep at least 0.45rem above and below their small caps at
    this density. */
 html[data-theme="silo"] .table th { padding-block: max(0.45rem, calc(0.5em * var(--density))); }
-/* Values are set in the screens' sans, in caps; case-sensitive fields and
-   free text keep the case the user typed (placeholders stay caps). */
+/* Values are set in the screens' sans. A select shows its option in caps;
+   typed values keep the case the user typed, at rest and while editing
+   (placeholders stay caps). */
 html[data-theme="silo"] :is(.input, .select, .textarea) { font-family: var(--font); letter-spacing: 0.04em; }
-html[data-theme="silo"] :is(.select, .input:not([type="email"], [type="url"], [type="password"], [type="search"])) { text-transform: uppercase; }
+html[data-theme="silo"] .select { text-transform: uppercase; }
 html[data-theme="silo"] :is(.input, .textarea)::placeholder { text-transform: uppercase; }
 /* In a table cell the control gives up its tracking and a date input
    tightens, so a row of controls fits a narrow modal with a full-size Qty. */
@@ -465,6 +466,10 @@ html[data-theme="silo"] .bulk-bar :focus-visible { outline-color: var(--on-accen
 /* Tabs as a row of outlined soft keys with a ">" cue. */
 html[data-theme="silo"] .tab { border: 1px solid var(--border); margin-inline-end: 0.35rem; }
 html[data-theme="silo"] .tab::after { content: " \203a"; opacity: 0.7; }
+/* A key that already carries a glyph (close, add, icon-only) takes no cue. */
+html[data-theme="silo"] .tab:has(.btn-close, .btn-icon, > .icon:only-child)::after { content: none; }
+/* Short state cells are tracked caps like the headers above them. */
+html[data-theme="silo"] .status { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85em; }
 html[data-theme="silo"] .tab[aria-selected="true"],
 html[data-theme="silo"] .tab.is-active { border-color: var(--accent-2); }
 
@@ -663,10 +668,20 @@ html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-
   /* Scanlines and the stat bloom are dropped on a phone: a full-screen
      repeating gradient and blurred glyphs cost too much to scroll. */
   html[data-theme="silo"] {
-    --app-padding: 0.5rem;
-    --app-main-bg: radial-gradient(ellipse at 50% 40%, var(--silo-haze), transparent 70%), var(--bg);
+    --app-padding: 0.8rem;
+    --app-main-bg: var(--bg);
   }
-  html[data-theme="silo"] .stat-value { text-shadow: none; }
+  /* The vignette and the title bloom go too: they repaint on every scroll. */
+  html[data-theme="silo"] .app-main { box-shadow: none; }
+  html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: none; }
+  /* A tab row that scrolls fades at its far edge until scrolled to the end. */
+  @supports (animation-timeline: scroll()) {
+    html[data-theme="silo"] .tabs:not([aria-orientation="vertical"]) {
+      mask: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent) 0 0 / calc(100% + 2.5rem) 100% no-repeat;
+      animation: silo-tabs-fade linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
   /* Numbered entries stay on one line at phone width. */
   html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"] { padding-inline: 0.35em; letter-spacing: 0; font-size: 0.75rem; }
   /* Oxanium is wider than the old face: a packed key row drops its tracking. */
@@ -679,7 +694,7 @@ html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-
   /* Brand plate and actions share the first row (the plate truncates
      before it wraps); the numbered nav is the second row. */
   html[data-theme="silo"] .app-bar { --app-bar-padding: 0.35rem 0.6rem; column-gap: 0.4rem; }
-  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; padding: 0.3rem 0.45rem; letter-spacing: 0.02em; font-size: 0.75rem; align-self: center; }
+  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; align-content: center; min-block-size: var(--tap-min, 2.75rem); padding: 0.3rem 0.6rem; letter-spacing: 0.06em; font-size: 0.75rem; align-self: stretch; }
   html[data-theme="silo"] .app-bar > .cluster { flex: 0 0 auto; flex-wrap: nowrap; gap: 0.25rem; }
   /* The search key keeps its icon and its accessible name, not its label. */
   html[data-theme="silo"] .app-bar .cluster > .btn:has(> kbd) { font-size: 0; padding-inline: 0.7rem; }
@@ -865,3 +880,5 @@ html[data-theme="silo"][data-variant="legacy"] :is(.stat-label, .label, .field-l
     --readout-glow: none;
   }
 }
+
+@keyframes silo-tabs-fade { from { mask-position: 100% 0; } to { mask-position: 0 0; } }

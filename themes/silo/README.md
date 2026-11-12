@@ -89,7 +89,9 @@ saturated fill is a **yellow-green "granted" band**.
   ("RELIC/SEIZED OBJECTS INVENTORY").
 - `.btn-primary` is the yellow-green band plus the SEARCH key's outer
   pale-yellow frame.
-- Tabs are outlined soft keys with a `›` cue (PACT's MESSAGE / CONTACTS row).
+- Tabs are outlined soft keys with a `›` cue (PACT's MESSAGE / CONTACTS row);
+  a tab that already carries a close or icon key takes no cue. On a phone a
+  tab row that scrolls fades at its far edge until scrolled to the end.
 - Readouts are PACT countdown pills: a rounded teal outline and amber
   numerals with a faint glow.
 - Progress, meters and bar charts are hatched yellow-green like the
@@ -99,12 +101,12 @@ saturated fill is a **yellow-green "granted" band**.
 - `kbd` uses the beige keycaps of the pull-out keyboards.
 - Static scanlines and a vignette on near-black glass, with the teal cast
   in a radial bloom (`--silo-haze`). Titles and big stat values glow; body
-  copy, tables and lists do not. On a phone the scanlines and the stat
-  glow are dropped, which keeps scrolling cheap.
+  copy, tables and lists do not. On a phone the scanlines, haze, vignette
+  and all glows are dropped, which keeps scrolling cheap.
 - Check boxes and radios are outlined cells on the glass (`--border`);
   checked is the yellow-green fill with a dark tick, a radio a square pip.
-- At phone width the bar is two rows: the brand plate (truncating if it
-  must) shares the first with the picker and actions, the search key
+- At phone width the bezel is 0.8rem and the bar is two rows: the
+  full-height brand plate (truncating if it must) shares the first with the picker and actions, the search key
   drops its label and keyboard hint, and the numbered nav is the second.
 
 ## Variants
@@ -128,9 +130,9 @@ labels. Headings, labels, tabs, badges, buttons, toggle keys,
 segments, chips, selects, menu entries, short list labels, legends,
 field labels, summaries, input addons, scrollspy links, an in-page nav
 brand and status-strip taskbar keys are uppercase and tracked (keys packed into a row, toggles and segments, track
-0.06em, and none on a phone, so the longest label fits). Text inputs show caps too, except email, URL,
-password and search fields and textareas, which keep the case the user
-typed. Body copy and titled list rows keep their case so long text stays
+0.06em, and none on a phone, so the longest label fits), as are status
+cells (0.06em). Typed values in inputs and textareas keep the case the
+user typed, at rest and while editing; their placeholders are caps. Body copy and titled list rows keep their case so long text stays
 readable. In a table cell a control drops its tracking and a date input
 tightens so a row of controls fits a narrow modal.
 
@@ -146,7 +148,7 @@ All pairs meet the lint floors and no exemptions are claimed.
 | `--on-accent` `#06201a` on accent | 9.1 |
 | `--danger-text` `#ff8a76` / `--success-text` `#5ce89f` on `--surface` (outlined keys) | 8.0 / 11.7 |
 | slider track `--border` `#1c8a72` on `--bg` | 4.5 |
-| field-cell outline `--silo-field` `#33735c` on `--surface` | 3.3 |
+| field-cell outline `--silo-field` `#4a7a4c` (olive, sampled `#477544`) on `--surface` | 3.6 |
 | waveform marker ink `#d4f8ee` on the tinted chips | 6.6+ |
 | tinted avatar chips take the same ink; a lit pad tints at 24% so `--text` stays at 5.1 | 7.3 / 5.1 |
 | dark ink `#06201a` / danger ink `#7a1406` on the yellow-green band | 9.1 / 5.8 |
