@@ -34,10 +34,10 @@ sense that the interface is a physical object you could pick up.
   card has a 2px milky rim (`--panel-border`), and the case body
   (`.app-main`) has frosted side walls that join the glossy bar to the
   rounded status foot, so the shell reads as one moulding.
-- **One soft streak per case.** The 115deg sheen is fixed to the viewport
-  (`background-attachment: fixed` inside `--imac-g3-sheen`), peaks at only
-  0.28 white and is wide, so side-by-side cards share one sweep of light
-  instead of each repeating a chrome stripe. Panels also carry an inner
+- **A soft, broad streak.** The 115deg sheen peaks at only 0.28 white and
+  spans about half the surface, so it reads as light on thick plastic
+  rather than a chrome stripe. (A viewport-fixed streak shared across
+  cards was tried and dropped: it repaints every panel on scroll.) Panels also carry an inner
   top lip and bottom fall-off (`--panel-shadow`) for thickness.
 - **The gel follows the colourway.** The button gel's base stop is
   `--imac-g3-gel`, set per variant, as are `--accent-2` and `--accent-text`,
