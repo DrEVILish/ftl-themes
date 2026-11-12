@@ -2,11 +2,35 @@
  * Theme-Name: TRON
  * Description: The Grid's electric cyan line-grid on black, with clip-path-cut angular corners standing in for the film's beveled edges.
  *
- * Note on fonts: the reference face is Eurostile. Neither it nor Orbitron
- * is vendored in assets/, so naming them here would silently render the
- * generic sans fallback on every real system while claiming a face this
- * theme doesn't ship — the stack names only what it actually has.
+ * Fonts (SIL OFL, vendored in assets/fonts): Michroma, a wide squared
+ * face and the closest shipped stand-in for the film's extended Eurostile,
+ * for headings and the brand; Titillium Web, a squared technical sans,
+ * for body text. Eurostile itself is not web-available.
  */
+@font-face {
+  font-family: "Michroma";
+  src: url("assets/fonts/Michroma-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-display: swap;
+  /* Titillium's stock metrics give a 1.52em content box, which crowds the
+     text box against the edges of short controls; trimmed to the glyphs. */
+  ascent-override: 95%;
+  descent-override: 28%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 700;
+  font-display: swap;
+  ascent-override: 95%;
+  descent-override: 28%;
+  line-gap-override: 0%;
+}
 
 html[data-theme="tron"] {
   --motion-leave: rain;
@@ -22,23 +46,23 @@ html[data-theme="tron"] {
   --accent-text: #0af0ff;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #ff8c1a;
   --danger: #ff3d3d;
-  --success: #6dffb0;
+  --success: #5effc8;  /* a cyan-leaning green: the film has no mint */
   --warning: #ff8c1a;
   --on-accent: #001114;
   --on-danger: #1a0000;
-  --on-success: #001108;
+  --on-success: #00110c;
   --radius: 0;
-  --font: "IBM Plex Sans", sans-serif;
+  --font: "Titillium Web", sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #ff8c1a;
 
   --btn-bg: transparent;
   --btn-fg: var(--accent-text);
   --btn-border: var(--accent);
-  --btn-shadow-hover: 0 0 12px var(--accent), inset 0 0 12px rgba(10, 240, 255, 0.3);
+  --btn-shadow-hover: inset 0 0 14px rgba(10, 240, 255, 0.45);
   --input-bg: #000;
   --focus-ring: 0 0 10px var(--accent);
-  --panel-shadow: 0 0 20px rgba(10, 240, 255, 0.12), inset 0 0 20px rgba(10, 240, 255, 0.04);
+  --panel-shadow: inset 0 0 18px rgba(10, 240, 255, 0.1);
   --table-head-fg: var(--accent);
   --table-head-rule: var(--accent);
   --row-selected-bg: rgba(10, 240, 255, 0.08);
@@ -50,6 +74,44 @@ html[data-theme="tron"] {
   --label-tracking: 0.15em;
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
+
+  /* No round shapes: every knob, chip, pin and avatar is square-cut. */
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --slider-thumb-radius: 0;
+  --badge-radius: 0;
+  --avatar-radius: 0;
+  --btn-icon-radius: 0;
+  --fab-radius: 0;
+  --scrubber-thumb-radius: 0;
+  --comment-pin-radius: 0;
+  --desktop-monitor-radius: 0;
+  --desktop-icon-label-radius: 0;
+
+  /* The slider track is a lit line (core hides the border so the box can
+     grow to --tap-min; the track is the content box's background). */
+  --slider-height: 3px;
+  --slider-bg: color-mix(in srgb, var(--accent) 70%, transparent);
+  --slider-thumb-shadow: 0 0 8px var(--accent);
+
+  /* Active states trace, they don't fill. */
+  --segmented-item-bg-active: rgba(10, 240, 255, 0.15);
+  --segmented-item-fg-active: var(--accent);
+  --toggle-btn-bg-on: rgba(10, 240, 255, 0.22);
+  --toggle-btn-fg-on: #ffffff;
+  --badge-bg-active: rgba(10, 240, 255, 0.15);
+  --badge-fg-active: var(--accent);
+  --desktop-icon-label-bg-selected: rgba(10, 240, 255, 0.15);
+  --desktop-icon-label-fg-selected: var(--accent);
+  --bulk-bar-bg: #000;
+  --cell-dirty-bg: rgba(255, 140, 26, 0.06);
+  --cell-saved-bg: rgba(94, 255, 200, 0.06);
+  --comment-pin-resolved-bg: #000;
+  --comment-pin-resolved-fg: var(--text);
+
+  /* Charts: one orange (the adversary) only; the fifth series is white
+     light, so no two series share a colour. */
+  --chart-series-5: #ffffff;
 }
 
 html[data-theme="tron"] {
@@ -68,7 +130,7 @@ html[data-theme="tron"] {
   --toast-shadow: 0 0 14px rgba(10, 240, 255, 0.4);
   --alert-bg: #000;
   --alert-fg: var(--text);
-  --card-shadow: 0 0 16px rgba(10, 240, 255, 0.1), inset 0 0 16px rgba(10, 240, 255, 0.04);
+  --card-shadow: inset 0 0 14px rgba(10, 240, 255, 0.1);
   --context-menu-bg: #000;
   --context-menu-border: var(--accent);
   --dropzone-border: var(--accent);
@@ -93,53 +155,78 @@ html[data-theme="tron"] h1,
 html[data-theme="tron"] h2,
 html[data-theme="tron"] h3 {
   text-transform: uppercase;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.18em;
   color: var(--accent);
   text-shadow: 0 0 8px rgba(10, 240, 255, 0.6);
 }
+/* Michroma is already extended, so it carries less extra tracking than the
+   old sans did; it ships one weight, so headings don't fake a bold. */
+html[data-theme="tron"] :is(h1, h2, h3, .nav-brand) {
+  font-family: "Michroma", var(--font);
+  font-weight: 400;
+}
+html[data-theme="tron"] .nav-brand { text-transform: uppercase; letter-spacing: 0.04em; }
 
-/* Cut corners — the theme's signature shape. clip-path clips everything the
-   box paints, including core's :focus-visible outline, so a keyboard user
-   would otherwise get no visible focus here. filter isn't clipped — it
-   post-processes the already-cut shape — so it's the fallback that keeps
-   the focus indicator visible instead of silently defeating it.
-   8-12px only reads as "cut" in a close-up crop; at the size a button or
-   panel actually renders it was indistinguishable from a plain box with
-   soft antialiasing. Enlarged, and extended past panel/modal to every
-   card-like surface so the shape is the theme's throughline, not a detail
-   on two components. */
-html[data-theme="tron"] .btn {
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+/* Cut corners — the theme's signature shape. clip-path cuts the box, and
+   two background layers draw the lit diagonal along each cut so the frame
+   stays continuous (the stroke sits just inside the clip line). The edge
+   colour follows each component's own border token, so a danger button's
+   diagonal is red. clip-path also cuts away anything painted outside the
+   box: the outer glow and core's :focus-visible outline. Glow is therefore
+   inset, and focus is drawn inside the box (see below). */
+html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover) {
+  --tron-cut: 18px;
+  clip-path: polygon(var(--tron-cut) 0, 100% 0, 100% calc(100% - var(--tron-cut)), calc(100% - var(--tron-cut)) 100%, 0 100%, 0 var(--tron-cut));
+  background-image:
+    linear-gradient(to bottom right, transparent 50%, var(--tron-edge, var(--border)) 0 calc(50% + 1.25px), transparent 0),
+    linear-gradient(to bottom right, transparent calc(50% - 1.25px), var(--tron-edge, var(--border)) 0 50%, transparent 0);
+  background-position: left top, right bottom;
+  background-size: var(--tron-cut) var(--tron-cut);
+  background-repeat: no-repeat;
+  background-origin: border-box;
 }
-html[data-theme="tron"] .panel,
-html[data-theme="tron"] .modal,
-html[data-theme="tron"] .card,
-html[data-theme="tron"] .dropdown,
-html[data-theme="tron"] .context-menu,
-html[data-theme="tron"] .popover {
-  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-}
+html[data-theme="tron"] .btn { --tron-cut: 10px; --tron-edge: var(--btn-border, var(--border)); }
+html[data-theme="tron"] .btn-sm { --tron-cut: 7px; }
+html[data-theme="tron"] .panel { --tron-edge: var(--panel-border, var(--border)); }
+html[data-theme="tron"] .modal { --tron-edge: var(--modal-border, var(--border)); }
+html[data-theme="tron"] .card { --tron-edge: var(--card-border, var(--panel-border, var(--border))); }
+html[data-theme="tron"] :is(.dropdown, .context-menu) { --tron-edge: var(--context-menu-border, var(--border)); }
+html[data-theme="tron"] .popover { --tron-edge: var(--popover-border, var(--border)); }
 /* Nested surfaces step down to the smaller bevel. */
-html[data-theme="tron"] :is(.panel, .modal, .card, .drawer, .popover) :is(.panel, .card) {
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-}
+html[data-theme="tron"] :is(.panel, .modal, .card, .drawer, .popover) :is(.panel, .card) { --tron-cut: 10px; }
 /* clip-path clips descendants like overflow: hidden does, so a surface
    holding an in-flow anchored menu (the v4 .anchor pattern) keeps square
    corners rather than cutting the menu off at its own edge. Top-layer
    popovers escape either way. */
-html[data-theme="tron"] :is(.panel, .modal, .card):has(.anchor) { clip-path: none; }
-html[data-theme="tron"] .btn-sm {
-  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
-}
-html[data-theme="tron"] .btn:focus-visible,
-html[data-theme="tron"] .panel:focus-visible,
-html[data-theme="tron"] .modal:focus-visible,
-html[data-theme="tron"] .card:focus-visible {
-  filter: drop-shadow(0 0 0 2px var(--focus)) drop-shadow(0 0 6px var(--focus));
+html[data-theme="tron"] :is(.panel, .modal, .card):has(.anchor) { clip-path: none; background-image: none; }
+/* Focus inside the cut: an inset outline plus an inner bloom, both inside
+   the clip so they can't be cut away. */
+html[data-theme="tron"] :is(.btn, .panel, .modal, .card):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -5px;
+  box-shadow: inset 0 0 12px var(--focus);
 }
 
 html[data-theme="tron"] .btn-primary { --btn-bg: rgba(10, 240, 255, 0.1); --btn-fg: var(--accent-text); }
-html[data-theme="tron"] .btn-danger { --btn-border: var(--accent-2); }
+/* Danger and success trace their edge in their own colour like primary,
+   rather than filling the button. */
+html[data-theme="tron"] .btn-danger {
+  --btn-bg: rgba(255, 61, 61, 0.1);
+  --btn-fg: var(--danger);
+  --btn-border: var(--danger);
+  --btn-shadow-hover: inset 0 0 12px rgba(255, 61, 61, 0.45);
+}
+html[data-theme="tron"] .btn-success {
+  --btn-bg: rgba(94, 255, 200, 0.08);
+  --btn-fg: var(--success);
+  --btn-border: var(--success);
+  --btn-shadow-hover: inset 0 0 12px rgba(94, 255, 200, 0.4);
+}
+html[data-theme="tron"] .bulk-bar { box-shadow: 0 0 12px rgba(10, 240, 255, 0.35), inset 0 0 12px rgba(10, 240, 255, 0.12); }
+/* Desktop windows are fixed-height dialogs: wide label tracking wraps a
+   four-tab strip onto a second row and pushes the footer out of the window. */
+html[data-theme="tron"] .desktop-window { --label-tracking: 0.04em; }
+html[data-theme="tron"] .desktop-window .tab { padding-inline: 0.55em; }
 html[data-theme="tron"] .table th { text-shadow: 0 0 6px rgba(10, 240, 255, 0.5); }
 
 /* --- Layout ------------------------------------------------------------ *
@@ -165,14 +252,15 @@ html[data-theme="tron"] .app-rail {
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
- * light-line messages (orange for yours) and hollow glowing columns. */
+ * light-line messages (white light for yours: orange is the adversary,
+ * not "you") and hollow glowing columns. */
 html[data-theme="tron"] {
   --message-border: var(--accent);
   --message-shadow: 0 0 0.4rem rgba(10, 240, 255, 0.35);
-  --message-own-border: var(--accent-2);
-  --message-own-shadow: 0 0 0.4rem rgba(255, 140, 26, 0.35);
+  --message-own-border: var(--text);
+  --message-own-shadow: 0 0 0.4rem rgba(216, 250, 255, 0.4);
   --bar-chart-bar: color-mix(in srgb, var(--accent) 18%, transparent);
-  --bar-chart-bar-alt: color-mix(in srgb, var(--accent-2) 55%, transparent);
+  --bar-chart-bar-alt: color-mix(in srgb, var(--accent) 45%, transparent);
   --bar-chart-shadow: inset 0 0 0 1px var(--accent), 0 0 0.5rem rgba(10, 240, 255, 0.45);
   --bar-chart-radius: 0;
 }
@@ -187,10 +275,10 @@ html[data-theme="tron"] {
    laid over the page's own grid at low intensity. Still. */
 html[data-theme="tron"] {
   --app-gutter-art:
-    conic-gradient(from 270deg at 200px 2px, rgba(10, 240, 255, 0.28) 25%, transparent 0) 40px 80px / 480px 640px,
-    conic-gradient(from 270deg at 2px 280px, rgba(10, 240, 255, 0.28) 25%, transparent 0) 240px 80px / 480px 640px,
-    conic-gradient(from 270deg at 2px 160px, rgba(10, 240, 255, 0.2) 25%, transparent 0) 120px 420px / 480px 640px,
-    conic-gradient(from 270deg at 240px 2px, rgba(10, 240, 255, 0.2) 25%, transparent 0) 120px 580px / 480px 640px,
-    conic-gradient(from 270deg at 160px 2px, rgba(255, 140, 26, 0.26) 25%, transparent 0) 280px 300px / 560px 760px,
-    conic-gradient(from 270deg at 2px 200px, rgba(255, 140, 26, 0.26) 25%, transparent 0) 440px 300px / 560px 760px;
+    conic-gradient(from 270deg at 200px 2px, rgba(10, 240, 255, 0.5) 25%, transparent 0) 40px 80px / 480px 640px,
+    conic-gradient(from 270deg at 2px 280px, rgba(10, 240, 255, 0.5) 25%, transparent 0) 240px 80px / 480px 640px,
+    conic-gradient(from 270deg at 2px 160px, rgba(10, 240, 255, 0.38) 25%, transparent 0) 120px 420px / 480px 640px,
+    conic-gradient(from 270deg at 240px 2px, rgba(10, 240, 255, 0.38) 25%, transparent 0) 120px 580px / 480px 640px,
+    conic-gradient(from 270deg at 160px 2px, rgba(255, 140, 26, 0.45) 25%, transparent 0) 280px 300px / 560px 760px,
+    conic-gradient(from 270deg at 2px 200px, rgba(255, 140, 26, 0.45) 25%, transparent 0) 440px 300px / 560px 760px;
 }
