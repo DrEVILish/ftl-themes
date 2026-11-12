@@ -9,20 +9,20 @@
  * grotesque, which is not free. The theme uses the system neo-grotesque
  * stack (Helvetica Neue / Helvetica / Arial / Liberation Sans) with slightly
  * negative tracking. Display lettering (numerals, the brand window, the
- * status strip, scribble strips) is a thin light grotesque that falls back
- * to the already-vendored Selawik Light; monospace is kept for code.
+ * status strip, scribble strips) is the vendored Lexend Exa Light, a wide
+ * thin geometric face like the OP-1 screen; monospace is kept for code.
  *
  * Component look is set through --<component>-* properties at root scope
  * (CONTRACT.md "How a theme overrides a component").
  */
 
-/* Selawik Light (SIL OFL, already vendored, assets/fonts/NOTICE.md): the
-   thin cut for the display numerals where Helvetica Neue Light and Segoe UI
-   Light are missing, so the thinness comes from the face, not a stroke. */
+/* Lexend Exa Light (SIL OFL, assets/fonts/NOTICE.md): wide, round and
+   thin like the OP-1 screen numerals, so the width comes from the face,
+   not tracking. Latin subset, wght 300-400. */
 @font-face {
-  font-family: "Selawik";
-  src: url("assets/fonts/Selawik-Light.woff2") format("woff2");
-  font-weight: 300;
+  font-family: "TE Display";
+  src: url("assets/fonts/LexendExa-Light-Regular.woff2") format("woff2");
+  font-weight: 300 400;
   font-display: swap;
 }
 
@@ -86,7 +86,7 @@ html[data-theme="teenage-engineering"] {
   --font: "Helvetica Neue", Helvetica, Arimo, Arial, "Liberation Sans", "Nimbus Sans", "Nimbus Sans L", "TeX Gyre Heros", "FreeSans", sans-serif;
   /* Display numerals: thin, wide strokes like the OP-1 screen. A light
      grotesque cut where the system has one, tabular so values never reflow. */
-  --te-display-font: "Helvetica Neue", "Segoe UI", "Selawik", Arimo, Arial, "Liberation Sans", "DejaVu Sans", sans-serif;
+  --te-display-font: "TE Display", "Helvetica Neue", Arimo, Arial, "Liberation Sans", "DejaVu Sans", sans-serif;
   /* Code, pre and timecodes only: the display lettering is --te-display-font. */
   --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
   --flare: var(--te-orange);
@@ -107,8 +107,8 @@ html[data-theme="teenage-engineering"] {
   --btn-radius: 0.55rem;
   --btn-weight: 500;
   --btn-tracking: -0.005em;
-  --btn-shadow: 0 2px 0 var(--te-key-edge), 0 3px 4px rgba(40, 48, 52, 0.12);
-  --btn-shadow-hover: 0 2px 0 #9aa2a5, 0 4px 6px rgba(40, 48, 52, 0.16);
+  --btn-shadow: 0 2px 0 var(--te-key-edge);  /* one hard layer: the key's side */
+  --btn-shadow-hover: 0 2px 0 #9aa2a5;
   --btn-icon-radius: 0.5rem;  /* square key faces; the round part is the dome */
 
   /* Close: one of the OP-1's black round note dots with a white cross. */
@@ -140,13 +140,13 @@ html[data-theme="teenage-engineering"] {
   --panel-bg: var(--surface);
   --panel-border: var(--te-key-edge);
   --panel-radius: 0.75rem;
-  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 0 var(--te-key-edge), 0 4px 10px rgba(40, 48, 52, 0.1);
+  --panel-shadow: 0 2px 0 var(--te-key-edge);
   --panel-header-bg: transparent;
   --panel-header-fg: var(--muted);
   --card-bg: var(--surface);
   --card-border: var(--te-key-edge);
   --card-radius: 0.75rem;
-  --card-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 0 var(--te-key-edge), 0 4px 10px rgba(40, 48, 52, 0.1);
+  --card-shadow: 0 2px 0 var(--te-key-edge);
   --modal-bg: var(--surface);
   --modal-border: var(--te-key-edge);
   --modal-radius: 0.9rem;
@@ -301,7 +301,8 @@ html[data-theme="teenage-engineering"] {
   /* Sparklines: a thin printed line, no tinted area. */
   --sparkline-area-opacity: 0;
   --chart-area-opacity: 0;  /* the screen draws line art, never a tinted area */
-  --chart-text-size: 9px;   /* SVG user units: the screen prints small legends, the chart does the scaling */
+  --chart-text-size: 7px;   /* SVG user units: the screen prints small legends, the chart does the scaling */
+  --chart-text-size-narrow: 14px;
   --slider-radius: 0;  /* a square-cut slot: core's 24/44px hit box clips the track to its content box */
   --slider-bg: var(--te-dot);
   --slider-border-width: 0;
@@ -360,6 +361,19 @@ html[data-theme="teenage-engineering"] {
   --eq-line: var(--te-glyph);
   --eq-fill: rgba(67, 206, 191, 0.22);
   --bar-chart-bar: var(--te-dot);  /* bars on a light key print in note-key black, not a blue fill */
+  --bar-chart-bar-alt: var(--te-orange);  /* the highlighted bar: same weight, the record colour */
+  /* The VU is a small screen too: glass face, dim scale, orange needle. */
+  --vu-face: var(--te-screen);
+  --vu-ink: var(--te-glyph-dim);
+  --vu-zone: var(--te-orange);
+  --vu-zone-ink: #ff8a4c;
+  --vu-needle: var(--te-orange);
+  --vu-needle-r: var(--te-teal);
+  --vu-glow: transparent;
+  --vu-bezel: var(--te-key-edge);
+  --vu-font: var(--te-display-font);
+  /* Plan figures are display numerals: thin, not bold. */
+  --price-fg: var(--text);
   --bar-chart-radius: 2px;
   --bar-chart-axis: var(--border);
 
@@ -451,13 +465,13 @@ html[data-theme="teenage-engineering"] {
   --transport-shadow: 0 2px 0 var(--te-key-edge);
   --transport-rec: var(--te-orange);
   --transport-play: var(--te-green);
-  --go-bg: var(--te-orange);
-  --go-fg: #0d0300;
-  --go-border: #b8410a;
+  --go-bg: var(--te-key-hi);  /* a light key: the orange is the legend dot */
+  --go-fg: var(--text);
+  --go-border: var(--te-key-edge);
   --go-radius: 0.75rem;
-  --go-shadow: 0 3px 0 #b8410a, 0 5px 8px rgba(0, 0, 0, 0.18);
-  --go-bg-hover: #ff6a24;
-  --go-shadow-hover: 0 3px 0 #b8410a, 0 6px 12px rgba(242, 90, 18, 0.35);
+  --go-shadow: 0 3px 0 var(--te-key-edge);
+  --go-bg-hover: #ffffff;
+  --go-shadow-hover: 0 3px 0 #9aa2a5;
 
   /* --- Conversation --------------------------------------------------------- */
   --message-bg: var(--te-key-hi);
@@ -530,8 +544,8 @@ html[data-theme="teenage-engineering"] .btn-primary {
   --btn-border: var(--te-dot);
   --btn-bg-hover: #3a3d40;
   --btn-border-hover: #000000;
-  --btn-shadow: 0 2px 0 #000000, 0 3px 4px rgba(40, 48, 52, 0.18);
-  --btn-shadow-hover: 0 2px 0 #000000, 0 4px 6px rgba(40, 48, 52, 0.22);
+  --btn-shadow: 0 2px 0 #000000;
+  --btn-shadow-hover: 0 2px 0 #000000;
 }
 html[data-theme="teenage-engineering"] .btn-ghost { --btn-shadow: none; --btn-border: transparent; }
 html[data-theme="teenage-engineering"] .btn:is(:disabled, [aria-disabled="true"]) { opacity: 0.45; box-shadow: none; }
@@ -617,6 +631,9 @@ html[data-theme="teenage-engineering"] .chart {
 html[data-theme="teenage-engineering"] .readout-unit { font-weight: 500; }
 /* Screen line art: small vertices, not discs (the ring still marks focus). */
 html[data-theme="teenage-engineering"] .chart-point { r: 2.5; }
+/* Axis ticks and end labels print in the thin screen face. */
+html[data-theme="teenage-engineering"] .chart text { font-family: var(--te-display-font); font-weight: 300; }
+html[data-theme="teenage-engineering"] .price { font-family: var(--te-display-font); font-weight: 300; letter-spacing: -0.01em; }
 /* Level meters and traces are machine values: thin white/teal on the glass. */
 html[data-theme="teenage-engineering"] :is(.visualizer, .trace) {
   --visualizer-fg: var(--te-glyph);
@@ -757,14 +774,14 @@ html[data-theme="teenage-engineering"] :is(.panel, .card):nth-of-type(4n+2) { --
 html[data-theme="teenage-engineering"] :is(.panel, .card):nth-of-type(4n+3) { --te-panel-dot: var(--te-white); }
 html[data-theme="teenage-engineering"] :is(.panel, .card):nth-of-type(4n+4) { --te-panel-dot: var(--te-orange); }
 /* The label is a .panel-header, or a plain heading that opens the panel. */
-html[data-theme="teenage-engineering"] :is(.panel-header > :first-child, :is(.panel, .card) > :is(h2, h3):first-child:not(:has(> .icon:first-child)), :is(.panel, .card) > .cluster:first-child > :is(h2, h3))::before {
+html[data-theme="teenage-engineering"] :is(.panel-header > :first-child, .panel-header:not(:has(> *)), .modal-header:not(:has(> *)), .modal-header > :is(h2, h3):first-child, :is(.panel, .card) > :is(h2, h3):first-child:not(:has(> .icon:first-child)), :is(.panel, .card) > .cluster:first-child > :is(h2, h3))::before {
   content: "";
   display: inline-block;
-  inline-size: 0.6em;
-  block-size: 0.6em;
-  margin-inline-end: 0.55em;
+  inline-size: 0.5rem;  /* rem: the same dot on a tiny header and a big heading */
+  block-size: 0.5rem;
+  margin-inline-end: 0.5rem;
   border-radius: 50%;
-  background: var(--te-panel-dot);
+  background: var(--te-panel-dot, var(--te-blue));
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
   vertical-align: 0.05em;
 }
@@ -785,6 +802,27 @@ html[data-theme="teenage-engineering"] .badge-accent:not(.badge-solid, .badge-ou
   background: var(--te-blue);
   vertical-align: -0.02em;
 }
+/* A badge in a tiny tracked header keeps a readable size and its own air. */
+html[data-theme="teenage-engineering"] .panel-header .badge { font-size: 0.68rem; letter-spacing: 0.04em; margin-inline-start: 0.5rem; }
+/* Confirm and GO are light keys: the colour is a legend dot, as on the
+   record key. Only a destructive key fills in orange. */
+html[data-theme="teenage-engineering"] .btn-success {
+  --btn-bg: var(--te-key-hi);
+  --btn-fg: var(--text);
+  --btn-border: var(--te-key-edge);
+  --btn-bg-hover: #ffffff;
+  --btn-border-hover: #8f979a;
+}
+html[data-theme="teenage-engineering"] :is(.btn-success, .btn-go:not(.btn-icon))::before {
+  content: "";
+  flex: none;
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  border-radius: 50%;
+  background: var(--te-green);
+}
+html[data-theme="teenage-engineering"] .btn-go:not(.btn-icon)::before { background: var(--te-orange); }
+html[data-theme="teenage-engineering"] .btn-go.btn-icon { --go-fg: #c24400; }  /* the legend itself is orange, 4.5:1 on the key */
 /* The dialog's black close dot would vanish on the bulk bar's glass. */
 html[data-theme="teenage-engineering"] .bulk-bar .btn-close { --btn-close-bg: var(--te-key-hi); --btn-close-fg: var(--text); }
 
@@ -881,8 +919,8 @@ html[data-theme="teenage-engineering"] .app-bar > .nav-brand {
   letter-spacing: 0.06em;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
 }
-html[data-theme="teenage-engineering"] .app-status { font-family: var(--te-display-font); font-weight: 300; letter-spacing: 0.05em; }
-html[data-theme="teenage-engineering"] .app-status { box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7); }
+/* Small strip text: Regular, so the hairlines hold at 1x; numerals stay Light. */
+html[data-theme="teenage-engineering"] .app-status { font-family: var(--te-display-font); font-weight: 400; letter-spacing: 0.02em; box-shadow: inset 0 1px 0 #000000; }
 
 /* Touch tiers: a thinner frame. */
 @container style(--tier: mobile) {

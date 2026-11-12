@@ -33,14 +33,16 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    legend like every key: blue is for links.
 3. **Keys are rounded rectangles with a 2px side.** Buttons, panels,
    cards, the bar and the rail are keys: `0.5-0.75rem` corners, a hairline
-   key-edge border and a hard 2px shadow underneath. A page-level
+   key-edge border and a hard 2px shadow underneath (one layer, no blur). A page-level
    `.toolbar` and the folder rail are keys too. Pressing moves a key
    down 1px. No gradients that read as gloss. The primary button is the
    black note key with a white legend: the hardware has no blue keys.
    Small square keys (`.btn-icon`, now square-cornered) and the mixer's
    MUTE/SOLO/SEL/48V keys carry the OP-1's round white dome inside a
    slightly darker key face, its lower edge shadowed; wide text buttons
-   stay plain keys.
+   stay plain keys. Confirm (`.btn-success`) and GO (`.btn-go`) are light
+   keys with a green or orange legend dot, like the record key's ring; only
+   a destructive key (`.btn-danger`) fills in orange.
 4. **Black means selected.** Active nav items, segmented items, pagination,
    active badges, the highlighted menu item and command row, checked toggle
    buttons, the mixer's SEL/monitor key and the selected strip, checked
@@ -56,14 +58,15 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    (h1 400, h2-h4 500) with negative tracking, so the display numerals stay
    the loudest type; panel heads, table heads and form labels are tiny tracked caps
    like the printing beside a key. Display numerals (`.readout`,
-   `.stat-value`) are thin and wide like the OP-1 screen: a light grotesque
-   (300, tracked 0.05em): Helvetica Neue Light or Segoe UI Light where
-   present, else the vendored Selawik Light (SIL OFL), so the thinness comes
-   from the cut and the strokes stay bright white. Page titles followed by
+   `.stat-value`, `.price`, chart ticks and labels) are thin and wide like
+   the OP-1 screen: the vendored Lexend Exa Light (SIL OFL, 300), a wide
+   round geometric face, so width and thinness come from the cut and the
+   strokes stay bright white. Page titles followed by
    a lede get a little air under them, and the lede gets `--space-s`
    before the next row. The brand window, the status strip and scribble
-   strips use the same thin display face (tracked 0.05-0.06em); the
-   monospace is only for code and timecodes.
+   strips use the same display face; the status strip's small text is its
+   Regular 400 so hairlines hold at 1x. The monospace is only for code and
+   timecodes.
 
 ## Signature details
 
@@ -85,7 +88,9 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
   above or below it. Every panel and card is a labelled key: its header's
   first item, a plain `h2`/`h3` that opens it, or the `h2`/`h3` in a
   `.cluster` that opens it, carries an encoder colour dot (blue, green,
-  white, orange by position).
+  white, orange by position). Plain-text panel headers and modal titles get
+  it too; the dot is 0.5rem everywhere. A badge in a panel header keeps
+  0.68rem and 0.5rem of air.
 - The page is a flat aluminium (`#c9cfd1`, toward the sampled `#c3c9c9`
   body): a slightly darker, cooler groove between the near-white keys,
   with `--muted` still 4.7:1 on it.
@@ -97,8 +102,11 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
   clip that keeps it there leaves no room for rounded ends).
 - Level meters (`.visualizer`) and `.trace` are small glass windows with
   white bars and a teal line. A `.bar-chart` on a light key prints its bars
-  in note-key black; sparklines are a thin line with no tinted area. Charts on the glass are
-  line art too: no area fill, 2.5-unit vertices, 9-unit legends.
+  in note-key black, its highlighted bar in orange; sparklines are a thin line with no tinted area. Charts on the glass are
+  line art too: no area fill, 2.5-unit vertices, 7-unit legends in the
+  thin display face. The VU meter is a glass face with a dim scale and an
+  orange needle. The donut and heatmap stay printed on the light key (the
+  heatmap's empty cells are glass-black, which would vanish on glass).
 - The inbox folder rail and a tinted `.band` are keys too (rounded, key-edge
   border, 2px side).
 - Every tab carries its encoder's colour dot; the active one is larger and
@@ -172,8 +180,9 @@ rest are core fallbacks, drawn at the same 1.5 stroke via
 - Fonts: the manufacturer's grotesque is not free; the system stack
   (Helvetica Neue, Helvetica, Arimo, Arial, Liberation Sans, Nimbus Sans,
   TeX Gyre Heros, FreeSans) stands in; Liberation Sans is metric-compatible
-  with Helvetica. Display numerals fall back to Selawik Light (SIL OFL,
-  already in `assets/fonts/`, see `NOTICE.md`), the open thin cut.
+  with Helvetica. Display numerals use Lexend Exa Light (SIL OFL,
+  `assets/fonts/LexendExa-Light-Regular.woff2`, wght 300-400 Latin subset,
+  see `NOTICE.md`).
 
 ## Reference status
 
