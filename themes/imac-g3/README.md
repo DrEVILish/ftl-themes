@@ -36,16 +36,18 @@ sense that the interface is a physical object you could pick up.
   what reads as translucent plastic rather than a painted highlight. The
   middle stop is the colorway's bright candy tone (`--imac-g3-candy`:
   Bondi `#0095b6`, Blueberry `#4a86ff`, Grape `#b06ae8`, Tangerine
-  `#ff8a1f`) at 35%, glowing through the darker text-bearing surface.
+  `#ff8a1f`) at 50% (`--imac-g3-candy-mix`; Tangerine 42%, which keeps
+  white at 4.5:1 over the peak), glowing through the darker text-bearing
+  surface.
 - **Translucent plastic.** Where nothing overlaps (panels, cards, lists,
   rails, bands, toolbars, media canvases) the last layer is
-  `--imac-g3-clear`, the surface at 84%, so the brighter case body and
+  `--imac-g3-clear`, the surface at 75% (Tangerine 80%), so the brighter case body and
   backdrop glow through. Windows and modals (`--modal-bg`), drawers,
   menus, popovers, toasts and title bars keep an opaque `var(--surface)`
   base, so overlapping windows never show through each other.
-- **Bright candy edges.** Every panel and card carries
+- **Bright candy edges.** Every panel, card and list carries
   `--imac-g3-edge-glow` inside its ice rim: a 2px ring of the candy tone
-  at 75%, a 1px ice inner bezel and a soft 12px top glow, all inside the
+  at 75%, a 1px ice inner bezel and an unblurred 4px candy top lip, all inside the
   padding where no text sits, so the plastic refracts brightest at its
   edges (as the hardware does) while the text-bearing core stays
   `--surface`. The app bar's gloss peaks at 50% candy (white 4.8:1;
@@ -62,8 +64,9 @@ sense that the interface is a physical object you could pick up.
   small square in its corner) and windowshade box (two bars) at the end
   in place of the core `_` / `□` glyphs.
 - **Ice.** The colour is set in frosted white plastic (`--imac-g3-ice`,
-  `rgba(232,248,252,0.7)`): every panel and card has a 4px milky rim
-  (`--panel-border`), menus, popovers, toasts, toolbars and grouped
+  `rgba(232,248,252,0.7)`): every panel, card, window and modal has a 4px
+  milky rim (`--panel-border`, `--modal-border`), lists a 3px one with
+  faint ice row rules (`--list-rule`), menus, popovers, toasts, toolbars and grouped
   fieldsets have ice rims too, and the case body (`.app-main`) has 12px
   frosted side walls (4px on phones, where width is scarce) plus a 3px ice seam under the bar and over the
   status foot (4px under the bar), so the shell reads as one moulding,
@@ -75,32 +78,36 @@ sense that the interface is a physical object you could pick up.
   gloss with a 3px ice rim, empty states are an ice-rimmed moulded well,
   skeletons are frosted ice, badges carry a 1px ice rim, and input addons
   are rounded gel beads (`--input-radius` outer corners, white label).
-- **A soft, broad streak.** The 115deg sheen peaks at only 0.28 white and
+- **A soft, broad streak.** The 115deg sheen peaks at only 0.2 white and
   spans about half the surface, so it reads as light on thick plastic
   rather than a chrome stripe. (A viewport-fixed streak shared across
   cards was tried and dropped: it repaints every panel on scroll.) Panels also carry an inner
-  top lip and a deep bottom fall-off (`--panel-shadow`, an inset of the
-  surface mixed 35% with black) so the case reads as thick plastic with
+  top lip and a short bottom fall-off (`--panel-shadow`, an 8px inset of
+  the surface mixed 25% with black) so the case reads as thick plastic with
   darker internals behind it.
 - **The gel follows the colourway.** The button gel's base stop is
   `--imac-g3-gel`, set per variant, as are `--accent-2` and `--accent-text`,
   so no Bondi teal survives on a Blueberry, Grape or Tangerine case.
-- Rails and lists (`--nav-rail-bg`, `--list-bg`) use the same pinstripe +
-  three-stop gloss as panels, without a streak; the rail gets `--radius`
-  corners.
+- Rails (`--nav-rail-bg`) use the same pinstripe + three-stop gloss as
+  panels, without a streak, and get `--radius` corners; lists
+  (`--list-bg`), which mostly sit inside panels, take the gloss without a
+  second rib layer.
+- Status labels are set at 0.93em (about 13px, core's is 12px) so they
+  hold over the sheen.
 - Sliders sit in a recessed ice groove drawn on core's content box (the
   hit area stays `--tap-min`) with a gel-bead thumb. Checkboxes are
   rounded (0.35rem) white wells that fill with the colourway's button gel
   and a white tick when checked; radios are white wells.
 - The app bar and status foot carry the same candy mid-stop gloss as the
-  panels (the candy tone at 35% over `--surface`, with a 1px inset white
+  panels (the candy tone at 50% over `--surface`, Tangerine 35%, with a 1px inset white
   lip rather than a white stop, so nav text holds 4.5:1), so the most
   visible chrome is plastic too. Tangerine's bar GO label is white. Nav items and every `.nav-brand`
   are pure white (`--nav-brand-fg` is set at the root, not only in the bar).
 - The case body (`--app-main-bg`) is the case colour (`--imac-g3-case`,
-  default `--surface`; Grape uses its gel `#7a3fae`, Tangerine `#9a4304`)
+  default `--surface`; Grape uses its gel `#7a3fae`, Tangerine `#9a4304`
+  easing to `#a24604`)
   at 86% over the bright backdrop, easing to 88% of a brighter foot
-  (`--imac-g3-case-foot`), with a faint 115deg sheen on top: white holds
+  (`--imac-g3-case-foot`, Bondi `#0b718a`), with a faint 115deg sheen on top: white holds
   5.0:1 and `--muted` 4.5:1 everywhere on it. Tinted bands
   (`--band-tint-bg`) and media canvases (`--ratio-canvas-bg`) take the
   translucent fill.
@@ -116,7 +123,7 @@ sense that the interface is a physical object you could pick up.
   but puts real tangerine everywhere else: a true-orange `--surface-2`
   (`#a84a05`, white 5.8:1) under buttons, badges and banners, the candy
   edge glow on every card, a bright `#fff1e2` / `#ff8a1f` / `#e8761f`
-  backdrop, a `#9a4304` case body, a `#b5500f` gel and the `#ff8a1f`
+  backdrop, a `#9a4304`-to-`#a24604` case body, a `#b5500f` gel and the `#ff8a1f`
   candy tone in the gloss, so it reads as orange plastic, not copper.
 - The backdrop (`--imac-g3-backdrop`) is the bright plastic itself, a
   plain linear gradient: an ice crown behind the bar into aqua and true
@@ -176,7 +183,7 @@ nothing is filled, marker dots are r1.1 rings, colour is always
 
 ## Typography
 
-`--font` is `Geneva, "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif`: Geneva was Mac OS 8/9's small-text face, so body copy leads with the 1998 voice before the later Mac sans and the metric-compatible fallbacks. `--font-mono` is `Monaco, Menlo, "DejaVu Sans Mono", Consolas, ui-monospace, monospace` (DejaVu Sans Mono is Bitstream Vera, the free relative of Monaco's shapes). Headings (`h1`–`h3`), the brand (at 1.15em) and modal/window title bars use `--imac-g3-font-ui`: `Charcoal, Chicago, "Helvetica Neue", Helvetica, "Liberation Sans", Arial, sans-serif` at weight 700 with normal tracking. Charcoal and Chicago are named first for machines that have them (they are not free to vendor); elsewhere a heavy normal-width grotesque keeps Charcoal's weight and width (an earlier condensed Arial Narrow fallback read as a newspaper voice; Charcoal is not condensed). (Baloo 2 was dropped: a rounded modern display face with no tie to 1998 Apple. A Garamond like EB Garamond, closer to Apple's 1998 marketing voice, is not vendored in `assets/fonts/`.) Headings carry a moulded `0 1px 0 rgba(0,0,0,0.35)` drop rather than a white glow.
+`--font` is `Geneva, "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif`: Geneva was Mac OS 8/9's small-text face, so body copy leads with the 1998 voice before the later Mac sans and the metric-compatible fallbacks. `--font-mono` is `Monaco, Menlo, "DejaVu Sans Mono", Consolas, ui-monospace, monospace` (DejaVu Sans Mono is Bitstream Vera, the free relative of Monaco's shapes). Headings (`h1`–`h3`), the brand (at 1.15em) and modal/window title bars use `--imac-g3-font-ui`: `Charcoal, Chicago, Archivo, "Helvetica Neue", Helvetica, "Liberation Sans", Arial, sans-serif` at weight 700 with normal tracking. Charcoal and Chicago are named first for machines that have them (they are not free to vendor); elsewhere Archivo Bold (OFL, vendored as `assets/fonts/Archivo-Bold.woff2`, see `assets/fonts/NOTICE.md`) stands in: a heavy normal-width grotesque with Charcoal's squarish rounds and tall x-height, so the headings read as a 1998 system face rather than Arial (an earlier condensed Arial Narrow fallback read as a newspaper voice; Charcoal is not condensed). (Baloo 2 was dropped: a rounded modern display face with no tie to 1998 Apple. A Garamond like EB Garamond, closer to Apple's 1998 marketing voice, is not vendored in `assets/fonts/`.) Headings carry a moulded `0 1px 0 rgba(0,0,0,0.35)` drop rather than a white glow.
 
 ## Contrast honesty
 
@@ -198,7 +205,7 @@ The shell is a saturated mid-tone, so this theme sits near the floors and `pytho
 ## v5 layout
 
 - **Tiers.** No rail at any size; the rounded bar and status strip work on phones and tablets, where core stacks the brand and actions over a scrolling nav line. Under 480px the case lip slims (0.9rem corners, tighter status padding and gap) so the status foot's last readout clears its rounded corner.
-- **Nesting.** The diagonal sheen is the surface's top background layer, not a clipped pseudo-element, so panels no longer need `overflow: hidden` (which cut off menus and popovers opened inside them). A panel or card inside another surface keeps the gloss and pinstripe but drops the streak: one streak per stack of plastic.
+- **Nesting.** The diagonal sheen is the surface's top background layer, not a clipped pseudo-element, so panels no longer need `overflow: hidden` (which cut off menus and popovers opened inside them). A panel or card inside another surface keeps the gloss but drops the streak, the pinstripe and the inner ice bezel (a 2px candy ring and an unblurred drop instead): one streak and one rib layer per stack of plastic, and no doubled frame.
 - **XL gutter art (1801px+).** The case continues past the screen as ribbed translucent plastic with one broad diagonal sheen, white at low alpha so every colorway tints it.
 
 ## Adoption

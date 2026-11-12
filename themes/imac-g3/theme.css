@@ -24,6 +24,17 @@
  * WCAG relative-luminance calc, not by eye).
  */
 
+/* Charcoal is proprietary and has no metric-compatible clone; Archivo Bold
+   (OFL, vendored) is the nearest open heavy grotesque with its squarish
+   rounds and tall x-height. Headings, title bars and the brand only. */
+@font-face {
+  font-family: "Archivo";
+  src: url("assets/fonts/Archivo-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 html[data-theme="imac-g3"] {
   --motion-leave: genie;
   color-scheme: dark;
@@ -88,7 +99,7 @@ html[data-theme="imac-g3"] {
   --font: Geneva, "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
   /* Charcoal / Chicago, the 1998 system voice: heavy and normal-width (not
      condensed). Where neither exists, a heavy normal-width grotesque. */
-  --imac-g3-font-ui: Charcoal, Chicago, "Helvetica Neue", Helvetica, "Liberation Sans", Arial, sans-serif;
+  --imac-g3-font-ui: Charcoal, Chicago, Archivo, "Helvetica Neue", Helvetica, "Liberation Sans", Arial, sans-serif;
   /* DejaVu Sans Mono (Bitstream Vera) is the free relative of Monaco. */
   --font-mono: Monaco, Menlo, "DejaVu Sans Mono", Consolas, ui-monospace, monospace;
   --flare: #ffe14d;
@@ -128,13 +139,16 @@ html[data-theme="imac-g3"] {
      gloss; var(--surface) is the opaque last layer, so stacked windows
      never show through each other's title bars. */
   --imac-g3-candy: #0095b6;
-  --imac-g3-gloss: linear-gradient(180deg, rgba(255,255,255,0.25), color-mix(in srgb, var(--imac-g3-candy) 35%, transparent) 30%, transparent);
+  /* 50% candy at the gloss's mid-stop (white 4.8:1 over --surface), so the
+     panels glow Bondi rather than read as dark glass. */
+  --imac-g3-candy-mix: 50%;
+  --imac-g3-gloss: linear-gradient(180deg, rgba(255,255,255,0.25), color-mix(in srgb, var(--imac-g3-candy) var(--imac-g3-candy-mix), transparent) 30%, transparent);
   --imac-g3-panel-fill: var(--imac-g3-pinstripe), var(--imac-g3-gloss), var(--surface);
   /* Translucent plastic: where nothing overlaps (panels, cards, lists,
-     rails, bands, empty states) the last layer is 84% surface, so the
+     rails, bands, empty states) the last layer is 75% surface, so the
      brighter Bondi case behind glows through. Windows, modals, drawers,
      menus, popovers and toasts keep the opaque fill above. */
-  --imac-g3-clear: color-mix(in srgb, var(--surface) 84%, transparent);
+  --imac-g3-clear: color-mix(in srgb, var(--surface) var(--imac-g3-clear-mix, 75%), transparent);
   --imac-g3-panel-clear: var(--imac-g3-pinstripe), var(--imac-g3-gloss), var(--imac-g3-clear);
   /* The diagonal sheen (below) rides on top of the fill. */
   --panel-bg: var(--imac-g3-sheen), var(--imac-g3-panel-clear);
@@ -146,17 +160,25 @@ html[data-theme="imac-g3"] {
      refracts brightest at its edges), inside the padding where no text
      sits; the text-bearing core stays --surface. */
   /* An ice inner bezel (1px) inside the candy ring, so white is a visible
-     second colour on every case, not only the outer rim. */
-  --imac-g3-edge-glow: 0 0 0 2px color-mix(in srgb, var(--imac-g3-candy) 75%, transparent) inset, 0 0 0 3px rgba(232, 248, 252, 0.55) inset, 0 12px 14px -8px var(--imac-g3-candy) inset;
-  --panel-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, var(--imac-g3-edge-glow), 0 -18px 26px color-mix(in srgb, var(--surface), black 20%) inset, 0 6px 18px rgba(0,0,0,0.3);
+     second colour on every case, not only the outer rim. The top glow is
+     an unblurred candy lip: the blurred one was the costliest layer. */
+  --imac-g3-edge-glow: 0 0 0 2px color-mix(in srgb, var(--imac-g3-candy) 75%, transparent) inset, 0 0 0 3px rgba(232, 248, 252, 0.55) inset, 0 5px 0 -1px color-mix(in srgb, var(--imac-g3-candy) 70%, transparent) inset;
+  --panel-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, var(--imac-g3-edge-glow), 0 -8px 8px -2px color-mix(in srgb, var(--surface), black 25%) inset, 0 6px 18px rgba(0,0,0,0.3);
   /* Ice: the frosted white plastic the colour sits in. A milky rim on
      every panel/card so the coloured body reads as a tinted insert. */
   --imac-g3-ice: rgba(232, 248, 252, 0.7);
   --panel-border: var(--imac-g3-ice);
   --panel-border-width: 4px;
+  /* Windows and modals take the same frosted rim, not a dark outline. */
+  --modal-border: var(--imac-g3-ice);
   /* Columns and lists are plastic too, not flat fills. */
   --nav-rail-bg: var(--imac-g3-panel-clear);
-  --list-bg: var(--imac-g3-panel-clear);
+  /* Lists are mostly nested in panels: gloss without a second rib layer,
+     an ice rim and ice row rules instead of dark lines. */
+  --list-bg: var(--imac-g3-gloss), var(--imac-g3-clear);
+  --list-border: var(--imac-g3-ice);
+  --list-border-width: 3px;
+  --list-rule: rgba(232, 248, 252, 0.22);
   /* Every floating or banded surface is the same moulded plastic. */
   --toolbar-bg: var(--imac-g3-rib), var(--imac-g3-gloss), var(--imac-g3-clear);
   --context-menu-bg: var(--imac-g3-panel-fill);
@@ -214,7 +236,9 @@ html[data-theme="imac-g3"] {
   /* The case body between bar and foot: translucent colour walled by ice
      (see .app-main below), so bar, body and foot are one moulding. No
      pinstripe here: on the scrolling body it pushed render cost over budget. */
-  --imac-g3-case-foot: #0c6f85;
+  /* Brighter Bondi toward the foot, as far as --muted holds 4.5:1 over
+     it (composited #0a748e); #0a86a3 left muted captions at 3.6:1. */
+  --imac-g3-case-foot: #0b718a;
   /* 86% case colour (--imac-g3-case, default --surface) over the bright
      backdrop (white 5.0-5.7:1, --muted 4.5:1), easing to 88% of a brighter
      foot so the lower case glows; a faint diagonal sheen rides on top. */
@@ -337,8 +361,12 @@ html[data-theme="imac-g3"] {
      0.55 chrome stripe. Not background-attachment: fixed, which would let
      one streak sweep the whole case but repaints every panel on scroll
      (render cost doubled). */
-  --imac-g3-sheen: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.28) 45%, rgba(255, 255, 255, 0.08) 55%, transparent 75%);
+  /* Peak 0.2 (was 0.28): small labels crossing the streak lost too much
+     local contrast; the brighter candy gloss carries the light now. */
+  --imac-g3-sheen: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.2) 45%, rgba(255, 255, 255, 0.06) 55%, transparent 75%);
 }
+/* Status labels at ~13px, not core's 12px, so they hold over the sheen. */
+html[data-theme="imac-g3"] .status { font-size: 0.93em; }
 /* Painted as the surfaces' top background layer (through --panel-bg, which
    cards and modals inherit) rather than a clipped pseudo-element: an
    overflow:hidden surface, plus a stacking context on every child to lift
@@ -346,8 +374,13 @@ html[data-theme="imac-g3"] {
    Nested surfaces step down: one streak per stack of plastic, so a panel
    inside a panel keeps the gloss and pinstripe but not a second streak. */
 html[data-theme="imac-g3"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
-  --panel-bg: var(--imac-g3-panel-clear);
+  /* No second rib layer either (render cost), and no inner ice bezel: the
+     outer case already frames it, so the nest doesn't read as doubled. */
+  --panel-bg: var(--imac-g3-gloss), var(--imac-g3-clear);
+  --panel-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 0 0 2px color-mix(in srgb, var(--imac-g3-candy) 60%, transparent) inset, 0 2px 0 rgba(0,0,0,0.2);
 }
+/* Lists get the panels' candy edge. */
+html[data-theme="imac-g3"] .list { box-shadow: var(--imac-g3-edge-glow); }
 
 /* --- Full-shell colorways ------------------------------------------------
  * Each overrides the same handful of tokens the Bondi default sets above;
@@ -377,16 +410,20 @@ html[data-theme="imac-g3"][data-variant="grape"] {
    white 5.1:1) and the candy tone in the gloss. #823a0a with a brown gel
    read as walnut. */
 html[data-theme="imac-g3"][data-variant="tangerine"] {
+  /* 42% candy keeps white at 4.5:1 over the gloss peak (50% was 4.1:1);
+     panels let 20% of the brighter case through. */
+  --imac-g3-candy-mix: 42%; --imac-g3-clear-mix: 80%;
   /* surface-2 is a true orange (#a84a05, white 5.8:1) so buttons, badges
      and banners read as tangerine; the bar keeps a 35% glow (white 4.9:1). */
   --bg: #8f3f02; --surface: #8a3a00; --surface-2: #a84a05;
   --imac-g3-chrome-gloss: linear-gradient(180deg, color-mix(in srgb, var(--imac-g3-candy) 35%, rgba(0,0,0,0)) 30%, transparent 85%);
   --border: #3e1704; --hairline: #4e1e06; --accent: #ffb066;
   --on-accent: #2c1000; --imac-g3-gel: #b5500f; --imac-g3-candy: #ff8a1f; --accent-2: #ffc48a; --accent-text: #ffe6cf;
-  /* The case body runs bright tangerine; --surface stays #8a3a00 only
-     under card text. */
+  /* The case body runs as bright as --muted allows (4.5-4.6:1 over the
+     backdrop glow; the #b5500f gel left it at 3.9:1), lighter toward the
+     foot; --surface stays #8a3a00 only under card text. */
   --imac-g3-backdrop: #fff1e2, #ffb066 2.5rem, #ff8a1f 6rem, #e8761f;
-  --imac-g3-case: #9a4304; --imac-g3-case-foot: #9a4304;
+  --imac-g3-case: #9a4304; --imac-g3-case-foot: #a24604;
   --muted: #ffe6cf;
   --app-bg: linear-gradient(180deg, var(--imac-g3-backdrop));
 }

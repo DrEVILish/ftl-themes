@@ -31,6 +31,16 @@ files are vendored unmodified.
 - **Used by:** `lcars` (display face for the sweep bar and numeric
   readouts)
 
+## Archivo
+
+- **Family:** Archivo (weight vendored: Bold 700, Latin subset —
+  `Archivo-Bold.woff2`, the Google Fonts Latin woff2, unmodified)
+- **Designer:** Omnibus-Type (Héctor Gatti)
+- **License:** SIL Open Font License, version 1.1 (google/fonts `ofl/archivo`)
+- **Source:** https://fonts.google.com/specimen/Archivo
+- **Used by:** `imac-g3` (stand-in for Charcoal, the Mac OS 8/9 system
+  face, in headings, title bars and the brand)
+
 ## Audiowide
 
 - **Family:** Audiowide (weight vendored: Regular 400 —
@@ -181,7 +191,7 @@ files are vendored unmodified.
 
 ## Bottom line
 
-Twenty-one files, fifteen families: thirteen SIL OFL 1.1, Bedstead CC0 and Px437
+Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
