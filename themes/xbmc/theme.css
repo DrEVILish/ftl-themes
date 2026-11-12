@@ -45,7 +45,7 @@ html[data-theme="xbmc"] {
      DejaVu-derived sans (shipped as arial.ttf). Roboto/Segoe are the near
      looks where DejaVu is absent. */
   --font: "DejaVu Sans", Roboto, "Segoe UI", Arial, sans-serif;
-  --font-mono: Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  --font-mono: "DejaVu Sans Mono", Consolas, "Liberation Mono", monospace;
   --readout-font: var(--font);
   --flare: #1e90ff;
 
@@ -55,7 +55,9 @@ html[data-theme="xbmc"] {
   --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   --btn-shadow-hover: 0 0 0 1px var(--accent), 0 0 14px rgba(30, 144, 255, 0.5);
   --focus: var(--accent);
-  --focus-ring: 0 0 0 2px var(--accent);
+  /* Two-tone: a black inner ring and the pale glow blue, so it clears 3:1
+     on the glass and on the backdrop alike. */
+  --focus-ring: 0 0 0 2px #000, 0 0 0 4px var(--accent-2);
   --input-bg: #08090a;
   --input-border: var(--border);
   --panel-bg: linear-gradient(180deg, rgba(29, 31, 34, 0.94), rgba(10, 11, 12, 0.94));
@@ -88,7 +90,7 @@ html[data-theme="xbmc"] {
   /* Submenu shelf: black glass, white focused label, no blue block. */
   --segmented-bg: linear-gradient(180deg, #1d1f22, #000);
   --segmented-border: #000;
-  --segmented-padding: 0.2rem 1.5rem;
+  --segmented-padding: 0.2rem 2.25rem;
   --segmented-radius: 0;
   --segmented-item-radius: 0;
   --segmented-item-fg: #c4cad0;
@@ -166,9 +168,9 @@ html[data-theme="xbmc"] {
   background: #001542;
   --xbmc-disc: rgba(20, 80, 215, 0.42);
   --xbmc-disc-2: rgba(25, 95, 225, 0.32);
-  --xbmc-rim: rgba(90, 170, 250, 0.5);
-  /* Out of focus: a dim centre brightening toward the rim. */
-  --xbmc-core: rgba(20, 80, 215, 0.16);
+  --xbmc-rim: rgba(90, 170, 250, 0.3);
+  /* Filled lens bokeh: the centre only a small step dimmer than the rim. */
+  --xbmc-core: rgba(20, 80, 215, 0.32);
   --xbmc-glow: rgba(70, 190, 240, 0.5);
   /* A soft fall-off outside the rim, so discs read as lens bokeh. */
   --xbmc-halo: rgba(90, 170, 250, 0.15);
@@ -178,7 +180,7 @@ html[data-theme="xbmc"] {
   --xbmc-rays:
     linear-gradient(60deg, transparent 30%, rgba(80, 170, 255, 0.14) 40%, transparent 50%),
     linear-gradient(60deg, transparent 55%, rgba(80, 170, 255, 0.12) 62%, transparent 70%);
-  --xbmc-base: radial-gradient(ellipse 120% 90% at 50% 28%, #0a6aa8 0%, #044070 45%, #03265c 75%, #001542 100%);
+  --xbmc-base: radial-gradient(ellipse 120% 90% at 50% 28%, #1690c4 0%, #075a92 22%, #03264a 55%, #001542 100%);
 }
 html[data-theme="xbmc"] body::before {
   content: "";
@@ -215,24 +217,26 @@ html[data-theme="xbmc"] body::before {
     radial-gradient(circle 5rem at 90% 56%, rgba(20, 80, 215, 0.24) 0 calc(100% - 2rem), transparent 100%),
     radial-gradient(circle 4rem at 30% 6%, rgba(20, 80, 215, 0.26) 0 calc(100% - 1.75rem), transparent 100%),
     /* The bright cyan-white bloom above centre, with cyan haze, and dark soft blobs. */
-    radial-gradient(ellipse 18rem 12rem at 50% 30%, rgba(120, 200, 255, 0.35), transparent 100%),
+    radial-gradient(ellipse 18rem 12rem at 50% 30%, rgba(40, 180, 215, 0.45), transparent 100%),
+    /* Small cyan discs along the top edge and gutters, where content seldom sits. */
+    radial-gradient(circle 1.25rem at 22% 4%, rgba(56, 187, 217, 0.55) calc(100% - 3px), transparent 100%),
+    radial-gradient(circle 1rem at 3% 52%, rgba(56, 187, 217, 0.5) calc(100% - 3px), transparent 100%),
+    radial-gradient(circle 1.5rem at 97.5% 26%, rgba(56, 187, 217, 0.5) calc(100% - 3px), transparent 100%),
     radial-gradient(circle 16rem at 46% 30%, rgba(40, 160, 230, 0.14), transparent 100%),
     radial-gradient(circle 14rem at 8% 45%, rgba(40, 120, 230, 0.14), transparent 100%),
     radial-gradient(circle 12rem at 62% 88%, rgba(40, 120, 230, 0.12), transparent 100%),
     var(--xbmc-rays),
     var(--xbmc-base);
 }
-/* Phones: six discs, no rays or haze, so the fixed layer is cheap to
-   raster and composite while scrolling. */
+/* Phones: three discs and the cyan glow, no rays or haze, so the fixed
+   layer is cheap to raster and composite while scrolling. */
 @media (max-width: 480px) {
   html[data-theme="xbmc"] body::before {
     background:
       radial-gradient(circle 1.25rem at 62% 20%, rgba(150, 225, 250, 0.6) 30%, var(--xbmc-glow) calc(100% - 4px), rgba(160, 225, 250, 0.6) calc(100% - 2px), transparent 100%),
-      radial-gradient(circle 5rem at 30% 14%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 4rem at 78% 36%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 4.5rem at 20% 58%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 6rem at 85% 78%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 5rem at 25% 94%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 5rem at 30% 14%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), transparent 100%),
+      radial-gradient(circle 6rem at 85% 70%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), transparent 100%),
+      radial-gradient(circle 5rem at 20% 90%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), transparent 100%),
       var(--xbmc-base);
   }
 }
@@ -273,6 +277,9 @@ html[data-theme="xbmc"] .app-status {
   min-block-size: 3.5rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
+/* A frameless ghost icon key drops the glass's top highlight, which would
+   float over the glyph as a stray hairline. */
+html[data-theme="xbmc"] .btn-ghost.btn-icon { --btn-shadow: none; }
 /* Its icon buttons are framed glass squares (the star and power keys). */
 html[data-theme="xbmc"] .app-status .btn-icon {
   border: 1px solid #000;
@@ -298,21 +305,24 @@ html[data-theme="xbmc"] .app-bar {
 html[data-theme="xbmc"] .app-bar .menubar {
   --menubar-fg: #8e8e8e;
 }
-/* Strip and tab caps: the same face in bold, broad and rounded. */
-html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a), .tab) {
+/* Strip and tab caps: the same face in bold, broad and rounded. Vertical
+   list navs (a sidebar) stay sentence case with only core's edge marker. */
+html[data-theme="xbmc"] :is(.app-bar .nav-item, .menubar > li > :is(button, a), .tab) {
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0;
   /* Embossed into the glass. */
   text-shadow: 0 1px 0 #000;
 }
-html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)) {
+html[data-theme="xbmc"] :is(.app-bar .nav-item, .menubar > li > :is(button, a)) {
   position: relative;
 }
 /* Tall, even strip cells of large caps split by faint separators. */
 html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) {
   /* Caps that nearly fill the band's height, as 'VIDEOS' does. */
   font-size: clamp(1rem, 1.6vw, 1.75rem);
+  /* Recessed into the glass: dark above, a faint light lip below. */
+  text-shadow: 0 -1px 0 #000, 0 1px 0 rgba(255, 255, 255, 0.07);
   flex: 0 0 auto;
   /* Equal cells where the bar has room; narrower bars let them hug. */
   min-inline-size: min(12rem, 10vw);
@@ -320,11 +330,22 @@ html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) 
   justify-content: center;
   border-inline-start: 1px solid rgba(255, 255, 255, 0.08);
 }
+/* Big caps sized to the strip's own width (what the brand and tools
+   leave), so they grow toward the reference's band-filling 'VIDEOS'
+   (~2.5rem) without pushing the tools onto a second row. */
+@media (min-width: 1200px) {
+  html[data-theme="xbmc"] .app-bar > :is(nav, .nav) { container-type: inline-size; min-inline-size: 0; }
+  html[data-theme="xbmc"] .app-bar :is(.nav, .menubar) { flex-wrap: nowrap; }
+  /* Cells share the strip in proportion to their labels. */
+  html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li) { flex: 1 1 auto; max-inline-size: none; }
+  html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { font-size: clamp(1rem, max(1.6vw, 2.7cqi), 2.5rem); min-inline-size: 0; max-inline-size: none; padding-inline: 0.5em; line-height: 1; }
+}
+html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)):is(.is-active, [aria-current="page"]) { text-shadow: 0 1px 0 #000; }
 /* Core already whitens an active .nav-item; the demo menubar's needs it here. */
 html[data-theme="xbmc"] .menubar > li > :is(button, a).is-active {
   color: #fff;
 }
-html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)):is(.is-active, [aria-current="page"])::after {
+html[data-theme="xbmc"] :is(.app-bar .nav-item, .menubar > li > :is(button, a)):is(.is-active, [aria-current="page"])::after {
   content: "";
   position: absolute;
   left: 0.6em;
@@ -358,8 +379,10 @@ html[data-theme="xbmc"] :is(.window, dialog, .modal, .panel, .card) .tabs:not([a
 html[data-theme="xbmc"] .app-main > :is(h1, h2, h3, p, .breadcrumbs, .cluster, .page-header) {
   text-shadow: 0 1px 2px #000, 0 0 4px rgba(0, 0, 0, 0.8);
 }
+/* A compact tab hanging under the strip, never stretched to the column. */
 html[data-theme="xbmc"] .segmented {
-  clip-path: polygon(0 0, 100% 0, calc(100% - 1.25rem) 100%, 1.25rem 100%);
+  inline-size: fit-content;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 1.75rem) 100%, 1.75rem 100%);
 }
 html[data-theme="xbmc"] .segmented-item + .segmented-item {
   border-inline-start: 1px solid #000;

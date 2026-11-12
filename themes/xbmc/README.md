@@ -24,9 +24,9 @@ hover glow and the selection underline.
    not a blue fill; so do the current page, active filter chips, a range
    picker's chosen button and selected table/list rows (opaque `#26292d`
    with the blue edge marker).
-2. **Blue backdrop, neutral chrome.** The page is a blue radial
-   (`#0a6aa8` → `#044070` → `#03265c` → navy `#001542` at the edges) under a
-   bright cyan-white bloom above centre under a field of
+2. **Blue backdrop, neutral chrome.** The page is a high-contrast radial
+   (cyan-blue `#1690c4` → `#075a92` → near-black `#03264a` by 55% → navy
+   `#001542` at the edges) under a vivid cyan bloom above centre under a field of
    saturated royal-blue bokeh discs and soft diagonal light rays; surfaces are neutral
    `#121314` / `#1d1f22` glass, not blue-tinted.
 3. **One blue, used as light.** `--accent` (`#1e90ff`) is a glow colour;
@@ -36,26 +36,38 @@ hover glow and the selection underline.
 
 - The backdrop: a fixed, viewport-sized `body::before` layer
   (`contain: strict`, so scrolling never repaints it) holding lens bokeh at
-  three depths: 14 near discs of 1.5-9rem — a dim `rgba(20,80,215,.16)`
-  centre brightening to royal blue `rgba(20,80,215,.42)` /
+  three depths: 14 near discs of 1.5-9rem — filled, a `rgba(20,80,215,.32)`
+  centre only a small step dimmer than royal blue `rgba(20,80,215,.42)` /
   `rgba(25,95,225,.32)`, overlapping in a cluster upper right, one small
-  bright cyan `rgba(70,190,240,.5)` — each with a soft 4-5px edge (a
-  `rgba(90,170,250,.5)` rim fading through a `.15` halo); five far discs
+  bright cyan `rgba(70,190,240,.5)` — each with a soft 4-5px
+  edge (a faint `rgba(90,170,250,.3)` rim fading through a `.15` halo); five far discs
   (fill `.12`, rim `.2`); and four fully defocused solid blobs melting into
-  the field. Over them a bright cyan-white bloom above centre (an 18rem by
-  12rem ellipse of `rgba(120,200,255,.35)` at 50% 30%, cyan haze around
-  it), soft blue blobs and two 60° light rays (`rgba(80,170,255,.12-.14)`),
-  all over the blue radial. Phones draw six discs on the radial only (no
-  rays or haze).
+  the field. Over them a cyan bloom above centre (an 18rem by
+  12rem ellipse of `rgba(40,180,215,.45)` at 50% 30%, cyan haze around
+  it), three small `#38bbd9` discs on the top edge and gutters where
+  content seldom sits, soft blue blobs and two 60° light rays (`rgba(80,170,255,.12-.14)`),
+  all over the blue radial. Phones draw the cyan glow and three discs on the
+  radial only (no rays, haze or halos), to keep the fixed layer cheap.
 - The menu strip: a tall 4rem band,
   `--app-bar-bg: linear-gradient(180deg, #232323, #141414 50%, #050505)`
   with a bevelled lip (1px `rgba(255,255,255,.28)` top, a fainter bottom
   hairline, `0 2px 0 #000` and a soft drop shadow under it); items in large
-  (`clamp(1rem, 1.6vw, 1.75rem)`, so 28px caps fill the band on wide
-  screens as 'VIDEOS' does) uppercase bold neutral `#8e8e8e` with a
-  `0 1px 0 #000` emboss, in equal cells (up to 14rem) centred across the band, split by 1px faint
+  uppercase bold neutral `#8e8e8e` caps, recessed into the glass
+  (`0 -1px 0 #000, 0 1px 0 rgba(255,255,255,.07)`; the active label is
+  white with a plain `0 1px 0 #000`). From 1200px the strip is a size
+  container and the caps take `clamp(1rem, max(1.6vw, 2.7cqi), 2.5rem)`,
+  growing toward the band-filling 'VIDEOS' as far as the brand and tools
+  leave room (about 27px on a sparse bar at 1280, 38px at 2400); below
+  that `clamp(1rem, 1.6vw, 1.75rem)`. Cells are centred across the band, split by 1px faint
   separators. On phones the strip scrolls sideways and the tools stay on
   one row, the theme picker shrinking so the account button stays visible.
+- Strip caps, emboss and underline are scoped to `.app-bar` (and
+  menubars); a vertical sidebar `.nav` stays sentence case with only
+  core's left edge marker.
+- Focus: a two-tone ring, `0 0 0 2px #000, 0 0 0 4px #7fc4ff`, so it
+  clears 3:1 on the glass and on the bright backdrop.
+- Ghost icon buttons (reading-pane toolbars) drop the glass's inset top
+  highlight, so no stray hairline floats over the glyph.
 - The active item's underline: 2px `--accent`,
   `box-shadow: 0 0 6px 1px rgba(30,144,255,.8)`.
 - Tabs inside a window, dialog, panel or card step down to 0.75rem caps
@@ -63,8 +75,9 @@ hover glow and the selection underline.
 - Page-level text straight on the backdrop (title, lede, breadcrumbs, the
   control rows) carries a dark `0 1px 2px #000, 0 0 4px` shadow halo.
 - The submenu shelf: `.segmented` is a black gradient whose bottom corners
-  are cut on a 1.25rem diagonal by `clip-path` (the 'Dateien | Addons'
-  trapezoid), 1.5rem end padding, dark separators, and regular-weight
+  are cut on a 1.75rem diagonal by `clip-path` (the 'Dateien | Addons'
+  trapezoid); it is `fit-content` wide, never stretched to the column,
+  with 2.25rem end padding, dark separators, and regular-weight
   sentence-case `#c4cad0` items, as 'Dateien' is.
 - The bottom bar: `.app-status` is a tall grey glass band (at least 3.5rem,
   `linear-gradient(180deg, #3a3a3a, #1a1a1a)`, 1rem padding) with a light
@@ -118,7 +131,7 @@ Strip items and tabs are the same face, uppercase 700, no extra tracking;
 segmented items (the submenu shelf) are 400 in sentence case. KPI values
 use the bold sans too (`--readout-font: var(--font)`, tabular numbers), as
 Confluence's clock does. `--font-mono` is
-`Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace`.
+`"DejaVu Sans Mono", Consolas, "Liberation Mono", monospace` (Kodi's bundled mono family first).
 
 ## Contrast honesty
 
