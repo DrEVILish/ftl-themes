@@ -36,7 +36,9 @@ a limitation to soften.
 - The page number ("P100") opens the header row in plain white, as on
   every real page; the nav links that follow each take a different
   broadcast colour (cyan / green / yellow / magenta), like a page's index
-  lines.
+  lines, on both `.nav-item` links and the demo `.menubar`; the current
+  item is a red block with black text. A yellow clock (`16:24/41`) closes
+  the row, as on every real header (hidden on phones).
 - `h1` is the section banner: a full-width blue band with the headline
   in yellow at true double height (`transform: scaleY(2)`, the band
   stretching with it as the hardware row did).
@@ -45,18 +47,31 @@ a limitation to soften.
   thick band of the same colour on top. Nothing draws a line: table rules
   and hairlines are gone, as on the real service.
 - Tabs are coloured words; the selected one is white on a blue band.
-- **Fastext:** the status strip ends with the four key words — red
-  *Headlines*, green *Sport*, yellow *Weather*, cyan *TV Guide* — one
-  monospaced string coloured cell-for-cell by a gradient clipped to the
-  text.
+- **Fastext:** the status strip ends with a blue strapline row (yellow
+  *Teletext: the world at your fingertips*) and then the four key words
+  on a row of their own — red *Headlines*, green *Sport*, yellow
+  *Weather*, cyan *TV Guide* — as four 10-cell words (the 40-column row)
+  in one monospaced string coloured cell-for-cell by a hard-stopped
+  gradient clipped to the text. Body size, shrinking so all 40 cells fit
+  a phone.
+- **No tints, no circles.** Badges are black cells with colour ink; the
+  bulk bar and skeletons are flat blue blocks; avatars are flat palette
+  cells; edited cells, poll rows, invalid inputs and sparklines carry no
+  wash. Switches, slider thumbs, icon buttons, avatars, status dots and
+  lamps are square. Disabled buttons are black with grey ink and edge,
+  not a dimmed fill.
+- **Colour, not white outlines:** inputs have a cyan edge; menus,
+  popovers, lists and logs a blue one. Secondary lines (list meta, stat
+  labels) are cyan, as on an index page.
 - Selected/active rows invert to a solid colour fill with black text
   (`--row-selected-bg`), not a tint or outline — real teletext has no
   concept of a translucent highlight.
 
 ## Icons
 
-`themes/teletext/icons.svg` redraws the full core icon set (178/178,
-plus `sun-moon`) as solid colour-cell block graphics, like the real
+`themes/teletext/icons.svg` redraws the original core icon subset (178
+glyphs plus `sun-moon`); the newer core icons (about 840 more) fall back
+to core's outline sprite, so a page mixing the two shows both styles as solid colour-cell block graphics, like the real
 service's character-cell display. Style rules, taken from the original
 subset and followed by every later addition:
 
@@ -70,9 +85,11 @@ subset and followed by every later addition:
   glyph's cells into one path per tone to keep the sprite small.
 - **Second tone:** a dimmed cell (`fill-opacity` 0.3–0.5) marks secondary
   detail such as map folds, a pie slice or disc glare. A dim cell must
-  never sit on top of a solid one, because it would vanish. A few
-  original glyphs (coin, compass, layout and others) do stack them, so
-  their inner mark is invisible.
+  never sit on top of a solid one, because it would vanish. Where a mark
+  sits inside a solid block (compass, layout, terminal, globe, file-check,
+  file-code, file-text) it is cut out with `fill-rule="evenodd"` instead.
+  A few original glyphs (coin and others) still stack them, so their
+  inner mark is invisible.
 - **Lettering:** the `PDF`/`PNG` labels are 3×5-cell block letters, not
   text.
 - **Palette:** `currentColor` only.
@@ -81,7 +98,7 @@ subset and followed by every later addition:
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-Core's tiers do the work; the theme has no breakpoints of its own.
+Core's tiers do the work; the theme's one breakpoint (≤480px) hides the header clock.
 
 - **Phone (≤480) and tablet (481–900):** bar, main and status in one column. The "P100" page number is now part of the bar's first line rather than an absolute overlay, so on a phone the brand truncates after it instead of sliding underneath it. The double-height headline scales down (`clamp`) so it still fits a 393px screen at double height.
 - **Nested surfaces:** a panel inside a panel, card, dialog, drawer or popover drops its full-width colour band and shows its title in the band's colour over a thin band, as a card does, so bands never stack.
@@ -106,7 +123,7 @@ Core's tiers do the work; the theme has no breakpoints of its own.
 
 ## Typography
 
-`--font` and `--font-mono` are **Bedstead**, vendored (`assets/fonts/Bedstead.woff2`, CC0 — see `assets/fonts/NOTICE.md`): Ben Harris's outline recreation of the SAA5050 character generator, so the blocky, stepped glyphs in all three captures are the real shapes. The subset keeps the teletext sextant mosaics (U+1FB00–1FBAF) for block graphics.
+`--font` and `--font-mono` are **Bedstead**, vendored (`assets/fonts/Bedstead.woff2`, CC0 — see `assets/fonts/NOTICE.md`): Ben Harris's outline recreation of the SAA5050 character generator, so the blocky, stepped glyphs in all three captures are the real shapes. The font has one weight and `font-synthesis: none` stops the browser smearing a faux bold over it, as teletext had no bold. The subset keeps the teletext sextant mosaics (U+1FB00–1FBAF) for block graphics.
 
 ## Contrast honesty
 

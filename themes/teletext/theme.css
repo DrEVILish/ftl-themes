@@ -59,7 +59,6 @@ html[data-theme="teletext"] {
   --focus-ring: 0 0 0 2px #ffffff;
   --input-bg: #000000;
   --input-border-width: 2px;
-  --input-border: #ffffff;
   --input-radius: 0;
   --panel-border-width: 0;
   --panel-bg: #000000;
@@ -88,6 +87,69 @@ html[data-theme="teletext"] {
   --overlay-bg: rgba(0, 0, 0, 0.85);
   --indicator-fg: var(--accent);
   --indicator-track: #333333;
+  /* Teletext had one weight: never let the browser smear a faux bold
+     over the stepped SAA5050 cells. */
+  font-synthesis: none;
+  /* Zero roundness: every core circle and pill becomes a square cell. */
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --switch-thumb-bg: #ffffff;
+  --switch-border: #ffffff;
+  --slider-thumb-radius: 0;
+  --slider-thumb-bg: #00ffff;
+  /* Core paints the track on the content box with --slider-bg; the
+     default (--surface-2) is black here, so the track would vanish. */
+  --slider-bg: #ffffff;
+  --avatar-radius: 0;
+  --avatar-bg: #ff00ff;
+  --avatar-fg: #000000;
+  /* User colours from the broadcast set, each under black ink. */
+  --presence-color-1: #00ffff;
+  --presence-color-2: #00ff00;
+  --presence-color-3: #ffff00;
+  --presence-color-4: #ff00ff;
+  --presence-color-5: #ff0000;
+  --presence-color-6: #ffffff;
+  --lamp-glow: none;
+  --badge-fg: #ffffff;
+  --btn-icon-radius: 0;
+  --status-dot-radius: 0;
+  --lamp-radius: 0;
+  --presence-radius: 0;
+  --steps-marker-radius: 0;
+  --swatch-radius: 0;
+  --fab-radius: 0;
+  --calendar-date-radius: 0;
+  --scrubber-thumb-radius: 0;
+  --scrollbar-radius: 0;
+  --prefs-swatch-radius: 0;
+  /* No tints: the eight colours are flat or absent. */
+  --sparkline-area-opacity: 0;
+  --skeleton-bg: #0000ff;
+  --skeleton-shine: transparent;
+  --skeleton-radius: 0;
+  --bulk-bar-bg: #0000ff;
+  --bulk-bar-fg: #ffffff;
+  --bulk-bar-border: #0000ff;
+  --bulk-bar-radius: 0;
+  /* Edited cells keep core's marker, glyph and ink, not a wash. */
+  --cell-dirty-bg: transparent;
+  --cell-saved-bg: transparent;
+  --cell-error-bg: transparent;
+  --input-error-bg: #000000;
+  --list-tone-tint: 0%;
+  /* Secondary lines in cyan, as a real index page's, not grey. */
+  --list-item-meta-fg: var(--accent);
+  /* Boxes are colour, not white outlines: inputs keep a cyan edge for
+     affordance, floating menus and logs a blue one. */
+  --input-border: #00ffff;
+  --dropdown-border: #0000ff;
+  --dropdown-border-width: 2px;
+  --popover-border: #0000ff;
+  --popover-border-width: 2px;
+  --listbox-border: #0000ff;
+  --list-border: #0000ff;
+  --log-border: #0000ff;
 }
 
 /* Headline double-height: real teletext hardware could stretch a text row
@@ -166,6 +228,27 @@ html[data-theme="teletext"] .app-bar::before {
 html[data-theme="teletext"] .app-bar .nav-item:nth-of-type(4n+2) { --nav-item-fg: #00ff00; }
 html[data-theme="teletext"] .app-bar .nav-item:nth-of-type(4n+3) { --nav-item-fg: #ffff00; }
 html[data-theme="teletext"] .app-bar .nav-item:nth-of-type(4n+4) { --nav-item-fg: #ff00ff; }
+/* The same for the demo pages' menubar (li > [role=menuitem]); the
+   current item is the red index block. */
+html[data-theme="teletext"] .app-bar .menubar > li:nth-child(4n+1) { color: #00ffff; }
+html[data-theme="teletext"] .app-bar .menubar > li:nth-child(4n+2) { color: #00ff00; }
+html[data-theme="teletext"] .app-bar .menubar > li:nth-child(4n+3) { color: #ffff00; }
+html[data-theme="teletext"] .app-bar .menubar > li:nth-child(4n+4) { color: #ff00ff; }
+html[data-theme="teletext"] .app-bar .menubar > li > [role="menuitem"]:is(.is-active, [aria-current]) {
+  background: #ff0000;
+  color: #000000;
+}
+/* The header clock: yellow, at the far end of the row, as on every page.
+   Hidden on phones, where the row has no cells to spare. */
+html[data-theme="teletext"] .app-bar::after {
+  content: "16:24/41";
+  order: 99;
+  flex: none;
+  color: #ffff00;
+}
+@media (max-width: 480px) {
+  html[data-theme="teletext"] .app-bar::after { content: none; }
+}
 
 /* --- Layout ------------------------------------------------------------ *
  * A broadcast frame: solid colour-block bar and status strip, zero
@@ -190,23 +273,57 @@ html[data-theme="teletext"] .app-bar {
   --nav-item-bg-active: var(--danger);
 }
 /* Fastext: the bottom row of a Ceefax page — four words in red, green,
-   yellow and cyan, one per remote-control key. One monospaced string,
-   each word padded to 12 cells, coloured cell-for-cell by a hard-stopped
-   gradient clipped to the text. */
+   yellow and cyan, one per remote-control key, under a blue strapline.
+   Each is its own full-width row at body size. One monospaced string of
+   four 10-cell words (the 40-column row), coloured cell-for-cell by a
+   hard-stopped gradient clipped to the text; the size shrinks so all 40
+   cells fit a phone. */
+html[data-theme="teletext"] .app-status { flex-wrap: wrap; row-gap: 0.2rem; }
+html[data-theme="teletext"] .app-status::before,
 html[data-theme="teletext"] .app-status::after {
-  content: "Headlines   Sport       Weather     TV Guide";
-  display: block;
-  white-space: pre;
-  margin-top: 0.3rem;
+  flex: 0 0 100%;
   font-family: var(--font-mono);
-  background: linear-gradient(90deg, #ff0000 0 12ch, #00ff00 12ch 24ch, #ffff00 24ch 36ch, #00ffff 36ch 48ch) 0 0 / 48ch 100% no-repeat;
+  font-size: min(1rem, calc((100vw - 2.5rem) / 24));
+  white-space: pre;
+  overflow: hidden;
+}
+html[data-theme="teletext"] .app-status::before {
+  content: "  Teletext: the world at your fingertips";
+  order: 98;
+  margin-top: 0.3rem;
+  background: #0000ff;
+  color: #ffff00;
+}
+html[data-theme="teletext"] .app-status::after {
+  content: "Headlines Sport     Weather   TV Guide  ";
+  order: 99;
+  background: linear-gradient(90deg, #ff0000 0 10ch, #00ff00 10ch 20ch, #ffff00 20ch 30ch, #00ffff 30ch 40ch) 0 0 / 40ch 100% no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  width: 48ch;
-  max-width: 100%;
-  overflow: hidden;
 }
+
+/* Bedstead's wide cells: a long toggle row wraps rather than overflow. */
+html[data-theme="teletext"] .toggle-group { flex-wrap: wrap; }
+html[data-theme="teletext"] .toggle-group > .toggle-btn { flex: 1 1 auto; }
+/* Stat labels in cyan, not grey: an index page's secondary line. */
+html[data-theme="teletext"] .stat-label { --muted: var(--accent); }
+/* Badges: a black cell with the colour as ink, never a dark tint. */
+html[data-theme="teletext"] :is(.badge-accent, .badge-danger, .badge-success, .badge-warning):not(.badge-solid, .badge-outline) { --badge-bg: #000000; }
+/* Disabled: black with grey ink and a grey edge, not a dimmed fill. */
+html[data-theme="teletext"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: #000000;
+  --btn-fg: #b3b3b3;
+  opacity: 1;
+  outline: 2px solid #b3b3b3;
+  outline-offset: -2px;
+}
+/* A user's avatar is their colour cell, flat, not a 28% tint. */
+html[data-theme="teletext"] .avatar[data-color] { --avatar-bg: var(--user-color); --avatar-fg: #000000; }
+/* Skeleton: a still blue placeholder block, no shimmer gradient. */
+html[data-theme="teletext"] .skeleton { background-image: none; animation: none; border-radius: 0; }
+/* The headline band spans the row even in a flex page header. */
+html[data-theme="teletext"] h1 { flex-grow: 1; }
 
 /* Mixing-console primitives in the broadcast eight: red/green/blue caps,
    magenta for LF (teletext has no brown), square keys, no rounding. */
