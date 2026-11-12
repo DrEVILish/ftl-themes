@@ -21,14 +21,19 @@ reproduced.
    of panels, cards, lists and alerts (a `::before`; `--panel-radius:
    0.7rem 0 0 0.7rem`). On an image card it sits on the edge, over the
    media, since the card clips its corners. Modals, menus and popovers carry it as a 3px inset.
-   No hairline closes the other three sides.
+   A folder rail (`.nav-rail`) and a group box (`fieldset.field`,
+   `.group-box`, legend as an outlined pill tab) are bracketed too.
+   No hairline closes the other three sides. The bracket line is the
+   accent lifted 15% toward white, brighter than the barely tinted glass.
 2. **Names sit on pill tabs.** A panel header's first child, the modal
    title and the app brand are filled accent tabs with dark text, like
    "TAG.NM" or "SUM EVA": ends rounded to half an em, a thin dark divider
    about half an em in from the left, a soft halo, and the tab growing out
    of the bracket's top-left return (its left end on the bracket line). A
-   window's tab carries only its name; minimise, maximise and close sit
-   on the glass at the top right in cyan.
+   window's tab carries only its name (no app glyph before it); minimise,
+   maximise and close sit on the glass at the top right in cyan. An
+   inactive window's tab is outlined (no fill, accent edge and text),
+   never faded. Tab captions are compact chips (0.68rem, brand 0.72rem).
 3. **Wide squared capitals for labels, plain for reading.** Michroma for
    headings, buttons, tabs, toggle groups, KPI labels, menubar items,
    badges and table heads (nav items at 0.72rem, not page-sized); section
@@ -36,8 +41,9 @@ reproduced.
    phone nav, switch rows and toggle rows, where width forbids Michroma);
    Share Tech for body;
    Share Tech Mono for data and inputs.
-4. **Controls are outlined pills.** Buttons and the segmented control are
-   1.5px outlined pills ("ENG HUL FRA"); primary is the filled pill.
+4. **Controls are outlined pills.** Buttons, the segmented control and
+   toggle groups are separate 1.5px outlined pills with gaps ("ENG HUL
+   FRA"); primary and the selected item fill. Only `.input-group` joins.
    Filter chips (`.badge-button`) are 1.5px outlined pills too, only the
    active one filled; status tags are outline-only small rects ("CK2").
 5. **Values live in dark boxes.** `.readout` is a small value box darker
@@ -48,7 +54,7 @@ reproduced.
    input navy (about 3.4:1 on the glass), and checkboxes and radios are
    navy wells with that same lit edge, filled accent when on.
 6. **The glass has a grid.** The page background is mid-navy lit glass
-   (`--bg: #051a2a`, panels a lit pane lighter at `#0d3049`) with a faint
+   (`--bg: #051a2a`, panels barely tinted glass: `#0d3049` at 60%) with a faint
    lattice of dashes and crosses. The navy glow scrolls with the page (not
    `fixed`), so touch scrolling does not repaint the whole background.
 
@@ -60,8 +66,9 @@ reproduced.
 - Orange edge codes ("0034529", "963409IN_CHY0432") running up the
   empty rail, drawn in CSS.
 - A thin cyan rule under the top bar; the brand is a pill tab.
-- A stepped frame line over the status bar: it runs flat, then angles up
-  45deg into a raised section over the sign-off (bridge "SY.AVL" frame).
+- A stepped 2px frame line over the status bar: it runs flat for 70% of
+  the width, then rises 1.4rem at 45deg into a raised section over the
+  sign-off with a faint halo on desktop (bridge "SY.AVL" frame).
 - Toasts carry the bracket in their status color instead of a full box.
 - Micro-caps status line in the label face: `.app-status` ends with the
   ship's sign-off "ENDO SY OS / MUTHUR PRQ 12-5 B" (generated, not read
@@ -81,7 +88,8 @@ Michroma (headings and labels), Share Tech (body) and Share Tech Mono
 film's own face is a custom wide squared sans; Michroma is the closest
 open match. All three faces have one weight, so `font-synthesis: none`
 keeps headings and numbers light. Michroma is too wide for narrow setting
-rows, so a switch row's label reads in Share Tech; avatar initials too.
+rows, so a switch row's label reads in Share Tech; avatar initials too
+(top-bar initials in Share Tech Mono at 0.74rem, with a smaller presence dot).
 On touch tiers a joined toggle row reads in Share Tech capitals too.
 
 ## Contrast honesty
@@ -106,7 +114,7 @@ is decoration under the panels and carries no text.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On tablet the brand tab stays as wide as its text; on phone it shares the first line with the bell and avatar (truncating if it must) and the nav reads in Share Tech tracked capitals on one line. Pager items and icon buttons are at least 2rem. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On tablet the brand tab stays as wide as its text; on phone it shares the first line with the bell and avatar (truncating if it must) and the nav reads in Share Tech tracked capitals on one line. Pager items and icon buttons are at least 2rem. On touch pointers the bracket halo and the tab glow drop out to keep scrolling cheap; headings and readouts keep their glow. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
 
 ## Icons
 

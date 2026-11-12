@@ -63,13 +63,17 @@ html[data-theme="prometheus"] {
 
   /* Glass with a bracket: a rounded "[" just off the left edge, open right.
      The bracket itself is drawn by ::before (see "The bracket" below). */
-  --panel-bg: var(--surface);
+  /* Barely tinted glass under bright lines (medipod): the pane is the lit
+     fill mixed most of the way back to the page. */
+  --pm-glass: color-mix(in srgb, var(--surface) 60%, transparent);
+  --pm-line: color-mix(in srgb, var(--accent), white 15%);
+  --panel-bg: var(--pm-glass);
   --panel-border: transparent;
   --panel-radius: 0.7rem 0 0 0.7rem;
   --panel-shadow: none;
   --panel-header-bg: transparent;
   --panel-header-fg: var(--accent);
-  --card-bg: var(--surface);
+  --card-bg: var(--pm-glass);
   --card-border: transparent;
   --card-radius: 0.7rem 0 0 0.7rem;
   --card-shadow: none;
@@ -132,6 +136,10 @@ html[data-theme="prometheus"] {
   --tab-fg-active: var(--accent);
   --tab-radius: 4px 4px 0 0;
   --segmented-radius: 999px;
+  --segmented-bg: transparent;
+  --segmented-border: transparent;
+  --segmented-padding: 0;
+  --segmented-item-fg: var(--accent-text);
   --segmented-item-radius: 999px;
   --segmented-item-bg-active: var(--accent);
   --segmented-item-fg-active: var(--on-accent);
@@ -296,6 +304,9 @@ html[data-theme="prometheus"] td { font-family: var(--font-mono); }
 html[data-theme="prometheus"] .btn-primary { --btn-fg: var(--on-accent); }
 /* Initials stay in the narrow face, even inside a Michroma header. */
 html[data-theme="prometheus"] .avatar { font-family: var(--font); letter-spacing: 0.02em; }
+/* The top-bar initials read at a real size; the presence dot stays a dot. */
+html[data-theme="prometheus"] .app-bar .avatar { font: 0.74rem var(--font-mono); letter-spacing: 0; --presence-dot-size: 0.55rem; }
+html[data-theme="prometheus"] .app-bar .btn-icon { font-size: 1rem; }
 /* Small glyph targets (pager, icon buttons) get at least 2rem. */
 html[data-theme="prometheus"] :is(.pagination-item, .btn-icon, .btn-close, .btn-min, .btn-max) {
   min-block-size: max(2rem, var(--tap-min));
@@ -323,6 +334,12 @@ html[data-theme="prometheus"] .input-group > .btn {
   --btn-icon-radius: 3px;
   min-inline-size: calc(var(--tap-min) + 2px);
 }
+/* Toggles are separate outlined pills with gaps ("ENG HUL FRA"); only the
+   selected one fills. Joined pills stay for .input-group. */
+html[data-theme="prometheus"] .segmented { gap: 0.35rem; }
+html[data-theme="prometheus"] .segmented-item { border: 1.5px solid var(--accent); }
+html[data-theme="prometheus"] .toggle-group:not(.is-stacked) { gap: 0.35rem; flex-wrap: wrap; }
+html[data-theme="prometheus"] .toggle-group:not(.is-stacked) > .toggle-btn { margin-inline-start: 0; border-radius: 999px; }
 /* Michroma is too wide for narrow setting rows; those labels read in
    Share Tech, still in tracked capitals. */
 /* Touch tiers: a joined toggle row has no room for Michroma's width, so
@@ -343,7 +360,7 @@ html[data-theme="prometheus"] .panel-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
 }
 /* A title tab starts level with the bracket's top return; its own padding
    keeps the text off the edge. A plain header keeps core's top padding. */
@@ -437,8 +454,21 @@ html[data-theme="prometheus"] .modal-header > :not(.btn-min, .btn-max, .btn-clos
   min-inline-size: 0;
   flex: 0 1 auto;
 }
-/* An inactive window's tab dims; it keeps its hue rather than going grey. */
-html[data-theme="prometheus"] { --window-header-filter-inactive: opacity(0.6); }
+/* An inactive window's tab goes outlined (the nested-glass tab): no fill,
+   accent edge and text, never a faded fill. Selectors mirror core's. */
+html[data-theme="prometheus"] { --window-header-filter-inactive: none; }
+html[data-theme="prometheus"] :is(
+  .desktop:has(.desktop-window:focus-within) .desktop-window:not(:focus-within),
+  .desktop:not(:has(.desktop-window:focus-within)):has(.window-app:checked) .desktop-window:not(:has(> .window-app:checked)),
+  .desktop:not(:has(.desktop-window:focus-within, .window-app:checked)) .desktop-window:not(:nth-last-child(1 of .desktop-window)),
+  .desktop:has(.start-menu:popover-open) .desktop-window
+) > .modal > .modal-header > .window-title {
+  background: transparent;
+  color: var(--accent-text);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+/* The window's tab grows straight out of the bracket: no app glyph before it. */
+html[data-theme="prometheus"] .desktop-window .modal-header > .icon { display: none; }
 
 /* Check boxes and radios are navy glass wells with the lit edge, cyan when
    on, instead of the browser's neutral grey. */
@@ -471,13 +501,13 @@ html[data-theme="prometheus"] .checkbox:indeterminate::before { block-size: 0.15
  * glass's left edge (medipod "MSCN_51/2", suit "TAG.NM"). Decoration only.
  * A list clips its overflow, so its bracket sits on the edge instead. */
 html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast) { position: relative; }
-html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast)::before {
+html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast, .nav-rail, fieldset.field, .group-box)::before {
   content: "";
   position: absolute;
   inset-block: 0;
   inset-inline-start: var(--pm-bracket-x, -5px);
   inline-size: 0.7rem;
-  border: var(--pm-bracket-w, 3px) solid var(--pm-bracket-c, var(--accent));
+  border: var(--pm-bracket-w, 3px) solid var(--pm-bracket-c, var(--pm-line));
   border-inline-end: 0;
   border-start-start-radius: 0.7rem;
   border-end-start-radius: 0.7rem;
@@ -488,11 +518,36 @@ html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast)::befo
    bracket, so the bracket sits on the edge, above the image. */
 /* Touch: the halo is the first thing to go when scrolling on a phone. */
 @media (pointer: coarse) {
-  html[data-theme="prometheus"] { --pm-glow-halo: none; }
+  html[data-theme="prometheus"] { --pm-glow-halo: none; --pm-glow-box: none; }
 }
 html[data-theme="prometheus"] .card.has-media { --pm-bracket-x: 0; }
 html[data-theme="prometheus"] .card.has-media::before { z-index: 1; }
 html[data-theme="prometheus"] .list { --pm-bracket-x: 0; }
+/* A folder rail and a group box are panels too: bracket, right side open.
+   The rail scrolls (clips), so its bracket sits on the edge. */
+html[data-theme="prometheus"] { --nav-rail-bg: var(--pm-glass); --nav-rail-rule-width: 0; }
+html[data-theme="prometheus"] :is(.nav-rail, fieldset.field, .group-box) { position: relative; }
+html[data-theme="prometheus"] .nav-rail { --pm-bracket-x: 0; padding-inline-start: calc(var(--space-xs) + 4px); }
+html[data-theme="prometheus"] :is(fieldset.field, .group-box) {
+  --pm-bracket-w: 2px;
+  --pm-bracket-c: color-mix(in srgb, var(--accent) 50%, transparent);
+  border: 0;
+  padding: 0 0 0.4rem 0.9rem;
+  margin-inline: 0;
+}
+/* A box that holds a bracketed list lets the list's bracket stand alone. */
+html[data-theme="prometheus"] :is(fieldset.field, .group-box):has(> .list)::before { content: none; }
+html[data-theme="prometheus"] :is(fieldset.field, .group-box) > legend {
+  border: 1.5px solid var(--accent);
+  border-radius: 0.5em;
+  padding: 0.3em 1.1em;
+  margin-inline-start: calc(-0.9rem - 1px);
+  margin-block-end: 0.4rem;
+  color: var(--accent-text);
+  font: 0.66rem var(--font-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 html[data-theme="prometheus"] .alert { --pm-bracket-w: 3px; --pm-bracket-c: var(--alert-border, var(--accent)); }
 /* Toasts are bracketed glass too, not boxed: the status color moves to the bracket. */
 html[data-theme="prometheus"] .toast { --pm-bracket-w: 3px; --pm-bracket-c: var(--toast-border, var(--accent)); --toast-border-width: 0; }
@@ -527,7 +582,7 @@ html[data-theme="prometheus"] .app-bar .nav-brand {
   padding: 0.3em 1.2em 0.3em 1.1em;
   border-radius: 0.5em;
   box-shadow: var(--pm-glow-box);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
 }
 html[data-theme="prometheus"] .app-rail {
   position: relative;
@@ -558,17 +613,22 @@ html[data-theme="prometheus"] .app-status {
    core's fixed positioning on touch tiers still wins. */
 :where(html[data-theme="prometheus"] .app-status) { position: relative; }
 html[data-theme="prometheus"] .app-status::before {
-  --pm-step-c: color-mix(in srgb, var(--accent) 70%, transparent);
+  --pm-step-c: color-mix(in srgb, var(--pm-line) 85%, transparent);
+  --pm-step-h: 1.4rem;  /* the raised section over the sign-off */
   content: "";
   position: absolute;
   inset-inline: 0;
-  inset-block-start: -10px;
-  block-size: 11px;
+  inset-block-start: calc(-1 * var(--pm-step-h));
+  block-size: calc(var(--pm-step-h) + 1px);
   background:
-    linear-gradient(var(--pm-step-c), var(--pm-step-c)) left bottom / 65% 1px no-repeat,
-    linear-gradient(to top right, transparent calc(50% - 0.75px), var(--pm-step-c) 0 calc(50% + 0.75px), transparent 0) calc(65% + 0px) 0 / 11px 11px no-repeat,
-    linear-gradient(var(--pm-step-c), var(--pm-step-c)) right top / calc(35% - 10px) 1px no-repeat;
+    linear-gradient(var(--pm-step-c), var(--pm-step-c)) left bottom / calc(70% + 1px) 2px no-repeat,
+    linear-gradient(to top right, transparent calc(50% - 1px), var(--pm-step-c) 0 calc(50% + 1px), transparent 0) calc(70% + 0.7 * var(--pm-step-h)) 0 / var(--pm-step-h) var(--pm-step-h) no-repeat,
+    linear-gradient(var(--pm-step-c), var(--pm-step-c)) right top / calc(30% - var(--pm-step-h) + 1px) 2px no-repeat;
   pointer-events: none;
+}
+/* The film's halo on the raised frame; a filter, so desktop pointers only. */
+@media (pointer: fine) {
+  html[data-theme="prometheus"] .app-status::before { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 45%, transparent)); }
 }
 /* The ship's own sign-off, bottom right of every console screen. */
 html[data-theme="prometheus"] .app-status::after {
