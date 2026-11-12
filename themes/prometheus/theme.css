@@ -32,20 +32,20 @@
 html[data-theme="prometheus"] {
   --motion-leave: warp;
   color-scheme: dark;
-  --bg: #03111b;
-  --surface: #072030;          /* holo-glass panel fill */
-  --surface-2: #0b2c40;        /* value boxes, raised glass */
-  --border: #1f5f80;
-  --hairline: #123a50;
+  --bg: #072235;               /* mid-navy lit glass, not black */
+  --surface: #0d3049;          /* holo-glass panel fill, a step lighter */
+  --surface-2: #123d5a;        /* raised glass: menus, toasts */
+  --border: #2a6d92;
+  --hairline: #1b4a66;
   --text: #d4f1ff;
   --muted: #86b9cf;
-  --accent: #4fd2ff;           /* hologram cyan */
-  --accent-text: #4fd2ff;  /* labels read this, so an app that sets --accent keeps them legible */
+  --accent: #5ec4e6;           /* medipod tab sky-cyan (MSCN_51/2 fill) */
+  --accent-text: #5ec4e6;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #3ee8c4;         /* teal: second series, pill toggles */
   --danger: #ff5c6c;
   --success: #4dffa2;
   --warning: #ffb81f;          /* the amber call-outs ("RC 01", tag codes) */
-  --danger-text: #ff8a95;
+  --danger-text: #ff97a1;
   --success-text: #4dffa2;
   --warning-text: #ffc44d;
   --on-accent: #021019;
@@ -61,17 +61,22 @@ html[data-theme="prometheus"] {
   --label-transform: uppercase;
   --label-tracking: 0.08em;
 
-  /* Glass with a bracket: a rounded "[" down the left edge, open right. */
+  /* Glass with a bracket: a rounded "[" just off the left edge, open right.
+     The bracket itself is drawn by ::before (see "The bracket" below). */
   --panel-bg: var(--surface);
   --panel-border: transparent;
   --panel-radius: 0.7rem 0 0 0.7rem;
-  --panel-shadow: inset 3px 0 0 var(--accent);
+  --panel-shadow: none;
   --panel-header-bg: transparent;
   --panel-header-fg: var(--accent);
   --card-bg: var(--surface);
-  --card-border: var(--hairline);
+  --card-border: transparent;
   --card-radius: 0.7rem 0 0 0.7rem;
-  --card-shadow: inset 3px 0 0 var(--accent);
+  --card-shadow: none;
+  --list-border: transparent;
+  --list-radius: 0.7rem 0 0 0.7rem;
+  --alert-border-width: 0;
+  --alert-radius: 0.7rem 0 0 0.7rem;
 
   /* Outlined pill toggles; primary is the filled tab. */
   --btn-bg: transparent;
@@ -84,9 +89,10 @@ html[data-theme="prometheus"] {
   --btn-transform: uppercase;
   --btn-tracking: 0.08em;
   --btn-weight: 400;
-  --btn-padding: calc(0.4em * var(--density)) calc(1.3em * var(--density));
+  --btn-padding: calc(0.6em * var(--density)) calc(1.3em * var(--density));
+  --btn-padding-sm: 0.5em 0.95em;
 
-  --input-bg: #041824;
+  --input-bg: #061c2c;
   --input-border: var(--border);
   --input-radius: 3px;
   --input-placeholder: #6e9fb5;
@@ -94,12 +100,15 @@ html[data-theme="prometheus"] {
   --focus: var(--accent-2);
 
   --modal-bg: var(--surface);
-  --modal-border: var(--border);
-  --modal-radius: 0.7rem 0 0.7rem 0;
-  --modal-shadow: inset 3px 0 0 var(--accent), 0 0 0 1px #02090f, 0 0 2.5rem rgba(79, 210, 255, 0.18);
+  --modal-border: transparent;
+  --modal-radius: 0.7rem 0 0 0.7rem;
+  --modal-shadow: inset 3px 0 0 var(--accent), 0 0 2.5rem rgba(79, 210, 255, 0.18);
   --overlay-bg: rgba(1, 8, 13, 0.78);
   --dropdown-bg: var(--surface-2);
-  --dropdown-radius: 4px;
+  --dropdown-border: transparent;
+  --popover-shadow: inset 3px 0 0 var(--accent), 0 0.6rem 1.6rem rgba(1, 8, 13, 0.55);
+  --context-menu-shadow: inset 3px 0 0 var(--accent), 0 0.6rem 1.6rem rgba(1, 8, 13, 0.55);
+  --dropdown-radius: 0.5rem 0 0 0.5rem;
   --tooltip-bg: var(--accent);
   --tooltip-fg: var(--on-accent);
   --tooltip-radius: 4px;
@@ -131,21 +140,25 @@ html[data-theme="prometheus"] {
   --badge-bg: var(--surface-2);
   --badge-fg: var(--accent);
   --badge-border: var(--border);
-  --switch-bg: #041824;
+  --switch-bg: #061c2c;
   --switch-border: var(--border);
   --switch-bg-on: var(--accent);
   --switch-border-on: var(--accent);
   --switch-thumb-bg: var(--muted);
   --switch-thumb-bg-on: var(--on-accent);
   --slider-thumb-bg: var(--accent);
-  --progress-bg: #041824;
+  /* The level bar is drawn (medipod E/F, suit DIAG): about 3.4:1 on the glass. */
+  --pm-control-edge: color-mix(in srgb, var(--accent) 60%, #061c2c);
+  --slider-bg: var(--pm-control-edge);
+  --slider-radius: 999px;
+  --progress-bg: #061c2c;
   --progress-fill: var(--accent);
   --progress-radius: 2px;
   --avatar-radius: 4px;
   --pagination-item-radius: 4px;
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: var(--on-accent);
-  --skeleton-bg: #0b2c40;
+  --skeleton-bg: #123d5a;
   --kbd-bg: var(--surface-2);
   --kbd-border: var(--border);
   --selection-bg: var(--accent);
@@ -155,16 +168,19 @@ html[data-theme="prometheus"] {
   --toast-bg: var(--surface-2);
   --alert-bg: var(--surface);
   --lamp-glow: 0 0 0.4rem currentColor;
+  /* The film's soft halo on brackets and tabs, kept faint. */
+  --pm-glow-halo: -1px 0 0.3rem -1px color-mix(in srgb, var(--accent) 45%, transparent);
+  --pm-glow-box: 0 0 0.5rem color-mix(in srgb, var(--accent) 30%, transparent);
 
   /* Readouts are the small dark value boxes ("986", "030"). */
-  --readout-bg: #0e3a54;
-  --readout-fg: var(--accent);
+  --readout-bg: #051826;       /* darker than the glass, like "986" */
+  --readout-fg: #4fd2ff;       /* glowing digits keep the hotter cyan */
   --readout-font: var(--font-mono);
   --readout-border-width: 0;
-  --readout-padding: 0.15em 0.55em;
+  --readout-padding: 0.35em 0.6em;
   --readout-unit-fg: var(--muted);
   --readout-glow: 0 0 0.5rem rgba(79, 210, 255, 0.45);
-  --meter-track: #041824;
+  --meter-track: #061c2c;
   --meter-border: var(--border);
   --meter-low: var(--accent);
   --meter-mid: var(--accent-2);
@@ -178,20 +194,17 @@ html[data-theme="prometheus"] {
   --transport-shadow: inset 3px 0 0 var(--accent);
 
   /* The deep navy glass with its grid of dashes and crosses. */
-  --holo-grid:
-    radial-gradient(5px 1px at 24px 24px, rgba(79, 210, 255, 0.12) 99%, transparent) 0 0 / 48px 48px,
-    radial-gradient(1px 5px at 72px 72px, rgba(79, 210, 255, 0.08) 99%, transparent) 0 0 / 96px 96px,
-    radial-gradient(5px 1px at 72px 72px, rgba(79, 210, 255, 0.08) 99%, transparent) 0 0 / 96px 96px;
-  --holo-glow: radial-gradient(120% 80% at 60% 0%, #0b3550 0%, #052032 45%, var(--bg) 100%) fixed;
+  --holo-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='rgb(79,210,255)'%3E%3Cg fill-opacity='0.12'%3E%3Crect x='19' y='23.5' width='10' height='1'/%3E%3Crect x='67' y='23.5' width='10' height='1'/%3E%3Crect x='19' y='71.5' width='10' height='1'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3Cg fill-opacity='0.08'%3E%3Crect x='71.5' y='67' width='1' height='10'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px; /* one tile, not three gradient layers */
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #0f3b58 0%, #082a40 60%, #051c2b 100%);
 }
 
 /* Suit Room: amber interface over the same blue glass. */
 html[data-theme="prometheus"][data-variant="suit"] {
-  --bg: #061820;
-  --surface: #0c2a36;
-  --surface-2: #123747;
+  --bg: #10222f;               /* suit-room slate-navy glass */
+  --surface: #16283a;
+  --surface-2: #1d3247;
   --border: #6b5a2a;
-  --hairline: #1d4252;
+  --hairline: #1f4e60;
   --text: #f3e6c8;
   --muted: #c2b08a;
   --accent: #ffb51f;
@@ -199,20 +212,21 @@ html[data-theme="prometheus"][data-variant="suit"] {
   --accent-2: #4fd2ff;
   --on-accent: #1a1000;
   --btn-bg-hover: rgba(255, 181, 31, 0.14);
-  --input-bg: #072029;
-  --row-selected-bg: rgba(255, 181, 31, 0.14);
-  --readout-bg: #15495c;
+  --input-bg: #072230;
+  --switch-bg: #072230;
+  --progress-bg: #072230;
+  --meter-track: #072230;
+  --skeleton-bg: #1d3247;
+  --row-selected-bg: rgba(255, 181, 31, 0.1);
+  --readout-bg: #04202b;
   --readout-fg: #7fe0ff;
   --readout-glow: 0 0 0.5rem rgba(79, 210, 255, 0.4);
   --meter-low: #4fd2ff;
   --meter-mid: #ffb51f;
   --meter-high: var(--danger);
-  --modal-shadow: inset 3px 0 0 var(--accent), 0 0 0 1px #02090f, 0 0 2.5rem rgba(255, 181, 31, 0.14);
-  --holo-grid:
-    radial-gradient(5px 1px at 24px 24px, rgba(255, 181, 31, 0.14) 99%, transparent) 0 0 / 48px 48px,
-    radial-gradient(1px 5px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px,
-    radial-gradient(5px 1px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px;
-  --holo-glow: radial-gradient(120% 80% at 50% 10%, #12404f 0%, #0a2a36 45%, var(--bg) 100%) fixed;
+  --modal-shadow: inset 3px 0 0 var(--accent), 0 0 2.5rem rgba(255, 181, 31, 0.14);
+  --holo-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='rgb(255,181,31)'%3E%3Cg fill-opacity='0.14'%3E%3Crect x='19' y='23.5' width='10' height='1'/%3E%3Crect x='67' y='23.5' width='10' height='1'/%3E%3Crect x='19' y='71.5' width='10' height='1'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3Cg fill-opacity='0.08'%3E%3Crect x='71.5' y='67' width='1' height='10'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px;
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #133847 0%, #0e2433 60%, #081822 100%);
 }
 
 /* --- Voice: wide squared capitals for every label ----------------------- */
@@ -230,14 +244,17 @@ html[data-theme="prometheus"] .segmented-item,
 html[data-theme="prometheus"] .panel-header,
 html[data-theme="prometheus"] .modal-header,
 html[data-theme="prometheus"] .label,
+html[data-theme="prometheus"] .toggle-btn,
+html[data-theme="prometheus"] .stat-label,
+html[data-theme="prometheus"] .menubar > li > button,
 html[data-theme="prometheus"] th {
   font-family: var(--font-label);
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-html[data-theme="prometheus"] h1 { font-size: 1.6rem; color: var(--accent); text-shadow: 0 0 1rem rgba(79, 210, 255, 0.35); }
-html[data-theme="prometheus"][data-variant="suit"] h1 { text-shadow: 0 0 1rem rgba(255, 181, 31, 0.3); }
+html[data-theme="prometheus"] h1 { font-size: 1.3rem; letter-spacing: 0.12em; color: var(--readout-fg); text-shadow: 0 0 1rem rgba(79, 210, 255, 0.35); }
+html[data-theme="prometheus"][data-variant="suit"] h1 { color: var(--accent); text-shadow: 0 0 1rem rgba(255, 181, 31, 0.3); }
 html[data-theme="prometheus"] h2 { font-size: 1.05rem; }
 html[data-theme="prometheus"] h3,
 html[data-theme="prometheus"] h4 { font-size: 0.8rem; color: var(--accent); }
@@ -246,11 +263,56 @@ html[data-theme="prometheus"] .badge,
 html[data-theme="prometheus"] .label,
 html[data-theme="prometheus"] th,
 html[data-theme="prometheus"] .tab,
-html[data-theme="prometheus"] .segmented-item { font-size: 0.68rem; }
+html[data-theme="prometheus"] .segmented-item,
+html[data-theme="prometheus"] .toggle-btn,
+html[data-theme="prometheus"] .stat-label,
+html[data-theme="prometheus"] .menubar > li > button { font-size: 0.66rem; }
+/* Nav lists are small tracked labels, not page-sized caps. */
+html[data-theme="prometheus"] .nav-item { font-size: 0.72rem; }
+/* Accent text on a tinted chip, mention or status card needs a darker well. */
+html[data-theme="prometheus"] .badge-accent { --badge-bg: var(--surface); }
+html[data-theme="prometheus"] { --mention-bg: color-mix(in srgb, var(--accent) 10%, transparent); --list-tone-tint: 11%; }
+/* Status pills stay readable micro-labels. */
+html[data-theme="prometheus"] .badge { font-size: 0.75rem; }
+html[data-theme="prometheus"] .status { font-size: 0.82rem; }
+/* Section lists (bare labels, not message rows) keep the narrow face but
+   read as tracked capitals. */
+html[data-theme="prometheus"] .master-detail-list .list-item:not(:has(.list-item-title)) { text-transform: uppercase; letter-spacing: 0.08em; }
 html[data-theme="prometheus"] .input,
 html[data-theme="prometheus"] .select,
 html[data-theme="prometheus"] td { font-family: var(--font-mono); }
 html[data-theme="prometheus"] .btn-primary { --btn-fg: var(--on-accent); }
+/* Initials stay in the narrow face, even inside a Michroma header. */
+html[data-theme="prometheus"] .avatar { font-family: var(--font); letter-spacing: 0.02em; }
+/* Both faces ship one weight; never smear a faux bold. */
+html[data-theme="prometheus"] { font-synthesis: none; }
+/* KPI numbers are holo readouts: light glowing digits, not bold white. */
+html[data-theme="prometheus"] .stat-value {
+  font-weight: 400;
+  color: var(--readout-fg);
+  text-shadow: var(--readout-glow);
+}
+/* An attached button squares off to match the input and SEND beside it,
+   and keeps its full target past the input's 1px overlap. */
+/* Firefox can light the filled part of the level bar, like "E ▬▬ F". */
+html[data-theme="prometheus"] .slider::-moz-range-progress { block-size: var(--slider-height, 0.35rem); border-radius: 999px; background: var(--accent); }
+html[data-theme="prometheus"] .input-group > .btn {
+  --btn-radius: 3px;
+  --btn-icon-radius: 3px;
+  min-inline-size: calc(var(--tap-min) + 2px);
+}
+/* Michroma is too wide for narrow setting rows; those labels read in
+   Share Tech, still in tracked capitals. */
+/* Touch tiers: a joined toggle row has no room for Michroma's width, so
+   its items read in Share Tech, still tracked capitals. */
+@media (max-width: 900px) {
+  html[data-theme="prometheus"] .toggle-btn { font-family: var(--font); font-size: 0.78rem; letter-spacing: 0.04em; }
+}
+html[data-theme="prometheus"] .field-row:has(> .switch) > .label {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
 
 /* Panel title on a filled pill tab ("TAG.NM"), the rest of the header
  * (counts, status) after it on the glass. */
@@ -261,17 +323,33 @@ html[data-theme="prometheus"] .panel-header {
   gap: 0.75rem;
   font-size: 0.7rem;
 }
+/* A title tab starts level with the bracket's top return; its own padding
+   keeps the text off the edge. A plain header keeps core's top padding. */
+html[data-theme="prometheus"] .panel-header:has(> strong:first-child) { padding-block-start: 0; }
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
+/* Minimise and maximise sit on the filled tab: dark glyphs on the cyan. */
+html[data-theme="prometheus"] .modal-header > :is(.btn-min, .btn-max) { --modal-header-close-fg: var(--on-accent); }
 html[data-theme="prometheus"] .modal-header > .btn-close { --btn-close-glyph-size: 1.6em; position: absolute; top: 0.25rem; right: 0.5rem; }
 html[data-theme="prometheus"] .panel-header strong:first-child,
 html[data-theme="prometheus"] .modal-header {
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
   color: var(--on-accent);
-  border-radius: 4px;
-  padding: 0.4em 1.4em 0.4em 0.8em;
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
+  padding: 0.4em 1.4em 0.4em 1.1em;
   font-weight: 400;
 }
+/* A tab is always one short line ("SUM EVA"); a long title truncates. */
+html[data-theme="prometheus"] :is(.panel-header strong:first-child, .modal-header:not(:has(> *)), .panel-header:not(:has(> *))) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+/* A bare-text flex header's text is an anonymous item, which cannot ellipsize. */
+html[data-theme="prometheus"] :is(.modal-header, .panel-header):not(:has(> *)) { display: block; }
 /* A table straight on the page (no panel) gets a glass wash, so the tick
    grid behind the page doesn't run through its rows. */
 html[data-theme="prometheus"] .table:not(:is(.panel, .card, .modal, .drawer, .popover, .dropdown) .table) {
@@ -282,19 +360,20 @@ html[data-theme="prometheus"] .table:not(:is(.panel, .card, .modal, .drawer, .po
 html[data-theme="prometheus"] .panel-header:not(:has(> *)) {
   width: fit-content;
   max-width: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
   color: var(--on-accent);
-  border-radius: 4px;
-  padding: 0.4em 1.4em 0.4em 0.8em;
-  /* Inside the glass like the <strong> tab, not bled to the corner. */
-  margin: calc(var(--space-xs) - var(--surface-pad, 1rem)) 0 var(--space-m);
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
+  padding: 0.4em 1.4em 0.4em 1.1em;
+  /* Top level with the bracket's top return, as in the film. */
+  margin: calc(-1 * var(--surface-pad, 1rem)) 0 var(--space-m);
 }
 /* Nested glass steps down: a box inside a box keeps its bracket but thinner
    and dimmer, and its title tab is outlined rather than filled, so a
    panel > card > panel stack doesn't repeat three full-strength frames. */
 html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
-  --panel-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 50%, transparent);
-  --card-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 50%, transparent);
+  --pm-bracket-w: 2px;
+  --pm-bracket-c: color-mix(in srgb, var(--accent) 50%, transparent);
 }
 html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header:not(:has(> *)),
 html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) > .panel-header > strong:first-child {
@@ -308,6 +387,65 @@ html[data-theme="prometheus"] .modal-header {
   font-size: 0.72rem;
   border-bottom: 0;
 }
+
+/* Check boxes and radios are navy glass wells with the lit edge, cyan when
+   on, instead of the browser's neutral grey. */
+html[data-theme="prometheus"] :is(.checkbox, .radio) {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  background: var(--input-bg);
+  border: 1.5px solid var(--pm-control-edge);
+  border-radius: 3px;
+}
+html[data-theme="prometheus"] .radio { border-radius: 50%; }
+html[data-theme="prometheus"] :is(.checkbox, .radio):is(:checked, :indeterminate) { background: var(--accent); border-color: var(--accent); }
+html[data-theme="prometheus"] :is(.checkbox, .radio):is(:checked, :indeterminate)::before {
+  content: "";
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  background: var(--on-accent);
+  clip-path: polygon(14% 44%, 0 62%, 40% 100%, 100% 22%, 84% 6%, 38% 66%);
+}
+html[data-theme="prometheus"] .radio:checked::before { inline-size: 0.45em; block-size: 0.45em; clip-path: circle(50%); }
+html[data-theme="prometheus"] .checkbox:indeterminate::before { block-size: 0.15em; clip-path: none; }
+@media (forced-colors: active) {
+  html[data-theme="prometheus"] :is(.checkbox, .radio) { appearance: auto; }
+  html[data-theme="prometheus"] :is(.checkbox, .radio)::before { content: none; }
+}
+
+/* --- The bracket ---------------------------------------------------------- *
+ * A "[" whose ends return as short curved arms, standing just off the
+ * glass's left edge (medipod "MSCN_51/2", suit "TAG.NM"). Decoration only.
+ * A list clips its overflow, so its bracket sits on the edge instead. */
+html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast) { position: relative; }
+html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast)::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--pm-bracket-x, -5px);
+  inline-size: 0.7rem;
+  border: var(--pm-bracket-w, 4px) solid var(--pm-bracket-c, var(--accent));
+  border-inline-end: 0;
+  border-start-start-radius: 0.7rem;
+  border-end-start-radius: 0.7rem;
+  box-shadow: var(--pm-glow-halo);  /* a shadow, not a filter: no layer per bracket */
+  pointer-events: none;
+}
+/* An image card clips to its corners and its media would cover the
+   bracket, so the bracket sits on the edge, above the image. */
+/* Touch: the halo is the first thing to go when scrolling on a phone. */
+@media (pointer: coarse) {
+  html[data-theme="prometheus"] { --pm-glow-halo: none; }
+}
+html[data-theme="prometheus"] .card.has-media { --pm-bracket-x: 0; }
+html[data-theme="prometheus"] .card.has-media::before { z-index: 1; }
+html[data-theme="prometheus"] .list { --pm-bracket-x: 0; }
+html[data-theme="prometheus"] .alert { --pm-bracket-w: 3px; --pm-bracket-c: var(--alert-border, var(--accent)); }
+/* Toasts are bracketed glass too, not boxed: the status color moves to the bracket. */
+html[data-theme="prometheus"] .toast { --pm-bracket-w: 3px; --pm-bracket-c: var(--toast-border, var(--accent)); --toast-border-width: 0; }
+/* Dropdowns take their edge from --panel-shadow: the bracket as an inset. */
+html[data-theme="prometheus"] .dropdown { --panel-shadow: inset 3px 0 0 var(--accent), 0 0.6rem 1.6rem rgba(1, 8, 13, 0.55); }
 
 /* --- Layout: the ship console ------------------------------------------- *
  * A thin framed top line with the brand as a tab, the glass grid behind
@@ -328,14 +466,15 @@ html[data-theme="prometheus"] {
   --app-main-bg: transparent;
   --app-status-bg: transparent;
   --app-status-fg: var(--muted);
-  --app-status-rule: var(--border);
+  --app-status-rule: transparent;  /* the stepped ::before line is the rule */
 }
 html[data-theme="prometheus"] .app-bar { font-size: 0.72rem; }
 html[data-theme="prometheus"] .app-bar .nav-brand {
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
   color: var(--on-accent);
-  padding: 0.3em 1.2em 0.3em 0.8em;
-  border-radius: 4px;
+  padding: 0.3em 1.2em 0.3em 1.1em;
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
   font-size: 0.8rem;
 }
 html[data-theme="prometheus"] .app-rail {
@@ -362,11 +501,38 @@ html[data-theme="prometheus"] .app-status {
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+/* The stepped frame line (bridge "SY.AVL"): flat along the bar, then up
+   45deg into a raised section over the sign-off. Zero specificity so
+   core's fixed positioning on touch tiers still wins. */
+:where(html[data-theme="prometheus"] .app-status) { position: relative; }
+html[data-theme="prometheus"] .app-status::before {
+  --pm-step-c: color-mix(in srgb, var(--accent) 70%, transparent);
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -10px;
+  block-size: 11px;
+  background:
+    linear-gradient(var(--pm-step-c), var(--pm-step-c)) left bottom / 65% 1px no-repeat,
+    linear-gradient(to top right, transparent calc(50% - 0.75px), var(--pm-step-c) 0 calc(50% + 0.75px), transparent 0) calc(65% + 0px) 0 / 11px 11px no-repeat,
+    linear-gradient(var(--pm-step-c), var(--pm-step-c)) right top / calc(35% - 10px) 1px no-repeat;
+  pointer-events: none;
+}
+/* The ship's own sign-off, bottom right of every console screen. */
+html[data-theme="prometheus"] .app-status::after {
+  content: "ENDO SY OS / MUTHUR PRQ 12-5 B" / "";
+  margin-inline-start: auto;
+  padding-inline-start: 1rem;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  html[data-theme="prometheus"] .app-status::after { content: none; }
+}
 
 /* Touch tiers: core lets the brand flex to fill the first line so it can
    truncate; this brand is a filled plate, so cap it at its own width. */
 @media (max-width: 900px) {
-  html[data-theme="prometheus"] .app-bar > .nav-brand { max-width: max-content; }
+  html[data-theme="prometheus"] .app-bar > .nav-brand { max-width: max-content; flex-shrink: 0; min-width: max-content; }
 }
 /* --- v5 tiers and XL gutters -------------------------------------------- *
  * Phone and tablet drop the edge-code rail (core hides it up to 900px;
@@ -421,7 +587,7 @@ html[data-theme="prometheus"] {
   --bar-chart-radius: 0;
   --bar-chart-axis: var(--border);
 }
-html[data-theme="prometheus"][data-variant="suit"] { --attachment-bg: #15495c; }
+html[data-theme="prometheus"][data-variant="suit"] { --attachment-bg: #04202b; }
 
 @media print {
   html[data-theme="prometheus"] body { background: #fff; }
