@@ -37,6 +37,20 @@ poster.
   the 3D language, not just the controls.
 - Tables draw a full 1px grid — Explorer's details view, not a modern
   borderless list.
+- Checkboxes and radios are 95's sunken white wells (`#808080`/`#000000`
+  over `#c0c0c0`/`#ffffff`) with a black pixel tick or dot, not the
+  browser's accent-coloured control.
+- Sliders are the 95 trackbar: a 4px sunken groove painted on the content
+  box inside core's `--tap-min` hit area, and an 11x21 raised grey pointer.
+- Filter chips, `.toggle-btn` and `.segmented` items are toolbar push
+  buttons: raised, and pressed (sunken, white/grey 50% dither) while on.
+  Switches, which 95 never had, are a sunken white well holding a raised
+  grey block; the well fills navy when on.
+- No blended state tints: the bulk-selection bar is the plain face in a
+  raised frame, dirty/saved/error cells keep only their marker bar, tick or
+  ring, and chart and sparkline areas carry no alpha wash.
+- Dialog scale: with a mouse the root is 13px (81.25%), panels pad 8px, and
+  dialog footer buttons are at least 75px wide, as OK/Cancel were.
 - **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): start a textarea with "Dear" and the Office assistant offers to help with the letter.
 
 ## Icons
@@ -73,8 +87,9 @@ the app up.
 ## Known compromise
 
 MS Sans Serif is not a web font and is absent from modern systems, so the
-stack falls back to Tahoma — its closest ubiquitous relative. No
-openly-licensed pixel face is vendored yet.
+stack falls back to Tahoma — its closest ubiquitous relative, then
+Arial. No openly-licensed pixel face is vendored yet (that needs a new
+file in `assets/fonts/`, outside this theme's folder).
 
 ## Tell-tales of an inauthentic result
 
@@ -87,14 +102,14 @@ openly-licensed pixel face is vendored yet.
 
 - **No radius.** `--radius: 0`, `--badge-radius: 0`, `--progress-radius: 0`. Not "just 2px".
 - **No drop shadow, no blur, no glow.** Depth is the two-tone bevel only.
-- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in tabs, the taskbar and Start menu, and a few fills, where no 95 capture has been measured yet.
+- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in tabs, the taskbar and Start menu, badges and striped rows, where no 95 capture has been measured yet; readonly fields, skeletons, sliders and switches use the `#c0c0c0` face.
 - **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`. The bevel is two 1px lines per side (a 1px border plus a 1px inset shadow), not a 2px border: raised is `#ffffff` then face on the top-left and `#808080` then `#000000` on the bottom-right; sunken is `#808080` then `#000000`, and `#c0c0c0` then `#ffffff`. Measured on `references/windows95/dialog-font.png`; see its `RESEARCH.md`.
 - **No transitions or fades.** Windows 95 repainted instantly.
 - **No modern-weight, anti-aliased title-bar type**, and no Segoe UI in place of Tahoma/MS Sans Serif when a system copy is available.
 
 ## Typography
 
-`--font` is `Tahoma, "MS Sans Serif", "Segoe UI", sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on most machines Tahoma is what renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
+`--font` is `Tahoma, "MS Sans Serif", Arial, "Liberation Sans", sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font; touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on most machines Tahoma is what renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
 
 ## Contrast honesty
 

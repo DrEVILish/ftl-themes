@@ -5,7 +5,7 @@
  *
  * Note on fonts: the authentic face is MS Sans Serif, which isn't a web
  * font and isn't present on modern systems; the stack below falls back to
- * Tahoma, its closest ubiquitous relative. Vendor a pixel font here if an
+ * Tahoma, its closest ubiquitous relative, then Arial. Vendor a pixel font here if an
  * exact match matters.
  */
 
@@ -41,7 +41,9 @@ html[data-theme="windows95"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0;
-  --font: Tahoma, "MS Sans Serif", "Segoe UI", sans-serif;
+  /* Arial before the generic: where neither 95 face exists, a narrow
+     neutral sans is closer than a wide humanist default. */
+  --font: Tahoma, "MS Sans Serif", Arial, "Liberation Sans", sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
   /* Panels are child windows: each gets the active navy caption bar. */
   --panel-header-bg: #000080;
@@ -137,6 +139,46 @@ html[data-theme="windows95"] {
   --switch-thumb-radius: 0;
   --slider-radius: 0;
   --slider-thumb-radius: 0;
+  /* The 95 trackbar: a 4px sunken groove (#808080, #000000, face,
+     #ffffff) painted on the content box core keeps for the drawn track,
+     and an 11x21 raised grey pointer. */
+  --slider-height: 4px;
+  --slider-bg: linear-gradient(#808080 0 1px, #000000 0 2px, #c0c0c0 0 calc(100% - 1px), #ffffff 0);
+  --slider-border-width: 0;
+  --slider-thumb-bg: #c0c0c0;
+  /* Switches (95 had none) drawn in its own vocabulary: a sunken white
+     well holding a raised grey block; on, the well fills navy. */
+  --switch-bg: #ffffff;
+  --switch-bg-on: #000080;
+  --switch-thumb-bg: #c0c0c0;
+  --switch-thumb-bg-on: #c0c0c0;
+  /* Filter chips are toolbar toggle buttons: raised grey, and pressed
+     (sunken, with the 50% white dither) when on, never navy-filled. */
+  --badge-bg-active: repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0 / 2px 2px;
+  --badge-fg-active: #000000;
+  --toggle-btn-bg-on: repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0 / 2px 2px;
+  --toggle-btn-fg-on: #000000;
+  --segmented-bg: var(--surface);
+  --segmented-padding: 0;
+  --segmented-border-width: 0;
+  --segmented-item-fg: #000000;
+  --segmented-item-bg-active: repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0 / 2px 2px;
+  --segmented-item-fg-active: #000000;
+  /* State fills stay on the 16-colour set: no blended tints. Selection
+     bars are the plain face, cell states keep only their marker bar,
+     glyph or ring, and chart areas drop the alpha wash. */
+  --bulk-bar-bg: var(--surface);
+  --bulk-bar-fg: var(--text);
+  --cell-dirty-bg: transparent;
+  --cell-saved-bg: transparent;
+  --cell-saved-flash: transparent;
+  --cell-error-bg: transparent;
+  --row-editing-bg: transparent;
+  --chart-area-opacity: 0;
+  --sparkline-area-opacity: 0;
+  --input-readonly-bg: var(--surface);
+  /* Dialog scale: 95 packed its dialogs ~8px from the frame. */
+  --panel-pad: 8px;
   --overlay-bg: rgba(0, 0, 0, 0.35);
   /* Era-accurate focus is a dotted marching-ants rectangle. It replaces
      the outline's color/style but never its presence. */
@@ -176,7 +218,7 @@ html[data-theme="windows95"] {
   --tooltip-radius: 0;
   --popover-bg: var(--surface);
   --popover-radius: 0;
-  --skeleton-bg: #dfdfdf;
+  --skeleton-bg: var(--surface);
   /* Tighter dialog-scale buttons: real 95 buttons are compact (~23px),
      not the roomy core default. */
   --btn-padding: 0.35em 1em;
@@ -251,7 +293,7 @@ html[data-theme="windows95"] .panel-header {
      dialog-font.png (navy starts at y=3 after #c0c0c0, #ffffff, #c0c0c0). */
   margin: calc(1px - var(--surface-pad, 1rem)) calc(1px - var(--surface-pad, 1rem)) calc(0.8rem * var(--density));
   /* 4px round the caption text: the v5 audit's text-to-edge floor. */
-  padding: 0.25rem 0.35rem;
+  padding: max(4px, 0.25rem) max(4px, 0.35rem);
   border-bottom: 0;
   font-weight: 700;
   font-size: 0.8rem;
@@ -278,8 +320,10 @@ html[data-theme="windows95"] .panel-header :is(.input-group, .input, .select, .d
 /* A caption bar holding controls grows to fit them instead of squeezing
    them into the 11px-text strip. */
 html[data-theme="windows95"] .panel-header:has(.input, .select, .btn) {
-  padding-block: 0.2rem;
+  padding-block: max(4px, 0.25rem);
 }
+/* A badge in a caption stands clear of the caption text. */
+html[data-theme="windows95"] .panel-header .badge { margin-inline-start: 0.5em; }
 /* Nested surfaces step down (PLAN.md §6): only the outermost surface is
    a window with a navy caption. A panel inside a panel, card, dialog or
    drawer is a group box: an etched frame line under a plain bold label
@@ -344,7 +388,7 @@ html[data-theme="windows95"] .tab.is-active { position: relative; bottom: -1px; 
 html[data-theme="windows95"] .app-status > * {
   border: 1px solid;
   border-color: #808080 #ffffff #ffffff #808080;
-  padding: 0.25rem 0.4rem;
+  padding: max(4px, 0.25rem) max(4px, 0.4rem);
 }
 
 /* Console primitives: sunken bay, raised strips, keys that sink and light
@@ -372,6 +416,123 @@ html[data-theme="windows95"] .table th { font-weight: 700; }
    ListView was a flat gray box anyway — one background on the table keeps
    state/hover/striped cell fills painting over it untouched. */
 html[data-theme="windows95"] .table { background-color: var(--surface); }
+
+/* 95 drew its UI in 8pt MS Sans Serif (11px). With a mouse a 13px root
+   (81.25%, so user font settings and data-text-size still scale it) brings
+   every rem-sized part to dialog scale; touch keeps the browser size so
+   targets stay large. */
+@media (pointer: fine) {
+  html[data-theme="windows95"] { --root-font-size: 81.25%; font-size: 81.25%; }
+}
+
+/* The groove gradient is sized to the content box core clips to. */
+html[data-theme="windows95"] .slider { background-origin: content-box; }
+/* Trackbar pointer: raised grey, 11x21 (core's 2px --bg ring would be
+   teal here). The groove itself is --slider-bg above. */
+html[data-theme="windows95"] .slider::-webkit-slider-thumb {
+  width: 11px;
+  height: 21px;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+html[data-theme="windows95"] .slider::-moz-range-thumb {
+  width: 11px;
+  height: 21px;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+/* Upright, the groove runs top to bottom and the pointer lies on its side.
+   The padding goes on the block axis (left/right under vertical-lr), so
+   the groove stays a thin centred line inside the full-width target. */
+html[data-theme="windows95"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, #808080 0 1px, #000000 0 2px, #c0c0c0 0 calc(100% - 1px), #ffffff 0);
+}
+html[data-theme="windows95"] .slider.is-vertical:not(.is-range > .slider) {
+  padding-inline: 0;
+  padding-block: calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+html[data-theme="windows95"] .slider.is-vertical::-webkit-slider-thumb { width: 21px; height: 11px; }
+html[data-theme="windows95"] .slider.is-vertical::-moz-range-thumb { width: 21px; height: 11px; }
+
+/* Checkboxes and radios: the sunken white well (dialog-font.png,
+   Strikeout/Underline) with a black tick or dot, not the browser's own. */
+html[data-theme="windows95"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  border-radius: 0;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
+  background: #ffffff no-repeat center / 100% 100%;
+}
+html[data-theme="windows95"] .checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 13'%3E%3Cpath d='M3 5h1v1h1v1h1V6h1V5h1V4h1V3h1v3H9v1H8v1H7v1H6v1H5V9H4V8H3z' fill='%23000'/%3E%3C/svg%3E");
+}
+html[data-theme="windows95"] .checkbox:indeterminate {
+  background-image: linear-gradient(#000000, #000000);
+  background-size: 50% 50%;
+}
+html[data-theme="windows95"] .radio { border-radius: 50%; }
+html[data-theme="windows95"] .radio:checked {
+  background-image: radial-gradient(circle, #000000 0 22%, transparent 24%);
+}
+html[data-theme="windows95"] :is(.checkbox, .radio):disabled { background-color: #c0c0c0; }
+
+/* Switch: sunken well, raised block; 95 repainted instantly. */
+html[data-theme="windows95"] .switch-track {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
+  transition: none;
+}
+html[data-theme="windows95"] .switch input:checked ~ .switch-track,
+html[data-theme="windows95"] .switch[aria-checked="true"] .switch-track { border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] .switch-thumb {
+  /* Fills the well inside its black inner line. */
+  box-sizing: border-box;
+  top: 1px;
+  inset-inline-start: 1px;
+  width: calc(1.4em * var(--density) - 4px);
+  height: calc(1.4em * var(--density) - 4px);
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+  transition: none;
+}
+
+/* Filter chips, toggle buttons and segmented items: raised push buttons
+   that stay pressed (sunken, dithered) while on. */
+html[data-theme="windows95"] :is(.badge-button, .toggle-btn, .segmented-item) {
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #808080;
+  transition: none;
+}
+html[data-theme="windows95"] :is(.badge-button.is-active, .toggle-btn:has(input:checked), .segmented-item.is-active) {
+  border-color: #000000 #ffffff #ffffff #000000;
+  box-shadow: inset 1px 1px 0 #808080;
+}
+html[data-theme="windows95"] .segmented { gap: 0; }
+html[data-theme="windows95"] .badge-button { --badge-bg: var(--surface); --badge-fg: var(--text); }
+/* No hover in 95: a chip only changes when pressed. */
+@media (hover: hover) {
+  html[data-theme="windows95"] .badge-button:not(.is-active):hover { background: var(--badge-bg); color: var(--badge-fg); }
+}
+
+/* Selection bar: the plain face in a raised frame. */
+html[data-theme="windows95"] .bulk-bar {
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+/* Loading placeholders: a dotted grey outline on the face, not a 98 fill. */
+html[data-theme="windows95"] .skeleton {
+  border-radius: 0;
+  outline: 1px dotted #808080;
+  outline-offset: -1px;
+}
+/* Dialog footers: 95's 75px-wide OK/Cancel buttons. */
+html[data-theme="windows95"] .modal-footer > .btn { min-inline-size: 75px; }
 
 /* --- Layout ------------------------------------------------------------ *
  * A desktop window: the teal backdrop shows around a beveled inset content
@@ -428,7 +589,7 @@ html[data-theme="windows95"] h3 { font-size: 0.85rem; font-weight: 700; }
 
 html[data-theme="windows95"] .app-bar .nav { padding: 0; }
 html[data-theme="windows95"] .app-bar .nav-brand { font-weight: 700; }
-html[data-theme="windows95"] .app-bar .nav-item { padding: 0.1em 0.6em; }
+html[data-theme="windows95"] .app-bar .nav-item { padding: max(4px, 0.25em) 0.6em; }
 html[data-theme="windows95"] .app-bar::after {
   content: "";
   position: absolute;
