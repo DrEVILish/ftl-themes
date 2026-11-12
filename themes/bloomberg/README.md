@@ -25,7 +25,10 @@ is the catalog's extreme-density stress test as much as a period theme.
 2. **Amber is the workhorse, yellow is the function key.** `--text` is
    amber; `--accent` is a brighter function-key yellow reserved for
    interactive elements. Losing that split makes everything read as one
-   flat color.
+   flat color. Running and command text (`--input-fg`, `--prose-fg`,
+   plain paragraphs) is the terminal's light grey `#e0e0e0`, like
+   'Enter all values and hit <GO>'; amber stays for names, labels,
+   headings and options.
 3. **Cyan is the second data category.** `--accent-2` exists so a
    second kind of information (a different data feed, an idle state) can
    be color-coded distinctly from the primary amber — real terminals code
@@ -49,9 +52,10 @@ is the catalog's extreme-density stress test as much as a period theme.
 7. **Amber window frames.** Panels, modals and desktop windows carry the
    terminal window's thin amber outer frame (`#e0983f`, near the
    reference's sampled `#e39c47`); cards and
-   hairlines stay grey `#3a3a3a`. Desktop window title rows are black with
-   amber titles and controls inside that frame; crimson is kept for
-   in-content section bars.
+   hairlines stay grey `#3a3a3a`. Window title rows (desktop and draggable
+   `.modal[data-drag]` windows) are black with a white title and white
+   min/max/close glyphs inside that frame, inactive ones muted amber with
+   no desaturating filter; crimson is kept for in-content section bars.
 8. **Blue is the command line.** Text inputs carry the reference's blue
    command-line rule (`--input-border: #2a52c8`, 3.1:1 on black), the
    screen's third structural colour; `.select` stays a filled amber field.
@@ -81,7 +85,8 @@ is the catalog's extreme-density stress test as much as a period theme.
   the terminal's column grid, not boxed cells.
 - The status strip text is cyan, not amber, including its right-hand meta — a second information channel,
   distinct at a glance from the primary data color. The colored
-  function-key strip sits in its flow (not over its text), and is left off
+  function-key strip (five 1.4rem x 0.9rem caps: red, yellow, green, cyan,
+  grey) sits in its flow (not over its text), and is left off
   taskbars so it never covers the Start button.
 - Grouped buttons (`.btn-group`) are filled function-key caps at rest:
   green navigation keys with black text, the selected/primary one yellow,
@@ -97,10 +102,20 @@ is the catalog's extreme-density stress test as much as a period theme.
 - Badges, `.status` pills, field hints and stat trends never drop under
   12px (`max(0.75em, 0.75rem)`).
 - Dropdowns (`.select`) are filled amber fields with black text and a
-  black arrow, like the reference's "Standard" select (about 10:1).
-- Data rows are tight (`0.25rem` block padding, the 4px edge floor, line-height 1.25) and
+  black arrow, like the reference's "Standard" select (about 10:1). In
+  the app bar it is a small field at cap height (0.85rem text, thin
+  padding) so the green key row leads the bar.
+- Data rows are tight (`0.125rem` block padding, line-height 1.15, about
+  21-22px per row like the reference's index grid; a cell holding a
+  `--tap-min` control drops its padding so the control alone sets the
+  row) and
   panels inset only `0.25rem`, so grids run nearly edge to edge under the
   red section bar.
+- Section bars, window titles and list-row names are regular weight
+  (`--list-item-title-weight: 400`), as the reference's 'News' /
+  'Indices' bars; bold is left to emphasis and key caps.
+- Disabled pagination and carousel arrows are dim amber `#6b4400`
+  (about 2.6:1), not core's 40% opacity.
 - Screen titles are small and regular weight (h1 1.3rem, h2 1.1rem,
   h3 1rem): the terminal sets titles at about the size of the data.
 - Sliders draw a dim-amber `0.3rem` track (`#8a5c00`, 3.6:1 on black)
