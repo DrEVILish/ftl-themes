@@ -6,6 +6,9 @@ changes are called out explicitly here.
 ## Unreleased
 
 ### Added
+- `.dropdown-item.is-danger`, `.field-row.is-wrap` (wrapping label, hint under it in the row),
+  `label.switch` with a `.switch-label` (a form checkbox switch with its text), and display-only
+  `.waveform.is-static` (no hover preview, no seeking).
 - `alienware` variants `alienmorph` (AlienMorph), `area-51` (the Area-51 Superman edition) and
   `aurora-dark` / `aurora-light` (the Aurora Star Wars editions), named after the systems they
   shipped on; the theme now covers all eight AlienGUIse suites.
@@ -223,6 +226,14 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `.icon` is `inline-block`: an icon before text in a block (a `.dropdown-item`, an `.alert`, a
+  modal title, a label) stayed on its own line because the reset makes every `svg` a block.
+- `.context-menu-item` keeps a leading icon beside its label (it was pushed to the opposite edge);
+  only a trailing `<kbd>` or submenu arrow goes to the end.
+- Anchored `.dropdown`, `.popover` and `.context-menu` stay on screen when neither side has room:
+  they take the roomier side and scroll, so the inline flip still applies.
+- A table row that is both `.is-selected` and `.is-active` keeps its selection fill.
+- `blue-future` and `xbmc`: selected table rows are a clearly stronger tint than stripes.
 - Console group in every theme, not only `proseries`: aux sends, dynamics curves, the assignable
   panel, the graphic EQ, the patchbay, faceplate displays and the rack's head strip fell back to the
   ProSeries navy, blue and grey, so they looked the same in all 46 themes (blue curves on Windows 95,

@@ -450,6 +450,18 @@ a { color: var(--link, var(--accent)); }
   text-overflow: ellipsis;
 }
 .field-row > .field-hint { margin-block-start: 0; flex: none; }
+/* .field-row.is-wrap — the label is the setting's only name, so it wraps
+   instead of truncating, and a sentence-length .field-hint sits under it
+   inside the row; the control stays at the end, centred on both. */
+.field-row.is-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  row-gap: 0.15em;
+}
+.field-row.is-wrap > .label { grid-column: 1; white-space: normal; overflow: visible; }
+.field-row.is-wrap > .field-hint { grid-column: 1; }
+.field-row.is-wrap > :not(.label, .field-hint) { grid-column: 2; grid-row: 1 / span 2; }
 
 /* .input-group — an input with joined addons: a unit label, a static
    prefix, or an attached button. Children share one border; only the
@@ -583,7 +595,8 @@ a { color: var(--link, var(--accent)); }
    (the attribute is also what assistive tech reads). The button sizes to
    its content: the track becomes a normal flex child and an optional
    .switch-label sits beside it. */
-button.switch {
+button.switch,
+label.switch:has(> .switch-label) {
   appearance: none;
   width: auto;
   height: auto;
@@ -596,7 +609,8 @@ button.switch {
   font: inherit;
   text-align: start;
 }
-button.switch .switch-track {
+button.switch .switch-track,
+label.switch:has(> .switch-label) > .switch-track {
   position: relative;
   inset: auto;
   flex: none;
@@ -957,6 +971,7 @@ dialog.modal:modal {
   color: var(--dropdown-item-fg, var(--text));
   text-align: start;
 }
+.dropdown-item.is-danger { color: var(--danger-text, var(--danger)); }
 .dropdown-item:focus-visible {
   background: var(--dropdown-item-bg-hover, var(--accent));
   color: var(--dropdown-item-fg-hover, var(--on-accent));
@@ -1610,7 +1625,7 @@ html.is-dragging-value, html.is-dragging-value * { cursor: var(--cursor-resize-y
   background: var(--row-selected-bg, rgba(128, 128, 128, 0.25));
   color: var(--row-selected-fg, inherit);
 }
-.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) td {
+.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):not(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) td {
   background: var(--row-active-bg, transparent);
 }
 /* The marker belongs to the row, so only its leading cell draws it — on
@@ -2077,8 +2092,7 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
 :is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)) {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.6em;
   width: 100%;
   padding: 0.45em 0.7em;
   border-radius: var(--context-menu-radius, var(--radius));
@@ -2086,6 +2100,10 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   text-align: start;
 }
 :is(.context-menu-item, .context-menu li > :is(button, a)).is-danger { color: var(--danger-text, var(--danger)); }
+/* A leading icon stays beside its label; a trailing shortcut (<kbd>) or a
+   submenu arrow is pushed to the end. */
+:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)) > :is(kbd, :last-child:not(:first-child, .icon)),
+:is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a))[aria-haspopup] > :last-child:not(.icon) { margin-inline-start: auto; padding-inline-start: 0.4em; }
 :is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):focus-visible {
   background: var(--context-menu-item-bg-hover, var(--dropdown-item-bg-hover, var(--accent)));
   color: var(--context-menu-item-fg-hover, var(--dropdown-item-fg-hover, var(--on-accent)));
@@ -2168,6 +2186,8 @@ meter.meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter
   stroke-width: var(--icon-stroke-width, 2);
   stroke-linecap: round;
   stroke-linejoin: round;
+  /* The reset makes every svg a block; an icon sits in the line with its text. */
+  display: inline-block;
   vertical-align: -0.2em;
   flex-shrink: 0;
 }
@@ -3934,6 +3954,10 @@ input[type="color"] { min-block-size: var(--tap-min); min-inline-size: var(--tap
     margin: 0.25rem 0;
     position-area: block-end span-inline-end;
     position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    /* Take the side with more room and scroll inside it, so the inline
+       flip can still fit when neither side holds the whole menu. */
+    position-try-order: most-block-size;
+    max-height: calc(100% - 0.5rem);
   }
 }
 /* A context menu shown at the pointer: the app sets --x/--y. */
@@ -10327,6 +10351,11 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 
 @keyframes waveform-shimmer { to { background-position: -200% 0; } }
 .waveform:has(> input:disabled) { opacity: 0.5; }
+/* .waveform.is-static — display only: the input still paints played and
+   unplayed and the head (hide it with --waveform-head: transparent), but
+   it doesn't seek, so no hover preview and no pointer. */
+.waveform.is-static::before { content: none; }
+.waveform.is-static > input[type="range"] { pointer-events: none; }
 
 /* ---- Waveform regions, markers and hover time -------------------------------
  * <div class="waveform" data-hover-time="0:41" style="--hover: .68">
@@ -16716,7 +16745,7 @@ html[data-pointer="touch"] { --_cell-pencil: inline-block; }
 .table tbody tr:nth-child(n):is(:hover, :focus-within):not(.table-empty, .table-more) {
   --_row-tint: var(--row-hover-bg, color-mix(in srgb, var(--accent) 8%, transparent));
 }
-.table tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
+.table tbody tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):not(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))):nth-child(n) { --_row-tint: var(--row-active-bg, transparent); }
 .table tbody tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))):nth-child(n) {
   --_row-tint: var(--row-selected-bg, color-mix(in srgb, var(--accent) 18%, transparent));
 }

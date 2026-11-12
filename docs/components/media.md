@@ -288,6 +288,10 @@ control too, for console-style themes; it needs `assets/js/controls.js`.
 - **Variants and states:** `.is-bottom` (bars rise from the bottom edge),
   `.is-envelope` (no gaps: a solid outline), `.is-loading` (a shimmer in
   place of the bars), and a disabled seek input dims the whole waveform.
+- **Display only:** `.waveform.is-static` doesn't seek: no hover preview
+  or hover time, and the input takes no pointer. It still paints played /
+  unplayed from the input's value; hide the head while nothing plays with
+  `--waveform-head: transparent`.
 - **Hover time:** with `data-hover-time="1:55"` on `.waveform`, a chip
   shows that text at `--hover`. `assets/js/controls.js` sets both from the
   pointer and the seek input's range; without it, set them yourself.

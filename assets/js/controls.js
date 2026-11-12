@@ -121,7 +121,7 @@
   });
   // Hover preview: --hover (0–1) and data-hover-time from the seek input.
   document.addEventListener("pointermove", function (e) {
-    var wf = e.target.closest && e.target.closest(".waveform");
+    var wf = e.target.closest && e.target.closest(".waveform:not(.is-static)");
     document.querySelectorAll(".waveform[data-hover-time]").forEach(function (w) {
       if (w !== wf) { w.style.removeProperty("--hover"); w.removeAttribute("data-hover-time"); }
     });

@@ -266,6 +266,8 @@ text. The app hides a collapsed branch's rows with `hidden`.
 ```
 
 - Rows select with core's `tr.is-selected` (add `aria-selected` in a grid).
+  A row that is both selected and `.is-active` keeps the selection fill and
+  adds the active marker.
 - A checkbox-only first column shrinks to its content; a labelled row
   checkbox gets a `--tap-min` wide target at every tier.
 - A `.bulk-bar` placed before its table (or the table's `.table-wrap`) is

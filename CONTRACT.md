@@ -1071,7 +1071,10 @@ switch, checkbox or short value:
 </div>
 ```
 Rows are spaced by `--field-row-gap` (default `0.5rem`); the label
-truncates with an ellipsis rather than wrapping.
+truncates with an ellipsis rather than wrapping. When the label is the
+setting's only name, use `.field-row.is-wrap`: the label wraps, a
+sentence-length `.field-hint` sits under it inside the row, and the
+control stays at the end.
 
 #### Form validation, sizes and composition
 ```html
@@ -1126,6 +1129,9 @@ visible `.switch-label` beside the track:
 ```
 Toggle it by flipping the attribute
 (`b.setAttribute("aria-checked", b.getAttribute("aria-checked") !== "true")`).
+A form checkbox gets the same layout from `label.switch` with a
+`.switch-label` inside it:
+`<label class="switch"><input type="checkbox" name="stop_others"><span class="switch-track"><span class="switch-thumb"></span></span><span class="switch-label">Stop others</span></label>`.
 Same `--switch-*` tokens as the checkbox form (plus `--switch-label-fg`,
 `--switch-label-gap`); on/off stay distinguishable by border and thumb
 colour even when `--muted` is close to `--accent`. Transitions are off under
@@ -1245,7 +1251,7 @@ data row; otherwise it is `--row-alt-bg` exactly.
   </div>
 </div>
 
-<div class="dropdown"><a class="dropdown-item" href="#">Item</a></div>
+<div class="dropdown"><a class="dropdown-item" href="#">Item</a><button class="dropdown-item is-danger">Panic</button></div>
 <div class="toolbar">…</div>
 ```
 
@@ -1546,8 +1552,10 @@ class or token renamed.
 <div class="context-menu">
   <button class="context-menu-item">Rename</button>
   <div class="context-menu-divider"></div>
-  <button class="context-menu-item is-danger">Delete</button>
+  <button class="context-menu-item is-danger"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-trash"/></svg> Delete</button>
 </div>
+<!-- A leading .icon sits beside the label; a trailing <kbd> shortcut, or
+     the last child of an item with aria-haspopup (a › arrow), goes to the end. -->
 
 <!-- Dropzone -->
 <div class="dropzone">Drop a file, or click to browse.</div>
