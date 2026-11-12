@@ -22,13 +22,21 @@ frame.
 2. **The ribbon.** The app bar is a Scenic Ribbon tab strip: a blue
    rounded application button at the left (with a small Windows flag),
    then tabs; the selected tab is white, framed in `#b6bccc` and joined
-   to the ribbon below.
+   to a short white ribbon band hung under the strip (box-shadows on the
+   bar, so it takes no layout; main pads 12px more to clear it).
 3. **Light type.** Segoe UI Light for headings — dialog/page titles in
    Live green `#2b7a2b` ("Add your email accounts"), section headings in
    dark Live blue `#1e395b`.
 4. **Windows 7 controls.** Grey-gloss push buttons with the pale-blue
    hover; the default button wears the cyan glow; Explorer's pale-blue
-   selection in a `#99d1ff` frame; Win7 tooltips; glossy green progress.
+   selection in a `#99d1ff` frame; Win7 tooltips; tall glossy green
+   progress. Every pressed/selected control (toggle buttons, segmented,
+   pagination, filter chips) uses that pale-blue selection with a
+   `#7da2ce` frame and dark text, never a saturated fill. Check boxes and
+   radios are the Win7 grey-gradient boxes with a dark-blue tick; the
+   slider is the trackbar's thin grey groove with a grey-gloss thumb;
+   disabled buttons are flat `#f4f4f4` with grey text; GO is a grey-gloss
+   push button; ghost/tertiary buttons are flat until the hot-track hover.
 5. **Presence.** Every avatar is a Messenger display picture: a rounded
    square in a glossy green frame.
 
@@ -40,6 +48,8 @@ frame.
 - Pane headers are the pale-blue gradient bars of Mail's "Quick views"
   and Gallery's folder pane.
 - The status bar is Mail's pale strip ("1 message(s), 0 unread").
+- The fifth chart series is a Live purple `#8b3fa8`, so it never doubles
+  series 2's green.
 
 ## Layout
 
@@ -55,10 +65,13 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-`"Segoe UI", "Segoe UI Web", Tahoma, sans-serif` — **system fonts, not
-vendored** (Segoe UI isn't freely licensed); off Windows, Tahoma or the
-platform sans renders, and Segoe UI Light's weight-300 headings fall
-back to whatever light weight is available.
+`"Segoe UI", Selawik, "Segoe UI Web", "Noto Sans", "Open Sans", Tahoma,
+sans-serif` — **system fonts, not vendored** (Segoe UI isn't freely
+licensed). Selawik (Microsoft's OFL Segoe UI stand-in) is named but not
+yet in `assets/fonts`; Noto Sans and Open Sans sit before Tahoma because
+they have a 300 weight, so the Light headings stay light off Windows.
+Where none of these exists (e.g. DejaVu-only Linux), headings render at
+regular weight.
 
 ## Contrast honesty
 

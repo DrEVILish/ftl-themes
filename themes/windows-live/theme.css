@@ -34,7 +34,10 @@ html[data-theme="windows-live"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 3px;
-  --font: "Segoe UI", "Segoe UI Web", Tahoma, sans-serif;
+  /* Selawik is Microsoft's open metric-compatible Segoe UI stand-in; Noto
+     and Open Sans come before Tahoma because they ship a weight 300, so
+     the Segoe UI Light headings stay light off Windows. */
+  --font: "Segoe UI", Selawik, "Segoe UI Web", "Noto Sans", "Open Sans", Tahoma, sans-serif;
   --font-mono: Consolas, "Lucida Console", monospace;
   /* The Windows flag's orange — the Live logo's warm corner. */
   --flare: #f78b1f;
@@ -129,6 +132,42 @@ html[data-theme="windows-live"] {
   --scrollbar-thumb: #c2c3c9;
   --scrollbar-track: #f0f0f0;
 
+  /* Explorer's selection, not a saturated fill: pale-blue gradient, a
+     #7da2ce frame and dark text, for every pressed/selected control. */
+  --live-select: linear-gradient(180deg, #e5f3fd, #cce8ff);
+  --toggle-btn-bg-on: var(--live-select);
+  --toggle-btn-fg-on: var(--text);
+  --toggle-btn-border-on: #7da2ce;
+  --segmented-item-bg-active: var(--live-select);
+  --segmented-item-fg-active: var(--text);
+  --pagination-item-bg-active: var(--live-select);
+  --pagination-item-fg-active: var(--text);
+  --badge-bg-active: var(--live-select);
+  --badge-fg-active: var(--text);
+  /* Fifth series: Live purple, so it never doubles the green of series 2. */
+  --chart-series-5: #8b3fa8;
+
+  /* Windows 7 trackbar (Movie Maker's zoom slider): a thin grey groove with
+     a darker frame, drawn as background on the content box so the hit area
+     stays at --tap-min; a grey-gloss thumb in a #707070 frame. */
+  --slider-height: 5px;
+  --slider-radius: 2px;
+  --slider-bg: linear-gradient(180deg, #e3e6ea, #fbfcfd) content-box 1px 1px / calc(100% - 2px) calc(100% - 2px) no-repeat, #7a8594;
+  --slider-thumb-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%);
+  --slider-thumb-shadow: 0 0 0 1px #707070;
+  --slider-thumb-radius: 2px;
+
+  /* Win7 progress is a tall glossy bar in a grey trough. */
+  --progress-height: 0.9rem;
+
+  /* Transport GO: a Win7 push button, not an outlined label. */
+  --go-bg: var(--btn-bg);
+  --go-bg-hover: var(--btn-bg-hover);
+  --go-fg: var(--text);
+  --go-border: #707070;
+  --go-border-width: 1px;
+  --go-shadow: var(--btn-shadow);
+
   /* The aurora: the pale-blue swooshes behind every Live sign-in, splash
      and welcome screen — soft blue light with a white ribbon of light
      sweeping across it. Fixed px Y so it stays on the first screen. */
@@ -155,6 +194,59 @@ html[data-theme="windows-live"] .btn-primary {
   --btn-shadow: inset 0 0 0 1px #9ed7fb, 0 0 4px rgba(51, 153, 255, 0.6);
 }
 html[data-theme="windows-live"] .btn-secondary { --btn-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%); --btn-fg: var(--text); --btn-border: #707070; }
+/* Toolbar-style buttons: flat at rest, Win7 hot-track frame on hover. */
+html[data-theme="windows-live"] :is(.btn-tertiary, .btn-ghost) {
+  --btn-shadow: none;
+  --btn-bg-hover: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 50%, #bee6fd 51%, #a7d9f5 100%);
+  --btn-border-hover: #3c7fb1;
+}
+/* Win7 disabled push button: flat grey, grey frame, grey label. */
+html[data-theme="windows-live"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: #f4f4f4;
+  --btn-bg-hover: #f4f4f4;
+  --btn-border: #adb2b5;
+  --btn-border-hover: #adb2b5;
+  --btn-fg: #838383;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  opacity: 1;
+}
+/* Core pads a vertical slider with padding-inline, which in its vertical
+   writing mode is top/bottom, leaving the groove 24px wide; pad the sides
+   physically so it is the same thin groove as the horizontal one. */
+html[data-theme="windows-live"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+html[data-theme="windows-live"] .segmented-item.is-active { box-shadow: inset 0 0 0 1px #7da2ce; }
+html[data-theme="windows-live"] .pagination-item.is-active { border-color: #7da2ce; }
+html[data-theme="windows-live"] .badge-button.is-active { box-shadow: inset 0 0 0 1px #7da2ce; }
+
+/* Win7 check boxes and radios: a white-to-grey box in a #8f8f8f frame, a
+   pale inner square, a dark Live-blue tick. Core's size is kept. */
+html[data-theme="windows-live"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 1px solid #8f8f8f;
+  background-image: linear-gradient(135deg, #dcdcdc, #ffffff);
+  box-shadow: inset 0 0 0 2px #f4f4f4, inset 0 0 0 3px #c9cfd6;
+  display: inline-grid;
+  place-content: center;
+}
+html[data-theme="windows-live"] .checkbox { border-radius: 1px; }
+html[data-theme="windows-live"] .radio { border-radius: 50%; }
+html[data-theme="windows-live"] :is(.checkbox, .radio):hover { border-color: #3c7fb1; }
+html[data-theme="windows-live"] .checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2l3 3 6-6.4' fill='none' stroke='%231e395b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"), linear-gradient(135deg, #dcdcdc, #ffffff);
+}
+html[data-theme="windows-live"] .checkbox:indeterminate {
+  background-image: linear-gradient(#2f6fc2, #1e395b), linear-gradient(135deg, #dcdcdc, #ffffff);
+  background-size: 50% 50%, auto;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+html[data-theme="windows-live"] .radio:checked {
+  background-image: radial-gradient(circle, #6fb4ea 0, #1e5aa0 30%, transparent 33%), linear-gradient(135deg, #dcdcdc, #ffffff);
+}
+
 html[data-theme="windows-live"] .stat-value,
 html[data-theme="windows-live"] .table td { font-variant-numeric: tabular-nums; }
 
@@ -183,7 +275,10 @@ html[data-theme="windows-live"] {
   --app-bar-rule-width: 1px;
   --app-bar-height: 2.6rem;
   --app-bar-padding: 0.35rem 0.75rem 0;
-  --app-main-padding: 1.25rem;
+  /* Main clears the ribbon band hung under the tab strip (below). */
+  --app-main-padding: calc(1.25rem + 12px) 1.25rem 1.25rem;
+  --app-main-padding-tablet: calc(var(--space-m) + 12px) var(--space-m) var(--space-m);
+  --app-main-padding-mobile: calc(var(--space-s) + 12px) var(--space-s) var(--space-s);
   --app-status-bg: linear-gradient(180deg, #f6f9fc, #e3eaf3);
   --app-status-fg: #3b4a5c;
   --app-status-rule: #c5d2df;
@@ -191,6 +286,10 @@ html[data-theme="windows-live"] {
 }
 html[data-theme="windows-live"] .app-bar {
   align-items: flex-end;
+  /* The ribbon body: a white band under the tab strip that the selected
+     tab flows into, closed by the ribbon's #b6bccc rule. Shadows, so it
+     takes no layout and never covers a menu. */
+  box-shadow: 0 6px 0 #ffffff, 0 11px 0 #f1f5fb, 0 12px 0 #b6bccc, 0 13px 5px -1px rgba(30, 60, 100, 0.12);
   --nav-brand-fg: #ffffff;
   /* The brand is the blue application button; the lint measures the
      white label against this, not the pale bar behind it. */
