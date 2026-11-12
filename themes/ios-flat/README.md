@@ -30,7 +30,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
    saturate(180%) blur(20px)`) for the nav bar, tab bar, alerts, menus and
    banners. Nothing else is translucent. On phones (up to 900px or a
    coarse pointer) the two sticky bars keep their 94% bar fill but drop
-   the live blur, which cost every scroll frame; menus and alerts keep it.
+   the live blur, which cost every scroll frame; alerts keep it, menus and
+   the home-screen Dock use a cheaper `blur(14px)` behind the same fill,
+   and toasts, popovers and tooltips (near-opaque already) have none.
 2. **Flat means flat.** No gradients, gloss, bevels or inner shadows. The
    only gradient is the Contacts monogram disc behind `.avatar`. Resting
    surfaces (panels, cards, lists, field rows) have no border and no
@@ -45,8 +47,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 5. **Inset grouped rows merge.** Consecutive `.field-row`s become one
    group: corners only at the ends, a hairline between rows that starts
    1rem in, or at the label when the row has a leading glyph. Tappable
-   `.list-item`s get a grey chevron; a disclosure group's (`.accordion`)
-   chevron turns down when open.
+   `.list-item`s get a grey chevron; a disclosure (`.accordion-item`) is
+   a white rounded cell whose chevron turns down when open, and
+   consecutive disclosures merge the same way.
 6. **The toggle is green.** `#34c759`, 51 by 31 with a white thumb that
    carries the iOS shadow. It is not the accent colour.
 7. **System colours, system fonts.** The palette is the HIG's system
@@ -58,19 +61,25 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   the page nav drawn as one iOS 13 segmented control, and the brand below
   it as a 34px bold large title. When the page has its own `h1` (the
   screen's large title) the brand becomes the 17px semibold inline title
-  on the top row, so a screen never shows two large titles. It is sticky
+  on the top row, so a screen never shows two large titles; on phones and
+  tablets (900px and under) that inline title is dropped altogether, as
+  iOS shows only the large title until you scroll. It is sticky
   and frosted. A `.nav` of items in the bar carries the grey track itself; loose
   items in the bar join into one strip with no notches. Menubar items are
   bar buttons: tint text, the current one semibold.
 - A `.nav` in content is a plain rounded nav bar: no rule, 17px semibold
   title, tint items, the current one semibold tint.
 - Horizontal `.tabs` and `.toggle-group`s in content are segmented
-  controls too (grey track, white pill with its shadow, 13px labels,
+  controls too (grey track, white pill with its shadow, 13px labels on
+  0.45em of block padding, so the 13pt text sits in a ~28pt segment,
   hairlines between unselected neighbours); there is no in-page tab strip
   or blue-filled segment on iOS 13+.
 - The status strip is a tab bar: 49px, frosted, sticky to the bottom,
   items spaced evenly in 12px medium text, status text no smaller than
-  Caption 2 (11px). On phones a taskbar's tray
+  Caption 2 (11px). A `.tabbar` (or `app-status tabbar`) is the real
+  UITabBar: a 26px glyph over a 10px label, the current item in the
+  tint text blue (`#0068d0`; the accent's 10px label was 4.46:1 on the
+  bar), no indicator line. On phones a taskbar's tray
   drops to a second line so task labels stay readable.
 - Modals are iOS alerts: 14px corners, frosted, title and body centred,
   buttons spanning the bottom edge with hairline dividers, the preferred
@@ -82,7 +91,17 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   Reminders' edit mode; iOS has no square checkbox.
 - Table selection is systemGray5 (`#e5e5ea`; the deeper `#d1d1d6` tap
   flash dropped tinted text under 4.5:1), and the active
-  row carries a trailing blue checkmark; there is no leading marker bar.
+  row carries a trailing blue checkmark over the row's grey fill; there
+  is no leading marker bar. Figures in tables (order numbers, totals,
+  durations) stay in the text face with tabular digits, as iOS's
+  monospacedDigit does; SF Mono is kept for code. Every table is one
+  white rounded group whose row rules start 1rem in (the last row has
+  none); one filling a pane with blank rows is unboxed and unstriped.
+  An edited, unsaved cell keeps its orange wash and gains a trailing
+  orange dot instead of a side stripe; log and feed lines carry no side
+  stripe either (warnings and errors lead with a dot in their colour).
+  The bulk-selection bar is a flat tint wash with no outline, and a
+  `.toolbar` in content is a rounded inset cell with no bottom rule.
   An in-cell editor is a rounded (6px) field ringed in 2px tint.
 - The `.nav-rail` is Mail's mailbox list: black labels, tint glyphs, the
   selected row a systemGray5 fill with no leading bar. Inside the content
@@ -90,11 +109,22 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 - A `.master-detail-list` is the iPad Settings sidebar: each row's
   leading glyph is white on a 29px coloured squircle tile (blue, grey,
   red, indigo in turn), and beside its pane the selected row is a blue
-  fill with white text. On a phone the list drills in and shows no
+  fill with white text, its tile ringed in white (a blue tile lightened to
+  `#3395ff`) so the squircle still shows. On a phone the list drills in and shows no
   selection, as iPhone Settings does.
 - Text fields use tertiarySystemFill itself (translucent): `#eeeeef` in a
   white cell, `#e3e3e9` on the grouped grey page, so a free-standing
-  field keeps an edge. Dark mode keeps the opaque `#2c2c2e`.
+  field keeps an edge. Dark mode keeps the opaque `#2c2c2e`. An invalid
+  field keeps that fill with no outline; its value turns red and the red
+  footnote under it says why. A select's disclosure is a thin
+  chevron.up.chevron.down in the tint, never a filled caret.
+- Mail rows mark unread with the blue dot centred in a 1.6rem leading
+  gutter that every row of that mailbox keeps (the "New" badge's word
+  stays for screen readers); the dot turns white only on the blue
+  selected fill, so on a phone, where the list drills in, it stays blue. Inset hairlines belong to
+  grouped lists only; `.list-cards` stay separate cards, and a featured
+  card is a 10% tint wash rather than a ring. Section headers
+  (`.field-group-title`) have no rule under them.
 - UISwitch keeps its fixed 51px; a hint beside it in a field row
   truncates instead.
 - Sliders have UISlider's blue minimum track: native in Firefox; in
@@ -107,12 +137,20 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 - Buttons follow iOS 15's styles: primary is "filled", secondary is
   "tinted" (a wash of the tint), ghost is "plain" text, the default is
   "gray". A tap dims to 55% opacity instead of moving.
-- `.btn-sm` is a capsule (the App Store "GET" button).
+- `.btn-sm` is a capsule (the App Store "GET" button), 0.42em by 0.9em
+  of padding.
+- Home-screen labels stay on one line and truncate with an ellipsis, as
+  SpringBoard draws them.
 - Toasts are notification banners with a small coloured app-icon tile;
   inline `.alert`s are white cells led by the same tile (no side stripe).
 - Small buttons on a state-washed row sit on a white chip.
 - Badges are capsules; the danger badge is the red notification badge.
-  `.badge-button` filter chips use Subheadline (15px medium).
+  `.badge-button` filter chips use the 13px semibold of the small
+  capsules and segments beside them, so a toolbar row keeps one style.
+- Text buttons (`.btn-clear`) are bar buttons: tint, regular weight.
+- A "Search" addon in front of a search field turns into the field's
+  magnifier, so the group reads as one search field.
+- A tinted `.band` inside the grouped page takes the 10px group radius.
 - Readouts use thin (300) tabular digits like the Stopwatch; stat values
   use SF Rounded (`ui-rounded`) like iOS 14 widgets.
 - Mixer pieces borrow from the system: faders are Control Center slabs,
@@ -133,12 +171,16 @@ The dark variant declares `color-scheme: dark` so native controls follow it.
 ## Typography
 
 Stack: `-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter",
-"Segoe UI", Roboto, "Noto Sans", "Liberation Sans", Arimo, Arial,
-sans-serif`. Inter, Liberation Sans and Arimo are there so Linux lands on
-a neutral grotesque rather than a wide fallback. On Apple platforms that is SF Pro
-(iOS 9 onward); Helvetica Neue is the iOS 7 and 8 system face, so it is
-the right first fallback. Nothing is vendored: SF Pro's licence does not
-allow redistribution. Monospace: `ui-monospace, "SF Mono", Menlo, …`.
+"Liberation Sans", Arimo, Arial, "Segoe UI", Roboto, "Noto Sans",
+sans-serif`. On Apple platforms that is SF Pro (iOS 9 onward); Helvetica
+Neue is the iOS 7 and 8 system face, so it is the right first fallback.
+SF Pro's licence does not allow redistribution, so everywhere else the
+theme vendors Inter (`assets/fonts/Inter-Variable.woff2`, OFL, a Latin
+subset with weights 400-700 and optical sizes 14-32), the closest open
+match to SF Pro; Liberation Sans / Arimo (Helvetica's metrics) follow it
+so nothing lands on a wide humanist face. Monospace: `ui-monospace,
+"SF Mono", Menlo, "DejaVu Sans Mono", …`; DejaVu Sans Mono is the face
+Menlo was drawn from.
 
 The root font size is 17px (Body). Headings follow the text styles:
 `h1` Large Title 34 bold, `h2` Title 2 22 bold, `h3` Headline 17
@@ -154,7 +196,8 @@ blocks are SF Mono at Footnote 13, as Xcode and Notes set code.
 | `--on-accent` white on `--accent` `#0071e3` | 4.7 |
 | white on `--danger` `#d70015` / `--success` `#1e7e34` | 5.4 / 5.1 |
 | `--warning-text` `#bf3100` / `--danger-text` `#be0013` / `--success-text` `#1b722f` on a grey fill `#e5e5ea` | 4.6 / 5.2 / 4.8 |
-| `--accent-text` `#005ebc` (links, tinted text, tabs) on the tinted wash / grey button fill | 4.8 / 4.9 |
+| `--ios-tint-text` `#0068d0` (links, bar buttons, alert buttons, nav items, the current tab) on white / bar `#f9f9f9` / alert (composites to `#eeeeee`) | 5.4 / 5.1 / 4.65 |
+| `--accent-text` `#005ebc` (gray-button labels, tabs) on the tinted wash / grey button fill | 4.8 / 4.9 |
 | dark: `--muted` `#9d9da3` on `#1c1c1e` / `#2c2c2e` / grey fill `#323236` | 6.3 / 5.2 / 4.7 |
 | dark: `--danger-text` `#ff6961`, `--success-text` `#30d158` on `#1c1c1e` | 6.0 / 8.4 |
 
@@ -171,8 +214,12 @@ Deviations from Apple's values, all made for the contrast floors:
 - **Secondary label.** secondaryLabel (60% `#3c3c43`) is 3.3:1 on white;
   `--muted` is `#5f5f63`, a shade under systemGray's accessible `#6c6c70`
   so it holds 4.5:1 on the grey fills and bubbles too.
-- **Tinted text.** Links, tabs and "gray" button labels use `--accent-text`
-  `#005ebc`; `#0071e3` is 4.1:1 on the grey fills, so it stays a fill colour.
+- **Tinted text.** systemBlue as text is 4.0:1 on white and 3.6:1 on the
+  alert. Text on white, the bars and the alert uses `--ios-tint-text`
+  `#0068d0`, the nearest blue to `#007aff` that holds 4.5:1 on the alert
+  (its frosted fill composites to `#eeeeee`, not the nominal `#f2f2f2`);
+  only text on a grey fill or tinted wash ("gray" button labels) drops to
+  `--accent-text` `#005ebc`.
 - **Toggle off track.** `#e9e9ea` on white is low contrast, as it is on
   the device. The thumb's shadow and position carry the state.
 
