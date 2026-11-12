@@ -38,7 +38,7 @@ html[data-theme="silo"] {
   --surface-2: #062219;
   --border: #1c8a72;       /* teal rule lines (sampled #0a6950..#268f6c) */
   --hairline: #0c3a2e;
-  --text: #6fe8cc;         /* phosphor teal (sampled #28c6aa core, lifted for bloom) */
+  --text: #52dec2;         /* phosphor teal (sampled #28c6aa core, lifted just enough for long text and tinted chips) */
   --muted: #3fb69a;
   --accent: #b9dc78;       /* yellow-green "JUDICIAL: SIMS" band / capacity bar (sampled #95c26f) */
   --accent-2: #e6dc8c;     /* pale yellow: selection outline, the PACT double rules */
@@ -55,7 +55,7 @@ html[data-theme="silo"] {
   --font: "Share Tech", "Eurostile", "DIN Alternate", "Bahnschrift", "Arial Narrow", sans-serif;
   --font-mono: "Share Tech Mono", "Lucida Console", "DejaVu Sans Mono", Consolas, monospace;
   --flare: #e5a93c;
-  --link: #8ff5dc;
+  --link: #6fe8cc;
   --focus: var(--accent-2);
   --focus-ring: 0 0 0.5rem rgba(230, 220, 140, 0.45);
 
@@ -64,7 +64,7 @@ html[data-theme="silo"] {
   --silo-plate-fg: #052019;
   --silo-bezel: #2b302b;    /* painted steel monitor housing */
   --silo-bezel-hi: #3d433c;
-  --silo-glow: rgba(40, 198, 170, 0.45);
+  --silo-glow: rgba(40, 198, 170, 0.3);
   --silo-tint: rgba(185, 220, 120, 0.12);
   --silo-num: #f0c060;      /* amber countdown numerals */
   --silo-field: #2f6b55;    /* field-box outline, olive-teal */
@@ -186,7 +186,9 @@ html[data-theme="silo"] {
   --slider-radius: 0;
   --slider-thumb-radius: 1px;
   --slider-thumb-bg: var(--accent-2);
-  --slider-bg: var(--surface-2);
+  /* Core clips the slider to its content box and hides the border, so the
+     teal rule is drawn as the track fill itself (4.6:1 on the glass). */
+  --slider-bg: var(--border);
   --slider-border: var(--border);
 
   /* Progress: the hatched yellow-green CAPACITY bar inside a teal box. */
@@ -243,7 +245,7 @@ html[data-theme="silo"] {
   --readout-border-width: 2px;
   --readout-border: var(--border);
   --readout-radius: 0.55rem;
-  --readout-padding: 0.15em 0.7em;
+  --readout-padding: 0.35em 0.7em;
   --readout-unit-fg: var(--muted);
   --readout-glow: 0 0 0.4rem rgba(240, 192, 96, 0.5);
   --meter-track: transparent;
@@ -254,6 +256,17 @@ html[data-theme="silo"] {
   --meter-mid: var(--warning);
   --meter-high: var(--danger);
   --meter-peak-fg: var(--accent-2);
+
+  /* Waveform marker chips: pale phosphor ink over every tinted chip. */
+  --waveform-marker-fg: #d4f8ee;
+  /* The active comment highlight stays dark enough for phosphor text. */
+  --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 30%, transparent);
+
+  /* The selection bar is the yellow-green SEARCH AUTHORIZATION band. */
+  --bulk-bar-bg: var(--accent);
+  --bulk-bar-fg: var(--on-accent);
+  --bulk-bar-border: var(--accent);
+  --bulk-bar-radius: 0;
 
   --list-active-marker: inset 0 0 0 2px var(--accent-2);
   --message-bg: var(--surface);
@@ -287,6 +300,15 @@ html[data-theme="silo"] h2 { font-size: 1.2rem; }
 html[data-theme="silo"] h3 { font-size: 0.95rem; letter-spacing: 0.18em; }
 html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th) { letter-spacing: 0.14em; text-transform: uppercase; }
 html[data-theme="silo"] .badge { font-size: 0.7rem; }
+/* Menu entries and short list labels are tracked caps too (FILE / VIEW /
+   GO), as are list rows used as navigation; content lists keep their case. */
+html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-menu, .menubar) li > :is(button, a), nav .list-item > span:not([class])) {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+/* Header cells keep at least 0.45rem above and below their small caps at
+   this density. */
+html[data-theme="silo"] .table th { padding-block: max(0.45rem, calc(0.5em * var(--density))); }
 html[data-theme="silo"] :is(.input, .select, .textarea) { font-family: var(--font-mono); text-transform: uppercase; }
 html[data-theme="silo"] :is(.input, .select, .textarea)::placeholder { text-transform: uppercase; }
 
@@ -334,6 +356,34 @@ html[data-theme="silo"] .modal-header {
 /* Primary: the SEARCH key's heavier pale-yellow frame around the filled band. */
 html[data-theme="silo"] .btn-primary { box-shadow: 0 0 0 1px var(--bg), 0 0 0 3px var(--accent-2); }
 html[data-theme="silo"] .btn:active { transform: translateY(1px); }
+/* Only the yellow-green band is a fill: danger and success are outlined
+   keys in their state colour, and a disabled key is an inert teal outline. */
+html[data-theme="silo"] .btn-danger { --btn-bg: transparent; --btn-fg: var(--danger-text); --btn-border: var(--danger); --btn-weight: 400; }
+html[data-theme="silo"] .btn-success { --btn-bg: transparent; --btn-fg: var(--success-text); --btn-border: var(--success); }
+html[data-theme="silo"] .btn:is(:disabled, [aria-disabled="true"]) {
+  --btn-bg: transparent;
+  --btn-fg: var(--muted);
+  --btn-border: var(--border);
+  box-shadow: none;
+}
+/* Keys on the yellow-green band take its dark ink. */
+html[data-theme="silo"] .bulk-bar {
+  --text: var(--on-accent);
+  --muted: var(--on-accent);
+  --btn-fg: var(--on-accent);
+  --btn-border: var(--on-accent);
+  --btn-bg-hover: rgba(6, 32, 26, 0.12);
+  --btn-border-hover: var(--on-accent);
+  --btn-close-fg: var(--on-accent);
+  --btn-close-fg-hover: var(--on-accent);
+  --danger: #7a1406;
+  --danger-text: #7a1406;
+  --focus: var(--on-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  text-shadow: none;
+}
+html[data-theme="silo"] .bulk-bar :focus-visible { outline-color: var(--on-accent); }
 
 /* Tabs as a row of outlined soft keys with a ">" cue. */
 html[data-theme="silo"] .tab { border: 1px solid var(--border); margin-inline-end: 0.35rem; }
@@ -411,25 +461,33 @@ html[data-theme="silo"] .app-bar {
   font-size: 0.9rem;
   counter-reset: silo-nav;
   --nav-bg: transparent;
+  --menubar-item-bg-active: var(--silo-tint);
+  --menubar-item-fg-active: var(--accent-2);
 }
 /* The brand is a pale plate, like the "RELIC DATABASE" title block. */
 html[data-theme="silo"] .app-bar .nav-brand {
   --nav-brand-fg: var(--silo-plate-fg);
   background: var(--silo-plate);
-  padding: 0.3rem 0.8rem;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 1.4rem;
   border-radius: 2px;
   letter-spacing: 0.18em;
   text-shadow: none;
 }
-html[data-theme="silo"] .app-bar .nav-item { letter-spacing: 0.06em; }
-html[data-theme="silo"] .app-bar .nav-item::before {
+/* PACT's numbered entries, on nav items and on the demo bar's menubar. */
+html[data-theme="silo"] .app-bar :is(.nav-item, .menubar > li > [role="menuitem"]) { letter-spacing: 0.06em; text-transform: uppercase; }
+html[data-theme="silo"] .app-bar :is(.nav-item, .menubar > li > [role="menuitem"])::before {
   counter-increment: silo-nav;
-  content: counter(silo-nav, decimal-leading-zero) " ";
+  content: counter(silo-nav, decimal-leading-zero);
+  margin-inline-end: 0.45em;
   color: var(--accent-2);
   font-family: var(--font-mono);
 }
 html[data-theme="silo"] .app-bar .nav-item.is-active,
-html[data-theme="silo"] .app-bar .nav-item[aria-current] { box-shadow: inset 0 0 0 1px var(--accent-2); }
+html[data-theme="silo"] .app-bar .nav-item[aria-current],
+html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"]:is(.is-active, [aria-current], [aria-expanded="true"]) { box-shadow: inset 0 0 0 1px var(--accent-2); }
 html[data-theme="silo"] .app-main { box-shadow: inset 0 0 3rem rgba(0, 0, 0, 0.75); }
 html[data-theme="silo"] .app-rail { border-left: 1px solid var(--border); }
 html[data-theme="silo"] .app-status {
@@ -445,13 +503,21 @@ html[data-theme="silo"] .app-status {
   --danger-text: #7a1406;
   --muted: #1d4a40;
 }
+/* The strip is three plates, like the Relic Database's bottom band: dark
+   glass notches after the first entry and before the last one. Text
+   entries (spans) only: a toolbar of controls keeps the core layout. */
+html[data-theme="silo"] .app-status > span { align-self: stretch; display: flex; align-items: center; margin-block: -0.25rem; }
+html[data-theme="silo"] .app-status > span:first-child:not(:only-child) { border-inline-end: 0.45rem solid var(--bg); padding-inline-end: 1rem; }
+html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-inline-start: auto; border-inline-start: 0.45rem solid var(--bg); padding-inline-start: 1rem; }
 /* Touch tiers: core lets the brand flex to fill the first line so it can
    truncate; this brand is a filled plate, so cap it at its own width. */
 @media (max-width: 900px) {
-  html[data-theme="silo"] .app-bar > .nav-brand { max-width: max-content; }
+  html[data-theme="silo"] .app-bar > .nav-brand { flex: 0 0 auto; max-width: 100%; }
 }
 @media (max-width: 480px) {
   html[data-theme="silo"] { --app-padding: 0.5rem; }
+  /* Numbered entries stay on one line at phone width. */
+  html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"] { padding-inline: 0.4em; letter-spacing: 0; }
 }
 @media (min-width: 481px) and (max-width: 900px) {
   html[data-theme="silo"] { --app-padding: 0.75rem 0.9rem 1rem; }
@@ -497,6 +563,7 @@ html[data-theme="silo"][data-variant="legacy"] {
   --silo-num: #ffd27a;
   --silo-field: #6e5630;
   --silo-haze: rgba(242, 184, 75, 0.06);
+  --waveform-marker-fg: #fff4dc;
   --modal-border: #f1dcae;
   --row-hover-bg: rgba(241, 220, 174, 0.06);
   --progress-fill: repeating-linear-gradient(90deg, var(--accent) 0 3px, rgba(242, 184, 75, 0.55) 3px 4px);

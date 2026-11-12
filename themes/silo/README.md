@@ -22,17 +22,18 @@ saturated fill is a **yellow-green "granted" band**.
 ## Core values
 
 1. **Teal is the phosphor.** All text and every line is one teal family
-   (`--text #6fe8cc`, `--border #1c8a72`) on green-black glass. Other hues
+   (`--text #52dec2`, `--border #1c8a72`) on green-black glass. Other hues
    are there to carry meaning, never to decorate.
 2. **Yellow-green fill means granted, selected or primary.** Examples are
-   `.btn-primary`, the active segment, switch-on, pagination and progress.
-   It never appears as decoration.
+   `.btn-primary`, the active segment, switch-on, pagination, progress and
+   the bulk-selection bar. It never appears as decoration. Danger and
+   success buttons are outlined keys in their state colour, not fills.
 3. **Pale yellow outline means "this one".** The focus ring, active tab,
    active nav entry and selected row all use the yellow box the hard-drive
    browser draws around the highlighted file (`--accent-2 #e6dc8c`).
 4. **Title bars are solid pale-teal plates with dark text.** This covers
    the brand, modal header, tooltip and status strip. Nothing else is a
-   light surface.
+   light surface apart from the yellow-green band.
 5. **Everything is boxed and labelled.** Inputs are outlined cells with
    tiny tracked-caps labels, panel titles sit between double rules, and
    buttons are outlined keys.
@@ -45,12 +46,18 @@ saturated fill is a **yellow-green "granted" band**.
   with the bar, main and status on one piece of CRT glass. The glass is
   rounded at the top of the bar and the bottom of the status strip.
 - The top bar is PACT's header. It sits between **pale-yellow double
-  rules**, its nav entries are **auto-numbered `01 02 03`** by a CSS
-  counter, and the brand is a pale-teal plate ("RELIC DATABASE").
+  rules**, its nav entries and the top-level entries of a menubar in the
+  bar are **auto-numbered `01 02 03`** by a CSS counter in tracked caps,
+  the active entry is outlined in pale yellow, and the brand is a
+  full-height pale-teal plate ("RELIC DATABASE").
 - The **right-hand rail is the screen's scroll track**: a thumb block over
   tick marks.
-- The **status strip is a pale-teal plate** ("DISK 10% RAM 40% ...") with
-  dark tracked caps. State colours are re-pointed to dark inks inside it.
+- The **status strip is three pale-teal plates** ("DISK 10% RAM 40% ...")
+  with dark tracked caps: dark glass notches cut it after the first entry
+  and before the last, like the Relic Database's bottom band. State
+  colours are re-pointed to dark inks inside it.
+- The **bulk-selection bar is the yellow-green SEARCH AUTHORIZATION band**:
+  a solid fill with dark tracked caps and dark-outlined keys.
 - Panel titles sit between 3px double rules with an `×` at the right
   ("RELIC/SEIZED OBJECTS INVENTORY").
 - `.btn-primary` is the yellow-green band plus the SEARCH key's outer
@@ -60,10 +67,12 @@ saturated fill is a **yellow-green "granted" band**.
   numerals with a faint glow.
 - Progress, meters and bar charts are hatched yellow-green like the
   CAPACITY bar.
+- Sliders draw their track as a teal rule (`--border`) with the pale
+  yellow thumb; the hit area stays the core's `--tap-min` box.
 - `kbd` uses the beige keycaps of the pull-out keyboards.
 - Static scanlines, a vignette and a faint bloom on all text.
 
-### Variants
+## Variants
 
 | Variant | Label | Source |
 |---|---|---|
@@ -77,8 +86,9 @@ vendored in `assets/fonts/` under SIL OFL (see `assets/fonts/NOTICE.md`).
 They are the closest open match to the show's squared, round-cornered
 all-caps techno face, which has not been identified. Fallbacks: Eurostile,
 DIN Alternate, Bahnschrift, Arial Narrow. Headings, labels, tabs, badges,
-buttons and inputs are uppercase and tracked. Body copy keeps its case so
-long text stays readable.
+buttons, inputs, menu entries and short list labels are uppercase and
+tracked. Body copy and titled list rows keep their case so long text stays
+readable.
 
 ## Contrast
 
@@ -86,17 +96,22 @@ All pairs meet the lint floors and no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#6fe8cc` on `--surface` `#03160f` / `--bg` | 12.5 / 13.3 |
+| `--text` `#52dec2` on `--surface` `#03160f` / `--bg` | 11.2 / 11.8 |
 | `--muted` `#3fb69a` on `--surface` / `--surface-2` | 7.4 / 6.7 |
 | `--accent` `#b9dc78` on `--surface` | 12.1 |
 | `--on-accent` `#06201a` on accent | 11.0 |
-| `--on-danger` on `--danger` `#ff6b55` | 7.0 |
-| `--on-success` on `--success` `#43e08f` | 10.6 |
+| `--danger-text` `#ff8a76` / `--success-text` `#5ce89f` on `--surface` (outlined keys) | 8.1 / 12.0 |
+| slider track `--border` `#1c8a72` on `--bg` | 4.6 |
+| waveform marker ink `#d4f8ee` on the tinted chips | 6.6+ |
+| dark ink `#06201a` / danger ink `#7a1406` on the yellow-green band | 11.0 / 7.0 |
 | plate text `#052019` on plate `#8fd3cc` | 10.1 |
 | legacy `--text` `#f1dcae` / `--muted` `#c4a46a` on surface | 14.3 / 8.2 |
 
 The real screens are dimmer: the sampled phosphor core is `#28c6aa`. Text
-is lifted to read like the bloom of a lit CRT.
+is lifted only as far as `#52dec2`, on the same cyan-teal hue, so long
+copy reads at 11:1 and stays above 4.5:1 on the tinted chips without
+turning minty; links use the brighter
+`#6fe8cc`.
 
 ## Layout
 
