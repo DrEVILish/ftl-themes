@@ -42,7 +42,7 @@ html[data-theme="wmp11"] {
   --panel-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 6px 18px rgba(0, 0, 0, 0.45);
   --row-selected-bg: rgba(63, 169, 245, 0.18);
   --nav-bg: linear-gradient(180deg, #1a1a22, #0a0a0d);
-  --slider-bg: linear-gradient(180deg, #000000, #0a0a0d 60%, #34343e);
+  --slider-bg: linear-gradient(180deg, #000000 0 40%, #16161c 60%, #6a6a76);
   --slider-thumb-shadow: 0 0 16px rgba(63, 169, 245, 0.9), 0 0 3px rgba(255, 255, 255, 0.8);
   --overlay-bg: rgba(5, 5, 10, 0.72);
   --overlay-blur: blur(4px);
@@ -50,14 +50,17 @@ html[data-theme="wmp11"] {
   --indicator-track: var(--border);
   /* Blue silk, WMP11's default visualization: bright light ribbons swept
      over deep navy. Shared by the content well and the bare page, so a
-     page without the app shell still sits on the player's backdrop. */
+     page without the app shell still sits on the player's backdrop. Each
+     layer is one viewport tall and black fills the rest (the silk fades
+     to black anyway), so a long page never stretches the arcs into columns. */
   --wmp-silk:
-    radial-gradient(ellipse 130% 60% at 75% 115%, transparent 56%, rgba(159, 224, 255, 0.15) 60%, rgba(79, 184, 232, 0.06) 63%, transparent 68%),
-    radial-gradient(ellipse 120% 55% at 30% -10%, transparent 58%, rgba(120, 205, 250, 0.14) 62%, transparent 67%),
-    radial-gradient(ellipse 110% 70% at 95% 40%, transparent 60%, rgba(79, 184, 232, 0.1) 64%, transparent 70%),
-    radial-gradient(ellipse 70% 45% at 25% 28%, rgba(40, 130, 215, 0.2), transparent 62%),
-    radial-gradient(ellipse 60% 40% at 80% 72%, rgba(20, 100, 185, 0.22), transparent 66%),
-    linear-gradient(160deg, #021428, #053666 40%, #021b35 72%, #000000);
+    linear-gradient(180deg, transparent 88%, #000000) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 130% 60% at 75% 115%, transparent 56%, rgba(159, 224, 255, 0.24) 60%, rgba(79, 184, 232, 0.08) 63%, transparent 68%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 120% 55% at 30% -10%, transparent 58%, rgba(120, 205, 250, 0.14) 62%, transparent 67%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 110% 70% at 95% 40%, transparent 60%, rgba(79, 184, 232, 0.1) 64%, transparent 70%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 70% 45% at 25% 28%, rgba(40, 130, 215, 0.2), transparent 62%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 60% 40% at 80% 72%, rgba(20, 100, 185, 0.22), transparent 66%) 0 0 / 100% 100lvh no-repeat,
+    linear-gradient(160deg, #021428, #053666 40%, #021b35 72%, #000000) 0 0 / 100% 100lvh no-repeat #000000;
   /* The blue glossy capsule: WMP11's active tab, reused for every
      "selected" state — tabs, segments, pages, list and row selection. */
   --wmp-capsule: linear-gradient(180deg, #6db8ee 0, #2a7fcc 18%, #1f70c2 48%, #0f4f9a 52%, #1a64b4 100%);
@@ -89,6 +92,15 @@ html[data-theme="wmp11"] {
   --toggle-btn-bg-on: var(--wmp-capsule);
   --toggle-btn-fg-on: #ffffff;
   --key-sel: #3b8fd6;
+  /* Lit mute keys and filter chips are glass too: deep red / the capsule,
+     white label — never a pastel fill. --danger stays for text and rules. */
+  --key-mute: #9a2626;
+  --key-mute-fg: #ffffff;
+  --badge-bg-active: var(--wmp-capsule);
+  --badge-fg-active: #ffffff;
+  /* List panes and folder rails are the same top-lit glass as panels. */
+  --list-bg: var(--panel-bg);
+  --nav-rail-bg: var(--panel-bg);
 }
 
 html[data-theme="wmp11"] { background: var(--wmp-silk); }
@@ -102,9 +114,25 @@ html[data-theme="wmp11"] .app-main { --muted: #c8ccdc; }
 html[data-theme="wmp11"] .app-main :is(.panel, .card, .modal, .drawer, .popover, .dropdown) { --muted: #8888a0; }
 html[data-theme="wmp11"] .slider::-webkit-slider-thumb { border: 1px solid #0a2b4d; }
 html[data-theme="wmp11"] .slider::-moz-range-thumb { border: 1px solid #0a2b4d; }
+/* The played part of the groove is lit blue up to the orb. Firefox has a
+   progress pseudo; Chromium gets a band painted by the thumb's border-image
+   outset to its left, clipped at the track start (no JS, hit area kept). */
+html[data-theme="wmp11"] .slider::-moz-range-progress { height: var(--slider-height, 0.35rem); border-radius: 999px; background: var(--progress-fill); }
+html[data-theme="wmp11"] .slider:not(.is-vertical, .is-range > .slider) { clip-path: inset(-1rem -1rem -1rem 0); }
+/* The clip would cut the focus ring's left edge: draw it inside the box. */
+html[data-theme="wmp11"] .slider:not(.is-vertical, .is-range > .slider):focus-visible { outline-offset: -2px; }
+html[data-theme="wmp11"] .slider:not(.is-vertical, .is-range > .slider)::-webkit-slider-thumb {
+  border: 0;
+  box-shadow: 0 0 0 1px #0a2b4d, var(--slider-thumb-shadow);
+  border-image: linear-gradient(180deg, transparent calc(50% - 0.15rem), #bfeaff 0, #3fa9f5 50%, #1a64b4 calc(50% + 0.15rem), transparent 0) 0 0 0 99% / 0 0 0 100vw / 0 0 0 100vw;
+}
 
-html[data-theme="wmp11"] .panel,
-html[data-theme="wmp11"] .modal { backdrop-filter: blur(6px); }
+/* Glass blur only where it is cheap: on touch tiers the panes are already
+   86-90% opaque and the blur cost every scroll frame. */
+@media (min-width: 901px) {
+  html[data-theme="wmp11"] .panel,
+  html[data-theme="wmp11"] .modal { backdrop-filter: blur(6px); }
+}
 
 /* The signature under-lit glossy bloom — a genuine specular highlight
  * band across the upper third of every glass surface, not just a faint
@@ -288,7 +316,17 @@ html[data-theme="wmp11"] .app-bar::before {
 }
 html[data-theme="wmp11"] .app-status {
   position: relative;
-  box-shadow: inset 0 2px 0 #1d6fb8, inset 0 3px 0 rgba(127, 209, 255, 0.5), 0 0 24px rgba(63, 169, 245, 0.25);
+  box-shadow: 0 0 24px rgba(63, 169, 245, 0.25);
+}
+/* The seek groove along the bar's top: dark grey, blue only where played. */
+html[data-theme="wmp11"] .app-status::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(180deg, transparent 0 1px, rgba(127, 209, 255, 0.5) 1px 2px, transparent 2px), linear-gradient(90deg, #3fa9f5 0 28%, #3a3a44 28%);
+  border-radius: inherit;
+  pointer-events: none;
 }
 /* The transport capsule, centred on the bar: stop, prev | play | next,
    volume. Decoration only — the app's own status text stays at the ends —
@@ -355,7 +393,9 @@ html[data-theme="wmp11"] h1,
 html[data-theme="wmp11"] h2,
 html[data-theme="wmp11"] h3 { color: #ffffff; font-weight: 600; text-shadow: 0 1px 1px #000; }
 /* WMP11 has no display type: a page title is a list-pane title. */
-html[data-theme="wmp11"] .app-main h1 { font-size: min(1.6rem, 1em + 2vw); line-height: 1.2; }
+html[data-theme="wmp11"] .app-main h1 { font-size: min(1.35rem, 1em + 2vw); line-height: 1.2; }
+html[data-theme="wmp11"] .app-main h2 { font-size: min(1.15rem, 1em + 1vw); line-height: 1.25; }
+html[data-theme="wmp11"] :is(h1, h2, h3) { font-synthesis-weight: none; }
 html[data-theme="wmp11"] .tabs { border-bottom-color: #000; gap: 2px; }
 html[data-theme="wmp11"] .tab.is-active { border-bottom: 0; box-shadow: inset 0 0 0 1px rgba(191, 234, 255, 0.5), 0 0 8px rgba(63, 169, 245, 0.45); }
 /* White on the capsule: a dark drop shadow keeps the label legible over
