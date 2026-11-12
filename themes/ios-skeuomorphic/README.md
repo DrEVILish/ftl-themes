@@ -35,8 +35,11 @@ and the two must never converge.
 ## Signature details
 
 - **The navigation bar** is a blue gloss with an inset white highlight
-  line, a bold white embossed title and capsule bar buttons. The active
-  one is the brighter "Done" blue. A black iPhone status strip sits above
+  line and a soft silvery sheen along its top edge, a bold white embossed
+  title and capsule bar buttons. A menubar in the bar and filter chips
+  (`.badge-button`) on a bar are capsule bar buttons too. The active
+  one is the brighter "Done" blue. Every label on a blue bar, switch and
+  check labels included, is white and embossed. A black iPhone status strip sits above
   it in the app shell, with a drawn signal row and battery and no text.
 - **The tab bar** is the black glossy `UITabBar`. It is used both for the
   app shell's status strip and for `.tabs`. Tabs share the bar evenly
@@ -44,15 +47,18 @@ and the two must never converge.
   whose label glows blue. Status text and ghost buttons on the black bars
   (status strip, `.transport`) take light inks.
 - **The slider** is the `UISlider` groove: a blue track with a dark rim
-  and an inset shade along its top, painted inside the padded 24/44px hit
-  area, and a white pearl knob.
+  and an inset shade along its top, round-capped, painted inside the
+  padded 24/44px hit area, and a white pearl knob. A vertical slider turns
+  the rim and shade 90 degrees.
 - **A side rail** (`.nav-rail`) is Mail's mailbox list: one rounded white
-  cell group with bold black labels and hairline separators; the current
+  cell group with bold black labels and single hairline separators; the current
   mailbox is the blue selected cell. Capsule bar buttons stay on bars.
 - **The switch** is a 4.1em pill: an "ON" in white on blue at the left, or
   an "OFF" in gray on white at the right, with a full-height white knob.
+  The track never shrinks; a squeezed row truncates its label instead.
 - **The selected cell** is the `#058cf5` to `#015fe6` gradient with white
-  text, and status text inside it turns white too.
+  text, and status text inside it turns white too (`.is-selected` and
+  `aria-selected="true"` rows, stacked-table labels included).
 - **Section headers** (`.panel-header`, `.table th`) use the plain-table
   gray-blue gradient with white bold type.
 - **The modal** is the UIAlertView: navy glass with a gloss band at the
@@ -67,7 +73,9 @@ and the two must never converge.
   navy frame. Toasts are the iOS 5 black notification banner. Tappable
   list rows (links, buttons and radio-select rows) get a grey disclosure
   chevron; a row that draws its own trailing chevron icon shows it in
-  the same `#7b7b7b`.
+  the same `#7b7b7b`. An `.accordion-item` is a grouped cell whose grey
+  chevron turns down when open; dropdown and context-menu rows have
+  hairline separators; `.scrollspy-nav` is a light bordered toolbar.
 
 ## Layout
 
@@ -84,7 +92,8 @@ apart from `aqua`.
   about 1.7:1. This theme starts it at `#5b779c`, so the title and bar
   buttons hold 4.5:1 across the whole gradient. The gloss split is kept
   by a hard break at 50% to a darker lower half, plus the inset highlight
-  line, not by a pale top stop. Do not lighten the gradient:
+  line and a soft inset sheen in the top few pixels (a shadow, above any
+  label), not by a pale top stop. Do not lighten the gradient:
   `scripts/check.py` measures every stop.
 - The count badge (`#8795af` in the reference) and the plain section
   header gradient are darkened for the same reason: the header's white
@@ -109,7 +118,7 @@ apart from `aqua`.
 
 ## v5 layout
 
-- **Tiers.** No rail. Phones and tablets: core puts the title and bar buttons on line 1 and the glossy nav buttons on a scrolling line 2, with their labels centred in the 44px buttons; phones tighten the button padding. Content padding is set per tier (`--app-main-padding-mobile|-tablet`).
+- **Tiers.** No rail. Phones and tablets: core puts the title and bar buttons on line 1 and the glossy nav buttons (or a menubar) on line 2, with their labels centred in the 44px buttons; phones tighten the button padding. Content padding is set per tier (`--app-main-padding-mobile|-tablet`).
 - **Nesting.** A panel, card, list, field row or table inside the navy alert view (`.modal`) goes back to black-on-white without the emboss, so its text no longer inherits the alert's white embossed type onto a white cell. Stacked-table labels use `--muted`.
 - **XL gutter art (1801px+).** The grey linen of the iOS 6 notification shade and lock screen, woven from two fine crossing stripe sets and a soft vignette.
 

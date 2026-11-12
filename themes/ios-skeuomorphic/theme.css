@@ -45,7 +45,7 @@ html[data-theme="ios-skeuomorphic"] {
   --on-success: #ffffff;
   --radius: 0.6rem;
   /* Nimbus Sans / TeX Gyre Heros / FreeSans: Helvetica-metric clones on Linux. */
-  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", "Nimbus Sans L", "TeX Gyre Heros", FreeSans, sans-serif;
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", "Nimbus Sans L", "TeX Gyre Heros", FreeSans, Arimo, sans-serif;
   --font-mono: Menlo, "DejaVu Sans Mono", Consolas, "Courier New", monospace;
   --flare: #e3101a;        /* the SpringBoard unread badge */
 
@@ -61,9 +61,10 @@ html[data-theme="ios-skeuomorphic"] {
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 11px),
     #434852;
   /* Gloss split by darkening the lower half: a pale top would drop the
-     white bar text under 4.5:1 (see Deliberate deviations). */
+     white bar text under 4.5:1 (see Deliberate deviations). The silvery
+     sheen is a soft inset glow in the top few pixels, above any label. */
   --ios-navbar: linear-gradient(180deg, #5b779c 0%, #52709a 50%, #3f5a82 50%, #3a5379 100%);
-  --ios-navbar-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 #2d405c;
+  --ios-navbar-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 8px 6px -4px rgba(230, 236, 246, 0.6), inset 0 -1px 0 #2d405c;
   --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
   --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
   --ios-select: linear-gradient(180deg, #058cf5 0%, #015fe6 100%);
@@ -234,6 +235,9 @@ html[data-theme="ios-skeuomorphic"] {
   --pagination-item-bg-hover: #e6ecf5;
   --breadcrumb-current-fg: #000000;
   --scrollspy-link-active-fg: #385487;
+  /* A scrollspy strip is a plain UIToolbar in the light (bordered) style. */
+  --scrollspy-nav-bg: linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #d9d9d9 100%);
+  --scrollspy-nav-rule: #8e9299;
   --carousel-dot: rgba(0, 0, 0, 0.25);
   --carousel-dot-active: #4c566c;
 
@@ -428,6 +432,12 @@ html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain))
   --accent-text: #ffffff;
   --breadcrumb-current-fg: #ffffff;
   --breadcrumb-separator: #c9d4e3;
+  --check-fg: #ffffff;
+}
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) :is(.switch-label, .check) {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: var(--ios-emboss-dark);
 }
 html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .breadcrumb-item { text-shadow: var(--ios-emboss-dark); }
 html[data-theme="ios-skeuomorphic"] .nav-brand {
@@ -466,12 +476,48 @@ html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item {
   border-block-start-color: var(--hairline);
   text-shadow: var(--ios-emboss-light);
 }
-html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item + .nav-item { border-block-start-width: 0; box-shadow: inset 0 1px 0 var(--hairline); }
+html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:not(:last-of-type) { border-block-end-width: 0; }
 html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:first-of-type { border-block-start-color: var(--border); border-start-start-radius: var(--radius); border-start-end-radius: var(--radius); }
 html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:last-of-type { border-end-start-radius: var(--radius); border-end-end-radius: var(--radius); }
 html[data-theme="ios-skeuomorphic"] .nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) { text-shadow: var(--ios-emboss-dark); --muted: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .toolbar:not(.is-plain) { border-color: #2d405c; }
 
+/* A menubar in the bar is a row of capsule bar buttons; the open item is Done blue. */
+html[data-theme="ios-skeuomorphic"] .app-bar .menubar {
+  --menubar-gap: 0.35rem;
+  --menubar-item-radius: 0.4rem;
+  --menubar-font-size: 0.8rem;
+  --menubar-item-bg-active: var(--ios-donebtn);
+  --menubar-item-fg-active: #ffffff;
+  align-items: center;
+}
+html[data-theme="ios-skeuomorphic"] .app-bar .menubar > li > [role="menuitem"] {
+  block-size: auto;
+  font-weight: 700;
+  text-shadow: var(--ios-emboss-dark);
+  background: var(--ios-barbtn);
+  border: 1px solid #2d405c;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+html[data-theme="ios-skeuomorphic"] .app-bar .menubar > li > :is(.is-active, [aria-expanded="true"], :focus-visible)[role="menuitem"],
+html[data-theme="ios-skeuomorphic"] .app-bar .menubar > li:focus-within > [role="menuitem"] { background: var(--ios-donebtn); border-color: #193f7d; }
+@media (hover: hover) {
+  html[data-theme="ios-skeuomorphic"] .app-bar .menubar > li:hover > [role="menuitem"] { background: var(--ios-donebtn); border-color: #193f7d; }
+}
+/* Filter chips on a bar are bar buttons too: bold, glossy, Done blue when on. */
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .badge-button {
+  --badge-bg: var(--ios-barbtn);
+  --badge-fg: #ffffff;
+  --badge-bg-active: var(--ios-donebtn);
+  --badge-fg-active: #ffffff;
+  --badge-border: #2d405c;
+  --badge-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid var(--badge-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .badge-button.is-active { --badge-border: #193f7d; }
 /* Bar buttons inside blue bars: the plain .btn picks up the capsule. */
 html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .btn:not(.btn-primary, .btn-danger, .btn-success) {
   --btn-bg: var(--ios-barbtn);
@@ -528,6 +574,18 @@ html[data-theme="ios-skeuomorphic"] .tab.is-active {
 /* --- Slider: the UISlider groove ---------------------------------------- */
 /* Size the groove gradient to the drawn track, not the padded hit area. */
 html[data-theme="ios-skeuomorphic"] .slider { background-origin: content-box; }
+/* Round groove ends: elliptical outer radii whose inner (content-box)
+   radii come out circular once the block padding is taken off. */
+html[data-theme="ios-skeuomorphic"] .slider:not(.is-vertical) { border-radius: calc(var(--slider-height) / 2) / 50%; }
+/* Vertical groove: physical side padding (core's logical padding lands on
+   the length axis in vertical-lr) and the rim and shade turned 90deg. */
+html[data-theme="ios-skeuomorphic"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+  border-radius: 50% / calc(var(--slider-height) / 2);
+  --slider-bg:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22), transparent 3px),
+    linear-gradient(90deg, #2b5fae 0 1px, #3b7fe0 1px, #7cb3f6 calc(100% - 1px), #2b5fae calc(100% - 1px));
+}
 
 /* --- Segmented control (bordered style) ---------------------------------- */
 html[data-theme="ios-skeuomorphic"] .segmented {
@@ -564,7 +622,7 @@ html[data-theme="ios-skeuomorphic"] .panel-header .key { --muted: #4c566c; text-
 html[data-theme="ios-skeuomorphic"] .list-item { font-weight: 700; }
 html[data-theme="ios-skeuomorphic"] .list-item.is-active { --list-item-fg: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .list-item.is-active,
-html[data-theme="ios-skeuomorphic"] .table tr.is-selected td { text-shadow: var(--ios-emboss-dark); }
+html[data-theme="ios-skeuomorphic"] .table tr:is(.is-selected, [aria-selected="true"]) td { text-shadow: var(--ios-emboss-dark); }
 /* The disclosure chevron: every tappable cell in a grouped table had one. */
 html[data-theme="ios-skeuomorphic"] :is(a, button, label:has(> input[type="radio"]):not(:has(> .icon:last-child))).list-item {
   position: relative;
@@ -588,6 +646,30 @@ html[data-theme="ios-skeuomorphic"] .list-item > .icon:last-child:not(:first-chi
 html[data-theme="ios-skeuomorphic"] .list-item.is-active > .icon:last-child { color: inherit; }
 html[data-theme="ios-skeuomorphic"] .field-row > .label { font-weight: 700; }
 
+/* Disclosure rows: an accordion is a grouped cell with a grey chevron
+   that turns down when open. */
+html[data-theme="ios-skeuomorphic"] .accordion-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+html[data-theme="ios-skeuomorphic"] .accordion-item + .accordion-item { border-block-start-color: var(--hairline); margin-block-start: -1px; }
+html[data-theme="ios-skeuomorphic"] .accordion-item:first-of-type { border-start-start-radius: var(--radius); border-start-end-radius: var(--radius); }
+html[data-theme="ios-skeuomorphic"] .accordion-item:last-of-type { border-end-start-radius: var(--radius); border-end-end-radius: var(--radius); }
+html[data-theme="ios-skeuomorphic"] .accordion-trigger { padding-inline: 0.9em; font-weight: 700; text-shadow: var(--ios-emboss-light); }
+html[data-theme="ios-skeuomorphic"] .accordion-panel { padding-inline: 0.9em; }
+html[data-theme="ios-skeuomorphic"] .accordion-trigger::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-top: 3px solid #7b7b7b;
+  border-right: 3px solid #7b7b7b;
+  transform: rotate(45deg);
+}
+html[data-theme="ios-skeuomorphic"] .accordion-item[open] > .accordion-trigger::after { transform: rotate(135deg); }
+/* Menu rows are table cells: one hairline between them. */
+html[data-theme="ios-skeuomorphic"] :is(.dropdown-item, .context-menu-item) + :is(.dropdown-item, .context-menu-item) { border-block-start: 1px solid var(--hairline); }
+html[data-theme="ios-skeuomorphic"] .scrollspy-link { font-weight: 700; text-shadow: var(--ios-emboss-light); }
+
 /* --- Tables ------------------------------------------------------------- */
 html[data-theme="ios-skeuomorphic"] .table th {
   font-size: 0.85em;
@@ -596,7 +678,7 @@ html[data-theme="ios-skeuomorphic"] .table th {
 }
 html[data-theme="ios-skeuomorphic"] .table td { background-color: #ffffff; }
 /* Everything in a selected (blue) cell turns white, status text included. */
-html[data-theme="ios-skeuomorphic"] .table tr.is-selected,
+html[data-theme="ios-skeuomorphic"] .table tr:is(.is-selected, [aria-selected="true"]),
 html[data-theme="ios-skeuomorphic"] .list-item.is-active {
   --success-text: #ffffff;
   --warning-text: #ffffff;
@@ -610,6 +692,8 @@ html[data-theme="ios-skeuomorphic"] .list-item.is-active {
 html[data-theme="ios-skeuomorphic"] .switch:not(button),
 html[data-theme="ios-skeuomorphic"] button.switch .switch-track {
   width: calc(4.1em * var(--density));
+  min-inline-size: calc(4.1em * var(--density));
+  flex-shrink: 0;
 }
 html[data-theme="ios-skeuomorphic"] .switch { --switch-shift: calc(2.7em * var(--density)); }
 html[data-theme="ios-skeuomorphic"] .switch:dir(rtl) { --switch-shift: calc(-2.7em * var(--density)); }
@@ -862,6 +946,8 @@ html[data-theme="ios-skeuomorphic"] .app-status {
  * labels. Phones tighten the buttons' side padding. */
 @media (max-width: 900px) {
   html[data-theme="ios-skeuomorphic"] .app-bar .nav-item { display: inline-flex; align-items: center; }
+  /* A menubar in the bar takes the scrolling line 2 too, so the title keeps line 1. */
+  html[data-theme="ios-skeuomorphic"] .app-bar > nav:has(> .menubar) { order: 10; flex: 1 0 100%; }
 }
 @media (max-width: 480px) {
   html[data-theme="ios-skeuomorphic"] .app-bar .nav-item { padding: 0.3em 0.5em; }
