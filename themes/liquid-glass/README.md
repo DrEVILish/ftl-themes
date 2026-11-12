@@ -34,61 +34,117 @@ touching the edge of the screen.
    inset around it (window 28px around 0.6rem-inset capsules; menu 18px
    around 12px items with 6px padding).
 4. **Content scrolls under the glass.** The toolbar and tab bar are
-   `position: sticky` over the window, and the wallpaper is
-   `background-attachment: fixed`, so the blur always has moving, colourful
-   content behind it. Glass over a flat colour is just a grey pill.
+   `position: sticky` over the window, and the wallpaper is a fixed layer
+   (`html::after`, so the compositor paints it once instead of a
+   `background-attachment: fixed` repaint every frame), so the blur always
+   has moving, colourful content behind it. Glass over a flat colour is just a grey pill.
 5. **Legibility beats transparency.** Small controls use the *clear*
    weight; anything carrying body text uses the *regular* weight (a 70–80%
-   white scrim), and the window pane under the content is 74–80% white so
-   `--muted` text holds 4.5:1 over the darkest wallpaper blue. Headings
-   that can land on the wallpaper carry a faint white halo.
+   white scrim), and the window pane under the content is 84–88% white,
+   blurred without the saturate boost (unblurred up to 900px, where only the soft wallpaper is behind it), so the content layer reads as white
+   and `--muted` text holds 4.5:1 over the darkest wallpaper blue. Headings
+   that can land on the wallpaper carry a faint white halo. Text never sits
+   on the bare wallpaper: an L0 page (no app shell) and any block beside
+   the shell get the window pane's scrim.
 6. **Colour is sparing.** One tint (systemBlue) for the prominent button,
-   selected labels and focus; selection is a grey lens with a blue label,
-   not a blue fill.
+   selected labels and focus; selection is a grey lens with a blue label
+   (or, in segmented controls, toggle groups and a `.btn-group`'s
+   `.btn-primary`, a lifted white lens on a grey track), not a blue fill.
+   Lists, sidebars and selected filter chips (`.badge-button.is-active`)
+   select the same way; only table multi-select keeps a pale blue band, as
+   Finder does.
 
 ## Signature details
 
-- `--lg-rim`: four inset shadows — top-left and bottom-right specular
-  edges (light catching the curved bezel), a 0.5px white hairline, and a
-  soft inner glow standing in for the refraction band.
+- `--lg-rim`: five inset shadows — a full-white top-left and a softer
+  bottom-right specular edge (light catching the curved bezel), a 0.06
+  black lower inner edge (the lens's shaded side), a 0.5px white hairline,
+  and a soft inner glow standing in for the refraction band. `--lg-lift`
+  adds a 0.5px `rgba(0,0,0,0.11)` outer ring so the rim reads against the
+  near-white window.
+- Clear glass is a faint grey (`rgba(244,244,247,0.66)` to
+  `rgba(232,232,237,0.56)`), not white: over the white pane it reads as the
+  reference's `#ededed` bar. The selection lens is `rgba(120,120,128,0.18)`
+  (about `#dadadc` over the grey glass, near the sampled `#e1e1e3`).
 - `backdrop-filter: blur(14px) saturate(160%) brightness(1.08)` on clear
-  glass; `blur(28px)` on sheets and the window. The saturate is what makes
-  controls pick up the wallpaper's colour.
+  glass; `blur(28px)` on sheets and the window (no backdrop pass on the
+  window up to 900px: it is the content layer over a soft gradient, and
+  that pass was most of a phone's scroll cost). The saturate is what makes controls pick up the wallpaper's
+  colour. Glass inside a blurred bar, and anything inside the window pane
+  on phones and tablets, skips its own backdrop pass: there is nothing new
+  behind it to blur.
 - Prominent buttons are *tinted glass*: the accent fill keeps the rim and
-  a lit top edge and casts a coloured bloom. On press glass **swells**
-  (`scale(1.04)`) instead of sinking.
-- Tabs, the nav and the status strip read as the iOS 26 tab bar: a glass
-  capsule whose selected item is a grey lens with a blue label.
+  a lit top edge and casts a coloured bloom. The `.btn-go` trigger is the
+  same tinted-glass capsule (`--go-*` tokens), sentence case and semibold,
+  not tracked caps. On press glass **swells** (`scale(1.04)`) instead of
+  sinking.
+- Tabs, the nav, the scrollspy nav and the status strip read as the iOS 26
+  tab bar: a glass capsule whose selected item is a grey lens with a blue
+  label. The capsule never wraps; it scrolls sideways.
+- Lists are inset grouped lists: 6px padding, rows as 12px lenses
+  (concentric with the 18px list), hairlines starting after the leading
+  icon.
+- Input groups stay capsules: the leading addon and the trailing field or
+  button are rounded, only the inner sides are square.
 - The switch is the iOS 26 one: wider track, a capsule knob wider than it
-  is tall, systemGreen when on. The slider thumb is Control Center's white
-  capsule.
-- The empty rail is drawn as a Tahoe sidebar: tall rounded glass with the
-  three traffic lights (`#ff5f57 #febc2e #28c840`) in its corner and a
-  selected-row lens.
+  is tall, systemGreen when on. The slider is Control Center's: a 0.6rem
+  capsule track (`rgba(120,120,128,0.36)`) filled in systemBlue from the
+  start to a white capsule thumb (`::-moz-range-progress` in Firefox, a
+  left-only thumb border image in Chromium; the hit area stays
+  `--tap-min`). A vertical slider is the same thin capsule standing up,
+  filled from the bottom: the theme pads it with physical left/right
+  padding, because core's logical padding lands top and bottom under
+  `writing-mode: vertical-lr`. The switch never flex-shrinks in a row.
+- The traffic lights (`#ff5f57 #febc2e #28c840`, 12px discs with a 0.5px
+  ring) sit at the start of the toolbar, as in Safari on Tahoe. Desktop
+  windows, and any `.modal` window with `.btn-min` / `.btn-max`, get real
+  ones: close, minimise and zoom at the start of a clear
+  title bar, glyphs only on hover, each in a `--tap-min` hit box; the title
+  is 13px semibold and centred; no window icon and no menu-bar strip.
+- An in-window sidebar (`.nav-rail`) is the Tahoe sidebar: a 20px rounded
+  pane of clear glass, no divider, rows as 10px grey lenses with a blue
+  selected label and no edge marker.
+- Segmented controls and toggle groups: a grey capsule track with a lifted
+  white lens on the selected item. Labels never wrap; a track too wide for
+  the screen scrolls sideways.
+- Editable table cells (dirty, saving, saved, editing, invalid) are 8px
+  rounded lenses, the dirty bar curving with the corner; `.log` rows sit
+  6px inside the rounded console so their level bars are not clipped.
+- Section headers (`.field-group-title`) are sentence-case semibold grey
+  with no rule under them. Only tiny stat labels stay uppercase.
+- Alerts and toasts are Lock Screen notifications: rounded glass with the
+  rim, no coloured stroke; a leading status dot carries the meaning.
+- Numbers (`.stat-value`, `.readout-lg`) are SF Pro bold with tabular
+  figures, not the monospace.
 - The page is a CSS sketch of the Tahoe wallpaper: pale sand top-left,
   deep blue sweeping waves, thin white crest arcs.
 
 ## Layout
 
-A macOS Tahoe window over the desktop. The full-height glass **sidebar**
-floats on the left; the content **window** is one large frosted pane
-(radius 28px) to its right that spans all three shell rows; the capsule
-**toolbar** floats inside its top edge and the capsule **tab bar**
-(`.app-status`) floats centred inside its bottom edge, only as wide as its
-items. Both bars are sticky, so content scrolls under them. Under 720px
-the sidebar goes, the toolbar sits above the window instead of over it and
-may wrap (as a 26px rounded rectangle).
+A macOS Tahoe window over the desktop, standing 1.5rem off the screen
+edge above 900px so the wallpaper frames it. The content **window** is one large
+frosted pane (radius 28px) that spans all three shell rows; the capsule
+**toolbar** (traffic lights at its start) floats inside its top edge and
+the capsule **tab bar** (`.app-status`) floats centred inside its bottom
+edge, only as wide as its items. Both bars are sticky, so content scrolls
+under them. The decorative `.app-rail` is not drawn: it is empty by
+contract, and an empty pane of glass read as a loading skeleton. Real
+sidebars are the app's own `.nav-rail`, drawn as glass inside the window.
+Up to 900px the toolbar sits above the window instead of over it and wraps
+to two lines (as a 26px rounded rectangle).
 
 ## Variants
 
 - `dark` — the same material over the Tahoe night wallpaper: smoked glass
   (`rgba(30–60,…,0.4–0.5)`), dimmer cool rims, dark HIG label colours
-  (`#f5f5f7` / `#a1a1a6`, accent text `#4aa3ff`). It declares
+  (`#f5f5f7` / `#a1a1a6`, accent text `#6cb4ff`, light enough for 4.5:1 on the grey lens). It declares
   `color-scheme: dark` so native controls follow it.
 
 ## Tell-tales of an inauthentic result
 
 - Bars or the sidebar touching the window edge, or rectangular bars.
+- Windows-style `_ □ ✕` caption buttons on the right of a window.
+- Status shown as a coloured outline around an alert or toast.
 - A hairline border under the toolbar or above the tab bar.
 - Glass with no rim highlight, or a rim that is a uniform 1px grey border.
 - Blue-filled selected tabs or nav items (that is iOS 7–18 or Material).
@@ -100,8 +156,10 @@ may wrap (as a 26px rounded rectangle).
 
 ## Don'ts
 
-- **Don't remove `backdrop-filter`** to "fix" a perf report; use
-  `prefers-reduced-transparency`, which this theme already honours.
+- **Don't remove `backdrop-filter`** from the glass (bars, controls,
+  menus, sheets) to "fix" a perf report; use
+  `prefers-reduced-transparency`, which this theme already honours. The
+  one exception is the phone/tablet window pane, which is content layer.
 - **Don't lower the white scrims** on `--lg-regular` or `--app-main-bg`;
   they are what keeps `--muted` at 4.5:1 over the dark wallpaper.
 - **Don't set `--accent` to `#0088ff`** (iOS 26 systemBlue): white text
@@ -111,11 +169,14 @@ may wrap (as a 26px rounded rectangle).
 ## Typography
 
 `--font` is `-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro",
-"Helvetica Neue", Inter, system-ui, sans-serif`; `--font-mono` starts with
+"Helvetica Neue", system-ui, sans-serif`; `--font-mono` starts with
 `"SF Mono", ui-monospace, Menlo`. SF Pro is Apple-licensed and not
-vendored, so it renders only on Apple platforms; elsewhere Helvetica Neue,
-Inter or the system UI face stands in. Headings are bold with slight
-negative tracking (the large-title voice); table headers are sentence-case
+vendored, so it renders only on Apple platforms; elsewhere Helvetica Neue
+or the system UI face stands in. Inter (OFL) would be the closest free
+stand-in, but it is not vendored in `assets/fonts/` yet, so the stack does
+not name it. Body text runs at -0.012em, as
+apple.com sets SF Text (code keeps normal spacing). Headings are bold with
+slight negative tracking (the large-title voice); table headers are sentence-case
 semibold, never uppercase.
 
 ## Contrast honesty
@@ -144,7 +205,7 @@ meter, a toast in the ftl-themes sense or a form with validation errors.
 
 ## v5 layout
 
-- **Tiers.** Phones and tablets (up to 900px): no sidebar (12rem of glass would cost the window its width), the toolbar stops overlapping the window and becomes a 26px rounded rectangle with the brand and actions on line 1 and the nav scrolling on line 2. The window no longer sets `overflow: visible`, so wide content is clipped by core instead of spilling past the screen. The floating bars sit on the `--z-sticky` layer, and the capsule buttons grow to `--tap-min` (44px) on touch tiers instead of holding their 1.85–2.25rem desktop height.
+- **Tiers.** Phones and tablets (up to 900px): no traffic lights, the toolbar stops overlapping the window and becomes a 26px rounded rectangle with the brand and actions on line 1 and the nav on line 2; on phones the theme picker narrows and the search button collapses to a glass circle so the bar stays at two lines. Tray text in the floating tab bar ellipsizes instead of escaping the capsule. The window no longer sets `overflow: visible`, so wide content is clipped by core instead of spilling past the screen. The floating bars sit on the `--z-sticky` layer, and the capsule buttons grow to `--tap-min` (44px) on touch tiers instead of holding their 1.85–2.25rem desktop height.
 - **Nesting.** Glass on glass already steps down through the material tokens; no extra rules.
 - **XL gutter art (1801px+).** Drops of clear glass resting on the wallpaper, soft lenses with brighter rims, white at low alpha so both the day and night wallpapers show through.
 
@@ -159,10 +220,9 @@ layout at **L1**.
 
 The window starts below the toolbar's row and reaches up under it by the
 toolbar's single-line footprint (`--lg-bar-reach`, 3.6rem), so a toolbar
-that wraps pushes the content down instead of covering it. To give a
-dashboard the sidebar's 12rem back, mark the rail `hidden` (or leave it
-out): its column collapses. `--app-rail-display: none` on `.app` hides it
-too, but keeps the column.
+that wraps pushes the content down instead of covering it. The theme
+draws no `.app-rail`; put navigation in a `.nav-rail` inside `.app-main`
+to get the glass sidebar.
 
 This theme is in the iOS family but declares `Inherit: none`: its bundle
 carries none of `ios-flat`'s or `ios-skeuomorphic`'s rules.
