@@ -65,8 +65,8 @@ html[data-theme="silo"] {
   /* Theme hooks; the legacy variant redefines these. */
   --silo-plate: #8fd3cc;    /* pale teal header plate (sampled #88cfcb / #83aba9) */
   --silo-plate-fg: #052019;
-  --silo-bezel: #2b302b;    /* painted steel monitor housing */
-  --silo-bezel-hi: #3d433c;
+  --silo-bezel: #2b3832;    /* grey-green painted steel housing (sampled #23382f) */
+  --silo-bezel-hi: #3c4b43;
   --silo-glow: rgba(40, 198, 170, 0.3);
   --silo-tint: rgba(159, 202, 110, 0.12);
   --silo-num: #f0c060;      /* amber countdown numerals */
@@ -315,6 +315,19 @@ html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th, .toggle-btn, .s
 html[data-theme="silo"] .stat-label { font-size: 0.68rem; }
 /* Keys in a packed row track less so the longest label fits a phone. */
 html[data-theme="silo"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0.06em; }
+/* So do soft keys inside a window or dialog: the row stays one row and
+   scrolls sideways before it would wrap. */
+html[data-theme="silo"] .modal .tabs:not([aria-orientation="vertical"]) { flex-wrap: nowrap; overflow-x: auto; }
+html[data-theme="silo"] .modal .tab { flex-shrink: 0; letter-spacing: 0.06em; margin-inline-end: 0.2rem; padding-inline: 0.6em; }
+/* Titles of small surfaces are tracked caps like every other label. */
+html[data-theme="silo"] :is(:is(.popover, .card) > strong:first-child, .empty-state-title, .value-row > span:first-child) {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+/* Unit suffixes and key hints stay legible at desktop scale. */
+html[data-theme="silo"] .readout-unit { font-size: max(0.45em, 0.65rem); }
+html[data-theme="silo"] .btn > kbd { font-size: max(0.85em, 0.68rem); }
 html[data-theme="silo"] .stat-value { font-size: 1.85rem; letter-spacing: 0.04em; font-weight: 600; }
 html[data-theme="silo"] .badge { font-size: 0.7rem; }
 /* Small labels outside the field cell are tracked caps too: legends, field
@@ -324,6 +337,10 @@ html[data-theme="silo"] :is(legend, .field-label, details > summary, .input-grou
   text-transform: uppercase;
   letter-spacing: var(--label-tracking);
 }
+/* Tree nodes track less and wrap only between words in the narrow pane. */
+html[data-theme="silo"] .tree details > summary { letter-spacing: 0.04em; overflow-wrap: normal; }
+/* A bare group box is a field-cell outline, not the browser's grey groove. */
+html[data-theme="silo"] fieldset { border: 1px solid var(--silo-field); padding-inline: 0.5rem; }
 /* Menu entries and short list labels are tracked caps too (FILE / VIEW /
    GO), as are list rows used as navigation; content lists keep their case. */
 html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-menu, .menubar) li > :is(button, a), nav .list-item > span:not([class])) {
@@ -353,7 +370,7 @@ html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .sel
   --input-padding: 0.2em 0.15em;
 }
 html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) > .label {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.16em;
   margin-block-end: 0.1em;
 }
@@ -657,12 +674,12 @@ html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-
   html[data-theme="silo"] .toggle-group > .toggle-btn { font-size: 0.82rem; padding-inline: 0.6em; }
   /* Keep the bar's controls on one row: the picker gives up width and the
      keyboard hint (no keyboard on a phone) goes, so the header stays short. */
-  html[data-theme="silo"] .app-bar .cluster > .select { flex: 0 1 5.5rem; inline-size: auto; min-inline-size: 0; padding-inline: 0.5em 1.7em; }
+  html[data-theme="silo"] .app-bar .cluster > .select { flex: 0 1 4.75rem; inline-size: auto; min-inline-size: 0; padding-inline: 0.5em 1.7em; }
   html[data-theme="silo"] .app-bar .btn > kbd { display: none; }
   /* Brand plate and actions share the first row (the plate truncates
      before it wraps); the numbered nav is the second row. */
   html[data-theme="silo"] .app-bar { --app-bar-padding: 0.35rem 0.6rem; column-gap: 0.4rem; }
-  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; padding: 0.3rem 0.6rem; letter-spacing: 0.08em; align-self: center; }
+  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; padding: 0.3rem 0.45rem; letter-spacing: 0.02em; font-size: 0.75rem; align-self: center; }
   html[data-theme="silo"] .app-bar > .cluster { flex: 0 0 auto; flex-wrap: nowrap; gap: 0.25rem; }
   /* The search key keeps its icon and its accessible name, not its label. */
   html[data-theme="silo"] .app-bar .cluster > .btn:has(> kbd) { font-size: 0; padding-inline: 0.7rem; }
@@ -821,6 +838,23 @@ html[data-theme="silo"][data-variant="legacy"] .app-status {
   font-size: 0.68rem;
 }
 html[data-theme="silo"][data-variant="legacy"] .app-status > * { border-inline-color: transparent; }
+/* The scroll-track ladder becomes one hairline with a vertical mono edge
+   label, and small labels take the tablet's typewriter mono. */
+html[data-theme="silo"][data-variant="legacy"] {
+  --app-rail-bg: var(--bg);
+}
+html[data-theme="silo"][data-variant="legacy"] .app-rail:empty::before {
+  content: "STRUCTURE 02.45" / "";
+  writing-mode: vertical-rl;
+  margin: 1rem auto 0;
+  padding-block: 0.4rem;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+html[data-theme="silo"][data-variant="legacy"] :is(.stat-label, .label, .field-label, th, .badge) { font-family: var(--font-mono); }
 
 @media print {
   html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: none; }

@@ -52,7 +52,8 @@ saturated fill is a **yellow-green "granted" band**.
 
 ## Signature details
 
-- The whole `.app` is a rounded **steel monitor bezel** (`--silo-bezel`)
+- The whole `.app` is a rounded **steel monitor bezel** (`--silo-bezel` `#2b3832`, the
+  reference's grey-green painted steel)
   with the bar, main and status on one piece of CRT glass. On desktop the
   housing is chunky (2.2-2.6rem of steel, 1.6rem outer radius) and the
   glass is recessed in it with a dark 2px lip and 1.1rem corners at the top
@@ -75,10 +76,15 @@ saturated fill is a **yellow-green "granted" band**.
   a solid fill with dark tracked caps and dark-outlined keys.
 - A `.field` with a label and a control is the **Relic Database field
   cell** ("OBJECT DESCRIPTION / DISPENSER, TOY..."): the outline wraps the
-  whole field, the label is 0.62rem tracked caps, the control loses its own
+  whole field, the label is 0.68rem tracked caps, the control loses its own
   border and its value is set at 1.15rem. The focused cell's outline turns
   pale yellow, an invalid one turns danger; the control keeps its own focus
-  ring and its `--tap-min` height.
+  ring and its `--tap-min` height. A bare `<fieldset>` takes the same
+  `--silo-field` outline instead of the browser's grey groove.
+- Popover, card and empty-state titles and `.value-row` labels are tracked
+  caps like every other label. Tabs inside a window or dialog track
+  0.06em and scroll sideways instead of wrapping to a second row; tree
+  nodes track 0.04em and wrap only between words.
 - Panel titles sit between 3px double rules with an `×` at the right
   ("RELIC/SEIZED OBJECTS INVENTORY").
 - `.btn-primary` is the yellow-green band plus the SEARCH key's outer
@@ -106,7 +112,7 @@ saturated fill is a **yellow-green "granted" band**.
 | Variant | Label | Source |
 |---|---|---|
 | (default) | Silo | Season 1 IT, Judicial and PACT terminals (teal). |
-| `legacy` | The Legacy (gold tablet) | Territory Studio's Season 2 Legacy tablet: gold `#f2b84b` on warm black. Not a CRT: no bezel, plates, scanlines or double rules. A hairline gold frame, warm bokeh glow, a cream pill brand ("LIBRARY INTEL UNIT"), nav numbers in circular nodes, panel titles on a single 1px rule with a ring glyph, pill tabs, badges and readouts, circular pagination, field cells reduced to an underline, and the status strip as small tracked mono labels in the margin. References in `references/silo/legacy/`. |
+| `legacy` | The Legacy (gold tablet) | Territory Studio's Season 2 Legacy tablet: gold `#f2b84b` on warm black. Not a CRT: no bezel, plates, scanlines or double rules. A hairline gold frame, warm bokeh glow, a cream pill brand ("LIBRARY INTEL UNIT"), nav numbers in circular nodes, panel titles on a single 1px rule with a ring glyph, pill tabs, badges and readouts, circular pagination, field cells reduced to an underline, the status strip as small tracked mono labels in the margin, the scroll-track ladder replaced by one hairline with a vertical mono edge label ("STRUCTURE 02.45"), and stat labels, field labels, header cells and badges in the typewriter mono. References in `references/silo/legacy/`. |
 
 ## Typography
 
