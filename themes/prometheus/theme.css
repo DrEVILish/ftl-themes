@@ -32,8 +32,8 @@
 html[data-theme="prometheus"] {
   --motion-leave: warp;
   color-scheme: dark;
-  --bg: #072235;               /* mid-navy lit glass, not black */
-  --surface: #0d3049;          /* holo-glass panel fill, a step lighter */
+  --bg: #051a2a;               /* deep navy behind the glass, not black */
+  --surface: #0d3049;          /* holo-glass panel fill: a lit pane over the page */
   --surface-2: #123d5a;        /* raised glass: menus, toasts */
   --border: #2a6d92;
   --hairline: #1b4a66;
@@ -136,10 +136,12 @@ html[data-theme="prometheus"] {
   --segmented-item-bg-active: var(--accent);
   --segmented-item-fg-active: var(--on-accent);
 
+  /* Tags are outlined, never tinted ("CK2"); filter chips are 1.5px
+     outlined pills ("ENG HUL FRA") and only the active one fills. */
   --badge-radius: 3px;
-  --badge-bg: var(--surface-2);
+  --badge-bg: transparent;
   --badge-fg: var(--accent);
-  --badge-border: var(--border);
+  --badge-border: currentColor;
   --switch-bg: #061c2c;
   --switch-border: var(--border);
   --switch-bg-on: var(--accent);
@@ -169,7 +171,7 @@ html[data-theme="prometheus"] {
   --alert-bg: var(--surface);
   --lamp-glow: 0 0 0.4rem currentColor;
   /* The film's soft halo on brackets and tabs, kept faint. */
-  --pm-glow-halo: -1px 0 0.3rem -1px color-mix(in srgb, var(--accent) 45%, transparent);
+  --pm-glow-halo: -1px 0 0.15rem -1px color-mix(in srgb, var(--accent) 40%, transparent);
   --pm-glow-box: 0 0 0.5rem color-mix(in srgb, var(--accent) 30%, transparent);
 
   /* Readouts are the small dark value boxes ("986", "030"). */
@@ -195,14 +197,14 @@ html[data-theme="prometheus"] {
 
   /* The deep navy glass with its grid of dashes and crosses. */
   --holo-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='rgb(79,210,255)'%3E%3Cg fill-opacity='0.12'%3E%3Crect x='19' y='23.5' width='10' height='1'/%3E%3Crect x='67' y='23.5' width='10' height='1'/%3E%3Crect x='19' y='71.5' width='10' height='1'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3Cg fill-opacity='0.08'%3E%3Crect x='71.5' y='67' width='1' height='10'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px; /* one tile, not three gradient layers */
-  --holo-glow: radial-gradient(140% 120% at 50% 30%, #0f3b58 0%, #082a40 60%, #051c2b 100%);
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #082539 0%, #061d2e 60%, #041521 100%);
 }
 
 /* Suit Room: amber interface over the same blue glass. */
 html[data-theme="prometheus"][data-variant="suit"] {
-  --bg: #10222f;               /* suit-room slate-navy glass */
-  --surface: #16283a;
-  --surface-2: #1d3247;
+  --bg: #08202a;               /* suit-room teal glass (#04252e..#113237) */
+  --surface: #0f3340;
+  --surface-2: #154050;
   --border: #6b5a2a;
   --hairline: #1f4e60;
   --text: #f3e6c8;
@@ -216,7 +218,7 @@ html[data-theme="prometheus"][data-variant="suit"] {
   --switch-bg: #072230;
   --progress-bg: #072230;
   --meter-track: #072230;
-  --skeleton-bg: #1d3247;
+  --skeleton-bg: #154050;
   --row-selected-bg: rgba(255, 181, 31, 0.1);
   --readout-bg: #04202b;
   --readout-fg: #7fe0ff;
@@ -226,7 +228,7 @@ html[data-theme="prometheus"][data-variant="suit"] {
   --meter-high: var(--danger);
   --modal-shadow: inset 3px 0 0 var(--accent), 0 0 2.5rem rgba(255, 181, 31, 0.14);
   --holo-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='rgb(255,181,31)'%3E%3Cg fill-opacity='0.14'%3E%3Crect x='19' y='23.5' width='10' height='1'/%3E%3Crect x='67' y='23.5' width='10' height='1'/%3E%3Crect x='19' y='71.5' width='10' height='1'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3Cg fill-opacity='0.08'%3E%3Crect x='71.5' y='67' width='1' height='10'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px;
-  --holo-glow: radial-gradient(140% 120% at 50% 30%, #133847 0%, #0e2433 60%, #081822 100%);
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #0b2c37 0%, #08202a 60%, #05171f 100%);
 }
 
 /* --- Voice: wide squared capitals for every label ----------------------- */
@@ -270,7 +272,8 @@ html[data-theme="prometheus"] .menubar > li > button { font-size: 0.66rem; }
 /* Nav lists are small tracked labels, not page-sized caps. */
 html[data-theme="prometheus"] .nav-item { font-size: 0.72rem; }
 /* Accent text on a tinted chip, mention or status card needs a darker well. */
-html[data-theme="prometheus"] .badge-accent { --badge-bg: var(--surface); }
+html[data-theme="prometheus"] .badge:not(.badge-solid) { --badge-bg: transparent; --badge-border: currentColor; }
+html[data-theme="prometheus"] .badge-button { --badge-radius: 999px; border: 1.5px solid var(--accent); }
 html[data-theme="prometheus"] { --mention-bg: color-mix(in srgb, var(--accent) 10%, transparent); --list-tone-tint: 11%; }
 /* Status pills stay readable micro-labels. */
 html[data-theme="prometheus"] .badge { font-size: 0.75rem; }
@@ -278,12 +281,27 @@ html[data-theme="prometheus"] .status { font-size: 0.82rem; }
 /* Section lists (bare labels, not message rows) keep the narrow face but
    read as tracked capitals. */
 html[data-theme="prometheus"] .master-detail-list .list-item:not(:has(.list-item-title)) { text-transform: uppercase; letter-spacing: 0.08em; }
+/* Desktop has the width for Michroma on section lists and group titles too. */
+@media (min-width: 901px) {
+  html[data-theme="prometheus"] :is(.master-detail-list .list-item:not(:has(.list-item-title)), .field-group-title, .radio-group > legend) {
+    font-family: var(--font-label);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
 html[data-theme="prometheus"] .input,
 html[data-theme="prometheus"] .select,
 html[data-theme="prometheus"] td { font-family: var(--font-mono); }
 html[data-theme="prometheus"] .btn-primary { --btn-fg: var(--on-accent); }
 /* Initials stay in the narrow face, even inside a Michroma header. */
 html[data-theme="prometheus"] .avatar { font-family: var(--font); letter-spacing: 0.02em; }
+/* Small glyph targets (pager, icon buttons) get at least 2rem. */
+html[data-theme="prometheus"] :is(.pagination-item, .btn-icon, .btn-close, .btn-min, .btn-max) {
+  min-block-size: max(2rem, var(--tap-min));
+  min-inline-size: max(2rem, var(--tap-min));
+}
+html[data-theme="prometheus"] :is(.checkbox, .radio) { inline-size: 1.15rem; block-size: 1.15rem; }
 /* Both faces ship one weight; never smear a faux bold. */
 html[data-theme="prometheus"] { font-synthesis: none; }
 /* KPI numbers are holo readouts: light glowing digits, not bold white. */
@@ -291,6 +309,10 @@ html[data-theme="prometheus"] .stat-value {
   font-weight: 400;
   color: var(--readout-fg);
   text-shadow: var(--readout-glow);
+  /* Digits sit in a small dark value box, like the suit room's "986". */
+  background: var(--readout-bg);
+  border-radius: 2px;
+  padding: max(5px, 0.15em) max(6px, 0.3em);
 }
 /* An attached button squares off to match the input and SEND beside it,
    and keeps its full target past the input's 1px overlap. */
@@ -326,10 +348,19 @@ html[data-theme="prometheus"] .panel-header {
 /* A title tab starts level with the bracket's top return; its own padding
    keeps the text off the edge. A plain header keeps core's top padding. */
 html[data-theme="prometheus"] .panel-header:has(> strong:first-child) { padding-block-start: 0; }
+/* The tab grows out of the bracket's top-left return (medipod "MSCN_51/2"):
+   its left end sits on the bracket line, not inset on the glass. */
+html[data-theme="prometheus"] .panel-header > strong:first-child,
+html[data-theme="prometheus"] .panel-header:not(:has(> *)) {
+  margin-inline-start: calc(-1 * var(--surface-pad, 1rem) + var(--pm-bracket-x, -5px));
+}
+/* A narrow header gives way in its count badge, not inside the tab. */
+html[data-theme="prometheus"] .panel-header > strong:first-child { flex-shrink: 0; }
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
-/* Minimise and maximise sit on the filled tab: dark glyphs on the cyan. */
-html[data-theme="prometheus"] .modal-header > :is(.btn-min, .btn-max) { --modal-header-close-fg: var(--on-accent); }
+/* The pill only ever carries the name: with a title element, only it is
+   filled and the caption glyphs sit on the glass at the right, in cyan. */
+html[data-theme="prometheus"] .modal-header { --modal-header-close-fg: var(--accent-text); }
 html[data-theme="prometheus"] .modal-header > .btn-close { --btn-close-glyph-size: 1.6em; position: absolute; top: 0.25rem; right: 0.5rem; }
 html[data-theme="prometheus"] .panel-header strong:first-child,
 html[data-theme="prometheus"] .modal-header {
@@ -366,7 +397,7 @@ html[data-theme="prometheus"] .panel-header:not(:has(> *)) {
   box-shadow: var(--pm-glow-box);
   padding: 0.4em 1.4em 0.4em 1.1em;
   /* Top level with the bracket's top return, as in the film. */
-  margin: calc(-1 * var(--surface-pad, 1rem)) 0 var(--space-m);
+  margin-block: calc(-1 * var(--surface-pad, 1rem)) var(--space-m);
 }
 /* Nested glass steps down: a box inside a box keeps its bracket but thinner
    and dimmer, and its title tab is outlined rather than filled, so a
@@ -387,6 +418,27 @@ html[data-theme="prometheus"] .modal-header {
   font-size: 0.72rem;
   border-bottom: 0;
 }
+html[data-theme="prometheus"] .modal-header:has(> :not(.btn-min, .btn-max, .btn-close)) {
+  width: auto;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: var(--on-accent);  /* the title inherits it; the caption glyphs use --modal-header-close-fg */
+}
+html[data-theme="prometheus"] .modal-header:has(> :not(.btn-min, .btn-max, .btn-close)) > .btn-close { position: static; }
+html[data-theme="prometheus"] .modal-header > :not(.btn-min, .btn-max, .btn-close, .icon):first-of-type {
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
+  padding: 0.4em 1.4em 0.4em 1.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-inline-size: 0;
+  flex: 0 1 auto;
+}
+/* An inactive window's tab dims; it keeps its hue rather than going grey. */
+html[data-theme="prometheus"] { --window-header-filter-inactive: opacity(0.6); }
 
 /* Check boxes and radios are navy glass wells with the lit edge, cyan when
    on, instead of the browser's neutral grey. */
@@ -425,7 +477,7 @@ html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast)::befo
   inset-block: 0;
   inset-inline-start: var(--pm-bracket-x, -5px);
   inline-size: 0.7rem;
-  border: var(--pm-bracket-w, 4px) solid var(--pm-bracket-c, var(--accent));
+  border: var(--pm-bracket-w, 3px) solid var(--pm-bracket-c, var(--accent));
   border-inline-end: 0;
   border-start-start-radius: 0.7rem;
   border-end-start-radius: 0.7rem;
@@ -527,11 +579,19 @@ html[data-theme="prometheus"] .app-status::after {
 }
 @media (max-width: 480px) {
   html[data-theme="prometheus"] .app-status::after { content: none; }
+  /* Thin edge strip, not four rows: nav in Share Tech tracked capitals on
+     one line, and the brand tab shares the first line with the icon
+     actions (the cluster's items join the bar's own flow). */
+  html[data-theme="prometheus"] .app-bar .menubar > li > button { font-family: var(--font); font-size: 0.82rem; letter-spacing: 0.06em; }
+  html[data-theme="prometheus"] .app-bar > .cluster:has(> .btn-icon) { display: contents; }
+  html[data-theme="prometheus"] .app-bar > .nav-brand { order: -2; flex: 0 1 auto; min-width: 0; max-width: none; font-size: 0.7rem; padding-block: 0.45em; }
+  html[data-theme="prometheus"] .app-bar > .cluster > .btn-icon { order: -1; }
+  html[data-theme="prometheus"] .app-bar > .cluster > .btn-icon:not(.btn-icon ~ .btn-icon) { margin-inline-start: auto; }
 }
 
 /* Touch tiers: core lets the brand flex to fill the first line so it can
    truncate; this brand is a filled plate, so cap it at its own width. */
-@media (max-width: 900px) {
+@media (min-width: 481px) and (max-width: 900px) {
   html[data-theme="prometheus"] .app-bar > .nav-brand { max-width: max-content; flex-shrink: 0; min-width: max-content; }
 }
 /* --- v5 tiers and XL gutters -------------------------------------------- *

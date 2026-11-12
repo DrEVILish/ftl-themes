@@ -16,7 +16,7 @@ reproduced.
 
 ## Core values
 
-1. **Every panel is a bracket.** A rounded 4px "[" in the accent (2px and dimmer when nested), with a faint halo, with
+1. **Every panel is a bracket.** A rounded 3px "[" in the accent (2px and dimmer when nested), with a tight faint halo, with
    short curved returns at top and bottom, stands just off the left edge
    of panels, cards, lists and alerts (a `::before`; `--panel-radius:
    0.7rem 0 0 0.7rem`). On an image card it sits on the edge, over the
@@ -25,23 +25,30 @@ reproduced.
 2. **Names sit on pill tabs.** A panel header's first child, the modal
    title and the app brand are filled accent tabs with dark text, like
    "TAG.NM" or "SUM EVA": ends rounded to half an em, a thin dark divider
-   about half an em in from the left, a soft halo, and the tab's top level
-   with the bracket's top return.
+   about half an em in from the left, a soft halo, and the tab growing out
+   of the bracket's top-left return (its left end on the bracket line). A
+   window's tab carries only its name; minimise, maximise and close sit
+   on the glass at the top right in cyan.
 3. **Wide squared capitals for labels, plain for reading.** Michroma for
    headings, buttons, tabs, toggle groups, KPI labels, menubar items,
    badges and table heads (nav items at 0.72rem, not page-sized); section
-   lists stay in Share Tech but in tracked capitals; Share Tech for body;
+   lists and group titles too on desktop (Share Tech tracked capitals on
+   phone nav, switch rows and toggle rows, where width forbids Michroma);
+   Share Tech for body;
    Share Tech Mono for data and inputs.
 4. **Controls are outlined pills.** Buttons and the segmented control are
    1.5px outlined pills ("ENG HUL FRA"); primary is the filled pill.
+   Filter chips (`.badge-button`) are 1.5px outlined pills too, only the
+   active one filled; status tags are outline-only small rects ("CK2").
 5. **Values live in dark boxes.** `.readout` is a small value box darker
    than the glass with glowing cyan digits ("986", "030"); KPI values
-   (`.stat-value`) use the same light glowing digits, never faux bold.
+   (`.stat-value`) sit in the same dark value box with glowing digits,
+   never faux bold.
    Level bars are drawn: the slider rail is the accent mixed 60% into the
    input navy (about 3.4:1 on the glass), and checkboxes and radios are
    navy wells with that same lit edge, filled accent when on.
 6. **The glass has a grid.** The page background is mid-navy lit glass
-   (`--bg: #072235`, panels a step lighter at `#0d3049`) with a faint
+   (`--bg: #051a2a`, panels a lit pane lighter at `#0d3049`) with a faint
    lattice of dashes and crosses. The navy glow scrolls with the page (not
    `fixed`), so touch scrolling does not repaint the whole background.
 
@@ -65,7 +72,7 @@ reproduced.
 | Variant | Label | What changes |
 |---|---|---|
 | (default) | Prometheus | Medipod sky-cyan `#5ec4e6` on filled tabs and buttons, hotter `#4fd2ff` for glowing text and readouts, teal second series. |
-| `suit` | Suit Room (amber) | Amber `#ffb51f` UI over slate-navy glass (`#10222f`), cyan values, as on the suit-room "RAVEL" screen. |
+| `suit` | Suit Room (amber) | Amber `#ffb51f` UI over teal suit-room glass (`#08202a`, panels `#0f3340`), cyan values, as on the suit-room "RAVEL" screen. |
 
 ## Typography
 
@@ -99,13 +106,13 @@ is decoration under the panels and carries no text.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On touch tiers the brand tab stays as wide as its text: it neither stretches across the first line nor truncates. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On tablet the brand tab stays as wide as its text; on phone it shares the first line with the bell and avatar (truncating if it must) and the nav reads in Share Tech tracked capitals on one line. Pager items and icon buttons are at least 2rem. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
 
 ## Icons
 
 `icons.svg` draws the core set as holographic HUD line glyphs (no studio or Weyland marks).
 
-- **Grid and weight.** 24 grid, ultra-thin 1.25px line, round caps and joins, true curves and arcs; boxes have a 1-unit corner radius.
+- **Grid and weight.** 24 grid, thin 1.5px line, round caps and joins, true curves and arcs; boxes have a 1-unit corner radius.
 - **Reticles.** Every circle of radius 6 or more (clock, compass, info, globe, disc) carries four short tick marks outside it, like the film's ring readouts.
 - **Glass, not ink.** Silhouettes are a 30% `fill-opacity` holo-glass wash under the line instead of a solid fill; only small markers and carets are solid.
 - Generated from one shared 24-grid geometry, so every core-set id (178/178) is drawn; everything uses `currentColor`, so icons follow text, accent and selected states (and every variant) with no hard-coded colour. The `suit` variant's amber comes through the same way.
