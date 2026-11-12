@@ -314,8 +314,12 @@ html[data-theme="msdos"] .panel-header > :first-child { flex: none; max-width: 1
 /* A drawer has no top frame line to set the title into, and a drawer or
    a .scroll panel scrolls, so it would clip a title pulled up over its
    edge: there the tab sits at the top of the content instead. */
-/* Its top gap matches the half-cell the tab has elsewhere. */
-html[data-theme="msdos"] :is(.drawer, .scroll) > .panel-header { margin-top: 0.25rem; }
+html[data-theme="msdos"] :is(.drawer, .scroll) > .panel-header {
+  margin-top: 0;
+  /* The tab's own padding already spaces it: keep the content below
+     where it sat before, so rows in a scroller fall as they did. */
+  margin-bottom: calc(0.75rem * var(--density) - 2 * var(--_tab-pad));
+}
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
 /* Close (v5): DOS dialogs closed with [■] at the left of the frame. */
@@ -359,6 +363,9 @@ html[data-theme="msdos"] {
    generated content so it's always present, not only when a page
    happens to render a <kbd>. */
 html[data-theme="msdos"] .app-status {
+  /* The 9px cell is wide: on a phone the tray drops to a second row
+     instead of running past the strip's edge. */
+  flex-wrap: wrap;
   font-family: var(--font-mono);
   font-size: 0.9rem;
   letter-spacing: 0;
