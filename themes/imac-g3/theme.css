@@ -25,16 +25,6 @@
  * WCAG relative-luminance calc, not by eye).
  */
 
-/* Baloo 2 (SIL OFL, vendored in assets/fonts) for headings only: the
-   round, friendly display voice of the case. The UI body stays a system
-   sans; Chicago/Charcoal aren't free to vendor, so they aren't named. */
-@font-face {
-  font-family: "Baloo 2";
-  src: url("assets/fonts/Baloo2-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-display: swap;
-}
-
 html[data-theme="imac-g3"] {
   --motion-leave: genie;
   color-scheme: dark;
@@ -84,7 +74,9 @@ html[data-theme="imac-g3"] {
   --on-danger: #ffffff;
   --on-success: #04261a;
   --radius: 1.3rem;
-  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Mac sans first (Lucida Grande, Geneva), so non-Helvetica platforms
+     land on a Mac face before the generic sans. */
+  --font: "Helvetica Neue", "Lucida Grande", Geneva, Helvetica, Arial, sans-serif;
   --font-mono: Monaco, Menlo, Consolas, ui-monospace, monospace;
   --flare: #ffe14d;
 
@@ -103,16 +95,24 @@ html[data-theme="imac-g3"] {
      white well. */
   --input-placeholder: #3d5f66;
   --input-radius: 0.9rem;
-  --focus-ring: 0 0 0 3px rgba(255,255,255,0.5);
+  /* Two-tone: the dark inner ring holds on the white wells, the white
+     outer one on the coloured case. */
+  --focus-ring: 0 0 0 2px var(--input-fg), 0 0 0 4px #fff;
+  /* The caret sits in the white well, so it takes the well's ink. */
+  --select-arrow-fg: var(--input-fg);
+  /* Every brand (app bar, pattern nav, collapsing nav), not just the bar's:
+     raw --accent was 1.2-2.6:1 on the nav gloss. */
+  --nav-brand-fg: #ffffff;
   /* Pinstripe layered OVER the gloss in one value. It used to be a separate
      `background-image` rule, which replaced this gradient outright — the
      gloss never rendered and panels lost their fill. */
-  --imac-g3-pinstripe: repeating-linear-gradient(180deg, rgba(255,255,255,0.07) 0 1px, transparent 1px 4px);
+  --imac-g3-pinstripe: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 4px);
   /* The colorway's bright candy tone glows through the middle of the
      gloss; var(--surface) is the opaque last layer, so stacked windows
      never show through each other's title bars. */
   --imac-g3-candy: #0095b6;
-  --imac-g3-panel-fill: var(--imac-g3-pinstripe), linear-gradient(180deg, rgba(255,255,255,0.25), color-mix(in srgb, var(--imac-g3-candy) 35%, transparent) 30%, transparent), var(--surface);
+  --imac-g3-gloss: linear-gradient(180deg, rgba(255,255,255,0.25), color-mix(in srgb, var(--imac-g3-candy) 35%, transparent) 30%, transparent);
+  --imac-g3-panel-fill: var(--imac-g3-pinstripe), var(--imac-g3-gloss), var(--surface);
   /* The diagonal sheen (below) rides on top of the fill. */
   --panel-bg: var(--imac-g3-sheen), var(--imac-g3-panel-fill);
   /* Thickness: a bright inner lip on top, a darker inner fall-off at the
@@ -167,15 +167,25 @@ html[data-theme="imac-g3"] {
      radial — that pairing crushed to near-black at the edges and read as
      a dim aquarium, not a sunlit candy-plastic desktop. */
   --app-bg: radial-gradient(ellipse at top, #2fb8d6, #073e4a 85%);
-  --app-bar-bg: var(--imac-g3-pinstripe), var(--surface);
+  /* The panels' candy glow; the white lip is the bar's inset highlight
+     (below), not a stop, so white nav text holds 4.5:1 everywhere on it. */
+  --imac-g3-chrome-gloss: linear-gradient(180deg, color-mix(in srgb, var(--imac-g3-candy) 35%, rgba(0,0,0,0)) 30%, transparent 85%);
+  --app-bar-bg: var(--imac-g3-pinstripe), var(--imac-g3-chrome-gloss), var(--surface);
   --app-bar-radius: 1.3rem 1.3rem 0 0;
   --app-bar-height: 3rem;
   /* The case body between bar and foot: translucent colour walled by ice
      (see .app-main below), so bar, body and foot are one moulding. No
      pinstripe here: on the scrolling body it pushed render cost over budget. */
-  --app-main-bg: linear-gradient(180deg, rgba(255,255,255,0.1), color-mix(in srgb, var(--surface) 60%, transparent) 30%, color-mix(in srgb, var(--surface) 75%, transparent));
+  /* It falls toward the colourway's gel (white 4.6-5.1:1 on every gel)
+     rather than dark surface, so the lower case glows like the cards. The
+     top is 70% surface: the vignette's bright crown left the page h1 and
+     lede at 2.3:1 under a whiter top stop. */
+  --app-main-bg: linear-gradient(180deg, color-mix(in srgb, var(--surface) 70%, transparent), color-mix(in srgb, var(--surface) 60%, transparent) 30%, color-mix(in srgb, var(--imac-g3-gel) 85%, transparent));
   --app-main-padding: 1.1rem;
-  --app-status-bg: linear-gradient(180deg, var(--surface), rgba(255,255,255,0.1));
+  --app-status-bg: var(--imac-g3-pinstripe), var(--imac-g3-chrome-gloss), var(--surface);
+  /* Tinted bands and media canvases are plastic, not flat case colour. */
+  --band-tint-bg: var(--imac-g3-panel-fill);
+  --ratio-canvas-bg: var(--imac-g3-panel-fill);
   /* Explicit rather than relying on the core default's implicit fallback to
      --muted: on the current bg/surface/surface-2 (#0a545f/#0c6478/
      #0d7489) --muted (#f5fcfd) measures ~7.1:1 against --surface,
@@ -199,24 +209,26 @@ html[data-theme="imac-g3"] {
   --accent-swatch-4: #e0722a; --on-accent-swatch-4: #1a0900; /* Tangerine */
 }
 
+/* Headings in the UI sans at 700 with tight tracking, the Charcoal-era
+   system voice, so brand and nav share one face. */
 html[data-theme="imac-g3"] h1,
 html[data-theme="imac-g3"] h2,
 html[data-theme="imac-g3"] h3,
 html[data-theme="imac-g3"] .nav-brand {
-  font-family: "Baloo 2", var(--font);
   font-weight: 700;
+  letter-spacing: -0.015em;
   /* A moulded drop, not a white blur. */
   text-shadow: 0 1px 0 rgba(0,0,0,0.35);
 }
 
 /* Ice side walls: the frosted rim joins the bar to the status foot. */
 html[data-theme="imac-g3"] .app-main {
-  border-inline: 4px solid var(--imac-g3-ice);
+  border-inline: 7px solid var(--imac-g3-ice);
 }
 /* The ice bezel also seals bar and foot to the body, as on the front of
    the hardware. */
 html[data-theme="imac-g3"] .app-bar { border-block-end: 3px solid var(--imac-g3-ice); }
-html[data-theme="imac-g3"] .app-status { border-block-start: 3px solid var(--imac-g3-ice); }
+html[data-theme="imac-g3"] .app-status { border-block-start: 3px solid var(--imac-g3-ice); box-shadow: inset 0 -1px 0 rgba(255,255,255,0.35); }
 html[data-theme="imac-g3"] .nav-rail { border-radius: var(--radius); }
 /* Nothing is sharp: banded toolbars, table head corners and grouped
    fields take the case radius. */
@@ -224,7 +236,7 @@ html[data-theme="imac-g3"] .toolbar { border-radius: var(--radius); border: 2px 
 html[data-theme="imac-g3"] .table thead tr > :first-child { border-start-start-radius: 0.9rem; }
 html[data-theme="imac-g3"] .table thead tr > :last-child { border-start-end-radius: 0.9rem; }
 html[data-theme="imac-g3"] fieldset.field { border: 2px solid var(--imac-g3-ice); border-radius: var(--radius); padding: 0.2rem 0.6rem 0.5rem; }
-html[data-theme="imac-g3"] .nav-brand { font-size: 1.15em; letter-spacing: 0.01em; }
+html[data-theme="imac-g3"] .nav-brand { font-size: 1.15em; }
 /* Unchecked boxes as white wells like the text inputs, not dark-scheme grey. */
 html[data-theme="imac-g3"] .radio { color-scheme: light; }
 /* Checkboxes are rounded wells that fill with the colorway's gel and a
@@ -246,13 +258,10 @@ html[data-theme="imac-g3"] .slider:disabled { opacity: 0.5; }
    chip left white at 4.26:1. */
 html[data-theme="imac-g3"] .waveform-marker { --waveform-bg: var(--surface); }
 
-/* The bar's gloss is an inset highlight rather than a translucent-white
-   gradient stop, so nav text sits on the solid surface (the cyan brand was
-   1.8:1 against the old gloss). */
+/* A bright lip over the bar's candy gloss; nav items pure white. */
 html[data-theme="imac-g3"] .app-bar {
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 14px 18px -12px rgba(255,255,255,0.25);
-  --nav-brand-fg: #ffffff;
-  --nav-item-fg: #e3f6f9;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+  --nav-item-fg: #ffffff;
 }
 
 /* A strong diagonal sheen band — the single most recognizable "translucent
@@ -300,11 +309,13 @@ html[data-theme="imac-g3"][data-variant="grape"] {
    white 5.1:1) and the candy tone in the gloss. #823a0a with a brown gel
    read as walnut. */
 html[data-theme="imac-g3"][data-variant="tangerine"] {
-  --bg: #5c2408; --surface: #8a3a00; --surface-2: #91430c;
+  --bg: #8f3f02; --surface: #8a3a00; --surface-2: #91430c;
   --border: #3e1704; --hairline: #4e1e06; --accent: #ffb066;
   --on-accent: #2c1000; --imac-g3-gel: #b5500f; --imac-g3-candy: #ff8a1f; --accent-2: #ffc48a; --accent-text: #ffe6cf;
-  --app-bg: radial-gradient(ellipse at top, #e8761f, #6e2a04 85%);
+  --app-bg: radial-gradient(ellipse at top, #e8761f, #8a3a00 85%);
 }
+/* The pale peach GO label was 3.9:1 on the bar's tangerine glow. */
+html[data-theme="imac-g3"][data-variant="tangerine"] .app-bar { --go-fg: #ffffff; }
 
 /* Secondary buttons: accent-colored text measured 2.6:1 on the lighter
    part of the card gloss; the pale accent text variant reads on all of it. */
@@ -359,4 +370,23 @@ html[data-theme="imac-g3"] .pattern-nav [aria-current="page"] { --accent-text: v
     --app-status-padding: 0.4rem 0.75rem;
   }
   html[data-theme="imac-g3"] .app-status { gap: 0.45rem; }
+}
+
+/* Windows have a fixed height: the four dialog tabs stay on one row
+   (scrolling, not wrapping) and grouped fields take a smaller radius, so
+   the OK/Cancel/Apply footer clears the window's rounded foot. */
+html[data-theme="imac-g3"] .desktop-window .tabs { flex-wrap: nowrap; overflow-x: auto; }
+html[data-theme="imac-g3"] .desktop-window .tab { padding-inline: 0.6em; white-space: nowrap; }
+html[data-theme="imac-g3"] .desktop-window fieldset.field { border-radius: 0.9rem; padding-block-end: 0.3rem; }
+
+/* Phones and touch: the scrolling surfaces are many, so the deep inset
+   fall-off shrinks to 8px and lists, toolbars and toasts lose the
+   pinstripe (panels and the bar keep it); render cost was over budget. */
+@media (pointer: coarse), (max-width: 600px) {
+  html[data-theme="imac-g3"] {
+    --panel-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 0 0 1px rgba(255,255,255,0.18) inset, 0 -8px 8px color-mix(in srgb, var(--surface), black 25%) inset, 0 3px 8px rgba(0,0,0,0.3);
+    --list-bg: var(--imac-g3-gloss), var(--surface);
+    --toolbar-bg: var(--imac-g3-gloss), var(--surface);
+    --toast-bg: var(--imac-g3-gloss), var(--surface);
+  }
 }
