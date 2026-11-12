@@ -18723,8 +18723,10 @@ html[data-theme="blue-future"] {
   --on-danger: #1a0007;
   --on-success: #001a10;
   --radius: 0.25rem;
-  --font: Consolas, "IBM Plex Mono", "SFMono-Regular", monospace;
-  --font-mono: Consolas, "IBM Plex Mono", monospace;
+  /* Consolas first; then the narrow, Consolas-metric local monos, so a
+     machine without it keeps the compact instrument face before a generic. */
+  --font: Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular", "Roboto Mono", "Noto Sans Mono", monospace;
+  --font-mono: var(--font);
   --flare: #d85cff;
   --density: 1;
 
@@ -18742,12 +18744,12 @@ html[data-theme="blue-future"] {
   --focus-ring: 0 0 8px rgba(0, 217, 255, 0.35);
   --link: var(--accent);
 
-  /* HUD corner brackets: 14px L-shapes, 2px stroke, 0.55 opacity, top-left
+  /* HUD corner brackets: 14px L-shapes, 2px stroke, 0.8 opacity, top-left
      and bottom-right. Painted as background layers rather than positioned
      ::before/::after: the surface needs no `position` of its own, so popovers,
      dropdowns and context menus inside it keep anchoring to their real
      offset parent, and the marks stay put when a .modal scrolls. */
-  --bracket: rgba(0, 217, 255, 0.55);
+  --bracket: rgba(0, 217, 255, 0.8);
   --brackets:
     linear-gradient(var(--bracket), var(--bracket)) top left / 14px 2px no-repeat,
     linear-gradient(var(--bracket), var(--bracket)) top left / 2px 14px no-repeat,
@@ -18755,24 +18757,59 @@ html[data-theme="blue-future"] {
     linear-gradient(var(--bracket), var(--bracket)) bottom right / 2px 14px no-repeat;
   --panel-bg: var(--brackets), var(--surface);
   --modal-bg: var(--brackets), var(--surface);
+  /* Cards (KPI tiles, pricing, slides) are plain hairline cells: the
+     L-marks stay on the instruments (panel, modal, transport). */
+  --card-bg: var(--surface);
   --panel-shadow: 0 0 20px rgba(0, 180, 255, 0.08), inset 0 0 30px rgba(0, 180, 255, 0.03);
   --panel-radius: 0.25rem;
 
-  /* Buttons: dark cell, tracked label, glow on hover. */
-  /* Buttons are tinted: text and border in the button's colour over a 25%
-     fill of it (40% on hover, with a glow). Plain buttons use --text; the
-     variants re-point --bf-tone below. */
+  /* Buttons: dark cell, tracked label, glow on hover. Plain buttons are
+     blue-cast cells on the panel ladder (blue = interactive); the variants
+     tint in their own colour (--bf-tone below). */
   --btn-fg: var(--text);
-  --btn-border: var(--text);
-  --btn-bg: color-mix(in srgb, var(--text) 25%, transparent);
-  --btn-bg-hover: color-mix(in srgb, var(--text) 40%, transparent);
-  --btn-border-hover: var(--text);
+  --btn-border: color-mix(in srgb, var(--accent-2) 55%, var(--border));
+  --btn-bg: color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+  --btn-bg-hover: color-mix(in srgb, var(--accent-2) 26%, var(--surface));
+  --btn-border-hover: var(--accent-2);
   --btn-tracking: 0.05em;
-  --btn-shadow-hover: 0 0 0.6rem color-mix(in srgb, var(--text) 45%, transparent);
+  --btn-shadow-hover: 0 0 0.6rem color-mix(in srgb, var(--accent-2) 45%, transparent);
+  --btn-icon-radius: var(--radius);
+
+  /* Square everything that core rounds: switches, chips, scrollbars. */
+  --switch-radius: 3px;
+  --switch-thumb-radius: 2px;
+  --switch-bg: #02050a;
+  --switch-bg-on: color-mix(in srgb, var(--accent) 12%, #02050a);
+  --badge-radius: 2px;
+  --scrollbar-radius: 2px;
+
+  /* Cyan means live, blue means interactive: a selected or pressed control
+     (toggle, segment, page, filter chip, tab, menu item) is a blue-tinted
+     cell with a blue edge, never a solid cyan slab. Solid cyan stays for
+     the primary action and live readouts. */
+  --bf-selected-bg: color-mix(in srgb, var(--accent-2) 35%, var(--surface));
+  --toggle-btn-bg-on: var(--bf-selected-bg);
+  --toggle-btn-fg-on: var(--text);
+  --toggle-btn-border-on: var(--accent-2);
+  --segmented-item-bg-active: var(--bf-selected-bg);
+  --segmented-item-fg-active: var(--text);
+  --pagination-item-bg-active: var(--bf-selected-bg);
+  --pagination-item-fg-active: var(--text);
+  --badge-bg-active: var(--bf-selected-bg);
+  --badge-fg-active: var(--text);
+  --menubar-item-bg-active: var(--bf-selected-bg);
+  --menubar-item-fg-active: var(--text);
+  --tab-fg-active: var(--text);
+  --tab-underline-active: var(--accent-2);
+
+  /* Cell edit states tint the panel, not the row, so a dirty cell on a
+     selected row stays amber instead of mixing to olive. */
+  --cell-dirty-bg: color-mix(in srgb, var(--warning) 14%, var(--surface));
 
   /* Inputs */
   --input-bg: #08192b;
-  --input-border: var(--border);
+  /* Field edge at 3:1 on the field (WCAG 1.4.11); panels keep --border. */
+  --input-border: #2a6a9a;
 
   /* Tables: dim tracked headers, hairline rules, accent left select bar. */
   --table-head-fg: var(--muted);
@@ -18787,7 +18824,9 @@ html[data-theme="blue-future"] {
   --slider-height: 4px;
   --slider-radius: 2px;
   --slider-border-width: 0;
-  --slider-bg: linear-gradient(90deg, #0e3a5c, var(--accent));
+  /* A dim scale, not a fill: the rail never knows the value, so the glow
+     lives on the thumb and the rail stays the same unlit blue end to end. */
+  --slider-bg: linear-gradient(90deg, #0e3a5c, #1d5c8f);
   --slider-thumb-size: 14px;
   --slider-thumb-radius: 2px;
   --slider-thumb-bg: #02050a;
@@ -18801,7 +18840,7 @@ html[data-theme="blue-future"] {
   /* Instrument primitives: a recorder's meters and counters are the
      content, so they get the brightest colors while the chrome stays dim. */
   --meter-track: #020509;
-  --meter-border: #0f3a5c;
+  --meter-border: var(--deck-trim); /* a VFD window edge, as on the transport */
   --meter-radius: 2px;
   --meter-low: #0aff9d;
   --meter-mid: #ffe400;
@@ -18820,10 +18859,19 @@ html[data-theme="blue-future"] {
   --lamp-off: #0d2b4a;
   --lamp-on: var(--accent);
   --lamp-glow: 0 0 0.5rem rgba(0, 217, 255, 0.7);
+
+  /* A selected desktop icon is a blue-tinted cell, like every other
+     selected state; solid cyan is for live data only. */
+  --desktop-icon-label-bg-selected: color-mix(in srgb, var(--accent-2) 35%, var(--surface));
+  --desktop-icon-label-fg-selected: var(--text);
+}
+html[data-theme="blue-future"] .desktop-icon:has(input:checked) > label > span {
+  box-shadow: inset 0 0 0 1px var(--accent-2);
 }
 
 /* Backdrop: a fixed radial vignette plus a faint 2rem cyan grid, so the
-   panel sits in a space instead of on flat color. */
+   panel sits in a space instead of on flat color. Touch screens scroll it
+   with the page: a fixed root background repaints the viewport each frame. */
 html[data-theme="blue-future"] {
   background-color: var(--bg);
   background-attachment: fixed;
@@ -18833,17 +18881,43 @@ html[data-theme="blue-future"] {
     radial-gradient(ellipse at top, #0a1a2e, #020509 70%);
   background-size: 2rem 2rem, 2rem 2rem, auto;
 }
+@media (pointer: coarse) {
+  html[data-theme="blue-future"] { background-attachment: scroll; }
+}
 
-/* Headings are labels on a panel: small, tracked, dim. Content is bright. */
-html[data-theme="blue-future"] h1,
-html[data-theme="blue-future"] h2,
-html[data-theme="blue-future"] h3,
-html[data-theme="blue-future"] h4 {
+/* Headings: tracked uppercase throughout. A page title (h1) and a section
+   title (h2) are bright and step up in size; h3/h4 are the labels on a
+   panel: small, wide-tracked, dim. */
+html[data-theme="blue-future"] :is(h1, h2, h3, h4) {
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+html[data-theme="blue-future"] :where(h1, h2, h3, h4) { margin-block-end: 0.4em; }
+html[data-theme="blue-future"] h1 {
+  font-size: 1.4em;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+html[data-theme="blue-future"] h2 {
+  font-size: 1.05em;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+html[data-theme="blue-future"] :is(h3, h4) {
   font-size: 0.8em;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
   color: var(--muted);
 }
+/* Reading content keeps its own case. */
+html[data-theme="blue-future"] :is(.prose, article) :is(h1, h2, h3, h4) {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+/* Browser fieldsets draw a light groove; keep the blue-cast rule. Zero
+   specificity, so a component that styles its own fieldset (.radio-group)
+   keeps its own border. */
+:where(html[data-theme="blue-future"] fieldset) { border: 1px solid var(--border); }
 
 /* Buttons */
 /* Button hierarchy: primary is a solid 80% accent with black text and a
@@ -18874,15 +18948,55 @@ html[data-theme="blue-future"] .btn-tertiary { --bf-tone: var(--accent); --btn-b
 html[data-theme="blue-future"] .btn-danger { --bf-tone: var(--danger); --bf-ink: #ff7a8f; }
 html[data-theme="blue-future"] .btn-success { --bf-tone: var(--success); }
 html[data-theme="blue-future"] .btn-ghost { --btn-shadow-hover: none; }
+/* Disabled: present but off. An unlit cell: no fill, dim text and a dashed
+   dim edge, so it never reads as a dimmed primary. */
 html[data-theme="blue-future"] .btn:disabled,
 html[data-theme="blue-future"] .btn[aria-disabled="true"] {
-  opacity: 0.35;
-  box-shadow: none;
+  --btn-bg: transparent;
+  --btn-bg-hover: transparent;
+  --btn-fg: var(--muted);
+  --btn-border: var(--muted);
+  --btn-border-hover: var(--muted);
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  opacity: 0.7;
+  border-style: dashed;
 }
+
+/* Segments and pagination have no border of their own: the selected cell
+   draws its blue edge inset, matching the toggle and filter chip. */
+html[data-theme="blue-future"] :is(.segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .badge-button:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .message-reactions > .badge-button[aria-pressed="true"]) {
+  box-shadow: inset 0 0 0 1px var(--accent-2);
+}
+
+/* In a window or dialog the tab strip is short of room: tighter tracking
+   keeps four tabs on one row so the action buttons stay above the fold. */
+html[data-theme="blue-future"] :is(.desktop-window, .modal) .tab { --label-tracking: 0.02em; padding-inline: 0.6em; }
 
 /* Table select bar: selected rows carry it too, not just the active row. */
 html[data-theme="blue-future"] .table tr.is-selected td:first-child {
   box-shadow: inset 0.35rem 0 0 var(--accent);
+}
+
+/* A vertical fader ramps along its value axis (bottom to top) and draws the
+   same thin rail as a horizontal one. In vertical-lr the physical left/right
+   padding is padding-block; the element keeps its full --tap-min width. */
+html[data-theme="blue-future"] .slider.is-vertical {
+  --slider-bg: linear-gradient(0deg, #0e3a5c, #1d5c8f);
+}
+html[data-theme="blue-future"] .slider.is-vertical:not(.is-range > .slider) {
+  padding-inline: 0;
+  padding-block: calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+
+/* A latched danger toggle is tinted like the danger button, not a solid
+   red slab: glow marks the live state. */
+html[data-theme="blue-future"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: color-mix(in srgb, var(--danger) 30%, var(--surface));
+  --toggle-btn-fg-on: #ff7a8f;
+}
+html[data-theme="blue-future"] .toggle-btn.is-danger:has(input:checked) {
+  box-shadow: 0 0 0.6rem color-mix(in srgb, var(--danger) 45%, transparent);
 }
 
 /* Slider thumb: dark cap, glow border. Core draws a 2px --bg ring here. */
@@ -18977,7 +19091,7 @@ html[data-theme="blue-future"] .sci-switch:has(> input:focus-visible) {
   outline-offset: 2px;
 }
 html[data-theme="blue-future"] .sci-switch:has(> input:disabled) {
-  opacity: 0.35;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -19011,6 +19125,48 @@ html[data-theme="blue-future"] {
   --app-main-padding: 1.2rem;
   --app-status-bg: rgba(3, 8, 15, 0.94);
   --app-status-rule: var(--border);
+}
+/* The status bar stays above anything spilling out of the page: a menu or
+   submenu open near the bottom of .app-main must not sit on the bar's
+   buttons. Both become stacking contexts at the same level, so the later
+   one in the tree (the bar) paints on top; neither gains a position. */
+html[data-theme="blue-future"] :is(.app-main, .app-status) { isolation: isolate; }
+
+/* Phone: the wide mono face needs its room back. Labels drop the button
+   tracking, joined toggles tighten, and the bar's actions stay on one line
+   beside the (truncating) brand so the bar is two rows, not four. */
+@media (max-width: 480px) {
+  html[data-theme="blue-future"] {
+    --btn-tracking: 0;
+    --toggle-btn-padding: 0.5em 0.4em;
+  }
+  html[data-theme="blue-future"] .app-bar > .cluster {
+    flex-wrap: nowrap;
+    --cluster-gap: 0.3rem;
+  }
+  html[data-theme="blue-future"] .app-bar > .cluster > .select { inline-size: 7.5rem; }
+  /* The nav takes the second row (as core does for .nav), so brand and
+     actions share the first. */
+  html[data-theme="blue-future"] .app-bar > nav { order: 10; }
+  /* Both rows are 44px touch targets; everything around them goes, so the
+     bar is two target rows tall and no more. Dense labels tighten a hair. */
+  html[data-theme="blue-future"] .app-bar {
+    --app-bar-padding: 0.15rem 0.6rem;
+    --menubar-pad: 0;
+    row-gap: 0;
+    letter-spacing: -0.01em;
+  }
+  /* A linked brand on a row of its own needs the target height itself now
+     that the bar's padding is gone. */
+  html[data-theme="blue-future"] .app-bar > .nav-brand { min-block-size: 24px; align-content: center; }
+  html[data-theme="blue-future"] :is(.toggle-btn, .segmented-item) { letter-spacing: -0.01em; }
+  /* Nav items and the taskbar tray give back padding the mono text needs. */
+  html[data-theme="blue-future"] .nav-item { padding-inline: 0.45em; }
+  html[data-theme="blue-future"] .taskbar-tray { padding-inline: 0.35em; gap: 0.3em; }
+  /* Panel labels: 0.2em tracking wraps them to three lines here. */
+  html[data-theme="blue-future"] :is(h3, h4) { letter-spacing: 0.08em; }
+  /* A shortcut hint means nothing without a keyboard. */
+  html[data-theme="blue-future"] .app-bar > .cluster kbd { display: none; }
 }
 
 /* XL gutters (v5, PLAN.md §3): deep space beside the console. A sparse

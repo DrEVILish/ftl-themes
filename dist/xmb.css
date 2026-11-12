@@ -18690,21 +18690,57 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * the "cross" the name describes.
  */
 
+/* The PS3 face (SCE Rodin) isn't free and system stacks fall back to a wide,
+   heavy humanist on Linux; Titillium Web is the closest light, open sans the
+   library already ships (OFL, assets/fonts/NOTICE.md). Its own metrics give
+   a 1.52em content box, which crowds the text box of small buttons; the
+   overrides bring it to a system-sans 1.18em with the caps still centred. */
+@font-face {
+  font-family: "XMB Titillium";
+  src: url("../assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 300 500;
+  font-display: swap;
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "XMB Titillium";
+  src: url("../assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "XMB Mono";
+  src: url("../assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
 html[data-theme="xmb"] {
   --motion-leave: iris;
   color-scheme: dark;
-  --bg: #0a1730;
-  --surface: rgba(255, 255, 255, 0.08);
-  --surface-2: rgba(255, 255, 255, 0.14);
-  --border: rgba(255, 255, 255, 0.22);
-  --hairline: rgba(255, 255, 255, 0.12);
-  --text: #eaf2ff;
-  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces. */
-  --muted: #b9cbe8;
+  /* Royal blue, sampled from the RetroArch capture (#0056b9 upper left,
+     #012e89 lower middle). */
+  --bg: #0050b0;
+  /* Glass tinted the wave's own deep blue, not white: a white tint over the
+     blue reads grey, and the deep tint keeps --muted above AA on top of the
+     brighter parts of the wave. */
+  --surface: rgba(0, 22, 80, 0.38);
+  --surface-2: rgba(110, 180, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.28);
+  --hairline: rgba(255, 255, 255, 0.16);
+  --text: #f2f7ff;
+  /* Muted carries labels and table headers, so it meets AA (4.5:1) on --bg and on the glass. */
+  --muted: #d3e0f5;
   --accent: #7ec8ff;
   --accent-2: #bfe4ff;
-  --danger: #ff6b6b;
-  --success: #6bffb0;
+  --danger: #ff9e9e;
+  /* Near-monochrome like the reference: a pale mint, not a neon green. */
+  --success: #8fe8c0;
   --warning: #ffd76b;
   --on-accent: #04162e;
   --on-danger: #2c0303;
@@ -18719,8 +18755,11 @@ html[data-theme="xmb"] {
      surface now gets a soft, generously-rounded rectangle instead of a
      stadium. */
   --radius: 0.85rem;
-  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: Consolas, monospace;
+  --font: "XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  /* Logs and code: Share Tech Mono (shipped, OFL) is a narrow, light-stroked
+     mono; the system fallback on Linux is a wide, dark DejaVu that read bold
+     beside thin Titillium. Inline numerals (.mono) use the sans, below. */
+  --font-mono: "XMB Mono", Consolas, monospace;
   --flare: #bfe4ff;
 
   /* The selection glow: a thin, bright, pill-shaped highlight bar, never a
@@ -18730,17 +18769,20 @@ html[data-theme="xmb"] {
   --btn-fg: var(--text);
   --btn-border: rgba(255, 255, 255, 0.3);
   --btn-shadow: none;
-  --btn-shadow-hover: 0 0 16px rgba(126, 200, 255, 0.65);
+  --btn-shadow-hover: 0 0 10px rgba(126, 200, 255, 0.65);
   --btn-weight: 300;
   /* Buttons stay pill-shaped even though the base radius no longer is —
      this is one of the surfaces where 999px is actually right. */
   --btn-radius: 999px;
   --focus: var(--accent);
   --focus-ring: 0 0 0 3px rgba(126, 200, 255, 0.4);
-  --input-bg: rgba(255, 255, 255, 0.08);
-  --input-border: rgba(255, 255, 255, 0.25);
-  --panel-border: rgba(255, 255, 255, 0.18);
-  --panel-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --input-bg: rgba(0, 20, 70, 0.3);
+  --input-border: rgba(255, 255, 255, 0.3);
+  /* XMB content floats on the wave with no box edges: panels are smoked
+     glass with a faint hairline and a top highlight, the way the bar is,
+     not an outlined, drop-shadowed card. */
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   --panel-radius: 0.9rem;
   /* Overlays are the one exception to "nothing is a filled block". A PS3
      system dialog (references/xmb/modalDialog*.jpg) dims the XMB nearly
@@ -18752,31 +18794,128 @@ html[data-theme="xmb"] {
   --modal-bg: rgba(14, 28, 58, 0.94);
   --modal-border: rgba(255, 255, 255, 0.4);
   --modal-shadow: 0 18px 60px rgba(0, 0, 0, 0.7), 0 0 24px rgba(126, 200, 255, 0.12);
-  --modal-header-bg: rgba(255, 255, 255, 0.08);
-  --modal-radius: 0.9rem;
+  /* The PS3 dialog is a dark band between thin white rules, not a titled
+     box: no header slab, near-square corners. */
+  --modal-header-bg: transparent;
+  --modal-radius: 0.25rem;
   --toast-bg: rgba(8, 18, 40, 0.94);
   --tooltip-bg: rgba(8, 18, 40, 0.96);
   --table-head-bg: rgba(255, 255, 255, 0.06);
   --table-head-transform: none;
-  --row-selected-bg: rgba(126, 200, 255, 0.18);
-  --row-active-marker: inset 0.2rem 0 0 var(--accent);
+  --row-selected-bg: rgba(255, 255, 255, 0.14);
+  /* No side stripe: the current XMB sub-item is marked by light alone. */
+  --row-active-marker: none;
+  --row-active-bg: rgba(255, 255, 255, 0.1);
+  --list-active-marker: 0 0 12px rgba(191, 228, 255, 0.45);
+  --nav-rail-marker: transparent;
+  --tree-selected-marker: none;
+  /* The pricing band and its cards are glass like every other panel. */
+  --band-tint-bg: rgba(0, 22, 80, 0.18);
   --nav-bg: transparent;
   --nav-item-radius: 999px;
   --dropdown-bg: rgba(10, 23, 48, 0.95);
-  --overlay-bg: rgba(0, 4, 12, 0.78);
-  --overlay-blur: blur(6px);
+  /* No blur: the overlay is already 82% opaque, and the blur cost frames. */
+  --overlay-bg: rgba(0, 4, 20, 0.82);
+  --overlay-blur: none;
   --indicator-fg: var(--accent);
   --indicator-track: rgba(255, 255, 255, 0.15);
+  /* The slider track is drawn by its fill alone (core keeps the border
+     transparent for the tap target): a light bar with a white, glowing knob. */
+  --slider-bg: rgba(255, 255, 255, 0.55);
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-shadow: 0 0 8px rgba(191, 228, 255, 0.85);
+  /* Numerals (KPIs, timecodes) share the thin sans, as the PS3 clock does. */
+  --readout-font: var(--font);
+  --readout-weight: 300;
+
+  /* Selection is a glow, not a fill: every "current item" state is a pale
+     glass lift with white text; the glow itself is added below. Solid
+     accent stays on .btn-primary only. */
+  --segmented-item-bg-active: rgba(255, 255, 255, 0.2);
+  --segmented-item-fg-active: #ffffff;
+  --pagination-item-bg-active: rgba(255, 255, 255, 0.2);
+  --pagination-item-fg-active: #ffffff;
+  --dropdown-item-bg-hover: rgba(255, 255, 255, 0.18);
+  --dropdown-item-fg-hover: #ffffff;
+  --listbox-option-bg-active: rgba(255, 255, 255, 0.2);
+  --listbox-option-fg-active: #ffffff;
+  --calendar-selected-bg: rgba(255, 255, 255, 0.24);
+  --calendar-selected-fg: #ffffff;
+  --badge-bg-active: rgba(255, 255, 255, 0.22);
+  --badge-fg-active: #ffffff;
+  --toggle-btn-bg-on: rgba(255, 255, 255, 0.2);
+  --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: rgba(255, 255, 255, 0.6);
+  --desktop-icon-label-bg-selected: rgba(255, 255, 255, 0.22);
+  --desktop-icon-label-fg-selected: #ffffff;
+  /* Keys read --muted by default; on a console's grey key that sank to 4.47:1. */
+  --key-fg: var(--text);
+  /* Rails and toolbars float on the wave instead of sitting as slabs. */
+  --nav-rail-bg: transparent;
+  --nav-rail-rule: var(--hairline);
+  --toolbar-bg: transparent;
 }
 
-/* The wave: a soft radial glow low in the frame, over the deep-blue base —
-   PS3's signature moving background, static here but the same composition. */
-html[data-theme="xmb"] {
-  background:
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(90, 160, 230, 0.35), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 20% 0%, rgba(60, 110, 180, 0.25), transparent 60%),
-    linear-gradient(180deg, #050d1e 0%, #0a1730 55%, #123058 100%);
+html[data-theme="xmb"] :is(.segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))),
+  .listbox [role="option"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .calendar-day:is([aria-pressed="true"], :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))),
+  .badge-button:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .toggle-btn:has(input:checked)) {
+  box-shadow: 0 0 10px rgba(191, 228, 255, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.45);
 }
+/* Focus is white, not a coloured fill: the primary action is a bright
+   white glass lift (modalDialog.jpg's focused "Yes"), and danger is said by
+   its text and edge, not a salmon block. */
+html[data-theme="xmb"] .btn-primary {
+  --btn-bg: rgba(255, 255, 255, 0.88);
+  --btn-border: #ffffff;
+  --btn-fg: #04162e;
+}
+html[data-theme="xmb"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: rgba(255, 158, 158, 0.14);
+  --toggle-btn-fg-on: var(--danger);
+  --toggle-btn-border-on: var(--danger);
+}
+html[data-theme="xmb"] .toggle-btn.is-danger:has(input:checked) {
+  box-shadow: 0 0 10px rgba(255, 158, 158, 0.5), inset 0 0 0 1px rgba(255, 158, 158, 0.45);
+}
+html[data-theme="xmb"] .btn-danger {
+  --btn-bg: rgba(0, 22, 80, 0.3);
+  --btn-fg: var(--danger);
+  --btn-border: var(--danger);
+}
+/* Core pads a vertical slider with padding-inline, which in its vertical
+   writing mode is top/bottom, so the whole 24px box would fill; draw the
+   track as a thin centred line instead. */
+html[data-theme="xmb"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 0.15rem), rgba(255, 255, 255, 0.55) 0 calc(50% + 0.15rem), transparent 0);
+}
+html[data-theme="xmb"] fieldset.field {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+}
+html[data-theme="xmb"] :is(.toolbar, .nav-rail) { border-radius: var(--panel-radius); }
+/* The diverging scale's positive end is a mid blue, not the pale accent:
+   a label on a full-strength cell stays legible. */
+html[data-theme="xmb"] { --chart-div-pos: #2a7de0; }
+/* Desktop windows overlap: each is near-opaque smoked glass, like the
+   system dialog, so the window behind can't show through its text. */
+html[data-theme="xmb"] .desktop-window { --modal-bg: rgb(12, 30, 72); }
+
+/* The wave: royal blue lit from the top right and falling to navy at the
+   bottom left (sampled from xmb-retroarch-main-menu.jpg), with the
+   translucent white ribbon sweeping across the middle of the screen. */
+html[data-theme="xmb"] {
+  --xmb-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cdefs%3E%3Cfilter id='b' x='-5%25' y='-60%25' width='110%25' height='220%25'%3E%3CfeGaussianBlur stdDeviation='6'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23b)'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300L1200 392C1000 470 800 425 600 385S220 340 0 402Z' fill='%23fff' fill-opacity='.05'/%3E%3Cpath d='M0 345C250 285 420 285 600 330S980 410 1200 350L1200 380C980 445 780 405 600 372S240 340 0 398Z' fill='%23fff' fill-opacity='.03'/%3E%3Cg fill='none' stroke='%23fff'%3E%3Cpath d='M0 362C220 300 400 305 600 345S1000 430 1200 352' stroke-opacity='.07' stroke-width='3'/%3E%3Cpath d='M0 398C240 340 420 330 600 372S980 445 1200 380' stroke-opacity='.06' stroke-width='5'/%3E%3C/g%3E%3C/g%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300' fill='none' stroke='%23fff' stroke-opacity='.12' stroke-width='1.5'/%3E%3Cg fill='%23fff' fill-opacity='.5'%3E%3Ccircle cx='140' cy='268' r='1.3'/%3E%3Ccircle cx='365' cy='240' r='1'/%3E%3Ccircle cx='520' cy='275' r='1.4'/%3E%3Ccircle cx='760' cy='322' r='1'/%3E%3Ccircle cx='905' cy='350' r='1.3'/%3E%3Ccircle cx='1080' cy='330' r='1'/%3E%3C/g%3E%3C/svg%3E");
+  background:
+    var(--xmb-wave) 0 38vh / 100% 46vh no-repeat,
+    radial-gradient(ellipse 42% 16% at 100% 0%, rgba(3, 152, 246, 0.85), transparent 80%) 0 0 / 100% 100vh no-repeat,
+    linear-gradient(215deg, #0162c6 0, #0058bc 300px, #013f9f 70%, #021a6a 100%);
+  /* The highlight and the ribbon are sized to the first screen, not the
+     document, so a long scrolled page keeps them where the eye starts
+     (centred on the screen's middle, as in the captures) rather than
+     stretched down its whole length. */
+}
+
+html[data-theme="xmb"] body { font-weight: 300; }
 
 html[data-theme="xmb"] h1,
 html[data-theme="xmb"] h2,
@@ -18784,6 +18923,11 @@ html[data-theme="xmb"] h3 {
   font-weight: 300;
   letter-spacing: 0.01em;
 }
+/* The thin voice holds for titles and numerals too: no Titillium Bold on
+   headers, the brand, list titles or KPI values. */
+html[data-theme="xmb"] :is(h4, h5, h6, .panel-header, .card-title, .modal-header, .nav-brand, .list-item-title) { font-weight: 400; }
+html[data-theme="xmb"] .stat-value { font-family: var(--font); font-weight: 300; }
+html[data-theme="xmb"] .price { font-weight: 300; }
 
 /* Icons enlarge and glow on the active state — the one unmistakable XMB
    interaction, applied here to the icon-button variant. */
@@ -18830,36 +18974,84 @@ html[data-theme="xmb"] .nav {
   justify-content: safe center;
   gap: 1.75rem;
 }
-/* `justify-content: center` above is correct and does win here (it's the
-   highest-specificity rule either page applies to .app-bar/.nav),
-   but it has no visible effect on the QA harness's own topbar markup:
-   example.html's header puts an inline `margin-left:auto` spacer before
-   the breadcrumbs, and example-2/3.html's `.demo-topbar-spacer` sets
-   `flex: 1`. Either one absorbs 100% of the row's free space by itself,
-   so there's nothing left for `justify-content` to distribute — the
-   brand+items are pinned flush left regardless. That's a property of
-   the harness's fixed nav markup (which this theme must not edit), not
-   a bug in this rule: an app that lays out its own `.app-bar`
-   without such a spacer gets the real centred cross-bar. See README
-   "Adoption" / "Tell-tales". Compensating here with more of the float-
-   and-glow language the layout is actually judged on: a stronger active-
-   item glow and a bar that visibly floats (translucent + blurred) over
-   the wave rather than sitting flush with it. */
-html[data-theme="xmb"] .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
-  box-shadow: 0 0 22px rgba(126, 200, 255, 0.55);
+/* The category row sits in the middle of the bar. The demo headers push
+   their tools right with an auto-margin spacer (`.push`, an inline
+   margin-left:auto span, `.demo-topbar-spacer`), which would pin the row
+   flush left; the theme gives that free space to the row's own margins
+   instead, so it centres between the brand and the tools. */
+html[data-theme="xmb"] .app-bar > :is(.push, .demo-topbar-spacer, [style*="margin-left:auto"], [style*="margin-left: auto"]) {
+  margin-inline-start: 0;
+  flex-grow: 0;
 }
+html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) { margin-inline: auto; }
+html[data-theme="xmb"] .app-bar :is(.nav-item, [role="menubar"] > li > [role="menuitem"]) {
+  font-size: 0.95rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+/* The selected category is the lit one, as the XMB's selected icon is twice
+   the size of its neighbours: larger, white, with a white halo. */
+html[data-theme="xmb"] .app-bar :is(.nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"]), [role="menubar"] > li > [role="menuitem"]:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
+  color: #ffffff;
+  font-size: 1.35rem;
+  text-shadow: 0 0 10px #ffffff;
+  font-weight: 400;
+}
+/* The cross's vertical arm: a short line of light falls from the selected
+   category toward the content beneath it. */
+html[data-theme="xmb"] .app-bar :is(.nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"]):not(.has-badge), [role="menubar"] > li:has(> [role="menuitem"].is-active))::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(100% + 0.15rem);
+  inset-inline-start: 50%;
+  inline-size: 1px;
+  block-size: 1.5rem;
+  background: linear-gradient(#ffffff, rgba(191, 228, 255, 0));
+  box-shadow: 0 0 6px rgba(191, 228, 255, 0.8);
+  pointer-events: none;
+}
+html[data-theme="xmb"] .app-bar .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"]) { position: relative; }
+/* Where a category carries an icon, it stacks over its label: icons over
+   words, as the cross shows them. */
+html[data-theme="xmb"] .app-bar .nav-item:has(> .icon) { flex-direction: column; gap: 0.15em; }
+html[data-theme="xmb"] .app-bar .nav-item > .icon { inline-size: 1.6em; block-size: 1.6em; }
+/* A smoked-glass capsule: the bar sits on the brightest part of the wave,
+   so a deep tint (not a blur, which cost frames for nothing behind it)
+   keeps its labels legible. */
 html[data-theme="xmb"] .app-bar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(0, 24, 84, 0.42), rgba(0, 24, 84, 0.28));
   border-radius: 999px;
   margin: 0.5rem 1rem 0;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* Inline numerals (order numbers, totals, timecodes) keep the thin sans
+   with tabular figures, as the PS3 clock does; only logs and code are mono. */
+html[data-theme="xmb"] .mono { font-family: var(--font); }
+
+/* A navigation list is the XMB's vertical sub-column: no box, no rules,
+   larger rows, the current one lit by its glow. */
+html[data-theme="xmb"] nav .list {
+  --list-bg: transparent;
+  --list-border: transparent;
+  --list-rule: transparent;
+  font-size: 1.1rem;
+}
+
+/* The PS3 system dialog (modalDialog.jpg): a dark band bounded by thin
+   white rules above and below, the title over a rule, the choices plain
+   text with the focused one bright. Desktop windows keep their frame. */
+html[data-theme="xmb"] .modal:not(.desktop-window) { border-inline-color: transparent; }
+html[data-theme="xmb"] .modal:not(.desktop-window) > .modal-header { border-block-end: 1px solid rgba(255, 255, 255, 0.35); }
+html[data-theme="xmb"] .modal-footer .btn:not(.btn-primary, .btn-danger) {
+  --btn-bg: transparent;
+  --btn-border: transparent;
 }
 
 /* --- v5 tiers ------------------------------------------------------------ *
  * Touch tiers: the bar wraps to two lines, and a 999px stadium round a
  * two-line bar clips the ends of both. It becomes a rounded glass slab
- * (still floating, still blurred) that spans the content width. Phones
+ * (still floating smoked glass) that spans the content width. Phones
  * also trade the 1rem frame round the shell for content width. */
 @media (max-width: 900px) {
   html[data-theme="xmb"] .app-bar {
@@ -18870,15 +19062,23 @@ html[data-theme="xmb"] .app-bar {
 @media (max-width: 480px) {
   html[data-theme="xmb"] { --app-padding: 0.5rem; }
   html[data-theme="xmb"] .nav { gap: 0.5rem; }
+  /* Keep the categories on one line under the brand, not a slab of rows. */
+  html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) { order: 1; flex: 1 1 100%; }
+  html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) ~ * { order: 2; }
+  html[data-theme="xmb"] .app-bar :is(.nav-item, [role="menubar"] > li > [role="menuitem"]) { padding-inline: 0.45em; }
+  html[data-theme="xmb"] .app-bar [role="menubar"] { justify-content: center; }
+  /* The tools share one row under the categories instead of wrapping the
+     bell and avatar onto a line of their own; the theme picker gives way. */
+  html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) ~ .cluster { flex: 1 1 100%; flex-wrap: nowrap; }
+  html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) ~ .cluster > .select { flex: 1 1 0; inline-size: 0; min-inline-size: 0; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the XMB wave carries on beside the
    content: three thin translucent light ribbons crossing the gutters,
-   within ~1.3:1 of --bg. They drift sideways once every two minutes,
+   the same ribbon as the page background. They drift sideways once every two minutes,
    only with motion allowed, the way the PS3 wave never sat still. */
 html[data-theme="xmb"] {
-  --app-gutter-art:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23bfe4ff'%3E%3Cpath d='M0 330C200 250 400 250 600 320S1000 400 1200 330' stroke-opacity='.10' stroke-width='2'/%3E%3Cpath d='M0 360C220 300 380 290 600 350S980 420 1200 360' stroke-opacity='.07' stroke-width='6'/%3E%3Cpath d='M0 300C180 230 420 230 600 290S1020 380 1200 300' stroke-opacity='.05' stroke-width='14'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 1200px 100% repeat-x;
+  --app-gutter-art: var(--xmb-wave) 0 58% / 1200px 46% repeat-x;
 }
 @media (min-width: 1801px) and (prefers-reduced-motion: no-preference) {
   html[data-theme="xmb"]:not([data-motion="reduced"])::before {
@@ -18894,12 +19094,6 @@ html[data-theme="xmb"] {
   to { background-position: 1200px 0; }
 }
 
-/* --- Print ----------------------------------------------------------------
- * Core's generic print reset already clears the wave background (the
- * html-level gradient) and .app-bar's own background/box-shadow, but
- * not backdrop-filter, which isn't a background property. Left on, it's
- * inert once there's nothing behind the bar to blur, but not worth
- * shipping to a print target regardless. */
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * soft glowing light columns. */
 html[data-theme="xmb"] {
@@ -18909,11 +19103,6 @@ html[data-theme="xmb"] {
   --bar-chart-shadow: 0 0 0.6rem rgba(126, 200, 255, 0.35);
 }
 
-@media print {
-  html[data-theme="xmb"] .app-bar {
-    backdrop-filter: none !important;
-  }
-}
 /* Window caption buttons sit together at the bar's right end with the
    close button (core pushes only close). */
 html[data-theme="xmb"] .modal-header > .btn-min { margin-inline-start: auto; }
@@ -18934,6 +19123,10 @@ html[data-theme="xmb"] .modal-header > .btn-close {
    --surface: mixed into a translucent white it stayed see-through, and on
    a highlighted (pale blue) listbox option its light initials sank to
    1.5:1. */
-html[data-theme="xmb"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--bg)); }
+html[data-theme="xmb"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 28%, #021a4a); }
+
+/* Titillium's narrow glyphs let an auto-layout table squeeze an inline
+   field below a usable target on a folded phone; keep it a tap wide. */
+html[data-theme="xmb"] td > .input { min-inline-size: 3rem; }
 
 }

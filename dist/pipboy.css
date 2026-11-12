@@ -18683,7 +18683,15 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * Theme-Name: Pip-Boy 3000
  * Navigation-Patterns: category-tabs
  * Description: Fallout's Pip-Boy 3000: monochrome phosphor green with a scanline overlay — every state reads as one green, on purpose.
+ *
+ * Note on fonts: the in-game face is Monofonto (Typodermic, not OFL). Share
+ * Tech Mono (OFL, vendored) is the closest free narrow, rounded monospace.
  */
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("../assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
 
 html[data-theme="pipboy"] {
   --motion-leave: power-off;
@@ -18693,34 +18701,70 @@ html[data-theme="pipboy"] {
   --surface-2: #0a2e15;
   --border: #1f7a3f;
   --hairline: #123d1e;
-  --text: #39ff6a;
+  --text: #1aff80;   /* Fallout 4 default Pip-Boy colour, RGB 26,255,128 */
   /* Muted carries labels and table headers, so it meets AA (4.5:1) on both
      surfaces and on tinted rows/bubbles under the glow; was #1fa43f (2.9:1
-     on a selected row once the glow is counted). */
-  --muted: #29c450;
-  --accent: #39ff6a;
-  --accent-text: #39ff6a;  /* labels read this, so an app that sets --accent keeps them legible */
-  --accent-2: #8dffab;
+     on a tinted row once the glow is counted). */
+  --muted: #1fc463;
+  --accent: #1aff80;
+  --accent-text: #1aff80;  /* labels read this, so an app that sets --accent keeps them legible */
+  --accent-2: #8dffc0;
   --danger: #ffb15c;
-  --success: #39ff6a;
+  --success: #1aff80;
   --warning: #ffe45c;
   --on-accent: #04140a;
   --on-danger: #221200;
   --on-success: #04140a;
   --radius: 0.15rem;
-  --font: "Perfect DOS VGA 437", "Courier New", monospace;
-  --font-mono: "Perfect DOS VGA 437", Consolas, monospace;
-  --flare: #39ff6a;
+  --font: "Share Tech Mono", "Courier New", monospace;
+  --font-mono: "Share Tech Mono", Consolas, monospace;
+  --flare: #1aff80;
 
   --btn-bg: transparent;
   --btn-fg: var(--accent-text);
-  --btn-shadow-hover: 0 0 8px rgba(57, 255, 106, 0.6);
+  --btn-transform: uppercase;
+  --btn-tracking: 0.05em;
+  --btn-shadow-hover: 0 0 8px rgba(26, 255, 128, 0.6);
   --input-bg: #04140a;
-  --focus-ring: 0 0 8px rgba(57, 255, 106, 0.5);
-  --panel-shadow: inset 0 0 24px rgba(57, 255, 106, 0.06);
+  --focus-ring: 0 0 8px rgba(26, 255, 128, 0.5);
+  --panel-shadow: inset 0 0 24px rgba(26, 255, 128, 0.06);
   --table-head-fg: var(--accent);
   --table-head-rule: var(--accent);
-  --row-selected-bg: rgba(57, 255, 106, 0.11);
+  /* The Pip-Boy cursor: a solid phosphor bar with the text knocked out. */
+  --row-selected-bg: var(--accent);
+  --row-selected-fg: var(--on-accent);
+  --row-active-marker: inset 0 0 0 transparent;
+  --nav-item-bg-active: var(--accent);
+  --nav-item-fg-active: var(--on-accent);
+  --context-menu-item-bg-hover: var(--accent);
+  --context-menu-item-fg-hover: var(--on-accent);
+  /* Core draws the track on the content box; the --border green keeps it
+     at 3:1 on bg and surface without shrinking the --tap-min hit area. */
+  --slider-bg: var(--border);
+  /* Rectangular, pixel-snapped hardware: no pills, circles or teardrops. */
+  --badge-radius: 0;
+  --avatar-radius: 0;
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --slider-thumb-radius: 0;
+  --scrubber-thumb-radius: 0;
+  --comment-pin-radius: 0;
+  --btn-icon-radius: 0;
+  --status-dot-radius: 0;
+  --lamp-radius: 0;
+  --presence-radius: 0;
+  --fab-radius: 0;
+  --steps-marker-radius: 0;
+  --calendar-date-radius: 0;
+  --scrollbar-radius: 0;
+  --comment-pin-resolved-fg: var(--text);
+  --waveform-marker-fg: #e0ffec;
+  /* Tabs: the Pip-Boy header (see the .tabs rules below). */
+  --tab-fg-active: var(--accent);
+  --tab-underline-active: transparent;
+  --tab-bg-active:
+    linear-gradient(var(--accent) 0 0) left bottom / 2px 50% no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right bottom / 2px 50% no-repeat border-box;
   --nav-bg: #04140a;
   --overlay-bg: rgba(2, 10, 5, 0.85);
   --indicator-fg: var(--accent);
@@ -18730,16 +18774,137 @@ html[data-theme="pipboy"] {
 
   --app-bg: #04140a;
   --app-bar-bg: #04140a;
-  --app-bar-rule: var(--border);
+  /* The bar rule doubles as the STAT / INV / DATA header rule. */
+  --app-bar-rule: var(--accent);
+  --app-bar-rule-width: 2px;
+  --app-status-rule: var(--accent);
+  /* Peak segments stay in the phosphor (brighter); amber is the clip only. */
+  --meter-mid: var(--accent-2);
+
+  /* Native controls (bare checkboxes, radios, ranges) take the phosphor. */
+  accent-color: var(--accent);
+  /* Only the Regular face is vendored, and the game sets everything at one
+     weight: no smeared faux bold; emphasis is brightness (see below). */
+  font-synthesis-weight: none;
+
+  /* Little boxing: panels and cards are a dim hairline with bright corner
+     brackets, not a full phosphor box. Consumers that color-mix the panel
+     fill get the flat surface instead of the gradient stack. */
+  --panel-border: var(--hairline);
+  --panel-bg:
+    linear-gradient(var(--accent) 0 0) left top / 12px 2px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) left top / 2px 12px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right top / 12px 2px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right top / 2px 12px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) left bottom / 12px 2px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) left bottom / 2px 12px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right bottom / 12px 2px no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right bottom / 2px 12px no-repeat border-box,
+    var(--surface);
+  --list-card-bg: var(--surface);
+  --ranked-item-bg: var(--surface);
+
+  /* HUD: rarity is brightness of the one phosphor, HP reads green as in
+     Fallout 4 (the low state still turns amber via --danger). */
+  --rarity-common: #0f7a3d;
+  --rarity-uncommon: #12b85c;
+  --rarity-rare: #1aff80;
+  --rarity-epic: #8dffc0;
+  --rarity-legendary: #e0ffec;
+  --hud-health: var(--accent);
+  --hud-achievement-icon-radius: 0;
+  /* A phosphor CRT cannot show colour: photos go through the green. */
+  --hud-scene-filter: var(--pipboy-phosphor);
+  --pipboy-phosphor: grayscale(1) contrast(0.9) brightness(0.8) sepia(1) hue-rotate(95deg) saturate(4.5);
 }
 
 /* The glow is the glyph's own phosphor (currentColor), so dim text glows dim
    instead of sitting in a bright-green halo that eats its contrast. */
 html[data-theme="pipboy"] { text-shadow: 0 0 3px color-mix(in srgb, currentColor 35%, transparent); }
-html[data-theme="pipboy"] .btn-primary { --btn-bg: rgba(57, 255, 106, 0.12); --btn-fg: var(--accent-text); }
+html[data-theme="pipboy"] .btn-primary { --btn-bg: rgba(26, 255, 128, 0.12); --btn-fg: var(--accent-text); }
+/* Drawn, not painted: danger/success are outlines too. Solid fill means
+   "selected" (the cursor bar), never a button's resting state. */
+html[data-theme="pipboy"] .btn-danger {
+  --btn-bg: color-mix(in srgb, var(--danger) 12%, transparent);
+  --btn-fg: var(--danger);
+  --btn-bg-hover: color-mix(in srgb, var(--danger) 26%, transparent);
+}
+html[data-theme="pipboy"] .btn-success {
+  --btn-bg: color-mix(in srgb, var(--success) 12%, transparent);
+  --btn-fg: var(--success);
+  --btn-bg-hover: color-mix(in srgb, var(--success) 26%, transparent);
+}
+
+/* STAT / INV / DATA header: uppercase tracked labels on one phosphor rule
+   that breaks under the active tab, whose ends rise as short ticks
+   (--tab-bg-active). The rule is drawn per tab plus a filler so it can
+   break; tab gaps are closed so it stays continuous. */
+html[data-theme="pipboy"] .tab,
+html[data-theme="pipboy"] .panel-header { text-transform: uppercase; letter-spacing: 0.08em; }
+html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) { gap: 0; border-bottom: 0; }
+html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) > .tab:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { border-inline-width: 0; border-bottom: 2px solid var(--accent); }
+html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before,
+html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::after { content: ""; flex: 1 0 1rem; border-bottom: 2px solid var(--accent); }
+html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before { flex: 0 0 0.75rem; }
+html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) > .tab-add { border-bottom: 2px solid var(--accent); }
+/* Narrow windows and dialogs: tighter tracking keeps the header on one rule. */
+html[data-theme="pipboy"] :is(.window, .modal) .tabs:not([aria-orientation="vertical"]) > .tab { letter-spacing: 0.03em; }
+
+/* The app bar nav is the same header: uppercase tracked labels, the active
+   one bracketed by the rising ticks. The solid cursor bar stays for list
+   and sidebar selection. */
+html[data-theme="pipboy"] .app-bar {
+  --nav-item-bg-active: var(--tab-bg-active);
+  --nav-item-fg-active: var(--accent);
+  --menubar-item-bg-active: var(--tab-bg-active);
+  --menubar-item-fg-active: var(--accent);
+}
+html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { text-transform: uppercase; }
+/* The brand never gives up its width to the nav; the nav wraps instead. */
+html[data-theme="pipboy"] .app-bar > .nav-brand { flex-basis: auto; flex-shrink: 0; }
+/* Tracked only where the bar has room; on phones it would wrap the nav. */
+@media (min-width: 481px) {
+  html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.08em; }
+}
+
+/* Media through the phosphor: no second hue sneaks in via photos. */
+html[data-theme="pipboy"] :is(img, video):not(.icon),
+html[data-theme="pipboy"] :is(.card-media, .map) > svg { filter: var(--pipboy-phosphor); }
+
+/* Rectangular hardware on the map too. */
+html[data-theme="pipboy"] .map.hud-minimap.is-round { border-radius: 0; }
+html[data-theme="pipboy"] .map-pin::before { border-radius: 0; rotate: 45deg; }
+/* Square LEDs where core hardcodes a circle (no token). */
+html[data-theme="pipboy"] :is(.avatar[data-status], .presence-status)::after,
+html[data-theme="pipboy"] .carousel-nav > a,
+html[data-theme="pipboy"] .carousel > .carousel-slide::scroll-marker,
+html[data-theme="pipboy"] .btn[aria-pressed]::before { border-radius: 0; }
+
+/* HP | LEVEL | AP: solid dim-green blocks with bright uppercase text,
+   under the same 2px phosphor rule as the bar. */
+html[data-theme="pipboy"] .app-status:not(.taskbar) { border-top-width: 2px; }
+html[data-theme="pipboy"] .app-status:not(.taskbar) > * {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid transparent;
+  background: color-mix(in srgb, var(--accent) 22%, var(--bg));
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 html[data-theme="pipboy"] h1,
 html[data-theme="pipboy"] h2,
-html[data-theme="pipboy"] h3 { text-transform: uppercase; letter-spacing: 0.1em; }
+html[data-theme="pipboy"] h3 { text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400; }
+/* Emphasis is a brighter phosphor, not a heavier stroke. */
+html[data-theme="pipboy"] :is(h1, h2, h3) { text-shadow: 0 0 6px color-mix(in srgb, currentColor 55%, transparent); }
+html[data-theme="pipboy"] :is(strong, b) { font-weight: 400; text-shadow: 0 0 5px color-mix(in srgb, currentColor 60%, transparent); }
+
+/* Wide mono cells: at the phone tier, tables set smaller so inputs inside
+   cells keep a usable width; the glow is dropped there too (dense text,
+   and the cheapest frame on a throttled phone). */
+@media (max-width: 480px) {
+  html[data-theme="pipboy"] .table { font-size: 0.85em; text-shadow: none; }
+  html[data-theme="pipboy"] td > :is(.input, .select) { min-inline-size: var(--tap-min); }
+}
 
 /* CRT scanlines: a repeating horizontal gradient over the whole app,
    pointer-events:none so it never intercepts clicks. Static, not animated —
@@ -18751,7 +18916,14 @@ html[data-theme="pipboy"] .app::after {
   /* Over the whole app, under modals and other floating layers. */
   z-index: calc(var(--z-modal) - 1);
   pointer-events: none;
-  background-image: repeating-linear-gradient(180deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px);
+  /* Own layer: scrolling never repaints the overlay. */
+  will-change: transform;
+  contain: strict;
+  /* Scanlines, plus the curved CRT glass: edges fall off a little (a
+     gradient, not a blurred inset shadow, which costs a frame budget). */
+  background-image:
+    repeating-linear-gradient(180deg, rgba(0,0,0,0.2) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, 0.3));
 }
 
 /* XL gutters (v5, PLAN.md §3): the Pip-Boy's MAP tab with the lamp
@@ -18760,24 +18932,24 @@ html[data-theme="pipboy"] .app::after {
    same scanlines as the screen; within about 1.2:1 of --bg. Still. */
 html[data-theme="pipboy"] {
   --app-gutter-art:
-    radial-gradient(circle, rgba(57, 255, 106, 0.22) 0 3px, transparent 3.5px) 41px 77px / 256px 224px,
-    radial-gradient(circle, rgba(57, 255, 106, 0.16) 0 2px, transparent 2.5px) 170px 13px / 320px 288px,
-    linear-gradient(rgba(57, 255, 106, 0.09) 1px, transparent 1px) 0 0 / 100% 128px,
-    linear-gradient(90deg, rgba(57, 255, 106, 0.09) 1px, transparent 1px) 0 0 / 128px 100%,
-    linear-gradient(rgba(57, 255, 106, 0.04) 1px, transparent 1px) 0 0 / 100% 32px,
-    linear-gradient(90deg, rgba(57, 255, 106, 0.04) 1px, transparent 1px) 0 0 / 32px 100%,
+    radial-gradient(circle, rgba(26, 255, 128, 0.22) 0 3px, transparent 3.5px) 41px 77px / 256px 224px,
+    radial-gradient(circle, rgba(26, 255, 128, 0.16) 0 2px, transparent 2.5px) 170px 13px / 320px 288px,
+    linear-gradient(rgba(26, 255, 128, 0.09) 1px, transparent 1px) 0 0 / 100% 128px,
+    linear-gradient(90deg, rgba(26, 255, 128, 0.09) 1px, transparent 1px) 0 0 / 128px 100%,
+    linear-gradient(rgba(26, 255, 128, 0.04) 1px, transparent 1px) 0 0 / 100% 32px,
+    linear-gradient(90deg, rgba(26, 255, 128, 0.04) 1px, transparent 1px) 0 0 / 32px 100%,
     var(--bg);
 }
 
 /* Chart palette: a monochrome phosphor display has one hue, so series are
    told apart by brightness, not colour. */
 html[data-theme="pipboy"] {
-  --chart-series-1: #39ff6a;
-  --chart-series-2: #3fbf5f;
-  --chart-series-3: #9de8ad;
-  --chart-series-4: #ffb642;
-  --chart-series-5: #238a3c;
-  --chart-series-6: #4f9a61;
+  --chart-series-1: #1aff80;
+  --chart-series-2: #12b85c;
+  --chart-series-3: #8dffc0;
+  --chart-series-4: #7fb894;
+  --chart-series-5: #0f7a3d;
+  --chart-series-6: #4fa877;
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
@@ -18787,7 +18959,7 @@ html[data-theme="pipboy"] {
   --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 6px, transparent 6px 9px);
   --bar-chart-bar-alt: repeating-linear-gradient(0deg, var(--accent-2) 0 6px, transparent 6px 9px);
   --bar-chart-radius: 0;
-  --bar-chart-shadow: 0 0 0.45rem rgba(57, 255, 106, 0.3);
+  --bar-chart-shadow: 0 0 0.45rem rgba(26, 255, 128, 0.3);
 }
 
 /* Close (v5): Pip-Boy menus back out with a BACK key hint. */

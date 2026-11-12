@@ -18735,7 +18735,7 @@ html[data-theme="ios-flat"] {
   --on-success: #ffffff;
   --on-surface: var(--text);
   --radius: 10px;         /* the inset-grouped cell corner */
-  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", "Segoe UI", Roboto, "Noto Sans", "Liberation Sans", Arimo, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --flare: #34c759;       /* systemGreen: the toggle, the one colour iOS 7 made famous */
   --link: var(--accent-text);
@@ -18779,8 +18779,10 @@ html[data-theme="ios-flat"] {
   --btn-shadow: none;
   --btn-icon-radius: 50%;
 
-  /* --- Inputs: the search-field fill, no border ----------------------- */
-  --input-bg: var(--surface-2);
+  /* --- Inputs: the search-field fill, no border ----------------------- *
+   * tertiarySystemFill itself, translucent: #eeeeef over a white cell,
+   * #e3e3e9 on the grouped grey page, so a free-standing field still shows. */
+  --input-bg: var(--ios-fill);
   --input-fg: var(--text);
   --input-border: transparent;
   --input-radius: 10px;
@@ -18881,7 +18883,7 @@ html[data-theme="ios-flat"] {
   --row-selected-bg: var(--ios-gray5);   /* #d1d1d6 drops tinted text under 4.5:1 */
   --row-alt-bg: #f7f7f9;
   --row-active-bg: transparent;
-  --row-active-marker: inset 3px 0 0 var(--accent);
+  --row-active-marker: none;   /* the trailing checkmark and the fill carry it */
 
   /* Navigation */
   --nav-bg: var(--ios-bar);
@@ -18927,7 +18929,8 @@ html[data-theme="ios-flat"] {
   --switch-thumb-bg-on: #ffffff;
 
   /* Slider: 4pt track, 28pt white knob. Progress: 4pt bar. */
-  --slider-bg: var(--ios-gray5);
+  --ios-slider-track: var(--ios-gray5);   /* UISlider's maximum track */
+  --slider-bg: var(--ios-slider-track);
   --slider-border: transparent;
   --slider-border-width: 0;
   --slider-height: 4px;
@@ -19028,7 +19031,7 @@ html[data-theme="ios-flat"] {
   --knob-border: transparent;
   --knob-shadow: var(--ios-thumb-shadow);
   --knob-pointer: #8e8e93;
-  --fader-track: linear-gradient(0deg, #ffffff calc(var(--value, 0.5) * 100%), transparent 0) center / 2.2rem 100% no-repeat, linear-gradient(#c7c7cc, #c7c7cc) center / 2.2rem 100% no-repeat;
+  --fader-track: linear-gradient(0deg, #ffffff calc(var(--value, var(--ios-slider-at)) * 100%), transparent 0) center / 2.2rem 100% no-repeat, linear-gradient(#c7c7cc, #c7c7cc) center / 2.2rem 100% no-repeat;
   --fader-cap-bg: transparent;
   --fader-cap-border: transparent;
   --fader-cap-shadow: none;
@@ -19149,6 +19152,8 @@ html[data-theme="ios-flat"][data-variant="dark"] {
   --ios-gray: #8e8e93;
   --ios-gray4: #3a3a3c;
   --ios-gray5: #2c2c2e;
+  --ios-slider-track: #48484a;   /* #2c2c2e vanished on the black page */
+  --input-bg: var(--surface-2);  /* the translucent fill over black is ~1.2:1 */
   --ios-fill: rgba(118, 118, 128, 0.24);
   --ios-cell-highlight: #3a3a3c;
   --ios-separator: rgba(84, 84, 88, 0.65);
@@ -19182,7 +19187,7 @@ html[data-theme="ios-flat"][data-variant="dark"] {
   --message-fg: #ffffff;
   --taskbar-bg: rgba(40, 40, 42, 0.6);
   --taskbar-task-bg-active: #3a3a3c;
-  --fader-track: linear-gradient(0deg, #ffffff calc(var(--value, 0.5) * 100%), transparent 0) center / 2.2rem 100% no-repeat, linear-gradient(#3a3a3c, #3a3a3c) center / 2.2rem 100% no-repeat;
+  --fader-track: linear-gradient(0deg, #ffffff calc(var(--value, var(--ios-slider-at)) * 100%), transparent 0) center / 2.2rem 100% no-repeat, linear-gradient(#3a3a3c, #3a3a3c) center / 2.2rem 100% no-repeat;
   --go-shadow: 0 0 0 3px #1c1c1e, 0 0 0 4.5px #48484a;
   --scrollbar-thumb: rgba(255, 255, 255, 0.35);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.5);
@@ -19264,10 +19269,26 @@ html[data-theme="ios-flat"] .switch-thumb {
 }
 html[data-theme="ios-flat"] button.switch .switch-thumb { font-size: 31px; }
 html[data-theme="ios-flat"] .switch-label { font-size: 17px; }
+/* UISwitch is a fixed 51pt; a long hint beside it gives way instead. */
+html[data-theme="ios-flat"] :is(.switch, .switch-track) { flex-shrink: 0; }
+html[data-theme="ios-flat"] .field-row > .field-hint { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 html[data-theme="ios-flat"] .slider::-webkit-slider-thumb { border: 0; }
 html[data-theme="ios-flat"] .slider::-moz-range-thumb { border: 0; }
 html[data-theme="ios-flat"] .slider:focus-visible { outline-offset: 8px; }
+/* UISlider's blue minimum track. Firefox draws it natively; elsewhere it
+   follows --value (0-1) when the page or core exposes it, else the value
+   attribute. shortcut: the attribute is the initial value, so a dragged
+   slider's fill stays where it started until core keeps --value on every
+   .slider (controls.js); drop the attr() fallback then. The fill sits on the content box, so the hit area keeps
+   core's --tap-min. */
+html[data-theme="ios-flat"] .slider::-moz-range-progress { height: var(--slider-height); border-radius: var(--slider-radius); background: var(--ios-blue); }
+html[data-theme="ios-flat"] .slider { --ios-slider-at: calc((attr(value type(<number>), 50) - attr(min type(<number>), 0)) / (attr(max type(<number>), 100) - attr(min type(<number>), 0))); }
+html[data-theme="ios-flat"] .slider:not(.is-bipolar, .is-vertical, .fader) { --slider-bg: linear-gradient(90deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-slider-track) 0); }
+/* Vertical: the same 4px track stood upright and centred, blue from the
+   bottom; the 24/44px box around it stays the hit area. */
+html[data-theme="ios-flat"] .slider.is-vertical:not(.fader) { --slider-bg: linear-gradient(0deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-slider-track) 0) center / var(--slider-height) 100% no-repeat; }
+html[data-theme="ios-flat"] .slider:not(.is-bipolar, .is-vertical, .fader):dir(rtl) { --slider-bg: linear-gradient(270deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-slider-track) 0); }
 
 /* --- Segmented control ----------------------------------------------- */
 html[data-theme="ios-flat"] .segmented { gap: 0; }
@@ -19328,12 +19349,19 @@ html[data-theme="ios-flat"] .field-row + .field-row {
   --field-row-bg: linear-gradient(var(--hairline), var(--hairline)) 1rem 0 / calc(100% - 1rem) 1px no-repeat, var(--surface);
 }
 html[data-theme="ios-flat"] .panel .field-row,
-html[data-theme="ios-flat"] .card .field-row { padding-inline: 0; --field-row-bg: transparent; }
+html[data-theme="ios-flat"] .card .field-row { margin-inline: calc(-1 * var(--surface-pad, 1rem)); --field-row-bg: transparent; }
 html[data-theme="ios-flat"] .panel .field-row + .field-row,
 html[data-theme="ios-flat"] .card .field-row + .field-row {
-  --field-row-bg: linear-gradient(var(--hairline), var(--hairline)) 0 0 / 100% 1px no-repeat;
+  --field-row-bg: linear-gradient(var(--hairline), var(--hairline)) 1rem 0 / calc(100% - 1rem) 1px no-repeat;
 }
+/* Rows inside a cell reach its edges (text stays 1rem in, as the hairline
+   does); the last row adds no gap below the group. */
+html[data-theme="ios-flat"] :is(.panel, .card) .field-row:not(:has(+ .field-row)) { margin-block-end: 0; }
 html[data-theme="ios-flat"] .field-row > .label { font-size: 17px; font-weight: 400; }
+
+/* A grey button on a state-washed row would mix its translucent fill
+   into the wash (tint text fell to 4.46:1); it sits on a white chip. */
+html[data-theme="ios-flat"] :is(.is-success, .is-warning, .is-danger) > .btn:not(.btn-primary, .btn-danger, .btn-success) { --btn-bg: var(--surface); }
 
 /* Lists: inset grouped rows, a disclosure chevron on every tappable one,
    the grey highlight (never a coloured bar) for the selected row. */
@@ -19350,10 +19378,29 @@ html[data-theme="ios-flat"] :is(a, button).list-item:not(:has(> .list-item-title
 html[data-theme="ios-flat"] :is(a, button).list-item:not(:has(> .list-item-title)):dir(rtl)::after { transform: scaleX(-1); }
 html[data-theme="ios-flat"] .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { color: inherit; }
 html[data-theme="ios-flat"] .list-item:focus-visible { outline-offset: -2px; }
+/* A row with a leading glyph insets its separator to the label, past the
+   icon, as UITableView does for a cell with an image. */
+html[data-theme="ios-flat"] .list > :not(:first-child):has(> .list-item > .icon + :not(.icon)) { box-shadow: inset 2.8em 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
+/* A disclosure group: the grey chevron, turned down when open. */
+html[data-theme="ios-flat"] .accordion-trigger::after {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 13px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 13'%3E%3Cpath d='M1.5 1.5L6.5 6.5L1.5 11.5' fill='none' stroke='%23c4c4c7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="ios-flat"] .accordion-trigger:dir(rtl)::after { transform: scaleX(-1); }
+html[data-theme="ios-flat"] .accordion-item[open] > .accordion-trigger::after { transform: rotate(90deg); }
+/* Pagination's prev/next chevrons drawn large, as the bar's chevrons are. */
+html[data-theme="ios-flat"] a.pagination-item:is(:first-child, :last-child) { font-size: 22px; height: 1.3em; min-width: max(1.3em, var(--tap-min)); }
+/* Code: SF Mono at footnote size, as Xcode and Notes set it. */
+html[data-theme="ios-flat"] pre { font-size: 13px; }
 
 /* Tables as plain lists. Headers in footnote caps; the active row gets
    the trailing blue checkmark a selected cell carries. */
 html[data-theme="ios-flat"] .table th { font-size: 13px; font-weight: 400; border-bottom-width: 0.5px; }
+/* An in-cell editor: a rounded field ringed in the tint, not a square box. */
+html[data-theme="ios-flat"] .table :is(td.is-editing, tr.is-editing > td) { --input-border-width: 2px; --cell-input-radius: 6px; }
 html[data-theme="ios-flat"] .table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) td:last-child {
   padding-inline-end: 2.2em;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='%230071e3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 0.6em center / 1em no-repeat;
@@ -19385,6 +19432,9 @@ html[data-theme="ios-flat"] .modal-header {
 html[data-theme="ios-flat"] .modal-header:has(> :is(.btn-close, .btn-min, .btn-max)) { justify-content: flex-end; }
 html[data-theme="ios-flat"] .modal-header:has(> :is(.btn-close, .btn-min, .btn-max)) > :first-child:not(.btn-close, .btn-min, .btn-max) { margin-inline-end: auto; }
 html[data-theme="ios-flat"] .modal:not(:has(> .modal-footer)) { padding-bottom: 1.25rem; }
+/* An iPad sheet (window controls) reads as a page, not an alert: body
+   text leading at 17pt. Its width follows its container, not the screen. */
+html[data-theme="ios-flat"] .modal:has(.btn-min, .btn-max) { text-align: start; font-size: 17px; width: min(32rem, calc(100vw - 2rem), 100%); }
 html[data-theme="ios-flat"] .modal :is(.field, .label, .input, .select, .textarea, .input-group) { text-align: start; }
 html[data-theme="ios-flat"] .modal .input { --input-bg: var(--surface); }
 html[data-theme="ios-flat"] .modal-footer {
@@ -19440,38 +19490,139 @@ html[data-theme="ios-flat"] .toast::before {
 html[data-theme="ios-flat"] .toast-success { --toast-icon: var(--ios-green); }
 html[data-theme="ios-flat"] .toast-danger { --toast-icon: var(--ios-red); }
 html[data-theme="ios-flat"] .toast-warning { --toast-icon: var(--ios-orange); }
-html[data-theme="ios-flat"] .alert { box-shadow: inset 4px 0 0 var(--alert-mark, var(--ios-gray)); }
-html[data-theme="ios-flat"] .alert-info { --alert-mark: var(--accent); }
+/* Inline alerts: a white cell led by the same coloured icon tile. */
+html[data-theme="ios-flat"] .alert::before {
+  content: "";
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-block-start: 0.1em;
+  border-radius: 5px;
+  background: var(--alert-mark, var(--ios-gray));
+}
+html[data-theme="ios-flat"] .alert-info { --alert-mark: var(--ios-blue); }
 html[data-theme="ios-flat"] .alert-success { --alert-mark: var(--ios-green); }
 html[data-theme="ios-flat"] .alert-warning { --alert-mark: var(--ios-orange); }
 html[data-theme="ios-flat"] .alert-danger { --alert-mark: var(--ios-red); }
 
 /* Badges: tinted capsules; the danger one is the red notification badge. */
 html[data-theme="ios-flat"] .badge { font-weight: 600; }
+/* Filter chips: Subheadline, like the neighbouring segmented labels. */
+html[data-theme="ios-flat"] .badge-button { font-size: 15px; font-weight: 500; }
 html[data-theme="ios-flat"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #ffffff; }
 
 /* --- Navigation ------------------------------------------------------ */
 html[data-theme="ios-flat"] .nav {
-  -webkit-backdrop-filter: var(--ios-bar-blur);
-  backdrop-filter: var(--ios-bar-blur);
   min-height: 44px;
   box-sizing: border-box;
 }
 html[data-theme="ios-flat"] .nav-brand { font-size: 17px; font-weight: 600; }
 html[data-theme="ios-flat"] .nav-item:hover:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { --nav-item-bg-active: var(--ios-fill); --nav-item-fg-active: var(--nav-item-fg); }
 html[data-theme="ios-flat"] .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { font-weight: 600; }
+/* A nav bar in content is a rounded bar, not a ruled strip: tint items,
+   the current one semibold tint, as the app bar's menubar draws it. */
+html[data-theme="ios-flat"] .nav:not(.app-bar .nav) { --nav-rule-width: 0; --nav-radius: var(--panel-radius); --nav-item-fg-active: var(--nav-item-fg); }
 
-/* Tabs are a tab bar: tint for the selected item, grey for the rest, a
-   hairline above, no underline. Vertical tabs are the iPadOS sidebar. */
-html[data-theme="ios-flat"] .tabs { border-bottom: 0; border-top: 0.5px solid var(--ios-separator); gap: 0; }
-html[data-theme="ios-flat"] .tab { flex: 1 1 0; border: 0; font-size: 12px; font-weight: 500; padding: 0.6em 0.8em; }
-html[data-theme="ios-flat"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-bottom: 0; }
+/* Horizontal tabs in content are a segmented control (grey track, white
+   pill, 13pt); there is no in-page tab strip on iOS. Vertical tabs are the
+   iPadOS sidebar. */
+html[data-theme="ios-flat"] .tabs:not([aria-orientation="vertical"]),
+html[data-theme="ios-flat"] .toggle-group:not(.is-stacked) {
+  gap: 0;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: var(--segmented-padding);
+  border: 0;
+  border-radius: var(--segmented-radius);
+  background: var(--segmented-bg);
+}
+html[data-theme="ios-flat"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  --tab-fg: var(--segmented-item-fg);
+  --tab-fg-hover: var(--segmented-item-fg);
+  --tab-fg-active: var(--segmented-item-fg-active);
+  --tab-bg-active: var(--segmented-item-bg-active);
+}
+html[data-theme="ios-flat"] .toggle-group:not(.is-stacked) > .toggle-btn {
+  --toggle-btn-bg: transparent;
+  --toggle-btn-fg: var(--segmented-item-fg);
+  --toggle-btn-border: transparent;
+  --toggle-btn-border-hover: transparent;
+  --toggle-btn-bg-on: var(--segmented-item-bg-active);
+  --toggle-btn-fg-on: var(--segmented-item-fg-active);
+  --toggle-btn-border-on: transparent;
+  margin: 0;
+}
+html[data-theme="ios-flat"] .toggle-group:not(.is-stacked) > .toggle-btn.is-danger { --toggle-btn-fg-on: var(--danger-text); }
+html[data-theme="ios-flat"] :is(.tabs:not([aria-orientation="vertical"]) > .tab, .toggle-group:not(.is-stacked) > .toggle-btn) {
+  position: relative;
+  flex: none;
+  border: 0;
+  border-radius: var(--segmented-item-radius);
+  padding: 0.3em 1.1em;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+html[data-theme="ios-flat"] .toggle-group.is-block > .toggle-btn { flex: 1 1 0; white-space: normal; }
+html[data-theme="ios-flat"] :is(.tabs > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .toggle-group > .toggle-btn:has(input:checked)) {
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+}
+html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { box-shadow: none; }
+/* The hairline divider between two unselected segments. */
+html[data-theme="ios-flat"] :is(.tabs:not([aria-orientation="vertical"]) > .tab:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) + .tab:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))), .toggle-group:not(.is-stacked) > .toggle-btn:not(:has(input:checked)) + .toggle-btn:not(:has(input:checked)))::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 25%;
+  height: 50%;
+  border-inline-start: 1px solid var(--ios-separator);
+}
 html[data-theme="ios-flat"] .tab:focus-visible { outline-offset: -2px; }
 html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] { border-top: 0; border-inline-end: 0; gap: 2px; padding: 0; }
 html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] > .tab { flex: none; font-size: 17px; font-weight: 400; padding: 0.5em 0.8em; }
 html[data-theme="ios-flat"] .tabs[aria-orientation="vertical"] > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --tab-bg-active: var(--accent); --tab-fg-active: #ffffff; border-inline-end: 0; font-weight: 600; }
 
 html[data-theme="ios-flat"] .breadcrumb-item:not(.is-current) { color: var(--link); }
+
+/* Sidebar (Mail's mailbox list): black labels, tint glyphs, the selected
+   row as a grey fill rather than a leading bar. */
+html[data-theme="ios-flat"] .nav-rail {
+  --nav-item-fg: var(--text);
+  --nav-item-fg-active: var(--text);
+  --nav-item-bg-active: var(--ios-gray5);
+  --nav-rail-marker: transparent;
+}
+html[data-theme="ios-flat"] .nav-rail > .nav-item > .icon { color: var(--accent-text); }
+/* In the content area the sidebar is an inset grouped card like its
+   neighbours, not a slab with a hairline. */
+/* The iPad Settings sidebar: white glyphs on coloured squircle tiles, and
+   (beside its pane) the selected row a blue fill with white text. */
+html[data-theme="ios-flat"] .master-detail-list .list-item > .icon:first-of-type {
+  width: 1.7em;   /* a 29pt tile round a 17pt glyph */
+  min-width: 1.7em;
+  height: 1.7em;
+  padding: 0.3em;
+  border-radius: 7px;
+  background: var(--ios-tile, var(--ios-blue));
+  color: #ffffff;
+}
+html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+2) { --ios-tile: var(--ios-gray); }
+html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+3) { --ios-tile: var(--ios-red); }
+html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+4) { --ios-tile: var(--accent-2); }
+@container (min-width: 481px) {
+  html[data-theme="ios-flat"] .master-detail-list .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --row-selected-bg: var(--accent); color: var(--on-accent); border-radius: 10px; }
+}
+/* On a phone the list drills in and keeps no selection, as iPhone Settings. */
+@container (max-width: 480px) {
+  html[data-theme="ios-flat"] .master-detail-list .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --row-selected-bg: transparent; }
+}
+html[data-theme="ios-flat"] .app-main .nav-rail { --nav-rail-rule-width: 0; border-radius: var(--panel-radius); }
+
+/* navigation-patterns' current link pairs --accent-text with an --accent
+   fill; on that fill the tint text is white. */
+html[data-theme="ios-flat"] .pattern-nav a[aria-current="page"] { --accent-text: var(--on-accent); }
 
 /* Readouts: Stopwatch digits. Stats: widget numbers in SF Rounded. */
 html[data-theme="ios-flat"] .readout { font-variant-numeric: tabular-nums; }
@@ -19492,6 +19643,9 @@ html[data-theme="ios-flat"] :is(.app-bar, .app-status) {
   backdrop-filter: var(--ios-bar-blur);
 }
 html[data-theme="ios-flat"] .app-bar { top: 0; flex-wrap: wrap; }
+html[data-theme="ios-flat"] .app-status > .taskbar-tray { margin-inline-start: 0; }
+/* Caption 2 (11pt) is the floor for tab-bar text. */
+html[data-theme="ios-flat"] .app-status .status { font-size: 11px; }
 html[data-theme="ios-flat"] .app-status { bottom: 0; justify-content: space-around; min-height: 49px; box-sizing: border-box; font-size: 12px; font-weight: 500; }
 html[data-theme="ios-flat"] .app-bar .nav { flex: 1 1 100%; flex-wrap: wrap; padding: 0; min-height: 0; gap: 0.5rem 0.75rem; -webkit-backdrop-filter: none; backdrop-filter: none; }
 html[data-theme="ios-flat"] .app-bar .nav-brand {
@@ -19502,9 +19656,11 @@ html[data-theme="ios-flat"] .app-bar .nav-brand {
   letter-spacing: 0.011em;
   line-height: 1.2;
 }
-/* The run of nav items reads as one segmented control: each item
-   carries the grey track (and a 2px spread of it), so adjacent items
-   merge into a single strip with the active one as the white pill. */
+/* The run of nav items reads as one iOS 13 segmented control. A .nav that
+   holds only items carries the grey track itself; loose items in the bar
+   (or a nav that also holds other things) each carry the track as a 2px
+   spread, the later ones reaching back over the joint so the strip has no
+   notches. The active item is the white pill. */
 html[data-theme="ios-flat"] .app-bar {
   --nav-item-bg: var(--surface-2);
   --nav-item-fg: var(--text);
@@ -19513,36 +19669,99 @@ html[data-theme="ios-flat"] .app-bar {
   --nav-brand-fg: var(--text);
 }
 html[data-theme="ios-flat"] .app-bar .nav-item {
-  margin-inline: -0.375rem;
+  position: relative;
+  margin-inline: 0;
   padding: 0.3em 0.95em;
   border-radius: 7px;
   font-size: 13px;
   font-weight: 500;
+  white-space: nowrap;
   outline-offset: 0;
   box-shadow: 0 0 0 2px var(--surface-2);
 }
-html[data-theme="ios-flat"] .app-bar .nav-item:first-of-type { margin-inline-start: 2px; }
+html[data-theme="ios-flat"] .app-bar > .nav-item:first-of-type { margin-inline-start: 2px; }
+html[data-theme="ios-flat"] .app-bar > .nav-item + .nav-item { margin-inline-start: -1rem; }
+html[data-theme="ios-flat"] .app-bar .nav:has(> :not(.nav-item)) > .nav-item + .nav-item { margin-inline-start: -0.75rem; }
+html[data-theme="ios-flat"] :is(.app-bar > .nav-item, .app-bar .nav:has(> :not(.nav-item)) > .nav-item) + .nav-item { box-shadow: 0 0 0 2px var(--surface-2), -8px 0 0 2px var(--surface-2); }
+html[data-theme="ios-flat"] .app-bar .nav:not(:has(> :not(.nav-item))) {
+  flex: 0 1 auto;
+  gap: 0;
+  padding: var(--segmented-padding);
+  border-radius: var(--segmented-radius);
+  --app-bar-nav-bg: var(--segmented-bg);
+}
+html[data-theme="ios-flat"] .app-bar .nav:not(:has(> :not(.nav-item))) > .nav-item { --nav-item-bg: transparent; box-shadow: none; }
+html[data-theme="ios-flat"] .app-bar .nav:not(:has(> :not(.nav-item))) > .nav-item:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) + .nav-item:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))))::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 25%;
+  height: 50%;
+  border-inline-start: 1px solid var(--ios-separator);
+}
 html[data-theme="ios-flat"] .app-bar .nav-item:hover:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { --nav-item-bg-active: var(--ios-gray5); }
 html[data-theme="ios-flat"] .app-bar .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
-  position: relative;
   z-index: 1;
   font-weight: 600;
   box-shadow: 0 0 0 2px var(--surface-2), 0 3px 8px 2px rgba(0, 0, 0, 0.12);
 }
+html[data-theme="ios-flat"] .app-bar .nav:not(:has(> :not(.nav-item))) > .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04); }
 html[data-theme="ios-flat"] .app-bar .select { width: auto; }
+/* A page with its own large title (the h1) keeps the bar compact: the
+   brand drops to the 17pt semibold inline title, so a screen shows one
+   large title, as iOS does. */
+html[data-theme="ios-flat"] .app:has(.app-main h1) .app-bar { --ios-bar-title: 17px; }
+@media (min-width: 901px) {
+  html[data-theme="ios-flat"] .app:has(.app-main h1) .app-bar .nav-brand { order: 0; flex: 0 1 auto; font-size: 17px; font-weight: 600; letter-spacing: 0; }
+}
+html[data-theme="ios-flat"] .app:has(.app-main h1) .app-bar .nav-brand { font-weight: 600; letter-spacing: 0; }
+/* Menubar items are bar buttons: tint text, the current section bold. */
+html[data-theme="ios-flat"] .app-bar .menubar { --menubar-fg: var(--accent-text); }
+html[data-theme="ios-flat"] .app-bar .menubar > li > :is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"]) { font-weight: 600; }
 
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
- * Phone and tablet: the large title moves up beside the trailing buttons,
- * as the iOS Photos and App Store tabs do (brand and actions on line 1, the
- * title truncating), and the segmented nav takes its own line and scrolls
- * sideways instead of wrapping into a second row of segments. */
+ * Phone and tablet: a bar without a button cluster keeps the brand beside
+ * its controls (truncating); the segmented nav takes its own line and
+ * scrolls sideways instead of wrapping into a second row of segments. */
 @media (max-width: 900px) {
-  html[data-theme="ios-flat"] .app-bar .nav-brand { order: 0; flex: 1 1 0; font-size: 30px; }
+  /* The scroll-away offset below counts these 4px gaps, so a page's own
+     bar gap (unlayered) must not move them. */
+  html[data-theme="ios-flat"] .app-bar { --ios-bar-title: 30px; row-gap: 4px !important; }
+  html[data-theme="ios-flat"] .app-bar .nav-brand { order: 0; flex: 1 1 0; min-width: min(50%, 12ch); font-size: var(--ios-bar-title); line-height: 1.2; }
+  /* Large-title bar: one 44pt row of bar buttons (the search button drops
+     to its glass, the shortcut hint has no key to press), the title under
+     it, the nav last. On scroll the button and title rows go and only the
+     nav row stays pinned, as the large title collapses on iOS. */
+  html[data-theme="ios-flat"] .app-bar:has(> .cluster) > .nav-brand { flex: 1 0 100%; min-width: 0; }
+  html[data-theme="ios-flat"] .app-bar > .cluster { order: -1; flex: 1 0 100%; flex-wrap: nowrap; justify-content: flex-end; gap: 0.5rem; block-size: 44px; margin: 0; }
+  html[data-theme="ios-flat"] .app-bar > .cluster > :is(.select, .input) { flex: 0 1 auto; min-width: 0; }
+  html[data-theme="ios-flat"] .app-bar > .cluster kbd { display: none; }
+  html[data-theme="ios-flat"] .app-bar > .cluster > .btn:has(> .icon + kbd) { font-size: 0; gap: 0; padding-inline: 0; min-inline-size: var(--tap-min); justify-content: center; }
+  html[data-theme="ios-flat"] .app-bar > .cluster > .btn:has(> .icon + kbd) > .icon { width: 20px; height: 20px; min-width: 20px; }
+  html[data-theme="ios-flat"] .app-bar:has(> .cluster) { top: calc(-0.35rem - 52px - 1.2 * var(--ios-bar-title)); }
   html[data-theme="ios-flat"] .app-bar .nav { flex: 1 0 100%; flex-wrap: nowrap; overflow-x: auto; padding: 2px 0.4rem 4px 2px; }
+  html[data-theme="ios-flat"] .app-bar .nav:not(:has(> :not(.nav-item))) { padding: var(--segmented-padding); }
+  html[data-theme="ios-flat"] .app-bar .nav:not(:has(> :not(.nav-item))) > .nav-item { flex: 1 0 auto; justify-content: center; }
   html[data-theme="ios-flat"] .app-bar .nav-item { display: inline-flex; align-items: center; }
+  /* Loose items in the bar and a menubar nav take their own last line, so
+     the large title keeps its room beside the bar's buttons. */
+  html[data-theme="ios-flat"] .app-bar > .nav-item { order: 10; }
+  html[data-theme="ios-flat"] .app-bar:has(> .nav-item)::after { content: ""; order: 9; flex: 1 0 100%; }
+  html[data-theme="ios-flat"] .app-bar > nav:has(> .menubar) { order: 10; flex: 1 0 100%; }
+  html[data-theme="ios-flat"] .app-bar .menubar { font-size: 15px; }
+  html[data-theme="ios-flat"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.6em; }
+  /* Segments keep their labels on one line and the control scrolls. */
+  html[data-theme="ios-flat"] .toggle-group:not(.is-stacked, .is-block) { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  html[data-theme="ios-flat"] .toggle-group > .toggle-btn:has(input:focus-visible) { outline-offset: -2px; }
 }
 @media (max-width: 480px) {
-  html[data-theme="ios-flat"] .app-bar .nav-brand { font-size: 26px; }
+  html[data-theme="ios-flat"] .app-bar { --ios-bar-title: 26px; }
+  /* A tab bar of tasks: the tray drops to its own line rather than
+     squeezing every task label to an ellipsis. */
+  html[data-theme="ios-flat"] .app-status.taskbar { flex-wrap: wrap; row-gap: 0.25rem; }
+  /* A free-standing nav bar wraps its few items instead of cutting one
+     mid-word at the scroll edge. */
+  html[data-theme="ios-flat"] .nav:not(.app-bar .nav) { flex-wrap: wrap; overflow-x: visible; gap: 0.25rem 0.5rem; }
 }
 
 /* XL gutters: the home screen beside the app, its icon grid reduced to
@@ -19556,6 +19775,12 @@ html[data-theme="ios-flat"][data-variant="dark"] {
 
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion="always"])[data-theme="ios-flat"] .switch-thumb { transition: none; }
+}
+
+/* Phones: the sticky bars drop the live blur (re-rendered every scroll
+   frame); at 94% opacity the bar reads the same. Menus and alerts keep it. */
+@media (max-width: 900px), (pointer: coarse) {
+  html[data-theme="ios-flat"] :is(.app-bar, .app-status) { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 
 /* Paper has no blur and no translucency. */

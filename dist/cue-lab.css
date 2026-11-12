@@ -18683,8 +18683,8 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * Theme-Name: Cue Lab
  * Description: A flat, glow-free live-show console: hairline grids and a single amber accent, the deliberate opposite of blue-future's neon.
  *
- * "Flat" is expressed by leaving every --*-shadow property unset rather
- * than by a blanket `* { box-shadow: none !important }`: that reset also
+ * "Flat" is expressed through the --*-shadow tokens (none where core has a
+ * fallback shadow) rather than by a blanket `* { box-shadow: none !important }`: that reset also
  * erased .table tr.is-active's inset marker, silently removing the
  * current-row indicator. Row state here is carried by background instead.
  */
@@ -18702,7 +18702,9 @@ html[data-theme="cue-lab"] {
   --accent-2: #ffb84d;
   --danger: #d63a3f;
   --success: #46a758;
-  --warning: #ffb84d;
+  /* Yellower than the accent so a warning (or a dirty cell's edge) never
+     reads as the amber "current cue". */
+  --warning: #e6c84d;
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
@@ -18721,12 +18723,13 @@ html[data-theme="cue-lab"] {
   --input-bg: var(--surface-2);
   --nav-rule-width: 2px;
   --nav-rule: var(--accent);
-  --table-head-fg: var(--accent);
+  --table-head-fg: var(--muted);
   --table-head-rule: var(--accent);
   --row-active-bg: rgba(255, 140, 26, 0.14);
-  --row-selected-bg: rgba(255, 140, 26, 0.28);
+  /* Selection is a neutral lift: amber stays for the one standing-by row. */
+  --row-selected-bg: #333333;
   /* A selected row's own text is full white: inherited --muted (e.g. in an
-     accordion) sank to 3.7:1 on the amber fill. */
+     accordion) would sink on the lifted fill. */
   --row-selected-fg: var(--text);
   --overlay-bg: rgba(0, 0, 0, 0.7);
   --label-transform: uppercase;
@@ -18735,8 +18738,12 @@ html[data-theme="cue-lab"] {
   --indicator-fg: var(--accent);
   /* QLab's most-referenced single element: the light-colored, right-
      pointing playhead triangle marking the cue standing by. .is-active
-     stands in for "standing by" on a generic table row. */
-  --row-active-marker: inset 0.3rem 0 0 var(--accent);
+     stands in for "standing by" on a generic table row; the triangle is
+     drawn below, the thin amber edge stays for forced colours and
+     themes-agnostic markup. */
+  --row-active-marker: inset 2px 0 0 var(--accent);
+  /* A ticked selection checkbox is a selection, not a cue standing by. */
+  --row-checked-marker: inset 2px 0 0 #777777;
 
   /* A cueing console is read at a glance from three metres away under show
      conditions, so: dense rows to fit the whole cue list, and one loud
@@ -18754,31 +18761,150 @@ html[data-theme="cue-lab"] {
   --transport-bg: var(--surface-2);
   --transport-edge-width: 0.3rem;
   --transport-edge: var(--accent);
-  --go-size: 1.15rem;
+  /* GO is the only solid amber block at rest; .btn-primary is outlined. */
+  --go-size: 1.9rem;
   --go-border-width: 2px;
-  --go-bg-hover: rgba(255, 140, 26, 0.12);
+  --go-bg: var(--accent);
+  --go-fg: var(--on-accent);
+  --go-border: var(--accent);
+  --go-bg-hover: var(--accent-2);
   /* The one deliberate glow in an otherwise flat theme. */
   --go-shadow-hover: 0 0 0 3px rgba(255, 140, 26, 0.35), 0 0 22px 4px rgba(255, 140, 26, 0.55);
   --lamp-radius: 0;
   --lamp-off: #2b2b2b;
   --lamp-on: var(--success);
   --lamp-glow: none;
+
+  /* Amber is state, not decoration: chrome and default series go neutral. */
+  --nav-brand-fg: var(--text);
+  --desktop-icon-glyph: var(--text);
+  --desktop-icon-glyph-selected: var(--accent);
+  --tree-selected-marker: inset 0.2rem 0 0 #777777;
+  --window-icon-glyph: var(--text);
+  --desktop-icon-label-bg-selected: #333333;
+  --desktop-icon-label-fg-selected: var(--accent);
+  --context-menu-item-bg-hover: #333333;
+  --context-menu-item-fg-hover: var(--text);
+  --start-menu-banner-bg: var(--surface-2);
+  --start-menu-banner-fg: var(--accent);
+  /* GO is the one solid amber block: every other "on" state is amber text
+     on the neutral lift, with an amber rule (rules below). */
+  --segmented-item-bg-active: #333333;
+  --segmented-item-fg-active: var(--accent);
+  --pagination-item-bg-active: transparent;
+  --pagination-item-fg-active: var(--accent);
+  --badge-bg-active: transparent;
+  --badge-fg-active: var(--accent);
+  --toggle-btn-bg-on: #333333;
+  --toggle-btn-fg-on: var(--accent);
+  /* A bulk selection, an own message and an edited cell are not cues:
+     neutral surfaces, so the standing-by row stays the one amber field. */
+  --bulk-bar-bg: #333333;
+  --bulk-bar-fg: var(--text);
+  --bulk-bar-border: var(--border);
+  --message-own-bg: var(--surface-2);
+  --cell-dirty-bg: transparent;
+  --info: #7a8a99;
+  --chart-series-1: #c8c8c8;
+  --chart-series-3: #7a8a99;
+  --chart-series-5: var(--accent);
+  --btn-padding-sm: 0.45em 0.8em;
+  --app-status-padding: 0.4rem 0.5rem;
+
+  /* Nearly square: hardware, not app. */
+  --badge-radius: var(--radius);
+  --avatar-radius: var(--radius);
+  --btn-icon-radius: var(--radius);
+  --switch-radius: var(--radius);
+  --switch-thumb-radius: 0;
+  --slider-thumb-radius: 0;
+  --scrubber-thumb-radius: 0;
+  --fab-radius: var(--radius);
+  /* The track on --bg at 4:1 (1.4.11), drawn in the content box; the hit
+     area stays core's --tap-min. The off switch gets a visible rim. */
+  --slider-bg: #777777;
+  --slider-height: 0.4rem;
+  --switch-border: #6a6a6a;
+
+  /* Flat: core's fallback shadows for overlays are set off explicitly. */
+  --panel-shadow: none;
+  --sheet-shadow: none;
+  --dock-shadow: none;
+  --dock-tile-shadow: none;
 }
 
-html[data-theme="cue-lab"] h1,
-html[data-theme="cue-lab"] h2,
-html[data-theme="cue-lab"] h3 {
+/* Section and panel headings read as console labels; h1, marketing
+   headlines and content titles (an open message, prose) stay real headings
+   in --text. rem, so nesting can't shrink them. */
+html[data-theme="cue-lab"] :is(h2, h3) {
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.85em;
-  color: var(--muted);
   font-weight: 600;
 }
+/* Window and workspace titles are mixed case, as show-control apps title them. */
+html[data-theme="cue-lab"] h1 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-block-end: 0.25rem; }
+html[data-theme="cue-lab"] h2 { font-size: 0.9rem; color: var(--muted); }
+html[data-theme="cue-lab"] h3 { font-size: 0.8rem; color: var(--muted); }
+html[data-theme="cue-lab"] :is(article > h2, .prose :is(h2, h3)) {
+  font-size: 1.05rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text);
+}
+html[data-theme="cue-lab"] :is(.hero :is(h1, h2), .band-head > h2) {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text);
+}
+/* Tracked uppercase titles run into a trailing badge without a gap. */
+html[data-theme="cue-lab"] .panel-header > .badge { margin-inline-start: 0.5rem; }
 
 html[data-theme="cue-lab"] .table { font-variant-numeric: tabular-nums; }
+/* The bulk bar's one state cue: a thin amber leading edge on the neutral slab. */
+html[data-theme="cue-lab"] .bulk-bar { box-shadow: inset 2px 0 0 var(--accent); }
 
-/* The one intentional flourish: a primary action gets a top highlight rule. */
-html[data-theme="cue-lab"] .btn-primary { border-top: 3px solid var(--accent-2); }
+/* Console-glance floor for small secondary text. */
+html[data-theme="cue-lab"] .badge { font-size: max(0.7rem, 0.75em); }
+html[data-theme="cue-lab"] .readout-unit { font-size: max(0.7rem, 0.45em); }
+
+/* Square everything: carousel dots/arrows and presence lamps too. */
+html[data-theme="cue-lab"] .carousel-nav > a,
+html[data-theme="cue-lab"] :is(.avatar[data-status], .presence-status)::after { border-radius: 0; }
+/* Separate rules: an unsupported pseudo-element would drop a whole list. */
+html[data-theme="cue-lab"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+html[data-theme="cue-lab"] .carousel::scroll-button(*) { border-radius: 0; }
+
+/* The playhead: a light right-pointing triangle at the leading edge of the
+   cue standing by (QLab), over the amber tint. Rows selected by their
+   checkbox are excluded and keep a neutral edge.
+   shortcut: background-position is physical, so RTL draws it on the left too;
+   switch to a logical ::before if an RTL demo appears. */
+html[data-theme="cue-lab"] :is(.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):not(:has(> td:first-child input[type="checkbox"]:checked)) > td:first-child, .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='10'%3E%3Cpath d='M0 0l8 5-8 5z' fill='%23f2f2f0'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.35rem 50%;
+  background-size: 0.5rem 0.625rem;
+  padding-inline-start: 1.2rem;
+}
+html[data-theme="cue-lab"] .table tr:has(> td:first-child input[type="checkbox"]:checked) > td:first-child { box-shadow: var(--row-checked-marker); }
+
+/* "On" states other than GO: amber text and an amber rule, never a fill. */
+html[data-theme="cue-lab"] .segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { box-shadow: inset 0 -2px 0 var(--accent); }
+html[data-theme="cue-lab"] .pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-color: var(--accent); }
+html[data-theme="cue-lab"] .badge-button:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--accent); }
+
+/* GO owns the solid amber fill, so a primary is an amber outline and
+   secondary/tertiary labels are plain text. */
+html[data-theme="cue-lab"] .btn-primary { --btn-bg: transparent; --btn-fg: var(--accent); --btn-border: var(--accent); }
+html[data-theme="cue-lab"] :is(.btn-secondary, .btn-tertiary) { --btn-fg: var(--text); }
+html[data-theme="cue-lab"] .alert-info { --alert-border: var(--info); }
+html[data-theme="cue-lab"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: var(--surface-2);
+  --btn-fg: var(--muted);
+  --btn-border: var(--hairline);
+}
 
 /* --- Layout ------------------------------------------------------------ *
  * A show console: minimal chrome, no rail, and every spare pixel given to
@@ -18795,16 +18921,19 @@ html[data-theme="cue-lab"] {
 
 /* --- v5 tiers --------------------------------------------------------------
  * No rail and a thin flat bar, so phone and tablet use core's one-column
- * shell as is. */
+ * shell as is, except that on phone the brand takes its own first line:
+ * core's zero-basis brand would otherwise collapse behind wide actions. */
+@media (max-width: 480px) {
+  html[data-theme="cue-lab"] .app-bar > .nav-brand { flex: 1 0 100%; }
+}
 
 /* XL gutters (v5, PLAN.md §3): the stage floor beside the console. A
    hairline stage-plot grid on black-grey with a scatter of faint amber
    spike-tape marks. Within ~1.3:1 of --bg; still. */
 html[data-theme="cue-lab"] {
+  /* One SVG tile (grid + marks), not three layers: cheaper to paint. */
   --app-gutter-art:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='288'%3E%3Cpath d='M41 48h14M48 41v14M185 192h14M192 185v14' stroke='%233a2715' stroke-width='3'/%3E%3C/svg%3E") 0 0 / 240px 288px,
-    linear-gradient(#222222 1px, transparent 1px) 0 0 / 48px 48px,
-    linear-gradient(90deg, #222222 1px, transparent 1px) 0 0 / 48px 48px;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='288'%3E%3Cpath d='M0 .5h240M0 48.5h240M0 96.5h240M0 144.5h240M0 192.5h240M0 240.5h240M.5 0v288M48.5 0v288M96.5 0v288M144.5 0v288M192.5 0v288' stroke='%23222222'/%3E%3Cpath d='M41 48h14M48 41v14M185 192h14M192 185v14' stroke='%233a2715' stroke-width='3'/%3E%3C/svg%3E") 0 0 / 240px 288px;
 }
 
 }

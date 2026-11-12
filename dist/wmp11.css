@@ -18703,7 +18703,7 @@ html[data-theme="wmp11"] {
   --on-danger: #1a0000;
   --on-success: #03140a;
   --radius: 0.4rem;
-  --font: "Segoe UI", Tahoma, sans-serif;
+  --font: "Segoe UI", Tahoma, "Selawik", "Open Sans", "Noto Sans", sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #7fd1ff;
 
@@ -18723,7 +18723,7 @@ html[data-theme="wmp11"] {
   --panel-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 6px 18px rgba(0, 0, 0, 0.45);
   --row-selected-bg: rgba(63, 169, 245, 0.18);
   --nav-bg: linear-gradient(180deg, #1a1a22, #0a0a0d);
-  --slider-bg: linear-gradient(180deg, #1e1e26, #0a0a0d);
+  --slider-bg: linear-gradient(180deg, #000000 0 40%, #16161c 60%, #6a6a76);
   --slider-thumb-shadow: 0 0 16px rgba(63, 169, 245, 0.9), 0 0 3px rgba(255, 255, 255, 0.8);
   --overlay-bg: rgba(5, 5, 10, 0.72);
   --overlay-blur: blur(4px);
@@ -18731,17 +18731,20 @@ html[data-theme="wmp11"] {
   --indicator-track: var(--border);
   /* Blue silk, WMP11's default visualization: bright light ribbons swept
      over deep navy. Shared by the content well and the bare page, so a
-     page without the app shell still sits on the player's backdrop. */
+     page without the app shell still sits on the player's backdrop. Each
+     layer is one viewport tall and black fills the rest (the silk fades
+     to black anyway), so a long page never stretches the arcs into columns. */
   --wmp-silk:
-    linear-gradient(116deg, transparent 34%, rgba(170, 225, 255, 0.28) 42%, rgba(120, 200, 255, 0.1) 47%, transparent 55%),
-    linear-gradient(124deg, transparent 48%, rgba(90, 170, 240, 0.24) 56%, transparent 66%),
-    linear-gradient(104deg, transparent 58%, rgba(60, 150, 230, 0.18) 66%, transparent 76%),
-    radial-gradient(ellipse 70% 45% at 25% 28%, rgba(40, 130, 215, 0.7), transparent 62%),
-    radial-gradient(ellipse 60% 40% at 80% 72%, rgba(20, 100, 185, 0.6), transparent 66%),
-    linear-gradient(160deg, #031a33, #06427a 40%, #03213f 72%, #000000);
+    linear-gradient(180deg, transparent 88%, #000000) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 130% 60% at 75% 115%, transparent 56%, rgba(159, 224, 255, 0.24) 60%, rgba(79, 184, 232, 0.08) 63%, transparent 68%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 120% 55% at 30% -10%, transparent 58%, rgba(120, 205, 250, 0.14) 62%, transparent 67%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 110% 70% at 95% 40%, transparent 60%, rgba(79, 184, 232, 0.1) 64%, transparent 70%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 70% 45% at 25% 28%, rgba(40, 130, 215, 0.2), transparent 62%) 0 0 / 100% 100lvh no-repeat,
+    radial-gradient(ellipse 60% 40% at 80% 72%, rgba(20, 100, 185, 0.22), transparent 66%) 0 0 / 100% 100lvh no-repeat,
+    linear-gradient(160deg, #021428, #053666 40%, #021b35 72%, #000000) 0 0 / 100% 100lvh no-repeat #000000;
   /* The blue glossy capsule: WMP11's active tab, reused for every
      "selected" state — tabs, segments, pages, list and row selection. */
-  --wmp-capsule: linear-gradient(180deg, #7cc4f5 0, #3b8fd6 48%, #1a64b4 52%, #2c7ccc 100%);
+  --wmp-capsule: linear-gradient(180deg, #6db8ee 0, #2a7fcc 18%, #1f70c2 48%, #0f4f9a 52%, #1a64b4 100%);
   --panel-header-bg: linear-gradient(180deg, #34373f 0, #1b1d22 48%, #07080a 52%, #121318 100%);
   --panel-header-fg: #e8e8f0;
   --tab-radius: 3px;
@@ -18754,6 +18757,10 @@ html[data-theme="wmp11"] {
   --pagination-item-fg-active: #ffffff;
   --row-selected-bg: var(--wmp-capsule);
   --row-selected-fg: #ffffff;
+  --nav-item-bg-active: var(--wmp-capsule);
+  --nav-item-fg-active: #ffffff;
+  --menubar-item-bg-active: var(--wmp-capsule);
+  --menubar-item-fg-active: #ffffff;
   --list-active-marker: none;
   /* The seek bar: a thin glowing blue line in a black groove, and the
      slider thumb a small glossy blue orb. */
@@ -18761,21 +18768,52 @@ html[data-theme="wmp11"] {
   --progress-border: #2a2a33;
   --progress-fill: linear-gradient(180deg, #bfeaff 0, #3fa9f5 45%, #1a64b4 100%);
   --progress-radius: 999px;
-  --slider-thumb-bg: radial-gradient(circle at 35% 30%, #d6f2ff, #4bb6ff 45%, #1d6fb8 80%, #0b3560);
+  --slider-thumb-bg: radial-gradient(circle at 35% 30%, #d6f2ff, #2a6fe0 45%, #0c2f8a 80%, #061a4d);
+  /* Primary and "on" toggles are the lit capsule, white label. */
+  --toggle-btn-bg-on: var(--wmp-capsule);
+  --toggle-btn-fg-on: #ffffff;
   --key-sel: #3b8fd6;
+  /* Lit mute keys and filter chips are glass too: deep red / the capsule,
+     white label — never a pastel fill. --danger stays for text and rules. */
+  --key-mute: #9a2626;
+  --key-mute-fg: #ffffff;
+  --badge-bg-active: var(--wmp-capsule);
+  --badge-fg-active: #ffffff;
+  /* List panes and folder rails are the same top-lit glass as panels. */
+  --list-bg: var(--panel-bg);
+  --nav-rail-bg: var(--panel-bg);
 }
 
-html[data-theme="wmp11"] { background: var(--wmp-silk) fixed; }
-
-html[data-theme="wmp11"] h1,
-html[data-theme="wmp11"] h2,
-html[data-theme="wmp11"] h3 {
-  color: var(--accent-2);
-  text-shadow: 0 0 6px rgba(63, 169, 245, 0.5);
+html[data-theme="wmp11"] { background: var(--wmp-silk); }
+/* Pinned behind the page on desktop only: a fixed root background repaints
+   the whole phone screen on every scroll frame (and iOS ignores it). */
+@media (min-width: 901px) { html[data-theme="wmp11"] { background-attachment: fixed; } }
+/* Muted text sitting straight on the silk is lifted: #c8ccdc stays at
+   4.6:1 on the brightest ribbon pixel (rgb(32,89,135)). The black-glass
+   panes keep the quieter #8888a0 (5.3:1 on --surface). */
+html[data-theme="wmp11"] .app-main { --muted: #c8ccdc; }
+html[data-theme="wmp11"] .app-main :is(.panel, .card, .modal, .drawer, .popover, .dropdown) { --muted: #8888a0; }
+html[data-theme="wmp11"] .slider::-webkit-slider-thumb { border: 1px solid #0a2b4d; }
+html[data-theme="wmp11"] .slider::-moz-range-thumb { border: 1px solid #0a2b4d; }
+/* The played part of the groove is lit blue up to the orb. Firefox has a
+   progress pseudo; Chromium gets a band painted by the thumb's border-image
+   outset to its left, clipped at the track start (no JS, hit area kept). */
+html[data-theme="wmp11"] .slider::-moz-range-progress { height: var(--slider-height, 0.35rem); border-radius: 999px; background: var(--progress-fill); }
+html[data-theme="wmp11"] .slider:not(.is-vertical, .is-range > .slider) { clip-path: inset(-1rem -1rem -1rem 0); }
+/* The clip would cut the focus ring's left edge: draw it inside the box. */
+html[data-theme="wmp11"] .slider:not(.is-vertical, .is-range > .slider):focus-visible { outline-offset: -2px; }
+html[data-theme="wmp11"] .slider:not(.is-vertical, .is-range > .slider)::-webkit-slider-thumb {
+  border: 0;
+  box-shadow: 0 0 0 1px #0a2b4d, var(--slider-thumb-shadow);
+  border-image: linear-gradient(180deg, transparent calc(50% - 0.15rem), #bfeaff 0, #3fa9f5 50%, #1a64b4 calc(50% + 0.15rem), transparent 0) 0 0 0 99% / 0 0 0 100vw / 0 0 0 100vw;
 }
 
-html[data-theme="wmp11"] .panel,
-html[data-theme="wmp11"] .modal { backdrop-filter: blur(6px); }
+/* Glass blur only where it is cheap: on touch tiers the panes are already
+   86-90% opaque and the blur cost every scroll frame. */
+@media (min-width: 901px) {
+  html[data-theme="wmp11"] .panel,
+  html[data-theme="wmp11"] .modal { backdrop-filter: blur(6px); }
+}
 
 /* The signature under-lit glossy bloom — a genuine specular highlight
  * band across the upper third of every glass surface, not just a faint
@@ -18822,9 +18860,9 @@ html[data-theme="wmp11"] .app-status {
    here instead, plus a highlight and a downward overlap to protrude. */
 html[data-theme="wmp11"] .btn-go {
   --go-radius: 999px;
-  --btn-bg: radial-gradient(circle at 35% 25%, #bfeaff, #4bb6ff 45%, #2f8fd8 70%, #164a75);
-  --btn-border: #1a5f96;
-  --btn-shadow: 0 2px 0 rgba(255, 255, 255, 0.7) inset, 0 -6px 10px rgba(0, 0, 0, 0.25) inset, 0 0 34px rgba(63, 169, 245, 0.85), 0 0 8px rgba(191, 234, 255, 0.9);
+  --btn-bg: radial-gradient(circle at 35% 25%, #cfe6ff, #2a6fe0 40%, #0c2f8a 75%, #061a4d);
+  --btn-border: #0a2b4d;
+  --btn-shadow: 0 0 0 1.5px rgba(207, 230, 255, 0.7) inset, 0 2px 0 rgba(255, 255, 255, 0.7) inset, 0 -6px 10px rgba(0, 0, 0, 0.25) inset, 0 0 34px rgba(63, 169, 245, 0.85), 0 0 8px rgba(191, 234, 255, 0.9);
   width: 3.2rem;
   height: 3.2rem;
   padding: 0;
@@ -18854,6 +18892,17 @@ html[data-theme="wmp11"] .btn-go::after {
 /* Library breadcrumbs: WMP11's Library view is a breadcrumb trail
    (Music > Library > Album Artist > …), not a tab bar — give the current
    crumb the same accent glow as everything else interactive. */
+html[data-theme="wmp11"] .app-main .breadcrumbs {
+  --breadcrumb-separator: #9fb4cc;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #2a2a34 0, #1a1a22 48%, #0e0e14 52%, #15151c 100%);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.12);
+  color: #c8ccdc;
+}
+html[data-theme="wmp11"] .app-main .breadcrumbs::before { content: "\266b"; color: var(--accent); margin-inline-end: 0.2em; }
+html[data-theme="wmp11"] .app-main .breadcrumb-item:not(:last-child)::after { content: "\25b8"; }
 html[data-theme="wmp11"] .breadcrumb-item.is-current {
   color: var(--accent-2);
   text-shadow: 0 0 6px rgba(63, 169, 245, 0.5);
@@ -18861,9 +18910,10 @@ html[data-theme="wmp11"] .breadcrumb-item.is-current {
 
 /* Glass fills for the semantic variants, so they keep their meaning
    against the neutral glass base button. */
-html[data-theme="wmp11"] .btn-primary { --btn-bg: linear-gradient(180deg, #4bb6ff, #3fa9f5 70%); --btn-border: var(--accent-2); }
-html[data-theme="wmp11"] .btn-danger { --btn-bg: linear-gradient(180deg, #ff7b7b, #e04545 70%); --btn-fg: #1a0000; }
-html[data-theme="wmp11"] .btn-success { --btn-bg: linear-gradient(180deg, #8bf0a3, #4cc46a 70%); }
+html[data-theme="wmp11"] :is(.btn-primary, .btn-danger, .btn-success) { --btn-fg: #ffffff; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65); }
+html[data-theme="wmp11"] .btn-primary { --btn-bg: var(--wmp-capsule); --btn-border: #0a2b4d; }
+html[data-theme="wmp11"] .btn-danger { --btn-bg: linear-gradient(180deg, #b04848 0, #8a1f1f 48%, #5c1010 52%, #4a0b0b 100%); --btn-border: #2a0505; }
+html[data-theme="wmp11"] .btn-success { --btn-bg: linear-gradient(180deg, #4f9a63 0, #1f6a33 48%, #134a22 52%, #0b3a18 100%); --btn-border: #04200c; }
 
 /* --- Layout ------------------------------------------------------------ *
  * One player window, not floating islands: the black glossy tab strip on
@@ -18895,28 +18945,36 @@ html[data-theme="wmp11"] .app-bar {
   --nav-bg: transparent;
   --nav-rule-width: 0;
   --nav-item-fg: #e6e6ee;
-  --nav-item-bg-active: linear-gradient(180deg, #7cc4f5 0, #3b8fd6 48%, #1a64b4 52%, #2c7ccc 100%);
-  --nav-item-fg-active: #ffffff;
   --nav-brand-fg: #ffffff;
 }
 html[data-theme="wmp11"] .app-bar .nav { padding: 0; gap: 0; }
 html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 1rem; }
 /* Tabs: evenly spaced labels split by hairline dividers; the current one
    is a blue glossy box with the small ▼ that drops its menu. */
-html[data-theme="wmp11"] .app-bar .nav-item {
+html[data-theme="wmp11"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) {
   position: relative;
   min-width: 7rem;
   text-align: center;
   padding: 0.3em 1em;
   border-radius: 3px;
-  font-size: 0.9em;
+  font-size: 0.875em;
   text-shadow: 0 1px 1px #000;
-  box-shadow: -1px 0 rgba(255, 255, 255, 0.12);
 }
-html[data-theme="wmp11"] .app-bar .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
+/* Hairline dividers between tabs: a dark line plus a light one. */
+html[data-theme="wmp11"] .app-bar :is(.nav-item + .nav-item, .menubar > li + li > :is(button, a)) {
+  box-shadow: -1px 0 rgba(0, 0, 0, 0.8), -2px 0 rgba(255, 255, 255, 0.18);
+}
+/* The demo pages' menubar marks its current top-level item with .is-active,
+   which core leaves unstyled: give it the same capsule (top level only, so
+   the dropdown panel keeps the context-menu look). */
+html[data-theme="wmp11"] .app-bar .menubar > li > :is(button, a):is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])) {
+  background: var(--wmp-capsule);
+  color: #ffffff;
+}
+html[data-theme="wmp11"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)):is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])) {
   box-shadow: inset 0 0 0 1px rgba(191, 234, 255, 0.55), 0 0 10px rgba(63, 169, 245, 0.5);
 }
-html[data-theme="wmp11"] .app-bar .nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))::after {
+html[data-theme="wmp11"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)):is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"]))::after {
   content: "\25bc";
   position: absolute;
   left: 50%;
@@ -18939,7 +18997,17 @@ html[data-theme="wmp11"] .app-bar::before {
 }
 html[data-theme="wmp11"] .app-status {
   position: relative;
-  box-shadow: inset 0 2px 0 #1d6fb8, inset 0 3px 0 rgba(127, 209, 255, 0.5), 0 0 24px rgba(63, 169, 245, 0.25);
+  box-shadow: 0 0 24px rgba(63, 169, 245, 0.25);
+}
+/* The seek groove along the bar's top: dark grey, blue only where played. */
+html[data-theme="wmp11"] .app-status::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(180deg, transparent 0 1px, rgba(127, 209, 255, 0.5) 1px 2px, transparent 2px), linear-gradient(90deg, #3fa9f5 0 28%, #3a3a44 28%);
+  border-radius: inherit;
+  pointer-events: none;
 }
 /* The transport capsule, centred on the bar: stop, prev | play | next,
    volume. Decoration only — the app's own status text stays at the ends —
@@ -18952,7 +19020,7 @@ html[data-theme="wmp11"] .app-status::before {
   width: 236px;
   height: 46px;
   transform: translate(-50%, -50%);
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='236' height='46'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233a3a44'/%3E%3Cstop offset='.5' stop-color='%2315151b'/%3E%3Cstop offset='.51' stop-color='%23050507'/%3E%3Cstop offset='1' stop-color='%231a1a22'/%3E%3C/linearGradient%3E%3CradialGradient id='p' cx='.4' cy='.28' r='.8'%3E%3Cstop offset='0' stop-color='%23d6f2ff'/%3E%3Cstop offset='.4' stop-color='%234bb6ff'/%3E%3Cstop offset='.75' stop-color='%231d6fb8'/%3E%3Cstop offset='1' stop-color='%230b3560'/%3E%3C/radialGradient%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='1.5' y='8.5' width='233' height='29' rx='14.5' fill='url(%23c)' stroke='%2356565f'/%3E%3Crect x='18' y='18' width='9' height='9' fill='%23d0d0d8'/%3E%3Crect x='70.5' y='12.5' width='95' height='21' rx='10.5' fill='url(%23c)' stroke='%236a6a74'/%3E%3Cpath d='M80 23l7-5v10zM87 23l7-5v10z' fill='%23d0d0d8'/%3E%3Cpath d='M156 23l-7-5v10zM149 23l-7-5v10z' fill='%23d0d0d8'/%3E%3Ccircle cx='118' cy='23' r='21' fill='url(%23p)' stroke='%230a2b4d' stroke-width='1.2'/%3E%3Cellipse cx='118' cy='12' rx='13' ry='7' fill='url(%23s)'/%3E%3Cpath d='M112 13v20l17-10z' fill='%23fff'/%3E%3Cpath d='M190 19h4l5-4v16l-5-4h-4z' fill='%23d0d0d8'/%3E%3Crect x='205' y='22' width='22' height='2' rx='1' fill='%233fa9f5'/%3E%3C/svg%3E") no-repeat;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='236' height='46'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233a3a44'/%3E%3Cstop offset='.5' stop-color='%2315151b'/%3E%3Cstop offset='.51' stop-color='%23050507'/%3E%3Cstop offset='1' stop-color='%231a1a22'/%3E%3C/linearGradient%3E%3CradialGradient id='p' cx='.4' cy='.28' r='.8'%3E%3Cstop offset='0' stop-color='%23d6f2ff'/%3E%3Cstop offset='.4' stop-color='%232a6fe0'/%3E%3Cstop offset='.75' stop-color='%230c2f8a'/%3E%3Cstop offset='1' stop-color='%23061a4d'/%3E%3C/radialGradient%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3ClinearGradient id='n' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%238a8a96'/%3E%3Cstop offset='.5' stop-color='%235a5a66'/%3E%3Cstop offset='.51' stop-color='%232e2e36'/%3E%3Cstop offset='1' stop-color='%233a3a44'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='1.5' y='8.5' width='233' height='29' rx='14.5' fill='url(%23c)' stroke='%2356565f'/%3E%3Crect x='18' y='18' width='9' height='9' fill='%23d0d0d8' fill-opacity='.45'/%3E%3Crect x='70.5' y='12.5' width='95' height='21' rx='10.5' fill='url(%23n)' stroke='%23101014'/%3E%3Cpath d='M80 23l7-5v10zM87 23l7-5v10z' fill='%23fff' fill-opacity='.6'/%3E%3Cpath d='M156 23l-7-5v10zM149 23l-7-5v10z' fill='%23fff' fill-opacity='.6'/%3E%3Ccircle cx='118' cy='23' r='21' fill='url(%23p)' stroke='%230a2b4d' stroke-width='1.2'/%3E%3Ccircle cx='118' cy='23' r='19.6' fill='none' stroke='%23cfe6ff' stroke-opacity='.7' stroke-width='1.5'/%3E%3Cellipse cx='118' cy='12' rx='13' ry='7' fill='url(%23s)'/%3E%3Cpath d='M112 13v20l17-10z' fill='%23fff'/%3E%3Cpath d='M190 19h4l5-4v16l-5-4h-4z' fill='%23d0d0d8' fill-opacity='.45'/%3E%3Crect x='205' y='22' width='22' height='2' rx='1' fill='%23000' stroke='%233a3a44' stroke-width='.5'/%3E%3Crect x='205' y='22' width='12' height='2' rx='1' fill='%233fa9f5'/%3E%3Ccircle cx='217' cy='23' r='4' fill='url(%23p)' stroke='%230a2b4d' stroke-width='.8'/%3E%3C/svg%3E") no-repeat;
   pointer-events: none;
 }
 /* Touch tiers (v5). The bar wraps to two lines (brand + actions, then
@@ -18961,15 +19029,21 @@ html[data-theme="wmp11"] .app-status::before {
    the status text, goes. On a phone the orbs' 4.4rem would push the
    actions onto a line of their own, so they go too and the tabs drop
    their fixed width; the black gloss strip and blue capsule tab stay. */
+/* A full desktop taskbar fills the strip with task buttons: no capsule. */
+html[data-theme="wmp11"] .app-status.desktop-bar::before { content: none; }
 @media (max-width: 900px) {
   html[data-theme="wmp11"] .app-status::before { content: none; }
   html[data-theme="wmp11"] .app-bar::before { top: calc(0.25rem + var(--tap-min) / 2); }
 }
 @media (max-width: 480px) {
-  html[data-theme="wmp11"] { --app-bar-padding: 0.25rem 0.6rem; }
+  html[data-theme="wmp11"] { --app-bar-padding: 0.25rem 0.6rem; --app-status-padding: 0.9rem 0.5rem; }
+  /* Picker, search, bell and avatar share one row: the picker gives way. */
+  html[data-theme="wmp11"] .app-bar > .cluster { flex: 1 1 100%; flex-wrap: nowrap; min-width: 0; }
+  html[data-theme="wmp11"] .app-bar > .cluster > .select { flex: 1 1 0; min-width: 0; }
+  html[data-theme="wmp11"] .taskbar-tray { padding-inline: 0.4em; font-size: 0.85em; }
   html[data-theme="wmp11"] .app-bar::before { content: none; }
-  html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 0; }
-  html[data-theme="wmp11"] .app-bar .nav-item { min-width: 0; }
+  html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 0; flex: none; }
+  html[data-theme="wmp11"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { min-width: 0; padding-inline: 0.6em; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the page behind the player is the bright
@@ -18998,9 +19072,20 @@ html[data-theme="wmp11"] .panel-header {
 }
 html[data-theme="wmp11"] h1,
 html[data-theme="wmp11"] h2,
-html[data-theme="wmp11"] h3 { color: #ffffff; text-shadow: 0 0 10px rgba(63, 169, 245, 0.55); }
+html[data-theme="wmp11"] h3 { color: #ffffff; font-weight: 600; text-shadow: 0 1px 1px #000; }
+/* WMP11 has no display type: a page title is a list-pane title. */
+html[data-theme="wmp11"] .app-main h1 { font-size: min(1.35rem, 1em + 2vw); line-height: 1.2; }
+html[data-theme="wmp11"] .app-main h2 { font-size: min(1.15rem, 1em + 1vw); line-height: 1.25; }
+html[data-theme="wmp11"] :is(h1, h2, h3) { font-synthesis-weight: none; }
 html[data-theme="wmp11"] .tabs { border-bottom-color: #000; gap: 2px; }
 html[data-theme="wmp11"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-bottom: 0; box-shadow: inset 0 0 0 1px rgba(191, 234, 255, 0.5), 0 0 8px rgba(63, 169, 245, 0.45); }
+/* White on the capsule: a dark drop shadow keeps the label legible over
+   the glossy upper band, as WMP11's own tab labels had. */
+html[data-theme="wmp11"] :is(.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))),
+  .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) td,
+  .track:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))), .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"])) {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65);
+}
 html[data-theme="wmp11"] .progress-bar { box-shadow: 0 0 8px rgba(63, 169, 245, 0.8); }
 
 /* Nested surfaces step down (PLAN.md §6): the gloss sheen and the lit

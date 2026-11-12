@@ -18740,6 +18740,13 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
   descent-override: 26%;
   line-gap-override: 0%;
 }
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("../assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 html[data-theme="motorsport-telemetry"] {
   --motion-leave: warp;
@@ -18765,7 +18772,8 @@ html[data-theme="motorsport-telemetry"] {
   --danger-text: #ff4d5e;
   --radius: 2px;
   --font: "Titillium Web", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SF Mono", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  /* Share Tech Mono: the square terminal face of the timing software (OFL, vendored). */
+  --font-mono: "Share Tech Mono", ui-monospace, "SF Mono", Consolas, monospace;
   --flare: #2fa8ff;           /* the blue shift light */
   --focus: #b57dff;
   --focus-ring: 0 0 0 4px rgba(139, 63, 240, 0.35);
@@ -18787,27 +18795,28 @@ html[data-theme="motorsport-telemetry"] {
   --mt-inter: #1fcf6b;
   --mt-wet: #2fa8ff;
   --mt-purple: #8b3ff0;
-  /* 2x2 twill: two diagonal stripe sets offset into a woven step, at a few
-     percent of white so it shows as material only under a raking glance. */
-  --mt-twill:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 4px),
-    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.35) 0 2px, transparent 2px 4px);
-  --mt-carbon: var(--mt-twill), linear-gradient(180deg, #15181c, #0f1114);
+  /* Twill: both diagonals in one 6px tile at a few percent of white, so it
+     shows as material only under a raking glance. One cached bitmap, not
+     fine-period gradients, keeps scrolling cheap. Only the frame (root, bar,
+     rail) is woven; panels and cards are flat so text never sits on it. */
+  --mt-twill: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M-1 1L1-1M0 6L6 0M5 7L7 5' stroke='%23000' stroke-opacity='.35' stroke-width='2.12'/%3E%3Cpath d='M-1 5L1 7M0 0L6 6M5-1L7 1' stroke='%23fff' stroke-opacity='.022' stroke-width='2.12'/%3E%3C/svg%3E") 0 0 / 6px 6px;
+  --mt-carbon: linear-gradient(180deg, #15181c, #0f1114);
   --mt-carbon-deep: var(--mt-twill), #0b0c0f;
   --mt-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%);
 
   /* --- Buttons: steering-wheel keys on a carbon face ---------------------- */
-  --btn-bg: linear-gradient(180deg, #20242b, #181b20);
-  --btn-bg-hover: linear-gradient(180deg, #2a2f37, #1f2329);
+  --btn-bg: #1c1f25;
+  --btn-bg-hover: #262a31;
   --btn-fg: var(--text);
   --btn-border: #3a404a;
   --btn-border-hover: #c18cff;
   --btn-radius: 2px;
+  --btn-icon-radius: 2px;
   --btn-tracking: 0.06em;
   --btn-transform: uppercase;
   --btn-weight: 700;
-  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 0 #000;
-  --btn-shadow-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(193, 140, 255, 0.35);
+  --btn-shadow: 0 1px 0 #000;
+  --btn-shadow-hover: 0 0 0 1px rgba(193, 140, 255, 0.35);
 
   --input-bg: #0b0c0f;
   --input-fg: var(--text);
@@ -18864,6 +18873,8 @@ html[data-theme="motorsport-telemetry"] {
   --row-selected-fg: #ffffff;
   --row-active-marker: inset 4px 0 0 var(--mt-purple);
   --table-group-bg: #1a1d23;
+  /* Unsaved edit: the yellow bar only, so it never muddies a purple selected row. */
+  --cell-dirty-bg: transparent;
 
   /* --- Navigation: broadcast caps, purple underline ----------------------- */
   --nav-bg: var(--mt-carbon-deep);
@@ -18887,7 +18898,7 @@ html[data-theme="motorsport-telemetry"] {
   --badge-bg: #0b0c0f;
   --badge-fg: var(--mt-hard);
   --badge-border: var(--mt-hard);
-  --badge-radius: 999px;
+  --badge-radius: 2px;
   --badge-bg-active: var(--mt-purple);
   --badge-fg-active: #ffffff;
 
@@ -19004,7 +19015,6 @@ html[data-theme="motorsport-telemetry"] {
   --compass-lubber: var(--mt-medium);
   --sparkline-stroke: #c18cff;
   --donut-track: #1b1f25;
-  --donut-hole: var(--surface);
   --donut-gap-color: var(--surface);
   --heatmap-radius: 1px;
   --timeline-line: #2e333b;
@@ -19042,10 +19052,13 @@ html[data-theme="motorsport-telemetry"] {
   --chart-highlight: #ffffff;
   --chart-selection: rgba(139, 63, 240, 0.18);
   --chart-annotation: var(--mt-medium);
-  --chart-seq-hue: var(--mt-purple);
+  /* Sequential scales ramp in personal-best green; purple stays for "best". */
+  --chart-seq-hue: var(--mt-inter);
   --chart-div-neg: #df4a4a;
   --chart-div-pos: #169e74;
   --legend-swatch-radius: 1px;
+  --legend-size: max(0.8rem, 0.85em);
+  --chart-area-opacity: 0.05;
   --bar-chart-bar: var(--mt-purple);
   --bar-chart-bar-alt: #3a404a;
   --bar-chart-axis: #3a404a;
@@ -19219,7 +19232,8 @@ html[data-theme="motorsport-telemetry"] {
   --app-bar-padding: 0.55rem 1.1rem 1rem;
   --app-rail-display: flex;
   --app-rail-empty-display: flex;
-  --app-rail-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='552' viewBox='0 0 76 552'%3E %3Crect width='76' height='28' fill='%231a1d23'/%3E%3Crect width='76' height='2' y='26' fill='%238b3ff0'/%3E %3Ctext x='38' y='18' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='1' fill='%23e7e9ec'%3ELAP 34/57%3C/text%3E %3Crect x='0' y='30' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='33' width='20' height='20' rx='1' fill='%23f3f4f6'/%3E%3Ctext x='14' y='47.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%230b0c0f'%3E1%3C/text%3E%3Crect x='28' y='35' width='3' height='16' fill='%238a93a0'/%3E%3Crect x='35' y='41' width='16' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='43' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='56' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='59' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='73.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E2%3C/text%3E%3Crect x='28' y='61' width='3' height='16' fill='%234f6d8f'/%3E%3Crect x='35' y='67' width='12.1' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='69' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='82' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='85' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='99.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E3%3C/text%3E%3Crect x='28' y='87' width='3' height='16' fill='%237b5ea7'/%3E%3Crect x='35' y='93' width='16.5' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='95' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='108' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='111' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='125.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E4%3C/text%3E%3Crect x='28' y='113' width='3' height='16' fill='%234f8f7a'/%3E%3Crect x='35' y='119' width='6.6' height='4' fill='%238b3ff0'/%3E%3Ccircle cx='66' cy='121' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='134' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='137' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='151.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E5%3C/text%3E%3Crect x='28' y='139' width='3' height='16' fill='%23a0794f'/%3E%3Crect x='35' y='145' width='14.3' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='147' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='160' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='163' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='177.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E6%3C/text%3E%3Crect x='28' y='165' width='3' height='16' fill='%236b7682'/%3E%3Crect x='35' y='171' width='9.9' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='173' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='186' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='189' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='203.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E7%3C/text%3E%3Crect x='28' y='191' width='3' height='16' fill='%238f4f5c'/%3E%3Crect x='35' y='197' width='18.7' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='199' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='212' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='215' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='229.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E8%3C/text%3E%3Crect x='28' y='217' width='3' height='16' fill='%235c7f9e'/%3E%3Crect x='35' y='223' width='5.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='225' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='238' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='241' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='255.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E9%3C/text%3E%3Crect x='28' y='243' width='3' height='16' fill='%239a8c5a'/%3E%3Crect x='35' y='249' width='8.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='251' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='264' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='267' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='281.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E10%3C/text%3E%3Crect x='28' y='269' width='3' height='16' fill='%235f5f8f'/%3E%3Crect x='35' y='275' width='15.4' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='277' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='290' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='293' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='307.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E11%3C/text%3E%3Crect x='28' y='295' width='3' height='16' fill='%238a93a0'/%3E%3Crect x='35' y='301' width='11.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='303' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='316' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='319' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='333.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E12%3C/text%3E%3Crect x='28' y='321' width='3' height='16' fill='%234f6d8f'/%3E%3Crect x='35' y='327' width='6.1' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='329' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='342' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='345' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='359.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E13%3C/text%3E%3Crect x='28' y='347' width='3' height='16' fill='%237b5ea7'/%3E%3Crect x='35' y='353' width='17.1' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='355' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='368' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='371' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='385.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E14%3C/text%3E%3Crect x='28' y='373' width='3' height='16' fill='%234f8f7a'/%3E%3Crect x='35' y='379' width='13.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='381' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='394' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='397' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='411.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E15%3C/text%3E%3Crect x='28' y='399' width='3' height='16' fill='%23a0794f'/%3E%3Crect x='35' y='405' width='4.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='407' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='420' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='423' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='437.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E16%3C/text%3E%3Crect x='28' y='425' width='3' height='16' fill='%236b7682'/%3E%3Crect x='35' y='431' width='8.8' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='433' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='446' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='449' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='463.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E17%3C/text%3E%3Crect x='28' y='451' width='3' height='16' fill='%238f4f5c'/%3E%3Crect x='35' y='457' width='16.0' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='459' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='472' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='475' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='489.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E18%3C/text%3E%3Crect x='28' y='477' width='3' height='16' fill='%235c7f9e'/%3E%3Crect x='35' y='483' width='7.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='485' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='498' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='501' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='515.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E19%3C/text%3E%3Crect x='28' y='503' width='3' height='16' fill='%239a8c5a'/%3E%3Crect x='35' y='509' width='11.6' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='511' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='524' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='527' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='541.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E20%3C/text%3E%3Crect x='28' y='529' width='3' height='16' fill='%235f5f8f'/%3E%3Crect x='35' y='535' width='18.2' height='4' fill='%233a404a'/%3E%3Ccircle cx='66' cy='537' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3C/svg%3E") 0 0 / 100% auto no-repeat, var(--mt-carbon-deep);
+  --mt-tower: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='552' viewBox='0 0 76 552'%3E %3Crect width='76' height='28' fill='%231a1d23'/%3E%3Crect width='76' height='2' y='26' fill='%238b3ff0'/%3E %3Ctext x='38' y='18' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='1' fill='%23e7e9ec'%3ELAP 34/57%3C/text%3E %3Crect x='0' y='30' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='33' width='20' height='20' rx='1' fill='%23f3f4f6'/%3E%3Ctext x='14' y='47.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%230b0c0f'%3E1%3C/text%3E%3Crect x='27' y='35' width='2' height='16' fill='%238a93a0'/%3E%3Crect x='35' y='41' width='16' height='4' fill='%233a404a'/%3E%3Ccircle cx='67' cy='43' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='56' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='59' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='73.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E2%3C/text%3E%3Crect x='27' y='61' width='2' height='16' fill='%234f6d8f'/%3E%3Ctext x='31' y='72' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.0%3C/text%3E%3Ccircle cx='67' cy='69' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='82' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='85' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='99.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E3%3C/text%3E%3Crect x='27' y='87' width='2' height='16' fill='%237b5ea7'/%3E%3Ctext x='31' y='98' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.6%3C/text%3E%3Ccircle cx='67' cy='95' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='108' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='111' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='125.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E4%3C/text%3E%3Crect x='27' y='113' width='2' height='16' fill='%234f8f7a'/%3E%3Ctext x='31' y='124' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%23c18cff'%3E+1.7%3C/text%3E%3Ccircle cx='67' cy='121' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='134' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='137' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='151.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E5%3C/text%3E%3Crect x='27' y='139' width='2' height='16' fill='%23a0794f'/%3E%3Ctext x='31' y='150' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.5%3C/text%3E%3Ccircle cx='67' cy='147' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='160' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='163' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='177.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E6%3C/text%3E%3Crect x='27' y='165' width='2' height='16' fill='%236b7682'/%3E%3Ctext x='31' y='176' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.4%3C/text%3E%3Ccircle cx='67' cy='173' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='186' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='189' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='203.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E7%3C/text%3E%3Crect x='27' y='191' width='2' height='16' fill='%238f4f5c'/%3E%3Ctext x='31' y='202' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.1%3C/text%3E%3Ccircle cx='67' cy='199' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='212' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='215' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='229.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E8%3C/text%3E%3Crect x='27' y='217' width='2' height='16' fill='%235c7f9e'/%3E%3Ctext x='31' y='228' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.4%3C/text%3E%3Ccircle cx='67' cy='225' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='238' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='241' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='255.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E9%3C/text%3E%3Crect x='27' y='243' width='2' height='16' fill='%239a8c5a'/%3E%3Ctext x='31' y='254' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.4%3C/text%3E%3Ccircle cx='67' cy='251' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='264' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='267' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='281.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E10%3C/text%3E%3Crect x='27' y='269' width='2' height='16' fill='%235f5f8f'/%3E%3Ctext x='31' y='280' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.4%3C/text%3E%3Ccircle cx='67' cy='277' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='290' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='293' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='307.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E11%3C/text%3E%3Crect x='27' y='295' width='2' height='16' fill='%238a93a0'/%3E%3Ctext x='31' y='306' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.2%3C/text%3E%3Ccircle cx='67' cy='303' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='316' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='319' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='333.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E12%3C/text%3E%3Crect x='27' y='321' width='2' height='16' fill='%234f6d8f'/%3E%3Ctext x='31' y='332' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.4%3C/text%3E%3Ccircle cx='67' cy='329' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='342' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='345' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='359.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E13%3C/text%3E%3Crect x='27' y='347' width='2' height='16' fill='%237b5ea7'/%3E%3Ctext x='31' y='358' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.5%3C/text%3E%3Ccircle cx='67' cy='355' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='368' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='371' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='385.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E14%3C/text%3E%3Crect x='27' y='373' width='2' height='16' fill='%234f8f7a'/%3E%3Ctext x='31' y='384' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.2%3C/text%3E%3Ccircle cx='67' cy='381' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='394' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='397' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='411.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E15%3C/text%3E%3Crect x='27' y='399' width='2' height='16' fill='%23a0794f'/%3E%3Ctext x='31' y='410' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+2.0%3C/text%3E%3Ccircle cx='67' cy='407' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='420' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='423' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='437.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E16%3C/text%3E%3Crect x='27' y='425' width='2' height='16' fill='%236b7682'/%3E%3Ctext x='31' y='436' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.6%3C/text%3E%3Ccircle cx='67' cy='433' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='446' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='449' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='463.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E17%3C/text%3E%3Crect x='27' y='451' width='2' height='16' fill='%238f4f5c'/%3E%3Ctext x='31' y='462' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+0.8%3C/text%3E%3Ccircle cx='67' cy='459' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3Crect x='0' y='472' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='475' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='489.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E18%3C/text%3E%3Crect x='27' y='477' width='2' height='16' fill='%235c7f9e'/%3E%3Ctext x='31' y='488' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.6%3C/text%3E%3Ccircle cx='67' cy='485' r='5' fill='%230b0c0f' stroke='%23eceae4' stroke-width='2'/%3E%3Crect x='0' y='498' width='76' height='26' fill='%2314171b'/%3E%3Crect x='4' y='501' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='515.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E19%3C/text%3E%3Crect x='27' y='503' width='2' height='16' fill='%239a8c5a'/%3E%3Ctext x='31' y='514' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+2.3%3C/text%3E%3Ccircle cx='67' cy='511' r='5' fill='%230b0c0f' stroke='%23e8002d' stroke-width='2'/%3E%3Crect x='0' y='524' width='76' height='26' fill='%23101216'/%3E%3Crect x='4' y='527' width='20' height='20' rx='1' fill='%231d2027'/%3E%3Ctext x='14' y='541.5' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='12' fill='%23e7e9ec'%3E20%3C/text%3E%3Crect x='27' y='529' width='2' height='16' fill='%235f5f8f'/%3E%3Ctext x='31' y='540' font-family='Arial,Helvetica,sans-serif' font-weight='700' font-size='10' letter-spacing='-0.3' fill='%238a93a0'%3E+1.5%3C/text%3E%3Ccircle cx='67' cy='537' r='5' fill='%230b0c0f' stroke='%23ffd60a' stroke-width='2'/%3E%3C/svg%3E");
+  --app-rail-bg: var(--mt-carbon-deep);
   --app-main-bg: transparent;
   --app-main-padding: 1.25rem 1.5rem;
   --app-main-padding-tablet: 1rem 1.1rem;
@@ -19230,6 +19244,9 @@ html[data-theme="motorsport-telemetry"] {
   --app-status-fg: #c9ced5;
   --app-status-rule: var(--mt-inter);
   --app-status-padding: 0.4rem 1.1rem;
+  /* Launcher and window glyphs are chrome, not sector data. */
+  --desktop-icon-glyph: var(--text);
+  --window-icon-glyph: var(--muted);
 }
 
 /* L0 backdrop: deep carbon. */
@@ -19280,18 +19297,20 @@ html[data-theme="motorsport-telemetry"] .stat-label {
 
 /* --- Buttons --------------------------------------------------------------- */
 html[data-theme="motorsport-telemetry"] .btn-primary {
-  --btn-bg: linear-gradient(180deg, #9a55f5, #7f33e6);
-  --btn-bg-hover: linear-gradient(180deg, #a666ff, #8b3ff0);
+  --btn-bg: var(--mt-purple);
+  --btn-bg-hover: #9447f3;
   --btn-border: #5d1fb8;
   --btn-border-hover: #d8c2ff;
-  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 0 #000;
+  --btn-shadow: 0 1px 0 #000;
 }
 html[data-theme="motorsport-telemetry"] .btn-danger { --btn-border: #9b0020; --btn-border-hover: #ffb3bd; }
 html[data-theme="motorsport-telemetry"] .btn-success { --btn-border: #0d6b36; --btn-border-hover: #b9f5d2; }
 html[data-theme="motorsport-telemetry"] .btn-ghost { --btn-shadow: none; }
 /* Tracked caps make long tokens wider than core's break-word allows for. */
 html[data-theme="motorsport-telemetry"] .btn { overflow-wrap: anywhere; }
-html[data-theme="motorsport-telemetry"] .btn-secondary { --btn-fg: var(--accent-text); --btn-shadow: none; }
+html[data-theme="motorsport-telemetry"] .btn-secondary { --btn-fg: var(--text); --btn-shadow: none; }
+/* Purple is "best/selected" only: quiet actions and counts are white. */
+html[data-theme="motorsport-telemetry"] .btn-tertiary { --btn-fg: var(--text); }
 html[data-theme="motorsport-telemetry"] .btn-go { text-transform: uppercase; letter-spacing: 0.12em; font-style: italic; }
 
 /* Focus: a purple ring, never removed. */
@@ -19300,27 +19319,68 @@ html[data-theme="motorsport-telemetry"] :focus-visible {
   outline-offset: 2px;
 }
 
-/* --- Badges: tyre chips. The ring is the compound; text keeps its tint. --- */
+/* --- Badges: tyre chips. A square timing cell led by the compound marker,
+   a dark disc with a 2px ring in --badge-border; text keeps its tint. --- */
 html[data-theme="motorsport-telemetry"] .badge {
-  border-width: 2px;
+  gap: 0.4em;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+html[data-theme="motorsport-telemetry"] .badge:not(.badge-solid, .badge-button:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .badge-button[aria-pressed="true"])::before {
+  content: "";
+  flex: none;
+  inline-size: 0.85em;
+  block-size: 0.85em;
+  box-sizing: border-box;
+  border: 2px solid var(--badge-border);
+  border-radius: 50%;
+  background: #0b0c0f;
+}
 html[data-theme="motorsport-telemetry"] .badge-danger { --badge-border: var(--mt-soft); }
 html[data-theme="motorsport-telemetry"] .badge-warning { --badge-border: var(--mt-medium); }
 html[data-theme="motorsport-telemetry"] .badge-success { --badge-border: var(--mt-inter); }
-html[data-theme="motorsport-telemetry"] .badge-accent { --badge-border: var(--mt-purple); }
+html[data-theme="motorsport-telemetry"] .badge-accent { --badge-border: var(--mt-purple); --badge-fg: var(--text); }
+/* Filter chips are tyre chips too: badge-sized caps in a hairline cell,
+   filled purple only while pressed. */
+html[data-theme="motorsport-telemetry"] .badge-button {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  border: 1px solid #3a404a;
+}
+html[data-theme="motorsport-telemetry"] .badge-button:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-pressed="true"]) { border-color: var(--mt-purple); }
+/* The italic title overhangs; give a trailing header chip room. */
+html[data-theme="motorsport-telemetry"] .panel-header > strong + .badge { margin-inline-start: 0.6em; }
 
 /* --- Tables: timing-screen rows ------------------------------------------- */
 html[data-theme="motorsport-telemetry"] .table th { font-size: 0.75em; font-weight: 700; }
 html[data-theme="motorsport-telemetry"] .table td:is([data-num], .num, .is-num),
 html[data-theme="motorsport-telemetry"] .table th:is([data-num], .num, .is-num) { text-align: end; }
+/* Status reads at row size in bold caps, as on a timing screen; figures
+   stay in Titillium (already tabular) so the table keeps one timing face. */
+html[data-theme="motorsport-telemetry"] .table .status { font-size: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+html[data-theme="motorsport-telemetry"] .table td.mono { font-family: var(--font); }
+/* Sector cells: in a table a status is a solid timing-screen cell (green,
+   yellow, red) with dark figures; the dot and the word still carry it. */
+html[data-theme="motorsport-telemetry"] .table :is(.status-ok, .status-warn, .status-error) {
+  padding: calc(0.1em + 4px) 0.55em;
+  border-radius: 1px;
+  background: var(--state-fg);
+  color: #0b0c0f;
+}
+/* Inline inputs keep a touch-sized floor in a narrow column. */
+html[data-theme="motorsport-telemetry"] td > .input { min-inline-size: var(--tap-min); }
+/* Legible small print: hints at 0.8rem at least. */
+html[data-theme="motorsport-telemetry"] .field-hint { font-size: max(0.8rem, 0.78em); }
+/* Line traces are bare like the telemetry screen; only the live point is marked. */
+html[data-theme="motorsport-telemetry"] .chart-point:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :focus-visible, :hover) { r: 2px; stroke-width: 0; }
 html[data-theme="motorsport-telemetry"] .table tr.is-selected td:first-child { box-shadow: inset 4px 0 0 var(--mt-purple); }
 
 /* --- Tabs and nav: the active item gets the purple sector bar ------------- */
 html[data-theme="motorsport-telemetry"] :is(.tab, .nav-item) { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 html[data-theme="motorsport-telemetry"] .tabs > .tab { border-bottom-width: 3px; }
+/* Vertical lists (folder rail, settings sections) share one register. */
+html[data-theme="motorsport-telemetry"] :is(.nav-rail > .nav-item, .master-detail-list .list-item) { font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 html[data-theme="motorsport-telemetry"] .app-bar .nav-item:is([aria-current], :is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { box-shadow: inset 0 -3px 0 var(--mt-purple); }
 
 /* --- Meters and progress: hard-edged bars, no gloss ----------------------- */
@@ -19366,11 +19426,27 @@ html[data-theme="motorsport-telemetry"] :is(.panel, .card, .modal, .drawer) .mod
    flat colour. */
 html[data-theme="motorsport-telemetry"] .app-bar {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='8' viewBox='0 0 150 8'%3E%3Ccircle cx='5' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='15' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='25' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='35' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='45' cy='4' r='3.2' fill='%231fcf6b' fill-opacity='1'/%3E%3Ccircle cx='55' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='65' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='75' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='85' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='95' cy='4' r='3.2' fill='%23e8002d' fill-opacity='1'/%3E%3Ccircle cx='105' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='1'/%3E%3Ccircle cx='115' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3Ccircle cx='125' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3Ccircle cx='135' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3Ccircle cx='145' cy='4' r='3.2' fill='%232fa8ff' fill-opacity='0.2'/%3E%3C/svg%3E") center bottom 4px / 150px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='248' height='10' viewBox='0 0 248 10'%3E%3Ccircle cx='5' cy='5' r='4.5' fill='%231fcf6b' fill-opacity='1' stroke='%230f7a3e' stroke-width='1'/%3E%3Ccircle cx='22' cy='5' r='4.5' fill='%231fcf6b' fill-opacity='1' stroke='%230f7a3e' stroke-width='1'/%3E%3Ccircle cx='39' cy='5' r='4.5' fill='%231fcf6b' fill-opacity='1' stroke='%230f7a3e' stroke-width='1'/%3E%3Ccircle cx='56' cy='5' r='4.5' fill='%231fcf6b' fill-opacity='1' stroke='%230f7a3e' stroke-width='1'/%3E%3Ccircle cx='73' cy='5' r='4.5' fill='%231fcf6b' fill-opacity='1' stroke='%230f7a3e' stroke-width='1'/%3E%3Ccircle cx='90' cy='5' r='4.5' fill='%23e8002d' fill-opacity='1' stroke='%238a001b' stroke-width='1'/%3E%3Ccircle cx='107' cy='5' r='4.5' fill='%23e8002d' fill-opacity='1' stroke='%238a001b' stroke-width='1'/%3E%3Ccircle cx='124' cy='5' r='4.5' fill='%23e8002d' fill-opacity='1' stroke='%238a001b' stroke-width='1'/%3E%3Ccircle cx='141' cy='5' r='4.5' fill='%23e8002d' fill-opacity='1' stroke='%238a001b' stroke-width='1'/%3E%3Ccircle cx='158' cy='5' r='4.5' fill='%23e8002d' fill-opacity='1' stroke='%238a001b' stroke-width='1'/%3E%3Ccircle cx='175' cy='5' r='4.5' fill='%232fa8ff' fill-opacity='1' stroke='%2314609a' stroke-width='1'/%3E%3Ccircle cx='192' cy='5' r='4.5' fill='%232fa8ff' fill-opacity='0.18' stroke='%231b1f25' stroke-width='1'/%3E%3Ccircle cx='209' cy='5' r='4.5' fill='%232fa8ff' fill-opacity='0.18' stroke='%231b1f25' stroke-width='1'/%3E%3Ccircle cx='226' cy='5' r='4.5' fill='%232fa8ff' fill-opacity='0.18' stroke='%231b1f25' stroke-width='1'/%3E%3Ccircle cx='243' cy='5' r='4.5' fill='%232fa8ff' fill-opacity='0.18' stroke='%231b1f25' stroke-width='1'/%3E%3C/svg%3E") center bottom 3px / 248px 10px no-repeat,
     var(--mt-twill),
     var(--app-bar-bg);
 }
 html[data-theme="motorsport-telemetry"] .app-rail { box-shadow: inset -1px 0 0 #23272e; }
+/* The tower rides down the page with the reader, so the rail never runs
+   out of timing column on a long page. */
+html[data-theme="motorsport-telemetry"] .app-rail::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  flex: none;
+  aspect-ratio: 76 / 552;
+  background: var(--mt-tower) 0 0 / 100% auto no-repeat;
+}
+/* Pattern-nav pages paint the current link in --accent-text on --accent;
+   white keeps it readable there (5.2:1) where --accent-text is tuned for
+   carbon. Set as the token because the page's unlayered rule outranks ours. */
+html[data-theme="motorsport-telemetry"] .pattern-nav a[aria-current] { --accent-text: #ffffff; }
+/* Firefox can draw the purple fill left of the slider thumb. */
+html[data-theme="motorsport-telemetry"] .slider::-moz-range-progress { block-size: var(--slider-height); background: var(--slider-range-fill); }
 html[data-theme="motorsport-telemetry"] .app-status {
   border-top-width: 2px;
   text-transform: uppercase;
@@ -19378,6 +19454,8 @@ html[data-theme="motorsport-telemetry"] .app-status {
   font-size: 0.8em;
   font-weight: 600;
 }
+/* The tray readout keeps tight tracking so it fits a phone. */
+html[data-theme="motorsport-telemetry"] .app-status .taskbar-tray { letter-spacing: 0.02em; }
 html[data-theme="motorsport-telemetry"] .app-status .readout { --readout-size: 1em; --readout-bg: transparent; --readout-border-width: 0; }
 
 /* --- v5 tiers -------------------------------------------------------------- *
@@ -19385,7 +19463,7 @@ html[data-theme="motorsport-telemetry"] .app-status .readout { --readout-size: 1
  * above), the bar keeps the rev-light strip under brand and actions with
  * the nav scrolling on line two, and display type steps down. */
 @media (max-width: 480px) {
-  html[data-theme="motorsport-telemetry"] { --app-bar-padding: 0.45rem 0.75rem 0.9rem; }
+  html[data-theme="motorsport-telemetry"] { --app-bar-padding: 0.45rem 0.75rem 1.5rem; }
   html[data-theme="motorsport-telemetry"] h1 { font-size: 1.5rem; }
   html[data-theme="motorsport-telemetry"] h2 { font-size: 1.2rem; }
 }

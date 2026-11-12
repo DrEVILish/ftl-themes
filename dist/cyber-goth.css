@@ -18682,7 +18682,48 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
 /* ftl-themes: Cyber-Goth
  * Theme-Name: Cyber-Goth
  * Description: Pitch-black club vinyl gloss with toxic neon green and hot purple sharing the accent role.
+ *
+ * Fonts (SIL OFL, vendored in assets/fonts/, see NOTICE.md): Audiowide is
+ * the rave-flyer display face for headings and panel/modal titles;
+ * Titillium Web, a squared techno sans in Eurostile's family tree, carries
+ * body, buttons and tabs. Eurostile itself is commercial and not named.
+ * Share Tech Mono, from the same squared techno family, sets readouts
+ * and stat values.
  */
+@font-face {
+  font-family: "Audiowide";
+  src: url("../assets/fonts/Audiowide-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("../assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("../assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  /* Titillium's own metrics give a 1.52em content area; trim it to the
+     glyphs so tight chips and buttons keep their padding. */
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("../assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
 
 html[data-theme="cyber-goth"] {
   --motion-leave: rain;
@@ -18694,11 +18735,13 @@ html[data-theme="cyber-goth"] {
   --hairline: #2e1240;
   --text: #f0e6ff;
   --muted: #9d7ec2;
-  --accent: #b6ff1a;
-  --accent-text: #b6ff1a;  /* labels read this, so an app that sets --accent keeps them legible */
+  /* EL-wire green, sampled from cyber-goth-el-wire-closeup.jpg (glow
+     mean #3de65d, core #87faac), pushed to full neon. */
+  --accent: #39ff5a;
+  --accent-text: #39ff5a;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #d61fff;
   --danger: #d61048;
-  --success: #b6ff1a;
+  --success: #39ff5a;
   --warning: #ffe11a;
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
@@ -18708,22 +18751,51 @@ html[data-theme="cyber-goth"] {
   --on-danger: #ffffff;
   --on-success: #0a0f00;
   --radius: 0.2rem;
-  --font: "Eurostile", "IBM Plex Sans", sans-serif;
-  --font-mono: Consolas, monospace;
+  --font: "Titillium Web", sans-serif;
+  --font-display: "Audiowide", var(--font);
+  --font-mono: "Share Tech Mono", Consolas, monospace;
+  /* Share Tech Mono ships one weight: keep it unsynthesised. */
+  --readout-weight: 400;
   --flare: #d61fff;
+  /* Text weight of --flare: the same purple lifted to 4.5:1 on the
+     glossiest tinted surfaces (#d61fff is 4.4:1 on #2d1137). */
+  --flare-text: #e04dff;
 
-  --btn-bg: linear-gradient(180deg, #1c0f26, #0d0710);
+  /* Vinyl gloss: a lit 1px lip and a specular band over the top ~40%,
+     then the dark body, as on the leather capture's sheen. The band is
+     capped at 28/40px so a tall panel keeps a lit lip, not a seam halfway
+     down its content. */
+  --gloss: linear-gradient(180deg, rgba(255,255,255,0.09) 0 1px, rgba(255,255,255,0.045) 1px min(36%, 28px), transparent min(44%, 40px));
+  --btn-bg: var(--gloss), linear-gradient(180deg, #1c0f26, #0a0510);
   --btn-fg: var(--accent-text);
-  --btn-border: var(--flare);
+  /* Control outlines take a dimmer purple than the hot --flare: the
+     blacklight ambience, with green carrying the one neon. 3.5:1 on --bg,
+     so input and track boundaries clear the 3:1 non-text floor. */
+  --line: #9030d8;
+  --btn-border: var(--line);
   --btn-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
   --btn-shadow-hover: 0 0 14px rgba(214, 31, 255, 0.6);
   --input-bg: #0a0510;
-  --input-border: var(--flare);
+  --input-border: var(--line);
   --focus-ring: 0 0 10px var(--accent);
-  --panel-bg: linear-gradient(180deg, #150a1c, #0a0510);
-  --panel-shadow: 0 0 24px rgba(122, 31, 191, 0.25), inset 0 1px 0 rgba(255,255,255,0.04);
-  --table-head-fg: var(--flare);
-  --table-head-rule: var(--flare);
+  /* Four cone studs riveted into the corners, like a collar's, then the
+     gloss: a lit tip, a violet cone and a dark rim. */
+  /* Studs sit in the outer 9px of the padding, clear of the first glyph. */
+  --stud: radial-gradient(circle at 42% 42%, #e6c8ff 0 1px, #8a3fc0 2.4px, #2a0e3a 3.4px, transparent 3.8px);
+  --_studs-top: var(--stud) 1px 1px / 8px 8px no-repeat, var(--stud) calc(100% - 1px) 1px / 8px 8px no-repeat;
+  --_studs-bottom: var(--stud) 1px calc(100% - 1px) / 8px 8px no-repeat, var(--stud) calc(100% - 1px) calc(100% - 1px) / 8px 8px no-repeat;
+  --_vinyl: var(--gloss), linear-gradient(180deg, #1a0f22, #08040c);
+  --panel-bg: var(--_studs-top), var(--_studs-bottom), var(--_vinyl);
+  --panel-shadow: 0 0 12px rgba(122, 31, 191, 0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+  --modal-header-fg: var(--flare-text);
+  --table-head-fg: var(--flare-text);
+  --panel-header-fg: var(--flare-text);
+  /* The track is purple structure; the core content-box clip keeps the
+     24/44px hit area around it. */
+  --slider-bg: var(--line);
+  --slider-height: 0.3rem;
+  --slider-thumb-shadow: 0 0 8px var(--accent);
+  --table-head-rule: var(--line);
   --row-selected-bg: rgba(214, 31, 255, 0.18);
   --nav-bg: #050006;
   --nav-rule: var(--flare);
@@ -18732,21 +18804,39 @@ html[data-theme="cyber-goth"] {
   /* The drop column's green tint is kept faint: the purple column title
      sits on it (core's 12% took it to 3.4:1). */
   --kanban-drop-bg: color-mix(in srgb, var(--accent) 4%, var(--surface-2));
+  /* Accent and success are the same green, so series 2 takes the
+     structural purple and series 5 a lavender, keeping every pair apart. */
+  --chart-series-2: var(--flare-text);
+  --chart-series-5: #b98cff;
 
   --app-bar-bg: #050006;
   --app-bar-rule: var(--flare);
   --app-status-bg: #050006;
-  --app-status-fg: var(--flare);
+  --app-status-fg: var(--muted);
+
+  /* Alerts, menus, popovers and lists share the vinyl gloss. */
+  --alert-bg: var(--gloss), var(--surface-2);
+  --dropdown-bg: var(--gloss), var(--surface-2);
+  --list-bg: var(--gloss), var(--surface);
 }
 
 html[data-theme="cyber-goth"] h1,
 html[data-theme="cyber-goth"] h2,
 html[data-theme="cyber-goth"] h3 {
-  color: var(--flare);
+  color: var(--flare-text);
+  font-family: var(--font-display);
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  text-shadow: 0 0 10px rgba(214, 31, 255, 0.6);
+  text-shadow: 0 0 10px rgba(214, 31, 255, 0.35);
 }
+/* Page titles are pale tube-white under a purple bloom: the big type
+   stops outweighing the green neon, which the captures make the one hue. */
+html[data-theme="cyber-goth"] :is(h1, h2) { color: var(--text); text-shadow: 0 0 12px rgba(214, 31, 255, 0.55); }
+/* Window and modal titles share the panel headers' purple voice. */
+html[data-theme="cyber-goth"] .modal-header { text-shadow: 0 0 10px rgba(214, 31, 255, 0.35); }
+/* Dense stat labels: a lighter lavender than --muted at 11px. */
+html[data-theme="cyber-goth"] .stat-label { --muted: #b9a0d8; }
 /* Kanban column titles sit on a tinted column: the purple bloom behind
    them dropped the title to 4.4:1, so they keep the colour, not the glow. */
 html[data-theme="cyber-goth"] .kanban-column-title { text-shadow: none; }
@@ -18757,6 +18847,12 @@ html[data-theme="cyber-goth"] .tab {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+/* Toggle buttons share a squeezed segmented row on phones: uppercase, but
+   untracked, so the longest label keeps its padding. */
+html[data-theme="cyber-goth"] .toggle-btn { text-transform: uppercase; }
+/* Titillium's narrow figures let a dense edit table fit the phone, which
+   brings its tiny Qty fields on screen: keep table fields at --tap-min. */
+html[data-theme="cyber-goth"] td > :is(.input, .select) { min-inline-size: var(--tap-min); }
 /* Hover bloom stays purple (structural colour) even on the green primary
    fill — see README "Signature details": the glow always reads as
    structure, never as the signal colour it happens to be lighting up. */
@@ -18767,85 +18863,146 @@ html[data-theme="cyber-goth"] .btn-primary { --btn-fg: #0a0f00; --btn-bg: var(--
  * tron/matrix at a glance). This theme's own identity is a spiked,
  * studded-leather/vinyl silhouette: a jagged sawtooth trim (not a smooth
  * clip-path bevel like alienware's, and not matrix's monospace rain) on
- * every structural bar, plus a harsh two-layer drop-shadow (a hard black
- * offset under the neon bloom) standing in for rivets/studs on buttons and
- * panels. The sawtooth is a decorative pseudo-element strip, never applied
- * to the interactive element's own clip-path, so it never clips focus
- * rings, click targets or label text. */
+ * the structural bars, a hard offset slab under buttons and panels, and
+ * cone studs riveted into panel corners. The sawtooth is a decorative
+ * pseudo-element strip, never the interactive element's own clip-path. */
 html[data-theme="cyber-goth"] .app-bar,
 html[data-theme="cyber-goth"] .nav,
 html[data-theme="cyber-goth"] .panel-header,
 html[data-theme="cyber-goth"] .modal-header {
   position: relative;
 }
+/* Full glowing fang strip: the bars and modal titles only. */
 html[data-theme="cyber-goth"] .app-bar::after,
 html[data-theme="cyber-goth"] .nav::after,
-html[data-theme="cyber-goth"] .panel-header::after,
 html[data-theme="cyber-goth"] .modal-header::after {
   content: "";
   position: absolute;
   inset: auto 0 -9px 0;
   height: 9px;
   background:
-    linear-gradient(-45deg, var(--flare) 6px, transparent 0),
-    linear-gradient(45deg, var(--flare) 6px, transparent 0);
+    linear-gradient(-45deg, var(--_teeth, #a020d8) 6px, transparent 0),
+    linear-gradient(45deg, var(--_teeth, #a020d8) 6px, transparent 0);
   background-position: left bottom;
   background-repeat: repeat-x;
   background-size: 12px 12px;
   filter: drop-shadow(0 0 5px rgba(214, 31, 255, 0.7));
   pointer-events: none;
 }
-html[data-theme="cyber-goth"] .panel-header,
+/* A loose nav (not inside the bar) keeps the teeth off the next line. */
+html[data-theme="cyber-goth"] .nav:not(.app-bar .nav) { margin-block-end: 9px; }
 html[data-theme="cyber-goth"] .modal-header {
   overflow: visible;
-  /* The 9px sawtooth hangs into the gap under the header; widen the gap
-     by that much so the teeth never touch the first line of the body. */
   margin-bottom: calc(var(--space-m) + 9px);
 }
-/* Nesting steps the trim down: a panel inside another surface gets a
-   smaller, unlit sawtooth, so stacked levels don't repeat the full glowing
-   fang strip (and it stays inside the inner panel's tighter padding). */
-html[data-theme="cyber-goth"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::after {
-  inset: auto 0 -5px 0;
-  height: 5px;
-  background-size: 8px 8px;
-  background-image:
-    linear-gradient(-45deg, var(--flare) 4px, transparent 0),
-    linear-gradient(45deg, var(--flare) 4px, transparent 0);
-  filter: none;
-  opacity: 0.6;
+/* Panel headers step the trim down to a smaller, unlit sawtooth, so the
+   bars and modals stay the loudest structure on the page. */
+html[data-theme="cyber-goth"] .panel-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -7px 0;
+  height: 7px;
+  background:
+    linear-gradient(-45deg, var(--flare) 5px, transparent 0),
+    linear-gradient(45deg, var(--flare) 5px, transparent 0);
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  background-size: 10px 10px;
+  opacity: 0.85;
+  pointer-events: none;
+}
+html[data-theme="cyber-goth"] .panel-header {
+  overflow: visible;
+  margin-bottom: calc(var(--space-m) + 7px);
+  /* No solid rule under the teeth, or the two merge into a dashed line. */
+  border-bottom-color: transparent;
+  font-family: var(--font-display);
+  font-weight: 400;
+  --label-transform: uppercase;
+  --label-tracking: 0.06em;
+}
+html[data-theme="cyber-goth"] .modal-header {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-/* Asymmetric single-corner chrome cut — one sharp diagonal fang on the
-   top-right only, unlike alienware's symmetric two-corner bevel (cut on
-   both opposing corners at matching size). clip-path clips the standard
-   focus outline, so drop-shadow (never clipped) stands in for it instead
-   of ever setting outline: none, same technique as alienware/tron. */
-html[data-theme="cyber-goth"] .btn {
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+/* Asymmetric single-corner fang cut on text buttons — one sharp diagonal
+   on the top-right only, unlike alienware's symmetric two-corner bevel.
+   The clip polygon runs on past the box by the slab's 3px, so the offset
+   slab (box-shadow) survives the cut and carries the fang too. Round icon
+   buttons and avatars keep core's circle, padding and shadow. */
+html[data-theme="cyber-goth"] :is(.btn:not(.btn-icon), .toggle-btn:not(.toggle-group > *)) {
+  --_fang: 14px;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - var(--_fang)) 0, 100% var(--_fang),
+    calc(100% + 3px) calc(var(--_fang) + 3px), calc(100% + 3px) calc(100% + 3px),
+    3px calc(100% + 3px), 0 100%);
+  padding-inline-end: calc(1.5em * var(--density));
+  box-shadow: 3px 3px 0 #3a1550, var(--btn-shadow);
+}
+/* A segmented row is one control: the fang goes on its last segment only,
+   with no slab under the joined segments. */
+html[data-theme="cyber-goth"] .toggle-group:not(.is-stacked) > .toggle-btn:last-child {
+  --_fang: 10px;
+  clip-path: polygon(0 0, calc(100% - var(--_fang)) 0, 100% var(--_fang), 100% 100%, 0 100%);
   padding-inline-end: calc(1.5em * var(--density));
 }
-html[data-theme="cyber-goth"] .btn-sm {
-  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+html[data-theme="cyber-goth"] .btn-sm:not(.btn-icon) { --_fang: 9px; }
+html[data-theme="cyber-goth"] .btn:not(.btn-icon):hover {
+  box-shadow: 3px 3px 0 #5a1f80, var(--btn-shadow-hover);
 }
-html[data-theme="cyber-goth"] .btn:focus-visible {
-  filter: drop-shadow(0 0 0 2px var(--focus, var(--accent))) drop-shadow(0 0 8px var(--accent));
+/* The diagonal stroke: the cut would otherwise just end the border. The
+   pseudo is clipped by the same polygon, so only the strip inside the cut
+   line paints. (is-armed and btn-brand use ::after themselves.) */
+html[data-theme="cyber-goth"] :is(.btn:not(.btn-icon, .is-armed, .btn-brand), .toggle-btn:not(.toggle-group > *), .toggle-group:not(.is-stacked) > .toggle-btn:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(-1 * var(--btn-border-width, 1px));
+  inset-inline-end: calc(-1 * var(--btn-border-width, 1px));
+  inline-size: var(--_fang);
+  block-size: var(--_fang);
+  background: linear-gradient(to top right, transparent calc(50% - 1.2px), var(--btn-border, var(--border)) 0);
+  pointer-events: none;
+}
+html[data-theme="cyber-goth"] .btn:not(.btn-icon):hover::after {
+  --btn-border: var(--btn-border-hover, var(--accent));
+}
+/* Toggles redraw the diagonal in their own border colour, green when on. */
+html[data-theme="cyber-goth"] .toggle-btn::after { --btn-border: var(--toggle-btn-border, var(--line)); }
+html[data-theme="cyber-goth"] .toggle-btn:is(:hover, :has(input:checked))::after { --btn-border: var(--accent); }
+html[data-theme="cyber-goth"] .toggle-btn.is-danger:has(input:checked)::after { --btn-border: var(--danger); }
+/* Borderless buttons: no lit lip or stray top edge, the fang reads as a
+   notch in the slab only. */
+html[data-theme="cyber-goth"] :is(.btn-tertiary, .btn-ghost) { --btn-shadow: none; }
+/* clip-path would cut the core focus outline; pull the ring inside the
+   polygon, dark on the green/red fills so it shows there too. */
+html[data-theme="cyber-goth"] .btn:not(.btn-icon):is(:focus-visible, [aria-pressed="true"]) { outline-offset: -4px; }
+html[data-theme="cyber-goth"] :is(.toggle-btn:not(.toggle-group > *), .toggle-group:not(.is-stacked) > .toggle-btn:last-child):has(input:focus-visible) { outline-offset: -4px; }
+html[data-theme="cyber-goth"] :is(.btn-primary, .btn-success, .btn-danger):not(.btn-icon):focus-visible {
+  outline-color: var(--bg);
 }
 
-/* Harsh, high-contrast studded look: a hard black offset shadow underneath
-   the existing neon inset highlight — riveted leather, not a soft glow
-   alone. Panels get the same hard black edge plus their bloom. */
-html[data-theme="cyber-goth"] .btn {
-  box-shadow: 3px 3px 0 #000, var(--btn-shadow);
-}
-html[data-theme="cyber-goth"] .btn:hover {
-  box-shadow: 3px 3px 0 #000, var(--btn-shadow-hover);
-}
+/* Panels sit on the same hard slab: a dark-violet offset plate edged in
+   the structural purple, readable against the near-black page. */
 html[data-theme="cyber-goth"] .panel,
 html[data-theme="cyber-goth"] .modal,
 html[data-theme="cyber-goth"] .card {
-  box-shadow: 4px 4px 0 #000, var(--panel-shadow);
+  box-shadow: 4px 4px 0 #2a0e3a, 4px 4px 0 1px #6a2d96, var(--panel-shadow);
 }
+/* Lighter surfaces ride a 3px slab, so they stay below the panels. */
+html[data-theme="cyber-goth"] :is(.alert, .dropdown, .context-menu, .popover, .list) {
+  box-shadow: 3px 3px 0 #2a0e3a, 3px 3px 0 1px #6a2d96;
+}
+/* Info is a notice, not a success: it takes the structural purple. */
+html[data-theme="cyber-goth"] .alert-info { --alert-border: var(--flare); }
+/* Desktop windows are fixed-height: a slimmer title gap leaves their
+   button row room. */
+html[data-theme="cyber-goth"] .desktop-window .modal-header { margin-bottom: calc(var(--space-s) + 9px); }
+/* A full-bleed title bar would sit on the top studs (the window icon took
+   one): titled modals and windows keep only the bottom pair. */
+html[data-theme="cyber-goth"] .modal:has(> .modal-header) { --modal-bg: var(--_studs-bottom), var(--_vinyl); }
 
 /* --- v5 tiers --------------------------------------------------------------
  * No rail on any tier. On phone and tablet core gives the bar's nav its own
@@ -18854,6 +19011,9 @@ html[data-theme="cyber-goth"] .card {
  * already edges the whole bar, so the nav's is dropped there. */
 @container style(--tier: mobile) or style(--tier: tablet) {
   html[data-theme="cyber-goth"] .app-bar > .nav::after { display: none; }
+  /* The teeth's blurred glow is a per-frame filter cost on phones; they
+     stay hot purple but unblurred there. */
+  html[data-theme="cyber-goth"] :is(.app-bar, .nav, .modal-header)::after { --_teeth: var(--flare); filter: none; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the club wall beside the console. A
@@ -18865,6 +19025,13 @@ html[data-theme="cyber-goth"] {
     linear-gradient(-45deg, #2a0e3a 6px, transparent 0) calc(100% - 7rem) 0 / 12px 12px repeat-y,
     repeating-linear-gradient(45deg, transparent 0 22px, #1c0a26 22px 24px),
     repeating-linear-gradient(-45deg, transparent 0 22px, #1c0a26 22px 24px);
+}
+
+/* Vertical slider: core's inline padding lands top/bottom in its vertical
+   writing mode, so the content box stays full width. Paint the track as a
+   centred strip instead, keeping the full-width hit area. */
+html[data-theme="cyber-goth"] .slider.is-vertical {
+  --slider-bg: linear-gradient(to right, transparent calc(50% - 0.15rem), var(--line) 0 calc(50% + 0.15rem), transparent 0);
 }
 
 }

@@ -18684,7 +18684,8 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * Description: Google Material Design: flat bold colour and a layered elevation shadow system in place of gloss or blur, underlined text fields.
  *
  * Note on fonts: Roboto isn't vendored, so the stack falls back to the
- * platform's own UI sans rather than claim a face this theme doesn't ship.
+ * platform's own UI sans (Noto Sans / Liberation Sans before Arial, the
+ * nearest neo-grotesques) rather than claim a face this theme doesn't ship.
  *
  * Elevation, not gloss: depth here comes from layered box-shadows at
  * increasing "dp" levels, never a gradient fill — the deliberate contrast
@@ -18716,7 +18717,7 @@ html[data-theme="material"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0.25rem;
-  --font: Roboto, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font: Roboto, "Segoe UI", "Noto Sans", "Helvetica Neue", "Liberation Sans", Arial, sans-serif;
   --font-mono: "Roboto Mono", Consolas, monospace;
   --flare: #bb86fc;
 
@@ -18727,46 +18728,155 @@ html[data-theme="material"] {
   --btn-border-width: 0;
   --btn-radius: 0.25rem;
   --btn-weight: 500;
-  --btn-tracking: 0.02em;
+  --btn-tracking: 0.0892em;  /* MD2 button: 1.25px on 14px */
   --btn-transform: uppercase;
   --btn-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 2px 1px -1px rgba(0,0,0,0.12);
   --btn-shadow-hover: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14), 0 1px 10px rgba(0,0,0,0.12);
   --focus: var(--accent);
   --focus-ring: 0 0 0 8px rgba(98, 0, 238, 0.12);
-  --input-bg: var(--surface-2);
+  /* MD2 filled field: 4% black over white, a 42%-black underline (3:1+). */
+  --input-bg: #f5f5f5;
+  --input-border: rgba(0, 0, 0, 0.42);
   --input-radius: 0.2rem 0.2rem 0 0;
-  --panel-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14), 0 1px 10px rgba(0,0,0,0.12);
+  --input-error-ring: inset 0 -1px 0 var(--danger);
+  /* Input-group addons continue the field: same fill, same underline. */
+  --input-addon-bg: var(--input-bg);
+  /* Cards rest at dp1, panels at dp2; dp4 is the app bar, dp8 menus, dp24 the modal. */
+  --card-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12);
+  --panel-shadow: 0 3px 1px -2px rgba(0,0,0,0.2), 0 2px 2px rgba(0,0,0,0.14), 0 1px 5px rgba(0,0,0,0.12);
   --modal-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12);
-  --table-head-fg: var(--muted);
-  --table-head-transform: uppercase;
+  --table-head-fg: var(--text);
+  --table-head-transform: none;
+  --table-head-tracking: normal;
   --row-selected-bg: rgba(98, 0, 238, 0.08);
-  --row-active-marker: inset 0.2rem 0 0 var(--accent);
+  /* MD2 selection is a tint only, no leading bar. A transparent shadow, not
+     `none`, because core comma-joins the marker with the card shadow. */
+  --row-active-marker: 0 0 transparent;
+  --list-active-marker: 0 0 transparent;
+  --tree-selected-marker: 0 0 transparent;
+  --nav-rail-marker: transparent;
+  /* Card, panel and dialog titles: MD2 Headline 6 in the text color. */
+  --panel-header-fg: var(--text);
+  --panel-header-pad: 1rem 1rem 0.5rem;
+  /* MD2 toggle-button group: one 12%-black outlined strip, the selected
+     segment a 12% accent tint with accent text, never a solid fill. */
+  --segmented-bg: transparent;
+  --segmented-border-width: 1px;
+  --segmented-border: rgba(0, 0, 0, 0.12);
+  --segmented-radius: 0.25rem;
+  --segmented-item-bg-active: rgba(98, 0, 238, 0.12);
+  --segmented-item-fg-active: var(--accent);
+  --toggle-btn-border-width: 1px;
+  --toggle-btn-border: rgba(0, 0, 0, 0.12);
+  --toggle-btn-border-hover: rgba(0, 0, 0, 0.38);
+  --toggle-btn-bg: transparent;
+  --toggle-btn-fg: var(--muted);
+  --toggle-btn-bg-on: rgba(98, 0, 238, 0.12);
+  --toggle-btn-fg-on: var(--accent);
+  --toggle-btn-border-on: rgba(0, 0, 0, 0.12);
   --nav-bg: var(--surface);
   --nav-item-bg-active: rgba(98, 0, 238, 0.08);
   --nav-item-fg-active: var(--accent);
-  --dropdown-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px rgba(0,0,0,0.14);
-  --overlay-bg: rgba(0, 0, 0, 0.5);
+  /* Menus and popovers: borderless white sheets at dp8. */
+  --dropdown-bg: var(--surface);
+  --dropdown-border-width: 0;
+  --dropdown-shadow: 0 5px 5px -3px rgba(0,0,0,0.2), 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
+  --context-menu-shadow: var(--dropdown-shadow);
+  --popover-shadow: var(--dropdown-shadow);
+  /* The snackbar: dark #323232 sheet, white text, borderless. */
+  --toast-bg: #323232;
+  --toast-fg: rgba(255, 255, 255, 0.87);
+  --toast-border-width: 0;
+  /* MD2 slider: a 4px track of accent at 55% (3.2:1 on #fafafa, 3.1:1 on
+     #f0f0f0; MD2's inactive track is 24%, raised to the 3:1 floor), accent
+     thumb. Height only; core's --tap-min padding keeps the hit area. */
+  --slider-bg: rgba(98, 0, 238, 0.55);
+  --slider-height: 0.25rem;
+  --slider-border-width: 0;
+  --slider-radius: 0.125rem;
+  /* MD2 switch: borderless 14px-ish track (accent at 50% on, black 42% off)
+     under a 20px thumb that overhangs it. 0.42 not 0.38 so the off track
+     reaches 3:1. */
+  --switch-border-width: 0;
+  --switch-bg: rgba(0, 0, 0, 0.42);
+  /* MD2 baseline puts the secondary on selection controls; the darker
+     secondary variant #018786 so the thumb keeps 3:1 on white. */
+  --switch-bg-on: rgba(1, 135, 134, 0.5);
+  --switch-thumb-bg: #ffffff;
+  --switch-thumb-bg-on: #018786;
+  /* MD2 scrim: 32% black. */
+  --overlay-bg: rgba(0, 0, 0, 0.32);
+  /* No boxed callouts in MD2: alerts are white dp1 sheets whose state
+     shows as a 4px leading bar (the snackbar treatment, see .alert below). */
+  --alert-bg: var(--surface);
+  --alert-border-width: 0;
+  /* MD2 banner: a white sheet with a 12% divider below, no grey bar. */
+  --banner-bg: var(--surface);
+  --banner-border: rgba(0, 0, 0, 0.12);
+  /* Setting rows are MD2 list items: no fill, no box, a 12% divider. */
+  --field-row-bg: transparent;
+  --field-row-border-width: 0;
+  --field-row-radius: 0;
+  --field-row-gap: 0;
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
 }
 
 html[data-theme="material"] .btn:active { transform: none; box-shadow: var(--btn-shadow-hover); }
+/* MD2 buttons are 36px tall; small and icon buttons keep their own size. */
+html[data-theme="material"] .btn:not(.btn-sm, .btn-icon) { min-block-size: max(var(--tap-min), 2.25rem); }
 html[data-theme="material"] .btn-primary {
   --btn-bg: var(--accent);
   --btn-fg: #ffffff;
+  --btn-weight: 500;  /* MD2 button labels are Medium, not core's 600 */
+}
+html[data-theme="material"] :is(.btn-danger, .btn-success) { --btn-weight: 500; }
+/* Ripple: a currentColor circle at 16% grows from the centre while pressed
+   (the growth animates only under prefers-reduced-motion: no-preference). */
+html[data-theme="material"] .btn:not(.btn-brand, :disabled, [aria-disabled="true"]):active {
+  background-image: radial-gradient(circle, color-mix(in srgb, currentColor 16%, transparent) 70%, transparent 71%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 250% 250%;
 }
 html[data-theme="material"] .btn-ghost { --btn-shadow: none; --btn-shadow-hover: none; }
 html[data-theme="material"] .btn-secondary { --btn-shadow: none; --btn-shadow-hover: none; --btn-border: var(--border); --btn-border-width: 1px; }
+/* MD2 dialog actions and attached input-group buttons are text buttons:
+   accent label, no outline, no fill, an 8% accent wash on hover. */
+html[data-theme="material"] :is(.modal-footer, .input-group) > .btn:not(.btn-danger, .btn-success) {
+  --btn-bg: transparent;
+  --btn-fg: var(--accent);
+  --btn-bg-hover: rgba(98, 0, 238, 0.08);
+  --btn-border-width: 0;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+}
+/* In an input group the text button sits inside the field's filled
+   container and continues its underline. */
+html[data-theme="material"] .input-group > .btn:not(.btn-danger, .btn-success, .btn-primary) {
+  --btn-bg: var(--input-bg);
+  --btn-bg-hover: color-mix(in srgb, var(--accent) 8%, var(--input-bg));
+  border-block-end: 1px solid var(--input-border);
+}
+/* Range button groups are toggle groups: outlined, not raised. */
+html[data-theme="material"] .btn-group > .btn:not(.btn-primary) { --btn-shadow: none; --btn-shadow-hover: none; --btn-border: rgba(0, 0, 0, 0.12); --btn-border-width: 1px; }
+html[data-theme="material"] .btn-group > .btn-primary { --btn-shadow: none; --btn-shadow-hover: none; }
+/* Selection controls take the secondary variant (see the switch tokens). */
+html[data-theme="material"] :is(.checkbox, .radio) { --accent: #018786; }
 
 /* The FAB: Material's other unmistakable control, and previously
    unreachable here — a plain .btn-icon is a circular *ghost/surface*
    button (the QA page's close/refresh icons; those should stay quiet).
    A FAB is specifically the primary action in icon form, so this scopes
    to .btn-primary.btn-icon, not every icon button — an app author
-   reaches for exactly that combination to build one. It's filled, floats
+   reaches for exactly that combination to build one. It's filled teal, floats
    at dp6 (one step above every other resting element), and rises to dp12
    on hover, never outlined or ghosted. */
 html[data-theme="material"] .btn-primary.btn-icon {
+  /* Mini FAB (40dp) in the MD2 baseline secondary teal. */
+  --btn-icon-size: 2.5rem;
+  --btn-bg: #03dac6;
+  --btn-fg: #000000;
   --btn-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px rgba(0,0,0,0.14), 0 1px 18px rgba(0,0,0,0.12);
   --btn-shadow-hover: 0 5px 5px -3px rgba(0,0,0,0.2), 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
 }
@@ -18776,25 +18886,115 @@ html[data-theme="material"] .btn-primary.btn-icon {
 html[data-theme="material"] .input,
 html[data-theme="material"] .select,
 html[data-theme="material"] .textarea {
-  border: none;
-  border-bottom: 2px solid var(--border);
+  border-width: 0 0 1px;
   padding-left: 0.6em;
   padding-right: 0.6em;
 }
+/* Focus thickens the underline to 2px accent; the inset shadow adds the
+   second pixel so the field height doesn't jump. */
+/* Room for core's arrow again (the side padding above would overlap it). */
+html[data-theme="material"] .select { padding-inline-end: 2.2em; }
+html[data-theme="material"] .input-group > .input-addon { border-width: 0 0 1px; }
+/* Invalid/valid keep the grey fill; only the underline changes color.
+   Declared on the field so it picks up the bar's own --input-bg too. */
+html[data-theme="material"] :is(.input, .select, .textarea) { --input-error-bg: var(--input-bg); --input-valid-bg: var(--input-bg); }
 html[data-theme="material"] .input:focus-visible,
 html[data-theme="material"] .select:focus-visible,
 html[data-theme="material"] .textarea:focus-visible {
-  border-bottom-color: var(--accent);
-  box-shadow: none;
+  box-shadow: inset 0 -1px 0 var(--focus);
 }
 
-/* Opt-in only: a brief ripple-style expand on primary buttons, gated by
-   motion preference like every other animated flourish in this catalog. */
+/* Vertical slider: core pads it along the inline axis, which writing-mode
+   turns vertical, so the 4px track drew as a full-width slab. Pad the
+   physical sides instead; the hit area stays --tap-min wide. */
+html[data-theme="material"] .slider.is-vertical:not(.is-range > .slider) {
+  padding-inline: 0;
+  padding-block: calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+
+/* MD2 switch geometry: the track sits inset, the thumb overhangs it. */
+html[data-theme="material"] .switch-track { inset: calc(0.2em * var(--density)) calc(0.1em * var(--density)); }
+html[data-theme="material"] button.switch .switch-track {
+  inline-size: calc(2.4em * var(--density));
+  block-size: calc(1em * var(--density));
+  margin: calc(0.2em * var(--density)) calc(0.1em * var(--density));
+}
+html[data-theme="material"] .switch-thumb {
+  top: calc(-0.2em * var(--density));
+  inset-inline-start: calc(-0.1em * var(--density));
+  width: calc(1.4em * var(--density));
+  height: calc(1.4em * var(--density));
+  /* MD2 thumb elevation plus a 12% ring so the white off thumb holds its
+     edge on grey setting rows. */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* Menus at dp8; the snackbar keeps its state as a 4px leading bar, and its
+   links take MD2's light-accent action color on the dark sheet. */
+html[data-theme="material"] .dropdown { --panel-shadow: var(--dropdown-shadow); }
+html[data-theme="material"] .toast {
+  --toast-shadow: inset 4px 0 0 var(--toast-border, transparent), 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px rgba(0,0,0,0.14), 0 1px 18px rgba(0,0,0,0.12);
+  --link: #bb86fc;
+  --muted: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="material"] .alert { box-shadow: inset 4px 0 0 var(--alert-border, var(--border)), var(--card-shadow); }
+html[data-theme="material"] .field-row { box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12); }
+/* A navigation list (the settings sections) is a drawer list: no box, no
+   rules, the active item an 8% accent tint with accent text. */
+html[data-theme="material"] nav > .list {
+  --list-bg: transparent;
+  --list-border-width: 0;
+  --list-rule: transparent;
+  --row-selected-fg: var(--accent);
+}
+
+/* MD2 disabled contained button: inert 12% black, 38% black label. */
+html[data-theme="material"] .btn:is(:disabled, [aria-disabled="true"]):not(.btn-ghost, .btn-secondary) {
+  --btn-bg: rgba(0, 0, 0, 0.12);
+  --btn-fg: rgba(0, 0, 0, 0.38);
+  --btn-border-width: 0;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  opacity: 1;
+}
+
+/* MD2 tabs: uppercase Medium 14px, 1.25px tracking. Scoped to the tab so
+   other --label-transform users stay sentence case. */
+html[data-theme="material"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  text-transform: uppercase;
+  letter-spacing: 0.0892em;
+  font-weight: 500;
+}
+
+/* KPI numbers are Headline 5 (24px Roboto Regular), not core's bold mono. */
+html[data-theme="material"] .stat-value { font-family: var(--font); font-weight: 400; font-size: 1.5rem; }
+
+/* MD2 data table: sentence-case Medium headers at body size, roomier rows. */
+html[data-theme="material"] .table th { font-weight: 500; font-size: 1em; }
+html[data-theme="material"] .table :is(th, td) { padding-block: calc(0.8em * var(--density)); }
+
+/* Card/dialog titles are Headline 6 (20px Medium) with no rule under them. */
+html[data-theme="material"] .panel-header { font-size: 1.25rem; font-weight: 500; border-bottom-color: transparent; }
+html[data-theme="material"] .panel-header > :is(strong, b) { font-weight: inherit; }
+html[data-theme="material"] :is(.modal-header, .popover > strong:first-child) { font-weight: 500; }
+html[data-theme="material"] .modal-header { font-size: 1.25rem; }
+
+/* MD2 type scale weights: large headlines Regular, small ones Medium.
+   Zero specificity, so component title rules still win. */
+:where(html[data-theme="material"]) :where(h1, h2, h3) { font-weight: 400; }
+:where(html[data-theme="material"]) :where(h4, h5, h6) { font-weight: 500; }
+
+/* Motion only when allowed: the button transitions and the ripple's growth. */
 @media (prefers-reduced-motion: no-preference) {
   html[data-theme="material"] .btn { transition: background 0.15s ease, box-shadow 0.2s ease, transform 0.1s ease; }
+  html[data-theme="material"] .btn:not(.btn-brand, :disabled, [aria-disabled="true"]):active { animation: material-ripple 0.35s ease-out; }
+  @keyframes material-ripple { from { background-size: 0 0; } }
 }
 
   html[data-motion="always"][data-theme="material"] .btn { transition: background 0.15s ease, box-shadow 0.2s ease, transform 0.1s ease; }
+  html[data-motion="always"][data-theme="material"] .btn:not(.btn-brand, :disabled, [aria-disabled="true"]):active { animation: material-ripple 0.35s ease-out; }
+  @keyframes material-ripple { from { background-size: 0 0; } }
 
 
 /* --- Layout ------------------------------------------------------------ *
@@ -18826,6 +19026,12 @@ html[data-theme="material"] .app-bar {
   --menubar-fg: #ffffff;
   --menubar-item-bg-active: rgba(255, 255, 255, 0.18);
   --menubar-item-fg-active: #ffffff;
+  /* A field on the bar is a translucent white fill with a white underline. */
+  --input-bg: rgba(255, 255, 255, 0.15);
+  --input-fg: #ffffff;
+  --input-border: rgba(255, 255, 255, 0.7);
+  --select-arrow-fg: #ffffff;
+  --focus: #ffffff;
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
@@ -18855,6 +19061,15 @@ html[data-theme="material"] :is(.panel, .card, .modal, .drawer) :is(.panel, .car
  * soft elevation shadow, the classic Material backdrop at very low contrast. */
 @media (max-width: 900px) {
   html[data-theme="material"] { --app-bar-padding: 0.25rem 1rem; }
+  /* Keep the brand readable (core lets it shrink to nothing) and pack the
+     bar's items tighter so it wraps less. */
+  html[data-theme="material"] .app-bar { column-gap: 0.25rem; }
+  html[data-theme="material"] .app-bar > .nav-brand { min-width: min(7ch, 40%); margin-inline-end: 0.5rem; }
+  html[data-theme="material"] .app-bar > .nav-item { padding-inline: 0.6em; }
+  /* The status-bar tray is unfilled, so its side padding only pushed the
+     readout past the bar's edge on phones. */
+  html[data-theme="material"] .app-status.taskbar { padding-inline-end: 0.75rem; }
+  html[data-theme="material"] .app-status > .taskbar-tray { padding-inline: 0; }
 }
 html[data-theme="material"] {
   --app-gutter-art:
@@ -18863,11 +19078,25 @@ html[data-theme="material"] {
     linear-gradient(20deg, rgba(3, 218, 198, 0.05) 0 22%, rgba(0, 0, 0, 0.04) 22%, transparent 23.5%);
 }
 
+/* XL: an MD2 top app bar spans the viewport. border-image-outset paints the
+   fill into the gutters as ink overflow, so nothing scrolls sideways. */
+@media (min-width: 1801px) {
+  html[data-theme="material"] .app-bar {
+    /* Chrome paints border-image only on a styled border; width stays 0. */
+    border-style: solid;
+    border-width: 0;
+    border-image: linear-gradient(var(--accent), var(--accent)) fill 0 / 0 / 0 100vmax;
+  }
+}
+
 /* Breadcrumbs on the purple bar: white, the trail dimmed like the nav items. */
 html[data-theme="material"] .app-bar .breadcrumbs {
   --muted: rgba(255, 255, 255, 0.8);
   --breadcrumb-current-fg: #ffffff;
   --breadcrumb-separator: rgba(255, 255, 255, 0.6);
 }
+
+/* The native option list doesn't share the bar's translucent fill. */
+html[data-theme="material"] .app-bar option { color: var(--text); background-color: var(--surface); }
 
 }
