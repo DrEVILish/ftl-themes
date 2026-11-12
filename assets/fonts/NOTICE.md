@@ -40,6 +40,18 @@ files are vendored unmodified.
 - **Source:** https://fonts.google.com/specimen/Audiowide
 - **Used by:** `vaporwave` (headings-only full-width display face)
 
+## Bodoni Moda
+
+- **Family:** Bodoni Moda (variable, roman only — `BodoniModa-Variable.woff2`;
+  wght axis limited to 400–700, opsz axis 6–96 kept, Latin subset)
+- **Designer:** Owen Earl (indestructible type*)
+- **License:** SIL Open Font License, version 1.1 (`ofl/bodonimoda/OFL.txt`
+  in `google/fonts`: "Copyright 2020 The Bodoni Moda Project Authors")
+- **Source:** https://fonts.google.com/specimen/Bodoni+Moda
+- **Modified:** subset and axis-limited with fontTools; the family name is
+  unchanged (no Reserved Font Name is declared)
+- **Used by:** `tokie` (display face for headings, panel titles, readouts)
+
 ## Bedstead
 
 - **Family:** Bedstead (Regular, subset to Latin, arrows, box drawing and

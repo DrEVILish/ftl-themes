@@ -52,14 +52,18 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
   (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
 - The saddle stitch (`--tokie-stitch`) is twelve background layers: four
   runs of slanted champagne thread beads (a 60° repeating gradient in a
-  2.5px strip, 6px pitch, each bead followed by about half a pitch of
-  dark channel, like a pricking iron sets them, in a half-strength
-  champagne thread), four corner arcs that turn the stitch on a 5px
+  3px strip, 6px pitch: about 2.4px of 72% champagne thread, a 0.8px dark
+  shade on one side so the slant reads, then dark channel, like a
+  pricking iron sets them), four corner arcs that turn the stitch on a 5px
   radius, and four creased grooves (75% black) with a faint lit lip. It
   costs no pseudo-elements, so any surface can wear it. On phones
-  (≤480px) it drops to the four bead runs, and raised and recessed
-  leather drop the grain tile (the page keeps it), to keep scrolling
-  within the frame budget on a throttled phone.
+  (≤480px) it drops to the four bead runs, and every SVG-filter tile
+  (pebble grain, brushed hairlines) is switched off: flat leather and
+  gradient-only gold keep scrolling within the frame budget on a
+  throttled phone.
+- The gold is aged brass, not new jewellery: brushed runs
+  `#c9b072 → #b39650 → #a68a48`, and polished highlights cap at
+  `#f0d68c` above a `#7a5718` horizon.
 - Brushed gold is anisotropic noise (`baseFrequency='0.002 0.9'`),
   stretched into horizontal hairlines over a satin vertical gradient. The
   spine rail uses the same noise rotated so its hairlines run vertically.
@@ -77,10 +81,12 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
   buttons speak the same voice (tracked caps; sentence case up to 900px,
   where toggle rows are packed tight) and turn polished gold when on; a danger toggle turns oxblood enamel.
 - Readouts are black lacquer dials with applied gold Didone numerals and
-  a thin gold chapter ring. Knobs are polished watch crowns with a fluted
+  a thin gold chapter ring; padding `max(6px, .4em) max(8px, .6em)` keeps
+  the numerals 4px+ off the ring. Knobs are polished watch crowns with a fluted
   edge.
 - Alerts are debossed into the leather like inputs; alerts and toasts
-  carry a 3px state-coloured lead rule on their leading edge. Folder
+  carry a 3px state-coloured lead rule on their leading edge; their other
+  three sides are a dim `#3a3226` hairline so the rule reads as a state. Folder
   rails (`.nav-rail`) are a raised leather flap edged in dark gold.
 - The focus ring is 2px polished gold at a 3px offset with a soft gold
   halo. It is visible on every control, on leather and on gold.
@@ -104,25 +110,28 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-Nothing is vendored. Display: `Didot, "Bodoni 72", "Bodoni MT",
-"Bodoni Moda", "Libre Bodoni", "Playfair Display", "Libre Caslon
-Display", "Noto Serif Display", "Linux Libertine", "Nimbus Roman",
-Georgia, serif`, set in tracked uppercase for headings, brand, panel
-titles, stat values and prices. UI: `Optima, "Optima nova", "URW
+Display: `Didot, "Bodoni 72", "Bodoni MT", "Bodoni Moda", "Libre
+Bodoni", "Playfair Display", "Linux Libertine", Georgia, "Liberation
+Serif", …, serif`, set in tracked uppercase for headings, brand, panel
+titles, stat values and prices. Bodoni Moda (OFL, Latin subset, wght
+400–700 and opsz 6–96 axes) is vendored as
+`assets/fonts/BodoniModa-Variable.woff2`; its optical-size axis follows
+the font size, so h3 and panel titles get sturdier hairlines than h1
+instead of losing their crossbars. h3, panel and dialog titles are set at
+weight 500; badges inside them use the UI sans at 600. UI: `Optima, "Optima nova", "URW
 Classico", "Linux Biolinum", Candara, "Segoe UI", "Noto
 Sans", Lato, "Open Sans", …, sans-serif`, the engraved-sans of luxury
-packaging. On a bare Linux box with none of these you get the system
-serif and sans (DejaVu); the tracking and foil colour carry the look but
-the Didone hairlines are lost. Vendoring an OFL Didone (Bodoni Moda)
-into `assets/fonts/` is the open follow-up; it needs a shared-assets
-change outside this theme folder. Inside desktop windows the tabs drop to sentence case
+packaging. On a bare Linux box the UI falls to Noto Sans or DejaVu;
+the vendored Bodoni Moda keeps the Didone. Inside desktop windows the tabs drop to sentence case
 so four fit on one row.
 
 ## Contrast honesty
 
 All lint pairs pass. `--text` `#ede4d1` on `--surface` `#151311` is
 above 14:1; `--muted` `#b0a184` reaches 4.5:1 on both surfaces; dark
-`#1b1408` on every polished and brushed gold stop is above 7:1. The
+`#1b1408` is above 7:1 on the polished highlights and the light brushed
+stops and 5.5:1 on the darkest brushed stop (`#a68a48`); the polished
+horizon band is decorative and sits away from the text's centre. The
 stitch thread is decorative and is never behind text. For that reason
 the bar's stitch is laid in the `.app-bar` rule, not in `--app-bar-bg`.
 
