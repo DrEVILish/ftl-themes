@@ -138,6 +138,22 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `lego-classic` (every glyph; Futura is named first when
   installed)
 
+## Lexend Exa
+
+- **Family:** Lexend Exa (weights vendored: Light 300 to Regular 400 as
+  one variable file — `LexendExa-Light-Regular.woff2`; instanced from the
+  variable `LexendExa[wght].ttf` to the wght 300–400 range and subset to Basic Latin, Latin-1
+  and common punctuation with fontTools, so it is a modified version)
+- **Designer:** Bonnie Shaver-Troup, Thomas Jockin (The Lexend Project)
+- **License:** SIL Open Font License, version 1.1, with Reserved Font
+  Name "RevReading Lexend" (verified in the `google/fonts` repo,
+  `ofl/lexendexa/OFL.txt`); the modified file does not use the reserved
+  name
+- **Source:** https://fonts.google.com/specimen/Lexend+Exa
+- **Used by:** `teenage-engineering` (display numerals, brand window,
+  status strip and scribble strips; a wide thin geometric stand-in for the
+  OP-1 screen lettering)
+
 ## Michroma
 
 - **Family:** Michroma (weight vendored: Regular 400 —
@@ -360,6 +376,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
 
 Twenty-four files, seventeen families: fifteen SIL OFL 1.1, Bedstead CC0 and Px437
+
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same

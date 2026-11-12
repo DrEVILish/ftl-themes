@@ -8,12 +8,23 @@
  * Note on fonts: the hardware and packaging use the manufacturer's own
  * grotesque, which is not free. The theme uses the system neo-grotesque
  * stack (Helvetica Neue / Helvetica / Arial / Liberation Sans) with slightly
- * negative tracking, and a system monospace on every display surface.
- * Nothing is vendored.
+ * negative tracking. Display lettering (numerals, the brand window, the
+ * status strip, scribble strips) is the vendored Lexend Exa Light, a wide
+ * thin geometric face like the OP-1 screen; monospace is kept for code.
  *
  * Component look is set through --<component>-* properties at root scope
  * (CONTRACT.md "How a theme overrides a component").
  */
+
+/* Lexend Exa Light (SIL OFL, assets/fonts/NOTICE.md): wide, round and
+   thin like the OP-1 screen numerals, so the width comes from the face,
+   not tracking. Latin subset, wght 300-400. */
+@font-face {
+  font-family: "TE Display";
+  src: url("assets/fonts/LexendExa-Light-Regular.woff2") format("woff2");
+  font-weight: 300 400;
+  font-display: swap;
+}
 
 html[data-theme="teenage-engineering"] {
   --motion-leave: power-off;
@@ -34,40 +45,49 @@ html[data-theme="teenage-engineering"] {
   --te-key-hi: #f7f9f9;
   --te-key-edge: #b3babd;   /* key side, seen as the shadow under a key */
   --te-surface-3: #ced3d5;  /* third nesting level */
+  /* The small-key dome: a round white button standing in a square key face,
+     its lower edge shadowed where it rises out of the face. Layered over
+     the face colour by the keys that carry one. */
+  --te-dish:
+    radial-gradient(circle closest-side, #fdfefe 0 66%, #f1f4f4 74%, transparent 76%),
+    radial-gradient(circle closest-side, #a7aeb1 0 75%, transparent 79%) 0 1.5px / 100% 100% no-repeat;
+  --te-dish-face: #e3e7e8;
   /* Encoder slot for the element: hue = the cap, ink = the same colour
      where it must read on the light body (white becomes near-black),
      pointer = the slot cut in the cap. Cycled by position below. */
   --te-hue: var(--te-blue);
   --te-ink: var(--te-blue);
-  --te-pointer: rgba(255, 255, 255, 0.92);
   /* Speaker grille: a 6px dot pitch, drawn once. */
   --te-grille: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='1.25' fill='%23858d90'/%3E%3C/svg%3E");
 
   /* --- Required tokens -------------------------------------------------- */
-  --bg: #d5d9da;          /* bead-blasted aluminium body; keys read by their seams, not a dark field */
+  --bg: #c9cfd1;          /* bead-blasted aluminium body (sampled #c3c9c9): a cooler groove between near-white keys */
   --surface: #edf0f0;     /* a key face: where text sits */
   --surface-2: #dadfe1;   /* recessed: stripes, nested panels */
   --border: #a9b0b3;
   --hairline: #c9cfd1;
   --text: #17191a;
   --muted: #4f565a;
-  --accent: var(--te-blue);
+  /* The deep encoder blue: generic accents sit on the aluminium (3.5:1);
+     the bright cap blue stays on the encoders, charts and gauges. */
+  --accent: #0a6ea3;
   --accent-2: var(--te-green);
   --danger: #e8400c;      /* the record key */
   --success: #2a9d2a;
   --warning: #f5b400;     /* the OP-Z's yellow encoder */
   --accent-text: #005a88;
   --success-text: #175f17;
-  --warning-text: #765100;
+  --warning-text: #6f4c00;  /* 4.8:1 on a warning callout over the darker aluminium */
   --danger-text: #982500;
-  --on-accent: #050b10;
+  --on-accent: #ffffff;
   --on-danger: #0d0300;
   --on-success: #020a02;
   --radius: 0.5rem;
   --font: "Helvetica Neue", Helvetica, Arimo, Arial, "Liberation Sans", "Nimbus Sans", "Nimbus Sans L", "TeX Gyre Heros", "FreeSans", sans-serif;
   /* Display numerals: thin, wide strokes like the OP-1 screen. A light
      grotesque cut where the system has one, tabular so values never reflow. */
-  --te-display-font: "Helvetica Neue", "Segoe UI", Arimo, Arial, "Liberation Sans", "DejaVu Sans", sans-serif;
+  --te-display-font: "TE Display", "Helvetica Neue", Arimo, Arial, "Liberation Sans", "DejaVu Sans", sans-serif;
+  /* Code, pre and timecodes only: the display lettering is --te-display-font. */
   --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
   --flare: var(--te-orange);
   --density: 1;
@@ -87,8 +107,9 @@ html[data-theme="teenage-engineering"] {
   --btn-radius: 0.55rem;
   --btn-weight: 500;
   --btn-tracking: -0.005em;
-  --btn-shadow: 0 2px 0 var(--te-key-edge), 0 3px 4px rgba(40, 48, 52, 0.12);
-  --btn-shadow-hover: 0 2px 0 #9aa2a5, 0 4px 6px rgba(40, 48, 52, 0.16);
+  --btn-shadow: 0 2px 0 var(--te-key-edge);  /* one hard layer: the key's side */
+  --btn-shadow-hover: 0 2px 0 #9aa2a5;
+  --btn-icon-radius: 0.5rem;  /* square key faces; the round part is the dome */
 
   /* Close: one of the OP-1's black round note dots with a white cross. */
   --btn-close-bg: var(--te-dot);
@@ -110,19 +131,22 @@ html[data-theme="teenage-engineering"] {
   --input-shadow: inset 0 1px 2px rgba(30, 36, 40, 0.12);
   --input-placeholder: #6b7276;
   --input-caret: var(--te-orange);
+  --pad-bg: var(--te-key-hi);
+  --pad-lit-alpha: 0%;
+  --pad-glow: 0;
   --select-arrow-fg: var(--text);
 
   /* --- Surfaces: keys on the frame --------------------------------------- */
   --panel-bg: var(--surface);
   --panel-border: var(--te-key-edge);
   --panel-radius: 0.75rem;
-  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 0 var(--te-key-edge), 0 4px 10px rgba(40, 48, 52, 0.1);
+  --panel-shadow: 0 2px 0 var(--te-key-edge);
   --panel-header-bg: transparent;
   --panel-header-fg: var(--muted);
   --card-bg: var(--surface);
   --card-border: var(--te-key-edge);
   --card-radius: 0.75rem;
-  --card-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 0 var(--te-key-edge), 0 4px 10px rgba(40, 48, 52, 0.1);
+  --card-shadow: 0 2px 0 var(--te-key-edge);
   --modal-bg: var(--surface);
   --modal-border: var(--te-key-edge);
   --modal-radius: 0.9rem;
@@ -276,6 +300,9 @@ html[data-theme="teenage-engineering"] {
   --slider-height: 0.3rem;
   /* Sparklines: a thin printed line, no tinted area. */
   --sparkline-area-opacity: 0;
+  --chart-area-opacity: 0;  /* the screen draws line art, never a tinted area */
+  --chart-text-size: 7px;   /* SVG user units: the screen prints small legends, the chart does the scaling */
+  --chart-text-size-narrow: 14px;
   --slider-radius: 0;  /* a square-cut slot: core's 24/44px hit box clips the track to its content box */
   --slider-bg: var(--te-dot);
   --slider-border-width: 0;
@@ -334,6 +361,19 @@ html[data-theme="teenage-engineering"] {
   --eq-line: var(--te-glyph);
   --eq-fill: rgba(67, 206, 191, 0.22);
   --bar-chart-bar: var(--te-dot);  /* bars on a light key print in note-key black, not a blue fill */
+  --bar-chart-bar-alt: var(--te-orange);  /* the highlighted bar: same weight, the record colour */
+  /* The VU is a small screen too: glass face, dim scale, orange needle. */
+  --vu-face: var(--te-screen);
+  --vu-ink: var(--te-glyph-dim);
+  --vu-zone: var(--te-orange);
+  --vu-zone-ink: #ff8a4c;
+  --vu-needle: var(--te-orange);
+  --vu-needle-r: var(--te-teal);
+  --vu-glow: transparent;
+  --vu-bezel: var(--te-key-edge);
+  --vu-font: var(--te-display-font);
+  /* Plan figures are display numerals: thin, not bold. */
+  --price-fg: var(--text);
   --bar-chart-radius: 2px;
   --bar-chart-axis: var(--border);
 
@@ -387,7 +427,7 @@ html[data-theme="teenage-engineering"] {
   --strip-border: var(--te-key-edge);
   --strip-radius: 0.6rem;
   --strip-rule: var(--hairline);
-  --strip-selected: var(--te-blue);
+  --strip-selected: var(--te-dot);
   --knob-size: calc(2.35rem * var(--density));
   --knob-arc-width: 3px;
   --knob-track: #c3c9cb;
@@ -409,8 +449,9 @@ html[data-theme="teenage-engineering"] {
   --key-shadow: 0 2px 0 var(--te-key-edge);
   --key-on: var(--te-green);
   --key-on-fg: #020a02;
-  --key-sel: var(--te-blue);
-  --key-sel-fg: #050b10;
+  /* Black means selected: SEL is a note key, not a blue one. */
+  --key-sel: var(--te-dot);
+  --key-sel-fg: #ffffff;
   --key-mute: var(--te-orange);
   --key-mute-fg: #0d0300;
   --key-solo: #f5b400;
@@ -424,13 +465,13 @@ html[data-theme="teenage-engineering"] {
   --transport-shadow: 0 2px 0 var(--te-key-edge);
   --transport-rec: var(--te-orange);
   --transport-play: var(--te-green);
-  --go-bg: var(--te-orange);
-  --go-fg: #0d0300;
-  --go-border: #b8410a;
+  --go-bg: var(--te-key-hi);  /* a light key: the orange is the legend dot */
+  --go-fg: var(--text);
+  --go-border: var(--te-key-edge);
   --go-radius: 0.75rem;
-  --go-shadow: 0 3px 0 #b8410a, 0 5px 8px rgba(0, 0, 0, 0.18);
-  --go-bg-hover: #ff6a24;
-  --go-shadow-hover: 0 3px 0 #b8410a, 0 6px 12px rgba(242, 90, 18, 0.35);
+  --go-shadow: 0 3px 0 var(--te-key-edge);
+  --go-bg-hover: #ffffff;
+  --go-shadow-hover: 0 3px 0 #9aa2a5;
 
   /* --- Conversation --------------------------------------------------------- */
   --message-bg: var(--te-key-hi);
@@ -472,6 +513,9 @@ html[data-theme="teenage-engineering"] :is(h1, h2, h3, h4) {
   line-height: 1.1;
 }
 html[data-theme="teenage-engineering"] h1 { font-weight: 400; letter-spacing: -0.045em; }
+/* A little air under the page title, like the gap above a key legend. */
+html[data-theme="teenage-engineering"] h1:has(+ p) { margin-block-end: 0.35em; }
+html[data-theme="teenage-engineering"] h1 + p { margin-block-end: var(--space-s); }
 html[data-theme="teenage-engineering"] :is(.panel-header, .table th, .strip-label, .knob-label) {
   font-weight: 600;
 }
@@ -500,8 +544,8 @@ html[data-theme="teenage-engineering"] .btn-primary {
   --btn-border: var(--te-dot);
   --btn-bg-hover: #3a3d40;
   --btn-border-hover: #000000;
-  --btn-shadow: 0 2px 0 #000000, 0 3px 4px rgba(40, 48, 52, 0.18);
-  --btn-shadow-hover: 0 2px 0 #000000, 0 4px 6px rgba(40, 48, 52, 0.22);
+  --btn-shadow: 0 2px 0 #000000;
+  --btn-shadow-hover: 0 2px 0 #000000;
 }
 html[data-theme="teenage-engineering"] .btn-ghost { --btn-shadow: none; --btn-border: transparent; }
 html[data-theme="teenage-engineering"] .btn:is(:disabled, [aria-disabled="true"]) { opacity: 0.45; box-shadow: none; }
@@ -546,8 +590,34 @@ html[data-theme="teenage-engineering"] :is(pre, .code-block, .chart, .toast, .ap
 }
 /* Code on the glass: the block's own ink, which <code> inside inherits. */
 html[data-theme="teenage-engineering"] :is(pre, .code-block) { color: var(--te-glyph); }
-/* The secondary key prints its label in the readable accent ink. */
-html[data-theme="teenage-engineering"] .btn-secondary { --btn-fg: var(--accent-text); --btn-bg: var(--te-key-hi); --btn-border: var(--te-key-edge); }
+/* Secondary and tertiary keys print a dark legend like every other key:
+   blue stays on links and the encoders. */
+html[data-theme="teenage-engineering"] .btn-secondary { --btn-fg: var(--text); --btn-bg: var(--te-key-hi); --btn-border: var(--te-key-edge); }
+html[data-theme="teenage-engineering"] .btn-tertiary { --btn-fg: var(--text); --btn-bg-hover: var(--surface-2); }
+/* Small square keys carry the OP-1's round dome inside the key face.
+   Wide text keys stay plain: a circle behind a word reads as a blot. */
+html[data-theme="teenage-engineering"] .btn-icon:not(.btn-primary, .btn-ghost, .btn-danger, .btn-success, .btn-go, .btn-brand, [aria-pressed="true"]) {
+  --btn-bg: var(--te-dish), var(--te-dish-face);
+  --btn-bg-hover: var(--te-dish), #edf0f1;
+}
+/* Mixer keys (MUTE/SOLO/SEL) are a little wider than tall: the dome is an
+   oval that holds the legend. Lit keys still fill in their colour. */
+html[data-theme="teenage-engineering"] .key:not(.transport-keys .key) {
+  --key-bg:
+    radial-gradient(closest-side, #fdfefe 0 70%, #f1f4f4 80%, transparent 83%),
+    radial-gradient(closest-side, #a7aeb1 0 82%, transparent 87%) 0 1.5px / 100% 100% no-repeat,
+    var(--te-dish-face);
+}
+/* Checks and radios fill in note-key black. */
+html[data-theme="teenage-engineering"] :is(.checkbox, .radio) { accent-color: var(--te-dot); }
+/* A trigger pad is a light key; playing lights a bar in its colour along
+   the bottom edge instead of tinting the whole face. */
+html[data-theme="teenage-engineering"] .pad { border-color: var(--te-key-edge); box-shadow: 0 2px 0 var(--te-key-edge); }
+html[data-theme="teenage-engineering"] .pad:is([aria-pressed="true"], .is-playing, :has(> input:checked)),
+html[data-theme="teenage-engineering"] .pad[data-mode="hold"]:active {
+  border-color: var(--te-key-edge);
+  box-shadow: inset 0 -4px 0 var(--_c), 0 2px 0 var(--te-key-edge);
+}
 /* Links inside running text are underlined, not colour alone. */
 html[data-theme="teenage-engineering"] .prose a:not(.btn) { text-decoration-line: underline; text-underline-offset: 0.15em; }
 html[data-theme="teenage-engineering"] :is(pre, .readout) {
@@ -558,12 +628,12 @@ html[data-theme="teenage-engineering"] .chart {
   border-radius: 0.5rem;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-/* The display face has no thin cut on every system: a hairline stroke in
-   the glass colour pares the glyphs down to the screen's thin line. */
-html[data-theme="teenage-engineering"] :is(.readout, .stat-value) {
-  -webkit-text-stroke: 0.035em var(--te-screen);
-}
-html[data-theme="teenage-engineering"] .readout-unit { -webkit-text-stroke: 0; font-weight: 500; }
+html[data-theme="teenage-engineering"] .readout-unit { font-weight: 500; }
+/* Screen line art: small vertices, not discs (the ring still marks focus). */
+html[data-theme="teenage-engineering"] .chart-point { r: 2.5; }
+/* Axis ticks and end labels print in the thin screen face. */
+html[data-theme="teenage-engineering"] .chart text { font-family: var(--te-display-font); font-weight: 300; }
+html[data-theme="teenage-engineering"] .price { font-family: var(--te-display-font); font-weight: 300; letter-spacing: -0.01em; }
 /* Level meters and traces are machine values: thin white/teal on the glass. */
 html[data-theme="teenage-engineering"] :is(.visualizer, .trace) {
   --visualizer-fg: var(--te-glyph);
@@ -582,7 +652,7 @@ html[data-theme="teenage-engineering"] :is(.nav-rail, .band.is-tinted, .toolbar:
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 0 var(--te-key-edge);
 }
 /* The scribble strip is display glass on a light key: give its text room. */
-html[data-theme="teenage-engineering"] .scribble { padding: 0.3rem 0.45rem; font-family: var(--font-mono); }
+html[data-theme="teenage-engineering"] .scribble { padding: 0.3rem 0.45rem; font-family: var(--te-display-font); font-weight: 300; letter-spacing: 0.05em; }
 /* A readout printed inside a gauge is already on the gauge's glass. */
 html[data-theme="teenage-engineering"] .gauge-readout .readout {
   --readout-bg: transparent;
@@ -606,7 +676,6 @@ html[data-theme="teenage-engineering"] :is(.segmented-item, .scrollspy-link, .br
 :where(html[data-theme="teenage-engineering"] :is(.knob, .slider, .fader, .tab, .strip, .field):nth-of-type(4n+3)) {
   --te-hue: var(--te-white);
   --te-ink: #26282a;
-  --te-pointer: #7d8588;
 }
 :where(html[data-theme="teenage-engineering"] :is(.knob, .slider, .fader, .tab, .strip, .field):nth-of-type(4n+4)) {
   --te-hue: var(--te-orange);
@@ -615,33 +684,36 @@ html[data-theme="teenage-engineering"] :is(.segmented-item, .scrollspy-link, .br
 :where(html[data-theme="teenage-engineering"] :is(.knob, .slider, .fader, .tab)) {
   --knob-color: var(--te-hue);
   --knob-arc: var(--te-ink);
-  --knob-pointer: var(--te-pointer);
-  --slider-thumb-bg: var(--te-hue);
+  /* a light key cap with its encoder's colour dot, not a coloured ball */
+  --slider-thumb-bg: radial-gradient(circle, var(--te-ink) 0 30%, var(--te-key-hi) 34%);
   --fader-cap-line: var(--te-ink);
   --tab-underline-active: var(--te-ink);
 }
 /* Band knobs keep their encoder; the white one gets a dark slot and arc. */
 html[data-theme="teenage-engineering"] .knob-hf { --knob-arc: var(--te-blue); }
 html[data-theme="teenage-engineering"] .knob-hmf { --knob-arc: var(--te-green); }
-html[data-theme="teenage-engineering"] .knob-lmf { --knob-arc: #26282a; --knob-pointer: #7d8588; }
+html[data-theme="teenage-engineering"] .knob-lmf { --knob-arc: #26282a; }
 html[data-theme="teenage-engineering"] .knob-lf { --knob-arc: var(--te-orange); }
 
 /* --- .knob: the encoder ---------------------------------------------------- *
- * A short coloured cylinder with a flat top and one slot, standing in a
- * recessed collar. The side of the cylinder is a hard 2px shadow in a
- * darker shade of the cap. */
+ * A small coloured cylinder (about half the diameter) with a flat top and
+ * one slot, standing on a light-grey cone skirt. The side of the cylinder
+ * is a hard 2px shadow in a darker shade of the cap. */
 html[data-theme="teenage-engineering"] .knob-dial {
   /* Painted on the dial, which does not turn, so the cylinder's side and
-     its shadow stay below the cap whatever the value. */
+     the skirt stay put whatever the value. */
   background:
-    radial-gradient(closest-side, color-mix(in srgb, var(--knob-color, var(--te-blue)) 62%, #000) calc(100% - 6px), transparent calc(100% - 5.5px)) 0 2px / 100% 100% no-repeat,
-    radial-gradient(closest-side, #d0d5d7 calc(100% - 4px), transparent calc(100% - 3.5px));
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
+    radial-gradient(closest-side, color-mix(in srgb, var(--knob-color, var(--te-blue)) 62%, #000) 48%, transparent 50%) 0 2px / 100% 100% no-repeat,
+    radial-gradient(closest-side, #e6e9ea 40%, #c3c9cb calc(100% - 5px), #9aa2a5 calc(100% - 4.5px), transparent calc(100% - 3.5px));
 }
 html[data-theme="teenage-engineering"] .knob-dial::after {
-  inset: calc(var(--knob-arc-width, 3px) + 3px);
+  /* Core's band knobs set a white pointer; the cap's slot is a cut, so it is
+     a darker shade of the cap whatever the band. */
+  --te-slot: color-mix(in srgb, var(--knob-color, var(--te-blue)) 58%, #000);
+  inset: calc(var(--knob-size, 2.35rem) * 0.26);
   background:
-    linear-gradient(var(--knob-pointer, #fff), var(--knob-pointer, #fff)) 50% 6% / 3px 42% no-repeat,
+    /* the slot: one straight cut through the centre, darker than the cap */
+    linear-gradient(var(--te-slot), var(--te-slot)) 50% 50% / 2px 70% no-repeat,
     var(--knob-color, var(--te-blue));
   border: 1px solid color-mix(in srgb, var(--knob-color, var(--te-blue)) 72%, #000);
   /* Flat matte top: only a 1px lighter rim where the top meets the side. */
@@ -649,9 +721,9 @@ html[data-theme="teenage-engineering"] .knob-dial::after {
 }
 html[data-theme="teenage-engineering"] .knob-label { letter-spacing: 0.1em; }
 
-/* Slider thumb: a small encoder cap on a black slot. */
-html[data-theme="teenage-engineering"] .slider::-webkit-slider-thumb { border: 1px solid color-mix(in srgb, var(--slider-thumb-bg, var(--te-blue)) 70%, #000); }
-html[data-theme="teenage-engineering"] .slider::-moz-range-thumb { border: 1px solid color-mix(in srgb, var(--slider-thumb-bg, var(--te-blue)) 70%, #000); }
+/* Slider thumb: a small light key on a black slot, edged like the keys. */
+html[data-theme="teenage-engineering"] .slider::-webkit-slider-thumb { border: 1px solid #8f979a; }
+html[data-theme="teenage-engineering"] .slider::-moz-range-thumb { border: 1px solid #8f979a; }
 
 /* --- Tabs: each one carries its encoder's colour dot ---------------------- */
 html[data-theme="teenage-engineering"] .tab::before {
@@ -681,7 +753,12 @@ html[data-theme="teenage-engineering"] .tab.is-active::before {
 /* --- A screen and a labelled key on every page -------------------------- *
  * KPI numbers sit in a small display window; each panel's label carries its
  * encoder's colour dot (blue, green, white, orange by position), like tabs. */
+/* A block of its own, so its label prints on a line beside it, never
+   flowed inline next to the window. */
 html[data-theme="teenage-engineering"] .stat-value {
+  display: block;
+  inline-size: max-content;
+  max-inline-size: 100%;
   align-self: flex-start;
   padding: 0.25em 0.45em 0.2em;
   border-radius: 0.35rem;
@@ -697,14 +774,14 @@ html[data-theme="teenage-engineering"] :is(.panel, .card):nth-of-type(4n+2) { --
 html[data-theme="teenage-engineering"] :is(.panel, .card):nth-of-type(4n+3) { --te-panel-dot: var(--te-white); }
 html[data-theme="teenage-engineering"] :is(.panel, .card):nth-of-type(4n+4) { --te-panel-dot: var(--te-orange); }
 /* The label is a .panel-header, or a plain heading that opens the panel. */
-html[data-theme="teenage-engineering"] :is(.panel-header > :first-child, :is(.panel, .card) > :is(h2, h3):first-child:not(:has(> .icon:first-child)))::before {
+html[data-theme="teenage-engineering"] :is(.panel-header > :first-child, .panel-header:not(:has(> *)), .modal-header:not(:has(> *)), .modal-header > :is(h2, h3):first-child, :is(.panel, .card) > :is(h2, h3):first-child:not(:has(> .icon:first-child)), :is(.panel, .card) > .cluster:first-child > :is(h2, h3))::before {
   content: "";
   display: inline-block;
-  inline-size: 0.6em;
-  block-size: 0.6em;
-  margin-inline-end: 0.55em;
+  inline-size: 0.5rem;  /* rem: the same dot on a tiny header and a big heading */
+  block-size: 0.5rem;
+  margin-inline-end: 0.5rem;
   border-radius: 50%;
-  background: var(--te-panel-dot);
+  background: var(--te-panel-dot, var(--te-blue));
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
   vertical-align: 0.05em;
 }
@@ -725,6 +802,27 @@ html[data-theme="teenage-engineering"] .badge-accent:not(.badge-solid, .badge-ou
   background: var(--te-blue);
   vertical-align: -0.02em;
 }
+/* A badge in a tiny tracked header keeps a readable size and its own air. */
+html[data-theme="teenage-engineering"] .panel-header .badge { font-size: 0.68rem; letter-spacing: 0.04em; margin-inline-start: 0.5rem; }
+/* Confirm and GO are light keys: the colour is a legend dot, as on the
+   record key. Only a destructive key fills in orange. */
+html[data-theme="teenage-engineering"] .btn-success {
+  --btn-bg: var(--te-key-hi);
+  --btn-fg: var(--text);
+  --btn-border: var(--te-key-edge);
+  --btn-bg-hover: #ffffff;
+  --btn-border-hover: #8f979a;
+}
+html[data-theme="teenage-engineering"] :is(.btn-success, .btn-go:not(.btn-icon))::before {
+  content: "";
+  flex: none;
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  border-radius: 50%;
+  background: var(--te-green);
+}
+html[data-theme="teenage-engineering"] .btn-go:not(.btn-icon)::before { background: var(--te-orange); }
+html[data-theme="teenage-engineering"] .btn-go.btn-icon { --go-fg: #c24400; }  /* the legend itself is orange, 4.5:1 on the key */
 /* The dialog's black close dot would vanish on the bulk bar's glass. */
 html[data-theme="teenage-engineering"] .bulk-bar .btn-close { --btn-close-bg: var(--te-key-hi); --btn-close-fg: var(--text); }
 
@@ -769,15 +867,13 @@ html[data-theme="teenage-engineering"] {
   --app-rail-empty-display: flex;
   --app-rail-radius: 0.75rem;
   --app-rail-bg:
-    radial-gradient(circle, var(--te-blue) 0 0.6rem, #a9b0b3 0.62rem 0.7rem, transparent 0.72rem) 50% 6.6rem / 1.5rem 1.5rem no-repeat,
-    radial-gradient(circle, var(--te-green) 0 0.6rem, #a9b0b3 0.62rem 0.7rem, transparent 0.72rem) 50% 8.6rem / 1.5rem 1.5rem no-repeat,
-    radial-gradient(circle, var(--te-white) 0 0.6rem, #a9b0b3 0.62rem 0.7rem, transparent 0.72rem) 50% 10.6rem / 1.5rem 1.5rem no-repeat,
-    radial-gradient(circle, var(--te-orange) 0 0.6rem, #a9b0b3 0.62rem 0.7rem, transparent 0.72rem) 50% 12.6rem / 1.5rem 1.5rem no-repeat,
+    /* the encoder row: four caps on grey skirts, each in its own square key well */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='184'%3E%3Cdefs%3E%3CradialGradient id='s'%3E%3Cstop offset='.4' stop-color='%23e6e9ea'/%3E%3Cstop offset='1' stop-color='%23c3c9cb'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect x='1' y='3' width='42' height='41' rx='8' fill='%23b3babd'/%3E%3Crect x='1.5' y='1.5' width='41' height='40' rx='7.5' fill='%23e3e7e8' stroke='%23b3babd'/%3E%3Ccircle cx='22' cy='21' r='14.5' fill='url(%23s)' stroke='%239aa2a5'/%3E%3Ccircle cx='22' cy='23' r='7.5' fill='%2306587f'/%3E%3Ccircle cx='22' cy='21' r='7' fill='%230a8fd0' stroke='%2306587f'/%3E%3Crect x='21' y='16' width='2' height='10' fill='%2306587f' transform='rotate(-35 22 21)'/%3E%3Crect x='1' y='49' width='42' height='41' rx='8' fill='%23b3babd'/%3E%3Crect x='1.5' y='47.5' width='41' height='40' rx='7.5' fill='%23e3e7e8' stroke='%23b3babd'/%3E%3Ccircle cx='22' cy='67' r='14.5' fill='url(%23s)' stroke='%239aa2a5'/%3E%3Ccircle cx='22' cy='69' r='7.5' fill='%231a611a'/%3E%3Ccircle cx='22' cy='67' r='7' fill='%232a9d2a' stroke='%231a611a'/%3E%3Crect x='21' y='62' width='2' height='10' fill='%231a611a' transform='rotate(0 22 67)'/%3E%3Crect x='1' y='95' width='42' height='41' rx='8' fill='%23b3babd'/%3E%3Crect x='1.5' y='93.5' width='41' height='40' rx='7.5' fill='%23e3e7e8' stroke='%23b3babd'/%3E%3Ccircle cx='22' cy='113' r='14.5' fill='url(%23s)' stroke='%239aa2a5'/%3E%3Ccircle cx='22' cy='115' r='7.5' fill='%238f9090'/%3E%3Ccircle cx='22' cy='113' r='7' fill='%23f7f8f8' stroke='%238f9090'/%3E%3Crect x='21' y='108' width='2' height='10' fill='%238f9090' transform='rotate(25 22 113)'/%3E%3Crect x='1' y='141' width='42' height='41' rx='8' fill='%23b3babd'/%3E%3Crect x='1.5' y='139.5' width='41' height='40' rx='7.5' fill='%23e3e7e8' stroke='%23b3babd'/%3E%3Ccircle cx='22' cy='159' r='14.5' fill='url(%23s)' stroke='%239aa2a5'/%3E%3Ccircle cx='22' cy='161' r='7.5' fill='%2396380b'/%3E%3Ccircle cx='22' cy='159' r='7' fill='%23f25a12' stroke='%2396380b'/%3E%3Crect x='21' y='154' width='2' height='10' fill='%2396380b' transform='rotate(50 22 159)'/%3E%3C/svg%3E") 50% 5.9rem / 44px 184px no-repeat,
     /* below the encoders, the column of black round note keys */
-    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 15.6rem / 1.5rem 1.5rem no-repeat,
-    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 17.6rem / 1.5rem 1.5rem no-repeat,
-    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 19.6rem / 1.5rem 1.5rem no-repeat,
-    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 21.6rem / 1.5rem 1.5rem no-repeat,
+    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 18.4rem / 1.5rem 1.5rem no-repeat,
+    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 20.4rem / 1.5rem 1.5rem no-repeat,
+    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 22.4rem / 1.5rem 1.5rem no-repeat,
+    radial-gradient(circle, var(--te-dot) 0 0.55rem, transparent 0.6rem) 50% 24.4rem / 1.5rem 1.5rem no-repeat,
     var(--te-key);
   --app-main-bg: transparent;
   --app-main-padding: 0.4rem 0.15rem;
@@ -818,19 +914,19 @@ html[data-theme="teenage-engineering"] .app-bar > .nav-brand {
   border-radius: 0.4rem;
   background: var(--te-screen);
   color: var(--te-glyph);
-  font-family: var(--font-mono);
-  font-weight: 400;
-  letter-spacing: 0.02em;
+  font-family: var(--te-display-font);
+  font-weight: 300;
+  letter-spacing: 0.06em;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
 }
-html[data-theme="teenage-engineering"] .app-status { font-family: var(--font-mono); letter-spacing: 0.01em; }
-html[data-theme="teenage-engineering"] .app-status { box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7); }
+/* Small strip text: Regular, so the hairlines hold at 1x; numerals stay Light. */
+html[data-theme="teenage-engineering"] .app-status { font-family: var(--te-display-font); font-weight: 400; letter-spacing: 0.02em; box-shadow: inset 0 1px 0 #000000; }
 
 /* Touch tiers: a thinner frame. */
 @container style(--tier: mobile) {
   html[data-theme="teenage-engineering"] .app { --app-padding: 0.35rem; --app-gap: 0.35rem; }
-  /* The wide mono face does not fit one phone line: the strip wraps to two
-     instead of cutting each item to one glyph. */
+  /* The tracked display face does not fit one phone line: the strip wraps
+     to two instead of cutting each item to one glyph. */
   /* The brand stays a small window instead of stretching across its own
      line, and the shortcut hint (no keyboard on a phone) leaves the bar so
      a typical set of actions keeps to one row. */
@@ -848,7 +944,7 @@ html[data-theme="teenage-engineering"] .app-status { box-shadow: inset 0 1px 3px
  * (within ~1.15:1), so the device seems to continue past the content. Still. */
 html[data-theme="teenage-engineering"] {
   --app-gutter-art:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='124'%3E%3Crect x='4.5' y='4.5' width='63' height='115' rx='13' fill='%23d9ddde' stroke='%23c9cdcf'/%3E%3Ccircle cx='36' cy='40' r='8' fill='%23ccd0d2'/%3E%3C/svg%3E") 0 0 / 72px 124px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='124'%3E%3Crect x='4.5' y='4.5' width='63' height='115' rx='13' fill='%23cdd3d5' stroke='%23bdc3c6'/%3E%3Ccircle cx='36' cy='40' r='8' fill='%23c0c6c9'/%3E%3C/svg%3E") 0 0 / 72px 124px,
     var(--bg);
 }
 

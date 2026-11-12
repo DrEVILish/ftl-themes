@@ -23,58 +23,90 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    toasts, tooltips, the status strip and the brand window. Panels, tables
    and forms stay light. Do not "dark mode" the body.
 2. **Four encoder colours, in order.** Blue, green, white, orange — knobs,
-   tab dots, slider thumbs, fader cap lines and the first chart series
-   follow that order by position (`--te-hue` / `--te-ink`, cycled with
-   zero-specificity `:where()` rules so band classes and app values win).
-   No other saturated colour is decoration; red-orange means record/danger.
+   tab dots, the dot on each slider thumb, fader cap lines and the first
+   chart series follow that order by position (`--te-hue` / `--te-ink`,
+   cycled with zero-specificity `:where()` rules so band classes and app
+   values win). No other saturated colour is decoration; red-orange means
+   record/danger. Generic UI accents (`--accent`) use the deep encoder blue
+   `#0a6ea3` (3.5:1 on the aluminium); the bright cap blue stays on the
+   encoders, charts and gauges. Secondary and tertiary buttons print a dark
+   legend like every key: blue is for links.
 3. **Keys are rounded rectangles with a 2px side.** Buttons, panels,
    cards, the bar and the rail are keys: `0.5-0.75rem` corners, a hairline
-   key-edge border and a hard 2px shadow underneath. A page-level
+   key-edge border and a hard 2px shadow underneath (one layer, no blur). A page-level
    `.toolbar` and the folder rail are keys too. Pressing moves a key
    down 1px. No gradients that read as gloss. The primary button is the
    black note key with a white legend: the hardware has no blue keys.
+   Small square keys (`.btn-icon`, now square-cornered) and the mixer's
+   MUTE/SOLO/SEL/48V keys carry the OP-1's round white dome inside a
+   slightly darker key face, its lower edge shadowed; wide text buttons
+   stay plain keys. Confirm (`.btn-success`) and GO (`.btn-go`) are light
+   keys with a green or orange legend dot, like the record key's ring; only
+   a destructive key (`.btn-danger`) fills in orange.
 4. **Black means selected.** Active nav items, segmented items, pagination,
    active badges, the highlighted menu item and command row, checked toggle
-   buttons, the selected calendar day (its range is pressed keys) and the
+   buttons, the mixer's SEL/monitor key and the selected strip, checked
+   checkboxes and radios, the selected calendar day (its range is pressed keys) and the
    selected desktop icon label are the black of the OP-1's
    note dots with white text, not the accent colour. Selected list, inbox and
    table rows are a pressed (darker) key with a black edge bar. The bulk
    selection bar is a strip of display glass; an accent badge is a white key
-   with a blue dot; an unsaved cell is a white key with an orange edge bar.
+   with a blue dot; an unsaved cell is a white key with an orange edge bar;
+   a playing sound pad stays a light key with a 4px bar in its colour along
+   the bottom, never a tinted face.
 5. **Light grotesque, silkscreen labels.** Headings are regular/medium
    (h1 400, h2-h4 500) with negative tracking, so the display numerals stay
    the loudest type; panel heads, table heads and form labels are tiny tracked caps
    like the printing beside a key. Display numerals (`.readout`,
-   `.stat-value`) are thin and wide like the OP-1 screen: a light grotesque
-   (300, tracked 0.05em, tabular) pared down further by a hairline stroke in
-   the glass colour, so they stay thin even where no light cut exists. Code,
-   the brand window and the status strip use the monospace.
+   `.stat-value`, `.price`, chart ticks and labels) are thin and wide like
+   the OP-1 screen: the vendored Lexend Exa Light (SIL OFL, 300), a wide
+   round geometric face, so width and thinness come from the cut and the
+   strokes stay bright white. Page titles followed by
+   a lede get a little air under them, and the lede gets `--space-s`
+   before the next row. The brand window, the status strip and scribble
+   strips use the same display face; the status strip's small text is its
+   Regular 400 so hairlines hold at 1x. The monospace is only for code and
+   timecodes.
 
 ## Signature details
 
-- `.knob` is the OP-1 encoder: a flat coloured cylinder cap with one slot,
-  standing in a recessed collar, with a thin value arc around it. The
-  cylinder's side (2px, darker shade of the cap) and its shadow are painted
+- `.knob` is the OP-1 encoder: a small flat coloured cylinder cap (about
+  48% of the dial, inset 26% of `--knob-size`) with one slot, standing on a
+  light-grey cone skirt (`#e6e9ea` to `#c3c9cb`, a 1px darker rim), with a
+  thin value arc around it. The cylinder's side (2px, darker shade of the
+  cap) and the skirt are painted
   on the dial, which doesn't turn, so they stay underneath at any value.
   `.knob-hf/-hmf/-lmf/-lf` are the four encoders. The cap top is a flat
-  matte fill with only a 1px lighter rim, no highlight.
+  matte fill with only a 1px lighter rim, no highlight; the slot is one 2px
+  cut through the centre (70% of the cap), a darker shade of the cap.
 - The rail is a key-face column: the speaker grille (an SVG dot field) on
-  top, the four encoder dots under it, then four black round note keys.
+  top, the encoder row under it (one SVG: each encoder a mini cap with a
+  slot on a grey skirt, in its own square key well with a 2px side), then
+  four black round note keys.
 - Every page has a screen: a KPI `.stat-value` sits in a small display
-  window. Every panel and card is a labelled key: its header's first item,
-  or a plain `h2`/`h3` that opens it, carries an encoder colour dot (blue,
-  green, white, orange by position).
-- The page is a flat near-white aluminium (`#d5d9da`); keys read by their
-  key-edge seams and 2px side, not by a dark field around them.
-- The bar's brand sits in a tiny display window (black glass, mono, white).
+  window, a block of its own so its label always prints on its own line
+  above or below it. Every panel and card is a labelled key: its header's
+  first item, a plain `h2`/`h3` that opens it, or the `h2`/`h3` in a
+  `.cluster` that opens it, carries an encoder colour dot (blue, green,
+  white, orange by position). Plain-text panel headers and modal titles get
+  it too; the dot is 0.5rem everywhere. A badge in a panel header keeps
+  0.68rem and 0.5rem of air.
+- The page is a flat aluminium (`#c9cfd1`, toward the sampled `#c3c9c9`
+  body): a slightly darker, cooler groove between the near-white keys,
+  with `--muted` still 4.7:1 on it.
+- The bar's brand sits in a tiny display window (black glass, thin display face, white).
 - The status strip is display glass. On a phone it wraps to two lines
   rather than cutting items to one glyph.
 - The slider is a thin, square-cut black slot (0.3rem) under a small
-  encoder-cap thumb; the hit area stays at core's tap minimum (the content-box
+  light key thumb carrying its encoder's colour dot; the hit area stays at core's tap minimum (the content-box
   clip that keeps it there leaves no room for rounded ends).
 - Level meters (`.visualizer`) and `.trace` are small glass windows with
   white bars and a teal line. A `.bar-chart` on a light key prints its bars
-  in note-key black; sparklines are a thin line with no tinted area.
+  in note-key black, its highlighted bar in orange; sparklines are a thin line with no tinted area. Charts on the glass are
+  line art too: no area fill, 2.5-unit vertices, 7-unit legends in the
+  thin display face. The VU meter is a glass face with a dim scale and an
+  orange needle. The donut and heatmap stay printed on the light key (the
+  heatmap's empty cells are glass-black, which would vanish on glass).
 - The inbox folder rail and a tinted `.band` are keys too (rounded, key-edge
   border, 2px side).
 - Every tab carries its encoder's colour dot; the active one is larger and
@@ -147,10 +179,10 @@ rest are core fallbacks, drawn at the same 1.5 stroke via
   brand window and the status display strip.
 - Fonts: the manufacturer's grotesque is not free; the system stack
   (Helvetica Neue, Helvetica, Arimo, Arial, Liberation Sans, Nimbus Sans,
-  TeX Gyre Heros, FreeSans) stands in. Nothing is vendored, so a machine
-  with none of these (a bare Linux box) falls back to its default sans,
-  usually DejaVu Sans, which runs wide; the light heading weights keep it
-  calm.
+  TeX Gyre Heros, FreeSans) stands in; Liberation Sans is metric-compatible
+  with Helvetica. Display numerals use Lexend Exa Light (SIL OFL,
+  `assets/fonts/LexendExa-Light-Regular.woff2`, wght 300-400 Latin subset,
+  see `NOTICE.md`).
 
 ## Reference status
 
