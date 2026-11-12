@@ -12,14 +12,18 @@ when clicked — a physical toy, not a flat icon of one.
 
 ## Core values
 
-1. **Thick black outlines, always 3px.** Every control is outlined like a
-   brick's moulding line.
+1. **Thick black outlines, always 3px.** Every control, card, list group,
+   list card and table is outlined like a brick's moulding line (badges,
+   avatars and pagination bricks take 2px).
 2. **A button has a shadow it loses on press.** `--btn-shadow` is a
    hard offset shadow; `:active` drops it and nudges the button down —
    the brick physically depresses.
 3. **Primary colours only** — red, yellow, blue, green — no intermediate
-   tints. `--flare` (blue) carries structural chrome (nav, table
-   heads) so red stays reserved for actions/danger.
+   tints: coloured badges are solid fills, never 20% tints. `--flare`
+   (blue) carries structure and selection (nav, table heads, links, the
+   active tab, segment, toggle, filter chip and page, info alerts), as
+   blue dominates the booklet; red stays reserved for buttons and danger.
+   Chart series run red, blue, yellow, green, black, grey with no repeats.
 4. **Bold, geometric type.** Heavy weight headings.
 5. **Studs are big and everywhere a brick's top face would show one** —
    the app bar, every panel/card top, and every panel/modal header. A
@@ -28,21 +32,26 @@ when clicked — a physical toy, not a flat icon of one.
 
 ## Signature details
 
-- Studs are ~16px `radial-gradient` discs in the host colour
-  (`--stud-host`: white on cards, blue on the bar), read by a dark
-  crescent at the lower right and a lit one at the upper left, as the
-  booklet draws grey studs on a grey baseplate and blue studs on blue
-  bricks. No gloss. Tiles use `background-repeat: space`, so every strip
+- Studs are ~19px line-art `radial-gradient` discs, drawn as the booklet
+  draws them: a crisp black outline ring, a host-coloured top
+  (`--stud-host`: white on cards, blue on the bar), a dark crescent at the
+  lower right and, on a coloured brick, a lit one at the upper left. No gloss. Tiles use `background-repeat: space`, so every strip
   shows whole, evenly inset studs: zero markup, purely decorative CSS.
 - The app bar carries its own blue stud row along its bottom edge, since
   it's the single largest, most-visible brick-top surface on the page.
   Desktop window title bars carry no strip, so studs never cross a title.
 - Sliders are a white groove with a black moulding line and a square red
   1x1 thumb; switches are square-cornered with a 1x1 knob; filter chips
-  are black-ruled callout boxes; a toggle group's chosen item is the red
+  are black-ruled callout boxes; a toggle group's chosen item is the blue
   brick pressed down, the rest white bricks with their shadow.
+- Tables are white bricks: a 3px black frame and the 4px drop under the
+  blue head. Pagination items and carousel arrows are 1x1 bricks with a
+  2px moulding line; bar-chart bars are flat (no gloss sliver).
+- Focus is an opaque blue ring (`--flare`) over a 2px ground-coloured
+  gap, so it shows next to the black outlines.
 - Alerts and toasts get the 3px black outline with the state colour as a
-  thick left stripe. Page titles and stat values are weight 900, tight.
+  thick left stripe. Page titles and stat values are weight 900, tight;
+  stat values use the sans, not the mono, to echo the step numerals.
 - `.btn:active` drops the shadow to `0 1px 0` and nudges the button
   `translateY(2px)` — the brick visibly sinks into the plate, not just
   darkens.
@@ -92,7 +101,8 @@ so the heavy stroke does not close them up. Colour is `currentColor` only.
 - **Filled primaries carry white text:** red `--danger` `#d0111b` is 5.56:1 under white (`--accent` is a hair darker, `#cc111a`, 5.7:1, so red links clear 4.5:1 on the `#e6e6e6` grey too); green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
 - **Yellow `#f5c400`** is only 1.47:1 on `--bg` and 1.64:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#6e5700` (6.94:1 on white).
 - **Red as small text** uses `--danger-text` `#b80f18` / `--accent-text` `#a50d15`.
-- `--muted` `#5a5a5a` is 6.90:1 on white, 5.74:1 on the sand `--bg`; red `--accent` links are 4.77:1 on it.
+- `--muted` `#5a5a5a` is 6.90:1 on white, 5.74:1 on the sand `--bg`; links are `--flare` `#0a64c2`, 4.85:1 on the sand and 5.82:1 on white.
+- Brighter brick blue `#2a85d4` (closer to the booklet print) is used only for non-text fills: chart series 2 and the progress fill (3.9:1 on white).
 - On the blue status strip, muted text is `#eef3fa` (5.21:1) and warning words `#ffea8a` (4.81:1); the active pattern-nav link on its red fill is white.
 
 ## Reference status
@@ -103,7 +113,7 @@ so the heavy stroke does not close them up. Colour is `currentColor` only.
 
 - **Tiers.** No rail. The studded blue bar works unchanged on phones and tablets, where core stacks the brand and actions over a scrolling nav line above the stud row.
 - **Nesting.** A panel or card reserves room for its 26px stud strip, so content starts below the studs instead of under them. A brick inside a brick keeps its thick outline and drop shadow but loses its studs: one row of studs per stack. Stacked-table labels use `--muted`.
-- **XL gutter art (1801px+).** The page sits on the booklet's grey baseplate (`#a0a3a6`): grey studs on grey, drawn by their rims.
+- **XL gutter art (1801px+).** The page sits on the booklet's grey baseplate (`#a0a3a6`): grey studs on grey, drawn by their rims. The baseplate runs right up to the page column with a hard edge (`--app-gutter-fade: 0px`) and the column carries a 3px black side line.
 
 ## Adoption
 

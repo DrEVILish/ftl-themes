@@ -43,9 +43,17 @@ html[data-theme="lego-classic"] {
   --btn-shadow-hover: 0 1px 0 #1b1b1b;
   --input-bg: #ffffff;
   --input-border-width: 3px;
-  --focus-ring: 0 0 0 3px rgba(0, 85, 191, 0.4);
+  /* Opaque brick-blue ring over a ground-coloured gap: 4.8:1 on sand. */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 5px var(--flare);
   --panel-border-width: 3px;
   --panel-shadow: 0 4px 0 #1b1b1b;
+  /* Every brick gets the 3px moulding line: cards, list groups, list cards. */
+  --card-border-width: 3px;
+  --card-border: #1b1b1b;
+  --list-border-width: 3px;
+  --list-border: #1b1b1b;
+  --list-card-border-width: 3px;
+  --list-card-border: #1b1b1b;
   --table-head-bg: var(--flare);
   --table-head-fg: #ffffff;
   --row-selected-bg: #f5c400;
@@ -56,6 +64,39 @@ html[data-theme="lego-classic"] {
   --overlay-bg: rgba(27, 27, 27, 0.5);
   --badge-radius: 0;
   --indicator-fg: var(--flare);
+  /* Blue is the booklet's structural colour: selection, navigation and
+     links. Red stays on primary and danger actions. */
+  --link: var(--flare);
+  --tab-fg-active: var(--flare);
+  --tab-underline-active: var(--flare);
+  --segmented-item-bg-active: var(--flare);
+  --segmented-item-fg-active: #ffffff;
+  --toggle-btn-bg-on: var(--flare);
+  --toggle-btn-fg-on: #ffffff;
+  --pagination-item-bg-active: var(--flare);
+  --pagination-item-fg-active: #ffffff;
+  --pagination-item-fg: var(--text);
+  --pagination-item-radius: 0.2rem;
+  --carousel-arrow-bg: var(--surface);
+  --carousel-dot-active: var(--flare);
+  --carousel-radius: 0.2rem;
+  /* The booklet's brighter brick blue for fills that carry no text. */
+  --progress-fill: #2a85d4;
+  --badge-bg-active: var(--flare);
+  --badge-fg-active: #ffffff;
+  --bulk-bar-bg: var(--accent-2);
+  --bulk-bar-fg: #1b1b1b;
+  --badge-border: #1b1b1b;
+  --skeleton-radius: 0.2rem;
+  /* Red, blue, yellow, green, black, grey: the six brick colours, no repeats. */
+  --chart-series-1: var(--accent);
+  --chart-series-2: #2a85d4;
+  --chart-series-3: var(--warning);
+  --chart-series-4: var(--success);
+  --chart-series-5: #1b1b1b;
+  --chart-series-6: #8a8d90;
+  /* A baseplate has a hard edge, not a fade. */
+  --app-gutter-fade: 0px;
 
   --app-bar-bg: var(--flare);
   --app-bar-rule-width: 3px;
@@ -120,7 +161,7 @@ html[data-theme="lego-classic"] h3 { font-weight: 800; }
 html[data-theme="lego-classic"] {
   --stud-host: var(--surface);
   --stud-lit: rgba(255, 255, 255, 0.35);
-  --stud-rim: rgba(0, 0, 0, 0.3);
+  --stud-rim: rgba(0, 0, 0, 0.45);
 }
 html[data-theme="lego-classic"] .panel-header::before,
 html[data-theme="lego-classic"] .modal-header::before,
@@ -132,10 +173,10 @@ html[data-theme="lego-classic"] .app-bar::after {
   inset: 3px 6px auto 6px;
   height: 22px;
   background-image:
-    radial-gradient(circle at 15px 10px, var(--stud-host) 0 8px, transparent 8.5px),
-    radial-gradient(circle at 14px 9px, var(--stud-lit) 0 8px, transparent 8.5px),
-    radial-gradient(circle at 16.5px 11.5px, var(--stud-rim) 0 8.5px, transparent 9px),
-    radial-gradient(circle at 15px 10px, rgba(0, 0, 0, 0.12) 0 9px, transparent 9.5px);
+    radial-gradient(circle at 14.2px 10.2px, var(--stud-host) 0 7.8px, transparent 8.2px),
+    radial-gradient(circle at 13.6px 9.6px, var(--stud-lit) 0 7.6px, transparent 8px),
+    radial-gradient(circle at 15px 11px, var(--stud-rim) 0 8.6px, transparent 8.9px),
+    radial-gradient(circle at 15px 11px, #1b1b1b 0 9.4px, transparent 9.9px);
   background-size: 32px 22px;
   background-repeat: space no-repeat;
   pointer-events: none;
@@ -177,7 +218,7 @@ html[data-theme="lego-classic"] {
   --bar-chart-bar: var(--accent);
   --bar-chart-bar-alt: var(--accent-2);
   --bar-chart-radius: 0.2rem 0.2rem 0 0;
-  --bar-chart-shadow: inset 0 0 0 2px #1b1b1b, inset 4px 0 0 2px rgba(255, 255, 255, 0.25);
+  --bar-chart-shadow: inset 0 0 0 2px #1b1b1b;
 }
 
 /* The stud strip is 26px tall and sits at the top of the brick, so the
@@ -262,6 +303,32 @@ html[data-theme="lego-classic"] .toggle-btn:not(:has(input:checked)) { box-shado
 /* Booklet step numerals: big, heavy, tight. */
 html[data-theme="lego-classic"] :is(h1, .stat-value) { font-weight: 900; letter-spacing: -0.02em; }
 html[data-theme="lego-classic"] .steps > li::before { font-weight: 900; }
+/* Stat numbers are step numerals, not code: the heavy sans, not the mono. */
+html[data-theme="lego-classic"] .stat-value { font-family: var(--font); font-variant-numeric: tabular-nums; }
+
+/* Coloured badges are solid primaries with the black moulding line, never
+   pastel tints. */
+html[data-theme="lego-classic"] .badge { border-width: 2px; }
+html[data-theme="lego-classic"] .badge-accent { --badge-bg: var(--accent); --badge-fg: var(--on-accent); }
+html[data-theme="lego-classic"] .badge-danger { --badge-bg: var(--danger); --badge-fg: var(--on-danger); }
+html[data-theme="lego-classic"] .badge-success { --badge-bg: var(--success); --badge-fg: var(--on-success); }
+html[data-theme="lego-classic"] .badge-warning { --badge-bg: var(--warning); --badge-fg: #1b1b1b; }
+html[data-theme="lego-classic"] .avatar { box-shadow: 0 0 0 2px #1b1b1b; }
+
+/* Info is blue (structure), not the red of action and danger. */
+html[data-theme="lego-classic"] .alert-info { --alert-border: var(--flare); }
+
+/* Tables are bricks too: a 3px outline and the 4px drop. */
+html[data-theme="lego-classic"] .table { border: 3px solid #1b1b1b; box-shadow: var(--panel-shadow); background: var(--surface); }
+/* Pagination items and carousel arrows: small 1x1 bricks. */
+html[data-theme="lego-classic"] .pagination-item { border: 2px solid #1b1b1b; font-weight: 700; }
+html[data-theme="lego-classic"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border: 2px solid #1b1b1b; }
+html[data-theme="lego-classic"] .skeleton { outline: 2px solid #1b1b1b; outline-offset: -2px; }
+
+/* XL: the page column is a brick standing on the baseplate, hard-edged. */
+@media (min-width: 1801px) {
+  html[data-theme="lego-classic"] .app { box-shadow: -3px 0 0 #1b1b1b, 3px 0 0 #1b1b1b; }
+}
 
 /* Square brick switch: the 3px track border leaves less room inside, so the
    1x1 knob shrinks to sit 2px clear of the moulding line on every side. */
