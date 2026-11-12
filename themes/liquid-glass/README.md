@@ -34,41 +34,65 @@ touching the edge of the screen.
    inset around it (window 28px around 0.6rem-inset capsules; menu 18px
    around 12px items with 6px padding).
 4. **Content scrolls under the glass.** The toolbar and tab bar are
-   `position: sticky` over the window, and the wallpaper is
-   `background-attachment: fixed`, so the blur always has moving, colourful
-   content behind it. Glass over a flat colour is just a grey pill.
+   `position: sticky` over the window, and the wallpaper is a fixed layer
+   (`html::after`, so the compositor paints it once instead of a
+   `background-attachment: fixed` repaint every frame), so the blur always
+   has moving, colourful content behind it. Glass over a flat colour is just a grey pill.
 5. **Legibility beats transparency.** Small controls use the *clear*
    weight; anything carrying body text uses the *regular* weight (a 70–80%
    white scrim), and the window pane under the content is 84–88% white,
    blurred without the saturate boost, so the content layer reads as white
    and `--muted` text holds 4.5:1 over the darkest wallpaper blue. Headings
-   that can land on the wallpaper carry a faint white halo.
+   that can land on the wallpaper carry a faint white halo. Text never sits
+   on the bare wallpaper: an L0 page (no app shell) and any block beside
+   the shell get the window pane's scrim.
 6. **Colour is sparing.** One tint (systemBlue) for the prominent button,
    selected labels and focus; selection is a grey lens with a blue label
-   (or, in segmented controls and toggle groups, a lifted white lens on a
-   grey track), not a blue fill.
+   (or, in segmented controls, toggle groups and a `.btn-group`'s
+   `.btn-primary`, a lifted white lens on a grey track), not a blue fill.
+   Lists and sidebars select the same way; only table multi-select keeps a
+   pale blue band, as Finder does.
 
 ## Signature details
 
-- `--lg-rim`: four inset shadows — top-left and bottom-right specular
-  edges (light catching the curved bezel), a 0.5px white hairline, and a
-  soft inner glow standing in for the refraction band.
+- `--lg-rim`: five inset shadows — a full-white top-left and a softer
+  bottom-right specular edge (light catching the curved bezel), a 0.06
+  black lower inner edge (the lens's shaded side), a 0.5px white hairline,
+  and a soft inner glow standing in for the refraction band. `--lg-lift`
+  adds a 0.5px `rgba(0,0,0,0.11)` outer ring so the rim reads against the
+  near-white window.
+- Clear glass is a faint grey (`rgba(244,244,247,0.66)` to
+  `rgba(232,232,237,0.56)`), not white: over the white pane it reads as the
+  reference's `#ededed` bar. The selection lens is `rgba(120,120,128,0.22)`
+  (`#e1e1e3` over white).
 - `backdrop-filter: blur(14px) saturate(160%) brightness(1.08)` on clear
-  glass; `blur(28px)` on sheets and the window. The saturate is what makes
-  controls pick up the wallpaper's colour.
+  glass; `blur(28px)` on sheets and the window (16px on the window up to
+  900px). The saturate is what makes controls pick up the wallpaper's
+  colour. Glass inside a blurred bar, and anything inside the window pane
+  on phones and tablets, skips its own backdrop pass: there is nothing new
+  behind it to blur.
 - Prominent buttons are *tinted glass*: the accent fill keeps the rim and
   a lit top edge and casts a coloured bloom. On press glass **swells**
   (`scale(1.04)`) instead of sinking.
-- Tabs, the nav and the status strip read as the iOS 26 tab bar: a glass
-  capsule whose selected item is a grey lens with a blue label.
+- Tabs, the nav, the scrollspy nav and the status strip read as the iOS 26
+  tab bar: a glass capsule whose selected item is a grey lens with a blue
+  label. The capsule never wraps; it scrolls sideways.
+- Lists are inset grouped lists: 6px padding, rows as 12px lenses
+  (concentric with the 18px list), hairlines starting after the leading
+  icon.
+- Input groups stay capsules: the leading addon and the trailing field or
+  button are rounded, only the inner sides are square.
 - The switch is the iOS 26 one: wider track, a capsule knob wider than it
   is tall, systemGreen when on. The slider is Control Center's: a 0.6rem
-  capsule track (`rgba(120,120,128,0.36)`) under a white capsule thumb.
+  capsule track (`rgba(120,120,128,0.36)`) filled in systemBlue from the
+  start to a white capsule thumb (`::-moz-range-progress` in Firefox, a
+  left-only thumb border image in Chromium; the hit area stays
+  `--tap-min`).
 - The traffic lights (`#ff5f57 #febc2e #28c840`, 12px discs with a 0.5px
   ring) sit at the start of the toolbar, as in Safari on Tahoe. Desktop
   windows get real ones: close, minimise and zoom at the start of a clear
-  title bar, glyphs only on hover, each in a `--tap-min` hit box; no window
-  icon and no menu-bar strip.
+  title bar, glyphs only on hover, each in a `--tap-min` hit box; the title
+  is 13px semibold and centred; no window icon and no menu-bar strip.
 - An in-window sidebar (`.nav-rail`) is the Tahoe sidebar: a 20px rounded
   pane of clear glass, no divider, rows as 10px grey lenses with a blue
   selected label and no edge marker.
@@ -128,10 +152,12 @@ to two lines (as a 26px rounded rectangle).
 ## Typography
 
 `--font` is `-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro",
-"Helvetica Neue", Inter, system-ui, sans-serif`; `--font-mono` starts with
+"Helvetica Neue", system-ui, sans-serif`; `--font-mono` starts with
 `"SF Mono", ui-monospace, Menlo`. SF Pro is Apple-licensed and not
-vendored, so it renders only on Apple platforms; elsewhere Helvetica Neue,
-Inter or the system UI face stands in. Headings are bold with slight
+vendored, so it renders only on Apple platforms; elsewhere Helvetica Neue
+or the system UI face stands in. Inter (OFL) would be the closest free
+stand-in, but it is not vendored in `assets/fonts/` yet, so the stack does
+not name it. Headings are bold with slight
 negative tracking (the large-title voice); table headers are sentence-case
 semibold, never uppercase.
 
