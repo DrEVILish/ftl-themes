@@ -101,7 +101,8 @@ show's extended face, so headings and values are widened with tracking
 (0.14em on headings, 0.05em on stat values) and values run about 2.5x
 their labels. Headings, labels, tabs, badges, buttons, toggle keys,
 segments, chips, selects, menu entries and short list labels are
-uppercase and tracked. Text inputs show caps too, except email, URL,
+uppercase and tracked (keys packed into a row, toggles and segments, track
+0.06em so the longest label fits a phone). Text inputs show caps too, except email, URL,
 password and search fields and textareas, which keep the case the user
 typed. Body copy and titled list rows keep their case so long text stays
 readable. In a table cell a control drops its tracking and a date input
@@ -121,6 +122,7 @@ All pairs meet the lint floors and no exemptions are claimed.
 | slider track `--border` `#1c8a72` on `--bg` | 4.3 |
 | field-cell outline `--silo-field` `#33735c` on `--surface` | 3.1 |
 | waveform marker ink `#d4f8ee` on the tinted chips | 6.6+ |
+| tinted avatar chips take the same ink; a lit pad tints at 24% so `--text` stays at 5.1 | 7.3 / 5.1 |
 | dark ink `#06201a` / danger ink `#7a1406` on the yellow-green band | 11.0 / 7.0 |
 | plate text `#052019` on plate `#8fd3cc` | 10.1 |
 | legacy `--text` `#f1dcae` / `--muted` `#c4a46a` on surface | 14.3 / 8.2 |
