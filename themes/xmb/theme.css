@@ -9,20 +9,49 @@
  * the "cross" the name describes.
  */
 
+/* The PS3 face (SCE Rodin) isn't free and system stacks fall back to a wide,
+   heavy humanist on Linux; Titillium Web is the closest light, open sans the
+   library already ships (OFL, assets/fonts/NOTICE.md). Its own metrics give
+   a 1.52em content box, which crowds the text box of small buttons; the
+   overrides bring it to a system-sans 1.18em with the caps still centred. */
+@font-face {
+  font-family: "XMB Titillium";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 300 500;
+  font-display: swap;
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "XMB Titillium";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
 html[data-theme="xmb"] {
   --motion-leave: iris;
   color-scheme: dark;
-  --bg: #0a1730;
-  --surface: rgba(255, 255, 255, 0.08);
-  --surface-2: rgba(255, 255, 255, 0.14);
-  --border: rgba(255, 255, 255, 0.22);
-  --hairline: rgba(255, 255, 255, 0.12);
-  --text: #eaf2ff;
-  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces. */
-  --muted: #b9cbe8;
+  /* Royal blue, sampled from the RetroArch capture (#0056b9 upper left,
+     #012e89 lower middle). */
+  --bg: #0050b0;
+  /* Glass tinted the wave's own deep blue, not white: a white tint over the
+     blue reads grey, and the deep tint keeps --muted above AA on top of the
+     brighter parts of the wave. */
+  --surface: rgba(0, 22, 80, 0.3);
+  --surface-2: rgba(110, 180, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.28);
+  --hairline: rgba(255, 255, 255, 0.16);
+  --text: #f2f7ff;
+  /* Muted carries labels and table headers, so it meets AA (4.5:1) on --bg and on the glass. */
+  --muted: #d3e0f5;
   --accent: #7ec8ff;
   --accent-2: #bfe4ff;
-  --danger: #ff6b6b;
+  --danger: #ff9e9e;
   --success: #6bffb0;
   --warning: #ffd76b;
   --on-accent: #04162e;
@@ -38,7 +67,7 @@ html[data-theme="xmb"] {
      surface now gets a soft, generously-rounded rectangle instead of a
      stadium. */
   --radius: 0.85rem;
-  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font: "XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #bfe4ff;
 
@@ -56,10 +85,10 @@ html[data-theme="xmb"] {
   --btn-radius: 999px;
   --focus: var(--accent);
   --focus-ring: 0 0 0 3px rgba(126, 200, 255, 0.4);
-  --input-bg: rgba(255, 255, 255, 0.08);
-  --input-border: rgba(255, 255, 255, 0.25);
-  --panel-border: rgba(255, 255, 255, 0.18);
-  --panel-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --input-bg: rgba(0, 20, 70, 0.3);
+  --input-border: rgba(255, 255, 255, 0.3);
+  --panel-border: rgba(255, 255, 255, 0.25);
+  --panel-shadow: 0 8px 30px rgba(0, 10, 50, 0.35);
   --panel-radius: 0.9rem;
   /* Overlays are the one exception to "nothing is a filled block". A PS3
      system dialog (references/xmb/modalDialog*.jpg) dims the XMB nearly
@@ -77,25 +106,75 @@ html[data-theme="xmb"] {
   --tooltip-bg: rgba(8, 18, 40, 0.96);
   --table-head-bg: rgba(255, 255, 255, 0.06);
   --table-head-transform: none;
-  --row-selected-bg: rgba(126, 200, 255, 0.18);
+  --row-selected-bg: rgba(255, 255, 255, 0.14);
   --row-active-marker: inset 0.2rem 0 0 var(--accent);
   --nav-bg: transparent;
   --nav-item-radius: 999px;
   --dropdown-bg: rgba(10, 23, 48, 0.95);
-  --overlay-bg: rgba(0, 4, 12, 0.78);
-  --overlay-blur: blur(6px);
+  /* No blur: the overlay is already 82% opaque, and the blur cost frames. */
+  --overlay-bg: rgba(0, 4, 20, 0.82);
+  --overlay-blur: none;
   --indicator-fg: var(--accent);
   --indicator-track: rgba(255, 255, 255, 0.15);
+
+  /* Selection is a glow, not a fill: every "current item" state is a pale
+     glass lift with white text; the glow itself is added below. Solid
+     accent stays on .btn-primary only. */
+  --segmented-item-bg-active: rgba(255, 255, 255, 0.2);
+  --segmented-item-fg-active: #ffffff;
+  --pagination-item-bg-active: rgba(255, 255, 255, 0.2);
+  --pagination-item-fg-active: #ffffff;
+  --dropdown-item-bg-hover: rgba(255, 255, 255, 0.18);
+  --dropdown-item-fg-hover: #ffffff;
+  --listbox-option-bg-active: rgba(255, 255, 255, 0.2);
+  --listbox-option-fg-active: #ffffff;
+  --calendar-selected-bg: rgba(255, 255, 255, 0.24);
+  --calendar-selected-fg: #ffffff;
+  --badge-bg-active: rgba(255, 255, 255, 0.22);
+  --badge-fg-active: #ffffff;
+  --toggle-btn-bg-on: rgba(255, 255, 255, 0.2);
+  --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: rgba(255, 255, 255, 0.6);
+  --desktop-icon-label-bg-selected: rgba(255, 255, 255, 0.22);
+  --desktop-icon-label-fg-selected: #ffffff;
+  /* Keys read --muted by default; on a console's grey key that sank to 4.47:1. */
+  --key-fg: var(--text);
+  /* Rails and toolbars float on the wave instead of sitting as slabs. */
+  --nav-rail-bg: transparent;
+  --nav-rail-rule: var(--hairline);
+  --toolbar-bg: transparent;
 }
 
-/* The wave: a soft radial glow low in the frame, over the deep-blue base —
-   PS3's signature moving background, static here but the same composition. */
-html[data-theme="xmb"] {
-  background:
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(90, 160, 230, 0.35), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 20% 0%, rgba(60, 110, 180, 0.25), transparent 60%),
-    linear-gradient(180deg, #050d1e 0%, #0a1730 55%, #123058 100%);
+html[data-theme="xmb"] :is(.segmented-item.is-active, .pagination-item.is-active,
+  .listbox [role="option"].is-active, .calendar-day:is([aria-pressed="true"], [aria-selected="true"]),
+  .badge-button.is-active, .toggle-btn:has(input:checked)) {
+  box-shadow: 0 0 14px rgba(191, 228, 255, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.45);
 }
+html[data-theme="xmb"] :is(.toolbar, .nav-rail) { border-radius: var(--panel-radius); }
+/* The diverging scale's positive end is a mid blue, not the pale accent:
+   a label on a full-strength cell stays legible. */
+html[data-theme="xmb"] { --chart-div-pos: #2a7de0; }
+/* Desktop windows overlap: each is near-opaque smoked glass, like the
+   system dialog, so the window behind can't show through its text. */
+html[data-theme="xmb"] .desktop-window { --modal-bg: rgb(12, 30, 72); }
+
+/* The wave: royal blue lit from the top right and falling to navy at the
+   bottom left (sampled from xmb-retroarch-main-menu.jpg), with the
+   translucent white ribbon sweeping across the middle of the screen. */
+html[data-theme="xmb"] {
+  --xmb-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300L1200 352C1000 430 800 385 600 345S220 300 0 362Z' fill-opacity='.12'/%3E%3Cpath d='M0 345C250 285 420 285 600 330S980 410 1200 350L1200 380C980 445 780 405 600 372S240 340 0 398Z' fill-opacity='.08'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300' stroke-opacity='.32' stroke-width='2'/%3E%3Cpath d='M0 362C220 300 400 305 600 345S1000 430 1200 352' stroke-opacity='.22' stroke-width='1.5'/%3E%3Cpath d='M0 398C240 340 420 330 600 372S980 445 1200 380' stroke-opacity='.15' stroke-width='3'/%3E%3C/g%3E%3C/svg%3E");
+  background:
+    var(--xmb-wave) 0 31vh / 100% 46vh no-repeat,
+    radial-gradient(ellipse 42% 16% at 100% 0%, rgba(3, 152, 246, 0.85), transparent 80%) 0 0 / 100% 100vh no-repeat,
+    radial-gradient(ellipse 70% 55% at 0% 100%, rgba(2, 16, 89, 0.85), transparent 70%),
+    linear-gradient(215deg, #0162c6 0, #0058bc 300px, #013f9f 70%, #021a6a 100%);
+  /* The highlight and the ribbon are sized to the first screen, not the
+     document, so a long scrolled page keeps them where the eye starts
+     (centred on the screen's middle, as in the captures) rather than
+     stretched down its whole length. */
+}
+
+html[data-theme="xmb"] body { font-weight: 300; }
 
 html[data-theme="xmb"] h1,
 html[data-theme="xmb"] h2,
@@ -143,36 +222,44 @@ html[data-theme="xmb"] .nav {
   justify-content: safe center;
   gap: 1.75rem;
 }
-/* `justify-content: center` above is correct and does win here (it's the
-   highest-specificity rule either page applies to .app-bar/.nav),
-   but it has no visible effect on the QA harness's own topbar markup:
-   example.html's header puts an inline `margin-left:auto` spacer before
-   the breadcrumbs, and example-2/3.html's `.demo-topbar-spacer` sets
-   `flex: 1`. Either one absorbs 100% of the row's free space by itself,
-   so there's nothing left for `justify-content` to distribute — the
-   brand+items are pinned flush left regardless. That's a property of
-   the harness's fixed nav markup (which this theme must not edit), not
-   a bug in this rule: an app that lays out its own `.app-bar`
-   without such a spacer gets the real centred cross-bar. See README
-   "Adoption" / "Tell-tales". Compensating here with more of the float-
-   and-glow language the layout is actually judged on: a stronger active-
-   item glow and a bar that visibly floats (translucent + blurred) over
-   the wave rather than sitting flush with it. */
+/* The category row sits in the middle of the bar. The demo headers push
+   their tools right with an auto-margin spacer (`.push`, an inline
+   margin-left:auto span, `.demo-topbar-spacer`), which would pin the row
+   flush left; the theme gives that free space to the row's own margins
+   instead, so it centres between the brand and the tools. */
+html[data-theme="xmb"] .app-bar > :is(.push, .demo-topbar-spacer, [style*="margin-left:auto"], [style*="margin-left: auto"]) {
+  margin-inline-start: 0;
+  flex-grow: 0;
+}
+html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) { margin-inline: auto; }
+html[data-theme="xmb"] .app-bar :is(.nav-item, [role="menubar"] > li > [role="menuitem"]) {
+  font-size: 1.05rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+/* The selected category is the lit one: white, a soft halo, slightly larger. */
+html[data-theme="xmb"] .app-bar :is(.nav-item.is-active, [role="menubar"] > li > [role="menuitem"].is-active) {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(191, 228, 255, 0.9);
+  font-weight: 400;
+}
 html[data-theme="xmb"] .nav-item.is-active {
   box-shadow: 0 0 22px rgba(126, 200, 255, 0.55);
 }
+/* A smoked-glass capsule: the bar sits on the brightest part of the wave,
+   so a deep tint (not a blur, which cost frames for nothing behind it)
+   keeps its labels legible. */
 html[data-theme="xmb"] .app-bar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(0, 24, 84, 0.42), rgba(0, 24, 84, 0.28));
   border-radius: 999px;
   margin: 0.5rem 1rem 0;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 10, 50, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 /* --- v5 tiers ------------------------------------------------------------ *
  * Touch tiers: the bar wraps to two lines, and a 999px stadium round a
  * two-line bar clips the ends of both. It becomes a rounded glass slab
- * (still floating, still blurred) that spans the content width. Phones
+ * (still floating smoked glass) that spans the content width. Phones
  * also trade the 1rem frame round the shell for content width. */
 @media (max-width: 900px) {
   html[data-theme="xmb"] .app-bar {
@@ -187,11 +274,10 @@ html[data-theme="xmb"] .app-bar {
 
 /* XL gutters (v5, PLAN.md §3): the XMB wave carries on beside the
    content: three thin translucent light ribbons crossing the gutters,
-   within ~1.3:1 of --bg. They drift sideways once every two minutes,
+   the same ribbon as the page background. They drift sideways once every two minutes,
    only with motion allowed, the way the PS3 wave never sat still. */
 html[data-theme="xmb"] {
-  --app-gutter-art:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23bfe4ff'%3E%3Cpath d='M0 330C200 250 400 250 600 320S1000 400 1200 330' stroke-opacity='.10' stroke-width='2'/%3E%3Cpath d='M0 360C220 300 380 290 600 350S980 420 1200 360' stroke-opacity='.07' stroke-width='6'/%3E%3Cpath d='M0 300C180 230 420 230 600 290S1020 380 1200 300' stroke-opacity='.05' stroke-width='14'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 1200px 100% repeat-x;
+  --app-gutter-art: var(--xmb-wave) 0 58% / 1200px 46% repeat-x;
 }
 @media (min-width: 1801px) and (prefers-reduced-motion: no-preference) {
   html[data-theme="xmb"]:not([data-motion="reduced"])::before {
@@ -202,12 +288,6 @@ html[data-theme="xmb"] {
   to { background-position: 1200px 0; }
 }
 
-/* --- Print ----------------------------------------------------------------
- * Core's generic print reset already clears the wave background (the
- * html-level gradient) and .app-bar's own background/box-shadow, but
- * not backdrop-filter, which isn't a background property. Left on, it's
- * inert once there's nothing behind the bar to blur, but not worth
- * shipping to a print target regardless. */
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * soft glowing light columns. */
 html[data-theme="xmb"] {
@@ -217,11 +297,6 @@ html[data-theme="xmb"] {
   --bar-chart-shadow: 0 0 0.6rem rgba(126, 200, 255, 0.35);
 }
 
-@media print {
-  html[data-theme="xmb"] .app-bar {
-    backdrop-filter: none !important;
-  }
-}
 /* Window caption buttons sit together at the bar's right end with the
    close button (core pushes only close). */
 html[data-theme="xmb"] .modal-header > .btn-min { margin-inline-start: auto; }
@@ -242,4 +317,8 @@ html[data-theme="xmb"] .modal-header > .btn-close {
    --surface: mixed into a translucent white it stayed see-through, and on
    a highlighted (pale blue) listbox option its light initials sank to
    1.5:1. */
-html[data-theme="xmb"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 28%, var(--bg)); }
+html[data-theme="xmb"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 28%, #021a4a); }
+
+/* Titillium's narrow glyphs let an auto-layout table squeeze an inline
+   field below a usable target on a folded phone; keep it a tap wide. */
+html[data-theme="xmb"] td > .input { min-inline-size: 3rem; }
