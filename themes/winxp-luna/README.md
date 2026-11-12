@@ -21,8 +21,11 @@ someone says "Windows XP."
    filled surface — the title bar, buttons, the nav bar — is what separates
    Luna from the flat Windows 95 look it replaced. Losing the highlight
    line at the top of the title bar is the single biggest tell.
-2. **Round, never sharp.** `--radius: 8px`, and windows themselves get
-   rounded top corners. XP retired square dialogs on purpose.
+2. **Round, never sharp — but never a pill.** Windows get 8px rounded
+   top corners (`--modal-radius`, `--app-bar-radius`); the controls inside
+   them are 3px (`--radius: 3px`, as on the push button). XP retired square
+   dialogs on purpose, and never drew a stadium: badges, chips, the FAB and
+   the switch are 3px, list boxes and their selection bar square.
 3. **Blue chrome, tan content.** The title bar and taskbar are the vivid
    royal blue (`#0054e3`); the actual working area is the calmer
    `#ece9d8` tan, with white cards for real content. Don't paint the
@@ -31,8 +34,10 @@ someone says "Windows XP."
    for the Start pill and the transport's GO (`.btn-go`); dialog buttons,
    including the primary one, are the white-to-beige Luna push button —
    the primary one marked, as XP marked its default button, by a blue
-   inner glow. `.btn-success` stays green. The selection blue (`#316ac5`)
-   is for "this row is chosen," not "click me."
+   inner glow. `.btn-success` stays green. The selection blue (`#316ac5`,
+   `--accent-2`) is for "this row is chosen," not "click me": table rows,
+   list and menu highlights, the active nav item, pagination, segmented and
+   toggle buttons and calendar days all use it, never the chrome `#0054e3`.
 5. **Tahoma, not a modern system font.** Segoe UI is the *next* Windows —
    swapping it in undoes the one typographic signal that says "XP."
 
@@ -49,12 +54,40 @@ someone says "Windows XP."
   button wears the blue one.
 - Panels and cards are **group boxes**: a `#d0d0bf` hairline frame with
   3px corners and the caption in `#0046d5`, sitting on the frame line.
-- Tabs are raised, round-topped, the selected one white with the orange
-  `#ffc83c`/`#e68b2c` hot-track line on top.
+- Tabs are raised, round-topped, white-to-`#ecebe6` in a `#919b9c` frame,
+  the selected one `#fcfcfe` with the orange `#ffc83c`/`#e68b2c` hot-track
+  line on top. A `.tabset`'s panel is the tab page: `#fcfcfe` boxed in
+  `#919b9c` on three sides, so the selected tab merges into it.
+- Selects carry the combo box's drop-down button: on the blue schemes a
+  pale blue `#c1d3fb` face in a `#b8cbf6` edge, 1px inside the field, with
+  the scroll arrow's navy `#4d6185` chevron; Silver `#e3e4ec → #c8c9d6` in
+  `#a8a9c0` with a `#4d4d6a` chevron, Olive `#e1e8c7 → #bcc99a` in
+  `#a4b080` with `#3d4a1f`, Zune and Royale Noir neutral grey.
+- Filter chips (`.badge-button`) are toggle push buttons: the push-button
+  face and `#003c74` frame, pressed in `#316ac5`. The switch is a white
+  well in the field's `#7f9db9` frame, filled `#316ac5` when on, with the
+  trackbar thumb's `#f3f3ef` face and `#778892` edge as its knob.
+- A changed cell in a selected row keeps the plain selection fill; only
+  the orange leading bar marks it.
+- Toasts are the notification balloon: cream `#ffffe1`, black hairline,
+  6px corners, soft drop shadow; a status toast keeps its colour as a
+  thick inline-start edge.
+- `.btn-danger` and `.btn-success` get the GO button's gloss: lighter top,
+  darker foot, white 1px lip, darker edge.
 - Checkboxes and radios are the Luna glyphs: beige-to-white wells in a
   `#1c5180` frame, green tick / green dot, orange glow on hover.
 - Progress is XP's segmented green block bar; the status strip is the
-  taskbar's own gradient.
+  taskbar's own gradient. Tray text is white (dark on Olive, Silver and
+  Royale's pale wells), muted strip text a softened `--app-status-fg`.
+- Page titles are compact Trebuchet (`1.6rem`); a section `h2` is
+  Explorer's: bold black over a 1px rule fading from `#4197ff` to nothing.
+- Toolbar and list glyphs, and mono glyphs in panels, cards and the plain
+  content area, take the Luna blue `#1f5fbf` (blue schemes), as XP's
+  toolbar icons were coloured, not black; not inside a filled, selected,
+  hovered-item or status parent, nor on the desktop wallpaper.
+- The trackbar groove's `#9d9da1` edge is painted into its 4px content box
+  (no border, `background-origin: content-box`, sideways on a vertical
+  fader), since core's 24px/44px hit area hides the border.
 - **Boot screen** (`.splash`): black, the four-pane flag, and three blue
   blocks marching through a rounded grey track (core's indeterminate
   sweep). `gallery.html` shows it while the themes load.
@@ -96,11 +129,11 @@ the window shape is shared, only the paint changes.
 | `data-variant` | Look |
 |---|---|
 | *(none)* | Luna Blue: royal-blue gloss, beige `#ece9d8` dialog face. |
-| `royale` | Royale / Media Center "Energy Blue": a glassier title bar with a strong upper highlight, cool grey-lilac `#ebe9ed` face, deep navy taskbar. |
+| `royale` | Royale / Media Center "Energy Blue": a glassier title bar with a strong upper highlight, cool grey-lilac `#ebe9ed` face, deep navy taskbar. The page's app bar is the measured caption's saturated lower half (`#3a76c8` to `#2e5ab4`, held for 4.6:1 under white) under an inset band of its bright `#7bb9ef` upper half. |
 | `royale-noir` | Royale Noir: glossy black chrome and caption buttons, neutral grey `#ececec` face, graphite `#4a4a4a` selection. The orange hot-track and green Start survive. |
 | `zune` | The Zune theme (2006): Royale Noir's black glass with burnt-orange Start/GO, selection and headings on a neutral grey face. Orange deepened to `#a54400` for 4.5:1 under white. |
 | `embedded` | XP Embedded / Windows Embedded Standard: deeper, flatter steel-blue title bar and taskbar, grey-blue face, **blue** Start/GO instead of green. |
-| `olive` | Olive Green ("HomeStead"): olive title bar and taskbar, Luna's beige face, olive selection, green Start. The olive is held dark enough for white title text (the real highlight band was lighter). |
+| `olive` | Olive Green ("HomeStead"): olive title bar and taskbar, Luna's beige face, olive selection, green Start. The bar is the pale measured olive, so its brand, nav items, icon buttons and breadcrumbs take dark #1f2a10 text with no shadow. |
 | `silver` | Silver ("Metallic"): light silver title bar and taskbar with **dark** title and taskbar text, silver caption buttons with dark glyphs (red close kept), cool grey face, grey selection with black text. |
 
 ## Layout
@@ -119,14 +152,14 @@ Luna background filling the well between them.
 ## Don'ts
 
 - **No flat, single-colour title bar** — the gloss highlight line at the top is the theme.
-- **No square window corners**, and no pill/stadium shapes either: XP is `8px` rounding, not Barbie.
+- **No square window corners**, and no pill/stadium shapes either: windows are `8px`, controls `3px`, not Barbie.
 - **No blue content area.** Blue is chrome; the well is tan `#ece9d8` and white.
 - **No green on selection.** Green is Start/GO, `#316ac5` blue is selection.
 - **No Segoe UI or system-ui swapped in for Tahoma** where Tahoma exists.
 
 ## Typography
 
-`--font` is `Tahoma, "Segoe UI", Verdana, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Segoe UI/Verdana or the generic sans render instead.
+`--font` is `Tahoma, Verdana, "DejaVu Sans Condensed", "Noto Sans", "Droid Sans", Arial, "Liberation Sans", sans-serif` (no Segoe UI; Verdana is Tahoma's wide sibling and the later faces are nearer Tahoma's width than a generic DejaVu Sans); `--font-mono` is `"Lucida Console", "Courier New", monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Verdana, DejaVu Sans Condensed or the generic sans render instead.
 
 ## Contrast honesty
 
@@ -154,6 +187,9 @@ layout at **L1**.
 
 ## Dialogs and the taskbar
 
+- A desktop window's dialog face has no padding of its own beyond the 3px
+  frame, so the title bar spans the window and the window body pads
+  itself.
 - **Every modal is an XP window:** the Luna title bar across the full
   width (rounded top corners, white bold Trebuchet caption, red close
   button), the title-bar blue carried down both sides and the bottom as a
@@ -171,9 +207,17 @@ layout at **L1**.
 
 - **Tiers.** Desktop is unchanged. Tablet keeps the glossy title bar; it
   wraps to two lines and the caption buttons pin to the first line's right
-  end. Mobile drops the decorative caption buttons (their 5.4rem would push
-  the actions onto a line of their own) and the Start button on the
-  taskbar. No rail on any tier. A bare checkbox in a table cell is drawn at
+  end; the bar reserves `67px + 0.9rem` at its right for them, so nothing
+  runs under them. On tablet the caption gloss stays on a first-line band
+  `--tap-min` tall and the wrapped row shows the caption's flat top
+  colour. On mobile the title bar is the brand row alone (29px, like XP's
+  30px caption) with only the close button; the rows the bar wraps onto
+  are XP's menu bar on the dialog face (`--bg`), black text, `#316ac5`
+  highlight, a `--border` rule above the content. Bliss behind the page
+  is its flat `#3a7bd5` sky there (a 0.4rem sliver; two page-tall
+  gradients cost scroll frames), segment buttons narrow their padding so
+  no label breaks, and the Start button leaves the taskbar.
+  No rail on any tier. A bare checkbox in a table cell is drawn at
   24px on touch tiers, as in core.
 - **Nesting.** Group-box captions sit on the frame line at every depth.
   Where a caption can't sit on a frame (a scrolling panel clips it, or the
@@ -181,7 +225,14 @@ layout at **L1**.
   the box's top. A drawer's header is the Luna title bar with the
   red-orange close button. `.btn-min`/`.btn-max` on a title bar are the
   blue glossy caption squares, cropped from each variant's own
-  `--luna-caption` strip, so every variant matches.
+  `--luna-caption` strip, so every variant matches, also when the buttons
+  are wrapped in a group inside the header.
+- **Edge spacing.** Group-box captions carry 4px of block padding (the
+  negative margin takes it back, so they stay on the frame line), tabs
+  `max(4px, 0.35em)`, header cells at least 4px.
+- **Bliss only behind a window.** A page with no `.app` window (marketing,
+  sign-in) is content, not desktop, so it sits on the `--bg` dialog face
+  instead of the sky, where its text could not be read.
 - **XL gutter art.** Bliss, washed almost out: a pale sky band and the
   rolling green hill within about 1.15:1 of the tan `--bg`. The
   full-strength Bliss behind the page gives way to `--bg` at XL. Still.
