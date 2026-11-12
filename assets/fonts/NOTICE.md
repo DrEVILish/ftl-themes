@@ -127,7 +127,7 @@ files are vendored unmodified.
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `matrix` (Share Tech Mono: app bar and headings)
 
 ## DSEG7 Classic
 

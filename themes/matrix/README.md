@@ -21,9 +21,9 @@ directly rather than an interface built for you.
 3. **Bloom, not glow.** A 2px text-shadow across all text imitates
    phosphor persistence. It is deliberately subtle — a strong glow reads as
    neon, which is a different aesthetic entirely.
-4. **Outline over fill.** Base controls are transparent with a green rule.
-   Only semantic variants take a fill, so a delete button still reads as
-   dangerous.
+4. **Outline over fill.** Base controls are a green rule on black (black,
+   not transparent, so the rain never falls through a label). Only semantic
+   variants take a fill, so a delete button still reads as dangerous.
 5. **Uppercase headings, tracked.** Terminal banner conventions.
 6. **Hard rectangles.** Badges, filter chips, switches, slider thumbs,
    icon buttons, avatars, carousel arrows and dots, and checkboxes are
@@ -32,32 +32,36 @@ directly rather than an interface built for you.
 ## Signature details
 
 - **The digital rain**: real glyph columns filling the frame top to bottom,
-  mixing mirrored digits and capitals with katakana-like stroke glyphs drawn
-  as SVG paths (about a third of the near layer's cells), each streak a
-  bright `#00ff41` tail (full strength from 40% of its length) ending in a
-  white-hot head with a doubled green blur glow, plus faint
-  residual glyphs between streaks, at uneven column pitch. Two SVG tiles
-  with coprime widths, so the wall never visibly repeats: a near 997px tile
-  at 14px on `html::after` (layer opacity 1) and a far 613px, dimmer
-  text-only tile at 10px on `body::before` (0.5; dropped on touch screens to keep the frame
-  budget). Streaks wrap across the
-  tile's bottom edge, so the loop has no seam. Each layer falls by `transform: translateY` of one
-  tile height (13s and 19s), so it loops seamlessly and composites rather
-  than repainting (both layers carry `will-change: transform`). With reduced motion the columns stand still.
-- Light text carries the bloom plus a black halo (2px twice, then 8px), so
+  all mirrored: about two thirds katakana-like stroke glyphs drawn as SVG
+  paths, the rest digits and the film's few symbols (`Z : = * " < > . + |`),
+  no Latin capitals. Each streak is a bright `#00ff41` tail ending in a
+  white-hot head whose glow is baked in as a wide translucent stroke (no SVG
+  filter), with faint residual glyphs between streaks and smaller, dimmer
+  far columns in some gaps for depth. One 997x960 tile on `html::after`
+  wraps across its bottom edge, so the loop has no seam; the layer falls by
+  `transform: translateY` of one tile height every 13s and composites
+  rather than repainting (`will-change: transform`). With reduced motion
+  the columns stand still.
+- Light text carries the bloom plus a black halo (2px, then 5px), so
   glyphs standing on the rain have a dark moat; a bare `aside` standing on
   the rain also gets an 80% black backing, at zero class specificity so a
   drawer or panel keeps its own fill. The halo's alpha is
   computed from the text's own lightness (relative colour from
   `currentColor`), so dark labels on lit fills get none; controls keep
   bloom only.
-  The content well is a 35% black wash over the rain, so the code wall
+  The content well is a 50% black wash over the rain, so the code wall
   stays bright between panels; panels and tables
-  are opaque.
+  are opaque. Pagination is a strip of cells on black; the current page is
+  a `--surface-2` cell with a lit `#00ff41` rule.
 - Panel rules are a lit `#1a9a2a` with a 24px inward glow; modals, toasts
   and alerts get the SYSTEM FAILURE double rule (black gap, then a 1px lit
-  line, in the alert's state colour). The app bar and panel headers carry
-  the operator console's ruled LCD plate: faint 3px phosphor scanlines.
+  line, in the alert's state colour). The app bar is the operator console's toolbar plate: a dark green
+  `#0b3d1c` to `#062a12` gradient with faint 3px scanlines and a 2px bevel
+  (lit `#1f6a3a` top, dark bottom); panel headers keep the scanlines on
+  near-black. A focused input lights up as the film's "Searching..." field:
+  a bright `#00ff41` rim, outer and inner glow, and a `#06200d` fill.
+- Warning is white-hot only in its text: the warning alert's rules and the
+  solid warning badge use the brighter green step `#7dff9a`.
 - Checkboxes and radios are drawn as green-ruled cells (phosphor fill and
   black tick when checked); the slider track is the lit rule colour (in Firefox the part up to
   the thumb lights `#00ff41`). The bar chart's highlighted column is a
@@ -105,12 +109,12 @@ flicker animation communicate anything.
 
 ## Typography
 
-`--font` (and `--font-mono`) is `"IBM Plex Mono", "DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`. Everything is monospace, and a clean sans mono leads so the width is similar on every platform (Courier New's serif typewriter face is last-resort only). **Nothing is vendored.** On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain mixes mirrored digits and Latin capitals in the system monospace with a dozen katakana-like shapes (ア イ ウ エ オ ハ ミ ヒ シ リ カ ツ) drawn as SVG strokes, which need no font.
+`--font` (and `--font-mono`) is `"DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`: a clean sans mono for running text, so long copy stays legible and lands at a similar width everywhere (Courier New's serif typewriter face is last-resort only). The app bar (`--app-bar-font`) and h1-h3 use `--font-console`, **Share Tech Mono** (vendored, OFL, `assets/fonts/ShareTechMono-Regular.woff2`), the squared LCD-style mono closest to the operator console's "Searching..." field, falling back to `--font`. On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain draws a score of katakana-like shapes as SVG strokes (no font needed) beside mirrored digits and symbols in the system monospace.
 
 ## Contrast honesty
 
 - **Phosphor green `#00ff41` is unlifted.** The `theme.css` header says it matches the reference on-screen code's hex; `RESEARCH.md` records no hex, so that claim could not be verified from the folder. It is 15.38:1 on black and 14.56:1 on `--surface` `#020c02`, so no AA adjustment was needed, and black `--on-accent` `#001a06` is 13.37:1 on it.
-- **Body text** `#8cff9c` is a saturated phosphor green a step lighter than the accent (16.9:1 on black, 14.64:1 on `--surface-2`), so long copy is not pure accent; pale and white are kept for heads, focus and warnings.
+- **Body text** `#5dff7a` is a saturated phosphor green a step lighter than the accent (16.05:1 on black, 13.9:1 on `--surface-2`), so long copy is not pure accent; pale and white are kept for heads, focus and warnings.
 - **`--muted` `#5cc860`** is 9.36:1 on `--surface` and 8.56:1 on `--surface-2`: AAA on every panel.
 - **Red is the only non-green hue.** `--danger` `#ff3b3b` is 5.94:1 on black.
 - **`--border` `#1a9a2a`** is about 5.7:1 on black, so the slider track and control rules clear the 3:1 non-text floor.
