@@ -226,7 +226,9 @@ html[data-theme="msdos"] .transport,
 html[data-theme="msdos"] .card { border-style: double; border-width: 3px; border-color: #ffffff; }
 /* Menus, popovers, list boxes, alerts and toasts are double-line boxes too;
    alerts and toasts keep their state colour as the line colour. */
-html[data-theme="msdos"] :is(.context-menu, .popover, .list, .alert, .toast, .switch-track) { border-style: double; border-width: 3px; }
+html[data-theme="msdos"] :is(.context-menu, .popover, .list, .alert, .toast, .switch-track, .log, .dropzone) { border-style: double; border-width: 3px; }
+/* A field group's title is underlined with the double rule too. */
+html[data-theme="msdos"] .field-group-title { border-bottom: 3px double var(--hairline); }
 html[data-theme="msdos"] .toggle-btn { border-style: double; }
 /* A lone toggle is a button: shadowed off, pressed in when on. Joined
    toggles (a .toggle-group) stay flat; the lit cell marks the choice. */
@@ -347,19 +349,21 @@ html[data-theme="msdos"] h1 {
   text-transform: uppercase;
 }
 html[data-theme="msdos"] h2 {
-  /* Medium: bright text plus a double-line rule underneath, echoing the
-     theme's double-line box borders instead of introducing a new motif. */
-  color: var(--accent-2);
+  /* Medium: the same yellow plus a double-line rule underneath, echoing
+     the theme's double-line box borders instead of introducing a new motif. */
+  color: var(--heading-fg);
   text-transform: uppercase;
   border-bottom: 3px double var(--accent-2);
   padding-bottom: 0.3em;
 }
 html[data-theme="msdos"] h3 {
-  /* Mildest: accent color only, no rule and no fill — still a step above
+  /* Mildest: yellow only, no rule and no fill — still a step above
      plain body text, a step below h2. */
-  color: var(--accent-2);
+  color: var(--heading-fg);
   text-transform: uppercase;
 }
+/* A heading under h2's double rule starts on its own text row. */
+html[data-theme="msdos"] h2 + :is(h1, h2, h3, h4) { margin-block-start: 1lh; }
 
 /* .panel-header previously fell back to transparent/muted-grey — dimmer
    than the panel's own white body text, the opposite of a header reading
@@ -655,7 +659,10 @@ html[data-theme="msdos"] :is(.spinner:not(.is-grow), .indicator)::before { conte
 html[data-theme="msdos"] td > .input { min-inline-size: var(--tap-min); }
 /* Text-mode windows had no title icon: the close box sits at the left. */
 html[data-theme="msdos"] .desktop-window .modal-header > .icon { display: none; }
-html[data-theme="msdos"] .desktop-window .modal-header { padding-inline-start: calc(0.5rem + 4ch); }
+html[data-theme="msdos"] .desktop-window .modal-header { padding-inline-start: calc(0.5rem + 4ch); width: auto; margin-inline: 0; }
+/* Turbo Vision: the title centred in the top line, [■] at the far left,
+   the _ and □ boxes at the far right edge. */
+html[data-theme="msdos"] .desktop-window .modal-header > .window-title { flex: 1; text-align: center; }
 /* One cell size: the 9x16 glyphs are drawn at 16px (h1 and stat figures
    at 32px), never at a fractional size that smears the pixels. */
 html[data-theme="msdos"] :is(small, th, .input, .select, .textarea, td, label, .label, .btn, .btn-sm, .badge, .tab, .nav-item, .breadcrumb-item,
@@ -683,7 +690,15 @@ html[data-theme="msdos"] .tab { padding: 0.25em 1ch; }
      its accessible name), so the controls fit one line. */
   html[data-theme="msdos"] .app-bar .btn:has(> kbd) { font-size: 0; padding: 0; min-inline-size: var(--tap-min); justify-content: center; }
   html[data-theme="msdos"] .app-bar .btn:has(> kbd) > .icon { font-size: 1rem; }
+  /* Its folded hint would still paint a speck of border and padding. */
+  html[data-theme="msdos"] .app-bar .btn:has(> kbd) > kbd { display: none; }
 }
+/* EDIT's menu bar: each title is its name with one blank cell either side,
+   so the demo menus fit one line of a phone. */
+html[data-theme="msdos"] .app-bar .menubar { --menubar-pad: 0; }
+html[data-theme="msdos"] .app-bar .menubar > li > :is(button, a) { padding-inline: 1ch; }
+/* The cyan cursor bar is black ink throughout: a trailing chevron too. */
+html[data-theme="msdos"] .list-item:is(.is-active, .is-selected, [aria-selected="true"]) { --muted: var(--row-selected-fg); }
 
 /* --- Polish round 3 ------------------------------------------------------ */
 /* Chart strokes are hard pixel steps, never anti-aliased slopes. */

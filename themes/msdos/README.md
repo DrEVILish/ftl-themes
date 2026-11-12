@@ -42,7 +42,8 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 - `border-style: double` at 3px is set on every bordered component
   (`.input`, `.select`, `.textarea`, `.btn`, `.panel`, `.modal`,
   `.dropdown`, `.context-menu`, `.popover`, `.list`, `.alert`, `.toast`,
-  `.toggle-btn`, the switch track) — alerts and toasts keep their state
+  `.toggle-btn`, the switch track, `.log`, `.dropzone`; a field group's
+  title is underlined with the double rule) — alerts and toasts keep their state
   colour as the line colour on the plain `#0000aa` field.
 - `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
   approximation — this theme's background is a real 16-color EGA/VGA value.
@@ -55,8 +56,9 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 - Badges are reverse-video VGA cells: black on grey, cyan, light red,
   light green or yellow. Lamps are lit cells with no glow; GO is the
   yellow primary block with the button's hard shadow.
-- Desktop windows have no title icon: the `[■]` close box sits at the
-  left of the title bar, as in DOS dialogs.
+- Desktop windows have no title icon: as in Turbo Vision, the `[■]` close
+  box sits at the far left of the title bar, the title is centred and the
+  `_` / `□` boxes sit at the far right edge.
 - Progress bars are the DOS 5 setup bar: a yellow block run in a white
   box. Meters keep their green/yellow/red ramp.
 - The phone home screen and dock are flat reverse-video cells (each app's
@@ -141,12 +143,18 @@ layout at **L1**.
 ## Shell and chrome (2026-09 pass)
 
 - **Menu bar:** the app bar is EDIT/QBasic's grey `#aaaaaa` menu bar with
-  black items; the open item is inverted (black, grey text).
+  black items, each its name with one blank cell either side (so the demo
+  menus fit one phone line); the open item is inverted (black, grey text).
 - **Boxes:** panels, cards and the work area are cyan `#55ffff`
   double-line boxes, with the panel title set *into* the top line,
   centred, reverse video — Norton's drive tab.
 - **Headings and column heads** are bright yellow `#ffff55`, no fills
-  (an `h1` on a grey dialog, sheet or bar turns VGA blue `#0000aa`).
+  (on a grey dialog, sheet or bar they turn VGA blue `#0000aa`). Tiers
+  differ by size and line: `h1` 32px, `h2` 16px over a cyan double rule,
+  `h3` 16px plain; a heading after an `h2` starts one text row down.
+- **Icons:** the core set and the most visible extended ones (player
+  transport, timer, carambola, earphone, drone) are square stepped
+  glyphs; other extended icons still fall back to the shared outline set.
 - **Charts and loaders** are flat: no translucent area fills, chart
   strokes are drawn with `shape-rendering: crispEdges`, and a
   skeleton is a still ░ shade block instead of a shimmer.
