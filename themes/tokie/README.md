@@ -50,23 +50,26 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 ## Signature details
 
 - Pebble grain is an SVG `feTurbulence` + `feDiffuseLighting` tile
-  (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
+  (200px, data-URI) under a 92%-opaque black wash on the page and an
+  88% wash on raised panels, so the pebble shows on panels as it does in
+  the references. There are no bitmaps.
 - The saddle stitch (`--tokie-stitch`) is twelve background layers: four
   runs of slanted thread beads (a 60° repeating gradient in a 3px strip,
-  6px pitch: about 2px of tone-on-tone taupe thread, `rgba(176,156,114,.5)`,
-  a 0.8px dark shade on one side so the slant reads, then about 2.2px of
+  8px pitch: about 3.8px of tone-on-tone taupe thread, `rgba(176,156,114,.38)`,
+  a 0.8px dark shade on one side so the slant reads, then about 2.4px of
   dark channel, like a pricking iron sets them; the references' thread is
   dark on dark, so the stitch shows when you look for it), four corner arcs that turn the stitch on a 5px
-  radius, and four creased grooves (75% black) with a faint lit lip. It
+  radius, and four creased grooves (88% black) with a faint lit lip. It
   costs no pseudo-elements, so any surface can wear it. On phones
-  (≤480px) it drops to the four bead runs and only panels, dialogs,
-  drawers and the bar wear it (cards are plain raised leather, with no
-  highlight gradient), and every SVG-filter tile
+  (≤480px) it drops to the four bead runs on panels, dialogs, drawers
+  and the bar, and cards keep a top and bottom bead run (flat raised
+  leather, no highlight gradient), and every SVG-filter tile
   (pebble grain, brushed hairlines) is switched off: flat leather and
   gradient-only gold keep scrolling within the frame budget on a
   throttled phone.
-- The gold is aged brass, not new jewellery: brushed runs
-  `#c9b072 → #b39650 → #a68a48`, and polished highlights cap at
+- The gold is aged brass, not new jewellery: brushed is a greyed satin
+  brass, `#c4b585 → #ad9e6c → #988a5a` (the references sample
+  `#9E9B70`–`#C3BF94`), and polished highlights cap at
   `#f0d68c` above a `#7a5718` horizon.
 - Brushed gold is anisotropic noise (`baseFrequency='0.002 0.9'`),
   stretched into horizontal hairlines over a satin vertical gradient. The
@@ -78,6 +81,13 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
   input to `--tap-min` and hides its border): a gold upper edge, a black
   channel and a faint lit lower lip; vertical sliders turn it on its side.
 - Switch thumbs are brushed-gold domes when off and polished gold when on.
+- Menus, dropdowns and popovers are lined tray compartments: a dim
+  `#3a3226` crease, a sunk top edge and a drop shadow; gold marks only the
+  hovered or active item, as a 2px lead rule. Toolbar ghost buttons keep a
+  dim `#4a3f2c` bezel. A highlighted chart bar is a darker satin brass, not
+  a grey third metal.
+- Window caption buttons (`_ □ ×`) use the UI sans at 700, not the
+  Didone title face, so their strokes hold contrast.
   No third metal.
 - Buttons: the default is a leather key with a gold bezel; primary is
   polished gold with engraved dark text; danger and success are enamelled
@@ -132,19 +142,25 @@ instead of losing their crossbars. h3, panel and dialog titles are set at
 weight 500; badges inside them use the UI sans at 600. Stat values,
 prices and readouts are set at 600 with `font-variation-settings:
 "opsz" 11`, so the '4' crossbar and the '$' stem keep their hairlines
-at 28px. UI: `Optima, "Optima nova", "URW
-Classico", "Linux Biolinum", Candara, "Segoe UI", "Noto
+at 28px. h1/h2 are
+weight 500 at `"opsz" 24`, so their hairlines hold toward the struck-foil
+weight. UI: `Optima, "Optima nova", "URW
+Classico", "Linux Biolinum O", Candara, "Segoe UI", "Noto
 Sans", Lato, "Open Sans", …, sans-serif`, the engraved-sans of luxury
-packaging. On a bare Linux box the UI falls to Noto Sans or DejaVu;
-the vendored Bodoni Moda keeps the Didone. Inside desktop windows the tabs drop to sentence case
+packaging. Linux Biolinum O (OFL, a flared Optima-class face) is
+vendored as `assets/fonts/LinBiolinum-Regular.woff2`, Regular only to stay
+in the 64 KiB per-theme font budget (bold is synthesised), so a bare
+Linux box keeps the flared UI voice; the vendored Bodoni Moda keeps the
+Didone. Inside desktop windows the tabs drop to sentence case
 so four fit on one row.
 
 ## Contrast honesty
 
-All lint pairs pass. `--text` `#ede4d1` on `--surface` `#151311` is
-above 14:1; `--muted` `#b0a184` reaches 4.5:1 on both surfaces; dark
+All lint pairs pass. `--text` `#ede4d1` on `--surface` `#1b1a18` is
+about 13.8:1; `--muted` `#b0a184` reaches 4.5:1 on both surfaces; dark
 `#1b1408` is above 7:1 on the polished highlights and the light brushed
-stops and 5.5:1 on the darkest brushed stop (`#a68a48`); the polished
+stops and 5.3:1 on the darkest brushed stop (`#988a5a`); the status
+plate's state inks were darkened to about 4:1 or better on that stop; the polished
 horizon band is decorative and sits away from the text's centre. The
 stitch thread is decorative and is never behind text. For that reason
 the bar's stitch is laid in the `.app-bar` rule, not in `--app-bar-bg`.

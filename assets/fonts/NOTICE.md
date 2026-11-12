@@ -52,6 +52,21 @@ files are vendored unmodified.
   unchanged (no Reserved Font Name is declared)
 - **Used by:** `tokie` (display face for headings, panel titles, readouts)
 
+## Linux Biolinum O
+
+- **Family:** Linux Biolinum O (Regular 400 only — `LinBiolinum-Regular.woff2`;
+  Latin-1 subset, hinting dropped, kern/liga/lnum/tnum kept, about 19 KiB)
+- **Designer:** Philipp H. Poll (Libertine Open Fonts Project)
+- **License:** dual-licensed GPL (with font exception) and SIL Open Font
+  License, version 1.1 — the font's own name table (IDs 13/14) states both;
+  vendored under the OFL
+- **Source:** CTAN `fonts/libertine/opentype/LinBiolinum_R.otf` (v1.1.8)
+- **Modified:** subset with fontTools; the family name is unchanged (the
+  name table declares no Reserved Font Name)
+- **Used by:** `tokie` (UI sans: a flared, Optima-class face for body,
+  labels and buttons where Optima/Candara are not installed; bold is
+  synthesised to stay inside the 64 KiB per-theme font budget)
+
 ## Bedstead
 
 - **Family:** Bedstead (Regular, subset to Latin, arrows, box drawing and
