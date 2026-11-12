@@ -65,7 +65,9 @@ How it differs from its neighbours:
   hard box-shadows), an inset off-white main panel with a moulded ledge, a
   **ribbed vent grille rail on the right** (3.25rem) topped by a stripe
   swatch, and a dark VFD status window.
-- Panel headers start with five black vent slots before the title.
+- Panel headers start with five black vent slots before the title (3px
+  slots on a 7px pitch, each with a 1px lit right edge so it reads as a
+  recess, not ink).
 - LED meter ladders (green, amber, red) on dark glass: every `.meter`
   fill is masked into discrete lit cells with dark gaps (the progress
   bar's 0.55rem/0.15rem pitch), counted from the zero end;
@@ -79,25 +81,39 @@ How it differs from its neighbours:
   beige recess (`#e2d6bd`) with an inset shadow and the orange marker,
   never a peach web tint.
 - At phone and tablet width the red Dymo brand keeps its whole name
-  (tracking 0.1em) and the bar links wrap under it.
+  (tracking 0.1em) and the bar links wrap under it. On phones the icon
+  keys (bell, account) ride on the brand row at the right. Icon buttons
+  are square keycaps (`--btn-icon-radius: 3px`), never circles.
+- Tabs inside a desktop window track tighter (0.03em) and scroll in one
+  row rather than wrap, so the dialog's OK/CANCEL row stays inside it.
 - Lamps are round LEDs in a 2px chrome bezel; off lamps are dark domes.
+  The live `.connection` lamp is the same LED (bezel, saturated `#3fd04a`
+  core) and only dims to 80% when it pulses.
 - Inputs are CRT wells with VFD-teal mono entry and a teal caret; a
   floating label resting in the well is dim VFD teal (`#8fb8b0`).
 - Sliders and faders have a cream cap with a dark centre line, like a
   mixer fader cap. The slider track is a 6px slot with a shadowed top
-  lip and a light lower lip (cut into the beige), drawn as a background
-  inside core's `--tap-min` hit area.
+  lip (`#8a7e68` over black) and a light lower lip (`#b5a88e` then
+  `#fffdf7`, cut into the beige), drawn as a `content-box` background
+  inside core's `--tap-min` hit area. The vertical fader is the same
+  6px slot: physical left/right padding works round core's vertical-lr
+  `padding-inline`, which would otherwise draw it the full hit width.
 - The dark surfaces (`.app-bar`, `.transport`, code blocks, the status
   window, countdowns) re-point `--text`/`--muted`/`--link` and the state-text tokens
   locally so text on them stays legible; the hero re-points only accent
   text.
+- The hero is the 808's chocolate deck with a 1px orange silk-screen
+  pinstripe inset 6px from its edge.
 
 ## v5 layout
 
 - **Tiers.** Desktop and XL keep the vent-grille rail on the right. Phone
   (≤480px) and tablet (481–900px) drop it, since it costs a 3.25rem column;
   the dark deck, its four-colour stripe and the LED status window stay.
-  Phones get a thinner housing margin and tighter tracking in the status strip, so its tray fits. The housing stipple now sits on the
+  Phones get a thinner housing margin and tighter tracking in the status strip, so its tray fits.
+  To stay inside the phone frame budget, phones (≤480px) also drop the
+  stipple, the VFD and lamp glows, the soft panel drop and the keycaps'
+  top highlight (each keycap keeps two hard shadows: skirt and drop). The housing stipple now sits on the
   page root, so it never covers the XL gutters.
 - **Nesting.** A panel inside another surface keeps its moulded header rule
   but drops the vent slots, so only the outer housing reads as vented.
@@ -111,6 +127,10 @@ How it differs from its neighbours:
   "Liberation Sans", Arial`, then **"CF Grotesk"**: the repo's vendored
   Titillium Web (OFL, `assets/fonts/`), so a machine with none of those
   gets a tight engineering grotesque, not a wide rounded system sans.
+  Known gap: Titillium's squarish caps read more 2000s tech than 70s
+  silk-screen Helvetica/Univers. A vendored neo-grotesk (Archivo, Inter
+  Tight) would be closer, but adding one lands in `assets/fonts/`,
+  outside this theme's folder.
 - `--font-mono`: Share Tech Mono (already vendored in `assets/fonts/`,
   OFL), then IBM Plex Mono and DejaVu Sans Mono.
 - Readout digits: **DSEG7 Classic Bold Italic** by keshikan (SIL OFL 1.1),
