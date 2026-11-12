@@ -34,8 +34,10 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    figures at 32px), never at a fractional size that smears the pixels;
    labels, hints, badges, table heads, buttons, menubars, logs, legends,
    chart text, tree rows, desktop icon labels, readouts, price units,
-   carousel arrows and page numbers, schedule chips, meter labels and the
-   sticky header are all 16px (a large readout or price is 32px).
+   carousel arrows and page numbers, schedule chips, meter labels, the
+   sticky header, Start-menu items, command-palette hints and keys,
+   preference hints and accent swatches are all 16px (a large readout or
+   price is 32px). A heading is followed by one blank text row.
 
 ## Signature details
 
@@ -54,11 +56,15 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
   link) and the
   panel title tab, always with black text — the `[X]` glyph included.
 - Badges are reverse-video VGA cells: black on grey, cyan, light red,
-  light green or yellow. Lamps are lit cells with no glow; GO is the
+  light green or yellow. Lamps are lit cells with no glow and no fade (a
+  live connection lamp stays lit); a user-coloured avatar is a solid
+  VGA cell with a black glyph. GO is the
   yellow primary block with the button's hard shadow.
 - Desktop windows have no title icon: as in Turbo Vision, the `[■]` close
   box sits at the far left of the title bar, the title is centred and the
-  `_` / `□` boxes sit at the far right edge.
+  `_` / `□` boxes sit at the far right edge — on a plain dialog with
+  min/max too, each box cutting its own gap in the double line. A desktop
+  dialog's tab labels never wrap.
 - Progress bars are the DOS 5 setup bar: a yellow block run in a white
   box. Meters keep their green/yellow/red ramp.
 - The phone home screen and dock are flat reverse-video cells (each app's
@@ -89,7 +95,10 @@ strip carrying the Norton Commander function-key bar along the bottom.
 
 ## Don'ts
 
-- **No radius, no shadow, no gradient, no transitions.** Text-mode cells only.
+- **No radius, no soft shadow, no gradient, no transitions.** Text-mode
+  cells only; the only shadow is the hard black one-cell block under
+  buttons, dialogs, context menus and popovers. Toasts and drawers are
+  flat.
 - **No colour outside the 16-colour VGA set.** Blue, cyan, white, yellow, light greys, light red/green.
 - **No single-line borders** where the double-line box characters belong.
 - **No proportional font.** No smooth weights.

@@ -93,6 +93,18 @@ html[data-theme="msdos"] {
   --modal-bg: #aaaaaa;
   --modal-border: #ffffff;
   --modal-shadow: 2ch 1em 0 #000000;
+  /* Floating boxes: never core's soft blur. Menus and popovers drop the
+     same hard one-cell black shadow as a dialog (Norton / Turbo Vision);
+     toasts, drawers, knobs and fader caps are flat. */
+  --panel-shadow: none;
+  --context-menu-shadow: 2ch 1em 0 #000000;
+  --popover-shadow: 2ch 1em 0 #000000;
+  --toast-shadow: none;
+  --drawer-shadow: none;
+  --knob-shadow: none;
+  --fader-cap-shadow: none;
+  /* The start menu is one cell size too. */
+  --start-menu-font-size: 1rem;
   --modal-header-bg: transparent;
   --modal-header-fg: #000000;
   --input-bg: #0000aa;
@@ -671,7 +683,10 @@ html[data-theme="msdos"] :is(small, th, .input, .select, .textarea, td, label, .
   .avatar, .message-meta > *, .attachment-size, .window-status, .empty-state-hint, .panel-header, .app-status, h2, h3, h4, h5, h6,
   .menubar, .menubar *, .log, .log *, .connection, .legend, .chart-legend, .accordion-trigger, .segmented-item, .typing, .scrollspy-link,
   .field-group-title, .thread-divider, .desktop-icon span, .tree *, .donut, .price-period, .readout-unit,
-  .carousel-nav, .carousel-nav *, .schedule, .schedule *, .sticky-top, .meter-bank span) { font-size: 1rem; }
+  .carousel-nav, .carousel-nav *, .schedule, .schedule *, .sticky-top, .meter-bank span,
+  .start-menu *, .command *, .prefs-hint, .prefs-accents *, .demo-heat-days li) { font-size: 1rem; }
+/* Core's command-palette hint rule is more specific than the list above. */
+html[data-theme="msdos"] .command-list :is([role="option"] > .command-hint, [role="group"] > [role="presentation"]) { font-size: 1rem; }
 html[data-theme="msdos"] :is(.stat-value, .price) { font-size: 2rem; }
 html[data-theme="msdos"] .donut :is(strong, .donut-value) { font-size: 1em; }
 html[data-theme="msdos"] .readout { --readout-size: 1rem; }
@@ -730,4 +745,22 @@ html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal
 html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > .btn-close { --btn-close-bg: #aaaaaa; left: 2ch; }
 /* Desktop dialogs: the tab row stays one line so the body never clips
    the OK / CANCEL row. */
-html[data-theme="msdos"] .desktop-window .tabs { flex-wrap: nowrap; gap: 0; }
+html[data-theme="msdos"] .desktop-window .tabs { flex-wrap: nowrap; gap: 0; overflow-x: auto; }
+/* A text-mode tab label never wraps. */
+html[data-theme="msdos"] .desktop-window .tab { white-space: nowrap; }
+/* A plain dialog with _ / □ boxes: the grey patch sits behind the title
+   only, and the boxes cut their own gap in the double line at the far
+   right edge, as on a desktop window. */
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header:has(> .btn-min, > .btn-max) { background: transparent; width: auto; margin-inline: 0; padding-inline: 5ch 1ch; }
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header:has(> .btn-min, > .btn-max) > span:first-of-type { background: #aaaaaa; padding-inline: 1ch; margin-inline-start: auto; }
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > :is(.btn-min, .btn-max) { background: #aaaaaa; }
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > :is(.btn-min, .btn-max:not(.btn-min ~ *)) { margin-inline-start: auto; }
+/* A lamp is lit or dark, never a smooth fade (core's lamp-pulse); :root
+   outranks core's motion-gated rule. */
+html:root[data-theme="msdos"] :is(.connection[data-state="live"], .status-rec)::before,
+html:root[data-theme="msdos"] .lamp.is-active { animation: none; }
+/* A user-coloured avatar is a solid VGA cell with a black glyph, not a
+   tint mixed into the blue. */
+html[data-theme="msdos"] .avatar[data-color] { --avatar-bg: var(--user-color); --avatar-fg: #000000; }
+/* Blank text row after a heading, as the DOS setup screens spaced blocks. */
+html[data-theme="msdos"] :is(h1, h2, h3) + :is(p, ul, ol, dl, h2, h3, h4, pre, blockquote) { margin-block-start: 1rem; }
