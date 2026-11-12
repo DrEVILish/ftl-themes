@@ -35,15 +35,18 @@ reproduced.
    Only modals and windows, which stack, get an opaque base. Don't make
    them opaque grey slabs.
 2. **Thin silver rules with knotwork corners.** Frames are 1px
-   `#6f6f6c` lines. Every panel and modal has a faint inner second rule
+   `#6f6f6c` lines. Every panel, modal and top-level card has a faint inner second rule
    and, over each outer corner, a small silver knot: two offset Ls joined
    at their tails by curls, and a looped strand in the corner woven over
    the outer L and under the inner one. Rules, inner rule and knots are
-   one 9-slice `border-image`, so the frame costs one paint. Don't add
+   one 9-slice `border-image`, so the frame costs one paint (cards and the
+   message list use the small knot). Don't add
    rounded corners (inputs included) or thick borders.
 3. **Condensed, white, quiet type.** One condensed sans for everything.
    Titles are uppercase with almost no tracking. Column heads are tiny grey
-   caps. Body text is sentence case. Nothing is bold except emphasis.
+   caps. Body text is sentence case. Nothing is bold except emphasis: list
+   titles, names, summaries, prices and table heads are the one regular
+   weight, ranked by size, case and white vs grey.
 4. **Selection is light, not colour.** A selected row or item is a white
    band that fades out at both ends (`--sky-select`). In tables it ends in
    an arrow tip, as in SkyUI (a stacked phone card drops the tip and
@@ -58,7 +61,9 @@ reproduced.
    stamina green is success, legendary gold is warning, and the level-bar
    frost blue `#aec0d5` fills progress and level bars and marks focus;
    it never fills a control: Delete and Confirm buttons, and a lit
-   danger toggle, are smoke plates with red or green text. Magicka blue is the second series. Alerts
+   danger toggle, are bare labels with red or green text. Magicka blue is the second series;
+   the fifth is the stamina highlight `#97bba5`. Lamps, connection and
+   status marks are `◆` diamonds in the light state text colour, unglowing. Alerts
    and toasts are smoke plates in the silver rule; the state colour is
    only a small leading `◆`.
 6. **Chevrons and diamonds are the ornament vocabulary.** Title bars and
@@ -87,6 +92,10 @@ reproduced.
   cells (`.mono`) use the condensed face with tabular figures, and a
   trailing value column sits flush right. Stacked on a phone, the
   selected card is the fading band with a bright 2px leading rule.
+- Every other button (secondary, plain, danger, success) is a bare
+  uppercase label, lit by the white band on hover, like the key-hint
+  strip; only `kbd`, the primary plate and a key joined to a field
+  (`.input-group`) keep a box.
 - `.btn-primary` alone is a lit plate between filled chevron points with
   silver rules top and bottom (no clip-path, so the focus ring is whole);
   inside a `.btn-group` it is just the lit band. `.btn-group`,
@@ -101,6 +110,8 @@ reproduced.
 - `.slider`: a thin silver line with a small diamond at each end and a
   white `▲` pointer, drawn in the content box so the core `--tap-min`
   hit area stays.
+- State labels (`.status`, `.badge`) never go under 12px; the condensed
+  face has a low x-height.
 - `.badge` is a hard box (no radius), like SkyUI's favourites-group
   numbers; `.badge-accent` is white on black in the bright rule.
 - `kbd` is a key-hint box: white outline, black fill, white glyph, in
@@ -111,7 +122,8 @@ reproduced.
   the strip has no room to spare). The desktop taskbar keeps plain
   spacing.
 - Desktop windows keep min / max / Exit side by side in the title row;
-  only dialogs hang the Exit key at the title's end.
+  so do dialogs with min / max; only a plain dialog hangs the Exit key
+  at the title's end. Notepad's text is the condensed face, not mono.
 - The left rail is a smoke strip with one vertical silver rule and a
   diamond on it, like the vanilla category-column divider.
 - **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): the tenth failed form check earns the guard's line about an arrow in the knee.
