@@ -393,7 +393,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Source:** https://github.com/microsoft/Selawik (release 1.01,
   `Selawik_Release.zip`: `selawkl.woff2`, `selawk.woff2`, `selawksb.woff2`)
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
-  Light headings)
+  Light headings); `win7-aero` (Regular and Semibold; stand-in for Segoe UI)
 
 ## Barlow Semi Condensed
 

@@ -37,21 +37,29 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 ## Signature details
 
 - Modals and dropdowns carry a real `backdrop-filter: blur(20px)
-  saturate(0.65)`, the title bar and status strip 24px, the client area a
-  plain `blur(20px)`; buttons, panels and toolbars on the white client
-  area do not blur again. Touch devices drop to `blur(12px)`.
+  saturate(0.8)`, the title bar and status strip 24px. The client area is
+  opaque white and is not blurred (a full-height blurred scroller cost
+  phones most of their frames); buttons, panels and toolbars on it do not
+  blur either. Touch devices drop dialogs and menus to a plain
+  `blur(12px)` and leave the title bar and status strip unblurred (the
+  tinted fill alone), so scrolling stays cheap.
 - The title bar carries Aero's faint diagonal **glare streaks**, a 1px
   dark outer frame, black caption text with a soft **white glow** behind
   it, and the joined **caption-button group** (min / max / red close)
   hanging flush from the top edge, drawn as one inline SVG. The glass
-  desaturates what shows through it (`saturate(0.65)`), so the frame
-  reads as Sky's cool blue-grey over the wallpaper, not cornflower. Bar text and
+  desaturates what shows through it (`saturate(0.45)`), so the frame
+  reads as Sky's smoky blue-grey over the wallpaper (about `#7ca2c7`,
+  HSL s0.40 l0.64, against the reference's `#698fb5`), not cornflower. Bar text and
   breadcrumbs are `#000` with the glow, never Luna's white outline.
 - The window frame: the white client area sits `--w7-frame` (7px) inside
   a tinted glass border down both sides, as dialogs (`--modal-bg`) do.
-- Panel captions are a full-width glass strip across the panel top,
-  padded in from its edges; headings are Segoe UI regular in Explorer's
-  navy `#1e395b`.
+- Panel captions sit on the white client area, so they are not glass:
+  a full-width pale command-bar strip (`#f5faff → #dce8f6`, `#c5d5e8`
+  bottom rule) with the heading in Explorer's navy `#1e395b`. Tinted
+  glass is kept for the title bar, frame, dialogs and status strip.
+- A navigation list (the settings sections) is Explorer's navigation
+  pane: white, unboxed rows; only the current item gets the framed
+  selection.
 - Desktop windows: glass frame and black-with-glow caption whether active
   or not, glass minimise/maximise beside the 43×20 red close with its
   white ×, also when the buttons are wrapped in their own span: one
@@ -69,6 +77,16 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   for vertical faders; grey-gloss thumb),
   check boxes with a `#4a5f97` tick — no Luna beige, orange or green
   left on controls.
+- Text boxes, selects and text areas are grey-framed (`#abadb3`) at rest
+  and turn blue only on hover (`#7eb4ea`) and focus (`#569de5`).
+- Toasts and alerts are notification balloons: white to `#e4e5f0`, a 1px
+  `#767676` frame, 3px corners, and the Win7 message icon (blue *i*,
+  green check, yellow *!*, red *x*) carrying the state, not a coloured
+  border.
+- Desktop icons keep their drop shadow when selected; the whole item gets
+  Win7's `rgba(255,255,255,.25)` fill in a half-white frame. Desktop
+  windows' bodies meet the frame directly (no 1rem dialog inset), so the
+  fixed-height Display Properties keeps its OK / Cancel / Apply row in view.
 - The desktop is the Windows 7 **"Harmony"** wallpaper: deep-to-bright
   blue, glowing light swooshes and a bloom where the logo sits — sharp
   enough shapes that the frost visibly softens them.
@@ -76,15 +94,35 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   `#7da2ce` frame with black text, never a leading accent bar or a solid
   blue block: tables (a stacked phone row frames the whole card, not each
   cell), lists, side nav, ticket cards, segmented and toggle buttons, the
-  current page and pressed filter chips. Chips and badges are 3px boxes,
+  current page and pressed filter chips. The nav rail's current item gets
+  the same framed fill instead of core's leading marker. Chips and badges are 3px boxes,
   not pills. Solid `#1265c7` is for links and focus. Tabs are raised gloss
   tabs, the selected one white; progress is the glossy green bar in a
-  15px sunken grey trough (meters 12px).
+  15px sunken grey trough; meters and table level bars (12px) take the
+  same green (`#22c018`) with a hard-split pale top half, amber and red
+  only for the high bands. Details-view headers are regular-weight navy
+  labels with a 1px `#d5dfe5` divider between columns.
+- Type keeps Explorer's 9pt (12px) for table cells and headers, small
+  buttons, filter chips (regular weight) and the status strip; the
+  status strip's secondary text is black with the white glow too.
+- The app rail is the white navigation pane; read-only and mirror
+  fields are `#f4f4f4` in the `#abadb3` frame; a spotlit card is the
+  selection fill in a 2px `#569de5` frame; switches are a 3px sunken
+  grey track (selection blue when on) with the slider's grey-gloss thumb.
+- Phones: the title takes the bar's first line whole, and on the desktop
+  page the caption buttons hang below the top status bar (clock, tray).
+- The account picture in the title bar is an opaque `#dbe8f6` tile in a
+  `#7da2ce` frame with a smaller presence dot on its corner.
 
 ## Icons
 
 `themes/win7-aero/icons.svg` covers the full core icon set (178/178, plus
-`sun-moon`) as soft glassy line work on the generic 24×24 grid. It uses
+`sun-moon`) as soft glassy line work on the generic 24×24 grid, except the Explorer
+objects — `folder`, `device-desktop` (Computer), `trash` (Recycle Bin),
+`globe`, `save` (floppy), `hard-drive`, `disc` and `file-text` — which
+are Win7's full-colour glossy icons (yellow `#f5d36b → #e8b13a` folder
+with a `#c9952b` edge, black-bezel monitor, glass bin, blue-green globe,
+silver drive), as on the desktop and in Explorer. The line set uses
 the inherited outline stroke, `fill="none"` and `currentColor`; boxes get
 generous radii (`rx` 2.5, 5 on square buttons, pill bars) and triangles
 get round joins. Most enclosed shapes (box, circle, page, cloud, bubble,
@@ -107,7 +145,7 @@ the text tokens are built for.
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
 - **Phone (≤480) and tablet (481–900):** core puts brand and actions on the bar's first line and the nav on a second. The caption buttons get their own 20px strip along the top edge instead of the desktop's right-hand reserve (the group's 104px plus 1rem), which on a phone had pushed the actions onto two extra lines.
-- **Nested surfaces step down:** only a top-level panel is a glass window with a caption bar. A panel inside a panel, card, dialog, drawer or flyout is a group box: a pale tinted label strip, no reflection and no second blur. Buttons, toolbars and navs inside a surface skip the blur too. The title-bar reflection now paints under the header's content (isolated, `z-index: -1`) and follows the corners with `border-radius: inherit` instead of `overflow: hidden`, so it never washes over a title or clips a menu opened from a header control. Minimise and maximise take the caption's black.
+- **Nested surfaces step down:** a top-level panel has the pale command-bar caption strip; a panel inside a panel, card, dialog, drawer or flyout is a group box: a paler tinted label strip, no shadow and no second blur. Buttons, toolbars and navs inside a surface skip the blur too. Minimise and maximise take the caption's black.
 - **XL gutters (≥1801):** the Harmony desktop either side of the window: two soft light swooshes and Aero's faint diagonal glare over the blue desktop. Still.
 
 ## Tell-tales of an inauthentic result
@@ -130,14 +168,14 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-`--font` is `"Segoe UI", Selawik, "Noto Sans", "Open Sans", "Liberation Sans", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not. Segoe UI is not open-licensed, so vendoring is not an option; Selawik, its open (OFL) metric-compatible stand-in, comes next and is used where installed (vendoring it into `assets/fonts/` is requested; not done in this theme folder), then the nearest humanist faces. The page sets `font-size-adjust: 0.5`, Segoe UI's own x-height ratio, so it changes nothing where Segoe UI renders but scales a wide fallback (DejaVu, Tahoma) down to Segoe's x-height and keeps Win7's compact 9pt proportions.
+`--font` is `"Segoe UI", Selawik, "Noto Sans", "Open Sans", "Liberation Sans", Tahoma, sans-serif`; `--font-mono` is `Consolas, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not. Segoe UI is not open-licensed, so vendoring is not an option; Selawik, its open (OFL) metric-compatible stand-in, comes next and is **bundled** (`assets/fonts/Selawik-Regular.woff2` and `Selawik-Semibold.woff2`, the release's Latin woff2 files; OFL entry in `assets/fonts/NOTICE.md`, shared with `windows-live`), then the nearest humanist faces. The page sets `font-size-adjust: 0.5`, Segoe UI's own x-height ratio, so it changes nothing where Segoe UI renders but scales a wide fallback (DejaVu, Tahoma) down to Segoe's x-height and keeps Win7's compact 9pt proportions.
 
 ## Contrast honesty
 
 - **Accent lifted from the reference:** the Aero blue `#1c6fd1` is 2.69:1 against the desktop backdrop `--bg` `#a6c2e0` (a fail for text on the backdrop). Shipped `--accent` is `#1265c7`: 3.08:1 on `--bg` (the 3.0:1 soft floor), 5.21:1 on `--surface`, 5.66:1 under white text.
 - **Primary button:** dark `#1a1a1a` text on the pale-blue gloss.
-- **App bar:** brand, nav items and bar text `#000000` on the frosted bar, with a white glow behind them (`#1a1a1a` measured 4.4:1 on the Chocolate tint).
-- **Status strip:** its muted text is `#2b3540`, not `--muted`, on the glass.
+- **App bar:** brand, nav items and bar text `#000000` on the frosted bar, with a white glow behind them (`0 0 8px #fff, 0 0 2px #fff, 0 0 12px rgba(255,255,255,.8)`, as Win7's caption glow plate). Ruby mixes into a denser frost (`rgb(236 241 248 / 0.64–0.72)`). The deep tints (Twilight, Violet, Slate) are kept deep, as Win7 drew them: 62–68% tint in a thin `rgb(236 241 248 / 0.34–0.4)` frost (Twilight's title bar about `rgb(35 94 176)`). Chocolate, the darkest hue, stops at 48–54% in a `0.54–0.6` frost so its bare glass still clears 4.5:1 for black. Their black caption, nav and dialog text gets a wider white glow plate (`0 0 14px rgba(255,255,255,.9)` plus 8/3/1px white), so the text is read against the glow, not the bare glass; against the bare glass it would fall below 3:1. That trade-off is Win7's own.
+- **Status strip:** black text with the caption's white glow on the glass (the old `#2b3540` measured 3.6:1).
 - **`--muted`** `#55606b` is 5.91:1 on `--surface` but 3.49:1 directly on `--bg`; do not set muted text on the bare backdrop.
 - `--danger`, `--success`, `--warning` on `--bg` are 2.96 / 2.79 / 1.77:1: fills only; use the `-text` variants for copy.
 
@@ -162,9 +200,11 @@ blur, still legible, just not glassy.
 
 Windows 7's *Personalize → Window Color* tinted all the glass. The theme
 does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
-mixed into a thin blue-grey frost (`--w7-frost`, `rgb(214 222 232 / 0.26–0.34)`)
-on the title bar and dialogs (26–34%), the side frame (30–38%) and status
-strip (28–34%), into near-white on panel captions and into dark blue-grey
+mixed into a grey-blue frost (`--w7-frost`, `rgb(214 226 238 / 0.4–0.46)`)
+on the title bar, dialogs, side frame and status strip (`--w7-mix` 25% fading
+to `--w7-mix-low` 30%; Ruby uses a denser `rgb(236 241 248 / 0.64–0.72)` frost, Twilight, Violet and
+Slate run 62–68% into a thin `0.34–0.4` frost so the glass stays deep, Chocolate 48–54% into `0.54–0.6`), so Sky glass lands near the
+reference's smoky `#698fb5`–`#83aad1`; and into dark blue-grey
 on the taskbar, so the desktop carries the colour and the black caption text with its
 white glow stays readable at every tint. The other fifteen presets are
 variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
