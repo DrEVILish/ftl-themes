@@ -422,7 +422,16 @@ html[data-theme="windows95"] .table { background-color: var(--surface); }
    every rem-sized part to dialog scale; touch keeps the browser size so
    targets stay large. */
 @media (pointer: fine) {
-  html[data-theme="windows95"] { --root-font-size: 81.25%; font-size: 81.25%; }
+  html[data-theme="windows95"] {
+    --root-font-size: 81.25%;
+    font-size: 81.25%;
+    /* The small rem steps keep their 16px-root sizes, so text never
+       closes to under 4px from its box edge (the v5 floor). */
+    --space-2xs: 4px;
+    --cell-pad-y: max(4px, calc(0.5em * var(--density)));
+  }
+  /* A one-glyph button (‹ ›) still spans the 24px target. */
+  html[data-theme="windows95"] .btn { min-inline-size: var(--tap-min); }
 }
 
 /* The groove gradient is sized to the content box core clips to. */
