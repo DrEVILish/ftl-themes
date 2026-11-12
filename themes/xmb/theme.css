@@ -42,7 +42,7 @@ html[data-theme="xmb"] {
   /* Glass tinted the wave's own deep blue, not white: a white tint over the
      blue reads grey, and the deep tint keeps --muted above AA on top of the
      brighter parts of the wave. */
-  --surface: rgba(0, 22, 80, 0.3);
+  --surface: rgba(0, 22, 80, 0.38);
   --surface-2: rgba(110, 180, 255, 0.1);
   --border: rgba(255, 255, 255, 0.28);
   --hairline: rgba(255, 255, 255, 0.16);
@@ -52,7 +52,8 @@ html[data-theme="xmb"] {
   --accent: #7ec8ff;
   --accent-2: #bfe4ff;
   --danger: #ff9e9e;
-  --success: #6bffb0;
+  /* Near-monochrome like the reference: a pale mint, not a neon green. */
+  --success: #8fe8c0;
   --warning: #ffd76b;
   --on-accent: #04162e;
   --on-danger: #2c0303;
@@ -78,7 +79,7 @@ html[data-theme="xmb"] {
   --btn-fg: var(--text);
   --btn-border: rgba(255, 255, 255, 0.3);
   --btn-shadow: none;
-  --btn-shadow-hover: 0 0 16px rgba(126, 200, 255, 0.65);
+  --btn-shadow-hover: 0 0 10px rgba(126, 200, 255, 0.65);
   --btn-weight: 300;
   /* Buttons stay pill-shaped even though the base radius no longer is —
      this is one of the surfaces where 999px is actually right. */
@@ -87,8 +88,11 @@ html[data-theme="xmb"] {
   --focus-ring: 0 0 0 3px rgba(126, 200, 255, 0.4);
   --input-bg: rgba(0, 20, 70, 0.3);
   --input-border: rgba(255, 255, 255, 0.3);
-  --panel-border: rgba(255, 255, 255, 0.25);
-  --panel-shadow: 0 8px 30px rgba(0, 10, 50, 0.35);
+  /* XMB content floats on the wave with no box edges: panels are smoked
+     glass with a faint hairline and a top highlight, the way the bar is,
+     not an outlined, drop-shadowed card. */
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   --panel-radius: 0.9rem;
   /* Overlays are the one exception to "nothing is a filled block". A PS3
      system dialog (references/xmb/modalDialog*.jpg) dims the XMB nearly
@@ -116,6 +120,14 @@ html[data-theme="xmb"] {
   --overlay-blur: none;
   --indicator-fg: var(--accent);
   --indicator-track: rgba(255, 255, 255, 0.15);
+  /* The slider track is drawn by its fill alone (core keeps the border
+     transparent for the tap target): a light bar with a white, glowing knob. */
+  --slider-bg: rgba(255, 255, 255, 0.32);
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-shadow: 0 0 8px rgba(191, 228, 255, 0.85);
+  /* Numerals (KPIs, timecodes) share the thin sans, as the PS3 clock does. */
+  --readout-font: var(--font);
+  --readout-weight: 300;
 
   /* Selection is a glow, not a fill: every "current item" state is a pale
      glass lift with white text; the glow itself is added below. Solid
@@ -148,7 +160,30 @@ html[data-theme="xmb"] {
 html[data-theme="xmb"] :is(.segmented-item.is-active, .pagination-item.is-active,
   .listbox [role="option"].is-active, .calendar-day:is([aria-pressed="true"], [aria-selected="true"]),
   .badge-button.is-active, .toggle-btn:has(input:checked)) {
-  box-shadow: 0 0 14px rgba(191, 228, 255, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 10px rgba(191, 228, 255, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+/* Focus is white, not a coloured fill: the primary action is a bright
+   white glass lift (modalDialog.jpg's focused "Yes"), and danger is said by
+   its text and edge, not a salmon block. */
+html[data-theme="xmb"] .btn-primary {
+  --btn-bg: rgba(255, 255, 255, 0.88);
+  --btn-border: #ffffff;
+  --btn-fg: #04162e;
+}
+html[data-theme="xmb"] .btn-danger {
+  --btn-bg: rgba(0, 22, 80, 0.3);
+  --btn-fg: var(--danger);
+  --btn-border: var(--danger);
+}
+/* Core pads a vertical slider with padding-inline, which in its vertical
+   writing mode is top/bottom, so the whole 24px box would fill; draw the
+   track as a thin centred line instead. */
+html[data-theme="xmb"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 0.15rem), rgba(255, 255, 255, 0.32) 0 calc(50% + 0.15rem), transparent 0);
+}
+html[data-theme="xmb"] fieldset.field {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
 }
 html[data-theme="xmb"] :is(.toolbar, .nav-rail) { border-radius: var(--panel-radius); }
 /* The diverging scale's positive end is a mid blue, not the pale accent:
@@ -162,9 +197,9 @@ html[data-theme="xmb"] .desktop-window { --modal-bg: rgb(12, 30, 72); }
    bottom left (sampled from xmb-retroarch-main-menu.jpg), with the
    translucent white ribbon sweeping across the middle of the screen. */
 html[data-theme="xmb"] {
-  --xmb-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300L1200 352C1000 430 800 385 600 345S220 300 0 362Z' fill-opacity='.12'/%3E%3Cpath d='M0 345C250 285 420 285 600 330S980 410 1200 350L1200 380C980 445 780 405 600 372S240 340 0 398Z' fill-opacity='.08'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300' stroke-opacity='.32' stroke-width='2'/%3E%3Cpath d='M0 362C220 300 400 305 600 345S1000 430 1200 352' stroke-opacity='.22' stroke-width='1.5'/%3E%3Cpath d='M0 398C240 340 420 330 600 372S980 445 1200 380' stroke-opacity='.15' stroke-width='3'/%3E%3C/g%3E%3C/svg%3E");
+  --xmb-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300L1200 392C1000 470 800 425 600 385S220 340 0 402Z' fill-opacity='.18'/%3E%3Cpath d='M0 345C250 285 420 285 600 330S980 410 1200 350L1200 380C980 445 780 405 600 372S240 340 0 398Z' fill-opacity='.08'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ffffff'%3E%3Cpath d='M0 300C200 220 400 230 600 290S1000 380 1200 300' stroke-opacity='.32' stroke-width='2'/%3E%3Cpath d='M0 362C220 300 400 305 600 345S1000 430 1200 352' stroke-opacity='.22' stroke-width='1.5'/%3E%3Cpath d='M0 398C240 340 420 330 600 372S980 445 1200 380' stroke-opacity='.15' stroke-width='3'/%3E%3C/g%3E%3C/svg%3E");
   background:
-    var(--xmb-wave) 0 31vh / 100% 46vh no-repeat,
+    var(--xmb-wave) 0 38vh / 100% 46vh no-repeat,
     radial-gradient(ellipse 42% 16% at 100% 0%, rgba(3, 152, 246, 0.85), transparent 80%) 0 0 / 100% 100vh no-repeat,
     radial-gradient(ellipse 70% 55% at 0% 100%, rgba(2, 16, 89, 0.85), transparent 70%),
     linear-gradient(215deg, #0162c6 0, #0058bc 300px, #013f9f 70%, #021a6a 100%);
@@ -182,6 +217,10 @@ html[data-theme="xmb"] h3 {
   font-weight: 300;
   letter-spacing: 0.01em;
 }
+/* The thin voice holds for titles and numerals too: no Titillium Bold on
+   headers, the brand, list titles or KPI values. */
+html[data-theme="xmb"] :is(h4, h5, h6, .panel-header, .card-title, .modal-header, .nav-brand, .list-item-title) { font-weight: 400; }
+html[data-theme="xmb"] .stat-value { font-family: var(--font); font-weight: 300; }
 
 /* Icons enlarge and glow on the active state — the one unmistakable XMB
    interaction, applied here to the icon-button variant. */
@@ -233,19 +272,22 @@ html[data-theme="xmb"] .app-bar > :is(.push, .demo-topbar-spacer, [style*="margi
 }
 html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) { margin-inline: auto; }
 html[data-theme="xmb"] .app-bar :is(.nav-item, [role="menubar"] > li > [role="menuitem"]) {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 300;
   letter-spacing: 0.02em;
 }
-/* The selected category is the lit one: white, a soft halo, slightly larger. */
-html[data-theme="xmb"] .app-bar :is(.nav-item.is-active, [role="menubar"] > li > [role="menuitem"].is-active) {
+/* The selected category is the lit one, as the XMB's selected icon is twice
+   the size of its neighbours: larger, white, with a white halo. */
+html[data-theme="xmb"] .app-bar :is(.nav-item:is(.is-active, [aria-current="page"]), [role="menubar"] > li > [role="menuitem"].is-active) {
   color: #ffffff;
-  text-shadow: 0 0 12px rgba(191, 228, 255, 0.9);
+  font-size: 1.35rem;
+  text-shadow: 0 0 10px #ffffff, 0 0 4px rgba(191, 228, 255, 0.9);
   font-weight: 400;
 }
-html[data-theme="xmb"] .nav-item.is-active {
-  box-shadow: 0 0 22px rgba(126, 200, 255, 0.55);
-}
+/* Where a category carries an icon, it stacks over its label: icons over
+   words, as the cross shows them. */
+html[data-theme="xmb"] .app-bar .nav-item:has(> .icon) { flex-direction: column; gap: 0.15em; }
+html[data-theme="xmb"] .app-bar .nav-item > .icon { inline-size: 1.6em; block-size: 1.6em; }
 /* A smoked-glass capsule: the bar sits on the brightest part of the wave,
    so a deep tint (not a blur, which cost frames for nothing behind it)
    keeps its labels legible. */
@@ -253,7 +295,7 @@ html[data-theme="xmb"] .app-bar {
   background: linear-gradient(180deg, rgba(0, 24, 84, 0.42), rgba(0, 24, 84, 0.28));
   border-radius: 999px;
   margin: 0.5rem 1rem 0;
-  box-shadow: 0 8px 30px rgba(0, 10, 50, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 /* --- v5 tiers ------------------------------------------------------------ *
@@ -270,6 +312,11 @@ html[data-theme="xmb"] .app-bar {
 @media (max-width: 480px) {
   html[data-theme="xmb"] { --app-padding: 0.5rem; }
   html[data-theme="xmb"] .nav { gap: 0.5rem; }
+  /* Keep the categories on one line under the brand, not a slab of rows. */
+  html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) { order: 1; flex: 1 1 100%; }
+  html[data-theme="xmb"] .app-bar > :is(nav, .nav, .demo-nav) ~ * { order: 2; }
+  html[data-theme="xmb"] .app-bar :is(.nav-item, [role="menubar"] > li > [role="menuitem"]) { padding-inline: 0.45em; }
+  html[data-theme="xmb"] .app-bar [role="menubar"] { justify-content: center; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the XMB wave carries on beside the
