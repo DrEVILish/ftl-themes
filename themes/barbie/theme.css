@@ -108,10 +108,11 @@ html[data-theme="barbie"] {
   --slider-thumb-radius: 999px;
   /* Core hides the slider border (the box grows to --tap-min); the pill
      track is drawn on the content box instead, so it shows on white. */
-  --slider-bg: linear-gradient(90deg, var(--accent-2), #ff8cc6);
-  --slider-height: 0.45rem;
+  --slider-bg: linear-gradient(90deg, var(--accent), var(--accent-2));
+  --slider-height: 0.4rem;
+  --slider-border-width: 0;
   --slider-thumb-shadow: 0 1px 3px rgba(204, 0, 119, 0.45);
-  --overlay-bg: rgba(122, 18, 80, 0.35);
+  --overlay-bg: rgba(204, 0, 119, 0.35);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
   /* Inactive desktop windows stay saturated: a paler candy pink with plum
@@ -142,8 +143,10 @@ html[data-theme="barbie"] h3 {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--heading-fg, var(--accent));
-  text-shadow: 0 1px 0 var(--flare);
 }
+/* The lip only on h2, at 2px: at h3 sizes a 1px gold line read as a
+   yellow misregistration fringe, not foil. */
+html[data-theme="barbie"] h2 { text-shadow: 0 2px 0 var(--flare); }
 /* A kanban column is a pink tint, so its title heading takes the deeper
    pink (the accent was 3.4-4.0:1 there). */
 /* The same on the other pink tints: headings and links there take the
@@ -163,16 +166,17 @@ html[data-theme="barbie"] :is(h1, .nav-brand) {
   text-transform: none;
   letter-spacing: 0.03em;
   font-weight: 400;
-  -webkit-text-stroke: 0.12em var(--wordmark-ink, var(--accent));
+  /* Painted under the fill, so ~0.1em shows outside the glyph: the pink
+     mass about equals the white stroke, as on the logo. */
+  -webkit-text-stroke: 0.2em var(--wordmark-ink, var(--accent));
   paint-order: stroke fill;
-  /* The logo's deep solid slab: steps out to 0.14em down-right so the
-     depth still reads at bar-brand size (Pacifico's thin strokes need the
-     thick outline and slab to carry the logo's weight). */
+  /* The logo's deep solid slab: steps out to 0.18em down-right so the
+     depth still reads at bar-brand size. Shadows don't take the stroke,
+     so the steps start fat (0.06em) to stay joined to the outline. */
   text-shadow:
-    0.035em 0.035em 0 var(--wordmark-ink, var(--accent)),
-    0.07em 0.07em 0 var(--wordmark-ink, var(--accent)),
-    0.105em 0.105em 0 var(--wordmark-ink, var(--accent)),
-    0.14em 0.14em 0 var(--wordmark-ink, var(--accent));
+    0.06em 0.06em 0 var(--wordmark-ink, var(--accent)),
+    0.12em 0.12em 0 var(--wordmark-ink, var(--accent)),
+    0.18em 0.18em 0 var(--wordmark-ink, var(--accent));
 }
 html[data-theme="barbie"] h1 { color: #ffffff; }
 
@@ -223,7 +227,10 @@ html[data-theme="barbie"] {
      4.5:1 against every stop of that range (white bottomed out at 2.1:1,
      the darkest plum at 3.2:1). This range keeps the glossy pink-to-magenta
      read while white nav text clears the floor end to end. */
-  --app-bar-bg: linear-gradient(180deg, #e0007f, #b8006f);
+  /* Bottom stop lifted from the berry #b8006f to the accent: the bar stays
+     nearer the logo's #ec008c (white is 4.3:1 there, under the floor, so
+     #e0007f is the closest top stop that passes). */
+  --app-bar-bg: linear-gradient(180deg, #e0007f, var(--accent));
   --app-bar-fg: #ffffff;
   --app-bar-rule-width: 0;
   --app-bar-radius: 1.4rem 1.4rem 0 0;
@@ -232,7 +239,7 @@ html[data-theme="barbie"] {
   --app-main-padding: 1.1rem;
   /* Same deepened range as the bar: white on the old --accent-2 top
      stop was 2.8:1. */
-  --app-status-bg: linear-gradient(180deg, #e0007f, #b8006f);
+  --app-status-bg: linear-gradient(180deg, #e0007f, var(--accent));
   --app-status-fg: #ffffff;
   --app-status-radius: 0 0 1.4rem 1.4rem;
   --app-status-rule: transparent;
@@ -341,4 +348,43 @@ html[data-theme="barbie"] .pattern-nav { --accent-text: var(--on-accent); }
    --tap-min wide for the hit area. */
 html[data-theme="barbie"] .slider.is-vertical:not(.is-range > .slider) {
   padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+
+/* No hard corners (README tell-tales): tables get a rounded header band
+   (separate borders, so the cells can take a radius; rows only draw
+   bottom rules, so nothing doubles up). */
+html[data-theme="barbie"] .table { border-collapse: separate; border-spacing: 0; }
+html[data-theme="barbie"] .table > thead > tr:first-child > th:first-child { border-start-start-radius: var(--tree-item-radius); }
+html[data-theme="barbie"] .table > thead > tr:first-child > th:last-child { border-start-end-radius: var(--tree-item-radius); }
+html[data-theme="barbie"] .table > tbody:last-child > tr:last-child > td:first-child { border-end-start-radius: var(--tree-item-radius); }
+html[data-theme="barbie"] .table > tbody:last-child > tr:last-child > td:last-child { border-end-end-radius: var(--tree-item-radius); }
+/* Window panes and the notepad's text field: the tree-row radius (the
+   page squares the notepad, so this outranks its layout glue). */
+html[data-theme="barbie"] :is(.window-pane, .window-body > .textarea) { border-radius: var(--tree-item-radius); }
+/* Fieldsets have no core style, so they fell back to the browser's grey
+   groove: a pink hairline box instead. Zero specificity, so core's
+   resets on classed fieldsets (.radio-group, .rating, ...) still win. */
+:where(html[data-theme="barbie"] fieldset) {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding-inline: 0.9rem;
+}
+:where(html[data-theme="barbie"] fieldset:not([class]) > legend, html[data-theme="barbie"] fieldset.field > legend) { padding-inline: 0.4rem; }
+/* Firefox can paint the filled side of a slider: the gradient up to the
+   thumb over a blush rest (Chromium has no CSS hook for it). */
+html[data-theme="barbie"] .slider::-moz-range-progress {
+  block-size: var(--slider-height);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+@supports selector(::-moz-range-progress) {
+  html[data-theme="barbie"] { --slider-bg: #ffd1e8; }
+}
+/* Phone tier: the soft 18px drop-glow on every card and panel was the
+   bulk of the scroll paint cost; a tight 6px glow keeps the lift. */
+@media (max-width: 480px) {
+  html[data-theme="barbie"] {
+    --panel-shadow: 0 3px 6px rgba(224, 33, 138, 0.18);
+    --card-shadow: 0 3px 6px rgba(224, 33, 138, 0.18);
+  }
 }

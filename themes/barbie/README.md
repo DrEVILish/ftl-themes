@@ -20,14 +20,17 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
 2. **Round, everywhere, generously.** `--radius: 1.4rem`, pill buttons,
    pill badges, pill pagination, pill sliders (a hot-pink gradient track),
    and input-group addons keep the input's round outer ends. The selected
-   desktop-icon label is a pill and tree rows take a `0.6rem` row-sized
-   radius. Nothing here has a hard corner.
+   desktop-icon label is a pill; tree rows, desktop window panes, the
+   notepad field and table corners (header band and last row) take a
+   `0.6rem` row-sized radius; fieldsets get a pink hairline box at the
+   panel radius instead of the browser's grey groove. Nothing here has a
+   hard corner.
 3. **Gloss over flat.** Every filled surface gets a light highlight band —
    the same "shiny plastic" cue as the button chrome, panels, and the app
    bar. Losing the highlight reads as a cheaper, flatter knockoff.
 4. **Gold is the sparkle, not the workhorse.** `--flare` (gold) shows
-   up only as a crisp 1px unblurred foil lip straight under the uppercase
-   headings — it's the
+   up only as a crisp 2px unblurred foil lip straight under the uppercase
+   `h2` (not `h3`, where a thin gold line read as misregistration) — it's the
    tiara, not a token you build components out of.
 5. **Deep pink text, not black.** Body text is `#7a1250`, a pink-shifted
    dark plum — legible, but never plain black, which would read as a
@@ -37,23 +40,31 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
 
 - **The wordmark.** `h1` and `.nav-brand` are Pacifico script in white
   letters inside a thick hot-pink outline (`-webkit-text-stroke` painted
-  under the fill, `0.12em`) with a deep solid pink slab stepped out to
-  `0.14em` down-right, the logo's extrusion, sized in em so it reads at
+  under the fill, `0.2em`, so the pink mass about equals the white
+  stroke as on the logo) with a deep solid pink slab stepped out in three
+  steps to `0.18em` down-right, the logo's extrusion, sized in em so it reads at
   bar-brand size. In the app bar the outline and slab go deep pink `#8f1458`.
-- Headings (`h2`/`h3`) are uppercase with a hard 1px gold lip underneath,
-  the poster-title voice. On `.hero` and `.band.is-tinted` they stay
+- Headings (`h2`/`h3`) are uppercase, `h2` with a hard 2px gold lip
+  underneath, the poster-title voice. On `.hero` and `.band.is-tinted` they stay
   accent pink (large text, 3:1 floor).
 - **Desktop windows.** Inactive title bars stay saturated: a paler candy
   pink (`#ffc2e0` to `#ff99cc`) with plum text, never core's desaturating
   filter (that turned the bar dusty mauve). Caption buttons follow the
   title text colour.
-- Sliders are slim pills in both orientations: the vertical slider insets
-  its track on the physical sides so it is not a 24px pillar.
+- Sliders are slim pills in both orientations, an accent-to-hot-pink
+  gradient track on the content box (the hit area stays `--tap-min`); in
+  Firefox the filled side takes the gradient over a blush rest. The
+  vertical slider insets its track on the physical sides so it is not a
+  24px pillar.
+- The modal backdrop is an accent-pink scrim (`rgba(204,0,119,.35)`), not
+  a plum-grey one.
 - Rising sparklines draw in toy mint-teal `#1f9e74` (the bar chart's alt
   series), not the text-weight green.
 - The accent `#cc0077` is a fully saturated magenta (hue 325°, the logos'
   `#ed008d`/`#ff00a6` family) at the darkest step that still takes white
-  text. Bar and status strip run `#e0007f` to `#b8006f`; gloss buttons run
+  text. Bar and status strip run `#e0007f` to the accent (the logo's
+`#ec008c` takes white at only 4.3:1, so `#e0007f` is the nearest passing
+top stop); gloss buttons run
   `#ff4fb3` to `#e0007f` to the accent, highlight band at the top.
 - **Toy-box sections.** `.hero` sits on a rounded blush panel with the
   gutter's polka dots; `.band.is-tinted` on a blush gradient panel.
@@ -72,6 +83,8 @@ card in the middle pop — box art, not a dashboard.
 
 - **Tiers.** No rail; the glossy bar's pills wrap as core lays them out,
   so phone (≤480px) and tablet (481–900px) use the one-column shell as is.
+- **Phone tier.** Cards and panels take a tight 6px glow instead of the
+  18px one, to keep scroll paint cost down.
 - **Nesting.** A panel or card inside another surface drops the pink
   drop-glow, so stacked levels read as inserts in one toy box.
 - **XL gutter art.** The packaging either side of the doll: soft polka
@@ -104,7 +117,10 @@ card in the middle pop — box art, not a dashboard.
   table cells, `.mono`, `.stat-value`, `.readout`). Only `code`, `pre`,
   `kbd` and `samp` use a real monospace (`ui-monospace, Consolas`).
 - Known gap: only Baloo 2 Bold is vendored, so body copy and headings share
-  700; a 500/600 cut would need a new file under `assets/fonts/`.
+  700; a 500/600 cut would need a new file under `assets/fonts/`. Likewise
+  Pacifico is a brush script, flatter than the logo's upright bouncy
+  script; a heavier upright cut (Lobster, Leckerli One) would also need a
+  new vendored file.
 
 ## Contrast honesty
 
