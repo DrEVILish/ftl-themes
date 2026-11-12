@@ -54,7 +54,7 @@ html[data-theme="ios-flat"] {
   --on-success: #ffffff;
   --on-surface: var(--text);
   --radius: 10px;         /* the inset-grouped cell corner */
-  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", "Segoe UI", Roboto, "Noto Sans", "Liberation Sans", Arimo, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --flare: #34c759;       /* systemGreen: the toggle, the one colour iOS 7 made famous */
   --link: var(--accent-text);
@@ -98,8 +98,10 @@ html[data-theme="ios-flat"] {
   --btn-shadow: none;
   --btn-icon-radius: 50%;
 
-  /* --- Inputs: the search-field fill, no border ----------------------- */
-  --input-bg: var(--surface-2);
+  /* --- Inputs: the search-field fill, no border ----------------------- *
+   * tertiarySystemFill itself, translucent: #eeeeef over a white cell,
+   * #e3e3e9 on the grouped grey page, so a free-standing field still shows. */
+  --input-bg: var(--ios-fill);
   --input-fg: var(--text);
   --input-border: transparent;
   --input-radius: 10px;
@@ -200,7 +202,7 @@ html[data-theme="ios-flat"] {
   --row-selected-bg: var(--ios-gray5);   /* #d1d1d6 drops tinted text under 4.5:1 */
   --row-alt-bg: #f7f7f9;
   --row-active-bg: transparent;
-  --row-active-marker: inset 3px 0 0 var(--accent);
+  --row-active-marker: none;   /* the trailing checkmark and the fill carry it */
 
   /* Navigation */
   --nav-bg: var(--ios-bar);
@@ -246,7 +248,8 @@ html[data-theme="ios-flat"] {
   --switch-thumb-bg-on: #ffffff;
 
   /* Slider: 4pt track, 28pt white knob. Progress: 4pt bar. */
-  --slider-bg: var(--ios-gray5);
+  --ios-slider-track: var(--ios-gray5);   /* UISlider's maximum track */
+  --slider-bg: var(--ios-slider-track);
   --slider-border: transparent;
   --slider-border-width: 0;
   --slider-height: 4px;
@@ -468,6 +471,8 @@ html[data-theme="ios-flat"][data-variant="dark"] {
   --ios-gray: #8e8e93;
   --ios-gray4: #3a3a3c;
   --ios-gray5: #2c2c2e;
+  --ios-slider-track: #48484a;   /* #2c2c2e vanished on the black page */
+  --input-bg: var(--surface-2);  /* the translucent fill over black is ~1.2:1 */
   --ios-fill: rgba(118, 118, 128, 0.24);
   --ios-cell-highlight: #3a3a3c;
   --ios-separator: rgba(84, 84, 88, 0.65);
@@ -598,8 +603,11 @@ html[data-theme="ios-flat"] .slider:focus-visible { outline-offset: 8px; }
    core's --tap-min. */
 html[data-theme="ios-flat"] .slider::-moz-range-progress { height: var(--slider-height); border-radius: var(--slider-radius); background: var(--ios-blue); }
 html[data-theme="ios-flat"] .slider { --ios-slider-at: calc((attr(value type(<number>), 50) - attr(min type(<number>), 0)) / (attr(max type(<number>), 100) - attr(min type(<number>), 0))); }
-html[data-theme="ios-flat"] .slider:not(.is-bipolar, .is-vertical, .fader) { --slider-bg: linear-gradient(90deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-gray5) 0); }
-html[data-theme="ios-flat"] .slider:not(.is-bipolar, .is-vertical, .fader):dir(rtl) { --slider-bg: linear-gradient(270deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-gray5) 0); }
+html[data-theme="ios-flat"] .slider:not(.is-bipolar, .is-vertical, .fader) { --slider-bg: linear-gradient(90deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-slider-track) 0); }
+/* Vertical: the same 4px track stood upright and centred, blue from the
+   bottom; the 24/44px box around it stays the hit area. */
+html[data-theme="ios-flat"] .slider.is-vertical:not(.fader) { --slider-bg: linear-gradient(0deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-slider-track) 0) center / var(--slider-height) 100% no-repeat; }
+html[data-theme="ios-flat"] .slider:not(.is-bipolar, .is-vertical, .fader):dir(rtl) { --slider-bg: linear-gradient(270deg, var(--ios-blue) calc(var(--value, var(--ios-slider-at)) * 100%), var(--ios-slider-track) 0); }
 
 /* --- Segmented control ----------------------------------------------- */
 html[data-theme="ios-flat"] .segmented { gap: 0; }
@@ -710,6 +718,8 @@ html[data-theme="ios-flat"] pre { font-size: 13px; }
 /* Tables as plain lists. Headers in footnote caps; the active row gets
    the trailing blue checkmark a selected cell carries. */
 html[data-theme="ios-flat"] .table th { font-size: 13px; font-weight: 400; border-bottom-width: 0.5px; }
+/* An in-cell editor: a rounded field ringed in the tint, not a square box. */
+html[data-theme="ios-flat"] .table :is(td.is-editing, tr.is-editing > td) { --input-border-width: 2px; --cell-input-radius: 6px; }
 html[data-theme="ios-flat"] .table tr.is-active td:last-child {
   padding-inline-end: 2.2em;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='%230071e3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 0.6em center / 1em no-repeat;
@@ -822,14 +832,15 @@ html[data-theme="ios-flat"] .badge-danger { --badge-bg: var(--danger); --badge-f
 
 /* --- Navigation ------------------------------------------------------ */
 html[data-theme="ios-flat"] .nav {
-  -webkit-backdrop-filter: var(--ios-bar-blur);
-  backdrop-filter: var(--ios-bar-blur);
   min-height: 44px;
   box-sizing: border-box;
 }
 html[data-theme="ios-flat"] .nav-brand { font-size: 17px; font-weight: 600; }
 html[data-theme="ios-flat"] .nav-item:hover:not(.is-active) { --nav-item-bg-active: var(--ios-fill); --nav-item-fg-active: var(--nav-item-fg); }
 html[data-theme="ios-flat"] .nav-item.is-active { font-weight: 600; }
+/* A nav bar in content is a rounded bar, not a ruled strip: tint items,
+   the current one semibold tint, as the app bar's menubar draws it. */
+html[data-theme="ios-flat"] .nav:not(.app-bar .nav) { --nav-rule-width: 0; --nav-radius: var(--panel-radius); --nav-item-fg-active: var(--nav-item-fg); }
 
 /* Horizontal tabs in content are a segmented control (grey track, white
    pill, 13pt); there is no in-page tab strip on iOS. Vertical tabs are the
@@ -905,6 +916,27 @@ html[data-theme="ios-flat"] .nav-rail {
 html[data-theme="ios-flat"] .nav-rail > .nav-item > .icon { color: var(--accent-text); }
 /* In the content area the sidebar is an inset grouped card like its
    neighbours, not a slab with a hairline. */
+/* The iPad Settings sidebar: white glyphs on coloured squircle tiles, and
+   (beside its pane) the selected row a blue fill with white text. */
+html[data-theme="ios-flat"] .master-detail-list .list-item > .icon:first-of-type {
+  width: 1.7em;   /* a 29pt tile round a 17pt glyph */
+  min-width: 1.7em;
+  height: 1.7em;
+  padding: 0.3em;
+  border-radius: 7px;
+  background: var(--ios-tile, var(--ios-blue));
+  color: #ffffff;
+}
+html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+2) { --ios-tile: var(--ios-gray); }
+html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+3) { --ios-tile: var(--ios-red); }
+html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+4) { --ios-tile: var(--accent-2); }
+@container (min-width: 481px) {
+  html[data-theme="ios-flat"] .master-detail-list .list-item.is-active { --row-selected-bg: var(--accent); color: var(--on-accent); border-radius: 10px; }
+}
+/* On a phone the list drills in and keeps no selection, as iPhone Settings. */
+@container (max-width: 480px) {
+  html[data-theme="ios-flat"] .master-detail-list .list-item.is-active { --row-selected-bg: transparent; }
+}
 html[data-theme="ios-flat"] .app-main .nav-rail { --nav-rail-rule-width: 0; border-radius: var(--panel-radius); }
 
 /* navigation-patterns' current link pairs --accent-text with an --accent
@@ -1062,6 +1094,12 @@ html[data-theme="ios-flat"][data-variant="dark"] {
 
 @media (prefers-reduced-motion: reduce) {
   html[data-theme="ios-flat"] .switch-thumb { transition: none; }
+}
+
+/* Phones: the sticky bars drop the live blur (re-rendered every scroll
+   frame); at 94% opacity the bar reads the same. Menus and alerts keep it. */
+@media (max-width: 900px), (pointer: coarse) {
+  html[data-theme="ios-flat"] :is(.app-bar, .app-status) { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 
 /* Paper has no blur and no translucency. */

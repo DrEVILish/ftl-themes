@@ -28,7 +28,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 1. **Three materials only.** Grouped grey for the page, white cells for
    content, and the frosted bar material (`backdrop-filter:
    saturate(180%) blur(20px)`) for the nav bar, tab bar, alerts, menus and
-   banners. Nothing else is translucent.
+   banners. Nothing else is translucent. On phones (up to 900px or a
+   coarse pointer) the two sticky bars keep their 94% bar fill but drop
+   the live blur, which cost every scroll frame; menus and alerts keep it.
 2. **Flat means flat.** No gradients, gloss, bevels or inner shadows. The
    only gradient is the Contacts monogram disc behind `.avatar`. Resting
    surfaces (panels, cards, lists, field rows) have no border and no
@@ -57,9 +59,11 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   it as a 34px bold large title. When the page has its own `h1` (the
   screen's large title) the brand becomes the 17px semibold inline title
   on the top row, so a screen never shows two large titles. It is sticky
-  and frosted. A `.nav` of items carries the grey track itself; loose
+  and frosted. A `.nav` of items in the bar carries the grey track itself; loose
   items in the bar join into one strip with no notches. Menubar items are
   bar buttons: tint text, the current one semibold.
+- A `.nav` in content is a plain rounded nav bar: no rule, 17px semibold
+  title, tint items, the current one semibold tint.
 - Horizontal `.tabs` and `.toggle-group`s in content are segmented
   controls too (grey track, white pill with its shadow, 13px labels,
   hairlines between unselected neighbours); there is no in-page tab strip
@@ -78,16 +82,28 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   Reminders' edit mode; iOS has no square checkbox.
 - Table selection is systemGray5 (`#e5e5ea`; the deeper `#d1d1d6` tap
   flash dropped tinted text under 4.5:1), and the active
-  row carries a trailing blue checkmark as well as the leading marker.
+  row carries a trailing blue checkmark; there is no leading marker bar.
+  An in-cell editor is a rounded (6px) field ringed in 2px tint.
 - The `.nav-rail` is Mail's mailbox list: black labels, tint glyphs, the
   selected row a systemGray5 fill with no leading bar. Inside the content
   area it is a rounded grouped card with no hairline edge.
+- A `.master-detail-list` is the iPad Settings sidebar: each row's
+  leading glyph is white on a 29px coloured squircle tile (blue, grey,
+  red, indigo in turn), and beside its pane the selected row is a blue
+  fill with white text. On a phone the list drills in and shows no
+  selection, as iPhone Settings does.
+- Text fields use tertiarySystemFill itself (translucent): `#eeeeef` in a
+  white cell, `#e3e3e9` on the grouped grey page, so a free-standing
+  field keeps an edge. Dark mode keeps the opaque `#2c2c2e`.
 - UISwitch keeps its fixed 51px; a hint beside it in a field row
   truncates instead.
 - Sliders have UISlider's blue minimum track: native in Firefox; in
   other engines it follows `--value` (0-1) when set, else the input's
   `value` attribute (typed `attr()`), which is the initial value only
-  until core keeps `--value` on every slider.
+  until core keeps `--value` on every slider. A vertical slider draws the
+  same 4px track upright and centred, blue from the bottom, inside its
+  full hit box. Dark mode's unfilled track is `#48484a` so it shows on
+  the black page.
 - Buttons follow iOS 15's styles: primary is "filled", secondary is
   "tinted" (a wash of the tint), ghost is "plain" text, the default is
   "gray". A tap dims to 55% opacity instead of moving.
@@ -116,8 +132,10 @@ The dark variant declares `color-scheme: dark` so native controls follow it.
 
 ## Typography
 
-Stack: `-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI",
-Roboto, "Noto Sans", Arial, sans-serif`. On Apple platforms that is SF Pro
+Stack: `-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter",
+"Segoe UI", Roboto, "Noto Sans", "Liberation Sans", Arimo, Arial,
+sans-serif`. Inter, Liberation Sans and Arimo are there so Linux lands on
+a neutral grotesque rather than a wide fallback. On Apple platforms that is SF Pro
 (iOS 9 onward); Helvetica Neue is the iOS 7 and 8 system face, so it is
 the right first fallback. Nothing is vendored: SF Pro's licence does not
 allow redistribution. Monospace: `ui-monospace, "SF Mono", Menlo, …`.
