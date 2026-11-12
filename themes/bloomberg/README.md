@@ -81,7 +81,7 @@ is the catalog's extreme-density stress test as much as a period theme.
 - Diverging heatmaps code net change: green `#2ecc40` up, red `#ff3333`
   down, `#141414` flat, never the yellow function-key colour.
 - Table cells get vertical rules between columns (`border-right`) and no
-  visible horizontal row rules (`--table-rule: #0a0a0a`, 1.1:1 on black):
+  visible horizontal row rules (`--table-rule: transparent`):
   the terminal's column grid, not boxed cells.
 - The status strip text is cyan, not amber, including its right-hand meta — a second information channel,
   distinct at a glance from the primary data color. The colored
