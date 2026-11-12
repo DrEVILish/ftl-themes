@@ -81,8 +81,7 @@ How it differs from its neighbours:
   beige recess (`#e2d6bd`) with an inset shadow and the orange marker,
   never a peach web tint.
 - At phone and tablet width the red Dymo brand keeps its whole name
-  (tracking 0.1em) and the bar links wrap under it. On phones the icon
-  keys (bell, account) ride on the brand row at the right. Icon buttons
+  (tracking 0.1em) and the bar links wrap under it. Icon buttons
   are square keycaps (`--btn-icon-radius: 3px`), never circles.
 - Tabs inside a desktop window track tighter (0.03em) and scroll in one
   row rather than wrap, so the dialog's OK/CANCEL row stays inside it.
@@ -146,11 +145,14 @@ warning:
 - `--accent` `#cc5a0a` on the beige `--bg` `#d3c9b3` is 2.5:1, below the
   3:1 advisory floor. The bare backdrop only shows in the shell's gutters
   and never carries accent text. Text links use `--link` `#8f3b00` and
-  `--accent-text` `#9a4100`. On `--surface` the accent passes.
+  `--accent-text` `#8a3a00`. On `--surface` the accent passes.
+  State text (`--accent-text`, `--success-text` `#1f5c25`,
+  `--warning-text`) clears 4.5:1 on the bare `--bg` too, since phones
+  drop the stipple and show it plainly.
 - `--on-accent` is black on the orange keycap. White on `--danger`
   `#c0200d` and on `--success` `#2c7a30`.
 - Yellow (`--warning`, GO) carries dark text only. `--warning-text`
-  `#775300` is used for text.
+  `#6b4b00` is used for text.
 - The focus ring is blue (`#1f6fd1`, 3px plus a soft halo). It is the only
   cool colour in the palette, so it shows up on beige, orange keys and dark
   windows.
