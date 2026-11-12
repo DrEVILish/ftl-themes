@@ -53,16 +53,19 @@ reproduced.
 - Orange edge codes ("0034529", "963409IN_CHY0432") running up the
   empty rail, drawn in CSS.
 - A thin cyan rule under the top bar; the brand is a pill tab.
+- A stepped frame line over the status bar: it runs flat, then angles up
+  45deg into a raised section over the sign-off (bridge "SY.AVL" frame).
+- Toasts carry the bracket in their status color instead of a full box.
 - Micro-caps status line in the label face: `.app-status` ends with the
   ship's sign-off "ENDO SY OS / MUTHUR PRQ 12-5 B" (generated, not read
   aloud; hidden on phones).
 
-### Variants
+## Variants
 
 | Variant | Label | What changes |
 |---|---|---|
-| (default) | Prometheus | Hologram cyan `#4fd2ff` with teal second series. |
-| `suit` | Suit Room (amber) | Amber `#ffb51f` UI over teal-blue glass, cyan values, as on the suit-room "RAVEL" screen. |
+| (default) | Prometheus | Medipod sky-cyan `#5ec4e6` on filled tabs and buttons, hotter `#4fd2ff` for glowing text and readouts, teal second series. |
+| `suit` | Suit Room (amber) | Amber `#ffb51f` UI over slate-navy glass (`#10222f`), cyan values, as on the suit-room "RAVEL" screen. |
 
 ## Typography
 

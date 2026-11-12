@@ -39,7 +39,7 @@ html[data-theme="prometheus"] {
   --hairline: #1b4a66;
   --text: #d4f1ff;
   --muted: #86b9cf;
-  --accent: #4fd2ff;           /* hologram cyan */
+  --accent: #5ec4e6;           /* medipod tab sky-cyan (MSCN_51/2 fill) */
   --accent-text: #4fd2ff;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #3ee8c4;         /* teal: second series, pill toggles */
   --danger: #ff5c6c;
@@ -169,12 +169,12 @@ html[data-theme="prometheus"] {
   --alert-bg: var(--surface);
   --lamp-glow: 0 0 0.4rem currentColor;
   /* The film's soft halo on brackets and tabs, kept faint. */
-  --pm-glow-drop: drop-shadow(0 0 0.3rem color-mix(in srgb, var(--accent) 45%, transparent));
+  --pm-glow-halo: -1px 0 0.3rem -1px color-mix(in srgb, var(--accent) 45%, transparent);
   --pm-glow-box: 0 0 0.5rem color-mix(in srgb, var(--accent) 30%, transparent);
 
   /* Readouts are the small dark value boxes ("986", "030"). */
   --readout-bg: #051826;       /* darker than the glass, like "986" */
-  --readout-fg: var(--accent);
+  --readout-fg: #4fd2ff;       /* glowing digits keep the hotter cyan */
   --readout-font: var(--font-mono);
   --readout-border-width: 0;
   --readout-padding: 0.35em 0.6em;
@@ -203,9 +203,9 @@ html[data-theme="prometheus"] {
 
 /* Suit Room: amber interface over the same blue glass. */
 html[data-theme="prometheus"][data-variant="suit"] {
-  --bg: #062634;
-  --surface: #0c3444;
-  --surface-2: #134357;
+  --bg: #10222f;               /* suit-room slate-navy glass */
+  --surface: #16283a;
+  --surface-2: #1d3247;
   --border: #6b5a2a;
   --hairline: #1f4e60;
   --text: #f3e6c8;
@@ -219,7 +219,7 @@ html[data-theme="prometheus"][data-variant="suit"] {
   --switch-bg: #072230;
   --progress-bg: #072230;
   --meter-track: #072230;
-  --skeleton-bg: #134357;
+  --skeleton-bg: #1d3247;
   --row-selected-bg: rgba(255, 181, 31, 0.1);
   --readout-bg: #04202b;
   --readout-fg: #7fe0ff;
@@ -232,7 +232,7 @@ html[data-theme="prometheus"][data-variant="suit"] {
     radial-gradient(5px 1px at 24px 24px, rgba(255, 181, 31, 0.14) 99%, transparent) 0 0 / 48px 48px,
     radial-gradient(1px 5px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px,
     radial-gradient(5px 1px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px;
-  --holo-glow: radial-gradient(140% 120% at 50% 30%, #12485a 0%, #0a3242 60%, #052230 100%);
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #133847 0%, #0e2433 60%, #081822 100%);
 }
 
 /* --- Voice: wide squared capitals for every label ----------------------- */
@@ -259,7 +259,7 @@ html[data-theme="prometheus"] th {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-html[data-theme="prometheus"] h1 { font-size: 1.6rem; color: var(--accent); text-shadow: 0 0 1rem rgba(79, 210, 255, 0.35); }
+html[data-theme="prometheus"] h1 { font-size: 1.3rem; letter-spacing: 0.12em; color: var(--accent-text); text-shadow: 0 0 1rem rgba(79, 210, 255, 0.35); }
 html[data-theme="prometheus"][data-variant="suit"] h1 { text-shadow: 0 0 1rem rgba(255, 181, 31, 0.3); }
 html[data-theme="prometheus"] h2 { font-size: 1.05rem; }
 html[data-theme="prometheus"] h3,
@@ -275,6 +275,9 @@ html[data-theme="prometheus"] .stat-label,
 html[data-theme="prometheus"] .menubar > li > button { font-size: 0.66rem; }
 /* Nav lists are small tracked labels, not page-sized caps. */
 html[data-theme="prometheus"] .nav-item { font-size: 0.72rem; }
+/* Status pills stay readable micro-labels. */
+html[data-theme="prometheus"] .badge { font-size: 0.75rem; }
+html[data-theme="prometheus"] .status { font-size: 0.82rem; }
 /* Section lists (bare labels, not message rows) keep the narrow face but
    read as tracked capitals. */
 html[data-theme="prometheus"] .master-detail-list .list-item:not(:has(.list-item-title)) { text-transform: uppercase; letter-spacing: 0.08em; }
@@ -294,6 +297,8 @@ html[data-theme="prometheus"] .stat-value {
 }
 /* An attached button squares off to match the input and SEND beside it,
    and keeps its full target past the input's 1px overlap. */
+/* Firefox can light the filled part of the level bar, like "E ▬▬ F". */
+html[data-theme="prometheus"] .slider::-moz-range-progress { block-size: var(--slider-height, 0.35rem); border-radius: 999px; background: var(--accent); }
 html[data-theme="prometheus"] .input-group > .btn {
   --btn-radius: 3px;
   --btn-icon-radius: 3px;
@@ -338,6 +343,16 @@ html[data-theme="prometheus"] .modal-header {
   padding: 0.4em 1.4em 0.4em 1.1em;
   font-weight: 400;
 }
+/* A tab is always one short line ("SUM EVA"); a long title truncates. */
+html[data-theme="prometheus"] :is(.panel-header strong:first-child, .modal-header:not(:has(> *)), .panel-header:not(:has(> *))) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+/* A bare-text flex header's text is an anonymous item, which cannot ellipsize. */
+html[data-theme="prometheus"] :is(.modal-header, .panel-header):not(:has(> *)) { display: block; }
 /* A table straight on the page (no panel) gets a glass wash, so the tick
    grid behind the page doesn't run through its rows. */
 html[data-theme="prometheus"] .table:not(:is(.panel, .card, .modal, .drawer, .popover, .dropdown) .table) {
@@ -406,8 +421,8 @@ html[data-theme="prometheus"] .checkbox:indeterminate::before { block-size: 0.15
  * A "[" whose ends return as short curved arms, standing just off the
  * glass's left edge (medipod "MSCN_51/2", suit "TAG.NM"). Decoration only.
  * A list clips its overflow, so its bracket sits on the edge instead. */
-html[data-theme="prometheus"] :where(.panel, .card, .list, .alert) { position: relative; }
-html[data-theme="prometheus"] :where(.panel, .card, .list, .alert)::before {
+html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast) { position: relative; }
+html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast)::before {
   content: "";
   position: absolute;
   inset-block: 0;
@@ -417,7 +432,7 @@ html[data-theme="prometheus"] :where(.panel, .card, .list, .alert)::before {
   border-inline-end: 0;
   border-start-start-radius: 0.7rem;
   border-end-start-radius: 0.7rem;
-  filter: var(--pm-glow-drop);
+  box-shadow: var(--pm-glow-halo);  /* a shadow, not a filter: no layer per bracket */
   pointer-events: none;
 }
 /* An image card clips to its corners and its media would cover the
@@ -426,6 +441,8 @@ html[data-theme="prometheus"] .card.has-media { --pm-bracket-x: 0; }
 html[data-theme="prometheus"] .card.has-media::before { z-index: 1; }
 html[data-theme="prometheus"] .list { --pm-bracket-x: 0; }
 html[data-theme="prometheus"] .alert { --pm-bracket-w: 3px; --pm-bracket-c: var(--alert-border, var(--accent)); }
+/* Toasts are bracketed glass too, not boxed: the status color moves to the bracket. */
+html[data-theme="prometheus"] .toast { --pm-bracket-w: 3px; --pm-bracket-c: var(--toast-border, var(--accent)); --toast-border-width: 0; }
 /* Dropdowns take their edge from --panel-shadow: the bracket as an inset. */
 html[data-theme="prometheus"] .dropdown { --panel-shadow: inset 3px 0 0 var(--accent), 0 0.6rem 1.6rem rgba(1, 8, 13, 0.55); }
 
@@ -448,7 +465,7 @@ html[data-theme="prometheus"] {
   --app-main-bg: transparent;
   --app-status-bg: transparent;
   --app-status-fg: var(--muted);
-  --app-status-rule: var(--border);
+  --app-status-rule: transparent;  /* the stepped ::before line is the rule */
 }
 html[data-theme="prometheus"] .app-bar { font-size: 0.72rem; }
 html[data-theme="prometheus"] .app-bar .nav-brand {
@@ -482,6 +499,23 @@ html[data-theme="prometheus"] .app-status {
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+/* The stepped frame line (bridge "SY.AVL"): flat along the bar, then up
+   45deg into a raised section over the sign-off. Zero specificity so
+   core's fixed positioning on touch tiers still wins. */
+:where(html[data-theme="prometheus"] .app-status) { position: relative; }
+html[data-theme="prometheus"] .app-status::before {
+  --pm-step-c: color-mix(in srgb, var(--accent) 70%, transparent);
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -10px;
+  block-size: 11px;
+  background:
+    linear-gradient(var(--pm-step-c), var(--pm-step-c)) left bottom / 65% 1px no-repeat,
+    linear-gradient(to top right, transparent calc(50% - 0.75px), var(--pm-step-c) 0 calc(50% + 0.75px), transparent 0) calc(65% + 0px) 0 / 11px 11px no-repeat,
+    linear-gradient(var(--pm-step-c), var(--pm-step-c)) right top / calc(35% - 10px) 1px no-repeat;
+  pointer-events: none;
 }
 /* The ship's own sign-off, bottom right of every console screen. */
 html[data-theme="prometheus"] .app-status::after {
