@@ -1,6 +1,6 @@
 /* ftl-themes: Cyber-Goth
  * Theme-Name: Cyber-Goth
- * Description: Pitch-black club vinyl gloss with toxic neon green and hot purple sharing the accent role.
+ * Description: Pitch-black club vinyl with a toxic-green EL-wire signal over hot-purple sawtooth structure.
  *
  * Fonts (SIL OFL, vendored in assets/fonts/, see NOTICE.md): Audiowide is
  * the rave-flyer display face for headings and panel/modal titles;
@@ -47,9 +47,11 @@
 html[data-theme="cyber-goth"] {
   --motion-leave: rain;
   color-scheme: dark;
-  --bg: #050006;
-  --surface: #0d0710;
-  --surface-2: #180f1e;
+  /* Near-neutral black, as the leather capture: purple stays in the
+     rules, teeth, plates and titles, not in the fills. */
+  --bg: #050406;
+  --surface: #0b090c;
+  --surface-2: #141117;
   --border: #7a1fbf;
   --hairline: #2e1240;
   --text: #f0e6ff;
@@ -79,13 +81,16 @@ html[data-theme="cyber-goth"] {
   /* Text weight of --flare: the same purple lifted to 4.5:1 on the
      glossiest tinted surfaces (#d61fff is 4.4:1 on #2d1137). */
   --flare-text: #e04dff;
+  /* Titles (h3, panel, modal and window titles, table heads) are a dim
+     lavender, not hot purple: the captures show one neon, so green stays
+     the brightest, most saturated thing on the page. */
+  --title: #b9a0d8;
 
-  /* Vinyl gloss: a lit 1px lip and a specular band over the top ~40%,
-     then the dark body, as on the leather capture's sheen. The band is
-     capped at 28/40px so a tall panel keeps a lit lip, not a seam halfway
-     down its content. */
-  --gloss: linear-gradient(180deg, rgba(255,255,255,0.09) 0 1px, rgba(255,255,255,0.045) 1px min(36%, 28px), transparent min(44%, 40px));
-  --btn-bg: var(--gloss), linear-gradient(180deg, #1c0f26, #0a0510);
+  /* Vinyl gloss: a lit 1px lip and a specular band feathered out over the
+     top ~60% (max 56px), as on the leather capture's soft sheen, so a tall
+     surface reads glossy, not two-tone. */
+  --gloss: linear-gradient(180deg, rgba(255,255,255,0.1) 0 1px, rgba(255,255,255,0.07) 1px, rgba(255,255,255,0.035) min(30%, 24px), transparent min(60%, 56px));
+  --btn-bg: var(--gloss), linear-gradient(180deg, #19151c, #080609);
   --btn-fg: var(--accent-text);
   /* Control outlines take a dimmer purple than the hot --flare: the
      blacklight ambience, with green carrying the one neon. 3.5:1 on --bg,
@@ -94,30 +99,50 @@ html[data-theme="cyber-goth"] {
   --btn-border: var(--line);
   --btn-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
   --btn-shadow-hover: 0 0 14px rgba(214, 31, 255, 0.6);
-  --input-bg: #0a0510;
+  --input-bg: #09070a;
   --input-border: var(--line);
   --focus-ring: 0 0 10px var(--accent);
   /* Four cone studs riveted into the corners, like a collar's, then the
      gloss: a lit tip, a violet cone and a dark rim. */
-  /* Studs sit in the outer 9px of the padding, clear of the first glyph. */
-  --stud: radial-gradient(circle at 42% 42%, #e6c8ff 0 1px, #8a3fc0 2.4px, #2a0e3a 3.4px, transparent 3.8px);
-  --_studs-top: var(--stud) 1px 1px / 8px 8px no-repeat, var(--stud) calc(100% - 1px) 1px / 8px 8px no-repeat;
-  --_studs-bottom: var(--stud) 1px calc(100% - 1px) / 8px 8px no-repeat, var(--stud) calc(100% - 1px) calc(100% - 1px) / 8px 8px no-repeat;
-  --_vinyl: var(--gloss), linear-gradient(180deg, #1a0f22, #08040c);
-  --panel-bg: var(--_studs-top), var(--_studs-bottom), var(--_vinyl);
+  /* Studs sit in the outer 14px of the 16px+ padding, clear of the first
+     glyph; a near-black rim lifts each cone off the gloss as metal. */
+  --stud: radial-gradient(circle at 46% 44%, #f3e3ff 0 1.1px, #a65ee0 2.4px, #4a1a70 4.2px, #120616 4.8px, transparent 5.2px);
+  --_studs-top: var(--stud) 2px 2px / 12px 12px no-repeat, var(--stud) calc(100% - 2px) 2px / 12px 12px no-repeat;
+  --_studs-bottom: var(--stud) 2px calc(100% - 2px) / 12px 12px no-repeat, var(--stud) calc(100% - 2px) calc(100% - 2px) / 12px 12px no-repeat;
+  /* Decorative panel and window edges sit dimmer than the control --line,
+     so purple stays ambience and the green neon is the brightest light. */
+  --panel-border: #4a1a70;
+  --modal-border: #4a1a70;
+  /* A pending cell keeps its yellow bar; the wash stays faint so it never
+     muddies a purple-selected row. */
+  --cell-dirty-bg: color-mix(in srgb, var(--warning) 5%, transparent);
+  /* EL-wire halo for green signals at rest. */
+  --_neon-halo: 0 0 3px rgba(57, 255, 90, 0.5), 0 0 14px rgba(57, 255, 90, 0.4);
+  /* A second, diagonal sheen where the leather capture catches the light. */
+  --_vinyl: var(--gloss), linear-gradient(115deg, transparent 62%, rgba(255,255,255,0.022) 70%, transparent 78%), linear-gradient(180deg, #151217, #070608);
+  /* Leather grain: a static feTurbulence tile at ~7%, desktop tiers only. */
+  --_grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 0 0 / 160px 160px;
+  --panel-bg: var(--_studs-top), var(--_studs-bottom), var(--_grain), var(--_vinyl);
   --panel-shadow: 0 0 12px rgba(122, 31, 191, 0.28), inset 0 1px 0 rgba(255,255,255,0.04);
-  --modal-header-fg: var(--flare-text);
-  --table-head-fg: var(--flare-text);
-  --panel-header-fg: var(--flare-text);
+  --modal-header-fg: var(--title);
+  --table-head-fg: var(--title);
+  --panel-header-fg: var(--title);
   /* The track is purple structure; the core content-box clip keeps the
      24/44px hit area around it. */
   --slider-bg: var(--line);
   --slider-height: 0.3rem;
   --slider-thumb-shadow: 0 0 8px var(--accent);
   --table-head-rule: var(--line);
-  --row-selected-bg: rgba(214, 31, 255, 0.18);
-  --nav-bg: #050006;
+  --row-selected-bg: rgba(214, 31, 255, 0.1);
+  --nav-bg: var(--bg);
   --nav-rule: var(--flare);
+  /* Green is never an edge: current-item markers are purple bars; the
+     item's own text carries the green. */
+  --row-active-marker: inset 0.25rem 0 0 var(--line);
+  --nav-rail-marker: var(--line);
+  --tree-selected-marker: inset 0.2rem 0 0 var(--line);
+  --list-featured-border: var(--flare);
+  --list-featured-border-width: 2px;
   --overlay-bg: rgba(3, 0, 5, 0.85);
   --indicator-fg: var(--accent);
   /* The drop column's green tint is kept faint: the purple column title
@@ -128,21 +153,31 @@ html[data-theme="cyber-goth"] {
   --chart-series-2: var(--flare-text);
   --chart-series-5: #b98cff;
 
-  --app-bar-bg: #050006;
+  --app-bar-bg: var(--bg);
   --app-bar-rule: var(--flare);
-  --app-status-bg: #050006;
+  --app-status-bg: var(--bg);
   --app-status-fg: var(--muted);
 
   /* Alerts, menus, popovers and lists share the vinyl gloss. */
   --alert-bg: var(--gloss), var(--surface-2);
   --dropdown-bg: var(--gloss), var(--surface-2);
   --list-bg: var(--gloss), var(--surface);
+  /* Rails and toolbars are vinyl too, on the lighter 3px slab. */
+  --nav-rail-bg: var(--gloss), var(--surface);
+  --nav-rail-rule: var(--border);
+  --toolbar-bg: var(--gloss), var(--surface-2);
+  /* Green fills and text only: bubbles and the bulk bar keep purple edges. */
+  --message-own-border: var(--line);
+  --bulk-bar-border: var(--line);
+  /* Window controls share one hue, lit green on hover. */
+  --modal-header-close-fg: var(--muted);
+  --btn-close-fg-hover: var(--accent-text);
 }
 
 html[data-theme="cyber-goth"] h1,
 html[data-theme="cyber-goth"] h2,
 html[data-theme="cyber-goth"] h3 {
-  color: var(--flare-text);
+  color: var(--title);
   font-family: var(--font-display);
   font-weight: 400;
   text-transform: uppercase;
@@ -152,8 +187,20 @@ html[data-theme="cyber-goth"] h3 {
 /* Page titles are pale tube-white under a purple bloom: the big type
    stops outweighing the green neon, which the captures make the one hue. */
 html[data-theme="cyber-goth"] :is(h1, h2) { color: var(--text); text-shadow: 0 0 12px rgba(214, 31, 255, 0.55); }
+/* A title inside a panel speaks with the panel headers, purple and unbloomed:
+   the bloom softened Audiowide's thin counters at panel-title size. */
+html[data-theme="cyber-goth"] :is(.panel, .card) :is(h2, h3),
+html[data-theme="cyber-goth"] .panel-header :is(h1, h2, h3, h4) { color: var(--title); text-shadow: none; }
+/* Dense column heads: at least 12px, tracked. */
+html[data-theme="cyber-goth"] .table th { font-size: max(0.78em, 0.75rem); }
+html[data-theme="cyber-goth"] .stat-label { font-size: max(0.78em, 0.75rem); }
+html[data-theme="cyber-goth"] .status { font-size: max(0.85em, 0.75rem); }
+/* A disabled pager arrow stays a visible muted glyph, not a near-bg tone. */
+html[data-theme="cyber-goth"] .pagination-item.is-disabled { opacity: 0.6; }
 /* Window and modal titles share the panel headers' purple voice. */
 html[data-theme="cyber-goth"] .modal-header { text-shadow: 0 0 10px rgba(214, 31, 255, 0.35); }
+/* Caption glyphs stay one flat --muted: the bloom tinted only the heavy "_". */
+html[data-theme="cyber-goth"] .modal-header > :is(.btn-min, .btn-max, .btn-close) { text-shadow: none; }
 /* Dense stat labels: a lighter lavender than --muted at 11px. */
 html[data-theme="cyber-goth"] .stat-label { --muted: #b9a0d8; }
 /* Kanban column titles sit on a tinted column: the purple bloom behind
@@ -165,6 +212,18 @@ html[data-theme="cyber-goth"] .btn,
 html[data-theme="cyber-goth"] .tab {
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+/* Navigation labels speak the same flyer voice; body copy and data cells
+   stay mixed case. The brand is set in the display face. */
+html[data-theme="cyber-goth"] :is(.nav-item, .menubar > li > [role="menuitem"], .master-detail-list .list-item:not(:has(.list-item-title))) {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+html[data-theme="cyber-goth"] .nav-brand {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 /* Toggle buttons share a squeezed segmented row on phones: uppercase, but
    untracked, so the longest label keeps its padding. */
@@ -200,12 +259,12 @@ html[data-theme="cyber-goth"] .modal-header::after {
   inset: auto 0 -9px 0;
   height: 9px;
   background:
-    linear-gradient(-45deg, var(--_teeth, #a020d8) 6px, transparent 0),
-    linear-gradient(45deg, var(--_teeth, #a020d8) 6px, transparent 0);
+    linear-gradient(-45deg, var(--_teeth, #7a1fbf) 6px, transparent 0),
+    linear-gradient(45deg, var(--_teeth, #7a1fbf) 6px, transparent 0);
   background-position: left bottom;
   background-repeat: repeat-x;
   background-size: 12px 12px;
-  filter: drop-shadow(0 0 5px rgba(214, 31, 255, 0.7));
+  filter: drop-shadow(0 0 4px rgba(214, 31, 255, 0.45));
   pointer-events: none;
 }
 /* A loose nav (not inside the bar) keeps the teeth off the next line. */
@@ -222,12 +281,11 @@ html[data-theme="cyber-goth"] .panel-header::after {
   inset: auto 0 -7px 0;
   height: 7px;
   background:
-    linear-gradient(-45deg, var(--flare) 5px, transparent 0),
-    linear-gradient(45deg, var(--flare) 5px, transparent 0);
+    linear-gradient(-45deg, var(--border) 5px, transparent 0),
+    linear-gradient(45deg, var(--border) 5px, transparent 0);
   background-position: left bottom;
   background-repeat: repeat-x;
   background-size: 10px 10px;
-  opacity: 0.85;
   pointer-events: none;
 }
 html[data-theme="cyber-goth"] .panel-header {
@@ -238,7 +296,9 @@ html[data-theme="cyber-goth"] .panel-header {
   font-family: var(--font-display);
   font-weight: 400;
   --label-transform: uppercase;
-  --label-tracking: 0.06em;
+  --label-tracking: 0.05em;
+  /* Audiowide's counters close up under 14px. */
+  font-size: max(0.85em, 0.9rem);
 }
 html[data-theme="cyber-goth"] .modal-header {
   font-family: var(--font-display);
@@ -250,14 +310,20 @@ html[data-theme="cyber-goth"] .modal-header {
 /* Asymmetric single-corner fang cut on text buttons — one sharp diagonal
    on the top-right only, unlike alienware's symmetric two-corner bevel.
    The clip polygon runs on past the box by the slab's 3px, so the offset
-   slab (box-shadow) survives the cut and carries the fang too. Round icon
-   buttons and avatars keep core's circle, padding and shadow. */
+   slab (box-shadow) survives the cut and carries the fang too. It runs
+   12px out on the other sides and along the cut line's own extension, so
+   the green rest halo and purple hover bloom show without filling the cut
+   corner. Round icon buttons and avatars keep core's circle, padding and
+   shadow. */
 html[data-theme="cyber-goth"] :is(.btn:not(.btn-icon), .toggle-btn:not(.toggle-group > *)) {
   --_fang: 14px;
   position: relative;
-  clip-path: polygon(0 0, calc(100% - var(--_fang)) 0, 100% var(--_fang),
-    calc(100% + 3px) calc(var(--_fang) + 3px), calc(100% + 3px) calc(100% + 3px),
-    3px calc(100% + 3px), 0 100%);
+  /* The 12px-out box minus only the cut triangle (and its 3px slab
+     shadow), reached by a zero-width slit from the top edge, so the halo
+     wraps the corner evenly instead of stopping on a diagonal. */
+  clip-path: polygon(-12px -12px, 100% -12px, 100% 0, calc(100% - var(--_fang)) 0,
+    calc(100% + 3px) calc(var(--_fang) + 3px), calc(100% + 3px) 3px, 100% 0, 100% -12px,
+    calc(100% + 12px) -12px, calc(100% + 12px) calc(100% + 12px), -12px calc(100% + 12px));
   padding-inline-end: calc(1.5em * var(--density));
   box-shadow: 3px 3px 0 #3a1550, var(--btn-shadow);
 }
@@ -269,6 +335,20 @@ html[data-theme="cyber-goth"] .toggle-group:not(.is-stacked) > .toggle-btn:last-
   padding-inline-end: calc(1.5em * var(--density));
 }
 html[data-theme="cyber-goth"] .btn-sm:not(.btn-icon) { --_fang: 9px; }
+/* Neon-lit, not neon-coloured: green signals carry a soft EL-wire bloom
+   at rest (the purple hover bloom below still takes over). */
+html[data-theme="cyber-goth"] :is(.btn-primary, .btn-success):not(.btn-icon, :disabled),
+html[data-theme="cyber-goth"] .toggle-btn:not(.toggle-group > *, .is-danger):has(input:checked) {
+  box-shadow: 3px 3px 0 #3a1550, var(--_neon-halo), var(--btn-shadow);
+}
+html[data-theme="cyber-goth"] .toggle-group > .toggle-btn:not(.is-danger):has(input:checked) { box-shadow: var(--_neon-halo); z-index: 1; }
+html[data-theme="cyber-goth"] .pagination-item.is-active { box-shadow: var(--_neon-halo); }
+html[data-theme="cyber-goth"] .tab.is-active { text-shadow: 0 0 6px rgba(57, 255, 90, 0.6); box-shadow: 0 4px 6px -4px rgba(57, 255, 90, 0.8); }
+html[data-theme="cyber-goth"] :is(.nav-brand, .nav-item.is-active, .nav-item[aria-current="page"]) { text-shadow: 0 0 8px rgba(57, 255, 90, 0.55); }
+/* Lines glow in their own series hue (desktop tiers; dropped on phones). */
+html[data-theme="cyber-goth"] :is(.sparkline, .chart-series:not(rect, .is-area)) {
+  filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 75%, transparent));
+}
 html[data-theme="cyber-goth"] .btn:not(.btn-icon):hover {
   box-shadow: 3px 3px 0 #5a1f80, var(--btn-shadow-hover);
 }
@@ -310,9 +390,18 @@ html[data-theme="cyber-goth"] .modal,
 html[data-theme="cyber-goth"] .card {
   box-shadow: 4px 4px 0 #2a0e3a, 4px 4px 0 1px #6a2d96, var(--panel-shadow);
 }
-/* Lighter surfaces ride a 3px slab, so they stay below the panels. */
-html[data-theme="cyber-goth"] :is(.alert, .dropdown, .context-menu, .popover, .list) {
-  box-shadow: 3px 3px 0 #2a0e3a, 3px 3px 0 1px #6a2d96;
+/* Lighter surfaces ride a plain, unedged 3px slab, so they stay below the
+   panels and add no purple line of their own. */
+html[data-theme="cyber-goth"] :is(.alert, .dropdown, .context-menu, .popover, .list, .nav-rail, .toolbar:not(.is-plain)) {
+  box-shadow: 3px 3px 0 #2a0e3a;
+}
+/* The rave-flyer voice reaches the smaller titles too. */
+html[data-theme="cyber-goth"] :is(.popover > strong:first-child, .accordion-trigger, .kanban-card-title) {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.9em;
 }
 /* Info is a notice, not a success: it takes the structural purple. */
 html[data-theme="cyber-goth"] .alert-info { --alert-border: var(--flare); }
@@ -321,7 +410,9 @@ html[data-theme="cyber-goth"] .alert-info { --alert-border: var(--flare); }
 html[data-theme="cyber-goth"] .desktop-window .modal-header { margin-bottom: calc(var(--space-s) + 9px); }
 /* A full-bleed title bar would sit on the top studs (the window icon took
    one): titled modals and windows keep only the bottom pair. */
-html[data-theme="cyber-goth"] .modal:has(> .modal-header) { --modal-bg: var(--_studs-bottom), var(--_vinyl); }
+html[data-theme="cyber-goth"] .modal:has(> .modal-header) { --modal-bg: var(--_studs-bottom), var(--_grain), var(--_vinyl); }
+/* A resizable window's grip owns the bottom-right corner: one stud, bottom-left. */
+html[data-theme="cyber-goth"] .modal.is-resizable:has(> .modal-header) { --modal-bg: var(--stud) 2px calc(100% - 2px) / 12px 12px no-repeat, var(--_grain), var(--_vinyl); }
 
 /* --- v5 tiers --------------------------------------------------------------
  * No rail on any tier. On phone and tablet core gives the bar's nav its own
@@ -330,9 +421,23 @@ html[data-theme="cyber-goth"] .modal:has(> .modal-header) { --modal-bg: var(--_s
  * already edges the whole bar, so the nav's is dropped there. */
 @container style(--tier: mobile) or style(--tier: tablet) {
   html[data-theme="cyber-goth"] .app-bar > .nav::after { display: none; }
+  /* The brand keeps its full name; the nav wraps to its own line. */
+  html[data-theme="cyber-goth"] .app-bar > .nav-brand { flex: 0 0 auto; min-width: max-content; }
+  /* Untracked there, so the bar's nav keeps to one line. */
+  html[data-theme="cyber-goth"] .app-bar :is(.nav-item, .menubar > li > [role="menuitem"]) { letter-spacing: 0; }
   /* The teeth's blurred glow is a per-frame filter cost on phones; they
      stay hot purple but unblurred there. */
-  html[data-theme="cyber-goth"] :is(.app-bar, .nav, .modal-header)::after { --_teeth: var(--flare); filter: none; }
+  html[data-theme="cyber-goth"] :is(.app-bar, .nav, .modal-header)::after { --_teeth: var(--line); filter: none; }
+  /* Scroll paint budget: no blurred halo, grain, studs, diagonal sheen,
+     plate edge or heading bloom; one plain plate. */
+  html[data-theme="cyber-goth"] :is(.panel, .card, .modal, .modal.is-resizable:has(> .modal-header)) {
+    --_vinyl: var(--gloss), linear-gradient(180deg, #151217, #070608);
+    --panel-bg: var(--_vinyl);
+    --modal-bg: var(--_vinyl);
+    box-shadow: 4px 4px 0 #2a0e3a;
+  }
+  html[data-theme="cyber-goth"] :is(h1, h2, h3, .modal-header) { text-shadow: none; }
+  html[data-theme="cyber-goth"] :is(.sparkline, .chart-series) { filter: none; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the club wall beside the console. A
