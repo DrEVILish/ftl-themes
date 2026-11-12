@@ -47,8 +47,20 @@ html[data-theme="winxp-luna"] {
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
-  --radius: 8px;
-  --font: Tahoma, "Segoe UI", Verdana, sans-serif;
+  /* Windows get 8px top corners (--modal-radius, --app-bar-radius); the
+     controls inside them, from push buttons to list boxes, are 3px. */
+  --radius: 3px;
+  /* No pills or stadiums: XP never drew them. */
+  --badge-radius: 3px;
+  --fab-radius: 3px;
+  --switch-radius: 2px;
+  --switch-thumb-radius: 2px;
+  --calendar-date-radius: 0;
+  /* XP list boxes and their selection bar are square. */
+  --listbox-radius: 0;
+  /* Metric-close fallbacks before the generic: Arial/Liberation are nearer
+     Tahoma's width than DejaVu Sans. */
+  --font: Tahoma, "Segoe UI", Verdana, Arial, "Liberation Sans", "DejaVu Sans Condensed", sans-serif;
   /* Lucida Console was XP's console face; Courier New only its fallback. */
   --font-mono: "Lucida Console", "Courier New", monospace;
   --flare: #ffd700;
@@ -231,8 +243,10 @@ html[data-theme="winxp-luna"] .panel-header {
   width: fit-content;
   max-width: calc(100% - 1rem);
   /* --surface-pad is the box's own padding (v5: it steps per tier). */
-  margin: calc(-1 * var(--surface-pad, 1rem) - 0.7em) 0 calc(0.6rem * var(--density)) -0.35rem;
-  padding: 0 0.3rem;
+  /* 4px of block padding keeps the caption text off the painted edge
+     (v5 edge-text); the margin takes it back so it stays on the frame. */
+  margin: calc(-1 * var(--surface-pad, 1rem) - 0.7em - 4px) 0 calc(0.6rem * var(--density)) -0.35rem;
+  padding: 4px 0.35rem;
   background: var(--luna-legend-bg, linear-gradient(180deg, transparent 50%, var(--panel-bg) 50%));
   border: 0;
   font-size: 0.9em;
@@ -272,7 +286,7 @@ html[data-theme="winxp-luna"] .drawer.drawer > .panel-header > .btn-close {
 /* Minimize / maximize on a window's title bar: the blue glossy Luna
    caption squares in a white frame, white glyphs (core leaves them in
    --muted, invisible on the blue). Close keeps the red-orange one. */
-html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) {
+html[data-theme="winxp-luna"] .modal-header :is(.btn-min, .btn-max) {
   --btn-close-bg: transparent;
   --btn-close-bg-hover: transparent;
   width: 21px;
@@ -281,28 +295,28 @@ html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) {
 /* The square is cropped from the variant's own --luna-caption strip onto
    the glyph box, so it matches the title bar's close button and stays
    21px when touch tiers grow the hit area to 44px. */
-html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) {
+html[data-theme="winxp-luna"] .modal-header :is(.btn-min, .btn-max) {
   --btn-min-glyph: "";
   --btn-max-glyph: "";
 }
-html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max)::before {
+html[data-theme="winxp-luna"] .modal-header :is(.btn-min, .btn-max)::before {
   display: block;
   width: 21px;
   height: 21px;
   background: var(--luna-caption) no-repeat 0 0 / 67px 21px;
 }
-html[data-theme="winxp-luna"] .modal-header > .btn-max::before { background-position: -23px 0; }
+html[data-theme="winxp-luna"] .modal-header .btn-max::before { background-position: -23px 0; }
 @media (hover: hover) {
-  html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max):hover::before { filter: brightness(1.15); }
+  html[data-theme="winxp-luna"] .modal-header :is(.btn-min, .btn-max):hover::before { filter: brightness(1.15); }
 }
-html[data-theme="winxp-luna"] .modal-header > .btn-min { margin-inline-start: auto; }
+html[data-theme="winxp-luna"] .modal-header .btn-min { margin-inline-start: auto; }
 /* With min/max beside it, the close button joins the row instead of
    sitting absolutely over the bar's right end. */
-html[data-theme="winxp-luna"] .modal-header:has(> .btn-min, > .btn-max) > .btn-close {
+html[data-theme="winxp-luna"] .modal-header:has(.btn-min, .btn-max) .btn-close {
   position: static;
   transform: none;
 }
-html[data-theme="winxp-luna"] .modal-header > :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: calc(2px - 0.5rem); }
+html[data-theme="winxp-luna"] .modal-header :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: calc(2px - 0.5rem); }
 
 /* Tabs: selected tab rises 2px, sits over the strip's rule, and carries
    the orange top line; hovering an unselected tab lights the same line. */
@@ -311,17 +325,25 @@ html[data-theme="winxp-luna"] .tab {
   border: 1px solid #919b9c;
   border-bottom: 0;
   margin-right: -1px;
-  padding: 0.2em 0.8em;
+  padding: max(4px, 0.35em) 0.8em;
 }
 html[data-theme="winxp-luna"] .tab:hover { box-shadow: inset 0 2px #ffc83c, inset 0 3px #e68b2c; }
 html[data-theme="winxp-luna"] .tab.is-active {
   position: relative;
   bottom: -1px;
-  padding-top: 0.35em;
-  padding-bottom: calc(0.2em + 1px);
+  padding-top: max(5px, 0.45em);
+  padding-bottom: calc(max(4px, 0.35em) + 1px);
   border-bottom: 0;
   box-shadow: inset 0 2px #ffc83c, inset 0 3px #e68b2c;
 }
+
+/* List-view column headers, chart tooltips and an editing cell's error
+   keep 4px of air round the text at the small XP root size (the extra
+   1.5px covers the glyph box overhanging the line). */
+html[data-theme="winxp-luna"] th { padding-block: max(5.5px, var(--cell-pad-y, calc(0.5em * var(--density, 1)))); }
+html[data-theme="winxp-luna"] .chart-tooltip { padding-block: max(5px, var(--space-2xs)); }
+html[data-theme="winxp-luna"] { --divide-y-pad: max(4.5px, var(--space-2xs)); }
+html[data-theme="winxp-luna"] .table td.is-editing > .field-error { padding-block-end: max(5px, var(--space-2xs)); }
 
 /* Checkboxes and radios: the Luna glyphs — white-to-beige wells in a
    navy #1c5180 frame, green tick / green dot. */
@@ -367,7 +389,7 @@ html[data-theme="winxp-luna"] {
   --app-bar-rule-width: 0;
   --app-bar-radius: 8px 8px 0 0;
   --app-bar-height: 2rem;
-  --app-bar-padding: 0.2rem 5.4rem 0.2rem 0.6rem;
+  --app-bar-padding: 4px calc(67px + 0.9rem) 4px 0.6rem;
   --app-main-bg: var(--bg);
   --app-main-padding: 0.9rem;
   --app-status-bg: linear-gradient(180deg, #2b71e0 15%, #2663da 18%, #235bd6 20%, #2258d5 23%, #2157d6 38%, #245ddb 54%, #2562df 86%, #245fdc 89%, #2158d4 92%, #1d4ec0 95%, #1941a5 98%);
@@ -423,9 +445,48 @@ html[data-theme="winxp-luna"] .app-status {
   --success-text: #c9f7b5;
   --warning-text: #ffe0a8;
   --danger-text: #ffd0d0;
+  /* Muted status text takes the strip's own text colour, softened; the
+     content-area grey measured 2.3:1 on the blue. */
+  --muted: color-mix(in srgb, var(--app-status-fg) 85%, transparent);
   margin-top: 0.4rem;
   box-shadow: var(--luna-taskbar-lip);
 }
+
+
+/* --- Luna's own choices, kept from the themes that extend it ------------ *
+ * The [data-variant] in the selector matches every Luna page, but
+ * theme_inheritance.py drops variant-scoped rules from child themes, so
+ * Win7 Aero and Alienware keep their own selection, headings and icons
+ * (their --accent-2 is no white-text fill). */
+html[data-theme="winxp-luna"]:is(:not([data-variant]), [data-variant]) {
+  /* Selection is XP's #316ac5 everywhere, not the chrome blue. */
+  --selection-bg: var(--accent-2);
+  --segmented-item-bg-active: var(--accent-2);
+  --dropdown-item-bg-hover: var(--accent-2);
+  --listbox-option-bg-active: var(--accent-2);
+  --menubar-item-bg-active: var(--accent-2);
+  --calendar-selected-bg: var(--accent-2);
+  --badge-bg-active: var(--accent-2);
+  --toggle-btn-bg-on: var(--accent-2);
+  --toggle-btn-border-on: var(--accent-2);
+  --nav-item-bg-active: var(--accent-2);
+  --pagination-item-bg-active: var(--accent-2);
+}
+/* The page title is compact Trebuchet, as on an XP window; a section
+   heading is Explorer's: bold black over a 1px rule that runs from #4197ff
+   and fades to white. */
+html[data-theme="winxp-luna"]:is(:not([data-variant]), [data-variant]) h1 { font-family: "Trebuchet MS", var(--font); font-size: 1.6rem; }
+html[data-theme="winxp-luna"]:is(:not([data-variant]), [data-variant]) :is(main, section, .app-main) > h2 {
+  font-size: 1.2rem;
+  color: var(--text);
+  padding-bottom: 5px;
+  border-bottom: 1px solid #4197ff;
+  border-image: linear-gradient(90deg, #4197ff, transparent) 1;
+}
+/* XP's toolbar and list glyphs were coloured; the mono set takes the Luna
+   blue there (5.9:1 on white) unless its button is selected. The blue
+   schemes only: the black, olive and silver ones keep mono glyphs. */
+html[data-theme="winxp-luna"]:is(:not([data-variant]), [data-variant="royale"], [data-variant="embedded"]) :is(.toolbar, .list) :is(.btn-ghost, .btn-icon, .list-item):not(.is-active, [aria-pressed="true"], [aria-current]) > .icon { color: #1f5fbf; }
 
 /* --- Variants (CONTRACT.md "Palette variants") ------------------------ *
  * Same window shape, different msstyles paint. */
@@ -745,8 +806,15 @@ html[data-theme="winxp-luna"][data-variant="royale"] {
   --window-task-toggle-fg: #ffffff;
   --window-task-toggle-rotate: 180deg;
 }
+/* Royale's app bar: the measured glass, saturated. The body is the
+   caption's deep lower half held at #3a76c8 (white text 4.6:1); its bright
+   #7bb9ef-#599ae6 upper half is an inset band above the text line. */
+html[data-theme="winxp-luna"][data-variant="royale"] {
+  --app-bar-bg: linear-gradient(180deg, #3a76c8 0%, #3573c5 40%, #3369c0 55%, #2e5ab4 85%, #2f56b4 93%, #2d467d 100%);
+}
+html[data-theme="winxp-luna"][data-variant="royale"] .app-bar { --luna-lip: inset 0 1px #96c5ff, inset 0 4px rgba(123, 185, 239, 0.75), inset 0 9px rgba(100, 161, 234, 0.5); }
 html[data-theme="winxp-luna"][data-variant="royale"] .start-menu :is(.start-menu-programs, .start-menu-places) { --context-menu-item-fg: #ffffff; color: #ffffff; }
-html[data-theme="winxp-luna"][data-variant="royale"] .app-status > :last-child:not(:first-child) { background: linear-gradient(180deg, #f3f9ff 0%, #e1ecfe 20%, #dae7fb 30%, #a7c3e8 55%, #8aaedd 70%, #719bd2 85%, #5f8fce 100%); }
+html[data-theme="winxp-luna"][data-variant="royale"] .app-status > :last-child:not(:first-child) { --taskbar-tray-fg: #0b1f4d; text-shadow: none; background: linear-gradient(180deg, #f3f9ff 0%, #e1ecfe 20%, #dae7fb 30%, #a7c3e8 55%, #8aaedd 70%, #719bd2 85%, #5f8fce 100%); }
 html[data-theme="winxp-luna"][data-variant="royale-noir"] {
   --luna-frame-inactive: color-mix(in srgb, var(--luna-frame) 55%, #ffffff);
   --taskbar-task-bg: linear-gradient(180deg, #666f79 0%, #697680 10%, #5e6a77 35%, #556170 55%, #3e4c5d 60%, #313a4d 85%, #2c3647 95%, #0f1a2a 100%);
@@ -898,8 +966,8 @@ html[data-theme="winxp-luna"] .modal-header::after {
   pointer-events: none;
 }
 /* A real close button takes the decoration's place and look. */
-html[data-theme="winxp-luna"] .modal-header:has(> .btn-close)::after { content: none; }
-html[data-theme="winxp-luna"] .modal-header > .btn-close {
+html[data-theme="winxp-luna"] .modal-header:has(.btn-close)::after { content: none; }
+html[data-theme="winxp-luna"] .modal-header .btn-close {
   --btn-close-bg: var(--luna-close) no-repeat center / 21px 21px;
   --btn-close-bg-hover: var(--luna-close) no-repeat center / 21px 21px;
   --btn-close-glyph: "";
@@ -967,6 +1035,11 @@ html[data-theme="winxp-luna"] .app-status > :last-child:not(:first-child) {
   background: linear-gradient(180deg, #0c59b9 0, #139ee9 6%, #18b5f2 12%, #139beb 45%, #1290e8 80%, #0d8dea 92%, #0b5ac6 100%);
   border-left: 1px solid #092e8d;
   box-shadow: inset 1px 0 #19b9f3;
+  /* Tray text is white, as XP's clock was; the shadow keeps it legible on
+     the bright cyan (Olive, Silver and Royale set a dark --taskbar-tray-fg). */
+  --muted: var(--taskbar-tray-fg);
+  color: var(--taskbar-tray-fg);
+  text-shadow: 1px 1px #0b3a8f, 0 0 2px #0b3a8f;
 }
 html[data-theme="winxp-luna"]:is([data-variant="royale-noir"], [data-variant="zune"]) .app-status > :last-child:not(:first-child) {
   background: linear-gradient(180deg, #4a4a4a, #2c2c2c 45%, #1a1a1a 55%, #262626);
@@ -995,7 +1068,7 @@ html[data-theme="winxp-luna"][data-variant="embedded"] .app-status > :last-child
   }
 }
 @media (max-width: 480px) {
-  html[data-theme="winxp-luna"] { --app-bar-padding: 0.2rem 0.6rem; }
+  html[data-theme="winxp-luna"] { --app-bar-padding: 4px 0.6rem; }
   html[data-theme="winxp-luna"] .app-bar::after { content: none; }
   html[data-theme="winxp-luna"] .app-status::before { content: none; }
   html[data-theme="winxp-luna"] .app-status { padding-inline-start: 0.6rem; }
@@ -1180,16 +1253,14 @@ html[data-theme="winxp-luna"] .desktop-launchers { color: #ffffff; padding-inlin
 html[data-theme="winxp-luna"] .desktop-launchers .dock-item { min-inline-size: max(1.5rem, 24px); border-radius: 3px; }
 /* XP draws Quick Launch and tray icons at 16px. */
 html[data-theme="winxp-luna"] .desktop-bar :is(.dock-item, .taskbar-tray) .icon { width: 16px; height: 16px; min-width: 16px; }
-/* An XP trackbar takes 24px of height around its thin track; the margin
-   keeps that footprint so stacked sliders stay 24px targets at the
-   smaller root size. */
-html[data-theme="winxp-luna"] .slider:not(.is-vertical) { margin-block: max(0px, calc((24px - var(--slider-height, 0.35rem)) / 2)); }
 /* Trackbar, sampled at 200% from a genuine XP Volume Control: a thin groove
    and an 11x21 thumb with a #f3f3ef face, #778892 edge and green ends. */
 html[data-theme="winxp-luna"] .slider {
   --slider-height: 4px;
   --slider-radius: 2px;
-  --slider-bg: #f4f3ee;
+  /* Core hides the border once the box grows to --tap-min, so the groove's
+     #9d9da1 edge is painted into the 4px content box instead. */
+  --slider-bg: linear-gradient(180deg, #9d9da1 1px, #f4f3ee 1px calc(100% - 1px), #9d9da1 calc(100% - 1px));
   --slider-border: #9d9da1;
 }
 html[data-theme="winxp-luna"] .slider::-webkit-slider-thumb {
