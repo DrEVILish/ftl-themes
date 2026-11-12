@@ -32,10 +32,13 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
    italic key with a deeper drop; it depresses 5px on `:active`.
 5. **Big round lamps with a bezel.** `.lamp` is a 1.3rem circle inside a navy
    ring; the rail carries five bezelled craft lamps.
-6. **The diagonal band is the only ornament.** A gold/navy 45-degree stripe
-   (`--ir-band`) under the bar and under `h1`. Built from CSS gradients.
+6. **The diagonal band and the sash are the only ornaments.** A gold/navy
+   45-degree stripe (`--ir-band`) under the bar; under `h1` a single wide gold
+   sash with a diagonal end. Built from CSS only.
 7. **Rounded-rectangle, never pill, never sharp.** Radius 0.5-1.1rem.
-8. **Headlines are heavy, italic, uppercase.** Reads as a title card.
+8. **Headlines are wide squared capitals.** Microgramma/Eurostile Extended
+   when installed, else the vendored Michroma; the heavy italic is kept for
+   the bar and the GO key.
 
 ## Signature details
 
@@ -49,11 +52,15 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 - **Rocker switch**: square-shouldered thumb in a stout slot; gold slot when on.
 - Panel and modal headers: navy caption bar with a gold underline band.
 - Tables: navy head, gold rule, italic uppercase captions, cream zebra.
-- Alerts carry a 1rem gold edge, like a warning tab.
+- Alerts carry a 1rem tab in the craft status colour (TB1 blue info, TB2
+  green success, TB4 yellow warning, TB3 orange-red danger; gold when plain).
+- Sliders are faders: a navy groove with a chunky gold knob in a navy bezel.
+- Lists and chat bubbles keep the navy outline (3px, 2px inside a console);
+  ghost and tertiary keys have no keycap drop until hovered.
 - Navy surfaces re-point `--text/--muted/--link` and state-text tokens locally
   so nested muted text, ghost buttons and state text remain legible.
 
-### Icons
+## Icons
 
 `icons.svg` redraws the full core set (178/178) as bold 1960s pictograms:
 - 24 grid, stroke only at 2.8 (`--icon-stroke-width`), round caps/joins from
@@ -68,13 +75,14 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 
 ## Typography (honest)
 
-No font is vendored. `--font`: Trebuchet MS, Gill Sans, Segoe UI, Verdana,
-system-ui. Headings/panel headers/bar: Arial Rounded MT Bold, Trebuchet MS,
-Arial Black, Verdana in weight 900 italic uppercase. The actual title-card
-and craft lettering are not verified to be any of these (Microgramma and
-Univers 59 are reported; neither is vendored or matched). The heavy italic is
-an interpretation. On systems without those faces (many Linux installs) it
-falls to DejaVu/Verdana-class sans, which is heavier and wider.
+`--font`: Trebuchet MS, Gill Sans, Segoe UI, Verdana, system-ui.
+Headings and panel headers (`--ir-display`): Eurostile Extended, Microgramma
+D Extended, Microgramma, then **Michroma** (SIL OFL, already vendored in
+`assets/fonts/`, see `assets/fonts/NOTICE.md`), uppercase, upright, weight
+400. Microgramma is the reported credits/title-card face; Michroma is an
+open Microgramma-alike, not the original. Univers 59 (craft lettering) is
+not matched. The bar and GO keep a heavy italic system stack (Arial Rounded
+MT Bold, Trebuchet MS, Arial Black) as an interpretation.
 
 ## Contrast honesty
 
