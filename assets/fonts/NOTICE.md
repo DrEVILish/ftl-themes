@@ -179,9 +179,26 @@ files are vendored unmodified.
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
   Light headings)
 
+## W95FA
+
+- **Family:** W95FA (Regular 400, subset to Basic Latin, Latin-1 and
+  common punctuation with fontTools — `W95FA.woff2`)
+- **Designer:** Alina Sava, published by FontsArena — an outline
+  recreation of the Windows 95 bitmap dialog face (one font pixel is 80 of
+  its 1000 units)
+- **License:** SIL Open Font License, version 1.1, verified in the font's
+  own name table (nameID 13 "SIL OpenFont License", nameID 14
+  http://scripts.sil.org/OFL) and on the FontsArena listing; no Reserved
+  Font Name is declared
+- **Source:** https://fontsarena.com/w95fa-by-alina-sava/ (version 1.002,
+  `W95FA.otf`, fetched from the mirror at github.com/verkcuos/w95fa and
+  converted to WOFF2)
+- **Used by:** `windows95` (mouse tier, after "Microsoft Sans Serif" / "MS
+  Sans Serif": the stand-in for the 8pt bitmap face off Windows)
+
 ## Bottom line
 
-Twenty-one files, fifteen families: thirteen SIL OFL 1.1, Bedstead CC0 and Px437
+Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
