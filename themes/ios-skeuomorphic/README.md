@@ -59,7 +59,8 @@ and the two must never converge.
   its top, round-capped, painted inside the padded 24/44px hit area, and
   a white pearl knob. Firefox draws the blue track with
   `::-moz-range-progress`; Chromium has no fill pseudo-element, so the
-  knob paints it as a border-image reaching back to the groove's start,
+  knob paints it as a border-image reaching back from the knob's left
+  edge (it paints above the knob's fill, so it stops there) to the groove's start,
   cut to the rounded end by a clip-path notch (left-to-right horizontal
   sliders; the two-thumb `.slider.is-range` draws its own). A vertical
   slider turns the rim and shade 90 degrees.
@@ -75,11 +76,21 @@ and the two must never converge.
 - **Section headers:** a `.panel-header` is the grouped-table section
   title, bold `#4c566c` with a white emboss and no bar. `.table th` is the
   slim plain-table strip, a gray-blue gradient with white bold type.
-- **Text on the pinstripe** (headings, intro copy and breadcrumbs placed
-  straight in `.app-main`) is slate `#4c566c` with the white emboss of
-  iOS 6 header and footer text. Text inside cells has none.
+- **Text on the pinstripe** (intro copy and breadcrumbs placed straight
+  in `.app-main`, and every `h1`-`h3` in `.app-main` that is not inside a
+  cell, card, panel, list, table, modal or other filled surface) is slate
+  `#4c566c` with the white emboss of iOS 6 header and footer text, so a
+  page title is the same colour on every page. Text inside cells has none.
 - **Grouped cell titles** (`.field-row > .label`) are 17pt-sized
   (1.0625rem) bold black, as Settings' "Wi-Fi" and "Airplane Mode" are.
+  Adjacent `.field-row`s join into one grouped section: no gap, a single
+  `#cacaca` separator, and rounded corners only on the first and last row.
+- **Checkboxes and radios** (iOS 6 had neither) are glossy white wells in
+  the `#8e9299` bar-button rim; checked, they show the `#385487` checkmark
+  of a selected table cell (a dot for a radio).
+- **Content toolbar icons** (`.btn-ghost.btn-icon`) are plain `#385487`
+  glyphs with a 44px hit area that show the bordered white bar-button
+  capsule on hover and focus. Every button and badge label is bold (700).
 - **The segmented control** splits into equal-width segments, as
   `UISegmentedControl` always did.
 - **Avatars** are the Contacts photo well: pale `#e4e6ea` with slate
@@ -132,9 +143,10 @@ apart from `aqua`.
   only `#5d779c` to `#5a7499`, so white holds 4.5:1 at every stop
   (`scripts/check.py` measures them). The paler steel of the upper bar
   is an inset sheen (two stacked shadows) over the upper half of the bar:
-  a 1px `#eff2f7` line, then about `#afbfd4` falling to `#5d779c` by
-  mid-bar, and the bold 1.25rem title (large text)
-  stays at 3:1 or more over the sheen; bar buttons sit on their own
+  a 1px `#eff2f7` line, then about `#afc0d4` falling to `#5d779c` a
+  little above mid-bar (about 40%; any lower and small bar text drops
+  under 4.5:1), and the bold 1.25rem title (large
+  text) stays at 3:1 or more from its cap line down; bar buttons sit on their own
   capsules. The bar is smooth, with no 50%
   break, as the reference is. Do not lighten the stops.
 - The count badge (`#8795af` in the reference) and the plain-table

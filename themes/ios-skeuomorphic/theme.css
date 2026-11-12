@@ -66,7 +66,9 @@ html[data-theme="ios-skeuomorphic"] {
      steel of the upper bar is an inset sheen over its top half that keeps
      the bold title at 3:1 or more (see Deliberate deviations). */
   --ios-navbar: linear-gradient(180deg, #5d779c 0%, #5a7499 100%);
-  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 7px 5px -2px rgba(220, 229, 240, 0.6), inset 0 18px 12px -6px rgba(190, 205, 224, 0.55), inset 0 -1px 0 #2d405c;
+  /* The pale #b3c3d8 upper half of the iOS 6 bar, as a sheen fading out by
+     about 40%; any lower and small bar text drops under 4.5:1 (core-regress). */
+  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 8px 5px -2px rgba(214, 224, 237, 0.55), inset 0 18px 10px -5px rgba(179, 195, 216, 0.55), inset 0 -1px 0 #2d405c;
   --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
   --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
   --ios-select: linear-gradient(180deg, #058cf5 0%, #015fe6 100%);
@@ -398,7 +400,7 @@ html[data-theme="ios-skeuomorphic"] :is(.field-group-title, .readout-unit) { tex
 html[data-theme="ios-skeuomorphic"] .drawer :is(.field-group-title, .label, .checkbox, .radio):not(:is(.field-row, .card, .panel) *) { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6); }
 
 /* --- Buttons ------------------------------------------------------------ */
-html[data-theme="ios-skeuomorphic"] .btn { text-shadow: var(--ios-btn-text-shadow); }
+html[data-theme="ios-skeuomorphic"] .btn { --btn-weight: 700; text-shadow: var(--ios-btn-text-shadow); }
 html[data-theme="ios-skeuomorphic"] .btn:active { --ios-btn-text-shadow: none; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35); }
 html[data-theme="ios-skeuomorphic"] .btn-primary {
   --btn-bg: var(--ios-donebtn);
@@ -432,6 +434,20 @@ html[data-theme="ios-skeuomorphic"] .btn-secondary {
   --btn-border: #a3a7ad;
 }
 html[data-theme="ios-skeuomorphic"] .btn-ghost { --btn-fg: #385487; --ios-btn-text-shadow: var(--ios-emboss-light); }
+/* A content toolbar's icon item: a 44px hit area around the glyph, and the
+   bordered bar-button capsule on hover and focus, as UIToolbar items had. */
+html[data-theme="ios-skeuomorphic"] .btn-ghost.btn-icon {
+  position: relative;
+  --btn-radius: 0.4rem;
+  --btn-bg-hover: linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #dadada 100%);
+  --btn-border-hover: #8e9299;
+}
+html[data-theme="ios-skeuomorphic"] .btn-ghost.btn-icon:focus-visible { border-color: #8e9299; }
+html[data-theme="ios-skeuomorphic"] .btn-ghost.btn-icon::before {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc(50% - 22px));
+}
 
 /* --- Navigation bar (free-standing .nav, .toolbar and the app bar) -------- */
 html[data-theme="ios-skeuomorphic"] .nav:not(.app-bar .nav),
@@ -623,7 +639,8 @@ html[data-theme="ios-skeuomorphic"] .slider::-moz-range-progress {
 }
 
 /* Chromium has no fill pseudo-element: the thumb paints the blue minimum
-   track as a border-image reaching 100vw back, and a clip-path notch cuts
+   track as a border-image reaching 100vw back to the knob's left edge (it
+   paints above the thumb's own fill, so it must stop there), and a clip-path notch cuts
    it at the groove's rounded start (outline and thumb still overflow). */
 html[data-theme="ios-skeuomorphic"] .slider:not(.is-vertical, .is-range > .slider, .is-bipolar, :dir(rtl)) {
   --ios-r: calc(var(--slider-height) / 2);
@@ -632,8 +649,35 @@ html[data-theme="ios-skeuomorphic"] .slider:not(.is-vertical, .is-range > .slide
     calc(var(--ios-r) * 0.3) calc(50% - var(--ios-r) * 0.7), var(--ios-r) calc(50% - var(--ios-r)), -1rem calc(50% - var(--ios-r)));
 }
 html[data-theme="ios-skeuomorphic"] .slider:not(.is-vertical, .is-range > .slider, .is-bipolar, :dir(rtl))::-webkit-slider-thumb {
-  border-image: linear-gradient(180deg, transparent calc(50% - var(--ios-r)), #2b5fae 0 calc(50% - var(--ios-r) + 1px), #3b7fe0 0, #7cb3f6 calc(50% + var(--ios-r) - 1px), #2b5fae 0 calc(50% + var(--ios-r)), transparent 0) 0 0 0 50% / 0 0 0 calc(100vw + 50%) / 0 0 0 100vw;
+  border-image: linear-gradient(180deg, transparent calc(50% - var(--ios-r)), #2b5fae 0 calc(50% - var(--ios-r) + 1px), #3b7fe0 0, #7cb3f6 calc(50% + var(--ios-r) - 1px), #2b5fae 0 calc(50% + var(--ios-r)), transparent 0) 0 0 0 50% / 0 0 0 100vw / 0 0 0 100vw;
 }
+
+/* --- Checkbox and radio ---------------------------------------------------
+ * iOS 6 had neither: a glossy white well in the bar-button rim, and when
+ * on, the #385487 checkmark of a selected table cell (a dot for a radio). */
+html[data-theme="ios-skeuomorphic"] :is(.checkbox, .radio) {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #8e9299;
+  border-radius: 0.3em;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #dadada 100%);
+  box-shadow: inset 0 1px 0 #ffffff, 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+html[data-theme="ios-skeuomorphic"] .radio { border-radius: 50%; }
+html[data-theme="ios-skeuomorphic"] .checkbox:checked {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3L12.5 4' fill='none' stroke='%23385487' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 85% no-repeat,
+    linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #dadada 100%);
+}
+html[data-theme="ios-skeuomorphic"] .checkbox:indeterminate {
+  background: linear-gradient(#385487, #385487) center / 55% 2px no-repeat,
+    linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #dadada 100%);
+}
+html[data-theme="ios-skeuomorphic"] .radio:checked {
+  background: radial-gradient(circle, #385487 0 30%, transparent 33%),
+    linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #dadada 100%);
+}
+html[data-theme="ios-skeuomorphic"] :is(.checkbox, .radio):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+html[data-theme="ios-skeuomorphic"] :is(.checkbox, .radio):disabled { opacity: 0.45; }
 
 /* --- Segmented control (bordered style) ---------------------------------- */
 html[data-theme="ios-skeuomorphic"] .segmented {
@@ -704,6 +748,19 @@ html[data-theme="ios-skeuomorphic"] .list-item > .icon:last-child:not(:first-chi
 html[data-theme="ios-skeuomorphic"] .list-item.is-active > .icon:last-child { color: inherit; }
 /* A Settings cell title: 17pt bold black, a little over body size. */
 html[data-theme="ios-skeuomorphic"] .field-row > .label { font-weight: 700; font-size: 1.0625rem; --label-fg: #000000; }
+/* Adjacent rows are one grouped section: a #cacaca separator between them,
+   rounded corners only on the first and last row. */
+html[data-theme="ios-skeuomorphic"] .field-row:has(+ .field-row) {
+  margin-block-end: 0;
+  border-block-end-width: 0;
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+html[data-theme="ios-skeuomorphic"] .field-row + .field-row {
+  border-block-start-color: #cacaca;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
 
 /* Disclosure rows: an accordion is a grouped cell with a grey chevron
    that turns down when open. */
@@ -801,7 +858,7 @@ html[data-theme="ios-skeuomorphic"] .switch[aria-checked="true"] .switch-track {
 }
 
 /* --- Badges: SpringBoard red badge for danger, count pill otherwise ------ */
-html[data-theme="ios-skeuomorphic"] .badge { text-shadow: var(--ios-emboss-dark); }
+html[data-theme="ios-skeuomorphic"] .badge { font-weight: 700; text-shadow: var(--ios-emboss-dark); }
 html[data-theme="ios-skeuomorphic"] .badge-danger {
   --badge-bg: linear-gradient(180deg, #f2636a 0%, #e3101a 50%, #c80d16 100%);
   --badge-fg: #ffffff;
@@ -1050,7 +1107,8 @@ html[data-theme="ios-skeuomorphic"] .app-status {
 }
 /* Headings and notes written straight on the pinstripe carry the white
    emboss of grouped-table header and footer text; text inside cells doesn't. */
-html[data-theme="ios-skeuomorphic"] .app-main > :is(h1, h2, h3, p, .breadcrumbs) { color: #4c566c; text-shadow: var(--ios-emboss-light); }
+html[data-theme="ios-skeuomorphic"] .app-main > :is(h1, h2, h3, p, .breadcrumbs),
+html[data-theme="ios-skeuomorphic"] .app-main :is(h1, h2, h3):not(:is(.panel, .card, .list, .field-row, .modal, .popover, .hero, .band, .drawer, .table, .dropdown, .toast, .alert, .callout, .accordion, .desktop-window, .empty-state, .tile, .site-footer) *) { color: #4c566c; text-shadow: var(--ios-emboss-light); }
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
  * Phone and tablet: core puts the title and the bar buttons on line 1 and
  * the nav buttons on a scrolling line 2; the 44px bar buttons centre their
