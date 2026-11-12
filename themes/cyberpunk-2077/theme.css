@@ -174,7 +174,7 @@ html[data-theme="cyberpunk-2077"] {
   --input-addon-bg: #24111a;
   --input-addon-fg: var(--text);
   --select-arrow-fg: var(--text);
-  --field-group-title-fg: var(--text);
+  --field-group-title-fg: #e8e6ea;   /* the white section-header band (rule below) */
 
   /* Surfaces. */
   --panel-bg: var(--cp-frame), var(--cp-fill);
@@ -334,18 +334,21 @@ html[data-theme="cyberpunk-2077"] {
   --switch-border-on: var(--cp-cyan);
   --switch-thumb-bg-on: #1d8a90;
   /* Slider: the settings value bar. A tall navy track in a dim red rule
-     (drawn in the background, since core's box grows to --tap-min with a
-     transparent border) and a red slab thumb the track's full height. */
+     with its bottom-right corner cut (drawn in the background, since
+     core's box grows to --tap-min with a transparent border), filling the
+     whole 24px target on desktop and 2rem of the 44px one on touch, and a
+     red slab thumb the track's full height. */
   --slider-radius: 0;
-  --slider-height: min(calc(var(--tap-min, 24px) - 4px), 1.75rem);
+  --slider-height: min(var(--tap-min, 24px), 2rem);
   --slider-bg:
     linear-gradient(#6f2a30, #6f2a30) left top / 100% 1px no-repeat,
-    linear-gradient(#6f2a30, #6f2a30) left bottom / 100% 1px no-repeat,
     linear-gradient(#6f2a30, #6f2a30) left top / 1px 100% no-repeat,
-    linear-gradient(#6f2a30, #6f2a30) right top / 1px 100% no-repeat,
-    #16111f;
+    linear-gradient(#6f2a30, #6f2a30) right top / 1px calc(100% - 6px) no-repeat,
+    linear-gradient(#6f2a30, #6f2a30) left bottom / calc(100% - 6px) 1px no-repeat,
+    linear-gradient(to top left, transparent calc(50% - 1px), #6f2a30 calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px)) right bottom / 6px 6px no-repeat,
+    linear-gradient(315deg, transparent 4.25px, #16111f 4.25px);
   --slider-border: transparent;
-  --slider-border-width: 1px;
+  --slider-border-width: 0px;
   --slider-thumb-radius: 0;
   --slider-thumb-bg: var(--cp-red);
   --slider-thumb-size: calc(var(--slider-height) - 2px);
@@ -559,13 +562,15 @@ html[data-theme="cyberpunk-2077"] {
   --rarity-legendary: #ffa31a;
 }
 
-/* --- Page: maroon wash over near-black, with scanlines ------------------ */
+/* --- Page: a maroon wash over the top half that falls into a cool
+   teal-black lower down (the menu is lit from the top), with scanlines. -- */
 html[data-theme="cyberpunk-2077"] {
-  background-color: var(--bg);
+  background-color: #090b10;
   background-image:
     var(--cp-scanlines),
-    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(120, 28, 38, 0.55), transparent 75%),
-    linear-gradient(180deg, #1c0d12, var(--bg) 22rem);
+    radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.5), transparent 80%),
+    linear-gradient(180deg, #24101a, rgba(64, 20, 24, 0.55) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
+    linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
   background-attachment: fixed;
   font-family: var(--font);
 }
@@ -742,6 +747,30 @@ html[data-theme="cyberpunk-2077"] :is(.tab, .segmented-item, .pagination-item, .
 html[data-theme="cyberpunk-2077"] :is(.tab, .nav-item) { font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
 html[data-theme="cyberpunk-2077"] .tabs { border-bottom-color: var(--cp-line); }
 html[data-theme="cyberpunk-2077"] .nav-item.is-active { text-shadow: 0 0 0.6rem rgba(94, 246, 255, 0.55); }
+/* App-bar menus are the game's top tab row: always tracked caps. */
+html[data-theme="cyberpunk-2077"] .app-bar .menubar > li > :is(button, a) { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+/* A side nav's current row is the same solid red plate as a selected list
+   row; cyan stays for the cursor (hover). */
+html[data-theme="cyberpunk-2077"] .nav-rail {
+  --nav-item-bg-active: var(--row-selected-bg);
+  --nav-item-fg-active: var(--row-selected-fg);
+  --nav-rail-marker: var(--cp-red);
+}
+html[data-theme="cyberpunk-2077"] .nav-rail > .nav-item.is-active { text-shadow: none; }
+/* Section header: the only white text in the menus, sentence case on a
+   dark band over a cyan hairline ("First-Person Camera (Mouse)"). */
+html[data-theme="cyberpunk-2077"] .field-group-title {
+  padding: 0.35em 0.6em;
+  background: #16111f;
+  border-bottom-color: rgba(94, 246, 255, 0.45);
+  font-size: 0.95em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+/* Fine print never drops under 13px: Rajdhani's small x-height reads a
+   size smaller than other faces at core's em steps. */
+html[data-theme="cyberpunk-2077"] :is(.field-hint, .field-error, .field-valid) { font-size: max(0.78em, 0.8125rem); }
+html[data-theme="cyberpunk-2077"] .status { font-size: max(0.85em, 0.8125rem); }
 /* Lists: each row is its own framed plate, 4px apart (the database and
    journal rows); the selected one is the solid red plate. */
 html[data-theme="cyberpunk-2077"] .list:not(.list-cards) { display: grid; gap: 4px; }

@@ -28,10 +28,10 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
    menu red (`--text #ff766e`, rules `#ff5f58`). Danger is a different,
    hotter red used as a *fill* (`--danger #ff2a3d`) and a pink-red as text
    (`--danger-text #ff4d7a`). Don't "fix" the theme by making body text
-   white.
+   white. The one white is the section-header band.
 2. **Cyan means live; red plates mean selected.** Active tab, ON, focus,
    values, readouts and the hover cursor are cyan `#5ef6ff`. A selected
-   list row or segmented choice is the game's solid red plate (`#a8343a`,
+   list row, side-nav row or segmented choice is the game's solid red plate (`#a8343a`,
    pale `#ffe4e1` text), as in the journal and difficulty screens; only the
    breach-grid table keeps a cyan selection. Nothing decorative is cyan
    except the breach corner brackets.
@@ -42,7 +42,7 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
    only genuinely round instruments (gauges, the FAB) stay round.
 4. **Condensed, squared caps.** One squared condensed sans (Rajdhani as
    the stand-in) for everything; titles, buttons, tabs and column heads in
-   tracked uppercase, body in sentence case.
+   tracked uppercase (the app-bar menu too), body in sentence case.
 5. **Tables are the breach grid.** A solid yellow-green head bar with dark
    text, a dark teal matrix with faint grid lines, the steel band under the
    cursor, cyan for selection, cyan corner brackets around a scrolling
@@ -69,10 +69,18 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   on the left or a dim cyan ON slab on the right covers half the navy
   track. `.segmented`: the active choice is the filled red plate.
 - `.slider`: the value bar, a tall navy track (fills core's `--tap-min`
-  box, less 4px, up to 1.75rem) in a dim red rule, with a full-height red
-  slab thumb whose lower-left corner is cut.
+  box, up to 2rem) in a dim red rule with a 6px cut bottom-right corner,
+  all drawn in `--slider-bg`, with a full-height red slab thumb whose
+  lower-left corner is cut.
 - `.list`: every row is its own plate, a dim red rule with an 8px cut
-  corner, 4px apart; the selected row is the solid red plate.
+  corner, 4px apart; the selected row is the solid red plate. A
+  `.nav-rail`'s current row is the same red plate with a red marker.
+- App-bar menu items are the top tab row: SemiBold caps, 0.06em tracking.
+- `.field-group-title` is the game's section header band, the only white
+  text: `#e8e6ea` sentence case on `#16111f` over a cyan hairline.
+- The page field is lit from the top: a maroon wash over the top half
+  that falls into a cool `#090b10` lower down, fixed to the viewport.
+- Field hints, errors and `.status` chips never drop under 13px.
 - `.badge-accent` (NEW, unread counts) is the game's solid yellow tag with
   dark caps; the plain badge stays a red-tint tag.
 - `.hud-bar`: flat fill with a glow in its own colour and an angled end;
@@ -119,7 +127,8 @@ and waveform chips (a 30% state tint) take a pale red `#ffd2ce`.
 
 The shell becomes a **menu screen**: a transparent maroon top bar ended by
 one long glowing red rule (the LEVEL / tabs / eddies strip), a 1.5rem data
-rail of tick marks down the left edge, content on the dark field, and a
+rail of tick marks down the left edge, content on the dark field (maroon
+over the top half, cool teal-black below), and a
 key-hint status strip along the bottom.
 
 ## v5 layout
