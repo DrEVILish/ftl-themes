@@ -20,18 +20,20 @@ frame.
    `#c5d2df` frame; the colour lives in the blue application button, the
    ribbon tabs, the aurora and the presence frames.
 2. **The ribbon.** The app bar is a Scenic Ribbon tab strip, flat pale
-   blue (`#e4edf8` to `#dfe9f5`), with a blue
-   rounded application button at the left (with a small Windows flag),
+   blue (`#e4edf8` to `#dfe9f5`), with a blue application button at the
+   left (with a small Windows flag) seated in the strip like Mail's File
+   tab: same height as the tabs, rounded on top, square at the foot and
+   down over the strip's rule,
    then tabs (nav items and menu-bar items alike) with 13px (9pt) labels
    and tight padding, still --tap-min tall; the selected tab is
-   white to `#f5faff`, framed in `#9faec2` and joined to a 10px ribbon
-   lip hung under the strip, `#f5faff` to `#dce6f4` over the ribbon's
+   white to `#f5faff`, framed in `#9faec2` and joined to a 24px ribbon
+   body hung under the strip, `#f5faff` to `#e3ebf6` over the ribbon's
    `#9faec2` rule (one `--app-main-bg` background at the top of main,
-   which pads 10px more to clear it, so it takes no layout and never
+   which pads 24px more to clear it, so it takes no layout and never
    covers a menu; no painted command groups, the page's toolbars are the
    commands). A ribbon always has
    one tab open: with no current nav item the first is drawn open.
-   Toolbars are ribbon groups: the white-to-`#eef3fa` band over a
+   Toolbars are ribbon groups: the white-to-`#e3ebf6` band over a
    `#9faec2` rule.
 3. **Light type.** Segoe UI Light (bundled Selawik Light off Windows) for headings — dialog/page titles in
    Live green `#2b7a2b` ("Add your email accounts"), section headings in
@@ -58,8 +60,9 @@ frame.
    Alerts take the information-bar tints per tone (info `#f2f8fd`,
    warning `#ffffe1`, danger `#fdf0ee`, success `#f0f8ee`).
 5. **Presence.** Every avatar is a Messenger display picture: an 8px
-   rounded square in a glossy green bezel (lime `#9be27a` top, darker
-   `#3f9a22` bottom, dark-green edge) whose thickness follows the picture
+   rounded square, a pale `#e8f6df` ring round the picture, then a glossy
+   green bezel (lime `#9be27a` across the top with a white highlight on
+   its inner edge, darker `#3f9a22` below, dark-green edge) whose thickness follows the picture
    (3px small, 4px default, 6px large), drawn with solid shadows only.
 
 ## Signature details
@@ -79,8 +82,14 @@ frame.
   headings drop core's tracked capitals. Table headers are Explorer's:
   regular weight on a white-to-`#f1f4f8` header with `#e3e8ef` column
   separators.
-- Windows (desktop windows and any modal with caption buttons) have
-  Windows 7 captions: a plain dark title (grey when inactive),
+- Windows (desktop windows and any modal with caption buttons) wear the
+  Windows 7 Aero frame: a 7px pale-blue glass border (`#d6e5f6` to
+  `#abc3e1`, paler and greyer `#eef2f7` to `#d6dfea` when inactive) in a
+  `#6a7f99` outer edge with a white inner highlight, 6px corners, the
+  caption on the glass and the white client area inset in a `#8ea2bb`
+  rule (background layers only, no extra layout). Captions are Windows
+  7's: a plain dark title with a soft white glow (grey when inactive),
+  caption buttons hanging from the frame's top edge,
   blue-grey glass minimise/maximise (`#dbe6f3` to `#c3d4e7`, white top
   highlight, slate frame) joined to each other and to the wide glossy
   red close, the group's outer bottom corners rounded 4px. The glyphs are
@@ -92,9 +101,13 @@ frame.
   only by its amber leading bar.
 - Pane headers are the pale-blue gradient bars of Mail's "Quick views"
   and Gallery's folder pane, titled in regular-weight Live blue `#1e5aa0`.
+  A folder rail beside a list (`.master-detail > .nav-rail`) is a framed
+  `#c5d2df` pane like its neighbours, headed on desktop by that bar
+  carrying the nav's own label (decorative, empty alt text).
 - Full-colour icons where Live had them: in folder panes, trees, lists,
-  toolbars and toolbar icon buttons, folders are yellow `#c8901a`, trash
-  red `#d03a2a`, mail glyphs blue `#2f6fc2`, the star gold `#e0a800` and
+  toolbars, toolbar icon buttons and desktop/file-view icons, folders are
+  yellow `#c8901a`, trash red `#d03a2a`, mail glyphs and the globe blue
+  `#2f6fc2`, settings grey `#5b6878`, the star gold `#e0a800` and
   people green `#3a8e3a` (CSS `color`, the sprite stays `currentColor`).
 - The status bar is Mail's pale strip ("1 message(s), 0 unread").
 - The fifth chart series is a Live purple `#8b3fa8`, so it never doubles
@@ -121,7 +134,9 @@ Segoe UI stand-in (SIL OFL 1.1), vendored unmodified from its 1.01 release
 as `assets/fonts/Selawik-Light.woff2` (300), `-Regular` (400) and
 `-Semibold` (600–700), about 44 KiB in all, and recorded in
 `assets/fonts/NOTICE.md`. The Light headings stay light on every
-platform. Body copy is 15px, a step under the browser default, so text
+platform. Code uses `Consolas, "Lucida Console"`, then Liberation Mono
+(metric-compatible with Courier New) and DejaVu Sans Mono off Windows.
+Body copy is 15px, a step under the browser default, so text
 and tables sit close to the 9pt controls as in the Essentials apps.
 
 ## Contrast honesty
