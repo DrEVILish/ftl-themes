@@ -30,9 +30,14 @@ the screen.
    avatars, switches, slider thumbs, comment pins, status dots and lamps,
    presence dots, carousel dots and arrows, typing dots, the pressed-button
    LED, the round minimap, the achievement icon and map pins. (Radio
-   buttons stay round, since the native checked radio is.)
+   buttons stay round, since the native checked radio is. Line-chart
+   points are SVG circles CSS cannot square; they shrink to 2.5-unit
+   pips instead.)
 6. **Little boxing.** Panels and cards are a dim hairline with bright
-   corner brackets, not a full phosphor box.
+   corner brackets, not a full phosphor box. Lists (`.list`, so the inbox
+   message list and settings nav) are an unboxed column of rows on faint
+   hairline rules, as the INV / DATA lists are; only the cursor bar marks
+   the selection.
 
 ## Signature details
 
@@ -66,13 +71,21 @@ the screen.
   header stays on one continuous rule.
 - **The status strip** (`.app-status`, not the taskbar variant) reads as
   the HP | LEVEL | AP bar: solid dim-green blocks (22% phosphor) with
-  bright uppercase text, under a 2px phosphor rule.
+  bright uppercase text, under a 2px phosphor rule. A filler block fills
+  the space before the last readout, so the strip is one segmented bar
+  across the full width, with 4px gaps.
+- Reaction chips go through `--pipboy-phosphor`, so colour emoji render
+  green. A picked reaction is a lit 1px outline on the dim block, not the
+  solid cursor bar, which would swallow the filtered emoji.
+- Disabled pager keys are the unlit placeholder green at full opacity
+  (about 5:1), not core's 40% opacity.
 - Type is Roboto Condensed (OFL, vendored Regular and Bold, Latin
   subset), Fallout 4's Pip-Boy `$MAIN_Font`, with "Arial Narrow" and
   "Liberation Sans Narrow" fallbacks. Share Tech Mono (OFL, vendored)
   stays as `--font-mono` for code and readouts. `font-synthesis-weight:
-  none`, so only the real weights render; headings also glow brighter. At the phone
-  tier tables set at 0.85em without the glow, and inputs in cells keep a
+  none`, so only the real weights render; headings glow a little more
+  (4px at 40%) but stay crisp. At the phone tier tables set at 0.85em,
+  badges keep an 11px (0.7rem) floor, and inputs in cells keep a
   `--tap-min` floor.
 - Slider tracks are drawn in `--border` green (3:1 on bg and surface) on
   the content box, so the hit area stays at `--tap-min`.
@@ -86,7 +99,10 @@ the screen.
 - All body text carries a faint `text-shadow: 0 0 3px` phosphor glow in its
   own colour (`currentColor` at 35%, so dim text glows dim), not
   just headings — the whole screen glows a little, not just the display
-  face.
+  face. At the phone tier, and under `update: slow` or
+  `prefers-reduced-transparency: reduce`, only headings and the app bar
+  keep the glow: a blurred shadow on every glyph costs a throttled phone
+  its frame budget.
 - `--success` and `--accent` are the *same* green — this theme has
   no separate "success" hue at all, only the one phosphor color and the
   two genuine hazard departures (danger amber, warning yellow).
