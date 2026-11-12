@@ -28,7 +28,7 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    cycled with zero-specificity `:where()` rules so band classes and app
    values win). No other saturated colour is decoration; red-orange means
    record/danger. Generic UI accents (`--accent`) use the deep encoder blue
-   `#0a6ea3` (3.9:1 on the aluminium); the bright cap blue stays on the
+   `#0a6ea3` (3.5:1 on the aluminium); the bright cap blue stays on the
    encoders, charts and gauges. Secondary and tertiary buttons print a dark
    legend like every key: blue is for links.
 3. **Keys are rounded rectangles with a 2px side.** Buttons, panels,
@@ -37,6 +37,10 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    `.toolbar` and the folder rail are keys too. Pressing moves a key
    down 1px. No gradients that read as gloss. The primary button is the
    black note key with a white legend: the hardware has no blue keys.
+   Small square keys (`.btn-icon`, now square-cornered) and the mixer's
+   MUTE/SOLO/SEL/48V keys carry the OP-1's round white dome inside a
+   slightly darker key face, its lower edge shadowed; wide text buttons
+   stay plain keys.
 4. **Black means selected.** Active nav items, segmented items, pagination,
    active badges, the highlighted menu item and command row, checked toggle
    buttons, the mixer's SEL/monitor key and the selected strip, checked
@@ -56,29 +60,36 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    (300, tracked 0.05em): Helvetica Neue Light or Segoe UI Light where
    present, else the vendored Selawik Light (SIL OFL), so the thinness comes
    from the cut and the strokes stay bright white. Page titles followed by
-   a lede get a little air under them. Code,
-   the brand window and the status strip use the monospace.
+   a lede get a little air under them, and the lede gets `--space-s`
+   before the next row. The brand window, the status strip and scribble
+   strips use the same thin display face (tracked 0.05-0.06em); the
+   monospace is only for code and timecodes.
 
 ## Signature details
 
-- `.knob` is the OP-1 encoder: a flat coloured cylinder cap with one slot,
-  standing in a recessed collar, with a thin value arc around it. The
-  cylinder's side (2px, darker shade of the cap) and its shadow are painted
+- `.knob` is the OP-1 encoder: a small flat coloured cylinder cap (about
+  48% of the dial, inset 26% of `--knob-size`) with one slot, standing on a
+  light-grey cone skirt (`#e6e9ea` to `#c3c9cb`, a 1px darker rim), with a
+  thin value arc around it. The cylinder's side (2px, darker shade of the
+  cap) and the skirt are painted
   on the dial, which doesn't turn, so they stay underneath at any value.
   `.knob-hf/-hmf/-lmf/-lf` are the four encoders. The cap top is a flat
   matte fill with only a 1px lighter rim, no highlight; the slot is one 2px
   cut through the centre (70% of the cap), a darker shade of the cap.
 - The rail is a key-face column: the speaker grille (an SVG dot field) on
-  top, the four encoder dots under it, then four black round note keys.
+  top, the encoder row under it (one SVG: each encoder a mini cap with a
+  slot on a grey skirt, in its own square key well with a 2px side), then
+  four black round note keys.
 - Every page has a screen: a KPI `.stat-value` sits in a small display
   window, a block of its own so its label always prints on its own line
   above or below it. Every panel and card is a labelled key: its header's
   first item, a plain `h2`/`h3` that opens it, or the `h2`/`h3` in a
   `.cluster` that opens it, carries an encoder colour dot (blue, green,
   white, orange by position).
-- The page is a flat near-white aluminium (`#d5d9da`); keys read by their
-  key-edge seams and 2px side, not by a dark field around them.
-- The bar's brand sits in a tiny display window (black glass, mono, white).
+- The page is a flat aluminium (`#c9cfd1`, toward the sampled `#c3c9c9`
+  body): a slightly darker, cooler groove between the near-white keys,
+  with `--muted` still 4.7:1 on it.
+- The bar's brand sits in a tiny display window (black glass, thin display face, white).
 - The status strip is display glass. On a phone it wraps to two lines
   rather than cutting items to one glyph.
 - The slider is a thin, square-cut black slot (0.3rem) under a small
@@ -86,7 +97,8 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
   clip that keeps it there leaves no room for rounded ends).
 - Level meters (`.visualizer`) and `.trace` are small glass windows with
   white bars and a teal line. A `.bar-chart` on a light key prints its bars
-  in note-key black; sparklines are a thin line with no tinted area.
+  in note-key black; sparklines are a thin line with no tinted area. Charts on the glass are
+  line art too: no area fill, 2.5-unit vertices, 9-unit legends.
 - The inbox folder rail and a tinted `.band` are keys too (rounded, key-edge
   border, 2px side).
 - Every tab carries its encoder's colour dot; the active one is larger and
