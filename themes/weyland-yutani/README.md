@@ -21,8 +21,11 @@ reproduced.
 2. **Labels are stencil.** Headings, buttons, table heads, panel titles,
    badges, nav, menubar, segmented keys, window titles and the status
    strip are uppercase with wide tracking (`--label-tracking: 0.14em`).
-   Headings, panel titles, table heads, title plates and the brand are set
-   in Michroma, an extended Microgramma-class face.
+   Headings, panel titles, table heads, tabs, stat labels, title plates
+   and the brand are set in Michroma, an extended Microgramma-class face;
+   headings, panel titles and title plates take a hairline text stroke so
+   they read as stamped plate lettering, and panel titles are in bone
+   `--text`.
 3. **Amber is the phosphor, and only readouts glow.** `.readout` and
    `.meter` get a faint glow and scanlines; nothing else does.
 4. **Hazard striping is a danger signal, not a palette.** Yellow/black
@@ -42,8 +45,13 @@ reproduced.
 - Heavy beige top bar over a 6px amber double rule (the terminals' double
   frame rules), with a matching 4px double rule over the status strip; a 3rem left rail drawn in CSS
   as a ruler of tick marks with an amber marker block (empty, `aria-hidden`).
-- Two registration corner marks (top-left, bottom-right) on every panel; a
+- Two registration corner marks (top-left, bottom-right) on every panel
+  (the top-left one is drawn on the panel header when there is one); a
   solid amber square before each panel title.
+- Stat tiles are the terminals' header rows: label and value over one long
+  double rule in `--wy-line-hi`, with no box.
+- Ghost buttons keep a lit `--wy-line-hi` underside lip (amber on hover) so
+  they still read as soft keys.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
   scanline overlay; amber mono readouts on glass-black.
 - Inputs are recessed with a heavy amber underline and amber caret.
@@ -94,8 +102,11 @@ a Helvetica/Futura-like face for signage.
   `"WY Michroma"`, then Eurostile / Bank Gothic. Used for headings, panel
   titles, table heads, modal and window title plates and the brand. It
   ships one weight, declared as 400-700 so labels never get a faked bold.
-- **Body** (`--font`): `Eurostile, "Bank Gothic", "Century Gothic",
-  "Segoe UI", "Helvetica Neue", Arial, sans-serif`, narrower for reading.
+- **Body** (`--font`): the vendored **Share Tech** (SIL OFL,
+  `assets/fonts/ShareTech-Regular.woff2`, family `"WY Share Tech"`), a
+  squared Eurostile-spirited grotesque, then Eurostile / Bank Gothic /
+  Helvetica Neue / Arial / Liberation Sans, so no system falls through to
+  a wide humanist sans.
 - **Mono** (readouts, inputs): the vendored **Share Tech Mono** (SIL OFL,
   `"WY Share Tech Mono"`), a square terminal face close to the MU/TH/UR
   screens, then `"Lucida Console", "DejaVu Sans Mono"`.
@@ -110,15 +121,17 @@ All pairs meet the lint floors; no exemptions are claimed.
 |---|---|
 | `--text` `#e4dcc8` on `--surface` `#17150f` / `--bg` `#0e0d0a` | 13.4 / 14.2 |
 | `--muted` `#a89f88` on `--surface` / `--surface-2` `#201d15` | 6.9 / 6.4 |
-| `--accent` `#ffa81f` on `--surface` | 9.5 |
-| `--on-accent` `#0e0d0a` on accent | 10.1 |
+| `--accent` `#ffb92e` on `--surface` | 10.6 |
+| `--on-accent` `#0e0d0a` on accent | 11.3 |
+| `--warning-text` `#ffe100` on `--surface` | 13.9 |
 | `--on-danger` `#0e0d0a` on `--danger` `#ff5a3d` | 6.3 |
 | `--on-success` `#0e0d0a` on `--success` `#8fd16a` | 10.6 |
 | `--danger-text` `#ff7a5c` on `--surface-2` | 6.6 |
 | beige bar `#d4cbb1` with `#14120d` text | above 11 |
 
 Deviations from the reference: the amber, beige and bone values are
-chosen for contrast and are not sampled from any source (none gives
+chosen for contrast (the amber leans yellow, toward the CRT in
+`terminal-amber-destination.jpg`, with hazard yellow `#ffe100` kept purer) and are not sampled from any source (none gives
 official hexes). `--border` `#57503f` is 2.3:1 on the surface, deliberately
 a structural line only. Danger is safety red-orange `#ff5a3d`, an addition
 of mine; the reference's danger cue is hazard yellow/black, which is
@@ -135,7 +148,7 @@ core's default.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** bar, main and status in one column. On phones the plate tightens (less padding and tracking, menubar at 0.8em) so the menubar fits one line. The 3rem equipment rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token).
+- **Phone (≤480) and tablet (481–900):** bar, main and status in one column. On phones the plate tightens (less padding and tracking, menubar at 0.8em, tighter tool keys, no keyboard-shortcut hint) so it stacks as three short rows: brand, menubar, and the tools on one line. The 3rem equipment rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token).
 - **Window caption buttons:** minimise and maximise take the label plate's ink, as close already does.
 - **XL gutters (≥1801):** the bay wall: a ruled plotting grid in `--hairline` with the rail's tick-ruler marks, all in the active screen's line colours, so the MU/TH/UR, Emergency and Earth variants follow. Still.
 

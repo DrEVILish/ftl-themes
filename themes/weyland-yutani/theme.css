@@ -25,6 +25,15 @@
   font-weight: 400 700;
   font-display: swap;
 }
+/* Share Tech (SIL OFL, Carrois): a squared techno grotesque in the Eurostile
+   family's spirit, vendored so the body copy no longer falls through to a
+   wide humanist system sans (DejaVu) on Linux. One weight, so bold is
+   synthesised. */
+@font-face {
+  font-family: "WY Share Tech";
+  src: url("assets/fonts/ShareTech-Regular.woff2") format("woff2");
+  font-display: swap;
+}
 @font-face {
   font-family: "WY Share Tech Mono";
   src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
@@ -42,21 +51,21 @@ html[data-theme="weyland-yutani"] {
   --hairline: #2e2a20;
   --text: #e4dcc8;         /* bone / aged-plastic off-white, the hardware colour */
   --muted: #a89f88;
-  --accent: #ffa81f;       /* amber phosphor */
-  --accent-2: #ffd27a;     /* pale amber: hover, second series */
+  --accent: #ffb92e;       /* amber phosphor, leaning to the yellow CRT of terminal-amber-destination.jpg */
+  --accent-2: #ffe08f;     /* pale amber: hover, second series */
   --danger: #ff5a3d;       /* safety red-orange; the hazard stripes ride on top of it */
   --success: #8fd16a;      /* green phosphor, the other Nostromo terminal colour */
-  --warning: #f5d000;      /* hazard yellow */
+  --warning: #ffe100;      /* hazard yellow, kept purer than the amber accent */
   --danger-text: #ff7a5c;
   --success-text: #8fd16a;
-  --warning-text: #f5d000;
+  --warning-text: #ffe100;
   --on-accent: #0e0d0a;
   --on-danger: #0e0d0a;
   --on-success: #0e0d0a;
   --radius: 0;
   --btn-icon-radius: 0;
   --list-tone-tint: 6%;
-  --font: Eurostile, "Bank Gothic", "Century Gothic", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font: "WY Share Tech", Eurostile, "Bank Gothic", "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
   --font-label: "WY Michroma", Eurostile, "Bank Gothic", "Century Gothic", sans-serif;
   --font-mono: "WY Share Tech Mono", "Lucida Console", "DejaVu Sans Mono", "Liberation Mono", Consolas, monospace;
   --flare: #f5c400;        /* the hazard yellow used in stripes */
@@ -75,8 +84,8 @@ html[data-theme="weyland-yutani"] {
   --wy-bar-item: var(--wy-bar-fg);
   --wy-bar-active-fg: var(--accent);
   --wy-bar-active-bg: var(--wy-bar-fg);
-  --wy-tint: rgba(255, 168, 31, 0.16);
-  --wy-glow: rgba(255, 168, 31, 0.55);
+  --wy-tint: rgba(255, 185, 46, 0.16);
+  --wy-glow: rgba(255, 185, 46, 0.55);
   --density: 0.95;
   --icon-stroke-width: 2.2;
 
@@ -115,8 +124,12 @@ html[data-theme="weyland-yutani"] {
     var(--surface);
   --panel-border: var(--wy-line-dim);
   --panel-shadow: none;
-  --panel-header-bg: var(--surface-2);
-  --panel-header-fg: var(--muted);
+  /* The header covers the panel's top-left corner, so it carries that mark. */
+  --panel-header-bg:
+    linear-gradient(var(--muted), var(--muted)) top left / 0.75rem 2px no-repeat,
+    linear-gradient(var(--muted), var(--muted)) top left / 2px 0.75rem no-repeat,
+    var(--surface-2);
+  --panel-header-fg: var(--text);
   --card-bg: var(--surface);
   --card-border: var(--wy-line-dim);
   --card-radius: 0;
@@ -264,6 +277,14 @@ html[data-theme="weyland-yutani"] h4 {
 html[data-theme="weyland-yutani"] h1 { font-size: 1.5rem; }
 html[data-theme="weyland-yutani"] h2 { font-size: 1.15rem; }
 html[data-theme="weyland-yutani"] h3 { font-size: 0.95rem; letter-spacing: 0.12em; }
+/* Michroma has one thin weight; a hairline stroke gives the display caps
+   the stamped weight of the Microgramma Bold Extended wordmark. */
+html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header) { -webkit-text-stroke: 0.02em currentColor; }
+/* <strong> in a title asked for 900, outside the face's 400-700 range,
+   which pulled a stray glyph from elsewhere. */
+html[data-theme="weyland-yutani"] :is(.panel-header, .modal-header) :is(strong, b) { font-weight: inherit; }
+/* Small all-caps UI labels speak in the stencil face too. */
+html[data-theme="weyland-yutani"] :is(.tab, .stat-label) { font-family: var(--font-label); letter-spacing: 0.05em; }
 /* The extended face carries the stencil-plate labels; it is already wide,
    so it takes less tracking than the old fallback did. */
 html[data-theme="weyland-yutani"] :is(.panel-header, .table th, .modal-header, .nav-brand) {
@@ -324,6 +345,11 @@ html[data-theme="weyland-yutani"] .toast-danger {
   background-position: left top;
   background-size: 0.8rem 100%;
   padding-inline-start: calc(0.8rem + 0.8em);
+}
+/* On a square icon button the full strap crowded the glyph off-centre. */
+html[data-theme="weyland-yutani"] .btn-danger.btn-icon {
+  background-size: 0.3rem 100%;
+  padding-inline-start: calc(0.3rem + 0.35em);
 }
 html[data-theme="weyland-yutani"] .badge-danger {
   background-image: var(--hazard);
@@ -420,6 +446,17 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) {
 html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner) { border-radius: 0; }
 html[data-theme="weyland-yutani"] .carousel > .carousel-slide::scroll-marker,
 html[data-theme="weyland-yutani"] .carousel::scroll-button(*) { border-radius: 0; }
+
+/* Ghost soft keys keep a lit lip so they still read as keys on surface-2. */
+html[data-theme="weyland-yutani"] .btn-ghost { --btn-shadow: inset 0 -3px 0 var(--wy-line-hi); --btn-shadow-hover: inset 0 -3px 0 var(--accent); }
+
+/* Stat tiles follow the terminals' header rows: label and value over one
+   long double rule, no box (terminal-amber-destination.jpg). */
+html[data-theme="weyland-yutani"] .card:has(> .stat-value) {
+  --card-bg: transparent;
+  --card-border: transparent;
+  border-bottom: 3px double var(--wy-line-hi);
+}
 
 /* Success is a lit outline (like the soft keys), not a solid green block:
    the hardware palette is amber and beige, green is a terminal status. */
@@ -597,10 +634,20 @@ html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:h
 /* Phone: a label plate, not a stack. Tighter plate padding and tracking so
    the menubar fits one line under the brand row. */
 @media (max-width: 480px) {
-  html[data-theme="weyland-yutani"] { --app-bar-padding: 0.35rem 0.75rem; }
+  html[data-theme="weyland-yutani"] { --app-bar-padding: 0.3rem 0.75rem 0.05rem; }
   html[data-theme="weyland-yutani"] .app-bar { letter-spacing: 0.06em; column-gap: 0.5rem; }
   html[data-theme="weyland-yutani"] .app-bar .menubar { --menubar-font-size: 0.8em; }
   html[data-theme="weyland-yutani"] .app-bar .menubar > li > :is(button, a) { letter-spacing: 0.04em; padding-inline: 0.5em; }
+  /* The tool cluster fits one row: tighter gaps and keys, and no keyboard
+     shortcut hint on a touch screen. */
+  html[data-theme="weyland-yutani"] .app-bar { row-gap: 0; }
+  /* The brand keeps its full name (the tools wrap instead) and a 24px row,
+     since the bar no longer spaces its rows apart. */
+  html[data-theme="weyland-yutani"] .app-bar .nav-brand { letter-spacing: 0.04em; flex: 1 0 auto; max-width: 100%; min-height: 1.5rem; }
+  html[data-theme="weyland-yutani"] .app-bar .cluster { --cluster-gap: 0.3rem; }
+  html[data-theme="weyland-yutani"] .app-bar .btn { letter-spacing: 0.04em; padding-inline: 0.6em; }
+  html[data-theme="weyland-yutani"] .app-bar .btn kbd { display: none; }
+  html[data-theme="weyland-yutani"] .app-bar .select { font-size: 0.85em; }
   html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0; font-size: 0.78em; }
 }
 
@@ -642,6 +689,7 @@ html[data-theme="weyland-yutani"] {
   html[data-theme="weyland-yutani"] {
     --readout-glow: none;
     --panel-bg: #ffffff;
+    --panel-header-bg: transparent;
     --readout-bg: #ffffff;
     --meter-track: #ffffff;
   }
