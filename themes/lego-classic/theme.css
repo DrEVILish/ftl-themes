@@ -6,7 +6,7 @@
 html[data-theme="lego-classic"] {
   --motion-leave: drop;
   color-scheme: light;
-  --bg: #f2f2f2;
+  --bg: #f1ead6;   /* the booklet's warm sand ground, pale enough for body text */
   --surface: #ffffff;
   --surface-2: #e6e6e6;
   --border: #1b1b1b;
@@ -30,9 +30,9 @@ html[data-theme="lego-classic"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0.4rem;
-  --font: "Futura", "Century Gothic", Arial, sans-serif;
+  --font: "Futura", "Jost", "Century Gothic", "URW Gothic", "URW Gothic L", "Avenir Next", Avenir, Arial, sans-serif;
   --font-mono: Consolas, monospace;
-  --flare: #0055bf;
+  --flare: #0a64c2;   /* Classic Space blue, a step toward the booklet's print; 5.8:1 under white */
 
   --btn-bg: var(--accent);
   --btn-fg: #ffffff;
@@ -69,6 +69,39 @@ html[data-theme="lego-classic"] {
 
   /* Thick, bold strokes to match the 3px brick borders everywhere else. */
   --icon-stroke-width: 3;
+
+  /* Brick outlines on the controls core draws thin by default. */
+  --panel-header-fg: var(--text);
+  --btn-padding-sm: calc(0.3em + 1px) calc(0.8em + 3px);   /* room for the 3px border */
+  --toggle-btn-bg: var(--surface);
+  --toggle-btn-fg: var(--text);
+  --toggle-btn-border-on: #1b1b1b;
+  --segmented-border-width: 3px;
+  --segmented-border: #1b1b1b;
+  --segmented-item-fg: var(--text);
+  --switch-radius: var(--radius);
+  --switch-thumb-radius: 0.2rem;
+  --switch-border-width: 3px;
+  --switch-border: #1b1b1b;
+  --switch-border-on: #1b1b1b;
+  --progress-border-width: 3px;
+  --progress-border: #1b1b1b;
+  --alert-border-width: 3px;
+  --toast-border-width: 3px;
+  --bulk-bar-border: #1b1b1b;
+  --steps-marker-border: #1b1b1b;
+  --steps-marker-radius: var(--radius);
+
+  /* Slider: a white brick groove with a black moulding line; the thumb is
+     a square red 1x1 with a black rim. The 2px frame is painted inside the
+     content box, so core's transparent border keeps the --tap-min target. */
+  --slider-height: 12px;
+  --slider-bg: linear-gradient(#ffffff, #ffffff) center / calc(100% - 6px) calc(100% - 6px) no-repeat, #1b1b1b;
+  --slider-border: transparent;
+  --slider-thumb-size: 1.25rem;
+  --slider-thumb-radius: 0.2rem;
+  --slider-thumb-bg: var(--accent);
+  --slider-thumb-shadow: 0 0 0 2px #1b1b1b, 0 2px 0 2px #1b1b1b;
 }
 
 html[data-theme="lego-classic"] .btn:active { transform: translateY(2px); box-shadow: none; }
@@ -77,84 +110,63 @@ html[data-theme="lego-classic"] h1,
 html[data-theme="lego-classic"] h2,
 html[data-theme="lego-classic"] h3 { font-weight: 800; }
 
-/* Studs: a row of big circular bumps — LEGO's single most identifiable
-   visual signature, evoking the two raised nubs on top of every real
-   brick. A real stud reads at a glance because it's a genuinely large,
-   two-tone disc (a bright highlight offset inside a darker rim), not a
-   faint pinprick; earlier passes tiled a slim, ~5px-radius dot strip
-   that only showed up on close inspection. Studs are now ~18px discs —
-   large enough to read in a normal screenshot — and run across every
-   panel-scale surface (panel, card, modal header) AND the app bar,
-   matching a real brick's top face having studs everywhere, not just a
-   thin accent line above a header. */
-/* Studs sit as a strip ABOVE the header text, not painted as the
-   header's own fill — filling the whole header's background put the
-   stud row directly behind/through the title text itself (confirmed by
-   rendering: "Recent orders" and "Signal" both had studs overlapping the
-   label), which is illegible, not decorative. */
+/* Studs: LEGO's single most identifiable signature, the round bumps on
+   top of every brick. A real stud is moulded in its brick's own colour and
+   reads only by its rim: a dark crescent at the lower right and, on a
+   coloured brick, a lit crescent at the upper left. So each stud is three
+   offset discs, the top one in the host colour (--stud-host). Tiles repeat
+   with `space`, so a strip only ever shows whole studs, evenly inset from
+   the brick's ends, never a half disc sliced off by the border. */
+html[data-theme="lego-classic"] {
+  --stud-host: var(--surface);
+  --stud-lit: rgba(255, 255, 255, 0.35);
+  --stud-rim: rgba(0, 0, 0, 0.3);
+}
+html[data-theme="lego-classic"] .panel-header::before,
+html[data-theme="lego-classic"] .modal-header::before,
+html[data-theme="lego-classic"] .panel:not(:has(> .panel-header))::before,
+html[data-theme="lego-classic"] .card::before,
+html[data-theme="lego-classic"] .app-bar::after {
+  content: "";
+  position: absolute;
+  inset: 3px 6px auto 6px;
+  height: 22px;
+  background-image:
+    radial-gradient(circle at 15px 10px, var(--stud-host) 0 8px, transparent 8.5px),
+    radial-gradient(circle at 14px 9px, var(--stud-lit) 0 8px, transparent 8.5px),
+    radial-gradient(circle at 16.5px 11.5px, var(--stud-rim) 0 8.5px, transparent 9px),
+    radial-gradient(circle at 15px 10px, rgba(0, 0, 0, 0.12) 0 9px, transparent 9.5px);
+  background-size: 32px 22px;
+  background-repeat: space no-repeat;
+  pointer-events: none;
+}
+/* Studs sit as a strip ABOVE the header text, never behind it. */
 html[data-theme="lego-classic"] .panel-header,
 html[data-theme="lego-classic"] .modal-header {
   position: relative;
   padding-top: calc(0.6em + 22px);
 }
-html[data-theme="lego-classic"] .panel-header::before,
-html[data-theme="lego-classic"] .modal-header::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 22px;
-  background-image:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95) 0 3px, rgba(255,255,255,0.35) 3px 5px, transparent 5px),
-    radial-gradient(circle, rgba(0,0,0,0.45) 9px, transparent 9.5px);
-  background-size: 32px 100%;
-  background-position: 16px center;
-  pointer-events: none;
-}
+/* A desktop window's title bar is the window's chrome, not a brick top:
+   no strip there, so studs never run through the title or the close stud. */
+html[data-theme="lego-classic"] .desktop-window .modal-header { padding-top: var(--space-xs, 0.4rem); }
+html[data-theme="lego-classic"] .desktop-window .modal-header::before { content: none; }
 html[data-theme="lego-classic"] .panel,
 html[data-theme="lego-classic"] .card {
   position: relative;
 }
-/* :not(:has(> .panel-header)) — a panel WITH a header already gets its
-   own top stud strip from the header rule above; adding this one too
-   would double the dots at the same spot, misaligned since the two
-   strips use different pitches. */
-html[data-theme="lego-classic"] .panel:not(:has(> .panel-header))::before,
-html[data-theme="lego-classic"] .card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 26px;
-  background-image:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9) 0 3.5px, rgba(255,255,255,0.32) 3.5px 5.5px, transparent 5.5px),
-    radial-gradient(circle, rgba(0,0,0,0.4) 10px, transparent 10.5px);
-  background-size: 36px 100%;
-  background-position: 18px center;
-  pointer-events: none;
-}
 html[data-theme="lego-classic"] .panel-header {
-  position: relative;
   z-index: 1;
+  font-weight: 800;
+  font-size: 1rem;
 }
-/* The app bar is the brick's own top plate, so it carries the same big
-   studs along its bottom edge — the header/card treatment alone left the
-   single largest, most-visible surface on the page (the top bar) with no
-   stud at all. */
+/* The app bar is the brick's own top plate: blue studs on blue. */
 html[data-theme="lego-classic"] .app-bar {
   position: relative;
   padding-bottom: calc(var(--app-bar-padding-y, 0.6rem) + 16px);
+  --stud-host: var(--flare);
+  --stud-rim: rgba(0, 0, 0, 0.38);
 }
-html[data-theme="lego-classic"] .app-bar::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 22px;
-  background-image:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.55) 0 3px, rgba(255,255,255,0.2) 3px 5px, transparent 5px),
-    radial-gradient(circle, rgba(0,0,0,0.5) 9px, transparent 9.5px);
-  background-size: 32px 100%;
-  background-position: 16px center;
-  pointer-events: none;
-}
+html[data-theme="lego-classic"] .app-bar::after { inset: auto 6px 0 6px; }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * black-outlined brick messages and bricks for bars. */
@@ -186,11 +198,13 @@ html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) .panel > .pa
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------- *
  * The shell needs nothing extra on phone and tablet: the studded blue bar
  * wraps its nav onto a second line above the stud row. XL gutters: the page
- * sits on a light-grey baseplate, studs within ~1.2:1 of --bg. */
+ * sits on the booklet's grey baseplate: grey studs on grey, shown by their rims. */
 html[data-theme="lego-classic"] {
   --app-gutter-art:
-    radial-gradient(circle at 13px 13px, rgba(255, 255, 255, 0.9) 0 2.5px, transparent 3.5px) 0 0 / 32px 32px,
-    radial-gradient(circle at 16px 16px, #e4e4e4 0 9px, #d8d8d8 9.5px 10.5px, transparent 11px) 0 0 / 32px 32px;
+    radial-gradient(circle at 16px 16px, #a9acaf 0 9px, transparent 9.5px) 0 0 / 32px 32px,
+    radial-gradient(circle at 15px 15px, #b8bbbe 0 9px, transparent 9.5px) 0 0 / 32px 32px,
+    radial-gradient(circle at 17.5px 17.5px, #84878a 0 9.5px, transparent 10px) 0 0 / 32px 32px,
+    #a0a3a6;
 }
 
 /* Stacked tables (phone width) label each cell with its column name in
@@ -207,9 +221,53 @@ html[data-theme="lego-classic"] .modal-header > .btn-close {
   --btn-close-fg-hover: #fff;
 }
 
-/* State words on the blue status bar read white (green is 1.2:1 there). */
+/* State words on the blue status bar read white (green is 1.2:1 there);
+   muted text there is a pale blue-white, 5.2:1, not the grey (1.0:1). */
 html[data-theme="lego-classic"] .app-status {
   --success-text: #ffffff;
-  --warning-text: #ffcc00;
+  --warning-text: #ffea8a;
   --danger-text: #ffffff;
+  --muted: #eef3fa;
+}
+/* On a phone the chunky Start brick leaves the tray too little room: it
+   shrinks and ellipsizes like the tasks instead of running off the strip. */
+html[data-theme="lego-classic"] .taskbar-tray { flex-shrink: 1; min-width: 0; }
+html[data-theme="lego-classic"] .taskbar-tray > .mono { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The active pattern-nav link sits on a red fill: its text is white. */
+html[data-theme="lego-classic"] .pattern-nav [aria-current="page"] { --accent-text: var(--on-accent); }
+
+/* Slider frame and fill are sized against the content box (the drawn
+   groove), not the padded --tap-min box. */
+html[data-theme="lego-classic"] .slider { background-origin: content-box; }
+
+/* Alerts and toasts: a black 3px moulding line all round, the state colour
+   kept as a thick left stripe. */
+html[data-theme="lego-classic"] .alert {
+  border-color: #1b1b1b;
+  border-inline-start: 8px solid var(--alert-border, #1b1b1b);
+}
+html[data-theme="lego-classic"] .toast {
+  border-color: #1b1b1b;
+  border-inline-start: 8px solid var(--toast-border, #1b1b1b);
+}
+html[data-theme="lego-classic"] .bulk-bar { border-width: 3px; }
+html[data-theme="lego-classic"] .tab.is-active { border-bottom-width: 4px; }
+/* Filter chips: a parts-callout box, black-ruled. */
+html[data-theme="lego-classic"] .badge-button { border: 2px solid #1b1b1b; }
+/* The selected toggle in a group is the pressed red brick. */
+html[data-theme="lego-classic"] .toggle-btn:has(input:checked) { transform: translateY(2px); }
+html[data-theme="lego-classic"] .toggle-btn:not(:has(input:checked)) { box-shadow: 0 2px 0 #1b1b1b; }
+
+/* Booklet step numerals: big, heavy, tight. */
+html[data-theme="lego-classic"] :is(h1, .stat-value) { font-weight: 900; letter-spacing: -0.02em; }
+html[data-theme="lego-classic"] .steps > li::before { font-weight: 900; }
+
+/* Square brick switch: the 3px track border leaves less room inside, so the
+   1x1 knob shrinks to sit 2px clear of the moulding line on every side. */
+html[data-theme="lego-classic"] .switch-thumb {
+  top: 2px;
+  inset-inline-start: 2px;
+  width: calc(1.4em * var(--density) - 10px);
+  height: calc(1.4em * var(--density) - 10px);
 }
