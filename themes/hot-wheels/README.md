@@ -17,10 +17,11 @@ menu, not a calm productivity tool.
 1. **Blue is the field, orange is the track.** `--bg` `#1638a6`,
    `--surface` `#1c44bc`, `--surface-2` `#224dcc` and the bar's
    `--hw-blue` `#1f4fd1` follow the electric royal blue of the PC set's
-   plastic and the menu backdrop. Orange (`#ff5f00`, `#ff8a1a` as
-   `--accent`) is a fill and a track lip, never the background and never
-   small text; links and accent text take the flame's yellow core
-   `#ffcc00`. A washed-out or brown orange has missed the point.
+   plastic and the menu backdrop. Orange (`#ff5f00`, and `#ff8a1a` as
+   `--hw-flame`/`--accent-2`) is every fill and the track lip, never the
+   background and never small text; `--accent` is the flame's yellow core
+   `#ffd21a`, because core paints the accent as text (links, active tabs,
+   GO, readouts). A washed-out or brown orange has missed the point.
 2. **Condensed, heavy, italic, uppercase.** Headings, buttons, nav, tabs
    and the brand use Antonio Bold slanted, white with a hard dark drop
    shadow stacked at 1px and 3px with no blur (h1 in flame yellow), like the menu's `MULTIPLAYER / BASEMENT` labels.
@@ -102,7 +103,7 @@ filled, marker dots are r1.2 rings, colour is always `currentColor`.
 
 ## Contrast honesty
 
-- **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--link`, secondary and tertiary buttons, GO, readouts, code keywords, the current breadcrumb and h1 use the flame yellow `#ffcc00` (5.34:1 on `--surface`, 4.63:1 on `--surface-2`, 6.46:1 on `--bg`). Orange stays a fill (buttons, avatars, pagination, badges) and the track lip.
+- **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--accent` (links, secondary buttons, GO, readouts, active tabs, the current breadcrumb) is the flame yellow `#ffd21a`: 4.68:1 on the bar, 4.83:1 on `--surface-2`, 5.5:1 on `--surface`. h1 uses `#ffcc00`. Orange stays a fill (buttons, avatars, pagination, accent badges, progress) and the track lip. Code blocks sit in a darker `#0f2c88` well so token colours keep their margin.
 - **Dark text on the fills.** `--on-accent` `#1a0900` is 8.22:1 on `#ff8a1a`; `--on-danger` `#1a0000` 5.23:1 on `#ff2d2d`. Yellow fills (table header, dialog header) carry `#0a1a4a` at 11.0:1.
 - **On the blues** `--text` white is 8.07:1 on `--surface` and 7.00:1 on `--surface-2`; `--muted` `#dbe4ff` is 6.36:1 on `--surface`, 5.52:1 on `--surface-2` and 5.34:1 on the bar. White on the selection blue `#2a64e8` is 5.14:1 and on the brand red `#e3171b` 4.77:1.
 - **Badges** are solid: `#1a0900` on `#ff8a1a` 8.22:1, `#0a1a4a` on `#ffcc00` 11.0:1, white on `#e3171b` 4.77:1, `#04220f` on `#29d17a` 8.46:1.
