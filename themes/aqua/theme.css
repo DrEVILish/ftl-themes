@@ -11,11 +11,11 @@
 html[data-theme="aqua"] {
   --motion-leave: genie;
   color-scheme: light;
-  --bg: #d9dee3;
+  --bg: #e3e3e3;
   --surface: #ececec;
   --surface-2: #ffffff;
-  --border: #a9adb2;
-  --hairline: #c7cbd0;
+  --border: #a8a8a8;
+  --hairline: #c8c8c8;
   --text: #1c1c1e;
   /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #6e7075, 4.2:1; checked against the darker panel gradient too. */
   --muted: #58595e;
@@ -35,8 +35,10 @@ html[data-theme="aqua"] {
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
-  --radius: 0.9rem;
-  --font: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Snow Leopard group boxes, sheets and menus have ~4-5px corners; the
+     window shell keeps its own larger radius (--app-bar-radius, .app). */
+  --radius: 0.35rem;
+  --font: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif;
   --font-mono: Monaco, Consolas, monospace;
   --flare: #5aa6ff;
 
@@ -44,25 +46,122 @@ html[data-theme="aqua"] {
      references/aqua/31db2b68338d1ae9.png (a 2x capture; column x=560):
      a flat #f2f2f2 upper 37%, a hard step to #e5e5e5, then lighter to
      white at the bottom (the gel's lit underside), in a #5d5d5d rim. */
-  --btn-bg: linear-gradient(180deg, #f2f2f2 0 37%, #e5e5e5 37%, #ffffff);
+  --aqua-push-gel: linear-gradient(180deg, #f2f2f2 0 37%, #e5e5e5 37%, #ffffff);
+  --aqua-push-gel-hover: linear-gradient(180deg, #e8e8e8 0 37%, #d9d9d9 37%, #f6f6f6);
+  /* The selected tab segment, same capture ('Tab', column x=480): #d7e3f2
+     to #bfd8f2 over the upper half, a step to #7db0e4, lighter below. */
+  --aqua-blue-gel: linear-gradient(180deg, #d7e3f2, #bfd8f2 50%, #7db0e4 50%, #a9d0f5 80%, #d4ecfc);
+  --btn-bg: var(--aqua-push-gel);
   --btn-border: #5d5d5d;
   --btn-fg: var(--text);
   --btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(0, 0, 0, 0.15);
+  /* Push and default buttons are full capsules (same capture: the corner
+     radius is half the height); latched toggle buttons keep the small
+     'Textured' corner. */
+  --btn-radius: 999px;
+  --toggle-btn-radius: 4px;
   --input-bg: #ffffff;
-  --input-radius: 0.6rem;
-  --input-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+  /* The square Snow Leopard text field with its inset top shadow. */
+  --input-radius: 2px;
+  --input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
   --focus-ring: 0 0 0 3px rgba(42, 116, 208, 0.35);
-  --panel-bg: linear-gradient(180deg, #e7eaee, #cfd3d8);
-  --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 14px rgba(0, 0, 0, 0.18);
-  --modal-header-bg: linear-gradient(180deg, #eef2f6, #d5d9de);
-  --table-head-bg: linear-gradient(180deg, #f4f6f8, #dde1e5);
-  --row-selected-bg: var(--accent);
+  /* Neutral greys (the capture's window body and group box are R=G=B). A
+     group box sits flat in a 1px rim; only floating surfaces (sheet, menu,
+     popover, toast, drawer) keep the large soft shadow. */
+  --panel-bg: linear-gradient(180deg, #ededed, #dcdcdc);
+  --panel-border: #b8b8b8;
+  --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* A group box's title is bold near-black, with no window controls. */
+  --panel-header-fg: #1c1c1e;
+  --aqua-float-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 14px rgba(0, 0, 0, 0.18);
+  --modal-shadow: var(--aqua-float-shadow);
+  --popover-shadow: var(--aqua-float-shadow);
+  --context-menu-shadow: var(--aqua-float-shadow);
+  --toast-shadow: var(--aqua-float-shadow);
+  --drawer-shadow: var(--aqua-float-shadow);
+  --modal-header-bg: linear-gradient(180deg, #eaeaea, #d2d2d2);
+  --table-head-bg: linear-gradient(180deg, #f4f4f4, #dddddd);
+  /* Source-list selection (Panther/Snow Leopard sidebar, references/aqua/
+     01.png): a vertical blue gradient under a 1px lighter top line. Every
+     stop keeps white text at 4.6:1 or better (#3a75c8 is the lightest). */
+  --aqua-select-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0 1px, transparent 1px),
+    linear-gradient(180deg, #3a75c8, #2a68c4 60%, #1f56b0);
+  --row-selected-bg: var(--aqua-select-bg);
   --row-selected-fg: #ffffff;
-  --nav-bg: linear-gradient(180deg, #f4f6f8, #d5d9de);
+  --nav-bg: linear-gradient(180deg, #f4f4f4, #d6d6d6);
+  /* A standalone nav's brand is accent text (#2a74d0 was 3.9:1 here). */
+  --nav-brand-fg: var(--accent-text);
   --dropdown-bg: #ffffff;
   --overlay-bg: rgba(0, 0, 0, 0.28);
   --indicator-fg: var(--accent);
   --indicator-track: var(--border);
+  --skeleton-bg: #e4e4e4;
+  --skeleton-shine: #f4f4f4;
+
+  /* Slider: a ~5px dark grey groove (same capture, y=472) painted on the
+     content box, so the 24/44px hit area core gives the input is kept, and
+     a blue gel knob. Core's border would eat 2px of the groove and can't
+     be seen anyway, so it is zeroed and the rim drawn as a top layer. */
+  --slider-bg:
+    linear-gradient(180deg, #5f5f5f 0 1px, transparent 1px calc(100% - 1px), #bdbdbd calc(100% - 1px)),
+    linear-gradient(180deg, #8a8a8a, #c4c4c4);
+  --slider-height: 0.35rem;
+  --slider-radius: 999px;
+  --slider-border-width: 0;
+  --slider-thumb-bg: radial-gradient(circle at 50% 30%, #fff 0 18%, transparent 40%), linear-gradient(180deg, #4a7fd0, #9cc8f6);
+  --slider-thumb-shadow: 0 0 0 1px #1f3f86, 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  /* Segmented control ('Test | One | Two'): joined grey gel segments in
+     one #5d5d5d rim, the selected one the blue tab gel with a black label. */
+  --segmented-bg: var(--aqua-push-gel);
+  --segmented-border: #5d5d5d;
+  --segmented-padding: 0;
+  --segmented-radius: 6px;
+  --segmented-item-radius: 0;
+  --segmented-item-fg: #1c1c1e;
+  --segmented-item-fg-hover: #000000;
+  --segmented-item-bg-active: var(--aqua-blue-gel);
+  --segmented-item-fg-active: #000000;
+  /* A latched toggle button (and a group of them) takes the same blue gel. */
+  --toggle-btn-bg-on: var(--aqua-blue-gel);
+  --toggle-btn-fg-on: #000000;
+  --toggle-btn-border-on: #2a2190;
+  /* Pagination's current page and an active filter chip are the same
+     latched blue gel, black label. */
+  --pagination-item-bg-active: var(--aqua-blue-gel);
+  --pagination-item-fg-active: #000000;
+  --badge-bg-active: var(--aqua-blue-gel);
+  --badge-fg-active: #000000;
+  /* Switch: grey push gel off, blue gel on, a white gel knob in a grey rim
+     (the rim is the knob's top layer: core has no knob border token). */
+  --switch-bg: var(--aqua-push-gel);
+  --switch-bg-on: var(--aqua-blue-gel);
+  --switch-border: #7a7a7a;
+  --switch-border-on: #45508a;
+  --switch-thumb-bg:
+    radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #7a7a7a calc(100% - 1px), transparent),
+    radial-gradient(circle at 50% 30%, #ffffff 0 22%, transparent 55%),
+    linear-gradient(180deg, #f6f6f6, #c9c9c9);
+  --switch-thumb-bg-on: var(--switch-thumb-bg);
+  /* Alerts and toasts are grey sheets; the state is the 3px start bar. */
+  --alert-bg: linear-gradient(180deg, #f4f4f4, #e4e4e4);
+  --toast-bg: linear-gradient(180deg, #f4f4f4, #e4e4e4);
+
+  /* Progress: the capture's ~16px, nearly square-ended gel bar. The fill
+     and track stay plain colours (core also uses them in colour-only
+     places); the gloss is an overlay further down. */
+  --progress-fill: #3b86e0;
+  --progress-border: #9a9a9a;
+  --progress-bg: #e4e4e4;
+  --progress-height: 1rem;
+  --progress-radius: 3px;
+
+  /* Source-list selection (Finder sidebar): a blue gradient bar with a
+     white label, deepened from #5d94d6/#2a62c0 so white holds 4.5:1. */
+  --nav-item-bg-active: var(--aqua-select-bg);
+  --nav-item-fg-active: #ffffff;
+  --nav-rail-marker: transparent;
 }
 
 html[data-theme="aqua"] { background: linear-gradient(180deg, #eef1f4, #c9ced4); }
@@ -95,6 +194,9 @@ html[data-theme="aqua"] {
 html[data-theme="aqua"] h1,
 html[data-theme="aqua"] h2,
 html[data-theme="aqua"] h3 { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7); }
+/* Aqua titles are small and bold, never display type. */
+html[data-theme="aqua"] h1 { font-size: 1.75rem; font-weight: 700; }
+html[data-theme="aqua"] h2 { font-size: 1.35rem; font-weight: 700; }
 
 /* Pinstripe texture on panels AND cards, over the gradient set above —
    applying it to only one component made the texture look like a stray
@@ -104,23 +206,30 @@ html[data-theme="aqua"] .panel,
 html[data-theme="aqua"] .card {
   background-image:
     repeating-linear-gradient(180deg, rgba(255,255,255,0.55) 0px, rgba(255,255,255,0.55) 1px, transparent 1px, transparent 3px),
-    linear-gradient(180deg, #e7eaee, #cfd3d8);
+    linear-gradient(180deg, #ededed, #dcdcdc);
 }
-html[data-theme="aqua"] .modal-header { text-align: center; border-bottom: 1px solid var(--border); }
-
-/* The traffic lights are Aqua's single most recognizable window-chrome
-   cue, but until now they only ever drew on .app-bar — so any layout
-   that doesn't adopt the full app shell (e.g. a marketing page built from
-   bare .panel/.card, or a dialog), never shows a single window
-   affordance anywhere on the page. Every framed header now gets its own
-   (smaller) set, exactly as a real Mac window/sheet titlebar would. */
-html[data-theme="aqua"] .panel-header,
+/* Phones skip the pinstripe (scrolling a page of repeating gradients cost
+   ~25ms a frame at 4x CPU); the gel gradient stays. */
+@container style(--tier: mobile) {
+  html[data-theme="aqua"] :is(.panel, .card) { background-image: linear-gradient(180deg, #ededed, #dcdcdc); }
+}
+/* A Mac sheet's title is centred: core's header is a flex row, so centre
+   the row and balance the lights' start padding at the end. */
 html[data-theme="aqua"] .modal-header {
-  position: relative;
-  padding-left: 3.6rem;
+  justify-content: center;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
 }
-html[data-theme="aqua"] .panel-header::before,
-html[data-theme="aqua"] .modal-header::before {
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-inline-end: 3.6rem; }
+
+/* Traffic lights belong to windows only: a group box (.panel-header) or a
+   sheet (a modal header with no window buttons) never carries them. A
+   modal header that has close/minimize/zoom buttons is a window title bar,
+   so it gets its own (smaller) set, and the buttons sit over the lights. */
+html[data-theme="aqua"] .panel-header { font-weight: 700; }
+html[data-theme="aqua"] .modal-header { position: relative; }
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-left: 3.6rem; }
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max)::before {
   content: "";
   position: absolute;
   left: 1rem;
@@ -141,21 +250,14 @@ html[data-theme="aqua"] .modal-header::before {
 
 /* Nesting steps down to an Aqua group box: a panel or card inside another
    surface is a lighter, flat inset (the parent's pinstripe shows through)
-   with no drop shadow, and its header has no traffic lights, since only a
-   window has window controls. Full-strength gloss and lights at every
-   level stacked windows inside windows. */
+   with no drop shadow. Full-strength gloss at every level stacked
+   windows inside windows. */
 html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
   --panel-bg: rgba(255, 255, 255, 0.4);
   --card-bg: rgba(255, 255, 255, 0.4);
   --panel-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   --card-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
   background-image: none;
-}
-html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
-  padding-left: var(--surface-pad, 1rem);
-}
-html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::before {
-  content: none;
 }
 /* Glossy candy fills for the semantic variants. */
 /* The default button, same capture (column x=760): pale Aqua blue with
@@ -196,6 +298,11 @@ html[data-theme="aqua"] .panel .table,
 html[data-theme="aqua"] .card .table {
   background: var(--surface-2);
 }
+/* Core layers the selection over a frozen cell's base as
+   linear-gradient(token 0 0), which can't take a gradient, so a table's
+   selection is the gradient's mid stop with the lit top line as a shadow. */
+html[data-theme="aqua"] .table { --row-selected-bg: #2a68c4; }
+html[data-theme="aqua"] .table tr:is(.is-selected, [aria-selected="true"]) td { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
 html[data-theme="aqua"] .table tr:nth-child(even):not(.is-selected, [aria-selected="true"]) td { background: rgba(0, 0, 0, 0.035); }
 
 /* --- Layout ------------------------------------------------------------ *
@@ -209,9 +316,11 @@ html[data-theme="aqua"] {
   --app-bar-rule: #5f5f5f;
   --app-bar-radius: 0.75rem 0.75rem 0 0;
   --app-bar-height: 2.75rem;
-  --app-main-bg: #f7f8fa;
+  /* The neutral grey window body (#ececec on the capture); white stays for
+     fields, tables and list views. */
+  --app-main-bg: #ececec;
   --app-main-padding: 1.1rem;
-  --app-status-bg: linear-gradient(180deg, #eef1f4, #dce0e5);
+  --app-status-bg: linear-gradient(180deg, #eeeeee, #dcdcdc);
   --app-status-fg: #3a3c40;
   --app-status-radius: 0 0 0.75rem 0.75rem;
 }
@@ -238,7 +347,8 @@ html[data-theme="aqua"] .app-bar {
    detail, drawn from --aqua-lights (measured, see the top of this file)
    so no extra markup is needed in the app shell. Full size here: 14px
    discs on a 21px pitch, as on the reference window. */
-html[data-theme="aqua"] .app-bar::before {
+html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before,
+html[data-theme="aqua"] .app-bar > .nav-brand::before {
   content: "";
   position: absolute;
   left: 1rem;
@@ -256,23 +366,54 @@ html[data-theme="aqua"] .app-bar::before {
   mask-position: 0 0, 1.3rem 0, 2.6rem 0;
 }
 
+/* With a brand, the lights hang off it: the brand isn't positioned, so the
+   bar stays their containing block (the brand's overflow clip on touch
+   tiers doesn't reach them), and top:auto leaves them at the brand's
+   static position, centred on its first line whichever row the bar wraps
+   it onto. */
+html[data-theme="aqua"] .app-bar > .nav-brand::before {
+  top: auto;
+  transform: none;
+  margin-top: calc((1lh - 0.875rem) / 2);
+}
+
 /* --- v5 tiers --------------------------------------------------------------
  * Phone and tablet: the window goes nearly full-screen (a thinner desktop
  * margin), and the traffic lights stay level with the bar's first line
  * (brand and actions) instead of centring on the wrapped two-line bar,
  * where they landed beside the nav. No rail on any tier. */
 @container style(--tier: mobile) or style(--tier: tablet) {
-  html[data-theme="aqua"] .app-bar::before { top: calc(0.6rem + var(--tap-min, 44px) / 2); }
+  html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before { top: calc(0.6rem + var(--tap-min, 44px) / 2); }
 }
 @container style(--tier: mobile) {
   html[data-theme="aqua"] .app { padding: 0.35rem; }
-  /* Panel-header-sized lights leave the brand room to show on a phone. */
+  /* Smaller lights leave the brand room to show on a phone; with a brand
+     only the brand steps clear of them, so the wrapped rows below start
+     at the bar's normal edge. */
   html[data-theme="aqua"] .app-bar { padding-left: 3.6rem; }
-  html[data-theme="aqua"] .app-bar::before {
+  html[data-theme="aqua"] .app-bar:has(> .nav-brand) { padding-left: 0.75rem; }
+  html[data-theme="aqua"] .app-bar > .nav-brand { margin-inline-start: 3.1rem; }
+  /* Scroll cost on a phone: tight shadows instead of large blurs, and a
+     still default button (its pulse repaints a blurred halo every frame). */
+  html[data-theme="aqua"] .app { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); }
+  html[data-theme="aqua"] {
+    --panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --aqua-float-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  }
+  html[data-theme="aqua"] .btn-primary { animation: none; }
+  html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before {
     left: 0.75rem;
     transform: translateY(-50%) scale(0.75);
     transform-origin: left center;
   }
+  html[data-theme="aqua"] .app-bar > .nav-brand::before {
+    left: 0.75rem;
+    transform: scale(0.75);
+    transform-origin: left center;
+  }
+  /* The tray gives way before it runs under the strip's rounded corner. */
+  html[data-theme="aqua"] .app-status > .taskbar-tray { flex-shrink: 1; min-width: 0; }
+  html[data-theme="aqua"] .app-status > .taskbar-tray > :last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the original Aqua pinstripe, the desktop
@@ -297,7 +438,163 @@ html[data-theme="aqua"] {
   --link: var(--accent-text);
   --readout-fg: var(--accent-text);
 }
-html[data-theme="aqua"] .btn-secondary { --btn-fg: var(--accent-text); }
+/* Every push button is gel: flat is the one thing Aqua never was. Quieter
+   buttons keep the gel with a lighter rim. */
+html[data-theme="aqua"] :is(.btn-secondary, .btn-tertiary, .btn-ghost) {
+  --btn-bg: var(--aqua-push-gel);
+  --btn-bg-hover: var(--aqua-push-gel-hover);
+  --btn-border: #5d5d5d;
+  /* Aqua push buttons always have black labels; the rim carries rank. */
+  --btn-fg: #000000;
+}
+html[data-theme="aqua"] :is(.btn-tertiary, .btn-ghost) { --btn-border: #9a9a9a; }
+
+/* Tabs: Aqua's tab view is a centred row of joined gel segments, not an
+   underline. Horizontal tabs only; a vertical rail keeps core's shape. */
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) {
+  --tab-bg: var(--aqua-push-gel);
+  --tab-bg-hover: var(--aqua-push-gel-hover);
+  --tab-bg-active: var(--aqua-blue-gel);
+  --tab-fg: #1c1c1e;
+  --tab-fg-hover: #000000;
+  --tab-fg-active: #000000;
+  --tab-border-hover: #5d5d5d;
+  --tab-border-active: #2a2190;
+  --tab-underline-active: #2a2190;
+  --tab-radius: 0;
+  justify-content: safe center;
+  gap: 0;
+  border-bottom: 0;
+}
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  border-color: #5d5d5d;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab + .tab { margin-inline-start: -1px; }
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab:first-child { border-start-start-radius: 6px; border-end-start-radius: 6px; }
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab:last-child { border-start-end-radius: 6px; border-end-end-radius: 6px; }
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab.is-active { border-bottom-width: 1px; position: relative; }
+html[data-theme="aqua"] .segmented { inline-size: fit-content; max-inline-size: 100%; gap: 0; overflow: hidden; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); }
+html[data-theme="aqua"] .segmented-item + .segmented-item { border-inline-start: 1px solid #8a8a8a; }
+
+/* Core clips the slider's background to the content box but sizes it on
+   the padding box, so only the middle of the groove gradient (and none of
+   its rim) showed; size it on the content box too. */
+html[data-theme="aqua"] .slider:not(.is-range > .slider) { background-origin: content-box; }
+/* The groove runs across a vertical fader too. */
+html[data-theme="aqua"] .slider.is-vertical {
+  --slider-bg:
+    linear-gradient(90deg, #5f5f5f 0 1px, transparent 1px calc(100% - 1px), #bdbdbd calc(100% - 1px)),
+    linear-gradient(90deg, #8a8a8a, #c4c4c4);
+}
+/* Core pads a vertical slider with logical padding, which writing-mode
+   turns sideways (the groove filled the whole 24px box); physical padding
+   narrows it back to the groove. */
+html[data-theme="aqua"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+
+/* Pop-up menu: the blue gel cap with its double arrow at the right end. */
+html[data-theme="aqua"] .select {
+  padding-inline-end: 2.4em;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='12'%3E%3Cpath d='M1 4.5 4 1.5 7 4.5M1 7.5 4 10.5 7 7.5' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, #5d6d8a 0 1px, transparent 1px),
+    var(--aqua-blue-gel);
+  background-position: calc(100% - 0.6em) 50%, 100% 0, 100% 0;
+  background-size: 8px 12px, 1.6em 100%, 1.6em 100%;
+  background-repeat: no-repeat;
+}
+html[data-theme="aqua"] .select:dir(rtl) { background-position: 0.6em 50%, 0 0, 0 0; }
+
+/* Checkboxes and radios: white gel wells in a grey rim; checked, the blue
+   gel with a black mark. */
+html[data-theme="aqua"] :is(.checkbox, .radio) {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  border: 1px solid #7a7a7a;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffffff, #e8e8e8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  min-block-size: 0;
+}
+html[data-theme="aqua"] .radio { border-radius: 50%; }
+html[data-theme="aqua"] :is(.checkbox, .radio):is(:checked, :indeterminate) { background: var(--aqua-blue-gel); border-color: #45508a; }
+html[data-theme="aqua"] .checkbox:checked::before {
+  content: "";
+  width: 0.55em;
+  height: 0.3em;
+  border: solid #000000;
+  border-width: 0 0 2px 2px;
+  transform: translateY(-0.08em) rotate(-45deg);
+}
+html[data-theme="aqua"] .checkbox:indeterminate::before { content: ""; width: 0.55em; height: 2px; background: #000000; }
+html[data-theme="aqua"] .radio:checked::before {
+  content: "";
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: #000000;
+}
+
+/* Progress: the gel gloss over the fill and a recessed grey trough; an
+   indeterminate bar is the blue barber pole. */
+html[data-theme="aqua"] .progress:not(:indeterminate) {
+  background-image: linear-gradient(180deg, #f4f4f4, #e8e8e8 50%, #dcdcdc 50%, #e8e8e8);
+}
+html[data-theme="aqua"] progress.progress:not(:indeterminate)::-webkit-progress-bar {
+  background-image: linear-gradient(180deg, #f4f4f4, #e8e8e8 50%, #dcdcdc 50%, #e8e8e8);
+}
+/* The blue gel fill: a light band over the upper half, a darker step, and
+   the faint vertical ripple of the capture's bar. */
+html[data-theme="aqua"] .progress-bar,
+html[data-theme="aqua"] progress.progress::-webkit-progress-value {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.25) 48%, rgba(0, 0, 0, 0.06) 52%, rgba(255, 255, 255, 0.4)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 3px, transparent 3px 7px);
+}
+
+/* A filled busy dot is the slider's blue gel ball; skeletons shimmer
+   light grey. */
+html[data-theme="aqua"] .spinner.is-grow { background: radial-gradient(circle at 50% 30%, #ffffff 0 18%, transparent 45%), linear-gradient(180deg, #2a68c4, #7db0e4); }
+html[data-theme="aqua"] .skeleton { background-image: linear-gradient(90deg, transparent, var(--skeleton-shine), transparent); }
+
+/* Switch knob sits under a soft drop, as the capture's radio does. */
+html[data-theme="aqua"] .switch-thumb { box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25); }
+/* Latched pagination and chips carry the toggle's #2a2190 rim. */
+html[data-theme="aqua"] .pagination-item.is-active { border-color: #2a2190; }
+/* Badges keep their tints with a gel highlight on top. */
+html[data-theme="aqua"] .badge { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -0.45em 0.4em rgba(0, 0, 0, 0.05); }
+/* An off filter chip is a small grey push gel in the tertiary rim (drawn
+   as a ring: core gives .badge-button no border). */
+html[data-theme="aqua"] .badge-button { --badge-bg: var(--aqua-push-gel); box-shadow: inset 0 0 0 1px #9a9a9a, 0 1px 1px rgba(0, 0, 0, 0.12); }
+html[data-theme="aqua"] .badge-button:not(.badge-accent, .badge-danger, .badge-success, .badge-warning) { --badge-fg: #1c1c1e; }
+html[data-theme="aqua"] .badge-button.is-active { box-shadow: inset 0 0 0 1px #2a2190, 0 1px 1px rgba(0, 0, 0, 0.12); }
+
+/* Alerts and toasts: a neutral rim, the state carried by a 3px start bar
+   in its text colour. */
+html[data-theme="aqua"] :is(.alert-info, .alert-success, .alert-warning, .alert-danger) { --alert-border: var(--border); }
+html[data-theme="aqua"] :is(.toast-success, .toast-danger, .toast-warning) { --toast-border: var(--border); }
+html[data-theme="aqua"] .alert-info { border-inline-start: 3px solid var(--accent-text); }
+html[data-theme="aqua"] :is(.alert-success, .toast-success) { border-inline-start: 3px solid var(--success-text); }
+html[data-theme="aqua"] :is(.alert-warning, .toast-warning) { border-inline-start: 3px solid var(--warning-text); }
+html[data-theme="aqua"] :is(.alert-danger, .toast-danger) { border-inline-start: 3px solid var(--danger-text); }
+html[data-theme="aqua"] progress.progress:indeterminate {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.08)),
+    repeating-linear-gradient(-45deg, #4a8fe6 0 0.5rem, #e8f2fd 0.5rem 1rem);
+  background-size: 100% 100%, 1.42rem 100%;
+  background-repeat: no-repeat, repeat;
+}
+
+/* In the title bar the selected nav item is a darker inset, not the
+   source-list blue. */
+html[data-theme="aqua"] .app-bar {
+  --nav-item-bg-active: linear-gradient(180deg, #9c9c9c, #b8b8b8);
+  --nav-item-fg-active: #000000;
+}
+html[data-theme="aqua"] .app-bar :is(.nav-item.is-active, .nav-item[aria-current="page"]) { box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35); }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * iChat gel bubbles (yours glossy blue) and Aqua gel columns, graphite for the highlight. */
@@ -317,7 +614,7 @@ html[data-theme="aqua"] {
 /* Close (v5): in Aqua the close IS the red traffic light. The real button
    sits over the header's red light (drawn by .modal-header::before), clear
    until hovered, when it shows the dark ×, as Mac OS X did. */
-html[data-theme="aqua"] .modal-header > .btn-close {
+html[data-theme="aqua"] .modal-header .btn-close {
   --btn-close-glyph: "";
   --btn-close-bg: transparent;
   --btn-close-order: -1;
@@ -331,7 +628,7 @@ html[data-theme="aqua"] .modal-header > .btn-close {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-html[data-theme="aqua"] .modal-header > .btn-close:is(:hover, :focus-visible) { --btn-close-glyph: "\00d7"; }
+html[data-theme="aqua"] .modal-header .btn-close:is(:hover, :focus-visible) { --btn-close-glyph: "\00d7"; }
 
 /* --- Desktop shell (v5 §23) ----------------------------------------------- *
  * core/components/desktop.css drawn as Mac OS X: the app bar becomes the
@@ -401,7 +698,8 @@ html[data-theme="aqua"] .desktop > .app-bar {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
-html[data-theme="aqua"] .desktop > .app-bar::before { content: none; }
+html[data-theme="aqua"] .desktop > .app-bar::before,
+html[data-theme="aqua"] .desktop > .app-bar > .nav-brand::before { content: none; }
 html[data-theme="aqua"] .desktop > .app-bar .select { padding-block: 0; min-block-size: 0; font-size: 0.8rem; }
 html[data-theme="aqua"] .desktop-bar > .taskbar-start { font-size: 1rem; }
 html[data-theme="aqua"] .desktop-bar > .taskbar-tray { font-size: 0.85rem; }
@@ -412,8 +710,8 @@ html[data-theme="aqua"]:has(.desktop-screen) {
 }
 /* Minimize and zoom sit on the yellow and green lights, as close sits on
    the red one: clear until pointed at. */
-html[data-theme="aqua"] .desktop-window .modal-header { padding-left: 3.8rem; }
-html[data-theme="aqua"] .desktop-window .modal-header > :is(.btn-min, .btn-max) {
+html[data-theme="aqua"] .modal-header:has(.btn-min, .btn-max) { padding-left: 3.8rem; }
+html[data-theme="aqua"] .modal-header :is(.btn-min, .btn-max) {
   --btn-min-glyph: "";
   --btn-max-glyph: "";
   --btn-close-bg: transparent;
@@ -426,10 +724,10 @@ html[data-theme="aqua"] .desktop-window .modal-header > :is(.btn-min, .btn-max) 
   margin: 0;
   transform: translate(-50%, -50%);
 }
-html[data-theme="aqua"] .desktop-window .modal-header > .btn-min { left: 2.2rem; }
-html[data-theme="aqua"] .desktop-window .modal-header > .btn-max { left: 3.1rem; --btn-close-fg-hover: #0d4a00; }
-html[data-theme="aqua"] .desktop-window .modal-header > .btn-min:is(:hover, :focus-visible) { --btn-min-glyph: "\2212"; }
-html[data-theme="aqua"] .desktop-window .modal-header > .btn-max:is(:hover, :focus-visible) { --btn-max-glyph: "+"; }
+html[data-theme="aqua"] .modal-header .btn-min { left: 2.2rem; }
+html[data-theme="aqua"] .modal-header .btn-max { left: 3.1rem; --btn-close-fg-hover: #0d4a00; }
+html[data-theme="aqua"] .modal-header .btn-min:is(:hover, :focus-visible) { --btn-min-glyph: "\2212"; }
+html[data-theme="aqua"] .modal-header .btn-max:is(:hover, :focus-visible) { --btn-max-glyph: "+"; }
 html[data-theme="aqua"] .desktop-window .modal-header > .icon { display: none; }
 html[data-theme="aqua"] .desktop-window .window-title { padding-inline-end: 3.1rem; }
 html[data-theme="aqua"] .desktop-window .window-status { justify-content: center; text-align: center; border-color: var(--border); }
@@ -442,3 +740,6 @@ html[data-theme="aqua"] .start-menu-header .avatar { border-radius: 0.35rem; }
    gradient (the whole background drops out). The gradient is opaque, so it
    paints the corner on its own. */
 html[data-theme="aqua"] .table:not(.is-stacked) > thead > tr > th:is(:first-child, :nth-child(2)) { background: var(--table-head-bg); }
+
+/* Menus float (core's dropdown only reads --panel-shadow). */
+html[data-theme="aqua"] .dropdown { box-shadow: var(--aqua-float-shadow); }
