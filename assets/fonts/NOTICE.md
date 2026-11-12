@@ -29,7 +29,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Antonio
 - **Used by:** `lcars` (display face for the sweep bar and numeric
-  readouts)
+  readouts); `skyrim` (fallback after Sofia Sans Condensed)
 
 ## Archivo
 
@@ -317,6 +317,23 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Source:** https://fonts.google.com/specimen/Barlow+Semi+Condensed
 - **Used by:** `hot-wheels` (display type: headings, buttons, nav, tabs;
   stand-in for the game menu's heavy semi-condensed italic caps)
+
+## Sofia Sans Condensed
+
+- **Family:** Sofia Sans Condensed (variable `wght` axis, limited to
+  300–700 and subset to Latin-1 plus common punctuation with fontTools —
+  `SofiaSansCondensed.woff2`)
+- **Designer:** Botio Nikoltchev and Ani Petrova, Lettersoup
+- **License:** SIL Open Font License, version 1.1 (`ofl/sofiasanscondensed/`
+  in `google/fonts`; OFL.txt: "Copyright 2019 The Sofia Sans Project
+  Authors")
+- **Source:** https://fonts.google.com/specimen/Sofia+Sans+Condensed
+  (`SofiaSansCondensed[wght].ttf` from `google/fonts`, version 4.101)
+- **Used by:** `skyrim` (the whole UI: a free stand-in for the game's
+  Futura Condensed, with its round bowls and light stroke)
+- **Note:** instancing and subsetting is a modification under OFL 1.1;
+  "Sofia Sans" is not a Reserved Font Name in the OFL header, so the
+  family name is kept.
 
 ## Bottom line
 
