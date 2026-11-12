@@ -14,12 +14,15 @@ than as a HUD's telemetry glow.
 
 1. **Purple structures, green signals.** Purple is the blacklight
    ambience: dim `--line` (`#9030d8`) and `--border` (`#7a1fbf`) for
-   control outlines, rules and panel edges, hot `--flare` only for the
-   bar sawtooth and the display headings. `--accent` (toxic green) is
+   control outlines, rules and panel edges, `--flare-text` for h3, panel
+   and window titles. Page titles (h1/h2) are pale `--text` under a purple
+   bloom, and the bar sawtooth is a dimmer `#a020d8`, so the green neon
+   carries the eye as the captures show. `--accent` (toxic green) is
    the one neon, reserved for primary/interactive/success — the two must
    not swap roles.
 2. **Black vinyl gloss, not matte.** Panels and buttons carry a lit 1px
-   lip and a specular band over their top ~40% (`--gloss`), then a dark
+   lip and a specular band over their top ~40%, capped at 28-40px so tall panels
+   show no seam (`--gloss`), then a dark
    body — plastic under a club light, not flat paint. Alerts, menus,
    popovers and lists take the same gloss on a 3px slab.
 3. **Glow is UV bloom.** Hover/focus glows are wide and colour-matched to
@@ -49,18 +52,28 @@ than as a HUD's telemetry glow.
   structure. A studded-collar silhouette, not a
   smooth bevel like `alienware`'s clip-path corners and not `matrix`'s
   monospace rain. It's a decorative pseudo-element strip with room left
-  under it, so it never covers the next line.
+  under it, so it never covers the next line. On phone and tablet the
+  teeth drop their `drop-shadow` filter (a scroll cost) and paint in the
+  brighter `--flare` instead.
 - Text buttons carry a single asymmetric fang cut on the top-right corner
   only (`clip-path`), with the border redrawn along the diagonal, over a
   hard dark-violet 3px offset slab (`#3a1550`; pure black vanished on the
   near-black page) that the clip polygon extends to include. `alienware`
   cuts both opposing corners at matching size; this cuts one, deliberately
-  uneven. Round icon buttons and avatars keep core's circle. Focus rings
+  uneven. Standalone `.toggle-btn` shares the cut and slab; a
+  `.toggle-group` row is cut on its last segment only, without a slab.
+  Round icon buttons and avatars keep core's circle. Focus rings
   sit 4px inside the cut so the clip never hides them.
 - Panels, cards and modals sit on a 4px offset plate (`#2a0e3a`, edged
-  `#6a2d96`), with a 10px cone stud (lit tip, violet cone, dark rim)
-  riveted into each corner, like a collar's.
-- Panel headers are uppercase Audiowide in `--flare-text`.
+  `#6a2d96`), with an 8px cone stud (lit tip, violet cone, dark rim)
+  riveted into the outer 9px of each corner, like a collar's. Titled
+  modals and desktop windows keep only the bottom pair, so the title bar
+  and its icon never sit on a stud.
+- Panel, modal and window titles are uppercase Audiowide in `--flare-text`.
+- Charts: series 1 is the green, series 2 the structural purple
+  (`--flare-text`) and series 5 lavender `#b98cff`, since `--accent` and
+  `--success` are the same green.
+- Stat labels read a lighter lavender (`#b9a0d8`) than `--muted`.
 
 ## Layout
 
