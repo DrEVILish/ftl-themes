@@ -27,29 +27,36 @@ directly rather than an interface built for you.
 5. **Uppercase headings, tracked.** Terminal banner conventions.
 6. **Hard rectangles.** Badges, filter chips, switches, slider thumbs,
    icon buttons, avatars, carousel arrows and dots, and checkboxes are
-   square terminal cells, never capsules or discs (radios stay round).
+   square terminal cells (`--radius: 0`), never capsules or discs (radios
+   stay round).
 
 ## Signature details
 
 - **The digital rain**: real glyph columns filling the frame top to bottom,
   all mirrored: about two thirds katakana-like stroke glyphs drawn as SVG
   paths, the rest digits and the film's few symbols (`Z : = * " < > . + |`),
-  no Latin capitals. Each streak is a bright `#00ff41` tail ending in a
-  white-hot head whose glow is baked in as a wide translucent stroke (no SVG
-  filter), with faint residual glyphs between streaks and smaller, dimmer
+  no Latin capitals. Each streak is 10-24 glyphs whose opacity ramps from
+  1.0 behind the head to about 0.15 at the tail, ending in a white-hot
+  `#f0fff0` head whose glow is baked in as two wide translucent strokes (a
+  `#b8ffc8` halo at 0.45, a `#00ff41` bloom at 0.18; no SVG filter), with
+  residual glyphs at 0.1 between streaks and smaller, dimmer
   far columns in some gaps for depth. One 997x960 tile on `html::after`
   wraps across its bottom edge, so the loop has no seam; the layer falls by
   `transform: translateY` of one tile height every 13s and composites
   rather than repainting (`will-change: transform`). With reduced motion
   the columns stand still.
-- Light text carries the bloom plus a black halo (2px, then 5px), so
-  glyphs standing on the rain have a dark moat; a bare `aside` standing on
-  the rain also gets an 80% black backing, at zero class specificity so a
+- All text carries a 2px bloom. Text that can stand on the rain (the
+  content well and a bare `aside`) adds a black halo (2px, then 5px), so
+  its glyphs have a dark moat; panels, cards, tables, alerts, dialogs and
+  popovers drop back to the bloom alone, which keeps scrolling cheap. A
+  bare `aside` and the page-level lines (breadcrumb, h1/h2, lede, a
+  control row) also get an 80% black backing, the lines cut to their own
+  width with 4px of black round the text, at zero class specificity so a
   drawer or panel keeps its own fill. The halo's alpha is
   computed from the text's own lightness (relative colour from
   `currentColor`), so dark labels on lit fills get none; controls keep
   bloom only.
-  The content well is a 50% black wash over the rain, so the code wall
+  The content well is a 30% black wash over the rain, so the code wall
   stays bright between panels; panels and tables
   are opaque. Pagination is a strip of cells on black; the current page is
   a `--surface-2` cell with a lit `#00ff41` rule.
@@ -58,10 +65,13 @@ directly rather than an interface built for you.
   line, in the alert's state colour). The app bar is the operator console's toolbar plate: a dark green
   `#0b3d1c` to `#062a12` gradient with faint 3px scanlines and a 2px bevel
   (lit `#1f6a3a` top, dark bottom); panel headers keep the scanlines on
-  near-black. A focused input lights up as the film's "Searching..." field:
+  near-black, and their icon buttons (and a `.toolbar`'s) are the same
+  raised plate cells. A focused input lights up as the film's "Searching..." field:
   a bright `#00ff41` rim, outer and inner glow, and a `#06200d` fill.
 - Warning is white-hot only in its text: the warning alert's rules and the
-  solid warning badge use the brighter green step `#7dff9a`.
+  solid warning badge use the brighter green step `#7dff9a`; the soft
+  warning badge is a `#0f2a14` cell under a `#7dff9a` rule. A comment's anchored
+  text sits on the same `#0f2a14` cell, `#1d5a2a` when active.
 - Checkboxes and radios are drawn as green-ruled cells (phosphor fill and
   black tick when checked); the slider track is the lit rule colour (in Firefox the part up to
   the thumb lights `#00ff41`). The bar chart's highlighted column is a
@@ -109,7 +119,7 @@ flicker animation communicate anything.
 
 ## Typography
 
-`--font` (and `--font-mono`) is `"DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`: a clean sans mono for running text, so long copy stays legible and lands at a similar width everywhere (Courier New's serif typewriter face is last-resort only). The app bar (`--app-bar-font`) and h1-h3 use `--font-console`, **Share Tech Mono** (vendored, OFL, `assets/fonts/ShareTechMono-Regular.woff2`), the squared LCD-style mono closest to the operator console's "Searching..." field, falling back to `--font`. On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain draws a score of katakana-like shapes as SVG strokes (no font needed) beside mirrored digits and symbols in the system monospace.
+`--font` (and `--font-mono`) is `"DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`: a clean sans mono for running text, so long copy stays legible and lands at a similar width everywhere (Courier New's serif typewriter face is last-resort only). The app bar (`--app-bar-font`), h1-h3 and the big numerals (`.stat-value`, `.timecode`, `.price`) use `--font-console`, **Share Tech Mono** (vendored, OFL, `assets/fonts/ShareTechMono-Regular.woff2`), the squared LCD-style mono closest to the operator console's "Searching..." field, falling back to `--font`. On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain draws a score of katakana-like shapes as SVG strokes (no font needed) beside mirrored digits and symbols in the system monospace.
 
 ## Contrast honesty
 
