@@ -29,25 +29,40 @@ HUD.
    pink-to-cyan pair with a glowing thumb.
 4. **Purple is the void.** `--bg`/`--surface` are deep purple, not
    black — black reads as `matrix`/`alienware`, not synthwave.
-5. **The horizon lives in the status strip.** The perspective grid-floor
-   pattern belongs to the bottom of the shell, echoing the genre's classic
-   sunset-over-grid composition.
+5. **The horizon lives at the foot of the shell.** The sun rises from the
+   status strip's top edge at the bottom of the content well, and the
+   perspective grid floor fills the strip below it: the genre's classic
+   sunset-over-grid composition, with no text ever sitting on the sun.
 
 ## Signature details
 
 - `h1`/`h2`/`h3` use a clipped gradient fill rather than a solid color —
   the one detail that reads "synthwave" before anything else does.
-- Buttons, `.btn-primary` included, use the magenta-to-cyan gradient fill; `--on-accent`
-  is dark purple, not white, since the gradient is bright enough that dark
-  text is what actually passes the contrast floor.
+- The magenta-to-cyan gradient marks what is primary or selected:
+  `.btn-primary`, a checked `.toggle-btn` and an active `.segmented-item`
+  get the gradient with dark `#1a0b2e` ink (7.5:1 / 9.9:1 on the stops).
+  Plain buttons are the quiet `--surface-2` chip with a `--border` edge, so
+  a range group (7d / 30d / 90d) shows which one is on.
+- Title-bar caption controls (minimise, maximise, close, wrapped or not)
+  are dark `#1a0b2e` ink on the gradient header with a soft dark hover
+  wash; no grey bevel.
 - The app bar is the sunset gradient (orange → magenta → purple → cyan);
   the content well deepens from the void into a magenta haze toward the
   status strip.
-- The status strip is the horizon: a gold-to-magenta setting sun
+- The horizon: a 4.5rem gold-to-magenta setting sun
   (`#ffd319` → `#ff8c3a` → `#ff2975` → `#c800c8`, the references' sun)
-  with masked slits near the horizon, a glowing pink horizon line, and a
-  perspective floor whose cyan rays converge on the sun and whose pink
-  cross-lines widen toward the viewer.
+  with slits near the horizon, drawn in `--app-main-bg` at the bottom
+  centre of the well (inside 3rem of bottom padding the content never
+  reaches) under a faint warm sunset glow. The status strip below is the
+  floor: a glowing pink horizon line and a perspective grid whose cyan
+  rays (0.85 alpha) converge on the sun and whose pink cross-lines widen
+  toward the viewer, with a pink glow. Status text carries a halo in the
+  strip colour so it stays clear of the lines.
+- Headings carry 4px of padding inside their gradient box (with a
+  matching negative margin, so layout is unchanged), so the glyphs never
+  touch the painted edge.
+- On phones (≤480px) the bar is the dark strip colour under a 4px sunset
+  rule with light nav ink, so the wrapped bar is not a slab of gradient.
 - Danger is one step darker than the "hot" reference red-pink — the
   literal value fails 4.5:1 against white button text.
 
@@ -95,6 +110,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
+- **Chrome titles:** the bar brand, panel and modal headers, tabs and KPI labels (`.stat-label`) also use Audiowide, uppercase, `0.06em` tracking, weight 400; tabs drop to `0.75em` so a strip keeps its width.
 - **Display (h1–h3):** Audiowide, **vendored** (`assets/fonts/Audiowide-Regular.woff2`, SIL OFL, `assets/fonts/NOTICE.md`), uppercase, `0.14em` tracking (`0.08em` on `h3`), under the gradient-text fill. It is the "wide, chunky geometric" stand-in for vaporwave's extended display type; it is not a true full-width face.
 - **Body:** `--font` is `"Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", sans-serif` — system fonts, **not vendored**. `--font-mono` is `Consolas, monospace`.
 - **Full-width Latin and katakana:** the aesthetic leans on full-width text (ＶＡＰＯＲ) and Japanese katakana, but the theme ships no face for either. Audiowide is a Latin display face; whether the vendored file covers full-width forms or katakana was not checked, so treat both as system-font fallback (`--font`, then the OS's CJK font). Put katakana in body-weight text or set an explicit CJK `font-family` in the app; do not expect Audiowide to render it. `RESEARCH.md` lists the mall/katakana-text target as still uncovered by the captures.

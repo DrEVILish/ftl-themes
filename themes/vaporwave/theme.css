@@ -55,10 +55,16 @@ html[data-theme="vaporwave"] {
   --font-mono: Consolas, monospace;
   --flare: #01cdfe;
 
-  --btn-bg: linear-gradient(90deg, var(--accent), var(--accent-2));
-  --btn-fg: #1a0b2e;
+  /* Plain buttons are the quiet purple chip; the gradient is kept for the
+     primary and the selected item, so a group shows which one is on. */
+  --btn-bg: var(--surface-2);
+  --btn-fg: var(--text);
   --btn-weight: 700;
-  --btn-border-width: 0;
+  --toggle-btn-bg-on: linear-gradient(90deg, var(--accent), var(--accent-2));
+  --toggle-btn-fg-on: #1a0b2e;
+  --toggle-btn-border-on: transparent;
+  --segmented-item-bg-active: linear-gradient(90deg, var(--accent), var(--accent-2));
+  --segmented-item-fg-active: #1a0b2e;
   --btn-shadow-hover: 0 0 16px rgba(255, 113, 206, 0.55), 0 0 16px rgba(1, 205, 254, 0.35);
   --focus: var(--accent-2);
   --focus-ring: 0 0 0 2px var(--accent-2), 0 0 12px var(--accent-2);
@@ -104,6 +110,15 @@ html[data-theme="vaporwave"] h3 {
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
+/* The gradient paints the heading's own box, so the glyphs get 4px of it
+   to sit inside (v5 edge rule); the matching negative margin keeps the
+   layout where it was. :where() keeps it at reset weight, so any page or
+   component margin on a heading still wins. */
+:where(html[data-theme="vaporwave"]) :is(h1, h2, h3) {
+  padding: 0.25rem;
+  margin: -0.25rem;
+}
+html[data-theme="vaporwave"] .panel > .panel-header > :is(h1, h2, h3) { margin: -0.25rem; }
 /* Neon bloom on the big titles; drop-shadow follows the clipped glyphs. */
 html[data-theme="vaporwave"] h1,
 html[data-theme="vaporwave"] h2 { filter: drop-shadow(0 0 6px rgba(255, 113, 206, 0.45)); }
@@ -112,7 +127,23 @@ html[data-theme="vaporwave"] h3 { letter-spacing: 0.08em; }
 
 /* Primary actions get the pair too (core resets .btn-primary to flat
    --accent); dark ink clears both stops (7.5:1 / 9.9:1). */
-html[data-theme="vaporwave"] .btn-primary { --btn-bg: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+html[data-theme="vaporwave"] .btn-primary {
+  --btn-bg: linear-gradient(90deg, var(--accent), var(--accent-2));
+  --btn-fg: #1a0b2e;
+  --btn-border: transparent;
+}
+
+/* Chrome titles share the display face, so the wide outrun type is not
+   confined to page headings. Body copy and tables stay on --font. */
+html[data-theme="vaporwave"] :is(.nav-brand, .panel-header, .modal-header, .tab, .stat-label) {
+  font-family: "Audiowide", var(--font);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+/* Audiowide runs ~25% wider than the body face; a tab strip keeps the
+   width it had. */
+html[data-theme="vaporwave"] .tab { font-size: 0.75em; letter-spacing: 0.01em; }
 
 html[data-theme="vaporwave"] .panel,
 html[data-theme="vaporwave"] .modal { border: 1px solid var(--border); }
@@ -128,9 +159,21 @@ html[data-theme="vaporwave"] {
   --app-bar-fg: #1a0b2e;
   --app-bar-rule-width: 0;
   --app-bar-height: 2.6rem;
-  /* The void deepens into a magenta haze toward the status-strip horizon. */
-  --app-main-bg: linear-gradient(180deg, #1a0b2e 0%, #1a0b2e 60%, #2a0f45 85%, #3d1250 100%);
-  --app-main-padding: 1.1rem;
+  /* The sun rises from the horizon (the status strip's top edge) at the
+     foot of the well, in padding the content never reaches. Layers, top
+     first: a warm sunset glow, slits in the haze colour, a cut-out that rounds the disc, the
+     references' gold-to-magenta sun, the haze (flat over the
+     bottom padding, so the cut-outs match it). */
+  --vw-haze: #3d1250;
+  --app-main-bg:
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255, 140, 58, 0.18), transparent),
+    linear-gradient(transparent 0 52%, var(--vw-haze) 52% 55%, transparent 55% 63%, var(--vw-haze) 63% 67%, transparent 67% 74%, var(--vw-haze) 74% 79%, transparent 79% 85%, var(--vw-haze) 85% 91%, transparent 91%) 50% 100% / 4.5rem 2.25rem no-repeat,
+    radial-gradient(circle at 50% 100%, transparent 2.25rem, var(--vw-haze) calc(2.25rem + 0.5px)) 50% 100% / 4.5rem 2.25rem no-repeat,
+    linear-gradient(180deg, #ffd319 0%, #ff8c3a 45%, #ff2975 75%, #c800c8 100%) 50% 100% / 4.5rem 2.25rem no-repeat,
+    linear-gradient(180deg, #1a0b2e 0%, #1a0b2e 60%, #2a0f45 85%, var(--vw-haze) calc(100% - 3rem));
+  --app-main-padding: 1.1rem 1.1rem 3rem;
+  --app-main-padding-tablet: var(--space-m) var(--space-m) 3rem;
+  --app-main-padding-mobile: var(--space-s) var(--space-s) 3rem;
   --app-status-bg: #150822;
   --app-status-fg: var(--accent-2);
   /* A taller strip, so the sunset horizon has room to read as one. */
@@ -158,31 +201,16 @@ html[data-theme="vaporwave"] .app-bar .breadcrumb-item {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.9), 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
-/* The horizon: a setting sun over a converging grid floor, the genre's
-   single most iconic composition. Confined to the status strip's own
-   stacking context (z-index -1 under its text). The sun is the references'
-   gold-to-magenta disc, its top half above the horizon line, with slits cut
-   (masked, so the void shows through) only near the horizon. */
+/* The horizon: the floor under the sun, a converging grid confined to
+   the status strip's own stacking context (z-index -1 under its text).
+   The sun itself sits in the well just above (see --app-main-bg), so no
+   status text ever lands on it; a halo in the strip colour keeps the text
+   clear of the grid lines. */
 html[data-theme="vaporwave"] .app-status {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  --vw-sun: linear-gradient(180deg, #ffd319 0%, #ff8c3a 45%, #ff2975 75%, #c800c8 100%);
-  --vw-slits: linear-gradient(#000 0 52%, transparent 52% 55%, #000 55% 63%, transparent 63% 67%, #000 67% 74%, transparent 74% 79%, #000 79% 85%, transparent 85% 91%, #000 91%);
-}
-html[data-theme="vaporwave"] .app-status::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 40%;
-  width: 3.25rem;
-  height: 1.625rem;
-  transform: translateX(-50%);
-  border-radius: 1.625rem 1.625rem 0 0;
-  background: var(--vw-sun);
-  mask-image: var(--vw-slits);
-  -webkit-mask-image: var(--vw-slits);
-  z-index: -1;
+  text-shadow: 0 0 2px #150822, 0 0 4px #150822;
 }
 /* The floor: cyan rays fanning from one vanishing point at the horizon,
    magenta cross-lines spaced wider toward the viewer (a real 3D tilt), a
@@ -194,9 +222,10 @@ html[data-theme="vaporwave"] .app-status::after {
   border-top: 1px solid rgba(255, 41, 117, 0.9);
   box-shadow: 0 -2px 8px rgba(255, 41, 117, 0.5);
   background-image:
-    linear-gradient(90deg, rgba(1, 205, 254, 0.5) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 113, 206, 0.5) 1px, transparent 1px);
-  background-size: 2.5rem 100%, 100% 0.6rem;
+    linear-gradient(90deg, rgba(1, 205, 254, 0.85) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 113, 206, 0.85) 1px, transparent 1px);
+  background-size: 2.5rem 100%, 100% 1rem;
+  filter: drop-shadow(0 0 2px #ff71ce);
   background-position: center top;
   /* A short perspective so the rays visibly converge on the sun. */
   transform: perspective(40px) rotateX(60deg);
@@ -311,19 +340,14 @@ html[data-theme="vaporwave"] {
   }
 }
 
-/* Close (v5): vaporwave's windows are Windows 95 dialogs, so the close is
-   the 95 grey caption button. */
-html[data-theme="vaporwave"] .modal-header > .btn-close {
-  --btn-close-bg: #c0c0c0;
-  --btn-close-bg-hover: #d4d0c8;
-  --btn-close-border: #000;
-  --btn-close-border-width: 1px;
-  --btn-close-radius: 0;
-  --btn-close-width: 1.4em;
-  --btn-close-height: 1.25em;
-  --modal-header-close-fg: #000;
-  --btn-close-fg-hover: #000;
-  box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #fff;
+/* Close (v5): the title bar's caption controls are dark ink on the
+   gradient (7:1+ on both stops), wrapped or not, with a soft dark wash on
+   hover; no grey Win95 bevel. */
+html[data-theme="vaporwave"] .modal-header {
+  --modal-header-close-fg: #1a0b2e;
+  --btn-close-fg: #1a0b2e;
+  --btn-close-fg-hover: #1a0b2e;
+  --btn-close-bg-hover: rgba(26, 11, 46, 0.18);
 }
 
 /* A heading used as a modal title takes the title bar's ink, not the page
@@ -331,9 +355,28 @@ html[data-theme="vaporwave"] .modal-header > .btn-close {
 html[data-theme="vaporwave"] .modal-header > :is(h1, h2, h3, h4, h5, h6) {
   background: none;
   -webkit-text-fill-color: currentColor;
+  padding: 0;
+  margin: 0;
 }
 
 /* An open comment's anchor: core's 40% of the pale-yellow --warning turned
    the purple into a mid-tone khaki the lilac text could not clear (4.1:1);
    30% keeps it clearly brighter than the idle 22%. */
 html[data-theme="vaporwave"] { --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 30%, transparent); }
+
+/* Phones: the wrapped bar would be a third of the screen of saturated
+   gradient, so it goes to the strip colour under a 4px sunset rule, with
+   light nav ink and the pink nav underline. */
+@media (max-width: 480px) {
+  html[data-theme="vaporwave"] {
+    --app-bar-bg: linear-gradient(90deg, #ff8c3a, #ff71ce 22%, #b967ff 55%, #01cdfe) 0 0 / 100% 0.25rem no-repeat #150822;
+    --app-bar-fg: var(--text);
+  }
+  html[data-theme="vaporwave"] .app-bar {
+    --nav-brand-fg: var(--text);
+    --nav-item-fg: var(--text);
+    --nav-item-fg-active: var(--accent);
+    --nav-item-bg-active: rgba(255, 113, 206, 0.15);
+  }
+  html[data-theme="vaporwave"] .app-bar :is(.nav-brand, .nav-item, .breadcrumb-item) { text-shadow: none; }
+}
