@@ -38,8 +38,12 @@ html[data-theme="aqua"] {
   /* Snow Leopard group boxes, sheets and menus have ~4-5px corners; the
      window shell keeps its own larger radius (--app-bar-radius, .app). */
   --radius: 0.35rem;
-  --font: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif;
-  --font-mono: Monaco, Consolas, monospace;
+  /* A humanist Vera/DejaVu fallback before the grotesques: closer to
+     Lucida's open apertures than Arial-metric Liberation Sans. */
+  --font: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif;
+  --font-mono: Monaco, Menlo, "DejaVu Sans Mono", Consolas, monospace;
+  /* Mac OS X set figures (KPIs, iTunes-style readouts) in Lucida Grande. */
+  --readout-font: var(--font);
   --flare: #5aa6ff;
 
   /* The Snow Leopard push button, measured on
@@ -162,6 +166,11 @@ html[data-theme="aqua"] {
   --nav-item-bg-active: var(--aqua-select-bg);
   --nav-item-fg-active: #ffffff;
   --nav-rail-marker: transparent;
+  /* Source-list rows have no side marker either. */
+  --list-active-marker: inset 0 0 0 transparent;
+  /* The default button gel (see .btn-primary below), shared with GO. */
+  --aqua-default-gel: linear-gradient(180deg, #d8ecff, #c2e1fd 37%, #8bc5f9 37%, #a5d6fe 65%, #d9fdfe);
+  --aqua-default-gel-hover: linear-gradient(180deg, #cfe6ff, #b6daf9 37%, #7cbcf5 37%, #98cefb 65%, #cdf6fb);
 }
 
 html[data-theme="aqua"] { background: linear-gradient(180deg, #eef1f4, #c9ced4); }
@@ -205,8 +214,11 @@ html[data-theme="aqua"] h2 { font-size: 1.35rem; font-weight: 700; }
 html[data-theme="aqua"] .panel,
 html[data-theme="aqua"] .card {
   background-image:
-    repeating-linear-gradient(180deg, rgba(255,255,255,0.55) 0px, rgba(255,255,255,0.55) 1px, transparent 1px, transparent 3px),
+    linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
     linear-gradient(180deg, #ededed, #dcdcdc);
+  /* One 3px tile, not a repeating gradient: far cheaper to raster. Kept at
+     0.35 so the 10.2 pinstripe is a texture hint on 10.6 group boxes. */
+  background-size: 100% 3px, auto;
 }
 /* Phones skip the pinstripe (scrolling a page of repeating gradients cost
    ~25ms a frame at 4x CPU); the gel gradient stays. */
@@ -266,8 +278,8 @@ html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
    bottom; rim #212a95 at the top, #6d737b at the bottom (the side colour
    is derived between them). */
 html[data-theme="aqua"] .btn-primary {
-  --btn-bg: linear-gradient(180deg, #d8ecff, #c2e1fd 37%, #8bc5f9 37%, #a5d6fe 65%, #d9fdfe);
-  --btn-bg-hover: linear-gradient(180deg, #cfe6ff, #b6daf9 37%, #7cbcf5 37%, #98cefb 65%, #cdf6fb);
+  --btn-bg: var(--aqua-default-gel);
+  --btn-bg-hover: var(--aqua-default-gel-hover);
   --btn-border: #45508a;
   --btn-fg: #000000;
   --btn-weight: 400;
@@ -277,13 +289,52 @@ html[data-theme="aqua"] .btn-primary {
    button Enter activates." A soft breathing halo, not a color change, so
    it reads as "this one" without vibrating the whole row; gated like
    matrix's flicker, never the sole way the primary action is marked. */
+/* Only the default button of a sheet or form pulses (Enter activates one
+   button, not every primary on the page), and the halo is a pre-blurred
+   pseudo that fades by opacity, so it composites instead of repainting. */
 @media (prefers-reduced-motion: no-preference) {
-  html[data-theme="aqua"] .btn-primary { animation: aqua-pulse 2.2s ease-in-out infinite; }
+  html[data-theme="aqua"]:not([data-motion="reduced"], [data-motion="none"]) :is(.modal-footer, form) .btn-primary:last-of-type:not(.is-armed) { position: relative; }
+  html[data-theme="aqua"]:not([data-motion="reduced"], [data-motion="none"]) :is(.modal-footer, form) .btn-primary:last-of-type:not(.is-armed)::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: 0 0 10px 3px rgba(42, 116, 208, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+    animation: var(--aqua-pulse, aqua-pulse 2.2s ease-in-out infinite);
+  }
 }
-@keyframes aqua-pulse {
-  0%, 100% { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(42, 116, 208, 0.5); }
-  50% { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 10px 3px rgba(42, 116, 208, 0.5); }
+@keyframes aqua-pulse { 50% { opacity: 1; } }
+/* GO is the default button too: the same blue gel capsule, mixed case. */
+html[data-theme="aqua"] {
+  --go-bg: var(--aqua-default-gel);
+  --go-bg-hover: var(--aqua-default-gel-hover);
+  --go-fg: #000000;
+  --go-border: #45508a;
+  --go-border-width: 1px;
+  --go-radius: 999px;
+  --go-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(0, 0, 0, 0.15);
 }
+html[data-theme="aqua"] .btn-go {
+  --btn-weight: 400;
+  --btn-tracking: normal;
+  --btn-transform: none;
+  border-color: #212a95 #45508a #6d737b;
+}
+/* A latched danger toggle is the red gel, never a flat fill. */
+html[data-theme="aqua"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: linear-gradient(180deg, #ef7b68, #c8321f 55%, #97200f);
+  --toggle-btn-border-on: #97200f;
+}
+/* KPI figures are Lucida Grande, tabular, like the readouts. */
+html[data-theme="aqua"] .stat-value { font-family: var(--font); }
+/* So is a window's status-strip text: Lucida with tabular figures (the
+   wider DejaVu Sans Mono also ran a phone tray's text into the edge). */
+html[data-theme="aqua"] .app-status .mono { font-family: var(--font); }
+/* The touch pencil follows a selected row's white label. */
+html[data-theme="aqua"] .table tr:is(.is-selected, [aria-selected="true"]) { --cell-edit-glyph-fg: currentColor; }
 html[data-theme="aqua"] .btn-danger { --btn-bg: linear-gradient(180deg, #ef7b68, #c8321f 55%, #97200f); --btn-border: #97200f; }
 html[data-theme="aqua"] .btn-success { --btn-bg: linear-gradient(180deg, #74c266, #3a7d2f 55%, #2a5f22); --btn-border: #2a5f22; }
 
@@ -394,13 +445,13 @@ html[data-theme="aqua"] .app-bar > .nav-brand::before {
   html[data-theme="aqua"] .app-bar:has(> .nav-brand) { padding-left: 0.75rem; }
   html[data-theme="aqua"] .app-bar > .nav-brand { margin-inline-start: 3.1rem; }
   /* Scroll cost on a phone: tight shadows instead of large blurs, and a
-     still default button (its pulse repaints a blurred halo every frame). */
+     still default button. */
   html[data-theme="aqua"] .app { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); }
   html[data-theme="aqua"] {
     --panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     --aqua-float-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
   }
-  html[data-theme="aqua"] .btn-primary { animation: none; }
+  html[data-theme="aqua"] { --aqua-pulse: none; }
   html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before {
     left: 0.75rem;
     transform: translateY(-50%) scale(0.75);
@@ -426,13 +477,12 @@ html[data-theme="aqua"] {
     linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 70%);
 }
 
-/* Accent as text (active tab, secondary button, transport trigger) sits on
+/* Accent as text (active tab, secondary button) sits on
    the brushed gradients, darker than --surface; the primary gel's top
    stop is deepened so its white label holds 4.5:1 across the button. */
 html[data-theme="aqua"] {
   --accent-text: #20589d;
   --tab-fg-active: var(--accent-text);
-  --go-fg: var(--accent-text);
   /* Links and readouts are accent text too: raw #2a74d0 fell to 3.5:1 on
      the light panels. */
   --link: var(--accent-text);
@@ -595,6 +645,15 @@ html[data-theme="aqua"] .app-bar {
   --nav-item-fg-active: #000000;
 }
 html[data-theme="aqua"] .app-bar :is(.nav-item.is-active, .nav-item[aria-current="page"]) { box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35); }
+/* Window titles are regular-weight Lucida. */
+html[data-theme="aqua"] .app-bar > .nav-brand { font-weight: 400; }
+/* A standalone nav bar's current item is a toolbar segment: blue gel,
+   black label, a dark rim (not a flat Bootstrap pill). */
+html[data-theme="aqua"] .nav:not(.app-bar .nav) {
+  --nav-item-bg-active: var(--aqua-blue-gel);
+  --nav-item-fg-active: #000000;
+}
+html[data-theme="aqua"] .nav:not(.app-bar .nav) :is(.nav-item.is-active, .nav-item[aria-current="page"]) { box-shadow: inset 0 0 0 1px #2a2190; }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * iChat gel bubbles (yours glossy blue) and Aqua gel columns, graphite for the highlight. */

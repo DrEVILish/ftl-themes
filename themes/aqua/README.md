@@ -34,8 +34,9 @@ tactile, unmistakably pre-flat-design.
 
 ## Signature details
 
-- Panels carry an actual **pinstripe**: a 3px repeating white-at-35%
-  gradient over a neutral `#ededed`→`#dcdcdc` gradient (surfaces are
+- Panels carry an actual **pinstripe**: one 3px background tile (a 1px
+  white-at-35% line, a texture hint: the 10.2 stripe kept faint on 10.6
+  group boxes, and cheaper to raster than a repeating gradient) over a neutral `#ededed`→`#dcdcdc` gradient (surfaces are
   R=G=B grey, as on the capture). Phones drop the stripe for scroll cost
   and keep the gradient.
 - The modal header is centred, with its own metal gradient — a Mac sheet,
@@ -52,7 +53,13 @@ tactile, unmistakably pre-flat-design.
 - Focus adds a soft 3px blue halo rather than a hard ring.
 - Every push button is a gel capsule with a black label, secondary,
   tertiary and ghost included (the quieter two with a lighter #9a9a9a
-  rim). Latched `.toggle-btn`s keep the square 4px 'Textured' corner.
+  rim). Latched `.toggle-btn`s keep the square 4px 'Textured' corner; a
+  latched danger toggle takes the `.btn-danger` red gel.
+- The default button (the last `.btn-primary` of a form or sheet footer)
+  pulses: a pre-blurred blue halo on a `::after` that fades by opacity
+  only. Other primaries keep the gel without the pulse.
+- `.btn-go` is the default-button gel capsule with a black, mixed-case,
+  regular-weight label.
 - Off filter chips (`.badge-button`) are small grey push gels in the
   #9a9a9a rim with a near-black label.
 - Latched states are the blue gel with a black label: a switch's on
@@ -75,8 +82,10 @@ tactile, unmistakably pre-flat-design.
   light grey (`#e4e4e4`) with a `#f4f4f4` shimmer.
 - Alerts and toasts are grey gel sheets with a neutral rim; their state is
   a 3px start bar in the state's text colour.
-- A source-list selection (`.nav-rail`) is a blue gradient bar with a
-  white label; in the title bar the current nav item is a darker grey inset.
+- A source-list selection (`.nav-rail`, `.list-item`) is a blue gradient
+  bar with a white label and no side marker; in the title bar the current
+  nav item is a darker grey inset and the brand is regular weight; in a
+  standalone `.nav` it is a blue gel toolbar segment in a `#2a2190` rim.
 
 ## Layout
 
@@ -119,7 +128,7 @@ fill without checking the contrast floor.
 
 ## Typography
 
-`--font` is `"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif` (the last three are open, metric-close fallbacks for Linux); `--font-mono` is `Monaco, Consolas, monospace`. Lucida Grande is the authentic face (named in `references/aqua/RESEARCH.md`) and it is **system-only, not vendored**: it ships with macOS and is absent on Windows and most Linux, where Lucida Sans Unicode (Windows, a close match) or Helvetica Neue/Arial render instead. Headings get a 1px white `text-shadow` (the "engraved" look); do not swap it for a heavier weight. Aqua titles are small, so `h1` is 1.75rem and `h2` 1.35rem, bold (700), not display type.
+`--font` is `"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif`: DejaVu/Vera are humanist with open apertures and a large x-height, so on Linux they stand in for Lucida far better than the Arial-metric grotesques after them. `--font-mono` is `Monaco, Menlo, "DejaVu Sans Mono", Consolas, monospace` (Menlo derives from DejaVu Sans Mono). KPI figures (`.stat-value`), readouts and status-strip `.mono` text are set in `--font` with tabular numerals, as Mac OS X set them, not in the mono face. Lucida Grande is the authentic face (named in `references/aqua/RESEARCH.md`) and it is **system-only, not vendored**: it ships with macOS and is absent on Windows and most Linux, where Lucida Sans Unicode (Windows, a close match) or Helvetica Neue/Arial render instead. Headings get a 1px white `text-shadow` (the "engraved" look); do not swap it for a heavier weight. Aqua titles are small, so `h1` is 1.75rem and `h2` 1.35rem, bold (700), not display type.
 
 ## Contrast honesty
 
