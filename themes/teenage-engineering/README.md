@@ -29,11 +29,14 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    No other saturated colour is decoration; red-orange means record/danger.
 3. **Keys are rounded rectangles with a 2px side.** Buttons, panels,
    cards, the bar and the rail are keys: `0.5-0.75rem` corners, a hairline
-   key-edge border and a hard 2px shadow underneath. Pressing moves a key
-   down 1px. No gradients that read as gloss.
+   key-edge border and a hard 2px shadow underneath. A page-level
+   `.toolbar` and the folder rail are keys too. Pressing moves a key
+   down 1px. No gradients that read as gloss. The primary button is the
+   black note key with a white legend: the hardware has no blue keys.
 4. **Black means selected.** Active nav items, segmented items, pagination,
    active badges, the highlighted menu item and command row, checked toggle
-   buttons and the selected desktop icon label are the black of the OP-1's
+   buttons, the selected calendar day (its range is pressed keys) and the
+   selected desktop icon label are the black of the OP-1's
    note dots with white text, not the accent colour. Selected list, inbox and
    table rows are a pressed (darker) key with a black edge bar. The bulk
    selection bar is a strip of display glass; an accent badge is a white key
@@ -41,7 +44,11 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
 5. **Light grotesque, silkscreen labels.** Headings are regular/medium
    (h1 400, h2-h4 500) with negative tracking, so the display numerals stay
    the loudest type; panel heads, table heads and form labels are tiny tracked caps
-   like the printing beside a key. Display surfaces use the monospace.
+   like the printing beside a key. Display numerals (`.readout`,
+   `.stat-value`) are thin and wide like the OP-1 screen: a light grotesque
+   (300, tracked 0.05em, tabular) pared down further by a hairline stroke in
+   the glass colour, so they stay thin even where no light cut exists. Code,
+   the brand window and the status strip use the monospace.
 
 ## Signature details
 
@@ -54,8 +61,9 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
 - The rail is a key-face column: the speaker grille (an SVG dot field) on
   top, the four encoder dots under it, then four black round note keys.
 - Every page has a screen: a KPI `.stat-value` sits in a small display
-  window. Every panel is a labelled key: its header's first item carries an
-  encoder colour dot (blue, green, white, orange by position).
+  window. Every panel and card is a labelled key: its header's first item,
+  or a plain `h2`/`h3` that opens it, carries an encoder colour dot (blue,
+  green, white, orange by position).
 - The page is a flat near-white aluminium (`#d5d9da`); keys read by their
   key-edge seams and 2px side, not by a dark field around them.
 - The bar's brand sits in a tiny display window (black glass, mono, white).
@@ -98,7 +106,9 @@ to its right.
   (0.35rem, set through `@container style(--tier: mobile)`, never a width
   query) and main inset `0.4rem 0.3rem`. The brand window stays a small
   window (content width, at most 60%, truncating first) instead of stretching
-  across its line, and the bar's `kbd` shortcut hints are hidden.
+  across its line, the bar's `kbd` shortcut hints are hidden, and the
+  action cluster (picker, search, bell, avatar) keeps to one row with the
+  picker giving way, so the bar is three rows: brand, nav, actions.
 - **XL (≥ 1801px):** the shell caps at 1800px; the gutters continue the key
   bed: rounded key outlines with a round dot, embossed a few percent off
   `--bg` (well within 1.5:1), still.
