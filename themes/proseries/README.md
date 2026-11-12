@@ -48,7 +48,8 @@ at arm's length in a dark room.
 - `--card-bg`: the strip blue (flat #3a62b4), so the console blue shows on
   every page; muted text in a card lifts to near-white. `--panel-bg` is the
   sidebar's royal-blue section, flat, under a flat light-lavender
-  `--panel-header-bg` band with dark bold text. Both are single fills with a
+  `--panel-header-bg` band with dark bold text (muted/status tones in the
+  band go dark to keep 4.5:1). Both are single fills with a
   hard 1px drop, no blur, to keep scrolling cheap. On touch screens
   (`pointer: coarse`) the key bevels flatten to one fill plus an inset line.
 - `--slider-bg`: the 6px black fader slot with a light lower lip;
