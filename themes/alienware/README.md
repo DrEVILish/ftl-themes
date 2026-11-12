@@ -56,17 +56,33 @@ and what was derived rather than measured is in
   `FontWeight=700`, `FontHeight=14`); XenoMorph's caption text stays
   near-white with a faint blue halo.
 - Caption buttons are drawn per suite (`--luna-caption`): silver squares
-  with dark glyphs (XenoMorph, ALX, AlienMorph), dark with white or red
-  glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
-  (Area-51), beige with an orange close (Aurora). XenoMorph's min, max
-  and close join into one black-framed silver strip with 1px dividers and
-  rounded outer corners, in every window whatever its header gap; close
-  lights blue on hover.
+  with dark glyphs (XenoMorph, ALX, AlienMorph), gunmetal tabs with
+  `#d0d0d0` glyphs and silver `#b8bac2` pillars between them (Darkstar),
+  one black pod of bare cyan glyphs (Invader), red with yellow (Area-51),
+  beige with an orange close (Aurora). XenoMorph's, Darkstar's and
+  Invader's min, max and close join into one strip with rounded outer
+  corners, in every window whatever its header gap; XenoMorph's close
+  lights blue on hover. Inactive caption buttons dim only to 90%, so
+  XenoMorph's stay silver.
+- XenoMorph's window frame is FrameLeft's 6px bevel (`#000`, `#555`,
+  `#181818`, `#181818`, `#555`, `#000`), and the caption runs edge to
+  edge inside it: a `#000` top edge, a `#bdbdbd` lip, about 11 rows of
+  `#717171`–`#464646` gloss, then `#252525` to a `#000` last row, active
+  or inactive (only the inactive title text dims).
+- The XP structure Luna fences off by variant is declared again in suite
+  tokens: boxed tab pages, the combo box's push-button drop button (silver
+  gloss in a black edge for XenoMorph, each suite's button face
+  elsewhere), notification balloons, glossy Delete/Confirm buttons and
+  push-button filter chips.
 - The Start button follows the suite: XenoMorph's 36px dark glassy blue
   orb with a tight top highlight in a thick bright silver bezel, with no label, rising out of the 31px taskbar; the light
   "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
   dark button, Area-51's red, Aurora's gold pill. A status bar that
-  already holds a real Start button draws no second one.
+  already holds a real Start button draws no second one. XenoMorph's
+  taskbar buttons have bold white labels; the open window's button is the
+  same button pressed (darker, sunken), with no coloured ring.
+- Start-menu labels sit flush beside their icons; XenoMorph's header
+  meets the columns on a black seam, not a blue rule.
 - The Start menu's user tile is a black gloss square in a silver frame,
   All Programs ends in a plain arrow in the column's text colour, and
   XenoMorph's places column is brushed silver; no Luna orange or green.
@@ -99,6 +115,10 @@ and what was derived rather than measured is in
   Luna's `#fcfcfe`.
 - Selected segments and filter chips read pressed: a black edge and an
   inset shadow, so the state does not rest on the highlight's hue.
+  Darkstar selects in black with white text, as its Theme Manager does
+  (segments, chips, pagination, the bulk-selection bar); its pressed
+  segments and chips light a red LED along their foot, and red otherwise
+  stays for its charts, meters and LED bars.
 - Page titles are 1.35rem bold Tahoma, nearer XP's dialog scale than
   Luna's Trebuchet banner.
 - Toolbars (and their bottom rule), table heads, skeletons, toasts and every field and group-box
