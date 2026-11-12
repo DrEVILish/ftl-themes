@@ -28,7 +28,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 1. **Three materials only.** Grouped grey for the page, white cells for
    content, and the frosted bar material (`backdrop-filter:
    saturate(180%) blur(20px)`) for the nav bar, tab bar, alerts, menus and
-   banners. Nothing else is translucent.
+   banners. Nothing else is translucent. On phones (up to 900px or a
+   coarse pointer) the two sticky bars keep their 94% bar fill but drop
+   the live blur, which cost every scroll frame; menus and alerts keep it.
 2. **Flat means flat.** No gradients, gloss, bevels or inner shadows. The
    only gradient is the Contacts monogram disc behind `.avatar`. Resting
    surfaces (panels, cards, lists, field rows) have no border and no
@@ -42,7 +44,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
    grouped headers are. Don't put it back inside a header strip.
 5. **Inset grouped rows merge.** Consecutive `.field-row`s become one
    group: corners only at the ends, a hairline between rows that starts
-   1rem in. Tappable `.list-item`s get a grey chevron.
+   1rem in, or at the label when the row has a leading glyph. Tappable
+   `.list-item`s get a grey chevron; a disclosure group's (`.accordion`)
+   chevron turns down when open.
 6. **The toggle is green.** `#34c759`, 51 by 31 with a white thumb that
    carries the iOS shadow. It is not the accent colour.
 7. **System colours, system fonts.** The palette is the HIG's system
@@ -52,25 +56,63 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 
 - The app bar is a large-title navigation bar: a top row of controls with
   the page nav drawn as one iOS 13 segmented control, and the brand below
-  it as a 34px bold large title. It is sticky and frosted.
+  it as a 34px bold large title. When the page has its own `h1` (the
+  screen's large title) the brand becomes the 17px semibold inline title
+  on the top row, so a screen never shows two large titles. It is sticky
+  and frosted. A `.nav` of items in the bar carries the grey track itself; loose
+  items in the bar join into one strip with no notches. Menubar items are
+  bar buttons: tint text, the current one semibold.
+- A `.nav` in content is a plain rounded nav bar: no rule, 17px semibold
+  title, tint items, the current one semibold tint.
+- Horizontal `.tabs` and `.toggle-group`s in content are segmented
+  controls too (grey track, white pill with its shadow, 13px labels,
+  hairlines between unselected neighbours); there is no in-page tab strip
+  or blue-filled segment on iOS 13+.
 - The status strip is a tab bar: 49px, frosted, sticky to the bottom,
-  items spaced evenly in 12px medium text.
+  items spaced evenly in 12px medium text, status text no smaller than
+  Caption 2 (11px). On phones a taskbar's tray
+  drops to a second line so task labels stay readable.
 - Modals are iOS alerts: 14px corners, frosted, title and body centred,
   buttons spanning the bottom edge with hairline dividers, the preferred
   (primary) one bold, the destructive one red. With window controls the
   header turns into an iPad sheet bar (title leading, round grey buttons
-  trailing).
+  trailing) and the body is leading-aligned 17px text; the sheet never
+  outgrows its container.
 - Checkboxes and radios are the round blue checkmark from Mail and
   Reminders' edit mode; iOS has no square checkbox.
 - Table selection is systemGray5 (`#e5e5ea`; the deeper `#d1d1d6` tap
   flash dropped tinted text under 4.5:1), and the active
-  row carries a trailing blue checkmark as well as the leading marker.
+  row carries a trailing blue checkmark; there is no leading marker bar.
+  An in-cell editor is a rounded (6px) field ringed in 2px tint.
+- The `.nav-rail` is Mail's mailbox list: black labels, tint glyphs, the
+  selected row a systemGray5 fill with no leading bar. Inside the content
+  area it is a rounded grouped card with no hairline edge.
+- A `.master-detail-list` is the iPad Settings sidebar: each row's
+  leading glyph is white on a 29px coloured squircle tile (blue, grey,
+  red, indigo in turn), and beside its pane the selected row is a blue
+  fill with white text. On a phone the list drills in and shows no
+  selection, as iPhone Settings does.
+- Text fields use tertiarySystemFill itself (translucent): `#eeeeef` in a
+  white cell, `#e3e3e9` on the grouped grey page, so a free-standing
+  field keeps an edge. Dark mode keeps the opaque `#2c2c2e`.
+- UISwitch keeps its fixed 51px; a hint beside it in a field row
+  truncates instead.
+- Sliders have UISlider's blue minimum track: native in Firefox; in
+  other engines it follows `--value` (0-1) when set, else the input's
+  `value` attribute (typed `attr()`), which is the initial value only
+  until core keeps `--value` on every slider. A vertical slider draws the
+  same 4px track upright and centred, blue from the bottom, inside its
+  full hit box. Dark mode's unfilled track is `#48484a` so it shows on
+  the black page.
 - Buttons follow iOS 15's styles: primary is "filled", secondary is
   "tinted" (a wash of the tint), ghost is "plain" text, the default is
   "gray". A tap dims to 55% opacity instead of moving.
 - `.btn-sm` is a capsule (the App Store "GET" button).
-- Toasts are notification banners with a small coloured app-icon tile.
+- Toasts are notification banners with a small coloured app-icon tile;
+  inline `.alert`s are white cells led by the same tile (no side stripe).
+- Small buttons on a state-washed row sit on a white chip.
 - Badges are capsules; the danger badge is the red notification badge.
+  `.badge-button` filter chips use Subheadline (15px medium).
 - Readouts use thin (300) tabular digits like the Stopwatch; stat values
   use SF Rounded (`ui-rounded`) like iOS 14 widgets.
 - Mixer pieces borrow from the system: faders are Control Center slabs,
@@ -90,15 +132,18 @@ The dark variant declares `color-scheme: dark` so native controls follow it.
 
 ## Typography
 
-Stack: `-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI",
-Roboto, "Noto Sans", Arial, sans-serif`. On Apple platforms that is SF Pro
+Stack: `-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter",
+"Segoe UI", Roboto, "Noto Sans", "Liberation Sans", Arimo, Arial,
+sans-serif`. Inter, Liberation Sans and Arimo are there so Linux lands on
+a neutral grotesque rather than a wide fallback. On Apple platforms that is SF Pro
 (iOS 9 onward); Helvetica Neue is the iOS 7 and 8 system face, so it is
 the right first fallback. Nothing is vendored: SF Pro's licence does not
 allow redistribution. Monospace: `ui-monospace, "SF Mono", Menlo, …`.
 
 The root font size is 17px (Body). Headings follow the text styles:
 `h1` Large Title 34 bold, `h2` Title 2 22 bold, `h3` Headline 17
-semibold; section headers and segmented labels are Footnote 13.
+semibold; section headers and segmented labels are Footnote 13; code
+blocks are SF Mono at Footnote 13, as Xcode and Notes set code.
 
 ## Contrast honesty
 
@@ -137,8 +182,9 @@ The shell becomes an iPhone screen stretched wide: frosted large-title nav
 bar at the top, grouped grey content, frosted tab bar at the bottom. Both
 bars are sticky so content scrolls under the blur. There is no rail: the
 phone shell has no sidebar, and an empty iPad sidebar would be a fake.
-At phone width the large title drops to 28px and the segmented nav scrolls
-sideways.
+At phone width the bar is three rows: the bar buttons (the search button
+icon-only), the title, the nav. On scroll the first two go and only the
+nav row stays pinned, as the large title collapses on iOS.
 
 ## Don'ts
 
@@ -181,8 +227,8 @@ or anything from iOS 7 itself in a resolution worth keeping.
 
 ## v5 layout
 
-- **Tiers.** Phones and tablets (up to 900px): the large title moves up beside the trailing buttons, as the Photos and App Store tabs do (30px, 26px on phones, truncating), and the segmented nav takes its own line and scrolls sideways instead of wrapping into a second row of segments. The bars sit on the `--z-sticky` layer.
-- **Nesting.** Grouped sections are flat by design; nested panels need no step-down rules.
+- **Tiers.** Phones and tablets (up to 900px): one 44px row of trailing bar buttons (search shows only its glass, the shortcut hint is hidden), the title under it (30px, 26px on phones, truncating; 17px semibold when the page has its own `h1`), and the nav last, scrolling sideways instead of wrapping into a second row of segments. The bar sticks with a negative top so the button and title rows scroll away and only the nav row stays pinned. Toggle groups keep their labels on one line and scroll; a free-standing `.nav` wraps on phones rather than cutting an item at the scroll edge. The bars sit on the `--z-sticky` layer.
+- **Nesting.** Grouped sections are flat by design; nested panels need no step-down rules. Field rows inside a panel or card reach the cell's edges, with their text and hairline 1rem in.
 - **XL gutter art (1801px+).** The home screen beside the app: its icon grid reduced to faint squircles (white ones on the dark variant).
 
 ## Adoption
