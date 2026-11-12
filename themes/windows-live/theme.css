@@ -398,9 +398,6 @@ html[data-theme="windows-live"] .app-bar {
   --nav-item-radius: 3px 3px 0 0;
   /* Menu-bar items in the strip are ribbon tabs too. */
   --menubar-item-radius: 3px 3px 0 0;
-  /* No bottom pad, so the open menu-bar tab reaches the rule and joins the
-     ribbon lip. */
-  --menubar-pad: var(--space-3xs) var(--space-3xs) 0;
   --menubar-item-bg-active: linear-gradient(180deg, #ffffff, #eef4fb);
 }
 html[data-theme="windows-live"] .app-bar .nav { padding: 0; align-items: flex-end; gap: 0.15rem; }
@@ -459,7 +456,10 @@ html[data-theme="windows-live"] .app-bar .menubar > li > :is(button, a) {
   border: 1px solid transparent;
   border-bottom: 0;
   position: relative;
-  bottom: -1px;
+  /* Down through the menu bar's 2px bottom pad as well, so the open tab
+     covers the strip's rule and joins the ribbon lip. */
+  bottom: calc(-1px - var(--space-3xs));
+  padding-block-end: calc(0.3em + var(--space-3xs));
 }
 html[data-theme="windows-live"] .app-bar .menubar > li > :is(button, a).is-active { background: var(--nav-item-bg-active); border-color: #9faec2; }
 html[data-theme="windows-live"] .app-bar .menubar > li:hover > :is(button, a):not(.is-active) { border-color: #d5dde8; }
