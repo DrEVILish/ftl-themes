@@ -33,9 +33,12 @@ poster.
 ## Signature details
 
 - Modal headers take the solid navy `#000080` title bar with white bold text (measured flat on `dialog-font.png`; the navy→blue gradient is Windows 98).
-- The content well is *sunken* (`#808080 #ffffff #ffffff #808080` plus an
-  inner black line); the status strip is *raised*. The shell itself obeys
-  the 3D language, not just the controls.
+- The shell is one window: a grey frame (`#c0c0c0` then `#ffffff` top and
+  left, `#000000` then `#808080` bottom and right, measured on
+  `dialog-font.png`) holds the caption, the content well and the status
+  bar with 2px of face between them and no desktop showing through. The
+  well is *sunken* (`#808080 #ffffff #ffffff #808080` plus an inner black
+  line); the status strip is *raised*.
 - Tables are Explorer's details view: raised push-button column headers
   (regular weight) over a white well with light horizontal rules only,
   no vertical body grid; selection is navy.
@@ -55,6 +58,8 @@ poster.
   box inside core's `--tap-min` hit area, and an 11x21 raised grey pointer.
 - Filter chips, `.toggle-btn` and `.segmented` items are toolbar push
   buttons: raised, and pressed (sunken, white/grey 50% dither) while on.
+  A pressed danger toggle (`.toggle-btn.is-danger`) sinks onto the same
+  dither with a `#800000` label, never a maroon slab.
   Switches, which 95 never had, are a sunken white well holding a raised
   grey block; the well fills navy when on.
 - No blended state tints: the bulk-selection bar is the plain face in a
@@ -102,9 +107,11 @@ icon set. Style rules:
   simplification the real set used at 16×16/32×32.
 - `currentColor` only, so icons follow text colour and every state —
   except the shell icons (`icon-device-desktop`, `icon-folder`,
-  `icon-trash`, `icon-globe`, `icon-file-text`, `icon-network`), which are
-  95's colour desktop icons in the 16-colour VGA palette (yellow folder,
-  teal-screened computer, wire bin, blue/green globe) with a 1px black
+  `icon-trash`, `icon-globe`, `icon-file-text`, `icon-network`,
+  `icon-hard-drive`, `icon-disc`, `icon-print`, `icon-save`), which are
+  95's colour icons in the 16-colour VGA palette (yellow folder,
+  teal-screened computer, wire bin, blue/green globe, grey drive with a
+  green lamp, silver CD, grey printer, navy floppy) with a 1px black
   outline and no stroke-width token.
 - Shared geometry: from "Round 2" on, the shapes are the same as
   `winamp-classic`, `winxp-luna` and `wmp11`; only the rendering differs.
@@ -114,18 +121,26 @@ icon set. Style rules:
 
 ## Layout
 
-The app shell becomes a **desktop window**: the teal backdrop shows at the
-edges, a 1.6rem solid navy title bar sits on top, the content is a sunken
-well, and the status bar is raised. Switching to this theme visibly boxes
+The app shell becomes a **desktop window**: the teal backdrop shows in a
+0.25rem margin round one grey window frame, which holds a 1.6rem solid navy
+title bar, the sunken content well and the raised status bar. Switching to this theme visibly boxes
 the app up.
 
 ## Known compromise
 
 MS Sans Serif is a bitmap font browsers do not render, so the stack
 starts with "Microsoft Sans Serif" (its TrueType cut, on every Windows),
-then Tahoma, then Arial. Off Windows (Linux render boxes have only
-DejaVu) a wide humanist fallback renders. No openly-licensed pixel face is vendored yet (that needs a new
-file in `assets/fonts/`, outside this theme's folder).
+then Arial and its metric clones (Liberation Sans, Arimo), then Tahoma.
+Microsoft Sans Serif shares Arial's metrics, so off Windows Liberation
+Sans renders; Tahoma comes last because it is a wider 98/2000 face and is
+often aliased to DejaVu Sans on Linux. With a mouse, W95FA (an OFL
+outline cut of the 95 bitmap face, `assets/fonts/W95FA.woff2`, see
+`assets/fonts/NOTICE.md`) sits right after the two MS faces, with
+`size-adjust` putting its pixels on whole screen pixels at the 13px root;
+it ships one weight, so bold captions are synthesised (as 95's own bold
+was a double strike). Touch keeps the Arial-metric stack, where the pixel
+face would be scaled past 1:1. Browsers still antialias the outline, so
+it is pixel-shaped, not bitmap-sharp.
 
 ## Tell-tales of an inauthentic result
 
@@ -138,14 +153,14 @@ file in `assets/fonts/`, outside this theme's folder).
 
 - **No radius.** `--radius: 0`, `--badge-radius: 0`, `--progress-radius: 0`. Not "just 2px".
 - **No drop shadow, no blur, no glow.** Depth is the two-tone bevel only.
-- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in tabs, the taskbar and Start menu, badges and striped rows, where no 95 capture has been measured yet; readonly and mirror fields, setting rows, skeletons, sliders and switches use the `#c0c0c0` face, and an answered Q&A row is the face with a 4px `#008000` bar.
+- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in the taskbar and Start menu bevels, where no 95 capture has been measured yet; striped rows are white like an unstriped 95 list, and readonly and mirror fields, setting rows, skeletons, sliders and switches use the `#c0c0c0` face, and an answered Q&A row is the face with a 4px `#008000` bar.
 - **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`. The bevel is two 1px lines per side (a 1px border plus a 1px inset shadow), not a 2px border: raised is `#ffffff` then face on the top-left and `#808080` then `#000000` on the bottom-right; sunken is `#808080` then `#000000`, and `#c0c0c0` then `#ffffff`. Measured on `references/windows95/dialog-font.png`; see its `RESEARCH.md`.
 - **No transitions or fades.** Windows 95 repainted instantly.
 - **No modern-weight, anti-aliased title-bar type**, and no Segoe UI in place of Tahoma/MS Sans Serif when a system copy is available.
 
 ## Typography
 
-`--font` is `"Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", Arimo, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font; touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on Windows Microsoft Sans Serif renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
+`--font` is `"Microsoft Sans Serif", "MS Sans Serif", Arial, "Liberation Sans", Arimo, Tahoma, sans-serif` on touch and adds `"W95FA"` (vendored, OFL) after the two MS faces with a fine pointer; `--font-mono` is `"Courier New", Consolas, monospace`. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font, and table headers, badges and field hints stop at 11px (8pt); touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on Windows Microsoft Sans Serif renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. The vendored W95FA stands in for it off Windows.
 
 ## Contrast honesty
 
@@ -174,16 +189,40 @@ layout at **L1**.
 
 - **Title bar:** navy with a bold white caption and the three bevelled
   caption buttons (minimize and maximize together, close set apart), one
-  inline SVG; the active nav item is a grey raised block.
+  inline SVG. The bar's nav is the **menu bar**: its own full-width
+  `#c0c0c0` strip under the caption (Notepad on `Windows-95-desktop.png`),
+  black text, the open or current item navy with white text. Every control
+  left on the caption (icon buttons, the account tile) is a grey raised
+  push button.
 - **Panels are child windows:** every `.panel-header` is a navy caption
-  bar (with light tints for muted and state text on it).
-- **Tabs** are raised 95 tabs; the selected one lifts and joins its page.
+  bar (with light tints for muted and state text on it). Icon buttons on it
+  are grey raised push buttons with black glyphs.
+- **Tabs** are raised 95 tabs with the corners cut one pixel on the
+  diagonal and a 1px edge (`#ffffff`, then `#000000`/`#808080` on the
+  right); the selected one (`.is-active`, a checked radio inside, or
+  `aria-selected`) stands 2px taller, overlaps its neighbours and
+  covers the sheet's top line. The dotted focus box sits inside the tab.
+  A `.tabset`'s `.tab-panel` is the property sheet: a raised frame
+  (white left, `#808080` + black right and bottom) padded 8px, which the
+  tab row's white top line closes (tablet and up; phones keep the width).
+- **Wells:** the `.log` console and an inbox reading pane's message body
+  are sunken white edit wells; setting rows (`.field-row`) are etched
+  group frames; an input-group addon is a plain static label on the face.
+  Your own chat messages are the grey read-only well, others' white.
 - **Progress** is the segmented navy block bar in a sunken well.
 - **Status bar** items sit in sunken fields.
 - **Mixing console:** sunken bay, raised strips, keys that sink and light
   when on, a sunken trackbar groove with a raised grey thumb, and sunken
   white scribble and EQ fields.
 - Icon buttons are square bevels, not circles.
+- **Ghost buttons** are the flat toolbar button: no edge at rest, a thin
+  raised edge on hover, sunken while pressed.
+- **Labels** (`.label`, legends) are black like 95's "Font:" labels;
+  `--muted` stays for hints and metadata. Stat labels are sentence case
+  at normal tracking.
+- **Avatars and logo tiles** are sunken white wells.
+- **Headings** stay at dialog size (13-14px bold) in the app; the marketing
+  hero is the Welcome screen, so its h1 is 2rem and band h2/h3 1.4/1.05rem.
 
 ## v5 layout
 
@@ -191,8 +230,10 @@ layout at **L1**.
   (481–900px) keeps the navy title bar; the bar wraps to two lines (brand
   and actions, then the scrolling nav) and the three caption buttons pin
   to the first line's right end instead of floating over both. Mobile
-  (≤480px) drops the decorative caption buttons, so the brand gets their
-  52px. No rail on any tier.
+  (≤480px) drops the decorative caption buttons; the brand (whole), the
+  bell and the account share the caption line, the theme select and search
+  take the line under it, and the grey menu strip comes last. No rail on
+  any tier.
 - **Nesting.** Only the outermost surface is a window with a navy caption.
   A panel inside a panel, card, dialog or drawer becomes a group box: an
   etched `#808080`/`#ffffff` frame with its plain caption on the face,

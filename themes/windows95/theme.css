@@ -5,9 +5,26 @@
  *
  * Note on fonts: the authentic face is MS Sans Serif, which isn't a web
  * font browsers render; the stack below starts with its TrueType cut,
- * "Microsoft Sans Serif", then Tahoma, then Arial. Vendor a pixel font if an
- * exact match matters.
+ * "Microsoft Sans Serif", then (with a mouse) the vendored OFL pixel cut
+ * W95FA, then Arial and its clones, then Tahoma.
  */
+
+/* W95FA (OFL, assets/fonts/NOTICE.md): an outline cut of the 95 bitmap
+   dialog face for machines without MS Sans Serif. One font pixel is 80
+   units, so size-adjust puts it on whole pixels at the 13px mouse root. */
+@font-face {
+  font-family: "W95FA";
+  src: url("assets/fonts/W95FA.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 96.15%;
+  /* Arial's line box (0.905 / 0.212), so "normal" line-height and every
+     box sized by it match the Arial-metric fallbacks; W95FA's own is a
+     cramped 0.94em. */
+  ascent-override: 90.5%;
+  descent-override: 21.2%;
+  line-gap-override: 0%;
+}
 
 html[data-theme="windows95"] {
   --motion-leave: bsod;
@@ -19,7 +36,9 @@ html[data-theme="windows95"] {
      contrast is unaffected: panels use --surface, not this token. */
   --bg: #008282;
   --surface: #c0c0c0;
-  --surface-2: #dfdfdf;
+  /* 95's "3D light" was the face itself: #dfdfdf is 98's in-between grey,
+     kept to the taskbar and Start menu bevels below. */
+  --surface-2: #c0c0c0;
   --border: #808080;
   --hairline: #808080;
   --text: #000000;
@@ -45,13 +64,18 @@ html[data-theme="windows95"] {
      neutral sans is closer than a wide humanist default. */
   /* "Microsoft Sans Serif" is the TrueType cut of the 95 dialog face and
      ships with every Windows since; Tahoma is its nearest relative. */
-  --font: "Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", Arimo, sans-serif;
+  /* MS Sans Serif was 95's face; Microsoft Sans Serif is its Arial-metric
+     outline cut, so Arial and its clones are the nearest fallback. Tahoma
+     (a wider 98/2000 face, often aliased off Windows) comes after them. */
+  --font: "Microsoft Sans Serif", "MS Sans Serif", Arial, "Liberation Sans", Arimo, Tahoma, sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
   /* Panels are child windows: each gets the active navy caption bar. */
   --panel-header-bg: #000080;
   --panel-header-fg: #ffffff;
   /* Tabs: raised, the selected one taller and joined to its page. */
-  --tab-radius: 3px 3px 0 0;
+  --tab-radius: 0;
+  /* The property sheet sits 8px inside its frame (rule below). */
+  --tab-panel-pad: 8px;
   --tab-bg: var(--surface);
   --tab-fg: var(--text);
   --tab-bg-active: var(--surface);
@@ -171,6 +195,14 @@ html[data-theme="windows95"] {
   --has-badge-ring-width: 1px;
   /* 95 fields had no pink wash: the #800000 message and ring carry it. */
   --input-error-bg: #ffffff;
+  /* An input-group addon is a static label on the face ("Find what:"),
+     not a tinted block. */
+  --input-addon-fg: #000000;
+  /* Setting rows are etched group frames (rule below); the log console is
+     a sunken white edit well. */
+  --field-row-border: #808080;
+  --field-row-border-hover: #808080;
+  --log-bg: #ffffff;
   /* Explorer details view: a white list well under raised column headers. */
   --table-bg: #ffffff;
   /* Filter chips are toolbar toggle buttons: raised grey, and pressed
@@ -179,6 +211,8 @@ html[data-theme="windows95"] {
   --badge-fg-active: #000000;
   --toggle-btn-bg-on: var(--w95-dither);
   --toggle-btn-fg-on: #000000;
+  /* 95 list views had no zebra bands; #dfdfdf is 98's 3D light. */
+  --row-alt-bg: #ffffff;
   --segmented-bg: var(--surface);
   --segmented-padding: 0;
   --segmented-border-width: 0;
@@ -230,6 +264,8 @@ html[data-theme="windows95"] {
   --avatar-bg: #ffffff;
   --avatar-fg: var(--text);
   --avatar-radius: 0;
+  /* Dialog labels ("Font:", "Color:") were black; --muted is for hints. */
+  --label-fg: var(--text);
   --pagination-item-radius: 0;
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: #ffffff;
@@ -390,6 +426,9 @@ html[data-theme="windows95"] .modal-header :is(.btn-min, .btn-max) + .btn-close 
 /* Wrapped in their own group (a flex span with its own gap), the group
    takes the header's 0.5rem gap so the margins above still close it up. */
 html[data-theme="windows95"] .modal-header :has(> .btn-min + .btn-max) { gap: 0.5rem !important; }
+/* Desktop windows' headers use core's 0.35rem gap; match the 0.5rem the
+   margins above cancel, or min and max sit apart. */
+html[data-theme="windows95"] .desktop-window > .modal > .modal-header { gap: 0.5rem; }
 html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max):active {
   border-color: #000000 #ffffff #ffffff #000000;
   box-shadow: inset 1px 1px 0 #808080;
@@ -398,11 +437,11 @@ html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max):a
    the panel caption above (dialog-font.png). */
 /* Flat toolbar buttons rest borderless (the .btn bevel above would
    otherwise reach them); hover gives a thin raised edge, no fill. */
-html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear) { border-color: transparent; }
+html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear, .btn-ghost) { border-color: transparent; }
 @media (hover: hover) {
-  html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear):hover:not(:active, [aria-pressed="true"], [aria-expanded="true"], :disabled) { border-color: #ffffff #808080 #808080 #ffffff; }
+  html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear, .btn-ghost):hover:not(:active, [aria-pressed="true"], [aria-expanded="true"], :disabled) { border-color: #ffffff #808080 #808080 #ffffff; }
 }
-html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear):is(:active, [aria-pressed="true"], [aria-expanded="true"]) { border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear, .btn-ghost):is(:active, [aria-pressed="true"], [aria-expanded="true"]) { border-color: #808080 #ffffff #ffffff #808080; }
 html[data-theme="windows95"] .has-badge::after { border-radius: 0; }
 html[data-theme="windows95"] .modal-header {
   margin-block-start: calc(1px - var(--surface-pad, 1.5rem));
@@ -412,19 +451,35 @@ html[data-theme="windows95"] .stat-value { font-family: var(--font); }
 
 /* Tabs: raised with light top-left, dark right; the selected one lifts
    2px and sits on the page, hiding the line under it. */
-html[data-theme="windows95"] .tabs { gap: 0; align-items: flex-end; border-bottom: 1px solid #ffffff; box-shadow: 0 1px 0 #dfdfdf; }
+html[data-theme="windows95"] .tabs { gap: 0; align-items: flex-end; border-bottom: 1px solid #ffffff; }
 html[data-theme="windows95"] .tab {
-  border: 2px solid;
+  border: 1px solid;
   border-color: #ffffff #000000 transparent #ffffff;
   border-bottom: 0;
-  box-shadow: inset -1px 0 0 #808080, inset 1px 1px 0 #dfdfdf;
+  box-shadow: inset -1px 0 0 #808080;
+  /* 95's tab corners are cut one pixel on the diagonal. */
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, 100% 2px, 100% 100%, 0 100%, 0 2px);
   /* Text clears the bevel by 4px+ (it sat on the white edge at 0.15em). */
   display: inline-flex;
   align-items: center;
   padding: 0.35em 0.8em;
-  margin-right: -2px;
+  margin-right: -1px;
 }
-html[data-theme="windows95"] .tab.is-active { position: relative; bottom: -1px; padding-top: 0.5em; padding-bottom: calc(0.35em + 1px); z-index: 1; }
+/* The selected tab stands 2px taller and covers the sheet's white top
+   edge, so the page runs on into it with no line underneath. */
+html[data-theme="windows95"] .tab:is(.is-active, :has(> input:checked), [aria-selected="true"]) {
+  position: relative;
+  z-index: 1;
+  margin-block-end: -1px;
+  margin-inline: -2px -3px;
+  padding-top: calc(0.35em + 2px);
+  padding-bottom: calc(0.35em + 1px);
+  padding-inline: calc(0.8em + 2px);
+}
+html[data-theme="windows95"] .tab:is(.is-active, :has(> input:checked), [aria-selected="true"]):first-child { margin-inline-start: 0; }
+/* The clip would cut an outside ring; 95 drew the dotted focus box
+   round the label inside the tab anyway. */
+html[data-theme="windows95"] .tabs > .tab:focus-visible { outline-offset: -4px; }
 
 /* Status bar: sunken fields, one per item. */
 html[data-theme="windows95"] .app-status > * {
@@ -474,6 +529,9 @@ html[data-theme="windows95"] .table td > :is(.input, .select) { min-inline-size:
    targets stay large. */
 @media (pointer: fine) {
   html[data-theme="windows95"] {
+    /* The pixel face only at dialog scale: on touch's 16px root it would
+       be blown up past one screen pixel per font pixel. */
+    --font: "Microsoft Sans Serif", "MS Sans Serif", "W95FA", Arial, "Liberation Sans", Arimo, Tahoma, sans-serif;
     --root-font-size: 81.25%;
     font-size: 81.25%;
     /* The small rem steps keep their 16px-root sizes, so text never
@@ -487,6 +545,9 @@ html[data-theme="windows95"] .table td > :is(.input, .select) { min-inline-size:
   /* The caption buttons eat 2px of that block padding, so a captioned
      bar is 28px and caption text alone still clears the 4px edge floor. */
   html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max) { margin-block: -2px; }
+  /* 95's floor was 8pt (11px): headers, badges and hints don't shrink
+     below it under the 13px root. */
+  html[data-theme="windows95"] :is(.table th, .badge, .field-hint) { font-size: max(11px, 0.78em); }
   /* A one-glyph button (‹ ›) still spans the 24px target. */
   html[data-theme="windows95"] .btn { min-inline-size: var(--tap-min); }
 }
@@ -580,6 +641,13 @@ html[data-theme="windows95"] :is(.badge-button.is-active, .toggle-btn:has(input:
   box-shadow: inset 1px 1px 0 #808080;
 }
 html[data-theme="windows95"] .segmented { gap: 0; }
+/* A pressed danger toggle sinks onto the dither like any other; the
+   #800000 label carries the state, never a maroon slab. */
+html[data-theme="windows95"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: var(--w95-dither);
+  --toggle-btn-fg-on: #800000;
+  --toggle-btn-border-on: #000000 #ffffff #ffffff #000000;
+}
 html[data-theme="windows95"] .badge-button { --badge-bg: var(--surface); --badge-fg: var(--text); }
 /* No hover in 95: a chip only changes when pressed. */
 @media (hover: hover) {
@@ -604,8 +672,12 @@ html[data-theme="windows95"] .modal-footer > .btn { min-inline-size: 75px; }
  * A desktop window: the teal backdrop shows around a beveled inset content
  * area, and the bar reads as a title bar with the classic gradient. */
 html[data-theme="windows95"] {
-  --app-padding: 0.25rem;
-  --app-gap: 0.25rem;
+  /* The shell is one window: a grey frame holds caption, client well and
+     status bar with no desktop between them. --app-padding is the 1px of
+     face inside the frame bevel; the teal shows only round the window. */
+  --app-bg: var(--surface);
+  --app-padding: 2px;
+  --app-gap: 2px;
   --app-bar-bg: #000080;
   --app-bar-fg: #ffffff;
   --app-bar-rule-width: 0;
@@ -615,6 +687,18 @@ html[data-theme="windows95"] {
   --app-main-padding: 0.6rem;
   --app-status-bg: var(--surface);
   --app-status-rule: #ffffff;
+}
+/* Window frame, measured on dialog-font.png: #c0c0c0 then #ffffff top and
+   left, #000000 then #808080 bottom and right. */
+html[data-theme="windows95"] .app {
+  margin: 0.25rem;
+  min-height: calc(100dvh - 0.5rem);
+  border: 1px solid;
+  border-color: #c0c0c0 #000000 #000000 #c0c0c0;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+}
+@media (min-width: 1801px) {
+  html[data-theme="windows95"] .app { margin-inline: auto; }
 }
 /* Sunken content well, raised status bar — the 3D language applied to the
    shell itself, not just to controls. */
@@ -639,8 +723,11 @@ html[data-theme="windows95"] .app-bar {
   --nav-item-bg-active: #c0c0c0;
   --nav-item-fg-active: #000000;
   --nav-item-radius: 0;
+  /* The end padding reserves the caption buttons; the menu strip below
+     reaches back across it. */
+  --w95-bar-pe: calc(52px + 0.8rem);
   position: relative;
-  padding-right: calc(52px + 0.8rem);
+  padding-right: var(--w95-bar-pe);
 
   /* Chunky, blocky icon strokes — the pixel-art look of the real 95 icon set. */
   --icon-stroke-width: 2.6;
@@ -652,6 +739,20 @@ html[data-theme="windows95"] .app-bar {
 html[data-theme="windows95"] h1 { font-size: 1.05rem; font-weight: 700; }
 html[data-theme="windows95"] h2 { font-size: 0.95rem; font-weight: 700; }
 html[data-theme="windows95"] h3 { font-size: 0.85rem; font-weight: 700; }
+/* The marketing page is the Welcome screen, not a dialog: its large
+   wordmark-style heading (dialog-welcome.png) gives the page a top. */
+html[data-theme="windows95"] .hero h1 { font-size: 2rem; }
+html[data-theme="windows95"] :is(.hero, .band) h2 { font-size: 1.4rem; }
+html[data-theme="windows95"] .band h3 { font-size: 1.05rem; }
+html[data-theme="windows95"] .hero .badge + h1 { margin-block-start: 0.75rem; }
+/* 95 labels were sentence case at normal tracking. */
+html[data-theme="windows95"] .stat-label { text-transform: none; letter-spacing: 0; }
+/* A white well is always sunken in a 95 dialog. */
+html[data-theme="windows95"] .avatar {
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: var(--input-shadow);
+}
 
 html[data-theme="windows95"] .app-bar .nav { padding: 0; }
 html[data-theme="windows95"] .app-bar .nav-brand { font-weight: 700; }
@@ -668,6 +769,15 @@ html[data-theme="windows95"] .app-bar::after {
   pointer-events: none;
 }
 html[data-theme="windows95"] :is(.app-bar, .panel-header) .btn-ghost { color: #ffffff; }
+/* Icon buttons left on a caption are grey raised push buttons, like the
+   window's own caption buttons. */
+html[data-theme="windows95"] .panel-header > .btn-icon.btn:is(*, :hover) {
+  --btn-bg: var(--surface);
+  --btn-bg-hover: var(--surface);
+  color: var(--text);
+  border-color: #ffffff #000000 #000000 #ffffff;
+}
+html[data-theme="windows95"] .panel-header > .btn-icon:active { border-color: #000000 #ffffff #ffffff #000000; }
 
 /* Touch tiers (v5): the bar wraps to two lines (brand + actions, then the
    nav), so the caption buttons pin to the first line's right end instead
@@ -679,7 +789,7 @@ html[data-theme="windows95"] :is(.app-bar, .panel-header) .btn-ghost { color: #f
   }
 }
 @media (max-width: 480px) {
-  html[data-theme="windows95"] .app-bar { padding-right: 0.4rem; }
+  html[data-theme="windows95"] .app-bar { --w95-bar-pe: 0.4rem; }
   html[data-theme="windows95"] .app-bar::after { content: none; }
 }
 
@@ -695,13 +805,14 @@ html[data-theme="windows95"] {
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
- * sunken white fields for messages (tooltip yellow for yours) and navy progress blocks stood on end. */
+ * sunken white fields for messages (the grey read-only well for yours) and navy progress blocks stood on end. */
 html[data-theme="windows95"] {
   --message-bg: #ffffff;
   --message-border: transparent;
   --message-radius: 0;
   --message-shadow: inset 1px 1px #808080, inset -1px -1px #ffffff, inset 2px 2px #000000, inset -2px -2px #dfdfdf;
-  --message-own-bg: #ffffe1;
+  /* Yours read as the grey read-only field; tooltip yellow stays tooltips'. */
+  --message-own-bg: var(--surface);
   --attachment-bg: #ffffff;
   --attachment-radius: 0;
   --bar-chart-bar: repeating-linear-gradient(0deg, transparent 0 2px, #000080 2px 10px);
@@ -792,6 +903,7 @@ html[data-theme="windows95"]:has(.desktop-screen) {
   --app-main-padding: 0;
 }
 html[data-theme="windows95"] .desktop-screen { border: 0; box-shadow: none; }
+html[data-theme="windows95"]:has(.desktop-screen) .app { margin: 0; min-height: 100dvh; border: 0; box-shadow: none; }
 /* Phone home grid: 95's labels hugged their text (1px round the
    selection plate), which is what lets "Neighborhood" wrap whole. */
 @media (max-width: 480px) {
@@ -1089,3 +1201,125 @@ html[data-theme="windows95"][data-easter-eggs]:has(textarea[data-egg-letter]) bo
   box-shadow: 2px 2px 0 #000;
   pointer-events: none;
 }
+
+/* --- Polish round 3: menu bar, property sheets, wells ------------------ */
+
+/* The menu bar: every 95 window puts File / Edit / View on its own grey
+   strip under the caption (Windows-95-desktop.png, Notepad), black text,
+   the open item navy. A bar's nav drops to a full-width second row on the
+   face; brand, actions and caption buttons stay on the navy caption. */
+html[data-theme="windows95"] .app-bar:has(> :is(nav:not(.breadcrumbs), .nav, .nav-item)) {
+  row-gap: 0.2rem;
+  padding-block-end: 0;
+}
+html[data-theme="windows95"] .app-bar:has(> :is(nav:not(.breadcrumbs), .nav, .nav-item))::after {
+  top: calc(0.2rem + var(--tap-min) / 2);
+}
+html[data-theme="windows95"] .app-bar > :is(nav:not(.breadcrumbs), .nav) {
+  --nav-item-fg: #000000;
+  --nav-item-bg-active: #000080;
+  --nav-item-fg-active: #ffffff;
+  order: 10;
+  flex: 1 0 100%;
+  margin-inline: -0.4rem calc(-1 * var(--w95-bar-pe));
+  background: var(--surface);
+  color: #000000;
+}
+html[data-theme="windows95"] .app-bar .menubar {
+  --menubar-fg: #000000;
+  --menubar-item-bg-active: #000080;
+  --menubar-item-fg-active: #ffffff;
+  --menubar-item-radius: 0;
+  --menubar-pad: 0;
+  --menubar-font-size: 1em;
+}
+/* Loose nav items (no nav wrapper): a zero-height break pushes them to
+   the second row and the bar's own fill turns grey under them. */
+html[data-theme="windows95"] .app-bar:has(> .nav-item) {
+  --app-bar-bg: linear-gradient(#000080, #000080) top / 100% calc(100% - var(--tap-min)) no-repeat, #c0c0c0;
+  row-gap: 0.1rem;
+}
+html[data-theme="windows95"] .app-bar:has(> .nav-item)::before { content: ""; order: 9; flex-basis: 100%; }
+html[data-theme="windows95"] .app-bar > .nav-item {
+  --nav-item-fg: #000000;
+  --nav-item-bg-active: #000080;
+  --nav-item-fg-active: #ffffff;
+  order: 10;
+  display: inline-flex;
+  align-items: center;
+  block-size: var(--tap-min);
+}
+html[data-theme="windows95"] .app-bar > .nav-item + .nav-item { margin-inline-start: -1rem; }
+
+/* Every control on the caption is a grey caption-style button: the
+   account tile and icon buttons get the raised push-button bevel. */
+html[data-theme="windows95"] .app-bar .avatar {
+  --avatar-bg: var(--surface);
+  --avatar-fg: #000000;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+html[data-theme="windows95"] .app-bar .btn-icon:not(.is-clear) {
+  --btn-bg: var(--surface);
+  --btn-bg-hover: var(--surface);
+  --btn-fg: #000000;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+  color: #000000;
+}
+
+/* Phone: brand, bell and account share the caption line (the brand whole),
+   the theme select and search take the line under it, the menu strip
+   last. The actions group dissolves so its items wrap one by one. */
+@media (max-width: 480px) {
+  html[data-theme="windows95"] .app-bar > .cluster { display: contents; }
+  html[data-theme="windows95"] .app-bar > .nav-brand { flex: 1 0 auto; max-width: 100%; }
+  html[data-theme="windows95"] .app-bar > .cluster > :is(.select, .btn:not(.btn-icon)) { order: 5; }
+  html[data-theme="windows95"] .app-bar > .cluster > .select,
+  html[data-theme="windows95"] .app-bar > .select.select { flex: 1 1 9rem; min-width: 0; }
+}
+
+/* Property sheet: the selected tab's page is a raised frame (white left,
+   #808080 + black right and bottom) that the tab row's white top edge
+   runs into. Phones keep the full width for the page itself. */
+@media (min-width: 481px) {
+  html[data-theme="windows95"] .tabset > .tab-panel {
+    border: 1px solid;
+    border-top: 0;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    box-shadow: inset -1px -1px 0 #808080;
+    padding-inline: 8px;
+    padding-block-end: 8px;
+  }
+}
+
+/* Setting rows are etched group frames like hr and nested panels, not a
+   flat grey outline. */
+html[data-theme="windows95"] .field-row { box-shadow: inset 1px 1px 0 #ffffff, 1px 1px 0 #ffffff; }
+/* The log console is a sunken white edit well (the measured field). */
+html[data-theme="windows95"] .log {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
+}
+/* An input-group addon is a static label on the face, no box. */
+html[data-theme="windows95"] .input-addon { border-color: transparent; }
+/* A message's body is a document: a white sunken well under the toolbar,
+   as Exchange's reading pane. */
+html[data-theme="windows95"] .master-detail-pane > .prose {
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
+}
+/* A linked brand on the caption keeps the 24px target now the menu strip
+   sits right under it. */
+html[data-theme="windows95"] .app-bar > a.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap-min);
+}
+/* A bare select on the caption sizes to its text and stays on the caption
+   line (core's full-width field wrapped it to a line of its own). */
+html[data-theme="windows95"] .app-bar > .select { inline-size: auto; flex: 0 1 auto; }
