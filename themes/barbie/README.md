@@ -1,6 +1,6 @@
 # Barbie
 
-> Hot-pink glamour — glossy pill chrome, gold sparkle, all-caps confidence.
+> Hot-pink glamour — glossy pill chrome, a fat outlined script wordmark, all-caps confidence.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
@@ -23,30 +23,64 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
    desktop-icon label is a pill; tree rows, desktop window panes, the
    notepad field and table corners (header band and last row) take a
    `0.6rem` row-sized radius; fieldsets get a pink hairline box at the
-   panel radius instead of the browser's grey groove. Nothing here has a
-   hard corner.
-3. **Gloss over flat.** Every filled surface gets a light highlight band —
-   the same "shiny plastic" cue as the button chrome, panels, and the app
-   bar. Losing the highlight reads as a cheaper, flatter knockoff.
-4. **Gold is the sparkle, not the workhorse.** `--flare` (gold) shows
-   up only as a crisp 2px unblurred foil lip straight under the uppercase
-   `h2` (not `h3`, where a thin gold line read as misregistration) — it's the
-   tiara, not a token you build components out of.
+   panel radius instead of the browser's grey groove. The white
+   `.app-main` card takes a `1rem` radius inside the rounded ribbon.
+   Nothing here has a hard corner.
+3. **Gloss over flat.** Every filled control gets a hard-edged bright
+   band over its top third (`--gloss-pink`: `#ff4fb3`/`#ff3da6`, then
+   `#e3007f` to the accent): primary, danger (`--gloss-danger`) and
+   mint success (`--gloss-success`) buttons, the active nav pill (a deep
+   plum gloss in the bar), the active pagination pill and the active
+   segmented item. A plain `.btn` is the lighter candy pill (white band
+   over a `#ffe0ef`-`#ffc2e0` blush, `--accent-text` label, `2px` accent
+   edge), so the primary action and a selected range stand out. Disabled
+   buttons are a flat blush pill with a dashed `#f7a8cf` edge. Core re-sets `--btn-bg` on `.btn-primary`/`-danger`/
+   `-success`, so the theme re-points it on those classes too. Losing the
+   highlight reads as a cheaper, flatter knockoff.
+4. **Pink on pink, no foil.** The logo is white, hot pink and a pink
+   extrusion; `h2` takes a small pink step of that extrusion
+   (`0.06em` in `#ffb3d9`), never a gold lip (it read as an offset-print
+   fringe). `--flare` gold is defined only because core requires it.
 5. **Deep pink text, not black.** Body text is `#7a1250`, a pink-shifted
    dark plum — legible, but never plain black, which would read as a
    generic light theme wearing a pink accent.
 
 ## Signature details
 
-- **The wordmark.** `h1` and `.nav-brand` are Pacifico script in white
-  letters inside a thick hot-pink outline (`-webkit-text-stroke` painted
-  under the fill, `0.2em`, so the pink mass about equals the white
-  stroke as on the logo) with a deep solid pink slab stepped out in three
-  steps to `0.18em` down-right, the logo's extrusion, sized in em so it reads at
-  bar-brand size. In the app bar the outline and slab go deep pink `#8f1458`.
-- Headings (`h2`/`h3`) are uppercase, `h2` with a hard 2px gold lip
-  underneath, the poster-title voice. On `.hero` and `.band.is-tinted` they stay
-  accent pink (large text, 3:1 floor).
+- **The wordmark.** `h1` and `.nav-brand` are Shrikhand: fat, separate
+  letters with ball terminals and flared slab-like serifs, as on the logo
+  (a connected brush script read as a diner sign). They are white letters
+  inside a hot-pink outline (`-webkit-text-stroke` painted under the fill,
+  `0.14em`, so the pink mass about equals the white stroke as on the logo)
+  with a solid pink slab stepped out in three steps to `0.18em`
+  down-right, the logo's extrusion. `word-spacing: 0.22em` (`0.1em` on the
+  brand) keeps the outline and slab from filling word gaps. The `h1` takes
+  a `skewX(11deg)` counter-skew, so Shrikhand's lean stands upright like
+  the logo's letters (the brand is not skewed, so its pill stays round).
+  The skew is pinned top-left with a `0.5em` end margin, so it never
+  crosses the column's left edge; a wrapped title steps each line about
+  `0.2em` right. The brand is set at `1.2em` with a
+  `0.06em` outline and one `0.06em` step, so the counters stay open at
+  bar size. In the app bar the brand sits on its own white sticker pill,
+  so the white/pink-outline/slab stack reads as on white.
+- Headings (`h2`/`h3`) are uppercase. `h2` is set at weight 800 with a
+  crisp `0.04em` step in 40% `--accent-2`, the poster-title voice; `h3`
+  stays flat. On `.hero` and `.band.is-tinted` they stay accent pink
+  (large text, 3:1 floor).
+- **Glossy pills.** Filled buttons, active nav/segmented/pagination items
+  and checked toggles take `--gloss-pink`: a `#ff4fb3`-`#ff3da6` band over
+  the top 36%, then `#e3007f` to the accent. White labels take a plum
+  `0 1px 0` text-shadow so a cap height or wrapped line in the band reads.
+- **Error fields.** Invalid inputs and selects stay white with a `2px`
+  danger edge and a soft danger halo, so they never share the readonly
+  blush.
+- **Toggle buttons.** Off is a white pill with a pink edge (like
+  Secondary); on is the glossy pink pill (`.is-danger`: the danger gloss).
+- **Packaging inserts.** Panels and cards have a `2px` pink edge; a panel
+  header is a white-to-blush band under a `3px` `--accent-2` top rule.
+- **Checkboxes and radios.** No browser-grey box: a white well in a `2px`
+  pink edge (`0.35em` corners on checkboxes), filled with the accent and a
+  white tick or dot when on.
 - **Desktop windows.** Inactive title bars stay saturated: a paler candy
   pink (`#ffc2e0` to `#ff99cc`) with plum text, never core's desaturating
   filter (that turned the bar dusty mauve). Caption buttons follow the
@@ -62,12 +96,17 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
   series), not the text-weight green.
 - The accent `#cc0077` is a fully saturated magenta (hue 325°, the logos'
   `#ed008d`/`#ff00a6` family) at the darkest step that still takes white
-  text. Bar and status strip run `#e0007f` to the accent (the logo's
-`#ec008c` takes white at only 4.3:1, so `#e0007f` is the nearest passing
-top stop); gloss buttons run
-  `#ff4fb3` to `#e0007f` to the accent, highlight band at the top.
+  text. Bar and status strip run `#e5007f` to the accent (the logo's
+  `#ec008c` takes white at only 4.25:1, so `#e5007f`, 4.53:1, is the nearest passing
+  top stop). Filled chrome leads with the brighter logo pink through the
+  gloss band, and the label sits on `#e3007f` (4.6:1) to the accent.
 - **Toy-box sections.** `.hero` sits on a rounded blush panel with the
-  gutter's polka dots; `.band.is-tinted` on a blush gradient panel.
+  gutter's polka dots; `.band.is-tinted` on a blush gradient panel. A
+  full-bleed one (a direct child of `body`) is inset by `--app-padding`
+  so its rounded edge never meets the window edge. A band right after a
+  hero is spaced off by `--space-m`, so the two read as separate inserts.
+- Small uppercase labels (stat labels, table heads) are Baloo 600 with
+  `0.06em` tracking, never under `0.75rem`.
 - Success state uses Barbie mint (`#3ddc97`) with dark text, not a generic
   green with white text — mint is too light for white to pass, and a
   generic green would clash with the palette.
@@ -83,8 +122,11 @@ card in the middle pop — box art, not a dashboard.
 
 - **Tiers.** No rail; the glossy bar's pills wrap as core lays them out,
   so phone (≤480px) and tablet (481–900px) use the one-column shell as is.
-- **Phone tier.** Cards and panels take a tight 6px glow instead of the
-  18px one, to keep scroll paint cost down.
+- **Phone tier.** For scroll paint cost: a flat `#ffe6f2` backdrop
+  instead of the radial gradient, no card/panel drop-glow (the 1px pink
+  border separates them), no `h2` extrusion step, a flat accent bar and
+  status strip, a single `0.08em` `h1` step, and no inset highlight on
+  the bar, hero or bands.
 - **Nesting.** A panel or card inside another surface drops the pink
   drop-glow, so stacked levels read as inserts in one toy box.
 - **XL gutter art.** The packaging either side of the doll: soft polka
@@ -104,29 +146,29 @@ card in the middle pop — box art, not a dashboard.
 - **No black text.** Body copy is plum `#7a1250`; plain black reads as a generic light theme.
 - **No pastel or desaturated pink.** A washed-out accent is the failure the theme exists to avoid.
 - **No matte flat fills** on primary chrome: keep the highlight band.
-- **No gold as a component colour.** `--flare` gold is the heading foil edge only.
-- **No script face on body or buttons.** Pacifico is for the wordmark and `h1` only.
+- **No gold.** Nothing on the logo is gold; `--flare` exists only as a required token.
+- **No script face on body or buttons.** Shrikhand is for the wordmark and `h1` only.
 - **No generic green success with white text**; keep mint with dark text.
 
 ## Typography
 
-- **Body/UI:** `"Baloo 2"`, then `"Segoe UI", "Helvetica Neue", Arial, sans-serif`. Baloo 2 **Bold (700)** is **vendored** (`assets/fonts/Baloo2-Bold.woff2`, SIL OFL, see `assets/fonts/NOTICE.md`); only that weight exists, so headings and buttons sit at 700. If it fails to load, the stack falls to Segoe UI/Arial, which is not rounded.
-- **Wordmark voice:** `"Pacifico", cursive` (Regular, **vendored**) on `h1` and the nav brand only. The brand's wordmark is a cursive script (`barbie-wordmark-2023-logo.png`), which Pacifico approximates; it is not the actual logo lettering. Fallback is the browser's generic `cursive`.
+- **Body/UI:** `"Baloo 2"`, then `"Segoe UI", "Helvetica Neue", Arial, sans-serif`. The Baloo 2 **variable** cut (wght 400-800, Latin subset) is **vendored** (`assets/fonts/Baloo2-Variable.woff2`, SIL OFL, see `assets/fonts/NOTICE.md`), so body copy is 400, labels 600 and headings/buttons 700. If it fails to load, the stack falls to Segoe UI/Arial, which is not rounded.
+- **Wordmark voice:** `"Shrikhand", "Cooper Black", Georgia, cursive` (Regular, **vendored** Latin subset, SIL OFL) on `h1` and the nav brand only. The brand's wordmark (`barbie-wordmark-2023-logo.png`, `s-l1200.png`) is fat, separate letters with ball terminals and flared serifs, which Shrikhand approximates; it is not the actual logo lettering. Cooper Black is the nearest common system face.
 - `--font-mono` is the rounded Baloo 2 stack, so readouts, order IDs,
   totals, timecodes and logs stay in the rounded voice (tabular figures on
   table cells, `.mono`, `.stat-value`, `.readout`). Only `code`, `pre`,
   `kbd` and `samp` use a real monospace (`ui-monospace, Consolas`).
-- Known gap: only Baloo 2 Bold is vendored, so body copy and headings share
-  700; a 500/600 cut would need a new file under `assets/fonts/`. Likewise
-  Pacifico is a brush script, flatter than the logo's upright bouncy
-  script; a heavier upright cut (Lobster, Leckerli One) would also need a
-  new vendored file.
+- Known gap: no open face reproduces the logo's custom lettering (its
+  slab-like serifs and ball terminals); Shrikhand is the nearest open face,
+  though it leans more than the logo's letters (the `h1` counter-skew
+  stands it up; the brand in the bar still leans).
 
 ## Contrast honesty
 
-- **Accent:** true "Barbie Pink" `#e0218a` (web reference from `RESEARCH.md`; the brand spec is Pantone 219C, which has no exact sRGB) is 4.42:1 under white text, and the logo files sample at `#ed008d`/`#ff00a6`/`#f200a2`. Shipped `--accent` is `#cc0077`: full saturation, 5.48:1 under white text, 4.66:1 as text on `--bg`. The chrome top stop `#e0007f` is 4.69:1 under white.
+- **Accent:** true "Barbie Pink" `#e0218a` (web reference from `RESEARCH.md`; the brand spec is Pantone 219C, which has no exact sRGB) is 4.42:1 under white text, and the logo files sample at `#ed008d`/`#ff00a6`/`#f200a2`. Shipped `--accent` is `#cc0077`: full saturation, 5.48:1 under white text, 4.66:1 as text on `--bg`. The bar and status strip run `#e5007f` (4.53:1 under white, the nearest stop to the logo's `#ec008c` at 4.25:1 that passes) to the accent; nav labels are regular-weight small text, so the 3:1 large-text floor does not apply and the chrome stays one step deeper than the logo.
+- **Gloss band:** white is 3.0-3.25:1 on the band (`#ff4fb3`-`#ff3da6`), large-text level; labels sit mostly on the `#e3007f`+ mass (4.6:1+) and take a plum text-shadow.
 - **Wordmark:** the `h1` fill is white; the glyph is carried by its hot-pink outline and extrusion (5.5:1 against white), so it reads as large outlined text.
-- **Status strip:** `--muted` turns white there (4.69:1 at the top stop; every pale pink fails it).
+- **Status strip:** `--muted` turns white there (4.53:1 at the top stop; every pale pink fails it). On the phone tier the strip is flat accent, so `--danger-text` there steps to `#fff0f5` (4.9:1).
 - **Inactive window title:** plum `#7a1250` on `#ff99cc` is 5.3:1 (on `#ffc2e0` higher).
 - **Sparkline:** `#1f9e74` is 3.4:1 on white (non-text 3:1).
 - **Tinted surfaces:** links, and headings except on the hero/band, on `.hero`, `.band.is-tinted`, `.order-summary` and the plain `.banner` use `--accent-text` (5.57:1 on `#ffd1e8`).
