@@ -19,7 +19,7 @@ per-page attribution — the one hard restriction is that the font may not
 be **sold by itself**, on its own, separate from software; that doesn't
 apply to embedding it in a theme's CSS bundle. Reserved font names must
 not be reused by a modified version, which is moot here since these
-files are vendored unmodified.
+files are vendored unmodified (the Inter subset below is the one modified file, and Inter declares no Reserved Font Name).
 
 ## Antonio
 
@@ -137,11 +137,28 @@ files are vendored unmodified.
 - **Source:** https://github.com/keshikan/DSEG
 - **Used by:** `cassette-futurism` (seven-segment readout digits)
 
+## Inter
+
+- **Family:** Inter (`InterVariable-Latin.woff2`: Inter 4.0 variable,
+  instanced to `wght` 300–700 at `opsz` 14 and subset to Latin with
+  fontTools — the one file in this folder that is a modified subset, not
+  an unmodified upstream file; Inter's OFL declares no Reserved Font Name,
+  and the theme loads it under its own family name, "Aperture Inter")
+- **Designer:** Rasmus Andersson / The Inter Project Authors
+- **License:** SIL Open Font License, version 1.1 (stated in the font's own
+  name table, ID 13/14)
+- **Source:** https://github.com/rsms/inter (also
+  https://fonts.google.com/specimen/Inter)
+- **Used by:** `aperture` (Univers stand-in for chamber signage: Light 300
+  headings and numerals, SemiBold 600 labels)
+
 ## Titillium Web
 
-- **Family:** Titillium Web (weights vendored: Regular 400, Bold 700, Bold
-  Italic 700 — `TitilliumWeb-Regular.woff2`, `TitilliumWeb-Bold.woff2`,
-  `TitilliumWeb-BoldItalic.woff2`; Google Fonts' Latin subset, unmodified)
+- **Family:** Titillium Web (weights vendored: Light 300, Regular 400,
+  SemiBold 600, Bold 700, Bold Italic 700 — `TitilliumWeb-Light.woff2`,
+  `TitilliumWeb-Regular.woff2`, `TitilliumWeb-SemiBold.woff2`,
+  `TitilliumWeb-Bold.woff2`, `TitilliumWeb-BoldItalic.woff2`; Google Fonts'
+  Latin subset, unmodified)
 - **Designer:** Accademia di Belle Arti di Urbino
 - **License:** SIL Open Font License, version 1.1 (verified in
   `google/fonts` `ofl/titilliumweb/OFL.txt` and its `METADATA.pb`,
