@@ -16,29 +16,39 @@ reproduced.
 
 ## Core values
 
-1. **Every panel is a bracket.** A rounded 3px "[" in the accent, with
+1. **Every panel is a bracket.** A rounded 4px "[" in the accent (2px and dimmer when nested), with a faint halo, with
    short curved returns at top and bottom, stands just off the left edge
    of panels, cards, lists and alerts (a `::before`; `--panel-radius:
-   0.7rem 0 0 0.7rem`). Modals, menus and popovers carry it as a 3px inset.
+   0.7rem 0 0 0.7rem`). On an image card it sits on the edge, over the
+   media, since the card clips its corners. Modals, menus and popovers carry it as a 3px inset.
    No hairline closes the other three sides.
 2. **Names sit on pill tabs.** A panel header's first child, the modal
    title and the app brand are filled accent tabs with dark text, like
-   "TAG.NM" or "SUM EVA".
+   "TAG.NM" or "SUM EVA": ends rounded to half an em, a thin dark divider
+   about half an em in from the left, a soft halo, and the tab's top level
+   with the bracket's top return.
 3. **Wide squared capitals for labels, plain for reading.** Michroma for
-   headings, buttons, tabs, badges and table heads; Share Tech for body;
+   headings, buttons, tabs, toggle groups, KPI labels, menubar items,
+   badges and table heads (nav items at 0.72rem, not page-sized); section
+   lists stay in Share Tech but in tracked capitals; Share Tech for body;
    Share Tech Mono for data and inputs.
 4. **Controls are outlined pills.** Buttons and the segmented control are
    1.5px outlined pills ("ENG HUL FRA"); primary is the filled pill.
 5. **Values live in dark boxes.** `.readout` is a small value box darker
    than the glass with glowing cyan digits ("986", "030"); KPI values
    (`.stat-value`) use the same light glowing digits, never faux bold.
+   Level bars are drawn: the slider rail is the accent mixed 60% into the
+   input navy (about 3.4:1 on the glass), and checkboxes and radios are
+   navy wells with that same lit edge, filled accent when on.
 6. **The glass has a grid.** The page background is mid-navy lit glass
    (`--bg: #072235`, panels a step lighter at `#0d3049`) with a faint
-   lattice of dashes and crosses.
+   lattice of dashes and crosses. The navy glow scrolls with the page (not
+   `fixed`), so touch scrolling does not repaint the whole background.
 
 ## Signature details
 
-- Bracketed panels with filled pill title tabs; pill-tab modal title.
+- Bracketed panels with filled pill title tabs (rounded ends, dark divider
+  near the left end); pill-tab modal title.
 - Holo grid of dashes and crosses on a navy glow behind the whole shell.
 - Orange edge codes ("0034529", "963409IN_CHY0432") running up the
   empty rail, drawn in CSS.
@@ -62,6 +72,7 @@ film's own face is a custom wide squared sans; Michroma is the closest
 open match. All three faces have one weight, so `font-synthesis: none`
 keeps headings and numbers light. Michroma is too wide for narrow setting
 rows, so a switch row's label reads in Share Tech; avatar initials too.
+On touch tiers a joined toggle row reads in Share Tech capitals too.
 
 ## Contrast honesty
 
@@ -80,7 +91,8 @@ is decoration under the panels and carries no text.
 
 - Fully boxed panels with titles in a header strip: generic dashboard.
 - Bold condensed type: the labels are wide and light.
-- Neon glow on everything: only headings and readouts glow.
+- Neon glow on everything: headings and readouts glow; brackets and tabs
+  carry only a faint halo.
 
 ## v5 layout
 

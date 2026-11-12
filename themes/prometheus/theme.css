@@ -147,6 +147,10 @@ html[data-theme="prometheus"] {
   --switch-thumb-bg: var(--muted);
   --switch-thumb-bg-on: var(--on-accent);
   --slider-thumb-bg: var(--accent);
+  /* The level bar is drawn (medipod E/F, suit DIAG): about 3.4:1 on the glass. */
+  --pm-control-edge: color-mix(in srgb, var(--accent) 60%, #061c2c);
+  --slider-bg: var(--pm-control-edge);
+  --slider-radius: 999px;
   --progress-bg: #061c2c;
   --progress-fill: var(--accent);
   --progress-radius: 2px;
@@ -164,6 +168,9 @@ html[data-theme="prometheus"] {
   --toast-bg: var(--surface-2);
   --alert-bg: var(--surface);
   --lamp-glow: 0 0 0.4rem currentColor;
+  /* The film's soft halo on brackets and tabs, kept faint. */
+  --pm-glow-drop: drop-shadow(0 0 0.3rem color-mix(in srgb, var(--accent) 45%, transparent));
+  --pm-glow-box: 0 0 0.5rem color-mix(in srgb, var(--accent) 30%, transparent);
 
   /* Readouts are the small dark value boxes ("986", "030"). */
   --readout-bg: #051826;       /* darker than the glass, like "986" */
@@ -191,7 +198,7 @@ html[data-theme="prometheus"] {
     radial-gradient(5px 1px at 24px 24px, rgba(79, 210, 255, 0.12) 99%, transparent) 0 0 / 48px 48px,
     radial-gradient(1px 5px at 72px 72px, rgba(79, 210, 255, 0.08) 99%, transparent) 0 0 / 96px 96px,
     radial-gradient(5px 1px at 72px 72px, rgba(79, 210, 255, 0.08) 99%, transparent) 0 0 / 96px 96px;
-  --holo-glow: radial-gradient(140% 120% at 50% 30%, #0f3b58 0%, #082a40 60%, #051c2b 100%) fixed;
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #0f3b58 0%, #082a40 60%, #051c2b 100%);
 }
 
 /* Suit Room: amber interface over the same blue glass. */
@@ -225,7 +232,7 @@ html[data-theme="prometheus"][data-variant="suit"] {
     radial-gradient(5px 1px at 24px 24px, rgba(255, 181, 31, 0.14) 99%, transparent) 0 0 / 48px 48px,
     radial-gradient(1px 5px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px,
     radial-gradient(5px 1px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px;
-  --holo-glow: radial-gradient(140% 120% at 50% 30%, #12485a 0%, #0a3242 60%, #052230 100%) fixed;
+  --holo-glow: radial-gradient(140% 120% at 50% 30%, #12485a 0%, #0a3242 60%, #052230 100%);
 }
 
 /* --- Voice: wide squared capitals for every label ----------------------- */
@@ -243,6 +250,9 @@ html[data-theme="prometheus"] .segmented-item,
 html[data-theme="prometheus"] .panel-header,
 html[data-theme="prometheus"] .modal-header,
 html[data-theme="prometheus"] .label,
+html[data-theme="prometheus"] .toggle-btn,
+html[data-theme="prometheus"] .stat-label,
+html[data-theme="prometheus"] .menubar > li > button,
 html[data-theme="prometheus"] th {
   font-family: var(--font-label);
   font-weight: 400;
@@ -259,7 +269,15 @@ html[data-theme="prometheus"] .badge,
 html[data-theme="prometheus"] .label,
 html[data-theme="prometheus"] th,
 html[data-theme="prometheus"] .tab,
-html[data-theme="prometheus"] .segmented-item { font-size: 0.68rem; }
+html[data-theme="prometheus"] .segmented-item,
+html[data-theme="prometheus"] .toggle-btn,
+html[data-theme="prometheus"] .stat-label,
+html[data-theme="prometheus"] .menubar > li > button { font-size: 0.66rem; }
+/* Nav lists are small tracked labels, not page-sized caps. */
+html[data-theme="prometheus"] .nav-item { font-size: 0.72rem; }
+/* Section lists (bare labels, not message rows) keep the narrow face but
+   read as tracked capitals. */
+html[data-theme="prometheus"] .master-detail-list .list-item:not(:has(.list-item-title)) { text-transform: uppercase; letter-spacing: 0.08em; }
 html[data-theme="prometheus"] .input,
 html[data-theme="prometheus"] .select,
 html[data-theme="prometheus"] td { font-family: var(--font-mono); }
@@ -283,6 +301,11 @@ html[data-theme="prometheus"] .input-group > .btn {
 }
 /* Michroma is too wide for narrow setting rows; those labels read in
    Share Tech, still in tracked capitals. */
+/* Touch tiers: a joined toggle row has no room for Michroma's width, so
+   its items read in Share Tech, still tracked capitals. */
+@media (max-width: 900px) {
+  html[data-theme="prometheus"] .toggle-btn { font-family: var(--font); font-size: 0.78rem; letter-spacing: 0.04em; }
+}
 html[data-theme="prometheus"] .field-row:has(> .switch) > .label {
   font-family: var(--font);
   font-size: 0.78rem;
@@ -298,6 +321,9 @@ html[data-theme="prometheus"] .panel-header {
   gap: 0.75rem;
   font-size: 0.7rem;
 }
+/* A title tab starts level with the bracket's top return; its own padding
+   keeps the text off the edge. A plain header keeps core's top padding. */
+html[data-theme="prometheus"] .panel-header:has(> strong:first-child) { padding-block-start: 0; }
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
 /* Minimise and maximise sit on the filled tab: dark glyphs on the cyan. */
@@ -305,10 +331,11 @@ html[data-theme="prometheus"] .modal-header > :is(.btn-min, .btn-max) { --modal-
 html[data-theme="prometheus"] .modal-header > .btn-close { --btn-close-glyph-size: 1.6em; position: absolute; top: 0.25rem; right: 0.5rem; }
 html[data-theme="prometheus"] .panel-header strong:first-child,
 html[data-theme="prometheus"] .modal-header {
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
   color: var(--on-accent);
-  border-radius: 4px;
-  padding: 0.4em 1.4em 0.4em 0.8em;
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
+  padding: 0.4em 1.4em 0.4em 1.1em;
   font-weight: 400;
 }
 /* A table straight on the page (no panel) gets a glass wash, so the tick
@@ -321,12 +348,13 @@ html[data-theme="prometheus"] .table:not(:is(.panel, .card, .modal, .drawer, .po
 html[data-theme="prometheus"] .panel-header:not(:has(> *)) {
   width: fit-content;
   max-width: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
   color: var(--on-accent);
-  border-radius: 4px;
-  padding: 0.4em 1.4em 0.4em 0.8em;
-  /* Inside the glass like the <strong> tab, not bled to the corner. */
-  margin: calc(var(--space-xs) - var(--surface-pad, 1rem)) 0 var(--space-m);
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
+  padding: 0.4em 1.4em 0.4em 1.1em;
+  /* Top level with the bracket's top return, as in the film. */
+  margin: calc(-1 * var(--surface-pad, 1rem)) 0 var(--space-m);
 }
 /* Nested glass steps down: a box inside a box keeps its bracket but thinner
    and dimmer, and its title tab is outlined rather than filled, so a
@@ -348,6 +376,32 @@ html[data-theme="prometheus"] .modal-header {
   border-bottom: 0;
 }
 
+/* Check boxes and radios are navy glass wells with the lit edge, cyan when
+   on, instead of the browser's neutral grey. */
+html[data-theme="prometheus"] :is(.checkbox, .radio) {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  background: var(--input-bg);
+  border: 1.5px solid var(--pm-control-edge);
+  border-radius: 3px;
+}
+html[data-theme="prometheus"] .radio { border-radius: 50%; }
+html[data-theme="prometheus"] :is(.checkbox, .radio):is(:checked, :indeterminate) { background: var(--accent); border-color: var(--accent); }
+html[data-theme="prometheus"] :is(.checkbox, .radio):is(:checked, :indeterminate)::before {
+  content: "";
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  background: var(--on-accent);
+  clip-path: polygon(14% 44%, 0 62%, 40% 100%, 100% 22%, 84% 6%, 38% 66%);
+}
+html[data-theme="prometheus"] .radio:checked::before { inline-size: 0.45em; block-size: 0.45em; clip-path: circle(50%); }
+html[data-theme="prometheus"] .checkbox:indeterminate::before { block-size: 0.15em; clip-path: none; }
+@media (forced-colors: active) {
+  html[data-theme="prometheus"] :is(.checkbox, .radio) { appearance: auto; }
+  html[data-theme="prometheus"] :is(.checkbox, .radio)::before { content: none; }
+}
+
 /* --- The bracket ---------------------------------------------------------- *
  * A "[" whose ends return as short curved arms, standing just off the
  * glass's left edge (medipod "MSCN_51/2", suit "TAG.NM"). Decoration only.
@@ -359,12 +413,17 @@ html[data-theme="prometheus"] :where(.panel, .card, .list, .alert)::before {
   inset-block: 0;
   inset-inline-start: var(--pm-bracket-x, -5px);
   inline-size: 0.7rem;
-  border: var(--pm-bracket-w, 3px) solid var(--pm-bracket-c, var(--accent));
+  border: var(--pm-bracket-w, 4px) solid var(--pm-bracket-c, var(--accent));
   border-inline-end: 0;
   border-start-start-radius: 0.7rem;
   border-end-start-radius: 0.7rem;
+  filter: var(--pm-glow-drop);
   pointer-events: none;
 }
+/* An image card clips to its corners and its media would cover the
+   bracket, so the bracket sits on the edge, above the image. */
+html[data-theme="prometheus"] .card.has-media { --pm-bracket-x: 0; }
+html[data-theme="prometheus"] .card.has-media::before { z-index: 1; }
 html[data-theme="prometheus"] .list { --pm-bracket-x: 0; }
 html[data-theme="prometheus"] .alert { --pm-bracket-w: 3px; --pm-bracket-c: var(--alert-border, var(--accent)); }
 /* Dropdowns take their edge from --panel-shadow: the bracket as an inset. */
@@ -393,10 +452,11 @@ html[data-theme="prometheus"] {
 }
 html[data-theme="prometheus"] .app-bar { font-size: 0.72rem; }
 html[data-theme="prometheus"] .app-bar .nav-brand {
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
   color: var(--on-accent);
-  padding: 0.3em 1.2em 0.3em 0.8em;
-  border-radius: 4px;
+  padding: 0.3em 1.2em 0.3em 1.1em;
+  border-radius: 0.5em;
+  box-shadow: var(--pm-glow-box);
   font-size: 0.8rem;
 }
 html[data-theme="prometheus"] .app-rail {
