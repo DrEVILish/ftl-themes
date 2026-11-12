@@ -163,6 +163,22 @@ files are vendored unmodified.
 - **Used by:** `cyberpunk-2077` (all UI text; stand-in for the game's
   commercial condensed face)
 
+## Inter
+
+- **Family:** Inter (one variable file, `Inter-Variable.woff2`: weight
+  axis 400-700, optical-size axis 14-32)
+- **Designer:** Rasmus Andersson and the Inter Project Authors
+- **License:** SIL Open Font License, version 1.1 (the font's own name
+  table: "This Font Software is licensed under the SIL Open Font License,
+  Version 1.1"; Copyright 2016 The Inter Project Authors). No Reserved
+  Font Name is declared, so the subset keeps the family name.
+- **Source:** https://github.com/rsms/inter (Inter 4.0 variable,
+  `InterVariable.woff2`), subset with fontTools to Basic Latin, Latin-1
+  and common punctuation, the weight axis limited to 400-700, hinting
+  dropped
+- **Used by:** `ios-flat` (and the themes that extend it), the open
+  stand-in for SF Pro after `-apple-system` and Helvetica Neue
+
 ## Selawik
 
 - **Family:** Selawik (weights vendored: Light 300, Regular 400, Semibold
@@ -181,7 +197,7 @@ files are vendored unmodified.
 
 ## Bottom line
 
-Twenty-one files, fifteen families: thirteen SIL OFL 1.1, Bedstead CC0 and Px437
+Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
