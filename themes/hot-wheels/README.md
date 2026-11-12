@@ -18,8 +18,10 @@ menu, not a calm productivity tool.
    `--surface` `#1c44bc`, `--surface-2` `#224dcc` and the bar's
    `--hw-blue` `#1f4fd1` follow the electric royal blue of the PC set's
    plastic and the menu backdrop. The main well has the menu backdrop's
-   depth: a radial lift to `#1f4cc4` near the top, sinking to `--bg` at
-   the edges, so panels lift off the field. Every tinted surface stays a
+   depth: a radial lift to a brighter, cyan-leaning `#1d54c4` near the top,
+   sinking to `--bg` at the edges (the game menu's sky blue is lighter
+   still, but any brighter centre drops the yellow accent and `--muted`
+   below 4.5:1), so panels lift off the field. Every tinted surface stays a
    saturated blue (`--hw-lift` `#2a5ad6` for the own-message bubble, bulk
    bar, kanban drop and similar; translucent `#4a8cf5` for row hover and
    ranges; the self-mention is the yellow band): core's default of mixing
@@ -58,19 +60,26 @@ menu, not a calm productivity tool.
 
 ## Signature details
 
-- The brand badge carries the flame: three curved tongues (red
-  `#e3171b`, orange `#ff5f00`, yellow core `#ffcc00`) sweeping about 3rem
-  back to sharp, curved points on the left with red showing between them,
-  the inner tongues tapering into a red
-  body (`#e3171b` to `#b0080c` top to bottom, kept red so the white
-  wordmark holds 4.77:1) that ends in a point on the right, all outlined
-  in a 1.5px `#ffcc00` line. It is two inline SVG backgrounds, so nothing
-  decorative ever sits behind nav text. The wordmark starts `3.4rem` in,
-  clear of the yellow core, and the badge is at least `7.5rem` wide so
-  short names get a full body; below 600px the tail shortens to `2.6rem`
-  and nav strips tighten their gap to `0.5rem`.
-- Dialog headers carry a second flame: the same three tongues at the
-  start edge of the yellow band, with the title padded clear of it.
+- The brand badge carries the logo flame (`--hw-flame-tail`): a red
+  `#e3171b` flame with a yellow-to-orange heart (`#fff1a0` to `#ffb400`
+  to `#ff5f00`) whose three curved tongues sweep about `4.8rem` back to
+  long points on the left, its rounded nose overlapping a red body
+  (`#e3171b` to `#b0080c` top to bottom) that ends in a point on the
+  right, all outlined in a 1.5px `#ffcc00` line. The wordmark is the
+  logo's yellow `#ffd21a` at `1.2rem` (large bold text, 3.29:1 on the
+  lightest red) with a dark red `#4a0000` outline and drop. It is two
+  inline SVG backgrounds, so nothing decorative ever sits behind nav
+  text. The wordmark starts `4.9rem` in, clear of the flame, and the badge
+  is at least `7.5rem` wide so short names get a full body; below 600px
+  the flame shortens to `3.9rem`, nav strips tighten their gap to
+  `0.5rem`, and the bar's menus drop to `0.95rem` with tighter padding so
+  four fit one row.
+- Dialog and window headers carry the same flame, `5rem` long, at the
+  start edge of the yellow band with the title padded clear of it.
+  Inactive windows keep the band, pinstripes and flame, desaturated
+  (`saturate(0.5) brightness(0.92)`) with navy titles.
+- KPI labels, scrollspy links and the taskbar Start button take the
+  display face's heavy italic too.
 - The app bar is solid `--hw-blue` with a 4px yellow rule and orange then
   red 3px pinstripes under it, the PC monitor's band. Dialog headers are
   the same yellow band with the pinstripes along their bottom edge.
