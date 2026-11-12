@@ -3,9 +3,22 @@
  * Navigation-Patterns: category-tabs
  * Description: Fallout's Pip-Boy 3000: monochrome phosphor green with a scanline overlay — every state reads as one green, on purpose.
  *
- * Note on fonts: the in-game face is Monofonto (Typodermic, not OFL). Share
- * Tech Mono (OFL, vendored) is the closest free narrow, rounded monospace.
+ * Note on fonts: Fallout 4's Pip-Boy sets its lists, stats and headers in
+ * Roboto Condensed ($MAIN_Font); it is OFL now, so a Latin subset is vendored.
+ * Share Tech Mono (OFL, vendored) stays for code and numeric readouts.
  */
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("assets/fonts/RobotoCondensed-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("assets/fonts/RobotoCondensed-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
 @font-face {
   font-family: "Share Tech Mono";
   src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
@@ -34,17 +47,21 @@ html[data-theme="pipboy"] {
   --on-accent: #04140a;
   --on-danger: #221200;
   --on-success: #04140a;
-  --radius: 0.15rem;
-  --font: "Share Tech Mono", "Courier New", monospace;
+  --radius: 0;
+  --font: "Roboto Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
   --font-mono: "Share Tech Mono", Consolas, monospace;
   --flare: #1aff80;
 
   --btn-bg: transparent;
   --btn-fg: var(--accent-text);
   --btn-transform: uppercase;
-  --btn-tracking: 0.05em;
+  --btn-tracking: 0.04em;
   --btn-shadow-hover: 0 0 8px rgba(26, 255, 128, 0.6);
   --input-bg: #04140a;
+  /* Dimmed phosphor: an empty field reads unlit next to a typed value. */
+  --input-placeholder: #15994d;
+  /* Window minimise: a centred bar, level with the max box and BACK. */
+  --btn-min-glyph: "\2212";
   --focus-ring: 0 0 8px rgba(26, 255, 128, 0.5);
   --panel-shadow: inset 0 0 24px rgba(26, 255, 128, 0.06);
   --table-head-fg: var(--accent);
@@ -82,8 +99,8 @@ html[data-theme="pipboy"] {
   --tab-fg-active: var(--accent);
   --tab-underline-active: transparent;
   --tab-bg-active:
-    linear-gradient(var(--accent) 0 0) left bottom / 2px 50% no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right bottom / 2px 50% no-repeat border-box;
+    linear-gradient(var(--accent) 0 0) left bottom / 2px 70% no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right bottom / 2px 70% no-repeat border-box;
   --nav-bg: #04140a;
   --overlay-bg: rgba(2, 10, 5, 0.85);
   --indicator-fg: var(--accent);
@@ -102,8 +119,7 @@ html[data-theme="pipboy"] {
 
   /* Native controls (bare checkboxes, radios, ranges) take the phosphor. */
   accent-color: var(--accent);
-  /* Only the Regular face is vendored, and the game sets everything at one
-     weight: no smeared faux bold; emphasis is brightness (see below). */
+  /* Real Regular and Bold faces only: never a smeared faux weight. */
   font-synthesis-weight: none;
 
   /* Little boxing: panels and cards are a dim hairline with bright corner
@@ -159,7 +175,7 @@ html[data-theme="pipboy"] .btn-success {
    (--tab-bg-active). The rule is drawn per tab plus a filler so it can
    break; tab gaps are closed so it stays continuous. */
 html[data-theme="pipboy"] .tab,
-html[data-theme="pipboy"] .panel-header { text-transform: uppercase; letter-spacing: 0.08em; }
+html[data-theme="pipboy"] .panel-header { text-transform: uppercase; letter-spacing: 0.04em; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) { gap: 0; border-bottom: 0; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) > .tab:not(.is-active) { border-inline-width: 0; border-bottom: 2px solid var(--accent); }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before,
@@ -183,7 +199,7 @@ html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :i
 html[data-theme="pipboy"] .app-bar > .nav-brand { flex-basis: auto; flex-shrink: 0; }
 /* Tracked only where the bar has room; on phones it would wrap the nav. */
 @media (min-width: 481px) {
-  html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.08em; }
+  html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.04em; }
 }
 
 /* Media through the phosphor: no second hue sneaks in via photos. */
@@ -198,6 +214,25 @@ html[data-theme="pipboy"] :is(.avatar[data-status], .presence-status)::after,
 html[data-theme="pipboy"] .carousel-nav > a,
 html[data-theme="pipboy"] .carousel > .carousel-slide::scroll-marker,
 html[data-theme="pipboy"] .btn[aria-pressed]::before { border-radius: 0; }
+/* Core's typing dots are radial circles (no shape token): square LEDs. */
+html[data-theme="pipboy"] .typing::before {
+  background:
+    linear-gradient(var(--typing-dot, currentColor) 0 0) 0 50% / 0.4em 0.4em no-repeat,
+    linear-gradient(var(--typing-dot, currentColor) 0 0) 50% 50% / 0.4em 0.4em no-repeat,
+    linear-gradient(var(--typing-dot, currentColor) 0 0) 100% 50% / 0.4em 0.4em no-repeat;
+}
+/* Core's carousel arrows hard-code a 999px radius: a drawn square key. */
+@supports selector(::scroll-button(*)) {
+  html[data-theme="pipboy"] .carousel::scroll-button(*) { border-radius: 0; border: 1px solid var(--border); background: transparent; }
+}
+/* Unchecked boxes: the dark-scheme UA box is grey; draw a phosphor outline.
+   Checked keeps the native glyph, tinted by accent-color. */
+html[data-theme="pipboy"] :is(.checkbox, .radio):not(:checked, :indeterminate) {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: transparent;
+}
+html[data-theme="pipboy"] .radio:not(:checked) { border-radius: 50%; }
 
 /* HP | LEVEL | AP: solid dim-green blocks with bright uppercase text,
    under the same 2px phosphor rule as the bar. */
@@ -208,14 +243,14 @@ html[data-theme="pipboy"] .app-status:not(.taskbar) > * {
   background: color-mix(in srgb, var(--accent) 22%, var(--bg));
   color: var(--text);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
 }
 html[data-theme="pipboy"] h1,
 html[data-theme="pipboy"] h2,
-html[data-theme="pipboy"] h3 { text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400; }
-/* Emphasis is a brighter phosphor, not a heavier stroke. */
+html[data-theme="pipboy"] h3 { text-transform: uppercase; letter-spacing: 0.04em; }
+/* Headings glow brighter than body text. */
 html[data-theme="pipboy"] :is(h1, h2, h3) { text-shadow: 0 0 6px color-mix(in srgb, currentColor 55%, transparent); }
-html[data-theme="pipboy"] :is(strong, b) { font-weight: 400; text-shadow: 0 0 5px color-mix(in srgb, currentColor 60%, transparent); }
+html[data-theme="pipboy"] :is(.input, .textarea)::placeholder { text-shadow: none; }
 
 /* Wide mono cells: at the phone tier, tables set smaller so inputs inside
    cells keep a usable width; the glow is dropped there too (dense text,

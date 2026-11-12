@@ -119,6 +119,20 @@ files are vendored unmodified.
 - **Used by:** `barbie` (scoped narrowly to the brand mark and `h1` only,
   as the cursive script signature — never body/button text)
 
+## Roboto Condensed
+
+- **Family:** Roboto Condensed (Regular 400, Bold 700 —
+  `RobotoCondensed-Regular.woff2`, `RobotoCondensed-Bold.woff2`; static
+  instances of the variable font, subset to Latin-1 plus common
+  punctuation)
+- **Designer:** Christian Robertson (The Roboto Project Authors)
+- **License:** SIL Open Font License, version 1.1 (`google/fonts` `ofl/robotocondensed/OFL.txt`;
+  older Roboto releases were Apache-2.0, and the file's own name table
+  still carries that line — both permit embedding and redistribution)
+- **Source:** https://fonts.google.com/specimen/Roboto+Condensed and
+  https://github.com/google/fonts/tree/main/ofl/robotocondensed
+- **Used by:** `pipboy` (body, headings, tabs and labels: Fallout 4's Pip-Boy face)
+
 ## Share Tech and Share Tech Mono
 
 - **Family:** Share Tech (Regular 400 — `ShareTech-Regular.woff2`) and
@@ -127,7 +141,7 @@ files are vendored unmodified.
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `pipboy` (Share Tech Mono: code and readouts)
 
 ## DSEG7 Classic
 
