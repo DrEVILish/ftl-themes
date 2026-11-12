@@ -34,21 +34,29 @@ and the two must never converge.
 
 ## Signature details
 
-- **The navigation bar** is a blue gloss with an inset white highlight
-  line and a soft silvery sheen along its top edge, a bold white embossed
+- **The navigation bar** is the iOS 6 steel blue: a smooth fall from a
+  pale sheen at the top to the reference's `#5d779c`, with an inset white
+  highlight line, a bold white embossed
   title and capsule bar buttons. A menubar in the bar and filter chips
   (`.badge-button`) on a bar are capsule bar buttons too. The active
   one is the brighter "Done" blue. Every label on a blue bar, switch and
   check labels included, is white and embossed. A black iPhone status strip sits above
   it in the app shell, with a drawn signal row and battery and no text.
+  The nav bar and the tab bar are pinned (sticky), as UINavigationBar and
+  UITabBar were; on phones, where the demo bar wraps to three rows, only
+  the tab bar stays pinned.
 - **The tab bar** is the black glossy `UITabBar`. It is used both for the
-  app shell's status strip and for `.tabs`. Tabs share the bar evenly
+  app shell's status strip and for `.tabs`. Tab items keep a fixed width and
+  centre as a group, as on an iPad, and share the bar evenly on phones
   (icon over label when a tab has one). The selected tab is a lit square
   whose label glows blue. Status text and ghost buttons on the black bars
   (status strip, `.transport`) take light inks.
-- **The slider** is the `UISlider` groove: a blue track with a dark rim
-  and an inset shade along its top, round-capped, painted inside the
-  padded 24/44px hit area, and a white pearl knob. A vertical slider turns
+- **The slider** is the `UISlider` groove: a blue minimum track and a
+  white-to-grey maximum track, each with a rim and an inset shade along
+  its top, round-capped, painted inside the padded 24/44px hit area, and
+  a white pearl knob. Firefox (`::-moz-range-progress`) and the two-thumb
+  `.slider.is-range` show both; Chromium exposes no fill, so a single
+  slider there shows the white groove. A vertical slider turns
   the rim and shade 90 degrees.
 - **A side rail** (`.nav-rail`) is Mail's mailbox list: one rounded white
   cell group with bold black labels and single hairline separators; the current
@@ -59,8 +67,14 @@ and the two must never converge.
 - **The selected cell** is the `#058cf5` to `#015fe6` gradient with white
   text, and status text inside it turns white too (`.is-selected` and
   `aria-selected="true"` rows, stacked-table labels included).
-- **Section headers** (`.panel-header`, `.table th`) use the plain-table
-  gray-blue gradient with white bold type.
+- **Section headers:** a `.panel-header` is the grouped-table section
+  title, bold `#4c566c` with a white emboss and no bar. `.table th` is the
+  slim plain-table strip, a gray-blue gradient with white bold type.
+- **Text on the pinstripe** (headings, intro copy and breadcrumbs placed
+  straight in `.app-main`) carries the white emboss of iOS 6 header and
+  footer text. Text inside cells has none.
+- **Badges and filter chips** (`.badge`, `.badge-button`) are glossy
+  split pills with bold embossed labels; an active chip is the Done blue.
 - **The modal** is the UIAlertView: navy glass with a gloss band at the
   top, a white rim, centered white text and dark glossy capsule buttons
   that stretch to fill the row. The primary button is lighter, as OK was.
@@ -88,16 +102,17 @@ apart from `aqua`.
 
 ## Deliberate deviations from the reference
 
-- The real iOS 6 nav bar starts at `#bdcbdc`, where a white title is
-  about 1.7:1. This theme starts it at `#5b779c`, so the title and bar
-  buttons hold 4.5:1 across the whole gradient. The gloss split is kept
-  by a hard break at 50% to a darker lower half, plus the inset highlight
-  line and a soft inset sheen in the top few pixels (a shadow, above any
-  label), not by a pale top stop. Do not lighten the gradient:
-  `scripts/check.py` measures every stop.
-- The count badge (`#8795af` in the reference) and the plain section
-  header gradient are darkened for the same reason: the header's white
-  0.95rem bold label is below WCAG's large-text size, so it needs 4.5:1.
+- The real iOS 6 nav bar runs from `#b8c9de` to `#5d779c`; a white title
+  on its top half is about 1.7:1. This theme's background gradient spans
+  only `#5d779c` to `#5a7499`, so white holds 4.5:1 at every stop
+  (`scripts/check.py` measures them). The paler steel of the upper bar
+  is an inset sheen (a shadow) that fades out by the label's x-height:
+  the bar's top edge renders about `#7e95b4`, and the bold 1.25rem
+  title (large text) stays above 4:1. The bar is smooth, with no 50%
+  break, as the reference is. Do not lighten the stops.
+- The count badge (`#8795af` in the reference) and the plain-table
+  header strip are darkened for the same reason: their white labels are
+  below WCAG's large-text size, so they need 4.5:1.
 - Instrument readouts keep extra padding (`0.3em 0.5em`) inside their
   black gloss box, so the figures never touch the painted edge.
 - The pinstripe contrast is raised slightly, so it still reads on a

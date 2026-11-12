@@ -60,11 +60,12 @@ html[data-theme="ios-skeuomorphic"] {
     repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 5px),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 11px),
     #434852;
-  /* Gloss split by darkening the lower half: a pale top would drop the
-     white bar text under 4.5:1 (see Deliberate deviations). The silvery
-     sheen is a soft inset glow in the top few pixels, above any label. */
-  --ios-navbar: linear-gradient(180deg, #5b779c 0%, #52709a 50%, #3f5a82 50%, #3a5379 100%);
-  --ios-navbar-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 8px 6px -4px rgba(230, 236, 246, 0.6), inset 0 -1px 0 #2d405c;
+  /* The iOS 6 steel-blue bar: a smooth fall to the reference's own bottom
+     stop #5d779c, no hard break. Every stop holds white at 4.5:1; the paler
+     steel of the upper bar is a soft inset sheen fading out above the
+     label's x-height (see Deliberate deviations). */
+  --ios-navbar: linear-gradient(180deg, #5d779c 0%, #5a7499 100%);
+  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 14px 14px -6px rgba(184, 201, 222, 0.5), inset 0 -1px 0 #2d405c;
   --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
   --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
   --ios-select: linear-gradient(180deg, #058cf5 0%, #015fe6 100%);
@@ -112,12 +113,19 @@ html[data-theme="ios-skeuomorphic"] {
   /* --- Slider / progress: UISlider and UIProgressView ------------------- */
   --slider-height: 0.55rem;
   --slider-radius: 999px;
-  /* The groove's dark rim and inset shade are painted inside the content
-     box: core keeps the border transparent so the hit area reaches --tap-min. */
+  /* The groove's rim and inset shade are painted inside the content box:
+     core keeps the border transparent so the hit area reaches --tap-min.
+     --slider-bg is the white maximum track; --ios-slider-min is the blue
+     minimum track, drawn where the browser exposes the filled part. */
   --slider-bg:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 3px),
+    linear-gradient(180deg, #9a9a9a 0 1px, #d6d6d6 1px, #fdfdfd calc(100% - 1px), #9a9a9a calc(100% - 1px));
+  --ios-slider-min:
     linear-gradient(180deg, rgba(0, 0, 0, 0.22), transparent 3px),
     linear-gradient(180deg, #2b5fae 0 1px, #3b7fe0 1px, #7cb3f6 calc(100% - 1px), #2b5fae calc(100% - 1px));
-  --slider-border: #2b5fae;
+  --slider-range-fill: var(--ios-slider-min);
+  --slider-fill: #3b7fe0;
+  --slider-border: #9a9a9a;
   --slider-thumb-size: 1.45rem;
   --slider-thumb-bg: radial-gradient(circle at 50% 35%, #ffffff 0%, #f1f1f1 45%, #c9c9c9 100%);
   --slider-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(0, 0, 0, 0.15);
@@ -136,8 +144,9 @@ html[data-theme="ios-skeuomorphic"] {
   --panel-border: var(--border);
   --panel-radius: var(--radius);
   --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
-  --panel-header-bg: var(--ios-section-head);
-  --panel-header-fg: #ffffff;
+  /* A grouped section's title is embossed slate type, not a filled bar. */
+  --panel-header-bg: transparent;
+  --panel-header-fg: #4c566c;
   --card-bg: var(--surface);
   --card-border: var(--border);
   --card-radius: var(--radius);
@@ -242,7 +251,11 @@ html[data-theme="ios-skeuomorphic"] {
   --carousel-dot-active: #4c566c;
 
   /* --- Badges: the Settings count pill (gray-blue) ----------------------- */
-  --badge-bg: #637394;   /* white on it 4.8:1 (#67779a was 4.49) */
+  /* The count pill's gloss split; white holds 4.5:1 from the top stop
+     (#637394, 4.8:1; the reference's #67779a was 4.49) down. */
+  --badge-bg: linear-gradient(180deg, #637394 0%, #5d6d8f 50%, #536284 51%, #4e5d7e 100%);
+  --badge-bg-active: var(--ios-donebtn);
+  --badge-fg-active: #ffffff;
   --badge-fg: #ffffff;
   --badge-border: transparent;
   --badge-radius: 999px;
@@ -504,6 +517,13 @@ html[data-theme="ios-skeuomorphic"] .app-bar .menubar > li:focus-within > [role=
 @media (hover: hover) {
   html[data-theme="ios-skeuomorphic"] .app-bar .menubar > li:hover > [role="menuitem"] { background: var(--ios-donebtn); border-color: #193f7d; }
 }
+/* Filter chips anywhere: the glossy slate pill, bold and embossed, Done
+   blue when on. On a bar they become capsule bar buttons (below). */
+html[data-theme="ios-skeuomorphic"] .badge-button {
+  font-weight: 700;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
 /* Filter chips on a bar are bar buttons too: bold, glossy, Done blue when on. */
 html[data-theme="ios-skeuomorphic"] :is(.app-bar, .nav, .toolbar:not(.is-plain)) .badge-button {
   --badge-bg: var(--ios-barbtn);
@@ -552,15 +572,21 @@ html[data-theme="ios-skeuomorphic"] .tab {
   text-shadow: 0 -1px 0 #000;
 }
 html[data-theme="ios-skeuomorphic"] .tabs .tab:hover { color: #ffffff; }
-/* UITabBar items share the bar evenly, icon over label. */
+/* UITabBar items, icon over label: on an iPad they keep a fixed width
+   and centre as a group; on a phone they share the bar evenly. */
+html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) { justify-content: center; }
 html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab {
-  flex: 1 1 0;
+  flex: 0 0 auto;
+  min-inline-size: 6.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.15em;
   min-block-size: max(2.75rem, var(--tap-min));
   text-align: center;
+}
+@media (max-width: 480px) {
+  html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab { flex: 1 1 0; min-inline-size: auto; }
 }
 html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab:has(> .icon) { flex-direction: column; }
 html[data-theme="ios-skeuomorphic"] .tabs:not([aria-orientation="vertical"]) > .tab > .icon { width: 1.4em; height: 1.4em; }
@@ -583,8 +609,15 @@ html[data-theme="ios-skeuomorphic"] .slider.is-vertical:not(.is-range > .slider)
   padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
   border-radius: 50% / calc(var(--slider-height) / 2);
   --slider-bg:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.22), transparent 3px),
-    linear-gradient(90deg, #2b5fae 0 1px, #3b7fe0 1px, #7cb3f6 calc(100% - 1px), #2b5fae calc(100% - 1px));
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 3px),
+    linear-gradient(90deg, #9a9a9a 0 1px, #d6d6d6 1px, #fdfdfd calc(100% - 1px), #9a9a9a calc(100% - 1px));
+}
+/* The blue minimum track. Firefox exposes it; Chromium has no fill
+   pseudo-element, so there the groove stays the white maximum track. */
+html[data-theme="ios-skeuomorphic"] .slider::-moz-range-progress {
+  block-size: 100%;
+  border-radius: calc(var(--slider-height) / 2);
+  background: var(--ios-slider-min);
 }
 
 /* --- Segmented control (bordered style) ---------------------------------- */
@@ -606,19 +639,12 @@ html[data-theme="ios-skeuomorphic"] .segmented-item.is-active {
 
 /* --- Grouped cells: panels, cards, lists, field rows ---------------------- */
 html[data-theme="ios-skeuomorphic"] .panel-header {
-  --success-text: #c9f7b8;
-  --warning-text: #ffe2a3;
-  --danger-text: #ffd0d2;
-  --muted: #eef2f7;
-  --accent-text: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
-  border-bottom-color: #4c5c71;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow: var(--ios-emboss-light);
+  border-bottom-color: var(--hairline);
 }
-/* A console key on the bar is its own light cap: dark captions, as below it. */
-html[data-theme="ios-skeuomorphic"] .panel-header .key { --muted: #4c566c; text-shadow: none; }
+html[data-theme="ios-skeuomorphic"] .panel-header .key { text-shadow: none; }
 html[data-theme="ios-skeuomorphic"] .list-item { font-weight: 700; }
 html[data-theme="ios-skeuomorphic"] .list-item.is-active { --list-item-fg: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .list-item.is-active,
@@ -672,6 +698,8 @@ html[data-theme="ios-skeuomorphic"] .scrollspy-link { font-weight: 700; text-sha
 
 /* --- Tables ------------------------------------------------------------- */
 html[data-theme="ios-skeuomorphic"] .table th {
+  /* The plain-table section strip: a slim 22pt band. */
+  padding-block: 0.2rem;
   font-size: 0.85em;
   font-weight: 700;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
@@ -886,11 +914,21 @@ html[data-theme="ios-skeuomorphic"] .app-bar {
   --nav-item-fg: #ffffff;
   --focus: #ffffff;
   --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.35);
-  position: relative;
   /* The iPhone status bar: a black strip above the navigation bar. */
   border-top: 1.15rem solid #000000;
   box-shadow: var(--ios-navbar-highlight), 0 1px 3px rgba(0, 0, 0, 0.35);
-  z-index: var(--z-raised);
+}
+/* UINavigationBar and UITabBar never scroll away. The stacking context also
+   keeps in-flow menus from painting over the bar buttons. */
+html[data-theme="ios-skeuomorphic"] :is(.app-bar, .app-status) { position: sticky; z-index: var(--z-sticky); }
+html[data-theme="ios-skeuomorphic"] .app-bar { top: 0; }
+html[data-theme="ios-skeuomorphic"] .app-status { bottom: 0; }
+/* A phone's bar wraps to three rows here, too tall to pin; the tab bar stays. */
+@media (max-width: 480px) {
+  html[data-theme="ios-skeuomorphic"] .app-bar { position: relative; }
+}
+@media print {
+  html[data-theme="ios-skeuomorphic"] :is(.app-bar, .app-status) { position: static; }
 }
 /* Battery glyph at the right of the status strip, drawn, not written. */
 html[data-theme="ios-skeuomorphic"] .app-bar::before {
@@ -940,6 +978,9 @@ html[data-theme="ios-skeuomorphic"] .app-status {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   text-shadow: 0 -1px 0 #000000;
 }
+/* Headings and notes written straight on the pinstripe carry the white
+   emboss of grouped-table header and footer text; text inside cells doesn't. */
+html[data-theme="ios-skeuomorphic"] .app-main > :is(h1, h2, h3, p, .breadcrumbs) { text-shadow: var(--ios-emboss-light); }
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
  * Phone and tablet: core puts the title and the bar buttons on line 1 and
  * the nav buttons on a scrolling line 2; the 44px bar buttons centre their
