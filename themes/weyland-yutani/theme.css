@@ -141,7 +141,9 @@ html[data-theme="weyland-yutani"] {
   --modal-header-bg: var(--wy-plate);
   --modal-header-fg: var(--wy-plate-fg);
   --modal-radius: 0;
-  --modal-shadow: 0 0 0 1px #000, 0 12px 32px rgba(0, 0, 0, 0.7);
+  --modal-shadow: 0 0 0 1px #000, 4px 4px 0 #000;   /* a hard machined drop, no blur */
+  --fab-radius: 0;
+  --fab-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.55);
   --overlay-bg: rgba(6, 5, 3, 0.8);
   --dropdown-bg: var(--surface-2);
   --dropdown-radius: 0;
@@ -290,7 +292,19 @@ html[data-theme="weyland-yutani"] h3 { font-size: 0.95rem; letter-spacing: 0.12e
 /* Michroma has one thin weight; a stroke painted under the fill gives the
    display caps the stamped weight of the Microgramma Bold Extended wordmark
    without clogging the counters. */
-html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header) { -webkit-text-stroke: 0.07em currentColor; paint-order: stroke fill; }
+html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header, .nav-brand) { -webkit-text-stroke: 0.07em currentColor; paint-order: stroke fill; }
+/* The wordmark is the most identity-bearing line and only 16px, so it takes
+   a heavier stroke to match the Bold Extended corporate mark. */
+html[data-theme="weyland-yutani"] .nav-brand { -webkit-text-stroke-width: 0.09em; }
+/* Phones: the stroke and glow cost a frame budget a scroll cannot spare;
+   wider tracking carries the stamped look instead. */
+@media (max-width: 480px) {
+  html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header) { -webkit-text-stroke: 0; letter-spacing: 0.12em; }
+  html[data-theme="weyland-yutani"] { --readout-glow: none; }
+  html[data-theme="weyland-yutani"][data-variant] :is(h1, h2, .nav-brand, .readout) { text-shadow: none; }
+  /* The tray's tracked caps clipped against its own frame on a phone. */
+  html[data-theme="weyland-yutani"] .taskbar .taskbar-tray { letter-spacing: 0.02em; padding-inline: 0.5em; }
+}
 /* <strong> in a title asked for 900, outside the face's 400-700 range,
    which pulled a stray glyph from elsewhere. */
 html[data-theme="weyland-yutani"] :is(.panel-header, .modal-header) :is(strong, b) { font-weight: inherit; }
@@ -308,7 +322,7 @@ html[data-theme="weyland-yutani"] :is(.panel-header, .table th, .modal-header, .
 /* Every label surface speaks in stencil caps, including the <button>s whose
    UA style resets the bar's inherited text-transform. */
 html[data-theme="weyland-yutani"] .app-bar .menubar > li > :is(button, a),
-html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .taskbar-start, .bulk-bar-count) {
+html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .taskbar-start, .bulk-bar-count, .master-detail-list .list-item) {
   text-transform: uppercase;
   letter-spacing: var(--label-tracking);
 }
@@ -326,6 +340,12 @@ html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) {
 html[data-theme="weyland-yutani"] .input,
 html[data-theme="weyland-yutani"] .select,
 html[data-theme="weyland-yutani"] .textarea { font-family: var(--font-mono); }
+/* Table status labels are stencil caps too, a size up so the caps stay open. */
+html[data-theme="weyland-yutani"] .table td .status {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
 html[data-theme="weyland-yutani"] .badge {
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -407,14 +427,10 @@ html[data-theme="weyland-yutani"] .meter::after {
   background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0 1px, transparent 1px 3px);
 }
 html[data-theme="weyland-yutani"] .meter::after {
-  background-image:
-    repeating-linear-gradient(90deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem),
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px);
+  background-image: repeating-linear-gradient(90deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem);
 }
 html[data-theme="weyland-yutani"] .meter-v::after {
-  background-image:
-    repeating-linear-gradient(0deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem),
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px);
+  background-image: repeating-linear-gradient(0deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem);
 }
 
 /* --- Layout -------------------------------------------------------------- *
@@ -475,6 +491,7 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) {
 /* Machined parts are square: carousel markers, the arrows and the spinner
    ring have no radius token in core, so it is set here (shape only). */
 html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner) { border-radius: 0; }
+html[data-theme="weyland-yutani"] :is(.has-badge, .avatar, .presence-status)::after { border-radius: 0; }
 html[data-theme="weyland-yutani"] .carousel > .carousel-slide::scroll-marker,
 html[data-theme="weyland-yutani"] .carousel::scroll-button(*) { border-radius: 0; }
 
@@ -490,6 +507,8 @@ html[data-theme="weyland-yutani"] .card:has(> .stat-value) {
 }
 /* The header rows' values glow in the screen's phosphor; labels stay muted. */
 html[data-theme="weyland-yutani"] .stat-value { color: var(--accent); text-shadow: var(--readout-glow); }
+/* Label over value, as the header rows' label column sits over the figures. */
+html[data-theme="weyland-yutani"] .card:has(> .stat-value) > :is(.stat-label, .stat-value) { display: block; }
 
 /* The readout is a boxed counter cell (romulus-colony-work-contract.webp):
    a lit inner outline 1px inside the glass frame. */
@@ -575,9 +594,9 @@ html[data-theme="weyland-yutani"][data-variant="mother"] {
   --panel-border: var(--wy-line-dim);
   --app-status-bg: var(--bg);
   --wy-rail-base: var(--bg);
-  --bg: #020a05;
-  --surface: #06130a;
-  --surface-2: #0b1d10;
+  --bg: #020603;
+  --surface: #060d08;
+  --surface-2: #0b160e;
   --border: #2f6a3c;
   --hairline: #11301a;
   --text: #a6f7b8;
@@ -612,9 +631,9 @@ html[data-theme="weyland-yutani"][data-variant="emergency"] {
   --panel-border: var(--wy-line-dim);
   --app-status-bg: var(--bg);
   --wy-rail-base: var(--bg);
-  --bg: #0c0302;
-  --surface: #170705;
-  --surface-2: #220c08;
+  --bg: #080202;
+  --surface: #110706;
+  --surface-2: #1a0b09;
   --border: #7a2a1e;
   --hairline: #3a120c;
   --text: #ffbcaa;
@@ -649,9 +668,9 @@ html[data-theme="weyland-yutani"][data-variant="earth"] {
   --panel-border: var(--wy-line-dim);
   --app-status-bg: var(--bg);
   --wy-rail-base: var(--bg);
-  --bg: #02090c;
-  --surface: #061419;
-  --surface-2: #0a1f26;
+  --bg: #020608;
+  --surface: #060e11;
+  --surface-2: #0a171b;
   --border: #23687a;
   --hairline: #0f313b;
   --text: #a4efff;

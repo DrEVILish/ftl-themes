@@ -19,19 +19,23 @@ reproduced.
 1. **Utilitarian, never glossy.** `--radius: 0`, no gradients, no
    bevels, no blurs. Panels are thin flat outlines.
 2. **Labels are stencil.** Headings, buttons, table heads, panel titles,
-   badges, nav, menubar, segmented keys, window titles and the status
+   badges, table status labels, nav (including the settings section list),
+   menubar, segmented keys, window titles and the status
    strip are uppercase with wide tracking (`--label-tracking: 0.14em`).
    Headings, panel titles, table heads, tabs, stat labels, title plates
    and the brand are set in Michroma, an extended Microgramma-class face;
-   headings, panel titles and title plates take a 0.07em text stroke
+   headings, panel titles, title plates and the brand (0.09em, as the
+   wordmark is the heaviest line) take a 0.07em text stroke
    painted under the fill (so counters stay open) so they read as the
    Bold Extended plate lettering, and panel titles are in bone `--text`.
+   On phones the heading stroke and the glows are dropped (wider tracking
+   instead) to keep scrolling inside the frame budget; the brand keeps it.
    Tabs inside desktop windows and on phones, and panel-header badges,
    drop to Share Tech: the extended face wrapped those rows (and its `%`
    draws as `o/o`).
 3. **Amber is the phosphor, and only readouts glow.** `.readout`, `.meter`
    and stat-tile values (the header rows' values) are in the phosphor with a
-   faint 4px glow; only readouts and meters get scanlines. A readout is
+   faint 4px glow; only readouts get scanlines and meters are segmented. A readout is
    a boxed counter cell: a lit `--wy-line-hi` outline 1px inside its glass
    frame, after the outlined digit boxes of the Romulus colony contract.
 4. **Hazard striping is a danger signal, not a palette.** Yellow/black
@@ -44,7 +48,8 @@ reproduced.
 6. **Buttons are chunky caps.** 2px edge, dark underside lip, drops 2px on
    press. Primary is a solid amber block; success is a lit green outline
    on glass black, not a green slab. Icon buttons are square
-   (`--btn-icon-radius: 0`), as are carousel markers and the spinner.
+   (`--btn-icon-radius: 0`), as are the FAB (flat lip, no blur), carousel
+   markers, the spinner, count badges and avatar presence marks.
 
 ## Signature details
 
@@ -55,14 +60,15 @@ reproduced.
   (the top-left one is drawn on the panel header when there is one); a
   solid amber square before each panel title. A second header further down
   a panel (a sub-section) has no plate or mark of its own.
-- Stat tiles are the terminals' header rows: muted label and amber phosphor
-  value over one long double rule in `--wy-line-hi`, with no box.
+- Stat tiles are the terminals' header rows: muted label stacked over the
+  amber phosphor value, over one long double rule in `--wy-line-hi`, with no box.
 - Ghost buttons keep a lit `--wy-line-hi` underside lip (amber on hover) so
   they still read as soft keys.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
-  scanline overlay; amber mono readouts on glass-black.
+  segment gaps (one gradient layer); amber mono readouts on glass-black.
 - Selected rows and edited cells are an opaque inverse-video amber
   (`--accent` 22% into `--surface`), not a translucent tint.
+- Modals and windows cast a hard 4px machined drop, no blur.
 - Modal and window title plates are set small (0.9rem, 0.02em tracking)
   and panel titles track at 0.06em, so titles fit one line; on phones the
   brand shares the bar's first row with the menubar and truncates first,
@@ -88,7 +94,9 @@ In every variant the beige plate becomes an inverse-video phosphor band
 outlines, and headings and readouts glow. Short UI lines (table cells,
 helper text, list items, breadcrumbs) go to tracked caps like the
 screens; paragraphs and inputs stay mixed case for reading. Body text is a light tint of the
-phosphor and the chart series are phosphor shades; only the status
+phosphor and the chart series are phosphor shades; backgrounds are near
+black with only a trace of the phosphor, so separation comes from the
+phosphor outlines, not tinted fills; only the status
 colours (success, warning, danger) step outside the screen's hue so they
 stay distinguishable.
 
