@@ -37,7 +37,11 @@ menu, not a calm productivity tool.
    bold italic caps; panel headers carry a `1px 1px 0` drop. Button labels
    never go below `0.875rem`. Window and dialog controls (close,
    minimize, maximize) drop back to the upright body face at `1rem` so the
-   glyphs stay legible. No glow.
+   glyphs stay legible (their wider glyph box applies to fine pointers
+  only; touch keeps core's 44px tap size). Table header cells, KPI values
+  (`.stat-value`, 800 at `1.85rem`) and `.readout` timecodes also take
+  the heavy italic display face, like the menu's currency counters; mono
+  is kept for code and log lines. No glow.
 3. **Angles, not curves.** `--radius: 0.2rem`; badges and avatars
    `0.15rem`, switches `0.2rem`, switch and slider thumbs `0.1rem`, icon
    buttons follow `--radius` (no circles). The primary button carries the
@@ -56,11 +60,15 @@ menu, not a calm productivity tool.
 
 - The brand badge carries the flame: three curved tongues (red
   `#e3171b`, orange `#ff5f00`, yellow core `#ffcc00`) sweeping about 3rem
-  back to long points on the left, the inner tongues tapering into a red
+  back to sharp, curved points on the left with red showing between them,
+  the inner tongues tapering into a red
   body (`#e3171b` to `#b0080c` top to bottom, kept red so the white
   wordmark holds 4.77:1) that ends in a point on the right, all outlined
   in a 1.5px `#ffcc00` line. It is two inline SVG backgrounds, so nothing
-  decorative ever sits behind nav text.
+  decorative ever sits behind nav text. The wordmark starts `3.4rem` in,
+  clear of the yellow core, and the badge is at least `7.5rem` wide so
+  short names get a full body; below 600px the tail shortens to `2.6rem`
+  and nav strips tighten their gap to `0.5rem`.
 - Dialog headers carry a second flame: the same three tongues at the
   start edge of the yellow band, with the title padded clear of it.
 - The app bar is solid `--hw-blue` with a 4px yellow rule and orange then
@@ -70,9 +78,20 @@ menu, not a calm productivity tool.
   plate (`#2a64e8` with a lighter `#3f7cf0` upper half and a 2px pale cyan
   `#a8dcff` top edge, so it reads as glossy; painted as backgrounds with
   angled ends, not clip-path, so focus rings are never clipped) with white
-  italic text; selected table
-  and list rows use the same blue.
-- Table headers are the yellow band with deep-blue text.
+  italic text; rail items keep `0.9rem` of end padding so trailing counts
+  sit on the flat part of the plate. Selected rows in a sidebar list
+  (`nav .list-item`) take the same plate, and single-line sidebar rows the
+  display face, so every sidebar selects alike; selected table rows use
+  the same blue.
+- Table headers are the yellow band with deep-blue display italic caps
+  (`0.85rem`, `0.03em` tracking).
+- The horizontal tab strip runs along a length of orange track: a 4px
+  `#ff5f00` border with a 2px `#ffa040` upper lip and a 2px `#b84400`
+  lower lip, the one large orange mass on the blue page.
+- Alerts are track panels too: the `--border` dark-blue edge all round and
+  a 4px bottom lip in the state colour (orange by default, `#a8dcff` info,
+  `#29d17a` success, `#ffcc00` warning, `#e3171b` danger), not thin
+  coloured keylines.
 - Panels, cards, popovers and dialogs are edged in a darker blue
   (`--border` `#0d2a80`) and carry one heavy 4px orange track lip along
   their bottom edge (`--panel-shadow`/`--card-shadow`), not thin orange
@@ -128,11 +147,11 @@ filled, marker dots are r1.2 rings, colour is always `currentColor`.
 
 ## Typography
 
-`--font-display` is Barlow Semi Condensed ExtraBold Italic (OFL, vendored in `assets/fonts/`, see `NOTICE.md`), falling back to Antonio Bold (vendored for lcars, slanted by the browser), then `"Arial Narrow", "Liberation Sans Narrow", Impact`; it sets headings, buttons, nav items, the app bar's menubar links, tabs, the brand, panel headers and dialog headers at weight 800 with `0.01em` tracking. Labels inside buttons, nav items and tabs get `0.15em` of end padding so the italic's last letter is never clipped. It is the closest free match to the game menu's heavy, squarish semi-condensed italic caps (`MULTIPLAYER`, `BASEMENT`), not the real logo lettering. Body `--font` is a plain system sans (`Arial, "Helvetica Neue", "Liberation Sans"`); `--font-mono` is `"Courier New", Consolas, monospace`.
+`--font-display` is Barlow Semi Condensed ExtraBold Italic (OFL, vendored in `assets/fonts/`, see `NOTICE.md`), falling back to Antonio Bold (vendored for lcars, slanted by the browser), then `"Arial Narrow", "Liberation Sans Narrow", Impact`; it sets headings, buttons, nav items, the app bar's menubar links, tabs, the brand, panel headers, dialog headers, table header cells, KPI values and readouts at weight 800 with `0.01em` tracking. Labels inside buttons, nav items and tabs get `0.15em` of end padding so the italic's last letter is never clipped. It is the closest free match to the game menu's heavy, squarish semi-condensed italic caps (`MULTIPLAYER`, `BASEMENT`), not the real logo lettering. Body `--font` is a plain system sans (`Arial, "Helvetica Neue", "Liberation Sans"`); `--font-mono` is `"Courier New", Consolas, monospace`.
 
 ## Contrast honesty
 
-- **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--accent` (links, secondary buttons, GO, readouts, active tabs, the current breadcrumb) is the flame yellow `#ffd21a`: 4.68:1 on the bar, 4.83:1 on `--surface-2`, 5.5:1 on `--surface`. h1 uses `#ffcc00`. Orange stays a fill (buttons, avatars, pagination, accent badges, progress) and the track lip. Code blocks and their inserted/deleted lines sit in a darker `#0f2c88` well so token colours keep their margin.
+- **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--accent` (links, secondary buttons, GO, readouts, active tabs, the current breadcrumb) is the flame yellow `#ffd21a`: 4.68:1 on the bar, 4.83:1 on `--surface-2`, 5.5:1 on `--surface`. h1 uses `#ffcc00`. Orange stays a fill (buttons, avatars, pagination, accent badges, progress) and the track lip. Code blocks and their inserted/deleted lines sit in a darker `#0f2c88` well so token colours keep their margin; highlighted lines are a solid `#1a3d9c` (the yellow accent token holds 6.6:1 on it).
 - **Dark text on the fills.** `--on-accent` `#1a0900` is 8.22:1 on `#ff8a1a`; `--on-danger` `#1a0000` 5.23:1 on `#ff2d2d`. Yellow fills (table header, dialog header) carry `#0a1a4a` at 11.0:1.
 - **On the blues** `--text` white is 8.07:1 on `--surface` and 7.00:1 on `--surface-2`; `--muted` `#dbe4ff` is 6.36:1 on `--surface`, 5.52:1 on `--surface-2` and 5.34:1 on the bar. White on the selection blue `#2a64e8` is 5.14:1 and on the brand red `#e3171b` 4.77:1. On `--hw-lift` `#2a5ad6` white is 5.95:1 and `--muted` 4.69:1. Dark ink `#1a0900` on the primary flame's darkest stop `#ff5f00` is 6.36:1. The disabled `#b9c6ee` on `#3a4f8f` is 4.59:1.
 - **Badges** are solid: `#1a0900` on `#ff8a1a` 8.22:1, `#0a1a4a` on `#ffcc00` 11.0:1, white on `#e3171b` 4.77:1, `#04220f` on `#29d17a` 8.46:1.
