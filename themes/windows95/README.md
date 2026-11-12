@@ -36,8 +36,18 @@ poster.
 - The content well is *sunken* (`#808080 #ffffff #ffffff #808080` plus an
   inner black line); the status strip is *raised*. The shell itself obeys
   the 3D language, not just the controls.
-- Tables draw a full 1px grid — Explorer's details view, not a modern
-  borderless list.
+- Tables are Explorer's details view: raised push-button column headers
+  (regular weight) over a white well with light horizontal rules only,
+  no vertical body grid; selection is navy.
+- `.btn-clear` / `.btn-icon.is-clear` are 95's flat toolbar buttons: no
+  edge at rest, a thin raised edge on hover, sunken onto the 50% dither
+  when pressed. Never a tinted wash.
+- The FAB is a square 2rem push button with the ordinary bevel, and
+  `.has-badge` counts are square `#800000` plates in a 1px black frame.
+- Invalid fields stay white: the `#800000` ring and message carry the
+  error, as error cells keep only their marker.
+- Title bars sit 2px round 24px caption buttons with a mouse (about 28px,
+  against 95's 18px; the buttons keep the `--tap-min` target).
 - Checkboxes and radios are 95's sunken white wells (`#808080`/`#000000`
   over `#c0c0c0`/`#ffffff`) with a black pixel tick or dot, not the
   browser's accent-coloured control.
@@ -61,6 +71,8 @@ poster.
   triangle (warning), red **X** (danger).
 - Scrollbars (Chromium/WebKit) are 16px: raised square thumb and arrow
   buttons on the 50% white dither track. Firefox keeps its native bar.
+  Every dither (scrollbar track, pressed toggles, active task) is one
+  2x2 PNG token, `--w95-dither`, not a gradient re-rasterised on scroll.
 - `.select` is the 95 combo box: a raised 16px grey drop button with a
   7x4 arrow, flush inside the sunken field's right edge.
 - Separators (`hr`, `.divider`, accordion rows) are etched: `#808080`
@@ -88,7 +100,12 @@ icon set. Style rules:
   rainbow, coins) become polylines through octagon vertices. The settings
   glyph is a plus of tabs around a square, not a gear: the same low-res
   simplification the real set used at 16×16/32×32.
-- `currentColor` only, so icons follow text colour and every state.
+- `currentColor` only, so icons follow text colour and every state —
+  except the shell icons (`icon-device-desktop`, `icon-folder`,
+  `icon-trash`, `icon-globe`, `icon-file-text`, `icon-network`), which are
+  95's colour desktop icons in the 16-colour VGA palette (yellow folder,
+  teal-screened computer, wire bin, blue/green globe) with a 1px black
+  outline and no stroke-width token.
 - Shared geometry: from "Round 2" on, the shapes are the same as
   `winamp-classic`, `winxp-luna` and `wmp11`; only the rendering differs.
   The last 47 ids ("Round 3", core-set top-up) were drawn by a small
@@ -128,7 +145,7 @@ file in `assets/fonts/`, outside this theme's folder).
 
 ## Typography
 
-`--font` is `"Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font; touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on Windows Microsoft Sans Serif renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
+`--font` is `"Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", Arimo, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font; touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on Windows Microsoft Sans Serif renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
 
 ## Contrast honesty
 
