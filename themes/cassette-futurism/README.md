@@ -66,14 +66,27 @@ How it differs from its neighbours:
   **ribbed vent grille rail on the right** (3.25rem) topped by a stripe
   swatch, and a dark VFD status window.
 - Panel headers start with five black vent slots before the title.
-- LED meter ladders (green, amber, red) on dark glass. Progress is an
-  orange segmented bar.
+- LED meter ladders (green, amber, red) on dark glass: every `.meter`
+  fill is masked into discrete lit cells with dark gaps (the progress
+  bar's 0.55rem/0.15rem pitch), counted from the zero end;
+  `.is-segmented` keeps core's finer ladder with faint unlit cells
+  (`--meter-unlit: 0.16`). Progress is an orange segmented bar.
+- Alerts and toasts carry a lamp: a round LED in the chrome bezel, lit in
+  the message's colour. Dropdowns, context menus and popovers sit on the
+  same hard `#4f4538` ledge as the keycaps; carousel markers are small
+  square keys.
+- Selected rows and the active list item are a pressed key: a darker
+  beige recess (`#e2d6bd`) with an inset shadow and the orange marker,
+  never a peach web tint.
+- At phone and tablet width the red Dymo brand keeps its whole name
+  (tracking 0.1em) and the bar links wrap under it.
 - Lamps are round LEDs in a 2px chrome bezel; off lamps are dark domes.
 - Inputs are CRT wells with VFD-teal mono entry and a teal caret; a
   floating label resting in the well is dim VFD teal (`#8fb8b0`).
 - Sliders and faders have a cream cap with a dark centre line, like a
-  mixer fader cap. The slider track is a 6px slot with a shadowed lip,
-  drawn as a background inside core's `--tap-min` hit area.
+  mixer fader cap. The slider track is a 6px slot with a shadowed top
+  lip and a light lower lip (cut into the beige), drawn as a background
+  inside core's `--tap-min` hit area.
 - The dark surfaces (`.app-bar`, `.transport`, code blocks, the status
   window, countdowns) re-point `--text`/`--muted`/`--link` and the state-text tokens
   locally so text on them stays legible; the hero re-points only accent
