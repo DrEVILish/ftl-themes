@@ -27,10 +27,20 @@ interface were machined rather than rendered.
 - Rivets are background layers, not pseudo-elements: one radial-gradient
   dome (lit off-centre, ringed by its dark shadow, transparent past 4.5px)
   in a 10px tile, laid at all four corners. Top-level panels, cards and
-  dialogs sit in a 6px cast-brass bezel (a diagonal `#f5e2b0` → `#c9962c`
-  → `#8a5e1a` → `#4a3010` gradient under a transparent border, leather
-  kept to the padding box, a dark recess inside) with the rivets on the
-  frame's corners; nested plates drop to a plain 2px leather edge.
+  dialogs sit in a 10px cast-brass moulding (6px at phone width): a
+  diagonal `#f5e2b0` → `#c9962c` → `#8a5e1a` → `#4a3010` outer lip under
+  a transparent border, a dark fillet, then a stepped inner band lit the
+  opposite way, leather kept to the padding box, a dark recess inside,
+  with the rivets centred on the frame's corners; nested plates drop to a
+  plain 2px leather edge.
+- Emphasised controls are never flat paint: `.btn-primary`, the active
+  segmented item, the active filter chip and a checked `.toggle-btn` are
+  the brightest polished brass (`#f2d690` → `#d9b062` → `#8a6420` with the
+  polish streak); `.btn-danger` is a lit oxblood enamel (`#c0503c` →
+  `#9e3a2b` → `#5e1f16`) and `.btn-success` a racing green (`#5e8a3a` →
+  `#3f5c26` → `#233614`), like the recorder's jewel buttons.
+- `.checkbox` is a small brass toggle: a cast rim round a dark enamel
+  well, with a lit brass tick when set.
 - Headings, nameplates, buttons and tabs are set in IM Fell English SC, a
   true small-capitals face (not `font-variant` or `text-transform`) — the
   Victorian-print detail uppercase-heading themes skip. Table column heads,
@@ -92,9 +102,11 @@ layout at **L1**.
   figures; headings are engraved (dark cut below, faint polish above).
   Body copy asks for a period book serif (IM Fell English, Libre Caslon,
   EB Garamond, then Georgia/Times) and figures for a typewriter mono
-  (Courier Prime, Courier New); none of these are vendored yet (this
-  pass could not add files to `assets/fonts/`), so the system fallback is
-  what renders where they are missing.
+  (Courier Prime, Courier New). EB Garamond (variable 400-800, set at
+  108% for its small x-height) and Courier Prime are vendored as Latin
+  subsets (OFL), so they are what renders without IM Fell English
+  installed. The scrollspy nav, disclosure summaries, empty-state titles
+  and popover titles also take the display face.
 - **Brass nameplates:** every `.panel-header` is a pale polished-brass
   plate with engraved dark lettering and a slotted screw at each end.
 - **Steam pipes:** a copper pipe with bolted flanges every 220px runs
@@ -131,9 +143,10 @@ layout at **L1**.
   at the level. Vertical meters stay sight glasses (a boiler's level
   gauge); segmented meters keep their lamps.
 - **Knife switches**: `.switch` is a copper blade with a black handle,
-  hinged on a slate base about 25px tall; off, it stands raised at 20
+  hinged on a slate base about 56x30px with a 6px blade; off, it stands raised at 20
   degrees (the handle stays on the slate); on, it lies seated in the
-  copper clip and an amber contact lamp below the blade lights, so the
+  copper clip and a 9px amber contact lamp below the blade lights and
+  glows, so the
   state is not carried by the angle alone.
 - **Filigree**: cards are brass-scrollwork plates (panels keep their
   rivets); dialogs carry smaller (1.6rem) scrolls in their lower corners
