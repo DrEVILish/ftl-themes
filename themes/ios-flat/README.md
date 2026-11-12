@@ -47,8 +47,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 5. **Inset grouped rows merge.** Consecutive `.field-row`s become one
    group: corners only at the ends, a hairline between rows that starts
    1rem in, or at the label when the row has a leading glyph. Tappable
-   `.list-item`s get a grey chevron; a disclosure group's (`.accordion`)
-   chevron turns down when open.
+   `.list-item`s get a grey chevron; a disclosure (`.accordion-item`) is
+   a white rounded cell whose chevron turns down when open, and
+   consecutive disclosures merge the same way.
 6. **The toggle is green.** `#34c759`, 51 by 31 with a white thumb that
    carries the iOS shadow. It is not the accent colour.
 7. **System colours, system fonts.** The palette is the HIG's system
@@ -93,8 +94,9 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   row carries a trailing blue checkmark over the row's grey fill; there
   is no leading marker bar. Figures in tables (order numbers, totals,
   durations) stay in the text face with tabular digits, as iOS's
-  monospacedDigit does; SF Mono is kept for code. A table filling a pane
-  with blank rows is one white rounded cell, unboxed and unstriped.
+  monospacedDigit does; SF Mono is kept for code. Every table is one
+  white rounded group whose row rules start 1rem in (the last row has
+  none); one filling a pane with blank rows is unboxed and unstriped.
   An edited, unsaved cell keeps its orange wash and gains a trailing
   orange dot instead of a side stripe; log and feed lines carry no side
   stripe either (warnings and errors lead with a dot in their colour).
@@ -116,8 +118,10 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   field keeps that fill with no outline; its value turns red and the red
   footnote under it says why. A select's disclosure is a thin
   chevron.up.chevron.down in the tint, never a filled caret.
-- Mail rows mark unread with the blue dot in the leading gutter (the
-  "New" badge's word stays for screen readers). Inset hairlines belong to
+- Mail rows mark unread with the blue dot centred in a 1.6rem leading
+  gutter that every row of that mailbox keeps (the "New" badge's word
+  stays for screen readers); the dot turns white only on the blue
+  selected fill, so on a phone, where the list drills in, it stays blue. Inset hairlines belong to
   grouped lists only; `.list-cards` stay separate cards, and a featured
   card is a 10% tint wash rather than a ring. Section headers
   (`.field-group-title`) have no rule under them.
@@ -141,7 +145,12 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   inline `.alert`s are white cells led by the same tile (no side stripe).
 - Small buttons on a state-washed row sit on a white chip.
 - Badges are capsules; the danger badge is the red notification badge.
-  `.badge-button` filter chips use Subheadline (15px medium).
+  `.badge-button` filter chips use the 13px semibold of the small
+  capsules and segments beside them, so a toolbar row keeps one style.
+- Text buttons (`.btn-clear`) are bar buttons: tint, regular weight.
+- A "Search" addon in front of a search field turns into the field's
+  magnifier, so the group reads as one search field.
+- A tinted `.band` inside the grouped page takes the 10px group radius.
 - Readouts use thin (300) tabular digits like the Stopwatch; stat values
   use SF Rounded (`ui-rounded`) like iOS 14 widgets.
 - Mixer pieces borrow from the system: faders are Control Center slabs,

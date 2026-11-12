@@ -114,6 +114,8 @@ html[data-theme="ios-flat"] {
   --btn-padding-sm: 0.42em 0.9em;   /* the 28pt capsule round 15pt text */
   --btn-shadow: none;
   --btn-icon-radius: 50%;
+  --btn-clear-fg: var(--ios-tint-text);   /* a text button is a bar button: tint means tappable */
+  --btn-clear-bg-active: color-mix(in srgb, var(--accent-text) 10%, var(--surface));   /* opaque, light enough for the tint text at 4.5:1 */
 
   /* --- Inputs: the search-field fill, no border ----------------------- *
    * tertiarySystemFill itself, translucent: #eeeeef over a white cell,
@@ -582,6 +584,9 @@ html[data-theme="ios-flat"] .btn-ghost {
   --btn-weight: 400;
 }
 html[data-theme="ios-flat"] .btn-sm { border-radius: 999px; }
+html[data-theme="ios-flat"] .btn-clear:not(.btn-icon) { --btn-weight: 400; }
+/* A tinted drop zone leaves the tint text under 4.5:1; its text buttons go black. */
+html[data-theme="ios-flat"] .is-drop-target { --btn-clear-fg: var(--text); }
 html[data-theme="ios-flat"] .btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; box-shadow: var(--focus-ring); }
 
 /* --- Inputs ---------------------------------------------------------- */
@@ -747,6 +752,12 @@ html[data-theme="ios-flat"] .accordion-trigger::after {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 13'%3E%3Cpath d='M1.5 1.5L6.5 6.5L1.5 11.5' fill='none' stroke='%23c4c4c7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 html[data-theme="ios-flat"] .accordion-trigger:dir(rtl)::after { transform: scaleX(-1); }
+html[data-theme="ios-flat"] .accordion-item { background-color: var(--surface); border: 0; border-radius: var(--panel-radius); }
+html[data-theme="ios-flat"] .accordion-trigger { min-height: 44px; box-sizing: border-box; padding-inline: 1rem; font-weight: 400; }
+html[data-theme="ios-flat"] .accordion-panel { padding-inline: 1rem; }
+/* Consecutive disclosures merge into one group, an inset hairline between. */
+html[data-theme="ios-flat"] .accordion-item:has(+ .accordion-item) { border-end-start-radius: 0; border-end-end-radius: 0; }
+html[data-theme="ios-flat"] .accordion-item + .accordion-item { border-start-start-radius: 0; border-start-end-radius: 0; box-shadow: inset 1rem 0 0 var(--surface), inset 0 0.5px 0 var(--ios-separator); }
 html[data-theme="ios-flat"] .accordion-item[open] > .accordion-trigger::after { transform: rotate(90deg); }
 /* Pagination's prev/next chevrons drawn large, as the bar's chevrons are. */
 html[data-theme="ios-flat"] a.pagination-item:is(:first-child, :last-child) { font-size: 22px; height: 1.3em; min-width: max(1.3em, var(--tap-min)); }
@@ -756,6 +767,20 @@ html[data-theme="ios-flat"] pre { font-size: 13px; }
 /* Tables as plain lists. Headers in footnote caps; the active row gets
    the trailing blue checkmark a selected cell carries. */
 html[data-theme="ios-flat"] .table th { font-size: 13px; font-weight: 400; border-bottom-width: 0.5px; }
+/* A table is one white rounded group; row rules start 1rem in, as a
+   cell's separator does, and the last row has none. clip, not hidden, so
+   a sticky header still sticks. */
+html[data-theme="ios-flat"] .table { background-color: var(--surface); border-radius: var(--panel-radius); overflow: clip; }
+html[data-theme="ios-flat"] .table td:first-child {
+  border-bottom-width: 0;
+  background-image: linear-gradient(var(--table-rule), var(--table-rule));
+  background-size: calc(100% - 1rem) 1px;
+  background-origin: border-box;
+  background-position: right bottom;
+  background-repeat: no-repeat;
+}
+html[data-theme="ios-flat"] .table td:first-child:dir(rtl) { background-position: left bottom; }
+html[data-theme="ios-flat"] .table tbody tr:last-child td { border-bottom-width: 0; background-image: none; }
 /* An in-cell editor: a rounded field ringed in the tint, not a square box. */
 html[data-theme="ios-flat"] .table :is(td.is-editing, tr.is-editing > td) { --input-border-width: 2px; --cell-input-radius: 6px; }
 html[data-theme="ios-flat"] .table tr.is-active td:last-child {
@@ -770,15 +795,22 @@ html[data-theme="ios-flat"] .table tr.is-active td:last-child {
    monospacedDigit does; SF Mono is for code. */
 html[data-theme="ios-flat"] .table .mono { font-family: var(--font); }
 
+/* A band inside the grouped page is a rounded group like every surface. */
+html[data-theme="ios-flat"] .band.is-tinted { border-radius: var(--panel-radius); }
+
 /* A featured card: a tinted wash, not a thick ring. */
 html[data-theme="ios-flat"] .list-cards > .list-item.is-featured:not(.is-success, .is-warning, .is-danger, .is-info) { background-color: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
 
 /* Mail's unread mark: a blue dot in the leading gutter, the word kept for
    screen readers. */
 html[data-theme="ios-flat"] .list-item:has(> .list-item-meta > .badge-accent) { position: relative; }
+/* A mailbox keeps the dot's gutter on every row, read or not, and insets
+   its separators to the text. */
+html[data-theme="ios-flat"] .list:has(> li > .list-item > .list-item-meta > .badge-accent) > li > .list-item { padding-inline-start: 1.6rem; }
+html[data-theme="ios-flat"] .list:has(> li > .list-item > .list-item-meta > .badge-accent) > li:not(:first-child) { box-shadow: inset 1.6rem 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
 html[data-theme="ios-flat"] .list-item-meta > .badge-accent {
   position: absolute;
-  inset-inline-start: 3px;
+  inset-inline-start: 0.4rem;
   inset-block-start: 17px;   /* centred on the title line (font-size is 0 here) */
   width: 9px;
   height: 9px;
@@ -789,7 +821,19 @@ html[data-theme="ios-flat"] .list-item-meta > .badge-accent {
   font-size: 0;
   background-color: var(--ios-blue);
 }
-html[data-theme="ios-flat"] .list-item:is(.is-active, :has(> input:checked)) > .list-item-meta > .badge-accent { color: inherit; background-color: currentColor; }
+
+/* A "Search" label before a search field becomes the field's magnifier,
+   so the group reads as one search field, not a two-part input group. */
+html[data-theme="ios-flat"] .input-group > .input-addon:has(+ .input[type="search"]) { font-size: 0; padding-inline: 0.6rem 0; border-start-start-radius: var(--input-radius); border-end-start-radius: var(--input-radius); }
+html[data-theme="ios-flat"] .input-group > .input-addon:has(+ .input[type="search"])::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  background-color: var(--muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='6.8' cy='6.8' r='5' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cpath d='M10.5 10.5L14.5 14.5' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='6.8' cy='6.8' r='5' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cpath d='M10.5 10.5L14.5 14.5' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="ios-flat"] .input-group > .input-addon + .input[type="search"] { padding-inline-start: 0.4rem; margin-inline-start: 0; }   /* no overlap: two translucent fills would draw a seam */
 
 /* Section headers have no rule: the white group below separates them. */
 html[data-theme="ios-flat"] .field-group-title { border-bottom: 0; }
@@ -911,8 +955,9 @@ html[data-theme="ios-flat"] .alert-danger { --alert-mark: var(--ios-red); }
 
 /* Badges: tinted capsules; the danger one is the red notification badge. */
 html[data-theme="ios-flat"] .badge { font-weight: 600; }
-/* Filter chips: Subheadline, like the neighbouring segmented labels. */
-html[data-theme="ios-flat"] .badge-button { font-size: 15px; font-weight: 500; }
+/* Filter chips: the 13pt semibold of the neighbouring small capsules and
+   segments, so a toolbar row keeps one text style. */
+html[data-theme="ios-flat"] .badge-button { font-size: 13px; font-weight: 600; }
 html[data-theme="ios-flat"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #ffffff; }
 
 /* --- Navigation ------------------------------------------------------ */
@@ -1017,6 +1062,8 @@ html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+3) { --ios-tile:
 html[data-theme="ios-flat"] .master-detail-list li:nth-child(4n+4) { --ios-tile: var(--accent-2); }
 @container (min-width: 481px) {
   html[data-theme="ios-flat"] .master-detail-list .list-item.is-active { --row-selected-bg: var(--accent); color: var(--on-accent); border-radius: 10px; }
+  /* On the blue fill the unread dot turns white; elsewhere it stays blue. */
+  html[data-theme="ios-flat"] .master-detail-list .list-item.is-active > .list-item-meta > .badge-accent { background-color: var(--on-accent); }
 }
 /* On a phone the list drills in and keeps no selection, as iPhone Settings. */
 @container (max-width: 480px) {
