@@ -28,8 +28,14 @@ is the catalog's extreme-density stress test as much as a period theme.
 4. **Density over chrome.** `--density: 0.7` — the tightest theme in
    the catalog on purpose. No decorative rail, minimal padding, a data
    wall rather than a spacious dashboard.
-5. **Zero radius, zero gloss.** Every corner is square; every fill is
-   flat. This is a data terminal, not a consumer app.
+5. **Zero radius, zero gloss.** Every corner is square, including core's
+   round defaults (icon buttons, switches, avatars, status dots, slider
+   thumbs, carousel dots); every fill is flat, and skeletons blink in steps
+   instead of shimmering. This is a data terminal, not a consumer app.
+6. **Color by role, like the screen.** Labels and names are amber, data
+   values (`.stat-value`, `td.mono`) are terminal white `#e8e8e8`, column
+   headers sit on a grey `#2a2a2a` bar, and panel/modal headers are the
+   dark-red `#7a0000` section bar with white text.
 
 ## Signature details
 
@@ -38,7 +44,20 @@ is the catalog's extreme-density stress test as much as a period theme.
 - Table cells get vertical rules between columns (`border-right`), a grid
   look real terminals use to keep dense columns readable.
 - The status strip text is cyan, not amber — a second information channel,
-  distinct at a glance from the primary data color.
+  distinct at a glance from the primary data color. The colored
+  function-key strip sits in its flow (not over its text), and is left off
+  taskbars so it never covers the Start button.
+- Grouped buttons (`.btn-group`) are filled function-key caps at rest:
+  green navigation keys with black text, the selected/primary one yellow,
+  like the reference's MSG / PgFd / PgBk row.
+- `.btn-go` is the keyboard's filled green `<GO>` key with black text.
+- Screen titles are small and regular weight (h1 1.3rem, h2 1.1rem,
+  h3 1rem): the terminal sets titles at about the size of the data.
+- Sliders draw a dim-amber track (`#8a5c00`, 3.6:1 on black) under a
+  square yellow thumb, inside core's full `--tap-min` hit area.
+- Chart series 3 is the function-key purple `#b05cff` (the key at the
+  right of the reference's zoomed row), since `--warning` equals
+  `--accent` and would repeat series 1.
 
 ## Layout
 
@@ -81,7 +100,8 @@ reads as another data row rather than a conventional status bar.
 - **Amber `#ff9900` is the theme's choice.** `RESEARCH.md` gives no hex for the terminal amber, so it is not a measured reference value. It is 9.81:1 on `--bg`, 9.25:1 on `--surface`, 8.6:1 on `--surface-2`: comfortably AA/AAA.
 - **`--muted` was lifted.** The dimmer amber `#b36b00` (4.4:1) was under the floor; `#b86e00` (4.97:1 on `--surface`) still fell to about 4:1 on the tinted schedule and unread-notification fills, so shipped `#cc7a00` is 6.35:1 on black and at least 4.8:1 on those tints. Yellow highlight tints (`--mark-bg`, `--mention-self-bg`, comment anchors) are lighter than core's so amber text keeps 4.5:1 on them.
 - **Yellow `#ffcc00` (`--accent`)** is 13.9:1 on black and carries black text (`--on-accent`) on filled controls; no deviation. **Cyan `#00ccff`** (second data category) is 10.45:1 on `--surface`.
-- **Green GO.** The reference keyboard's `<GO>` key is green (`bloomberg-keyboard-function-keys.jpg`). The green is kept only in the decorative function-key strip and `<kbd>` cycle (`#2ecc40`) and in `--success` `#33ff66` (15.6:1 on black). It is *not* the interactive colour: primary interaction is yellow (`--accent`) and the second category is cyan. So the GO-green role is substituted, not reproduced, in interactive chrome.
+- **Green GO.** The reference keyboard's `<GO>` key is green (`bloomberg-keyboard-function-keys.jpg`). `.btn-go` and grouped buttons are filled `#2ecc40` with black text (about 10:1); `--accent` stays yellow for primary interaction and the second category is cyan.
+- **Lit tints.** Core's 30% yellow mix on lit pads put amber text at 3.99:1, so `--pad-lit-alpha` is 18%; waveform-marker labels are white on their tint. Muted text inside the red section bars is lifted to `#f0c8a0`.
 - `--danger` `#ff3333` is 5.77:1 on black.
 
 ## Reference status

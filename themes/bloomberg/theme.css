@@ -80,7 +80,103 @@ html[data-theme="bloomberg"] {
   --overlay-bg: rgba(0, 0, 0, 0.9);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
+
+  /* Zero radius everywhere: core's round defaults (icon buttons, switches,
+     avatars, dots, thumbs, pins) all go square, like terminal key caps. */
+  --btn-icon-radius: 0;
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --avatar-radius: 0;
+  --status-dot-radius: 0;
+  --lamp-radius: 0;
+  --presence-radius: 0;
+  --fab-radius: 0;
+  --steps-marker-radius: 0;
+  --swatch-radius: 0;
+  --calendar-date-radius: 0;
+  --comment-pin-radius: 0;
+  --scrubber-thumb-radius: 0;
+  --desktop-monitor-radius: 0;
+  --skeleton-radius: 0;
+
+  /* Slider: core draws the track on the content box of a --tap-min box.
+     A dim-amber track (3.6:1 on black) and a square yellow block thumb. */
+  --slider-bg: #8a5c00;
+  --slider-thumb-radius: 0;
+  --slider-thumb-size: 0.75rem;
+
+  /* Lit pads and waveform markers: core's 30% yellow mix put amber text
+     at 3.99:1. A lighter lit tint, and marker labels in data white. */
+  --pad-lit-alpha: 18%;
+  --waveform-marker-fg: #ffffff;
+  --comment-pin-resolved-fg: var(--text);
+
+  /* Chart series: --warning equals --accent, so series 3 would repeat
+     series 1. The function-key purple from the reference's key row takes
+     its place (white mixed into avatar tints left amber at 4.27:1). */
+  --chart-series-3: #b05cff;
+
+  /* Role colors from the terminal screen: grey column-header bar with
+     light text, dark-red section bars with white text. */
+  --table-head-bg: #2a2a2a;
+  --table-head-fg: #e8e8e8;
+  --panel-header-bg: #7a0000;
+  --panel-header-fg: #ffffff;
+  --panel-header-pad: 0.25rem 0.5rem;
+  --modal-header-bg: #7a0000;
+  --modal-header-fg: #ffffff;
+  --card-pad: 0.5rem;
+  --toolbar-pad: 0.25rem;
+  --toggle-btn-padding: 0.25rem 0.45rem;
+
+  /* The green <GO> key from the real keyboard, filled with black text. */
+  --go-bg: #2ecc40;
+  --go-fg: #000000;
+  --go-border: #2ecc40;
+  --go-bg-hover: #33ff66;
 }
+
+/* Muted amber falls under 4.5:1 on the red section bar; meta text there
+   reads in a light tone instead. */
+html[data-theme="bloomberg"] :is(.panel-header, .modal-header) { --muted: #f0c8a0; }
+
+/* Data values are white on the terminal; amber stays for labels and names. */
+html[data-theme="bloomberg"] .stat-value { --text: #e8e8e8; }
+html[data-theme="bloomberg"] .table td.mono { color: #e8e8e8; }
+
+/* Screen titles are small and regular weight, the same family and close
+   to the size of the data, not code-editor headlines. */
+html[data-theme="bloomberg"] :is(h1, h2, h3) { font-weight: 400; }
+html[data-theme="bloomberg"] h1 { font-size: 1.3rem; }
+html[data-theme="bloomberg"] h2 { font-size: 1.1rem; }
+html[data-theme="bloomberg"] h3 { font-size: 1rem; }
+
+/* Header cells keep at least 4px around their text at --density 0.7. */
+html[data-theme="bloomberg"] .table th { padding-block: 0.3rem; }
+
+/* Function keys: grouped buttons are filled key caps at rest (green
+   navigation keys, the selected one yellow), black text, like the
+   terminal's MSG / PgFd / PgBk row. */
+html[data-theme="bloomberg"] .btn-group > .btn:not(.btn-primary, .btn-danger) {
+  --btn-bg: #2ecc40;
+  --btn-fg: #000000;
+  --btn-border: #2ecc40;
+  --btn-bg-hover: var(--accent);
+}
+
+/* Carousel dots and arrows are hard-coded pills in core. */
+html[data-theme="bloomberg"] .carousel-nav > a,
+html[data-theme="bloomberg"] .carousel > .carousel-slide::scroll-marker,
+html[data-theme="bloomberg"] .carousel::scroll-button(*) { border-radius: 0; }
+
+/* Skeletons: no gradient shimmer, a flat stepped blink. */
+html[data-theme="bloomberg"] .skeleton { background-image: none; animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="bloomberg"]:not([data-motion="reduced"], [data-motion="none"]) .skeleton {
+    animation: bloomberg-blink 1.2s steps(1) infinite;
+  }
+}
+@keyframes bloomberg-blink { 50% { opacity: 0.55; } }
 
 html[data-theme="bloomberg"] .btn:hover { color: #000000; }
 
@@ -136,12 +232,12 @@ html[data-theme="bloomberg"] {
   --app-bar-rule: var(--accent);
   --app-bar-rule-width: 1px;
   --app-bar-height: 1.8rem;
-  --app-bar-padding: 0 0.5rem;
-  --app-main-padding: 0.5rem;
+  --app-bar-padding: 0.25rem 0.5rem;
+  --app-main-padding: 0.35rem;
   --app-status-bg: #0a0a0a;
   --app-status-fg: var(--accent-2);
   --app-status-rule: var(--border);
-  --app-status-padding: 0.15rem 0.5rem 0.15rem 4.4rem;
+  --app-status-padding: 0.25rem 0.5rem;
 
   /* Thin strokes at extreme density — the wireframe look of a data wall,
      never a heavy glyph competing with the numbers around it. */
@@ -151,16 +247,9 @@ html[data-theme="bloomberg"] {
    grey) is as much a Bloomberg signature as the amber screen — drawn as a
    persistent strip on the status bar so it's always visible, not only
    when a page happens to render a <kbd>. */
-html[data-theme="bloomberg"] .app-status {
-  position: relative;
-}
-html[data-theme="bloomberg"] .app-status::before {
+html[data-theme="bloomberg"] .app-status:not(.taskbar, .desktop-bar)::before {
   content: "";
-  position: absolute;
-  left: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3.6rem;
+  flex: 0 0 3.6rem;
   height: 0.6rem;
   background-image: linear-gradient(90deg,
     #ff4136 0 18%, #0a0a0a 18% 20%,
