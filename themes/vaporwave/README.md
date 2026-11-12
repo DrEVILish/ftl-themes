@@ -56,7 +56,7 @@ HUD.
   reaches) under a faint warm sunset glow. The status strip below is the
   floor: a glowing pink horizon line and a perspective grid whose cyan
   rays (0.85 alpha) converge on the sun and whose pink cross-lines widen
-  toward the viewer, with a pink glow. Status text carries a halo in the
+  toward the viewer. Status text carries a halo in the
   strip colour so it stays clear of the lines.
 - Headings carry 4px of padding inside their gradient box (with a
   matching negative margin, so layout is unchanged), so the glyphs never
