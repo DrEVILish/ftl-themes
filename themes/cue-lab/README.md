@@ -24,7 +24,8 @@ stress. Everything in this theme serves that moment.
 3. **Density is a feature.** `--density: 0.85`. Fitting more of the cue
    list on screen is worth more than breathing room.
 4. **Amber is state, not decoration.** `#ff8c1a` marks the active cue, the
-   armed transport, the thing that is about to happen.
+   armed transport, the thing that is about to happen. Brand text, table
+   heads, icons and default chart series stay neutral.
 5. **Neutral greys carry the chrome.** `#141414`/`#1d1d1d`/`#262626` — a
    console body, not a brand colour.
 6. **Numbers are tabular.** Cue numbers and times must not reflow as they
@@ -44,9 +45,18 @@ stress. Everything in this theme serves that moment.
 ## Signature details
 
 - **The transport is the theme.** A flat strip with a 0.3rem amber left
-  edge, carrying GO. GO is a 2px amber outline that fills faintly and
-  blooms on hover — a deliberate, and the *only*, exception to the
-  no-glow rule.
+  edge, carrying GO. GO is the only solid amber block at rest (1.5rem,
+  dark legend) and blooms on hover — a deliberate, and the *only*,
+  exception to the no-glow rule. `.btn-primary` is an amber outline so it
+  never out-shouts GO; secondary and tertiary labels are plain `--text`.
+- **Headings are console labels.** h2/h3 are small uppercase `--muted`
+  labels; h1 and marketing headlines stay full-size `--text`.
+- **Square everything.** Badges, avatars, switches, slider thumbs and icon
+  buttons use `--radius` (or 0), not pills or circles. Overlay shadows are
+  set to `none` explicitly (`--panel-shadow` and friends).
+- **Selection is neutral.** A selected row lifts to `#333`; the amber tint
+  belongs to the one standing-by row. Table heads, brand, info alerts,
+  icons and the default chart series are neutral.
 - **Meters** use conventional green/amber/red banding, squared off
   (`--meter-radius: 0`).
 - **Lamps** are square and unlit-dark with no bloom: panel LEDs, not
@@ -81,8 +91,8 @@ Don't:
 - Introduce a gradient or a shadow anywhere.
 - Round corners to soften the look.
 - Use a universal `!important` reset to enforce flatness — that erases
-  state indicators like the active-row marker. Express flatness by leaving
-  the `--*-shadow` properties unset.
+  state indicators like the active-row marker. Express flatness through
+  the `--*-shadow` tokens, set to `none` where core has a fallback shadow.
 
 ## Tell-tales of an inauthentic result
 

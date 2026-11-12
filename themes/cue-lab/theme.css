@@ -2,8 +2,8 @@
  * Theme-Name: Cue Lab
  * Description: A flat, glow-free live-show console: hairline grids and a single amber accent, the deliberate opposite of blue-future's neon.
  *
- * "Flat" is expressed by leaving every --*-shadow property unset rather
- * than by a blanket `* { box-shadow: none !important }`: that reset also
+ * "Flat" is expressed through the --*-shadow tokens (none where core has a
+ * fallback shadow) rather than by a blanket `* { box-shadow: none !important }`: that reset also
  * erased .table tr.is-active's inset marker, silently removing the
  * current-row indicator. Row state here is carried by background instead.
  */
@@ -40,12 +40,13 @@ html[data-theme="cue-lab"] {
   --input-bg: var(--surface-2);
   --nav-rule-width: 2px;
   --nav-rule: var(--accent);
-  --table-head-fg: var(--accent);
+  --table-head-fg: var(--muted);
   --table-head-rule: var(--accent);
   --row-active-bg: rgba(255, 140, 26, 0.14);
-  --row-selected-bg: rgba(255, 140, 26, 0.28);
+  /* Selection is a neutral lift: amber stays for the one standing-by row. */
+  --row-selected-bg: #333333;
   /* A selected row's own text is full white: inherited --muted (e.g. in an
-     accordion) sank to 3.7:1 on the amber fill. */
+     accordion) would sink on the lifted fill. */
   --row-selected-fg: var(--text);
   --overlay-bg: rgba(0, 0, 0, 0.7);
   --label-transform: uppercase;
@@ -73,31 +74,79 @@ html[data-theme="cue-lab"] {
   --transport-bg: var(--surface-2);
   --transport-edge-width: 0.3rem;
   --transport-edge: var(--accent);
-  --go-size: 1.15rem;
+  /* GO is the only solid amber block at rest; .btn-primary is outlined. */
+  --go-size: 1.5rem;
   --go-border-width: 2px;
-  --go-bg-hover: rgba(255, 140, 26, 0.12);
+  --go-bg: var(--accent);
+  --go-fg: var(--on-accent);
+  --go-border: var(--accent);
+  --go-bg-hover: var(--accent-2);
   /* The one deliberate glow in an otherwise flat theme. */
   --go-shadow-hover: 0 0 0 3px rgba(255, 140, 26, 0.35), 0 0 22px 4px rgba(255, 140, 26, 0.55);
   --lamp-radius: 0;
   --lamp-off: #2b2b2b;
   --lamp-on: var(--success);
   --lamp-glow: none;
+
+  /* Amber is state, not decoration: chrome and default series go neutral. */
+  --nav-brand-fg: var(--text);
+  --desktop-icon-glyph: var(--text);
+  --desktop-icon-glyph-selected: var(--accent);
+  --info: #7a8a99;
+  --chart-series-1: #c8c8c8;
+  --chart-series-3: #7a8a99;
+  --chart-series-5: var(--accent);
+  --btn-padding-sm: 0.45em 0.8em;
+  --app-status-padding: 0.4rem 0.5rem;
+
+  /* Nearly square: hardware, not app. */
+  --badge-radius: var(--radius);
+  --avatar-radius: var(--radius);
+  --btn-icon-radius: var(--radius);
+  --switch-radius: var(--radius);
+  --switch-thumb-radius: 0;
+  --slider-thumb-radius: 0;
+  --scrubber-thumb-radius: 0;
+  --fab-radius: var(--radius);
+  /* The track on --bg at 3.2:1 (1.4.11); the hit area stays core's. */
+  --slider-bg: #666666;
+
+  /* Flat: core's fallback shadows for overlays are set off explicitly. */
+  --panel-shadow: none;
+  --sheet-shadow: none;
+  --dock-shadow: none;
+  --dock-tile-shadow: none;
 }
 
-html[data-theme="cue-lab"] h1,
-html[data-theme="cue-lab"] h2,
-html[data-theme="cue-lab"] h3 {
+/* Section and panel headings read as console labels; h1 and marketing
+   headlines stay real headings in --text. rem, so nesting can't shrink them. */
+html[data-theme="cue-lab"] :is(h1, h2, h3) {
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.85em;
-  color: var(--muted);
   font-weight: 600;
+}
+html[data-theme="cue-lab"] h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text); }
+html[data-theme="cue-lab"] h2 { font-size: 0.9rem; color: var(--muted); }
+html[data-theme="cue-lab"] h3 { font-size: 0.8rem; color: var(--muted); }
+html[data-theme="cue-lab"] :is(.hero :is(h1, h2), .band-head > h2) {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
 }
 
 html[data-theme="cue-lab"] .table { font-variant-numeric: tabular-nums; }
 
-/* The one intentional flourish: a primary action gets a top highlight rule. */
-html[data-theme="cue-lab"] .btn-primary { border-top: 3px solid var(--accent-2); }
+/* GO owns the solid amber fill, so a primary is an amber outline and
+   secondary/tertiary labels are plain text. */
+html[data-theme="cue-lab"] .btn-primary { --btn-bg: transparent; --btn-fg: var(--accent); --btn-border: var(--accent); }
+html[data-theme="cue-lab"] :is(.btn-secondary, .btn-tertiary) { --btn-fg: var(--text); }
+html[data-theme="cue-lab"] .alert-info { --alert-border: var(--info); }
+html[data-theme="cue-lab"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: var(--surface-2);
+  --btn-fg: var(--muted);
+  --btn-border: var(--hairline);
+}
 
 /* --- Layout ------------------------------------------------------------ *
  * A show console: minimal chrome, no rail, and every spare pixel given to
