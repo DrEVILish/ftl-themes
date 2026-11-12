@@ -40,12 +40,11 @@ html[data-theme="tokie"] {
   --success-text: #7cc394;
   --warning-text: #e0b25a;
   --danger-text: #d98a7a;
-  --accent-text: #e2c06e;
   --on-accent: #1b1408;
   --on-danger: #fbefe6;
   --on-success: #f2f7ef;
   --radius: 6px;
-  --font: Optima, "Optima nova", Candara, "Segoe UI", "Noto Sans", Lato, "Open Sans", "Helvetica Neue", sans-serif;
+  --font: Optima, "Optima nova", "URW Classico", "Linux Biolinum O", "Linux Biolinum", Candara, "Segoe UI", "Noto Sans", Lato, "Open Sans", "Helvetica Neue", sans-serif;
   --font-mono: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   --tokie-display: Didot, "Bodoni 72", "Bodoni MT", "Bodoni Moda", "Libre Bodoni", "Playfair Display", "Libre Caslon Display", "Noto Serif Display", "Linux Libertine", "Nimbus Roman", Georgia, "Times New Roman", serif;
   --flare: #f6e3a8;
@@ -83,11 +82,14 @@ html[data-theme="tokie"] {
      the way a pricking iron sets them. The corners turn on a 5px radius.
      Straight runs and corner arcs are background layers, so any element
      can wear it under its content (no pseudo-elements). */
-  --tokie-thread: rgba(222, 196, 140, 0.55);
-  --tokie-groove: rgba(0, 0, 0, 0.6);
-  --tokie-lip: rgba(255, 240, 210, 0.07);
-  --tokie-bead-h: repeating-linear-gradient(52deg, transparent 0 0.8px, var(--tokie-thread) 1.2px 2.6px, transparent 3px 5.2px);
-  --tokie-bead-v: repeating-linear-gradient(142deg, transparent 0 0.8px, var(--tokie-thread) 1.2px 2.6px, transparent 3px 5.2px);
+  /* Each bead is a short slanted stitch with a clear gap of dark channel
+     (about half the pitch) before the next, so the run reads as separate
+     saddle stitches sunk in a crease, not a twisted cord. */
+  --tokie-thread: rgba(222, 196, 140, 0.5);
+  --tokie-groove: rgba(0, 0, 0, 0.75);
+  --tokie-lip: rgba(255, 240, 210, 0.1);
+  --tokie-bead-h: repeating-linear-gradient(60deg, transparent 0 0.6px, var(--tokie-thread) 1px 2.4px, transparent 2.8px 6px);
+  --tokie-bead-v: repeating-linear-gradient(150deg, transparent 0 0.6px, var(--tokie-thread) 1px 2.4px, transparent 2.8px 6px);
   --tokie-corner: transparent 3.5px, var(--tokie-groove) 4px 4.2px, var(--tokie-thread) 4.6px 6.2px, var(--tokie-groove) 6.6px 7px, transparent 7.4px;
   --tokie-stitch:
     var(--tokie-bead-h) 13px 6.5px / calc(100% - 26px) 2.5px no-repeat,
@@ -115,7 +117,8 @@ html[data-theme="tokie"] {
   --tokie-polished-hover: linear-gradient(180deg, #fffaf0 0%, #f8e3a5 16%, #e4c16c 40%, #8a641f 49%, #b88a33 56%, #ecca74 80%, #fff0bd 100%);
   --tokie-polished-ring: conic-gradient(from 210deg, #fff4cf, #a77b29, #6b4b14, #e2bd66, #fff4cf, #a77b29, #fff4cf);
   /* Gold foil on leather: flat gold, struck into the surface. */
-  --tokie-foil: #dcbc6d;
+  /* Worn foil: a greyed old-gold, softer than the polished hardware. */
+  --tokie-foil: #cdb47a;
   --tokie-deboss: 0 -1px 0 rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 235, 190, 0.12);
 
   /* --- Components ------------------------------------------------------ */
@@ -182,7 +185,12 @@ html[data-theme="tokie"] {
   --row-hover-bg: rgba(214, 178, 94, 0.07);
   --row-selected-bg: rgba(255, 250, 240, 0.07);
   --row-selected-fg: #fff3d6;
-  --row-active-marker: #f3d47e;
+  /* Edited cells and the bulk bar: a neutral lift with a gold lead rule,
+     never an amber wash. */
+  --cell-dirty-bg: rgba(255, 255, 255, 0.05);
+  --cell-dirty-marker: #d6b25e;
+  --bulk-bar-bg: rgba(255, 250, 240, 0.05);
+  --row-active-marker: inset 2px 0 0 #d6b25e;
 
   --nav-bg: var(--tokie-leather);
   --nav-rule: #a8853f;
@@ -190,6 +198,9 @@ html[data-theme="tokie"] {
   --nav-item-fg: #cbbd9f;
   --nav-item-fg-active: #f3d47e;
   --nav-item-bg-active: rgba(214, 178, 94, 0.1);
+  /* Folder rails are a raised leather flap edged by a dark-gold rule. */
+  --nav-rail-bg: var(--tokie-leather-raised);
+  --nav-rail-rule: #6b5326;
   --tab-fg: #b8a98b;
   --tab-fg-active: #f3d47e;
   --tab-underline-active: #e2c06e;
@@ -202,7 +213,9 @@ html[data-theme="tokie"] {
   --badge-bg-active: var(--tokie-polished);
   --badge-fg-active: #1b1408;
 
-  --alert-bg: var(--tokie-leather-raised);
+  /* Alerts are debossed into the leather like inputs; alerts and toasts
+     carry a 3px state-coloured lead rule (see the rule below). */
+  --alert-bg: var(--tokie-leather-recessed);
   --alert-border: #8c6d2f;
   --toast-bg: var(--tokie-leather-raised);
   --toast-border: #a8853f;
@@ -382,6 +395,8 @@ html[data-theme="tokie"] :is(h1, h2, h3) {
   text-shadow: var(--tokie-deboss);
 }
 html[data-theme="tokie"] :is(h1, h2) { text-transform: uppercase; letter-spacing: 0.16em; }
+/* h3 keeps the foil caps voice a step quieter (band heads, price cards). */
+html[data-theme="tokie"] h3 { text-transform: uppercase; letter-spacing: 0.12em; }
 html[data-theme="tokie"] .nav-brand {
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -443,6 +458,10 @@ html[data-theme="tokie"] .toggle-btn.is-danger {
 html[data-theme="tokie"] .toggle-btn.is-danger:has(input:checked) { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6); box-shadow: inset 0 1px 0 rgba(255, 220, 200, 0.12); }
 /* Tinted list cards mix their tone into a colour (color-mix takes no image). */
 html[data-theme="tokie"] .list-cards > .list-item:is(.is-success, .is-warning, .is-danger, .is-info) { --list-card-bg: #191817; }
+/* Alerts and toasts: a 3px state-coloured lead rule on the leading edge;
+   alerts sit debossed in the leather. */
+html[data-theme="tokie"] :is(.alert, .toast) { border-inline-start-width: 3px; }
+html[data-theme="tokie"] .alert { box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 235, 190, 0.06); }
 html[data-theme="tokie"] .btn-go { text-transform: uppercase; letter-spacing: 0.16em; }
 
 /* --- Focus: a polished gold ring, never removed ------------------------- */
@@ -554,6 +573,18 @@ html[data-theme="tokie"] .tooltip { text-shadow: 0 1px 0 rgba(255, 245, 215, 0.5
   html[data-theme="tokie"] .toggle-btn { text-transform: none; letter-spacing: 0; font-weight: 400; }
 }
 @media (max-width: 480px) {
+  /* Throttled phones: the grain stays on the page backdrop only;
+     raised leather is a flat fill and the stitch keeps its four bead runs
+     (no corner arcs, no groove lips), which halves the scroll paint cost. */
+  html[data-theme="tokie"] {
+    --tokie-leather-raised: radial-gradient(120% 90% at 30% 0%, rgba(255, 250, 240, 0.025), transparent 60%), linear-gradient(#121110, #121110);
+    --tokie-leather-recessed: linear-gradient(#080706, #080706);
+    --tokie-stitch:
+      var(--tokie-bead-h) 13px 6.5px / calc(100% - 26px) 2.5px no-repeat,
+      var(--tokie-bead-h) 13px calc(100% - 6.5px) / calc(100% - 26px) 2.5px no-repeat,
+      var(--tokie-bead-v) 6.5px 13px / 2.5px calc(100% - 26px) no-repeat,
+      var(--tokie-bead-v) calc(100% - 6.5px) 13px / 2.5px calc(100% - 26px) no-repeat;
+  }
   /* Stitched surfaces keep content 8px+ clear of the 7px stitch line. */
   html[data-theme="tokie"] { --app-padding: 8px; --app-bar-padding: 0.8rem 1rem 0.95rem; --panel-pad: calc(9px + 0.6rem); --card-pad: calc(9px + 0.6rem); --app-status-padding: 0.45rem 0.75rem; }
 }

@@ -26,8 +26,9 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 2. **Leather is matte and black.** Surfaces are neutral near-black
    (`#0b0a09` to `#1e1d1b`, red and blue within 3 of each other) with a
    visible pebble grain. No gloss, no brown tint; warmth lives only in
-   the gold. A selected row is a neutral lift with a thin gold lead rule,
-   not an amber fill.
+   the gold. A selected row or list item, an edited table cell and the
+   bulk-selection bar are a neutral lift with a thin gold lead rule, not
+   an amber fill.
 3. **Stitching is on the edge, never under text.** The saddle stitch runs
    7px inside the edge of panels, cards, dialogs, drawers and the bar.
    Small elements (buttons, inputs, badges, transport, list cards) are
@@ -36,7 +37,9 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
    0.75rem / 0.6rem, and desktop windows pad their body inside it.
 4. **Gold foil, not gold paint.** Type on leather is flat gold with a
    deboss shadow (dark above, faint light below), tracked uppercase in a
-   Didone serif. No gradient text, no glow.
+   Didone serif (h1 to h3, brand, titles). The foil is a worn, greyed
+   old-gold (`#cdb47a`), softer than the polished hardware. No gradient
+   text, no glow.
 5. **Polished gold has a horizon.** Mirror gold is a hard gradient with
    a dark band just above the middle. Without that band it reads as
    yellow plastic.
@@ -48,12 +51,15 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 - Pebble grain is an SVG `feTurbulence` + `feDiffuseLighting` tile
   (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
 - The saddle stitch (`--tokie-stitch`) is twelve background layers: four
-  runs of slanted champagne thread beads (a 52° repeating gradient in a
-  2.5px strip, 5.2px pitch with a clear gap between beads, like a
-  pricking iron sets them, in a half-strength champagne thread), four
-  corner arcs that turn the stitch on a 5px radius, and four creased
-  grooves with a faint lit lip. It costs no pseudo-elements, so any
-  surface can wear it.
+  runs of slanted champagne thread beads (a 60° repeating gradient in a
+  2.5px strip, 6px pitch, each bead followed by about half a pitch of
+  dark channel, like a pricking iron sets them, in a half-strength
+  champagne thread), four corner arcs that turn the stitch on a 5px
+  radius, and four creased grooves (75% black) with a faint lit lip. It
+  costs no pseudo-elements, so any surface can wear it. On phones
+  (≤480px) it drops to the four bead runs, and raised and recessed
+  leather drop the grain tile (the page keeps it), to keep scrolling
+  within the frame budget on a throttled phone.
 - Brushed gold is anisotropic noise (`baseFrequency='0.002 0.9'`),
   stretched into horizontal hairlines over a satin vertical gradient. The
   spine rail uses the same noise rotated so its hairlines run vertically.
@@ -73,6 +79,9 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 - Readouts are black lacquer dials with applied gold Didone numerals and
   a thin gold chapter ring. Knobs are polished watch crowns with a fluted
   edge.
+- Alerts are debossed into the leather like inputs; alerts and toasts
+  carry a 3px state-coloured lead rule on their leading edge. Folder
+  rails (`.nav-rail`) are a raised leather flap edged in dark gold.
 - The focus ring is 2px polished gold at a 3px offset with a soft gold
   halo. It is visible on every control, on leather and on gold.
 
@@ -99,12 +108,14 @@ Nothing is vendored. Display: `Didot, "Bodoni 72", "Bodoni MT",
 "Bodoni Moda", "Libre Bodoni", "Playfair Display", "Libre Caslon
 Display", "Noto Serif Display", "Linux Libertine", "Nimbus Roman",
 Georgia, serif`, set in tracked uppercase for headings, brand, panel
-titles, stat values and prices. UI: `Optima, Candara, "Segoe UI", "Noto
+titles, stat values and prices. UI: `Optima, "Optima nova", "URW
+Classico", "Linux Biolinum", Candara, "Segoe UI", "Noto
 Sans", Lato, "Open Sans", …, sans-serif`, the engraved-sans of luxury
 packaging. On a bare Linux box with none of these you get the system
 serif and sans (DejaVu); the tracking and foil colour carry the look but
-the Didone hairlines are lost. Vendoring an OFL Didone (Bodoni Moda) is
-the open follow-up. Inside desktop windows the tabs drop to sentence case
+the Didone hairlines are lost. Vendoring an OFL Didone (Bodoni Moda)
+into `assets/fonts/` is the open follow-up; it needs a shared-assets
+change outside this theme folder. Inside desktop windows the tabs drop to sentence case
 so four fit on one row.
 
 ## Contrast honesty
