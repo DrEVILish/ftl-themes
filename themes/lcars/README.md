@@ -56,7 +56,8 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
    and periwinkle marks information text (trend deltas, ARMED/CONNECTED,
    message times). Type comes
    in three sizes only: main title (2.4rem), sub header (1.25rem), normal
-   data (0.95rem); only printed ruler numerals on scales are exempt.
+   data (0.95rem, 1.05rem on phones, where Antonio's thin strokes need
+   the extra size); only printed ruler numerals on scales are exempt.
 
 ## How the tokens carry that
 
@@ -120,7 +121,8 @@ this catalog could verify against.
 - **Sliders** are a 0.5rem lavender bar with an orange block thumb, drawn
   in the content box of core's `--tap-min` hit area.
 - **Desktop windows** carry MIN/MAX/CLOSE as small candy keys after the
-  title (lavender, peach, orange).
+  title (lavender, peach, orange); the words stay down to a 20rem header,
+  and only below that become large glyph keys.
 
 ### Icons
 
@@ -271,8 +273,9 @@ black gaps, so a tall page doesn't read as a column of equal slabs.
 - **Alerts and toasts** keep core's variant colour on their leg: info
   orange, success periwinkle, warning tan, danger red.
 - **Settings rows** (`.field-row`) hang off a short lavender leg on
-  black; **segmented controls** are touching lavender blocks (active
-  orange) capped only at the two ends, like the tabs.
+  black; **segmented controls** and joined toggle groups are lavender
+  blocks (active orange) split by 0.3rem black gaps and capped only at
+  the two ends, like the tabs.
 - **Checkboxes and radios** are flat: a black square (or disc) in a
   lavender ring, lit orange with a black mark when on.
 - **Side nav columns** (`.nav-rail`, the inbox folders) are blocks flat
@@ -397,3 +400,16 @@ Needs markup (left as is):
   readouts in Antonio Bold.
 - **Thin-bar caps** keep a 0.75rem floor; the rail's background repaints
   under `contain: paint`.
+
+## Polish round 6
+
+- **Dividers are candy strips**: `.divider` is a 0.3rem lavender bar
+  across the run, `.divider-v` a 0.3rem lavender leg — never a hairline.
+- **Joined toggle groups** break between keys with the tabs' 0.3rem
+  black gap.
+- **Cards side by side** in a `.grid` stretch to the row, so their bottom
+  bars and caps share a baseline.
+- **Inline code** is no grey box: black, hung off a 0.2rem lavender leg.
+- **Phones**: normal data steps up to 1.05rem; in a panel title break the
+  icon keys shrink to their glyph (touch area kept by an invisible
+  overlay) and the badge ellipsizes before the title.

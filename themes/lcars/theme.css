@@ -1146,16 +1146,17 @@ html[data-theme="lcars"] .btn-ghost.btn-icon:not(.is-clear, .app-bar *, .panel-h
 }
 
 /* Window title wins over its keys: in a narrow window the MIN/MAX/CLOSE
-   keys fall back to glyph width before the title ellipsizes. */
+   keys fall back to glyph width before the title ellipsizes — only when
+   the words truly can't fit, and then the glyphs are set large. */
 html[data-theme="lcars"] .desktop-window .modal-header { container-type: inline-size; }
-@container (max-width: 30rem) {
+@container (max-width: 20rem) {
   html[data-theme="lcars"] .modal-header * > :is(.btn-min, .btn-max, .btn-close),
   html[data-theme="lcars"] .desktop-window .modal-header > :is(.btn-min, .btn-max, .btn-close) {
     --btn-min-glyph: "\2013";
     --btn-max-glyph: "+";
     --btn-close-glyph: "\00d7";
     --btn-close-pad: 0 0.45em;
-    --btn-close-glyph-size: 1em;
+    --btn-close-glyph-size: 1.25rem;
   }
 }
 
@@ -1282,7 +1283,7 @@ html[data-theme="lcars"] :is(.carousel-nav > :is(.carousel-prev, .carousel-next)
 html[data-theme="lcars"] :is(.legend, .chart-legend) { --legend-size: var(--lcars-size-data); }
 html[data-theme="lcars"] :is(.legend, .chart-legend) > li { font-size: var(--lcars-size-data); }
 
-/* --- Polish round 5 ------------------------------------------------------ */
+/* --- Polish round 6 ------------------------------------------------------ */
 
 /* Text-only keys have no block to fill, so no minimum width. */
 html[data-theme="lcars"] .btn:is(.btn-ghost, .btn-tertiary, .btn-link):not(.btn-icon) { min-width: 0; }
@@ -1322,3 +1323,35 @@ html[data-theme="lcars"] .skeleton { background-image: none; animation-name: lca
 
 /* The rail's layered fill repaints only itself when the page scrolls. */
 html[data-theme="lcars"] .app-rail { contain: paint; }
+
+/* --- Polish round 6 ------------------------------------------------------ */
+
+/* A divider is a thin candy strip with the in-frame gap's thickness, not a
+   hairline: LCARS splits runs of content with bars. */
+html[data-theme="lcars"] .divider { border: 0; border-top: 0.3rem solid var(--lcars-lavender); align-self: stretch; inline-size: auto; }
+html[data-theme="lcars"] .divider-v { border: 0; border-inline-start: 0.3rem solid var(--lcars-lavender); }
+/* A joined switch row breaks between keys with the same black gap as tabs. */
+html[data-theme="lcars"] .toggle-group { gap: 0.3rem; }
+html[data-theme="lcars"] .toggle-group > .toggle-btn:not(:first-child) { margin-inline-start: 0; }
+/* Frames side by side share their baselines. */
+html[data-theme="lcars"] .grid > .card { align-self: stretch; }
+/* Inline code is no grey box: black, hung off a short lavender leg. */
+html[data-theme="lcars"] { --code-bg: transparent; }
+html[data-theme="lcars"] :not(pre) > code { box-shadow: inset 0.2rem 0 0 var(--lcars-lavender); padding-inline-start: 0.55em; }
+@media (max-width: 480px) {
+  /* Antonio is thin: normal data steps up a size on a phone so it holds. */
+  html[data-theme="lcars"] { --lcars-size-data: 1.05rem; --btn-padding: 0.55rem 0.75rem 0.45rem 2rem; --btn-padding-sm: 0.3rem 0.65rem 0.35rem 1.4rem; }
+  /* The title wins the bar break: the badge ellipsizes first. */
+  html[data-theme="lcars"] .panel-header > :first-child { flex-shrink: 0.05; }
+  html[data-theme="lcars"] .panel-header > .badge { flex: 0 1 auto; min-width: 1.6em; }
+  /* Icon keys in the break shrink to their glyph; the invisible ::before
+     keeps the full touch target. */
+  html[data-theme="lcars"] .panel-header > .btn-icon { width: 1.6rem; min-width: 0; }
+  html[data-theme="lcars"] .panel-header > .btn-icon::before { inset: min(0px, (1.6rem - var(--tap-min)) / 2); }
+}
+/* Window keys keep their words; they only tighten before the title has to
+   ellipsize, and fall back to large glyphs below 20rem (above). */
+@container (max-width: 28rem) {
+  html[data-theme="lcars"] .modal-header * > :is(.btn-min, .btn-max, .btn-close),
+  html[data-theme="lcars"] .desktop-window .modal-header > :is(.btn-min, .btn-max, .btn-close) { --btn-close-pad: 0 0.4em; }
+}
