@@ -40,7 +40,7 @@ html[data-theme="prometheus"] {
   --text: #d4f1ff;
   --muted: #86b9cf;
   --accent: #5ec4e6;           /* medipod tab sky-cyan (MSCN_51/2 fill) */
-  --accent-text: #5ec4e6;  /* labels read this, so an app that sets --accent keeps them legible */
+  --accent-text: #4fd2ff;  /* glowing text keeps the hotter cyan; labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #3ee8c4;         /* teal: second series, pill toggles */
   --danger: #ff5c6c;
   --success: #4dffa2;
@@ -194,10 +194,7 @@ html[data-theme="prometheus"] {
   --transport-shadow: inset 3px 0 0 var(--accent);
 
   /* The deep navy glass with its grid of dashes and crosses. */
-  --holo-grid:
-    radial-gradient(5px 1px at 24px 24px, rgba(79, 210, 255, 0.12) 99%, transparent) 0 0 / 48px 48px,
-    radial-gradient(1px 5px at 72px 72px, rgba(79, 210, 255, 0.08) 99%, transparent) 0 0 / 96px 96px,
-    radial-gradient(5px 1px at 72px 72px, rgba(79, 210, 255, 0.08) 99%, transparent) 0 0 / 96px 96px;
+  --holo-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='rgb(79,210,255)'%3E%3Cg fill-opacity='0.12'%3E%3Crect x='19' y='23.5' width='10' height='1'/%3E%3Crect x='67' y='23.5' width='10' height='1'/%3E%3Crect x='19' y='71.5' width='10' height='1'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3Cg fill-opacity='0.08'%3E%3Crect x='71.5' y='67' width='1' height='10'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px; /* one tile, not three gradient layers */
   --holo-glow: radial-gradient(140% 120% at 50% 30%, #0f3b58 0%, #082a40 60%, #051c2b 100%);
 }
 
@@ -228,10 +225,7 @@ html[data-theme="prometheus"][data-variant="suit"] {
   --meter-mid: #ffb51f;
   --meter-high: var(--danger);
   --modal-shadow: inset 3px 0 0 var(--accent), 0 0 2.5rem rgba(255, 181, 31, 0.14);
-  --holo-grid:
-    radial-gradient(5px 1px at 24px 24px, rgba(255, 181, 31, 0.14) 99%, transparent) 0 0 / 48px 48px,
-    radial-gradient(1px 5px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px,
-    radial-gradient(5px 1px at 72px 72px, rgba(255, 181, 31, 0.08) 99%, transparent) 0 0 / 96px 96px;
+  --holo-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='rgb(255,181,31)'%3E%3Cg fill-opacity='0.14'%3E%3Crect x='19' y='23.5' width='10' height='1'/%3E%3Crect x='67' y='23.5' width='10' height='1'/%3E%3Crect x='19' y='71.5' width='10' height='1'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3Cg fill-opacity='0.08'%3E%3Crect x='71.5' y='67' width='1' height='10'/%3E%3Crect x='67' y='71.5' width='10' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px;
   --holo-glow: radial-gradient(140% 120% at 50% 30%, #133847 0%, #0e2433 60%, #081822 100%);
 }
 
@@ -275,6 +269,9 @@ html[data-theme="prometheus"] .stat-label,
 html[data-theme="prometheus"] .menubar > li > button { font-size: 0.66rem; }
 /* Nav lists are small tracked labels, not page-sized caps. */
 html[data-theme="prometheus"] .nav-item { font-size: 0.72rem; }
+/* A current link on a filled accent plate reads dark, like every filled tab
+   (the demo page paints --accent-text on --accent). */
+html[data-theme="prometheus"] .pattern-nav a[aria-current="page"] { color: var(--on-accent); }
 /* Status pills stay readable micro-labels. */
 html[data-theme="prometheus"] .badge { font-size: 0.75rem; }
 html[data-theme="prometheus"] .status { font-size: 0.82rem; }
@@ -437,6 +434,10 @@ html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast)::befo
 }
 /* An image card clips to its corners and its media would cover the
    bracket, so the bracket sits on the edge, above the image. */
+/* Touch: the halo is the first thing to go when scrolling on a phone. */
+@media (pointer: coarse) {
+  html[data-theme="prometheus"] { --pm-glow-halo: none; }
+}
 html[data-theme="prometheus"] .card.has-media { --pm-bracket-x: 0; }
 html[data-theme="prometheus"] .card.has-media::before { z-index: 1; }
 html[data-theme="prometheus"] .list { --pm-bracket-x: 0; }
