@@ -21,7 +21,7 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 
 1. **Slate e-paper, not black glass.** Surfaces are a desaturated
    grey-slate, evenly lit like the prop (page `#22343a`, panels
-   `#283c43`, sampled `#1e2e33` / `#263b43` under set light), and the room
+   `#263a40`, sampled `#1e2e33` / `#263b43` under set light), and the room
    around them is near-black (`#070b0d`). Do not use pure black panels
    and do not use neon on black.
 2. **Cyan is the ink.** One steel-cyan (`#5cbbca`, a low-chroma lift of the sampled `#3f96a6`-`#5c9ba4`) draws outlines, active
@@ -132,13 +132,14 @@ All pairs meet the lint floors. No exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#d6e6ea` on `--surface` `#283c43` / `--bg` `#22343a` | 9.0 / 10.1 |
-| `--muted` `#9ab6be` on `--surface` / `--surface-2` `#2e434a` | 5.4 / 4.9 |
-| `--muted` on status strip `#070b0d` | 9.2 |
-| `--accent` `#5cbbca` on `--surface` / `--surface-2` | 5.2 / 4.7 |
+| `--text` `#d6e6ea` on `--surface` `#263a40` / `--bg` `#22343a` | 9.3 / 10.1 |
+| `--muted` `#a0bcc4` on `--surface` / `--surface-2` `#2b3f46` | 6.0 / 5.5 |
+| `--muted` on status strip `#070b0d` | 9.9 |
+| `--accent` `#5cbbca` on `--surface` / `--surface-2` | 5.3 / 5.0 |
+| `--link` / `--accent-text` `#6cc4d2` (links, accent text on tinted rows) on `--bg` / `--surface` | 6.5 / 5.9 |
 | `.badge-accent` text `#84d5e2` on its chip (20% cyan over surface) | 4.9 |
-| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 3.8 / 3.4 |
-| Danger button text `#ffaba4` / success `#9fe06a` on their tints (worst case, tint over a lit row) | 5.1 / 5.8 |
+| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 3.8 / 3.5 |
+| Danger button text `#ffb6b0` / success `#9fe06a` on their tints (worst case, tint over a lit row) | 5.8 / 5.8 |
 | `--on-accent` `#071014` on accent | 8.6 |
 | `--on-danger` on `--danger` `#ff5a4f` | 6.2 |
 | `--on-success` on `--success` `#8fd65a` | 10.9 |
