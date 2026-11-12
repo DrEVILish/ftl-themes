@@ -68,8 +68,8 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 - Buttons: the default is a leather key with a gold bezel; primary is
   polished gold with engraved dark text; danger and success are enamelled
   oxblood and bottle-green leather that keep the gold bezel. Toggle
-  buttons speak the same voice (tracked caps) and turn polished gold when
-  on; a danger toggle turns oxblood enamel.
+  buttons speak the same voice (tracked caps; sentence case up to 900px,
+  where toggle rows are packed tight) and turn polished gold when on; a danger toggle turns oxblood enamel.
 - Readouts are black lacquer dials with applied gold Didone numerals and
   a thin gold chapter ring. Knobs are polished watch crowns with a fluted
   edge.
