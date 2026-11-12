@@ -102,7 +102,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
   carry the same license), not to the CSS or apps that load it.
 - **Source:** https://int10h.org/oldschool-pc-fonts/ (pack v2.2, web
   edition)
-- **Used by:** `msdos` (every glyph on the page)
+- **Used by:** `msdos` (every glyph on the page); `nokia-3310` (code, kbd, pre and samp only)
 
 ## Jost
 
@@ -330,3 +330,15 @@ a template to follow instead of reinventing the check.
   (`google/fonts`, `ofl/notoserifdisplay/`)
 - **Used by:** `nerv` (title-card serif for `h1`/`h2`, standing in for
   the proprietary Matisse EB)
+
+## Jersey 15
+
+- **Family:** Jersey 15 (Regular, subset to Latin-1 plus common
+  punctuation, arrows and the euro sign — `Jersey15-Regular.woff2`)
+- **Designer:** Sarah Cadigan-Fried (The Soft Type Project Authors)
+- **License:** SIL Open Font License, version 1.1 (the `OFL.txt` in the
+  family's `google/fonts` `ofl/jersey15/` directory)
+- **Source:** https://fonts.google.com/specimen/Jersey+15
+  (https://github.com/google/fonts/tree/main/ofl/jersey15)
+- **Used by:** `nokia-3310` (the pixel face for the whole screen, standing
+  in for the 3310's Series-20 screen font)
