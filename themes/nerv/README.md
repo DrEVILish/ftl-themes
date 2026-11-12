@@ -29,8 +29,9 @@ is actually wrong.
    whole. The face only works at title size, so `h2`, `h3`, buttons, frame headers, tabs, table
    heads, badges, nav items, top-bar menus and KPI numerals (pale amber `--accent-2`) in the vendored Antonio
    Bold, a tight condensed bold standing in for NERV's compressed readout
-   sans. Labels, badges, filter chips, toggle and segmented buttons, nav
-   items and the app brand are uppercase; Antonio is never set mixed-case,
+   sans. Field, KPI and group labels are Antonio Bold too (0.85rem floor,
+   0.06em tracking). Labels, badges, filter chips, toggle and segmented buttons, nav
+   items, KPI values and the app brand are uppercase; Antonio is never set mixed-case,
    and its small readouts (table heads, badges) are floored at 0.8rem (badges 0.85rem) and
    tracked 0.08em wide. Body text stays in a plain Helvetica/Arial stack
    for legibility; labels and secondary readouts glow amber phosphor
@@ -54,13 +55,21 @@ is actually wrong.
   emergency card: a 2px red frame on a red-black ground, an 8px hazard-tape
   band across the top and the message stencilled uppercase in Antonio —
   the theme's single decorative flourish, reserved for the danger state.
-- The active-row marker is signal red (`--danger`, about 4:1 on the
-  black) even though every other structural accent in the theme is
-  orange — the one place danger's color, not orange, gets to mark something.
+- Selection inverts into orange, as on the NERV terminals: selected rows,
+  nav items and options take a dark-orange fill (`#2a1600`) and a 0.3rem
+  orange (`--accent`) start marker. Red never marks a selection.
+- Checkboxes and radios are drawn by the theme: an unchecked box is a 2px
+  dim-orange frame (`#a85400`, 3.8:1) on the input ground, a checked one
+  lights up solid orange. A switch's off thumb is an unlit lamp (`#5a2e00`
+  inside a 2px `#a85400` ring); on lights up in `--accent`.
+- Caution (`.alert-warning`, `.toast-warning`) notes take the label-box voice: a solid 0.5em
+  orange bar on the inline start and the text in uppercase Antonio — solid,
+  never striped.
 - Panel, modal and window headers reverse out like the table head: a solid
   orange strip with black, uppercase condensed text — the NERV warning-box
-  label. A panel header with no controls in it has its trailing bottom
-  corner cut at 0.7em, as on NERV's angled warning boxes. Caption buttons on that strip are a stamped cluster: equal 1.4em
+  label. A panel whose header holds no controls has the whole frame's
+  top-right corner cut at 1em, as on NERV's angled warning boxes; the
+  orange strip draws the diagonal. Caption buttons on that strip are a stamped cluster: equal 1.4em
   squares in a 2px frame of the header ink (black on orange, orange on
   an inactive window's unlit strip). Cards stay plain frames.
 - Carousel dots and arrows are square; the arrows are outlined in 2px

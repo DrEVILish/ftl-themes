@@ -71,8 +71,9 @@ html[data-theme="nerv"] {
   --table-head-fg: #000;
   --table-head-tracking: 0.08em;  /* NERV's small readouts run wide-tracked */
   --toolbar-bg: var(--bg);
-  --row-selected-bg: rgba(224, 0, 27, 0.2);
-  --row-active-marker: inset 0.3rem 0 0 var(--danger);
+  /* Selection inverts into orange; red stays reserved for EMERGENCY. */
+  --row-selected-bg: #2a1600;
+  --row-active-marker: inset 0.3rem 0 0 var(--accent);
   --nav-bg: #000;
   --nav-rule-width: 3px;
   --overlay-bg: rgba(0, 0, 0, 0.85);
@@ -93,6 +94,7 @@ html[data-theme="nerv"] {
   --badge-radius: 0;
   --switch-radius: 0;
   --switch-thumb-radius: 0;
+  --switch-thumb-bg: #5a2e00;  /* off is an unlit lamp; on lights up in --accent */
   --avatar-radius: 0;
   --scrollbar-radius: 0;
   --status-dot-radius: 0;
@@ -218,6 +220,8 @@ html[data-theme="nerv"] .slider.is-vertical {
   html[data-theme="nerv"] .app-bar .btn > kbd { display: none; }
   html[data-theme="nerv"] .app-bar .cluster { column-gap: 0.5rem; }
   html[data-theme="nerv"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0.02em; padding-inline: 0.5em; white-space: nowrap; }
+  /* The brand takes its own line rather than truncating to three letters. */
+  html[data-theme="nerv"] .app-bar .nav-brand { flex: 0 0 auto; min-inline-size: max-content; }
 }
 
 html[data-theme="nerv"] .app-status { border-top-width: 3px; }
@@ -252,9 +256,18 @@ html[data-theme="nerv"] :is(.btn, .panel-header, .modal-header, .tab, .table th,
   font-weight: 700;
 }
 /* Every label-sized readout is uppercase; Antonio is never mixed case. */
-html[data-theme="nerv"] :is(.badge, .badge-button, .segmented-item, .toggle-btn, .nav-item, .nav-brand) {
+html[data-theme="nerv"] :is(.badge, .badge-button, .segmented-item, .toggle-btn, .nav-item, .nav-brand, .stat-value) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+/* Field, KPI and group labels are compressed bold readouts, not tracked
+   Helvetica; body copy stays in Helvetica. */
+html[data-theme="nerv"] :is(.label, .stat-label, .field-group-title, .radio-group > legend) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: max(0.85rem, 0.82em);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 /* Antonio is too condensed below ~13px: floor the small readouts and track
    them wide, as NERV's small screen labels are. */
@@ -277,11 +290,43 @@ html[data-theme="nerv"] :is(.panel-header, .modal-header) {
   letter-spacing: 0.06em;
   font-size: 0.95em;
 }
-/* The strip's trailing corner is cut, as on NERV's angled warning boxes.
-   Headers holding controls stay square so nothing at the edge is clipped. */
-html[data-theme="nerv"] .panel-header:not(:has(.btn, .input, .select, .input-group, .badge-button)) {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 0.7em), calc(100% - 0.7em) 100%, 0 100%);
+/* The whole frame's top-right corner is cut, as on NERV's angled warning
+   boxes; the orange header strip draws the diagonal. The polygon reaches
+   far past the other edges so focus rings and overflow are not clipped.
+   Panels whose header holds controls stay square. */
+html[data-theme="nerv"] .panel:has(> .panel-header):not(:has(> .panel-header :is(.btn, .input, .select, .input-group, .badge-button))) {
+  clip-path: polygon(-100vw -100vh, calc(100% - 1em) -100vh, calc(100% - 1em) 0, 100% 1em, calc(100% + 100vw) 1em, calc(100% + 100vw) calc(100% + 100vh), -100vw calc(100% + 100vh));
 }
+/* Caution notes take the orange label-box voice: a solid bar along the
+   inline start and the stencilled display face (no stripes). */
+html[data-theme="nerv"] :is(.alert-warning, .toast-warning) {
+  border-inline-start-width: 0.5em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1em;
+}
+/* Unchecked boxes are dim orange frames on the input ground (3.8:1), not
+   the browser's grey; checked ones light up in --accent. Radios stay round. */
+html[data-theme="nerv"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 2px solid #a85400;
+  background: var(--input-bg);
+  border-radius: 0;
+}
+html[data-theme="nerv"] .radio { border-radius: 50%; }
+html[data-theme="nerv"] :is(.checkbox, .radio):checked { border-color: var(--accent); }
+html[data-theme="nerv"] .checkbox:checked {
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%231a0900' stroke-width='2.6'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+html[data-theme="nerv"] .checkbox:indeterminate {
+  border-color: var(--accent);
+  background: linear-gradient(var(--on-accent) 0 0) center / 60% 2px no-repeat, var(--accent);
+}
+html[data-theme="nerv"] .radio:checked { background: radial-gradient(var(--accent) 0 38%, var(--input-bg) 44%); }
+html[data-theme="nerv"] .switch-thumb { box-shadow: inset 0 0 0 2px #a85400; }
+html[data-theme="nerv"] :is(.switch input:checked ~ .switch-track, .switch[aria-checked="true"]) .switch-thumb { box-shadow: none; }
 /* Hazard stripes on the danger variant — the one place stripes appear. */
 html[data-theme="nerv"] .btn-danger {
   background-image: repeating-linear-gradient(135deg, var(--danger) 0 10px, #000 10px 20px);
