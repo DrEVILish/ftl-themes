@@ -27,16 +27,18 @@ saturated fill is a **yellow-green "granted" band**.
 2. **Yellow-green fill means granted, selected or primary.** Examples are
    `.btn-primary`, the active segment, switch-on, pagination, progress and
    the bulk-selection bar. It never appears as decoration. Danger and
-   success buttons are outlined keys in their state colour, not fills.
+   success buttons, and a pressed danger toggle, are outlined keys in their
+   state colour, not fills.
 3. **Pale yellow outline means "this one".** The focus ring, active tab,
    active nav entry and selected row all use the yellow box the hard-drive
    browser draws around the highlighted file (`--accent-2 #e6dc8c`).
 4. **Title bars are solid pale-teal plates with dark text.** This covers
    the brand, modal header, tooltip and status strip. Nothing else is a
    light surface apart from the yellow-green band.
-5. **Everything is boxed and labelled.** Inputs are outlined cells with
-   tiny tracked-caps labels, panel titles sit between double rules, and
-   buttons are outlined keys.
+5. **Everything is boxed and labelled.** A form field is one outlined cell
+   with a tiny tracked-caps label at its top-left and a large bare value
+   below it, panel titles sit between double rules, and buttons are
+   outlined keys.
 6. **Amber is for numerals and warnings only.** That means the countdown
    readout digits (`--silo-num`) and `--warning`.
 
@@ -58,6 +60,12 @@ saturated fill is a **yellow-green "granted" band**.
   colours are re-pointed to dark inks inside it.
 - The **bulk-selection bar is the yellow-green SEARCH AUTHORIZATION band**:
   a solid fill with dark tracked caps and dark-outlined keys.
+- A `.field` with a label and a control is the **Relic Database field
+  cell** ("OBJECT DESCRIPTION / DISPENSER, TOY..."): the outline wraps the
+  whole field, the label is 0.62rem tracked caps, the control loses its own
+  border and its value is set at 1.15rem. The focused cell's outline turns
+  pale yellow, an invalid one turns danger; the control keeps its own focus
+  ring and its `--tap-min` height.
 - Panel titles sit between 3px double rules with an `×` at the right
   ("RELIC/SEIZED OBJECTS INVENTORY").
 - `.btn-primary` is the yellow-green band plus the SEARCH key's outer
@@ -66,11 +74,14 @@ saturated fill is a **yellow-green "granted" band**.
 - Readouts are PACT countdown pills: a rounded teal outline and amber
   numerals with a faint glow.
 - Progress, meters and bar charts are hatched yellow-green like the
-  CAPACITY bar.
+  CAPACITY bar; the alternate bar is the same hatching in teal.
 - Sliders draw their track as a teal rule (`--border`) with the pale
   yellow thumb; the hit area stays the core's `--tap-min` box.
 - `kbd` uses the beige keycaps of the pull-out keyboards.
-- Static scanlines, a vignette and a faint bloom on all text.
+- Static scanlines, a vignette and a faint bloom on all text, on glass
+  with the reference's teal cast (`--bg #021712`).
+- At phone width the bar's picker gives up width and the search key's
+  keyboard hint is dropped, so the controls stay on one row.
 
 ## Variants
 
@@ -81,14 +92,20 @@ saturated fill is a **yellow-green "granted" band**.
 
 ## Typography
 
-Share Tech (UI) and Share Tech Mono (inputs, readouts, data) are already
+Share Tech (UI and field values) and Share Tech Mono (readouts, data) are already
 vendored in `assets/fonts/` under SIL OFL (see `assets/fonts/NOTICE.md`).
 They are the closest open match to the show's squared, round-cornered
 all-caps techno face, which has not been identified. Fallbacks: Eurostile,
-DIN Alternate, Bahnschrift, Arial Narrow. Headings, labels, tabs, badges,
-buttons, inputs, menu entries and short list labels are uppercase and
-tracked. Body copy and titled list rows keep their case so long text stays
-readable.
+DIN Alternate, Bahnschrift, Arial Narrow. Share Tech is narrower than the
+show's extended face, so headings and values are widened with tracking
+(0.14em on headings, 0.05em on stat values) and values run about 2.5x
+their labels. Headings, labels, tabs, badges, buttons, toggle keys,
+segments, chips, selects, menu entries and short list labels are
+uppercase and tracked. Text inputs show caps too, except email, URL,
+password and search fields and textareas, which keep the case the user
+typed. Body copy and titled list rows keep their case so long text stays
+readable. In a table cell a control drops its tracking and a date input
+tightens so a row of controls fits a narrow modal.
 
 ## Contrast
 
@@ -96,12 +113,13 @@ All pairs meet the lint floors and no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#52dec2` on `--surface` `#03160f` / `--bg` | 11.2 / 11.8 |
-| `--muted` `#3fb69a` on `--surface` / `--surface-2` | 7.4 / 6.7 |
-| `--accent` `#b9dc78` on `--surface` | 12.1 |
+| `--text` `#52dec2` on `--surface` `#041d17` / `--bg` `#021712` | 10.5 / 11.1 |
+| `--muted` `#3fb69a` on `--surface` / `--surface-2` | 7.0 / 6.2 |
+| `--accent` `#b9dc78` on `--surface` | 11.4 |
 | `--on-accent` `#06201a` on accent | 11.0 |
-| `--danger-text` `#ff8a76` / `--success-text` `#5ce89f` on `--surface` (outlined keys) | 8.1 / 12.0 |
-| slider track `--border` `#1c8a72` on `--bg` | 4.6 |
+| `--danger-text` `#ff8a76` / `--success-text` `#5ce89f` on `--surface` (outlined keys) | 7.7 / 11.3 |
+| slider track `--border` `#1c8a72` on `--bg` | 4.3 |
+| field-cell outline `--silo-field` `#33735c` on `--surface` | 3.1 |
 | waveform marker ink `#d4f8ee` on the tinted chips | 6.6+ |
 | dark ink `#06201a` / danger ink `#7a1406` on the yellow-green band | 11.0 / 7.0 |
 | plate text `#052019` on plate `#8fd3cc` | 10.1 |
@@ -109,7 +127,7 @@ All pairs meet the lint floors and no exemptions are claimed.
 
 The real screens are dimmer: the sampled phosphor core is `#28c6aa`. Text
 is lifted only as far as `#52dec2`, on the same cyan-teal hue, so long
-copy reads at 11:1 and stays above 4.5:1 on the tinted chips without
+copy reads at 10.5:1 or more and stays above 4.5:1 on the tinted chips without
 turning minty; links use the brighter
 `#6fe8cc`.
 

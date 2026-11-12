@@ -33,9 +33,9 @@
 html[data-theme="silo"] {
   --motion-leave: power-off;
   color-scheme: dark;
-  --bg: #010d0a;           /* the CRT glass, a green-black (sampled #011d15, darkened) */
-  --surface: #03160f;
-  --surface-2: #062219;
+  --bg: #021712;           /* the CRT glass, a teal-black (sampled #011d15..#022c25) */
+  --surface: #041d17;
+  --surface-2: #07291f;
   --border: #1c8a72;       /* teal rule lines (sampled #0a6950..#268f6c) */
   --hairline: #0c3a2e;
   --text: #52dec2;         /* phosphor teal (sampled #28c6aa core, lifted just enough for long text and tinted chips) */
@@ -67,8 +67,8 @@ html[data-theme="silo"] {
   --silo-glow: rgba(40, 198, 170, 0.3);
   --silo-tint: rgba(185, 220, 120, 0.12);
   --silo-num: #f0c060;      /* amber countdown numerals */
-  --silo-field: #2f6b55;    /* field-box outline, olive-teal */
-  --silo-haze: rgba(40, 198, 170, 0.07);
+  --silo-field: #33735c;    /* field-box outline, olive-teal (3.1:1 on the glass) */
+  --silo-haze: rgba(40, 198, 170, 0.1);
 
   --density: 0.9;
   --icon-stroke-width: 1.8;
@@ -187,7 +187,7 @@ html[data-theme="silo"] {
   --slider-thumb-radius: 1px;
   --slider-thumb-bg: var(--accent-2);
   /* Core clips the slider to its content box and hides the border, so the
-     teal rule is drawn as the track fill itself (4.6:1 on the glass). */
+     teal rule is drawn as the track fill itself (4.3:1 on the glass). */
   --slider-bg: var(--border);
   --slider-border: var(--border);
 
@@ -278,7 +278,7 @@ html[data-theme="silo"] {
   --attachment-border: var(--border);
   --attachment-radius: 0;
   --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 3px, rgba(185, 220, 120, 0.55) 3px 4px);
-  --bar-chart-bar-alt: var(--text);
+  --bar-chart-bar-alt: repeating-linear-gradient(0deg, var(--border) 0 3px, transparent 3px 4px);
   --bar-chart-radius: 0;
   --bar-chart-axis: var(--border);
   --bar-chart-axis-width: 2px;
@@ -291,14 +291,19 @@ html[data-theme="silo"] {
 html[data-theme="silo"] body { text-shadow: 0 0 0.3em var(--silo-glow); }
 html[data-theme="silo"] :is(h1, h2, h3, h4) {
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   font-weight: 400;
   text-shadow: 0 0 0.45em var(--silo-glow);
 }
-html[data-theme="silo"] h1 { font-size: 1.6rem; }
+html[data-theme="silo"] h1 { font-size: 1.9rem; }
 html[data-theme="silo"] h2 { font-size: 1.2rem; }
 html[data-theme="silo"] h3 { font-size: 0.95rem; letter-spacing: 0.18em; }
-html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th) { letter-spacing: 0.14em; text-transform: uppercase; }
+html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th, .toggle-btn, .segmented-item, .chip, .stat-label) { letter-spacing: 0.14em; text-transform: uppercase; }
+/* Big value under a tiny label, about 2.5:1 (DISPENSER, TOY... under
+   OBJECT DESCRIPTION); the squared face is widened by tracking. */
+html[data-theme="silo"] .stat-label { font-size: 0.68rem; }
+html[data-theme="silo"] .segmented-item { letter-spacing: 0.08em; }
+html[data-theme="silo"] .stat-value { font-size: 1.85rem; letter-spacing: 0.05em; font-weight: 400; }
 html[data-theme="silo"] .badge { font-size: 0.7rem; }
 /* Menu entries and short list labels are tracked caps too (FILE / VIEW /
    GO), as are list rows used as navigation; content lists keep their case. */
@@ -309,8 +314,36 @@ html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-men
 /* Header cells keep at least 0.45rem above and below their small caps at
    this density. */
 html[data-theme="silo"] .table th { padding-block: max(0.45rem, calc(0.5em * var(--density))); }
-html[data-theme="silo"] :is(.input, .select, .textarea) { font-family: var(--font-mono); text-transform: uppercase; }
-html[data-theme="silo"] :is(.input, .select, .textarea)::placeholder { text-transform: uppercase; }
+/* Values are set in the screens' sans, in caps; case-sensitive fields and
+   free text keep the case the user typed (placeholders stay caps). */
+html[data-theme="silo"] :is(.input, .select, .textarea) { font-family: var(--font); letter-spacing: 0.04em; }
+html[data-theme="silo"] :is(.select, .input:not([type="email"], [type="url"], [type="password"], [type="search"])) { text-transform: uppercase; }
+html[data-theme="silo"] :is(.input, .textarea)::placeholder { text-transform: uppercase; }
+/* In a table cell the control gives up its tracking and a date input
+   tightens, so a row of controls fits a narrow modal with a full-size Qty. */
+html[data-theme="silo"] td > :is(.input, .select) { letter-spacing: 0; }
+html[data-theme="silo"] td > .input[type="date"] { padding-inline: 0.4em; font-size: 0.85em; }
+html[data-theme="silo"] td > .input[type="number"] { min-inline-size: var(--tap-min, 24px); }
+
+/* The Relic Database field cell: the outlined box wraps the tiny tracked
+   label and a large bare value. The focused cell takes the yellow box. */
+html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) {
+  border: 1px solid var(--silo-field);
+  padding: 0.3rem 0.5rem 0.2rem;
+  --input-border: transparent;
+  --input-padding: 0.2em 0.15em;
+}
+html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) > .label {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  margin-block-end: 0.1em;
+}
+html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) > :is(.input, .select, .textarea) {
+  font-size: 1.15rem;
+  min-block-size: var(--tap-min, 24px);
+}
+html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)):focus-within { border-color: var(--accent-2); }
+html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)):has(> :is(.is-invalid, [aria-invalid="true"])) { border-color: var(--danger); }
 
 /* Selection and focus are the same yellow box the hard-drive browser draws
  * around the highlighted file. */
@@ -360,6 +393,7 @@ html[data-theme="silo"] .btn:active { transform: translateY(1px); }
    keys in their state colour, and a disabled key is an inert teal outline. */
 html[data-theme="silo"] .btn-danger { --btn-bg: transparent; --btn-fg: var(--danger-text); --btn-border: var(--danger); --btn-weight: 400; }
 html[data-theme="silo"] .btn-success { --btn-bg: transparent; --btn-fg: var(--success-text); --btn-border: var(--success); }
+html[data-theme="silo"] .toggle-btn.is-danger { --toggle-btn-bg-on: transparent; --toggle-btn-fg-on: var(--danger-text); --toggle-btn-border-on: var(--danger); }
 html[data-theme="silo"] .btn:is(:disabled, [aria-disabled="true"]) {
   --btn-bg: transparent;
   --btn-fg: var(--muted);
@@ -518,6 +552,10 @@ html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-
   html[data-theme="silo"] { --app-padding: 0.5rem; }
   /* Numbered entries stay on one line at phone width. */
   html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"] { padding-inline: 0.4em; letter-spacing: 0; }
+  /* Keep the bar's controls on one row: the picker gives up width and the
+     keyboard hint (no keyboard on a phone) goes, so the header stays short. */
+  html[data-theme="silo"] .app-bar .cluster > .select { flex: 1 1 5rem; inline-size: auto; min-inline-size: 0; }
+  html[data-theme="silo"] .app-bar .btn > kbd { display: none; }
 }
 @media (min-width: 481px) and (max-width: 900px) {
   html[data-theme="silo"] { --app-padding: 0.75rem 0.9rem 1rem; }
