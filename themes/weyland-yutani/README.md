@@ -19,8 +19,10 @@ reproduced.
 1. **Utilitarian, never glossy.** `--radius: 0`, no gradients, no
    bevels, no blurs. Panels are thin flat outlines.
 2. **Labels are stencil.** Headings, buttons, table heads, panel titles,
-   badges, nav and the status strip are uppercase with wide tracking
-   (`--label-tracking: 0.14em`).
+   badges, nav, menubar, segmented keys, window titles and the status
+   strip are uppercase with wide tracking (`--label-tracking: 0.14em`).
+   Headings, panel titles, table heads, title plates and the brand are set
+   in Michroma, an extended Microgramma-class face.
 3. **Amber is the phosphor, and only readouts glow.** `.readout` and
    `.meter` get a faint glow and scanlines; nothing else does.
 4. **Hazard striping is a danger signal, not a palette.** Yellow/black
@@ -31,17 +33,22 @@ reproduced.
    bar and tooltips are bone-beige with near-black text, like a riveted
    label plate on dark equipment.
 6. **Buttons are chunky caps.** 2px edge, dark underside lip, drops 2px on
-   press. Primary is a solid amber block.
+   press. Primary is a solid amber block; success is a lit green outline
+   on glass black, not a green slab. Icon buttons are square
+   (`--btn-icon-radius: 0`), as are carousel markers and the spinner.
 
 ## Signature details
 
-- Heavy beige top bar over a 4px amber rule; a 3rem left rail drawn in CSS
+- Heavy beige top bar over a 6px amber double rule (the terminals' double
+  frame rules), with a matching 4px double rule over the status strip; a 3rem left rail drawn in CSS
   as a ruler of tick marks with an amber marker block (empty, `aria-hidden`).
 - Two registration corner marks (top-left, bottom-right) on every panel; a
   solid amber square before each panel title.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
   scanline overlay; amber mono readouts on glass-black.
 - Inputs are recessed with a heavy amber underline and amber caret.
+- Slider tracks are drawn in `--wy-line-hi` on the content box (about
+  3.2:1 on the bay black), inside core's transparent 24/44px hit area.
 - Status strip in tracked micro-caps, its items drawn as a row of
   outlined soft keys like the terminals' function-key row; the first one
   is lit in the accent.
@@ -53,7 +60,10 @@ each, from the frames in `references/weyland-yutani/` (see RESEARCH.md).
 In every variant the beige plate becomes an inverse-video phosphor band
 (modal title, tooltips), the top bar becomes the screen's header row
 (phosphor text on black over a phosphor rule), panels get thin phosphor
-outlines, and headings and readouts glow.
+outlines, and headings and readouts glow. Body text is a light tint of the
+phosphor and the chart series are phosphor shades; only the status
+colours (success, warning, danger) step outside the screen's hue so they
+stay distinguishable.
 
 | Variant | Label | Source |
 |---|---|---|
@@ -77,13 +87,20 @@ blocky, machined stencil glyphs:
 ## Typography
 
 Reference: an extended Eurostile/Microgramma-class sans (the wordmark) plus
-a Helvetica/Futura-like face for signage. **Nothing is vendored.** Stack:
-`Eurostile, "Bank Gothic", "Century Gothic", "Segoe UI", "Helvetica Neue",
-Arial, sans-serif`. Eurostile ships on macOS, Bank Gothic on Windows with
-Office; elsewhere you get a generic sans, and the uppercase and tracking
-carry the look. Monospace (readouts, inputs): `"Lucida Console", "DejaVu Sans
-Mono", "Liberation Mono", Consolas, monospace`. The wordmark's striped
-slogan face is not imitated.
+a Helvetica/Futura-like face for signage.
+
+- **Labels** (`--font-label`): the vendored **Michroma** (SIL OFL,
+  `assets/fonts/Michroma-Regular.woff2`) under the theme-private family
+  `"WY Michroma"`, then Eurostile / Bank Gothic. Used for headings, panel
+  titles, table heads, modal and window title plates and the brand. It
+  ships one weight, declared as 400-700 so labels never get a faked bold.
+- **Body** (`--font`): `Eurostile, "Bank Gothic", "Century Gothic",
+  "Segoe UI", "Helvetica Neue", Arial, sans-serif`, narrower for reading.
+- **Mono** (readouts, inputs): the vendored **Share Tech Mono** (SIL OFL,
+  `"WY Share Tech Mono"`), a square terminal face close to the MU/TH/UR
+  screens, then `"Lucida Console", "DejaVu Sans Mono"`.
+
+The wordmark's striped slogan face is not imitated.
 
 ## Contrast honesty
 
@@ -118,7 +135,7 @@ core's default.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** bar, main and status in one column. The 3rem equipment rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token).
+- **Phone (≤480) and tablet (481–900):** bar, main and status in one column. On phones the plate tightens (less padding and tracking, menubar at 0.8em) so the menubar fits one line. The 3rem equipment rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token).
 - **Window caption buttons:** minimise and maximise take the label plate's ink, as close already does.
 - **XL gutters (≥1801):** the bay wall: a ruled plotting grid in `--hairline` with the rail's tick-ruler marks, all in the active screen's line colours, so the MU/TH/UR, Emergency and Earth variants follow. Still.
 

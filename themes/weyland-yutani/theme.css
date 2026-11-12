@@ -4,17 +4,33 @@
  * Variants: mother=MU/TH/UR (green), emergency=Emergency (red), earth=Alien: Earth (cyan)
  *
  * Note on fonts: the corporate wordmark is set in an extended Eurostile /
- * Microgramma-style sans (see references/weyland-yutani/RESEARCH.md). Nothing
- * of that class is vendored here. The stack names Eurostile (ships with
- * macOS) and Bank Gothic (ships with Microsoft Office on Windows), then
- * falls back to Century Gothic / Segoe UI / Arial. On a machine with none of
- * the first two you get a plain wide-tracked uppercase sans: the tracking and
- * casing carry the stencil-label voice, the face itself does not.
+ * Microgramma-style sans (see references/weyland-yutani/RESEARCH.md). The
+ * labels (headings, bar, panel titles, table heads, buttons, badges) use the
+ * vendored Michroma (SIL OFL, Vernon Adams), a free extended Microgramma-
+ * class face, under a theme-private family name so its weight mapping can't
+ * leak into other themes. Body copy keeps the narrower Eurostile / Bank
+ * Gothic / system stack for reading. Readouts use the vendored Share Tech
+ * Mono, a square terminal face close to the MU/TH/UR screens.
  *
  * Hazard rule: yellow/black 45deg striping appears ONLY on danger states
  * (.btn-danger, .alert-danger, .badge-danger, .status-error, .toast-danger).
  * It is never part of the palette, the shell, or a decorative background.
  */
+
+/* Michroma ships one weight; claiming 400-700 stops the browser faking a
+   smeared bold on the 700-weight labels. */
+@font-face {
+  font-family: "WY Michroma";
+  src: url("assets/fonts/Michroma-Regular.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "WY Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
 
 html[data-theme="weyland-yutani"] {
   --motion-leave: power-off;
@@ -38,8 +54,11 @@ html[data-theme="weyland-yutani"] {
   --on-danger: #0e0d0a;
   --on-success: #0e0d0a;
   --radius: 0;
+  --btn-icon-radius: 0;
+  --list-tone-tint: 6%;
   --font: Eurostile, "Bank Gothic", "Century Gothic", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "Lucida Console", "DejaVu Sans Mono", "Liberation Mono", Consolas, monospace;
+  --font-label: "WY Michroma", Eurostile, "Bank Gothic", "Century Gothic", sans-serif;
+  --font-mono: "WY Share Tech Mono", "Lucida Console", "DejaVu Sans Mono", "Liberation Mono", Consolas, monospace;
   --flare: #f5c400;        /* the hazard yellow used in stripes */
 
   /* Screen palette hooks: the variants below recolour the whole theme by
@@ -164,6 +183,9 @@ html[data-theme="weyland-yutani"] {
   --slider-radius: 0;
   --slider-thumb-radius: 0;
   --slider-thumb-bg: var(--accent);
+  /* The track is drawn on the content box (core keeps the 24/44px hit area
+     as a transparent border); --wy-line-hi is ~3.2:1 on --bg (WCAG 1.4.11). */
+  --slider-bg: var(--wy-line-hi);
   --progress-radius: 0;
   --progress-fill: var(--accent);
   --progress-bg: var(--wy-deep);
@@ -208,7 +230,7 @@ html[data-theme="weyland-yutani"] {
   --readout-tracking: 0.06em;
   --readout-border-width: 1px;
   --readout-border: var(--wy-line-dim);
-  --readout-padding: 0.2em 0.5em;
+  --readout-padding: max(0.35em, 5px) 0.5em;
   --readout-unit-fg: var(--muted);
   --readout-glow: 0 0 0.45rem var(--wy-glow);
   --meter-track: var(--wy-deep);
@@ -222,18 +244,46 @@ html[data-theme="weyland-yutani"] {
   --meter-peak-width: 3px;
 }
 
+/* Core pads the vertical slider with padding-inline, which a vertical
+   writing mode turns into top/bottom, so the visible track filled the whole
+   24/44px hit box once it had a colour. Pad it physically instead. */
+html[data-theme="weyland-yutani"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
+}
+
 /* --- Voice --------------------------------------------------------------- */
 html[data-theme="weyland-yutani"] h1,
 html[data-theme="weyland-yutani"] h2,
 html[data-theme="weyland-yutani"] h3,
 html[data-theme="weyland-yutani"] h4 {
+  font-family: var(--font-label);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   font-weight: 700;
 }
 html[data-theme="weyland-yutani"] h1 { font-size: 1.5rem; }
 html[data-theme="weyland-yutani"] h2 { font-size: 1.15rem; }
-html[data-theme="weyland-yutani"] h3 { font-size: 0.95rem; letter-spacing: 0.18em; }
+html[data-theme="weyland-yutani"] h3 { font-size: 0.95rem; letter-spacing: 0.12em; }
+/* The extended face carries the stencil-plate labels; it is already wide,
+   so it takes less tracking than the old fallback did. */
+html[data-theme="weyland-yutani"] :is(.panel-header, .table th, .modal-header, .nav-brand) {
+  font-family: var(--font-label);
+}
+/* Every label surface speaks in stencil caps, including the <button>s whose
+   UA style resets the bar's inherited text-transform. */
+html[data-theme="weyland-yutani"] .app-bar .menubar > li > :is(button, a),
+html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .taskbar-start, .bulk-bar-count) {
+  text-transform: uppercase;
+  letter-spacing: var(--label-tracking);
+}
+html[data-theme="weyland-yutani"] .nav-brand { text-transform: uppercase; }
+/* Title plates are set in the extended face, which needs little tracking. */
+html[data-theme="weyland-yutani"] :is(.modal-header, .window-title) { letter-spacing: 0.05em; }
+/* Segment keys sit edge to edge in a fixed row, so they track tighter. */
+html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 html[data-theme="weyland-yutani"] .input,
 html[data-theme="weyland-yutani"] .select,
 html[data-theme="weyland-yutani"] .textarea { font-family: var(--font-mono); }
@@ -258,7 +308,7 @@ html[data-theme="weyland-yutani"] .panel-header::before {
   margin-right: 0.7em;
   background: var(--accent);
 }
-html[data-theme="weyland-yutani"] .panel-header { letter-spacing: 0.18em; }
+html[data-theme="weyland-yutani"] .panel-header { letter-spacing: 0.14em; column-gap: 0.75rem; }
 
 /* --- Hazard striping: danger states ONLY -------------------------------- *
  * A yellow/black 45deg strap on the leading edge. Text always sits on the
@@ -325,7 +375,7 @@ html[data-theme="weyland-yutani"] {
   --app-bar-bg: var(--wy-bar-bg);
   --app-bar-fg: var(--wy-bar-fg);
   --app-bar-rule: var(--accent);
-  --app-bar-rule-width: 4px;
+  --app-bar-rule-width: 6px;
   --app-bar-height: 3.4rem;
   --app-bar-padding: 0.5rem 1.25rem;
   --app-bar-font: var(--font);
@@ -343,6 +393,10 @@ html[data-theme="weyland-yutani"] {
   --app-status-rule: var(--wy-line);
   --app-status-padding: 0.4rem 1.25rem;
 }
+/* The terminals frame the screen between heavy double rules (see
+   terminal-amber-destination.jpg): under the bar and over the status row. */
+html[data-theme="weyland-yutani"] .app-bar { border-bottom-style: double; }
+html[data-theme="weyland-yutani"] .app-status:not(.taskbar) { border-top: 4px double var(--accent); }
 html[data-theme="weyland-yutani"] .app-rail { border-right: 1px solid var(--wy-line-dim); }
 html[data-theme="weyland-yutani"] .app-bar {
   --nav-brand-fg: var(--wy-bar-brand);
@@ -351,14 +405,36 @@ html[data-theme="weyland-yutani"] .app-bar {
   --nav-item-bg-active: var(--wy-bar-active-bg);
   --nav-bg: transparent;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   font-weight: 700;
 }
-html[data-theme="weyland-yutani"] .app-status {
+html[data-theme="weyland-yutani"] .app-bar .menubar > li > :is(button, a) { letter-spacing: 0.1em; }
+html[data-theme="weyland-yutani"] .app-status:not(.taskbar) {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 0.75rem;
 }
+
+/* Machined parts are square: carousel markers, the arrows and the spinner
+   ring have no radius token in core, so it is set here (shape only). */
+html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner) { border-radius: 0; }
+html[data-theme="weyland-yutani"] .carousel > .carousel-slide::scroll-marker,
+html[data-theme="weyland-yutani"] .carousel::scroll-button(*) { border-radius: 0; }
+
+/* Success is a lit outline (like the soft keys), not a solid green block:
+   the hardware palette is amber and beige, green is a terminal status. */
+html[data-theme="weyland-yutani"] .btn-success {
+  --btn-bg: var(--wy-deep);
+  --btn-fg: var(--success-text);
+  --btn-border: var(--success);
+  --btn-bg-hover: var(--wy-deep);
+  --btn-border-hover: var(--success-text);
+}
+
+/* A taskbar in the status slot keeps core's tight inline padding: the
+   strip's 1.25rem gutters pushed the tray clock past the edge on phones. */
+html[data-theme="weyland-yutani"] .app-status.taskbar { padding-inline: 0.6rem; }
+html[data-theme="weyland-yutani"] .taskbar-start { letter-spacing: 0.06em; }
 
 /* --- Soft-key row ---------------------------------------------------------- *
  * The terminals put their commands in a row of outlined function-key boxes
@@ -367,7 +443,7 @@ html[data-theme="weyland-yutani"] .app-status {
 html[data-theme="weyland-yutani"] .app-status:not(.taskbar) { gap: 0.4rem; }
 html[data-theme="weyland-yutani"] .app-status:not(.taskbar) > * {
   border: 1px solid var(--wy-line-hi);
-  padding: 0.1rem 0.75rem;
+  padding: 0.3rem 0.75rem;
 }
 html[data-theme="weyland-yutani"] .app-status:not(.taskbar) > :first-child { border-color: var(--accent); color: var(--accent); }
 
@@ -378,6 +454,16 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) > :first-child { bor
  * inverse-video phosphor band (modal titles, tooltips). The top bar is the
  * screen's header row: phosphor text on black over a phosphor rule. See
  * references/weyland-yutani/RESEARCH.md for the frames each one follows. */
+/* One phosphor per screen: chart series are shades of it, so only status
+   colours (success/warning/danger) step outside the screen's hue. */
+html[data-theme="weyland-yutani"][data-variant] {
+  --chart-series-1: var(--accent);
+  --chart-series-2: var(--accent-2);
+  --chart-series-3: var(--muted);
+  --chart-series-4: var(--text);
+  --chart-series-5: var(--wy-line-hi);
+  --chart-series-6: var(--border);
+}
 html[data-theme="weyland-yutani"][data-variant] :is(h1, h2, .nav-brand, .readout) { text-shadow: 0 0 0.5rem var(--wy-glow); }
 
 /* MU/TH/UR 6000: the Nostromo's green phosphor. */
@@ -401,7 +487,7 @@ html[data-theme="weyland-yutani"][data-variant="mother"] {
   --surface-2: #0b1d10;
   --border: #2f6a3c;
   --hairline: #11301a;
-  --text: #c8f7d1;
+  --text: #a6f7b8;
   --muted: #7fc18d;
   --accent: #4dff7c;
   --accent-2: #b6ffc8;
@@ -441,7 +527,7 @@ html[data-theme="weyland-yutani"][data-variant="emergency"] {
   --surface-2: #220c08;
   --border: #7a2a1e;
   --hairline: #3a120c;
-  --text: #ffd9cf;
+  --text: #ffbcaa;
   --muted: #d48f80;
   --accent: #ff5640;
   --accent-2: #ffa18f;
@@ -481,7 +567,7 @@ html[data-theme="weyland-yutani"][data-variant="earth"] {
   --surface-2: #0a1f26;
   --border: #23687a;
   --hairline: #0f313b;
-  --text: #cdf6ff;
+  --text: #a4efff;
   --muted: #80c3d2;
   --accent: #4fe0ff;
   --accent-2: #b4f2ff;
@@ -507,6 +593,15 @@ html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:h
  * outranks the per-tier rail token, so it is switched off here. */
 @media (max-width: 900px) {
   html[data-theme="weyland-yutani"] { --app-rail-empty-display: none; }
+}
+/* Phone: a label plate, not a stack. Tighter plate padding and tracking so
+   the menubar fits one line under the brand row. */
+@media (max-width: 480px) {
+  html[data-theme="weyland-yutani"] { --app-bar-padding: 0.35rem 0.75rem; }
+  html[data-theme="weyland-yutani"] .app-bar { letter-spacing: 0.06em; column-gap: 0.5rem; }
+  html[data-theme="weyland-yutani"] .app-bar .menubar { --menubar-font-size: 0.8em; }
+  html[data-theme="weyland-yutani"] .app-bar .menubar > li > :is(button, a) { letter-spacing: 0.04em; padding-inline: 0.5em; }
+  html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0; font-size: 0.78em; }
 }
 
 /* XL gutters: the bay wall either side of the console. A ruled plotting
