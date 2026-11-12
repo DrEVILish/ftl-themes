@@ -24,26 +24,30 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    `#1e3239`, sampled `#1e2e33` / `#263b43` under set light), and the room
    around them is near-black (`#070b0d`). Do not use pure black panels
    and do not use neon on black.
-2. **Cyan is the ink.** One cyan (`#4fc8dc`) draws outlines, active
+2. **Cyan is the ink.** One cyan (`#48b9cc`) draws outlines, active
    states, table heads and panel titles. Lime (`#a5d65a`) is reserved for
    values (the vitals readout's HR 111 and the dial's outer bars), and
    it serves as the second chart series.
 3. **Condensed caps for every label.** Headings, buttons, tabs, nav,
    menubar and context-menu items, toggle buttons, settings-style nav
    lists, summaries, legends, scrollspy links, table heads, badges and
-   panel headers are set in a condensed DIN-like face (Antonio),
-   uppercase. Headings are weight 700, tracked 0.1em, like SECTOR [17]. Body copy is a plain sans, because
+   panel headers are set in a semi-condensed squared face (Rajdhani),
+   uppercase. Headings are weight 700, tracked 0.06em, like SECTOR [17].
+   Small caps (table heads, badges) never drop below 12px. Body copy is a plain sans, because
    the tablets never set paragraphs.
 4. **Values in brackets.** Badges read `[14]`, `[PAID]` and
    `[LIVE]`, like the matrix's `[14] BULK APPERCEPTION` and the phone's
-   `SECTOR [17]`.
+   `SECTOR [17]`. The brackets sit tight on the value.
 5. **Levels are stacks of squares.** Meters, progress bars and chart bars
-   are segmented ladders, like the attribute sliders. They are never
-   smooth bars.
+   are segmented ladders, like the attribute sliders, horizontal and
+   vertical alike; meters keep the cyan / lime / red level bands inside
+   the squares. They are never smooth bars.
 6. **Outlined caps for buttons.** A button has a 1px cyan-slate outline
-   over a faint cyan tint, with a small 0.3rem radius (END / HOLD /
-   UPLOAD). Primary buttons are solid cyan. Hover adds a faint glow, and
-   nothing else glows at rest.
+   over a faint cyan tint, with small chamfered corners (END / HOLD /
+   UPLOAD). The primary button, like HOLD, is a cyan outline over a
+   brighter tint with cyan text; active segmented items, toggles, filter
+   chips, pagination and selected icons use the same tint, never a solid
+   cyan fill. Hover adds a faint glow, and nothing else glows at rest.
 7. **Red belongs to the room.** Delos red `#c8102e` appears in exactly
    one place: the control room's cove light, drawn as the status strip's
    top rule. Danger states use the separate corrupted-tablet red-orange
@@ -59,8 +63,9 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
   on the matrix tablet. It is drawn in CSS (on the empty rail's
   `::before`) as three segmented sliders (lime, cyan, cyan) that run the
   height of the leaf down to the bottom of the first screen, lit from the
-  bottom, each with a triangle marker, and rotated COORDINATION /
-  AGGRESSION / LOYALTY captions beside them (`::after`). It is empty and
+  bottom, each with a triangle marker, and cyan COORDINATION /
+  AGGRESSION / LOYALTY captions reading bottom-up in the gap right of
+  each ladder (`::after`, `writing-mode: sideways-lr`). It is empty and
   `aria-hidden`.
 - **DELOS pill brand.** The bar's `.nav-brand` is drawn as an outlined
   pill, like the DELOS wordmark plate on every device. It never
@@ -70,10 +75,11 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
   (`corner-shape: bevel`, 1.2rem) with a cyan line inside the slant, like
   the ATTRIBUTE MATRIX window. Browsers without `corner-shape` show a
   small filled cyan corner tab instead. Each panel header starts with a
-  short cyan rule.
+  short cyan rule. Modals and windows are cut top-right and bottom-left,
+  like the S2 CORE PERMISSIONS dialog.
 - **Segmented slider track.** `.slider` draws its track as a row of
   cyan-slate squares (`--ww-line-hi`, 4.4:1 on the page) inside the
-  `--tap-min` hit box.
+  `--tap-min` hit box; on a vertical fader the squares stack as rungs.
 - **Chip tabs.** Tabs and nav items are small rounded chips. The active
   one gets a cyan outline and a cyan tint, like the phone's
   CODE / HOSTS / SATELLITE row.
@@ -84,11 +90,11 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 
 | Role | Stack | Why |
 |---|---|---|
-| Labels | Bahnschrift SemiCondensed where installed, then `Antonio` (vendored OFL, `assets/fonts`, shared with lcars), DIN Condensed, Arial Narrow | The tablets use a semi-condensed DIN-class grotesque. Bahnschrift is closest; Antonio is the closest free condensed face already in the repo, used at 700 for headings and buttons. |
-| Body | Helvetica Neue, Helvetica, Inter, Roboto, Noto Sans, Arial, Liberation Sans | Inter / Roboto / Noto Sans come before Arial so Linux does not fall through to the wide DejaVu Sans. | The Delos security panel (an ARG site) sets body text in a plain geometric or grotesque sans. |
+| Labels | `Rajdhani` (vendored OFL, `assets/fonts`, Medium and Bold), then Bahnschrift SemiCondensed, DIN Condensed, Arial Narrow | The tablets use a semi-condensed, squared DIN/Eurostile-class grotesque. Rajdhani is the closest free face in the repo (Antonio was too tall and narrow and read as LCARS), used at 700 for headings and buttons. |
+| Body | `Titillium Web` (vendored OFL), then Helvetica Neue, Helvetica, Inter, Roboto, Noto Sans, Arial, Liberation Sans | A plain technical grotesque that ships with the theme, so no platform falls through to the wide DejaVu Sans. The Delos security panel (an ARG site) sets body text in a plain grotesque sans. |
 | Mono and readouts | `Share Tech Mono` (vendored OFL, shared with prometheus) | It matches the squared numerals of the vitals and code panes. |
 
-No new font files were added.
+No new font files were added; all three faces were already vendored.
 
 ## Contrast honesty
 
@@ -99,7 +105,7 @@ All pairs meet the lint floors. No exemptions are claimed.
 | `--text` `#d6e6ea` on `--surface` `#1e3239` / `--bg` `#172a31` | 10.4 / 11.6 |
 | `--muted` `#9ab6be` on `--surface` / `--surface-2` `#263c44` | 6.2 / 5.4 |
 | `--muted` on status strip `#070b0d` | 9.2 |
-| `--accent` `#4fc8dc` on `--surface` | 6.8 |
+| `--accent` `#48b9cc` on `--surface` / `--surface-2` | 5.8 / 5.0 |
 | `.badge-accent` text `#66d3e5` on its chip (20% cyan over surface) | 5.0 |
 | `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 4.4 / 3.9 |
 | `--on-accent` `#071014` on accent | 9.7 |
@@ -112,7 +118,7 @@ line only, never as text.
 
 Deviations from the reference: the cyan in the stills is photographed off
 an ambient-lit e-paper prop (sampled `#3f96a6` to `#5c9ba4`). It has been
-raised to the brightness the screen would emit. Danger, warning and
+raised only partway toward the brightness the screen would emit. Danger, warning and
 success are not established in the show's UI as semantic colours. They
 are taken from the corrupted S2 tablet (red), the diagnostic node graph
 (amber) and the vitals (lime).
