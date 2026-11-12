@@ -53,25 +53,52 @@ and what was derived rather than measured is in
 ## Signature details
 
 - Captions use Arial Bold (XenoMorph's `.uis`: `FontName=Arial`,
-  `FontWeight=700`, `FontHeight=14`); XenoMorph's caption text glows blue.
+  `FontWeight=700`, `FontHeight=14`); XenoMorph's caption text stays
+  near-white with a faint blue halo.
 - Caption buttons are drawn per suite (`--luna-caption`): silver squares
-  with dark glyphs (XenoMorph, ALX, AlienMorph), dark with white or red
-  glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
-  (Area-51), beige with an orange close (Aurora).
-- The Start button follows the suite: XenoMorph's 36px blue orb in a
-  silver ring, with no label, rising out of the 31px taskbar; the light
+  with dark glyphs (XenoMorph, ALX, AlienMorph), gunmetal tabs with
+  `#d0d0d0` glyphs and silver `#b8bac2` pillars between them (Darkstar),
+  one black pod of bare cyan glyphs (Invader), red with yellow (Area-51),
+  beige with an orange close (Aurora). XenoMorph's, Darkstar's and
+  Invader's min, max and close join into one strip with rounded outer
+  corners, in every window whatever its header gap; XenoMorph's close
+  lights blue on hover. Inactive caption buttons dim only to 90%, so
+  XenoMorph's stay silver.
+- XenoMorph's window frame is FrameLeft's 6px bevel (`#000`, `#555`,
+  `#181818`, `#181818`, `#555`, `#000`), and the caption runs edge to
+  edge inside it: a `#000` top edge, a `#bdbdbd` lip, about 11 rows of
+  `#717171`–`#464646` gloss, then `#252525` to a `#000` last row, active
+  or inactive (only the inactive title text dims).
+- The XP structure Luna fences off by variant is declared again in suite
+  tokens: boxed tab pages, the combo box's push-button drop button (silver
+  gloss in a black edge for XenoMorph, each suite's button face
+  elsewhere), notification balloons, glossy Delete/Confirm buttons and
+  push-button filter chips.
+- The Start button follows the suite: XenoMorph's 36px dark glassy blue
+  orb with a tight top highlight in a thick bright silver bezel, with no label, rising out of the 31px taskbar; the light
   "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
-  dark button, Area-51's red, Aurora's gold pill.
+  dark button, Area-51's red, Aurora's gold pill. A status bar that
+  already holds a real Start button draws no second one. XenoMorph's
+  taskbar buttons have bold white labels; the open window's button is the
+  same button pressed (darker, sunken), with no coloured ring.
+- Start-menu labels sit flush beside their icons; XenoMorph's header
+  meets the columns on a black seam, not a blue rule.
+- The Start menu's user tile is a black gloss square in a silver frame,
+  All Programs ends in a plain arrow in the column's text colour, and
+  XenoMorph's places column is brushed silver; no Luna orange or green.
 - Push buttons, primary and secondary included, wear each suite's face:
   XenoMorph's grey gloss (light top, darker bottom, white lip) in a 1px
   black frame, Darkstar's black with white text, Area-51's red with bold
-  yellow text, silver or beige in the others. XenoMorph's hover and
+  yellow text, Invader's silver with a black frame and bold black label
+  (its Theme Manager), silver or beige in the others. XenoMorph's hover and
   default (primary) button take the blue glow fill of the hovered Cancel
   in its Display Properties; the suite draws that label white, the theme
   keeps it black for 4.5:1.
 - GO and play buttons take the suite's highlight gloss in its button
   frame, not Luna's green; switches read as the trackbar (square groove,
-  dark glossy thumb). Green stays for success states only.
+  dark glossy thumb). Bar charts are XP's chunked progress bars in the
+  suite's highlight (a darker shade for the second series). Green stays
+  for success states only.
 - The trackbar is XenoMorph's black-edged blue groove (`#0374f4`; the
   suite's highlight in the others): 1px black, 4px groove, 1px black, with
   a dark glossy grey thumb, inside core's full-height hit area; the
@@ -86,15 +113,25 @@ and what was derived rather than measured is in
   its dialogs, not Luna blue.
 - Panels and cards are the suite's surface (XenoMorph's pure white), not
   Luna's `#fcfcfe`.
-- Toolbars, table heads, skeletons, toasts and every field and group-box
+- Selected segments and filter chips read pressed: a black edge and an
+  inset shadow, so the state does not rest on the highlight's hue.
+  Darkstar selects in black with white text, as its Theme Manager does
+  (segments, chips, pagination, the bulk-selection bar); its pressed
+  segments and chips light a red LED along their foot, and red otherwise
+  stays for its charts, meters and LED bars.
+- Page titles are 1.35rem bold Tahoma, nearer XP's dialog scale than
+  Luna's Trebuchet banner.
+- Toolbars (and their bottom rule), table heads, skeletons, toasts and every field and group-box
   border take the suite's own face, surface and border, so Luna's beige
   and `#7f9db9` blue never show. The gap around a full-page app window is
   the suite's wallpaper, not Bliss (XenoMorph's: a royal-blue band with
-  cyan light arcs over a black top); pages without the shell keep the
-  face grey so no page text sits on the dark wallpaper.
-- Where Tahoma and Arial are missing, the stacks fall back to DejaVu Sans
-  Condensed and Arimo/Liberation Sans, closer in width to the originals
-  than DejaVu Sans.
+  cyan light arcs over a black top); pages without the shell, and phones
+  (where only a few pixels of it would show), keep the face grey so no
+  page text sits on the dark wallpaper.
+- Where Tahoma and Arial are missing, the stacks fall back to Segoe UI,
+  then DejaVu Sans Condensed where it is installed, then the Arial-metric
+  Arimo/Liberation Sans, all narrower than Verdana. Monospace is Lucida Console, then Courier New and its
+  metric twins Liberation Mono and Cousine.
 
 ## Accessibility notes
 
@@ -110,6 +147,11 @@ companion carries text:
   callouts sit on a pale chip for the same reason.
 - `--success-text` is `#0f5a24` (`#073514` for tip callouts on the darker
   Darkstar and ALX faces) so the tip callout passes 4.5:1.
+- Focus is XP's black rectangle: `--focus` is black in every suite (the
+  highlights reached only 1.1-2.3:1 on the faces), and fields get an
+  opaque 2px ring. On the title bars, taskbar and Start-menu columns the
+  focus takes that bar's own text colour, so it stays visible on dark
+  chrome.
 - The taskbar's status text uses the taskbar's own foreground.
 - Area-51's yellow button text sits on the darker middle of its red gloss
   (`#b01a14`, 5.2:1).
