@@ -34,7 +34,8 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
    Small elements (buttons, inputs, badges, transport, list cards) are
    not stitched. Content keeps 8px or more clear of it at every tier:
    `--panel-pad` / `--card-pad` start at the 9.5px stitch strip plus
-   0.75rem / 0.6rem, and desktop windows pad their body inside it.
+   0.75rem / 0.6rem, and desktop windows keep 8px clear of it at the
+   bottom too (the dialog footer sits above the stitch, not on it).
 4. **Gold foil, not gold paint.** Type on leather is flat gold with a
    deboss shadow (dark above, faint light below), tracked uppercase in a
    Didone serif (h1 to h3, brand, titles). The foil is a worn, greyed
@@ -51,13 +52,16 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 - Pebble grain is an SVG `feTurbulence` + `feDiffuseLighting` tile
   (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
 - The saddle stitch (`--tokie-stitch`) is twelve background layers: four
-  runs of slanted champagne thread beads (a 60° repeating gradient in a
-  3px strip, 6px pitch: about 2.4px of 72% champagne thread, a 0.8px dark
-  shade on one side so the slant reads, then dark channel, like a
-  pricking iron sets them), four corner arcs that turn the stitch on a 5px
+  runs of slanted thread beads (a 60° repeating gradient in a 3px strip,
+  6px pitch: about 2px of tone-on-tone taupe thread, `rgba(176,156,114,.5)`,
+  a 0.8px dark shade on one side so the slant reads, then about 2.2px of
+  dark channel, like a pricking iron sets them; the references' thread is
+  dark on dark, so the stitch shows when you look for it), four corner arcs that turn the stitch on a 5px
   radius, and four creased grooves (75% black) with a faint lit lip. It
   costs no pseudo-elements, so any surface can wear it. On phones
-  (≤480px) it drops to the four bead runs, and every SVG-filter tile
+  (≤480px) it drops to the four bead runs and only panels, dialogs,
+  drawers and the bar wear it (cards are plain raised leather, with no
+  highlight gradient), and every SVG-filter tile
   (pebble grain, brushed hairlines) is switched off: flat leather and
   gradient-only gold keep scrolling within the frame budget on a
   throttled phone.
@@ -78,15 +82,22 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 - Buttons: the default is a leather key with a gold bezel; primary is
   polished gold with engraved dark text; danger and success are enamelled
   oxblood and bottle-green leather that keep the gold bezel. Toggle
-  buttons speak the same voice (tracked caps; sentence case up to 900px,
-  where toggle rows are packed tight) and turn polished gold when on; a danger toggle turns oxblood enamel.
+  buttons speak the same voice (tracked caps, lighter tracking up to 900px;
+  a joined `.toggle-group` drops to sentence case there so five segments
+  fit a phone row), as does the taskbar's Start key, and turn polished gold when on; a danger toggle turns oxblood enamel.
 - Readouts are black lacquer dials with applied gold Didone numerals and
-  a thin gold chapter ring; padding `max(6px, .4em) max(8px, .6em)` keeps
-  the numerals 4px+ off the ring. Knobs are polished watch crowns with a fluted
+  a thin gold chapter ring; padding `max(8px, .4em) max(9px, .6em)` keeps
+  the numerals 4px+ off the ring (Bodoni's glyph box overhangs its line
+  box). The active pagination page is a polished plate 2.3em tall, so
+  its numeral keeps 4px of gold above and below. Knobs are polished watch crowns with a fluted
   edge.
 - Alerts are debossed into the leather like inputs; alerts and toasts
   carry a 3px state-coloured lead rule on their leading edge; their other
-  three sides are a dim `#3a3226` hairline so the rule reads as a state. Folder
+  three sides are a dim `#3a3226` hairline so the rule reads as a state.
+  List-card states use the same idiom on neutral leather (no tint); the
+  spotlight card is a 1px aged-brass bezel with a gold lead rule. A
+  `fieldset` group box is a dim `#3a3226` crease, not the browser's grey
+  groove. Folder
   rails (`.nav-rail`) are a raised leather flap edged in dark gold.
 - The focus ring is 2px polished gold at a 3px offset with a soft gold
   halo. It is visible on every control, on leather and on gold.
@@ -118,7 +129,10 @@ titles, stat values and prices. Bodoni Moda (OFL, Latin subset, wght
 `assets/fonts/BodoniModa-Variable.woff2`; its optical-size axis follows
 the font size, so h3 and panel titles get sturdier hairlines than h1
 instead of losing their crossbars. h3, panel and dialog titles are set at
-weight 500; badges inside them use the UI sans at 600. UI: `Optima, "Optima nova", "URW
+weight 500; badges inside them use the UI sans at 600. Stat values,
+prices and readouts are set at 600 with `font-variation-settings:
+"opsz" 11`, so the '4' crossbar and the '$' stem keep their hairlines
+at 28px. UI: `Optima, "Optima nova", "URW
 Classico", "Linux Biolinum", Candara, "Segoe UI", "Noto
 Sans", Lato, "Open Sans", …, sans-serif`, the engraved-sans of luxury
 packaging. On a bare Linux box the UI falls to Noto Sans or DejaVu;

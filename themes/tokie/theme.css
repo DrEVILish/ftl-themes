@@ -6,7 +6,7 @@
  *   - Leather (black, matte, pebble grain): everything you would rest a
  *     hand on — the page, panels, cards, inputs. Grain is an SVG
  *     feTurbulence + feDiffuseLighting tile in a data-URI, no bitmap.
- *     Panel edges carry a saddle stitch: slanted champagne beads laid
+ *     Panel edges carry a saddle stitch: slanted tone-on-tone beads laid
  *     in a creased groove, drawn as background layers (no pseudo-elements).
  *   - Brushed gold (satin, horizontal hairlines, low contrast): structure —
  *     the app bar's rail, the spine rail, the status nameplate, table-head
@@ -93,12 +93,12 @@ html[data-theme="tokie"] {
   /* Each bead is a short slanted stitch with a clear gap of dark channel
      (about half the pitch) before the next, so the run reads as separate
      saddle stitches sunk in a crease, not a twisted cord. */
-  --tokie-thread: rgba(226, 202, 148, 0.72);
+  --tokie-thread: rgba(176, 156, 114, 0.5);
   --tokie-thread-shade: rgba(0, 0, 0, 0.7);
   --tokie-groove: rgba(0, 0, 0, 0.75);
   --tokie-lip: rgba(255, 240, 210, 0.1);
-  --tokie-bead-h: repeating-linear-gradient(60deg, transparent 0 0.4px, var(--tokie-thread) 0.8px 3.2px, var(--tokie-thread-shade) 3.4px 4.2px, transparent 4.6px 6px);
-  --tokie-bead-v: repeating-linear-gradient(150deg, transparent 0 0.4px, var(--tokie-thread) 0.8px 3.2px, var(--tokie-thread-shade) 3.4px 4.2px, transparent 4.6px 6px);
+  --tokie-bead-h: repeating-linear-gradient(60deg, transparent 0 0.4px, var(--tokie-thread) 0.8px 2.8px, var(--tokie-thread-shade) 3px 3.8px, transparent 4.2px 6px);
+  --tokie-bead-v: repeating-linear-gradient(150deg, transparent 0 0.4px, var(--tokie-thread) 0.8px 2.8px, var(--tokie-thread-shade) 3px 3.8px, transparent 4.2px 6px);
   --tokie-corner: transparent 3.5px, var(--tokie-groove) 4px 4.2px, var(--tokie-thread) 4.6px 6.2px, var(--tokie-groove) 6.6px 7px, transparent 7.4px;
   --tokie-stitch:
     var(--tokie-bead-h) 13px 6.25px / calc(100% - 26px) 3px no-repeat,
@@ -172,6 +172,9 @@ html[data-theme="tokie"] {
   /* List cards are small, like keys: plain raised leather, no stitch to
      cross their text. */
   --list-card-bg: var(--tokie-leather-raised);
+  --list-tone-tint: 0%;
+  --list-featured-border-width: 1px;
+  --list-featured-border: #a8853f;
   --card-border: #050404;
   --card-radius: 10px;
   --card-shadow: var(--panel-shadow);
@@ -265,9 +268,9 @@ html[data-theme="tokie"] {
   --readout-border: #a8853f;
   --readout-border-width: 1px;
   --readout-radius: 4px;
-  --readout-padding: max(6px, 0.4em) max(8px, 0.6em);
+  --readout-padding: max(8px, 0.4em) max(9px, 0.6em);
   --readout-font: var(--tokie-display);
-  --readout-weight: 400;
+  --readout-weight: 600;
   --readout-tracking: 0.06em;
   --readout-glow: 0 1px 0 #000;
   --readout-unit-fg: #a8946a;
@@ -406,7 +409,9 @@ html[data-theme="tokie"] :is(h1, h2, h3) {
 html[data-theme="tokie"] :is(h1, h2) { text-transform: uppercase; letter-spacing: 0.16em; }
 /* h3 keeps the foil caps voice a step quieter (band heads, price cards). */
 html[data-theme="tokie"] h3 { text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; }
-html[data-theme="tokie"] .stat-value { font-weight: 500; }
+/* Display numerals at stat size: a caption optical size and 600 weight,
+   so the '4' crossbar and '$' stem keep their hairlines. */
+html[data-theme="tokie"] :is(.stat-value, .price, .readout) { font-weight: 600; font-variation-settings: "opsz" 11; }
 html[data-theme="tokie"] .nav-brand {
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -470,11 +475,16 @@ html[data-theme="tokie"] .toggle-btn.is-danger {
 html[data-theme="tokie"] .toggle-btn.is-danger:has(input:checked) { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6); box-shadow: inset 0 1px 0 rgba(255, 220, 200, 0.12); }
 /* Tinted list cards mix their tone into a colour (color-mix takes no image). */
 html[data-theme="tokie"] .list-cards > .list-item:is(.is-success, .is-warning, .is-danger, .is-info) { --list-card-bg: #191817; }
+/* States stay neutral leather with the alerts' 3px lead rule; the
+   spotlight is a 1px aged-brass bezel plus a gold lead rule. */
+html[data-theme="tokie"] .list-cards > .list-item:is(.is-success, .is-warning, .is-danger, .is-info) { border-color: #3a3226; border-inline-start: 3px solid var(--_list-tone); }
+html[data-theme="tokie"] .list-cards > .list-item.is-featured { border-inline-start: 3px solid #d6b25e; }
 /* Alerts and toasts: a 3px state-coloured lead rule on the leading edge;
    alerts sit debossed in the leather. */
 html[data-theme="tokie"] :is(.alert, .toast) { border-color: #3a3226; border-inline-start: 3px solid var(--alert-border); }
 html[data-theme="tokie"] .toast { border-inline-start-color: var(--toast-border); }
 html[data-theme="tokie"] .alert { box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 235, 190, 0.06); }
+html[data-theme="tokie"] .taskbar-start { text-transform: uppercase; letter-spacing: 0.12em; }
 html[data-theme="tokie"] .btn-go { text-transform: uppercase; letter-spacing: 0.16em; }
 
 /* --- Focus: a polished gold ring, never removed ------------------------- */
@@ -532,6 +542,12 @@ html[data-theme="tokie"] .desktop-window .tab { letter-spacing: 0.03em; text-tra
 /* Window lists and tab rows sit a little tighter than page ones so a dialog's footer keeps inside the stitch. */
 html[data-theme="tokie"] .desktop-window :is(.list-item, .tab) { padding-block: 0.35rem; }
 html[data-theme="tokie"] .desktop-window .modal-footer { margin-block-start: 0.4rem; }
+/* The bottom row keeps 8px clear of the 9.5px stitch strip. */
+html[data-theme="tokie"] .desktop-window > .modal { padding-block-end: calc(9.5px + 8px); }
+html[data-theme="tokie"] .desktop-window .tab-panel { padding-block-start: 0.6rem; }
+html[data-theme="tokie"] .desktop-window .tab-panel > :last-child { margin-block-end: 0; }
+/* A group box is a creased line in the leather, not the browser's grey groove. */
+html[data-theme="tokie"] fieldset.field { border: 1px solid #3a3226; border-radius: 4px; }
 
 /* --- Inputs: debossed into the leather ---------------------------------- */
 html[data-theme="tokie"] :is(.input, .select, .textarea):focus-visible {
@@ -549,7 +565,7 @@ html[data-theme="tokie"] .table tr:is(.is-selected, [aria-selected="true"]) td:f
 html[data-theme="tokie"] .badge { font-family: var(--font); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.72em; }
 html[data-theme="tokie"] :is(.panel-header, .modal-header) .badge { margin-inline-start: 0.5em; letter-spacing: 0.06em; }
 /* The active page is a polished plate: its numeral keeps 4px+ of gold round it. */
-html[data-theme="tokie"] .pagination-item { padding-inline: max(6px, 0.45em); }
+html[data-theme="tokie"] .pagination-item { padding-inline: max(6px, 0.45em); height: 2.3em; }
 
 /* --- Readouts: applied gold numerals on a black lacquer dial ------------ */
 html[data-theme="tokie"] .readout {
@@ -587,9 +603,12 @@ html[data-theme="tokie"] .tooltip { text-shadow: 0 1px 0 rgba(255, 245, 215, 0.5
  * switched off here), the box rim tightened a little on phones. */
 @media (max-width: 900px) {
   html[data-theme="tokie"] { --app-rail-empty-display: none; }
-  /* Toggle rows are packed tight at this width: they drop to sentence case
-     (as window tabs do) so every label fits its key. */
-  html[data-theme="tokie"] .toggle-btn { text-transform: none; letter-spacing: 0; font-weight: 400; }
+  /* Toggle rows are packed tight at this width: they keep the caps voice
+     of the buttons beside them, with lighter tracking so labels fit. */
+  html[data-theme="tokie"] .toggle-btn { letter-spacing: 0.04em; }
+  /* A joined toggle group is one control: its segments drop to sentence
+     case together (as window tabs do) so five fit a phone row. */
+  html[data-theme="tokie"] .toggle-group .toggle-btn { text-transform: none; letter-spacing: 0; font-weight: 400; }
 }
 @media (max-width: 480px) {
   /* Throttled phones: no SVG-filter grain or brush anywhere (flat leather,
@@ -599,7 +618,9 @@ html[data-theme="tokie"] .tooltip { text-shadow: 0 1px 0 rgba(255, 245, 215, 0.5
     --tokie-grain: none;
     --tokie-brush: none;
     --tokie-leather: linear-gradient(#0b0a09, #0b0a09);
-    --tokie-leather-raised: radial-gradient(120% 90% at 30% 0%, rgba(255, 250, 240, 0.025), transparent 60%), linear-gradient(#121110, #121110);
+    --tokie-leather-raised: linear-gradient(#121110, #121110);
+    /* Only panels, dialogs and the bar keep the stitch on phones. */
+    --card-bg: var(--tokie-leather-raised);
     --tokie-leather-recessed: linear-gradient(#080706, #080706);
     --tokie-stitch:
       var(--tokie-bead-h) 13px 6.25px / calc(100% - 26px) 3px no-repeat,
