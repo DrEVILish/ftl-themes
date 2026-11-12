@@ -27,9 +27,11 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
 3. **Cyan means live data; blue means interactive.** `--accent` (cyan)
    carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
-4. **Structure over ornament.** Headings are tracked, uppercase, *dim* —
-   they are labels on a panel, not titles on a page. The content is the
-   bright thing; the chrome recedes.
+4. **Structure over ornament.** Headings are tracked and uppercase. The
+   page and section titles (`h1`, `h2`) are bright and step up in size so
+   the panel has a title level; `h3`/`h4` are *dim* labels on a panel. The
+   content is the bright thing; the chrome recedes. Reading content
+   (`.prose`, `article`) keeps its own case.
 5. **No gradients on interactive surfaces.** A flat fill plus a glow reads
    as energized. A gradient reads as a web button from 2012.
 
@@ -55,7 +57,7 @@ Changing them is a change to the reference, not a matter of taste.
 | `--font` | Consolas | Monospace as the *primary* UI font, not just for values. This single choice does more for the "spacecraft computer" feel than any color. |
 | `--radius` | `0.25rem` | Almost square. Rounded corners read as consumer software. |
 | `--flare` | `#d85cff` | Magenta, used almost nowhere. Held in reserve for a single rare emphasis so it keeps its force. |
-| `--btn-*` | three levels | Primary is a solid 80% cyan with black text at 1.1em: the one bright action on the panel. Secondary is tinted: cyan text and border over a 25% fill (40% and a glow on hover). Tertiary is the cyan outline with no fill until hover. Danger and success are tinted in red and green; plain buttons in the text colour. A lit outline on dark glass, in keeping with "a flat fill plus a glow". |
+| `--btn-*` | three levels | Primary is a solid 80% cyan with black text at 1.1em: the one bright action on the panel. Secondary is tinted: cyan text and border over a 25% fill (40% and a glow on hover). Tertiary is the cyan outline with no fill until hover. Danger and success are tinted in red and green; plain buttons are blue-cast cells (`--accent-2` at 14% over the panel, blue border) because blue means interactive. A lit outline on dark glass, in keeping with "a flat fill plus a glow". |
 
 ## Instruments
 
@@ -87,13 +89,15 @@ the two should visibly move the furniture.
    `#020509` at 70%) under a faint cyan 2rem grid (`rgba(47,214,255,0.04)`
    1px lines): the interface reads as a panel in a space, not wallpaper.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
-   14px L-marks, 2px stroke, 0.55 opacity, top-left and bottom-right. They
+   14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right. They
    are painted as background layers (`--brackets` inside `--panel-bg`,
    `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
    surface gains a `position` and popovers, dropdowns and context menus
    keep anchoring to their true offset parent; they also stay put when a
    modal scrolls.
-3. **Buttons** are dark cells with 0.05em tracking. Primary carries
+3. **Buttons** are dark blue-cast cells with 0.05em tracking (dropped to
+   0 on phones, where the wide mono face needs the room). Icon buttons are
+   square like everything else. Primary carries
    `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
    border to the glow and adds `0 0 8px`; `:disabled` is flat at 0.35
    opacity with no shadow. All via `--btn-*` tokens.
@@ -101,8 +105,12 @@ the two should visibly move the furniture.
    outline and adds `0 0 8px rgba(0,217,255,0.35)`.
 5. **Tables**: dim, 0.08em-tracked uppercase headers, hairline row rules,
    and an accent select bar (`inset 0.35rem`) on active and selected rows.
-6. **Headings** are 0.8em, 0.2em-tracked, uppercase and `--muted`.
-7. **Glow range inputs**: 4px `#0e3a5c` to cyan gradient track, 14px
+6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
+   in `--text`; `h3`/`h4` 0.8em, 0.2em-tracked and `--muted` (panel labels).
+   Headings inside `.prose`/`article` keep their case.
+7. **Glow range inputs**: 4px `#0e3a5c` to cyan gradient track (a vertical
+   fader ramps bottom to top and keeps the same 4px rail inside its
+   full-size hit area), 14px
    near-square `#02050a` thumb with a glow border and glow shadow
    (`--slider-*`).
 8. **`.sci-switch`** (theme-scoped: `html[data-theme="blue-future"]
@@ -111,7 +119,10 @@ the two should visibly move the furniture.
    glowing cyan on), and a readout drawn from `data-off` / `data-on`
    (dim and recessed off, glowing on). Markup:
    `<label class="sci-switch" data-on="ONLINE" data-off="OFFLINE"><input type="checkbox"><span></span></label>`.
-   Slides only under `prefers-reduced-motion: no-preference`.
+   Slides only under `prefers-reduced-motion: no-preference`. Core's
+   `.switch` carries the same look through tokens: a square 3px track on
+   `#02050a`, a square thumb, cyan when on. Badges, chips and scrollbars
+   are squared to 2px too: nothing on the panel is a pill.
 9. **Status helpers**: `.status-ok` (success), `.status-error` (danger),
    `.status-rec` or `.status-error.is-rec` (bold danger plus glow),
    `.status-idle` (success, a ready recorder is green).
