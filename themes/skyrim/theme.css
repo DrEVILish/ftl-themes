@@ -71,7 +71,8 @@ html[data-theme="skyrim"] {
   --sky-line: #6f6f6c;
   --sky-line-hi: #b9b9b5;
   --sky-diamond: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='%230b0b0a' stroke='%23b9b9b5' stroke-width='1.2'%3E%3Cpath d='M6 1 11 6 6 11 1 6Z'/%3E%3C/svg%3E");
-  --sky-select: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.2) 35%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.07));
+  /* SkyUI's band: clear on the left, brightest past the middle, held to the tip. */
+  --sky-select: linear-gradient(90deg, rgba(255, 255, 255, 0) 15%, rgba(255, 255, 255, 0.22) 75%, rgba(255, 255, 255, 0.22));
   /* Knotwork corner: two offset silver Ls (the outer one bevelled, with a
      light top edge) joined at their tails by small curls, and a looped
      strand in the corner that passes over the outer L and under the inner
@@ -202,7 +203,7 @@ html[data-theme="skyrim"] {
   --desktop-icon-label-fg-selected: #ffffff;
   --desktop-icon-glyph-selected: #ffffff;
   --pagination-item-radius: 0;
-  --pagination-item-bg-active: rgba(255, 255, 255, 0.18);
+  --pagination-item-bg-active: var(--sky-select);
   --pagination-item-fg-active: #ffffff;
   --pagination-item-fg: var(--text);  /* only .is-disabled dims (core's opacity) */
   --breadcrumb-separator: "\25C7";
@@ -340,15 +341,17 @@ html[data-theme="skyrim"] {
   background-color: var(--bg);
   font-family: var(--font);
 }
-/* The game sets tight: no extra tracking or word space on running text;
-   only the small grey text (hints, captions, meta) opens a hair. */
+/* The game sets tight: no extra tracking or word space, small text included
+   (the condensed face already has open sidebearings at small sizes). Small
+   grey text floors at 13px: the face has a low x-height. */
 html[data-theme="skyrim"] body { font-size: 1.06rem; }
-html[data-theme="skyrim"] :is(small, .field-hint, .text-muted, .text-sm, figcaption, .qa-note, .app-status) { letter-spacing: 0.02em; }
+html[data-theme="skyrim"] :is(small, .field-hint, .text-sm, figcaption, .qa-note) { font-size: max(0.8125rem, 0.8em); }
+html[data-theme="skyrim"] .nav-brand { letter-spacing: 0.01em; }
 
 /* --- Voice: condensed, white, uppercase titles with no tracking ---------- */
 html[data-theme="skyrim"] :is(h1, h2, h3) {
   text-transform: uppercase;
-  font-weight: 400;
+  font-weight: 500;  /* the title face is a medium condensed */
   letter-spacing: 0.02em;
   color: #ffffff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
@@ -368,7 +371,7 @@ html[data-theme="skyrim"] .panel-header {
   align-items: center;
   gap: 0.6em;
   font-size: 1.05em;
-  font-weight: 400;
+  font-weight: 500;
   text-transform: uppercase;
   border-bottom: 0;
 }
@@ -459,9 +462,9 @@ html[data-theme="skyrim"] .table tr:is(.is-selected, [aria-selected="true"]) {
   /* The tip is two half-height triangles at the end, not a clip: a
      clipped cell repaints the row's band from its own edge (a seam). */
   background:
-    linear-gradient(to top right, rgba(255, 255, 255, 0.16) 50%, transparent 50%) right top / 0.7em 50% no-repeat,
-    linear-gradient(to bottom right, rgba(255, 255, 255, 0.16) 50%, transparent 50%) right bottom / 0.7em 50% no-repeat,
-    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.14) 18%, rgba(255, 255, 255, 0.24) 60%, rgba(255, 255, 255, 0.16)) left top / calc(100% - 0.7em) 100% no-repeat;
+    linear-gradient(to top right, rgba(255, 255, 255, 0.22) 50%, transparent 50%) right top / 0.7em 50% no-repeat,
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.22) 50%, transparent 50%) right bottom / 0.7em 50% no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, 0) 15%, rgba(255, 255, 255, 0.22) 75%) left top / calc(100% - 0.7em) 100% no-repeat;
 }
 html[data-theme="skyrim"] .table tr:is(.is-selected, [aria-selected="true"]) > td:last-child { padding-inline-end: 1.4em; }
 /* A stacked phone card is many rows tall: no arrow tip (it would stretch
@@ -848,3 +851,23 @@ html[data-theme="skyrim"] .status { font-size: max(0.75rem, 0.85em); }
 html[data-theme="skyrim"] .badge { font-size: max(0.75rem, 0.75em); }
 /* The game has no monospace face: Notepad's prose is the condensed face. */
 html[data-theme="skyrim"] .desktop-window textarea { font-family: var(--font); font-variant-numeric: tabular-nums; }
+
+/* --- Round-3 polish -------------------------------------------------------- */
+/* State badges keep the grey chrome: the state is the text colour only. */
+html[data-theme="skyrim"] .badge:is(.badge-danger, .badge-success, .badge-warning):not(.badge-solid) { --badge-bg: transparent; --badge-border: var(--sky-line); }
+/* Filter chips are bare menu entries, the chosen one lit by the row band. */
+html[data-theme="skyrim"] .badge.badge-button { --badge-bg: transparent; --badge-border: transparent; --badge-bg-active: var(--sky-select); }
+/* Carousel markers and the typing dots are diamonds, not circles. */
+html[data-theme="skyrim"] { --carousel-dot: var(--sky-line); --carousel-dot-active: #ffffff; }
+html[data-theme="skyrim"] .carousel-nav > a:not(.carousel-prev, .carousel-next) { min-width: 0.7em; padding: 0; border-radius: 0; rotate: 45deg; scale: 0.8; }
+html[data-theme="skyrim"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; rotate: 45deg; }
+html[data-theme="skyrim"] .typing::before {
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 4' preserveAspectRatio='none'%3E%3Cpath d='M2 0 4 2 2 4 0 2ZM8 0 10 2 8 4 6 2ZM14 0 16 2 14 4 12 2Z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
+}
+/* Phone: cards drop the knotwork image (the 1px silver rule stays, as
+   nested panels do) and the smoke is opaque, so scrolling does not
+   re-composite translucent layers over the mist. */
+@media (max-width: 480px) {
+  html[data-theme="skyrim"] { --sky-smoke: linear-gradient(90deg, #0f0f0e, #1b1a17 55%, #121210); }
+  html[data-theme="skyrim"] :is(.card, .master-detail-list > .list):not(:is(.panel, .card, .modal, .drawer) *) { border-image: none; }
+}

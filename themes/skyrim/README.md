@@ -40,19 +40,23 @@ reproduced.
    at their tails by curls, and a looped strand in the corner woven over
    the outer L and under the inner one. Rules, inner rule and knots are
    one 9-slice `border-image`, so the frame costs one paint (cards and the
-   message list use the small knot). Don't add
+   message list use the small knot; on a phone cards keep only the 1px
+   silver rule and the smoke turns opaque, to keep scrolling cheap). Don't add
    rounded corners (inputs included) or thick borders.
 3. **Condensed, white, quiet type.** One condensed sans for everything.
-   Titles are uppercase with almost no tracking. Column heads are tiny grey
-   caps. Body text is sentence case. Nothing is bold except emphasis: list
-   titles, names, summaries, prices and table heads are the one regular
-   weight, ranked by size, case and white vs grey.
+   Titles (`h1`–`h3`, panel titles) are uppercase medium (500) with almost
+   no tracking, as the skills-menu and inventory titles are. Column heads
+   are tiny grey caps. Body text is sentence case. Nothing is bold except
+   emphasis: list titles, names, summaries, prices and table heads are the
+   one regular weight, ranked by size, case and white vs grey.
 4. **Selection is light, not colour.** A selected row or item is a white
-   band that fades out at both ends (`--sky-select`). In tables it ends in
+   band (`--sky-select`): clear for the first 15%, rising to its brightest
+   (white at 22%) past the middle and held there to the end. In tables it ends in
    an arrow tip, as in SkyUI (a stacked phone card drops the tip and
    takes a bright leading rule). Grouped choices (range chips, toggle
-   groups, segmented controls) are bare text entries with no box; the
-   chosen one is lit by the band, as are ghost buttons on hover. A lone
+   groups, segmented controls, filter chips, the current page) are bare
+   text entries with no box; the chosen one is lit by the band, as are
+   ghost buttons on hover. A lone
    primary button is the lit plate with chevron end caps (the skills
    menu's "Perks to increase"). Selected list items and the active nav-rail folder take the
    same fading band instead of an edge marker. There are no blue
@@ -113,7 +117,11 @@ reproduced.
 - State labels (`.status`, `.badge`) never go under 12px; the condensed
   face has a low x-height.
 - `.badge` is a hard box (no radius), like SkyUI's favourites-group
-  numbers; `.badge-accent` is white on black in the bright rule.
+  numbers; `.badge-accent` is white on black in the bright rule. State
+  badges (danger/success/warning) keep the grey rule and no fill; only the
+  text takes the state colour.
+- Round marks are diamonds: carousel markers (grey, the current one
+  white) and the typing dots are turned squares.
 - `kbd` is a key-hint box: white outline, black fill, white glyph, in
   the condensed face.
 - The bottom strip is the menu footer: light grey text, items spaced by
@@ -139,8 +147,9 @@ subset of the variable font (weights 300–700,
 `assets/fonts/SofiaSansCondensed.woff2`, see `assets/fonts/NOTICE.md`).
 It has Futura Condensed's round O/C/G bowls and light stroke, where the
 repo's Antonio (next in the stack) is squarer and heavier. Text is set
-tight, with no added tracking or word space; only small grey text
-(hints, captions, the status strip) opens to 0.02em. Stat values
+tight, with no added tracking or word space, small text and the app-bar
+brand (0.01em) included. Small grey text (hints, captions, `small`)
+floors at 13px. Stat values
 (`.stat-value`) use the UI font, not monospace, because the game has no
 monospace anywhere. `.mono` inside tables, logs, the status strip,
 `.value-row` and `.meter-bank`, attachment file names, `kbd`, whole
