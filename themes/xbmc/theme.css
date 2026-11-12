@@ -20,7 +20,7 @@ html[data-theme="xbmc"] {
   --border: #34383d;
   --hairline: #26292d;
   --text: #e8e8e8;
-  /* Light grey, so it clears 4.5:1 on the backdrop's bright centre (#065080) too. */
+  /* Light grey: 4.5:1 on the glass surfaces; over the bright backdrop centre, page-level text adds a shadow halo. */
   --muted: #c4cad0;
   --accent: #1e90ff;
   --accent-2: #7fc4ff;
@@ -70,9 +70,9 @@ html[data-theme="xbmc"] {
   --row-selected-bg: #26292d;
   --row-active-marker: inset 0.2rem 0 0 var(--accent);
   --nav-bg: #0b0c0e;
-  /* As dark as the strip allows: #8a9096 still clears 4.5:1 on its lightest
-     tone (#232323); the reference's #4d4d4d would not. */
-  --nav-item-fg: #8a9096;
+  /* As dark as the strip allows, and hue-neutral: #8e8e8e still clears
+     4.5:1 on its lightest tone (#232323); the reference's #4d4d4d would not. */
+  --nav-item-fg: #8e8e8e;
   --nav-brand-fg: #ffffff;
   --nav-item-bg-active: transparent;
   --nav-item-fg-active: #ffffff;
@@ -146,13 +146,16 @@ html[data-theme="xbmc"] .btn-group > .btn-primary {
 html[data-theme="xbmc"] :is(.carousel-nav > a, .desktop-pages > span) {
   border-radius: 1px;
 }
+/* Separate rules: a browser without these pseudo-elements drops only them. */
+html[data-theme="xbmc"] .carousel > .carousel-slide::scroll-marker { border-radius: 1px; }
+html[data-theme="xbmc"] .carousel::scroll-button(*) { border-radius: 1px; }
 /* KPI numbers in the bold sans, as Confluence's clock and info widgets. */
 html[data-theme="xbmc"] .stat-value {
   font-family: var(--font);
 }
 
-/* The Confluence backdrop: a navy field (#001542 at the edges, a lighter
-   blue above centre) under saturated royal-blue bokeh discs, a few small
+/* The Confluence backdrop: a navy field (#001542 at the edges, #0a6aa8
+   above centre under a bright cyan-white bloom) under saturated royal-blue bokeh discs, a few small
    bright cyan ones, and soft diagonal light rays. Disc rims are brighter
    than their fills. It sits on a fixed layer sized to the viewport, so the
    discs keep their size on a long page and scrolling never repaints it.
@@ -167,10 +170,15 @@ html[data-theme="xbmc"] {
   /* Out of focus: a dim centre brightening toward the rim. */
   --xbmc-core: rgba(20, 80, 215, 0.16);
   --xbmc-glow: rgba(70, 190, 240, 0.5);
+  /* A soft fall-off outside the rim, so discs read as lens bokeh. */
+  --xbmc-halo: rgba(90, 170, 250, 0.15);
+  /* Far discs: fainter fill and rim, further out of focus. */
+  --xbmc-far: rgba(30, 100, 220, 0.12);
+  --xbmc-far-rim: rgba(90, 170, 250, 0.2);
   --xbmc-rays:
-    linear-gradient(60deg, transparent 30%, rgba(80, 170, 255, 0.08) 40%, transparent 50%),
-    linear-gradient(60deg, transparent 55%, rgba(80, 170, 255, 0.06) 62%, transparent 70%);
-  --xbmc-base: radial-gradient(ellipse 120% 90% at 50% 25%, #065080 0%, #033a70 40%, #001542 100%);
+    linear-gradient(60deg, transparent 30%, rgba(80, 170, 255, 0.14) 40%, transparent 50%),
+    linear-gradient(60deg, transparent 55%, rgba(80, 170, 255, 0.12) 62%, transparent 70%);
+  --xbmc-base: radial-gradient(ellipse 120% 90% at 50% 28%, #0a6aa8 0%, #044070 45%, #03265c 75%, #001542 100%);
 }
 html[data-theme="xbmc"] body::before {
   content: "";
@@ -181,23 +189,33 @@ html[data-theme="xbmc"] body::before {
   pointer-events: none;
   contain: strict;
   background:
-    radial-gradient(circle 1.5rem at 50% 31%, var(--xbmc-glow) calc(100% - 2px), rgba(160, 225, 250, 0.6) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 7rem at 47% 14%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 4rem at 70% 30%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 5.5rem at 74% 31%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 4.5rem at 79% 33%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 6rem at 94% 40%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 6.5rem at 43% 49%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 2.5rem at 32% 53%, rgba(40, 150, 235, 0.4) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 4.5rem at 33% 58%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 4rem at 7% 70%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 5rem at 36% 72%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 8rem at 24% 92%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 9rem at 88% 82%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 3rem at 68% 9%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 1.5rem at 50% 31%, rgba(150, 225, 250, 0.6) 30%, var(--xbmc-glow) calc(100% - 4px), rgba(160, 225, 250, 0.6) calc(100% - 2px), transparent 100%),
+    radial-gradient(circle 7rem at 47% 14%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 4rem at 70% 30%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 5.5rem at 74% 31%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 4.5rem at 79% 33%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 6rem at 94% 40%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 6.5rem at 43% 49%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 2.5rem at 32% 53%, rgba(40, 150, 235, 0.4) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 4.5rem at 33% 58%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 4rem at 7% 70%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 5rem at 36% 72%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 8rem at 24% 92%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 9rem at 88% 82%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 3rem at 68% 9%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+    /* Far, fainter discs at other depths. */
+    radial-gradient(circle 5rem at 58% 62%, var(--xbmc-far) calc(100% - 6px), var(--xbmc-far-rim) calc(100% - 3px), transparent 100%),
+    radial-gradient(circle 6rem at 86% 14%, var(--xbmc-far) calc(100% - 6px), var(--xbmc-far-rim) calc(100% - 3px), transparent 100%),
+    radial-gradient(circle 4rem at 18% 40%, var(--xbmc-far) calc(100% - 6px), var(--xbmc-far-rim) calc(100% - 3px), transparent 100%),
+    radial-gradient(circle 7rem at 60% 96%, var(--xbmc-far) calc(100% - 6px), var(--xbmc-far-rim) calc(100% - 3px), transparent 100%),
+    radial-gradient(circle 3.5rem at 96% 64%, var(--xbmc-far) calc(100% - 6px), var(--xbmc-far-rim) calc(100% - 3px), transparent 100%),
+    /* Fully defocused discs: solid centres melting into the field. */
     radial-gradient(circle 10rem at 12% 22%, rgba(20, 70, 200, 0.3) 0 calc(100% - 3rem), transparent 100%),
-    /* The light bloom left of centre, with cyan haze, and dark soft blobs. */
-    radial-gradient(circle 11rem at 52% 24%, rgba(150, 210, 255, 0.16), transparent 100%),
+    radial-gradient(circle 6rem at 8% 88%, rgba(20, 80, 215, 0.28) 0 calc(100% - 2.5rem), transparent 100%),
+    radial-gradient(circle 5rem at 90% 56%, rgba(20, 80, 215, 0.24) 0 calc(100% - 2rem), transparent 100%),
+    radial-gradient(circle 4rem at 30% 6%, rgba(20, 80, 215, 0.26) 0 calc(100% - 1.75rem), transparent 100%),
+    /* The bright cyan-white bloom above centre, with cyan haze, and dark soft blobs. */
+    radial-gradient(ellipse 18rem 12rem at 50% 30%, rgba(120, 200, 255, 0.35), transparent 100%),
     radial-gradient(circle 16rem at 46% 30%, rgba(40, 160, 230, 0.14), transparent 100%),
     radial-gradient(circle 14rem at 8% 45%, rgba(40, 120, 230, 0.14), transparent 100%),
     radial-gradient(circle 12rem at 62% 88%, rgba(40, 120, 230, 0.12), transparent 100%),
@@ -209,14 +227,13 @@ html[data-theme="xbmc"] body::before {
 @media (max-width: 480px) {
   html[data-theme="xbmc"] body::before {
     background:
-      radial-gradient(circle 1.25rem at 62% 20%, var(--xbmc-glow) calc(100% - 2px), rgba(160, 225, 250, 0.6) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 5rem at 30% 14%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 4rem at 78% 36%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 4.5rem at 20% 58%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 6rem at 85% 78%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-      radial-gradient(circle 5rem at 25% 94%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 1.25rem at 62% 20%, rgba(150, 225, 250, 0.6) 30%, var(--xbmc-glow) calc(100% - 4px), rgba(160, 225, 250, 0.6) calc(100% - 2px), transparent 100%),
+      radial-gradient(circle 5rem at 30% 14%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 4rem at 78% 36%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 4.5rem at 20% 58%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 6rem at 85% 78%, var(--xbmc-core) 45%, var(--xbmc-disc) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 5rem at 25% 94%, var(--xbmc-core) 45%, var(--xbmc-disc-2) calc(100% - 5px), var(--xbmc-rim) calc(100% - 3px), var(--xbmc-halo) calc(100% - 1px), transparent 100%),
       var(--xbmc-base);
-    will-change: transform;
   }
 }
 
@@ -276,10 +293,10 @@ html[data-theme="xbmc"] .app-bar {
 @media (min-width: 481px) {
   html[data-theme="xbmc"] .app-bar > :is(nav, .nav) { flex: 1 1 auto; }
   html[data-theme="xbmc"] .app-bar :is(.nav, .menubar) { justify-content: center; }
-  html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li) { flex: 1 1 0; max-inline-size: 12rem; }
+  html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li) { flex: 1 1 0; max-inline-size: 14rem; }
 }
 html[data-theme="xbmc"] .app-bar .menubar {
-  --menubar-fg: #8a9096;
+  --menubar-fg: #8e8e8e;
 }
 /* Strip and tab caps: the same face in bold, broad and rounded. */
 html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a), .tab) {
@@ -294,10 +311,11 @@ html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)) {
 }
 /* Tall, even strip cells of large caps split by faint separators. */
 html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) {
-  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  /* Caps that nearly fill the band's height, as 'VIDEOS' does. */
+  font-size: clamp(1rem, 1.6vw, 1.75rem);
   flex: 0 0 auto;
   /* Equal cells where the bar has room; narrower bars let them hug. */
-  min-inline-size: min(9.5rem, 11vw);
+  min-inline-size: min(12rem, 10vw);
   text-align: center;
   justify-content: center;
   border-inline-start: 1px solid rgba(255, 255, 255, 0.08);
@@ -323,6 +341,22 @@ html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)):is(.is-ac
    shelf items are regular-weight sentence case, as 'Dateien' is. */
 html[data-theme="xbmc"] .tab.is-active {
   box-shadow: 0 6px 8px -6px rgba(30, 144, 255, 0.8);
+}
+/* Inside a window or panel the bold caps step down, so a tab row stays
+   on one line and the dialog's buttons stay in the frame. */
+html[data-theme="xbmc"] :is(.window, dialog, .modal, .panel, .card) .tab {
+  font-size: 0.75rem;
+  padding-inline: 0.5em;
+}
+html[data-theme="xbmc"] :is(.window, dialog, .modal, .panel, .card) .tabs:not([aria-orientation="vertical"]) {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+/* Page-level text over the bright bloom sits on a dark shadow halo, as
+   Confluence's labels over the backdrop do. */
+html[data-theme="xbmc"] .app-main > :is(h1, h2, h3, p, .breadcrumbs, .cluster, .page-header) {
+  text-shadow: 0 1px 2px #000, 0 0 4px rgba(0, 0, 0, 0.8);
 }
 html[data-theme="xbmc"] .segmented {
   clip-path: polygon(0 0, 100% 0, calc(100% - 1.25rem) 100%, 1.25rem 100%);
@@ -414,7 +448,11 @@ html[data-theme="xbmc"] {
   html[data-theme="xbmc"] {
     --card-bg: linear-gradient(180deg, #1d1f22, #0a0b0c);
     --panel-bg: linear-gradient(180deg, #1d1f22, #0a0b0c);
+    --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
+  /* Shelf and toggle rows scroll sideways instead of wrapping a label. */
+  html[data-theme="xbmc"] :is(.segmented, .toggle-group) { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-inline-size: 100%; }
+  html[data-theme="xbmc"] :is(.segmented, .toggle-group) > * { white-space: nowrap; flex-shrink: 0; }
   html[data-theme="xbmc"] .card {
     padding: 1.25rem 1rem 1rem;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
