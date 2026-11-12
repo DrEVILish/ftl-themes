@@ -29,28 +29,39 @@ otherwise clinical space.
 
 ## Signature details
 
-- Danger is the portal orange (`--danger: #ff8a1e`, dark `--on-danger`
+- Danger is the portal orange (`--danger: #ff9a1f`, dark `--on-danger`
   text, `--danger-text: #8f4500`) everywhere — buttons, badges, alerts,
   invalid fields, status, danger menu items — not red. Warning takes the
   facility's hazard yellow (`#f4c430`, text `#6b5600`) so the two never
   share a colour.
-- Blue is portal azure: fills take `--accent: #1a8ad8` under dark
-  `--on-accent: #0d1b26` text (4.7:1), the bright portal rather than a
-  corporate link blue; the same azure (`--aperture-portal`) is every
-  mark that carries no text (focus ring, spinner, slider thumb, chart
-  series 1; 3:1 on the page). Blue text takes the deeper `#13609a`
+- Blue is the cyan-azure of the blue portal: fills take `--accent:
+  #0b8ccc` (hue ~200, full saturation) under dark `--on-accent: #0d1b26`
+  text (4.7:1), not a corporate link blue; the same azure
+  (`--aperture-portal`) is every mark that carries no text (focus ring,
+  spinner, slider thumb, chart series 1; 3:1 on the page). The brighter
+  in-game `#2fa3e0` is kept to the black brand tile and the XL gutter
+  ring, where it does not have to clear 3:1 on the light page. Blue text takes the deeper `#13609a`
   (5.4:1 on the page), including sort headers and scrollspy links.
-- Type: Titillium Web (vendored, OFL) stands in for the chamber signage
-  grotesk — headings light (400) and lightly tracked, panel h3 at 600;
-  readouts and KPI values use the same light face as chamber numerals;
-  Share Tech Mono for code. Headings are `--text` black and never
+- Type: `--font` names Univers (`"Univers LT Std", Univers`) first, the
+  chamber signage face; Titillium Web (vendored, OFL: Light 300, Regular,
+  SemiBold 600, Bold) stands in where it is absent. h1/h2 are Light 300
+  and lightly tracked, h3 at 600; readouts and KPI values (`.stat-value`
+  1.9rem) are Light 300 chamber numerals; labels (brand, panel headers)
+  are SemiBold 600 at most, uppercase KPI labels at least 0.75rem. Share
+  Tech Mono for code. Headings are `--text` black and never
   uppercase; h1 gets `margin-block-end: var(--space-xs)` because the
   face's line box is trimmed for controls.
 - Chamber sign plate: the page h1 sits under a 5px `#2b2b2b` rule with a
-  row of short dashes under it (the chamber progress bar); panel headers
-  are black text over a 2px `#2b2b2b` rule; the app-bar brand (black
-  text), panel headers and KPI labels each carry the plate's black
-  pictogram square; the active tab sits on a black rule, not a blue one.
+  row of short dashes under it — the chamber progress bar, the first four
+  black and the rest `#c3c7ca` (chamber 04 of 11); panel headers are black
+  text over a 2px `#2b2b2b` rule; the active tab sits on a black rule, not
+  a blue one.
+- Sign pictograms: the app-bar brand carries a black tile with the blue
+  and orange portal pair, at every width; panel headers and KPI labels
+  carry a black tile with a white chamber-sign pictogram that cycles
+  cube, cube-on-button, water hazard and energy pellet by position, so a
+  dashboard shows a row of them like a chamber sign (inline SVG data
+  URIs, `--aperture-picto-*`).
 - Panels, cards and modals are flat sign plates: `--panel-radius:
   0.6rem`, a darker `#b5babd` edge and no shadow.
 - Neutrals are cool lab greys: `--bg #e6e8e9`, `--surface #f3f4f5`,
@@ -61,8 +72,10 @@ otherwise clinical space.
 - Surfaces have no shadow and buttons `0 1px 2px` at most — this is the
   flattest, quietest theme in the catalog; anything heavier reads as a
   different theme entirely.
-- The warning alert/toast keeps its 1px outline like its siblings, with an
-  8px hazard stripe down the leading edge.
+- Alerts and toasts take a 4px leading edge in their state colour; the
+  warning one is a single 8px left edge painted with the hazard stripe.
+- Pager items are `--text` at 0.8125rem and `.status` at 0.8125rem or
+  more, so small secondary text stays legible in the light face.
 
 ## Layout
 
@@ -72,11 +85,11 @@ the panel sits in the room rather than filling it.
 ## v5 layout
 
 - **Tiers.** No rail and no bar decoration, so phone (≤480px) and tablet
-  (481–900px) use core's one-column shell as is: brand and actions on the
-  first line, the nav scrolling on the second.
+  (481–900px) use core's one-column shell, except that on a phone the
+  brand takes its own full line so its name is not elided to the tile.
 - **XL gutter art.** The test chamber's wall continues past the console:
   square white wall panels with recessed seams and one faint portal ring
-  each side (azure `#27a7d8` left, orange right). Still, and within about 1.3:1 of
+  each side (azure `#27a7d8` left, orange `#ff9a1f` right). Still, and within about 1.3:1 of
   `--bg`.
 
 ## Tell-tales of an inauthentic result
