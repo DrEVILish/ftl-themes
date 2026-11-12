@@ -48,7 +48,7 @@ html[data-theme="hot-wheels"] {
   --on-accent: #1a0900;
   --on-danger: #1a0000;
   --on-success: #04220f;
-  --radius: 0.35rem;
+  --radius: 0.2rem;
   --font: Arial, "Helvetica Neue", "Liberation Sans", sans-serif;
   --font-display: "Antonio", "Arial Narrow", "Liberation Sans Narrow", Impact, sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
@@ -79,7 +79,9 @@ html[data-theme="hot-wheels"] {
   --panel-shadow: inset 0 -4px 0 var(--hw-orange);
   /* Dialog headers are the PC monitor's yellow band with its red and
      orange pinstripes along the bottom edge. */
-  --modal-header-bg: linear-gradient(to top, var(--hw-red) 0 3px, var(--hw-orange) 3px 6px, var(--hw-yellow) 6px);
+  --modal-header-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 40' preserveAspectRatio='none'%3E%3Cpath fill='%23e3171b' d='M48 0H22L0 7l20 6L3 21l19 5L8 37l22 3h18z'/%3E%3Cpath fill='%23ff5f00' d='M48 5H26L10 10l17 4-12 7 15 4-10 9 19 2h13z'/%3E%3Cpath fill='%23ffcc00' d='M48 11H31l-9 4 13 3-8 4 11 3-5 5h15z'/%3E%3C/svg%3E") 0 0 / 2.2rem calc(100% - 6px) no-repeat, linear-gradient(to top, var(--hw-red) 0 3px, var(--hw-orange) 3px 6px, var(--hw-yellow) 6px);
+  /* Room at the start edge for the flame tongues. */
+  --modal-header-pad: var(--space-xs) var(--space-m) var(--space-xs) calc(var(--space-m) + 1.6rem);
   --modal-header-fg: #0a1a4a;
   --window-header-bg-inactive: var(--surface-2);
   --window-header-fg-inactive: var(--muted);
@@ -107,6 +109,15 @@ html[data-theme="hot-wheels"] {
   --badge-radius: 0.15rem;
   --switch-radius: 0.2rem;
   --switch-thumb-radius: 0.1rem;
+  --avatar-radius: 0.15rem;
+  --btn-icon-radius: var(--radius);
+  --slider-thumb-radius: 0.1rem;
+  /* Antonio is condensed: never let a label drop below 14px. */
+  --btn-font-size: max(0.875rem, 0.9em);
+  /* Heat runs up the flame (deep red, orange, yellow core); a blue-to-
+     yellow mix greys out in the middle. */
+  --chart-seq-0: #7a1800;
+  --chart-seq-8: var(--hw-yellow);
   /* Slider: a length of orange track with its raised lips; core keeps the
      padding and the tap size. */
   --slider-height: 0.5rem;
@@ -126,10 +137,17 @@ html[data-theme="hot-wheels"] :is(h1, h2, h3) {
   text-shadow: 2px 2px 0 #06103a;
 }
 html[data-theme="hot-wheels"] h1 { color: var(--hw-yellow); }
-html[data-theme="hot-wheels"] :is(.btn, .nav-item, .nav-brand, .tab, .modal-header, .panel-header, .app-bar .menubar > li > [role="menuitem"]) {
+html[data-theme="hot-wheels"] :is(.btn, .nav-item, .nav-brand, .tab, .modal-header, .panel-header, .app-bar .menubar > li > [role="menuitem"], .toggle-btn, .badge-button, .segmented > *, .accordion-trigger, .popover > strong:first-child) {
   font-family: var(--font-display);
   font-style: italic;
 }
+html[data-theme="hot-wheels"] :is(.modal-header, .panel-header, .toggle-btn, .badge-button, .segmented > *, .accordion-trigger, .popover > strong:first-child) {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+html[data-theme="hot-wheels"] .panel-header { text-shadow: 1px 1px 0 #06103a; }
+html[data-theme="hot-wheels"] .btn-sm { font-size: max(0.875rem, 0.78em); }
 html[data-theme="hot-wheels"] :is(.panel-header, .app-bar .menubar > li > [role="menuitem"]) {
   font-weight: 700;
   font-size: 1.05rem;
@@ -138,6 +156,7 @@ html[data-theme="hot-wheels"] :is(.panel-header, .app-bar .menubar > li > [role=
 /* Antonio has no italic face: the browser's slant leans the last letter
    past the box, so clipped labels get room for it. */
 html[data-theme="hot-wheels"] :is(.btn, .nav-item, .tab) > span { padding-inline-end: 0.15em; }
+html[data-theme="hot-wheels"] .panel-header > :first-child { margin-inline-end: 0.4em; }
 /* Window controls follow the header's own ink: deep blue on the yellow
    band, muted on an inactive blue header. */
 html[data-theme="hot-wheels"] .modal-header { --btn-close-fg: currentColor; }
@@ -201,13 +220,13 @@ html[data-theme="hot-wheels"] .app-bar {
    to a thin strip so it reads as a flag, not a full chessboard. */
 html[data-theme="hot-wheels"] .app-status {
   background-color: #050505;
-  background-image:
-    repeating-conic-gradient(#ffffff 0% 25%, #050505 0% 50%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' shape-rendering='crispEdges'%3E%3Cpath fill='%23050505' d='M0 0h2v2H0z'/%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E");
   background-size: 0.6rem 0.6rem;
 }
 /* A desktop taskbar is mostly segments: the flag runs as one cap along
    its top edge instead of showing through every gap. */
 html[data-theme="hot-wheels"] .app-status.taskbar {
+  background-color: var(--hw-blue);
   background-size: 0.5rem 0.5rem;
   background-repeat: repeat-x;
 }
@@ -220,6 +239,8 @@ html[data-theme="hot-wheels"] .app-status > * {
   padding: 0.1rem 0.5rem;
   border-radius: var(--radius);
 }
+/* On the blue taskbar the segments sit straight on the blue. */
+html[data-theme="hot-wheels"] .app-status.taskbar > * { background: none; text-shadow: none; }
 
 /* The brand is the flame logo: three hard-edged tongues (red, orange,
    yellow core) swept back to points on the left, a red body behind the
@@ -244,7 +265,7 @@ html[data-theme="hot-wheels"] {
   --progress-fill: var(--hw-orange);
   --bar-chart-bar: linear-gradient(0deg, #ff5f00, #ff8a00 55%, #ffb400);
   /* Highlight: the flame's yellow core under a short finish-line cap. */
-  --bar-chart-bar-alt: repeating-conic-gradient(#f5f5f5 0 25%, #0a1a4a 0 50%) 0 0 / 8px 8px repeat-x, linear-gradient(0deg, #ffb400, #ffcc00);
+  --bar-chart-bar-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' shape-rendering='crispEdges'%3E%3Cpath fill='%230a1a4a' d='M0 0h2v2H0z'/%3E%3Cpath fill='%23f5f5f5' d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E") 0 0 / 8px 8px repeat-x, linear-gradient(0deg, #ffb400, #ffcc00);
   --bar-chart-radius: 0.35rem 0.35rem 0 0;
 }
 
@@ -257,14 +278,14 @@ html[data-theme="hot-wheels"] {
   html[data-theme="hot-wheels"] .app-bar > .nav-brand { max-width: fit-content; }
 }
 
-/* XL gutters: a length of orange track runs down each side, raised lips and
-   dark joints every 120px, all burnt down close to the deep blue. */
+/* XL gutters: a length of burnt-orange track runs down each side, raised
+   lips and blue joints every 120px, toned down so it stays behind the page. */
 html[data-theme="hot-wheels"] {
   --app-gutter-art:
     linear-gradient(transparent 0 114px, var(--bg) 114px) 0 0 / 100% 120px,
     repeating-linear-gradient(90deg,
       transparent 0 96px,
-      #4a3a8a 96px 102px, #3a3488 102px 178px, #4a3a8a 178px 184px,
+      #b84400 96px 102px, #8a3300 102px 178px, #b84400 178px 184px,
       transparent 184px 280px);
 }
 
@@ -277,3 +298,10 @@ html[data-theme="hot-wheels"] {
   --toggle-btn-border-width: 1px;
   --toggle-btn-bg-on: linear-gradient(135deg, #ff8a00, var(--hw-orange));
 }
+
+/* Area fills sink to a deeper blue well under the line: any translucent
+   yellow or orange over this blue mixes to grey. */
+html[data-theme="hot-wheels"] :is(.chart-series.is-area, .chart-series .is-area) { fill: #0a2170; fill-opacity: 0.55; }
+/* Native checkboxes in the light scheme: a white box on the blue, not the
+   dark scheme's grey square; checked keeps the yellow accent. */
+html[data-theme="hot-wheels"] :is(.checkbox, .radio) { color-scheme: light; }
