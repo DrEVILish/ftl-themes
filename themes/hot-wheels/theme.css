@@ -20,21 +20,26 @@ html[data-theme="hot-wheels"] {
   /* Blue is the field, as in every capture (game menu backdrop, the 1999
      PC's plastic, the wallpaper); orange is the track; yellow and red are
      the flame. */
-  --bg: #0a1a4a;
-  --surface: #12267a;
-  --surface-2: #183090;
-  --border: #ff5f00;
-  --hairline: #3a58c0;
+  --bg: #1638a6;
+  --surface: #1c44bc;
+  --surface-2: #224dcc;
+  /* Surfaces are edged in a darker blue; orange is kept for one heavy
+     track lip per surface (--panel-shadow), not keylines everywhere. */
+  --border: #0d2a80;
+  --hairline: #4f78e6;
   --text: #ffffff;
-  --muted: #c5d3ff;
-  /* Track orange lifted one step so it also reads as text on the blues
-     (5.6:1 on --surface, 4.8:1 on --surface-2); the outlines keep #ff5f00. */
+  --muted: #dbe4ff;
+  /* Orange is a fill on this bright blue, never small text (2.97:1 on
+     --surface-2); links and accent text take the flame's yellow core. */
   --accent: #ff8a1a;
+  --accent-text: #ffcc00;
+  --link: #ffcc00;
   --accent-2: #ffcc00;
   --danger: #ff2d2d;
   --success: #29d17a;
   --warning: #ffcc00;
-  --danger-text: #ff8080;
+  --danger-text: #ffcccc;
+  --success-text: #9dffc8;
   --on-accent: #1a0900;
   --on-danger: #1a0000;
   --on-success: #04220f;
@@ -62,9 +67,11 @@ html[data-theme="hot-wheels"] {
   --btn-shadow-hover: 0 0 0 2px var(--hw-yellow);
   --focus: var(--hw-yellow);
   --focus-ring: 0 0 0 2px rgba(255, 204, 0, 0.6);
-  --input-bg: var(--bg);
+  --input-bg: #0f2c88;
+  --input-border: var(--hairline);
   --panel-bg: var(--surface);
-  --panel-shadow: 0 0 0 1px var(--border) inset;
+  /* A length of orange track along the bottom of every surface. */
+  --panel-shadow: inset 0 -4px 0 var(--hw-orange);
   /* Dialog headers are the PC monitor's yellow band with its red and
      orange pinstripes along the bottom edge. */
   --modal-header-bg: linear-gradient(to top, var(--hw-red) 0 3px, var(--hw-orange) 3px 6px, var(--hw-yellow) 6px);
@@ -98,8 +105,7 @@ html[data-theme="hot-wheels"] {
   /* Slider: a length of orange track with its raised lips; core keeps the
      padding and the tap size. */
   --slider-height: 0.5rem;
-  --slider-bg: linear-gradient(#ffa040 0 25%, var(--hw-orange) 25% 75%, #b84400 75%);
-  --slider-fill: var(--hw-yellow);
+  --slider-bg: linear-gradient(#ffa040 0 2px, var(--hw-orange) 2px calc(100% - 2px), #b84400 0);
   --slider-thumb-bg: var(--hw-yellow);
 }
 
@@ -112,21 +118,32 @@ html[data-theme="hot-wheels"] :is(h1, h2, h3) {
   letter-spacing: 0.03em;
   font-style: italic;
   color: #ffffff;
-  text-shadow: 2px 2px 0 #000a2a;
+  text-shadow: 1px 1px 0 #06103a, 2px 2px 0 #06103a, 3px 3px 0 #06103a;
 }
-html[data-theme="hot-wheels"] h1 { color: var(--accent); }
-html[data-theme="hot-wheels"] :is(.btn, .nav-item, .nav-brand, .tab, .modal-header) {
+html[data-theme="hot-wheels"] h1 { color: var(--hw-yellow); }
+html[data-theme="hot-wheels"] :is(.btn, .nav-item, .nav-brand, .tab, .modal-header, .panel-header, .app-bar .menubar > li > [role="menuitem"]) {
   font-family: var(--font-display);
   font-style: italic;
 }
-/* Small orange copy on core's orange-tinted accent-badge fill needs one
-   more lift (#ff8a1a is 4.39:1 there). Scoped to the variant, not
-   --accent-text, which the navigation-patterns demo paints on --accent. */
-html[data-theme="hot-wheels"] .badge-accent { --badge-fg: #ffa040; }
+html[data-theme="hot-wheels"] :is(.panel-header, .app-bar .menubar > li > [role="menuitem"]) {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+/* Antonio has no italic face: the browser's slant leans the last letter
+   past the box, so clipped labels get room for it. */
+html[data-theme="hot-wheels"] :is(.btn, .nav-item, .tab) > span { padding-inline-end: 0.15em; }
+/* Window controls follow the header's own ink: deep blue on the yellow
+   band, muted on an inactive blue header. */
+html[data-theme="hot-wheels"] .modal-header { --btn-close-fg: currentColor; }
+/* Status badges are solid flame fills with dark ink, like the buttons. */
+html[data-theme="hot-wheels"] .badge-accent { --badge-bg: var(--accent); --badge-fg: var(--on-accent); }
+html[data-theme="hot-wheels"] .badge-warning { --badge-bg: var(--hw-yellow); --badge-fg: #0a1a4a; }
+html[data-theme="hot-wheels"] .badge-danger { --badge-bg: var(--hw-red); --badge-fg: #ffffff; }
+html[data-theme="hot-wheels"] .badge-success { --badge-bg: var(--success); --badge-fg: var(--on-success); }
 html[data-theme="hot-wheels"] .kanban-column-title { text-shadow: none; }
-
-html[data-theme="hot-wheels"] .panel,
-html[data-theme="hot-wheels"] .modal { border: 1px solid var(--border); }
+/* Core clips the slider to its content box; map the lips to it too. */
+html[data-theme="hot-wheels"] .slider { background-origin: content-box; }
 
 /* v3.4.0 components: blue panels with orange track trim. */
 html[data-theme="hot-wheels"] {
@@ -135,17 +152,17 @@ html[data-theme="hot-wheels"] {
   --toast-shadow: 0 4px 0 #000a2a;
   --alert-bg: var(--surface);
   --alert-fg: var(--text);
-  --card-shadow: 0 0 0 1px var(--border) inset;
+  --card-shadow: inset 0 -4px 0 var(--hw-orange);
   --context-menu-bg: var(--surface);
   --context-menu-border: var(--border);
   --dropzone-border: var(--accent);
   --dropzone-bg-active: rgba(255, 138, 26, 0.12);
-  --dropzone-fg-active: var(--accent);
+  --dropzone-fg-active: var(--link);
   --avatar-bg: var(--accent);
   --avatar-fg: var(--on-accent);
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: var(--on-accent);
-  --breadcrumb-current-fg: var(--accent);
+  --breadcrumb-current-fg: var(--link);
   --tooltip-bg: var(--bg);
   --tooltip-border: var(--accent);
   --popover-bg: var(--surface);
@@ -183,6 +200,12 @@ html[data-theme="hot-wheels"] .app-status {
     repeating-conic-gradient(#ffffff 0% 25%, #050505 0% 50%);
   background-size: 0.6rem 0.6rem;
 }
+/* A desktop taskbar is mostly segments: the flag runs as one cap along
+   its top edge instead of showing through every gap. */
+html[data-theme="hot-wheels"] .app-status.taskbar {
+  background-size: 0.5rem 0.5rem;
+  background-repeat: repeat-x;
+}
 /* Each readout sits on a solid chip: white text straight over the
    checkers was unreadable. */
 html[data-theme="hot-wheels"] .app-status > * {
@@ -214,7 +237,8 @@ html[data-theme="hot-wheels"] .nav-brand {
 html[data-theme="hot-wheels"] {
   --message-own-border: var(--accent);
   --bar-chart-bar: linear-gradient(0deg, #ff5f00, #ff8a00 55%, #ffb400);
-  --bar-chart-bar-alt: repeating-conic-gradient(#f5f5f5 0 25%, #0a1a4a 0 50%) 0 0 / 10px 10px;
+  /* Highlight: the flame's yellow core under a short finish-line cap. */
+  --bar-chart-bar-alt: repeating-conic-gradient(#f5f5f5 0 25%, #0a1a4a 0 50%) 0 0 / 8px 8px repeat-x, linear-gradient(0deg, #ffb400, #ffcc00);
   --bar-chart-radius: 0.35rem 0.35rem 0 0;
 }
 
@@ -234,7 +258,7 @@ html[data-theme="hot-wheels"] {
     linear-gradient(transparent 0 114px, var(--bg) 114px) 0 0 / 100% 120px,
     repeating-linear-gradient(90deg,
       transparent 0 96px,
-      #3a2448 96px 102px, #2a1f4a 102px 178px, #3a2448 178px 184px,
+      #4a3a8a 96px 102px, #3a3488 102px 178px, #4a3a8a 178px 184px,
       transparent 184px 280px);
 }
 
