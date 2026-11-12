@@ -32,19 +32,24 @@ reproduced.
    (`#161512`–`#24231f`, sampled from SkyUI lists). They fade at the edges,
    with no blur and no colour tint. Don't make them opaque grey slabs.
 2. **Thin silver rules with knotwork corners.** Frames are 1px
-   `#6f6f6c` lines. Every panel and modal has a small interlaced square in
-   each corner and a faint inner second rule. Don't add rounded corners or
+   `#6f6f6c` lines. Every panel and modal has a faint inner second rule
+   with an interlaced corner bracket (two nested curled L-strands crossed
+   by a loop) straddling it in each corner. Don't add rounded corners or
    thick borders.
 3. **Condensed, white, quiet type.** One condensed sans for everything.
    Titles are uppercase with almost no tracking. Column heads are tiny grey
    caps. Body text is sentence case. Nothing is bold except emphasis.
 4. **Selection is light, not colour.** A selected row or item is a white
    band that fades out at both ends (`--sky-select`). In tables it ends in
-   an arrow tip, as in SkyUI. There are no blue highlight fills.
+   an arrow tip, as in SkyUI. Primary buttons, pressed toggles, active
+   chips and menubar items use the same white light in a bright silver
+   rule. There are no blue highlight fills.
 5. **Colour belongs to the game state.** Health red `#b33e3f` is danger,
    stamina green is success, legendary gold is warning, and the level-bar
-   frost blue `#aec0d5` is the only interactive accent. Magicka blue is the
-   second series.
+   frost blue `#aec0d5` fills progress and level bars and marks focus;
+   it never fills a control. Magicka blue is the second series. Alerts
+   and toasts are smoke plates in the silver rule; the state colour is
+   only a small leading `◆`.
 6. **Chevrons and diamonds are the ornament vocabulary.** Title bars and
    bars end in points. The active tab is flanked by `◁ ▷`. Checkboxes and
    switch thumbs are diamonds (SkyUI's MCM). Section rules end in an open
@@ -56,7 +61,10 @@ reproduced.
   1px silver rules top and bottom (the creation / journal title bar).
 - `.tab.is-active` reads `◁ OVERVIEW ▷`. Inactive tabs are dimmed grey.
 - `.table`: tiny uppercase grey heads over one silver rule, no row rules,
-  and a selected row drawn as a fading white band that ends in an arrow tip.
+  and a selected row (`.is-selected` or `aria-selected`) drawn as one
+  white band, faded only in its end cells, ending in an arrow tip. Data
+  cells (`.mono`) use the condensed face with tabular figures, and a
+  trailing value column sits flush right.
 - `.panel-header`: white caps followed by a thin rule running to an open
   diamond (the MCM section header).
 - `.progress` and horizontal `.meter`: diamond end caps (clip-path). The
@@ -64,6 +72,9 @@ reproduced.
   stamina green, then gold, then health red.
 - `.checkbox` is a rotated diamond: hollow when off, a white diamond with
   a black inset when on. `.switch-thumb` is a diamond.
+- `.slider`: a thin silver line with a small diamond at each end and a
+  white `▲` pointer, drawn in the content box so the core `--tap-min`
+  hit area stays.
 - `kbd` is a key-hint box: white outline, black fill, white glyph.
 - The left rail is a smoke strip with one vertical silver rule and a
   diamond on it, like the vanilla category-column divider.
@@ -79,8 +90,9 @@ commercial and is not vendored. The stack names `"Futura PT Cond"`,
 `assets/fonts/` for LCARS, so this theme adds no files. Antonio is
 narrower and more squared than Futura Condensed, but it keeps the tall,
 condensed, light voice. Stat values (`.stat-value`) use the UI font, not
-monospace, because the game has no monospace anywhere. `code` and `.mono`
-keep the mono stack.
+monospace, because the game has no monospace anywhere. `.mono` inside
+tables, logs and the status strip, and `.readout`, use it too, with tabular figures; `code`
+and `pre` keep the mono stack.
 
 ## Contrast honesty
 
@@ -107,6 +119,9 @@ across the top. A slim smoke rail on the left carries a silver divider
 and a diamond. Content sits on the misty slate backdrop, and the
 key-hint strip runs along the bottom edge. At phone width the rail
 collapses as core sets by default.
+
+The status strip is plain text unless the page puts `kbd` key hints in
+it; the theme does not invent key glyphs for shell demos that have none.
 
 ## Don'ts
 
@@ -150,7 +165,7 @@ partial crop is referenced) and the dialogue menu. See
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The rail is hidden up to 900px. On touch tiers the chevron-capped bar is shallower and less inset. On a phone the `h1` steps down, and panels use smaller corner knots and a full 1rem padding, so text clears them. Nested panels drop the knotwork and the drop shadow. Panel titles clear the corner knot, and a header holding controls wraps with the title kept whole. On XL the gutters show knotwork border bands: a woven lattice between silver rules with a chain of diamonds, a few percent over `--bg` (about 1.0:1).
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The rail is hidden up to 900px. On touch tiers the chevron-capped bar is shallower and less inset. On a phone the bar's chevron points keep the depth of its first line when it wraps, so it stays a thin strip with the extra lines tucked under, and the brand truncates as core sets. The `h1` steps down, and panels use smaller corner knots and a full 1rem padding, so text clears them. Desktop windows pad their title row so the icon and the Exit key clear the knots. Nested panels drop the knotwork and the drop shadow. Panel titles clear the corner knot, and a header holding controls wraps with the title kept whole. On XL the gutters show knotwork border bands: a woven lattice between silver rules with a chain of diamonds, a few percent over `--bg` (about 1.0:1).
 
 ## Icons
 
