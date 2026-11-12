@@ -55,13 +55,16 @@ files are vendored unmodified.
 
 ## Baloo 2
 
-- **Family:** Baloo 2 (weight vendored: Bold 700 — `Baloo2-Bold.woff2`;
-  Google serves the same static instance for 700 and 800, so only one
-  file is vendored and used at 700 for both headings and buttons)
+- **Family:** Baloo 2 (variable cut, wght 400-800, Latin subset —
+  `Baloo2-Variable.woff2`, subset with fontTools from
+  `google/fonts` `ofl/baloo2/Baloo2[wght].ttf`). The older static
+  `Baloo2-Bold.woff2` (700) is kept for existing references.
 - **Designer:** Ek Type
-- **License:** SIL Open Font License, version 1.1
+- **License:** SIL Open Font License, version 1.1 — `google/fonts`
+  `ofl/baloo2/` (with `OFL.txt`)
 - **Source:** https://fonts.google.com/specimen/Baloo+2
-- **Used by:** `barbie` (rounded-display voice for headings and buttons)
+- **Used by:** `barbie` (rounded voice for body, labels, buttons and
+  headings, 400-800)
 
 ## IM Fell English SC
 
@@ -116,8 +119,21 @@ files are vendored unmodified.
 - **Designer:** Vernon Adams (commissioned by Google)
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Pacifico
-- **Used by:** `barbie` (scoped narrowly to the brand mark and `h1` only,
+- **Used by:** none currently (`barbie` used it for the brand mark and `h1`,
   as the cursive script signature — never body/button text)
+
+## Leckerli One
+
+- **Family:** Leckerli One (weight vendored: Regular 400, Latin subset —
+  `LeckerliOne-Regular.woff2`, subset with fontTools from `google/fonts`
+  `ofl/leckerlione/LeckerliOne-Regular.ttf`)
+- **Designer:** Gesine Todt
+- **License:** SIL Open Font License, version 1.1 — `google/fonts`
+  `ofl/leckerlione/` (with `OFL.txt`); Reserved Font Names "Leckerli" and
+  "Leckerli One", moot here since the file is only subset, not renamed or
+  redesigned
+- **Source:** https://fonts.google.com/specimen/Leckerli+One
+- **Used by:** `barbie` (wordmark script on the brand mark and `h1` only)
 
 ## Share Tech and Share Tech Mono
 
