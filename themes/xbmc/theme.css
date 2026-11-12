@@ -88,7 +88,9 @@ html[data-theme="xbmc"] {
   --row-selected-bg: rgba(30, 144, 255, 0.14);
   --row-active-marker: inset 0.2rem 0 0 var(--accent);
   --nav-bg: #0b0c0e;
-  --nav-item-fg: #9aa0a6;
+  /* As dark as the strip allows: #8a9096 still clears 4.5:1 on its lightest
+     tone (#232323); the reference's #4d4d4d would not. */
+  --nav-item-fg: #8a9096;
   --nav-brand-fg: #ffffff;
   --nav-item-bg-active: transparent;
   --nav-item-fg-active: #ffffff;
@@ -104,10 +106,10 @@ html[data-theme="xbmc"] {
   /* Submenu shelf: black glass, white focused label, no blue block. */
   --segmented-bg: linear-gradient(180deg, #1d1f22, #000);
   --segmented-border: #000;
-  --segmented-padding: 0.2rem 0.75rem;
+  --segmented-padding: 0.2rem 1.5rem;
   --segmented-radius: 0;
   --segmented-item-radius: 0;
-  --segmented-item-fg: #9aa0a6;
+  --segmented-item-fg: #c4cad0;
   --segmented-item-bg-active: linear-gradient(180deg, #3a3d41, #1d1f22);
   --segmented-item-fg-active: #ffffff;
   --tab-fg: #9aa0a6;
@@ -126,16 +128,24 @@ html[data-theme="xbmc"] {
   --switch-thumb-radius: var(--radius);
 }
 
-/* The Confluence backdrop: a cyan-leaning blue (hue ~205), brightest above
-   centre and darkening to the edges, under a field of crisp bokeh discs whose
-   rims are brighter than their fills. It sits on a fixed, composited layer
-   sized to the viewport, so the discs keep their size on a long page and
-   scrolling never repaints it. The centre is held at #065080 (the capture
-   reaches #0365a2) so muted text over it keeps 4.5:1. */
+/* The Confluence backdrop: a navy field (#001542 at the edges, a lighter
+   blue above centre) under saturated royal-blue bokeh discs, a few small
+   bright cyan ones, and soft diagonal light rays. Disc rims are brighter
+   than their fills. It sits on a fixed layer sized to the viewport, so the
+   discs keep their size on a long page and scrolling never repaints it.
+   Royal blue (hue ~220) is vivid but low in luminance, so text over a disc
+   keeps 4.5:1; the bright cyan discs (#38bbd9 in the capture) are kept small
+   and few, toned down where they would sit under body text. */
 html[data-theme="xbmc"] {
-  background: #031637;
-  --xbmc-disc: rgba(40, 150, 230, 0.1);
-  --xbmc-rim: rgba(90, 185, 245, 0.32);
+  background: #001542;
+  --xbmc-disc: rgba(20, 80, 215, 0.42);
+  --xbmc-disc-2: rgba(25, 95, 225, 0.32);
+  --xbmc-rim: rgba(90, 170, 250, 0.5);
+  --xbmc-glow: rgba(70, 190, 240, 0.5);
+  --xbmc-rays:
+    linear-gradient(60deg, transparent 30%, rgba(80, 170, 255, 0.08) 40%, transparent 50%),
+    linear-gradient(60deg, transparent 55%, rgba(80, 170, 255, 0.06) 62%, transparent 70%);
+  --xbmc-base: radial-gradient(ellipse 120% 90% at 50% 25%, #065080 0%, #033a70 40%, #001542 100%);
 }
 html[data-theme="xbmc"] body::before {
   content: "";
@@ -144,24 +154,40 @@ html[data-theme="xbmc"] body::before {
   /* Below core's XL gutter art (html::before, z-index -1). */
   z-index: -2;
   pointer-events: none;
-  will-change: transform;
+  contain: strict;
   background:
-    radial-gradient(circle 7rem at 47% 14%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 2.5rem at 50% 31%, rgba(90, 200, 245, 0.22) calc(100% - 2px), rgba(140, 220, 250, 0.4) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 5.5rem at 71% 30%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 4rem at 76% 29%, rgba(40, 110, 230, 0.14) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 6rem at 94% 40%, rgba(30, 100, 220, 0.14) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 6.5rem at 43% 49%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 1.5rem at 50% 31%, var(--xbmc-glow) calc(100% - 2px), rgba(160, 225, 250, 0.6) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 7rem at 47% 14%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 4rem at 70% 30%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 5.5rem at 74% 31%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 4.5rem at 79% 33%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 6rem at 94% 40%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 6.5rem at 43% 49%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 2.5rem at 32% 53%, rgba(40, 150, 235, 0.4) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
     radial-gradient(circle 4.5rem at 33% 58%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 2.5rem at 32% 53%, rgba(40, 150, 230, 0.16) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
     radial-gradient(circle 4rem at 7% 70%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 5rem at 36% 72%, rgba(40, 140, 230, 0.13) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 5rem at 36% 72%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
     radial-gradient(circle 8rem at 24% 92%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
     radial-gradient(circle 9rem at 88% 82%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 3rem at 68% 9%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 1.5rem at 55% 39%, rgba(60, 170, 240, 0.18) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
-    radial-gradient(circle 10rem at 12% 22%, rgba(30, 90, 200, 0.12) 0 calc(100% - 3rem), transparent 100%),
-    radial-gradient(ellipse 120% 90% at 50% 25%, #065080 0%, #043e6c 40%, #031637 100%);
+    radial-gradient(circle 3rem at 68% 9%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+    radial-gradient(circle 10rem at 12% 22%, rgba(20, 70, 200, 0.3) 0 calc(100% - 3rem), transparent 100%),
+    var(--xbmc-rays),
+    var(--xbmc-base);
+}
+/* Phones: six discs instead of fourteen, so the fixed layer is cheap to
+   raster and composite while scrolling. */
+@media (max-width: 480px) {
+  html[data-theme="xbmc"] body::before {
+    background:
+      radial-gradient(circle 1.25rem at 62% 20%, var(--xbmc-glow) calc(100% - 2px), rgba(160, 225, 250, 0.6) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 5rem at 30% 14%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 4rem at 78% 36%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 4.5rem at 20% 58%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 6rem at 85% 78%, var(--xbmc-disc) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+      radial-gradient(circle 5rem at 25% 94%, var(--xbmc-disc-2) calc(100% - 2px), var(--xbmc-rim) calc(100% - 1px), transparent 100%),
+      var(--xbmc-rays),
+      var(--xbmc-base);
+  }
 }
 
 /* Titillium is narrower than the fallback, so a squeezed table row now
@@ -191,21 +217,31 @@ html[data-theme="xbmc"] {
   --app-bar-height: 4rem;
   --app-main-padding: 1.5rem;
   /* The bottom bar: lighter grey glass, as under the Confluence home screen. */
-  --app-status-bg: linear-gradient(180deg, #3a3d41, #141516);
+  --app-status-bg: linear-gradient(180deg, #3a3a3a, #1a1a1a);
   --app-status-fg: #d0d3d6;
   --app-status-rule: rgba(255, 255, 255, 0.18);
   /* A taller footer band, as Confluence's, for its square icon buttons. */
-  --app-status-padding: 0.6rem 1rem;
+  --app-status-padding: 1rem 1rem;
+}
+html[data-theme="xbmc"] .app-status {
+  min-block-size: 3.5rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+/* Its icon buttons are framed glass squares (the star and power keys). */
+html[data-theme="xbmc"] .app-status .btn-icon {
+  border: 1px solid #000;
+  background: linear-gradient(180deg, #2a2d31, #141517);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 html[data-theme="xbmc"] .app-bar {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 html[data-theme="xbmc"] .app-bar .menubar {
-  --menubar-fg: #9aa0a6;
+  --menubar-fg: #8a9096;
 }
 /* Strip, tab and segmented caps use a wide bold (Confluence's caps are
    broad and rounded); Titillium stays the body face. */
-html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a), .tab, .segmented-item) {
+html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a), .tab) {
   font-family: Roboto, "Segoe UI", "DejaVu Sans", var(--font);
   text-transform: uppercase;
   font-weight: 700;
@@ -218,8 +254,10 @@ html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)) {
 }
 /* Tall, even strip cells of large caps split by faint separators. */
 html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) {
-  font-size: 1.4rem;
-  min-inline-size: 8rem;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  flex: 0 0 auto;
+  /* Equal cells where the bar has room; narrower bars let them hug. */
+  min-inline-size: min(9.5rem, 11vw);
   text-align: center;
   justify-content: center;
   border-inline-start: 1px solid rgba(255, 255, 255, 0.08);
@@ -240,13 +278,14 @@ html[data-theme="xbmc"] :is(.nav-item, .menubar > li > :is(button, a)):is(.is-ac
 }
 
 /* Tabs and segmented controls are the submenu shelf that drops under the
-   strip ('Dateien | Addons'): bold caps, dark separators, and a segmented
-   shelf whose bottom corners are cut away. */
+   strip ('Dateien | Addons'): dark separators, and a segmented shelf whose
+   bottom corners are cut away on a wide diagonal. Tabs keep the strip's caps;
+   shelf items are regular-weight sentence case, as 'Dateien' is. */
 html[data-theme="xbmc"] .tab.is-active {
   box-shadow: 0 6px 8px -6px rgba(30, 144, 255, 0.8);
 }
 html[data-theme="xbmc"] .segmented {
-  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 10px 100%);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 1.25rem) 100%, 1.25rem 100%);
 }
 html[data-theme="xbmc"] .segmented-item + .segmented-item {
   border-inline-start: 1px solid #000;
@@ -344,6 +383,8 @@ html[data-theme="xbmc"] {
      Confluence's is ('ILDER … OPTION'). */
   html[data-theme="xbmc"] .app-bar .nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   html[data-theme="xbmc"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { font-size: 0.8rem; min-inline-size: 0; padding-inline: 0.4rem; flex-shrink: 0; }
+  /* The bar's tools stay on one row and scroll, rather than stacking. */
+  html[data-theme="xbmc"] .app-bar > .cluster { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   /* Keep the tray readout off the status bar's right edge (v5 edgeText). */
   html[data-theme="xbmc"] .app-status.taskbar > .taskbar-tray { margin-inline-end: 0.25rem; }
 }

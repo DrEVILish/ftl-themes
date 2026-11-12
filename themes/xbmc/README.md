@@ -22,32 +22,37 @@ hover glow and the selection underline.
    line with a 6px glow so the white label carries the focus. Toggle
    buttons and segmented items select with a lighter glass and a blue edge,
    not a blue fill.
-2. **Blue backdrop, neutral chrome.** The page is a cyan-leaning blue
-   radial (hue ~205: `#065080` → `#043e6c` → `#031637`) under a field of
-   crisp bokeh discs, darkening toward the edges; surfaces are neutral
+2. **Blue backdrop, neutral chrome.** The page is a blue radial
+   (`#065080` → `#033a70` → navy `#001542` at the edges) under a field of
+   saturated royal-blue bokeh discs and soft diagonal light rays; surfaces are neutral
    `#121314` / `#1d1f22` glass, not blue-tinted.
 3. **One blue, used as light.** `--accent` (`#1e90ff`) is a glow colour;
    only primary buttons still fill with it.
 
 ## Signature details
 
-- The backdrop: a fixed, viewport-sized `body::before` layer (composited,
-  so scrolling never repaints it) holding ~15 crisp `radial-gradient`
-  discs of 1.5-10rem in `rgba(40,150,230,…)`, each with a 1px brighter rim,
-  over the blue radial.
+- The backdrop: a fixed, viewport-sized `body::before` layer
+  (`contain: strict`, so scrolling never repaints it) holding 15 crisp
+  `radial-gradient` discs of 1.5-10rem — royal blue `rgba(20,80,215,.42)`
+  and `rgba(25,95,225,.32)`, overlapping in a cluster upper right, one small
+  bright cyan `rgba(70,190,240,.5)` — each with a 1px `rgba(90,170,250,.5)`
+  rim, plus two 60° light rays (`rgba(80,170,255,.06-.08)`), over the blue
+  radial. Phones draw six discs instead.
 - The menu strip: a tall 4rem band,
   `--app-bar-bg: linear-gradient(180deg, #232323, #141414 50%, #050505)`
-  with a 1px `rgba(255,255,255,.18)` top hairline; items in large (1.4rem)
-  uppercase bold `#9aa0a6` with a `0 1px 0 #000` emboss, in even centred
-  cells at least 8rem wide, split by 1px faint separators.
+  with a 1px `rgba(255,255,255,.18)` top hairline; items in large
+  (up to 1.25rem) uppercase bold `#8a9096` with a `0 1px 0 #000` emboss, in
+  even centred cells `min(9.5rem, 11vw)` wide, split by 1px faint separators.
 - The active item's underline: 2px `--accent`,
   `box-shadow: 0 0 6px 1px rgba(30,144,255,.8)`.
 - The submenu shelf: `.segmented` is a black gradient whose bottom corners
-  are cut by `clip-path` (the 'Dateien | Addons' trapezoid), with dark
-  separators between items.
-- The bottom bar: `.app-status` is a taller grey glass band
-  (`linear-gradient(180deg, #3a3d41, #141516)`, 0.6rem padding) with a
-  light top hairline.
+  are cut on a 1.25rem diagonal by `clip-path` (the 'Dateien | Addons'
+  trapezoid), 1.5rem end padding, dark separators, and regular-weight
+  sentence-case `#c4cad0` items, as 'Dateien' is.
+- The bottom bar: `.app-status` is a tall grey glass band (at least 3.5rem,
+  `linear-gradient(180deg, #3a3a3a, #1a1a1a)`, 1rem padding) with a light
+  top hairline; its icon buttons are framed glass squares (1px `#000`,
+  inset top highlight).
 - Flat rectangles: square slider thumb and switch knobs, a grey `#70767e`
   slider track; icon buttons, badges/chips and avatars take `--radius`
   (no circles or pills).
@@ -84,10 +89,11 @@ the 1px glowing-underline accent bar. Colour is always `currentColor`.
 `--font` is `"Titillium Web", "Arial Narrow", "Segoe UI", sans-serif`;
 `--font-mono` is `Consolas, monospace`. Titillium Web (OFL, already vendored
 in `assets/fonts/`) stands in for Confluence's bold, slightly condensed
-sans; the skin's own face is not named. Headings are 700. Strip items, tabs
-and segmented items use a wider bold for Confluence's broad menu caps —
+sans; the skin's own face is not named. Headings are 700. Strip items and
+tabs use a wider bold for Confluence's broad menu caps —
 `Roboto, "Segoe UI", "DejaVu Sans"`, then Titillium — uppercase 700, no
-extra tracking.
+extra tracking. Segmented items (the submenu shelf) stay Titillium 400 in
+sentence case.
 
 ## Contrast honesty
 
@@ -101,12 +107,16 @@ extra tracking.
 - The backdrop centre is held at `#065080`; the capture's centre is
   brighter (`#0365a2`), which would drop muted text over it below 4.5:1.
   The hue (~205) matches; the value is the trade-off.
-- Strip labels `#9aa0a6` clear 4.5:1 on the strip's lightest stop; the
+- The discs are royal blue (hue ~220), which is vivid but low in luminance,
+  so muted text over a disc still clears 4.5:1. The capture's bright cyan
+  discs (`#057ac9`, `#38bbd9`) would not; only one small cyan disc is kept,
+  and text that happens to cross it can fall below 4.5:1.
+- Strip labels `#8a9096` clear 4.5:1 on the strip's lightest stop; the
   brand is white, as the KODI wordmark is.
 - The backdrop and strip hexes are sampled from `xbmc-confluence-14.jpg`
   (strip `#191919`-`#2c2c2c`, backdrop `#0365a2` → `#043e6c` → `#031637`);
-  the strip label is lifted from the capture's `#515151` to `#9aa0a6` for
-  4.5:1.
+  the strip label is lifted from the capture's `#4d4d4d`-`#515151` to
+  `#8a9096`, the darkest grey that keeps 4.5:1.
 
 ## Reference status
 
@@ -124,7 +134,8 @@ Not backed: the glowing blue underline itself (Confluence marks focus by whiteni
   drop). On mobile the category tiles lose the big home-screen padding and
   their outer blur shadow, cards and panels go opaque (cheaper scrolling),
   the strip's caps step down to 0.8rem so the strip stays one row (a plain
-  `.nav` in the bar scrolls sideways instead of wrapping), and the taskbar
+  `.nav` in the bar scrolls sideways instead of wrapping), the bar's tool
+  cluster stays one row and scrolls sideways, and the taskbar
   tray keeps a small inline-end margin off the status-bar edge. A number field in a
   table cell keeps at least `--tap-min` of width.
 - **Nesting.** The home-screen tile look (big padding, centred label,
