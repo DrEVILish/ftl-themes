@@ -20,7 +20,11 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 4. **Cyan is the bright accent; yellow is reserved further still** (used
    only as `--flare` and warning) — this is a two-tier bright system,
    not a rainbow.
-5. **Zero radius.** Text-mode has no curves.
+5. **Zero radius.** Text-mode has no curves: badges, switches, avatars,
+   icon buttons, status dots and the slider thumb are square cells;
+   checkboxes and radios are `[X]` and `(•)` text.
+6. **One weight.** The VGA font has no bold, so faux bold is switched off
+   (`font-synthesis-weight: none`); emphasis is colour.
 
 ## Signature details
 
@@ -30,15 +34,17 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
   the entire visual signature.
 - `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
   approximation — this theme's background is a real 16-color EGA/VGA value.
-- The nav bar, app bar, and status strip all fill solid cyan
-  (`--accent`) with black text — the one place a "bright" color
-  becomes a background instead of a foreground.
+- The app bar and every in-window menubar are EDIT's grey `#aaaaaa` menu
+  bar with black items; the status strip is black with Norton's F-key row
+  of black-on-cyan label blocks. Cyan becomes a fill only for the cursor
+  bar (selected rows, the active tab, the current nav link) and the
+  panel title tab, always with black text.
+- Tables draw cyan box-drawing column rules (│) and no row hairlines.
 
 ## Layout
 
-A bar and status strip both filled solid cyan with black text — the
-Norton Commander function-key bar — with the rest of the shell staying
-DOS blue.
+A grey EDIT menu bar on top, the DOS-blue work area, and a black status
+strip carrying the Norton Commander function-key bar along the bottom.
 
 ## Tell-tales of an inauthentic result
 
@@ -85,7 +91,7 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). Phone and tablet keep the grey menu bar, blue work area and F-key strip; the bar wraps to two lines. Nested titled boxes leave headroom for their title tab. Boxes inside a grey dialog take the screen's white-on-blue inks back, and a drawer or `.scroll` panel puts its title tab inside the box rather than on its top edge, where scrolling would clip it. On XL the gutters show the Turbo Vision desktop: the CP437 light-shade fill (░) in dim VGA blue, about 1.4:1 against `--bg`.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). Phone and tablet keep the grey menu bar, blue work area and F-key strip; the bar wraps to two lines. Nested titled boxes leave headroom for their title tab. Boxes inside a grey dialog take the screen's white-on-blue inks back, and a drawer or `.scroll` panel puts its title tab inside the box rather than on its top edge, where scrolling would clip it. On XL the gutters show the Turbo Vision desktop: the CP437 light-shade fill (░) as hard-edged 1px cells in dim blue, about 1.4:1 against `--bg`.
 
 ## Adoption
 
@@ -103,7 +109,10 @@ layout at **L1**.
 - **Boxes:** panels, cards and the work area are cyan `#55ffff`
   double-line boxes, with the panel title set *into* the top line,
   centred, reverse video — Norton's drive tab.
-- **Headings and column heads** are bright yellow `#ffff55`, no fills.
+- **Headings and column heads** are bright yellow `#ffff55`, no fills
+  (an `h1` on a grey dialog, sheet or bar turns VGA blue `#0000aa`).
+- **Charts and loaders** are flat: no translucent area fills, and a
+  skeleton is a still ░ shade block instead of a shimmer.
 - **Buttons** are solid blocks with a hard black shadow one cell
   down-right, dropped when pressed; primary is yellow.
 - **Dialogs** are grey with black text, an inset white double line and a
