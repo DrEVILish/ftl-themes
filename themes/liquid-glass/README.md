@@ -41,7 +41,7 @@ touching the edge of the screen.
 5. **Legibility beats transparency.** Small controls use the *clear*
    weight; anything carrying body text uses the *regular* weight (a 70–80%
    white scrim), and the window pane under the content is 84–88% white,
-   blurred without the saturate boost (a plain `blur(10px)` up to 900px), so the content layer reads as white
+   blurred without the saturate boost (unblurred up to 900px, where only the soft wallpaper is behind it), so the content layer reads as white
    and `--muted` text holds 4.5:1 over the darkest wallpaper blue. Headings
    that can land on the wallpaper carry a faint white halo. Text never sits
    on the bare wallpaper: an L0 page (no app shell) and any block beside
@@ -67,8 +67,9 @@ touching the edge of the screen.
   reference's `#ededed` bar. The selection lens is `rgba(120,120,128,0.18)`
   (about `#dadadc` over the grey glass, near the sampled `#e1e1e3`).
 - `backdrop-filter: blur(14px) saturate(160%) brightness(1.08)` on clear
-  glass; `blur(28px)` on sheets and the window (a single `blur(10px)` pass
-  on the window up to 900px, to keep phone scrolling smooth). The saturate is what makes controls pick up the wallpaper's
+  glass; `blur(28px)` on sheets and the window (no backdrop pass on the
+  window up to 900px: it is the content layer over a soft gradient, and
+  that pass was most of a phone's scroll cost). The saturate is what makes controls pick up the wallpaper's
   colour. Glass inside a blurred bar, and anything inside the window pane
   on phones and tablets, skips its own backdrop pass: there is nothing new
   behind it to blur.
@@ -155,8 +156,10 @@ to two lines (as a 26px rounded rectangle).
 
 ## Don'ts
 
-- **Don't remove `backdrop-filter`** to "fix" a perf report; use
-  `prefers-reduced-transparency`, which this theme already honours.
+- **Don't remove `backdrop-filter`** from the glass (bars, controls,
+  menus, sheets) to "fix" a perf report; use
+  `prefers-reduced-transparency`, which this theme already honours. The
+  one exception is the phone/tablet window pane, which is content layer.
 - **Don't lower the white scrims** on `--lg-regular` or `--app-main-bg`;
   they are what keeps `--muted` at 4.5:1 over the dark wallpaper.
 - **Don't set `--accent` to `#0088ff`** (iOS 26 systemBlue): white text

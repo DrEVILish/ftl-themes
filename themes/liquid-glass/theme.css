@@ -590,8 +590,9 @@ html[data-theme="liquid-glass"] .toggle-group {
 }
 html[data-theme="liquid-glass"] .toggle-group > .toggle-btn { border-radius: 999px; margin: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
 html[data-theme="liquid-glass"] :is(.toggle-group:not(.is-block, .is-stacked) > .toggle-btn, .segmented-item) { flex-shrink: 0; white-space: nowrap; }
-/* A segmented control never wraps a label: the track scrolls sideways. */
-html[data-theme="liquid-glass"] :is(.toggle-group, .segmented):not(.is-block, .is-stacked) { overflow-x: auto; scrollbar-width: none; }
+/* A segmented control never wraps a label or gets squeezed by its row (the
+   row's label ellipsizes first); only a track wider than the screen scrolls. */
+html[data-theme="liquid-glass"] :is(.toggle-group, .segmented):not(.is-block, .is-stacked) { flex-shrink: 0; max-inline-size: 100%; overflow-x: auto; scrollbar-width: none; }
 html[data-theme="liquid-glass"] :is(.toggle-group > .toggle-btn, .segmented-item):has(input:focus-visible) { outline-offset: -3px; }
 html[data-theme="liquid-glass"] .toggle-group > .toggle-btn:has(input:checked) {
   box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.04), 0 3px 8px rgba(0, 0, 0, 0.12);
@@ -893,10 +894,12 @@ html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .toolbar, .tabs, .tra
     grid-row: auto;
     margin-top: 0;
     padding: 1rem 0.75rem 4.8rem;
-    /* Touch tiers: a lighter, single-pass blur on the big pane keeps
-       scrolling smooth (the soft wallpaper behind it needs no more). */
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    /* Touch tiers: the pane is the content layer, and all that is behind
+       it is the soft fixed wallpaper, which a blur barely changes; its
+       backdrop pass was most of a phone's scroll cost (measured: 40-58ms
+       a frame with it, 18-20ms without). The glass bars keep theirs. */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
   /* Anything inside the near-white pane has nothing visible to blur (its
      fill and rim carry the look); on phones and tablets it skips the
