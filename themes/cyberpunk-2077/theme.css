@@ -1,6 +1,6 @@
 /* ftl-themes: Cyberpunk 2077
  * Theme-Name: Cyberpunk 2077
- * Description: Night City menus and HUD: coral-red condensed caps on near-black maroon, cyan for whatever is live or selected, yellow tags, angled cut corners, scanlines, glitch offsets, and netrunner breach-grid tables.
+ * Description: Night City menus and HUD: coral-red condensed caps on near-black maroon, cyan for whatever is live or under the cursor, solid red plates for the selected row, yellow tags, angled cut corners, scanlines, glitch offsets, and netrunner breach-grid tables.
  *
  * Inspired by the in-game menus and HUD of Cyberpunk 2077 (CD PROJEKT RED,
  * 2020). No logo, wordmark, corporate mark or game art ships here; see
@@ -48,7 +48,7 @@ html[data-theme="cyberpunk-2077"] {
   --surface-2: #110d15;   /* recessed: inputs, tracks, menus */
   --border: #a8383d;      /* the long red rule, dimmed for structure */
   --hairline: #3b1a21;
-  --text: #ff8a82;        /* menu red: labels, item names, descriptions */
+  --text: #ff7562;        /* menu red: labels, item names, descriptions (sampled #f75a52, lifted to 7:1 at the same hue) */
   --muted: #e3645d;       /* inactive tabs, column heads: dimmer red */
   --accent: #5ef6ff;      /* live / selected / ON / values: the cyan */
   --accent-2: #fcee0a;    /* the yellow: NEW tags, quest marks */
@@ -102,14 +102,14 @@ html[data-theme="cyberpunk-2077"] {
     linear-gradient(315deg, transparent 5.7px, var(--surface-2) 5.7px);
   /* Cyan corner brackets (the breach screen and the HUD cursor). */
   --cp-brackets:
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 2px 10px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 2px 10px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 2px 10px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 2px 10px no-repeat;
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 2px 14px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 2px 14px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 2px 14px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 2px 14px no-repeat;
   --cp-scanlines: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
 
   --label-transform: uppercase;
@@ -136,16 +136,16 @@ html[data-theme="cyberpunk-2077"] {
   --btn-border-hover: var(--cp-cyan);
   --btn-shadow-hover: inset 0 0 0.9rem rgba(94, 246, 255, 0.18);
   --btn-radius: 0;
-  --btn-weight: 700;
+  --btn-weight: 500;
   --btn-tracking: 0.06em;
   --btn-transform: uppercase;
   --btn-padding: calc(0.45em * var(--density)) calc(1.3em * var(--density)) calc(0.4em * var(--density)) calc(1.1em * var(--density));
   --btn-icon-radius: 0;
   --toggle-btn-bg: rgba(255, 95, 88, 0.08);
-  --toggle-btn-bg-on: rgba(94, 246, 255, 0.14);
+  --toggle-btn-bg-on: var(--row-selected-bg);   /* the filled red choice, like .segmented */
   --toggle-btn-border: var(--cp-line);
-  --toggle-btn-border-on: var(--cp-cyan);
-  --toggle-btn-fg-on: var(--cp-cyan);
+  --toggle-btn-border-on: var(--cp-red);
+  --toggle-btn-fg-on: var(--row-selected-fg);
   --toggle-btn-radius: 0;
   --go-bg: rgba(255, 95, 88, 0.12);
   --go-border: var(--cp-red);
@@ -174,7 +174,7 @@ html[data-theme="cyberpunk-2077"] {
   --input-addon-bg: #24111a;
   --input-addon-fg: var(--text);
   --select-arrow-fg: var(--text);
-  --field-group-title-fg: var(--text);
+  --field-group-title-fg: #e8e6ea;   /* the white section-header band (rule below) */
 
   /* Surfaces. */
   --panel-bg: var(--cp-frame), var(--cp-fill);
@@ -241,8 +241,10 @@ html[data-theme="cyberpunk-2077"] {
   --table-sort-fg: #10140a;
   --table-rule: rgba(207, 236, 88, 0.14);
   --row-hover-bg: rgba(255, 95, 88, 0.1);   /* lists, trees, menus; tables get the steel band below */
-  --row-selected-bg: rgba(94, 246, 255, 0.16);
-  --row-selected-fg: var(--cp-cyan);
+  /* Selected rows are the game's solid red plate (journal, database);
+     tables keep the breach grid's cyan (see .table below). */
+  --row-selected-bg: #a8343a;
+  --row-selected-fg: #ffe4e1;
   --row-active-bg: rgba(255, 95, 88, 0.08);
   --row-active-marker: inset 3px 0 0 var(--cp-cyan);
   --row-alt-bg: rgba(207, 236, 88, 0.03);
@@ -280,27 +282,37 @@ html[data-theme="cyberpunk-2077"] {
   --segmented-radius: 0;
   --segmented-item-radius: 0;
   --segmented-item-fg: var(--muted);
-  --segmented-item-bg-active: var(--cp-cyan);
-  --segmented-item-fg-active: #0b0a0f;
+  --segmented-item-bg-active: #a8343a;   /* the filled red choice (HARD) */
+  --segmented-item-fg-active: #ffe4e1;
   --segmented-item-fg-hover: var(--cp-cyan);
   --pagination-item-radius: 0;
   --pagination-item-bg-active: var(--cp-cyan);
   --pagination-item-fg-active: #0b0a0f;
   --pagination-item-fg: var(--text);
   --pagination-item-fg-hover: var(--cp-cyan);
+  --carousel-arrow-bg: rgba(255, 95, 88, 0.08);
   --breadcrumb-separator: "\25B8";
   --breadcrumb-current-fg: var(--cp-cyan);
   --scrollspy-link-active-fg: var(--cp-cyan);
   --scrollspy-link-active-marker: var(--cp-cyan);
   --list-bg: transparent;
-  --list-border: var(--hairline);
+  --list-border: transparent;
   --list-radius: 0;
-  --list-rule: var(--hairline);
-  --list-item-bg-hover: rgba(255, 95, 88, 0.1);
-  --list-active-marker: inset 3px 0 0 var(--cp-cyan);
+  --list-rule: transparent;
+  --list-item-bg-hover: rgba(94, 246, 255, 0.08);
+  --list-active-marker: inset 3px 0 0 var(--cp-red);
+  /* A list row is its own plate: a dim red rule with the cut corner. */
+  --cp-row-line: rgba(255, 95, 88, 0.38);
+  --cp-row-frame:
+    linear-gradient(var(--cp-row-line), var(--cp-row-line)),
+    linear-gradient(var(--cp-row-line), var(--cp-row-line)),
+    linear-gradient(var(--cp-row-line), var(--cp-row-line)),
+    linear-gradient(var(--cp-row-line), var(--cp-row-line)),
+    linear-gradient(to top left, transparent calc(50% - 1px), var(--cp-row-line) calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(315deg, transparent 5.7px, rgba(255, 95, 88, 0.05) 5.7px);
   --accordion-trigger-bg-hover: rgba(255, 95, 88, 0.08);
 
-  /* Badges: the yellow NEW tag; colour variants keep their own fills. */
+  /* Badges: red-tint tags; the accent badge (NEW, counts) is the yellow tag below. */
   --badge-bg: rgba(255, 95, 88, 0.14);
   --badge-fg: var(--text);
   --badge-border: var(--cp-line);
@@ -312,25 +324,36 @@ html[data-theme="cyberpunk-2077"] {
   --avatar-bg: #24111a;
   --avatar-fg: var(--cp-cyan);
 
-  /* Switch: the OFF/ON block toggle. Square, red when off, cyan when on. */
+  /* Switch: the OFF / ON slab pair (rules below): a red OFF slab on the
+     left, a dim cyan ON slab on the right. */
   --switch-radius: 0;
   --switch-thumb-radius: 0;
-  --switch-bg: #3a1418;
-  --switch-border: #8a2c31;
+  --switch-bg: #16111f;
+  --switch-border: #6f2a30;
   --switch-thumb-bg: var(--cp-red);
-  --switch-bg-on: rgba(94, 246, 255, 0.2);
+  --switch-bg-on: #16111f;
   --switch-border-on: var(--cp-cyan);
-  --switch-thumb-bg-on: var(--cp-cyan);
-  /* Slider: dark track, a red slab thumb. */
+  --switch-thumb-bg-on: #1d8a90;
+  /* Slider: the settings value bar. A tall navy track in a dim red rule
+     with its bottom-right corner cut (drawn in the background, since
+     core's box grows to --tap-min with a transparent border), filling the
+     whole 24px target on desktop and 2rem of the 44px one on touch, and a
+     red slab thumb the track's full height. */
   --slider-radius: 0;
-  --slider-height: 0.55rem;
-  --slider-bg: linear-gradient(90deg, rgba(255, 95, 88, 0.35), rgba(255, 95, 88, 0.1)), #16111f;
-  --slider-border: #6f2a30;
-  --slider-border-width: 1px;
+  --slider-height: min(var(--tap-min, 24px), 2rem);
+  --slider-bg:
+    linear-gradient(#6f2a30, #6f2a30) left top / 100% 1px no-repeat,
+    linear-gradient(#6f2a30, #6f2a30) left top / 1px 100% no-repeat,
+    linear-gradient(#6f2a30, #6f2a30) right top / 1px calc(100% - 6px) no-repeat,
+    linear-gradient(#6f2a30, #6f2a30) left bottom / calc(100% - 6px) 1px no-repeat,
+    linear-gradient(to top left, transparent calc(50% - 1px), #6f2a30 calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px)) right bottom / 6px 6px no-repeat,
+    linear-gradient(315deg, transparent 4.25px, #16111f 4.25px);
+  --slider-border: transparent;
+  --slider-border-width: 0px;
   --slider-thumb-radius: 0;
   --slider-thumb-bg: var(--cp-red);
-  --slider-thumb-size: 1rem;
-  --slider-thumb-shadow: 0 0 0.6rem rgba(255, 95, 88, 0.6);
+  --slider-thumb-size: calc(var(--slider-height) - 2px);
+  --slider-thumb-shadow: none;
 
   /* Bars and meters: flat red fill with a glow, angled end. */
   --progress-height: 0.55rem;
@@ -526,7 +549,16 @@ html[data-theme="cyberpunk-2077"] {
   --hud-float-mana: var(--cp-cyan);
   --mention-self-bg: color-mix(in srgb, var(--cp-yellow) 16%, transparent);
   --mention-self-fg: var(--cp-yellow);
+  --presence-color-2: var(--cp-red);   /* series 2 lifted so a cursor label reads in black */
   --presence-color-3: #d6c80a;   /* series 3 lifted so a cursor label reads in black */
+  /* Waveform chips are a 30% state tint; the pale red ink keeps them legible. */
+  --waveform-marker-fg: #ffd2ce;
+  /* Desktop icons are red ink; cyan only for the selected one. */
+  --desktop-icon-glyph: var(--text);
+  /* Inactive window titles: the dimmer red at full strength (4.7:1), no fade. */
+  --window-header-fg-inactive: var(--muted);
+  --window-header-filter-inactive: none;
+  --desktop-icon-glyph-selected: var(--cp-cyan);
   --rarity-common: #a7a9b0;
   --rarity-uncommon: #3fcf5c;
   --rarity-rare: #3a9bff;
@@ -534,29 +566,37 @@ html[data-theme="cyberpunk-2077"] {
   --rarity-legendary: #ffa31a;
 }
 
-/* --- Page: maroon wash over near-black, with scanlines ------------------ */
+/* --- Page: a maroon wash over the top half that falls into a cool
+   teal-black lower down (the menu is lit from the top), with scanlines. -- */
 html[data-theme="cyberpunk-2077"] {
-  background-color: var(--bg);
+  background-color: #090b10;
+  font-family: var(--font);
+}
+/* On its own fixed layer so scrolling composites it instead of repainting
+   the viewport. z-index -2 keeps it under core's XL gutter art (::before). */
+html[data-theme="cyberpunk-2077"]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
   background-image:
     var(--cp-scanlines),
-    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(120, 28, 38, 0.55), transparent 75%),
-    linear-gradient(180deg, #1c0d12, var(--bg) 22rem);
-  background-attachment: fixed;
-  font-family: var(--font);
+    radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.5), transparent 80%),
+    linear-gradient(180deg, #24101a, rgba(64, 20, 24, 0.55) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
+    linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
 }
 html[data-theme="cyberpunk-2077"] body { font-weight: 500; letter-spacing: 0.01em; }
 
-/* --- Voice: condensed caps, red; display titles carry a static glitch
-   split (cyan / pink offset), no motion needed. ------------------------- */
+/* --- Voice: condensed caps in flat red, like SAVE GAME / JACKIE WELLES;
+   section titles in the medium weight. ---------------------------------- */
 html[data-theme="cyberpunk-2077"] :is(h1, h2, h3, h4) {
-  font-weight: 700;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: var(--text);
 }
-html[data-theme="cyberpunk-2077"] h1 {
-  text-shadow: -2px 0 rgba(94, 246, 255, 0.55), 2px 0 rgba(255, 42, 109, 0.45);
-}
+html[data-theme="cyberpunk-2077"] h1 { font-weight: 700; letter-spacing: 0.04em; }
 html[data-theme="cyberpunk-2077"] :is(.stat-value, .price) { color: var(--cp-cyan); font-weight: 600; }
 html[data-theme="cyberpunk-2077"] :is(code, kbd, samp, pre) { font-family: var(--font-mono); }
 html[data-theme="cyberpunk-2077"] kbd { font-family: var(--font); font-weight: 700; }
@@ -590,6 +630,8 @@ html[data-theme="cyberpunk-2077"] .btn-primary {
   html[data-theme="cyberpunk-2077"] .btn-primary:hover { --btn-fg: #0b0a0f; }
   html[data-theme="cyberpunk-2077"] .btn:not(.btn-primary, .btn-danger, .btn-success):hover { color: var(--cp-cyan); }
 }
+/* Filled buttons keep the menu face's medium weight too (CONFIRM, CRAFT). */
+html[data-theme="cyberpunk-2077"] :is(.btn-primary, .btn-danger, .btn-success) { --btn-weight: 500; }
 html[data-theme="cyberpunk-2077"] .btn-danger { --btn-bg-hover: #ff4d5c; --btn-border-hover: #ffffff; }
 html[data-theme="cyberpunk-2077"] .btn-success { --btn-bg-hover: #5cf09e; --btn-border-hover: #ffffff; }
 html[data-theme="cyberpunk-2077"] .btn-secondary { --btn-fg: var(--cp-cyan); --btn-border: rgba(94, 246, 255, 0.55); }
@@ -597,8 +639,8 @@ html[data-theme="cyberpunk-2077"] .btn-ghost { --btn-border: transparent; }
 
 /* Badges: angled tags (the yellow NEW chip). */
 html[data-theme="cyberpunk-2077"] .badge {
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 /* A badge-button keeps square corners so core's focus outline isn't clipped. */
@@ -606,12 +648,50 @@ html[data-theme="cyberpunk-2077"] .badge:not(.badge-button) {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%);
 }
 html[data-theme="cyberpunk-2077"] .badge-warning { --badge-border: var(--cp-yellow); }
+/* The game's yellow NEW tag: a solid yellow chip with dark caps. */
+html[data-theme="cyberpunk-2077"] .badge-accent { --badge-bg: var(--cp-yellow); --badge-fg: #0b0a0f; --badge-border: var(--cp-yellow); font-weight: 700; }
+
+/* Slider: the value bar. The track rule is drawn on the content box; the
+   thumb is a red slab with its lower-left corner cut, no ring. */
+html[data-theme="cyberpunk-2077"] .slider { background-origin: content-box; }
+html[data-theme="cyberpunk-2077"] .slider::-webkit-slider-thumb {
+  width: 1.4rem;
+  border: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0.55rem 100%, 0 calc(100% - 0.55rem));
+}
+html[data-theme="cyberpunk-2077"] .slider::-moz-range-thumb {
+  width: 1.4rem;
+  border: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0.55rem 100%, 0 calc(100% - 0.55rem));
+}
+html[data-theme="cyberpunk-2077"] .slider.is-vertical::-webkit-slider-thumb { width: var(--slider-thumb-size); height: 1.4rem; }
+html[data-theme="cyberpunk-2077"] .slider.is-vertical::-moz-range-thumb { width: var(--slider-thumb-size); height: 1.4rem; }
+
+/* Switch: the OFF / ON slab pair. The thumb covers one half of a wide
+   track and says which; its word is decoration (alt text ""). */
+html[data-theme="cyberpunk-2077"] .switch { --switch-shift: 100%; }
+html[data-theme="cyberpunk-2077"] .switch:not(button) { width: 4.5em; height: 1.5em; }
+html[data-theme="cyberpunk-2077"] .switch:dir(rtl) { --switch-shift: -100%; }
+html[data-theme="cyberpunk-2077"] button.switch .switch-track { width: 4.5em; height: 1.5em; }
+html[data-theme="cyberpunk-2077"] .switch-thumb {
+  width: calc(50% - 2px);
+  height: calc(100% - 4px);
+  display: grid;
+  place-items: center;
+  color: #0b0a0f;
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+html[data-theme="cyberpunk-2077"] .switch-thumb::before { content: "OFF" / ""; }
+html[data-theme="cyberpunk-2077"] :is(.switch input:checked ~ .switch-track, .switch[aria-checked="true"] .switch-track) .switch-thumb::before { content: "ON" / ""; }
 
 /* Surfaces: the frame sits in the background, so a header pulled to the
    edges must clear the 3px tab; panel titles read as section titles. */
 html[data-theme="cyberpunk-2077"] :is(.panel-header, .modal-header) {
   font-size: 1em;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -672,19 +752,63 @@ html[data-theme="cyberpunk-2077"] .avatar[data-color] { --avatar-bg: color-mix(i
 /* Dimmed states (a dragged column, a disabled tag field) dim less than
    core's 0.5: red on near-black has less luminance headroom than white. */
 html[data-theme="cyberpunk-2077"] .table :is(th, td).is-dragging { opacity: 0.75; }
-html[data-theme="cyberpunk-2077"] .tag-input:has(.tag-input-field:disabled) { opacity: 0.7; }
+html[data-theme="cyberpunk-2077"] .tag-input:has(.tag-input-field:disabled) { opacity: 0.8; }
 
 /* Tabs and nav: tracked caps, cyan for the active one. */
 /* The condensed face makes two-letter tabs narrower than a touch target;
    they keep the target's width, not just its height. */
 html[data-theme="cyberpunk-2077"] :is(.tab, .segmented-item, .pagination-item, .breadcrumb-item, .badge-button) { min-inline-size: var(--tap-min, 24px); }
+/* A dead end (first page, first slide) keeps its shape: a dim red rule and
+   no deeper fade than 0.6, so the control still reads as there. */
+html[data-theme="cyberpunk-2077"] .pagination-item.is-disabled { opacity: 0.6; border-color: var(--cp-row-line); }
+html[data-theme="cyberpunk-2077"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border: 1px solid var(--cp-row-line); border-radius: 0; }
+html[data-theme="cyberpunk-2077"] .carousel::scroll-button(*) { border: 1px solid var(--cp-row-line); border-radius: 0; }
+html[data-theme="cyberpunk-2077"] .carousel::scroll-button(*):disabled { opacity: 0.6; }
 html[data-theme="cyberpunk-2077"] :is(.tab, .nav-item) { font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
 html[data-theme="cyberpunk-2077"] .tabs { border-bottom-color: var(--cp-line); }
 html[data-theme="cyberpunk-2077"] .nav-item.is-active { text-shadow: 0 0 0.6rem rgba(94, 246, 255, 0.55); }
-html[data-theme="cyberpunk-2077"] .list-item.is-active { color: var(--cp-cyan); }
+/* App-bar menus are the game's top tab row: always tracked caps. */
+html[data-theme="cyberpunk-2077"] .app-bar .menubar > li > :is(button, a) { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+/* A side nav's current row is the same solid red plate as a selected list
+   row; cyan stays for the cursor (hover). */
+html[data-theme="cyberpunk-2077"] .nav-rail {
+  --nav-item-bg-active: var(--row-selected-bg);
+  --nav-item-fg-active: var(--row-selected-fg);
+  --nav-rail-marker: var(--cp-red);
+}
+html[data-theme="cyberpunk-2077"] .nav-rail > .nav-item.is-active { text-shadow: none; }
+/* Section header: the only white text in the menus, sentence case on a
+   dark band over a cyan hairline ("First-Person Camera (Mouse)"). */
+html[data-theme="cyberpunk-2077"] .field-group-title {
+  padding: 0.35em 0.6em;
+  background: #16111f;
+  border-bottom-color: rgba(94, 246, 255, 0.45);
+  font-size: 0.95em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+/* Fine print never drops under 13px: Rajdhani's small x-height reads a
+   size smaller than other faces at core's em steps. */
+html[data-theme="cyberpunk-2077"] :is(.field-hint, .field-error, .field-valid) { font-size: max(0.78em, 0.8125rem); }
+html[data-theme="cyberpunk-2077"] .status { font-size: max(0.85em, 0.8125rem); }
+/* Lists: each row is its own framed plate, 4px apart (the database and
+   journal rows); the selected one is the solid red plate. */
+html[data-theme="cyberpunk-2077"] .list:not(.list-cards) { display: grid; gap: 4px; }
+html[data-theme="cyberpunk-2077"] .list:not(.list-cards) > .list-item,
+html[data-theme="cyberpunk-2077"] .list:not(.list-cards) > li > .list-item {
+  background-image: var(--cp-row-frame);
+  background-position: left top, left top, right top, left bottom, right bottom, 0 0;
+  background-size: 100% 1px, 1px 100%, 1px calc(100% - 8px), calc(100% - 8px) 1px, 8px 8px, 100% 100%;
+  background-repeat: no-repeat;
+}
+/* A lit pad is a 30% state tint; the pale red ink keeps its name legible. */
+html[data-theme="cyberpunk-2077"] .pad:is([aria-pressed="true"], .is-playing, :has(> input:checked)),
+html[data-theme="cyberpunk-2077"] .pad[data-mode="hold"]:active { --pad-fg: #ffd2ce; }
 
 /* --- Breach grid tables ---------------------------------------------------- */
 html[data-theme="cyberpunk-2077"] .table {
+  --row-selected-bg: rgba(94, 246, 255, 0.16);
+  --row-selected-fg: var(--cp-cyan);
   --row-hover-bg: var(--cp-breach-band);
   --row-active-bg: var(--cp-breach-band);
   color: var(--cp-breach);
@@ -697,7 +821,21 @@ html[data-theme="cyberpunk-2077"] .table th { font-weight: 700; }
 html[data-theme="cyberpunk-2077"] .table :is(td, th) + :is(td, th) { border-inline-start: 1px solid rgba(207, 236, 88, 0.1); }
 html[data-theme="cyberpunk-2077"] .table th + th { border-inline-start-color: rgba(16, 20, 10, 0.25); }
 html[data-theme="cyberpunk-2077"] .table :is(a, .text-muted) { color: inherit; }
-html[data-theme="cyberpunk-2077"] .table-wrap:has(> .table) { background: var(--cp-brackets); padding: 4px; }
+/* Cyan breach brackets just outside every table's corners, drawn over a
+   bulk bar above it; a .table-wrap pads enough not to clip them. */
+html[data-theme="cyberpunk-2077"] .table { position: relative; }
+html[data-theme="cyberpunk-2077"] .table::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background: var(--cp-brackets);
+}
+html[data-theme="cyberpunk-2077"] .table-wrap:has(> .table) { padding: 6px; }
+/* Form cells keep a usable width; a narrow box scrolls or clips the table
+   rather than squeezing a field below the target size. */
+html[data-theme="cyberpunk-2077"] .table td > :is(.input, .select) { min-inline-size: max(var(--tap-min, 24px), 3.5rem); }
+html[data-theme="cyberpunk-2077"] .table td > .select { min-inline-size: 6rem; }
 /* A stacked table hides its head (core visually-hides the thead on narrow
    boxes); its cards take the breach plate, so the head bar goes unfilled. */
 @media (max-width: 480px) {
@@ -725,11 +863,11 @@ html[data-theme="cyberpunk-2077"] .hud-bar-value { color: var(--hud-bar-fill, va
 /* --- Glitch: hover and alerts, only with full motion ------------------- *
  * A short RGB split and jitter (≤ 0.3s, two steps) when a button is
  * hovered or focused; danger alerts and toasts glitch once on arrival and
- * then flicker briefly every 7s. Nothing carries state by motion alone:
+ * then flicker twice more, 7s apart. Nothing carries state by motion alone:
  * the colours and borders above say the same thing standing still. */
 @media (prefers-reduced-motion: no-preference) {
   html[data-theme="cyberpunk-2077"]:not([data-motion="reduced"]):not([data-motion="none"]) :is(.alert-danger, .toast-danger, .hud-bar.is-low) {
-    animation: cyberpunk-2077-glitch 0.35s steps(3, end) 1, cyberpunk-2077-flicker 7s steps(1, end) 1s infinite;
+    animation: cyberpunk-2077-glitch 0.35s steps(3, end) 1, cyberpunk-2077-flicker 7s steps(1, end) 1s 2;
   }
   html[data-theme="cyberpunk-2077"]:not([data-motion="reduced"]):not([data-motion="none"]) .btn:focus-visible {
     animation: cyberpunk-2077-glitch 0.28s steps(2, end) 1;
@@ -792,6 +930,12 @@ html[data-theme="cyberpunk-2077"] .app-bar {
   box-shadow: 0 2px 0.9rem rgba(255, 95, 88, 0.35);
 }
 html[data-theme="cyberpunk-2077"] .app-bar .nav-brand { font-weight: 700; font-size: 1.2em; color: var(--cp-cyan); }
+/* Phone: the brand keeps its natural width (no forced full line), so a short
+   brand shares its row with the nav; a long one wraps the nav below it. */
+@media (max-width: 480px) {
+  html[data-theme="cyberpunk-2077"] { --app-bar-padding: 0.35rem 0.75rem; }
+  html[data-theme="cyberpunk-2077"] .app-bar > .nav-brand { flex: 0 1 auto; }
+}
 html[data-theme="cyberpunk-2077"] .app-status kbd { font-size: 0.85em; }
 
 /* XL gutters (v5, PLAN.md §3): Night City in the dark beyond the menu.
