@@ -179,6 +179,10 @@ function measure({ tier }) {
     // centred in a fixed box, not text; and an explicit opt-out, data-audit-edge="ignore",
     // on the text's element, an ancestor, or the box itself.
     if (el.closest(EDGE_EXEMPT)) continue;
+    // Visually hidden by clipping (a stacked table's thead, .visually-hidden): nobody sees its text.
+    let hid = false;
+    for (let a = el; a && !hid; a = a.parentElement) hid = /^inset\(50%/.test(cs(a).clipPath);
+    if (hid) continue;
     const b = box(el);
     if (!b || b.matches('[data-audit-edge="ignore"]')) continue;
     range.setStartBefore(texts[0]); range.setEndAfter(texts[texts.length - 1]);
