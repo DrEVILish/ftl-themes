@@ -346,6 +346,19 @@ def check_app_bar(theme, tokens, css, variant=None):
                  f"bar background (floor 4.5:1). Re-point --{tok} in a `.app-bar` "
                  f"scoped block (--app-bar-fg does not reach nav text).")
 
+    # An unfilled .btn-go on the bar (no --go-bg): core gives its label
+    # --go-fg, else the bar text colour (--app-bar-fg, --nav-item-fg, --text).
+    # A filled GO is read against its own fill, which a gradient makes a
+    # job for the rendered audits, not a stop-by-stop token check.
+    if not color_stops(scoped, scoped.get("go-bg", "")):
+        go_fg = resolve(scoped, scoped.get("go-fg") or scoped.get("app-bar-fg")
+                        or scoped.get("nav-item-fg") or "var(--text)")
+        worst = min(contrast(over(go_fg, s), s) for s in stops) if go_fg else 99
+        if worst < 4.5:
+            fail(theme, "contrast",
+                 f"app-bar .btn-go: label {go_fg[:3]} is {worst:.1f}:1 against the "
+                 f"bar (floor 4.5:1). Set --go-fg (or --go-bg) in a `.app-bar` scoped block.")
+
     # The status strip's own text (--app-status-fg) on its background.
     status_stops = [over(s, base) for s in color_stops(
         tokens, tokens.get("app-status-bg") or tokens.get("surface", ""))]
@@ -605,6 +618,19 @@ for path in sorted(glob.glob("core/*.css") + glob.glob("core/components/*.css"))
 # dist/ must match a fresh build — including themes.json, which is
 # deterministic now (its version is a content hash of the bundles; no
 # wall-clock field survives a rebuild).
+# Demo pages: unique ids (popovertarget/for/aria-* resolve to the first), and
+# no text attribute running across lines, the mark of an unclosed quote that
+# swallows the markup after it into an accessible name.
+for path in sorted(glob.glob("*.html")):
+    page = open(path, encoding="utf-8").read()
+    seen = set()
+    for m in re.finditer(r'\sid="([^"]+)"', page):
+        if m.group(1) in seen:
+            failures.append(f"page: [duplicate-id] {path}:{page.count(chr(10), 0, m.start()) + 1} id=\"{m.group(1)}\" is declared twice")
+        seen.add(m.group(1))
+    for m in re.finditer(r'\s(aria-[\w-]+|title|alt|placeholder)="([^"]*\n[^"]*)"', page):
+        failures.append(f"page: [attribute] {path}:{page.count(chr(10), 0, m.start()) + 1} {m.group(1)} spans lines (unclosed quote?)")
+
 subprocess.run(["scripts/build.sh"], check=True, stdout=subprocess.DEVNULL)
 # Compare the fresh worktree build to the index, not `git status`: correctly
 # staged generated files are expected to differ from HEAD before a commit.

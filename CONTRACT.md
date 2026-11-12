@@ -444,13 +444,15 @@ html[data-theme="winxp-luna"] .app-bar {
 }
 ```
 
-Other text sitting straight on the bar — `.btn-secondary`, `.btn-ghost`
-and `.text-muted` — takes `--app-bar-fg`, or `--nav-item-fg` when a theme
-sets no `--app-bar-fg`. Filled buttons keep their own fill.
+Other text sitting straight on the bar — plain text such as a clock,
+`.btn-secondary`, `.btn-ghost`, `.text-muted`, and a `.btn-go` the theme
+hasn't styled (no `--go-fg`/`--go-border`) — takes `--app-bar-fg`, or
+`--nav-item-fg` when a theme sets no `--app-bar-fg`. Filled buttons keep
+their own fill.
 
-`scripts/check.py` measures brand and item text and `--app-bar-fg` against
-every color stop of `--app-bar-bg`, and `--app-status-fg` against the
-status strip, and fails anything under 4.5:1.
+`scripts/check.py` measures brand and item text, `--app-bar-fg` and an
+unfilled `.btn-go`'s label against every color stop of `--app-bar-bg`, and
+`--app-status-fg` against the status strip, and fails anything under 4.5:1.
 
 A `.nav` inside the bar does not paint `--nav-bg`: it sits on the bar. A
 theme that wants a distinct strip inside its bar sets `--app-bar-nav-bg`

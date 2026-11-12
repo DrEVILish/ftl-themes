@@ -302,6 +302,19 @@ changes are called out explicitly here.
   `.scrollspy-nav` get inner padding. Still flagged on blue-future: an unbreakable button label on
   `nesting.html`, a taskbar tray at phone width, and text in a sideways-scrolling nav.
 
+- A `.btn-go` in the app bar no longer vanishes on themes whose bar is painted in the accent
+  (material, windows95, nokia-3310, msdos, weyland-yutani, lego-classic and 30 more theme/variant
+  pairs measured 1.0–3.7:1): unless the theme styles its GO, it takes the bar's text colour.
+  `scripts/check.py` fails an unfilled GO under 4.5:1 on the bar.
+- Plain text in the app bar (a clock, a title) follows the bar instead of the page: it falls back
+  to `--nav-item-fg` when a theme sets no `--app-bar-fg`. lego-classic's bar text goes from 2.5:1
+  to 6.9:1.
+- `liquid-glass`: from 901 to 1100px the sidebar slims from 12rem to 5rem, so the window keeps
+  its width at the narrow end of the desktop tier.
+- `components.html`: the text input's accessible name was 50 lines of tag-stripped page text (an
+  unclosed `aria-label`); `fleet.html` declared the `pin-VAN-12` popover twice.
+  `scripts/check.py` now fails duplicate ids and text attributes that span lines in the demo pages.
+
 ### Removed
 - `data-eq-show="pre"`: superseded by the `data-rta-view` radios.
 

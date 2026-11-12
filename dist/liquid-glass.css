@@ -3232,6 +3232,14 @@ pre code { padding: 0; background: none; border-radius: 0; }
   --btn-border-hover: var(--app-bar-text);
 }
 .app-bar :is(.btn-tertiary, .btn-ghost) { --btn-border: transparent; }
+/* A GO button on the bar: core's GO is an outlined accent label, which on a
+   bar painted in the accent reads at 1:1. Unless the theme styles its GO
+   (--go-fg, --go-border), it takes the bar's text colour like the other
+   unfilled buttons. A theme that fills it (--go-bg) also sets --go-fg. */
+.app-bar .btn-go {
+  --btn-fg: var(--go-fg, var(--app-bar-text));
+  --btn-border: var(--go-border, var(--app-bar-text));
+}
 
 /* Screen-reader-only content — the standard visually-hidden-but-announced
    clip-rect pattern, not display:none (which screen readers also skip). */
@@ -18413,7 +18421,9 @@ html[data-motion="reduced"] :is(.table-wrap > .table, .table.is-frozen-1, .table
   min-width: 0;
   padding: var(--app-bar-padding, 0.6rem 1rem);
   background: var(--app-bar-bg, var(--nav-bg, var(--surface)));
-  color: var(--app-bar-fg, inherit);
+  /* Plain text on the bar (a clock, a title) follows the bar, not the page:
+     --app-bar-fg, else --nav-item-fg, which check.py holds to 4.5:1 here. */
+  color: var(--app-bar-fg, var(--nav-item-fg, inherit));
   border-bottom: var(--app-bar-rule-width, 1px) solid var(--app-bar-rule, var(--border));
   border-radius: var(--app-bar-radius, 0);
   min-height: var(--app-bar-height, auto);
@@ -19291,6 +19301,12 @@ html[data-theme="liquid-glass"] .app-rail {
  * brand and actions on the toolbar's first line and the nav on a second,
  * sideways-scrolling line, so the wrapped capsule becomes a 26px rounded
  * rectangle. */
+/* The narrow end of the desktop tier: a 12rem sidebar would leave the window
+   too little width, so it slims to a strip that still holds the traffic
+   lights and the selected-row lens. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  html[data-theme="liquid-glass"] { --app-columns: 5rem minmax(0, 1fr); }
+}
 @media (max-width: 900px) {
   html[data-theme="liquid-glass"] .app-rail { display: none; }
   html[data-theme="liquid-glass"] { --app-padding: 0.5rem; --app-gap: 0.5rem; --app-bar-radius: 26px; }
