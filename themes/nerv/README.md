@@ -16,20 +16,26 @@ is actually wrong.
    accent, the border colour, the heading colour. It marks that this
    terminal is a war-room fixture, not a calm state.
 2. **Signal red (`#e0001b`) is reserved for danger alone**, and gets the one decorative
-   flourish in the theme: diagonal hazard stripes on destructive actions.
+   flourish in the theme: diagonal hazard stripes on destructive actions
+   and as the 6px tape edge of danger alerts.
 3. **Sharp, condensed, uppercase.** `--radius: 0`, carried to badges,
-   chips, switches and avatars (radios stay round); headings, buttons
-   and frame headers in the vendored Antonio Bold, a tight
-   condensed bold standing in for NERV's compressed readout sans. Body
-   text stays in a plain Helvetica/Arial stack.
+   chips, switches, avatars, slider thumbs, lamps and carousel dots
+   (radios stay round); headings, buttons, frame headers, tabs, table
+   heads, badges, top-bar menus and KPI numerals in the vendored Antonio
+   Bold, a tight condensed bold standing in for NERV's compressed readout
+   sans. Labels are uppercase. Body text stays in a plain Helvetica/Arial
+   stack for legibility.
 4. **Thick rules.** 2–3px borders and bars, not hairlines — a bunker's
    markings are painted, not printed.
 
 ## Signature details
 
+- Every panel header carries a black flat-top hexagon before its label,
+  the MAGI hex brought into the shell at every width.
 - Danger buttons alone get a `repeating-linear-gradient(135deg, ...)`
-  hazard-stripe fill instead of a flat color — the theme's single
-  decorative flourish, reserved exclusively for that one state.
+  hazard-stripe fill instead of a flat color, and danger alerts a 6px
+  hazard-tape edge — the theme's single decorative flourish, reserved
+  for the danger state.
 - The active-row marker is signal red (`--danger`, about 4:1 on the
   black) even though every other structural accent in the theme is
   orange — the one place danger's color, not orange, gets to mark something.
@@ -38,6 +44,10 @@ is actually wrong.
   label.
 - Headings are condensed bold uppercase set tight (`0.04em`), not airy
   wide tracking.
+- Inactive windows dim to an unlit dark strip with an orange label rather
+  than a faded orange.
+- Confirm (success) buttons are outlined in phosphor green, not filled:
+  green stays a status signal inside an orange-forward palette.
 
 ## Layout
 
@@ -50,7 +60,7 @@ into that frame.
 
 - Orange used sparingly, as an accent among others → this palette runs
   orange-forward everywhere.
-- Hazard stripes anywhere other than a destructive action.
+- Hazard stripes anywhere other than a destructive action or danger alert.
 - Thin, quiet borders — NERV's markings are bold.
 - Wide, airy tracked headings → NERV type is condensed and tight.
 
@@ -62,7 +72,7 @@ Antonio Bold (SIL OFL 1.1, already in `assets/fonts/`) for display type.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.2:1 against the black, deliberately quiet).
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.4:1 against the black, deliberately quiet).
 
 ## Icons
 

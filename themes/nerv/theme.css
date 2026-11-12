@@ -26,7 +26,7 @@ html[data-theme="nerv"] {
   --border: #ff6600;
   --hairline: #3a2200;
   --text: #f2f2f2;
-  --muted: #d08a3a;
+  --muted: #e0a060;  /* dimmed orange, not tan: 9:1 on --bg */
   --accent: #ff6600;
   --accent-text: #ff6600;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #ff9640;
@@ -58,7 +58,6 @@ html[data-theme="nerv"] {
   --input-border: var(--accent);
   --focus: var(--accent);
   --panel-border-width: 2px;
-  --panel-shadow: inset 0 0 0 1px rgba(255, 102, 0, 0.15);
   --table-head-bg: var(--accent);
   --table-head-fg: #000;
   --row-selected-bg: rgba(224, 0, 27, 0.2);
@@ -75,7 +74,6 @@ html[data-theme="nerv"] {
   --app-status-rule: var(--accent);
 
   /* Frame headers reverse out like the table head: orange bar, black text. */
-  --panel-header-bg: var(--accent);
   --panel-header-fg: #000;
   --modal-header-bg: var(--accent);
   --modal-header-fg: #000;
@@ -91,9 +89,39 @@ html[data-theme="nerv"] {
   --fab-radius: 0;
   --btn-icon-radius: 0;
 
-  /* Content-box slider: the track is --slider-bg, so give it a dim orange
-     that reads against the black (about 2.4:1); the fill stays --accent. */
-  --slider-bg: #6a2c00;
+  /* Content-box slider: the track is --slider-bg, a dim orange at 3.2:1
+     on the black (WCAG 1.4.11); the square thumb stays --accent. */
+  --slider-bg: #a04400;
+  --slider-thumb-radius: 0;
+  --lamp-radius: 0;
+
+  /* Labels, tabs and table heads read as stencilled readouts. */
+  --label-transform: uppercase;
+  --label-tracking: 0.04em;
+
+  /* Inactive windows: an unlit strip with an orange label (6:1), not the
+     core desaturate filter, which turns the orange into off-palette tan. */
+  --window-header-filter-inactive: none;
+  --window-header-bg-inactive: #2a1000;
+  --window-header-fg-inactive: var(--accent);
+
+  /* Frame headers carry the MAGI hex: a black flat-top hexagon before the
+     label, painted into the orange strip so it adds no box. */
+  --panel-header-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='25,6 75,6 100,50 75,94 25,94 0,50'/%3E%3C/svg%3E") no-repeat var(--surface-pad, 1rem) 50% / 0.8em 0.8em, var(--accent);
+  --panel-header-pad: var(--space-xs) var(--surface-pad, 1rem) var(--space-xs) calc(var(--surface-pad, 1rem) + 1.2em);
+}
+
+/* Square carousel dots; the vertical fader's track is a narrow centred bar
+   (core's vertical padding runs along the length, so the content box would
+   otherwise paint the full tap width). The box keeps its --tap-min width. */
+html[data-theme="nerv"] .carousel-nav > a { border-radius: 0; }
+html[data-theme="nerv"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 3px), #a04400 0 calc(50% + 3px), transparent 0);
+}
+/* Phones: the fallback mono is wide enough that the tray (which cannot
+   shrink) runs past the status bar's padding; trim its inline padding. */
+@media (max-width: 480px) {
+  html[data-theme="nerv"] .taskbar-tray { padding-inline: 0.25em; }
 }
 
 html[data-theme="nerv"] .app-status { border-top-width: 3px; }
@@ -108,7 +136,7 @@ html[data-theme="nerv"] h3 {
   color: var(--accent);
 }
 /* Condensed stencil voice on the controls and frame headers. */
-html[data-theme="nerv"] :is(.btn, .panel-header, .modal-header) {
+html[data-theme="nerv"] :is(.btn, .panel-header, .modal-header, .tab, .table th, .badge, .stat-value, .app-bar .menubar > li > [role="menuitem"]) {
   font-family: var(--font-display);
   font-weight: 700;
 }
@@ -132,6 +160,23 @@ html[data-theme="nerv"] .btn-danger {
   background-image: repeating-linear-gradient(135deg, var(--danger) 0 10px, #000 10px 20px);
   --btn-border: var(--danger);
 }
+/* Danger alerts carry the same tape as a 6px edge at the start. */
+html[data-theme="nerv"] .alert-danger {
+  background-image: repeating-linear-gradient(135deg, var(--danger) 0 6px, #000 6px 12px);
+  background-size: 6px 100%;
+  background-repeat: no-repeat;
+  padding-inline-start: calc(1em + 6px);
+}
+/* Confirm is an outlined phosphor-green button, not a solid green slab:
+   the palette stays orange-forward, green stays a status signal. */
+html[data-theme="nerv"] .btn-success {
+  --btn-bg: #111;
+  --btn-fg: var(--success);
+}
+html[data-theme="nerv"] .app-bar .menubar > li > [role="menuitem"] {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * solid orange columns and a solid light-orange highlight (stripes stay on
@@ -145,12 +190,12 @@ html[data-theme="nerv"] {
 /* XL gutters (v5, PLAN.md §3): the MAGI's hex field. A triangle lattice
    (three 1px line sets at 0/60/120 degrees, so its cells read as the
    hexagon motif on NERV's command screens) in dim hazard orange on the
-   bunker black, about 1.2:1 against --bg. Still: no motion. */
+   bunker black, about 1.4:1 against --bg. Still: no motion. */
 html[data-theme="nerv"] {
   --app-gutter-art:
-    repeating-linear-gradient(0deg, rgba(255, 102, 0, 0.15) 0 1px, transparent 1px 52px),
-    repeating-linear-gradient(60deg, rgba(255, 102, 0, 0.15) 0 1px, transparent 1px 52px),
-    repeating-linear-gradient(120deg, rgba(255, 102, 0, 0.15) 0 1px, transparent 1px 52px),
+    repeating-linear-gradient(0deg, rgba(255, 102, 0, 0.25) 0 1px, transparent 1px 52px),
+    repeating-linear-gradient(60deg, rgba(255, 102, 0, 0.25) 0 1px, transparent 1px 52px),
+    repeating-linear-gradient(120deg, rgba(255, 102, 0, 0.25) 0 1px, transparent 1px 52px),
     var(--bg);
 }
 
@@ -161,3 +206,7 @@ html[data-theme="nerv"] :is(.panel, .card, .modal, .drawer) .panel {
   --panel-border-width: 1px;
   --panel-border: #8a3a00;
 }
+
+/* The condensed table heads narrow a phone-width table enough to bring its
+   shrunken in-cell number fields on screen; keep them a full tap wide. */
+html[data-theme="nerv"] .table td > .input { min-inline-size: var(--tap-min); }
