@@ -20,9 +20,9 @@
  *
  * Note on fonts: SF Pro / SF Mono are Apple-licensed and cannot be
  * vendored. The stack names them first (-apple-system resolves to SF on
- * Apple platforms); elsewhere Helvetica Neue or the system UI face
- * renders. No free face is vendored yet (Inter would be the closest; it
- * needs adding to assets/fonts/ first), so none is named.
+ * Apple platforms); elsewhere Inter renders (OFL, vendored as a Latin
+ * variable subset, wght 400-700 with the opsz axis, assets/fonts/NOTICE.md),
+ * the closest open grotesque to SF Pro's proportions.
  *
  * Note on refraction: real Liquid Glass bends the content at its rim (a
  * lens). CSS can't do that portably — an SVG feDisplacementMap in
@@ -31,6 +31,13 @@
  * blur + saturate instead. Without backdrop-filter, surfaces fall back to
  * their translucent white fill, still legible.
  */
+
+@font-face {
+  font-family: "Inter";
+  src: url("assets/fonts/InterVariable-Latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
 
 html[data-theme="liquid-glass"] {
   --motion-leave: shatter;
@@ -69,7 +76,7 @@ html[data-theme="liquid-glass"] {
   --on-danger: #ffffff;
   --on-success: #06240f;
   --radius: 14px;
-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", system-ui, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
   --font-mono: "SF Mono", ui-monospace, Menlo, "Cascadia Mono", monospace;
   /* The specular highlight: the white light along every glass rim. */
   --flare: #ffffff;
@@ -99,9 +106,13 @@ html[data-theme="liquid-glass"] {
     inset 0 0 0 0.5px rgba(255, 255, 255, 0.6),
     inset 0 0 8px rgba(255, 255, 255, 0.4);
   --lg-lift: 0 0 0 0.5px rgba(0, 0, 0, 0.11), 0 6px 18px rgba(0, 20, 60, 0.14);
+  /* What the big floating panes (sidebar, tab bar) pick up from the
+     wallpaper through the window: a faint blue-to-peach cast. */
+  --lg-pickup: linear-gradient(105deg, rgba(120, 170, 255, 0.1), rgba(255, 200, 170, 0.08));
   --lg-lift-high: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 18px 48px rgba(0, 20, 60, 0.24);
   /* The selection lens: #e1e1e3 over the reference #ededed bar, as sampled from the Phone tab bar. */
   --lg-lens: rgba(120, 120, 128, 0.18);
+  --lg-edge-fog: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 55%, rgba(255, 255, 255, 0.55));
   --lg-sheet-radius: 28px;
 
   /* --- Controls: capsules of clear glass ------------------------------- */
@@ -299,7 +310,7 @@ html[data-theme="liquid-glass"] {
   /* An in-window sidebar (.nav-rail) is the Tahoe sidebar: a rounded pane
      of clear glass with no divider, the selected row a grey lens with a
      blue label and no edge marker. */
-  --nav-rail-bg: var(--lg-clear);
+  --nav-rail-bg: var(--lg-pickup), var(--lg-clear);
   --nav-rail-rule-width: 0;
   --nav-rail-marker: transparent;
 
@@ -322,10 +333,13 @@ html[data-theme="liquid-glass"] {
   --readout-fg: var(--accent-text);
   --readout-border: transparent;
   --readout-radius: 16px;
-  /* Room inside the rounded ends: text clears the pill's edge by 4px+. */
-  --readout-padding: max(0.2em, 5px) max(0.5em, 10px);
+  /* Room inside the rounded ends: text (with its ascent and descent, which
+     overhang core's 1.1 line height) clears the pill's edge by 4px+. */
+  --readout-padding: max(0.25em, 6px) max(0.5em, 10px);
   --readout-font: var(--font);
   --readout-weight: 600;
+  /* Finder's selected label: a rounded highlight, not a square block. */
+  --desktop-icon-label-radius: 5px;
   --lamp-radius: 50%;
   --lamp-border: rgba(255, 255, 255, 0.7);
   --meter-radius: 999px;
@@ -497,7 +511,9 @@ html[data-theme="liquid-glass"] .table tr > td:is(.is-dirty, .is-saving, .htmx-r
 
 /* Log rows sit inside the rounded console, their level bars rounded too. */
 html[data-theme="liquid-glass"] .log { padding-inline: 6px; }
-html[data-theme="liquid-glass"] .log-line { border-radius: 6px; }
+/* The level bar keeps a straight edge: only the trailing corners round,
+   so a 3px bar never curls into a "(" around the 6px corner. */
+html[data-theme="liquid-glass"] .log-line { border-radius: 2px 6px 6px 2px; }
 
 /* Grouped toolbar buttons share one capsule of glass (Safari's back/
    forward pair, Preview's zoom cluster). */
@@ -615,9 +631,25 @@ html[data-theme="liquid-glass"] .tabs {
   scrollbar-width: none;
 }
 html[data-theme="liquid-glass"] .tabs > .tab:focus-visible { outline-offset: -3px; }
+/* A capsule that overflows fades out at its trailing end (the iOS scroll
+   edge), so a cut label reads as "more to scroll", not as clipped text.
+   Inert where the capsule fits: a scroll timeline with no range is
+   inactive, so no mask applies. Leading edge stays crisp. */
+@keyframes lg-scroll-fade {
+  0%, 96% { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  100% { -webkit-mask-image: none; mask-image: none; }
+}
+@supports (animation-timeline: scroll()) {
+  /* shortcut: fades the right edge only; RTL capsules would need the mirrored gradient. */
+  html[data-theme="liquid-glass"]:not([dir="rtl"]) :is(.tabs:not([aria-orientation="vertical"]), :is(.toggle-group, .segmented):not(.is-block, .is-stacked)) {
+    animation: lg-scroll-fade linear both;
+    animation-timeline: scroll(self inline);
+    scroll-padding-inline: 6px;
+  }
+}
 html[data-theme="liquid-glass"] .tab { border: 0; padding: 0.45em 1.1em; font-weight: 500; flex-shrink: 0; white-space: nowrap; }
 html[data-theme="liquid-glass"] .tab.is-active { border-bottom: 0; font-weight: 600; }
-html[data-theme="liquid-glass"] .tabs[aria-orientation="vertical"] { border-radius: 22px; padding: 6px; }
+html[data-theme="liquid-glass"] .tabs[aria-orientation="vertical"] { border-radius: 22px; padding: 6px; flex-shrink: 0; }
 html[data-theme="liquid-glass"] .tabs[aria-orientation="vertical"] > .tab { border-radius: 14px; }
 
 /* The scrollspy nav: the same floating capsule, no rule under it. */
@@ -710,6 +742,15 @@ html[data-theme="liquid-glass"] .table tbody tr.is-selected td:last-child,
 html[data-theme="liquid-glass"] .table tbody tr:hover td:last-child { border-start-end-radius: 12px; border-end-end-radius: 12px; }
 
 html[data-theme="liquid-glass"] .badge { font-weight: 600; }
+/* Money and time columns: SF Pro with tabular figures, as Numbers and
+   Finder set them; logs and code keep the mono. */
+html[data-theme="liquid-glass"] .table td.mono { font-family: var(--font); font-variant-numeric: tabular-nums; }
+/* Page numbers: 32px glass circles (iOS 26 circular controls are 28-32px),
+   the digit well inside the edge. */
+html[data-theme="liquid-glass"] .pagination-item { min-inline-size: max(2.35em, var(--tap-min)); block-size: 2.35em; }
+/* A truncating list row ellipsizes its text: as a flex box it could not,
+   and the label ran into the row's rounded edge. */
+html[data-theme="liquid-glass"] .list-item.text-truncate { display: block; }
 /* Apple's numeric voice is SF Pro with tabular figures, not a monospace. */
 html[data-theme="liquid-glass"] :is(.stat-value, .card-title.mono, .readout-lg) {
   font-family: var(--font);
@@ -751,7 +792,7 @@ html[data-theme="liquid-glass"] .nav-rail > .nav-item { border-inline-start: 0; 
 /* Group boxes are Apple form sections: no etched frame, the legend is the
    section header and the inset list below is the group. */
 html[data-theme="liquid-glass"] fieldset.field { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
-html[data-theme="liquid-glass"] .readout { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+html[data-theme="liquid-glass"] .readout { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.25; }
 html[data-theme="liquid-glass"] .avatar { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); }
 
 /* Focus: the macOS keyboard ring — a soft systemBlue halo hugging the
@@ -790,7 +831,7 @@ html[data-theme="liquid-glass"] {
   /* The window pane: a white scrim heavy enough that body and muted text
      hold their contrast over the darkest wallpaper blue, light enough that
      the wallpaper still tints through it. */
-  --app-main-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.84));
+  --app-main-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.8));
   /* The window reaches up under the toolbar by the toolbar's own footprint
      (its 0.6rem margin + 3rem), then pads that back plus 1rem. A bar that
      wraps or grows pushes the window's row down, so content still starts
@@ -798,7 +839,7 @@ html[data-theme="liquid-glass"] {
   --lg-bar-reach: 3.6rem;
   --app-main-padding: calc(var(--lg-bar-reach) + 1rem) 1.25rem 5rem;
   --app-main-radius: 28px;
-  --app-status-bg: var(--lg-clear);
+  --app-status-bg: var(--lg-pickup), var(--lg-clear);
   --app-status-fg: var(--text);
   --app-status-rule: transparent;
   --app-status-radius: 999px;
@@ -875,6 +916,27 @@ html[data-theme="liquid-glass"] .app-bar::before {
     radial-gradient(circle 6px at 46px 6px, #28c840 5.5px, rgba(0, 0, 0, 0.12) 5.5px 6px, transparent 6.5px);
 }
 html[data-theme="liquid-glass"] .desktop > .app-bar::before { content: none; }
+/* Desktop: the Tahoe toolbar is not one long pill. The window's own top
+   edge carries the bare traffic lights and title, and the controls sit
+   on it in separate small glass capsules (Safari: sidebar, back/forward,
+   address field, share group). The bar keeps only a soft scroll-edge fog
+   of the pane colour, so content scrolling under it never collides with
+   the bare title. */
+@media (min-width: 901px) {
+  html[data-theme="liquid-glass"] { --app-bar-bg: var(--lg-edge-fog); --app-bar-radius: 20px; }
+  html[data-theme="liquid-glass"] .app-bar {
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  html[data-theme="liquid-glass"] .app-bar > nav,
+  html[data-theme="liquid-glass"] .app-bar .btn-ghost.btn-icon {
+    border-radius: 999px;
+    background-image: var(--lg-clear);
+    box-shadow: var(--lg-rim), var(--lg-lift);
+  }
+  html[data-theme="liquid-glass"] .app-bar > nav { flex: 0 1 auto; padding-inline: 4px; }
+}
 /* Glass inside glass: a control already sitting in a blurred bar has
    nothing new behind it to blur, so it skips its own backdrop pass. */
 html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .toolbar, .tabs, .transport) :is(.btn, .btn-close, .btn-group, .tabs, .kbd, .taskbar-start) {
@@ -906,6 +968,14 @@ html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .toolbar, .tabs, .tra
      backdrop pass. Bars, menus, sheets and toasts keep theirs. */
   html[data-theme="liquid-glass"] .app-main :is(.panel, .card, .btn, .btn-close, .btn-group, .tabs, .toolbar, .kbd, .alert, .transport) { -webkit-backdrop-filter: none; backdrop-filter: none; }
   html[data-theme="liquid-glass"] .app-bar { margin: 0; top: 0.5rem; padding: 0.4rem 0.5rem 0.4rem 0.9rem; }
+  /* The two sticky bars blur on every scroll frame: a smaller radius and
+     no brightness() keep that pass cheap on phones. */
+  html[data-theme="liquid-glass"] :is(.app-bar, .app-status) {
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    backdrop-filter: blur(10px) saturate(160%);
+  }
+  /* Phone tab capsules fit four tabs without a clipped last label. */
+  html[data-theme="liquid-glass"] .tabs:not([aria-orientation="vertical"]) > .tab { padding-inline: 0.85em; }
   html[data-theme="liquid-glass"] .app-bar .nav { flex: 1 0 100%; margin-block: 0 -2px; }
 }
 @media (min-width: 481px) and (max-width: 900px) {
@@ -1010,7 +1080,9 @@ html[data-theme="liquid-glass"][data-variant="dark"] {
   --readout-bg: rgba(118, 118, 128, 0.18);
   --meter-track: rgba(120, 120, 128, 0.36);
   --list-bg: rgba(44, 44, 46, 0.6);
-  --app-main-bg: linear-gradient(180deg, rgba(30, 30, 34, 0.86), rgba(24, 24, 28, 0.82));
+  --app-main-bg: linear-gradient(180deg, rgba(28, 30, 40, 0.8), rgba(22, 24, 34, 0.76));
+  --lg-pickup: linear-gradient(105deg, rgba(60, 140, 255, 0.14), rgba(40, 200, 220, 0.08));
+  --lg-edge-fog: linear-gradient(180deg, rgba(28, 30, 40, 0.92) 55%, rgba(28, 30, 40, 0.5));
   --message-bg: #3a3a3c;
   --message-fg: #f5f5f7;
   --message-own-bg: #0a6ce0;
@@ -1047,11 +1119,15 @@ html[data-theme="liquid-glass"][data-variant="dark"] .avatar { box-shadow: 0 0 0
     --lg-clear: var(--surface);
     --lg-clear-hover: var(--surface-2);
     --lg-regular: var(--surface);
+    --lg-pickup: linear-gradient(transparent, transparent);
+    --lg-edge-fog: var(--surface);
   }
 }
 html[data-theme="liquid-glass"][data-contrast="high"] {
   --lg-clear: var(--surface);
   --lg-regular: var(--surface);
+  --lg-pickup: linear-gradient(transparent, transparent);
+  --lg-edge-fog: var(--surface);
 }
 
 @media print {

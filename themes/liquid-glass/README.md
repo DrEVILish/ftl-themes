@@ -40,7 +40,9 @@ touching the edge of the screen.
    has moving, colourful content behind it. Glass over a flat colour is just a grey pill.
 5. **Legibility beats transparency.** Small controls use the *clear*
    weight; anything carrying body text uses the *regular* weight (a 70–80%
-   white scrim), and the window pane under the content is 84–88% white,
+   white scrim), and the window pane under the content is 80–84% white
+   (enough for the wallpaper to tint it; `--muted` still measures 4.7:1
+   over the darkest light-wallpaper blue `#0a2fa8`),
    blurred without the saturate boost (unblurred up to 900px, where only the soft wallpaper is behind it), so the content layer reads as white
    and `--muted` text holds 4.5:1 over the darkest wallpaper blue. Headings
    that can land on the wallpaper carry a faint white halo. Text never sits
@@ -96,7 +98,11 @@ touching the edge of the screen.
   padding, because core's logical padding lands top and bottom under
   `writing-mode: vertical-lr`. The switch never flex-shrinks in a row.
 - The traffic lights (`#ff5f57 #febc2e #28c840`, 12px discs with a 0.5px
-  ring) sit at the start of the toolbar, as in Safari on Tahoe. Desktop
+  ring) sit bare at the start of the toolbar, as in Safari on Tahoe. Above
+  900px the toolbar is not one long pill: it is a soft scroll-edge fog of
+  the pane colour (`--lg-edge-fog`, no rim or shadow), and its controls
+  float on it as separate glass capsules (the nav, the theme picker, the
+  search button, icon buttons as glass circles). Desktop
   windows, and any `.modal` window with `.btn-min` / `.btn-max`, get real
   ones: close, minimise and zoom at the start of a clear
   title bar, glyphs only on hover, each in a `--tap-min` hit box; the title
@@ -109,13 +115,30 @@ touching the edge of the screen.
   the screen scrolls sideways.
 - Editable table cells (dirty, saving, saved, editing, invalid) are 8px
   rounded lenses, the dirty bar curving with the corner; `.log` rows sit
-  6px inside the rounded console so their level bars are not clipped.
+  6px inside the rounded console so their level bars are not clipped;
+  a log row rounds only its trailing corners (2px 6px 6px 2px), so the
+  3px level bar stays straight instead of curling into a "(".
+- The sidebar (`.nav-rail`) and the floating tab bar pick up a faint
+  blue-to-peach cast from the wallpaper (`--lg-pickup`, about 8-10%
+  alpha) over the clear glass; reduced transparency and high contrast
+  drop it.
+- A tab capsule or segmented track too wide for the screen fades out over
+  its trailing 28px (a scroll-driven mask, so it is inert when it fits),
+  reading as "more to scroll" rather than a clipped label.
+- Readouts are 16px-radius grey pills with `max(0.25em, 6px)` block
+  padding and a 1.25 line height, so digits clear the pill edge by 4px+.
+- A vertical tab capsule keeps its width beside a form; a truncating list
+  row (`.list-item.text-truncate`) is a block so its label ellipsizes
+  instead of running into the row edge.
+- Pagination items are 2.35em (about 32px) circles, `--tap-min` on touch; selected desktop
+  icon labels are 5px-rounded highlights, as in Finder.
 - Section headers (`.field-group-title`) are sentence-case semibold grey
   with no rule under them. Only tiny stat labels stay uppercase.
 - Alerts and toasts are Lock Screen notifications: rounded glass with the
   rim, no coloured stroke; a leading status dot carries the meaning.
 - Numbers (`.stat-value`, `.readout-lg`) are SF Pro bold with tabular
-  figures, not the monospace.
+  figures, not the monospace; so are money and time table columns
+  (`.table td.mono`). Logs and code keep SF Mono.
 - The page is a CSS sketch of the Tahoe wallpaper: pale sand top-left,
   deep blue sweeping waves, thin white crest arcs.
 
@@ -124,7 +147,8 @@ touching the edge of the screen.
 A macOS Tahoe window over the desktop, standing 1.5rem off the screen
 edge above 900px so the wallpaper frames it. The content **window** is one large
 frosted pane (radius 28px) that spans all three shell rows; the capsule
-**toolbar** (traffic lights at its start) floats inside its top edge and
+**toolbar** (bare traffic lights and title at its start, its controls as
+separate glass capsules) floats inside its top edge and
 the capsule **tab bar** (`.app-status`) floats centred inside its bottom
 edge, only as wide as its items. Both bars are sticky, so content scrolls
 under them. The decorative `.app-rail` is not drawn: it is empty by
@@ -137,7 +161,9 @@ to two lines (as a 26px rounded rectangle).
 
 - `dark` — the same material over the Tahoe night wallpaper: smoked glass
   (`rgba(30–60,…,0.4–0.5)`), dimmer cool rims, dark HIG label colours
-  (`#f5f5f7` / `#a1a1a6`, accent text `#6cb4ff`, light enough for 4.5:1 on the grey lens). It declares
+  (`#f5f5f7` / `#a1a1a6`, accent text `#6cb4ff`, light enough for 4.5:1 on the grey lens). The window pane is a
+  76–80% smoked navy (`rgba(28,30,40,…)`), so the night wallpaper's blue
+  shows through, and the floating bars take a blue-teal pickup. It declares
   `color-scheme: dark` so native controls follow it.
 
 ## Tell-tales of an inauthentic result
@@ -160,8 +186,9 @@ to two lines (as a 26px rounded rectangle).
   menus, sheets) to "fix" a perf report; use
   `prefers-reduced-transparency`, which this theme already honours. The
   one exception is the phone/tablet window pane, which is content layer.
-- **Don't lower the white scrims** on `--lg-regular` or `--app-main-bg`;
-  they are what keeps `--muted` at 4.5:1 over the dark wallpaper.
+- **Don't lower the white scrims** on `--lg-regular` or `--app-main-bg`
+  below their current 70% / 80%; they are what keeps `--muted` at 4.5:1
+  over the dark wallpaper.
 - **Don't set `--accent` to `#0088ff`** (iOS 26 systemBlue): white text
   on it is 3.5:1. It is used where no text sits on it (focus, progress,
   the switch caret, `--accent-2`).
@@ -169,12 +196,13 @@ to two lines (as a 26px rounded rectangle).
 ## Typography
 
 `--font` is `-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro",
-"Helvetica Neue", system-ui, sans-serif`; `--font-mono` starts with
-`"SF Mono", ui-monospace, Menlo`. SF Pro is Apple-licensed and not
-vendored, so it renders only on Apple platforms; elsewhere Helvetica Neue
-or the system UI face stands in. Inter (OFL) would be the closest free
-stand-in, but it is not vendored in `assets/fonts/` yet, so the stack does
-not name it. Body text runs at -0.012em, as
+Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif`;
+`--font-mono` starts with `"SF Mono", ui-monospace, Menlo`. SF Pro is
+Apple-licensed and not vendored, so it renders only on Apple platforms;
+elsewhere Inter stands in: the closest open grotesque to SF Pro, vendored
+as `assets/fonts/InterVariable-Latin.woff2` (OFL, a 45 KB Latin subset of
+Inter 4.0's variable font, wght 400-700 with the opsz axis, so large
+titles get Inter Display's tighter cut; see `assets/fonts/NOTICE.md`). Body text runs at -0.012em, as
 apple.com sets SF Text (code keeps normal spacing). Headings are bold with
 slight negative tracking (the large-title voice); table headers are sentence-case
 semibold, never uppercase.

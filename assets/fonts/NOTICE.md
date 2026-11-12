@@ -179,9 +179,25 @@ files are vendored unmodified.
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
   Light headings)
 
+## Inter
+
+- **Family:** Inter (vendored: one variable file, `InterVariable-Latin.woff2`,
+  wght 400-700 and opsz 14-32)
+- **Designer:** Rasmus Andersson and the Inter Project Authors
+- **License:** SIL Open Font License, version 1.1, no Reserved Font Name
+  (verified in the font's own `name` table, IDs 0 and 13: "Copyright 2016
+  The Inter Project Authors", "licensed under the SIL Open Font License,
+  Version 1.1")
+- **Source:** Inter 4.0 (`InterVariable.woff2`, https://github.com/rsms/inter),
+  instanced to wght 400-700 and subset to Latin-1 plus general punctuation
+  with fontTools; OFL permits modified copies, and with no Reserved Font
+  Name the family name is kept
+- **Used by:** `liquid-glass` (all UI text off Apple platforms; stand-in
+  for SF Pro)
+
 ## Bottom line
 
-Twenty-one files, fifteen families: thirteen SIL OFL 1.1, Bedstead CC0 and Px437
+Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
