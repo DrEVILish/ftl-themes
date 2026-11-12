@@ -16,9 +16,11 @@ reproduced.
 
 ## Core values
 
-1. **Every panel is a bracket.** A rounded 3px "[" in the accent runs down
-   the left edge (`--panel-shadow: inset 3px 0 0`, `--panel-radius:
-   0.7rem 0 0 0.7rem`); the right side stays open.
+1. **Every panel is a bracket.** A rounded 3px "[" in the accent, with
+   short curved returns at top and bottom, stands just off the left edge
+   of panels, cards, lists and alerts (a `::before`; `--panel-radius:
+   0.7rem 0 0 0.7rem`). Modals, menus and popovers carry it as a 3px inset.
+   No hairline closes the other three sides.
 2. **Names sit on pill tabs.** A panel header's first child, the modal
    title and the app brand are filled accent tabs with dark text, like
    "TAG.NM" or "SUM EVA".
@@ -27,9 +29,11 @@ reproduced.
    Share Tech Mono for data and inputs.
 4. **Controls are outlined pills.** Buttons and the segmented control are
    1.5px outlined pills ("ENG HUL FRA"); primary is the filled pill.
-5. **Values live in dark boxes.** `.readout` is a small darker-blue value
-   box with glowing cyan digits ("986", "030").
-6. **The glass has a grid.** The page background is navy with a faint
+5. **Values live in dark boxes.** `.readout` is a small value box darker
+   than the glass with glowing cyan digits ("986", "030"); KPI values
+   (`.stat-value`) use the same light glowing digits, never faux bold.
+6. **The glass has a grid.** The page background is mid-navy lit glass
+   (`--bg: #072235`, panels a step lighter at `#0d3049`) with a faint
    lattice of dashes and crosses.
 
 ## Signature details
@@ -39,7 +43,9 @@ reproduced.
 - Orange edge codes ("0034529", "963409IN_CHY0432") running up the
   empty rail, drawn in CSS.
 - A thin cyan rule under the top bar; the brand is a pill tab.
-- Micro-caps status line in the label face ("ENDO SY OS / MUTHUR").
+- Micro-caps status line in the label face: `.app-status` ends with the
+  ship's sign-off "ENDO SY OS / MUTHUR PRQ 12-5 B" (generated, not read
+  aloud; hidden on phones).
 
 ### Variants
 
@@ -53,7 +59,9 @@ reproduced.
 Michroma (headings and labels), Share Tech (body) and Share Tech Mono
 (data) are vendored under SIL OFL; see `assets/fonts/NOTICE.md`. The
 film's own face is a custom wide squared sans; Michroma is the closest
-open match. It has one weight, so headings are not bold.
+open match. All three faces have one weight, so `font-synthesis: none`
+keeps headings and numbers light. Michroma is too wide for narrow setting
+rows, so a switch row's label reads in Share Tech; avatar initials too.
 
 ## Contrast honesty
 
@@ -76,7 +84,7 @@ is decoration under the panels and carries no text.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On touch tiers the brand tab stays as wide as its text, so it doesn't stretch across the first line. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On touch tiers the brand tab stays as wide as its text: it neither stretches across the first line nor truncates. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
 
 ## Icons
 
