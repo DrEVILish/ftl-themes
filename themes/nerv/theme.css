@@ -5,7 +5,8 @@
  * Note on fonts: NERV's title cards use Matisse EB (proprietary), named
  * first in --nerv-title; the vendored stand-in is Noto Serif Display
  * instanced at wdth 62.5 / wght 900 (SIL OFL 1.1), a compressed heavy
- * serif, for h1/h2 and hero titles. Buttons, tabs, table heads and frame
+ * serif, for page titles (h1) and hero titles only; its hairlines break
+ * apart below ~32px, so h2/h3 stay in Antonio. Buttons, tabs, table heads and frame
  * headers use the vendored Antonio Bold (Vernon Adams, SIL OFL 1.1), a
  * tight condensed bold; body text stays in a plain Helvetica/Arial stack.
  */
@@ -43,7 +44,7 @@ html[data-theme="nerv"] {
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --danger-text: #eb4c5a;
+  --danger-text: #ff6b78;
   --on-accent: #1a0900;
   --on-danger: #ffffff;
   --on-success: #05170a;
@@ -78,7 +79,6 @@ html[data-theme="nerv"] {
   --indicator-fg: var(--accent);
 
   --app-bar-bg: #000;
-  --app-bar-rule-width: 3px;
   --app-status-bg: #000;
   --app-status-fg: var(--accent);
   --app-status-rule: var(--accent);
@@ -131,6 +131,14 @@ html[data-theme="nerv"] {
   /* Danger alerts are the EVA emergency card: a red frame on a red-black
      ground (white text 20:1), with a hazard-tape band painted on top. */
   --alert-border-width: 2px;
+
+  /* The MAGI screen grid: a faint orange 24px lattice (stroke-opacity .07)
+     behind main and inside panel bodies, so body text barely moves.
+     Cards and list cards keep the flat surface (core color-mixes theirs). */
+  --nerv-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0V24H0' fill='none' stroke='%23ff8a00' stroke-opacity='.07'/%3E%3C/svg%3E") 0 0 / 24px 24px;
+  --app-main-bg: var(--nerv-grid), var(--bg);
+  --panel-bg: var(--nerv-grid), var(--surface);
+  --card-bg: var(--surface);
 }
 html[data-theme="nerv"] .alert-danger { --alert-bg: #1a0003; }
 /* Caption buttons nested in a wrapper miss core's direct-child header-ink
@@ -170,11 +178,17 @@ html[data-theme="nerv"] .app-main h1::before {
   inline-size: 0.8em;
   block-size: 0.7em;
   margin-inline-end: 0.3em;
-  background: currentColor;
+  background: var(--accent);
   clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
 }
 /* NERV's twin warning rule under the bar: orange, a black gap, signal red. */
-html[data-theme="nerv"] .app-bar { box-shadow: 0 2px 0 #000, 0 4px 0 var(--danger); }
+/* Lifted one layer so main's grid ground does not paint over the shadows. */
+html[data-theme="nerv"] .app-bar {
+  --app-bar-rule-width: 4px;
+  box-shadow: 0 3px 0 #000, 0 6px 0 var(--danger);
+  position: relative;
+  z-index: 1;
+}
 /* Toolbars sit on the bunker black inside a painted 2px rule. */
 html[data-theme="nerv"] .toolbar:not(.is-plain) { border-bottom-width: 2px; }
 
@@ -219,12 +233,18 @@ html[data-theme="nerv"] h3 {
   margin-block-end: 0.25em;
   color: var(--accent);
 }
-/* Page titles and section heads take the title-card face: compressed heavy
-   serif, set tight. Headings inside frame headers keep Antonio. */
-html[data-theme="nerv"] :is(h1, h2):not(:is(.panel-header, .modal-header, .card-header) *) {
+/* Page and hero titles take the title card: white compressed heavy serif
+   on black (orange stays on the terminal chrome). Only at title size; h2
+   and below stay in orange Antonio. Headings in frame headers keep Antonio. */
+html[data-theme="nerv"] :is(h1, .hero h2):not(:is(.panel-header, .modal-header, .card-header) *) {
   font-family: var(--nerv-title);
   font-weight: 900;
   letter-spacing: 0;
+  color: var(--text);
+  /* Thickens the instance's hairlines (about 0.6px a side at 32px) so H
+     and E hold together; under the fill, so counters stay open. */
+  -webkit-text-stroke: 0.04em currentColor;
+  paint-order: stroke fill;
 }
 /* Condensed stencil voice on the controls and frame headers. */
 html[data-theme="nerv"] :is(.btn, .panel-header, .modal-header, .tab, .table th, .badge, .badge-button, .segmented-item, .toggle-btn, .nav-brand, .stat-value, .nav-item, .app-bar .menubar > li > [role="menuitem"]) {
@@ -239,9 +259,11 @@ html[data-theme="nerv"] :is(.badge, .badge-button, .segmented-item, .toggle-btn,
 /* Antonio is too condensed below ~13px: floor the small readouts and track
    them wide, as NERV's small screen labels are. */
 html[data-theme="nerv"] .table th { font-size: max(0.8rem, 0.78em); }
-html[data-theme="nerv"] .badge { font-size: max(0.8rem, 0.75em); letter-spacing: 0.08em; }
+html[data-theme="nerv"] .badge { font-size: max(0.85rem, 0.75em); letter-spacing: 0.08em; }
+/* Page markup runs title and badge together; keep them apart. */
+html[data-theme="nerv"] .panel-header > .badge { margin-inline-start: 0.5em; }
 /* Plain text inside the orange strip switches to dark inks (all 5:1 or
-   better on #ff6600). Badges and buttons keep their own dark fills, so
+   better on #ff8a00). Badges and buttons keep their own dark fills, so
    they keep the normal inks. */
 html[data-theme="nerv"] :is(.panel-header, .modal-header) :is(.text-muted, .text-accent, .text-success, .text-danger, .text-warning, .status, .field-hint, .updated, small, time):not(.badge, .btn) {
   --muted: #1a0900;
@@ -254,6 +276,11 @@ html[data-theme="nerv"] :is(.panel-header, .modal-header) {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: 0.95em;
+}
+/* The strip's trailing corner is cut, as on NERV's angled warning boxes.
+   Headers holding controls stay square so nothing at the edge is clipped. */
+html[data-theme="nerv"] .panel-header:not(:has(.btn, .input, .select, .input-group, .badge-button)) {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 0.7em), calc(100% - 0.7em) 100%, 0 100%);
 }
 /* Hazard stripes on the danger variant — the one place stripes appear. */
 html[data-theme="nerv"] .btn-danger {
@@ -313,3 +340,6 @@ html[data-theme="nerv"] :is(.panel, .card, .modal, .drawer) .panel {
 /* The condensed table heads narrow a phone-width table enough to bring its
    shrunken in-cell number fields on screen; keep them a full tap wide. */
 html[data-theme="nerv"] .table td > .input { min-inline-size: var(--tap-min); }
+
+/* KPI readouts glow pale amber, like the MAGI's numeric displays. */
+html[data-theme="nerv"] .stat-value { color: var(--accent-2); }

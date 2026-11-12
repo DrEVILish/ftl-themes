@@ -21,15 +21,17 @@ is actually wrong.
    and as the 8px tape band across the top of danger alerts.
 3. **Sharp, condensed, uppercase.** `--radius: 0`, carried to badges,
    chips, switches, avatars, slider thumbs, lamps and carousel dots
-   (radios stay round). Page titles and section heads (`h1`, `h2` outside
-   frame headers) take the title-card face: `"Matisse EB"` named first,
-   then the vendored Noto Serif Display instanced at width 62.5 / weight
-   900, a compressed heavy serif, set with no tracking. `h3`, buttons, frame headers, tabs, table
-   heads, badges, nav items, top-bar menus and KPI numerals in the vendored Antonio
+   (radios stay round). Page and hero titles (`h1` and `.hero h2` outside
+   frame headers) are the title card: white (`--text`) on black, in
+   `"Matisse EB"` named first, then the vendored Noto Serif Display
+   instanced at width 62.5 / weight 900, a compressed heavy serif, set with
+   no tracking and a 0.04em under-fill stroke that keeps its hairlines
+   whole. The face only works at title size, so `h2`, `h3`, buttons, frame headers, tabs, table
+   heads, badges, nav items, top-bar menus and KPI numerals (pale amber `--accent-2`) in the vendored Antonio
    Bold, a tight condensed bold standing in for NERV's compressed readout
    sans. Labels, badges, filter chips, toggle and segmented buttons, nav
    items and the app brand are uppercase; Antonio is never set mixed-case,
-   and its small readouts (table heads, badges) are floored at 0.8rem and
+   and its small readouts (table heads, badges) are floored at 0.8rem (badges 0.85rem) and
    tracked 0.08em wide. Body text stays in a plain Helvetica/Arial stack
    for legibility; labels and secondary readouts glow amber phosphor
    (`--muted: #d9a066`, 8.9:1) as on the EVA terminal screens.
@@ -42,8 +44,11 @@ is actually wrong.
   before its label, the MAGI hex brought into the shell at every width;
   desktop windows whose title already leads with an app icon skip it.
   Page titles (`.app-main h1`) take the same hexagon as a bullet.
-- The app bar's 3px orange rule is doubled by a 2px signal-red rule below
-  a black gap: NERV's twin warning rule.
+- The app bar's 4px orange rule is doubled by a 3px signal-red rule below
+  a 3px black gap: NERV's twin warning rule.
+- `.app-main` and panel bodies sit on a faint MAGI screen grid: a 24px
+  orange lattice at 7% opacity, so text contrast barely moves. Cards and
+  list cards keep the flat surface.
 - Danger buttons alone get a `repeating-linear-gradient(135deg, ...)`
   hazard-stripe fill instead of a flat color. Danger alerts are the EVA
   emergency card: a 2px red frame on a red-black ground, an 8px hazard-tape
@@ -54,14 +59,15 @@ is actually wrong.
   orange — the one place danger's color, not orange, gets to mark something.
 - Panel, modal and window headers reverse out like the table head: a solid
   orange strip with black, uppercase condensed text — the NERV warning-box
-  label. Caption buttons on that strip are a stamped cluster: equal 1.4em
+  label. A panel header with no controls in it has its trailing bottom
+  corner cut at 0.7em, as on NERV's angled warning boxes. Caption buttons on that strip are a stamped cluster: equal 1.4em
   squares in a 2px frame of the header ink (black on orange, orange on
   an inactive window's unlit strip). Cards stay plain frames.
 - Carousel dots and arrows are square; the arrows are outlined in 2px
   orange like the buttons. Toolbars sit on the bunker black over a 2px
   orange rule.
 - Headings are condensed uppercase set tight (`0` for the serif titles,
-  `0.04em` for Antonio `h3`), not airy wide tracking, with a small
+  `0.04em` for Antonio `h2`/`h3`, which stay orange), not airy wide tracking, with a small
   `0.25em` trailing margin.
 - Chart series step in lightness as well as hue: amber, phosphor green,
   grey, signal red, deep orange, pale amber.
