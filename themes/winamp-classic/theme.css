@@ -434,8 +434,14 @@ html[data-theme="winamp-classic"] .table :is(th, td) {
 }
 
 /* Phone: the bar wraps, so the ridge run would take a row of its own;
-   drop it and tighten the nav so the player chrome stays compact. */
+   drop it, tighten the nav and close the row gaps (the 44px items carry
+   their own padding) so the player chrome stays compact. The brand keeps
+   its full name, taking its own row when the nav will not fit beside it. */
 @media (max-width: 480px) {
   html[data-theme="winamp-classic"] .app-bar::after { display: none; }
-  html[data-theme="winamp-classic"] .app-bar .nav-item { padding-inline: 0.4em; }
+  /* The demo pages' unlayered .demo-topbar gap outranks this layered
+     bundle, so only !important reaches it (as for .pattern-nav above). */
+  html[data-theme="winamp-classic"] .app-bar { row-gap: 0 !important; }
+  html[data-theme="winamp-classic"] .app-bar > .nav-brand { flex: 1 0 auto; }
+  html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"]) { padding-inline: 0.3em; }
 }

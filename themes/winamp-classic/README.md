@@ -83,7 +83,7 @@ Everything is snug against everything else.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** core's one-column shell. On phones the bar's ridge run is dropped and nav items are tightened, since the bar wraps. The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
+- **Phone (≤480) and tablet (481–900):** core's one-column shell. On phones the bar's ridge run is dropped, nav items are tightened and the bar's row gaps close, so the wrapped bar stays compact (the brand keeps its full name on a row of its own when the nav will not fit beside it). The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
 - **XL gutters (≥1801):** the spectrum analyser along the foot of the desk: twelve-band bars in a dim, translucent analyser green, with the page's brushed 4px ribbing showing through as LED segments. Paused, not animated.
 
 ## Tell-tales of an inauthentic result
