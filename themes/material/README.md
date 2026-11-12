@@ -48,7 +48,8 @@ not plastic or glass.
   42% black off) under a larger white thumb that overhangs it, with the
   MD2 thumb shadow and a 12% ring. Checkboxes, radios and the on switch
   take the baseline secondary in its darker variant #018786 (3:1 on
-  white). Sliders are a 4px accent track at 38% with an accent thumb.
+  white). Sliders are a 4px accent track at 55% (3.2:1 on the page; MD2's
+  inactive track is 24%) with an accent thumb.
 - `.btn-primary.btn-icon` is the mini FAB: 40px, baseline secondary teal
   (#03dac6) with black icon.
 - Table headers are sentence-case Medium at body size, on roomier rows.
@@ -64,6 +65,15 @@ not plastic or glass.
 - Segmented controls and toggle groups are one 12%-black outlined strip;
   the selected segment is a 12% accent tint with accent text. Range
   button groups are outlined, not raised.
+- Tabs are MD2 tabs: uppercase Medium with 1.25px tracking.
+- Alerts are white dp1 sheets with the state as a 4px leading bar (no
+  boxed outline); banners are white with a 12% divider below.
+- Setting rows (`.field-row`) are list items with only a 12% divider;
+  navigation lists are borderless drawer lists, the active item an 8%
+  accent tint with accent text.
+- Disabled contained buttons are 12% black with a 38% black label.
+- KPI values (`.stat-value`) are Headline 5: 24px Regular in the UI font.
+- The modal scrim is MD2's 32% black.
 - At XL (1801px+) the purple app bar still spans the full viewport.
 
 ## Layout
@@ -76,7 +86,13 @@ no border, no gradient, just color and shadow.
 
 - Roboto isn't vendored (fonts live outside the theme folder), so the
   stack falls back to the platform sans; on Linux that is DejaVu Sans,
-  which is wider than Roboto.
+  which is wider than Roboto (no narrower grotesque is installed on the
+  gate machine either).
+- Field labels sit above the filled field, not inside it as MD2 floating
+  labels; that needs markup or core support. Fields keep core height
+  rather than MD2's 56px so dense layouts don't grow.
+- The slider has no filled (active) track left of the thumb: core exposes
+  no value-driven fill token.
 
 ## Tell-tales of an inauthentic result
 

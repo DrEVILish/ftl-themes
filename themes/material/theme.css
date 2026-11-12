@@ -106,10 +106,10 @@ html[data-theme="material"] {
   --toast-bg: #323232;
   --toast-fg: rgba(255, 255, 255, 0.87);
   --toast-border-width: 0;
-  /* MD2 slider: a 4px track of accent at 38% (3:1 on the page; MD2 uses 24%,
-     raised so the track is visible), accent thumb. Height only, so core's
-     --tap-min hit area around it is untouched. */
-  --slider-bg: rgba(98, 0, 238, 0.38);
+  /* MD2 slider: a 4px track of accent at 55% (3.2:1 on #fafafa, 3.1:1 on
+     #f0f0f0; MD2's inactive track is 24%, raised to the 3:1 floor), accent
+     thumb. Height only; core's --tap-min padding keeps the hit area. */
+  --slider-bg: rgba(98, 0, 238, 0.55);
   --slider-height: 0.25rem;
   --slider-border-width: 0;
   --slider-radius: 0.125rem;
@@ -123,7 +123,20 @@ html[data-theme="material"] {
   --switch-bg-on: rgba(1, 135, 134, 0.5);
   --switch-thumb-bg: #ffffff;
   --switch-thumb-bg-on: #018786;
-  --overlay-bg: rgba(0, 0, 0, 0.5);
+  /* MD2 scrim: 32% black. */
+  --overlay-bg: rgba(0, 0, 0, 0.32);
+  /* No boxed callouts in MD2: alerts are white dp1 sheets whose state
+     shows as a 4px leading bar (the snackbar treatment, see .alert below). */
+  --alert-bg: var(--surface);
+  --alert-border-width: 0;
+  /* MD2 banner: a white sheet with a 12% divider below, no grey bar. */
+  --banner-bg: var(--surface);
+  --banner-border: rgba(0, 0, 0, 0.12);
+  /* Setting rows are MD2 list items: no fill, no box, a 12% divider. */
+  --field-row-bg: transparent;
+  --field-row-border-width: 0;
+  --field-row-radius: 0;
+  --field-row-gap: 0;
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
 }
@@ -244,6 +257,38 @@ html[data-theme="material"] .toast {
   --muted: rgba(255, 255, 255, 0.7);
 }
 
+html[data-theme="material"] .alert { box-shadow: inset 4px 0 0 var(--alert-border, var(--border)), var(--card-shadow); }
+html[data-theme="material"] .field-row { box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12); }
+/* A navigation list (the settings sections) is a drawer list: no box, no
+   rules, the active item an 8% accent tint with accent text. */
+html[data-theme="material"] nav > .list {
+  --list-bg: transparent;
+  --list-border-width: 0;
+  --list-rule: transparent;
+  --row-selected-fg: var(--accent);
+}
+
+/* MD2 disabled contained button: inert 12% black, 38% black label. */
+html[data-theme="material"] .btn:is(:disabled, [aria-disabled="true"]):not(.btn-ghost, .btn-secondary) {
+  --btn-bg: rgba(0, 0, 0, 0.12);
+  --btn-fg: rgba(0, 0, 0, 0.38);
+  --btn-border-width: 0;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  opacity: 1;
+}
+
+/* MD2 tabs: uppercase Medium 14px, 1.25px tracking. Scoped to the tab so
+   other --label-transform users stay sentence case. */
+html[data-theme="material"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  text-transform: uppercase;
+  letter-spacing: 0.0892em;
+  font-weight: 500;
+}
+
+/* KPI numbers are Headline 5 (24px Roboto Regular), not core's bold mono. */
+html[data-theme="material"] .stat-value { font-family: var(--font); font-weight: 400; font-size: 1.5rem; }
+
 /* MD2 data table: sentence-case Medium headers at body size, roomier rows. */
 html[data-theme="material"] .table th { font-weight: 500; font-size: 1em; }
 html[data-theme="material"] .table :is(th, td) { padding-block: calc(0.8em * var(--density)); }
@@ -335,6 +380,10 @@ html[data-theme="material"] :is(.panel, .card, .modal, .drawer) :is(.panel, .car
   html[data-theme="material"] .app-bar { column-gap: 0.25rem; }
   html[data-theme="material"] .app-bar > .nav-brand { min-width: min(7ch, 40%); margin-inline-end: 0.5rem; }
   html[data-theme="material"] .app-bar > .nav-item { padding-inline: 0.6em; }
+  /* The status-bar tray is unfilled, so its side padding only pushed the
+     readout past the bar's edge on phones. */
+  html[data-theme="material"] .app-status.taskbar { padding-inline-end: 0.75rem; }
+  html[data-theme="material"] .app-status > .taskbar-tray { padding-inline: 0; }
 }
 html[data-theme="material"] {
   --app-gutter-art:
