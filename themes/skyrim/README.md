@@ -33,10 +33,10 @@ reproduced.
    with no blur and no colour tint. Don't make them opaque grey slabs.
 2. **Thin silver rules with knotwork corners.** Frames are 1px
    `#6f6f6c` lines. Every panel and modal has a faint inner second rule
-   and, over each outer corner, a bevelled silver knotwork bracket (an
-   outer L with a square boss, an inner L, and a diagonal strand woven
-   over one and under the other). Don't add rounded corners or thick
-   borders.
+   and, over each outer corner, a small silver knot: two offset Ls joined
+   at their tails by curls, and a looped strand in the corner woven over
+   the outer L and under the inner one. Don't add rounded corners or
+   thick borders.
 3. **Condensed, white, quiet type.** One condensed sans for everything.
    Titles are uppercase with almost no tracking. Column heads are tiny grey
    caps. Body text is sentence case. Nothing is bold except emphasis.
@@ -50,12 +50,13 @@ reproduced.
 5. **Colour belongs to the game state.** Health red `#b33e3f` is danger,
    stamina green is success, legendary gold is warning, and the level-bar
    frost blue `#aec0d5` fills progress and level bars and marks focus;
-   it never fills a control: Delete and Confirm buttons are smoke plates
-   with red or green text. Magicka blue is the second series. Alerts
+   it never fills a control: Delete and Confirm buttons, and a lit
+   danger toggle, are smoke plates with red or green text. Magicka blue is the second series. Alerts
    and toasts are smoke plates in the silver rule; the state colour is
    only a small leading `◆`.
 6. **Chevrons and diamonds are the ornament vocabulary.** Title bars and
-   bars end in points. The active tab is flanked by `◁ ▷`. Checkboxes and
+   bars end in points. The active tab, and the active item of a
+   horizontal nav, is flanked by `◁ ▷`. Checkboxes and
    switch thumbs are diamonds (SkyUI's MCM). Section rules end in an open
    diamond.
 
@@ -65,10 +66,14 @@ reproduced.
   all round by a 1px silver rule that follows both diagonals of each
   point, with an interlaced double-diamond knot inside each point (the
   creation / journal title bar). On a phone the knot is dropped.
-- `.tab.is-active` reads `◁ OVERVIEW ▷`. Inactive tabs are dimmed grey.
+- `.tab.is-active` reads `◁ OVERVIEW ▷`, and so does the active
+  `.nav-item` in a `.nav` or the app bar (the vertical rail keeps its
+  fading band instead). Inactive tabs are dimmed grey.
 - `.table`: tiny uppercase grey heads over one silver rule, row rules at a 4% hairline,
-  and a selected row (`.is-selected` or `aria-selected`) drawn as one
-  white band, faded only in its end cells, ending in an arrow tip. Data
+  and a selected row (`.is-selected` or `aria-selected`) drawn once on
+  the row as one white band (clear at the start, brightest past the
+  middle) ending in an arrow tip; its cells stay clear, and a cell state
+  keeps only its leading bar while the row is lit. Data
   cells (`.mono`) use the condensed face with tabular figures, and a
   trailing value column sits flush right.
 - `.panel-header`: white caps followed by a thin rule running to an open
@@ -81,10 +86,17 @@ reproduced.
 - `.slider`: a thin silver line with a small diamond at each end and a
   white `▲` pointer, drawn in the content box so the core `--tap-min`
   hit area stays.
+- `.badge` is a hard box (no radius), like SkyUI's favourites-group
+  numbers; `.badge-accent` is white on black in the bright rule.
 - `kbd` is a key-hint box: white outline, black fill, white glyph, in
   the condensed face.
 - The bottom strip is the menu footer: light grey text, items spaced by
-  an open `◇`.
+  an open `◇`, whether they are text, links or buttons (the `◇` hangs in
+  the gap, outside a key's frame; on a phone only text items get it, as
+  the strip has no room to spare). The desktop taskbar keeps plain
+  spacing.
+- Desktop windows keep min / max / Exit side by side in the title row;
+  only dialogs hang the Exit key at the title's end.
 - The left rail is a smoke strip with one vertical silver rule and a
   diamond on it, like the vanilla category-column divider.
 - **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): the tenth failed form check earns the guard's line about an arrow in the knee.
@@ -102,8 +114,12 @@ condensed, light voice. Stat values (`.stat-value`) use the UI font, not
 monospace, because the game has no monospace anywhere. `.mono` inside
 tables, logs and the status strip, `kbd`, whole `.log` lines and
 `.readout` use it too, with tabular figures; `code` and `pre` keep the
-mono stack. Body text uses 0.01em tracking so long copy stays readable
-in Antonio.
+mono stack. Body text uses 0.01em tracking and slightly wider word
+spaces (Antonio's are tighter than Futura's), and small text (hints,
+captions, the status strip) uses 0.03em tracking so it doesn't run
+together; `pre` and `code` keep normal spacing. No rounder condensed face is vendored in the repo, so Antonio
+stays the only fallback; a closer Futura stand-in would need a new font
+in `assets/fonts/`.
 
 ## Contrast honesty
 
@@ -176,7 +192,7 @@ partial crop is referenced) and the dialogue menu. See
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The rail is hidden up to 900px. On touch tiers the chevron-capped bar is shallower and less inset. On a phone the bar's chevron points keep the depth of its first line when it wraps, so it stays a thin strip with the extra lines tucked under, and the brand truncates as core sets. The `h1` steps down, and panels use smaller (16px) corner knots and a full 1rem padding, so text clears them. Desktop windows pad their title row so the icon and the Exit key clear the knots. Nested panels drop the knotwork and the drop shadow. Panel titles clear the corner knot, and a header holding controls wraps with the title kept whole. On XL the gutters show knotwork border bands: a woven lattice between silver rules with a chain of diamonds, a few percent over `--bg` (about 1.0:1).
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The rail is hidden up to 900px. On touch tiers the chevron-capped bar is shallower and less inset. On a phone only the bar's first line is the chevron strip; the lines it wraps onto sit below it on the page, closed by a plain hairline, and the brand keeps at least 9ch (it moves the nav to the next line rather than truncating to "N…"). The `h1` steps down, and panels use smaller (16px) corner knots and a full 1rem padding, so text clears them. Desktop windows pad their title row by a knot's width so the icon and the Exit key clear the knots. Nested panels drop the knotwork and the drop shadow. Panel titles clear the corner knot, and a header holding controls wraps with the title kept whole. On XL the gutters show knotwork border bands: a woven lattice between silver rules with a chain of diamonds, a few percent over `--bg` (about 1.0:1).
 
 ## Icons
 
