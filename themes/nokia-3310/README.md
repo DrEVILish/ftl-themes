@@ -42,14 +42,19 @@ background, never from introducing a new colour.
 
 ## Signature details
 
-- Signal (left) and battery (right) as tall vertical ink stacks at the
-  app bar's outer edges (16×42px on desktop and XL, nearly the bar's full
-  height): stepped bars widest at the top, an antenna and a
-  battery glyph at the base, as on the 3310's idle screen
-  (`nokia-3310-blue.png`), drawn as pixel-exact SVGs in the ink colour.
+- Signal (left) and battery (right) as tall vertical ink stacks down the
+  LCD's side edges, as on the 3310's idle screen (`nokia-3310-blue.png`):
+  on desktop and XL they hang just below the top line, about a third of
+  the viewport tall (`clamp(9rem, 32vh, 26rem)`), in a gutter that the
+  main area's inline padding (`--app-main-padding: 1rem 2.3rem`) keeps
+  clear; on touch tiers they shrink into the bar's first-line corners.
+  Stepped bars widest at the top, an antenna and a battery glyph at the
+  base, drawn as pixel SVGs in the ink colour.
 - One LCD tone top to bottom, as in both lit captures: the top line is
   plain LCD with a 2px ink rule; the bottom line carries a single centred
-  bold "Menu" (the Navi-key's one softkey label) on its own row. No
+  "Menu" (the Navi-key's one softkey label) on its own row, the heaviest
+  line on the screen: 1.6rem pixel type (2rem on XL) thickened with a
+  0.04em text stroke, clock-sized as in the photo. No
   inverted strips; inversion is kept for selection. On the desktop page
   only the front window's title is inverted; the others stay LCD tone
   above a 2px ink rule.
@@ -59,11 +64,19 @@ background, never from introducing a new colour.
   beside the shell (an `aside` sibling of `.app`) is its own LCD panel.
 - The slider is an ink rail (`--slider-bg: var(--text)`) with a square
   ink thumb.
-- Pixel type for the screen's big lines: headings, the bar brand, window
-  titles and the "Menu" softkey are set in Bedstead, a character-generator
-  matrix face. Body text is bold, chunky mono: 600 (the mono's bold cut),
-  labels, nav and buttons 700, `-webkit-font-smoothing: none` where
-  honoured.
+- Pixel type for all screen chrome: headings, the bar brand, window
+  titles, the "Menu" softkey, and the short UI strings (nav links, menubar
+  items, buttons, tabs, badges, table heads, labels, h4) are set in
+  Bedstead, a character-generator matrix face, at its one weight with a
+  0.03em text stroke instead of synthetic bold. Prose stays in a bold,
+  chunky mono (600), `-webkit-font-smoothing: none` where honoured; avatar
+  initials stay mono because the matrix is illegible that small.
+- Dialogs close with a "Back" softkey label; a desktop window's title bar
+  keeps the square × beside its other window buttons.
+- A destructive button leads with a "!" pixel (hidden from the accessible
+  name), so Delete differs from Confirm by structure, not hue.
+- On a phone the bar links sit closer (0.3em inline padding, still
+  `--tap-min` tall) so the menu takes one row.
 
 ## Icons
 
@@ -79,7 +92,11 @@ the original hand-drawn subset and followed by every later addition:
   (checks, slashes, axes, wheels) are 2.5–3 wide.
 - **No curves:** circles become octagons (coin, album, disc, gps), arcs
   become stepped or angular runs (rainbow, storm, cloud).
-- **Inherited outline:** the core `.icon` outline (2.5 units via `--icon-stroke-width`, round joins)
+- **Fallbacks:** icons outside the redrawn set (core's outline glyphs) get
+  `shape-rendering: crispEdges` and mitred joins from the theme's `.icon`
+  rule, so they at least render pixel-hard. They still contain core's
+  circles and arcs.
+- **Inherited outline:** the core `.icon` outline (2.5 units via `--icon-stroke-width`; the theme mitres the joins)
   also strokes every filled shape, so blocks look slightly soft and grow
   about 1.25 units per side. Gaps between filled parts are therefore at least 3
   units. The one exception is the pixel lettering on `file-type-pdf` and
@@ -105,16 +122,16 @@ the original hand-drawn subset and followed by every later addition:
 
 ## Typography
 
-`--font` and `--font-mono` are both `"Consolas", "Courier New", monospace`, at weight 600 for body and 700 for labels, nav and buttons. `--font-pixel` is **Bedstead** (CC0, already vendored in `assets/fonts/` for `teletext`; see `assets/fonts/NOTICE.md`), used at weight 400 for h1–h3, `.nav-brand`, window/modal titles and the "Menu" softkey. Its 5×9 SAA5050 matrix is the nearest shipped relative of the 3310's 5×7 Series-20 font (`nokia-3310-blue.png` shows that font in "Menü" and the clock). It is not the same face: SAA5050 rounds its diagonals, and the letters are taller. A true Series-20 copy (or an OFL face such as Pixelify Sans or Silkscreen) would need adding to `assets/fonts/` with a NOTICE entry, and that is outside this theme's folder. Body copy stays in the mono so long text stays readable. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
+`--font` and `--font-mono` are both `"Consolas", "Courier New", monospace`, at weight 600 for prose. `--font-pixel` is **Bedstead** (CC0, already vendored in `assets/fonts/` for `teletext`; see `assets/fonts/NOTICE.md`), used at weight 400 for h1–h4, `.nav-brand`, window/modal titles, the "Menu" softkey and the short UI strings (nav, menubar, buttons, tabs, badges, `th`, labels), with a small `-webkit-text-stroke` for weight. Its 5×9 SAA5050 matrix is the nearest shipped relative of the 3310's 5×7 Series-20 font (`nokia-3310-blue.png` shows that font in "Menü" and the clock). It is not the same face: SAA5050 rounds its diagonals, and the letters are taller. A true Series-20 copy (or an OFL face such as Pixelify Sans or Silkscreen) would need adding to `assets/fonts/` with a NOTICE entry, and that is outside this theme's folder. Body copy stays in the mono so long text stays readable. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
 
 ## Contrast honesty
 
-- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The lit screen samples at `#749964`, `#76956a` and `#75945f`. The shipped tones keep that yellow-green chroma and are lifted only as far as the ink needs to keep 7:1: `--bg` `#8aab70`, `--surface` `#90b075`, `--surface-2` `#82a168`, ink `#0e160a` (7.15:1 on `--bg`, 7.6:1 on `--surface`, 6.4:1 on `--surface-2`). The true sampled tone would give the ink only about 5.8:1, so the reference value gives way to the AAA floor here.
-- **AAA:** `--text` clears 7:1 on `--bg` and `--surface` but is 6.4:1 on `--surface-2`; that is the real LCD's low contrast.
-- **`--muted`** `#141d0e` (6.0:1 on `--surface-2`) is not really a second shade. On a free-standing dark `.nav` strip `--muted` and the state-text tokens flip to `--bg`.
-- **State inks are a departure.** `--danger` `#161a0c` (6.9:1 on `--bg`), `--success` `#0f1e10` (6.7:1) and `--warning` `#1e1f0c` (6.5:1) are within a few percent of the ink, so a Delete or Confirm button reads as ink, not as a brown or teal. The labels and shapes say which is which, not the hue. The real phone had no such colours.
+- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The lit screen samples at `#749964`, `#76956a` and `#75945f`. The shipped tones keep that yellow-green chroma and sit as close to the sample as a near-black ink allows at 7:1: `--bg` `#82a563`, `--surface` `#88aa68`, `--surface-2` `#789a5a`, ink `#060b03` (7.1:1 on `--bg`, 7.6:1 on `--surface`, 6.2:1 on `--surface-2`). The true sampled tone would give even this ink only about 6:1, so the last few points of lightness give way to the AAA floor.
+- **AAA:** `--text` clears 7:1 on `--bg` and `--surface` but is 6.2:1 on `--surface-2`; that is the real LCD's low contrast.
+- **`--muted`** `#0b1007` (6.0:1 on `--surface-2`) is not really a second shade. On a free-standing dark `.nav` strip `--muted` and the state-text tokens flip to `--bg`.
+- **State inks are a departure.** `--danger` `#101306` (6.7:1 on `--bg`), `--success` `#081308` (6.8:1) and `--warning` `#14150a` (6.6:1) are within a few percent of the ink, so a Delete or Confirm button reads as ink, not as a brown or teal. The labels and shapes say which is which, not the hue; a danger button also leads with a "!". The real phone had no such colours.
 - **Waveform cue tags** mix 30% of their ink into `--waveform-bg`; under the tag the theme sets a lighter LCD segment (`#b4cc9e`) so the ink stays above 4.5:1.
-- `--on-accent` (`--bg`) on `--accent` is the same 7.2:1 invert used for selection.
+- `--on-accent` (`--bg`) on `--accent` is the same 7.1:1 invert used for selection.
 
 ## Reference status
 
@@ -128,4 +145,4 @@ the original hand-drawn subset and followed by every later addition:
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The handset framing is kept at every size. From 900px down the casing and its padding get thinner so the LCD keeps its width; the earpiece moves into the casing; and the signal and battery stacks sit on the bar's first line, smaller on a phone. On a phone the segmented control's labels shrink to 0.85em so "Recovering" fits. The bar only sets inline padding, so core's block padding stays. The casing is painted on the page around the shell (`html:has(.app)`), not on `body`, which is the shell itself. On XL the gutters continue the casing with faint silver oval keys, three to a row.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The handset framing is kept at every size. From 900px down the casing and its padding get thinner so the LCD keeps its width; the earpiece moves into the casing; and the signal and battery stacks sit on the bar's first line, smaller on a phone. From 901px up they hang below the bar down the LCD edges, and the main area (and the desktop wallpaper's icon column) gets matching inline padding. On a phone the segmented control's labels shrink to 0.85em so "Recovering" fits. The bar only sets inline padding, so core's block padding stays. The casing is painted on the page around the shell (`html:has(.app)`), not on `body`, which is the shell itself. On XL the gutters continue the casing with faint silver oval keys, three to a row.
