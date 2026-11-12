@@ -27,9 +27,11 @@ html[data-theme="winamp-classic"] {
   --surface-2: #484861;
   --border: #686883;
   --hairline: #2f2f4b;
-  --text: #d9d9c8;
-  /* Muted carries labels and table headers, so it meets AA (4.5:1) on both surfaces; was #9a9a8c, 3.1:1. */
-  --muted: #c2c2ba;
+  /* Chassis legends (kbps, kHz, EQ dB marks) are cool white and light
+     grey-blue on the indigo, not beige. Muted carries labels and table
+     headers: 4.8:1 on --surface-2, 6.7:1 on --surface. */
+  --text: #dfe3ee;
+  --muted: #bcc0d0;
   /* The general accent is the title-bar ridge gold (#c7b070) and its
      highlight (#ffefa6), sampled on the base skin. LCD green (--lcd) is
      kept for readouts, inputs, meters and the playlist selection only. */
@@ -101,7 +103,7 @@ html[data-theme="winamp-classic"] {
   --dropdown-item-fg-hover: #ffffff;
   --pagination-item-bg-active: #0000ff;
   --pagination-item-fg-active: #ffffff;
-  --nav-brand-fg: #c8c8b8;
+  --nav-brand-fg: #c8ccd8;
   /* Toggle chips, radio toggle groups, segmented controls and switches
      are silver keys with a lamp, as the base skin's EQ/PL and ON/AUTO
      keys: off is the raised key, on is the same key pressed in (darker
@@ -128,7 +130,17 @@ html[data-theme="winamp-classic"] {
   --nav-rule: #1b1b2b;
   --badge-radius: 0;
   --progress-radius: 0;
-  --progress-fill: var(--accent-2);
+  /* Progress and goal bars are the playlist green (#00e000), not a modern
+     lime; --accent-2 stays only as the bar chart's mid stop. */
+  --progress-fill: #00e000;
+  /* Status bullets are the skin's square LED blocks. */
+  --status-dot-radius: 0;
+  /* Carousel prev/next are the small silver keys; dots stay square (below). */
+  --carousel-arrow-bg: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
+  --carousel-arrow-fg: #1b1b2b;
+  /* Floors for the micro-caps and the mono fields (Share Tech Mono's small
+     x-height needs ~0.9rem to read like Arial at 11px). */
+  --input-font-size-sm: max(0.78em, 0.9rem);
   --slider-radius: 0;
   --slider-thumb-radius: 0;
   /* The seek/volume groove, drawn inside the content box (core keeps the
@@ -191,7 +203,7 @@ html[data-theme="winamp-classic"] {
      Labels stay small (SVG text scales with the chart's width). */
   --chart-bg: #000000;
   --chart-series-1: var(--lcd);
-  --chart-series-2: #c8c8b8;
+  --chart-series-2: #c8ccd8;
   --chart-point-ring: #000000;
   --chart-grid: #2f2f4b;
   --chart-font: var(--font-mono);
@@ -204,7 +216,7 @@ html[data-theme="winamp-classic"] {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cpath fill='%23393950' d='M0 0h4v1H0z'/%3E%3Cpath fill='%23343450' d='M0 1h4v1H0z'/%3E%3Cpath fill='%232f2f4b' d='M0 2h4v2H0z'/%3E%3C/svg%3E") #2f2f4b;
 }
 
-/* Headings, nav and default buttons stay steel/khaki — the LCD green is a
+/* Headings, nav and default buttons stay steel/grey-blue — the LCD green is a
    rare, confined signature (readout digits, meters, sliders), not a
    general theme accent splashed across every element, which is what a
    real Winamp skin never does either. */
@@ -288,6 +300,9 @@ html[data-theme="winamp-classic"] .textarea {
   border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
   font-family: var(--font-mono);
 }
+html[data-theme="winamp-classic"] :is(.input, .select, .textarea):not(.input-sm, .input-lg) { font-size: max(0.9em, 0.9rem); }
+html[data-theme="winamp-classic"] .table th { font-size: max(0.78em, 0.75rem); }
+html[data-theme="winamp-classic"] .badge { font-size: max(0.75em, 0.75rem); }
 /* Sliders and switches are physical hardware in the reference skin too —
    same recessed track, raised thumb logic as the controls above. */
 html[data-theme="winamp-classic"] .slider.is-vertical {
@@ -341,8 +356,29 @@ html[data-theme="winamp-classic"] .tracklist {
 }
 html[data-theme="winamp-classic"] .track-time { font-family: var(--font-mono); }
 html[data-theme="winamp-classic"] .track:is(.is-playing, [aria-current="true"]) { --track-fg: #ffffff; --track-meta-fg: #ffffff; --track-num-fg: #ffffff; --track-playing-fg: #ffffff; }
-/* Checkboxes and radios light the LCD lamp, not the gold. */
+/* Checkboxes and radios are small square silver keys (EQ ON/AUTO): checked
+   is the key pressed in with its dark-green lamp lit (6.3:1 on the key).
+   Forced colours keep the native control. */
 html[data-theme="winamp-classic"] :is(.checkbox, .radio) { accent-color: #00e000; }
+/* A bare radio keeps core's 44px tap box, so only labelled ones are keys. */
+html[data-theme="winamp-classic"] :is(.checkbox, .check > .radio) {
+  appearance: none;
+  min-block-size: 0;
+  border: 1px solid;
+  border-color: #f0ffff #414f61 #414f61 #f0ffff;
+  border-radius: 0;
+  background: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
+  box-shadow: inset -1px -1px 0 #8e9cad;
+}
+html[data-theme="winamp-classic"] :is(.checkbox, .check > .radio):is(:checked, :indeterminate) {
+  border-color: #414f61 #f0ffff #f0ffff #414f61;
+  box-shadow: inset 1px 1px 0 #8e9cad;
+  background: linear-gradient(#006400, #006400) center / 50% 50% no-repeat, var(--key-pressed-bg);
+}
+html[data-theme="winamp-classic"] .checkbox:indeterminate:not(:checked) { background: linear-gradient(#006400, #006400) center / 60% 2px no-repeat, var(--key-pressed-bg); }
+@media (forced-colors: active) {
+  html[data-theme="winamp-classic"] :is(.checkbox, .radio) { appearance: auto; }
+}
 
 /* Text buttons are the silver hardware keys too (ADD/REM/SEL, PRESETS):
    only ghost stays bare. */
@@ -367,7 +403,7 @@ html[data-theme="winamp-classic"] {
   --app-main-bg: var(--surface);
   --app-main-padding: 0.5rem;
   --app-status-bg: linear-gradient(180deg, #32324f, #2f2f4b);
-  --app-status-fg: #c8c8b8;
+  --app-status-fg: #c8ccd8;
   --app-status-rule: #1b1b2b;
   --app-status-padding: 0.35rem 0.5rem;
 }
@@ -379,10 +415,10 @@ html[data-theme="winamp-classic"] .app-main {
   box-shadow: inset 1px 1px 0 #1b1b2b, inset -1px -1px 0 #1b1b2b;
 }
 
-/* App-bar nav text. Items lifted from --muted (4.1:1 on the bar's lighter top
-   stop) to a pale khaki that clears it. */
+/* App-bar nav text: a pale chassis grey-blue, 5.5:1 on the bar's lighter
+   top stop. */
 html[data-theme="winamp-classic"] .app-bar {
-  --nav-item-fg: #c8c8b8;
+  --nav-item-fg: #c8ccd8;
 }
 
 /* Winamp's chrome carries texture, not just color: a dotted grip on the
@@ -441,23 +477,25 @@ html[data-theme="winamp-classic"] {
     linear-gradient(90deg, rgba(0, 224, 0, 0.12) 0 10px, transparent 10px) 154px 100% / 168px 18% repeat-x;
 }
 
-/* Close (v5): Winamp 2's tiny bevelled close box. */
-html[data-theme="winamp-classic"] .modal-header > .btn-close {
-  --btn-close-bg: linear-gradient(#c8c8b8, #8a8a7a);
-  --btn-close-bg-hover: linear-gradient(#dcdccc, #9a9a8a);
-  --btn-close-border: #2b2b24;
+/* Caption buttons (v5): the base skin's three matching small square keys,
+   the same silver as every other key here. */
+html[data-theme="winamp-classic"] .modal-header > :is(.btn-min, .btn-max, .btn-close) {
+  --btn-close-bg: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 40%, #d2dfe7);
+  --btn-close-bg-hover: linear-gradient(180deg, #ffffff 0 1px, #eaf7f9 1px 40%, #dce8ee);
+  --btn-close-border: #414f61;
   --btn-close-border-width: 1px;
   --btn-close-radius: 0;
   --btn-close-width: 1.2em;
   --btn-close-height: 1.2em;
   --btn-close-glyph-size: 1em;
-  --modal-header-close-fg: #222;
+  --modal-header-close-fg: #1b1b2b;
   --btn-close-fg-hover: #000;
+  box-shadow: inset -1px -1px 0 #8e9cad;
 }
 
 /* --- Contrast (a11y sweep) -------------------------------------------------
  * The skin's colours are full-brightness LED greens and amber; a tint of
- * them mixed into the mid-grey --surface came out mid-tone, and the beige
+ * them mixed into the mid-grey --surface came out mid-tone, and the pale
  * text sank to ~3.2-4.2:1 on it. Tints here mix into the near-black --bg
  * instead, so they read as dim LED glow behind the text. */
 html[data-theme="winamp-classic"] {
@@ -530,7 +568,7 @@ html[data-theme="winamp-classic"] :is(.nav-brand, .app-bar .nav-item, .app-bar [
 html[data-theme="winamp-classic"] .tab { font-size: 0.85em; }
 html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"]) { font-size: 0.78em; letter-spacing: 0.1em; }
 /* Strip legends are the skin's tiny tracked caps (10px at the 14px body). */
-html[data-theme="winamp-classic"] .panel-header { font-size: 0.72em; letter-spacing: 0.12em; }
+html[data-theme="winamp-classic"] .panel-header { font-size: max(0.72em, 0.75rem); letter-spacing: 0.12em; }
 /* Inside a window the strip is a property sheet's (Winamp's own
    Preferences are native dialogs): bold mixed case, no tracking, so a
    fixed-height dialog's tabs keep one row and its footer stays in view. */
@@ -581,5 +619,58 @@ html[data-theme="winamp-classic"] .table :is(th, td) {
    and the cell labels keep a 0.75rem floor. */
 @media (max-width: 480px) {
   html[data-theme="winamp-classic"] .table.is-stacked > * > tr:is(.is-selected, [aria-selected="true"]) { --row-selected-bg: #00006a; border-inline-start: 4px solid #0000ff; }
-  html[data-theme="winamp-classic"] .table.is-stacked > * > tr > [data-label]::before { font-size: max(0.78em, 0.75rem); }
+}
+/* Stacked cell labels: one face and size whatever the cell's own (a .mono
+   cell would otherwise lend them the readout face). Core stacks on a
+   container query, so this is not inside the media block. */
+html[data-theme="winamp-classic"] .table.is-stacked > * > tr > [data-label]::before { font-family: var(--font); font-size: 0.75rem; }
+
+/* --- Polish round 3 ---------------------------------------------------- */
+/* Tabs are a native property sheet (Winamp's Preferences): each tab a 1px
+   bevelled box, the selected one raised 2px onto the page with no foot, no
+   underline. */
+html[data-theme="winamp-classic"] {
+  --tab-bg-active: var(--surface);
+  --tab-fg-active: var(--text);
+}
+html[data-theme="winamp-classic"] .tabs:not([aria-orientation="vertical"]) { gap: 2px; }
+/* Unselected tabs start 2px lower; the row stretches them, so their foot
+   still meets the rule and the selected tab stands 2px taller. */
+html[data-theme="winamp-classic"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  border-color: #686883 #1b1b2b transparent #686883;
+  border-bottom-width: 0;
+  margin-block-start: 2px;
+}
+html[data-theme="winamp-classic"] .tabs:not([aria-orientation="vertical"]) > .tab.is-active {
+  border-color: #686883 #1b1b2b var(--surface) #686883;
+  border-bottom: 1px solid var(--surface);
+  margin-block: 0 -1px;
+}
+@media (max-width: 480px) {
+  html[data-theme="winamp-classic"] .tabs:not([aria-orientation="vertical"]) > .tab { letter-spacing: 0.02em; padding-inline: 0.5em; }
+}
+
+/* Meters are the analyser's LED stacks: the fill cut into 2px segments
+   with 1px gaps, the green-yellow-red stops kept. */
+html[data-theme="winamp-classic"] .meter:not(.is-segmented) > .meter-fill {
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 3px);
+  mask: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 3px);
+}
+html[data-theme="winamp-classic"] .meter-v:not(.is-segmented) > .meter-fill {
+  -webkit-mask: repeating-linear-gradient(0deg, #000 0 2px, transparent 2px 3px);
+  mask: repeating-linear-gradient(0deg, #000 0 2px, transparent 2px 3px);
+}
+
+/* Carousel dots and arrows: square, like every control in the skin (core
+   rounds them with a literal 999px, no token). Arrows are silver keys. */
+html[data-theme="winamp-classic"] .carousel-nav > a { border-radius: 0; }
+html[data-theme="winamp-classic"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border: 1px solid; border-color: #f0ffff #414f61 #414f61 #f0ffff; }
+@supports selector(::scroll-marker) and selector(::scroll-button(*)) {
+  html[data-theme="winamp-classic"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+  html[data-theme="winamp-classic"] .carousel::scroll-button(*) {
+    border-radius: 0;
+    border: 1px solid;
+    border-color: #f0ffff #414f61 #414f61 #f0ffff;
+    box-shadow: inset -1px -1px 0 #8e9cad;
+  }
 }
