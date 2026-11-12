@@ -15,7 +15,7 @@ html[data-theme="international-rescue"] {
   --surface: #f6f1e3;      /* cream panel */
   --surface-2: #e8e2cf;    /* recessed: inputs, stripes */
   --border: #0a2f6e;       /* IR navy: thick outlines */
-  --hairline: #b9b39c;
+  --hairline: #848b8e;     /* putty rule mixed 30% toward IR navy */
   --text: #12203c;
   --muted: #4a5570;
   --accent: #0a4fb4;       /* Thunderbird 1 blue */
@@ -30,8 +30,9 @@ html[data-theme="international-rescue"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0.75rem;
-  --font: "Trebuchet MS", "Gill Sans", "Segoe UI", Verdana, system-ui, sans-serif;
-  --font-mono: "Lucida Console", "Courier New", monospace;
+  /* 1960s signage grotesque: Univers/Helvetica, else Arial (Liberation Sans). */
+  --font: "Univers", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --font-mono: "Lucida Console", "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace;
   --flare: #f5b800;        /* IR gold trim */
   --link: var(--accent);
   --focus: #0a4fb4;
@@ -41,17 +42,22 @@ html[data-theme="international-rescue"] {
   /* Craft palette, namespaced. Lamps are brighter than the text-safe
      semantic fills above; they never carry text. */
   --ir-navy: #0a2f6e;
+  /* Uniform blue: the painted bands (bar, status strip, caption bars) are
+     the 1965 tunic's royal blue; #0a2f6e stays the ink of outlines/drops. */
+  --ir-blue: #123f8f;
+  /* The IR sash: a short gold diagonal, as on the uniform. Caption bars
+     carry it at their start; the app bar carries a wider one. */
+  --ir-sash-mini: linear-gradient(115deg, transparent 0 calc(50% - 0.3rem), var(--ir-gold) 0 calc(50% + 0.3rem), transparent 0) 0.75rem 0 / 1.4rem 100% no-repeat;
   --ir-gold: #f5b800;
   --ir-tb1: #1d63d1;
   --ir-tb2: #25a244;
   --ir-tb3: #e5470f;
   --ir-tb4: #f5b800;
   --ir-tb5: #bfc4cf;
-  --ir-band: repeating-linear-gradient(-45deg, var(--ir-gold) 0 0.5rem, var(--ir-navy) 0.5rem 1rem);
 
   /* Keycap buttons: thick navy outline, flat fill, hard drop like a
      chunky console key. */
-  --btn-bg: #ffffff;
+  --btn-bg: #fbf6e8;       /* cream keycap: a painted panel has no optical white */
   --btn-fg: var(--text);
   --btn-border: var(--ir-navy);
   --btn-border-hover: var(--ir-navy);
@@ -80,13 +86,13 @@ html[data-theme="international-rescue"] {
   --panel-border-width: 3px;
   --panel-radius: 1rem;
   --panel-shadow: 0 5px 0 var(--ir-navy);
-  --panel-header-bg: var(--ir-navy);
+  --panel-header-bg: var(--ir-sash-mini), var(--ir-blue);
   --panel-header-fg: #f6f1e3;
   --modal-bg: var(--surface);
   --modal-border: var(--ir-navy);
   --modal-radius: 1.1rem;
   --modal-shadow: 0 8px 0 var(--ir-navy);
-  --modal-header-bg: var(--ir-navy);
+  --modal-header-bg: var(--ir-sash-mini), var(--ir-blue);
   --modal-header-fg: #f6f1e3;
   --card-bg: var(--surface);
   --card-border: var(--ir-navy);
@@ -97,10 +103,10 @@ html[data-theme="international-rescue"] {
   --dropdown-border: var(--ir-navy);
   --dropdown-border-width: 3px;
   --dropdown-radius: 0.8rem;
-  --dropdown-item-bg-hover: var(--ir-gold);
+  --dropdown-item-bg-hover: var(--row-selected-bg);
   --dropdown-item-fg-hover: var(--text);
 
-  --table-head-bg: var(--ir-navy);
+  --table-head-bg: var(--ir-blue);
   --table-head-fg: #f6f1e3;
   --table-head-fg-hover: var(--ir-gold);
   --table-head-transform: uppercase;
@@ -115,6 +121,16 @@ html[data-theme="international-rescue"] {
   --row-selected-bg: color-mix(in srgb, var(--ir-gold) 30%, var(--surface));
   --row-selected-fg: var(--text);
   --row-active-marker: inset 0.35rem 0 0 var(--accent);
+  /* Option lists: a rounded-rect wash, never a gold capsule. */
+  --listbox-option-bg-active: var(--row-selected-bg);
+  --listbox-option-fg-active: var(--text);
+  --menubar-item-radius: 0.45rem;
+  /* Calendar: a bezelled console with keycap-shaped days and a wash range. */
+  --calendar-border: var(--ir-navy);
+  --calendar-border-width: 3px;
+  --calendar-radius: 0.9rem;
+  --calendar-day-radius: 0.45rem;
+  --calendar-range-bg: var(--row-selected-bg);
 
   --nav-bg: var(--ir-navy);
   --nav-brand-fg: var(--ir-gold);
@@ -174,9 +190,17 @@ html[data-theme="international-rescue"] {
   --list-radius: 0.8rem;
   --message-border: var(--ir-navy);
   --message-border-width: 2px;
+  /* Own bubbles stay in the cream/gold family (core's accent tint was a
+     dead blue-grey). */
+  --message-own-bg: color-mix(in srgb, var(--ir-gold) 18%, var(--surface));
+  /* The bulk-action strip is a selected-row wash in the console's 3px bezel. */
+  --bulk-bar-bg: var(--row-selected-bg);
+  --bulk-bar-border: var(--ir-navy);
   /* Inactive title bars stay IR navy (a filter muddied them to slate);
      the caption dims to the on-navy muted ink instead. */
   --window-header-filter-inactive: none;
+  /* Window captions clear the gold sash at their start. */
+  --window-header-pad: 0.3rem 0.4rem 0.3rem 2.4rem;
   --window-header-fg-inactive: #c7d3ee;
   --window-caption-opacity-inactive: 0.75;
   --toast-bg: var(--ir-navy);
@@ -200,7 +224,7 @@ html[data-theme="international-rescue"] {
   --avatar-fg: var(--ir-gold);
   --dropzone-border: var(--ir-navy);
   --dropzone-radius: 0.9rem;
-  --kbd-bg: #ffffff;
+  --kbd-bg: #fbf6e8;
   --kbd-border: var(--ir-navy);
   --kbd-shadow: 0 2px 0 var(--ir-navy);
   --overlay-bg: rgba(10, 47, 110, 0.55);
@@ -268,13 +292,25 @@ html[data-theme="international-rescue"] {
   --connection-reconnecting: var(--ir-tb4);
   --connection-attention: var(--ir-tb4);
   --connection-offline: var(--ir-tb3);
+  /* Instrument family: the same 3px navy bezel and hard drop as the keys. */
+  --gauge-border: var(--ir-navy);
+  --gauge-border-width: 3px;
+  --gauge-shadow: 0 4px 0 var(--ir-navy);
+  --compass-strip-border: var(--ir-navy);
+  --compass-strip-border-width: 3px;
+  --compass-strip-radius: 0.7rem;
+  --map-border: var(--ir-navy);
+  --map-border-width: 3px;
+  --map-shadow: 0 5px 0 var(--ir-navy);
+  --map-radius: 1rem;
+  /* FAB: a keycap with the hard navy drop, round in icon form like a lamp. */
+  --fab-shadow: 0 5px 0 var(--ir-navy);
 }
 
 /* --- Page: a 1960s map-room graticule behind the console ----------------- */
 html[data-theme="international-rescue"] {
-  background-image:
-    linear-gradient(rgba(10, 47, 110, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 47, 110, 0.08) 1px, transparent 1px);
+  /* One SVG tile, not two full-page gradient layers: cheaper to raster. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M0 .5H32M.5 0V32' stroke='%230a2f6e' stroke-opacity='.08'/%3E%3C/svg%3E");
   background-size: 2rem 2rem;
 }
 
@@ -302,7 +338,8 @@ html[data-theme="international-rescue"] h3 {
 }
 /* The extended face needs air under h2/h3 before the next line. */
 html[data-theme="international-rescue"] :is(h2, h3) { margin-block-end: 0.4em; }
-html[data-theme="international-rescue"] h3 { letter-spacing: 0.01em; }
+/* Small captions skip the stroke: it blurred Michroma below ~1.2rem. */
+html[data-theme="international-rescue"] h3 { letter-spacing: 0.03em; -webkit-text-stroke: 0; }
 /* The h1 underline is the IR sash: one wide gold band with a diagonal end,
    on its own line so the heading text keeps clear of it. */
 html[data-theme="international-rescue"] h1 { margin-block-end: 0.6rem; }
@@ -339,12 +376,17 @@ html[data-theme="international-rescue"] :is(.panel-header, .modal-header) {
   font-family: var(--ir-display);
   font-weight: 400;
   border-bottom: 0.4rem solid var(--ir-gold);
-  -webkit-text-stroke: 0.5px currentColor;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   border-radius: 0.75rem 0.75rem 0 0;
-  padding: 0.55rem 1rem;
+  padding: 0.55rem 1rem 0.55rem 2.6rem;
+  /* Michroma has one weight: a thin stroke gives the caption its heft. */
+  -webkit-text-stroke: 0.35px currentColor;
 }
+/* Controls inside a caption bar keep their own unstroked voice. */
+html[data-theme="international-rescue"] :is(.panel-header, .modal-header) :is(.badge, .btn, .kbd, .select, .input, .tabs, .segmented) { -webkit-text-stroke: 0; }
 /* Nested consoles step down: a panel or card inside another surface drops
-   its hard drop shadow, takes a 2px outline and a thinner hazard band, so
+   its hard drop shadow, takes a 2px outline and a thinner gold band, so
    only the outer console reads as the chunky one. */
 html[data-theme="international-rescue"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
   --panel-shadow: none;
@@ -365,6 +407,12 @@ html[data-theme="international-rescue"] .table > :first-child > tr:first-child >
 html[data-theme="international-rescue"] .table > :first-child > tr:first-child > :last-child { border-start-end-radius: 0.7rem; }
 html[data-theme="international-rescue"] .table > :last-child > tr:last-child > :first-child { border-end-start-radius: 0.7rem; }
 html[data-theme="international-rescue"] .table > :last-child > tr:last-child > :last-child { border-end-end-radius: 0.7rem; }
+/* Blank rows under a table continue its frame: the table's lower corners
+   square off and the ruled tray below carries the bezel's sides and foot. */
+html[data-theme="international-rescue"] .table:has(+ .table-blank-rows) { border-end-start-radius: 0; border-end-end-radius: 0; }
+html[data-theme="international-rescue"] .table:has(+ .table-blank-rows) > :last-child > tr:last-child > * { border-end-start-radius: 0; border-end-end-radius: 0; }
+html[data-theme="international-rescue"] .table-blank-rows { border: 3px solid var(--ir-navy); border-top: 0; border-radius: 0 0 0.7rem 0.7rem; }
+html[data-theme="international-rescue"] .bulk-bar { border-width: 3px; box-shadow: 0 4px 0 var(--ir-navy); }
 /* A readout is one number: in a narrow value row it keeps "+2 dB" on one
    line instead of stacking the unit under the digits. */
 html[data-theme="international-rescue"] .readout { white-space: nowrap; }
@@ -387,8 +435,24 @@ html[data-theme="international-rescue"] :is(.btn-ghost, .btn-tertiary) {
 html[data-theme="international-rescue"] :is(.panel, .card, .modal, .drawer) .list { --list-border-width: 2px; }
 /* Card lists shrink with their column instead of pushing past it. */
 html[data-theme="international-rescue"] .list-cards > .list-item { min-inline-size: 0; }
-/* Folder rails sit on cream, not navy: navy ink. */
-html[data-theme="international-rescue"] .nav-rail { --nav-item-fg: var(--text); }
+/* Folder rails sit on cream, not navy: navy ink, and the current folder
+   takes the selected-row gold wash with the TB1 tab (solid gold is GO's). */
+html[data-theme="international-rescue"] .nav-rail {
+  --nav-item-fg: var(--text);
+  --nav-item-bg-active: var(--row-selected-bg);
+}
+html[data-theme="international-rescue"] .nav-rail > .nav-item { border-inline-start-width: 0.35rem; }
+/* Option rows are rounded rectangles, not capsules. */
+html[data-theme="international-rescue"] .listbox [role="option"] { border-radius: 0.45rem; }
+/* The extended FAB is a rounded-rect keycap; the icon FAB stays a round lamp. */
+html[data-theme="international-rescue"] .fab.is-extended { --fab-radius: 0.9rem; }
+/* A maximized window is square: its caption bar fills the corners too. */
+html[data-theme="international-rescue"] :is(.modal.is-maximized, .window-max:checked + .modal) > .modal-header { border-radius: 0; }
+/* Group boxes in a window: a navy outline, not the UA's grey groove. */
+html[data-theme="international-rescue"] .modal fieldset.field {
+  border: 2px solid var(--ir-navy);
+  border-radius: 0.6rem;
+}
 html[data-theme="international-rescue"] .badge { border-width: 2px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
 /* Filter chips are badges too: same navy outline and size (core's
    `font: inherit` would otherwise blow them up to body size); an idle chip
@@ -403,8 +467,17 @@ html[data-theme="international-rescue"] .badge-button {
 }
 /* Toggle keys are keycaps like .btn: the same hard navy drop, pressed flat. */
 html[data-theme="international-rescue"] .toggle-btn { box-shadow: 0 4px 0 var(--ir-navy); }
+/* Segmented and toggle keys share the keycap's voice with .btn. */
+html[data-theme="international-rescue"] :is(.toggle-btn, .segmented-item) {
+  font-weight: var(--btn-weight);
+  text-transform: var(--btn-transform);
+  letter-spacing: var(--btn-tracking);
+}
 html[data-theme="international-rescue"] .toggle-btn:has(input:checked) { --toggle-btn-border-on: var(--ir-navy); }
 html[data-theme="international-rescue"] .toggle-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ir-navy); }
+/* Window tabs track tighter so a four-tab dialog keeps one row. */
+html[data-theme="international-rescue"] :is(.modal, .window) .tabs { --label-tracking: 0; gap: 0.15rem; }
+html[data-theme="international-rescue"] :is(.modal, .window) .tabs > .tab { padding-inline: 0.5em; font-size: 0.8em; }
 /* Tabs sit on a 3px navy rail; the active tab is a key outlined on three sides. */
 html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"]) { border-bottom: 3px solid var(--ir-navy); }
 html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"]) > .tab.is-active {
@@ -472,7 +545,7 @@ html[data-theme="international-rescue"] .connection.connection[data-state]::befo
 html[data-theme="international-rescue"] .connection[data-state="recovering"] { --connection-lamp: var(--ir-tb1); }
 
 /* --- Layout: the control room ------------------------------------------- *
- * A navy IR bar with a gold/navy diagonal band along its lower edge, a
+ * A navy IR bar with a gold sash and a gold rule along its lower edge, a
  * 4.5rem instrument rail carrying five bezelled craft lamps (TB1-TB5),
  * a cream console panel with a hard navy drop, and a navy status strip
  * with a gold rule. The graticule backdrop shows around them. */
@@ -480,13 +553,13 @@ html[data-theme="international-rescue"] {
   --app-columns: 4.5rem minmax(0, 1fr);
   --app-gap: 0.9rem;
   --app-padding: 0.9rem;
-  --app-bar-bg: var(--ir-navy);
+  --app-bar-bg: var(--ir-blue);
   --app-bar-fg: #f6f1e3;
   --app-bar-rule-width: 0;
   --app-bar-radius: 1.1rem;
   --app-bar-height: 4rem;
   --app-bar-padding: 0.6rem 1.25rem 1rem;
-  --app-bar-font: "Arial Rounded MT Bold", "Trebuchet MS", "Arial Black", Verdana, sans-serif;
+  --app-bar-font: var(--font);
   --app-rail-display: flex;
   --app-rail-empty-display: flex;
   --app-rail-radius: 1.1rem;
@@ -494,7 +567,7 @@ html[data-theme="international-rescue"] {
   --app-main-bg: var(--surface);
   --app-main-padding: 1.5rem;
   --app-main-radius: 1.1rem;
-  --app-status-bg: var(--ir-navy);
+  --app-status-bg: var(--ir-blue);
   --app-status-fg: #f6f1e3;
   --app-status-rule: var(--ir-gold);
   --app-status-radius: 1.1rem;
@@ -507,10 +580,18 @@ html[data-theme="international-rescue"] .app-bar {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background-image: var(--ir-band);
-  background-size: 100% 0.45rem;
-  background-position: bottom;
+  /* The IR uniform sash: one wide gold diagonal crossing the bar's left
+     end, over a solid gold rule along its lower edge whose right end
+     carries the five craft colours (TB1-TB5), like the lamp rail. */
+  --ir-sash:
+    linear-gradient(115deg, transparent 0 calc(50% - 0.75rem), var(--ir-gold) calc(50% - 0.75rem) calc(50% + 0.75rem), transparent 0);
+  --ir-craft-rule:
+    linear-gradient(90deg, var(--ir-tb1) 0 20%, var(--ir-tb2) 0 40%, var(--ir-tb3) 0 60%, var(--ir-tb4) 0 80%, var(--ir-tb5) 0);
+  background-image: var(--ir-sash), var(--ir-craft-rule), linear-gradient(var(--ir-gold), var(--ir-gold));
+  background-size: 3.6rem 100%, 16rem 0.5rem, 100% 0.4rem;
+  background-position: 0.5rem 0, right 1.1rem bottom, bottom;
   background-repeat: no-repeat;
+  padding-inline-start: 4.4rem;
   box-shadow: 0 5px 0 #06214f;
 }
 /* The brand is the title card: the display face, upright and wide. */
@@ -518,6 +599,7 @@ html[data-theme="international-rescue"] .app-bar :is(.brand, .nav-brand) {
   font-family: var(--ir-display);
   font-weight: 400;
   letter-spacing: 0.06em;
+  -webkit-text-stroke: 0.6px currentColor;
 }
 html[data-theme="international-rescue"] .app-status {
   --focus: #f5b800;
@@ -537,22 +619,25 @@ html[data-theme="international-rescue"] .app-rail {
   background-repeat: no-repeat;
   background-size: 2.6rem 2.6rem;
   background-position:
-    50% 1rem, 50% 4.6rem, 50% 8.2rem, 50% 11.8rem, 50% 15.4rem;
+    50% 1rem, 50% 5.2rem, 50% 9.4rem, 50% 13.6rem, 50% 17.8rem;
+  /* Five SVG lamp images (craft fill, silver bezel ring, navy rim; TB5's
+     ring is gold), not radial gradients: a cached image is cheaper to
+     repaint while the phone page scrolls. Colours are --ir-tb1..5. */
   background-image:
-    radial-gradient(circle, var(--ir-tb1) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb2) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb3) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb4) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
-    radial-gradient(circle, var(--ir-tb5) 0 44%, var(--ir-gold) 44% 56%, var(--ir-navy) 56% 68%, transparent 70%);
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230a2f6e'/%3E%3Ccircle cx='50' cy='50' r='37' fill='%23bfc4cf'/%3E%3Ccircle cx='50' cy='50' r='31' fill='%231d63d1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230a2f6e'/%3E%3Ccircle cx='50' cy='50' r='37' fill='%23bfc4cf'/%3E%3Ccircle cx='50' cy='50' r='31' fill='%2325a244'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230a2f6e'/%3E%3Ccircle cx='50' cy='50' r='37' fill='%23bfc4cf'/%3E%3Ccircle cx='50' cy='50' r='31' fill='%23e5470f'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230a2f6e'/%3E%3Ccircle cx='50' cy='50' r='37' fill='%23bfc4cf'/%3E%3Ccircle cx='50' cy='50' r='31' fill='%23f5b800'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230a2f6e'/%3E%3Ccircle cx='50' cy='50' r='40' fill='%23f5b800'/%3E%3Ccircle cx='50' cy='50' r='31' fill='%23bfc4cf'/%3E%3C/svg%3E");
 }
 /* The rail lamps carry their craft numbers, 1-5, in the title-card face. */
 @media (min-width: 901px) {
   html[data-theme="international-rescue"] .app-rail::before {
     content: "1\A 2\A 3\A 4\A 5";
     white-space: pre;
-    padding-block-start: 2.3rem;
+    padding-block-start: 2.2rem;
     text-align: center;
-    font: 400 0.7rem/3.6rem var(--ir-display);
+    font: 400 0.95rem/4.2rem var(--ir-display);
     color: var(--ir-navy);
   }
 }
@@ -563,7 +648,7 @@ html[data-theme="international-rescue"] .app-rail {
  * console keeps all of its width and height. */
 html[data-theme="international-rescue"] {
   --app-areas-mobile: "bar" "rail" "main" "status";
-  --app-rows-mobile: auto 3.6rem minmax(0, 1fr) auto;
+  --app-rows-mobile: auto 2.1rem minmax(0, 1fr) auto;
   --app-rail-display-mobile: block;
   --app-main-padding-mobile: 1rem;
   --app-main-padding-tablet: 1.25rem;
@@ -585,18 +670,44 @@ html[data-theme="international-rescue"] {
   /* Segmented keys share a phone-width row: tighter sides so a long label
      ("Recovering") stays inside its key. */
   html[data-theme="international-rescue"] {
-    --toggle-btn-padding: 0.5em 0.45em;
+    --toggle-btn-padding: 0.6em 0.4em;
     --app-status-padding: 0.6rem 0.5rem;
   }
   /* The wide brand takes its own line rather than truncate to "F..", and
      the nav keys tighten so they share the next one. */
   html[data-theme="international-rescue"] .app-bar > .nav-brand { flex: 1 0 100%; }
-  html[data-theme="international-rescue"] .app-bar .nav-item { padding-inline: 0.5em; letter-spacing: 0.02em; }
+  html[data-theme="international-rescue"] .app-bar .nav-item { padding-inline: 0.35em; letter-spacing: 0; }
+  /* Phone bar: the demo menubar keys share one row, and the bar loses its
+     extra bottom padding, so less of the first screen is chrome. */
+  /* The sash is cut short to the brand row rather than stretched down the
+     tall wrapped bar; the brand steps right to clear it. */
+  html[data-theme="international-rescue"] .app-bar {
+    --app-bar-padding: 0.5rem 0.75rem 0.6rem;
+    padding-inline-start: 0.75rem;
+    /* The demo pages' unlayered .demo-topbar gap outranks this layered
+       bundle, so only !important reaches it (as winamp-classic does). */
+    row-gap: 0.25rem !important;
+    background-size: 2.6rem 2.6rem, 6rem 0.4rem, 100% 0.4rem;
+    background-position: 0.4rem 0, right 0.9rem bottom, bottom;
+  }
+  html[data-theme="international-rescue"] .app-bar > .nav-brand { padding-inline-start: 2.4rem; }
+  /* The action cluster keeps one row: the picker gives way, and the search
+     key drops its keyboard hint (no Ctrl K on a touch phone). */
+  html[data-theme="international-rescue"] .app-bar > .cluster { flex: 1 1 100%; flex-wrap: nowrap; min-inline-size: 0; }
+  html[data-theme="international-rescue"] .app-bar > .cluster > .select { flex: 1 1 0; min-inline-size: 0; }
+  html[data-theme="international-rescue"] .app-bar > .cluster > .btn > kbd { display: none; }
+  /* Headings and captions drop the stroke on phones: it costs paint on
+     every scroll (the brand keeps it). */
+  html[data-theme="international-rescue"] :is(h1, h2, .panel-header, .modal-header) { -webkit-text-stroke: 0; }
+  html[data-theme="international-rescue"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.4em; letter-spacing: 0; }
+  /* Segmented keys keep their label on one line. */
+  html[data-theme="international-rescue"] :is(.segmented, .toggle-group) > * { white-space: nowrap; font-size: 0.72em; letter-spacing: 0; }
   /* The status tray's lamp shrinks so the tray readout stays in the strip. */
   html[data-theme="international-rescue"] .taskbar-tray .lamp { --lamp-size: 0.7rem; }
   /* A one-line code block wraps instead of turning into a scroll box. */
   html[data-theme="international-rescue"] pre { white-space: pre-wrap; overflow-wrap: anywhere; }
   html[data-theme="international-rescue"] .app-rail {
+    background-size: 1.75rem 1.75rem;
     background-position:
       calc(50% - 8rem) 50%, calc(50% - 4rem) 50%, 50% 50%, calc(50% + 4rem) 50%, calc(50% + 8rem) 50%;
   }
