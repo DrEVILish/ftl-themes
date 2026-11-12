@@ -4,8 +4,8 @@
  * Description: Classic beveled 3D gray dialog chrome on the #008080-ish teal desktop, bevels inverting light-to-dark on press.
  *
  * Note on fonts: the authentic face is MS Sans Serif, which isn't a web
- * font and isn't present on modern systems; the stack below falls back to
- * Tahoma, its closest ubiquitous relative. Vendor a pixel font here if an
+ * font browsers render; the stack below starts with its TrueType cut,
+ * "Microsoft Sans Serif", then Tahoma, then Arial. Vendor a pixel font if an
  * exact match matters.
  */
 
@@ -41,7 +41,11 @@ html[data-theme="windows95"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0;
-  --font: Tahoma, "MS Sans Serif", "Segoe UI", sans-serif;
+  /* Arial before the generic: where neither 95 face exists, a narrow
+     neutral sans is closer than a wide humanist default. */
+  /* "Microsoft Sans Serif" is the TrueType cut of the 95 dialog face and
+     ships with every Windows since; Tahoma is its nearest relative. */
+  --font: "Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", Arimo, sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
   /* Panels are child windows: each gets the active navy caption bar. */
   --panel-header-bg: #000080;
@@ -137,6 +141,65 @@ html[data-theme="windows95"] {
   --switch-thumb-radius: 0;
   --slider-radius: 0;
   --slider-thumb-radius: 0;
+  /* The 95 trackbar: a 4px sunken groove (#808080, #000000, face,
+     #ffffff) painted on the content box core keeps for the drawn track,
+     and an 11x21 raised grey pointer. */
+  --slider-height: 4px;
+  --slider-bg: linear-gradient(#808080 0 1px, #000000 0 2px, #c0c0c0 0 calc(100% - 1px), #ffffff 0);
+  --slider-border-width: 0;
+  --slider-thumb-bg: #c0c0c0;
+  /* Switches (95 had none) drawn in its own vocabulary: a sunken white
+     well holding a raised grey block; on, the well fills navy. */
+  --switch-bg: #ffffff;
+  --switch-bg-on: #000080;
+  --switch-thumb-bg: #c0c0c0;
+  --switch-thumb-bg-on: #c0c0c0;
+  /* The 50% #c0c0c0/#ffffff dither of pressed toggles and scrollbar
+     tracks, as one 2x2 bitmap: a 2px repeating-conic-gradient re-rasterised
+     on every scroll frame (render-cost WARN on the phone dashboard). */
+  --w95-dither: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEXAwMD///8raYe0AAAADklEQVR42mNgZGBgYAQAAAwAAx4J0QoAAAAASUVORK5CYII=") 0 0 / 2px 2px;
+  /* Flat toolbar buttons (.btn-clear): no tint ever. Hover raises a thin
+     bevel (rule below); pressed sinks onto the same dither as toggles. */
+  --btn-clear-bg-hover: transparent;
+  --btn-clear-bg-active: var(--w95-dither);
+  /* The FAB is an ordinary square push button, not a Material disc. */
+  --fab-radius: 0;
+  --fab-shadow: inset -1px -1px 0 #808080;
+  --fab-size: 2rem;
+  /* Count badges: a square red plate with a 1px black frame. */
+  --has-badge-ring: #000000;
+  --has-badge-ring-width: 1px;
+  /* 95 fields had no pink wash: the #800000 message and ring carry it. */
+  --input-error-bg: #ffffff;
+  /* Explorer details view: a white list well under raised column headers. */
+  --table-bg: #ffffff;
+  /* Filter chips are toolbar toggle buttons: raised grey, and pressed
+     (sunken, with the 50% white dither) when on, never navy-filled. */
+  --badge-bg-active: var(--w95-dither);
+  --badge-fg-active: #000000;
+  --toggle-btn-bg-on: var(--w95-dither);
+  --toggle-btn-fg-on: #000000;
+  --segmented-bg: var(--surface);
+  --segmented-padding: 0;
+  --segmented-border-width: 0;
+  --segmented-item-fg: #000000;
+  --segmented-item-bg-active: var(--w95-dither);
+  --segmented-item-fg-active: #000000;
+  /* State fills stay on the 16-colour set: no blended tints. Selection
+     bars are the plain face, cell states keep only their marker bar,
+     glyph or ring, and chart areas drop the alpha wash. */
+  --bulk-bar-bg: var(--surface);
+  --bulk-bar-fg: var(--text);
+  --cell-dirty-bg: transparent;
+  --cell-saved-bg: transparent;
+  --cell-saved-flash: transparent;
+  --cell-error-bg: transparent;
+  --row-editing-bg: transparent;
+  --chart-area-opacity: 0;
+  --sparkline-area-opacity: 0;
+  --input-readonly-bg: var(--surface);
+  /* Dialog scale: 95 packed its dialogs ~8px from the frame. */
+  --panel-pad: 8px;
   --overlay-bg: rgba(0, 0, 0, 0.35);
   /* Era-accurate focus is a dotted marching-ants rectangle. It replaces
      the outline's color/style but never its presence. */
@@ -176,7 +239,7 @@ html[data-theme="windows95"] {
   --tooltip-radius: 0;
   --popover-bg: var(--surface);
   --popover-radius: 0;
-  --skeleton-bg: #dfdfdf;
+  --skeleton-bg: var(--surface);
   /* Tighter dialog-scale buttons: real 95 buttons are compact (~23px),
      not the roomy core default. */
   --btn-padding: 0.35em 1em;
@@ -234,6 +297,10 @@ html[data-theme="windows95"] .btn-primary:active {
 html[data-theme="windows95"] .input,
 html[data-theme="windows95"] .select,
 html[data-theme="windows95"] .textarea { border-color: #808080 #ffffff #ffffff #808080; }
+/* Invalid: the outer bevel line turns #800000 all round (the field stays
+   white; the message and this ring carry the error). */
+html[data-theme="windows95"] :is(.input, .select, .textarea):is(.is-invalid, [aria-invalid="true"]),
+html[data-theme="windows95"] .is-validated :is(.input, .select, .textarea):user-invalid { border-color: var(--danger); }
 
 html[data-theme="windows95"] .panel,
 html[data-theme="windows95"] .modal,
@@ -251,7 +318,7 @@ html[data-theme="windows95"] .panel-header {
      dialog-font.png (navy starts at y=3 after #c0c0c0, #ffffff, #c0c0c0). */
   margin: calc(1px - var(--surface-pad, 1rem)) calc(1px - var(--surface-pad, 1rem)) calc(0.8rem * var(--density));
   /* 4px round the caption text: the v5 audit's text-to-edge floor. */
-  padding: 0.25rem 0.35rem;
+  padding: max(4px, 0.25rem) max(4px, 0.35rem);
   border-bottom: 0;
   font-weight: 700;
   font-size: 0.8rem;
@@ -278,8 +345,10 @@ html[data-theme="windows95"] .panel-header :is(.input-group, .input, .select, .d
 /* A caption bar holding controls grows to fit them instead of squeezing
    them into the 11px-text strip. */
 html[data-theme="windows95"] .panel-header:has(.input, .select, .btn) {
-  padding-block: 0.2rem;
+  padding-block: max(4px, 0.25rem);
 }
+/* A badge in a caption stands clear of the caption text. */
+html[data-theme="windows95"] .panel-header .badge { margin-inline-start: 0.5em; }
 /* Nested surfaces step down (PLAN.md §6): only the outermost surface is
    a window with a navy caption. A panel inside a panel, card, dialog or
    drawer is a group box: an etched frame line under a plain bold label
@@ -299,7 +368,7 @@ html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel
    glyphs, as on every 95 window (core's default follows the bar's text
    colour for close only, and leaves min/max in --muted: invisible on
    navy). */
-html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max) {
+html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max) {
   --btn-close-bg: var(--surface);
   --btn-close-bg-hover: var(--surface);
   --btn-close-fg: #000000;
@@ -316,11 +385,28 @@ html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max)
 }
 /* Minimize and maximize touch; close stands 2px apart. */
 html[data-theme="windows95"] .modal-header > .btn-min { margin-inline-start: auto; }
-html[data-theme="windows95"] .modal-header > .btn-min + .btn-max { margin-inline-start: -0.5rem; }
-html[data-theme="windows95"] .modal-header > :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: calc(2px - 0.5rem); }
-html[data-theme="windows95"] .modal-header > :is(.btn-close, .btn-min, .btn-max):active {
+html[data-theme="windows95"] .modal-header .btn-min + .btn-max { margin-inline-start: -0.5rem; }
+html[data-theme="windows95"] .modal-header :is(.btn-min, .btn-max) + .btn-close { margin-inline-start: calc(2px - 0.5rem); }
+/* Wrapped in their own group (a flex span with its own gap), the group
+   takes the header's 0.5rem gap so the margins above still close it up. */
+html[data-theme="windows95"] .modal-header :has(> .btn-min + .btn-max) { gap: 0.5rem !important; }
+html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max):active {
   border-color: #000000 #ffffff #ffffff #000000;
   box-shadow: inset 1px 1px 0 #808080;
+}
+/* One #c0c0c0 row and column between the frame and the caption, as on
+   the panel caption above (dialog-font.png). */
+/* Flat toolbar buttons rest borderless (the .btn bevel above would
+   otherwise reach them); hover gives a thin raised edge, no fill. */
+html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear) { border-color: transparent; }
+@media (hover: hover) {
+  html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear):hover:not(:active, [aria-pressed="true"], [aria-expanded="true"], :disabled) { border-color: #ffffff #808080 #808080 #ffffff; }
+}
+html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear):is(:active, [aria-pressed="true"], [aria-expanded="true"]) { border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] .has-badge::after { border-radius: 0; }
+html[data-theme="windows95"] .modal-header {
+  margin-block-start: calc(1px - var(--surface-pad, 1.5rem));
+  margin-inline: calc(1px - var(--surface-pad, 1.5rem));
 }
 html[data-theme="windows95"] .stat-value { font-family: var(--font); }
 
@@ -344,7 +430,7 @@ html[data-theme="windows95"] .tab.is-active { position: relative; bottom: -1px; 
 html[data-theme="windows95"] .app-status > * {
   border: 1px solid;
   border-color: #808080 #ffffff #ffffff #808080;
-  padding: 0.25rem 0.4rem;
+  padding: max(4px, 0.25rem) max(4px, 0.4rem);
 }
 
 /* Console primitives: sunken bay, raised strips, keys that sink and light
@@ -363,15 +449,156 @@ html[data-theme="windows95"] :focus-visible {
   outline-offset: 1px;
 }
 
-html[data-theme="windows95"] .table th,
-html[data-theme="windows95"] .table td { border: 1px solid #808080; }
-html[data-theme="windows95"] .table th { font-weight: 700; }
+/* Explorer's details view: raised button-like column headers (white
+   top/left, #808080 then #000000 bottom/right) over a white well with
+   only horizontal rules, no vertical body grid. */
+html[data-theme="windows95"] .table td { border: 0; border-bottom: 1px solid #c0c0c0; }
+html[data-theme="windows95"] .table th {
+  font-weight: 400;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
 /* Opaque table canvas: cells are transparent by design, so any backdrop
-   showing through the rows (a desktop gradient, a tinted strip) lands
-   directly under badge fills and erases their contrast. A real Win95
-   ListView was a flat gray box anyway — one background on the table keeps
-   state/hover/striped cell fills painting over it untouched. */
-html[data-theme="windows95"] .table { background-color: var(--surface); }
+   showing through the rows (the teal desktop, a tinted strip) would land
+   under badge fills. The white well keeps state/hover/striped cell fills
+   painting over it untouched. */
+html[data-theme="windows95"] .table { background-color: var(--table-bg); }
+/* Regular-weight headers let auto columns pack tighter: a field in a
+   cell still spans the whole touch target. */
+html[data-theme="windows95"] .table td > :is(.input, .select) { min-inline-size: var(--tap-min); }
+
+/* 95 drew its UI in 8pt MS Sans Serif (11px). With a mouse a 13px root
+   (81.25%, so user font settings and data-text-size still scale it) brings
+   every rem-sized part to dialog scale; touch keeps the browser size so
+   targets stay large. */
+@media (pointer: fine) {
+  html[data-theme="windows95"] {
+    --root-font-size: 81.25%;
+    font-size: 81.25%;
+    /* The small rem steps keep their 16px-root sizes, so text never
+       closes to under 4px from its box edge (the v5 floor). */
+    --space-2xs: 4px;
+    --cell-pad-y: max(4px, calc(0.5em * var(--density)));
+    /* Title bars closer to 95's 18px caption (touch keeps the roomier
+       default). */
+    --modal-header-pad: 4px 2px 4px 4px;
+  }
+  /* The caption buttons eat 2px of that block padding, so a captioned
+     bar is 28px and caption text alone still clears the 4px edge floor. */
+  html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max) { margin-block: -2px; }
+  /* A one-glyph button (‹ ›) still spans the 24px target. */
+  html[data-theme="windows95"] .btn { min-inline-size: var(--tap-min); }
+}
+
+/* The groove gradient is sized to the content box core clips to. */
+html[data-theme="windows95"] .slider { background-origin: content-box; }
+/* Trackbar pointer: raised grey, 11x21 (core's 2px --bg ring would be
+   teal here). The groove itself is --slider-bg above. */
+html[data-theme="windows95"] .slider::-webkit-slider-thumb {
+  width: 11px;
+  height: 21px;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+html[data-theme="windows95"] .slider::-moz-range-thumb {
+  width: 11px;
+  height: 21px;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+/* Upright, the groove runs top to bottom and the pointer lies on its side.
+   The padding goes on the block axis (left/right under vertical-lr), so
+   the groove stays a thin centred line inside the full-width target. */
+html[data-theme="windows95"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, #808080 0 1px, #000000 0 2px, #c0c0c0 0 calc(100% - 1px), #ffffff 0);
+}
+html[data-theme="windows95"] .slider.is-vertical:not(.is-range > .slider) {
+  padding-inline: 0;
+  padding-block: calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+html[data-theme="windows95"] .slider.is-vertical::-webkit-slider-thumb { width: 21px; height: 11px; }
+html[data-theme="windows95"] .slider.is-vertical::-moz-range-thumb { width: 21px; height: 11px; }
+
+/* Checkboxes and radios: the sunken white well (dialog-font.png,
+   Strikeout/Underline) with a black tick or dot, not the browser's own. */
+html[data-theme="windows95"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  border-radius: 0;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
+  background: #ffffff no-repeat center / 100% 100%;
+}
+html[data-theme="windows95"] .checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 13'%3E%3Cpath d='M3 5h1v1h1v1h1V6h1V5h1V4h1V3h1v3H9v1H8v1H7v1H6v1H5V9H4V8H3z' fill='%23000'/%3E%3C/svg%3E");
+}
+html[data-theme="windows95"] .checkbox:indeterminate {
+  background-image: linear-gradient(#000000, #000000);
+  background-size: 50% 50%;
+}
+html[data-theme="windows95"] .radio { border-radius: 50%; }
+html[data-theme="windows95"] .radio:checked {
+  background-image: radial-gradient(circle, #000000 0 22%, transparent 24%);
+}
+html[data-theme="windows95"] :is(.checkbox, .radio):disabled { background-color: #c0c0c0; }
+
+/* Switch: sunken well, raised block; 95 repainted instantly. */
+html[data-theme="windows95"] .switch-track {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
+  transition: none;
+}
+html[data-theme="windows95"] .switch input:checked ~ .switch-track,
+html[data-theme="windows95"] .switch[aria-checked="true"] .switch-track { border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] .switch-thumb {
+  /* Fills the well inside its black inner line. */
+  box-sizing: border-box;
+  top: 1px;
+  inset-inline-start: 1px;
+  width: calc(1.4em * var(--density) - 4px);
+  height: calc(1.4em * var(--density) - 4px);
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+  transition: none;
+}
+
+/* Filter chips, toggle buttons and segmented items: raised push buttons
+   that stay pressed (sunken, dithered) while on. */
+html[data-theme="windows95"] :is(.badge-button, .toggle-btn, .segmented-item) {
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #808080;
+  transition: none;
+}
+html[data-theme="windows95"] :is(.badge-button.is-active, .toggle-btn:has(input:checked), .segmented-item.is-active) {
+  border-color: #000000 #ffffff #ffffff #000000;
+  box-shadow: inset 1px 1px 0 #808080;
+}
+html[data-theme="windows95"] .segmented { gap: 0; }
+html[data-theme="windows95"] .badge-button { --badge-bg: var(--surface); --badge-fg: var(--text); }
+/* No hover in 95: a chip only changes when pressed. */
+@media (hover: hover) {
+  html[data-theme="windows95"] .badge-button:not(.is-active):hover { background: var(--badge-bg); color: var(--badge-fg); }
+}
+
+/* Selection bar: the plain face in a raised frame. */
+html[data-theme="windows95"] .bulk-bar {
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+/* Loading placeholders: a dotted grey outline on the face, not a 98 fill. */
+html[data-theme="windows95"] .skeleton {
+  border-radius: 0;
+  outline: 1px dotted #808080;
+  outline-offset: -1px;
+}
+/* Dialog footers: 95's 75px-wide OK/Cancel buttons. */
+html[data-theme="windows95"] .modal-footer > .btn { min-inline-size: 75px; }
 
 /* --- Layout ------------------------------------------------------------ *
  * A desktop window: the teal backdrop shows around a beveled inset content
@@ -428,7 +655,7 @@ html[data-theme="windows95"] h3 { font-size: 0.85rem; font-weight: 700; }
 
 html[data-theme="windows95"] .app-bar .nav { padding: 0; }
 html[data-theme="windows95"] .app-bar .nav-brand { font-weight: 700; }
-html[data-theme="windows95"] .app-bar .nav-item { padding: 0.1em 0.6em; }
+html[data-theme="windows95"] .app-bar .nav-item { padding: max(4px, 0.25em) 0.6em; }
 html[data-theme="windows95"] .app-bar::after {
   content: "";
   position: absolute;
@@ -524,6 +751,11 @@ html[data-theme="windows95"] {
   --desktop-icon-label-bg-selected: #000080;
   --desktop-icon-label-fg-selected: #ffffff;
   --desktop-icon-font-size: 0.75rem;
+  /* Wide enough that "Neighborhood" wraps whole, at word boundaries only. */
+  --desktop-icon-cell: 6.5rem;
+  /* Phone home grid: the label steps down to 95's own 8pt (~11px) so
+     "Neighborhood" fits its column whole. */
+  --home-label-size: 0.7rem;
   --window-icon-glyph: #000080;
   --window-pad: 2px;
   --window-header-pad: 0.1rem 0.15rem 0.1rem 0.25rem;
@@ -538,7 +770,7 @@ html[data-theme="windows95"] {
   --taskbar-gap: 3px;
   --taskbar-task-max: 10rem;
   --taskbar-task-weight-active: 700;
-  --taskbar-task-bg-active: repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0 / 2px 2px;
+  --taskbar-task-bg-active: var(--w95-dither);
   --taskbar-start-bg-open: var(--surface);
   --taskbar-start-border-open: #000000 #ffffff #ffffff #000000;
   --taskbar-start-shadow-open: inset 1px 1px 0 #000000, inset -1px -1px 0 #dfdfdf;
@@ -560,6 +792,12 @@ html[data-theme="windows95"]:has(.desktop-screen) {
   --app-main-padding: 0;
 }
 html[data-theme="windows95"] .desktop-screen { border: 0; box-shadow: none; }
+/* Phone home grid: 95's labels hugged their text (1px round the
+   selection plate), which is what lets "Neighborhood" wrap whole. */
+@media (max-width: 480px) {
+  html[data-theme="windows95"] .desktop-screen > .desktop-icons .desktop-icon > label:first-child { padding-inline: 0; }
+  html[data-theme="windows95"] .desktop-screen > .desktop-icons .desktop-icon > label > span { padding-inline: 1px; }
+}
 /* The taskbar: one raised strip, its parts drawn by the --taskbar tokens
    rather than the status bar's sunken fields. */
 html[data-theme="windows95"] .desktop-bar {
@@ -627,6 +865,212 @@ html[data-theme="windows95"][data-alert="red"] :is(.panel, .card) {
   --muted: #c0c0c0;
   --danger-text: #ff9999;
   font-family: var(--font-mono);
+}
+
+/* --- Polish round 2 -------------------------------------------------------- */
+
+/* Push buttons are all the grey face (dialog-font.png, dialog-run.jpg):
+   the default button keeps its black frame and bold label, danger and
+   success are grey buttons with coloured text, and disabled text is
+   embossed #808080 over a 1px white offset instead of an opacity wash. */
+html[data-theme="windows95"] .btn-primary { --btn-bg: var(--surface); --btn-fg: #000000; --btn-border: #000000; }
+html[data-theme="windows95"] .btn-danger { --btn-bg: var(--surface); --btn-fg: #800000; --btn-border: #000000; }
+html[data-theme="windows95"] .btn-success { --btn-bg: var(--surface); --btn-fg: #004d00; --btn-border: #000000; }
+html[data-theme="windows95"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: var(--surface);
+  --btn-fg: #808080;
+  opacity: 1;
+  text-shadow: 1px 1px 0 #ffffff;
+}
+
+/* Message-box glyphs: 95 marked a message's kind with an icon (i, !, X),
+   so each state gets its own 16px glyph, not just a colour. */
+html[data-theme="windows95"] {
+  --w95-icon-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23fff' stroke='%23000'/%3E%3Cpath d='M7 3h2v2H7zM6 6h3v6h1v1H6v-1h1V7H6z' fill='%23000080' shape-rendering='crispEdges'/%3E%3C/svg%3E");
+  --w95-icon-success: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23008000' stroke='%23000'/%3E%3Cpath d='M4.5 8l2.5 2.5L11.5 5.5' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+  --w95-icon-warning: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 .8L15.4 15.5H.6z' fill='%23ff0' stroke='%23000'/%3E%3Cpath d='M7 5h2v6H7zM7 12h2v2H7z' fill='%23000' shape-rendering='crispEdges'/%3E%3C/svg%3E");
+  --w95-icon-danger: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23f00' stroke='%23800000'/%3E%3Cpath d='M5 5l6 6M11 5l-6 6' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+}
+html[data-theme="windows95"] :is(.alert-info, .alert-success, .alert-warning, .alert-danger, .toast-success, .toast-warning, .toast-danger):not(:has(> .icon))::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-block-start: 0.05em;
+  background: var(--w95-state-icon) no-repeat center / 16px 16px;
+}
+html[data-theme="windows95"] :is(.alert-info) { --w95-state-icon: var(--w95-icon-info); }
+html[data-theme="windows95"] :is(.alert-success, .toast-success) { --w95-state-icon: var(--w95-icon-success); }
+html[data-theme="windows95"] :is(.alert-warning, .toast-warning) { --w95-state-icon: var(--w95-icon-warning); }
+html[data-theme="windows95"] :is(.alert-danger, .toast-danger) { --w95-state-icon: var(--w95-icon-danger); }
+
+/* The 95 scrollbar: 16px, raised square thumb and arrow buttons on a
+   50% white dither. Chromium only honours ::-webkit-scrollbar while
+   scrollbar-color/-width stay auto; Firefox keeps its native bar. */
+html[data-theme="windows95"] {
+  --scrollbar-width: auto;
+  --scrollbar-size: 16px;
+  --scrollbar-radius: 0;
+  --scrollbar-thumb: #c0c0c0;
+  --scrollbar-thumb-hover: #c0c0c0;
+  --scrollbar-track: var(--w95-dither);
+  scrollbar-color: auto;
+  scrollbar-width: auto;
+}
+html[data-theme="windows95"] :is(.scroll, .table-wrap) { scrollbar-color: auto; scrollbar-width: auto; }
+html[data-theme="windows95"]::-webkit-scrollbar,
+html[data-theme="windows95"] ::-webkit-scrollbar { width: 16px; height: 16px; }
+html[data-theme="windows95"]::-webkit-scrollbar-track,
+html[data-theme="windows95"] ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+html[data-theme="windows95"]::-webkit-scrollbar-thumb,
+html[data-theme="windows95"] ::-webkit-scrollbar-thumb,
+html[data-theme="windows95"]::-webkit-scrollbar-button,
+html[data-theme="windows95"] ::-webkit-scrollbar-button {
+  background-color: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  border-radius: 0;
+  box-shadow: inset -1px -1px 0 #808080;
+  background-clip: border-box;
+}
+html[data-theme="windows95"]::-webkit-scrollbar-button,
+html[data-theme="windows95"] ::-webkit-scrollbar-button { display: block; width: 16px; height: 16px; background-repeat: no-repeat; background-position: center; }
+html[data-theme="windows95"]::-webkit-scrollbar-button:active,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:active { border-color: #808080; box-shadow: none; }
+html[data-theme="windows95"]::-webkit-scrollbar-button:vertical:decrement,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M3 0h1v1h1v1h1v1h1v1H0V3h1V2h1V1h1z'/%3E%3C/svg%3E"); }
+html[data-theme="windows95"]::-webkit-scrollbar-button:vertical:increment,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M0 0h7v1H6v1H5v1H4v1H3V3H2V2H1V1H0z'/%3E%3C/svg%3E"); }
+html[data-theme="windows95"]::-webkit-scrollbar-button:horizontal:decrement,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:horizontal:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7'%3E%3Cpath d='M0 3h1V2h1V1h1V0h1v7H3V6H2V5H1V4H0z'/%3E%3C/svg%3E"); }
+html[data-theme="windows95"]::-webkit-scrollbar-button:horizontal:increment,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:horizontal:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7'%3E%3Cpath d='M0 0h1v1h1v1h1v1h1v1H3v1H2v1H1v1H0z'/%3E%3C/svg%3E"); }
+/* One button at each end, as 95 drew them (not the doubled pair). */
+html[data-theme="windows95"]::-webkit-scrollbar-button:start:increment,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:start:increment,
+html[data-theme="windows95"]::-webkit-scrollbar-button:end:decrement,
+html[data-theme="windows95"] ::-webkit-scrollbar-button:end:decrement { display: none; }
+html[data-theme="windows95"]::-webkit-scrollbar-corner,
+html[data-theme="windows95"] ::-webkit-scrollbar-corner { background: #c0c0c0; }
+
+/* The combo box: a raised 16px grey drop button flush inside the sunken
+   field's right edge (dialog-font.png Color/Script), the 7x4 arrow on it.
+   Nested blocks draw the bevel: black, white, #808080, then the face. */
+html[data-theme="windows95"] .select {
+  padding-inline-end: 22px;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath d='M0 0h7v1H6v1H5v1H4v1H3V3H2V2H1V1H0z'/%3E%3C/svg%3E"),
+    linear-gradient(#c0c0c0, #c0c0c0),
+    linear-gradient(#808080, #808080),
+    linear-gradient(#ffffff, #ffffff),
+    linear-gradient(#000000, #000000);
+  background-position:
+    right 6px center,
+    right 3px top 2px,
+    right 2px top 2px,
+    right 2px top 1px,
+    right 1px top 1px;
+  background-size:
+    7px 4px,
+    13px calc(100% - 5px),
+    14px calc(100% - 4px),
+    15px calc(100% - 3px),
+    16px calc(100% - 2px);
+  background-repeat: no-repeat;
+}
+html[data-theme="windows95"] .select:dir(rtl) {
+  background-position: left 6px center, left 2px top 2px, left 2px top 2px, left 1px top 1px, left 1px top 1px;
+}
+
+/* Nested panels are group boxes (dialog-font.png, Effects / Sample): an
+   etched #808080 + #ffffff frame, the caption on the face breaking its
+   top line. Measured in RESEARCH.md; the outer window keeps its bevel. */
+html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel {
+  border-color: #808080;
+  box-shadow: inset 1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+  margin-block-start: 0.9em;
+}
+html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
+  width: fit-content;
+  max-width: calc(100% - 12px);
+  /* The caption is an opaque plate on the frame line, its text 4px clear
+     of the plate's edge (the v5 floor) and centred on the line. */
+  margin: calc(-0.6em - 4px - var(--surface-pad, 1rem)) 0 calc(0.4rem * var(--density) - 4px) calc(4px - var(--surface-pad, 1rem));
+  padding: 4px;
+  background: linear-gradient(var(--panel-bg, var(--surface)), var(--panel-bg, var(--surface)));
+  border-bottom: 0;
+  box-shadow: none;
+  font-weight: 400;
+  font-size: inherit;
+}
+
+/* Etched separators: #808080 with #ffffff under it, as every 95 rule. */
+html[data-theme="windows95"] :is(hr, .divider) {
+  border: 0;
+  border-top: 1px solid #808080;
+  box-shadow: 0 1px 0 #ffffff;
+}
+html[data-theme="windows95"] .divider-v {
+  border-inline-start-color: #808080;
+  box-shadow: 1px 0 0 #ffffff;
+}
+/* Drawn by the bottom border alone (no shadow), so the row stays a
+   one-sided rule, not a box round the trigger text. */
+html[data-theme="windows95"] .accordion-item {
+  border-bottom: 2px solid #808080;
+  border-image: linear-gradient(to top, #ffffff 1px, #808080 1px) 0 0 2 0 / 0 0 2px 0;
+}
+
+/* List views and table scrollers are white sunken wells with no row
+   rules, as Explorer's file list (dialog-save-as.png). */
+html[data-theme="windows95"] {
+  --list-bg: #ffffff;
+  --list-rule: transparent;
+}
+html[data-theme="windows95"] .list:not(.list-cards) {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #000000;
+}
+
+/* Carousel: square dots, raised square prev/next buttons. */
+html[data-theme="windows95"] .carousel-nav > a { border-radius: 0; }
+html[data-theme="windows95"] .carousel-nav > :is(.carousel-prev, .carousel-next) {
+  --carousel-arrow-bg: var(--surface);
+  border: 1px solid;
+  border-color: #ffffff #000000 #000000 #ffffff;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+
+@supports selector(::scroll-marker) and selector(::scroll-button(*)) {
+  html[data-theme="windows95"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+  html[data-theme="windows95"] .carousel::scroll-button(*) {
+    border: 1px solid;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    border-radius: 0;
+    box-shadow: inset -1px -1px 0 #808080;
+    background: var(--surface);
+  }
+  html[data-theme="windows95"] .carousel::scroll-button(*):disabled { opacity: 1; color: #808080; text-shadow: 1px 1px 0 #ffffff; }
+}
+
+/* Display Properties monitor: the square grey case, raised. */
+html[data-theme="windows95"] {
+  --desktop-monitor-radius: 0;
+  --desktop-monitor-bg: var(--surface);
+  --input-mirror-bg: var(--surface);
+  --field-row-bg: var(--surface);
+}
+html[data-theme="windows95"] .desktop-monitor { border-color: #ffffff #000000 #000000 #ffffff; }
+
+/* State list cards (an answered question): the plain face with a 4px
+   marker bar in the state colour, not a blended tint. */
+html[data-theme="windows95"] { --list-tone-tint: 0%; }
+html[data-theme="windows95"] .list-cards > .list-item:is(.is-success, .is-warning, .is-danger, .is-info) {
+  box-shadow: inset 4px 0 0 var(--_list-tone), inset -1px -1px 0 #808080;
+}
+html[data-theme="windows95"] .ranked-item.is-answered {
+  background: var(--ranked-item-bg, var(--surface));
+  box-shadow: inset 4px 0 0 #008000;
 }
 
 /* Easter egg (data-easter-eggs + assets/js/eggs.js): start a textarea
