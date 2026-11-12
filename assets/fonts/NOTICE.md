@@ -88,6 +88,26 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `steampunk` (display face: headings, panel nameplates,
   buttons, the app bar)
 
+## EB Garamond
+
+- **Family:** EB Garamond (variable wght 400-800, Latin subset made with
+  fontTools — `EBGaramond-Variable.woff2`)
+- **Designer:** Georg Duffner, Octavio Pardo
+- **License:** SIL Open Font License, version 1.1 — confirmed by its
+  placement at `google/fonts` `ofl/ebgaramond/` (with `OFL.txt`)
+- **Source:** https://fonts.google.com/specimen/EB+Garamond
+- **Used by:** `steampunk` (body text)
+
+## Courier Prime
+
+- **Family:** Courier Prime (Regular 400, Latin subset made with fontTools
+  — `CourierPrime-Regular.woff2`)
+- **Designer:** Alan Dague-Greene (Quote-Unquote Apps)
+- **License:** SIL Open Font License, version 1.1 — confirmed by its
+  placement at `google/fonts` `ofl/courierprime/` (with `OFL.txt`)
+- **Source:** https://fonts.google.com/specimen/Courier+Prime
+- **Used by:** `steampunk` (monospace)
+
 ## Px437 IBM VGA 9x16
 
 - **Family:** Px437 IBM VGA 9x16 (web cut `Web437_IBM_VGA_9x16`, converted

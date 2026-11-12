@@ -19,18 +19,31 @@ interface were machined rather than rendered.
    nowhere else.
 3. **Serif type, small-caps headings.** This is Victorian print, not a
    sans-serif dashboard.
-4. **Warm and dark.** Leather-brown plates on an olive perforated-metal
-   backplate; never a cool grey.
+4. **Warm and dark.** Walnut-brown plates (`#4e3522` → `#33241a`, after
+   the recorder's Nixie plate) on an olive perforated-metal backplate;
+   never a cool grey.
 
 ## Signature details
 
 - Rivets are background layers, not pseudo-elements: one radial-gradient
   dome (lit off-centre, ringed by its dark shadow, transparent past 4.5px)
-  in a 10px tile, laid at all four corners. Top-level panels, cards and
-  dialogs sit in a 6px cast-brass bezel (a diagonal `#f5e2b0` → `#c9962c`
-  → `#8a5e1a` → `#4a3010` gradient under a transparent border, leather
-  kept to the padding box, a dark recess inside) with the rivets on the
-  frame's corners; nested plates drop to a plain 2px leather edge.
+  in a 10px tile, laid at all four corners. Top-level panels and
+  dialogs sit in a 10px cast-brass moulding (6px at phone width); cards
+  and stat tiles, and fixed-height desktop windows, take a 6px one: a
+  diagonal `#f5e2b0` → `#c9962c` → `#8a5e1a` → `#4a3010` outer lip under
+  a transparent border, a dark fillet, then a stepped inner band lit the
+  opposite way (`#d9b062` at its brightest, so the lower edges read as
+  cast brass, not a cream gilt frame), leather kept to the padding box, a dark recess inside,
+  with the rivets centred on the frame's corners; nested plates drop to a
+  plain 2px leather edge.
+- Emphasised controls are never flat paint: `.btn-primary`, the active
+  segmented item, the active filter chip and a checked `.toggle-btn` are
+  the brightest polished brass (`#f2d690` → `#d9b062` → `#8a6420` with the
+  polish streak); `.btn-danger` is a lit oxblood enamel (`#c0503c` →
+  `#9e3a2b` → `#5e1f16`) and `.btn-success` a racing green (`#5e8a3a` →
+  `#3f5c26` → `#233614`), like the recorder's jewel buttons.
+- `.checkbox` is a small brass toggle: a cast rim round a dark enamel
+  well, with a lit brass tick when set.
 - Headings, nameplates, buttons and tabs are set in IM Fell English SC, a
   true small-capitals face (not `font-variant` or `text-transform`) — the
   Victorian-print detail uppercase-heading themes skip. Table column heads,
@@ -47,8 +60,13 @@ interface were machined rather than rendered.
   edge, a brass rule just inside the edge and a dark seam outside. No
   rivets; list cards keep the bezel but drop the corner scrollwork, which
   would sit on their text. Alerts, toasts, toolbars, field rows, drop
-  zones and tinted bands are the same walnut, with a 2px tone-coloured
-  edge on alerts and toasts.
+  zones, tinted bands, banners (the sticky-header bar) and the scrollspy
+  nav are the same walnut, with a 2px tone-coloured edge on alerts and
+  toasts and a `#c7a35a` brass rule at the foot of banners and the
+  scrollspy, whose current link wears a brass underline plate.
+- Text fields, selects and textareas are slots let into a brass bezel: a
+  `#6e4c14` border, a 1px `#c7a35a` outer ring, an inset recess and a faint
+  lit lip at the foot; focus brightens the ring to `#f2d690`.
 - Badges are brass-rimmed enamel plaques (a `#c7a35a` rim round a fill in
   the tone's own enamel; danger is `#f2c4b8` on oxblood); avatars are
   brass-rimmed medallions.
@@ -74,7 +92,7 @@ console reads as a cabinet fitted with brass hardware.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. Phones also drop the leather and walnut grain (repeating gradients on every plate) to keep scrolling inside the frame budget. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the perforated backplate. The gutter art is still; only the bar's small gears turn.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. Phones also drop the leather and walnut grain (repeating gradients on every plate), give cards and stat tiles a two-stop casting without rivets or scrollwork (panels keep the full moulding), and lay a solid `#2f3322` backplate in place of the dot grid, to keep scrolling inside the frame budget. Filter chips stay wider than tall, and a toggle group keeps its labels on one line and scrolls sideways. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the perforated backplate. The gutter art is still; only the bar's small gears turn.
 
 ## Adoption
 
@@ -92,11 +110,20 @@ layout at **L1**.
   figures; headings are engraved (dark cut below, faint polish above).
   Body copy asks for a period book serif (IM Fell English, Libre Caslon,
   EB Garamond, then Georgia/Times) and figures for a typewriter mono
-  (Courier Prime, Courier New); none of these are vendored yet (this
-  pass could not add files to `assets/fonts/`), so the system fallback is
-  what renders where they are missing.
+  (Courier Prime, Courier New). EB Garamond (variable 400-800, set at
+  108% for its small x-height) and Courier Prime are vendored as Latin
+  subsets (OFL), so they are what renders without IM Fell English
+  installed. The scrollspy nav, disclosure summaries, empty-state titles
+  and popover titles also take the display face.
 - **Brass nameplates:** every `.panel-header` is a pale polished-brass
-  plate with engraved dark lettering and a slotted screw at each end.
+  plate with engraved dark lettering and a slotted screw at each end. On a
+  phone a title-plus-badge plate tightens its tracking and lets the badge
+  ellipsize rather than wrap into a two-row slab.
+- **Lamps and labels on the backplate:** `.connection` feed lamps burn in
+  the text-weight success/danger tints, which hold 3:1 on the olive;
+  muted labels and quiet buttons lying straight on the perforated metal
+  take full ink and a dark cut. Stacked-table labels and every tree node
+  are set in the display face at one size, on one line.
 - **Steam pipes:** a copper pipe with bolted flanges every 220px runs
   along the foot of the app bar and the head of the status strip.
 - **Gear train:** a brass and a copper cog (solid teeth grown from the
@@ -104,8 +131,8 @@ layout at **L1**.
   above the pipe) mesh at the bar's right end and turn slowly in opposite directions (only under
   `prefers-reduced-motion: no-preference`); hidden on phones. From desktop
   width up, two large still flywheels (one silhouette each: teeth, rim,
-  six spokes and hub in one colour) sit dimly in the backplate behind the
-  plates.
+  six spokes and hub in one colour, one brass at 20% and one copper at
+  16%) sit dimly in the backplate behind the plates.
 - **Bezel jewels:** GO is a round cast-brass bezel round a dark enamel
   face with a lit green legend, like the recorder's play button; window
   and dialog title-band controls are engraved in dark ink on the brass.
@@ -131,14 +158,15 @@ layout at **L1**.
   at the level. Vertical meters stay sight glasses (a boiler's level
   gauge); segmented meters keep their lamps.
 - **Knife switches**: `.switch` is a copper blade with a black handle,
-  hinged on a slate base about 25px tall; off, it stands raised at 20
+  hinged on a slate base about 56x30px with a 6px blade; off, it stands raised at 20
   degrees (the handle stays on the slate); on, it lies seated in the
-  copper clip and an amber contact lamp below the blade lights, so the
+  copper clip and a 9px amber contact lamp below the blade lights and
+  glows, so the
   state is not carried by the angle alone.
 - **Filigree**: cards are brass-scrollwork plates (panels keep their
   rivets); dialogs carry smaller (1.6rem) scrolls in their lower corners
-  under the brass title band, so less of a fixed-height window is held
-  back for them.
+  under the brass title band. Desktop windows have a fixed height, so
+  they carry no scrollwork and reserve no foot for it.
 
 
 ## Icons
@@ -157,3 +185,5 @@ instrument glyphs, after the brass icon buttons and gauges in
   the line. Transport legends (play, pause, stop, skip) are solid castings.
 - `currentColor` everywhere, so icons follow brass text, engraved plates
   and selected states.
+- Ids outside the core set (the extended sprite) fall back to the generic
+  outline glyphs, drawn at the same 1.4 line via `--icon-stroke-width`.
