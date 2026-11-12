@@ -29,9 +29,7 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    square cells; checkboxes and radios are `[X]` and `(•)` text;
    spinners are the stepped `| / - \` text cursor.
 6. **One weight.** The VGA font has no bold, so faux bold is switched off
-   (`font-synthesis-weight: none`); emphasis is colour: running text is
-   VGA light grey `#aaaaaa`, as on the DOS setup screens, and bright white
-   marks emphasis (`strong`, stat figures, a table's key column).
+   (`font-synthesis-weight: none`); emphasis is colour.
 7. **One cell size.** The 9x16 glyphs are drawn at 16px (h1 and stat
    figures at 32px), never at a fractional size that smears the pixels;
    labels, hints, badges, table heads, buttons, menubars, logs, legends,
@@ -118,8 +116,9 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 - **Cyan on blue:** `--accent` `#00aaaa` on `#0000aa` is 4.64:1 (passes AA by a hair). The Norton cursor bar puts black on cyan, 7.33:1.
 - **Yellow on blue:** `#ffff55` is 12.46:1; light cyan `#55ffff` is 10.84:1.
 - **Cyan as text:** the dim cyan `#00aaaa` is only 4.64:1 on the blue, so links, `--accent-text` (code keywords) and outlined-button labels use light cyan `#55ffff`; badges are solid cells with black ink (black on cyan 7.33:1). Inside a reverse-video panel title tab every word is black on cyan (VGA greys and brights are 1.2-2.2:1 there), and sheets and the command palette take the grey dialog's black ink.
-- **Grey on blue:** `--text` and `--muted` `#aaaaaa` are 5.72:1 on `#0000aa` and 9.04:1 on `--surface-2`, which is VGA black `#000000` (hover cells, code chips, tracks), not an off-palette brighter blue.
+- **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa` and 9.04:1 on `--surface-2`, which is VGA black `#000000` (hover cells, code chips, tracks), not an off-palette brighter blue.
 - **Disabled buttons** are VGA dark grey `#555555` on black, below 4.5:1 on purpose: disabled controls are exempt, and that is how DOS greyed them.
+- **Body text stays white:** the DOS setup screens run their text in light grey `#aaaaaa`, but that is 5.72:1 on the blue, under the 7:1 body-text floor, so `--text` is white `#ffffff` (8.6:1) and grey is kept for muted text.
 - **The one deviation:** real light red `#ff5555` is only 4.23:1 on the blue, so text uses `--danger-text` `#ff7e7e` (5.40:1) and the raw hex is fill-only.
 
 ## Reference status
