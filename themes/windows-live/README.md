@@ -21,30 +21,43 @@ frame.
    ribbon tabs, the aurora and the presence frames.
 2. **The ribbon.** The app bar is a Scenic Ribbon tab strip: a blue
    rounded application button at the left (with a small Windows flag),
-   then tabs; the selected tab is white, framed in `#b6bccc` and joined
-   to a short white ribbon band hung under the strip (box-shadows on the
-   bar, so it takes no layout; main pads 12px more to clear it).
-3. **Light type.** Segoe UI Light for headings — dialog/page titles in
+   then tabs (nav items and menu-bar items alike); the selected tab is
+   white, framed in `#b6bccc` and joined to a 24px ribbon band hung under
+   the strip, white fading to `#e3ebf6` (box-shadows on the bar, so it
+   takes no layout; main pads 24px more to clear it). A ribbon always has
+   one tab open: with no current nav item the first is drawn open.
+   Toolbars are ribbon groups: the white-to-`#eef3fa` band over a
+   `#b6bccc` rule.
+3. **Light type.** Segoe UI Light (bundled Selawik Light off Windows) for headings — dialog/page titles in
    Live green `#2b7a2b` ("Add your email accounts"), section headings in
    dark Live blue `#1e395b`.
 4. **Windows 7 controls.** Grey-gloss push buttons with the pale-blue
-   hover; the default button wears the cyan glow; Explorer's pale-blue
-   selection in a `#99d1ff` frame; Win7 tooltips; tall glossy green
+   hover; the default button is the same gloss faintly tinted blue in a
+   `#3c7fb1` frame with the cyan inner glow, turning pale blue only on
+   hover; Explorer's pale-blue selection in a `#99d1ff` frame (rows,
+   tree, folder pane, desktop and file-view icons; no accent bar); Win7 tooltips; tall glossy green
    progress. Every pressed/selected control (toggle buttons, segmented,
    pagination, filter chips) uses that pale-blue selection with a
    `#7da2ce` frame and dark text, never a saturated fill. Check boxes and
    radios are the Win7 grey-gradient boxes with a dark-blue tick; the
    slider is the trackbar's thin grey groove with a grey-gloss thumb;
    disabled buttons are flat `#f4f4f4` with grey text; GO is a grey-gloss
-   push button; ghost/tertiary buttons are flat until the hot-track hover.
+   push button; ghost/tertiary buttons and resting filter chips are flat
+   until the hot-track hover. The toggle switch is drawn from the
+   trackbar: grey groove, grey-gloss thumb, pale-blue track when on.
+   Alerts take the information-bar tints per tone (info `#f2f8fd`,
+   warning `#ffffe1`, danger `#fdf0ee`, success `#f0f8ee`).
 5. **Presence.** Every avatar is a Messenger display picture: a rounded
    square in a glossy green frame.
 
 ## Signature details
 
 - The **aurora** (`--live-aurora`): pale-blue light pools with a white
-  ribbon of light sweeping across the top, behind the whole app and any
-  page without the shell.
+  ribbon of light sweeping across the top, behind heroes, the XL gutters
+  and any page without the shell. Inside the shell the work area is
+  white, with only a faint wash of it under the ribbon (gone by 240px).
+- Desktop windows have Windows 7 captions: a plain dark title (grey when
+  inactive), grey-gloss minimise/maximise joined to the wide red close.
 - Pane headers are the pale-blue gradient bars of Mail's "Quick views"
   and Gallery's folder pane.
 - The status bar is Mail's pale strip ("1 message(s), 0 unread").
@@ -54,7 +67,7 @@ frame.
 ## Layout
 
 App bar → ribbon tab strip (no padding round the window; the app fills
-it), white panes on the aurora, pale status bar. No rail.
+it), white work area, pale status bar. No rail.
 
 ## v5 layout
 
@@ -65,13 +78,14 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-`"Segoe UI", Selawik, "Segoe UI Web", "Noto Sans", "Open Sans", Tahoma,
-sans-serif` — **system fonts, not vendored** (Segoe UI isn't freely
-licensed). Selawik (Microsoft's OFL Segoe UI stand-in) is named but not
-yet in `assets/fonts`; Noto Sans and Open Sans sit before Tahoma because
-they have a 300 weight, so the Light headings stay light off Windows.
-Where none of these exists (e.g. DejaVu-only Linux), headings render at
-regular weight.
+`"Segoe UI", Selawik, Tahoma, sans-serif`. Segoe UI isn't freely
+licensed, so it is used only where Windows has it. Everywhere else the
+theme's bundled **Selawik** takes over. It is Microsoft's metric-compatible
+Segoe UI stand-in (SIL OFL 1.1), vendored unmodified from its 1.01 release
+as `assets/fonts/Selawik-Light.woff2` (300), `-Regular` (400) and
+`-Semibold` (600–700), about 44 KiB in all, and recorded in
+`assets/fonts/NOTICE.md`. The Light headings stay light on every
+platform.
 
 ## Contrast honesty
 
@@ -107,4 +121,4 @@ and conversation, Photo Gallery ribbon, Movie Maker 2009 and 2011
 ## Adoption
 
 At **L0** it recolours; at **L1** (the `.app` shell) the app bar becomes
-the ribbon tab strip and the aurora fills the window.
+the ribbon tab strip over a white work area.

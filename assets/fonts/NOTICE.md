@@ -163,9 +163,25 @@ files are vendored unmodified.
 - **Used by:** `cyberpunk-2077` (all UI text; stand-in for the game's
   commercial condensed face)
 
+## Selawik
+
+- **Family:** Selawik (weights vendored: Light 300, Regular 400, Semibold
+  600 — `Selawik-Light.woff2`, `Selawik-Regular.woff2`,
+  `Selawik-Semibold.woff2`; the release's own Latin woff2 files,
+  unmodified)
+- **Designer:** Microsoft Corporation (Aaron Bell) — an open,
+  metric-compatible fallback for Segoe UI
+- **License:** SIL Open Font License, version 1.1, with Reserved Font
+  Name "Selawik" (verified in the project's `LICENSE.txt`); vendored
+  unmodified, so the name is kept as shipped
+- **Source:** https://github.com/microsoft/Selawik (release 1.01,
+  `Selawik_Release.zip`: `selawkl.woff2`, `selawk.woff2`, `selawksb.woff2`)
+- **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
+  Light headings)
+
 ## Bottom line
 
-Eighteen files, fourteen families: twelve SIL OFL 1.1, Bedstead CC0 and Px437
+Twenty-one files, fifteen families: thirteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
