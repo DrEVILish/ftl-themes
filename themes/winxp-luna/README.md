@@ -49,9 +49,18 @@ someone says "Windows XP."
   with white bold Trebuchet MS text carrying a 1px `#0f1089` drop shadow,
   and three separate 21px caption buttons (blue minimize/maximize,
   red-orange close) drawn as one inline SVG.
-- Push buttons: `#ffffff → #ecebe6 → #d6d0c5` face, 1px `#003c74` border,
+- Push buttons: `#ffffff → #ecebe6 → #d6d0c5` face, 1px `#003c74` border
+  (`--luna-btn-frame`; neutral `#3a3a3a` on Royale Noir and Zune),
   3px corners; hover lights XP's orange inner glow, the primary/default
-  button wears the blue one.
+  button wears the blue one (a 1px ring on `.btn-sm`, so a small button
+  does not read as a second default).
+- The toolbar is XP's rebar band (`#f0eee2 → #efecdc`, `#d8d2bd` rule) on
+  Luna Blue and Olive; the grey schemes derive both from their own face.
+- Chart series are six distinct hues (accent, `#2e7a14`, `#ff8c00`,
+  `#cc0000`, `#7a4fbf`, `#009aa6`; Olive swaps series 2 to blue), so no
+  two legend swatches read alike.
+- Desktop icon labels wrap at word breaks only; the cell is 7rem so
+  "Network Neighborhood" breaks between the words in the fallback faces.
 - Panels and cards are **group boxes**: a `#d0d0bf` hairline frame with
   3px corners and the caption in `#0046d5`, sitting on the frame line.
 - Tabs are raised, round-topped, white-to-`#ecebe6` in a `#919b9c` frame,
@@ -200,8 +209,11 @@ layout at **L1**.
   italic "start" with the flag, rounded on its right, green (orange for
   Zune, blue for Embedded via `--taskbar-start-bg`) — status items along
   the bar, and the last item in the notification-area tray (a lighter
-  well with a dark left edge; charcoal on Royale Noir/Zune). The Start
-  button is dropped on phones.
+  well with a dark left edge; charcoal on Royale Noir/Zune). The pill is
+  painted on the bar's `::before`, unless the taskbar carries its own
+  `.taskbar-start`: then that real button wears the pill and the
+  `::before` goes, so there is only ever one Start. The painted one is
+  dropped on phones.
 
 ## v5 layout
 
@@ -211,7 +223,8 @@ layout at **L1**.
   runs under them. On tablet the caption gloss stays on a first-line band
   `--tap-min` tall and the wrapped row shows the caption's flat top
   colour. On mobile the title bar is the brand row alone (29px, like XP's
-  30px caption) with only the close button; the rows the bar wraps onto
+  30px caption) with only the close button, its text the caption's own
+  white (dark on Olive/Silver); the rows the bar wraps onto
   are XP's menu bar on the dialog face (`--bg`), black text, `#316ac5`
   highlight, a `--border` rule above the content. Bliss behind the page
   is its flat `#3a7bd5` sky there (a 0.4rem sliver; two page-tall
