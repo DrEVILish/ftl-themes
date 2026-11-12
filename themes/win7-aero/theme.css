@@ -42,13 +42,19 @@ html[data-theme="win7-aero"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 6px;
-  --font: "Segoe UI", Tahoma, sans-serif;
+  /* Segoe UI where installed; then Selawik (Microsoft's open, metric-
+     compatible stand-in) and the nearest humanist sans faces. */
+  --font: "Segoe UI", Selawik, "Noto Sans", "Open Sans", "Liberation Sans", Tahoma, sans-serif;
   --font-mono: Consolas, monospace;
   /* Window Color (Personalize): the glass tint. Win7's default "Sky";
      the other fifteen presets are the variants at the end of this file.
      Every glass surface mixes it into translucent white (or dark, for the
      taskbar), so text contrast holds whatever the tint. */
   --aero-tint: #74b8fc;
+  /* The frost the tint is mixed into: a thin blue-grey, not white, so the
+     blurred desktop carries the colour and the glass reads cool and calm. */
+  --w7-frost: rgb(214 222 232 / 0.34);
+  --w7-frost-low: rgb(214 222 232 / 0.26);
   --flare: #7fd8ff;
 
   /* Glass, not plastic: translucent fills over a blurred backdrop, not an
@@ -83,8 +89,30 @@ html[data-theme="win7-aero"] {
   --tab-underline-active: #ffffff;
   /* Explorer's selection: pale blue fill in a #99d1ff frame, dark text. */
   --row-selected-fg: #1a1a1a;
+  /* Every selected or pressed control takes the same Explorer selection:
+     pale-blue gradient, #7da2ce frame, black text. Solid blue is for links
+     and focus only. */
+  --w7-select-bg: linear-gradient(180deg, #e5f1fd, #c4dcf9);
+  --w7-select-frame: #7da2ce;
+  --segmented-item-bg-active: var(--w7-select-bg);
+  --segmented-item-fg-active: #000000;
+  --toggle-btn-bg-on: var(--w7-select-bg);
+  --toggle-btn-fg-on: #000000;
+  --toggle-btn-border-on: var(--w7-select-frame);
+  --pagination-item-bg-active: var(--w7-select-bg);
+  --pagination-item-fg-active: #000000;
+  /* Filter chips are command-bar toggles: 3px box, frame on hover/press. */
+  --badge-radius: 3px;
+  --badge-bg-active: var(--w7-select-bg);
+  --badge-fg-active: #000000;
+  /* Meters are progress grooves too (the disk bar in Computer). */
+  --meter-thickness: 12px;
+  --meter-track: linear-gradient(180deg, #e6e6e6, #f6f6f6);
+  --meter-border: #bcbcbc;
+  --meter-radius: 2px;
   /* The glossy green progress bar. */
-  --progress-bg: linear-gradient(180deg, #f3f3f3, #e2e2e2);
+  --progress-height: 15px;
+  --progress-bg: linear-gradient(180deg, #e6e6e6, #f6f6f6);
   --progress-border: #bcbcbc;
   --progress-border-width: 1px;
   --progress-radius: 2px;
@@ -101,6 +129,9 @@ html[data-theme="win7-aero"] {
   --table-head-transform: none;
   --table-head-tracking: normal;
   --row-selected-bg: linear-gradient(180deg, #dcebfc, #c1dcfc);
+  /* Selection is framed, not barred: a 1px #7da2ce outline round the
+     pale fill, as in Explorer. No Fluent-style leading accent bar. */
+  --row-active-marker: inset 0 0 0 1px #7da2ce;
   --nav-bg: transparent;
   --nav-rule-width: 0;
   --nav-item-bg-active: rgba(28, 111, 209, 0.16);
@@ -110,8 +141,8 @@ html[data-theme="win7-aero"] {
   --overlay-blur: blur(2px);
   /* Taskbar: the glowing orb Start button, glassy task buttons with a
      top highlight, running tasks brighter with an accent light-bar. */
-  --taskbar-bg: color-mix(in srgb, var(--aero-tint) 35%, rgb(20 30 45 / 0.6));
-  --taskbar-start-size: 2.4em;
+  --taskbar-bg: color-mix(in srgb, var(--aero-tint) 22%, rgb(40 70 100 / 0.55));
+  --taskbar-start-size: max(2.4em, var(--tap-min));
   --taskbar-start-padding: 0;
   --taskbar-start-bg: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), rgba(160, 210, 255, 0.55) 45%, rgba(40, 110, 190, 0.75));
   --taskbar-start-border: rgba(255, 255, 255, 0.55);
@@ -129,11 +160,19 @@ html[data-theme="win7-aero"] {
   --indicator-track: var(--border);
 }
 
-html[data-theme="win7-aero"] { background: linear-gradient(180deg, #0a3d8f, #1467c4 45%, #0b4aa8); }
+/* Outside the window (QA sidebars, gutters) the page is the light --bg the
+   text tokens are built for; the Harmony desktop lives on --app-bg. */
+html[data-theme="win7-aero"] {
+  background: color-mix(in srgb, var(--bg) 35%, #ffffff);
+  /* Segoe UI's x-height is half the em. A fallback face (DejaVu, Tahoma)
+     is scaled to the same x-height, so text keeps Win7's compact 9pt
+     proportions instead of reading wide and large. */
+  font-size-adjust: 0.5;
+}
 
 html[data-theme="win7-aero"] h1,
 html[data-theme="win7-aero"] h2,
-html[data-theme="win7-aero"] h3 { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
+html[data-theme="win7-aero"] h3 { font-weight: 400; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
 
 /* Glass surfaces get an actual blur, not just transparency — the one CSS
    feature that separates "glass" from "washed-out plastic". A strict
@@ -143,15 +182,21 @@ html[data-theme="win7-aero"] h3 { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
    enough that the colorful backdrop blobs behind a panel (see
    --app-bg below) read as clearly out-of-focus color, not a crisp
    background peeking through a tint. */
-html[data-theme="win7-aero"] .btn,
-html[data-theme="win7-aero"] .panel,
+/* Glass belongs to the frame: dialogs and menus blur what is behind them;
+   the client area (.app-main) is frosted once, without saturate, and the
+   buttons, panels and toolbars on it sit on near-white and skip the blur. */
 html[data-theme="win7-aero"] .modal,
-html[data-theme="win7-aero"] .dropdown,
-html[data-theme="win7-aero"] .nav,
-html[data-theme="win7-aero"] .toolbar,
+html[data-theme="win7-aero"] .dropdown {
+  backdrop-filter: blur(20px) saturate(0.65);
+  -webkit-backdrop-filter: blur(20px) saturate(0.65);
+}
 html[data-theme="win7-aero"] .app-main {
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  /* The blur already isolates the client area; saying so keeps a menu
+     that overflows it under the status strip for tools (axe) that do
+     not count backdrop-filter as a stacking context. */
+  isolation: isolate;
 }
 
 /* The default button: the same gloss, marked by Win7's cyan-blue frame and
@@ -165,7 +210,33 @@ html[data-theme="win7-aero"] .btn-primary {
 html[data-theme="win7-aero"] .tabs { border-bottom-color: #898c95; gap: 0; align-items: flex-end; }
 html[data-theme="win7-aero"] .tab { border: 1px solid #898c95; border-bottom: 0; margin-right: -1px; padding: 0.35em 0.8em; display: inline-flex; align-items: center; }
 html[data-theme="win7-aero"] .tab.is-active { position: relative; bottom: -1px; padding-top: 0.5em; padding-bottom: calc(0.35em + 1px); }
-html[data-theme="win7-aero"] .table tr.is-selected td { box-shadow: inset 0 1px #99d1ff, inset 0 -1px #99d1ff; }
+/* A selected row is one framed band: top and bottom on every cell, the
+   sides on the end cells. */
+html[data-theme="win7-aero"] .table tr:is(.is-selected, .is-active, [aria-selected="true"]) td { box-shadow: inset 0 1px #7da2ce, inset 0 -1px #7da2ce; }
+html[data-theme="win7-aero"] .table tr:is(.is-selected, .is-active, [aria-selected="true"]) td:first-child { box-shadow: inset 1px 0 #7da2ce, inset 0 1px #7da2ce, inset 0 -1px #7da2ce; }
+html[data-theme="win7-aero"] .table tr:is(.is-selected, .is-active, [aria-selected="true"]) td:last-child { box-shadow: inset -1px 0 #7da2ce, inset 0 1px #7da2ce, inset 0 -1px #7da2ce; }
+html[data-theme="win7-aero"] .list-item.is-active { border-radius: 3px; }
+/* Stacked (card) rows: the card is the selection, not each cell in it. */
+@media (max-width: 480px) {
+  html[data-theme="win7-aero"] .table.is-stacked > * > tr:is(.is-selected, .is-active, [aria-selected="true"]) { background: var(--row-selected-bg); border-color: var(--w7-select-frame); }
+  html[data-theme="win7-aero"] .table.is-stacked > * > tr:is(.is-selected, .is-active, [aria-selected="true"]) > td:nth-child(n) { background: transparent; box-shadow: none; }
+}
+@container (max-width: 480px) {
+  html[data-theme="win7-aero"] .table.is-stacked > * > tr:is(.is-selected, .is-active, [aria-selected="true"]) { background: var(--row-selected-bg); border-color: var(--w7-select-frame); }
+  html[data-theme="win7-aero"] .table.is-stacked > * > tr:is(.is-selected, .is-active, [aria-selected="true"]) > td:nth-child(n) { background: transparent; box-shadow: none; }
+}
+/* The selection frame on segments, pages and chips (core gives them no
+   border of their own). */
+html[data-theme="win7-aero"] .segmented-item.is-active,
+html[data-theme="win7-aero"] .prefs .segmented-item:has(> input:checked) { box-shadow: inset 0 0 0 1px var(--w7-select-frame); }
+html[data-theme="win7-aero"] .pagination-item.is-active { border-color: var(--w7-select-frame); }
+html[data-theme="win7-aero"] .badge-button { border: 1px solid transparent; }
+html[data-theme="win7-aero"] .badge-button.is-active { border-color: var(--w7-select-frame); }
+@media (hover: hover) {
+  html[data-theme="win7-aero"] .badge-button:hover { border-color: var(--w7-select-frame); }
+}
+/* The progress trough is sunk into the surface. */
+html[data-theme="win7-aero"] :is(.progress, .meter) { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15); }
 
 /* Aero's second signature, beyond the glass gloss: the "glow" focus ring.
    Real Aero focus/hover feedback is a soft blue bloom radiating outward from
@@ -274,24 +345,30 @@ html[data-theme="win7-aero"] {
   /* Title-bar glass with Aero's faint diagonal glare streaks. */
   --app-bar-bg:
     repeating-linear-gradient(115deg, transparent 0 60px, rgba(255, 255, 255, 0.1) 60px 95px, transparent 95px 190px),
-    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 22%, rgb(255 255 255 / 0.55)), color-mix(in srgb, var(--aero-tint) 38%, rgb(255 255 255 / 0.45)));
-  --app-bar-fg: var(--text);
+    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 26%, var(--w7-frost)), color-mix(in srgb, var(--aero-tint) 34%, var(--w7-frost-low)));
+  --app-bar-fg: #000000;
   --app-bar-rule-width: 0;
   --app-bar-radius: 8px 8px 0 0;
   --app-bar-height: 2.4rem;
-  /* The client area is near-white, as in a real Win7 window; only a
-     little desktop colour survives the frost. */
-  --app-main-bg: rgba(255, 255, 255, 0.72);
-  --app-main-padding: 1rem;
-  --app-status-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 30%, rgb(255 255 255 / 0.55)), color-mix(in srgb, var(--aero-tint) 40%, rgb(255 255 255 / 0.5)));
+  /* The client area is opaque white, as in Explorer, inset
+     --w7-frame into a tinted glass border down both sides (the bar and
+     status strip are the top and bottom of the frame). */
+  --app-main-bg:
+    linear-gradient(#ffffff, #ffffff) var(--w7-side) 0 / calc(100% - 2 * var(--w7-side)) 100% no-repeat,
+    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 30%, var(--w7-frost)), color-mix(in srgb, var(--aero-tint) 38%, var(--w7-frost-low)));
+  --w7-side: var(--w7-frame);
+  --app-main-padding: 1rem calc(1rem + var(--w7-side));
+  --app-main-padding-mobile: var(--space-s) calc(var(--space-s) + var(--w7-side));
+  --app-main-padding-tablet: var(--space-m) calc(var(--space-m) + var(--w7-side));
+  --app-status-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 28%, var(--w7-frost)), color-mix(in srgb, var(--aero-tint) 34%, var(--w7-frost-low)));
   --app-status-fg: #1a1a1a;
   --app-status-radius: 0 0 8px 8px;
   --app-status-rule: transparent;
 }
 html[data-theme="win7-aero"] .app-bar,
 html[data-theme="win7-aero"] .app-status {
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(0.65);
+  -webkit-backdrop-filter: blur(24px) saturate(0.65);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
@@ -299,7 +376,7 @@ html[data-theme="win7-aero"] .app-status {
    caption on glass, so it reads over whatever the desktop shows through. */
 html[data-theme="win7-aero"] .app-bar {
   --nav-brand-fg: #000000;
-  --nav-item-fg: #1a1a1a;
+  --nav-item-fg: #000000;
   --nav-item-fg-active: #000000;
   --nav-item-bg-active: rgba(255, 255, 255, 0.45);
   position: relative;
@@ -307,7 +384,7 @@ html[data-theme="win7-aero"] .app-bar {
      .app-main's, which comes later: without a z-index here, a menu or
      notification popup opened from the bar paints under main's content. */
   z-index: var(--z-sticky);
-  padding-right: 7.5rem;
+  padding-right: calc(104px + 1rem);
   border: 1px solid rgba(0, 0, 0, 0.45);
   border-bottom: 0;
 }
@@ -317,12 +394,21 @@ html[data-theme="win7-aero"] .app-bar :is(.nav-brand, .nav-item) {
 html[data-theme="win7-aero"] .app-bar .nav { padding: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
 html[data-theme="win7-aero"] .stat-value { font-family: var(--font); }
 html[data-theme="win7-aero"] .app-bar .nav-brand { font-weight: 400; }
+/* Luna's white outlined bar text gives way to the black-with-glow caption. */
+html[data-theme="win7-aero"] .app-bar .breadcrumbs {
+  --muted: #1a1a1a;
+  --breadcrumb-current-fg: #000000;
+  color: #000000;
+  text-shadow: 0 0 8px #ffffff, 0 0 8px #ffffff, 0 0 2px #ffffff;
+}
+html[data-theme="win7-aero"] .app-bar .btn-ghost { color: #000000; }
 /* Minimize / maximize / close: the joined caption-button group tucked
    under the top edge, glass with a red close. One inline SVG. */
 html[data-theme="win7-aero"] .app-bar::after {
   content: "";
   position: absolute;
   top: 0;
+  transform: none;
   right: 0.5rem;
   width: 104px;
   height: 20px;
@@ -338,12 +424,17 @@ html[data-theme="win7-aero"] .app-status { border-top: 0; }
 
 /* --- v5 layout (PLAN.md §2–§3) ---------------------------------------------
  * Touch tiers: core puts brand and actions on the bar's first line and the
- * nav on a second. The desktop bar keeps 7.5rem clear on the right for the
+ * nav on a second. The desktop bar keeps the caption group's width clear on the right for the
  * caption buttons, which on a phone pushed the actions onto two extra
  * lines; up to 900px the buttons get a 20px strip of their own along the
  * top edge instead, as a maximised window's do. */
 @media (max-width: 900px) {
   html[data-theme="win7-aero"] .app-bar { padding-right: 1rem; padding-top: calc(20px + 0.35rem); }
+}
+/* A phone's window is maximised, and a maximised Win7 window has no side
+   frame: the client area runs edge to edge between bar and status strip. */
+@media (max-width: 480px) {
+  html[data-theme="win7-aero"] { --w7-side: 0px; }
 }
 
 /* XL gutters: the Harmony desktop either side of the window. Two soft
@@ -435,7 +526,7 @@ html[data-theme="win7-aero"] {
   --w7-caption: 2rem;
   --modal-bg:
     linear-gradient(#ffffff, #ffffff) var(--w7-frame) var(--w7-caption) / calc(100% - 2 * var(--w7-frame)) calc(100% - var(--w7-caption) - var(--w7-frame)) no-repeat,
-    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 30%, rgb(255 255 255 / 0.6)), color-mix(in srgb, var(--aero-tint) 45%, rgb(255 255 255 / 0.45)));
+    linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 26%, var(--w7-frost)), color-mix(in srgb, var(--aero-tint) 34%, var(--w7-frost-low)));
   --modal-border: rgba(0, 0, 0, 0.55);
   --modal-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55) inset, 0 12px 32px rgba(0, 0, 0, 0.45);
 }
@@ -465,7 +556,7 @@ html[data-theme="win7-aero"] .modal-header {
 html[data-theme="win7-aero"] .modal-header::before { content: none; }
 /* Minimise and maximise take the caption's black, as core already gives
    the close button; the default muted grey faded out on darker tints. */
-html[data-theme="win7-aero"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, inherit); }
+html[data-theme="win7-aero"] .modal-header :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, inherit); }
 /* Client-area content sits in from the white edge. */
 html[data-theme="win7-aero"] .modal > :not(.modal-header):not(.modal-footer) { margin-inline: 1rem; }
 html[data-theme="win7-aero"] .modal-header + * { margin-top: 1rem; }
@@ -498,14 +589,15 @@ html[data-theme="win7-aero"] {
 
 /* Close (v5): Aero's wide red glossy caption button, drawn as centred
    layers so it keeps its 43x20 shape when the hit area grows to --tap-min. */
-html[data-theme="win7-aero"] .modal-header > .btn-close {
-  --btn-close-bg: linear-gradient(#e8a493, #d0573c 45%, #c1301a 55%, #d7612f) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
-  --btn-close-bg-hover: linear-gradient(#f2b8a6, #e5684b 45%, #d63e22 55%, #ea7a43) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+html[data-theme="win7-aero"] .modal-header .btn-close {
+  --btn-close-bg: linear-gradient(#e8a493, #d0573c 45%, #c1301a 55%, #d7612f) 50% 0 / 41px 19px no-repeat, linear-gradient(#1d3a5c, #1d3a5c) 50% 0 / 43px 20px no-repeat;
+  --btn-close-bg-hover: linear-gradient(#f2b8a6, #e5684b 45%, #d63e22 55%, #ea7a43) 50% 0 / 41px 19px no-repeat, linear-gradient(#1d3a5c, #1d3a5c) 50% 0 / 43px 20px no-repeat;
   --btn-close-radius: 0;
   --btn-close-width: 43px;
   --btn-close-height: 20px;
   --btn-close-glyph-size: 1.1em;
   --modal-header-close-fg: #fff;
+  --btn-close-fg: #fff;
   --btn-close-fg-hover: #fff;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
@@ -555,11 +647,13 @@ html[data-theme="win7-aero"]:has(.desktop-screen) {
   --app-padding: 0;
   --app-main-bg: transparent;
   --app-main-padding: 0;
+  --app-main-padding-mobile: 0;
+  --app-main-padding-tablet: 0;
   --app-bg: transparent;
   --app-status-radius: 0;
 }
 html[data-theme="win7-aero"] .desktop-screen { border: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
-html[data-theme="win7-aero"] .desktop > .desktop-bar { border: 0; border-top: 1px solid rgba(0, 0, 0, 0.6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); color: #ffffff; padding-block: 0; }
+html[data-theme="win7-aero"] .desktop > .desktop-bar { border: 0; border-top: 1px solid rgba(0, 0, 0, 0.6); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); color: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.5); padding-block: 0; }
 html[data-theme="win7-aero"] .desktop-bar > .taskbar-start { align-self: center; margin-inline: 0.3rem 0.5rem; }
 html[data-theme="win7-aero"] .desktop-bar > .taskbar-start > .taskbar-start-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 html[data-theme="win7-aero"] .taskbar-start > .icon {
@@ -590,4 +684,181 @@ html[data-theme="win7-aero"] .window-pane .desktop-icon {
   --desktop-icon-label-fg-selected: #000000;
   --desktop-icon-glyph: #1e5aa8;
   --desktop-icon-filter: none;
+}
+
+/* --- Win7 over Luna's leftovers ----------------------------------------- *
+ * Everything below replaces an XP detail the build inherits from
+ * winxp-luna with its Windows 7 counterpart. */
+html[data-theme="win7-aero"] {
+  /* Explorer's command bar: a pale-blue gradient strip with a soft rule. */
+  --toolbar-bg: linear-gradient(180deg, #f5faff, #dce8f6);
+  /* Details-view column header: white fading to pale blue-grey, one light
+     divider, no beige three-step edge. */
+  --table-head-bg: linear-gradient(180deg, #ffffff, #f1f5fb);
+  --table-head-rule: #d5dfe5;
+  --table-head-rule-width: 1px;
+  --skeleton-bg: #e3ebf5;
+  --avatar-bg: #dfe9f5;
+  --dropzone-bg-active: #e3ebf5;
+  /* The 13px desktop root (inherited from Luna's 8pt scale) made the
+     smallest spacing steps ~3px; text needs 4px+ clear of a box edge. */
+  --space-3xs: max(0.125rem, 2px);
+  --space-2xs: max(0.25rem, 5px);
+  /* Segmented toggles: Win7 command-button padding, so a five-way group
+     fits a phone row without the labels touching their edges. */
+  --toggle-btn-padding: calc(0.3em * var(--density)) calc(0.6em * var(--density));
+  --toast-bg: linear-gradient(180deg, #ffffff, #e4ecf7);
+  --card-border: #b9cde5;
+  --card-bg: #ffffff;
+  --scrollbar-track: #f0f0f0;
+  --luna-heading: #1e395b;
+  /* Inactive desktop windows keep the glass frame and black caption;
+     only the caption buttons fade, as in Win7. */
+  --window-header-bg-inactive: transparent;
+  --window-header-fg-inactive: #1a1a1a;
+  --window-header-filter-inactive: none;
+  /* The trackbar groove: a 4px light channel with a dark top edge, drawn
+     as a content-box background (core keeps the 24/44px hit area). */
+  --slider-height: 4px;
+}
+html[data-theme="win7-aero"] .toolbar { border-bottom-color: #c5d5e8; }
+html[data-theme="win7-aero"] .table th { padding-block: max(5px, var(--cell-pad-y, calc(0.5em * var(--density)))); }
+html[data-theme="win7-aero"] .table :is(td.is-editing, tr.is-editing > td) > .field-error { padding-block: 4px 5px; }
+/* An input squeezed into a narrow cell (a Qty column) keeps a full target. */
+html[data-theme="win7-aero"] .table td > :is(.input, .select) { min-inline-size: var(--tap-min); }
+
+/* Captions: a full-width glass strip across the top of each panel, text
+   padded in from its edges — not Luna's group-box label on the frame. */
+html[data-theme="win7-aero"] .panel { margin-top: 0; }
+html[data-theme="win7-aero"] .panel-header {
+  --luna-legend-bg: var(--panel-header-bg);
+  width: auto;
+  max-width: none;
+  margin: calc(-1 * var(--surface-pad, 1rem)) calc(-1 * var(--surface-pad, 1rem)) var(--space-s);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.95em;
+}
+
+/* Status strip: frosted glass end to end. No XP "start" pill, no cyan
+   tray; the tray text is the strip's own dark text. */
+html[data-theme="win7-aero"] .app-status::before { content: none; }
+html[data-theme="win7-aero"] .app-status { padding-inline-start: 0.6rem; }
+html[data-theme="win7-aero"] .app-status:not(.taskbar) { --muted: #2b3540; }
+/* A strip marked .taskbar is the Win7 taskbar: dark glass, white text. */
+html[data-theme="win7-aero"] .app-status.taskbar { --app-status-bg: var(--taskbar-bg); --app-status-fg: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.5); }
+html[data-theme="win7-aero"] .app-status > :last-child:not(:first-child) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+/* A text-only Start button in the strip becomes the orb: the four-pane
+   flag drawn over the orb glass, the word kept for assistive tech. */
+html[data-theme="win7-aero"] .app-status > .taskbar-start:not(:has(.icon)) {
+  --taskbar-start-bg:
+    linear-gradient(#f65314, #f65314) calc(50% - 0.27rem) calc(50% - 0.27rem) / 0.48rem 0.48rem no-repeat,
+    linear-gradient(#7cbb00, #7cbb00) calc(50% + 0.27rem) calc(50% - 0.27rem) / 0.48rem 0.48rem no-repeat,
+    linear-gradient(#00a1f1, #00a1f1) calc(50% - 0.27rem) calc(50% + 0.27rem) / 0.48rem 0.48rem no-repeat,
+    linear-gradient(#ffbb00, #ffbb00) calc(50% + 0.27rem) calc(50% + 0.27rem) / 0.48rem 0.48rem no-repeat,
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), rgba(160, 210, 255, 0.55) 45%, rgba(40, 110, 190, 0.75));
+  overflow: hidden;
+  text-indent: 200%;
+  white-space: nowrap;
+}
+html[data-theme="win7-aero"] .app-status > .taskbar-start > .taskbar-start-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* Tabs: no Luna orange hot-track line; hover is the pale-blue fill. */
+html[data-theme="win7-aero"] .tab:is(:hover, .is-active):not(:focus-visible) { box-shadow: none; }
+
+/* Check boxes and radios: Win7's grey frame, dark blue-grey tick, blue dot. */
+html[data-theme="win7-aero"] :is(.checkbox, .radio) { border-color: #8f8f8f; }
+html[data-theme="win7-aero"] :is(.checkbox, .radio):hover:not(:focus-visible) { border-color: #3c7fb1; box-shadow: inset 0 0 0 1px #c6e9fd; }
+html[data-theme="win7-aero"] .checkbox:checked::before { border-color: #4a5f97; }
+html[data-theme="win7-aero"] .radio:checked::before { background: radial-gradient(circle at 35% 35%, #9fd8fb, #1d5ea8); }
+
+/* Trackbar: groove + Win7 thumb (11x18, grey gloss, #707070 edge). */
+html[data-theme="win7-aero"] .slider:not(.is-vertical) { margin-block: 0; }
+html[data-theme="win7-aero"] .slider {
+  --slider-radius: 1px;
+  /* Edge #6e6e6e: the groove reaches 3:1 against the white client area. */
+  --slider-bg: linear-gradient(180deg, #6e6e6e 0 1px, #d6d9dc 1px calc(100% - 1px), #ffffff calc(100% - 1px));
+  --slider-border: transparent;
+  /* No border: the 4px groove is the whole content box, and the gradient
+     is laid out on it, so the dark top and white bottom edges show. */
+  --slider-border-width: 0;
+  background-origin: content-box;
+  box-shadow: none;
+}
+html[data-theme="win7-aero"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, #6e6e6e 0 1px, #d6d9dc 1px calc(100% - 1px), #ffffff calc(100% - 1px));
+}
+/* Core pads a vertical fader on its inline axis, which writing-mode turns
+   vertical, so the groove filled the whole 24px target. Pad across it. */
+html[data-theme="win7-aero"] .slider.is-vertical:not(.is-range > .slider) {
+  padding-block: calc((var(--tap-min) - var(--slider-height)) / 2);
+  padding-inline: 0;
+}
+html[data-theme="win7-aero"] .slider::-webkit-slider-thumb {
+  height: 18px;
+  border-color: #707070;
+  background: linear-gradient(180deg, #f2f2f2, #ebebeb 50%, #dddddd 51%, #cfcfcf);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+html[data-theme="win7-aero"] .slider::-moz-range-thumb {
+  height: 18px;
+  border-color: #707070;
+  background: linear-gradient(180deg, #f2f2f2, #ebebeb 50%, #dddddd 51%, #cfcfcf);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+html[data-theme="win7-aero"] .slider.is-vertical::-webkit-slider-thumb { width: 18px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75); }
+html[data-theme="win7-aero"] .slider.is-vertical::-moz-range-thumb { width: 18px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75); }
+
+/* Caption buttons on dialogs and desktop windows: glass minimise and
+   maximise, the wide red close with its white x (Luna blanked the glyph). */
+/* Descendant selectors: a caption group wrapped in its own span gets the
+   same buttons (Luna's direct-child rules miss it). */
+html[data-theme="win7-aero"] .modal-header :is(.btn-min, .btn-max) { --btn-min-glyph: ""; --btn-max-glyph: ""; width: 27px; height: 20px; }
+html[data-theme="win7-aero"] .modal-header :is(.btn-min, .btn-max)::before { display: block; width: 27px; height: 20px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='20'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.75'/%3E%3Cstop offset='.5' stop-color='%23fff' stop-opacity='.35'/%3E%3Cstop offset='.51' stop-color='%238fb4dc' stop-opacity='.45'/%3E%3Cstop offset='1' stop-color='%23c9e3ff' stop-opacity='.75'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 0h27v20H4a4 4 0 0 1-4-4z' fill='url%28%23g%29'/%3E%3Cpath d='M.5 0v15.5a4 4 0 0 0 4 4h22V0' fill='none' stroke='%231d3a5c' stroke-opacity='.75'/%3E%3Cpath d='M1.5 0v14.5a3.5 3.5 0 0 0 3.5 3.5h20.5V0' fill='none' stroke='%23fff' stroke-opacity='.5'/%3E%3Crect x='8.5' y='11' width='10' height='3' fill='%23fff' stroke='%231d3a5c' stroke-width='.8'/%3E%3C/svg%3E") no-repeat; }
+html[data-theme="win7-aero"] .modal-header .btn-max::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='20'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.75'/%3E%3Cstop offset='.5' stop-color='%23fff' stop-opacity='.35'/%3E%3Cstop offset='.51' stop-color='%238fb4dc' stop-opacity='.45'/%3E%3Cstop offset='1' stop-color='%23c9e3ff' stop-opacity='.75'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='27' height='20' fill='url%28%23g%29'/%3E%3Cpath d='M.5 0v19.5h26V0' fill='none' stroke='%231d3a5c' stroke-opacity='.75'/%3E%3Cpath d='M1.5 0v17.5h24V0' fill='none' stroke='%23fff' stroke-opacity='.5'/%3E%3Crect x='8' y='5.5' width='11' height='8' fill='none' stroke='%231d3a5c' stroke-width='3'/%3E%3Crect x='8' y='5.5' width='11' height='8' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat; }
+/* One flush strip hanging from the top frame edge: neighbours share their
+   1px divider, the glyph boxes sit at the top of the (taller) hit areas,
+   and a wrapper span's own gap is cancelled. */
+html[data-theme="win7-aero"] .modal-header > :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: calc(-1px - 0.5rem); }
+html[data-theme="win7-aero"] .modal-header > * > :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: -1px; }
+html[data-theme="win7-aero"] .modal-header :is(.btn-min, .btn-max, .btn-close) { align-self: flex-start; align-items: flex-start; }
+html[data-theme="win7-aero"] .modal-header .btn-close::before { line-height: 20px; }
+html[data-theme="win7-aero"] .modal-header > :has(> :is(.btn-min, .btn-max, .btn-close)) { gap: 0 !important; align-self: flex-start; } /* beats a wrapper's inline gap */
+html[data-theme="win7-aero"] .modal-header > .btn-close { top: 0; right: 0.5rem; transform: none; width: 43px; height: 20px; }
+/* A real close button replaces the drawn one, wrapped or not. */
+html[data-theme="win7-aero"] .modal-header:has(.btn-close)::after { content: none; }
+html[data-theme="win7-aero"] :is(.modal-header, .drawer.drawer > .panel-header) .btn-close {
+  --btn-close-glyph: "\00d7";
+  font-weight: 700;
+}
+html[data-theme="win7-aero"] .drawer.drawer > .panel-header > .btn-close {
+  --btn-close-bg: linear-gradient(#e8a493, #d0573c 45%, #c1301a 55%, #d7612f) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+  --btn-close-bg-hover: linear-gradient(#f2b8a6, #e5684b 45%, #d63e22 55%, #ea7a43) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+  --btn-close-radius: 0;
+  --btn-close-width: 43px;
+  --btn-close-height: 20px;
+  --btn-close-glyph-size: 1.1em;
+  --btn-close-fg: #fff;
+  --btn-close-fg-hover: #fff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+/* A dialog drawn without a close control still shows Win7's close, not XP's. */
+html[data-theme="win7-aero"] .modal-header::after {
+  top: 0;
+  right: 0.5rem;
+  width: 43px;
+  height: 20px;
+  transform: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='43' height='20'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23e8a493'/%3E%3Cstop offset='.45' stop-color='%23d0573c'/%3E%3Cstop offset='.55' stop-color='%23c1301a'/%3E%3Cstop offset='1' stop-color='%23d7612f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='.5' y='.5' width='42' height='19' rx='3' fill='url%28%23r%29' stroke='%236b1c10'/%3E%3Cpath d='M17.5 6l8 8M25.5 6l-8 8' stroke='%235a1a12' stroke-width='3.6'/%3E%3Cpath d='M17.5 6l8 8M25.5 6l-8 8' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") no-repeat;
+}
+
+@media (pointer: coarse) {
+  /* Touch: a plain blur, no saturate pass, to keep phone scrolling cheap. */
+  html[data-theme="win7-aero"] :is(.modal, .dropdown, .app-main:not(.desktop-screen), .app-bar, .app-status) {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
