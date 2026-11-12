@@ -17,31 +17,40 @@ hover glow and the selection underline.
 
 1. **The focused label is white over a glowing underline, never a filled
    block.** Strip items are grey bold caps; the active one turns white
-   with a 3px blue underline glowing beneath it
-   (`:is(.nav-item, .menubar > li > button).is-active::after`). Toggle
+   with a blue underline glowing beneath it
+   (`:is(.nav-item, .menubar > li > button).is-active::after`), a slim 2px
+   line with a 6px glow so the white label carries the focus. Toggle
    buttons and segmented items select with a lighter glass and a blue edge,
    not a blue fill.
-2. **Blue backdrop, neutral chrome.** The page is a deep blue radial
-   (`#0b3a80` → `#072659` → `#020a1a`) with faint bokeh discs, darkening
-   toward the edges; surfaces are neutral `#121314` / `#1d1f22` glass, not
-   blue-tinted.
+2. **Blue backdrop, neutral chrome.** The page is a cyan-leaning blue
+   radial (hue ~205: `#065080` → `#043e6c` → `#031637`) under a field of
+   crisp bokeh discs, darkening toward the edges; surfaces are neutral
+   `#121314` / `#1d1f22` glass, not blue-tinted.
 3. **One blue, used as light.** `--accent` (`#1e90ff`) is a glow colour;
    only primary buttons still fill with it.
 
 ## Signature details
 
-- The menu strip: `--app-bar-bg: linear-gradient(180deg, #2a2d31, #0b0c0e 45%, #000)`
-  with a 1px `rgba(255,255,255,.18)` top hairline; items in uppercase bold
-  `#9aa0a6`, 1.1rem, split by 1px faint separators.
-- The active item's underline: 3px `--accent`,
-  `box-shadow: 0 0 12px 2px rgba(30,144,255,.9)`.
+- The backdrop: a fixed, viewport-sized `body::before` layer (composited,
+  so scrolling never repaints it) holding ~15 crisp `radial-gradient`
+  discs of 1.5-10rem in `rgba(40,150,230,…)`, each with a 1px brighter rim,
+  over the blue radial.
+- The menu strip: a tall 4rem band,
+  `--app-bar-bg: linear-gradient(180deg, #232323, #141414 50%, #050505)`
+  with a 1px `rgba(255,255,255,.18)` top hairline; items in large (1.4rem)
+  uppercase bold `#9aa0a6` with a `0 1px 0 #000` emboss, in even centred
+  cells at least 8rem wide, split by 1px faint separators.
+- The active item's underline: 2px `--accent`,
+  `box-shadow: 0 0 6px 1px rgba(30,144,255,.8)`.
 - The submenu shelf: `.segmented` is a black gradient whose bottom corners
   are cut by `clip-path` (the 'Dateien | Addons' trapezoid), with dark
   separators between items.
-- The bottom bar: `.app-status` is grey glass
-  (`linear-gradient(180deg, #3a3d41, #141516)`) with a light top hairline.
+- The bottom bar: `.app-status` is a taller grey glass band
+  (`linear-gradient(180deg, #3a3d41, #141516)`, 0.6rem padding) with a
+  light top hairline.
 - Flat rectangles: square slider thumb and switch knobs, a grey `#70767e`
-  slider track.
+  slider track; icon buttons, badges/chips and avatars take `--radius`
+  (no circles or pills).
 
 ## Tell-tales of an inauthentic result
 
@@ -75,20 +84,29 @@ the 1px glowing-underline accent bar. Colour is always `currentColor`.
 `--font` is `"Titillium Web", "Arial Narrow", "Segoe UI", sans-serif`;
 `--font-mono` is `Consolas, monospace`. Titillium Web (OFL, already vendored
 in `assets/fonts/`) stands in for Confluence's bold, slightly condensed
-sans; the skin's own face is not named. Headings are 700; strip items, tabs
-and segmented items are uppercase 700 with 0.02em tracking.
+sans; the skin's own face is not named. Headings are 700. Strip items, tabs
+and segmented items use a wider bold for Confluence's broad menu caps —
+`Roboto, "Segoe UI", "DejaVu Sans"`, then Titillium — uppercase 700, no
+extra tracking.
 
 ## Contrast honesty
 
 - `--accent` `#1e90ff` is a glow on black glass; `--on-accent` `#04101f`
   carries text on the few accent fills. `--accent-text` `#2d98ff` clears
   4.5:1 on its own 20% badge tint.
-- Text `#e8e8e8` and muted `#aab0b6` sit on neutral `#121314` / `#1d1f22`;
+- Text `#e8e8e8` and muted `#c4cad0` sit on neutral `#121314` / `#1d1f22`;
   muted is lifted above the reference's darker grey so it also clears 4.5:1
-  on the backdrop's brightest blue.
+  on the backdrop's brightest blue. Links use `--accent-2` `#7fc4ff` for
+  the same reason.
+- The backdrop centre is held at `#065080`; the capture's centre is
+  brighter (`#0365a2`), which would drop muted text over it below 4.5:1.
+  The hue (~205) matches; the value is the trade-off.
 - Strip labels `#9aa0a6` clear 4.5:1 on the strip's lightest stop; the
   brand is white, as the KODI wordmark is.
-- The hexes are eyeballed from `xbmc-confluence-14.jpg`, not sampled.
+- The backdrop and strip hexes are sampled from `xbmc-confluence-14.jpg`
+  (strip `#191919`-`#2c2c2c`, backdrop `#0365a2` → `#043e6c` → `#031637`);
+  the strip label is lifted from the capture's `#515151` to `#9aa0a6` for
+  4.5:1.
 
 ## Reference status
 
@@ -103,15 +121,17 @@ Not backed: the glowing blue underline itself (Confluence marks focus by whiteni
 ## v5 layout
 
 - **Tiers.** Desktop and tablet are the same shell (there is no rail to
-  drop). On mobile the category tiles lose the big home-screen padding,
-  the strip's caps step down to 0.95rem, and the taskbar tray keeps a
-  small inline-end margin off the status-bar edge. A number field in a
+  drop). On mobile the category tiles lose the big home-screen padding and
+  their outer blur shadow, cards and panels go opaque (cheaper scrolling),
+  the strip's caps step down to 0.8rem so the strip stays one row (a plain
+  `.nav` in the bar scrolls sideways instead of wrapping), and the taskbar
+  tray keeps a small inline-end margin off the status-bar edge. A number field in a
   table cell keeps at least `--tap-min` of width.
 - **Nesting.** The home-screen tile look (big padding, centred label,
   black glass with a light top edge, hover glow and lift) is for top-level
   cards. A card nested in a panel, card, dialog or drawer steps down to
   normal padding, left-aligned text and a hairline frame; a card holding a
-  table, form or list stays left-aligned. The hover lift only applies on
+  table, form, list or KPI (`.stat-*`, `.sparkline`) stays left-aligned. The hover lift only applies on
   devices that can hover.
 - **XL gutter art.** More of the out-of-focus backdrop: faint bokeh discs,
   within about 1.2:1 of `--bg`. Still.
