@@ -19,7 +19,9 @@ html[data-theme="teletext"] {
   --bg: #000000;
   --surface: #000000;
   --surface-2: #000000;
-  --border: #ffffff;
+  /* Edges are a blue cell, never a white hairline: white is kept for
+     the focus ring alone. */
+  --border: #0000ff;
   --hairline: #4d4d4d;
   --text: #ffffff;
   /* Not part of the real 8-colour set — teletext had no "muted" register,
@@ -86,7 +88,23 @@ html[data-theme="teletext"] {
   --badge-radius: 0;
   --overlay-bg: rgba(0, 0, 0, 0.85);
   --indicator-fg: var(--accent);
-  --indicator-track: #333333;
+  --indicator-track: #0000ff;
+  --spinner-track: #0000ff;
+  --spinner-fg: var(--accent);
+  /* Carousel dots: white cells, the current one cyan. */
+  --carousel-dot: #ffffff;
+  --carousel-dot-active: #00ffff;
+  /* Secondary roles take a broadcast colour, not the grey: nav links
+     white, form labels yellow (as a listings page labels its rows). */
+  --nav-item-fg: #ffffff;
+  --label-fg: #ffff00;
+  --nav-rail-rule: transparent;
+  --desktop-monitor-radius: 0;
+  /* An inactive window is a blue band, active magenta: no filter, which
+     would push the band off the eight colours. */
+  --window-header-bg-inactive: #0000ff;
+  --window-header-fg-inactive: #ffffff;
+  --window-header-filter-inactive: none;
   /* Teletext had one weight: never let the browser smear a faux bold
      over the stepped SAA5050 cells. */
   font-synthesis: none;
@@ -276,28 +294,32 @@ html[data-theme="teletext"] .app-bar {
    yellow and cyan, one per remote-control key, under a blue strapline.
    Each is its own full-width row at body size. One monospaced string of
    four 10-cell words (the 40-column row), coloured cell-for-cell by a
-   hard-stopped gradient clipped to the text; the size shrinks so all 40
-   cells fit a phone. */
-html[data-theme="teletext"] .app-status { flex-wrap: wrap; row-gap: 0.2rem; }
+   hard-stopped gradient clipped to the text. The row spans the whole
+   strip, as it spanned the screen: the cell size follows the strip up to
+   a cap, each key word starts a quarter (tab stops at 25%, the 10-cell
+   columns) and the strapline sits centred in its band. */
+html[data-theme="teletext"] .app-status { flex-wrap: wrap; row-gap: 0.2rem; container-type: inline-size; }
 html[data-theme="teletext"] .app-status::before,
 html[data-theme="teletext"] .app-status::after {
   flex: 0 0 100%;
   font-family: var(--font-mono);
-  font-size: min(1rem, calc((100vw - 2.5rem) / 24));
+  font-size: min(1.5rem, calc(100cqi / 24.5));
+  tab-size: 25cqi;
   white-space: pre;
   overflow: hidden;
 }
 html[data-theme="teletext"] .app-status::before {
-  content: "  Teletext: the world at your fingertips";
+  content: "Teletext: the world at your fingertips";
+  text-align: center;
   order: 98;
   margin-top: 0.3rem;
   background: #0000ff;
   color: #ffff00;
 }
 html[data-theme="teletext"] .app-status::after {
-  content: "Headlines Sport     Weather   TV Guide  ";
+  content: "Headlines\9Sport\9Weather\9TV Guide";
   order: 99;
-  background: linear-gradient(90deg, #ff0000 0 10ch, #00ff00 10ch 20ch, #ffff00 20ch 30ch, #00ffff 30ch 40ch) 0 0 / 40ch 100% no-repeat;
+  background: linear-gradient(90deg, #ff0000 0 25%, #00ff00 25% 50%, #ffff00 50% 75%, #00ffff 75%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -384,3 +406,26 @@ html[data-theme="teletext"] {
     conic-gradient(from 270deg at 12px 20px, #262600 25%, transparent 0) 60px 180px / 132px 300px,
     repeating-linear-gradient(#000 0 200px, #000038 200px 240px);
 }
+
+/* No circles: every core ring, dot and ball is a square cell. The rings
+   step round a quarter at a time, the way a cell grid can only move. */
+html[data-theme="teletext"] :is(.carousel-nav > a, .indicator, .spinner) { border-radius: 0; }
+html[data-theme="teletext"] :is(.avatar[data-status], .presence-status)::after { border-radius: 0; }
+html[data-theme="teletext"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+html[data-theme="teletext"] :is(.indicator, .spinner:not(.is-grow)) { animation-timing-function: steps(4); animation-duration: 0.8s; }
+/* One cell size: small print never drops more than a step under body. */
+html[data-theme="teletext"] :is(.badge, .stat-label, .stat-trend, .table th, .btn-sm, .field-hint) { font-size: max(0.875rem, 0.78em); }
+/* Core pads a vertical fader with padding-inline, which vertical-lr turns
+   vertical; physical side padding keeps the track thin in its tap box. */
+html[data-theme="teletext"] .slider.is-vertical:not(.is-range > .slider) { padding: 0 calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2); }
+/* A block-mosaic mark before the brand, built only from teletext mosaic
+   cells, yellow over a hard one-cell-step blue shadow, as the Ceefax
+   wordmark sat on its page. Decorative: generated content is not read. */
+html[data-theme="teletext"] .app-bar .nav-brand::before {
+  content: "\2584\2588\2580" / "";
+  margin-inline-end: 0.5ch;
+  color: #ffff00;
+  text-shadow: 0.25em 0.2em 0 #0000ff;
+}
+/* A bare fieldset's UA groove reads as a white box: a blue cell edge. */
+html[data-theme="teletext"] fieldset { border: 2px solid var(--border); }

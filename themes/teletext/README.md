@@ -33,7 +33,10 @@ a limitation to soften.
 
 ## Signature details
 
-- The page number ("P100") opens the header row in plain white, as on
+- The page number ("P100") opens the header row in plain white, followed
+  by a small block-mosaic mark before the brand (lower-half, full and
+  upper-half cells in yellow over a hard blue offset shadow, as the
+  Ceefax wordmark sat on its page), as on
   every real page; the nav links that follow each take a different
   broadcast colour (cyan / green / yellow / magenta), like a page's index
   lines, on both `.nav-item` links and the demo `.menubar`; the current
@@ -44,25 +47,38 @@ a limitation to soften.
   stretching with it as the hardware row did).
 - Panel titles are full-width colour bands (blue / green / magenta /
   yellow by position, each with the text colour it needs); cards carry a
-  thick band of the same colour on top. Nothing draws a line: table rules
-  and hairlines are gone, as on the real service.
+  thick band of the same colour on top. Nothing draws a white line: table
+  rules and hairlines are gone, as on the real service, and every edge
+  core draws from `--border` (toolbars, drop zones, settings rows, kbd
+  keys, fieldsets, progress) is a blue cell edge. White is kept for the
+  focus ring alone.
 - Tabs are coloured words; the selected one is white on a blue band.
 - **Fastext:** the status strip ends with a blue strapline row (yellow
   *Teletext: the world at your fingertips*) and then the four key words
   on a row of their own — red *Headlines*, green *Sport*, yellow
-  *Weather*, cyan *TV Guide* — as four 10-cell words (the 40-column row)
-  in one monospaced string coloured cell-for-cell by a hard-stopped
-  gradient clipped to the text. Body size, shrinking so all 40 cells fit
-  a phone.
+  *Weather*, cyan *TV Guide* — in one monospaced string coloured by a
+  hard-stopped gradient (25/50/75%) clipped to the text. Both rows span
+  the whole strip, as they spanned the screen: the strip is a size
+  container, the cell size follows it (`100cqi / 24.5`, capped at
+  1.5rem), each key word starts a quarter (tab stops at `25cqi`, the
+  10-cell columns) and the strapline is centred in its band.
 - **No tints, no circles.** Badges are black cells with colour ink; the
   bulk bar and skeletons are flat blue blocks; avatars are flat palette
   cells; edited cells, poll rows, invalid inputs and sparklines carry no
-  wash. Switches, slider thumbs, icon buttons, avatars, status dots and
-  lamps are square. Disabled buttons are black with grey ink and edge,
-  not a dimmed fill.
+  wash. Switches, slider thumbs, icon buttons, avatars, presence dots,
+  status dots, lamps, carousel dots, the display-properties monitor and
+  the spinner/indicator rings are square; the rings step round a quarter
+  at a time (`steps(4)`) on a blue track. Inactive desktop windows carry
+  a blue title band (active ones magenta) with no desaturating filter.
+  Disabled buttons are black with grey ink and edge, not a dimmed fill.
+- **One cell size:** badges, stat labels and trends, table heads, small
+  buttons and field hints never drop under 0.875rem, so small print sits
+  at most a step under body.
 - **Colour, not white outlines:** inputs have a cyan edge; menus,
   popovers, lists and logs a blue one. Secondary lines (list meta, stat
-  labels) are cyan, as on an index page.
+  labels) are cyan, as on an index page; nav links are white and form
+  labels yellow, as a listings page labels its rows. Grey is left only
+  for true hint text and the disabled state.
 - Selected/active rows invert to a solid colour fill with black text
   (`--row-selected-bg`), not a tint or outline — real teletext has no
   concept of a translucent highlight.
@@ -83,6 +99,10 @@ subset and followed by every later addition:
   (mostly 2–4 units). The later additions sit on a 12×12 grid of 2-unit
   cells (strokes 1–2 cells thick, gaps of at least 1 cell) and pack each
   glyph's cells into one path per tone to keep the sprite small.
+- **Cut-outs:** `file`, `file-zip`, `mouse`, `message`,
+  `message-circle`, `cash` and `map` are single `fill-rule="evenodd"`
+  paths with their detail cut out, so they no longer read as plain
+  blocks.
 - **Second tone:** a dimmed cell (`fill-opacity` 0.3–0.5) marks secondary
   detail such as map folds, a pie slice or disc glare. A dim cell must
   never sit on top of a solid one, because it would vanish. Where a mark
@@ -134,10 +154,13 @@ Core's tiers do the work; the theme's one breakpoint (≤480px) hides the header
 
 ## Reference status
 
-`references/teletext/` holds 3 captures plus `RESEARCH.md`, all pure text screens with no people:
+`references/teletext/` holds 8 captures plus `RESEARCH.md`, all pure text screens with no people:
 
-- `teletext-arte-page100.png` — an ARTE page 100: blocky aliased type, a page-number/clock header row, blue-band panels and a blue `101 SOMMAIRE` footer bar. Backs the flat colour-cell blocks and the page-number header idea (the `P100` badge).
-- `teletext-ceefax-football-index.jpg` — a BBC Ceefax football index: cyan headline list with page numbers, white double-height lead lines and a blue title band. Backs the cyan index look, double-height headlines and the 8-colour palette.
-- `teletext-screen-teletexnews.png` — a teletext news page (300): double-height headlines, an index list and a blue footer strip. Backs the double-height and newsflash frame.
-
-Uncertain: `RESEARCH.md` describes a red/green/yellow/blue Fastext bar, but I could not see a four-colour Fastext key bar in any of the three files at their resolution (only blue/yellow footer bands); the Fastext row follows the service's own four-colour key convention rather than any one capture.
+- `ceefax-p100-index.webp` — the Ceefax P100 index: the bottom two rows span the full width, a centred strapline in its band over the four-colour Fastext row (red/green/yellow/cyan). Backs the full-width Fastext strip and the mosaic mark.
+- `ceefax-p324-football-table.png` — a football table: rows separated by colour and blank lines, at most a red rule, no white boxes. Backs the blue edges and the absence of white hairlines.
+- `ceefax-p696-bbc1-listings.webp` — BBC1 listings: yellow times, white titles, cyan descriptions. Backs the cyan meta and the yellow labels.
+- `ceefax-p299-newsreel.png` — yellow mosaic CEEFAX blocks with a drop shadow on a blue frame. Backs the mosaic brand mark and its hard blue shadow.
+- `teletext-arte-page100.png` — an ARTE page 100: page-number/clock header row, blue-band panels, a blue footer bar. Backs the `P100` header.
+- `teletext-ceefax-football-index.jpg` — a Ceefax football index: cyan headline list, double-height lead lines and a blue title band.
+- `teletext-screen-teletexnews.png` — a news page (300): double-height headlines and an index list.
+- `football-nostalgia-print.webp` — mosaic wordmarks and centred multicolour paragraphs.
