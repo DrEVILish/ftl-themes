@@ -89,7 +89,7 @@ files are vendored unmodified.
   carry the same license), not to the CSS or apps that load it.
 - **Source:** https://int10h.org/oldschool-pc-fonts/ (pack v2.2, web
   edition)
-- **Used by:** `msdos` (every glyph on the page)
+- **Used by:** `msdos` (every glyph on the page); `nokia-3310` (code, kbd, pre and samp only)
 
 ## Michroma
 

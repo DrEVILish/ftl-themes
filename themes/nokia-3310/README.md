@@ -47,8 +47,8 @@ background, never from introducing a new colour.
 
 - Signal (left) and battery (right) as tall vertical ink stacks down the
   LCD's side edges, as on the 3310's idle screen (`nokia-3310-blue.png`):
-  on desktop and XL they hang just below the top line, about a third of
-  the viewport tall (`clamp(9rem, 32vh, 26rem)`), in a gutter that the
+  on desktop and XL they hang just below the top line as thin dashes,
+  0.7rem wide and `clamp(7rem, 24vh, 18rem)` tall, in a gutter that the
   main area's inline padding (`--app-main-padding: 1rem 2.3rem`) keeps
   clear; on touch tiers they shrink into the bar's first-line corners.
   Stepped bars widest at the top, a Y antenna and a battery glyph at the
@@ -70,18 +70,29 @@ background, never from introducing a new colour.
   deep above the LCD and 1.25rem at the sides and bottom. From 901px up,
   the top of the silver Navi-key with its cyan `#3aa0d8` line sits on the
   casing just below the screen. On XL
-  the gutters carry faint silver oval keys, three to a row. A sidebar
+  each gutter carries one 3x4 number pad: silver oval keys with their
+  numerals and letters, the outer columns tilted out and sitting higher
+  than the centre one, on otherwise plain casing. A sidebar
   beside the shell (an `aside` sibling of `.app`) is its own LCD panel.
 - The slider is an ink rail (`--slider-bg: var(--text)`) with a square
   ink thumb.
 - Pixel type throughout, in Jersey 15, a squat bold pixel sans: headings,
   the bar brand, window titles, the "Menu" softkey, the short UI strings
-  and body text alike (code stays in the mono). Its small x-height is
-  lifted with `font-size-adjust: ex-height 0.5`; table heads and badges
-  never drop below 0.75rem, so their pixels stay whole on the LCD.
+  and body text alike. Numerals, ids, timestamps, log lines and file names
+  (core's "mono" and readouts) are LCD readouts too: the same face with
+  tabular digits. Only code, kbd, pre and samp keep a true monospace, the
+  bitmap-cut Px437 IBM VGA 9x16, never a thin typewriter face. Its small
+  x-height is lifted with `font-size-adjust: ex-height 0.5`; table heads,
+  badges and small buttons never drop below 0.8rem, and the root steps up
+  to 106.25% on XL, so the pixels stay whole on the LCD.
   `-webkit-font-smoothing: none` where honoured.
-- Dialogs close with a "Back" softkey label; a desktop window's title bar
-  keeps the square × beside its other window buttons.
+- Dialogs close with a "Back" softkey label; a window's title bar (a
+  desktop window, or any header with min/max buttons) keeps the square ×
+  beside its other window buttons.
+- Alerts and toasts lead with an inverted pixel tag ("i" info, "OK"
+  success, "!" warning, "!!" danger; hidden from the accessible name),
+  and a danger alert or toast inverts as a whole, so severity reads by
+  structure, not hue.
 - A destructive button leads with a "!" pixel (hidden from the accessible
   name), so Delete differs from Confirm by structure, not hue.
 - On a phone the bar links sit closer (0.3em inline padding, still
@@ -131,7 +142,7 @@ the original hand-drawn subset and followed by every later addition:
 
 ## Typography
 
-`--font` and `--font-pixel` are `"Jersey 15", "Consolas", "Courier New", monospace`; `--font-mono` (code) is `"Consolas", "Courier New", monospace`. **Jersey 15** (SIL OFL 1.1, vendored as a Latin subset in `assets/fonts/Jersey15-Regular.woff2`; see `assets/fonts/NOTICE.md`) is a bold, squat, proportional pixel sans with open counters (C, 2 and 8 stay distinct at UI sizes), the nearest open relative of the 3310's Series-20 screen font (`nokia-3310-blue.png` shows that font in "Menü" and the clock). It has one weight, already heavy; the `@font-face` claims weights 100–900 so the browser never adds synthetic bold, and no text stroke is used. `font-size-adjust: ex-height 0.5` lifts its 0.41em x-height to body size. It is not the Series-20 face itself: Nokia's font was never released. Pixelify Sans was tried first and dropped: its C and 2 close up into O and 8 at body sizes. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
+`--font` and `--font-pixel` are `"Jersey 15", "Consolas", "Courier New", monospace`; `--font-mono` is the same pixel stack (with `tabular-nums`) for numerals and readouts; inside `code`, `kbd`, `pre` and `samp` it becomes `"Px437 IBM VGA 9x16", "Consolas", "Courier New", monospace` (CC BY-SA 4.0, already vendored as `assets/fonts/Web437_IBM_VGA_9x16.woff2`; see `assets/fonts/NOTICE.md`). **Jersey 15** (SIL OFL 1.1, vendored as a Latin subset in `assets/fonts/Jersey15-Regular.woff2`; see `assets/fonts/NOTICE.md`) is a bold, squat, proportional pixel sans with open counters (C, 2 and 8 stay distinct at UI sizes), the nearest open relative of the 3310's Series-20 screen font (`nokia-3310-blue.png` shows that font in "Menü" and the clock). It has one weight, already heavy; the `@font-face` claims weights 100–900 so the browser never adds synthetic bold, and no text stroke is used. `font-size-adjust: ex-height 0.5` lifts its 0.41em x-height to body size. It is not the Series-20 face itself: Nokia's font was never released. Pixelify Sans was tried first and dropped: its C and 2 close up into O and 8 at body sizes. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
 
 ## Contrast honesty
 

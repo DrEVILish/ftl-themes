@@ -55,7 +55,12 @@ html[data-theme="nokia-3310"] {
      the nearest open cousin of the Series-20 screen font; code and other
      true monospace stays in the mono. */
   --font: "Jersey 15", "Consolas", "Courier New", monospace;
-  --font-mono: "Consolas", "Courier New", monospace;
+  /* Numerals, ids, timestamps, log lines and file names are LCD readouts,
+     so "mono" here is the pixel face with tabular digits; only code keeps
+     a true monospace (the chunky VGA pixel cut, below). */
+  --font-mono: "Jersey 15", "Consolas", "Courier New", monospace;
+  --readout-font: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   --flare: #060b03;
   font-weight: 500;
   /* Jersey 15 has a small x-height (0.41em): lift it to 0.5em so body
@@ -189,6 +194,19 @@ html[data-theme="nokia-3310"] {
   font-weight: 100 900;
   font-display: swap;
 }
+@font-face {
+  font-family: "Px437 IBM VGA 9x16";
+  src: url("assets/fonts/Web437_IBM_VGA_9x16.woff2") format("woff2");
+  font-display: swap;
+}
+/* Code needs real fixed-width columns: a bitmap-cut mono, never a thin
+   anti-aliased typewriter face. */
+html[data-theme="nokia-3310"] :is(code, kbd, pre, samp) {
+  --font-mono: "Px437 IBM VGA 9x16", "Consolas", "Courier New", monospace;
+  /* Its cell is already full-size: lifting its x-height widened a code
+     line past a phone's width. */
+  font-size-adjust: none;
+}
 /* Pixel lines: headings, the bar title and the softkey. */
 html[data-theme="nokia-3310"] :is(h1, h2, h3, .nav-brand, .app-bar-title, .modal-header) {
   font-family: var(--font-pixel);
@@ -227,8 +245,12 @@ html[data-theme="nokia-3310"] :is(h4, th, label, .nav a, .nav-item, .menubar li 
 }
 /* The pixel face needs about 12px to keep its pixels whole on the
    low-contrast LCD: small heads and badges never go below that. */
-html[data-theme="nokia-3310"] .table th { font-size: max(0.75rem, 0.78em); }
-html[data-theme="nokia-3310"] .badge { font-size: max(0.75rem, 0.75em); }
+html[data-theme="nokia-3310"] :is(.table th, .badge) { font-size: max(0.8rem, 0.8em); }
+html[data-theme="nokia-3310"] .btn-sm { font-size: max(0.8rem, 0.78em); }
+/* XL: the screen is far wider, so its pixels grow a step too. */
+@media (min-width: 1801px) {
+  html[data-theme="nokia-3310"] { font-size: 106.25%; }
+}
 /* The wider pixel face squeezes a narrow numeric input in a crowded
    table row below its touch size; it keeps a full tap target. */
 html[data-theme="nokia-3310"] td > .input { min-inline-size: var(--tap-min); }
@@ -328,12 +350,13 @@ html[data-theme="nokia-3310"] .app-bar::after {
   html[data-theme="nokia-3310"] .app-bar::after {
     top: calc(100% + 1.5rem);
     transform: none;
-    width: 1.1rem;
-    height: clamp(9rem, 32vh, 26rem);
+    /* Thin dashes about 2.5x as tall as wide, as beside the clock. */
+    width: 0.7rem;
+    height: clamp(7rem, 24vh, 18rem);
     /* Only the bars stretch down the edge; the antenna and battery glyph
        keep their 7x8 pixel shape (about one bar tall) at the base. */
     background:
-      var(--_nokia-bars) top / 100% calc(100% - 1.7rem) no-repeat,
+      var(--_nokia-bars) top / 100% calc(100% - 1.3rem) no-repeat,
       var(--_nokia-icon) bottom / 100% auto no-repeat;
   }
   html[data-theme="nokia-3310"] .app-bar::before {
@@ -462,13 +485,17 @@ html[data-theme="nokia-3310"] .app-status::before {
   html[data-theme="nokia-3310"] .toggle-btn { font-size: 0.85em; --toggle-btn-padding: 0.5em 0.6em; letter-spacing: -0.03em; }
 }
 
-/* XL gutters (v5, PLAN.md §3): the rest of the handset. The navy casing
-   carries the keypad: rows of silver oval keys, three to a row like the
-   3310's number pad, kept faint so the gutter stays quiet. */
+/* XL gutters (v5, PLAN.md §3): the rest of the handset. Each side of the
+   navy casing carries one 3x4 number pad, the 3310's silver keys with
+   their numerals: outer columns tilted out and sitting higher than the
+   centre one. The art runs almost to the shell, so the pad sits clear of
+   the fade. */
 html[data-theme="nokia-3310"] {
+  --app-gutter-fade: 2rem;
+  --_nokia-keypad: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 240' font-family='sans-serif' font-weight='700' text-anchor='middle'%3E%3Cstyle%3Eellipse%7Bfill:%23c9cbc6%3Bfill-opacity:.38%7Dtext%7Bfill:%231b1d27%3Bfill-opacity:.75%7D%3C/style%3E%3Cg transform='translate(26 34) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E1%3C/text%3E%3C/g%3E%3Cg transform='translate(80 44) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E2%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Eabc%3C/text%3E%3C/g%3E%3Cg transform='translate(134 34) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E3%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Edef%3C/text%3E%3C/g%3E%3Cg transform='translate(26 92) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E4%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Eghi%3C/text%3E%3C/g%3E%3Cg transform='translate(80 102) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E5%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Ejkl%3C/text%3E%3C/g%3E%3Cg transform='translate(134 92) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E6%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Emno%3C/text%3E%3C/g%3E%3Cg transform='translate(26 150) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E7%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Epqrs%3C/text%3E%3C/g%3E%3Cg transform='translate(80 160) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E8%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Etuv%3C/text%3E%3C/g%3E%3Cg transform='translate(134 150) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E9%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Ewxyz%3C/text%3E%3C/g%3E%3Cg transform='translate(26 208) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E%2A%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3E%2B%3C/text%3E%3C/g%3E%3Cg transform='translate(80 218) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E0%3C/text%3E%3C/g%3E%3Cg transform='translate(134 208) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E%23%3C/text%3E%3C/g%3E%3C/svg%3E");
   --app-gutter-art:
-    radial-gradient(ellipse 34px 18px at 50% 50%, rgba(200, 201, 196, 0.2) 0 92%, transparent 100%) 0 0 / 92px 64px,
-    radial-gradient(ellipse 34px 18px at 50% 50%, rgba(255, 255, 255, 0.06) 0 30%, transparent 70%) 0 -4px / 92px 64px,
+    var(--_nokia-keypad) left max(0px, calc((100vw - 1800px) / 4 - 1rem - 100px)) center / 200px 300px no-repeat,
+    var(--_nokia-keypad) right max(0px, calc((100vw - 1800px) / 4 - 1rem - 100px)) center / 200px 300px no-repeat,
     #3c3e4e;
 }
 
@@ -484,9 +511,9 @@ html[data-theme="nokia-3310"] {
 }
 
 /* Close (v5): a dialog backs out with the phone's "Back" soft key, not ×.
-   A desktop window's title bar keeps the square × beside its other two
-   window buttons. */
-html[data-theme="nokia-3310"] .modal-header > .btn-close:not(.desktop-window *) {
+   A window's title bar (a desktop window, or any header that also has the
+   min/max buttons) keeps the square × beside them. */
+html[data-theme="nokia-3310"] .modal-header > .btn-close:not(.desktop-window *, :is(.btn-min, .btn-max) ~ *) {
   --btn-close-glyph: "Back";
   --btn-close-width: auto;
   --btn-close-pad: 0 0.4em;
@@ -499,6 +526,25 @@ html[data-theme="nokia-3310"] .btn-danger::before {
   content: "!" / "";
   margin-inline-end: 0.35em;
 }
+
+/* Alerts and toasts: the one ink can't tell severity, so a lead cell does,
+   as an inverted pixel tag (hidden from the accessible name): "i" info,
+   "OK" success, "!" warning; danger inverts the whole box as well. */
+html[data-theme="nokia-3310"] :is(.alert-info, .alert-success, .alert-warning, .alert-danger, .toast-success, .toast-warning, .toast-danger)::before {
+  flex: none;
+  min-inline-size: 1.4em;
+  padding-inline: 0.25em;
+  font: 700 1em/1.4 var(--font-pixel);
+  text-align: center;
+  background: var(--_lead-bg, var(--text));
+  color: var(--_lead-fg, var(--bg));
+}
+html[data-theme="nokia-3310"] .alert-info::before { content: "i" / ""; }
+html[data-theme="nokia-3310"] :is(.alert-success, .toast-success)::before { content: "OK" / ""; }
+html[data-theme="nokia-3310"] :is(.alert-warning, .toast-warning)::before { content: "!" / ""; }
+html[data-theme="nokia-3310"] :is(.alert-danger, .toast-danger)::before { content: "!!" / ""; }
+html[data-theme="nokia-3310"] .alert-danger { --alert-bg: var(--text); --alert-fg: var(--bg); --_lead-bg: var(--bg); --_lead-fg: var(--text); }
+html[data-theme="nokia-3310"] .toast-danger { --toast-bg: var(--text); --toast-fg: var(--bg); --_lead-bg: var(--bg); --_lead-fg: var(--text); }
 
 /* Fallback icons (core's outline set beyond the redrawn glyphs): mitred
    corners and no anti-aliasing, so they render pixel-hard beside the LCD
