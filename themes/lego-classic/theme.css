@@ -1,41 +1,64 @@
 /* ftl-themes: LEGO Classic
  * Theme-Name: LEGO Classic
- * Description: Primary-colour blocks, thick borders, and circular corner studs on every panel — a physical brick, not just a palette.
+ * Description: Primary-colour bricks with thick black outlines, a press-shadow and a row of studs along every panel top, on the booklet's lemon sand.
  */
+
+/* Jost (OFL), a Futura revival: the booklet's geometric step numerals.
+   One variable Latin file covers 400 body to 900 numerals. */
+@font-face {
+  font-family: "Jost";
+  src: url("assets/fonts/Jost-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  /* Jost's own metrics give a 1.45em content area; trim it to Arial's
+     1.12em so text keeps its padding in fixed-height bricks. */
+  ascent-override: 92%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
 
 html[data-theme="lego-classic"] {
   --motion-leave: drop;
   color-scheme: light;
-  --bg: #f0e5c2;   /* the booklet's warm yellow sand, pale enough for blue/red text at 4.5:1 */
+  --bg: #dcc95a;   /* the booklet's lemon sand (#d8c451-#ddc94e); text tokens darken to keep 4.5:1 */
   --surface: #ffffff;
   --surface-2: #e6e6e6;
   --border: #1b1b1b;
   --hairline: #cccccc;
   --text: #1b1b1b;
-  --muted: #5a5a5a;
-  --accent: #cc111a;   /* a hair under #d0111b so red links clear 4.5:1 on the grey */
-  --accent-2: #f5c400;
+  --muted: #474747;
+  --accent: #b80f18;   /* LEGO red, a hair deep so red text clears 4.5:1 on the sand */
+  --accent-2: #f2d43a;
   --danger: #d0111b;
   --success: #237841;
-  --warning: #f5c400;
+  --warning: #f2d43a;   /* the booklet's lemon brick yellow, not egg-yolk */
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --success-text: #21703d;
-  --warning-text: #6e5700;
-  --danger-text: #b80f18;
+  --success-text: #1a5a31;
+  --warning-text: #5e4a00;
+  --danger-text: #9a0c14;
   /* Accent as small text (accent badges) on a tint of itself. */
-  --accent-text: #a50d15;
+  --accent-text: #9a0c14;
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
-  --radius: 0.4rem;
+  --radius: 0.125rem;   /* bricks are near-square: a 2px moulding radius */
   --font: "Futura", "Jost", "Century Gothic", "URW Gothic", "URW Gothic L", "Avenir Next", Avenir, Arial, sans-serif;
-  --font-mono: Consolas, monospace;
-  --flare: #0a64c2;   /* Classic Space blue, a step toward the booklet's print; 5.8:1 under white */
+  --font-mono: Consolas, "Liberation Mono", "Courier New", monospace;
+  /* Classic Space blue. The booklet prints #0090dc: that bright blue fills
+     everything that carries no text; --flare is the same hue one step
+     deeper so white text on it clears 4.6:1; --flare-text is the link ink. */
+  --brick-blue: #0090dc;
+  --flare: #007ac0;
+  --flare-text: #064a8f;
 
-  --btn-bg: var(--accent);
-  --btn-fg: #ffffff;
+  /* A plain button is a white brick; red is kept for the one primary
+     action per view, as the booklet keeps red for the odd accent part. */
+  --btn-bg: var(--surface);
+  --btn-fg: var(--text);
+  --btn-border-hover: #1b1b1b;
   --btn-border-width: 3px;
   --btn-border: #1b1b1b;
   --btn-weight: 800;
@@ -43,8 +66,8 @@ html[data-theme="lego-classic"] {
   --btn-shadow-hover: 0 1px 0 #1b1b1b;
   --input-bg: #ffffff;
   --input-border-width: 3px;
-  /* Opaque brick-blue ring over a ground-coloured gap: 4.8:1 on sand. */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 5px var(--flare);
+  /* Opaque deep-blue ring over a ground-coloured gap: 5.2:1 on sand. */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 5px var(--flare-text);
   --panel-border-width: 3px;
   --panel-shadow: 0 4px 0 #1b1b1b;
   /* Every brick gets the 3px moulding line: cards, list groups, list cards. */
@@ -56,21 +79,41 @@ html[data-theme="lego-classic"] {
   --list-card-border: #1b1b1b;
   --table-head-bg: var(--flare);
   --table-head-fg: #ffffff;
-  --row-selected-bg: #f5c400;
+  --row-selected-bg: var(--warning);
   --row-selected-fg: #1b1b1b;
-  --nav-bg: #1a78cc;
-  --nav-item-radius: 0.2rem;
+  --nav-bg: var(--flare);
+  --nav-item-radius: 0;
   --nav-item-bg-active: var(--surface);
   --nav-item-fg-active: #1b1b1b;
   --nav-brand-fg: #ffffff;
   --nav-item-fg: #ffffff;
+  /* The folder rail is the same blue plate as the bar, so its white items
+     read; a 3px moulding line on its open edge. */
+  --nav-rail-bg: var(--flare);
+  --nav-rail-rule-width: 3px;
+  --nav-rail-rule: #1b1b1b;
+  /* Field rows and meters are bricks too: white, black 3px/2px moulding. */
+  --field-row-bg: var(--surface);
+  --field-row-border: #1b1b1b;
+  --field-row-border-width: 3px;
+  --field-row-border-hover: #1b1b1b;
+  --meter-track: var(--surface);
+  --meter-border: #1b1b1b;
+  --meter-border-width: 2px;
+  /* The scrollspy strip sits on the sand, ruled off by the moulding line. */
+  --scrollspy-nav-bg: var(--bg);
+  --scrollspy-nav-rule: #1b1b1b;
+  /* Desktop icons are blue structure bricks, not red. */
+  --desktop-icon-glyph: var(--flare);
+  --window-icon-glyph: var(--flare);
+  --desktop-icon-label-bg-selected: var(--flare);
   --overlay-bg: rgba(27, 27, 27, 0.5);
   --badge-radius: 0;
-  --indicator-fg: var(--flare);
+  --indicator-fg: var(--flare-text);
   /* Blue is the booklet's structural colour: selection, navigation and
      links. Red stays on primary and danger actions. */
-  --link: var(--flare);
-  --tab-fg-active: var(--flare);
+  --link: var(--flare-text);
+  --tab-fg-active: var(--flare-text);
   --tab-underline-active: var(--flare);
   --segmented-item-bg-active: var(--flare);
   --segmented-item-fg-active: #ffffff;
@@ -79,18 +122,18 @@ html[data-theme="lego-classic"] {
   --pagination-item-bg-active: var(--flare);
   --pagination-item-fg-active: #ffffff;
   --pagination-item-fg: var(--text);
-  --pagination-item-radius: 0.2rem;
+  --pagination-item-radius: 0.125rem;
   --carousel-arrow-bg: var(--surface);
-  --carousel-dot-active: var(--flare);
-  --carousel-radius: 0.2rem;
+  --carousel-dot-active: var(--brick-blue);
+  --carousel-radius: 0.125rem;
   /* The booklet's brighter brick blue for fills that carry no text. */
-  --progress-fill: #2a85d4;
+  --progress-fill: var(--brick-blue);
   --badge-bg-active: var(--flare);
   --badge-fg-active: #ffffff;
   --bulk-bar-bg: var(--accent-2);
   --bulk-bar-fg: #1b1b1b;
   --badge-border: #1b1b1b;
-  --skeleton-radius: 0.2rem;
+  --skeleton-radius: 0.125rem;
   /* Plain badges and unselected filter chips are white bricks, not grey. */
   --badge-bg: var(--surface);
   --badge-fg: var(--text);
@@ -107,19 +150,25 @@ html[data-theme="lego-classic"] {
   /* Active tab: a white brick, 3px outline on top and sides. */
   --tab-bg-active: var(--surface);
   --tab-border-active: #1b1b1b;
-  --tab-radius: 0.2rem 0.2rem 0 0;
+  --tab-radius: 0.125rem 0.125rem 0 0;
   /* No intermediate tints: states read by outline and stripe. */
   --input-error-bg: var(--input-bg);
   --cell-saved-bg: transparent;
   --cell-saved-flash: transparent;
   --cell-error-bg: transparent;
   --sparkline-area-opacity: 0;
+  --chart-area-opacity: 0;
   --list-tone-tint: 0%;
-  --callout-bg: var(--surface);
+  /* Callouts are the booklet's parts-callout box: an unfilled frame on the sand. */
+  --callout-bg: transparent;
+  --callout-important-text: var(--warning-text);
+  --log-border: #1b1b1b;
+  --log-border-width: 2px;
   --callout-rule-width: 8px;
-  /* Red, blue, yellow, green, black, grey: the six brick colours, no repeats. */
-  --chart-series-1: var(--accent);
-  --chart-series-2: #2a85d4;
+  /* Blue, red, yellow, green, black, grey: the six brick colours, led by
+     the booklet's dominant blue. */
+  --chart-series-1: var(--brick-blue);
+  --chart-series-2: var(--accent);
   --chart-series-3: var(--warning);
   --chart-series-4: var(--success);
   --chart-series-5: #1b1b1b;
@@ -127,20 +176,20 @@ html[data-theme="lego-classic"] {
   /* A baseplate has a hard edge, not a fade. */
   --app-gutter-fade: 0px;
 
-  /* The booklet's brighter brick blue for the bar (white text 4.6:1);
-     the deeper --flare stays on text, links and the status strip. */
-  --app-bar-bg: #1a78cc;
+  /* The bar is the blue brick: white text on --flare at 4.6:1. */
+  --app-bar-bg: var(--flare);
   --app-bar-rule-width: 3px;
   --app-bar-rule: #1b1b1b;
-  --app-status-bg: var(--flare);
+  --app-status-bg: var(--flare);   /* the bar's own blue: one blue plate top and bottom */
   --app-status-fg: #ffffff;
   /* Schedule times and event bars in brick blue: the yellow is 1.5:1 as text. */
-  --schedule-color: var(--flare);
+  --schedule-color: var(--flare-text);
   /* Code functions: core mixes the yellow, 4.1:1 at best; a deep ochre. */
-  --code-function: #796422;
+  --code-function: #5a4818;
 
-  /* Thick, bold strokes to match the 3px brick borders everywhere else. */
-  --icon-stroke-width: 3;
+  /* The theme's own glyphs draw at 3px; the generic sprite's denser glyphs
+     (file types, pins, badge marks) take 2.5 so their detail stays open. */
+  --icon-stroke-width: 2.5;
 
   /* Brick outlines on the controls core draws thin by default. */
   --panel-header-fg: var(--text);
@@ -152,10 +201,13 @@ html[data-theme="lego-classic"] {
   --segmented-border: #1b1b1b;
   --segmented-item-fg: var(--text);
   --switch-radius: var(--radius);
-  --switch-thumb-radius: 0.2rem;
+  --switch-thumb-radius: 0.125rem;
   --switch-border-width: 3px;
   --switch-border: #1b1b1b;
   --switch-border-on: #1b1b1b;
+  /* On is the blue structure brick with a white knob, as toggles and chips. */
+  --switch-bg-on: var(--flare);
+  --switch-thumb-bg-on: #ffffff;
   --progress-border-width: 3px;
   --progress-border: #1b1b1b;
   --alert-border-width: 3px;
@@ -171,7 +223,7 @@ html[data-theme="lego-classic"] {
   --slider-bg: linear-gradient(#ffffff, #ffffff) center / calc(100% - 6px) calc(100% - 6px) no-repeat, #1b1b1b;
   --slider-border: transparent;
   --slider-thumb-size: 1.25rem;
-  --slider-thumb-radius: 0.2rem;
+  --slider-thumb-radius: 0.125rem;
   --slider-thumb-bg: var(--accent);
   --slider-thumb-shadow: 0 0 0 2px #1b1b1b, 0 2px 0 2px #1b1b1b;
 }
@@ -186,11 +238,11 @@ html[data-theme="lego-classic"] h3 { font-weight: 800; }
    top of every brick. Each stud is a cylinder seen from just above: a top
    face in the brick's own colour (an ellipse: seen slightly from above), a
    darker side wall 3px below it and one black outline round the pair,
-   packed at the booklet's pitch (16px studs, 6px apart). One cached SVG tile per host colour, repeated with `space`
+   at the real 4.8mm-on-8mm proportion (16.5px studs on a 27px pitch). One cached SVG tile per host colour, repeated with `space`
    so a strip only ever shows whole studs, never a half disc at the border. */
 html[data-theme="lego-classic"] {
-  --stud-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='18'%3E%3Cpath d='M2.75 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M4 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%23a9a9a9'/%3E%3Cellipse cx='11' cy='7.5' rx='7' ry='5.5' fill='%23ffffff'/%3E%3C/svg%3E");
-  --stud-tile-blue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='18'%3E%3Cpath d='M2.75 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M4 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%230b3f73'/%3E%3Cellipse cx='11' cy='7.5' rx='7' ry='5.5' fill='%231a78cc'/%3E%3C/svg%3E");
+  --stud-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='18'%3E%3Cpath d='M5.25 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M6.5 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%239a9a9a'/%3E%3Cellipse cx='13.5' cy='7.5' rx='7' ry='5.5' fill='%23ffffff'/%3E%3C/svg%3E");
+  --stud-tile-blue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='18'%3E%3Cpath d='M5.25 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M6.5 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%2300457a'/%3E%3Cellipse cx='13.5' cy='7.5' rx='7' ry='5.5' fill='%231a9be0'/%3E%3C/svg%3E");
 }
 html[data-theme="lego-classic"] .panel-header::before,
 html[data-theme="lego-classic"] .modal-header::before,
@@ -201,8 +253,9 @@ html[data-theme="lego-classic"] .app-bar::after {
   position: absolute;
   inset: 4px 4px auto 4px;
   height: 18px;
-  background: var(--stud-tile) 0 0 / 22px 18px space no-repeat;
+  background: var(--stud-tile) 0 0 / 27px 18px space no-repeat;
   pointer-events: none;
+  contain: strict;   /* the strip paints alone, never invalidating its brick */
 }
 /* Studs sit as a strip ABOVE the header text, never behind it. */
 html[data-theme="lego-classic"] .panel-header,
@@ -229,7 +282,17 @@ html[data-theme="lego-classic"] .app-bar {
   padding-bottom: calc(var(--app-bar-padding-y, 0.6rem) + 16px);
   --stud-tile: var(--stud-tile-blue);
 }
-html[data-theme="lego-classic"] .app-bar::after { inset: auto 6px 0 6px; }
+/* The stud row sits on the brick's lit top face: the booklet's brighter
+   #0090dc band, the text above stays on the deeper --flare. */
+html[data-theme="lego-classic"] .app-bar::after {
+  inset: auto 0 0 0;
+  padding-inline: 6px;
+  background-origin: content-box;
+  background-clip: border-box;
+  background-color: var(--brick-blue);
+}
+/* Unfilled bar buttons keep the black moulding line, not a glassy tint. */
+html[data-theme="lego-classic"] .app-bar .btn-secondary { --btn-border: #1b1b1b; --btn-border-hover: #1b1b1b; }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * black-outlined brick messages and bricks for bars. */
@@ -237,9 +300,9 @@ html[data-theme="lego-classic"] {
   --message-border: #1b1b1b;
   --message-border-width: 2px;
   --message-own-bg: var(--surface);
-  --bar-chart-bar: var(--accent);
+  --bar-chart-bar: var(--brick-blue);
   --bar-chart-bar-alt: var(--accent-2);
-  --bar-chart-radius: 0.2rem 0.2rem 0 0;
+  --bar-chart-radius: 0.125rem 0.125rem 0 0;
   --bar-chart-shadow: inset 0 0 0 2px #1b1b1b;
 }
 
@@ -257,6 +320,10 @@ html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) :is(.panel, 
 html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card)::before,
 html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::before { content: none; }
 html[data-theme="lego-classic"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header { padding-top: var(--space-xs); }
+/* A second header further down the same brick is a section label, not a
+   second brick top: no stud strip mid-brick. */
+html[data-theme="lego-classic"] .panel > .panel-header:not(:first-child)::before { content: none; }
+html[data-theme="lego-classic"] .panel > .panel-header:not(:first-child) { padding-top: var(--space-xs); }
 
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------- *
  * The shell needs nothing extra on phone and tablet: the studded blue bar
@@ -279,20 +346,20 @@ html[data-theme="lego-classic"] .table.is-stacked > * > tr > [data-label]::befor
 html[data-theme="lego-classic"] .modal-header > .btn-close {
   --btn-close-bg: #c91a09;
   --btn-close-bg-hover: #a31507;
-  --btn-close-radius: 0.2rem;
+  --btn-close-radius: 0.125rem;
   --btn-close-border: #1b1b1b;
   --btn-close-border-width: 2px;
   --modal-header-close-fg: #fff;
   --btn-close-fg-hover: #fff;
 }
 
-/* State words on the blue status bar read white (green is 1.2:1 there);
-   muted text there is a pale blue-white, 5.2:1, not the grey (1.0:1). */
+/* State words on the blue status bar read white (green is 1.2:1, pale yellow 3.8:1 there);
+   muted text there is white, 4.6:1, not the grey (1.0:1). */
 html[data-theme="lego-classic"] .app-status {
   --success-text: #ffffff;
-  --warning-text: #ffea8a;
+  --warning-text: #ffffff;
   --danger-text: #ffffff;
-  --muted: #eef3fa;
+  --muted: #ffffff;
 }
 /* On a phone the chunky Start brick leaves the tray too little room: it
    shrinks and ellipsizes like the tasks instead of running off the strip. */
@@ -328,6 +395,7 @@ html[data-theme="lego-classic"] .toggle-btn:not(:has(input:checked)) { box-shado
 /* Booklet step numerals: big, heavy, tight. */
 html[data-theme="lego-classic"] :is(h1, .stat-value) { font-weight: 900; letter-spacing: -0.02em; }
 html[data-theme="lego-classic"] .steps > li::before { font-weight: 900; }
+html[data-theme="lego-classic"] .stat-label { font-weight: 700; }
 /* Stat numbers are step numerals, not code: the heavy sans, not the mono. */
 html[data-theme="lego-classic"] .stat-value { font-family: var(--font); font-variant-numeric: tabular-nums; }
 
@@ -354,6 +422,9 @@ html[data-theme="lego-classic"] .carousel-nav > :is(.carousel-prev, .carousel-ne
 }
 /* Disabled stays outlined and legible, only dimmed. */
 html[data-theme="lego-classic"] .pagination-item.is-disabled { opacity: 0.55; }
+/* Small framed groups carry the 2px small-piece line, never a grey hairline. */
+html[data-theme="lego-classic"] fieldset.field { border: 2px solid #1b1b1b; }
+html[data-theme="lego-classic"] :is(.markdown-alert, [data-callout]) { border: 2px solid #1b1b1b; border-inline-start: 8px solid var(--_callout); }
 html[data-theme="lego-classic"] .skeleton { outline: 2px solid #1b1b1b; outline-offset: -2px; }
 
 /* XL: the page column is a brick standing on the baseplate, hard-edged. */
@@ -384,8 +455,57 @@ html[data-theme="lego-classic"] :is(.table tr > td, .editable).is-saved { box-sh
    brick turns baseplate grey. */
 html[data-theme="lego-classic"] {
   --window-header-filter-inactive: none;
-  --window-header-fg-inactive: var(--muted);
+  --window-header-fg-inactive: #4a4a4a;
 }
 @container style(--_inactive: 1) {
   html[data-theme="lego-classic"] .desktop-window .modal-header > .btn-close { --btn-close-bg: #a0a3a6; --modal-header-close-fg: #1b1b1b; }
 }
+
+/* Heatmaps step through solid brick colours instead of a pastel ramp:
+   grey plate, yellow, blue, black (falling luminance, so order still reads
+   in greyscale). Each step switches on with a hard threshold on --v. */
+html[data-theme="lego-classic"] .heatmap:not(.is-diverging) > :not(.is-empty),
+html[data-theme="lego-classic"] :is(.legend, .chart-legend).is-scale > li::before {
+  background:
+    color-mix(in srgb, #1b1b1b clamp(0%, (var(--v, 0) - 0.8) * 100000%, 100%),
+      color-mix(in srgb, var(--brick-blue) clamp(0%, (var(--v, 0) - 0.5) * 100000%, 100%),
+        color-mix(in srgb, var(--warning) clamp(0%, (var(--v, 0) - 0.2) * 100000%, 100%), var(--surface-2))));
+}
+html[data-theme="lego-classic"] .heatmap { --heatmap-radius: 1px; }
+
+/* Jost's heavy brand word is a touch wider than Arial's: on a phone a
+   section nav takes the small inline padding so its last item stays clear
+   of the bar's edge. */
+@media (max-width: 480px) {
+  html[data-theme="lego-classic"] { --nav-pad: 0.6rem var(--space-s, 0.5rem); }
+}
+
+/* Tertiary and ghost buttons are unpainted bricks: the full moulding line
+   on the sand, not underlined text. (Not on the blue bar or a blue table
+   head, where core keeps them borderless.) */
+html[data-theme="lego-classic"] :is(.btn-tertiary, .btn-ghost):not(.app-bar *, .table th *) {
+  --btn-border: #1b1b1b;
+  --btn-border-hover: #1b1b1b;
+}
+/* Disabled is a baseplate-grey brick, outline kept: never a faded pink. */
+html[data-theme="lego-classic"] .btn:is(:disabled, [aria-disabled="true"]) {
+  opacity: 1;
+  --btn-bg: #a0a3a6;
+  --btn-bg-hover: #a0a3a6;
+  --btn-fg: #3a3a3a;
+  --btn-border: #1b1b1b;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+}
+/* Accordion items, the pricing band and the scrollspy strip carry the
+   3px moulding line like every other brick. */
+html[data-theme="lego-classic"] .accordion-item { border: 3px solid #1b1b1b; background: var(--surface); }
+html[data-theme="lego-classic"] .accordion-item + .accordion-item { border-top-width: 0; }
+html[data-theme="lego-classic"] .accordion-trigger { padding-inline: 0.75em; }
+html[data-theme="lego-classic"] .accordion-panel { padding-inline: 0.75em; }
+html[data-theme="lego-classic"] .band.is-tinted { border: 3px solid #1b1b1b; box-shadow: var(--panel-shadow); }
+html[data-theme="lego-classic"] .scrollspy-nav { border-block-end-width: 3px; }
+/* The rail stands as a base plate: hard drop like the bricks beside it. */
+html[data-theme="lego-classic"] .nav-rail { box-shadow: var(--panel-shadow); }
+/* Jost at 400 is thin beside the 3px moulding lines: body copy at 500. */
+html[data-theme="lego-classic"] body { font-weight: 500; }
