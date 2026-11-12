@@ -651,6 +651,8 @@ html[data-theme="cassette-futurism"] .otp {
   background: var(--cf-window);
   border-radius: 2px;
 }
+/* The KPI legend is silk-screened over its window, on every card alike. */
+html[data-theme="cassette-futurism"] .stat-label { display: block; margin-block-end: 0.35rem; }
 /* KPI figures sit behind dark glass too: a recessed readout window. */
 html[data-theme="cassette-futurism"] .stat-value {
   display: inline-block;
@@ -687,18 +689,30 @@ html[data-theme="cassette-futurism"] .meter-v:not(.is-segmented) > .meter-fill {
 /* --- Lamps on alerts and toasts: a round LED in a chrome bezel, lit in
    the message's own colour, ahead of the text. */
 html[data-theme="cassette-futurism"] :is(.alert, .toast)::before {
-  --_lamp: var(--alert-border, var(--border));
   content: "";
   flex: none;
-  inline-size: var(--lamp-size);
-  block-size: var(--lamp-size);
+  inline-size: 0.85em;
+  block-size: 0.85em;
   margin-block-start: 0.2em;
   border-radius: 50%;
   border: var(--lamp-border-width) solid var(--lamp-border);
-  background: var(--_lamp);
-  box-shadow: inset 0 -2px 2px rgba(0, 0, 0, 0.3), 0 0 0.4rem var(--_lamp);
+  background: radial-gradient(circle at 40% 35%, rgba(255, 255, 255, 0.75) 0, var(--_led) 45%, color-mix(in srgb, var(--_led), #000 35%));
+  box-shadow: 0 0 0.4rem var(--_led);
 }
-html[data-theme="cassette-futurism"] .toast::before { --_lamp: var(--toast-border); }
+/* Each lamp is the bright LED, not the darkened text-safe token; a
+   neutral message keeps an unlit dome. */
+html[data-theme="cassette-futurism"] :is(.alert, .toast) { --_led: #6b5f50; }
+html[data-theme="cassette-futurism"] .alert-info { --_led: #ff8a1f; }
+html[data-theme="cassette-futurism"] :is(.alert-success, .toast-success) { --_led: #3fd04a; }
+html[data-theme="cassette-futurism"] :is(.alert-warning, .toast-warning) { --_led: #ffc21a; }
+html[data-theme="cassette-futurism"] :is(.alert-danger, .toast-danger) { --_led: #ff3b25; }
+/* Alerts are moulded plates like panels: a hairline housing, lit top lip,
+   hard ledge, and the message colour as a label strip down the lead edge. */
+html[data-theme="cassette-futurism"] .alert {
+  border-color: #a99d86;
+  border-inline-start: 0.4rem solid var(--alert-border, var(--border));
+  box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
+}
 /* The live-feed lamp is the same LED: a chrome bezel round a lit core. */
 html[data-theme="cassette-futurism"] .connection[data-state="live"]::before {
   border-color: var(--lamp-border);
@@ -786,7 +800,7 @@ html[data-theme="cassette-futurism"] {
   --app-rail-padding: 0;
   --app-rail-bg:
     var(--cf-stripes) center 0.8rem / 1.6rem 0.5rem no-repeat,
-    repeating-linear-gradient(180deg, #3a3129 0 4px, #c4b9a2 4px 6px, var(--bg) 6px 10px) center 2rem / 1.6rem calc(100% - 3rem) no-repeat,
+    repeating-linear-gradient(180deg, #4a4034 0 3px, rgba(255, 253, 247, 0.6) 3px 4px, transparent 4px 7px) center 2rem / 1.6rem min(40%, 18rem) no-repeat,
     var(--surface-2);
   --app-main-bg: var(--surface);
   --app-main-padding: 1.4rem;
@@ -817,6 +831,21 @@ html[data-theme="cassette-futurism"] .app-bar {
   position: relative;
   z-index: var(--z-raised);
 }
+/* Menubar keys are buttons, which do not inherit the deck's caps. */
+html[data-theme="cassette-futurism"] .app-bar .menubar > li > :is(button, a) {
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+html[data-theme="cassette-futurism"] .app-bar .menubar {
+  --menubar-item-bg-active: var(--cf-orange);
+  --menubar-item-fg-active: #120c06;
+}
+/* The current top-level key latches like the active nav key. */
+html[data-theme="cassette-futurism"] .app-bar .menubar > li > :is(button, a):is(.is-active, [aria-expanded="true"], [aria-current="page"]) {
+  background: var(--cf-orange);
+  color: #120c06;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.2), 0 2px 0 #4f4538;
+}
 /* Brand on red Dymo tape. */
 html[data-theme="cassette-futurism"] .app-bar .nav-brand {
   background: #b01b0b;
@@ -830,7 +859,12 @@ html[data-theme="cassette-futurism"] .app-bar .nav-brand {
 html[data-theme="cassette-futurism"] .app-main {
   border: 1px solid #a99d86;
   /* moulded: lit top lip, shaded lower lip, then a hard ledge onto the housing */
-  box-shadow: inset 0 1px 0 #ffffff, inset 0 -2px 0 #ddd4c2, 0 2px 0 #9d917a, 0 4px 0 #b6aa93;
+  box-shadow: inset 0 1px 0 #ffffff, inset 0 -2px 0 #ddd4c2,
+    inset 0 0 0 8px var(--surface), inset 0 0 0 9px #b6aa93,
+    0 2px 0 #9d917a, 0 4px 0 #b6aa93;
+  /* the housing's ABS stipple, fainter on the front plate */
+  background-image: radial-gradient(rgba(80, 60, 30, 0.045) 1px, transparent 1.2px);
+  background-size: 5px 5px;
 }
 /* Status in a table row reads at the row's size, not core's 0.85em. */
 html[data-theme="cassette-futurism"] td .status { font-size: inherit; }
@@ -869,6 +903,18 @@ html[data-theme="cassette-futurism"] {
   html[data-theme="cassette-futurism"] .app-bar > .nav-brand { flex: 0 1 auto; letter-spacing: 0.1em; }
   /* The LED strip's wide tracking and bezel would push the tray out. */
   html[data-theme="cassette-futurism"] .app-status { letter-spacing: 0.04em; font-size: 0.74rem; }
+  /* Deck in three rows: brand with the icon keys, then links, then the
+     wide controls. The action cluster unwraps so its icon keys can join
+     the brand row. */
+  html[data-theme="cassette-futurism"] .app-bar { row-gap: 0.4rem; }
+  html[data-theme="cassette-futurism"] .app-bar > .cluster { display: contents; }
+  html[data-theme="cassette-futurism"] .app-bar > .nav-brand { order: -2; margin-inline-end: auto; }
+  html[data-theme="cassette-futurism"] .app-bar > .cluster > .btn-icon { order: -1; }
+  html[data-theme="cassette-futurism"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.5em; letter-spacing: 0.02em; }
+  /* Setting rows: tighter tracking so the legend fits, wrap if not, and
+     air between the toggle and the row's edge. */
+  html[data-theme="cassette-futurism"] .field-row { padding-inline-end: 0.85rem; }
+  html[data-theme="cassette-futurism"] .field-row > .label { letter-spacing: 0.03em; white-space: normal; }
 }
 
 /* Phone render budget: the stipple, VFD glows and soft drop shadows are
@@ -886,6 +932,11 @@ html[data-theme="cassette-futurism"] {
     --go-shadow-hover: inset 0 -6px 0 rgba(0, 0, 0, 0.16), 0 3px 0 #2a221c;
   }
   html[data-theme="cassette-futurism"] .app-status { text-shadow: none; }
+  /* flat plate; the 8px frame would sit under the phone's thinner padding */
+  html[data-theme="cassette-futurism"] .app-main {
+    background-image: none;
+    box-shadow: inset 0 1px 0 #ffffff, inset 0 -2px 0 #ddd4c2, 0 2px 0 #9d917a, 0 4px 0 #b6aa93;
+  }
   /* no emboss, no filter, no blurred inset wells */
   html[data-theme="cassette-futurism"] :is(.badge, .badge-warning, .tooltip, .app-bar .nav-brand) { text-shadow: none; }
   html[data-theme="cassette-futurism"] .switch-thumb { filter: none; }
@@ -903,7 +954,7 @@ html[data-theme="cassette-futurism"] {
 }
 
 @media print {
-  html[data-theme="cassette-futurism"] { background-image: none; }
+  html[data-theme="cassette-futurism"], html[data-theme="cassette-futurism"] .app-main { background-image: none; }
   html[data-theme="cassette-futurism"] {
     --readout-glow: none;
     --readout-bg: #ffffff;

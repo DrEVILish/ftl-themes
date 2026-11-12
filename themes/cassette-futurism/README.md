@@ -69,8 +69,18 @@ How it differs from its neighbours:
 - **Shell = a deck housing**: dark top deck with a 4-band stripe (stacked
   hard box-shadows), an inset off-white main panel with a moulded edge (lit
   top lip, shaded lower lip, a 2px `#9d917a` ledge then `#b6aa93`), a
+  silk-screened `#b6aa93` hairline frame 8px inside it and a fainter copy
+  of the housing stipple on the plate (desktop only), a
   **ribbed vent grille rail on the right** (3.25rem) topped by a stripe
-  swatch, and a dark VFD status window.
+  swatch: a block of moulded ribs (3px `#4a4034` slots with a lit
+  `#fffdf7` 60% lower edge on a 7px pitch, 40% of the rail, at most
+  18rem), not a full-height scale; and a dark VFD status window.
+- The deck lettering is silk-screen caps throughout, menubar keys
+  included (buttons do not inherit `text-transform`, so the theme passes
+  it on). The current top-level menubar key latches orange with the
+  same skirt and drop as the active nav key.
+- KPI cards: the small-caps legend sits over its recessed readout on
+  every card, never inline beside it.
 - Panel headers start with five black vent slots before the title (3px
   slots on a 7px pitch, each with a 1px lit right edge so it reads as a
   recess, not ink).
@@ -79,8 +89,12 @@ How it differs from its neighbours:
   bar's 0.55rem/0.15rem pitch), counted from the zero end;
   `.is-segmented` keeps core's finer ladder with faint unlit cells
   (`--meter-unlit: 0.16`). Progress is an orange segmented bar.
-- Alerts and toasts carry a lamp: a round LED in the chrome bezel, lit in
-  the message's colour. Dropdowns, context menus and popovers sit on the
+- Alerts are moulded plates (hairline `#a99d86` housing, lit top lip,
+  hard `#b6aa93` ledge) with the message colour as a 0.4rem label strip
+  down the lead edge. Alerts and toasts carry a 0.85em lamp: a round LED
+  in the chrome bezel, lit in the bright LED of the message's colour
+  (info `#ff8a1f`, success `#3fd04a`, warning `#ffc21a`, danger
+  `#ff3b25`; a neutral message is an unlit dome). Dropdowns, context menus and popovers sit on the
   same hard `#4f4538` ledge as the keycaps; carousel markers are small
   square keys.
 - A `.status` in a table cell keeps the row's font size (core sets 0.85em).
@@ -121,6 +135,10 @@ How it differs from its neighbours:
   (≤480px) and tablet (481–900px) drop it, since it costs a 3.25rem column;
   the dark deck, its four-colour stripe and the LED status window stay.
   Phones get a thinner housing margin and tighter tracking in the status strip, so its tray fits.
+  The phone deck fits in three rows: brand with the icon keys, then the
+  menubar (0.02em tracking), then the theme picker and search. Settings
+  rows track at 0.03em, wrap rather than truncate, and keep 0.85rem of
+  air after the toggle. The main plate drops its frame and stipple.
   To stay inside the phone frame budget, phones (≤480px) also drop the
   stipple, the VFD and lamp glows, the soft panel drop and the keycaps'
   top highlight (each keycap keeps two hard shadows: skirt and drop). The housing stipple now sits on the
@@ -152,7 +170,9 @@ warning:
 
 - `--accent` `#cc5a0a` on the beige `--bg` `#d3c9b3` is 2.5:1, below the
   3:1 advisory floor. The bare backdrop only shows in the shell's gutters
-  and never carries accent text. Text links use `--link` `#8f3b00` and
+  and never carries accent text. Darkening the keycap orange to reach
+  3:1 (`#b34d06`) would drop its black legend to 4.0:1, so the TR-808
+  orange stays and the warning is accepted. Text links use `--link` `#8f3b00` and
   `--accent-text` `#8a3a00`. On `--surface` the accent passes.
   State text (`--accent-text`, `--success-text` `#1f5c25`,
   `--warning-text`) clears 4.5:1 on the bare `--bg` too, since phones
