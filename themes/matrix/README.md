@@ -15,7 +15,9 @@ directly rather than an interface built for you.
 1. **Monospace is non-negotiable.** Every element, not just values.
 2. **Green is the only colour with a job.** Semantic red exists for genuine
    errors and nothing else. Introducing a second decorative hue breaks the
-   single-phosphor illusion.
+   single-phosphor illusion. Warning is the white-hot head glyph `#e8ffe0`,
+   `--accent-2` is a lighter green `#7dff9a`, and the six chart series are
+   brightness steps of the one green.
 3. **Bloom, not glow.** A 2px text-shadow across all text imitates
    phosphor persistence. It is deliberately subtle — a strong glow reads as
    neon, which is a different aesthetic entirely.
@@ -23,8 +25,27 @@ directly rather than an interface built for you.
    Only semantic variants take a fill, so a delete button still reads as
    dangerous.
 5. **Uppercase headings, tracked.** Terminal banner conventions.
+6. **Hard rectangles.** Badges, filter chips, switches, slider thumbs and
+   checkboxes are square terminal cells, never capsules.
 
 ## Signature details
+
+- **The digital rain**: real glyph columns (mirrored digits and capitals)
+  with a fading green tail and a white-hot head, at uneven column pitch, in
+  two SVG tiles: a near 14px layer on `html::after` and a far, dimmer 10px
+  layer on `body::before`. Each layer falls by `transform: translateY` of one
+  tile height (13s and 19s), so it loops seamlessly and composites rather
+  than repainting. With reduced motion the columns stand still.
+- Light text carries the bloom plus a tight black halo, so glyphs standing
+  on the rain (an unpanelled sidebar) have a dark moat. The halo's alpha is
+  computed from the text's own lightness (relative colour from
+  `currentColor`), so dark labels on lit fills get none; controls keep
+  bloom only.
+  The content well is 86% black over the rain.
+- Panel rules are a lit `#1a9a2a` with a 24px inward glow; modals get the
+  SYSTEM FAILURE double rule (black gap, then a 1px phosphor line).
+- Checkboxes and radios are drawn as green-ruled cells (phosphor fill and
+  black tick when checked); the slider track is the lit rule colour.
 
 - A heading flicker animation, gated behind
   `@media (prefers-reduced-motion: no-preference)` and never carrying state
@@ -45,7 +66,7 @@ whole file, followed by the 45 ids added in the 2026-10 top-up: 24 grid;
 1px hairline stroke, square caps, miter joins; never filled (the sprite
 inherits `fill: none`); true curves allowed; rects rx 1.5 when 6+ wide,
 sharp below; dots are r1.2 hairline rings; colour is `currentColor` only.
-- **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): after a minute idle, digital rain falls until the next key or pointer move.
+- **Easter egg** (`data-easter-eggs`, `assets/js/eggs.js`): after a minute idle, digital rain falls until the next key or pointer move (`@keyframes matrix-egg-rain`, separate from the page rain).
 
 ## Layout
 
@@ -68,7 +89,7 @@ flicker animation communicate anything.
 
 ## Typography
 
-`--font` is `"Courier New", "IBM Plex Mono", Consolas, monospace`; `--font-mono` is `"Courier New", Consolas, monospace`. Everything is monospace. **Nothing is vendored** — Courier New is a system font (Windows/macOS; availability on Linux varies), IBM Plex Mono only renders if installed. The film's rain glyphs are mirrored katakana and numerals from a custom set; the theme ships no glyph face for them, so any katakana on the page is system-font fallback.
+`--font` (and `--font-mono`) is `"IBM Plex Mono", "DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`. Everything is monospace, and a clean sans mono leads so the width is similar on every platform (Courier New's serif typewriter face is last-resort only). **Nothing is vendored.** On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain uses mirrored digits and Latin capitals in the system monospace instead.
 
 ## Contrast honesty
 
@@ -76,6 +97,7 @@ flicker animation communicate anything.
 - **Body text** `#b6ffb6` is a pale green (17.97:1 on black) so long copy is not pure accent.
 - **`--muted` `#4caf50`** is 7.15:1 on `--surface` and 6.54:1 on `--surface-2`: AA, below AAA on the darkest panel.
 - **Red is the only non-green hue.** `--danger` `#ff3b3b` is 5.94:1 on black.
+- **`--border` `#1a9a2a`** is about 5.7:1 on black, so the slider track and control rules clear the 3:1 non-text floor.
 
 ## Reference status
 
