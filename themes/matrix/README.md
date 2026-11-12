@@ -35,24 +35,28 @@ directly rather than an interface built for you.
 - **The digital rain**: real glyph columns filling the frame top to bottom,
   all mirrored: about two thirds katakana-like stroke glyphs drawn as SVG
   paths, the rest digits and the film's few symbols (`Z : = * " < > . + |`),
-  no Latin capitals. Each streak is 10-24 glyphs whose opacity ramps from
-  1.0 behind the head to about 0.15 at the tail, ending in a white-hot
-  `#f0fff0` head whose glow is baked in as two wide translucent strokes (a
-  `#b8ffc8` halo at 0.45, a `#00ff41` bloom at 0.18; no SVG filter), with
-  residual glyphs at 0.1 between streaks and smaller, dimmer
-  far columns in some gaps for depth. One 997x960 tile on `html::after`
+  no Latin capitals. Columns sit at a 13-15px pitch (about one glyph's gap,
+  packed like the film's wall), each carrying four to six streaks of 10-22
+  glyphs whose opacity ramps from 1.0 behind the head to about 0.35 at the
+  tail, ending in a white-hot `#f0fff0` head whose glow is baked in as two
+  tight translucent strokes (a 2.5px `#b8ffc8` halo at 0.45, a 5px `#00ff41`
+  bloom at 0.22; no SVG filter), so heads stay one cell size. Residual
+  glyphs at 0.1 fill the gaps between streaks, with smaller, dimmer far
+  columns in the wider gaps for depth. One 997x960 tile on `html::after`
   wraps across its bottom edge, so the loop has no seam; the layer falls by
   `transform: translateY` of one tile height every 13s and composites
-  rather than repainting (`will-change: transform`). With reduced motion
+  rather than repainting (`will-change: transform`, `contain: strict`). With reduced motion
   the columns stand still.
 - All text carries a 2px bloom. Text that can stand on the rain (the
-  content well and a bare `aside`) adds a black halo (2px, then 5px), so
+  content well and a bare `aside`) adds a black halo (2px, then 5px; phones keep only the 2px layer, which
+  keeps scrolling cheap on low-end devices), so
   its glyphs have a dark moat; panels, cards, tables, alerts, dialogs and
   popovers drop back to the bloom alone, which keeps scrolling cheap. A
   bare `aside` and the page-level lines (breadcrumb, h1/h2, lede, a
   control row) also get an 80% black backing, the lines cut to their own
-  width with 4px of black round the text, at zero class specificity so a
-  drawer or panel keeps its own fill. The halo's alpha is
+  width with 6px of black round the text, at zero class specificity so a
+  drawer or panel keeps its own fill. Small labels on the rain (desktop
+  icon names, figure and demo captions) get the same black cell. The halo's alpha is
   computed from the text's own lightness (relative colour from
   `currentColor`), so dark labels on lit fills get none; controls keep
   bloom only.
@@ -64,7 +68,10 @@ directly rather than an interface built for you.
   and alerts get the SYSTEM FAILURE double rule (black gap, then a 1px lit
   line, in the alert's state colour). The app bar is the operator console's toolbar plate: a dark green
   `#0b3d1c` to `#062a12` gradient with faint 3px scanlines and a 2px bevel
-  (lit `#1f6a3a` top, dark bottom); panel headers keep the scanlines on
+  (lit `#1f6a3a` top, dark bottom). Window and dialog title bars
+  (`.modal-header`) are the same plate and bevel; an inactive window's
+  bar drops to the near-black scanlined panel header. A window's tab strip
+  keeps mixed case so its tabs fit on one row; panel headers keep the scanlines on
   near-black, and their icon buttons (and a `.toolbar`'s) are the same
   raised plate cells. A focused input lights up as the film's "Searching..." field:
   a bright `#00ff41` rim, outer and inner glow, and a `#06200d` fill.
@@ -77,6 +84,9 @@ directly rather than an interface built for you.
   the thumb lights `#00ff41`). The bar chart's highlighted column is a
   solid brighter step `#7dff9a`, not a pale gradient.
 
+- At `data-alert` the main view glitches like a CRT losing sync: green-only
+  ghost offsets (`#00ff41`, `#7dff9a`) and a brightness jolt at red, never
+  a red/cyan fringe.
 - A heading flicker animation, gated behind
   `@media (prefers-reduced-motion: no-preference)` and never carrying state
   on its own.
@@ -119,13 +129,13 @@ flicker animation communicate anything.
 
 ## Typography
 
-`--font` (and `--font-mono`) is `"DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`: a clean sans mono for running text, so long copy stays legible and lands at a similar width everywhere (Courier New's serif typewriter face is last-resort only). The app bar (`--app-bar-font`), h1-h3 and the big numerals (`.stat-value`, `.timecode`, `.price`) use `--font-console`, **Share Tech Mono** (vendored, OFL, `assets/fonts/ShareTechMono-Regular.woff2`), the squared LCD-style mono closest to the operator console's "Searching..." field, falling back to `--font`. On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain draws a score of katakana-like shapes as SVG strokes (no font needed) beside mirrored digits and symbols in the system monospace.
+`--font` (and `--font-mono`) is `"DejaVu Sans Mono", Consolas, Menlo, "Courier New", monospace`: a clean sans mono for running text, so long copy stays legible and lands at a similar width everywhere (Courier New's serif typewriter face is last-resort only). The app bar (`--app-bar-font`), h1-h3, the big numerals (`.stat-value`, `.timecode`, `.price`) and the console captions (panel and window title bars, table heads, `.stat-label`, at weight 400 with `font-synthesis: none`, since the face has no bold) use `--font-console`, **Share Tech Mono** (vendored, OFL, `assets/fonts/ShareTechMono-Regular.woff2`), the squared LCD-style mono closest to the operator console's "Searching..." field, falling back to `--font`. On phones the five-way toggle group and the bar nav trim their side padding so the wide mono keeps 4px clear of the box edge. The film's rain glyphs are mirrored katakana and numerals from a custom set; katakana has no reliable system font, so the rain draws a score of katakana-like shapes as SVG strokes (no font needed) beside mirrored digits and symbols in the system monospace.
 
 ## Contrast honesty
 
-- **Phosphor green `#00ff41` is unlifted.** The `theme.css` header says it matches the reference on-screen code's hex; `RESEARCH.md` records no hex, so that claim could not be verified from the folder. It is 15.38:1 on black and 14.56:1 on `--surface` `#020c02`, so no AA adjustment was needed, and black `--on-accent` `#001a06` is 13.37:1 on it.
-- **Body text** `#5dff7a` is a saturated phosphor green a step lighter than the accent (16.05:1 on black, 13.9:1 on `--surface-2`), so long copy is not pure accent; pale and white are kept for heads, focus and warnings.
-- **`--muted` `#5cc860`** is 9.36:1 on `--surface` and 8.56:1 on `--surface-2`: AAA on every panel.
+- **Phosphor green `#00ff41` is unlifted.** The `theme.css` header says it matches the reference on-screen code's hex; `RESEARCH.md` records no hex, so that claim could not be verified from the folder. It is 15.38:1 on black and 14.73:1 on `--surface` `#000a02` (black with green light only), so no AA adjustment was needed, and black `--on-accent` `#001a06` is 13.37:1 on it.
+- **Body text** `#3cf060` is a saturated phosphor green on the film's 140deg axis, between `#00ff41` and `#008f11` (13.83:1 on black, 12.51:1 on `--surface-2` `#021405`), so long copy is not pure accent; pale and white are kept for heads, focus and warnings.
+- **`--muted` `#5cc860`** is 9.47:1 on `--surface` and 8.95:1 on `--surface-2`: AAA on every panel.
 - **Red is the only non-green hue.** `--danger` `#ff3b3b` is 5.94:1 on black.
 - **`--border` `#1a9a2a`** is about 5.7:1 on black, so the slider track and control rules clear the 3:1 non-text floor.
 
