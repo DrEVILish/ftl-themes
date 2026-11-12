@@ -195,10 +195,12 @@ layout at **L1**.
   left on the caption (icon buttons, the account tile) is a grey raised
   push button.
 - **Panels are child windows:** every `.panel-header` is a navy caption
-  bar (with light tints for muted and state text on it).
+  bar (with light tints for muted and state text on it). Icon buttons on it
+  are grey raised push buttons with black glyphs.
 - **Tabs** are raised 95 tabs with the corners cut one pixel on the
   diagonal and a 1px edge (`#ffffff`, then `#000000`/`#808080` on the
-  right); the selected one stands 2px taller, overlaps its neighbours and
+  right); the selected one (`.is-active`, a checked radio inside, or
+  `aria-selected`) stands 2px taller, overlaps its neighbours and
   covers the sheet's top line. The dotted focus box sits inside the tab.
   A `.tabset`'s `.tab-panel` is the property sheet: a raised frame
   (white left, `#808080` + black right and bottom) padded 8px, which the
@@ -213,6 +215,14 @@ layout at **L1**.
   when on, a sunken trackbar groove with a raised grey thumb, and sunken
   white scribble and EQ fields.
 - Icon buttons are square bevels, not circles.
+- **Ghost buttons** are the flat toolbar button: no edge at rest, a thin
+  raised edge on hover, sunken while pressed.
+- **Labels** (`.label`, legends) are black like 95's "Font:" labels;
+  `--muted` stays for hints and metadata. Stat labels are sentence case
+  at normal tracking.
+- **Avatars and logo tiles** are sunken white wells.
+- **Headings** stay at dialog size (13-14px bold) in the app; the marketing
+  hero is the Welcome screen, so its h1 is 2rem and band h2/h3 1.4/1.05rem.
 
 ## v5 layout
 

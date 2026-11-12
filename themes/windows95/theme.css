@@ -264,6 +264,8 @@ html[data-theme="windows95"] {
   --avatar-bg: #ffffff;
   --avatar-fg: var(--text);
   --avatar-radius: 0;
+  /* Dialog labels ("Font:", "Color:") were black; --muted is for hints. */
+  --label-fg: var(--text);
   --pagination-item-radius: 0;
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: #ffffff;
@@ -435,11 +437,11 @@ html[data-theme="windows95"] .modal-header :is(.btn-close, .btn-min, .btn-max):a
    the panel caption above (dialog-font.png). */
 /* Flat toolbar buttons rest borderless (the .btn bevel above would
    otherwise reach them); hover gives a thin raised edge, no fill. */
-html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear) { border-color: transparent; }
+html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear, .btn-ghost) { border-color: transparent; }
 @media (hover: hover) {
-  html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear):hover:not(:active, [aria-pressed="true"], [aria-expanded="true"], :disabled) { border-color: #ffffff #808080 #808080 #ffffff; }
+  html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear, .btn-ghost):hover:not(:active, [aria-pressed="true"], [aria-expanded="true"], :disabled) { border-color: #ffffff #808080 #808080 #ffffff; }
 }
-html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear):is(:active, [aria-pressed="true"], [aria-expanded="true"]) { border-color: #808080 #ffffff #ffffff #808080; }
+html[data-theme="windows95"] :is(.btn-clear, .btn-icon.is-clear, .btn-ghost):is(:active, [aria-pressed="true"], [aria-expanded="true"]) { border-color: #808080 #ffffff #ffffff #808080; }
 html[data-theme="windows95"] .has-badge::after { border-radius: 0; }
 html[data-theme="windows95"] .modal-header {
   margin-block-start: calc(1px - var(--surface-pad, 1.5rem));
@@ -465,7 +467,7 @@ html[data-theme="windows95"] .tab {
 }
 /* The selected tab stands 2px taller and covers the sheet's white top
    edge, so the page runs on into it with no line underneath. */
-html[data-theme="windows95"] .tab.is-active {
+html[data-theme="windows95"] .tab:is(.is-active, :has(> input:checked), [aria-selected="true"]) {
   position: relative;
   z-index: 1;
   margin-block-end: -1px;
@@ -474,7 +476,7 @@ html[data-theme="windows95"] .tab.is-active {
   padding-bottom: calc(0.35em + 1px);
   padding-inline: calc(0.8em + 2px);
 }
-html[data-theme="windows95"] .tab.is-active:first-child { margin-inline-start: 0; }
+html[data-theme="windows95"] .tab:is(.is-active, :has(> input:checked), [aria-selected="true"]):first-child { margin-inline-start: 0; }
 /* The clip would cut an outside ring; 95 drew the dotted focus box
    round the label inside the tab anyway. */
 html[data-theme="windows95"] .tabs > .tab:focus-visible { outline-offset: -4px; }
@@ -737,6 +739,20 @@ html[data-theme="windows95"] .app-bar {
 html[data-theme="windows95"] h1 { font-size: 1.05rem; font-weight: 700; }
 html[data-theme="windows95"] h2 { font-size: 0.95rem; font-weight: 700; }
 html[data-theme="windows95"] h3 { font-size: 0.85rem; font-weight: 700; }
+/* The marketing page is the Welcome screen, not a dialog: its large
+   wordmark-style heading (dialog-welcome.png) gives the page a top. */
+html[data-theme="windows95"] .hero h1 { font-size: 2rem; }
+html[data-theme="windows95"] :is(.hero, .band) h2 { font-size: 1.4rem; }
+html[data-theme="windows95"] .band h3 { font-size: 1.05rem; }
+html[data-theme="windows95"] .hero .badge + h1 { margin-block-start: 0.75rem; }
+/* 95 labels were sentence case at normal tracking. */
+html[data-theme="windows95"] .stat-label { text-transform: none; letter-spacing: 0; }
+/* A white well is always sunken in a 95 dialog. */
+html[data-theme="windows95"] .avatar {
+  border: 1px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: var(--input-shadow);
+}
 
 html[data-theme="windows95"] .app-bar .nav { padding: 0; }
 html[data-theme="windows95"] .app-bar .nav-brand { font-weight: 700; }
@@ -753,6 +769,15 @@ html[data-theme="windows95"] .app-bar::after {
   pointer-events: none;
 }
 html[data-theme="windows95"] :is(.app-bar, .panel-header) .btn-ghost { color: #ffffff; }
+/* Icon buttons left on a caption are grey raised push buttons, like the
+   window's own caption buttons. */
+html[data-theme="windows95"] .panel-header > .btn-icon.btn:is(*, :hover) {
+  --btn-bg: var(--surface);
+  --btn-bg-hover: var(--surface);
+  color: var(--text);
+  border-color: #ffffff #000000 #000000 #ffffff;
+}
+html[data-theme="windows95"] .panel-header > .btn-icon:active { border-color: #000000 #ffffff #ffffff #000000; }
 
 /* Touch tiers (v5): the bar wraps to two lines (brand + actions, then the
    nav), so the caption buttons pin to the first line's right end instead
