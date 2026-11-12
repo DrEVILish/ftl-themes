@@ -26,7 +26,8 @@ not plastic or glass.
    and attached text buttons
    share the same fill and underline, and an invalid field keeps the grey
    fill, turning only its underline red. Distinct from every boxed-input
-   theme in the catalog. Fields are 40px tall, and one-time-code cells
+   theme in the catalog. Fields are 48px tall (MD2 dense) with 4px top
+   corners, labels above them are Caption (Regular 12px, muted), and one-time-code cells
    are drawn as the same filled fields (fill and underline, no box).
 4. **Uppercase button labels.** Buttons set their text
    `text-transform: uppercase` in Medium weight with MD2's 1.25px
@@ -89,7 +90,12 @@ not plastic or glass.
   (accent label, no outline or fill).
 - Segmented controls and toggle groups are one 12%-black outlined strip;
   the selected segment is a 12% accent tint with accent text. Range
-  button groups are outlined, not raised.
+  button groups are outlined, not raised. Standalone toggle buttons
+  (`.toggle-btn` outside a `.toggle-group`) use the button label voice: uppercase Medium, 1.25px tracking.
+- Icon buttons draw a 24px glyph in a 40px circle.
+- Dialogs inset title and body 24px on one left edge (desktop windows keep
+  a shorter title bar on the same edge). Fieldsets are outlined
+  containers: a 12% hairline, 4px corners, a muted Medium 12px legend.
 - Tabs are MD2 tabs: uppercase Medium with 1.25px tracking. Inside a
   window body the strip scrolls on one row rather than wrapping.
 - Alerts are white dp1 sheets with the state as a 4px leading bar (no
@@ -97,7 +103,8 @@ not plastic or glass.
 - Setting rows (`.field-row`) are list items with only a 12% divider
   and 12px block padding;
   navigation lists are borderless drawer lists, the active item an 8%
-  accent tint with accent text.
+  accent tint with accent text. A nav rail is a drawer on the page
+  background (no white sheet) with a 12% divider.
 - Disabled contained buttons are 12% black with a 38% black label.
 - KPI values (`.stat-value`) are Headline 5: 24px Regular in the UI font.
 - The modal scrim is MD2's 32% black.
@@ -116,8 +123,8 @@ no border, no gradient, just color and shadow.
 ## Known gaps
 
 - Field labels sit above the filled field, not inside it as MD2 floating
-  labels; that needs markup or core support. Fields are 40px, not MD2's
-  56px, so dense layouts don't grow much.
+  labels; that needs markup or core support. Fields are 48px (MD2 dense), not the
+  56px standard filled field, since the label sits outside.
 - Outside Firefox the slider has no filled (active) track left of the
   thumb: core exposes no value-driven fill token.
 
