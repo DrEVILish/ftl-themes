@@ -30,9 +30,10 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
    not an amber fill.
 3. **Stitching is on the edge, never under text.** The saddle stitch runs
    7px inside the edge of panels, cards, dialogs, drawers and the bar.
-   Small elements (buttons, inputs, badges, transport) are not stitched.
-   Content keeps 8px or more clear of it at every tier: phones widen the
-   panel and card padding, and desktop windows pad their body inside it.
+   Small elements (buttons, inputs, badges, transport, list cards) are
+   not stitched. Content keeps 8px or more clear of it at every tier:
+   `--panel-pad` / `--card-pad` start at the 9.5px stitch strip plus
+   0.75rem / 0.6rem, and desktop windows pad their body inside it.
 4. **Gold foil, not gold paint.** Type on leather is flat gold with a
    deboss shadow (dark above, faint light below), tracked uppercase in a
    Didone serif. No gradient text, no glow.
@@ -48,7 +49,8 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
   (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
 - The saddle stitch (`--tokie-stitch`) is twelve background layers: four
   runs of slanted champagne thread beads (a 52° repeating gradient in a
-  2.5px strip, about 4.4px pitch, like a pricking iron sets them), four
+  2.5px strip, 5.2px pitch with a clear gap between beads, like a
+  pricking iron sets them, in a half-strength champagne thread), four
   corner arcs that turn the stitch on a 5px radius, and four creased
   grooves with a faint lit lip. It costs no pseudo-elements, so any
   surface can wear it.
@@ -65,7 +67,9 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
   No third metal.
 - Buttons: the default is a leather key with a gold bezel; primary is
   polished gold with engraved dark text; danger and success are enamelled
-  oxblood and bottle-green leather that keep the gold bezel.
+  oxblood and bottle-green leather that keep the gold bezel. Toggle
+  buttons speak the same voice (tracked caps) and turn polished gold when
+  on; a danger toggle turns oxblood enamel.
 - Readouts are black lacquer dials with applied gold Didone numerals and
   a thin gold chapter ring. Knobs are polished watch crowns with a fluted
   edge.
