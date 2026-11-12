@@ -14,8 +14,10 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
 
 1. **Glass, not solid.** Surfaces are translucent gradients with a blur
    behind them (from 901px up; touch tiers skip the blur to keep scrolling
-   smooth). List panes and folder rails use the same top-lit glass. A
-   fully opaque panel loses the idiom.
+   smooth). List panes and folder rails use the same top-lit glass, and so
+   do toolbars (bordered and rounded, unblurred for frame cost), section navs, setting rows and
+   toasts (`--wmp-glass`: the panel sheen over `--panel-bg`). A fully
+   opaque panel loses the idiom.
 2. **Light comes from below.** Blue glow sits under controls and behind the
    bar — the player is lit from inside.
 3. **Cool blue only.** `#3fa9f5`/`#7fd1ff`. Warmth anywhere reads as a
@@ -36,8 +38,9 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
   current one a blue glossy capsule (rounded top only) that nearly fills
   the strip and stands on its bottom edge, with the small ▼ in its foot.
   The bar's own capsule (`--wmp-tab-capsule`) is lit from below as the
-  Library tab was: a dark navy body under the gloss break, a brighter blue
-  foot band and a `#0a2550` rim.
+  Library tab was: a dark navy body under the gloss break, a `#0a2550`
+  split line at 73-75%, a bright `#2f7fe0` to `#4a9cf0` foot band where the
+  ▼ sits, and a `#0a2550` rim.
   Labels are regular 0.8125em (13px). The round back/forward orbs sit at its left end (inline
   SVG, no markup).
 - **The transport bar.** The status strip is the player bar, a blue-grey
@@ -52,11 +55,20 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
   420x60 inline SVG. From 1280px the bar grows to the player's height
   (about 3.6rem); between 901 and 1279px the capsule scales to 300px so the
   status text keeps its room. Decorative only (it cannot be clicked or focused); the
-  stop/volume glyphs sit at 45% and the prev/next arrows at 60% so the
-  picture doesn't read as live controls. It is dropped
+  stop/volume glyphs sit at 45% so the picture doesn't read as live
+  controls; the |◀◀ ▶▶| glyphs are solid white, bar touching the arrows. It is dropped
   under 901px and on a desktop taskbar (`.app-status.desktop-bar`), so it
   never covers the app's own status text or task buttons. An app that
   wants real transport controls puts its own buttons in the status bar.
+- **The real transport echoes it.** In any `.transport`, the icon buttons
+  directly before and after a round `.btn-go.btn-icon` (the media kit's
+  previous/next) become one silver-grey glossy pill tucked under the orb
+  (outer ends rounded, filled white glyphs, painted ~2rem tall inside a
+  44px hit area), and the orb sits on the pill's centre line.
+- **The playing track is green** (`--track-playing-fg: #5fd35f`), as in
+  WMP11's lists; a playing row that is also selected keeps white on the
+  blue capsule. KPI numerals (`.stat-value`) use the UI face at 600, not
+  mono; mono stays for code and logs.
 - **Blue silk** — WMP11's default visualization — fills the content well
   (and the bare page, for apps without the shell) as curved bright-cyan
   light ribbons (elliptical arcs) over deep navy; the black-glass panels float on it.
