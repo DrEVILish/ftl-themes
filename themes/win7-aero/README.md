@@ -37,9 +37,10 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 ## Signature details
 
 - Modals and dropdowns carry a real `backdrop-filter: blur(20px)
-  saturate(0.65)`, the title bar and status strip 24px, the client area a
-  plain `blur(20px)`; buttons, panels and toolbars on the white client
-  area do not blur again. Touch devices drop to `blur(12px)`.
+  saturate(0.8)`, the title bar and status strip 24px. The client area is
+  opaque white and is not blurred (a full-height blurred scroller cost
+  phones most of their frames); buttons, panels and toolbars on it do not
+  blur either. Touch devices drop to a plain `blur(12px)`.
 - The title bar carries Aero's faint diagonal **glare streaks**, a 1px
   dark outer frame, black caption text with a soft **white glow** behind
   it, and the joined **caption-button group** (min / max / red close)
@@ -69,6 +70,14 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   for vertical faders; grey-gloss thumb),
   check boxes with a `#4a5f97` tick — no Luna beige, orange or green
   left on controls.
+- Text boxes, selects and text areas are grey-framed (`#abadb3`) at rest
+  and turn blue only on hover (`#7eb4ea`) and focus (`#569de5`).
+- Toasts and alerts are notification balloons: white to `#e4e5f0`, a 1px
+  `#767676` frame, 3px corners, and the Win7 message icon (blue *i*,
+  green check, yellow *!*, red *x*) carrying the state, not a coloured
+  border.
+- Desktop icons stay white with a drop shadow when selected; the whole
+  item gets Win7's `rgba(255,255,255,.25)` fill in a half-white frame.
 - The desktop is the Windows 7 **"Harmony"** wallpaper: deep-to-bright
   blue, glowing light swooshes and a bloom where the logo sits — sharp
   enough shapes that the frost visibly softens them.
@@ -76,7 +85,8 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   `#7da2ce` frame with black text, never a leading accent bar or a solid
   blue block: tables (a stacked phone row frames the whole card, not each
   cell), lists, side nav, ticket cards, segmented and toggle buttons, the
-  current page and pressed filter chips. Chips and badges are 3px boxes,
+  current page and pressed filter chips. The nav rail's current item gets
+  the same framed fill instead of core's leading marker. Chips and badges are 3px boxes,
   not pills. Solid `#1265c7` is for links and focus. Tabs are raised gloss
   tabs, the selected one white; progress is the glossy green bar in a
   15px sunken grey trough (meters 12px).
@@ -130,14 +140,14 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-`--font` is `"Segoe UI", Selawik, "Noto Sans", "Open Sans", "Liberation Sans", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not. Segoe UI is not open-licensed, so vendoring is not an option; Selawik, its open (OFL) metric-compatible stand-in, comes next and is used where installed (vendoring it into `assets/fonts/` is requested; not done in this theme folder), then the nearest humanist faces. The page sets `font-size-adjust: 0.5`, Segoe UI's own x-height ratio, so it changes nothing where Segoe UI renders but scales a wide fallback (DejaVu, Tahoma) down to Segoe's x-height and keeps Win7's compact 9pt proportions.
+`--font` is `"Segoe UI", Selawik, "Noto Sans", "Open Sans", "Liberation Sans", Tahoma, sans-serif`; `--font-mono` is `Consolas, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not. Segoe UI is not open-licensed, so vendoring is not an option; Selawik, its open (OFL) metric-compatible stand-in, comes next and is used where installed (vendoring it into `assets/fonts/` is requested; not done in this theme folder), then the nearest humanist faces. The page sets `font-size-adjust: 0.5`, Segoe UI's own x-height ratio, so it changes nothing where Segoe UI renders but scales a wide fallback (DejaVu, Tahoma) down to Segoe's x-height and keeps Win7's compact 9pt proportions.
 
 ## Contrast honesty
 
 - **Accent lifted from the reference:** the Aero blue `#1c6fd1` is 2.69:1 against the desktop backdrop `--bg` `#a6c2e0` (a fail for text on the backdrop). Shipped `--accent` is `#1265c7`: 3.08:1 on `--bg` (the 3.0:1 soft floor), 5.21:1 on `--surface`, 5.66:1 under white text.
 - **Primary button:** dark `#1a1a1a` text on the pale-blue gloss.
-- **App bar:** brand, nav items and bar text `#000000` on the frosted bar, with a white glow behind them (`#1a1a1a` measured 4.4:1 on the Chocolate tint).
-- **Status strip:** its muted text is `#2b3540`, not `--muted`, on the glass.
+- **App bar:** brand, nav items and bar text `#000000` on the frosted bar, with a white glow behind them (`0 0 8px #fff, 0 0 2px #fff, 0 0 12px rgba(255,255,255,.8)`, as Win7's caption glow plate). Dark tints (Twilight, Ruby, Violet, Chocolate, Slate) mix into a denser frost (`rgb(236 241 248 / 0.64–0.72)`), as Win7's colour-intensity slider would, so the glass stays light enough for the black caption (Chocolate title glass measured about 5.5:1 against black, up from 3.2:1).
+- **Status strip:** black text with the caption's white glow on the glass (the old `#2b3540` measured 3.6:1).
 - **`--muted`** `#55606b` is 5.91:1 on `--surface` but 3.49:1 directly on `--bg`; do not set muted text on the bare backdrop.
 - `--danger`, `--success`, `--warning` on `--bg` are 2.96 / 2.79 / 1.77:1: fills only; use the `-text` variants for copy.
 
@@ -162,9 +172,11 @@ blur, still legible, just not glassy.
 
 Windows 7's *Personalize → Window Color* tinted all the glass. The theme
 does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
-mixed into a thin blue-grey frost (`--w7-frost`, `rgb(214 222 232 / 0.26–0.34)`)
-on the title bar and dialogs (26–34%), the side frame (30–38%) and status
-strip (28–34%), into near-white on panel captions and into dark blue-grey
+mixed into a pale sky frost (`--w7-frost`, `rgb(228 238 248 / 0.5–0.58)`)
+on the title bar, dialogs, side frame and status strip (35% fading
+to 41%; dark tints use a denser `rgb(236 241 248 / 0.64–0.72)` frost), so Sky glass lands near the
+reference's `rgb(160,195,230)`; into a pale blue floor (not white, so the
+Frost tint still shows a caption strip) on panel captions and into dark blue-grey
 on the taskbar, so the desktop carries the colour and the black caption text with its
 white glow stays readable at every tint. The other fifteen presets are
 variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
