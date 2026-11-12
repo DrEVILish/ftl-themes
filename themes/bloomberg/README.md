@@ -1,22 +1,24 @@
 # Bloomberg Terminal
 
-> Black-and-amber data density — every pixel is monospace.
+> Black-and-amber data density in the terminal's narrow screen sans.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
-**The financial data terminal look**: amber-on-black monospace text at
+**The financial data terminal look**: amber-on-black narrow sans at
 maximum density, function-key yellow, and a second cyan data category —
 built for scanning a wall of numbers fast, not for looking friendly. This
 is the catalog's extreme-density stress test as much as a period theme.
 
 ## Core values
 
-1. **Everything is monospace.** `--font` and `--font-mono` are the
-   same stack — headings, labels, buttons, body text, not just numeric
-   readouts. A proportional-font heading next to monospace data is the
-   single biggest tell this isn't authentic.
+1. **The screen's narrow sans, tabular figures.** `--font` is Share
+   Tech, a narrow proportional sans like the modern terminal's labels,
+   names, headers and figures ('British Pound Spot Curncy', 'DOW JONES'
+   in `EngineeringValue_EP3_Preview.webp`), with `tabular-nums` so columns
+   of figures align. `--font-mono` (Share Tech Mono) stays for code and
+   readouts. An all-mono UI reads as a retro clone, not the real screen.
 2. **Amber is the workhorse, yellow is the function key.** `--text` is
    amber; `--accent` is a brighter function-key yellow reserved for
    interactive elements. Losing that split makes everything read as one
@@ -36,9 +38,11 @@ is the catalog's extreme-density stress test as much as a period theme.
    control), and line-chart points stay circles (core draws them as SVG
    `<circle>`). This is a data terminal, not a consumer app.
 6. **Color by role, like the screen.** Labels and names are amber, data
-   values (`.stat-value`, `td.mono`) are terminal white `#e8e8e8`, column
-   headers sit on a grey `#2a2a2a` bar, and panel/modal headers are the
-   dark-red `#7a0000` section bar with white text.
+   values (`.stat-value`, `td.mono`) are terminal white `#e8e8e8` except
+   up/down cells, which keep the green-up / red-down net-change colour;
+   column headers are mixed-case light grey `#c8c8c8` at data size on a
+   grey `#2a2a2a` bar, and panel/modal headers are the crimson `#800414`
+   section bar (sampled from the reference, rgb 129,4,19) with white text.
 7. **Amber window frames.** Panels, modals and desktop windows carry the
    terminal window's thin amber outer frame (`#cc7a00`); inputs, cards and
    hairlines stay grey `#3a3a3a`.
@@ -47,8 +51,9 @@ is the catalog's extreme-density stress test as much as a period theme.
 
 - Buttons are outlined amber-on-black at rest and invert to filled yellow
   with black text on hover — the terminal function-key press.
-- Table cells get vertical rules between columns (`border-right`), a grid
-  look real terminals use to keep dense columns readable.
+- Table cells get vertical rules between columns (`border-right`) and no
+  visible horizontal row rules (`--table-rule: #0a0a0a`, 1.1:1 on black):
+  the terminal's column grid, not boxed cells.
 - The status strip text is cyan, not amber — a second information channel,
   distinct at a glance from the primary data color. The colored
   function-key strip sits in its flow (not over its text), and is left off
@@ -59,7 +64,12 @@ is the catalog's extreme-density stress test as much as a period theme.
 - `.btn-go` is the keyboard's filled green `<GO>` key with black text.
 - The app bar's nav and menubar items are the same green key caps with
   black text (yellow when hovered, focused or current), the reference's
-  MSG / PgFd / PgBk row across the top of the window.
+  MSG / PgFd / PgBk row across the top of the window. Vertical nav lists
+  (rails, mail folders) are amber text rows with only the selected one a
+  yellow cap, so green caps stay a horizontal key row.
+- Focus is white (`--focus: #ffffff`), so cyan stays a data colour and
+  yellow the function key.
+- Badges never drop under 12px (`max(0.75em, 0.75rem)`).
 - Dropdowns (`.select`) are filled amber fields with black text and a
   black arrow, like the reference's "Standard" select (about 10:1).
 - Data rows are tight (`0.25rem` block padding, the 4px edge floor, line-height 1.25) and
@@ -92,7 +102,8 @@ reads as another data row rather than a conventional status bar.
 
 ## Tell-tales of an inauthentic result
 
-- Any proportional (non-monospace) font anywhere on the page.
+- A wide or all-monospace UI face (the clone look), or proportional
+  figures that make columns of numbers jitter.
 - Rounded corners or a gradient/gloss fill on any control.
 - Generous padding or a spacious, low-density layout — this theme should
   feel cramped by this catalog's normal standards, deliberately.
@@ -100,7 +111,7 @@ reads as another data row rather than a conventional status bar.
 
 ## Don'ts
 
-- **No proportional font anywhere**, including headings, buttons and nav.
+- **No wide or decorative face.** Keep the narrow screen sans with tabular figures; do not add letter-spacing.
 - **No rounded corners, gradients or gloss.** `--radius: 0`.
 - **No spacious layout.** Do not raise `--density` above `0.7` to be friendly.
 - **No decorative colour.** Amber, yellow and cyan each mean something; do not use cyan as an accent for buttons or amber for a second category.
@@ -108,7 +119,7 @@ reads as another data row rather than a conventional status bar.
 
 ## Typography
 
-`--font` is `"Share Tech Mono", Consolas, "Liberation Mono", "Courier New", monospace` and `--font-mono` is the same stack minus Courier: the whole UI is monospace. Share Tech Mono (SIL OFL, already vendored in `assets/fonts/` for other themes, Regular only) is first so every platform gets the same narrow screen face (0.54em advance, against 0.60em for the DejaVu Sans Mono that Linux would otherwise fall to); that width keeps dense columns, the bar and table-cell inputs from overflowing. The real terminal's face is a proprietary screen font that no capture in `references/bloomberg/` lets us name, so this is a stand-in, not a match; the modern screen is partly proportional, which a mono stand-in deliberately does not follow (core value 1).
+`--font` is `"Share Tech", "Arial Narrow", "Roboto Condensed", "Liberation Sans Narrow", sans-serif` with `font-variant-numeric: tabular-nums` on the body; `--font-mono` is `"Share Tech Mono", Consolas, "Liberation Mono", monospace` for code and readouts. Both Share Tech faces (SIL OFL, already vendored in `assets/fonts/`, Regular only, so bold is synthesized) load on every platform, keeping dense columns, the bar and table-cell inputs the same width everywhere. The real terminal's face is a proprietary screen font that no capture in `references/bloomberg/` lets us name, so Share Tech is a stand-in chosen for the same narrow, slightly squared proportional shape seen in `EngineeringValue_EP3_Preview.webp`. Column headers are mixed case at data size with no tracking, like the reference's 'Index' / '2 Day' / '%YTD' bar.
 
 ## Contrast honesty
 
@@ -121,7 +132,7 @@ reads as another data row rather than a conventional status bar.
 
 ## Reference status
 
-`references/bloomberg/` has 4 captures plus `RESEARCH.md`. `bloomberg-keyboard-function-keys.jpg` (real keyboard, red/yellow/green function-key rows, green GO key) backs the function-key strip and the colour-coded `<kbd>`. `EngineeringValue_EP3_Preview.webp` backs amber-on-black screen type and the function-key row. `images.jpg` is a third-party dense data-grid dashboard, and `1_ka17MqtycuFqVq5i28WB2w.png` is a third-party clone ("FincepT Terminal"), not real Bloomberg — the weakest of the set per `RESEARCH.md`. No captured hex values.
+`references/bloomberg/` has 4 captures plus `RESEARCH.md`. `bloomberg-keyboard-function-keys.jpg` (real keyboard, red/yellow/green function-key rows, green GO key) backs the function-key strip and the colour-coded `<kbd>`. `EngineeringValue_EP3_Preview.webp` backs amber-on-black screen type and the function-key row; its red section bar was sampled at rgb(129,4,19) and its header text at `#c8c8c8`. `images.jpg` is a third-party dense data-grid dashboard, and `1_ka17MqtycuFqVq5i28WB2w.png` is a third-party clone ("FincepT Terminal"), not real Bloomberg — the weakest of the set per `RESEARCH.md`. The amber and key colours are not sampled values.
 
 ## Icons
 

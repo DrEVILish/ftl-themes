@@ -1,11 +1,19 @@
 /* ftl-themes: Bloomberg Terminal
  * Theme-Name: Bloomberg Terminal
- * Description: Black-and-amber monospace terminal density — every UI element, not just numbers, set in a narrow screen mono, at --density: 0.7.
+ * Description: Black-and-amber terminal density — a narrow proportional screen sans with tabular figures, mono for code and readouts, at --density: 0.7.
  *
  * An extreme-density stress test as much as a theme: --density is
- * turned down hard, every font (not just --font-mono) is monospace,
- * and the whole palette is functional color-coding, not decoration.
+ * turned down hard and the whole palette is functional color-coding,
+ * not decoration.
  */
+
+/* Share Tech (SIL OFL, vendored): the modern terminal screen sets labels,
+   names and figures in a narrow proportional sans, not a mono. */
+@font-face {
+  font-family: "Share Tech";
+  src: url("assets/fonts/ShareTech-Regular.woff2") format("woff2");
+  font-display: swap;
+}
 
 /* Share Tech Mono (SIL OFL, already vendored for other themes) is a
    narrow screen mono (0.54em advance against DejaVu Sans Mono's 0.60),
@@ -44,9 +52,9 @@ html[data-theme="bloomberg"] {
   --on-danger: #000000;
   --on-success: #000000;
   --radius: 0;
-  /* The whole UI is monospace, not just numeric readouts — a data-grid
-     stress test for .table, not a cosmetic choice. */
-  --font: "Share Tech Mono", Consolas, "Liberation Mono", "Courier New", monospace;
+  /* The screen's narrow proportional sans (labels, names, headers and
+     figures); mono stays for code and readouts. Figures are tabular. */
+  --font: "Share Tech", "Arial Narrow", "Roboto Condensed", "Liberation Sans Narrow", sans-serif;
   --font-mono: "Share Tech Mono", Consolas, "Liberation Mono", monospace;
   --flare: #ffcc00;
 
@@ -60,7 +68,8 @@ html[data-theme="bloomberg"] {
   --btn-border: var(--accent);
   --btn-radius: 0;
   --btn-bg-hover: var(--accent);
-  --focus: var(--accent-2);
+  /* White, so cyan stays a data colour and yellow the function key. */
+  --focus: #ffffff;
   --focus-ring: none;
   --input-bg: #000000;
   --input-border: var(--border);
@@ -72,13 +81,13 @@ html[data-theme="bloomberg"] {
   --card-border: var(--border);
   --panel-pad: 0.25rem;
   --tab-panel-pad: 0.35rem;
-  --modal-header-bg: #141414;
-  --modal-header-fg: var(--accent);
-  --table-head-bg: #141414;
-  --table-head-fg: var(--accent);
-  --table-head-transform: uppercase;
-  --table-head-tracking: 0.02em;
-  --table-rule: var(--hairline);
+  /* Column headers: mixed case at data size, like 'Index' / '2 Day'. */
+  --table-head-transform: none;
+  --table-head-tracking: 0;
+  /* Column rules carry the grid; the row rule is the panel's own near-black
+     (1.1:1 on black), so rows read as the terminal's unruled grid while
+     each cell keeps its edge. */
+  --table-rule: #0a0a0a;
   --row-selected-bg: rgba(255, 204, 0, 0.15);
   /* A selected row's own text is the full amber: inherited --muted (e.g. in
      an accordion) fell to 3.7:1 on the yellow tint. */
@@ -137,11 +146,11 @@ html[data-theme="bloomberg"] {
   /* Role colors from the terminal screen: grey column-header bar with
      light text, dark-red section bars with white text. */
   --table-head-bg: #2a2a2a;
-  --table-head-fg: #e8e8e8;
-  --panel-header-bg: #7a0000;
+  --table-head-fg: #c8c8c8;
+  --panel-header-bg: #800414;
   --panel-header-fg: #ffffff;
   --panel-header-pad: 0.25rem 0.5rem;
-  --modal-header-bg: #7a0000;
+  --modal-header-bg: #800414;
   --modal-header-fg: #ffffff;
   --card-pad: 0.4rem;
   --toolbar-pad: 0.25rem;
@@ -160,7 +169,9 @@ html[data-theme="bloomberg"] :is(.panel-header, .modal-header) { --muted: #f0c8a
 
 /* Data values are white on the terminal; amber stays for labels and names. */
 html[data-theme="bloomberg"] .stat-value { --text: #e8e8e8; }
-html[data-theme="bloomberg"] .table td.mono { color: #e8e8e8; }
+html[data-theme="bloomberg"] body { font-variant-numeric: tabular-nums; }
+/* Up/down cells keep core's green/red net-change colour. */
+html[data-theme="bloomberg"] .table td.mono:not(.is-up, .is-down) { color: #e8e8e8; }
 
 /* Screen titles are small and regular weight, the same family and close
    to the size of the data, not code-editor headlines. */
@@ -172,7 +183,7 @@ html[data-theme="bloomberg"] h3 { font-size: 1rem; }
 /* Header cells keep at least 4px around their text at --density 0.7; data
    rows are as tight as the terminal's grid (touch tiers reach --tap-min
    through the controls inside the row, not padding). */
-html[data-theme="bloomberg"] .table th { padding-block: 0.3rem; }
+html[data-theme="bloomberg"] .table th { padding-block: 0.3rem; font-size: inherit; }
 html[data-theme="bloomberg"] .table td { padding-block: 0.25rem; line-height: 1.25; }
 /* A wide fallback face must never squeeze a cell input under the target. */
 html[data-theme="bloomberg"] .table td > :is(.input, .select) { min-inline-size: calc(var(--tap-min) + 1ch); }
@@ -284,13 +295,15 @@ html[data-theme="bloomberg"] .app-status:not(.taskbar, .desktop-bar)::before {
    small filled key caps (green, the current one yellow) like the
    reference's MSG / PgFd / PgBk row. */
 html[data-theme="bloomberg"] {
-  --nav-item-bg: #2ecc40;
-  --nav-item-fg: #000000;
+  /* Rail and in-page nav lists are amber text rows with a yellow selected
+     cap; only the bar's horizontal row is green caps. */
+  --nav-item-fg: var(--text);
   --nav-item-bg-active: #ffcc00;
   --nav-item-fg-active: #000000;
   --desktop-icon-font-size: 0.72rem;
 }
-html[data-theme="bloomberg"] .app-bar .nav-item { padding: 0.25rem 0.45em; }
+html[data-theme="bloomberg"] .app-bar { --nav-item-bg: #2ecc40; --nav-item-fg: #000000; }
+html[data-theme="bloomberg"] .app-bar .nav-item { padding: 0.25rem 0.45em; min-inline-size: var(--tap-min); justify-content: center; text-align: center; }
 /* The bar's menubar items are the same caps at rest; hover, focus and an
    open menu fall through to core's yellow active key. */
 html[data-theme="bloomberg"] .app-bar .menubar { --menubar-gap: 3px; --menubar-item-fg-active: #000000; }
@@ -303,6 +316,9 @@ html[data-theme="bloomberg"] .app-bar .menubar > li:not(:hover, :focus-within) >
 @container style(--tier: mobile) {
   html[data-theme="bloomberg"] :is(.app-bar, .app-bar > .cluster) { gap: 0.35rem; }
   html[data-theme="bloomberg"] .app-bar > .cluster > .select { inline-size: 8.5rem; }
+  /* Narrow caps leave the brand room beside the key row. */
+  html[data-theme="bloomberg"] .app-bar .menubar { --menubar-gap: 2px; }
+  html[data-theme="bloomberg"] .app-bar :is(.menubar > li > :is(button, a), .nav-item) { padding-inline: 0.3em; }
 }
 
 /* XL gutters (v5, PLAN.md §3): more of the data wall, out of focus. Rows
@@ -326,3 +342,7 @@ html[data-theme="bloomberg"] {
   --bar-chart-gap: 2px;
   --bar-chart-radius: 0;
 }
+
+/* Badges never fall under 12px: the narrow sans reads smaller than a mono
+   at the same size. */
+html[data-theme="bloomberg"] .badge { font-size: max(0.75em, 0.75rem); }
