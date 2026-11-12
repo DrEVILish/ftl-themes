@@ -1,118 +1,193 @@
 /* ftl-themes: Hot Wheels
  * Theme-Name: Hot Wheels
- * Description: Blister-pack orange on track-black with a diagonal flame-stripe app bar and a checkered-flag status strip.
+ * Description: Electric Hot Wheels blue with orange track trim, a hard-edged red/orange/yellow flame on the logo badge, slanted selection bars and a checkered-flag status strip.
  *
- * Note on fonts: "Arial Black"/Impact are broadly pre-installed system
- * fonts, not a niche display face that needs vendoring — unlike Eurostile
- * or Orbitron elsewhere in this repo, naming them here doesn't create the
- * silent-fallback problem those did.
+ * Fonts: display type (headings, buttons, nav, brand, tabs) uses Antonio
+ * Bold (OFL, already vendored in assets/fonts for lcars), slanted by the
+ * browser, as the closest free match to the game menu's condensed heavy
+ * italic caps. Body copy stays a plain system sans.
  */
+@font-face {
+  font-family: "Antonio";
+  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-weight: 600 900;
+  font-display: swap;
+}
 
 html[data-theme="hot-wheels"] {
   --motion-leave: warp;
-  /* Keep the nav's own strip inside the app bar (core drops it there by
-     default): this theme's bar layout is built around it. */
-  --app-bar-nav-bg: var(--nav-bg);
-  --app-bar-nav-rule-width: var(--nav-rule-width, 1px);
-  --app-bar-nav-radius: var(--nav-radius, 0);
   color-scheme: dark;
-  --bg: #0a0a0a;
-  --surface: #161616;
-  --surface-2: #232323;
-  --border: #ff5f00;
-  --hairline: #3a3a3a;
-  --text: #f5f5f5;
-  --muted: #9a9a9a;
-  --accent: #ff5f00;
-  --accent-2: #ffb400;
+  /* Blue is the field, as in every capture (game menu backdrop, the 1999
+     PC's plastic, the wallpaper); orange is the track; yellow and red are
+     the flame. */
+  --bg: #1638a6;
+  --surface: #1c44bc;
+  --surface-2: #224dcc;
+  /* Surfaces are edged in a darker blue; orange is kept for one heavy
+     track lip per surface (--panel-shadow), not keylines everywhere. */
+  --border: #0d2a80;
+  --hairline: #4f78e6;
+  --text: #ffffff;
+  --muted: #dbe4ff;
+  /* Orange cannot be small text on this bright blue (2.97:1 on
+     --surface-2), and core paints --accent as text in many places, so the
+     accent is the flame's yellow core, lifted a hair (4.68:1 on the bar);
+     orange keeps every fill it had through --hw-flame. */
+  --accent: #ffd21a;
+  --accent-2: #ff8a1a;
+  --hw-flame: #ff8a1a;
+  --code-bg: #0f2c88;
+  --code-inserted-bg: color-mix(in srgb, var(--success) 18%, #0f2c88);
+  --code-deleted-bg: color-mix(in srgb, var(--danger) 18%, #0f2c88);
+  --comment-anchor-bg-active: #5a6278;
   --danger: #ff2d2d;
   --success: #29d17a;
   --warning: #ffcc00;
-  /* Text-weight variants of the state colors, for .status, trends,
-     colored badges and danger menu items: same hue, adjusted to 4.5:1 on
-     this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --danger-text: #ff8080;
+  --danger-text: #ffcccc;
+  --success-text: #9dffc8;
   --on-accent: #1a0900;
   --on-danger: #1a0000;
   --on-success: #04220f;
-  --radius: 0.35rem;
-  --font: "Arial Black", Impact, Arial, sans-serif;
+  --radius: 0.2rem;
+  --font: Arial, "Helvetica Neue", "Liberation Sans", sans-serif;
+  --font-display: "Antonio", "Arial Narrow", "Liberation Sans Narrow", Impact, sans-serif;
   --font-mono: "Courier New", Consolas, monospace;
-  --flare: #ffb400;
-  /* Hot Wheels' real packaging/branding is blue-and-orange, not just
-     orange-on-black — the blister-pack blue backing and the logo's blue
-     background trim are as much a brand signature as the flame. */
-  --hw-blue: #0033a0;
+  --flare: #ffcc00;
+  --hw-blue: #1f4fd1;
+  --hw-select: #2a64e8;
+  --hw-red: #e3171b;
+  --hw-orange: #ff5f00;
+  --hw-yellow: #ffcc00;
+  /* The game menu's selected item: a slanted blue bar. Painted as a
+     background (not clip-path) so focus rings are never clipped. */
+  --hw-slant: linear-gradient(100deg, transparent 0.45rem, var(--hw-select) 0.45rem calc(100% - 0.45rem), transparent calc(100% - 0.45rem));
 
-  /* Angled flame-gradient buttons, bold and uppercase like the blister-pack
-     logo type. */
-  --btn-bg: linear-gradient(135deg, #ff8a00, var(--accent));
+  /* Angled flame-gradient buttons, bold and uppercase like the logo type. */
+  --btn-bg: linear-gradient(135deg, #ff8a00, var(--hw-orange));
   --btn-fg: var(--on-accent);
-  --btn-weight: 800;
-  --btn-tracking: 0.05em;
+  --btn-weight: 700;
+  --btn-tracking: 0.06em;
   --btn-transform: uppercase;
   --btn-border-width: 0;
-  --btn-shadow-hover: 0 0 16px rgba(255, 95, 0, 0.6);
-  --focus: var(--accent-2);
-  --focus-ring: 0 0 0 2px rgba(255, 180, 0, 0.5);
-  --input-bg: #000000;
+  --btn-shadow-hover: 0 0 0 2px var(--hw-yellow);
+  --focus: var(--hw-yellow);
+  --focus-ring: 0 0 0 2px rgba(255, 204, 0, 0.6);
+  --input-bg: #0f2c88;
+  --input-border: var(--hairline);
   --panel-bg: var(--surface);
-  --panel-shadow: 0 0 0 1px var(--border) inset;
-  --modal-header-bg: linear-gradient(135deg, #ff8a00, var(--accent));
-  --modal-header-fg: var(--on-accent);
-  --table-head-bg: var(--hw-blue);
-  --table-head-fg: #ffffff;
-  --row-selected-bg: rgba(255, 95, 0, 0.32);
-  /* A selected row's own text is full white: inherited --muted (e.g. in an
-     accordion) sank to 3.9:1 on the orange fill. */
-  --row-selected-fg: var(--text);
-  /* The drop column's tint is kept faint: the orange glowing title sits
-     on it (core's 12% took it to 3.9:1). */
-  --kanban-drop-bg: color-mix(in srgb, var(--accent) 5%, var(--surface-2));
-  --row-active-marker: inset 0.25rem 0 0 var(--accent);
-  --nav-bg: #000000;
-  --nav-rule: var(--accent);
-  --nav-item-fg-active: var(--accent);
-  --overlay-bg: rgba(0, 0, 0, 0.7);
+  /* A length of orange track along the bottom of every surface. */
+  --panel-shadow: inset 0 -4px 0 var(--hw-orange);
+  /* Dialog headers are the PC monitor's yellow band with its red and
+     orange pinstripes along the bottom edge. */
+  --modal-header-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 40' preserveAspectRatio='none'%3E%3Cpath fill='%23e3171b' d='M48 0H22L0 7l20 6L3 21l19 5L8 37l22 3h18z'/%3E%3Cpath fill='%23ff5f00' d='M48 5H26L10 10l17 4-12 7 15 4-10 9 19 2h13z'/%3E%3Cpath fill='%23ffcc00' d='M48 11H31l-9 4 13 3-8 4 11 3-5 5h15z'/%3E%3C/svg%3E") 0 0 / 2.2rem calc(100% - 6px) no-repeat, linear-gradient(to top, var(--hw-red) 0 3px, var(--hw-orange) 3px 6px, var(--hw-yellow) 6px);
+  /* Room at the start edge for the flame tongues. */
+  --modal-header-pad: var(--space-xs) var(--space-m) var(--space-xs) calc(var(--space-m) + 1.6rem);
+  --modal-header-fg: #0a1a4a;
+  --window-header-bg-inactive: var(--surface-2);
+  --window-header-fg-inactive: var(--muted);
+  --window-header-filter-inactive: none;
+  --table-head-bg: var(--hw-yellow);
+  --table-head-fg: #0a1a4a;
+  --row-selected-bg: var(--hw-select);
+  --row-selected-fg: #ffffff;
+  --kanban-drop-bg: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+  --row-active-marker: inset 0.25rem 0 0 var(--hw-orange);
+  --nav-bg: var(--hw-blue);
+  --nav-rule: var(--hw-yellow);
+  --nav-item-fg: #ffffff;
+  --nav-item-bg-active: var(--hw-slant);
+  --nav-item-fg-active: #ffffff;
+  --nav-brand-fg: #ffffff;
+  --tab-fg: var(--muted);
+  --tab-bg-active: var(--hw-slant);
+  --tab-fg-active: #ffffff;
+  --tab-underline-active: var(--hw-yellow);
+  --overlay-bg: rgba(5, 12, 40, 0.75);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
+  /* Angles, not pills. */
+  --badge-radius: 0.15rem;
+  --switch-radius: 0.2rem;
+  --switch-thumb-radius: 0.1rem;
+  --avatar-radius: 0.15rem;
+  --btn-icon-radius: var(--radius);
+  --slider-thumb-radius: 0.1rem;
+  /* Antonio is condensed: never let a label drop below 14px. */
+  --btn-font-size: max(0.875rem, 0.9em);
+  /* Heat runs up the flame (deep red, orange, yellow core); a blue-to-
+     yellow mix greys out in the middle. */
+  --chart-seq-0: #7a1800;
+  --chart-seq-8: var(--hw-yellow);
+  /* Slider: a length of orange track with its raised lips; core keeps the
+     padding and the tap size. */
+  --slider-height: 0.5rem;
+  --slider-bg: linear-gradient(#ffa040 0 2px, var(--hw-orange) 2px calc(100% - 2px), #b84400 0);
+  --slider-thumb-bg: var(--hw-yellow);
 }
 
-html[data-theme="hot-wheels"] h1,
-html[data-theme="hot-wheels"] h2,
-html[data-theme="hot-wheels"] h3 {
+/* Display type: condensed heavy italic caps, crisp, with a hard drop
+   shadow like the game menu's labels (no glow). */
+html[data-theme="hot-wheels"] :is(h1, h2, h3) {
+  font-family: var(--font-display);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   font-style: italic;
-  color: var(--accent);
-  text-shadow: 0 0 10px rgba(255, 95, 0, 0.5);
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #06103a;
 }
-/* A kanban column title sits on a tinted column (the drop target): the
-   orange glow behind it took it under 4.5:1, so it keeps colour, not glow. */
+html[data-theme="hot-wheels"] h1 { color: var(--hw-yellow); }
+html[data-theme="hot-wheels"] :is(.btn, .nav-item, .nav-brand, .tab, .modal-header, .panel-header, .app-bar .menubar > li > [role="menuitem"], .toggle-btn, .badge-button, .segmented > *, .accordion-trigger, .popover > strong:first-child) {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+html[data-theme="hot-wheels"] :is(.modal-header, .panel-header, .toggle-btn, .badge-button, .segmented > *, .accordion-trigger, .popover > strong:first-child) {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+html[data-theme="hot-wheels"] .panel-header { text-shadow: 1px 1px 0 #06103a; }
+html[data-theme="hot-wheels"] .btn-sm { font-size: max(0.875rem, 0.78em); }
+html[data-theme="hot-wheels"] :is(.panel-header, .app-bar .menubar > li > [role="menuitem"]) {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+/* Antonio has no italic face: the browser's slant leans the last letter
+   past the box, so clipped labels get room for it. */
+html[data-theme="hot-wheels"] :is(.btn, .nav-item, .tab) > span { padding-inline-end: 0.15em; }
+html[data-theme="hot-wheels"] .panel-header > :first-child { margin-inline-end: 0.4em; }
+/* Window controls follow the header's own ink: deep blue on the yellow
+   band, muted on an inactive blue header. */
+html[data-theme="hot-wheels"] .modal-header { --btn-close-fg: currentColor; }
+/* Status badges are solid flame fills with dark ink, like the buttons. */
+html[data-theme="hot-wheels"] .badge-accent { --badge-bg: var(--hw-flame); --badge-fg: var(--on-accent); }
+html[data-theme="hot-wheels"] .badge-warning { --badge-bg: var(--hw-yellow); --badge-fg: #0a1a4a; }
+html[data-theme="hot-wheels"] .badge-danger { --badge-bg: var(--hw-red); --badge-fg: #ffffff; }
+html[data-theme="hot-wheels"] .badge-success { --badge-bg: var(--success); --badge-fg: var(--on-success); }
 html[data-theme="hot-wheels"] .kanban-column-title { text-shadow: none; }
+/* Core clips the slider to its content box; map the lips to it too. */
+html[data-theme="hot-wheels"] .slider { background-origin: content-box; }
 
-html[data-theme="hot-wheels"] .panel,
-html[data-theme="hot-wheels"] .modal { border: 1px solid var(--border); }
-
-/* v3.4.0 components: flame-orange-on-black extended to the newer primitives. */
+/* v3.4.0 components: blue panels with orange track trim. */
 html[data-theme="hot-wheels"] {
   --toast-bg: var(--surface);
-  --toast-border: var(--accent);
-  --toast-shadow: 0 0 14px rgba(255, 95, 0, 0.35);
+  --toast-border: var(--border);
+  --toast-shadow: 0 4px 0 #000a2a;
   --alert-bg: var(--surface);
   --alert-fg: var(--text);
-  --card-shadow: 0 0 0 1px var(--border) inset;
+  --card-shadow: inset 0 -4px 0 var(--hw-orange);
   --context-menu-bg: var(--surface);
   --context-menu-border: var(--border);
-  --dropzone-border: var(--accent);
-  --dropzone-bg-active: rgba(255, 95, 0, 0.1);
+  --dropzone-border: var(--hw-orange);
+  --dropzone-bg-active: rgba(255, 138, 26, 0.12);
   --dropzone-fg-active: var(--accent);
-  --avatar-bg: var(--accent);
+  --avatar-bg: var(--hw-flame);
   --avatar-fg: var(--on-accent);
-  --pagination-item-bg-active: var(--accent);
+  --pagination-item-bg-active: var(--hw-flame);
   --pagination-item-fg-active: var(--on-accent);
   --breadcrumb-current-fg: var(--accent);
-  --tooltip-bg: #000000;
+  --tooltip-bg: var(--bg);
   --tooltip-border: var(--accent);
   --popover-bg: var(--surface);
   --popover-border: var(--border);
@@ -120,15 +195,16 @@ html[data-theme="hot-wheels"] {
 }
 
 /* --- Layout ---------------------------------------------------------------
- * A black track with a diagonal flame stripe across the bar, and a
- * checkered-flag strip along the bottom — the two motifs that read "Hot
- * Wheels" before a single word does. */
+ * A Hot Wheels blue bar with the PC set's yellow band and red/orange
+ * pinstripes under it, the flame logo badge as the brand, and a
+ * checkered-flag strip along the bottom. Nothing decorative sits behind the
+ * nav text. */
 html[data-theme="hot-wheels"] {
   --app-padding: 0.5rem;
   --app-gap: 0.5rem;
-  --app-bar-bg: #000000;
+  --app-bar-bg: var(--hw-blue);
   --app-bar-fg: #ffffff;
-  --app-bar-rule: var(--hw-blue);
+  --app-bar-rule: var(--hw-yellow);
   --app-bar-rule-width: 4px;
   --app-bar-height: 2.6rem;
   --app-main-bg: var(--bg);
@@ -136,29 +212,25 @@ html[data-theme="hot-wheels"] {
   --app-status-fg: var(--text);
   --app-status-rule-width: 0;
 }
-/* The flame stripe: an angled orange-to-yellow band cutting across the
-   black bar. */
+/* Orange then red pinstripes under the yellow rule. */
 html[data-theme="hot-wheels"] .app-bar {
-  background-image: linear-gradient(
-    100deg,
-    transparent 0%,
-    transparent 42%,
-    var(--accent) 46%,
-    var(--accent-2) 52%,
-    var(--accent) 58%,
-    transparent 62%,
-    transparent 100%
-  );
+  box-shadow: 0 3px 0 var(--hw-orange), 0 6px 0 var(--hw-red);
 }
 /* The checkered flag: a small repeating black/white square pattern, kept
    to a thin strip so it reads as a flag, not a full chessboard. */
 html[data-theme="hot-wheels"] .app-status {
   background-color: #050505;
-  background-image:
-    repeating-conic-gradient(#ffffff 0% 25%, #050505 0% 50%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' shape-rendering='crispEdges'%3E%3Cpath fill='%23050505' d='M0 0h2v2H0z'/%3E%3Cpath fill='%23ffffff' d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E");
   background-size: 0.6rem 0.6rem;
 }
-/* Each readout sits on a solid black chip: white text straight over the
+/* A desktop taskbar is mostly segments: the flag runs as one cap along
+   its top edge instead of showing through every gap. */
+html[data-theme="hot-wheels"] .app-status.taskbar {
+  background-color: var(--hw-blue);
+  background-size: 0.5rem 0.5rem;
+  background-repeat: repeat-x;
+}
+/* Each readout sits on a solid chip: white text straight over the
    checkers was unreadable. */
 html[data-theme="hot-wheels"] .app-status > * {
   background: #050505;
@@ -167,80 +239,69 @@ html[data-theme="hot-wheels"] .app-status > * {
   padding: 0.1rem 0.5rem;
   border-radius: var(--radius);
 }
+/* On the blue taskbar the segments sit straight on the blue. */
+html[data-theme="hot-wheels"] .app-status.taskbar > * { background: none; text-shadow: none; }
 
-/* Two-tone packaging: the Hot Wheels logo's blue color-blocking is as much
-   a brand signature as the orange flame — real blister-pack backers and
-   the logo's own background trim are solid blue, not a thin accent line.
-   A 4px rule and a table-header fill read as monochrome-orange-with-a-hint
-   of blue, so give the blue a real block presence: a bold banner cutting
-   across the app bar (behind the flame stripe, like the blue backer card
-   showing through the die-cut orange flame on the packaging) and a
-   badge-style logo treatment on the brand mark. */
-html[data-theme="hot-wheels"] .app-bar {
-  position: relative;
-  background-image:
-    linear-gradient(
-      100deg,
-      transparent 0%,
-      transparent 42%,
-      var(--accent) 46%,
-      var(--accent-2) 52%,
-      var(--accent) 58%,
-      transparent 62%,
-      transparent 100%
-    ),
-    linear-gradient(90deg, var(--hw-blue) 0%, var(--hw-blue) 38%, transparent 38%);
-}
+/* The brand is the flame logo: three hard-edged tongues (red, orange,
+   yellow core) swept back to points on the left, a red body behind the
+   white wordmark, and a slanted cut on the right. */
 html[data-theme="hot-wheels"] .nav-brand {
   display: inline-block;
-  background: var(--hw-blue);
-  color: #ffffff;
-  padding: 0.3rem 0.7rem;
-  border-radius: var(--radius);
-  font-style: italic;
+  padding: 0.3rem 1rem 0.3rem 2.4rem;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 40' preserveAspectRatio='none'%3E%3Cpath fill='%23e3171b' d='M48 0H22L0 7l20 6L3 21l19 5L8 37l22 3h18z'/%3E%3Cpath fill='%23ff5f00' d='M48 5H26L10 10l17 4-12 7 15 4-10 9 19 2h13z'/%3E%3Cpath fill='%23ffcc00' d='M48 11H31l-9 4 13 3-8 4 11 3-5 5h15z'/%3E%3C/svg%3E") 0 0 / 2.5rem 100% no-repeat,
+    linear-gradient(100deg, var(--hw-red) calc(100% - 0.6rem), transparent calc(100% - 0.6rem)) 2.4rem 0 / calc(100% - 2.4rem) 100% no-repeat;
+  border-radius: 0;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  text-shadow: 2px 2px 0 #4a0000;
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * flame-gradient columns with a checkered-flag highlight. */
 html[data-theme="hot-wheels"] {
-  --message-own-border: var(--accent);
+  --message-own-border: var(--hw-orange);
+  --progress-fill: var(--hw-orange);
   --bar-chart-bar: linear-gradient(0deg, #ff5f00, #ff8a00 55%, #ffb400);
-  --bar-chart-bar-alt: repeating-conic-gradient(#f5f5f5 0 25%, #161616 0 50%) 0 0 / 10px 10px;
+  /* Highlight: the flame's yellow core under a short finish-line cap. */
+  --bar-chart-bar-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' shape-rendering='crispEdges'%3E%3Cpath fill='%230a1a4a' d='M0 0h2v2H0z'/%3E%3Cpath fill='%23f5f5f5' d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E") 0 0 / 8px 8px repeat-x, linear-gradient(0deg, #ffb400, #ffcc00);
   --bar-chart-radius: 0.35rem 0.35rem 0 0;
 }
 
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------- *
  * Phone and tablet: core puts the brand and actions on the first line of the
- * bar and the nav strip on its own scrolling line. The brand's blue logo
- * badge keeps its own width there instead of stretching across the free
- * space (core gives the brand a zero flex basis so it can truncate). */
+ * bar and the nav strip on its own scrolling line. The flame badge keeps its
+ * own width there instead of stretching across the free space (core gives
+ * the brand a zero flex basis so it can truncate). */
 @media (max-width: 900px) {
   html[data-theme="hot-wheels"] .app-bar > .nav-brand { max-width: fit-content; }
 }
-@media (max-width: 480px) {
-  html[data-theme="hot-wheels"] .nav-brand { padding-inline: 0.5rem; }
-}
 
-/* XL gutters: a length of orange track runs down each side, raised lips and
-   dark joints every 120px, all burnt down to within ~1.3:1 of the black. */
+/* XL gutters: a length of burnt-orange track runs down each side, raised
+   lips and blue joints every 120px, toned down so it stays behind the page. */
 html[data-theme="hot-wheels"] {
   --app-gutter-art:
-    linear-gradient(transparent 0 114px, #0a0a0a 114px) 0 0 / 100% 120px,
+    linear-gradient(transparent 0 114px, var(--bg) 114px) 0 0 / 100% 120px,
     repeating-linear-gradient(90deg,
       transparent 0 96px,
-      #3a1b02 96px 102px, #251101 102px 178px, #3a1b02 178px 184px,
+      #b84400 96px 102px, #8a3300 102px 178px, #b84400 178px 184px,
       transparent 184px 280px);
 }
 
-/* Toggles: unpressed falls back to the flame-gradient --btn-bg, the same
-   orange as pressed, so the two states read alike. Unpressed sits on the
-   dark surface with an orange rim; pressed keeps the flame. */
+/* Toggles: unpressed sits on the blue surface with an orange rim; pressed
+   takes the flame. */
 html[data-theme="hot-wheels"] {
   --toggle-btn-bg: var(--surface-2);
   --toggle-btn-fg: var(--text);
-  --toggle-btn-border: color-mix(in srgb, var(--accent) 55%, var(--surface-2));
+  --toggle-btn-border: var(--hw-orange);
   --toggle-btn-border-width: 1px;
-  --toggle-btn-bg-on: linear-gradient(135deg, #ff8a00, var(--accent));
+  --toggle-btn-bg-on: linear-gradient(135deg, #ff8a00, var(--hw-orange));
 }
+
+/* Area fills sink to a deeper blue well under the line: any translucent
+   yellow or orange over this blue mixes to grey. */
+html[data-theme="hot-wheels"] :is(.chart-series.is-area, .chart-series .is-area) { fill: #0a2170; fill-opacity: 0.55; }
+/* Native checkboxes in the light scheme: a white box on the blue, not the
+   dark scheme's grey square; checked keeps the yellow accent. */
+html[data-theme="hot-wheels"] :is(.checkbox, .radio) { color-scheme: light; }
