@@ -48,7 +48,7 @@ html[data-theme="cyberpunk-2077"] {
   --surface-2: #110d15;   /* recessed: inputs, tracks, menus */
   --border: #a8383d;      /* the long red rule, dimmed for structure */
   --hairline: #3b1a21;
-  --text: #ff766e;        /* menu red: labels, item names, descriptions (sampled #f75a52, lifted a step) */
+  --text: #ff7562;        /* menu red: labels, item names, descriptions (sampled #f75a52, lifted to 7:1 at the same hue) */
   --muted: #e3645d;       /* inactive tabs, column heads: dimmer red */
   --accent: #5ef6ff;      /* live / selected / ON / values: the cyan */
   --accent-2: #fcee0a;    /* the yellow: NEW tags, quest marks */
@@ -102,14 +102,14 @@ html[data-theme="cyberpunk-2077"] {
     linear-gradient(315deg, transparent 5.7px, var(--surface-2) 5.7px);
   /* Cyan corner brackets (the breach screen and the HUD cursor). */
   --cp-brackets:
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 2px 10px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 2px 10px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 2px 10px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 10px 2px no-repeat,
-    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 2px 10px no-repeat;
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left top / 2px 14px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right top / 2px 14px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) left bottom / 2px 14px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 14px 2px no-repeat,
+    linear-gradient(var(--cp-cyan), var(--cp-cyan)) right bottom / 2px 14px no-repeat;
   --cp-scanlines: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
 
   --label-transform: uppercase;
@@ -136,16 +136,16 @@ html[data-theme="cyberpunk-2077"] {
   --btn-border-hover: var(--cp-cyan);
   --btn-shadow-hover: inset 0 0 0.9rem rgba(94, 246, 255, 0.18);
   --btn-radius: 0;
-  --btn-weight: 700;
+  --btn-weight: 500;
   --btn-tracking: 0.06em;
   --btn-transform: uppercase;
   --btn-padding: calc(0.45em * var(--density)) calc(1.3em * var(--density)) calc(0.4em * var(--density)) calc(1.1em * var(--density));
   --btn-icon-radius: 0;
   --toggle-btn-bg: rgba(255, 95, 88, 0.08);
-  --toggle-btn-bg-on: rgba(94, 246, 255, 0.14);
+  --toggle-btn-bg-on: var(--row-selected-bg);   /* the filled red choice, like .segmented */
   --toggle-btn-border: var(--cp-line);
-  --toggle-btn-border-on: var(--cp-cyan);
-  --toggle-btn-fg-on: var(--cp-cyan);
+  --toggle-btn-border-on: var(--cp-red);
+  --toggle-btn-fg-on: var(--row-selected-fg);
   --toggle-btn-radius: 0;
   --go-bg: rgba(255, 95, 88, 0.12);
   --go-border: var(--cp-red);
@@ -290,6 +290,7 @@ html[data-theme="cyberpunk-2077"] {
   --pagination-item-fg-active: #0b0a0f;
   --pagination-item-fg: var(--text);
   --pagination-item-fg-hover: var(--cp-cyan);
+  --carousel-arrow-bg: rgba(255, 95, 88, 0.08);
   --breadcrumb-separator: "\25B8";
   --breadcrumb-current-fg: var(--cp-cyan);
   --scrollspy-link-active-fg: var(--cp-cyan);
@@ -554,6 +555,9 @@ html[data-theme="cyberpunk-2077"] {
   --waveform-marker-fg: #ffd2ce;
   /* Desktop icons are red ink; cyan only for the selected one. */
   --desktop-icon-glyph: var(--text);
+  /* Inactive window titles: the dimmer red at full strength (4.7:1), no fade. */
+  --window-header-fg-inactive: var(--muted);
+  --window-header-filter-inactive: none;
   --desktop-icon-glyph-selected: var(--cp-cyan);
   --rarity-common: #a7a9b0;
   --rarity-uncommon: #3fcf5c;
@@ -566,13 +570,21 @@ html[data-theme="cyberpunk-2077"] {
    teal-black lower down (the menu is lit from the top), with scanlines. -- */
 html[data-theme="cyberpunk-2077"] {
   background-color: #090b10;
+  font-family: var(--font);
+}
+/* On its own fixed layer so scrolling composites it instead of repainting
+   the viewport. z-index -2 keeps it under core's XL gutter art (::before). */
+html[data-theme="cyberpunk-2077"]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
   background-image:
     var(--cp-scanlines),
     radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.5), transparent 80%),
     linear-gradient(180deg, #24101a, rgba(64, 20, 24, 0.55) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
     linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
-  background-attachment: fixed;
-  font-family: var(--font);
 }
 html[data-theme="cyberpunk-2077"] body { font-weight: 500; letter-spacing: 0.01em; }
 
@@ -618,6 +630,8 @@ html[data-theme="cyberpunk-2077"] .btn-primary {
   html[data-theme="cyberpunk-2077"] .btn-primary:hover { --btn-fg: #0b0a0f; }
   html[data-theme="cyberpunk-2077"] .btn:not(.btn-primary, .btn-danger, .btn-success):hover { color: var(--cp-cyan); }
 }
+/* Filled buttons keep the menu face's medium weight too (CONFIRM, CRAFT). */
+html[data-theme="cyberpunk-2077"] :is(.btn-primary, .btn-danger, .btn-success) { --btn-weight: 500; }
 html[data-theme="cyberpunk-2077"] .btn-danger { --btn-bg-hover: #ff4d5c; --btn-border-hover: #ffffff; }
 html[data-theme="cyberpunk-2077"] .btn-success { --btn-bg-hover: #5cf09e; --btn-border-hover: #ffffff; }
 html[data-theme="cyberpunk-2077"] .btn-secondary { --btn-fg: var(--cp-cyan); --btn-border: rgba(94, 246, 255, 0.55); }
@@ -625,8 +639,8 @@ html[data-theme="cyberpunk-2077"] .btn-ghost { --btn-border: transparent; }
 
 /* Badges: angled tags (the yellow NEW chip). */
 html[data-theme="cyberpunk-2077"] .badge {
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 /* A badge-button keeps square corners so core's focus outline isn't clipped. */
@@ -635,7 +649,7 @@ html[data-theme="cyberpunk-2077"] .badge:not(.badge-button) {
 }
 html[data-theme="cyberpunk-2077"] .badge-warning { --badge-border: var(--cp-yellow); }
 /* The game's yellow NEW tag: a solid yellow chip with dark caps. */
-html[data-theme="cyberpunk-2077"] .badge-accent { --badge-bg: var(--cp-yellow); --badge-fg: #0b0a0f; --badge-border: var(--cp-yellow); }
+html[data-theme="cyberpunk-2077"] .badge-accent { --badge-bg: var(--cp-yellow); --badge-fg: #0b0a0f; --badge-border: var(--cp-yellow); font-weight: 700; }
 
 /* Slider: the value bar. The track rule is drawn on the content box; the
    thumb is a red slab with its lower-left corner cut, no ring. */
@@ -677,7 +691,7 @@ html[data-theme="cyberpunk-2077"] :is(.switch input:checked ~ .switch-track, .sw
    edges must clear the 3px tab; panel titles read as section titles. */
 html[data-theme="cyberpunk-2077"] :is(.panel-header, .modal-header) {
   font-size: 1em;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -744,6 +758,12 @@ html[data-theme="cyberpunk-2077"] .tag-input:has(.tag-input-field:disabled) { op
 /* The condensed face makes two-letter tabs narrower than a touch target;
    they keep the target's width, not just its height. */
 html[data-theme="cyberpunk-2077"] :is(.tab, .segmented-item, .pagination-item, .breadcrumb-item, .badge-button) { min-inline-size: var(--tap-min, 24px); }
+/* A dead end (first page, first slide) keeps its shape: a dim red rule and
+   no deeper fade than 0.6, so the control still reads as there. */
+html[data-theme="cyberpunk-2077"] .pagination-item.is-disabled { opacity: 0.6; border-color: var(--cp-row-line); }
+html[data-theme="cyberpunk-2077"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border: 1px solid var(--cp-row-line); border-radius: 0; }
+html[data-theme="cyberpunk-2077"] .carousel::scroll-button(*) { border: 1px solid var(--cp-row-line); border-radius: 0; }
+html[data-theme="cyberpunk-2077"] .carousel::scroll-button(*):disabled { opacity: 0.6; }
 html[data-theme="cyberpunk-2077"] :is(.tab, .nav-item) { font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
 html[data-theme="cyberpunk-2077"] .tabs { border-bottom-color: var(--cp-line); }
 html[data-theme="cyberpunk-2077"] .nav-item.is-active { text-shadow: 0 0 0.6rem rgba(94, 246, 255, 0.55); }
@@ -801,7 +821,17 @@ html[data-theme="cyberpunk-2077"] .table th { font-weight: 700; }
 html[data-theme="cyberpunk-2077"] .table :is(td, th) + :is(td, th) { border-inline-start: 1px solid rgba(207, 236, 88, 0.1); }
 html[data-theme="cyberpunk-2077"] .table th + th { border-inline-start-color: rgba(16, 20, 10, 0.25); }
 html[data-theme="cyberpunk-2077"] .table :is(a, .text-muted) { color: inherit; }
-html[data-theme="cyberpunk-2077"] .table-wrap:has(> .table) { background: var(--cp-brackets); padding: 4px; }
+/* Cyan breach brackets just outside every table's corners, drawn over a
+   bulk bar above it; a .table-wrap pads enough not to clip them. */
+html[data-theme="cyberpunk-2077"] .table { position: relative; }
+html[data-theme="cyberpunk-2077"] .table::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background: var(--cp-brackets);
+}
+html[data-theme="cyberpunk-2077"] .table-wrap:has(> .table) { padding: 6px; }
 /* Form cells keep a usable width; a narrow box scrolls or clips the table
    rather than squeezing a field below the target size. */
 html[data-theme="cyberpunk-2077"] .table td > :is(.input, .select) { min-inline-size: max(var(--tap-min, 24px), 3.5rem); }
@@ -900,10 +930,11 @@ html[data-theme="cyberpunk-2077"] .app-bar {
   box-shadow: 0 2px 0.9rem rgba(255, 95, 88, 0.35);
 }
 html[data-theme="cyberpunk-2077"] .app-bar .nav-brand { font-weight: 700; font-size: 1.2em; color: var(--cp-cyan); }
-/* Phone: the brand keeps its name; whatever follows wraps to its own line. */
+/* Phone: the brand keeps its natural width (no forced full line), so a short
+   brand shares its row with the nav; a long one wraps the nav below it. */
 @media (max-width: 480px) {
   html[data-theme="cyberpunk-2077"] { --app-bar-padding: 0.35rem 0.75rem; }
-  html[data-theme="cyberpunk-2077"] .app-bar > .nav-brand { flex: 1 0 auto; max-inline-size: 100%; }
+  html[data-theme="cyberpunk-2077"] .app-bar > .nav-brand { flex: 0 1 auto; }
 }
 html[data-theme="cyberpunk-2077"] .app-status kbd { font-size: 0.85em; }
 

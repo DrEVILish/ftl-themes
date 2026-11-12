@@ -25,13 +25,13 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 ## Core values
 
 1. **Red is the ink, not an alarm.** Body text, labels and frames are the
-   menu red (`--text #ff766e`, rules `#ff5f58`). Danger is a different,
+   menu red (`--text #ff7562`, rules `#ff5f58`). Danger is a different,
    hotter red used as a *fill* (`--danger #ff2a3d`) and a pink-red as text
    (`--danger-text #ff4d7a`). Don't "fix" the theme by making body text
    white. The one white is the section-header band.
 2. **Cyan means live; red plates mean selected.** Active tab, ON, focus,
    values, readouts and the hover cursor are cyan `#5ef6ff`. A selected
-   list row, side-nav row or segmented choice is the game's solid red plate (`#a8343a`,
+   list row, side-nav row, segmented or toggle-group choice is the game's solid red plate (`#a8343a`,
    pale `#ffe4e1` text), as in the journal and difficulty screens; only the
    breach-grid table keeps a cyan selection. Nothing decorative is cyan
    except the breach corner brackets.
@@ -45,8 +45,8 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
    tracked uppercase (the app-bar menu too), body in sentence case.
 5. **Tables are the breach grid.** A solid yellow-green head bar with dark
    text, a dark teal matrix with faint grid lines, the steel band under the
-   cursor, cyan for selection, cyan corner brackets around a scrolling
-   table. This is deliberately a second palette inside the theme.
+   cursor, cyan for selection, cyan corner brackets just outside every
+   table's corners. This is deliberately a second palette inside the theme.
 6. **Glitch is punctuation.** Titles are flat red caps. With full motion,
    a 0.3s jitter on hover and focus, and arriving danger alerts glitch once
    and flicker twice more, then stay still. Never a constant animation on
@@ -64,10 +64,12 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   minimise and maximise are matching cyan boxes.
 - `kbd` is a cyan outlined key cap, as in the key-hint strip.
 - `.table`: breach-yellow head bar, teal matrix, cyan selected row with a
-  cyan marker; inside `.table-wrap`, cyan corner brackets.
+  cyan marker; 14px cyan corner brackets just outside every table's
+  corners (drawn over a bulk bar above it).
 - `.switch`: the settings OFF / ON slab pair, 4.5em wide; a red OFF slab
   on the left or a dim cyan ON slab on the right covers half the navy
-  track. `.segmented`: the active choice is the filled red plate.
+  track. `.segmented` and `.toggle-group`: the active choice is the
+  filled red plate; cyan is only hover and focus.
 - `.slider`: the value bar, a tall navy track (fills core's `--tap-min`
   box, up to 2rem) in a dim red rule with a 6px cut bottom-right corner,
   all drawn in `--slider-bg`, with a full-height red slab thumb whose
@@ -79,7 +81,10 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 - `.field-group-title` is the game's section header band, the only white
   text: `#e8e6ea` sentence case on `#16111f` over a cyan hairline.
 - The page field is lit from the top: a maroon wash over the top half
-  that falls into a cool `#090b10` lower down, fixed to the viewport.
+  that falls into a cool `#090b10` lower down, on its own fixed layer
+  (`html::after`) so scrolling composites it instead of repainting.
+- Disabled pagination ends and carousel arrows keep a dim red rule and
+  never fade below 0.6, so the control still reads.
 - Field hints, errors and `.status` chips never drop under 13px.
 - `.badge-accent` (NEW, unread counts) is the game's solid yellow tag with
   dark caps; the plain badge stays a red-tint tag.
@@ -99,9 +104,10 @@ vendors **Rajdhani** Medium and Bold (Indian Type Foundry, SIL OFL 1.1,
 `assets/fonts/Rajdhani-*.woff2`, Latin subset, about 15 KB each), whose
 squared counters and short descenders are the closest open match, and
 reuses the already-vendored **Share Tech Mono** for code and logs.
-Page titles (`h1`) are Bold; section titles (`h2`–`h4`) are Medium with
-0.06em tracking, closer to the game's lighter menu headings (SemiBold is
-not vendored).
+Page titles (`h1`) are Bold; section titles (`h2`–`h4`), buttons, badges
+and panel / modal titles are Medium with 0.06em tracking, like the game's
+DEFAULTS / CONFIRM labels (SemiBold is not vendored). Only the yellow NEW
+tag stays Bold.
 
 ## Contrast honesty
 
@@ -109,7 +115,8 @@ All pairs meet the lint floors; no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#ff766e` on `--surface` `#1a1119` | 7.1 |
+| `--text` `#ff7562` on `--surface` `#1a1119` | 7.0 |
+| Inactive window title `--muted` `#e3645d` on its title strip `#361a20` | 4.7 |
 | Selected plate `#ffe4e1` on `#a8343a` | 5.4 |
 | Yellow tag `#0b0a0f` on `#fcee0a` | 16.3 |
 | `--muted` `#e3645d` on `--surface` / `--surface-2` `#110d15` | 5.5 / 5.7 |
