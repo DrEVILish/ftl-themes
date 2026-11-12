@@ -86,8 +86,9 @@ html[data-theme="alienware"] {
   --taskbar-tray-fg: #ffffff;
   --aw-tray-bg: linear-gradient(180deg, #1a1a1a, #000000);
   --aw-tray-border: #3a3a3a;
-  --taskbar-start-bg: radial-gradient(ellipse 9px 5px at 50% 32%, rgba(255, 255, 255, 0.75), transparent), radial-gradient(circle at 50% 50%, #8fdcff 0 3px, #35bdfb 6px, #0374f4 11px, #023d81 14px, #e0e0e0 15px, #6a6a6a 17px, #000000 18px, transparent 18.5px);
-  --taskbar-start-bg-open: radial-gradient(circle at 50% 50%, #35bdfb 0 3px, #0374f4 7px, #023d81 12px, #011f42 14px, #bdbdbd 15px, #5a5a5a 17px, #000000 18px, transparent 18.5px);
+  /* Dark glassy disc, tight top specular, thick bright silver bezel. */
+  --taskbar-start-bg: radial-gradient(ellipse 7px 3px at 50% 30%, rgba(255, 255, 255, 0.85), transparent), radial-gradient(circle at 50% 50%, #5fc8ff 0 2px, #0a5fd0 7px, #023d81 11px, #02275a 13.5px, #000000 14px, #f0f0f0 14.5px, #c8c8c8 16px, #8a8a8a 17.5px, #000000 18px, transparent 18.5px);
+  --taskbar-start-bg-open: radial-gradient(circle at 50% 50%, #35bdfb 0 2px, #0374f4 7px, #023d81 11px, #011f42 13.5px, #000000 14px, #c8c8c8 14.5px, #a0a0a0 16px, #6a6a6a 17.5px, #000000 18px, transparent 18.5px);
   --taskbar-start-fg: #ffffff;
   --taskbar-start-border: #000000;
   --taskbar-start-radius: 0 14px 14px 0;
@@ -103,7 +104,7 @@ html[data-theme="alienware"] {
   --aw-start-menu-header-rule: #0093f0;
   --start-menu-programs-bg: linear-gradient(180deg, #252525, #050505);
   --aw-start-menu-programs-fg: #ffffff;
-  --start-menu-places-bg: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.10) 0 1px, transparent 1px 3px), linear-gradient(180deg, #cbcbcb, #bfbfbf);
+  --start-menu-places-bg: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 2px), linear-gradient(180deg, #c9c9c9, #b5b5b5);
   --aw-start-menu-places-fg: #000000;
   --start-menu-rule: #5a5a5a;
   --start-menu-footer-bg: linear-gradient(180deg, #1c1c1c 0%, #0a0a0a 25%, #000000 100%);
@@ -133,6 +134,9 @@ html[data-theme="alienware"] {
   --scrollbar-track: #e6e6e6;
   --tab-underline-active: #0093f0;
   --progress-fill: #0093f0;
+  /* Bar charts: XP's chunked progress bars in the suite's highlight, not Luna green. */
+  --bar-chart-bar: repeating-linear-gradient(0deg, transparent 0 2px, var(--accent) 2px 10px), linear-gradient(90deg, var(--accent-2), color-mix(in srgb, var(--accent-2) 40%, #ffffff) 45%, var(--accent));
+  --bar-chart-bar-alt: repeating-linear-gradient(0deg, transparent 0 2px, color-mix(in srgb, var(--accent) 50%, #000000) 2px 10px), linear-gradient(90deg, color-mix(in srgb, var(--accent) 50%, #000000), var(--accent) 45%, color-mix(in srgb, var(--accent) 50%, #000000));
   --indicator-fg: #0093f0;
   /* Wallpaper: a CSS impression of the suite's own, not the artwork. */
   /* Royal-blue field brightest across the lower middle, cyan light arcs over it, dark top-left for the icons. */
@@ -949,6 +953,13 @@ html[data-theme="alienware"] .start-menu-header { border-block-end-color: var(--
 html[data-theme="alienware"] .start-menu-programs { color: var(--aw-start-menu-programs-fg); --context-menu-item-fg: var(--aw-start-menu-programs-fg); }
 html[data-theme="alienware"] .start-menu-places { color: var(--aw-start-menu-places-fg); --context-menu-item-fg: var(--aw-start-menu-places-fg); }
 html[data-theme="alienware"] .start-menu-footer { box-shadow: none; }
+/* The user tile is a black gloss square in a silver frame, not Luna's orange. */
+html[data-theme="alienware"] .start-menu-header { --avatar-bg: linear-gradient(180deg, #5a5a5a, #1a1a1a 50%, #000000); --avatar-fg: #ffffff; }
+html[data-theme="alienware"] .start-menu-header .avatar { border-color: #c8c8c8; box-shadow: 0 0 0 1px #000000; }
+/* All Programs ends in a plain arrow in the column's text colour, not Luna's green square. */
+html[data-theme="alienware"] .start-menu-all > button::after { content: "\2794"; background: none; color: inherit; font-size: 0.95rem; }
+/* Page titles step toward XP's dialog scale (Luna's 1.6rem Trebuchet banner is Luna's own). */
+html[data-theme="alienware"]:is(:not([data-variant]), [data-variant]) h1 { font-size: 1.35rem; }
 
 /* --- Boot screen -------------------------------------------------------------
  * No Windows flag: the boot is black with the suite's accent marching. */
@@ -1010,7 +1021,7 @@ html[data-theme="alienware"] {
 /* The wallpaper shows only in the gap round a full-page shell, where no
    page text sits on it; text outside a shell (L0 pages, the QA sidebar)
    stays on the face grey. XL keeps --bg and paints the gutters instead. */
-@media (max-width: 1800px) {
+@media (min-width: 481px) and (max-width: 1800px) {
   html[data-theme="alienware"]:has(> body.app) { background: var(--desktop-bg); }
 }
 /* Luna styles primary and secondary at component scope; take them back to
@@ -1035,6 +1046,10 @@ html[data-theme="alienware"] :is(.checkbox, .radio):hover { box-shadow: inset 0 
 /* The taskbar's status text takes the taskbar's own foreground. */
 html[data-theme="alienware"] .app-status { --muted: var(--app-status-fg); }
 html[data-theme="alienware"] .tabs { border-bottom-color: var(--border); }
+html[data-theme="alienware"] .toolbar { border-bottom-color: var(--border); }
+/* Selected segments and filter chips read pressed (XP's black edge and
+   inset shadow), so the state does not rest on the highlight's hue. */
+html[data-theme="alienware"] :is(.toggle-btn:has(input:checked), .badge-button.is-active, .segmented-item.is-active, .prefs .segmented-item:has(> input:checked)) { border-color: #000000; box-shadow: inset 0 0 0 1px #000000, inset 0 2px 2px rgba(0, 0, 0, 0.45); }
 html[data-theme="alienware"] .tab { border-color: var(--border); padding-block: max(4px, 0.2em); }
 html[data-theme="alienware"] .tab:hover { box-shadow: inset 0 2px var(--accent); }
 html[data-theme="alienware"] .tab:is(.is-active, [aria-selected="true"]) {
@@ -1095,9 +1110,14 @@ html[data-theme="alienware"][data-variant="area-51"] { --callout-bg: var(--surfa
 /* Invader centres its caption title, as the suite's Theme Manager does. */
 /* XenoMorph's min/max/close sit edge to edge as one strip (the cells'
    1px dividers are in the SVGs); close lights blue on hover. */
-html[data-theme="alienware"]:not([data-variant]) .modal-header :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: calc(0px - 0.5rem); }
+/* The header's gap is fixed here so the 24px hit boxes step a 22px pitch
+   whatever header they sit in; min/max show 22px of the 23px sprite cells
+   and close sits 1px in, so the three cells touch. */
+html[data-theme="alienware"]:not([data-variant]) .modal-header:has(.btn-min, .btn-max) { column-gap: 0.35rem; }
+html[data-theme="alienware"]:not([data-variant]) .modal-header :is(.btn-min, .btn-max) + :is(.btn-max, .btn-close) { margin-inline-start: calc(-0.35rem - 2px); }
+html[data-theme="alienware"]:not([data-variant]) .modal-header :is(.btn-min, .btn-max)::before { width: 22px; }
 html[data-theme="alienware"]:not([data-variant]) .modal-header:has(.btn-min, .btn-max) .btn-close {
-  --btn-close-bg: var(--aw-close-joined) no-repeat center / 21px 21px;
-  --btn-close-bg-hover: var(--aw-close-joined-hover) no-repeat center / 21px 21px;
+  --btn-close-bg: var(--aw-close-joined) no-repeat 1px center / 21px 21px;
+  --btn-close-bg-hover: var(--aw-close-joined-hover) no-repeat 1px center / 21px 21px;
 }
 html[data-theme="alienware"][data-variant="invader"] .modal-header { justify-content: center; text-align: center; }

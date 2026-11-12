@@ -60,12 +60,16 @@ and what was derived rather than measured is in
   glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
   (Area-51), beige with an orange close (Aurora). XenoMorph's min, max
   and close join into one black-framed silver strip with 1px dividers and
-  rounded outer corners; close lights blue on hover.
-- The Start button follows the suite: XenoMorph's 36px blue orb in a
-  silver ring, with no label, rising out of the 31px taskbar; the light
+  rounded outer corners, in every window whatever its header gap; close
+  lights blue on hover.
+- The Start button follows the suite: XenoMorph's 36px dark glassy blue
+  orb with a tight top highlight in a thick bright silver bezel, with no label, rising out of the 31px taskbar; the light
   "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
   dark button, Area-51's red, Aurora's gold pill. A status bar that
   already holds a real Start button draws no second one.
+- The Start menu's user tile is a black gloss square in a silver frame,
+  All Programs ends in a plain arrow in the column's text colour, and
+  XenoMorph's places column is brushed silver; no Luna orange or green.
 - Push buttons, primary and secondary included, wear each suite's face:
   XenoMorph's grey gloss (light top, darker bottom, white lip) in a 1px
   black frame, Darkstar's black with white text, Area-51's red with bold
@@ -76,7 +80,9 @@ and what was derived rather than measured is in
   keeps it black for 4.5:1.
 - GO and play buttons take the suite's highlight gloss in its button
   frame, not Luna's green; switches read as the trackbar (square groove,
-  dark glossy thumb). Green stays for success states only.
+  dark glossy thumb). Bar charts are XP's chunked progress bars in the
+  suite's highlight (a darker shade for the second series). Green stays
+  for success states only.
 - The trackbar is XenoMorph's black-edged blue groove (`#0374f4`; the
   suite's highlight in the others): 1px black, 4px groove, 1px black, with
   a dark glossy grey thumb, inside core's full-height hit area; the
@@ -91,15 +97,20 @@ and what was derived rather than measured is in
   its dialogs, not Luna blue.
 - Panels and cards are the suite's surface (XenoMorph's pure white), not
   Luna's `#fcfcfe`.
-- Toolbars, table heads, skeletons, toasts and every field and group-box
+- Selected segments and filter chips read pressed: a black edge and an
+  inset shadow, so the state does not rest on the highlight's hue.
+- Page titles are 1.35rem bold Tahoma, nearer XP's dialog scale than
+  Luna's Trebuchet banner.
+- Toolbars (and their bottom rule), table heads, skeletons, toasts and every field and group-box
   border take the suite's own face, surface and border, so Luna's beige
   and `#7f9db9` blue never show. The gap around a full-page app window is
   the suite's wallpaper, not Bliss (XenoMorph's: a royal-blue band with
-  cyan light arcs over a black top); pages without the shell keep the
-  face grey so no page text sits on the dark wallpaper.
-- Where Tahoma and Arial are missing, the stacks fall back to DejaVu Sans
-  Condensed and Arimo/Liberation Sans, closer in width to the originals
-  than DejaVu Sans. Monospace is Lucida Console, then Courier New and its
+  cyan light arcs over a black top); pages without the shell, and phones
+  (where only a few pixels of it would show), keep the face grey so no
+  page text sits on the dark wallpaper.
+- Where Tahoma and Arial are missing, the stacks fall back to Segoe UI,
+  then DejaVu Sans Condensed where it is installed, then the Arial-metric
+  Arimo/Liberation Sans, all narrower than Verdana. Monospace is Lucida Console, then Courier New and its
   metric twins Liberation Mono and Cousine.
 
 ## Accessibility notes
