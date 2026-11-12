@@ -45,8 +45,12 @@ How it differs from its neighbours:
    `.segmented` rows (cream keys on the dark deck), tabs (piano-key tops),
    the active nav item and the current page number use the same skirt and
    drop; a latched key is pressed in and lit orange with a black legend.
+   Ghost and tertiary buttons are still caps, just quieter: a lower-contrast
+   beige face (`#ebe4d4` to `#d6ccb7`, `#8a7e68` edge), and a dark choc cap
+   on the dark bands (app bar, transport, hero, table head, window panes).
 4. **`.switch` is a bat-handle toggle, never a pill.** It is a chrome ball
-   on a shaft with a pivot nut at the track centre, on a slotted plate. Off
+   on a thin shaft out of a larger chrome ring nut (dark bore, bright face,
+   dark rim) at the track centre, on a 3.6em x 1.6em slotted plate. Off
    throws the ball left over a dark slot. On throws it right and the slot
    lights orange. Position and colour both carry the state.
 5. **The stripe is trim, used three times.** Yellow, orange, red and brown,
@@ -55,14 +59,16 @@ How it differs from its neighbours:
 6. **Labels are Dymo tape.** `.badge`, `.tooltip` and the bar brand are
    embossed tape: bold tracked capitals with an emboss text-shadow. Black
    tape by default; red, green, orange and yellow for the semantic badges.
-7. **Silk-screen voice.** Headings, buttons, table heads and panel titles
+7. **Silk-screen voice.** Headings, buttons, table heads, panel titles,
+   modal and window title bars, popover titles and `.nav` keys
    are upright bold caps in a Helvetica/Univers stack with tracking. Never
    italic, never a script.
 
 ## Signature details
 
 - **Shell = a deck housing**: dark top deck with a 4-band stripe (stacked
-  hard box-shadows), an inset off-white main panel with a moulded ledge, a
+  hard box-shadows), an inset off-white main panel with a moulded edge (lit
+  top lip, shaded lower lip, a 2px `#9d917a` ledge then `#b6aa93`), a
   **ribbed vent grille rail on the right** (3.25rem) topped by a stripe
   swatch, and a dark VFD status window.
 - Panel headers start with five black vent slots before the title (3px
@@ -77,13 +83,18 @@ How it differs from its neighbours:
   the message's colour. Dropdowns, context menus and popovers sit on the
   same hard `#4f4538` ledge as the keycaps; carousel markers are small
   square keys.
+- A `.status` in a table cell keeps the row's font size (core sets 0.85em).
+- Phones drop the Dymo emboss text-shadow, the switch's drop-shadow filter
+  and the blurred inset shadows of the KPI and status windows (hard insets
+  instead), on top of the stipple, glows and soft shadows, for the
+  render budget.
 - Selected rows and the active list item are a pressed key: a darker
   beige recess (`#e2d6bd`) with an inset shadow and the orange marker,
   never a peach web tint.
 - At phone and tablet width the red Dymo brand keeps its whole name
   (tracking 0.1em) and the bar links wrap under it. Icon buttons
   are square keycaps (`--btn-icon-radius: 3px`), never circles.
-- Tabs inside a desktop window track tighter (0.03em) and scroll in one
+- Tabs inside a desktop window track tighter (0.03em, 0.78rem) and scroll in one
   row rather than wrap, so the dialog's OK/CANCEL row stays inside it.
 - Lamps are round LEDs in a 2px chrome bezel; off lamps are dark domes.
   The live `.connection` lamp is the same LED (bezel, saturated `#3fd04a`
@@ -123,13 +134,10 @@ How it differs from its neighbours:
 ## Typography
 
 - `--font`: `"Helvetica Neue", Helvetica, "Nimbus Sans", Univers, Arimo,
-  "Liberation Sans", Arial`, then **"CF Grotesk"**: the repo's vendored
-  Titillium Web (OFL, `assets/fonts/`), so a machine with none of those
-  gets a tight engineering grotesque, not a wide rounded system sans.
-  Known gap: Titillium's squarish caps read more 2000s tech than 70s
-  silk-screen Helvetica/Univers. A vendored neo-grotesk (Archivo, Inter
-  Tight) would be closer, but adding one lands in `assets/fonts/`,
-  outside this theme's folder.
+  "Liberation Sans", Arial, sans-serif`. The silk-screen Helvetica/Univers
+  voice comes first; Arimo and Liberation Sans are metric-compatible
+  stand-ins, and Arial is on every desktop, so no web font is loaded for
+  UI text.
 - `--font-mono`: Share Tech Mono (already vendored in `assets/fonts/`,
   OFL), then IBM Plex Mono and DejaVu Sans Mono.
 - Readout digits: **DSEG7 Classic Bold Italic** by keshikan (SIL OFL 1.1),
