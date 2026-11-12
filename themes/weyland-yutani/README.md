@@ -23,11 +23,15 @@ reproduced.
    strip are uppercase with wide tracking (`--label-tracking: 0.14em`).
    Headings, panel titles, table heads, tabs, stat labels, title plates
    and the brand are set in Michroma, an extended Microgramma-class face;
-   headings, panel titles and title plates take a hairline text stroke so
-   they read as stamped plate lettering, and panel titles are in bone
-   `--text`.
-3. **Amber is the phosphor, and only readouts glow.** `.readout` and
-   `.meter` get a faint glow and scanlines; nothing else does.
+   headings, panel titles and title plates take a 0.07em text stroke
+   painted under the fill (so counters stay open) so they read as the
+   Bold Extended plate lettering, and panel titles are in bone `--text`.
+   Tabs inside desktop windows and on phones, and panel-header badges,
+   drop to Share Tech: the extended face wrapped those rows (and its `%`
+   draws as `o/o`).
+3. **Amber is the phosphor, and only readouts glow.** `.readout`, `.meter`
+   and stat-tile values (the header rows' values) are in the phosphor with a
+   faint glow; only readouts and meters get scanlines.
 4. **Hazard striping is a danger signal, not a palette.** Yellow/black
    45deg stripes appear on `.btn-danger`, `.alert-danger`, `.toast-danger`,
    `.badge-danger` and `.status-error` only, as a leading strap. Text never
@@ -47,9 +51,10 @@ reproduced.
   as a ruler of tick marks with an amber marker block (empty, `aria-hidden`).
 - Two registration corner marks (top-left, bottom-right) on every panel
   (the top-left one is drawn on the panel header when there is one); a
-  solid amber square before each panel title.
-- Stat tiles are the terminals' header rows: label and value over one long
-  double rule in `--wy-line-hi`, with no box.
+  solid amber square before each panel title. A second header further down
+  a panel (a sub-section) has no plate or mark of its own.
+- Stat tiles are the terminals' header rows: muted label and amber phosphor
+  value over one long double rule in `--wy-line-hi`, with no box.
 - Ghost buttons keep a lit `--wy-line-hi` underside lip (amber on hover) so
   they still read as soft keys.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
@@ -59,7 +64,11 @@ reproduced.
   3.2:1 on the bay black), inside core's transparent 24/44px hit area.
 - Status strip in tracked micro-caps, its items drawn as a row of
   outlined soft keys like the terminals' function-key row; the first one
-  is lit in the accent.
+  is lit in the accent. The desktop taskbar gets the same outlined soft
+  keys (Start and the focused window's key lit in the accent); an unfocused
+  window's title bar is an unlit dark plate, the focused one the beige plate.
+- The rail's tick ruler is a 0.5rem tile repeated down (cheap to scroll),
+  and the rail and meters are paint-contained.
 
 ### Variants
 
