@@ -24,71 +24,115 @@ sense that the interface is a physical object you could pick up.
 
 ## Signature details
 
-- The pinstripe (a 90deg `repeating-linear-gradient`, white at 4%, 1px
-  every 4px) sits on panels, the app bar and the status foot. It reads as
-  vertical case ribbing, not the CRT scanlines a horizontal stripe made.
+- The pinstripe (a 90deg `repeating-linear-gradient`, a 2px white-8% /
+  2px black-5% pair every 4px, strong enough to survive the gloss on top
+  of it) sits on panels, cards, lists and menus. It reads as vertical case
+  ribbing, not the CRT scanlines a horizontal stripe made. Large
+  text-bearing areas (the app bar, tinted bands, toolbars) take a wider,
+  fainter rib (`--imac-g3-rib`: 3px white 4.5% / 4px black 3%), so they
+  read as moulded ribbing rather than a barcode.
 - Every gloss gradient is three stops (bright highlight → faint → the base
   surface colour), never a plain two-stop fade — that middle fade-out is
   what reads as translucent plastic rather than a painted highlight. The
   middle stop is the colorway's bright candy tone (`--imac-g3-candy`:
   Bondi `#0095b6`, Blueberry `#4a86ff`, Grape `#b06ae8`, Tangerine
-  `#ff8a1f`) at 35%, glowing through the darker text-bearing surface, and
-  `var(--surface)` is the opaque last layer, so overlapping windows never
-  show through each other's title bars (`--modal-header-bg` has the same
-  opaque base).
+  `#ff8a1f`) at 50% (`--imac-g3-candy-mix`; Tangerine 42%, which keeps
+  white at 4.5:1 over the peak), glowing through the darker text-bearing
+  surface.
+- **Translucent plastic.** Where nothing overlaps (panels, cards, lists,
+  rails, bands, toolbars, media canvases) the last layer is
+  `--imac-g3-clear`, the surface at 75% (Tangerine 80%), so the brighter case body and
+  backdrop glow through. Windows and modals (`--modal-bg`), drawers,
+  menus, popovers, toasts and title bars keep an opaque `var(--surface)`
+  base, so overlapping windows never show through each other.
+- **Bright candy edges.** Every panel, card and list carries
+  `--imac-g3-edge-glow` inside its ice rim: a 2px ring of the candy tone
+  at 75%, a 1px ice inner bezel and an unblurred 4px candy top lip, all inside the
+  padding where no text sits, so the plastic refracts brightest at its
+  edges (as the hardware does) while the text-bearing core stays
+  `--surface`. The app bar's gloss peaks at 50% candy (white 4.8:1;
+  Tangerine keeps 35%).
+- **The white chin.** The status foot is an ice band (`#f4fbfd` to
+  `#d3eaf0`) with dark `#0f3a44` ink, like the hardware's white lower
+  bezel; `.app-status` re-inks `--text`, `--muted`, `--link`,
+  `--accent-text` and the state text tokens for everything it holds.
+- **Platinum title bars.** Modal and desktop-window headers
+  (`--modal-header-bg`) are Mac OS 8/9 Platinum title bars in ice: 1px
+  horizontal pinstripes every 3px over an ice gradient, a dark
+  Charcoal-voice title centred with the stripes broken around it, the
+  square Platinum close box at the start, and the bevelled zoom box (a
+  small square in its corner) and windowshade box (two bars) at the end
+  in place of the core `_` / `□` glyphs.
 - **Ice.** The colour is set in frosted white plastic (`--imac-g3-ice`,
-  `rgba(232,248,252,0.7)`): every panel and card has a 3px milky rim
-  (`--panel-border`), menus, popovers, toasts, toolbars and grouped
-  fieldsets have ice rims too, and the case body (`.app-main`) has 7px
+  `rgba(232,248,252,0.7)`): every panel, card, window and modal has a 4px
+  milky rim (`--panel-border`, `--modal-border`), lists a 3px one with
+  faint ice row rules (`--list-rule`), menus, popovers, toasts, toolbars and grouped
+  fieldsets have ice rims too, and the case body (`.app-main`) has 12px
   frosted side walls (4px on phones, where width is scarce) plus a 3px ice seam under the bar and over the
-  status foot, so the shell reads as one moulding, like the hardware's
-  front bezel.
+  status foot (4px under the bar), so the shell reads as one moulding,
+  like the hardware's front bezel.
 - **Every surface is moulded plastic.** Toolbars, context menus,
   dropdowns, popovers and toasts take the panel fill; table heads are a
   three-stop gloss with rounded top corners; alerts get a short gloss over
-  `--surface-2`. Toolbars and fieldsets carry `--radius`.
-- **A soft, broad streak.** The 115deg sheen peaks at only 0.28 white and
+  `--surface-2`. Toolbars and fieldsets carry `--radius`. Logs take the
+  gloss with a 3px ice rim, empty states are an ice-rimmed moulded well,
+  skeletons are frosted ice, badges carry a 1px ice rim, and input addons
+  are rounded gel beads (`--input-radius` outer corners, white label).
+- **A soft, broad streak.** The 115deg sheen peaks at only 0.2 white and
   spans about half the surface, so it reads as light on thick plastic
   rather than a chrome stripe. (A viewport-fixed streak shared across
   cards was tried and dropped: it repaints every panel on scroll.) Panels also carry an inner
-  top lip and a deep bottom fall-off (`--panel-shadow`, an inset of the
-  surface mixed 35% with black) so the case reads as thick plastic with
+  top lip and a short bottom fall-off (`--panel-shadow`, an 8px inset of
+  the surface mixed 25% with black) so the case reads as thick plastic with
   darker internals behind it.
 - **The gel follows the colourway.** The button gel's base stop is
   `--imac-g3-gel`, set per variant, as are `--accent-2` and `--accent-text`,
   so no Bondi teal survives on a Blueberry, Grape or Tangerine case.
-- Rails and lists (`--nav-rail-bg`, `--list-bg`) use the same pinstripe +
-  three-stop gloss as panels, without a streak; the rail gets `--radius`
-  corners.
+- Rails (`--nav-rail-bg`) use the same pinstripe + three-stop gloss as
+  panels, without a streak, and get `--radius` corners; lists
+  (`--list-bg`), which mostly sit inside panels, take the gloss without a
+  second rib layer.
+- Status labels are set at 0.93em (about 13px, core's is 12px) so they
+  hold over the sheen.
 - Sliders sit in a recessed ice groove drawn on core's content box (the
   hit area stays `--tap-min`) with a gel-bead thumb. Checkboxes are
   rounded (0.35rem) white wells that fill with the colourway's button gel
   and a white tick when checked; radios are white wells.
 - The app bar and status foot carry the same candy mid-stop gloss as the
-  panels (the candy tone at 35% over `--surface`, with a 1px inset white
+  panels (the candy tone at 50% over `--surface`, Tangerine 35%, with a 1px inset white
   lip rather than a white stop, so nav text holds 4.5:1), so the most
   visible chrome is plastic too. Tangerine's bar GO label is white. Nav items and every `.nav-brand`
   are pure white (`--nav-brand-fg` is set at the root, not only in the bar).
-- The case body (`--app-main-bg`) is 70% surface at the top, so the page
-  title holds 4.5:1 under the vignette's bright crown, and it falls toward
-  the colourway's gel (`--imac-g3-gel`) at the bottom, so the lower case
-  glows rather than going flat dark. Tinted bands (`--band-tint-bg`) and
-  media canvases (`--ratio-canvas-bg`) take the panel fill.
+- The case body (`--app-main-bg`) is the case colour (`--imac-g3-case`,
+  default `--surface`; Grape uses its gel `#7a3fae`, Tangerine `#9a4304`
+  easing to `#a24604`)
+  at 86% over the bright backdrop, easing to 88% of a brighter foot
+  (`--imac-g3-case-foot`, Bondi `#0b718a`), with a faint 115deg sheen on top: white holds
+  5.0:1 and `--muted` 4.5:1 everywhere on it. Tinted bands
+  (`--band-tint-bg`) and media canvases (`--ratio-canvas-bg`) take the
+  translucent fill.
 - Desktop windows keep their four dialog tabs on one row (they scroll
   rather than wrap) and use a 0.9rem fieldset radius, so the
   OK/Cancel/Apply footer fits the fixed window height.
-- On touch and narrow screens (`pointer: coarse` or 600px and under) the
-  panel's inset fall-off becomes a 4px unblurred lip, and lists,
-  toolbars and toasts drop the pinstripe, to keep scrolling within the
-  render budget.
+- On touch and narrow screens (`pointer: coarse` or 600px and under)
+  there are no blurred shadows: panels get a 1px candy ring and an
+  unblurred bottom lip, buttons an unblurred lip, and every scrolling
+  surface, the app bar and the case body drop the ribbing and sheens for a
+  single gloss, to keep scrolling within the render budget.
 - Tangerine keeps its card surface dark (`#8a3a00`, 7.8:1 under white)
-  but puts real tangerine everywhere else: a `#e8761f` to `#8a3a00`
-  backdrop, a warmer `--bg` (`#9a4708`, white 5.0:1), a `#b5500f` gel that
-  also lights the lower case body, and the `#ff8a1f` candy tone in the
-  gloss, so it reads as orange plastic, not copper.
-- The page backdrop is a radial vignette in the shell's own colour
-  (`radial-gradient(ellipse at top, ...)`), so the case always appears to
-  glow against a darker version of itself, never a neutral grey.
+  but puts real tangerine everywhere else: a true-orange `--surface-2`
+  (`#a84a05`, white 5.8:1) under buttons, badges and banners, the candy
+  edge glow on every card, a bright `#fff1e2` / `#ff8a1f` / `#e8761f`
+  backdrop, a `#9a4304`-to-`#a24604` case body, a `#b5500f` gel and the `#ff8a1f`
+  candy tone in the gloss, so it reads as orange plastic, not copper.
+- The backdrop (`--imac-g3-backdrop`) is the bright plastic itself, a
+  plain linear gradient: an ice crown behind the bar into aqua and true
+  Bondi `#0095b6` (each fruit has its own: ice, light fruit, candy, gel).
+  It shows around the case and glows through the translucent body, never
+  a neutral grey.
+- `--muted` is a pale tint one visible step under white (Bondi `#d6f2f8`,
+  Tangerine `#ffe6cf`; Grape and Blueberry, whose `--surface-2` is
+  brighter, keep a near-white tint), like Platinum's grey secondary labels.
 
 ## Variants
 
@@ -111,7 +155,7 @@ color pick without a full theme change.
 The shell reads as **one plastic case**: a glossy rounded top bar, a
 pinstriped body, and a rounded status foot — all one continuous rounded
 shape (`0.75rem` outer padding, `1.3rem` corners top and bottom), floating
-on a radial vignette of its own colour.
+on a bright ice-to-Bondi backdrop of its own colour.
 
 ## Tell-tales of an inauthentic result
 
@@ -127,7 +171,7 @@ on a radial vignette of its own colour.
 - **No colorway that changes shape**, gloss or radius — variants override colour tokens only.
 - **No dark text on the saturated case colour**; white (or `--accent-text` on tints) only.
 - **No neutral grey backdrop.** The vignette is always the case's own colour.
-- **Do not present this as the Platinum OS look.** The reference software UI (`references/imac-g3/`) is light grey Platinum; this theme is the hardware-inspired shell, not that UI.
+- **Do not present this as the Platinum OS look.** The reference software UI (`references/imac-g3/`) is light grey Platinum; this theme is the hardware-inspired shell, borrowing only Platinum's striped title bars, square close box and Charcoal title voice.
 
 ## Icons
 
@@ -139,19 +183,19 @@ nothing is filled, marker dots are r1.1 rings, colour is always
 
 ## Typography
 
-`--font` is `"Helvetica Neue", "Lucida Grande", Geneva, Helvetica, Arial, sans-serif`; `--font-mono` is `Monaco, Menlo, Consolas, ui-monospace, monospace`. The Mac sans faces come before the generic Helvetica fallbacks, so a platform without Helvetica Neue lands on a Mac face first when one is present. Headings (`h1`–`h3`) and the brand (at 1.15em) use the same UI sans at weight 700 with `-0.015em` tracking, the Charcoal-era system voice, so the brand and nav items share one face. (Baloo 2 was dropped: a rounded modern display face with no tie to 1998 Apple. A Garamond like EB Garamond, closer to Apple's 1998 marketing voice, is not vendored in `assets/fonts/`.) Chicago and Charcoal are not free to vendor, so they are not named. Headings carry a moulded `0 1px 0 rgba(0,0,0,0.35)` drop rather than a white glow.
+`--font` is `Geneva, "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif`: Geneva was Mac OS 8/9's small-text face, so body copy leads with the 1998 voice before the later Mac sans and the metric-compatible fallbacks. `--font-mono` is `Monaco, Menlo, "DejaVu Sans Mono", Consolas, ui-monospace, monospace` (DejaVu Sans Mono is Bitstream Vera, the free relative of Monaco's shapes). Headings (`h1`–`h3`), the brand (at 1.15em) and modal/window title bars use `--imac-g3-font-ui`: `Charcoal, Chicago, Archivo, "Helvetica Neue", Helvetica, "Liberation Sans", Arial, sans-serif` at weight 700 with normal tracking. Charcoal and Chicago are named first for machines that have them (they are not free to vendor); elsewhere Archivo Bold (OFL, vendored as `assets/fonts/Archivo-Bold.woff2`, see `assets/fonts/NOTICE.md`) stands in: a heavy normal-width grotesque with Charcoal's squarish rounds and tall x-height, so the headings read as a 1998 system face rather than Arial (an earlier condensed Arial Narrow fallback read as a newspaper voice; Charcoal is not condensed). (Baloo 2 was dropped: a rounded modern display face with no tie to 1998 Apple. A Garamond like EB Garamond, closer to Apple's 1998 marketing voice, is not vendored in `assets/fonts/`.) Headings carry a moulded `0 1px 0 rgba(0,0,0,0.35)` drop rather than a white glow.
 
 ## Contrast honesty
 
 The shell is a saturated mid-tone, so this theme sits near the floors and `python3 scripts/check.py` prints AAA warnings for it:
 
-- **Body text (AAA warning):** `--text` white on `--surface` `#0c6478` is 6.8:1 (floor 7.0:1); on `--bg` `#0a545f` it is 8.58:1. It clears AA everywhere but not AAA on `--surface`.
-- **Accent legibility (warning):** `--accent` `#00b0d4` on `--surface` is 2.6:1 (soft floor 3.0:1); on `--bg` it is 3.34:1. The `theme.css` header comment says `#00b0d4` "clears 3.0:1" — that was measured against an earlier, darker surface; against the current `#0c6478` it does not.
-- **Bondi lifted from the reference:** the verified hardware colour Bondi Blue is `#0095b6`; shipped `--accent` is `#00b0d4`, one step lighter. True Bondi is only 1.92:1 against `--surface`, so it cannot be used as text on this shell at all.
-- **Surface-2 darkened:** `#0f7d92` left white at 4.81:1 and every tinted text token under 4.5:1 on context menus, toasts and readonly fields, so `--surface-2` is `#0d7489` (white 5.42:1, `--muted` `#f5fcfd` about 5.2:1). The button gel keeps the old `#0f7d92` stop (as `--imac-g3-gel`), so buttons look the same. Accent as text (badges, links, readouts, active tab, GO, `.schedule`) is `--accent-text` `#cff4f9`; raw `--accent` is 2.6:1 on `--surface`. Selection frost is `rgba(255,255,255,0.12)` (was 0.25, white 3.1–3.9:1 on it) and series 6 is graphite `#8a9ba1` instead of near-white `--muted`, so white text on its tints passes.
+- **Body text (AAA warning):** `--text` white on `--surface` `#0c6478` is 6.8:1 (floor 7.0:1); on `--bg` `#0a545f` it is 8.58:1. It clears AA everywhere but not AAA on `--surface`. Brightening `--surface` itself (to `#0b6a80`/`#0b7088`) was tried and dropped: tinted state badges and marker chips fell under 4.5:1 and `--accent` under 3:1; the light lives in the backdrop, the translucent case and the ice instead.
+- **Accent legibility:** `--accent` is `#3cc6e2`, 3.3:1 on `--surface` and 4.2:1 on `--bg`, so tab underlines, selected-row bars and segmented edges clear the 3:1 non-text floor (the earlier `#00b0d4` was 2.6:1).
+- **Bondi lifted from the reference:** the verified hardware colour Bondi Blue is `#0095b6`; shipped `--accent` is `#3cc6e2`, the light aqua end of the same family; true Bondi is the candy tone in the gloss and edge glow. True Bondi is only 1.92:1 against `--surface`, so it cannot be used as text on this shell at all.
+- **Surface-2 darkened:** `#0f7d92` left white at 4.81:1 and every tinted text token under 4.5:1 on context menus, toasts and readonly fields, so `--surface-2` is `#0d7489` (white 5.42:1, `--muted` `#d6f2f8` 4.62:1, 5.76:1 on `--surface`). The button gel keeps the old `#0f7d92` stop (as `--imac-g3-gel`), so buttons look the same. Accent as text (badges, links, readouts, active tab, GO, `.schedule`) is `--accent-text` `#cff4f9`; raw `--accent` is 3.3:1 on `--surface`, below the 4.5:1 text floor. Selection frost is `rgba(255,255,255,0.12)` (was 0.25, white 3.1–3.9:1 on it) and series 6 is graphite `#8a9ba1` instead of near-white `--muted`, so white text on its tints passes.
 - **Focus and select caret:** the focus ring is two-tone (`0 0 0 2px var(--input-fg), 0 0 0 4px #fff`), so it holds on the white wells and the coloured case alike, and the select caret is drawn in `--input-fg` on the white well (it was near-white `--muted`, about 1.05:1).
 - **State text** uses pale tints (`--success-text` `#c9f8d6`, `--warning-text` `#ffebb9`, `--danger-text` `#ffe8e6`, each at least 4.6:1 on `--surface-2`) because the fills fail as text on the teal.
-- **Lit pads and marker chips:** core mixes 30% accent over surface-2 there, which left white labels at 4.26:1; lit pads use 18% (4.6:1+) and marker chips mix over `--surface` (4.9:1). A filled accent pill (`.pattern-nav [aria-current]`) labels in `--on-accent` (6.2:1), not the pale `--accent-text` (2.2:1 on the fill).
+- **Lit pads and marker chips:** core mixes 30% accent over surface-2 there, which left white labels at 4.26:1; lit pads use 12% of the lifted accent (4.5:1+) and marker chips mix over `--surface` (4.9:1). A filled accent pill (`.pattern-nav [aria-current]`) labels in `--on-accent` (6.2:1), not the pale `--accent-text` (2.2:1 on the fill). Tinted accent badges label in white (core's 20% accent tint left `--accent-text` at 4.37:1), and secondary buttons in the brighter app bar label in white.
 - **Tangerine variant** surface is `#8a3a00` (7.8:1 with white) after the brighter oranges measured 3.8:1 and 2.7:1; its gel `#b5500f` holds white button labels at 5.1:1.
 
 ## Reference status
@@ -161,7 +205,7 @@ The shell is a saturated mid-tone, so this theme sits near the floors and `pytho
 ## v5 layout
 
 - **Tiers.** No rail at any size; the rounded bar and status strip work on phones and tablets, where core stacks the brand and actions over a scrolling nav line. Under 480px the case lip slims (0.9rem corners, tighter status padding and gap) so the status foot's last readout clears its rounded corner.
-- **Nesting.** The diagonal sheen is the surface's top background layer, not a clipped pseudo-element, so panels no longer need `overflow: hidden` (which cut off menus and popovers opened inside them). A panel or card inside another surface keeps the gloss and pinstripe but drops the streak: one streak per stack of plastic.
+- **Nesting.** The diagonal sheen is the surface's top background layer, not a clipped pseudo-element, so panels no longer need `overflow: hidden` (which cut off menus and popovers opened inside them). A panel or card inside another surface keeps the gloss but drops the streak, the pinstripe and the inner ice bezel (a 2px candy ring and an unblurred drop instead): one streak and one rib layer per stack of plastic, and no doubled frame.
 - **XL gutter art (1801px+).** The case continues past the screen as ribbed translucent plastic with one broad diagonal sheen, white at low alpha so every colorway tints it.
 
 ## Adoption
