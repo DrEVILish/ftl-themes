@@ -3,50 +3,20 @@
  * Description: Sterile Aperture Science test-chamber off-white and grey, with portal blue/orange as the only saturated colours — Portal's signature palette split.
  *
  * Note on fonts: the chamber signage face is Univers, named first for
- * machines that have it. Titillium Web (vendored, OFL: Light 300, Regular,
- * SemiBold 600, Bold) stands in as the nearest open technical grotesk, set
- * light and tracked; Share Tech Mono (vendored, OFL) is the instrument face
- * for code.
+ * machines that have it. Inter (vendored, OFL, one variable file at
+ * 300-700) stands in as the nearest open neutral grotesk to Univers' Swiss
+ * proportions, set light and tracked; Share Tech Mono (vendored, OFL) is
+ * the instrument face for code.
  */
 
 @font-face {
-  font-family: "Titillium Web";
-  src: url("assets/fonts/TitilliumWeb-Light.woff2") format("woff2");
-  font-weight: 100 300;
+  font-family: "Aperture Inter";
+  /* Inter 4.0 (OFL), instanced to wght 300-700 at text optical size and
+     subset to Latin: one neutral neo-grotesk file for every weight. */
+  src: url("assets/fonts/InterVariable-Latin.woff2") format("woff2");
+  font-weight: 300 700;
   font-style: normal;
   font-display: swap;
-  ascent-override: 96%;
-  descent-override: 26%;
-}
-@font-face {
-  font-family: "Titillium Web";
-  src: url("assets/fonts/TitilliumWeb-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-  ascent-override: 96%;
-  descent-override: 26%;
-}
-
-@font-face {
-  font-family: "Titillium Web";
-  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
-  font-weight: 400 500;
-  font-style: normal;
-  font-display: swap;
-  /* Titillium's tall default line box crowds small controls; trim it. */
-  ascent-override: 96%;
-  descent-override: 26%;
-}
-@font-face {
-  font-family: "Titillium Web";
-  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
-  font-weight: 700 800;
-  font-style: normal;
-  font-display: swap;
-  /* Titillium's tall default line box crowds small controls; trim it. */
-  ascent-override: 96%;
-  descent-override: 26%;
 }
 @font-face {
   font-family: "Share Tech Mono";
@@ -76,18 +46,20 @@ html[data-theme="aperture"] {
   /* The second portal is danger, everywhere: badges, alerts, invalid
      fields, status, danger menu items — not only the button. */
   --danger: #ff9a1f;
-  --success: #2f7d46;
+  /* Success is a filled state only (Confirm, valid edge, lamps): a grey
+     teal, so it never reads as a third brand colour beside the portals. */
+  --success: #3f6f66;
   /* Warning takes the facility's hazard yellow so it never reads as danger. */
   --warning: #f4c430;
   --on-warning: #2b2b2b;
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --success-text: #286b3c;
+  --success-text: #24633a; /* 5:1 on its own 20% teal badge tint */
   /* Warning/danger text: dark steps of yellow and orange, 5.6:1+ on --bg
      and on their own 20% badge tint, and distinct from each other. */
   --warning-text: #6b5600;
-  --danger-text: #8f4500;
+  --danger-text: #9a4a00;
   /* Blue as text (links, tabs, secondary buttons, accent badges, readouts,
      code keywords): the fill is 3.8:1 on --bg, so text takes a deeper
      step of the same blue (5.4:1). Fills keep it. */
@@ -103,13 +75,16 @@ html[data-theme="aperture"] {
   /* The brand is a sign: black text behind a black pictogram tile. */
   --nav-brand-fg: var(--text);
   /* The active tab sits on the plate's heavy black rule. */
-  --tab-underline-active: #2b2b2b;
+  --tab-underline-active: #2b2b2b; /* thickened to 4px below */
   --on-danger: #2b2b2b;
   --on-success: #ffffff;
+  /* Meters fill portal blue, warn in hazard yellow, peak in portal orange;
+     a rising sparkline is blue, not green. */
+  --meter-low: var(--aperture-portal);
   /* Controls are hardware (0.2rem); surfaces are rounded sign plates. */
   --radius: 0.2rem;
   --panel-radius: 0.6rem;
-  --font: "Univers LT Std", Univers, "Titillium Web", "Helvetica Neue", Arial, sans-serif;
+  --font: "Univers LT Std", Univers, "Aperture Inter", Inter, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Share Tech Mono", Consolas, monospace;
   /* Readouts are chamber numerals: the light sign face, not a code font. */
   --readout-font: var(--font);
@@ -183,23 +158,56 @@ html[data-theme="aperture"] h1,
 html[data-theme="aperture"] h2,
 html[data-theme="aperture"] h3 { color: var(--text); text-transform: none; letter-spacing: 0.01em; font-weight: 300; }
 html[data-theme="aperture"] h3 { font-weight: 600; letter-spacing: 0.02em; }
-/* The test-chamber sign plate: a heavy rule over the big light title and a
-   chamber progress row of dashes under it. The face's trimmed line box
-   needs the extra end margin so the lede doesn't crowd the title. */
-html[data-theme="aperture"] h1 { border-top: 5px solid #2b2b2b; padding-top: 0.15em; margin-block-end: var(--space-xs); }
-html[data-theme="aperture"] h1::after {
-  content: "";
-  display: block;
-  inline-size: min(11rem, 100%);
-  block-size: 0.3rem;
-  margin-block-start: 0.4rem;
-  /* Chamber 04 of 11: the cleared tests black, the rest still grey. */
-  background:
-    repeating-linear-gradient(90deg, #2b2b2b 0 0.75rem, transparent 0.75rem 1rem) 0 0 / 4rem 100% no-repeat,
-    repeating-linear-gradient(90deg, #c3c7ca 0 0.75rem, transparent 0.75rem 1rem);
+/* The test-chamber sign plate: a heavy rule over the big light chamber
+   numeral and title, then the sign's lower half: an "04/11" counter beside
+   the chamber progress dashes, and the pictogram strip under them. Fixed
+   rem sizes, so the plate is the same object on every page however short
+   the title. */
+html[data-theme="aperture"] h1 {
+  border-top: 5px solid #2b2b2b;
+  padding-top: 0.15em;
+  margin-block-end: var(--space-xs);
+  min-inline-size: min(18.5rem, 100%);
 }
-html[data-theme="aperture"] .hero h1::after { margin-inline: auto; }
+html[data-theme="aperture"] h1:not(.hero h1)::before {
+  content: "04" / "";
+  margin-inline-end: 0.3em;
+  font-size: 1.5em;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+html[data-theme="aperture"] h1::after {
+  content: "04/11" / "";
+  display: block;
+  box-sizing: border-box;
+  block-size: 3.5rem;
+  margin-block-start: 0.5rem;
+  padding-inline-start: 18rem;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  /* Chamber 04 of 11: the cleared tests black, the rest still grey; then
+     the cube, button, water and pellet tiles, as on the in-game sign. */
+  background:
+    repeating-linear-gradient(90deg, #2b2b2b 0 1.25rem, transparent 1.25rem 1.625rem) 0 0.25rem / 6.5rem 0.5rem no-repeat,
+    repeating-linear-gradient(90deg, #c3c7ca 0 1.25rem, transparent 1.25rem 1.625rem) 0 0.25rem / 17.5rem 0.5rem no-repeat,
+    var(--aperture-picto-cube) 0 1.5rem / 2rem 2rem no-repeat,
+    var(--aperture-picto-button) 2.5rem 1.5rem / 2rem 2rem no-repeat,
+    var(--aperture-picto-water) 5rem 1.5rem / 2rem 2rem no-repeat,
+    var(--aperture-picto-pellet) 7.5rem 1.5rem / 2rem 2rem no-repeat;
+}
+html[data-theme="aperture"] .hero h1::after { margin-inline: auto; inline-size: 21rem; max-inline-size: 100%; }
 html[data-theme="aperture"] .panel-header { border-bottom: 2px solid #2b2b2b; }
+/* The active tab sits on the plate's heavy rule: core's 2px border plus a
+   2px inset, 4px in all, without shifting the label. */
+html[data-theme="aperture"] .tabs:not([aria-orientation="vertical"]) .tab.is-active { box-shadow: inset 0 -2px 0 var(--tab-underline-active); }
 /* Sign labels stay semibold at most, under the light sign numerals. */
 html[data-theme="aperture"] .nav-brand { font-weight: 600; }
 html[data-theme="aperture"] .panel-header :is(strong, b) { font-weight: inherit; }
@@ -212,12 +220,19 @@ html[data-theme="aperture"] .panel-header::before,
 html[data-theme="aperture"] .stat-label::before {
   content: "";
   display: inline-block;
-  inline-size: 1em;
-  block-size: 1em;
-  margin-inline-end: 0.4em;
-  vertical-align: -0.15em;
+  flex: none;
+  inline-size: max(1.5em, 20px);
+  block-size: max(1.5em, 20px);
+  margin-inline-end: 0.45em;
+  vertical-align: -0.4em;
   background: var(--aperture-picto, var(--aperture-picto-cube)) center / 100% 100% no-repeat;
 }
+html[data-theme="aperture"] .stat-label::before { inline-size: 1.4em; block-size: 1.4em; vertical-align: -0.35em; }
+/* Danger text stays the dark orange step for contrast; the portal orange
+   itself shows as the status dot and a 3px leading edge on menu items. */
+html[data-theme="aperture"] :is(.status-error, .status-rec)::before { background: var(--danger); }
+html[data-theme="aperture"] :is(.dropdown-item, .context-menu-item, .context-menu li > :is(button, a)).is-danger { box-shadow: inset 3px 0 0 var(--danger); }
+html[data-theme="aperture"] .sparkline.is-up { --sparkline-stroke: var(--aperture-portal); }
 html[data-theme="aperture"] .nav-brand { --aperture-picto: var(--aperture-picto-portals); }
 html[data-theme="aperture"] :nth-child(4n+2) > :is(.panel-header, .stat-label) { --aperture-picto: var(--aperture-picto-button); }
 html[data-theme="aperture"] :nth-child(4n+3) > :is(.panel-header, .stat-label) { --aperture-picto: var(--aperture-picto-water); }
@@ -233,6 +248,10 @@ html[data-theme="aperture"] :is(.alert, .toast):is(.alert-info, .alert-success, 
    isn't elided to its pictogram (core truncates it to keep the actions). */
 @media (max-width: 480px) {
   html[data-theme="aperture"] .app-bar > .nav-brand { flex: 1 0 100%; }
+  /* ...and keeps the actions on one row: the switcher shrinks and the
+     search button drops its shortcut hint, so the avatar isn't orphaned. */
+  html[data-theme="aperture"] .app-bar .cluster > .select { flex: 1 1 7rem; inline-size: 7rem; min-inline-size: 0; }
+  html[data-theme="aperture"] .app-bar .btn > kbd { display: none; }
 }
 /* Core pads a vertical fader with padding-inline, which is top/bottom in
    vertical-lr; pad the physical sides so only a thin groove is painted. */
@@ -288,6 +307,6 @@ html[data-theme="aperture"] {
     linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 60%) 0 0 / 128px 128px;
 }
 
-/* Titillium sets wider than the fallback, so a narrow table can squeeze an
+/* The sign face sets wider than the fallback, so a narrow table can squeeze an
    inline cell input below the touch target; keep it at least --tap-min. */
 html[data-theme="aperture"] td > .input { min-inline-size: var(--tap-min); }

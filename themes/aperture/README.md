@@ -30,8 +30,14 @@ otherwise clinical space.
 ## Signature details
 
 - Danger is the portal orange (`--danger: #ff9a1f`, dark `--on-danger`
-  text, `--danger-text: #8f4500`) everywhere — buttons, badges, alerts,
-  invalid fields, status, danger menu items — not red. Warning takes the
+  text, `--danger-text: #9a4a00`) everywhere — buttons, badges, alerts,
+  invalid fields, status, danger menu items — not red. Where danger is
+  text, the orange itself still shows: error/rec status dots are
+  `#ff9a1f` and danger menu items carry a 3px orange leading edge.
+- Success is a filled state only, a grey teal (`--success: #3f6f66`,
+  white text) so it never reads as a third brand colour; meters fill
+  portal blue (`--meter-low`), warn in hazard yellow and peak in orange,
+  and a rising sparkline is portal blue, not green. Warning takes the
   facility's hazard yellow (`#f4c430`, text `#6b5600`) so the two never
   share a colour.
 - Blue is the cyan-azure of the blue portal: fills take `--accent:
@@ -43,22 +49,28 @@ otherwise clinical space.
   ring, where it does not have to clear 3:1 on the light page. Blue text takes the deeper `#13609a`
   (5.4:1 on the page), including sort headers and scrollspy links.
 - Type: `--font` names Univers (`"Univers LT Std", Univers`) first, the
-  chamber signage face; Titillium Web (vendored, OFL: Light 300, Regular,
-  SemiBold 600, Bold) stands in where it is absent. h1/h2 are Light 300
+  chamber signage face; Inter (vendored as `"Aperture Inter"`, OFL, one
+  variable Latin file at weights 300–700) stands in where it is absent,
+  as the closest open neutral grotesk to Univers' Swiss proportions. h1/h2 are Light 300
   and lightly tracked, h3 at 600; readouts and KPI values (`.stat-value`
   1.9rem) are Light 300 chamber numerals; labels (brand, panel headers)
   are SemiBold 600 at most, uppercase KPI labels at least 0.75rem. Share
   Tech Mono for code. Headings are `--text` black and never
   uppercase; h1 gets `margin-block-end: var(--space-xs)` because the
   face's line box is trimmed for controls.
-- Chamber sign plate: the page h1 sits under a 5px `#2b2b2b` rule with a
-  row of short dashes under it — the chamber progress bar, the first four
-  black and the rest `#c3c7ca` (chamber 04 of 11); panel headers are black
-  text over a 2px `#2b2b2b` rule; the active tab sits on a black rule, not
-  a blue one.
+- Chamber sign plate: the page h1 sits under a 5px `#2b2b2b` rule (at
+  least 18.5rem wide, so it is the same object on every page), led by a
+  light muted "04" chamber numeral at 1.5em; under it, the chamber
+  progress bar — eleven 1.25rem × 0.5rem dashes, the first four black and
+  the rest `#c3c7ca` — with an "04/11" counter, then the strip of four 2rem
+  pictogram tiles (cube, button, water, pellet), as on the in-game sign.
+  Both pseudo-elements are hidden from assistive tech. Panel headers are
+  black text over a 2px `#2b2b2b` rule; the active tab sits on a 4px black
+  rule, not a blue one.
 - Sign pictograms: the app-bar brand carries a black tile with the blue
   and orange portal pair, at every width; panel headers and KPI labels
-  carry a black tile with a white chamber-sign pictogram that cycles
+  carry a black tile (1.5em, at least 20px; 1.4em on KPI labels) with a
+  white chamber-sign pictogram that cycles
   cube, cube-on-button, water hazard and energy pellet by position, so a
   dashboard shows a row of them like a chamber sign (inline SVG data
   URIs, `--aperture-picto-*`).
@@ -86,7 +98,9 @@ the panel sits in the room rather than filling it.
 
 - **Tiers.** No rail and no bar decoration, so phone (≤480px) and tablet
   (481–900px) use core's one-column shell, except that on a phone the
-  brand takes its own full line so its name is not elided to the tile.
+  brand takes its own full line so its name is not elided to the tile,
+  and the actions keep one row (the switcher shrinks, the search button
+  drops its Ctrl K hint).
 - **XL gutter art.** The test chamber's wall continues past the console:
   square white wall panels with recessed seams and one faint portal ring
   each side (azure `#27a7d8` left, orange `#ff9a1f` right). Still, and within about 1.3:1 of
