@@ -243,6 +243,11 @@ changes are called out explicitly here.
   falls back to the base theme for an unknown variant instead of showing a blank value.
 - `components.html`: the Uploads window's minimise, maximise and close buttons are direct children
   of `.modal-header` (the documented window pattern), so they take the title bar's colour.
+- Windows XP (Luna) and the themes built on it (Alienware, Windows 7 Aero): group-box captions
+  get 4px above and below, so their text no longer touches the caption box; the page behind the
+  window paints `--desktop-bg`, so a child's own desktop replaces Bliss; and the app bar's ghost
+  buttons, breadcrumbs and nav text follow `--app-bar-fg`, so light title bars (Alienware Invader
+  and AlienMorph, Luna Olive, Aero) no longer get a white bell icon.
 - `.icon` is `inline-block`: an icon before text in a block (a `.dropdown-item`, an `.alert`, a
   modal title, a label) stayed on its own line because the reset makes every `svg` a block.
 - `.context-menu-item` keeps a leading icon beside its label (it was pushed to the opposite edge);

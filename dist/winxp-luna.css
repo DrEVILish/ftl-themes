@@ -18890,9 +18890,9 @@ html[data-theme="winxp-luna"] {
    shows in the gap around the app window (--app-padding) — same as on
    a real desktop, where Bliss sits behind whatever's open, not under it. */
 html[data-theme="winxp-luna"] {
-  background:
+  background: var(--desktop-bg,
     radial-gradient(ellipse 90% 55% at 28% 118%, #6cb33f 0%, #5a9c34 32%, transparent 58%),
-    linear-gradient(180deg, #3a7bd5 0%, #7fb8ea 45%, #cbe6f5 85%, #d9edf5 100%);
+    linear-gradient(180deg, #3a7bd5 0%, #7fb8ea 45%, #cbe6f5 85%, #d9edf5 100%));
 }
 /* A page with no app window (a marketing or sign-in page) is content, not
    desktop: its text would sit straight on the sky, so it gets the dialog
@@ -18954,10 +18954,10 @@ html[data-theme="winxp-luna"] .panel-header {
   width: fit-content;
   max-width: calc(100% - 1rem);
   /* --surface-pad is the box's own padding (v5: it steps per tier). */
-  /* 4px of block padding keeps the caption text off the painted edge
-     (v5 edge-text); the margin takes it back so it stays on the frame. */
-  margin: calc(-1 * var(--surface-pad, 1rem) - 0.7em - 4px) 0 calc(0.6rem * var(--density)) -0.35rem;
-  padding: 4px 0.35rem;
+  /* 4px above and below keeps the text off the caption's own box; the
+     margins take it back so the text still centres on the frame line. */
+  margin: calc(-1 * var(--surface-pad, 1rem) - 0.7em - 4px) 0 calc(0.6rem * var(--density) - 4px) -0.35rem;
+  padding: 4px 0.3rem;
   background: var(--luna-legend-bg, linear-gradient(180deg, transparent 50%, var(--panel-bg) 50%));
   border: 0;
   font-size: 0.9em;
@@ -19116,9 +19116,9 @@ html[data-theme="winxp-luna"] .app-bar {
   font-family: "Trebuchet MS", var(--font);
   /* White title-bar text, as on every Luna window. The root nav tokens are
      black for the tan content area and measured 1.0:1 on this blue. */
-  --nav-brand-fg: #ffffff;
-  --nav-item-fg: #ffffff;
-  --nav-item-fg-active: #ffffff;
+  --nav-brand-fg: var(--app-bar-fg);
+  --nav-item-fg: var(--app-bar-fg);
+  --nav-item-fg-active: var(--app-bar-fg);
   --nav-item-bg-active: rgba(255, 255, 255, 0.2);
 }
 html[data-theme="winxp-luna"] .app-bar .nav { padding: 0; }
@@ -19127,8 +19127,8 @@ html[data-theme="winxp-luna"] .app-bar .nav-brand {
   text-shadow: 1px 1px #0f1089;
 }
 html[data-theme="winxp-luna"] .app-bar .nav-item { text-shadow: 1px 1px #0f1089; }
-html[data-theme="winxp-luna"] .app-bar .btn-ghost { color: #ffffff; }
-html[data-theme="winxp-luna"] .app-bar .breadcrumbs { --muted: #ffffff; --breadcrumb-current-fg: #ffffff; color: #ffffff; text-shadow: 1px 1px #0f1089; }
+html[data-theme="winxp-luna"] .app-bar .btn-ghost { color: var(--app-bar-fg); }
+html[data-theme="winxp-luna"] .app-bar .breadcrumbs { --muted: var(--app-bar-fg); --breadcrumb-current-fg: var(--app-bar-fg); color: var(--app-bar-fg); text-shadow: 1px 1px #0f1089; }
 /* Minimize / maximize / close: three separate 21px caption buttons, the
    single most recognizable Luna detail — blue glossy squares in a white
    frame, the close button red-orange. One inline SVG, so no markup. */
@@ -19563,14 +19563,8 @@ html[data-theme="winxp-luna"][data-variant="silver"] {
   --window-task-header-bg: linear-gradient(90deg, #ffffff, #d6d7e0);
   --window-task-header-fg: #3f3d3d;
 }
-html[data-theme="winxp-luna"][data-variant="silver"] .app-bar {
-  --nav-brand-fg: #15162a;
-  --nav-item-fg: #15162a;
-  --nav-item-fg-active: #15162a;
-  --nav-item-bg-active: rgba(255, 255, 255, 0.6);
-}
+html[data-theme="winxp-luna"][data-variant="silver"] .app-bar { --nav-item-bg-active: rgba(255, 255, 255, 0.6); }
 html[data-theme="winxp-luna"][data-variant="silver"] :is(.app-bar .nav-brand, .app-bar .nav-item, .app-bar .breadcrumbs, .modal-header) { text-shadow: none; }
-html[data-theme="winxp-luna"][data-variant="silver"] .app-bar :is(.btn-ghost, .breadcrumbs) { color: #15162a; --muted: #15162a; --breadcrumb-current-fg: #15162a; }
 html[data-theme="winxp-luna"][data-variant="silver"] .app-status > :last-child:not(:first-child) {
   background: linear-gradient(180deg, #ffffff 0%, #f6f7f9 15%, #dedee8 35%, #cbccda 60%, #bfc1d1 80%, #afb2c7 95%);
   border-left-color: #8e90a8;
@@ -20217,7 +20211,7 @@ html[data-theme="winxp-luna"] .start-menu > ul.start-menu-footer { padding-block
 html[data-theme="winxp-luna"] .start-menu-footer > li > :is(a, button) { min-block-size: 28px; padding-block: 0; }
 html[data-theme="winxp-luna"] .start-menu-footer > li > :is(a, button):hover { background: rgba(255, 255, 255, 0.18); color: var(--start-menu-footer-fg, #ffffff); }
 /* Olive Green and Silver: dark text on the pale header, taskbar and buttons. */
-html[data-theme="winxp-luna"]:is([data-variant="olive"], [data-variant="silver"]) :is(.start-menu-header, .taskbar-task, .taskbar-tray, .modal-header, .app-bar .nav-brand, .app-bar .nav-item) { text-shadow: none; }
+html[data-theme="winxp-luna"]:is([data-variant="olive"], [data-variant="silver"]) :is(.start-menu-header, .taskbar-task, .taskbar-tray, .modal-header, .app-bar .nav-brand, .app-bar .nav-item, .app-bar .breadcrumbs) { text-shadow: none; }
 html[data-theme="winxp-luna"][data-variant="olive"] .app-bar { --nav-brand-fg: #1f2a10; --nav-item-fg: #1f2a10; --nav-item-fg-active: #1f2a10; --nav-item-bg-active: rgba(255, 255, 255, 0.5); }
 html[data-theme="winxp-luna"][data-variant="olive"] .app-bar :is(.btn-ghost, .breadcrumbs) { color: #1f2a10; --muted: #1f2a10; --breadcrumb-current-fg: #1f2a10; }
 @media (max-width: 480px) {
