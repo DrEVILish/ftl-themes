@@ -24,8 +24,11 @@ green LCD-style readout. It really whips the llama's ass.
    monospace face on true black — an LCD panel inset into the chassis.
    `.readout` (timecodes, counters, dB values) is the main display:
    `--lcd` digits on black in a 1px recessed well, units in dim green.
+   KPI figures (`.stat-value`) get the same well, like the time and
+   kbps/kHz displays.
 4. **Beveled hardware.** Like Windows 95 but subtler: 1px two-tone borders,
-   inverted on press.
+   inverted on press. The main window (`.app-main`) has a 2px raised
+   outer edge (`#686883` lit top-left) and a dark `#1b1b2b` inner frame.
 5. **Uppercase micro-labels.** Buttons, the brand, bar nav, tabs, panel
    and window titles are tiny bold caps, as on the original's chassis.
    Tabs inside a window are a native property sheet's (Winamp's own
@@ -51,12 +54,17 @@ green LCD-style readout. It really whips the llama's ass.
 - Selection follows pledit: `#0000ff`. A multi-selected table row keeps its
   green text (the playlist's selected, non-current look), as does a
   selected (`.is-active`) track; the current entry (an active list item, a
-  table row with `.is-active` or `aria-current`, the playing track), menus,
-  segmented controls, radio toggle groups and the pager use white.
+  table row with `.is-active` or `aria-current`, the playing track), menus
+  and the pager use white. Blue stays on the black playlist field: on
+  phones a selected stacked row is a `#0000ff` edge bar on `#00006a`.
+- Segmented controls, radio toggle groups and filter chips are rows of
+  silver keys in both states; the on key is pressed in (inverted bevel,
+  `#d2dfe7` face) with dark-green `#006400` text (5.47:1).
 - Sliders are a plain recessed groove (dark top edge, light foot) drawn
   with `--slider-bg` inside core's tap-sized box, with a wide ribbed gold
-  seek-bar thumb; vertical sliders are tall EQ faders with a short, wide
-  ribbed cap (1.4rem by 0.7rem, 1px light / 2px dark ribs, a `#414f61`
+  seek-bar thumb; vertical sliders are tall EQ bands: the groove lit green
+  at the foot through yellow to red at the top, with a short, wide silver
+  cap (1.4rem by 0.7rem, `#f0ffff`/`#deeff1`/`#8e9cad`, a `#414f61`
   outline so it reads at 1x). The now-playing seek and volume bars use the
   same square ribbed thumb on a dark groove, with no fill.
 - Every text button but ghost is a pale silver key (`#deeff1` face, dark
@@ -67,8 +75,10 @@ green LCD-style readout. It really whips the llama's ass.
   indicators); avatars are square too.
 - Line charts are the visualiser: a green trace on a black field, the
   previous series in chassis grey, small mono labels.
-- Panel and window titles are 0.8em caps tracked 0.1em, one line between
-  the ridge runs.
+- Panel and window titles are 0.72em caps tracked 0.12em (bar nav 0.78em,
+  0.1em), one line between the ridge runs.
+- Lists, tables, logs and text areas take a gold-on-dark scrollbar, the
+  playlist editor's scroll thumb.
 - No gold active fills: gold is the ridge colour. Like the EQ/PL and
   ON/AUTO keys, an on switch is a silver track with a lit green lamp
   thumb, an active filter chip a silver key with dark-green (`#006400`)
@@ -128,7 +138,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 - **Ridge gold `#c7b070` (`--accent`)** is 5.79:1 on `--surface` and 7.97:1 on `--bg`; `--accent-text` `#ffefa6` is 10.65:1 on `--surface`. Dark text on gold (`--on-accent #1b1b2b`) is 7.97:1.
 - **LCD green `#00ff00` (`--lcd`)** is 12.42:1 on `--bg` and 8.29:1 on `--surface`. `RESEARCH.md` records no hex for the real skin's green, so that value is the theme's own, unverified against captures.
-- **Yellow fader deviation.** The reference has yellow EQ faders (`RESEARCH.md`). The theme's slider thumb is the base skin's ribbed gold seek thumb (`#ffefa6`/`#c7b070`), used for every slider including faders. `--warning` `#ffcc00` (11.27:1) is used for warning states.
+- **Yellow fader deviation.** The reference has yellow EQ faders (`RESEARCH.md`). Horizontal sliders keep the base skin's ribbed gold seek thumb (`#ffefa6`/`#c7b070`); vertical (EQ) faders have a silver cap on a green-yellow-red band, not a yellow one. `--warning` `#ffcc00` (11.27:1) is used for warning states.
 - **Muted lifted:** `#9a9a8c` (3.1:1) to `#c2c2ba` (clears 4.5:1 on `--surface-2` and on the planner's series tints). User, series and highlight tints, pads and waveform markers mix into `--bg`, not `--surface`, so the beige text keeps 4.5:1 on them.
 - **Nav items lifted** from `--muted` (4.1:1 on the bar's lighter top stop) to `#c8c8b8` (6.72:1 on `--surface`, 5.24:1 on `--surface-2`).
 - **State text:** `--success-text` `#00d900` (5.92:1 on `--surface`) and `--danger-text` `#f1a8a8` (5.91:1); the raw `--danger` `#cc2020` is 3.08:1 on `--bg` (fill only, white text 5.53:1).

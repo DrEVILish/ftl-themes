@@ -94,21 +94,26 @@ html[data-theme="winamp-classic"] {
      (6.3:1), as the playlist draws a selected, non-current entry. */
   --row-selected-bg: #0000ff;
   --row-selected-fg: var(--lcd);
-  /* Lists, menus, segmented controls and the pager select the way the
-     playlist does: #0000ff with white (pledit "current") text, 8.59:1. */
+  /* Lists, menus and the pager (it sits under the playlist-style table)
+     select the way the playlist does: #0000ff with white (pledit
+     "current") text, 8.59:1. */
   --dropdown-item-bg-hover: #0000ff;
   --dropdown-item-fg-hover: #ffffff;
-  --segmented-item-bg-active: #0000ff;
-  --segmented-item-fg-active: #ffffff;
   --pagination-item-bg-active: #0000ff;
   --pagination-item-fg-active: #ffffff;
   --nav-brand-fg: #c8c8b8;
-  /* Toggle chips and switches are silver keys with a lamp, as the base
-     skin's EQ/PL and ON/AUTO keys: gold is the ridge colour, not a fill.
-     Radio toggle groups select like the segmented control (#0000ff). */
-  --toggle-btn-bg-on: #0000ff;
-  --toggle-btn-fg-on: #ffffff;
-  --toggle-btn-border-on: #0000ff;
+  /* Toggle chips, radio toggle groups, segmented controls and switches
+     are silver keys with a lamp, as the base skin's EQ/PL and ON/AUTO
+     keys: off is the raised key, on is the same key pressed in (darker
+     foot-first face, inverted bevel below) with its label lit dark green
+     (5.47:1 on #d2dfe7). Blue stays on the black playlist field. */
+  --key-pressed-bg: linear-gradient(180deg, #d2dfe7, #deeff1);
+  --toggle-btn-bg-on: var(--key-pressed-bg);
+  --toggle-btn-fg-on: #006400;
+  --segmented-item-bg-active: var(--key-pressed-bg);
+  --segmented-item-fg-active: #006400;
+  --segmented-bg: transparent;
+  --segmented-border-width: 0;
   --badge-bg-active: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
   --badge-fg-active: #006400;
   --switch-bg-on: #deeff1;
@@ -252,6 +257,31 @@ html[data-theme="winamp-classic"] :is(.btn-primary, .btn-danger, .btn-success) {
 html[data-theme="winamp-classic"] .panel,
 html[data-theme="winamp-classic"] .modal,
 html[data-theme="winamp-classic"] .dropdown { border-color: #8e9cad #0d0e14 #0d0e14 #8e9cad; }
+/* Pressed keys (on toggles and segments) are the key held down: inverted
+   bevel. The off segments and filter chips are raised silver keys like
+   the toggle buttons beside them (ADD/REM/SEL, ON/AUTO: every key in a
+   group is a key in both states). */
+html[data-theme="winamp-classic"] .toggle-btn:has(input:checked),
+html[data-theme="winamp-classic"] .segmented-item.is-active { border-color: #414f61 #f0ffff #f0ffff #414f61; box-shadow: inset 1px 1px 0 #8e9cad; }
+html[data-theme="winamp-classic"] .segmented-item,
+html[data-theme="winamp-classic"] .badge-button { border: 1px solid; border-color: #f0ffff #414f61 #414f61 #f0ffff; }
+html[data-theme="winamp-classic"] .segmented-item:not(.is-active) { background: var(--btn-bg); color: #1b1b2b; box-shadow: inset -1px -1px 0 #8e9cad; }
+html[data-theme="winamp-classic"] .badge-button:not(.is-active) { --badge-bg: var(--btn-bg); --badge-fg: #1b1b2b; }
+html[data-theme="winamp-classic"] .badge-button.is-active { border-color: #414f61 #f0ffff #f0ffff #414f61; }
+/* KPI figures are readouts: green digits in the recessed black well of
+   the time and kbps/kHz displays. The label stays chassis caps. */
+html[data-theme="winamp-classic"] .stat-value {
+  display: inline-block;
+  align-self: flex-start;
+  color: var(--lcd);
+  background: #000;
+  border: 1px solid;
+  border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
+  /* Digits keep a 4px inset from the well's edge (as .readout). */
+  padding: 4px max(0.3em, 6px);
+}
+/* The playlist editor's ribbed gold scroll thumb on a dark track. */
+html[data-theme="winamp-classic"] :is(.list, .table-wrap, .log, .textarea, .tracklist, .dropdown) { scrollbar-color: #c7b070 #1b1b2b; }
 html[data-theme="winamp-classic"] .input,
 html[data-theme="winamp-classic"] .select,
 html[data-theme="winamp-classic"] .textarea {
@@ -265,8 +295,13 @@ html[data-theme="winamp-classic"] .slider.is-vertical {
   /* Drawn as a centred 0.6rem groove: in vertical writing mode core's
      padding-inline pads top/bottom, so the content box spans the full
      tap width. */
-  --slider-bg: linear-gradient(90deg, transparent calc(50% - 0.3rem), #0d0e14 0 calc(50% - 0.3rem + 2px), #1b1b2b 0 calc(50% + 0.3rem - 2px), #8e9cad 0 calc(50% + 0.3rem), transparent 0);
-  --slider-thumb-bg: repeating-linear-gradient(180deg, #ffefa6 0 1px, #c7b070 1px 3px);
+  /* The EQ band: the groove is lit green at the foot through yellow to
+     red at the top, the base skin's level colours, inside the same dark
+     bevel; the fader cap is the small silver key, not the gold seek bar. */
+  --slider-bg:
+    linear-gradient(90deg, transparent calc(50% - 0.3rem), #0d0e14 0 calc(50% - 0.3rem + 2px), transparent 0 calc(50% + 0.3rem - 2px), #8e9cad 0 calc(50% + 0.3rem), transparent 0),
+    linear-gradient(0deg, #00b400, #ffe000 60%, #ff3000) center / calc(0.6rem - 4px) 100% no-repeat;
+  --slider-thumb-bg: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 70%, #8e9cad);
   --slider-thumb-shadow: 0 0 0 1px #414f61, inset -1px -1px 0 #8e9cad;
 }
 /* Core clips the track to the content box; the groove's edges have to be
@@ -336,9 +371,12 @@ html[data-theme="winamp-classic"] {
   --app-status-rule: #1b1b2b;
   --app-status-padding: 0.35rem 0.5rem;
 }
+/* The window: a raised two-tone outer edge (#686883 lit top-left) with
+   the dark #1b1b2b inner frame every display sits in. */
 html[data-theme="winamp-classic"] .app-main {
-  border: 1px solid;
-  border-color: #1b1b2b #686883 #686883 #1b1b2b;
+  border: 2px solid;
+  border-color: #686883 #0d0e14 #0d0e14 #686883;
+  box-shadow: inset 1px 1px 0 #1b1b2b, inset -1px -1px 0 #1b1b2b;
 }
 
 /* App-bar nav text. Items lifted from --muted (4.1:1 on the bar's lighter top
@@ -373,8 +411,8 @@ html[data-theme="winamp-classic"] {
   --message-meta-fg: #a4ff30;
   --message-border: #686883;
   --message-radius: 0;
-  --bar-chart-bar: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, 0.55) 3px 4px), linear-gradient(0deg, #00b400, #a4ff30 55%, #ffe000 80%, #ff3000) left bottom / 100% var(--bar-chart-height, 8rem);
-  --bar-chart-bar-alt: repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, 0.55) 3px 4px), linear-gradient(0deg, #c8c8c8, #ffffff) left bottom / 100% var(--bar-chart-height, 8rem);
+  --bar-chart-bar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='4'%3E%3Cpath fill-opacity='.55' d='M0 3h1v1H0z'/%3E%3C/svg%3E"), linear-gradient(0deg, #00b400, #a4ff30 55%, #ffe000 80%, #ff3000) left bottom / 100% var(--bar-chart-height, 8rem);
+  --bar-chart-bar-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='4'%3E%3Cpath fill-opacity='.55' d='M0 3h1v1H0z'/%3E%3C/svg%3E"), linear-gradient(0deg, #c8c8c8, #ffffff) left bottom / 100% var(--bar-chart-height, 8rem);
   --bar-chart-radius: 0;
   --bar-chart-gap: 3px;
 }
@@ -476,9 +514,9 @@ html[data-theme="winamp-classic"] .panel-header {
 }
 html[data-theme="winamp-classic"] .panel-header > :not(:first-child) { order: 1; }
 html[data-theme="winamp-classic"] .modal-header {
-  font-size: 0.8em;
+  font-size: 0.72em;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -489,9 +527,10 @@ html[data-theme="winamp-classic"] :is(.nav-brand, .app-bar .nav-item, .app-bar [
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"], .tab) { font-size: 0.85em; }
-/* Strip legends are the skin's tiny tracked caps (11.2px at the 14px body). */
-html[data-theme="winamp-classic"] .panel-header { font-size: 0.8em; letter-spacing: 0.1em; }
+html[data-theme="winamp-classic"] .tab { font-size: 0.85em; }
+html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"]) { font-size: 0.78em; letter-spacing: 0.1em; }
+/* Strip legends are the skin's tiny tracked caps (10px at the 14px body). */
+html[data-theme="winamp-classic"] .panel-header { font-size: 0.72em; letter-spacing: 0.12em; }
 /* Inside a window the strip is a property sheet's (Winamp's own
    Preferences are native dialogs): bold mixed case, no tracking, so a
    fixed-height dialog's tabs keep one row and its footer stays in view. */
@@ -514,6 +553,8 @@ html[data-theme="winamp-classic"] .pattern-nav a[aria-current="page"] { backgrou
    a narrow cell input, and table cells whose em padding shrank. */
 html[data-theme="winamp-classic"] a.nav-brand { display: inline-flex; align-items: center; min-block-size: 24px; }
 html[data-theme="winamp-classic"] .input { min-inline-size: var(--tap-min); }
+/* A one-glyph key (a ‹ › pager pair in a squeezed toolbar) keeps the tap floor. */
+html[data-theme="winamp-classic"] .btn { min-inline-size: var(--tap-min); }
 html[data-theme="winamp-classic"] .table td > .field-error { padding-block-end: max(var(--space-2xs), 5px); }
 html[data-theme="winamp-classic"] .table :is(th, td) {
   padding: max(calc(0.5em * var(--density)), 6px) max(calc(0.75em * var(--density)), 8px);
@@ -529,9 +570,16 @@ html[data-theme="winamp-classic"] .table :is(th, td) {
      bundle, so only !important reaches it (as for .pattern-nav above). */
   html[data-theme="winamp-classic"] .app-bar { row-gap: 0 !important; }
   html[data-theme="winamp-classic"] .app-bar > .nav-brand { flex: 1 0 auto; }
-  html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > :is([role="menuitem"], button)) { padding-inline: 0.3em; min-inline-size: var(--tap-min, 44px); justify-content: center; text-align: center; }
+  html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > :is([role="menuitem"], button)) { padding-inline: max(0.3em, 5px); min-inline-size: var(--tap-min, 44px); justify-content: center; text-align: center; }
   /* No keyboard shortcut hint on a phone; the actions and avatar then
      share one row. */
   html[data-theme="winamp-classic"] .app-bar .btn > kbd { display: none; }
   html[data-theme="winamp-classic"] .app-bar > .cluster { gap: 0.25rem; }
+}
+/* Stacked (phone) rows: a selected card is a #0000ff bar down its edge on
+   a deep-blue ground (green 12.7:1), not a full block of playlist blue,
+   and the cell labels keep a 0.75rem floor. */
+@media (max-width: 480px) {
+  html[data-theme="winamp-classic"] .table.is-stacked > * > tr:is(.is-selected, [aria-selected="true"]) { --row-selected-bg: #00006a; border-inline-start: 4px solid #0000ff; }
+  html[data-theme="winamp-classic"] .table.is-stacked > * > tr > [data-label]::before { font-size: max(0.78em, 0.75rem); }
 }
