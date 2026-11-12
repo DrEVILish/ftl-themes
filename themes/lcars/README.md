@@ -24,7 +24,7 @@ plain **LCARS** — the orange-led palette. Select the others with `data-variant
 | `data-variant` | Era | Palette |
 |---|---|---|
 | *(none)* | LCARS | Orange-led candy: orange, lavender, peach, tan. |
-| `voyager` | Voyager / DS9 | Gold-tan `#cc9966` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
+| `voyager` | Voyager / DS9 | Gold-tan `#cc9966`/`#ddbb88` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
 | `picard` | Picard (2399) | Sampled from `picard/graph-dial-dataTable.jpg`: slate/steel structure `#8c9ab4`/`#b9c4d6`/`#7a8aa8` (shell frame, elbows, table head), cyan `#4fb3f6` for active/selected only, red-orange `#e8553f` highlight, ice-blue text `#dde6f2`. |
 
 Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
@@ -56,7 +56,8 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
    and periwinkle marks information text (trend deltas, ARMED/CONNECTED,
    message times). Type comes
    in three sizes only: main title (2.4rem), sub header (1.25rem), normal
-   data (0.95rem); only printed ruler numerals on scales are exempt.
+   data (0.95rem, 1.05rem on phones, where Antonio's thin strokes need
+   the extra size); only printed ruler numerals on scales are exempt.
 
 ## How the tokens carry that
 
@@ -87,7 +88,8 @@ this catalog could verify against.
   into that bar at the left, in a black break cut out of it, the text in
   the frame's colour — the on-screen section-title position. The title
   wins the bar's room over the decoration up to the bar's end cap; every
-  panel, card and modal top bar ends in that separate pill cap. Frame
+  panel, card and modal top bar ends in that separate pill cap, at least
+  0.75rem tall (on a thin card bar it stands proud of the bar). Frame
   colours rotate orange → lavender → peach → periwinkle by position.
 
 - **Meters** are MSD-panel gauges — black tubes with a lavender tick ruler, filled from the bottom — banded periwinkle → orange → alert red rather than
@@ -99,24 +101,28 @@ this catalog could verify against.
   the primary action is a *block*, consistent with everything else.
 - **Lamps** are rounded rectangles, not circles: LCARS has few true circles.
   Icon buttons likewise are capped blocks (`999px 0.3rem 0.3rem 999px`),
-  ghost ones included (lavender, black glyph); only glyphs sitting in a
-  panel's title break stay bare. A lit lamp is full candy and steady; an
+  ghost ones included (lavender, black glyph), and so are the small
+  glyph keys (bulk-bar clear, carousel and page arrows); only glyphs
+  sitting in a panel's title break stay bare, sized to the break. A lit lamp is full candy and steady; an
   off one is the unlit dim lavender (`--surface-2`).
 - **No green.** `--success` is periwinkle and charts draw in the candy set
   (orange, periwinkle, lavender, peach, tan); badges are solid candy blocks
   with black text. Red is kept for danger/alert only; a falling sparkline
   is peach.
 - **Black menus.** Dropdowns, context menus, popovers and the dropzone are
-  black framed by a 0.6rem lavender leg; only text fields keep a dark well.
+  black framed by a 0.6rem lavender leg; text fields are black too, carried
+  by their lavender cap (a read-only field is an unlit block).
   File chips and sticky header bars take the same leg; card lists are black
   blocks with a leg in the state colour (lavender, orange featured,
   periwinkle success). `--surface-2` is unlit lavender, not navy-grey, so
-  skeletons, off tracks and placeholders read as dark candy blocks.
+  skeletons, off tracks, switch tracks, mixer strips and placeholders read
+  as dark candy blocks; a skeleton blinks unlit/lit in steps, no shimmer.
   `--border` is transparent, so no grey hairline survives anywhere.
 - **Sliders** are a 0.5rem lavender bar with an orange block thumb, drawn
   in the content box of core's `--tap-min` hit area.
 - **Desktop windows** carry MIN/MAX/CLOSE as small candy keys after the
-  title (lavender, peach, orange).
+  title (lavender, peach, orange); the words stay down to a 20rem header,
+  and only below that become large glyph keys.
 
 ### Icons
 
@@ -141,13 +147,14 @@ Selecting LCARS re-arranges the app shell, it does not merely recolour it:
 
 - a **7rem candy rail** appears down the left (`--app-columns`), drawn
   entirely in CSS as fixed-height blocks (rem stops, so a long page doesn't
-  stretch them into slabs) separated by black gaps, the top two carrying
-  black block codes at their lower right, the last running on to the
-  bottom;
+  stretch them into slabs) separated by black gaps, every block carrying a black block code at
+  its lower right, the last running on to the bottom;
 - the **top bar becomes an orange elbow**: a thick leg over the rail that
   curves into a thin bar running right, ending in separate pill-capped
-  segments; the brand becomes the large right-aligned screen title and nav
-  items become pills on the black above the bar;
+  segments (the tan end cap a true half-disc on black); the brand becomes
+  the large right-aligned screen title and nav items — `.nav-item` and the
+  top-level `.menubar` keys — become lavender pills on the black above the
+  bar, label bottom-right, the current one orange;
 - the **status strip is the mirrored bottom elbow**, in tan, closing the
   frame.
 
@@ -184,7 +191,8 @@ Don't:
 
 - **Display:** Antonio (Regular 400 and Bold 700), **vendored** in `assets/fonts/` (SIL OFL 1.1, see `assets/fonts/NOTICE.md`). It drives the sweep bar (`--app-bar-font`), the big numeric readouts (`--readout-font`) and the other all-caps display spots in `theme.css`. It is a stand-in: the on-screen originals are usually described as Swiss 911 / Helvetica Compressed, but nothing in `references/lcars/` names a face, so that attribution is unverified.
 - **Body:** `--font` is Antonio too (falling back to `"Arial Narrow"`/condensed system faces). A proportional humanist body face under Antonio headings read as a web page, not a panel.
-- Labels are uppercase with `0.05em` tracking (`--label-transform`, `--label-tracking`). Lowercase Antonio at display size undoes the look.
+- Labels are uppercase and set tight, `0.02em` tracking (`--label-tracking`, `--btn-tracking`, bar, nav and headings alike), as the packed on-screen type is. Lowercase Antonio at display size undoes the look.
+- Weight: Antonio Bold 700 for the screen title, h1, panel titles and readouts/stat values; 400 for data, labels and keys.
 
 ## Contrast honesty
 
@@ -243,7 +251,7 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
    a bottom bar with its own elbow. Panels, cards and modals now close
    along the bottom too.
 5. **No strokes.** LCARS has no outlines or hairlines, only fills. Inputs
-   are dark wells with a 0.8rem candy cap on the left end (lavender;
+   are black with a 0.8rem candy cap on the left end (lavender;
    red when invalid, periwinkle when valid, orange in a table cell being
    edited — the cap carries the state, never a stroke), the log/switches/toggles lose
    their outlines, table rules and hairlines are gone, strips are filled
@@ -251,9 +259,12 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
 6. **Labels bottom-right.** Button labels now sit in the bottom-right
    corner of taller blocks, as on every LCARS key.
 
-Known remaining difference: original rails label *every* block with a
-code; the shell rail is one empty element with two pseudo-elements, so
-only its top two blocks carry codes. The leg below them repeats a run of
+The shell rail is one empty element: its top two blocks carry codes from
+its two pseudo-elements, and every block below them gets its code from an
+SVG tile painted into the rail's background (six codes, repeating with
+the blocks). An SVG image can't reach the page's fonts, so the tile
+carries its own 1.3 KB Antonio subset (digits and hyphen, OFL, renamed)
+as an inline data-URI `@font-face`; every code matches. The leg below them repeats a run of
 varied blocks — 7rem tan, 4rem tan, 10rem lavender — split by 0.3rem
 black gaps, so a tall page doesn't read as a column of equal slabs.
 
@@ -262,8 +273,9 @@ black gaps, so a tall page doesn't read as a column of equal slabs.
 - **Alerts and toasts** keep core's variant colour on their leg: info
   orange, success periwinkle, warning tan, danger red.
 - **Settings rows** (`.field-row`) hang off a short lavender leg on
-  black; **segmented controls** are touching lavender blocks (active
-  orange) capped only at the two ends, like the tabs.
+  black; **segmented controls** and joined toggle groups are lavender
+  blocks (active orange) split by 0.3rem black gaps and capped only at
+  the two ends, like the tabs.
 - **Checkboxes and radios** are flat: a black square (or disc) in a
   lavender ring, lit orange with a black mark when on.
 - **Side nav columns** (`.nav-rail`, the inbox folders) are blocks flat
@@ -292,7 +304,7 @@ Reviewed every demo page against the guideline and manifesto rules:
   dropzones and keycaps lost their outlines (dark wells / lavender pills).
 - **Two spacing constants** — 0.3rem inside a frame (segments, rail
   blocks, tabs), 0.6rem between frames (the upper and lower frame).
-- **3:1 buttons** — 6.9rem × 2.3rem minimum, labels bottom-right, never
+- **3:1 buttons** — 6.5rem × 2.3rem minimum, labels bottom-right, never
   wrapped. Long labels still stretch the pill: CSS can't see label
   length, so choosing the flat-ended variant for them is the app's call.
 - **Modal titles** sit on black under the bar (a modal scrolls, so a
@@ -350,5 +362,54 @@ Needs markup (left as is):
   they get no frame; the chat's narrow side columns squeeze names.
 - Long button labels should switch to the flat-ended variant — an app
   decision, not visible to CSS.
-- Only two rail blocks can carry codes without rail markup.
+- Settings' Profile title is a plain heading in the pane, not a
+  `.panel-header`, so it sits under the bar rather than in a break of it.
 
+## Polish round 4
+
+- **Panel titles** in the bar break are no longer cut: badges and icon
+  keys are sized to the break (icon keys keep their touch area through an
+  invisible overlay).
+- **Menubar keys** in the shell bar are lavender pills, current orange.
+- **Window keys** render on a window whose MIN/MAX/CLOSE sit straight in
+  `.modal-header` (no `.desktop-window`); CLOSE stays in the title row.
+- **Master-detail section lists** (settings) are capped lavender blocks,
+  the open section orange, matching the inbox folders.
+- **Small glyph keys** (bulk-bar clear, carousel and page arrows) are
+  candy keys with the glyph at the sub size; checkboxes and radios are at
+  least 24px.
+- **Chart legends** are at the data size everywhere.
+- **Voyager** repaints the structure too: peach becomes brick `#cc6666`
+  and tan a dimmer gold-tan `#ddbb88`, so rail and bars change era.
+
+## Polish round 5
+
+- **Keys put the label in the corner.** Filled buttons are at least 6.5rem
+  wide with `0.75rem` right / `2rem` left padding, the shell nav pills
+  likewise, and GO is a wide block with its label bottom-right, so short
+  labels leave empty candy to their left. Text-only keys (ghost,
+  tertiary, link) have no minimum width.
+- **Panel-header badges** are never cut mid-glyph: a short badge stays
+  whole, a long one stops at 8em with an ellipsis; the title then
+  ellipsizes when the break is still too narrow.
+- **Glyphs on candy are black**: the accordion's +/× mark (a bold sans,
+  Antonio's + is a speck), the settings section chevrons and the
+  editable-cell pencils on selected rows (`--cell-edit-glyph-fg:
+  currentColor`).
+- **Tighter, heavier type**: tracking cut to 0.01–0.03em; titles and
+  readouts in Antonio Bold.
+- **Thin-bar caps** keep a 0.75rem floor; the rail's background repaints
+  under `contain: paint`.
+
+## Polish round 6
+
+- **Dividers are candy strips**: `.divider` is a 0.3rem lavender bar
+  across the run, `.divider-v` a 0.3rem lavender leg — never a hairline.
+- **Joined toggle groups** break between keys with the tabs' 0.3rem
+  black gap.
+- **Cards side by side** in a `.grid` stretch to the row, so their bottom
+  bars and caps share a baseline.
+- **Inline code** is no grey box: black, hung off a 0.2rem lavender leg.
+- **Phones**: normal data steps up to 1.05rem; in a panel title break the
+  icon keys shrink to their glyph (touch area kept by an invisible
+  overlay) and the badge ellipsizes before the title.
