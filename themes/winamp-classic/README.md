@@ -14,22 +14,56 @@ green LCD-style readout. It really whips the llama's ass.
 ## Core values
 
 1. **Small, tight, compact.** This is a player window that lives in a
-   corner of the screen, not a full-page app. Type is small; the title bar
-   is 1.8rem.
-2. **Steel texture, not flat grey.** A 4px repeating horizontal gradient
-   gives the brushed-metal body.
+   corner of the screen, not a full-page app. Type is small (root 87.5%,
+   14px body); the title bar is 1.8rem.
+2. **Steel texture, not flat grey.** A 4px horizontal stripe gives the
+   brushed-metal body; panels and cards carry a finer 3px rib of the same
+   chassis bands. Both (and the title-bar ridges) are tiny tiled SVGs, not
+   repeating gradients, so they rasterise once and scrolling stays cheap.
 3. **The readout is green-on-black.** Track info and values set in the
    monospace face on true black — an LCD panel inset into the chassis.
 4. **Beveled hardware.** Like Windows 95 but subtler: 1px two-tone borders,
    inverted on press.
-5. **Uppercase micro-labels.** Buttons are tiny caps, as on the original's
-   transport row.
+5. **Uppercase micro-labels.** Buttons, the brand, bar nav, tabs, panel
+   and window titles are tiny bold caps, as on the original's chassis.
+   Tabs inside a window are a native property sheet's (Winamp's own
+   Preferences): bold mixed case, untracked, so a dialog's strip stays on
+   one row.
+   Below the h1 readout, h2 (1.1em) and h3 (0.9em) are two distinct caps
+   steps.
 
 ## Signature details
 
 - Inputs are black with green monospace text — they read as the display,
   not as form fields.
-- Sliders are square-thumbed with a llama-green cap.
+- Title bars carry the base skin's gold ridge lines (`#ffefa6` over
+  `#c7b070`, sampled): window, modal and panel titles sit centred between
+  two ridge runs on the title-strip gradient (`#484861` to `#32324f`), like
+  the WINAMP EQUALIZER / PLAYLIST strips; badges and actions follow the
+  right run. On the app bar one run fills the space from the nav to the
+  actions (hidden on phones, where the bar wraps).
+- Tables, lists and the tracklist are the playlist editor: a black field
+  with green (`#00e000`) Arial rows, `.mono` cells and track durations in
+  the readout face. The playing track is white (pledit "current"); the
+  gold equaliser glyph is the only gold in the list.
+- Selection follows pledit: `#0000ff`. A multi-selected table row keeps its
+  green text (the playlist's selected, non-current look), as does a
+  selected (`.is-active`) track; the current entry (an active list item, a
+  table row with `.is-active` or `aria-current`, the playing track), menus,
+  segmented controls, radio toggle groups and the pager use white.
+- Sliders are a plain recessed groove (dark top edge, light foot) drawn
+  with `--slider-bg` inside core's tap-sized box, with a wide ribbed gold
+  seek-bar thumb; vertical sliders are tall EQ faders with a short, wide
+  ribbed cap (1.4rem by 0.7rem, 1px light / 2px dark ribs, a `#414f61`
+  outline so it reads at 1x).
+- Every text button but ghost is a pale silver key (`#deeff1` face, dark
+  label, bevel), like ADD/REM/SEL and PRESETS; icon buttons are square
+  silver keys like the transport row; toggles show a dark-green lamp glyph
+  when on.
+- No gold active fills: gold is the ridge colour. Like the EQ/PL and
+  ON/AUTO keys, an on switch is a silver track with a lit green lamp
+  thumb, an active filter chip a silver key with dark-green (`#006400`)
+  text, and checkboxes and radios light LCD green.
 - The status strip repeats the chassis gradient, framing the window.
 
 ## Icons
@@ -60,7 +94,7 @@ Everything is snug against everything else.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** core's one-column shell; the compact player chrome already fits a phone. The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
+- **Phone (≤480) and tablet (481–900):** core's one-column shell. On phones the bar's ridge run is dropped, nav items are tightened, the bar's row gaps close and buttons drop their keyboard-shortcut hint (so the actions and avatar share one row), so the wrapped bar stays compact (the brand keeps its full name on a row of its own when the nav will not fit beside it). The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
 - **XL gutters (≥1801):** the spectrum analyser along the foot of the desk: twelve-band bars in a dim, translucent analyser green, with the page's brushed 4px ribbing showing through as LED segments. Paused, not animated.
 
 ## Tell-tales of an inauthentic result
@@ -72,20 +106,21 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Don'ts
 
-- **No LCD green as a general accent.** It is confined to readouts, meters, slider caps, the playlist's selected row text and the default (`.btn-primary`) button, drawn as the LCD (green on black); headings, nav and other buttons stay khaki or silver.
+- **No LCD green as a general accent.** `--accent` is the ridge gold `#c7b070` and `--accent-text` its highlight `#ffefa6`; LCD green (`--lcd`) is confined to readouts (h1, inputs, table digits), the playlist (table, list and track rows), meters, the switch and checkbox lamps, the playlist's selected row text and the default (`.btn-primary`) button, drawn as the LCD (green on black).
 - **No radius above `0.1rem`, no gloss.** Chunky 2px bevels only.
 - **No body copy in the LCD face.** Only h1 and the readout/table digits use the mono stack.
 - **No yellow fader caps here** without knowing this deviates from the reference (see Contrast honesty).
 
 ## Typography
 
-`--font` is `Arial, Helvetica, sans-serif`; `--font-mono` is `"Fixedsys", "Courier New", Consolas, monospace`. **All system fonts, none vendored.** The real skin's readout uses a bitmap pixel font (Fixedsys is the closest system relative on Windows); on other systems Courier New renders, which is thinner and rounder. Labels are tiny and uppercase.
+`--font` is `Arial, Helvetica, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif` (the base skin's playlist font, then Arial's metric-compatible clones so a box without Arial does not fall to a wider face). No Arial clone is vendored yet in `assets/fonts/` (outside a theme's files), so a box with none of these falls back to its system sans, often the wider DejaVu Sans. `--font-mono` is `"Share Tech Mono", "Fixedsys", "Courier New", Consolas, monospace`; Share Tech Mono (OFL) is already vendored in `assets/fonts/`. The real skin's readout is a bitmap face; Share Tech Mono's square, narrow digits are closer to it than Courier New. Labels are tiny bold caps.
 
 ## Contrast honesty
 
-- **LCD green `#00ff00` (`--accent`)** is 12.42:1 on `--bg` and 8.29:1 on `--surface`. `RESEARCH.md` records no hex for the real skin's green, so that value is the theme's own, unverified against captures.
-- **Yellow fader deviation.** The reference has yellow EQ faders (`RESEARCH.md`). The theme's slider thumb is `--accent-2` lime `#a4ff30` (13.74:1 on `--bg`), not yellow. The only yellow is `--warning` `#ffcc00` (11.27:1), used for warning states. This is a colour deviation, not a contrast lift: yellow would also pass.
-- **Muted lifted:** `#9a9a8c` (3.1:1) to `#c2c2ba` (clears 4.5:1 on `--surface-2` and on the planner's series tints). User, series and highlight tints mix into `--bg`, not `--surface`, so the beige text keeps 4.5:1 on them.
+- **Ridge gold `#c7b070` (`--accent`)** is 5.79:1 on `--surface` and 7.97:1 on `--bg`; `--accent-text` `#ffefa6` is 10.65:1 on `--surface`. Dark text on gold (`--on-accent #1b1b2b`) is 7.97:1.
+- **LCD green `#00ff00` (`--lcd`)** is 12.42:1 on `--bg` and 8.29:1 on `--surface`. `RESEARCH.md` records no hex for the real skin's green, so that value is the theme's own, unverified against captures.
+- **Yellow fader deviation.** The reference has yellow EQ faders (`RESEARCH.md`). The theme's slider thumb is the base skin's ribbed gold seek thumb (`#ffefa6`/`#c7b070`), used for every slider including faders. `--warning` `#ffcc00` (11.27:1) is used for warning states.
+- **Muted lifted:** `#9a9a8c` (3.1:1) to `#c2c2ba` (clears 4.5:1 on `--surface-2` and on the planner's series tints). User, series and highlight tints, pads and waveform markers mix into `--bg`, not `--surface`, so the beige text keeps 4.5:1 on them.
 - **Nav items lifted** from `--muted` (4.1:1 on the bar's lighter top stop) to `#c8c8b8` (6.72:1 on `--surface`, 5.24:1 on `--surface-2`).
 - **State text:** `--success-text` `#00d900` (5.92:1 on `--surface`) and `--danger-text` `#f1a8a8` (5.91:1); the raw `--danger` `#cc2020` is 3.08:1 on `--bg` (fill only, white text 5.53:1).
 
