@@ -74,8 +74,10 @@ html[data-theme="winamp-classic"] {
   --input-placeholder: #5f9a5f;
   /* Panels carry the chassis striping (RESEARCH.md: #525266/#2f2f4b
      bands), a 3px rib, so the steel shows inside the window too. Cards in
-     tinted lists mix a colour, so they keep the flat face. */
-  --panel-bg: repeating-linear-gradient(180deg, #35355a 0 1px, #32324f 1px 2px, #2c2c47 2px 3px);
+     tinted lists mix a colour, so they keep the flat face. Drawn as a
+     tiny tiled SVG, not a repeating gradient: it rasterises once, so
+     scrolling a page of panels stays inside the frame budget. */
+  --panel-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3'%3E%3Cpath fill='%2335355a' d='M0 0h4v1H0z'/%3E%3Cpath fill='%2332324f' d='M0 1h4v1H0z'/%3E%3Cpath fill='%232c2c47' d='M0 2h4v1H0z'/%3E%3C/svg%3E") #32324f;
   --list-card-bg: var(--surface);
   /* Panel headers are the sub-window title strip (WINAMP EQUALIZER,
      WINAMP PLAYLIST): title-bar gradient, gold ridges either side. */
@@ -101,6 +103,16 @@ html[data-theme="winamp-classic"] {
   --pagination-item-bg-active: #0000ff;
   --pagination-item-fg-active: #ffffff;
   --nav-brand-fg: #c8c8b8;
+  /* Toggle chips and switches are silver keys with a lamp, as the base
+     skin's EQ/PL and ON/AUTO keys: gold is the ridge colour, not a fill.
+     Radio toggle groups select like the segmented control (#0000ff). */
+  --toggle-btn-bg-on: #0000ff;
+  --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: #0000ff;
+  --badge-bg-active: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
+  --badge-fg-active: #006400;
+  --switch-bg-on: #deeff1;
+  --switch-thumb-bg-on: radial-gradient(circle, #00ff00 0 35%, #006400 45%);
   --btn-icon-radius: 0;
   /* Toggle keys (shuffle, repeat, like) sit on the silver key: a dark
      glyph off, the skin's dark-green lamp on (6.28:1 on #deeff1). */
@@ -139,7 +151,8 @@ html[data-theme="winamp-classic"] {
 }
 
 html[data-theme="winamp-classic"] {
-  background: repeating-linear-gradient(180deg, #3c3c50 0px, #32324f 2px, #2f2f4b 2px, #2f2f4b 4px);
+  /* The 4px brushed body stripe, as a tiled SVG (see --panel-bg). */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cpath fill='%23393950' d='M0 0h4v1H0z'/%3E%3Cpath fill='%23343450' d='M0 1h4v1H0z'/%3E%3Cpath fill='%232f2f4b' d='M0 2h4v2H0z'/%3E%3C/svg%3E") #2f2f4b;
 }
 
 /* Headings, nav and default buttons stay steel/khaki — the LCD green is a
@@ -210,6 +223,7 @@ html[data-theme="winamp-classic"] .slider.is-vertical {
      tap width. */
   --slider-bg: linear-gradient(90deg, transparent calc(50% - 0.3rem), #0d0e14 0 calc(50% - 0.3rem + 2px), #1b1b2b 0 calc(50% + 0.3rem - 2px), #8e9cad 0 calc(50% + 0.3rem), transparent 0);
   --slider-thumb-bg: repeating-linear-gradient(180deg, #ffefa6 0 1px, #c7b070 1px 3px);
+  --slider-thumb-shadow: 0 0 0 1px #414f61, inset -1px -1px 0 #8e9cad;
 }
 /* Core clips the track to the content box; the groove's edges have to be
    measured from it too, or they land in the clipped-away padding. */
@@ -218,8 +232,8 @@ html[data-theme="winamp-classic"] .slider { background-origin: content-box; }
    cap across its groove. Core keeps the input's tap-sized box. */
 html[data-theme="winamp-classic"] .slider::-webkit-slider-thumb { width: 1.75rem; height: 0.85rem; }
 html[data-theme="winamp-classic"] .slider::-moz-range-thumb { width: 1.75rem; height: 0.85rem; }
-html[data-theme="winamp-classic"] .slider.is-vertical::-webkit-slider-thumb { width: 1.1rem; height: 0.6rem; }
-html[data-theme="winamp-classic"] .slider.is-vertical::-moz-range-thumb { width: 1.1rem; height: 0.6rem; }
+html[data-theme="winamp-classic"] .slider.is-vertical::-webkit-slider-thumb { width: 1.4rem; height: 0.7rem; }
+html[data-theme="winamp-classic"] .slider.is-vertical::-moz-range-thumb { width: 1.4rem; height: 0.7rem; }
 html[data-theme="winamp-classic"] .switch-track {
   border: 2px solid;
   border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
@@ -230,8 +244,24 @@ html[data-theme="winamp-classic"] .switch-track {
    for the current/active row, #0000ff selection. */
 html[data-theme="winamp-classic"] .table { --row-alt-bg: #14141f; }
 html[data-theme="winamp-classic"] .table tbody { background: #000000; color: #00e000; }
-html[data-theme="winamp-classic"] .table tr:is(.is-active, [aria-current]) td { color: #ffffff; }
+/* [class~="is-active"], not .is-active: the build widens .is-active to
+   checkbox-selected rows, and those keep their green (pledit selected). */
+html[data-theme="winamp-classic"] .table tr:is([class~="is-active"], [aria-current]) td { color: #ffffff; }
 html[data-theme="winamp-classic"] .list { --row-selected-fg: #ffffff; }
+/* The tracklist is the playlist editor too: green rows on black, the
+   playing (current) entry white, a selected row green on #0000ff. */
+html[data-theme="winamp-classic"] .tracklist {
+  --track-fg: #00e000;
+  --track-meta-fg: #00e000;
+  --track-num-fg: #00e000;
+  --track-bg-hover: #14141f;
+  --track-selected-marker: none;
+  background: #000000;
+}
+html[data-theme="winamp-classic"] .track-time { font-family: var(--font-mono); }
+html[data-theme="winamp-classic"] .track:is(.is-playing, [aria-current="true"]) { --track-fg: #ffffff; --track-meta-fg: #ffffff; --track-num-fg: #ffffff; --track-playing-fg: #ffffff; }
+/* Checkboxes and radios light the LCD lamp, not the gold. */
+html[data-theme="winamp-classic"] :is(.checkbox, .radio) { accent-color: #00e000; }
 
 /* Text buttons are the silver hardware keys too (ADD/REM/SEL, PRESETS):
    only ghost stays bare. */
@@ -367,7 +397,7 @@ html[data-theme="winamp-classic"] .calendar-event { --calendar-event-bg: color-m
  * without a chip behind it; caption buttons move after the right ridge.
  * On the app bar one ridge runs from the end of the nav to the actions. */
 html[data-theme="winamp-classic"] {
-  --ridge: repeating-linear-gradient(180deg, #ffefa6 0 1px, #c7b070 1px 2px, transparent 2px 3px);
+  --ridge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3'%3E%3Cpath fill='%23ffefa6' d='M0 0h4v1H0z'/%3E%3Cpath fill='%23c7b070' d='M0 1h4v1H0z'/%3E%3C/svg%3E");
 }
 html[data-theme="winamp-classic"] .modal-header::before,
 html[data-theme="winamp-classic"] .modal-header::after,
@@ -410,6 +440,10 @@ html[data-theme="winamp-classic"] :is(.nav-brand, .app-bar .nav-item, .app-bar [
   text-transform: uppercase;
 }
 html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"], .tab) { font-size: 0.85em; }
+/* Inside a window the strip is a property sheet's (Winamp's own
+   Preferences are native dialogs): bold mixed case, no tracking, so a
+   fixed-height dialog's tabs keep one row and its footer stays in view. */
+html[data-theme="winamp-classic"] .modal .tab { text-transform: none; letter-spacing: 0; padding-inline: 0.35rem; }
 
 /* Icon buttons are square silver keys like the transport row, not rings.
    Coloured variants and the clear (avatar) button keep their own fill. */
@@ -444,4 +478,8 @@ html[data-theme="winamp-classic"] .table :is(th, td) {
   html[data-theme="winamp-classic"] .app-bar { row-gap: 0 !important; }
   html[data-theme="winamp-classic"] .app-bar > .nav-brand { flex: 1 0 auto; }
   html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"]) { padding-inline: 0.3em; }
+  /* No keyboard shortcut hint on a phone; the actions and avatar then
+     share one row. */
+  html[data-theme="winamp-classic"] .app-bar .btn > kbd { display: none; }
+  html[data-theme="winamp-classic"] .app-bar > .cluster { gap: 0.25rem; }
 }
