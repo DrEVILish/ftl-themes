@@ -31,7 +31,9 @@ How it differs from its neighbours:
 1. **Beige is the housing, dark glass is a window.** `--bg`/`--surface` are
    warm beige and off-white. Dark (`--cf-window` `#17140f`) is used only for
    recessed displays: `.readout`, `.meter`, `.input`/`.select`, `.log`,
-   `.scribble`, the status strip. Dark brown (`--cf-choc`) is the top deck:
+   `.scribble`, the status strip, the one-time-code window and the KPI
+   figure (`.stat-value`, a small recessed readout with segment digits).
+   Dark brown (`--cf-choc`) is the top deck:
    app bar, table head, modal title, transport.
 2. **Digits are segments.** `.readout` sets DSEG7 Classic Bold Italic in
    VFD teal with a soft glow. `unicode-range` limits it to digits and
@@ -39,7 +41,10 @@ How it differs from its neighbours:
 3. **Keys are keycaps.** `.btn` is a sculpted square cap: radius 3px, a
    lighter top, a darker skirt (`inset 0 -4px`) and a 2px hard drop. It
    presses 2px on `:active`. Colour comes from the cap, as on the 808:
-   primary orange, danger red, success green, GO yellow.
+   primary orange, danger red, success green, GO yellow. Toggle buttons,
+   `.segmented` rows (cream keys on the dark deck), tabs (piano-key tops),
+   the active nav item and the current page number use the same skirt and
+   drop; a latched key is pressed in and lit orange with a black legend.
 4. **`.switch` is a bat-handle toggle, never a pill.** It is a chrome ball
    on a shaft with a pivot nut at the track centre, on a slotted plate. Off
    throws the ball left over a dark slot. On throws it right and the slot
@@ -64,9 +69,11 @@ How it differs from its neighbours:
 - LED meter ladders (green, amber, red) on dark glass. Progress is an
   orange segmented bar.
 - Lamps are round LEDs in a 2px chrome bezel; off lamps are dark domes.
-- Inputs are CRT wells with VFD-teal mono entry and a teal caret.
+- Inputs are CRT wells with VFD-teal mono entry and a teal caret; a
+  floating label resting in the well is dim VFD teal (`#8fb8b0`).
 - Sliders and faders have a cream cap with a dark centre line, like a
-  mixer fader cap.
+  mixer fader cap. The slider track is a 6px slot with a shadowed lip,
+  drawn as a background inside core's `--tap-min` hit area.
 - The dark surfaces (`.app-bar`, `.transport`, code blocks, the status
   window, countdowns) re-point `--text`/`--muted`/`--link` and the state-text tokens
   locally so text on them stays legible; the hero re-points only accent
@@ -77,7 +84,7 @@ How it differs from its neighbours:
 - **Tiers.** Desktop and XL keep the vent-grille rail on the right. Phone
   (≤480px) and tablet (481–900px) drop it, since it costs a 3.25rem column;
   the dark deck, its four-colour stripe and the LED status window stay.
-  Phones get a thinner housing margin. The housing stipple now sits on the
+  Phones get a thinner housing margin and tighter tracking in the status strip, so its tray fits. The housing stipple now sits on the
   page root, so it never covers the XL gutters.
 - **Nesting.** A panel inside another surface keeps its moulded header rule
   but drops the vent slots, so only the outer housing reads as vented.
@@ -87,8 +94,10 @@ How it differs from its neighbours:
 
 ## Typography
 
-- `--font`: `"Helvetica Neue", Helvetica, "Nimbus Sans", Univers,
-  "Liberation Sans", Arial`. Not vendored.
+- `--font`: `"Helvetica Neue", Helvetica, "Nimbus Sans", Univers, Arimo,
+  "Liberation Sans", Arial`, then **"CF Grotesk"**: the repo's vendored
+  Titillium Web (OFL, `assets/fonts/`), so a machine with none of those
+  gets a tight engineering grotesque, not a wide rounded system sans.
 - `--font-mono`: Share Tech Mono (already vendored in `assets/fonts/`,
   OFL), then IBM Plex Mono and DejaVu Sans Mono.
 - Readout digits: **DSEG7 Classic Bold Italic** by keshikan (SIL OFL 1.1),

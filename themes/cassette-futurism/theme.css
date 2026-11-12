@@ -8,8 +8,9 @@
  * a readout fall through to the mono stack instead of rendering as
  * garbled segments. The mono stack uses the repo's already-vendored Share
  * Tech Mono (assets/fonts/, OFL). The UI face is the Helvetica/Univers
- * silk-screen voice from the system: nothing vendored, so on Linux it is
- * Nimbus Sans / Liberation Sans / Arial.
+ * silk-screen voice from the system; where none of those is installed it
+ * falls to the repo's vendored Titillium Web (OFL, assets/fonts/), a tight
+ * engineering grotesque, rather than a wide rounded system sans.
  *
  * Signature rules: beige is the housing, dark glass is only ever a
  * recessed window (readouts, inputs, meters, status strip). The four-colour
@@ -24,6 +25,25 @@
   font-style: normal;
   font-display: swap;
   unicode-range: U+0030-0039, U+002D, U+002E, U+003A, U+0020;
+}
+@font-face {
+  font-family: "CF Grotesk";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  /* Titillium's own 1.52em content area, trimmed to the glyphs. */
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "CF Grotesk";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+  ascent-override: 96%;
+  descent-override: 26%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Share Tech Mono";
@@ -57,7 +77,7 @@ html[data-theme="cassette-futurism"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 3px;
-  --font: "Helvetica Neue", Helvetica, "Nimbus Sans", Univers, "Liberation Sans", Arial, sans-serif;
+  --font: "Helvetica Neue", Helvetica, "Nimbus Sans", Univers, Arimo, "Liberation Sans", Arial, "CF Grotesk", sans-serif;
   --font-mono: "Share Tech Mono", "IBM Plex Mono", "DejaVu Sans Mono", Consolas, monospace;
   --flare: #6fe8d6;        /* vacuum-fluorescent cyan: only inside dark windows */
   --focus: #1f6fd1;        /* a cool blue ring reads on beige, orange and the dark glass */
@@ -192,8 +212,11 @@ html[data-theme="cassette-futurism"] {
   --nav-item-bg-active: var(--accent);
   --nav-item-radius: 2px;
   --nav-radius: 4px;
-  --tab-bg: var(--surface-2);
-  --tab-fg: var(--muted);
+  /* Tabs are piano-key tops: cream caps, the open one sits flush with the
+     panel (see the keycap rules below). */
+  --tab-bg: linear-gradient(180deg, #f8f4ea, #ddd4c2);
+  --tab-bg-hover: linear-gradient(180deg, #fffaf0, #e6decb);
+  --tab-fg: var(--text);
   --tab-bg-active: var(--surface);
   --tab-fg-active: var(--text);
   --tab-underline-active: var(--accent);
@@ -203,10 +226,11 @@ html[data-theme="cassette-futurism"] {
   --segmented-radius: 3px;
   --segmented-padding: 3px;
   --segmented-item-radius: 2px;
-  --segmented-item-fg: #e8dfcc;
-  --segmented-item-fg-hover: #ffffff;
-  --segmented-item-bg-active: var(--surface);
-  --segmented-item-fg-active: var(--text);
+  /* A transport row: cream keys on the dark deck, the latched one lit. */
+  --segmented-item-fg: var(--text);
+  --segmented-item-fg-hover: #000000;
+  --segmented-item-bg-active: var(--cf-orange);
+  --segmented-item-fg-active: #120c06;
   --pagination-item-radius: 2px;
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: var(--on-accent);
@@ -263,7 +287,10 @@ html[data-theme="cassette-futurism"] {
     linear-gradient(180deg, #ffffff, #b5b5af 45%, #5d5d58) center / calc(100% - 1em) 0.3em no-repeat;
 
   /* Sliders: slotted rail, square chrome-capped knob. */
-  --slider-bg: var(--cf-window);
+  /* A 6px fader slot: shadowed top lip, dark glass, worn lower edge. Drawn
+     as a background so it survives core's content-box --tap-min target. */
+  --slider-height: 0.4rem;
+  --slider-bg: linear-gradient(180deg, #000000 0 2px, var(--cf-window) 2px calc(100% - 1px), var(--cf-window-edge) calc(100% - 1px));
   --slider-border: var(--cf-window-edge);
   --slider-radius: 2px;
   --slider-thumb-bg: linear-gradient(180deg, #f4efe4 0 45%, var(--cf-choc) 45% 55%, #d6ccb8 55%);
@@ -451,10 +478,39 @@ html[data-theme="cassette-futurism"] .toggle-btn:active {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -2px 0 rgba(0, 0, 0, 0.16), 0 0 0 #4f4538;
 }
 html[data-theme="cassette-futurism"] .btn-go:active:not(:disabled) { transform: translateY(3px); }
-html[data-theme="cassette-futurism"] .toggle-btn[aria-pressed="true"] {
+/* Toggle buttons (and radio rows of them) are keycaps like .btn. */
+html[data-theme="cassette-futurism"] .toggle-btn { box-shadow: var(--btn-shadow); font-weight: 700; }
+html[data-theme="cassette-futurism"] :is(.toggle-btn[aria-pressed="true"], .toggle-btn:has(input:checked)) {
   transform: translateY(1px);
   box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.3), 0 1px 0 #4f4538;
 }
+/* Segmented rows are transport keys: cream caps with a skirt and a hard
+   drop on the dark deck; the latched one is pressed in and lit orange.
+   (:not(.is-active) so core's active fill still wins.) */
+html[data-theme="cassette-futurism"] .segmented-item:not(.is-active) {
+  background: var(--key-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 2px 0 #0d0a07;
+  font-weight: 700;
+}
+html[data-theme="cassette-futurism"] .segmented-item.is-active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.35);
+  font-weight: 700;
+}
+/* Tabs: piano-key tops; the open tab drops flush into the panel. */
+html[data-theme="cassette-futurism"] .tab:not(.is-active) {
+  border-color: #a99d86 #a99d86 transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+}
+html[data-theme="cassette-futurism"] .tab { font-weight: 700; }
+/* Lit nav keys: the active nav item and page number are orange keycaps
+   with the same skirt and drop as .btn, not flat slabs. */
+html[data-theme="cassette-futurism"] :is(.nav-item.is-active, .nav-item[aria-current="page"], .pagination-item.is-active) {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.2), 0 2px 0 #4f4538;
+}
+/* The navigation-patterns demo paints the current link --accent-text on an
+   --accent fill; on the orange cap that ink is the black legend. */
+html[data-theme="cassette-futurism"] .pattern-nav [aria-current="page"] { --accent-text: var(--on-accent); }
 
 /* The transport deck is dark: re-point text tokens so labels stay legible. */
 html[data-theme="cassette-futurism"] .transport {
@@ -526,6 +582,33 @@ html[data-theme="cassette-futurism"] .badge-warning { text-shadow: 0 1px 0 rgba(
 
 /* --- Windows: inputs, readouts, logs are smoked glass ---------------------- */
 html[data-theme="cassette-futurism"] :is(.input, .select, .textarea) { font-family: var(--font-mono); }
+/* A floating label rests inside the dark well: dim VFD ink, not the
+   beige-tuned muted brown (2.2:1 on the glass). */
+html[data-theme="cassette-futurism"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, #000000 0 2px, var(--cf-window) 2px calc(100% - 1px), var(--cf-window-edge) calc(100% - 1px));
+}
+html[data-theme="cassette-futurism"] .field.is-floating { --label-fg: #8fb8b0; }
+/* The one-time code is one smoked-glass window with six digit cells, so
+   the digits' real backdrop is dark, not the card behind the spans. */
+html[data-theme="cassette-futurism"] .otp {
+  background: var(--cf-window);
+  border-radius: 2px;
+}
+/* KPI figures sit behind dark glass too: a recessed readout window. */
+html[data-theme="cassette-futurism"] .stat-value {
+  display: inline-block;
+  max-inline-size: 100%;
+  inline-size: fit-content;
+  padding: 0.2em 0.45em 0.15em;
+  background: var(--cf-window);
+  color: var(--cf-vfd);
+  border: 2px solid var(--cf-window-edge);
+  border-radius: 2px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7);
+  font-family: var(--readout-font);
+  font-weight: 400;
+  text-shadow: var(--readout-glow);
+}
 html[data-theme="cassette-futurism"] .readout { text-shadow: var(--readout-glow); font-style: normal; }
 html[data-theme="cassette-futurism"] .readout-unit {
   font-family: var(--font-mono);
@@ -658,6 +741,8 @@ html[data-theme="cassette-futurism"] {
 }
 @container style(--tier: mobile) {
   html[data-theme="cassette-futurism"] .app { padding: 0.35rem; }
+  /* The LED strip's wide tracking and bezel would push the tray out. */
+  html[data-theme="cassette-futurism"] .app-status { letter-spacing: 0.04em; font-size: 0.74rem; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the housing carries on past the deck.
