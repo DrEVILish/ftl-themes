@@ -26,7 +26,9 @@ which doesn't translate to a general-purpose page background.
    94%, `--tooltip-bg` 96%) over a heavy, near-opaque `--overlay-bg`.
 2. **Selection is a glow, not a fill.** The active icon/row gets a soft
    blue glow and a scale-up, not a solid highlight block — see
-   `--btn-shadow-hover` and the icon-button hover rule.
+   `--btn-shadow-hover` and the icon-button hover rule. A selected nav item
+   has no fill anywhere (`--nav-item-bg-active: transparent`): white text
+   with a halo, plus a thin lit edge outside the category row.
 3. **The bar is centred, not left-aligned.** Real XMB's icon row runs
    through the horizontal centre of the screen; a left-anchored nav bar
    reads as a generic app, not XMB.
@@ -37,33 +39,40 @@ which doesn't translate to a general-purpose page background.
   bottom left (sampled from `xmb-retroarch-main-menu.jpg`: #0056b9 upper
   left, #0398f6 top right, #021059 bottom left), with a translucent white
   ribbon sweeping across the lower middle of the first screen (from 38vh):
-  two feathered sheets (5% and 3% white, Gaussian-blurred inside the SVG
-  so their edges are soft, as in the captures), two blurred edge strokes,
-  one crisp 12% highlight line and a few tiny sparkle dots (the PS3's
-  particles). The opacities are held low so `--muted` stays at about
-  4.6:1 or better averaged over the band; only the 1.5px highlight line
-  dips to about 4.1:1 where a glyph crosses it. The highlight and ribbon are sized to the viewport,
+  two layered sheets (10% and 6% white) and a third lobe whose white
+  climbs from 3% at the left to 15% at the right edge, so the band
+  brightens to the right as in the RetroArch capture; wide 4-5% strokes
+  soften the outer edges, one crisp 16% highlight line runs along the top
+  and a few tiny sparkle dots stand in for the PS3's particles. No SVG
+  filter: a blur over the full-width ribbon cost frames on every scroll.
+  The top-right highlight is a broad `ellipse 60% 40%` of #0398f6 at 60%.
+  The highlight and ribbon are sized to the viewport,
   so a long page doesn't stretch them; the same ribbon continues in the XL
   gutters.
 - Glass is tinted the wave's own deep blue (`--surface`
-  `rgba(0,22,80,.38)`; the tinted `.band` a lighter `rgba(0,22,80,.18)`), not white, so panels read as blue glass rather than
+  `rgba(0,22,80,.26)`; the tinted `.band` a lighter `rgba(0,22,80,.18)`), not white, so panels read as blue glass rather than
   grey blocks; the folder rail and toolbars are transparent and rounded.
-  Panels and cards have no box edge to speak of: a 10% hairline
-  (`--panel-border`) and a top highlight (`--panel-shadow`
-  `inset 0 1px 0`), no drop shadow, as content floats on the wave in the
-  captures.
+  Panels and cards have no box edge: no hairline (`--panel-border` is
+  transparent), only a top highlight (`--panel-shadow` `inset 0 1px 0`)
+  and no drop shadow, as content floats on the wave in the captures.
 - The category row is centred in a smoked-glass capsule: the theme
   neutralises the demo headers' auto-margin spacers so the row takes the
   free space on both sides. The selected category is the lit one, as the
   XMB's selected icon is twice its neighbours' size: 1.35rem white with a
   white halo against 0.95rem pale-blue neighbours. A category that carries
-  an icon stacks it (1.6em) over its label. A 1px line of light (1.5rem,
-  white fading out) falls from the selected category: the cross's vertical
-  arm. On phones the row takes its own line under the brand, and the tools
-  share one row beneath it (the theme picker shrinks).
+  an icon stacks it (1.6em) over its label, and the selected one's icon
+  sits on a 2.6em white rounded tile with a navy glyph, as RetroArch's
+  selected icon does (a selected rail item's icon gets the same white
+  tile, drawn with a spread shadow so the row keeps its height). A 2px
+  line of light (2.5rem, white fading out, an 8px white glow) falls from
+  the selected category: the cross's vertical arm. On phones the row takes its own line under the brand, and the tools
+  share one row beneath it (the theme picker shrinks); the selected
+  category drops to 1.15rem, the arm to 0.9rem, and a brand followed
+  directly by categories keeps its full width.
 - Current sub-items are marked by light alone, as on the XMB: no side
   stripe (`--row-active-marker`, `--nav-rail-marker` and
-  `--tree-selected-marker` are off), a 10-14% white lift and a 12px glow
+  `--tree-selected-marker` are off), a 9% white lift inside lists (14% on
+  table rows) rounded on all four corners, and a tight, even 8px glow
   (`--list-active-marker`). A list inside a `nav` is the sub-column: no
   box, no rules, 1.1rem rows.
 - System dialogs follow `modalDialog.jpg`: a dark band with thin white
@@ -80,6 +89,10 @@ which doesn't translate to a general-purpose page background.
   same goes for a danger `.toggle-btn` when on (14% salmon tint, danger
   edge and a salmon glow).
   `--success` is a pale mint (`#8fe8c0`), not a neon green.
+- Labels are sentence case, as XMB labels are: KPI labels and
+  field-group titles drop core's tracked capitals.
+- An unchecked `.checkbox` is blue glass (50% navy, 55% white edge), not
+  the browser's grey square; the checked state stays native.
 - Sliders: the track is a 55%-white bar (about 3:1 on the wave) (`--slider-bg`) with a white,
   glowing knob; the vertical fader draws it as a thin centred line.
 - Icon buttons scale up (`transform: scale(1.15)`) on hover/focus — the
@@ -125,12 +138,12 @@ by size) and true circles. The only solids are small dots and badges
 
 ## Typography
 
-`--font` is `"XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is "XMB Mono" (the library's own `ShareTechMono-Regular.woff2`, a narrow, light-stroked mono) then `Consolas, monospace`, kept for code and logs only: KPI values (`.stat-value`), prices, readouts (`--readout-font`) and inline numerals (`.mono`: order numbers, totals, timecodes) use the theme sans at weight 300 with tabular figures, as the PS3 clock does. h4-h6, panel/modal headers, card and list titles and the brand are capped at 400, so Titillium Bold appears only for inline emphasis. "XMB Titillium" is the library's own `assets/fonts/TitilliumWeb-*.woff2` (OFL, see `assets/fonts/NOTICE.md`): without it Linux fell back to DejaVu Sans, wide and heavy. Body, headings and the category row are weight 300. The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation); the actual PS3 face (SCE Rodin) isn't free, and Titillium is the closest light, open sans the library ships, not a match.
+`--font` is `"FOT-Rodin Pro", "Rodin", "XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is "XMB Mono" (the library's own `ShareTechMono-Regular.woff2`, a narrow, light-stroked mono) then `Consolas, monospace`, kept for code and logs only: KPI values (`.stat-value`), prices, readouts (`--readout-font`) and inline numerals (`.mono`: order numbers, totals, timecodes) use the theme sans at weight 300 with tabular figures, as the PS3 clock does. h4-h6, panel/modal headers, card and list titles and the brand are capped at 400, so Titillium Bold appears only for inline emphasis. "XMB Titillium" is the library's own `assets/fonts/TitilliumWeb-*.woff2` (OFL, see `assets/fonts/NOTICE.md`): without it Linux fell back to DejaVu Sans, wide and heavy. Body, headings and the category row are weight 300. The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation); the actual PS3 face (SCE Rodin) isn't free, and Titillium is the closest light, open sans the library ships, not a match.
 
 ## Contrast honesty
 
-- **Base:** `--text` `#f2f7ff` and `--muted` `#d3e0f5` on the wave. Measured on rendered pixels at 1280x900: muted is 4.9-7.0:1 over the content area (lowest just under the bar at the top right, #005abe). The brightest part of the wave (#028ceb, top-right corner) only sits behind the app-bar, whose smoked-glass capsule carries its labels.
-- **Glass:** `--surface` `rgba(0,22,80,.38)` composites to about #003b8c on `--bg`, where `--muted` is about 7:1; `--surface-2` `rgba(110,180,255,.1)` keeps `--muted` at AA (checked by `scripts/check.sh`). `--danger` was lifted to `#ff9e9e` to clear 4.5:1 on the bluer glass.
+- **Base:** `--text` `#f2f7ff` and `--muted` `#dbe6f7` on the wave. Measured on rendered pixels at 1280x900: muted is 4.8-5.6:1 over the page-level content area (#0060c4 under the bar's right half), 4.7:1 or better on glass where it crosses the brightest part of the ribbon. The top-right corner (about #006cd0, 4.1:1) and the ribbon's bright right end outside panels carry no page text in the demos; the app-bar's smoked-glass capsule carries its own labels there.
+- **Glass:** `--surface` `rgba(0,22,80,.26)` composites to about #004199 on `--bg`, where `--muted` is about 6.5:1; `--surface-2` `rgba(110,180,255,.1)` keeps `--muted` at AA (checked by `scripts/check.sh`). `--danger` was lifted to `#ff9e9e` to clear 4.5:1 on the bluer glass.
 - **Keys** use `--text` (`--key-fg`), not `--muted`; a console's grey key sank muted to 4.47:1.
 - **Heatmap badges** sit on smoked glass (`rgba(0,16,56,.72)`), so white labels stay legible on the pale positive end of the scale.
 - **Overlays:** `--modal-bg` `rgba(14,28,58,.94)` over `--overlay-bg` `rgba(0,4,20,.82)`; no blur (the overlay is opaque enough without it, and the blur cost frames). Toasts are 16:1 on `--toast-bg`.
