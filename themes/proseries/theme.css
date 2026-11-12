@@ -17,13 +17,13 @@ html[data-theme="proseries"] {
   color-scheme: dark;
   /* --- Palette (sampled, see RESEARCH.md) -------------------------------- */
   --bg: #2f3868;
-  --surface: #424e86;
+  --surface: #2c4fa8;
   --surface-2: #232a52;
   --border: #1a1f3d;
   --hairline: #3b4782;
   --text: #ffffff;
   --muted: #dde2fb;
-  --accent: #f6e27a;
+  --accent: #f8e88c;
   --accent-2: #8fb4ff;
   --danger: #ff6a3d;
   --success: #57d37a;
@@ -78,11 +78,11 @@ html[data-theme="proseries"] {
   --table-head-tracking: 0;
 
   /* --- Surfaces: royal-blue panels, navy title bars ---------------------- */
-  /* A sidebar section: graded from a light top edge to a darker foot,
-     in the reference's greyer lavender-blue. The sampled #6b77aa body is
-     lighter still, but muted text on it drops to 3.4:1, so the panel sits
-     at the lightest value small bold muted text keeps 4.5:1. */
-  --panel-bg: linear-gradient(180deg, #535f9d, #4a5592);
+  /* Panels are the input screen's channel-strip blue (sampled #4379cf
+     to #6290ce, the theme's strip band #3a62b4), graded to a darker foot.
+     The sidebar's #6b77aa lavender is a mid-tone that neither white nor
+     navy text clears 4.5:1 on, so only the header band takes it. */
+  --panel-bg: linear-gradient(180deg, #3a62b4, #3157a6);
   --panel-border: #1a1f3d;
   --panel-radius: 4px;
   --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.35), 0 1px 0 rgba(0, 0, 0, 0.5);
@@ -99,7 +99,7 @@ html[data-theme="proseries"] {
      cannot be mixed), so they take the strip's flat band. */
   --list-card-bg: #3a62b4;
   --ranked-item-bg: #3a62b4;
-  --modal-bg: #4a578f;
+  --modal-bg: #3a62b4;
   --modal-header-bg: linear-gradient(180deg, #4e63b3 0, #2c3d8e 55%, #23327a 100%);
   --modal-header-fg: #ffffff;
   --overlay-bg: rgba(8, 10, 26, 0.7);
@@ -115,17 +115,17 @@ html[data-theme="proseries"] {
   --tab-bg: #0d0f1c;
   --tab-fg: #c4c8dc;
   --tab-bg-hover: #1d2448;
-  --tab-bg-active: #535f9d;
+  --tab-bg-active: #3a62b4;
   --tab-fg-active: #ffffff;
   --tab-border-active: #6b77aa;
-  --tab-underline-active: #535f9d;
+  --tab-underline-active: #3a62b4;
   --tab-radius: 5px 5px 0 0;
 
   /* --- Tables and lists --------------------------------------------------- */
   --table-head-bg: #1d2448;
   --table-head-fg: #ffffff;
   --row-alt-bg: rgba(255, 255, 255, 0.04);
-  --row-selected-bg: #2c4fa8;
+  --row-selected-bg: #213f94;
   --row-selected-fg: #ffffff;
 
   /* --- Console primitives -------------------------------------------------- */
@@ -282,6 +282,8 @@ html[data-theme="proseries"] {
   --carousel-arrow-fg: #111111;
   /* Chart ticks: small bold labels, not display type (SVG text scales). */
   --chart-text-size: 8px;
+  /* A saving cell dims less, so its text keeps 4.5:1 on the strip blue. */
+  --pending-opacity: 0.9;
 
   /* --- Layout: black home bar over the desk, no rail, no status strip ---- */
   --app-bar-bg: linear-gradient(180deg, #111111, #000000);
@@ -471,13 +473,8 @@ html[data-theme="proseries"] .panel-header {
   --warning-text: #4a3500;
   --danger-text: #6a1404;
 }
-/* Dark chips inside the band keep the desk's light tones. */
-html[data-theme="proseries"] .panel-header .badge {
-  --muted: #dde2fb;
-  --success-text: #a8f7bc;
-  --warning-text: #fff0b0;
-  --danger-text: #ffe4dc;
-}
+/* Title, badges and spinners in a header sit apart, never touching. */
+html[data-theme="proseries"] .panel-header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.5rem; }
 
 /* Slider caps: wider along the travel than across it, black rim. */
 html[data-theme="proseries"] .slider::-webkit-slider-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
@@ -499,8 +496,61 @@ html[data-theme="proseries"] :is(.switch input:checked ~ .switch-track, .switch[
   box-shadow: 0 0 5px #3df05a;
 }
 /* Carousel arrows are square soft keys like every icon key. */
-html[data-theme="proseries"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border-radius: 2px; border: 1px solid #2a2a2a; }
-html[data-theme="proseries"] .carousel::scroll-button(*) { border-radius: 2px; border: 1px solid #2a2a2a; }
+html[data-theme="proseries"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border-radius: 2px; border: 1px solid #2a2a2a; box-shadow: var(--btn-shadow); }
+html[data-theme="proseries"] .carousel::scroll-button(*) { min-inline-size: 2rem; min-block-size: 2rem; border-radius: 2px; border: 1px solid #2a2a2a; box-shadow: var(--btn-shadow); }
+@media (pointer: fine) { html[data-theme="proseries"] .carousel-nav > :is(.carousel-prev, .carousel-next) { min-width: 2rem; height: 2rem; line-height: 2rem; } }
+/* An end-stop arrow is an unlit key: a darker grey face, not a faded one. */
+html[data-theme="proseries"] .carousel-nav > :is(.carousel-prev, .carousel-next):is(.is-disabled, [aria-disabled="true"]),
+html[data-theme="proseries"] .carousel::scroll-button(*):disabled { opacity: 1; background: #7a7a80; color: #333333; box-shadow: none; }
+
+/* Pagination: every page is a grey soft key; the current one the lit
+   yellow key, an end stop an unlit darker key. */
+html[data-theme="proseries"] { --pagination-item-radius: 2px; --pagination-item-fg-hover: #111111; --pagination-item-bg-hover: var(--ps-key-face-hover); }
+html[data-theme="proseries"] .pagination-item { border-color: #2a2a2a; box-shadow: var(--btn-shadow); }
+@media (pointer: fine) { html[data-theme="proseries"] .pagination-item { min-width: 1.8rem; height: 1.8rem; } }
+html[data-theme="proseries"] .pagination-item:not(.is-active, :has(> input:checked)) { background: var(--ps-key-face); color: #111111; }
+html[data-theme="proseries"] .pagination-item.is-disabled { opacity: 1; background: #7a7a80; color: #333333; box-shadow: none; }
+
+/* Status toasts and alerts keep the blue body and light a thick bar in
+   their colour at the start edge, like a lamp beside the message. */
+html[data-theme="proseries"] :is(.toast-success, .toast-warning, .toast-danger, .alert-info, .alert-success, .alert-warning, .alert-danger) { border-inline-start-width: 0.35rem; }
+
+/* Checkboxes are square grey keys that light yellow with a dark tick. */
+html[data-theme="proseries"] .checkbox[type="checkbox"] {
+  appearance: none;
+  display: inline-grid;
+  border: 1px solid #000000;
+  border-radius: 1px;
+  background: var(--ps-key-face);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+html[data-theme="proseries"] .checkbox[type="checkbox"]:is(:checked, :indeterminate) {
+  background: #f1eb5b no-repeat center / 80% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%23111' stroke-width='2.6'/%3E%3C/svg%3E");
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 4px rgba(241, 235, 91, 0.7);
+}
+html[data-theme="proseries"] .checkbox[type="checkbox"]:indeterminate {
+  background-image: linear-gradient(#111111, #111111);
+  background-size: 60% 2px;
+}
+html[data-theme="proseries"] .checkbox[type="checkbox"]:disabled { background: #7a7a80; }
+
+/* The bar's icon keys are the status key: a grey key with a red lamp. */
+html[data-theme="proseries"] .app-bar .btn-icon:not(.is-clear) { position: relative; }
+html[data-theme="proseries"] .app-bar .btn-icon:not(.is-clear)::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #ffd0c8 0, var(--lamp-on) 45%, #7a0e06 100%);
+  box-shadow: 0 0 3px var(--lamp-on);
+}
+
+/* Desktop icon labels: a wider cell so the wide bold face breaks between
+   words, not inside them. */
+html[data-theme="proseries"] { --desktop-icon-cell: 7rem; --desktop-icon-font-size: 0.75rem; }
 
 /* Headings stay console-sized: the largest type on the screen is the
    page title in the black bar. */
@@ -581,7 +631,9 @@ html[data-theme="proseries"] {
 }
 
 /* Badges are solid lit tiles with dark text, like the console's status
-   flags, not tints mixed into the blue. */
+   flags, not tints mixed into the blue; the neutral one is the grey name
+   tag. */
+html[data-theme="proseries"] { --badge-bg: #c4c4c4; --badge-fg: #111111; }
 html[data-theme="proseries"] .badge-accent { --badge-bg: var(--accent); --badge-fg: #111111; }
 html[data-theme="proseries"] .badge-success { --badge-bg: var(--success); --badge-fg: #0b1a10; }
 html[data-theme="proseries"] .badge-warning { --badge-bg: var(--warning); --badge-fg: #111111; }
@@ -590,6 +642,11 @@ html[data-theme="proseries"] .badge-danger { --badge-bg: var(--danger); --badge-
 /* Touch screens: one flat fill per key and band, so phone scrolling stays
    inside the frame budget (the bevel survives as a single inset line). */
 @media (pointer: coarse) {
+  /* Blurred glows and drop shadows go flat (each one repaints per frame). */
+  html[data-theme="proseries"] { --slider-thumb-shadow: 0 1px 0 #000000; --fader-cap-shadow: 0 1px 0 #000000; --knob-shadow: 0 1px 0 #000000; }
+  html[data-theme="proseries"] .app-bar .btn-icon:not(.is-clear)::before,
+  html[data-theme="proseries"] .checkbox[type="checkbox"]:is(:checked, :indeterminate) { box-shadow: none; }
+  html[data-theme="proseries"] .app-bar .menubar > li > .is-active { text-shadow: 0 1px 0 #000000; }
   html[data-theme="proseries"] {
     --ps-key-face: #c4c4c4;
     --ps-key-face-hover: #d6d6d6;
@@ -597,7 +654,7 @@ html[data-theme="proseries"] .badge-danger { --badge-bg: var(--danger); --badge-
     --go-bg: #3faa58;
     --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     --panel-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-    --panel-bg: #4f5b98;
+    --panel-bg: #3a62b4;
     --card-bg: #3a62b4;
     --card-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     --modal-header-bg: #2c3d8e;

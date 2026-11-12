@@ -47,10 +47,12 @@ at arm's length in a dark room.
   and `.btn-ghost` a key outline (never bare text on the desk).
 - `--card-bg`: a strip block graded #4568b8 to #3157a6 through the strip's
   #3a62b4 band, with a light top edge and a dark foot line; muted text in a
-  card lifts to near-white. `--panel-bg` is a sidebar section graded
-  #535f9d to #4a5592 (the sampled #6b77aa is lighter, but muted text there
-  falls to 3.4:1), under a flat light-lavender `--panel-header-bg` band with
-  dark bold text (muted/status tones in the band go dark to keep 4.5:1).
+  card lifts to near-white. `--panel-bg` (and `--surface`, `--modal-bg`) is
+  the input screen's strip blue, #3a62b4 graded to #3157a6, so big panels
+  read as the console's saturated blue; the sidebar's #6b77aa lavender is a
+  mid-tone neither white nor navy text clears 4.5:1 on, so it is used only
+  for the flat light-lavender `--panel-header-bg` band with dark bold text
+  (muted/status tones in the band go dark to keep 4.5:1).
   Both are static two-stop fills with a hard 1px drop, no blur. On touch
   screens (`pointer: coarse`) cards, panels and key bevels flatten to one
   fill plus an inset line.
@@ -68,6 +70,11 @@ at arm's length in a dark room.
   tick labels; h1/h2 capped at 1.5rem/1.2rem (the bar title is the largest type).
 - `--btn-close-*`: a white round close disc with a dark glyph (dark red on `.is-danger`);
   window minimise/maximise are square grey soft keys.
+- `--badge-bg`: the neutral badge is the grey name tag (#c4c4c4, #111 text).
+- `--pagination-item-*`: every page is a grey soft key, the current one
+  lit yellow, an end stop the unlit darker key (#7a7a80, #333 text).
+- `--desktop-icon-cell`/`--desktop-icon-font-size`: a 7rem cell at 0.75rem so
+  the wide bold labels break between words.
 - `--app-*`: black home bar, no rail, a flat navy desk (#3d4778).
 - `--nav-item-bg-active`: flat navy for side and section navs; only the
   bar's `--menubar-item-bg-active` is the two-tone tab.
@@ -81,13 +88,18 @@ at arm's length in a dark room.
   white bold text that sits wholly on the navy), a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
   On every page the bar's current item is the two-tone tab, the brand gets
-  the round back key and fields in the bar are the black yellow scene field.
+  the round back key, fields in the bar are the black yellow scene field and
+  the bar's icon keys are status keys with a small red lamp (tap tempo needs
+  page markup, so it appears only on `proseries.html`).
 - The splash: a deep-blue sky with a gold "ProSeries" wordmark (no logos).
 - Badges and filter chips are square solid lit tiles with dark text, never tints or pills.
 - Lit keys carry near-black text over their glowing face.
+- Checkboxes are square grey keys that light yellow with a dark tick.
+- Status toasts and alerts keep the blue body and light a thick bar in their
+  colour at the start edge.
 - Every slider thumb is the black hourglass fader cap with its grey disc,
   never the default accent dot.
-- Icon buttons, carousel arrows and window min/max are square bevelled soft
+- Icon buttons, pagination, carousel arrows (2rem) and window min/max are square bevelled soft
   keys (ghost ones grey); the round back key and close disc are the only
   round controls.
 - Leaves with a CRT-style power-off when you switch theme.
@@ -95,7 +107,7 @@ at arm's length in a dark room.
 ## Layout
 
 Black home bar across the top, no rail, the content on a flat
-navy-violet desk. Panels are graded lavender-blue sections with light
+navy-violet desk. Panels are strip-blue sections with light lavender
 headers; cards are graded strip-blue blocks.
 
 ## v5 layout
