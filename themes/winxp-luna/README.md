@@ -46,22 +46,49 @@ someone says "Windows XP."
 - Modal headers repeat the title bar's exact three-stop gloss gradient.
 - The title bar is Luna's own multi-stop gradient (bright `#0997ff` lip,
   `#0050ee` body, lighter `#0066ff` lower band, `#003dd7` bottom edge),
-  with white bold Trebuchet MS text carrying a 1px `#0f1089` drop shadow,
-  and three separate 21px caption buttons (blue minimize/maximize,
-  red-orange close) drawn as one inline SVG.
-- Push buttons: `#ffffff → #ecebe6 → #d6d0c5` face, 1px `#003c74` border,
+  with white bold Trebuchet MS text carrying a 1px `#0f1089` drop shadow
+  after a 16px program icon (a small window), and three separate 21px
+  caption buttons (blue minimize/maximize, red-orange close) drawn as one
+  inline SVG. Trebuchet falls back to Noto Sans (narrower than DejaVu)
+  before the Tahoma stack. When the app bar has a `.nav-brand`, the
+  caption is the brand row alone and the nav and actions wrap below it
+  onto XP's menu bar: the tan face, black Tahoma with no caption shadow
+  (whether the items sit directly in the bar or inside a wrapper), tight
+  `0.2em 0.55em` items, `#316ac5` highlight with white text, a
+  `--border` rule above the content.
+- Menus (`.context-menu`, `.dropdown`, menu-bar submenus) are XP's: white,
+  square, framed and divided in `--border` (`#aca899` on Luna Blue), a
+  hard `2px 2px 3px` shadow, `3px 20px` rows in a 2px well (the row
+  height still meets core's `--tap-min`).
+- Page and section titles (`h1`–`h3`) are dark navy `#1c3f94`, as in
+  Explorer and Control Panel; the bright `#0046d5` stays on group-box
+  captions.
+- The Start flag is XP's waving flag, one inline SVG (`--luna-flag`):
+  four curved, radially lit panes with dark gaps and a short motion
+  tail, never the flat four-square logo, and exactly one per button.
+- Push buttons: `#ffffff → #ecebe6 → #d6d0c5` face, 1px `#003c74` border
+  (`--luna-btn-frame`; neutral `#3a3a3a` on Royale Noir and Zune),
   3px corners; hover lights XP's orange inner glow, the primary/default
-  button wears the blue one.
+  button wears the blue one (a 1px ring on `.btn-sm`, so a small button
+  does not read as a second default).
+- The toolbar is XP's rebar band (`#f0eee2 → #efecdc`, `#d8d2bd` rule) on
+  Luna Blue and Olive; the grey schemes derive both from their own face.
+- Chart series are six distinct hues (accent, `#2e7a14`, `#ff8c00`,
+  `#cc0000`, `#7a4fbf`, `#009aa6`; Olive swaps series 2 to blue), so no
+  two legend swatches read alike.
+- Desktop icon labels wrap at word breaks only; the cell is 7rem so
+  "Network Neighborhood" breaks between the words in the fallback faces.
 - Panels and cards are **group boxes**: a `#d0d0bf` hairline frame with
   3px corners and the caption in `#0046d5`, sitting on the frame line.
 - Tabs are raised, round-topped, white-to-`#ecebe6` in a `#919b9c` frame,
   the selected one `#fcfcfe` with the orange `#ffc83c`/`#e68b2c` hot-track
   line on top. A `.tabset`'s panel is the tab page: `#fcfcfe` boxed in
   `#919b9c` on three sides, so the selected tab merges into it.
-- Selects carry the combo box's drop-down button: on the blue schemes a
-  pale blue `#c1d3fb` face in a `#b8cbf6` edge, 1px inside the field, with
-  the scroll arrow's navy `#4d6185` chevron; Silver `#e3e4ec → #c8c9d6` in
-  `#a8a9c0` with a `#4d4d6a` chevron, Olive `#e1e8c7 → #bcc99a` in
+- Selects carry the combo box's drop-down button: a glossy rounded
+  (2.5px) face with a white inner lip, 1px inside the field; on the blue
+  schemes `#e0e9fd → #c1d3fb → #aac3f7` in a `#b8cbf6` edge with the
+  scroll arrow's navy `#4d6185` chevron; Silver `#f1f1f6 → #c3c4d3` in
+  `#a8a9c0` with a `#4d4d6a` chevron, Olive `#eef2dc → #bcc99a` in
   `#a4b080` with `#3d4a1f`, Zune and Royale Noir neutral grey.
 - Filter chips (`.badge-button`) are toggle push buttons: the push-button
   face and `#003c74` frame, pressed in `#316ac5`. The switch is a white
@@ -74,11 +101,16 @@ someone says "Windows XP."
   thick inline-start edge.
 - `.btn-danger` and `.btn-success` get the GO button's gloss: lighter top,
   darker foot, white 1px lip, darker edge.
-- Checkboxes and radios are the Luna glyphs: beige-to-white wells in a
-  `#1c5180` frame, green tick / green dot, orange glow on hover.
+- Checkboxes and radios are the Luna glyphs: `#d6d6cf → #ebebe6 → #fff`
+  diagonal beige-to-white wells in a `#1c5180` frame, green tick / green dot, orange glow on hover.
 - Progress is XP's segmented green block bar; the status strip is the
   taskbar's own gradient. Tray text is white (dark on Olive, Silver and
   Royale's pale wells), muted strip text a softened `--app-status-fg`.
+- `--surface-2` (badges, wells, ratio boxes) is one step darker than the
+  face (`#e3e0cd` on Luna Blue and Olive; each scheme its own step), so
+  it never vanishes into `--bg`.
+- Table column headers and badges keep an 11px (`0.85rem`) floor under
+  the dense 13px root.
 - Page titles are compact Trebuchet (`1.6rem`); a section `h2` is
   Explorer's: bold black over a 1px rule fading from `#4197ff` to nothing.
 - Toolbar and list glyphs, and mono glyphs in panels, cards and the plain
@@ -88,7 +120,7 @@ someone says "Windows XP."
 - The trackbar groove's `#9d9da1` edge is painted into its 4px content box
   (no border, `background-origin: content-box`, sideways on a vertical
   fader), since core's 24px/44px hit area hides the border.
-- **Boot screen** (`.splash`): black, the four-pane flag, and three blue
+- **Boot screen** (`.splash`): black, the waving flag, and three blue
   blocks marching through a rounded grey track (core's indeterminate
   sweep). `gallery.html` shows it while the themes load.
 
@@ -159,7 +191,7 @@ Luna background filling the well between them.
 
 ## Typography
 
-`--font` is `Tahoma, Verdana, "DejaVu Sans Condensed", "Noto Sans", "Droid Sans", Arial, "Liberation Sans", sans-serif` (no Segoe UI; Verdana is Tahoma's wide sibling and the later faces are nearer Tahoma's width than a generic DejaVu Sans); `--font-mono` is `"Lucida Console", "Courier New", monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Verdana, DejaVu Sans Condensed or the generic sans render instead.
+`--font` is `Tahoma, "DejaVu Sans Condensed", Verdana, "Noto Sans", "Droid Sans", Arial, "Liberation Sans", sans-serif` (no Segoe UI; DejaVu Sans Condensed is the nearest Tahoma width on Linux and comes before Verdana, Tahoma's wide sibling, which Linux often aliases to the wider DejaVu Sans; the later faces are nearer Tahoma's width than a generic DejaVu Sans); `--font-mono` is `"Lucida Console", "Courier New", monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Verdana, DejaVu Sans Condensed or the generic sans render instead.
 
 ## Contrast honesty
 
@@ -200,18 +232,18 @@ layout at **L1**.
   italic "start" with the flag, rounded on its right, green (orange for
   Zune, blue for Embedded via `--taskbar-start-bg`) — status items along
   the bar, and the last item in the notification-area tray (a lighter
-  well with a dark left edge; charcoal on Royale Noir/Zune). The Start
-  button is dropped on phones.
+  well with a dark left edge; charcoal on Royale Noir/Zune). The pill is
+  painted on the bar's `::before`, unless the taskbar carries its own
+  `.taskbar-start`: then that real button wears the pill and the
+  `::before` goes, so there is only ever one Start. The painted one is
+  dropped on phones.
 
 ## v5 layout
 
-- **Tiers.** Desktop is unchanged. Tablet keeps the glossy title bar; it
-  wraps to two lines and the caption buttons pin to the first line's right
-  end; the bar reserves `67px + 0.9rem` at its right for them, so nothing
-  runs under them. On tablet the caption gloss stays on a first-line band
-  `--tap-min` tall and the wrapped row shows the caption's flat top
-  colour. On mobile the title bar is the brand row alone (29px, like XP's
-  30px caption) with only the close button; the rows the bar wraps onto
+- **Tiers.** On every tier an app bar with a `.nav-brand` draws the
+  caption as the brand row alone (31px, like XP's 30px caption, all three
+  caption buttons; only close on mobile), its text the caption's own
+  white (dark on Olive/Silver); the rows the bar wraps onto
   are XP's menu bar on the dialog face (`--bg`), black text, `#316ac5`
   highlight, a `--border` rule above the content. Bliss behind the page
   is its flat `#3a7bd5` sky there (a 0.4rem sliver; two page-tall
