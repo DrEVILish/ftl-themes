@@ -46,8 +46,11 @@ html[data-theme="proseries"] {
   --mark-fg: #111111;
 
   /* --- Buttons: grey bevels with dark bold text --------------------------- */
-  --btn-bg: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
-  --btn-bg-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  /* The grey soft-key face, shared by every grey key (flat on touch). */
+  --ps-key-face: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
+  --ps-key-face-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  --btn-bg: var(--ps-key-face);
+  --btn-bg-hover: var(--ps-key-face-hover);
   --btn-fg: #111111;
   --btn-border: #2a2a2a;
   --btn-radius: 3px;
@@ -81,7 +84,8 @@ html[data-theme="proseries"] {
   --panel-border: #1a1f3d;
   --panel-radius: 4px;
   --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 0 rgba(0, 0, 0, 0.5);
-  --panel-header-bg: linear-gradient(180deg, #a9b0d6, #8e97c4);
+  /* The effects-page sidebar's light lavender section band, flat. */
+  --panel-header-bg: #a4aacb;
   --panel-header-fg: #14193a;
   /* Cards are the console's blue channel strip, flat at the strip's
      #3a62b4 band (a gradient here costs scroll frames); muted text in a
@@ -119,7 +123,7 @@ html[data-theme="proseries"] {
   --mixer-border: #0e1230;
   --mixer-radius: 0;
   --mixer-gap: 2px;
-  --strip-bg: linear-gradient(180deg, #4d74c4 0, #3a62b4 30%, #5d86d2 70%, #4677c9 100%);
+  --strip-bg: linear-gradient(180deg, #2f4fae 0, #3a62b4 30%, #5a82d0 70%, #3256ac 100%);
   --strip-border: #1d2a5e;
   --strip-radius: 0;
   --strip-rule: #2e3c7a;
@@ -229,13 +233,21 @@ html[data-theme="proseries"] {
   --rack-selected: #ffe33b;
   --log-bg: #000000;
   --progress-fill: linear-gradient(180deg, #8fb4ff, #3a62b4);
-  --switch-bg-on: #57d37a;
+  /* Switches are the console's square ON key: a grey key cap in a black
+     slot that lights as the green LED bar when on. */
+  --switch-bg: #07080f;
+  --switch-bg-on: #07080f;
+  --switch-border: #6b77aa;
+  --switch-border-on: #3df05a;
+  --switch-thumb-bg: #c4c4c4;
+  --switch-thumb-bg-on: #3df05a;
+  --switch-thumb-radius: 2px;
   /* Square and bevelled: tiles and toggles, not pills. */
   --badge-radius: 2px;
-  --switch-radius: 3px;
+  --switch-radius: 2px;
   /* The slider track is the console's black fader slot. */
-  --slider-bg: #050505;
-  --slider-height: 4px;
+  --slider-bg: linear-gradient(180deg, #050505 0 calc(100% - 1px), rgba(255, 255, 255, 0.4) 0);
+  --slider-height: 6px;
   /* The thumb is the fader cap turned on its side: black hourglass body,
      grey disc, the centre line across the travel. */
   --slider-thumb-bg:
@@ -256,6 +268,10 @@ html[data-theme="proseries"] {
   --mention-self-bg: color-mix(in srgb, #f1c232 30%, #1d2448);
   /* Icon keys are square bevels like every other soft key. */
   --btn-icon-radius: var(--btn-radius);
+  --carousel-arrow-bg: var(--ps-key-face);
+  --carousel-arrow-fg: #111111;
+  /* Chart ticks: small bold labels, not display type (SVG text scales). */
+  --chart-text-size: 8px;
 
   /* --- Layout: black home bar over the desk, no rail, no status strip ---- */
   --app-bar-bg: linear-gradient(180deg, #111111, #000000);
@@ -273,11 +289,12 @@ html[data-theme="proseries"] {
   --app-status-bg: #000000;
   --app-status-fg: #d3d8f3;
   --nav-item-fg: #d3d8f3;
-  --nav-item-fg-active: #000000;
-  --nav-item-bg-active: linear-gradient(180deg, #d6e0ea, #8396a8);
-  /* The menubar's open/hovered item is the two-tone "home" tab too. */
-  --menubar-item-bg-active: linear-gradient(180deg, #e6ecf2 0 50%, #8396a8 50%, #6d8093);
-  --menubar-item-fg-active: #000000;
+  /* The current item is the two-tone "home" tab: a light grey cap over a
+     navy lower half, bold white text with a dark outline. */
+  --nav-item-fg-active: #ffffff;
+  --nav-item-bg-active: linear-gradient(180deg, #d9dce6 0 42%, #2c3d8e 42%);
+  --menubar-item-bg-active: linear-gradient(180deg, #d9dce6 0 42%, #2c3d8e 42%);
+  --menubar-item-fg-active: #ffffff;
   --nav-brand-fg: #ffffff;
   --app-gutter-art:
     radial-gradient(1px 1px at 25% 35%, rgba(255, 255, 255, 0.35) 50%, transparent 51%) 0 0 / 9rem 9rem,
@@ -390,8 +407,10 @@ html[data-theme="proseries"] .app-bar:not(.ps-bar) .nav-brand::before {
 /* The current section in the bar is the two-tone grey "home" tab. */
 html[data-theme="proseries"] .app-bar .menubar > li > .is-active {
   background: var(--menubar-item-bg-active);
-  color: #000000;
+  color: #ffffff;
   border: 1px solid #000000;
+  border-radius: 2px;
+  text-shadow: 0 1px 1px #000000, 0 0 2px #000000;
 }
 /* Fields in the bar are the black scene field with the name in yellow. */
 html[data-theme="proseries"] .app-bar {
@@ -413,21 +432,47 @@ html[data-theme="proseries"] {
   --btn-close-fg: #14193a;
   --modal-header-close-fg: #14193a;
 }
+/* Minimise and maximise are square grey soft keys; only close is round. */
+html[data-theme="proseries"] :is(.btn-min, .btn-max) {
+  --btn-close-radius: 2px;
+  --btn-close-bg: var(--ps-key-face);
+  --btn-close-bg-hover: var(--ps-key-face-hover);
+  --btn-close-border-width: 1px;
+  --btn-close-border: #2a2a2a;
+  --btn-close-fg: #111111;
+  --btn-close-fg-hover: #111111;
+  --modal-header-close-fg: #111111;
+}
 html[data-theme="proseries"] .btn-close.is-danger { --btn-close-fg: #9a1e0a; }
 html[data-theme="proseries"] .card { --muted: #eef1ff; }
 
 /* Slider caps: wider along the travel than across it, black rim. */
 html[data-theme="proseries"] .slider::-webkit-slider-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
 html[data-theme="proseries"] .slider::-moz-range-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
-/* A vertical slider is the upright fader: the full cap and a 4px slot
+/* A vertical slider is the upright fader: the full cap and a 6px slot
    centred in the touch-sized box (the slot is drawn, not the box). */
 html[data-theme="proseries"] .slider.is-vertical {
-  --slider-bg: linear-gradient(90deg, transparent calc(50% - 2px), #050505 0 calc(50% + 2px), transparent 0);
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 3px), #050505 0 calc(50% + 3px), transparent 0);
   --slider-thumb-bg: var(--fader-cap-bg);
   --slider-thumb-radius: var(--fader-cap-radius);
 }
 html[data-theme="proseries"] .slider.is-vertical::-webkit-slider-thumb { width: 0.95rem; height: 1.4rem; }
 html[data-theme="proseries"] .slider.is-vertical::-moz-range-thumb { width: 0.95rem; height: 1.4rem; }
+
+/* Switch thumb: a narrow upright key cap; on, it slides to the far end. */
+html[data-theme="proseries"] .switch-thumb { width: calc((1.4em * var(--density) - 6px) * 0.6); }
+html[data-theme="proseries"] :is(.switch input:checked ~ .switch-track, .switch[aria-checked="true"]) .switch-thumb {
+  margin-inline-start: calc((1.4em * var(--density) - 6px) * 0.4);
+  box-shadow: 0 0 5px #3df05a;
+}
+/* Carousel arrows are square soft keys like every icon key. */
+html[data-theme="proseries"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border-radius: 2px; border: 1px solid #2a2a2a; }
+html[data-theme="proseries"] .carousel::scroll-button(*) { border-radius: 2px; border: 1px solid #2a2a2a; }
+
+/* Headings stay console-sized: the largest type on the screen is the
+   page title in the black bar. */
+html[data-theme="proseries"] h1 { font-size: 1.5rem; }
+html[data-theme="proseries"] h2 { font-size: 1.2rem; }
 
 /* Strips keep their dark dividers and the black send block. */
 html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.25); }
@@ -453,8 +498,8 @@ html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shad
 /* Secondary is the grey copy/paste key; tertiary a flat grey key; ghost a
    key outline. No button is bare text on the desk. */
 html[data-theme="proseries"] .btn-secondary {
-  --btn-bg: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
-  --btn-bg-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  --btn-bg: var(--ps-key-face);
+  --btn-bg-hover: var(--ps-key-face-hover);
   --btn-fg: #111111;
   --btn-border: #2a2a2a;
   --btn-border-hover: #2a2a2a;
@@ -473,8 +518,8 @@ html[data-theme="proseries"] .btn-ghost {
 }
 /* A ghost icon button is a grey soft key, not a ring on the desk. */
 html[data-theme="proseries"] .btn-icon.btn-ghost {
-  --btn-bg: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
-  --btn-bg-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  --btn-bg: var(--ps-key-face);
+  --btn-bg-hover: var(--ps-key-face-hover);
   --btn-fg: #111111;
   --btn-border: #2a2a2a;
   --btn-border-hover: #2a2a2a;
@@ -498,3 +543,24 @@ html[data-theme="proseries"] .badge-accent { --badge-bg: var(--accent); --badge-
 html[data-theme="proseries"] .badge-success { --badge-bg: var(--success); --badge-fg: #0b1a10; }
 html[data-theme="proseries"] .badge-warning { --badge-bg: var(--warning); --badge-fg: #111111; }
 html[data-theme="proseries"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #111111; }
+
+/* Touch screens: one flat fill per key and band, so phone scrolling stays
+   inside the frame budget (the bevel survives as a single inset line). */
+@media (pointer: coarse) {
+  html[data-theme="proseries"] {
+    --ps-key-face: #c4c4c4;
+    --ps-key-face-hover: #d6d6d6;
+    --ps-primary-bg: #33479b;
+    --go-bg: #3faa58;
+    --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    --panel-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    --modal-header-bg: #2c3d8e;
+    --toast-bg: #2c3d8e;
+    --app-bar-bg: #000000;
+    --progress-fill: #5a86d8;
+  }
+  html[data-theme="proseries"] .key {
+    --key-bg: color-mix(in srgb, var(--_tone) 36%, #141418);
+    --key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+}

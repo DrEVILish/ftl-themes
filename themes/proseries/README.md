@@ -47,12 +47,20 @@ at arm's length in a dark room.
   and `.btn-ghost` a key outline (never bare text on the desk).
 - `--card-bg`: the strip blue (flat #3a62b4), so the console blue shows on
   every page; muted text in a card lifts to near-white. `--panel-bg` is the
-  sidebar's royal-blue section, flat. Both are single fills with a hard
-  1px drop, no blur, to keep scrolling cheap.
-- `--slider-bg`: the black fader slot; `--slider-thumb-*`: the fader cap on
-  its side (upright on `.slider.is-vertical`, which draws a 4px slot in its
-  touch-sized box). `--badge-radius`/`--switch-radius`/`--btn-icon-radius`: square.
-- `--btn-close-*`: a white round close disc with a dark glyph (dark red on `.is-danger`).
+  sidebar's royal-blue section, flat, under a flat light-lavender
+  `--panel-header-bg` band with dark bold text. Both are single fills with a
+  hard 1px drop, no blur, to keep scrolling cheap. On touch screens
+  (`pointer: coarse`) the key bevels flatten to one fill plus an inset line.
+- `--slider-bg`: the 6px black fader slot with a light lower lip;
+  `--slider-thumb-*`: the fader cap on its side (upright on
+  `.slider.is-vertical`, which draws a 6px slot in its touch-sized box).
+  `--badge-radius`/`--switch-radius`/`--btn-icon-radius`: square.
+- `--switch-*`: the square ON key: a narrow grey cap in a black slot that
+  lights as a green LED bar when on.
+- `--carousel-arrow-*`: grey soft keys (square). `--chart-text-size`: small
+  tick labels; h1/h2 capped at 1.5rem/1.2rem (the bar title is the largest type).
+- `--btn-close-*`: a white round close disc with a dark glyph (dark red on `.is-danger`);
+  window minimise/maximise are square grey soft keys.
 - `--app-*`: black home bar, no rail, a flat navy desk.
 
 ## Signature details
@@ -60,7 +68,7 @@ at arm's length in a dark room.
 - Knob tick rings drawn with a repeating conic gradient behind the value arc; the console's other
   pointer styles (chicken heads, clock, lobed, sculpted, LED ring, LED dot) are `data-pointer` values.
 - Brushed-metal and leather faceplates are drawn in CSS (`data-finish`), never copied from the console.
-- The home bar: a two-tone "home" tab, a round back key, the page title,
+- The home bar: a two-tone "home" tab (light grey cap over navy, white bold text), a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
   On every page the bar's current item is the two-tone tab, the brand gets
   the round back key and fields in the bar are the black yellow scene field.
@@ -69,8 +77,9 @@ at arm's length in a dark room.
 - Lit keys carry near-black text over their glowing face.
 - Every slider thumb is the black hourglass fader cap with its grey disc,
   never the default accent dot.
-- Icon buttons are square bevelled soft keys (ghost ones grey); the round
-  back key and close disc are the only round controls.
+- Icon buttons, carousel arrows and window min/max are square bevelled soft
+  keys (ghost ones grey); the round back key and close disc are the only
+  round controls.
 - Leaves with a CRT-style power-off when you switch theme.
 
 ## Layout
