@@ -25,30 +25,49 @@ the screen.
 4. **Uppercase, tracked labels** — headings, tabs, panel headers and buttons
    are terminal readouts, not a stylized logo.
 5. **Rectangular hardware.** No pills, circles or teardrops: badges, avatars,
-   switches, slider thumbs, comment pins and status dots are square.
+   switches, slider thumbs, comment pins, status dots, the round minimap,
+   the achievement icon and map pins are square.
+6. **Little boxing.** Panels and cards are a dim hairline with bright
+   corner brackets, not a full phosphor box.
 
 ## Signature details
 
 - The phosphor is Fallout 4's default Pip-Boy colour, `#1aff80`
   (RGB 26, 255, 128), on a green-black `#04140a`. Chart series are
   brightnesses of that one green; no second hue outside hazard states.
-- **The cursor bar.** Selected rows, active nav items and hovered menu
-  items are a solid `--accent` bar with the text knocked out in
+  HUD rarity tiers (`--rarity-*`) are brightness steps of the same green,
+  and the HP bar (`--hud-health`) is green, as in Fallout 4.
+- **Media through the phosphor.** Images, videos, card/map SVGs and the
+  HUD scene take one CSS filter chain (`--pipboy-phosphor`: grayscale,
+  sepia, hue-rotate, saturate), so photos render in green, never colour.
+- Native controls follow the phosphor via `accent-color`.
+- **The cursor bar.** Selected rows, active list/sidebar nav items and
+  hovered menu items are a solid `--accent` bar with the text knocked out in
   `--on-accent` (the INV/DATA list cursor), with no left marker.
 - **The tab header.** `.tabs` is one 2px phosphor rule that breaks under
   the active tab; short ticks rise from the rule at the active tab's ends,
-  bracketing the uppercase label (the STAT / INV / DATA strip).
+  bracketing the uppercase label (the STAT / INV / DATA strip). The
+  `.tab-add` button carries the rule too. The app bar nav is the same
+  header: uppercase (tracked above the phone tier), its active/open item
+  bracketed by the same ticks, over a 2px phosphor bar rule.
 - **The status strip** (`.app-status`, not the taskbar variant) reads as
-  boxed readout segments, like the HP | LEVEL | AP bar.
+  the HP | LEVEL | AP bar: solid dim-green blocks (22% phosphor) with
+  bright uppercase text, under a 2px phosphor rule.
 - Type is Share Tech Mono (OFL, vendored), the closest free narrow,
   rounded monospace to the game's Monofonto (not OFL, so not named).
+  Only the Regular face exists, so `font-synthesis-weight: none`:
+  headings and `strong` stay at 400 and show emphasis by brightness (a
+  stronger glow), never a smeared faux bold. At the phone
+  tier tables set at 0.85em without the glow, and inputs in cells keep a
+  `--tap-min` floor.
 - Slider tracks are drawn in `--border` green (3:1 on bg and surface) on
   the content box, so the hit area stays at `--tap-min`.
 
 - Scanlines are a fixed `::after` overlay on `.app` with
   `pointer-events: none` — a 1px-on/2px-off repeating gradient at 28%
   black, plus a soft inset vignette for the curved glass, so they never
-  intercept a click and never need JavaScript. The vignette is a radial
+  intercept a click and never need JavaScript. The overlay is its own
+  layer (`will-change`, `contain: strict`) so scrolling never repaints it. The vignette is a radial
   gradient in the same layer (no blurred shadow, so no frame cost).
 - All body text carries a faint `text-shadow: 0 0 3px` phosphor glow in its
   own colour (`currentColor` at 35%, so dim text glows dim), not
