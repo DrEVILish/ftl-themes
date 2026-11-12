@@ -20,8 +20,10 @@ otherwise clinical space.
    for danger** — a direct, deliberate swap of the usual red-for-danger
    convention across every danger state, because orange is what the
    reference uses for its second state.
-3. **No decoration.** Flat fills, quiet 1px borders, small shadows. This is
-   institutional software, not a HUD.
+3. **No decoration.** Flat fills, quiet 1px edges, no shadow on surfaces.
+   Surfaces are rounded sign plates (`--panel-radius: 0.6rem`); controls
+   stay square-ish hardware (`--radius: 0.2rem`). This is institutional
+   software, not a HUD.
 4. **Headings are chamber signs** — black, light and large, never
    uppercase: the sign plate's numeral, not a marketing headline.
 
@@ -32,11 +34,12 @@ otherwise clinical space.
   invalid fields, status, danger menu items — not red. Warning takes the
   facility's hazard yellow (`#f4c430`, text `#6b5600`) so the two never
   share a colour.
-- Blue is portal blue: fills take `--accent: #0b78c2` (4.7:1 under white
-  text), text takes the deeper `#13609a` (5.4:1 on the page), and every
-  blue that carries no text (focus ring, spinner, slider thumb, chart
-  series 1) takes the brighter portal azure `--aperture-portal: #1a8ad8`
-  (3:1 on the page).
+- Blue is portal azure: fills take `--accent: #1a8ad8` under dark
+  `--on-accent: #0d1b26` text (4.7:1), the bright portal rather than a
+  corporate link blue; the same azure (`--aperture-portal`) is every
+  mark that carries no text (focus ring, spinner, slider thumb, chart
+  series 1; 3:1 on the page). Blue text takes the deeper `#13609a`
+  (5.4:1 on the page), including sort headers and scrollspy links.
 - Type: Titillium Web (vendored, OFL) stands in for the chamber signage
   grotesk — headings light (400) and lightly tracked, panel h3 at 600;
   readouts and KPI values use the same light face as chamber numerals;
@@ -45,15 +48,21 @@ otherwise clinical space.
   face's line box is trimmed for controls.
 - Chamber sign plate: the page h1 sits under a 5px `#2b2b2b` rule with a
   row of short dashes under it (the chamber progress bar); panel headers
-  are black text over a 2px `#2b2b2b` rule; KPI labels carry the plate's
-  black pictogram square.
+  are black text over a 2px `#2b2b2b` rule; the app-bar brand (black
+  text), panel headers and KPI labels each carry the plate's black
+  pictogram square; the active tab sits on a black rule, not a blue one.
+- Panels, cards and modals are flat sign plates: `--panel-radius:
+  0.6rem`, a darker `#b5babd` edge and no shadow.
 - Neutrals are cool lab greys: `--bg #e6e8e9`, `--surface #f3f4f5`,
   `--app-bg #dcdfe1`, `--border #c3c7ca`, `--muted #5a5e62`.
   `--app-main-bg` is flat; the 128px panel seams live in the XL gutter.
 - Sliders are a 0.375rem grey groove (`--slider-bg: #7f8488`, 3:1 on the
   page) with a 1.1rem azure thumb; charts use only blue, orange and greys.
-- Shadows never exceed `0 1px 3px` — this is the flattest, quietest theme
-  in the catalog; anything heavier reads as a different theme entirely.
+- Surfaces have no shadow and buttons `0 1px 2px` at most — this is the
+  flattest, quietest theme in the catalog; anything heavier reads as a
+  different theme entirely.
+- The warning alert/toast keeps its 1px outline like its siblings, with an
+  8px hazard stripe down the leading edge.
 
 ## Layout
 
@@ -67,7 +76,7 @@ the panel sits in the room rather than filling it.
   first line, the nav scrolling on the second.
 - **XL gutter art.** The test chamber's wall continues past the console:
   square white wall panels with recessed seams and one faint portal ring
-  each side (blue left, orange right). Still, and within about 1.3:1 of
+  each side (azure `#27a7d8` left, orange right). Still, and within about 1.3:1 of
   `--bg`.
 
 ## Tell-tales of an inauthentic result

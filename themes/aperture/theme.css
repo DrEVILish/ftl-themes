@@ -47,8 +47,9 @@ html[data-theme="aperture"] {
   --text: #2b2b2b;
   /* Cool chamber grey, readable on the selected-row tint (4.8:1). */
   --muted: #5a5e62;
-  /* Portal blue, as bright as white text allows (4.7:1). */
-  --accent: #0b78c2;
+  /* Portal azure as the fill, under dark chamber-black text (4.7:1) the
+     way the bright portal reads; still 3:1 on --bg as a mark. */
+  --accent: #1a8ad8;
   --accent-2: #ff8a1e;
   /* The second portal is danger, everywhere: badges, alerts, invalid
      fields, status, danger menu items — not only the button. */
@@ -72,10 +73,20 @@ html[data-theme="aperture"] {
   --link: var(--accent-text);
   --tab-fg-active: var(--accent-text);
   --readout-fg: var(--accent-text);
-  --on-accent: #ffffff;
+  --on-accent: #0d1b26;
+  /* Text-only uses of the accent take the 4.5:1 step. */
+  --table-sort-fg: var(--accent-text);
+  --scrollspy-link-active-fg: var(--accent-text);
+  --sends-active: var(--accent-text);
+  /* The brand is a sign: black text behind a black pictogram tile. */
+  --nav-brand-fg: var(--text);
+  /* The active tab sits on the plate's heavy black rule. */
+  --tab-underline-active: #2b2b2b;
   --on-danger: #2b2b2b;
   --on-success: #ffffff;
+  /* Controls are hardware (0.2rem); surfaces are rounded sign plates. */
   --radius: 0.2rem;
+  --panel-radius: 0.6rem;
   --font: "Titillium Web", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Share Tech Mono", Consolas, monospace;
   /* Readouts are chamber numerals: the light sign face, not a code font. */
@@ -93,10 +104,12 @@ html[data-theme="aperture"] {
   --input-bg: #ffffff;
   /* The portal's own bright azure, wherever no text sits on it: focus
      ring, spinner, slider thumb, chart series 1 (3:1 on --bg). */
-  --aperture-portal: #1a8ad8;
+  --aperture-portal: var(--accent);
   --focus-ring: 0 0 0 3px rgba(26, 138, 216, 0.4);
   --panel-bg: #ffffff;
-  --panel-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  /* Plates are flat: a darker 1px edge, no shadow. */
+  --panel-border: #b5babd;
+  --panel-shadow: none;
   --table-head-bg: #eef0f1;
   --row-selected-bg: rgba(47, 158, 224, 0.12);
   --nav-bg: #ffffff;
@@ -152,7 +165,10 @@ html[data-theme="aperture"] h1::after {
 }
 html[data-theme="aperture"] .hero h1::after { margin-inline: auto; }
 html[data-theme="aperture"] .panel-header { border-bottom: 2px solid #2b2b2b; }
-/* KPI labels carry the plate's black pictogram square. */
+/* The plate's black pictogram square marks every sign: KPI labels, panel
+   headers and the brand. */
+html[data-theme="aperture"] .nav-brand::before,
+html[data-theme="aperture"] .panel-header::before,
 html[data-theme="aperture"] .stat-label::before {
   content: "";
   display: inline-block;
@@ -163,6 +179,7 @@ html[data-theme="aperture"] .stat-label::before {
   border-radius: 2px;
   background: #2b2b2b;
 }
+html[data-theme="aperture"] .nav-brand::before { inline-size: 1em; block-size: 1em; vertical-align: -0.15em; }
 html[data-theme="aperture"] .stat-value { font-family: var(--font); font-weight: 400; letter-spacing: 0.02em; }
 /* Core pads a vertical fader with padding-inline, which is top/bottom in
    vertical-lr; pad the physical sides so only a thin groove is painted. */
@@ -190,7 +207,7 @@ html[data-theme="aperture"] .dropzone::before {
 }
 html[data-theme="aperture"] .alert-warning,
 html[data-theme="aperture"] .toast-warning {
-  border: none;
+  border-color: var(--border);
   border-left-width: 8px;
   border-left-style: solid;
   border-left-color: var(--aperture-hazard);
@@ -211,7 +228,7 @@ html[data-theme="aperture"] .toast-warning {
    still. */
 html[data-theme="aperture"] {
   --app-gutter-art:
-    radial-gradient(ellipse 58px 96px at 190px 42%, transparent 82%, rgba(11, 120, 194, 0.22) 86% 94%, transparent 98%),
+    radial-gradient(ellipse 58px 96px at 190px 42%, transparent 82%, rgba(39, 167, 216, 0.3) 86% 94%, transparent 98%),
     radial-gradient(ellipse 58px 96px at calc(100% - 190px) 58%, transparent 82%, rgba(255, 138, 30, 0.24) 86% 94%, transparent 98%),
     linear-gradient(90deg, #d0d4d7 2px, transparent 2px) 0 0 / 128px 128px,
     linear-gradient(#d0d4d7 2px, transparent 2px) 0 0 / 128px 128px,
