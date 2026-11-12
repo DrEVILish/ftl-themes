@@ -13,13 +13,14 @@
   font-weight: 400 800;
   font-display: swap;
 }
-/* Leckerli One (SIL OFL, Google Fonts): the brand's signature is a fat,
-   upright, bouncy script with ball terminals; Leckerli's even heavy strokes
-   are nearer that than a thin slanted brush script. Scoped to the brand
-   mark and h1 only, never body/button text. */
+/* Shrikhand (SIL OFL, Google Fonts): the logo's letters stand apart, fat,
+   with ball terminals and flared slab-like serifs; Shrikhand has all
+   three, where a connected brush script (the old Leckerli One) read as a
+   diner sign. Cooper Black (where installed) is the nearest system face.
+   Scoped to the brand mark and h1 only, never body text. */
 @font-face {
-  font-family: "Leckerli One";
-  src: url("assets/fonts/LeckerliOne-Regular.woff2") format("woff2");
+  font-family: "Shrikhand";
+  src: url("assets/fonts/Shrikhand-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
@@ -73,9 +74,12 @@ html[data-theme="barbie"] {
      gloss sticker on a toy package), then the logo-pink mass. The band
      sits above the label's x-height; the label reads on #e3007f-accent
      (white 4.6:1+). Core's .btn-primary/-danger/-success re-set --btn-bg
-     on the class, so those take their own gloss below. */
-  --gloss-pink: linear-gradient(180deg, #ff86c8, #ff4fb3 36%, #e3007f 36%, var(--accent));
-  --gloss-danger: linear-gradient(180deg, #ff86ab, #ff4f86 36%, #e0145f 36%, var(--danger));
+     on the class, so those take their own gloss below. The band runs from
+     a deeper hot pink (white 3.1:1+, large/bold floor) so a label that
+     wraps or a small button's cap height into it still reads; filled
+     pills also take a plum text-shadow (see .btn below). */
+  --gloss-pink: linear-gradient(180deg, #ff4fb3, #ff3da6 36%, #e3007f 36%, var(--accent));
+  --gloss-danger: linear-gradient(180deg, #ff4f86, #f5306f 36%, #e0145f 36%, var(--danger));
   --gloss-success: linear-gradient(180deg, #c8f9e2, #8ff0c4 36%, #55e2a5 36%, var(--success));
   --btn-bg: var(--gloss-pink);
   --btn-fg: #ffffff;
@@ -106,6 +110,14 @@ html[data-theme="barbie"] {
   --nav-item-bg-active: var(--gloss-pink);
   --nav-item-fg-active: #ffffff;
   --segmented-item-bg-active: var(--gloss-pink);
+  /* Toggle buttons: off is a white pill like Secondary, on is the glossy
+     pink pill (core's off state falls back to the glossy --btn-bg). */
+  --toggle-btn-bg: #ffffff;
+  --toggle-btn-fg: var(--accent-text);
+  --toggle-btn-border: var(--border);
+  --toggle-btn-bg-on: var(--gloss-pink);
+  --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: var(--accent);
   --badge-radius: 999px;
   --progress-radius: 999px;
   --progress-fill: linear-gradient(90deg, var(--accent), var(--accent-2));
@@ -139,6 +151,12 @@ html[data-theme="barbie"] {
 html[data-theme="barbie"] .modal-header { --btn-close-fg: currentColor; }
 html[data-theme="barbie"] .btn-primary { --btn-bg: var(--gloss-pink); }
 html[data-theme="barbie"] .btn-danger { --btn-bg: var(--gloss-danger); }
+html[data-theme="barbie"] .toggle-btn.is-danger { --toggle-btn-bg-on: var(--gloss-danger); }
+/* White labels on the gloss: a plum drop keeps them crisp where the
+   cap height reaches the bright band. */
+html[data-theme="barbie"] :is(.btn:not(.btn-secondary, .btn-tertiary, .btn-ghost, .btn-success), .toggle-btn:has(input:checked), .segmented-item.is-active, .segmented-item:has(input:checked), .pagination-item.is-active, .nav-item.is-active, .nav-item[aria-current="page"]) {
+  text-shadow: 0 1px 0 rgba(122, 18, 80, 0.55);
+}
 html[data-theme="barbie"] .btn-success { --btn-bg: var(--gloss-success); }
 /* Rising sparklines in the bright toy mint (3.4:1 on white), the bar
    chart's alt series, not the dark text-weight green. */
@@ -150,9 +168,13 @@ html[data-theme="barbie"] h3 {
   letter-spacing: 0.04em;
   color: var(--heading-fg, var(--accent));
 }
-/* h2 takes a small pink-on-pink step of the logo's extrusion (a gold lip
-   read as an offset-print fringe; no gold appears on the logo). */
-html[data-theme="barbie"] h2 { text-shadow: 0.06em 0.06em 0 #ffb3d9; }
+/* Poster h2s take the heaviest cut and a small, crisp step of the logo's
+   extrusion in the light pink; h3 stays flat (at reading-pane size the
+   step looked like print misregistration). */
+html[data-theme="barbie"] h2 {
+  font-weight: 800;
+  text-shadow: 0.04em 0.04em 0 rgba(255, 92, 173, 0.4);
+}
 /* A kanban column is a pink tint, so its title heading takes the deeper
    pink (the accent was 3.4-4.0:1 there). */
 /* The same on the other pink tints: headings and links there take the
@@ -168,14 +190,15 @@ html[data-theme="barbie"] :is(.hero, .band.is-tinted) { --heading-fg: var(--acce
    hot-pink outline with a hard stepped extrusion, as on the logo. The glyph
    is read by its pink outline (5.5:1 on white), not by the fill. */
 html[data-theme="barbie"] :is(h1, .nav-brand) {
-  font-family: "Leckerli One", cursive;
+  font-family: "Shrikhand", "Cooper Black", Georgia, cursive;
+  font-style: normal;
   text-transform: none;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   font-weight: 400;
-  /* Painted under the fill, so ~0.08em shows outside the glyph: the pink
-     mass about equals the white stroke, as on the logo, and Leckerli's
-     counters stay open. */
-  -webkit-text-stroke: 0.16em var(--wordmark-ink, var(--accent));
+  /* Painted under the fill, so ~0.07em shows outside the glyph: the pink
+     mass about equals the white stroke, as on the logo, and the counters
+     stay open. */
+  -webkit-text-stroke: 0.14em var(--wordmark-ink, var(--accent));
   paint-order: stroke fill;
   /* The logo's deep solid slab: steps out to 0.18em down-right so the
      depth still reads at bar-brand size. Shadows don't take the stroke,
@@ -187,14 +210,12 @@ html[data-theme="barbie"] :is(h1, .nav-brand) {
 }
 html[data-theme="barbie"] h1 { color: #ffffff; }
 /* At brand size (~16-20px) the full outline and three steps clog the
-   counters: the brand is set larger, with a thinner outline and two
-   shallower steps. */
+   counters: a hairline outline and a single shallow step. */
 html[data-theme="barbie"] .nav-brand {
-  font-size: 1.25em;
-  -webkit-text-stroke-width: 0.1em;
-  text-shadow:
-    0.05em 0.05em 0 var(--wordmark-ink, var(--accent)),
-    0.1em 0.1em 0 var(--wordmark-ink, var(--accent));
+  font-size: 1.2em;
+  letter-spacing: 0.05em;
+  -webkit-text-stroke-width: 0.06em;
+  text-shadow: 0.06em 0.06em 0 var(--wordmark-ink, var(--accent));
 }
 /* Small uppercase labels: semibold with open tracking, never under 0.75rem. */
 html[data-theme="barbie"] :is(.stat-label, .table th) {
@@ -203,8 +224,22 @@ html[data-theme="barbie"] :is(.stat-label, .table th) {
   font-size: max(0.75rem, 0.78em);
 }
 
-html[data-theme="barbie"] .panel,
 html[data-theme="barbie"] .modal { border: 1px solid var(--border); }
+/* Panels and cards are packaging inserts, not hairline admin boxes: a
+   2px pink edge and a blush header band under a hot-pink top rule. */
+html[data-theme="barbie"] {
+  --panel-border-width: 2px;
+  --card-border-width: 2px;
+  --panel-header-bg: linear-gradient(180deg, #ffffff, #ffe6f2);
+  --panel-header-fg: var(--accent-text);
+}
+/* The header's corners follow the inner curve of the 2px edge, so the
+   top rule meets the border with no white sliver. */
+html[data-theme="barbie"] .panel-header {
+  box-shadow: inset 0 3px 0 var(--accent-2);
+  border-start-start-radius: calc(var(--panel-radius) - 2px);
+  border-start-end-radius: calc(var(--panel-radius) - 2px);
+}
 
 /* v3.4.0 components: glossy pink extended to the newer primitives. */
 html[data-theme="barbie"] {
@@ -252,8 +287,9 @@ html[data-theme="barbie"] {
      read while white nav text clears the floor end to end. */
   /* Bottom stop lifted from the berry #b8006f to the accent: the bar stays
      nearer the logo's #ec008c (white is 4.3:1 there, under the floor, so
-     #e0007f is the closest top stop that passes). */
-  --app-bar-bg: linear-gradient(180deg, #e0007f, var(--accent));
+     #e5007f, 4.53:1, is the closest top stop that passes; nav labels are
+     regular-weight small text, so the 3:1 large-text floor can't apply). */
+  --app-bar-bg: linear-gradient(180deg, #e5007f, var(--accent));
   --app-bar-fg: #ffffff;
   --app-bar-rule-width: 0;
   --app-bar-radius: 1.4rem 1.4rem 0 0;
@@ -262,7 +298,7 @@ html[data-theme="barbie"] {
   --app-main-padding: 1.1rem;
   /* Same deepened range as the bar: white on the old --accent-2 top
      stop was 2.8:1. */
-  --app-status-bg: linear-gradient(180deg, #e0007f, var(--accent));
+  --app-status-bg: linear-gradient(180deg, #e5007f, var(--accent));
   --app-status-fg: #ffffff;
   --app-status-radius: 0 0 1.4rem 1.4rem;
   --app-status-rule: transparent;
@@ -279,7 +315,7 @@ html[data-theme="barbie"] .app-bar {
 html[data-theme="barbie"] .app-bar .nav-brand {
   background: #ffffff;
   border-radius: 999px;
-  /* Line-height stays normal: the pill must hold Leckerli's whole content
+  /* Line-height stays normal: the pill must hold the script's whole content
      area, so the script's tall ascenders never touch its edge. */
   line-height: normal;
   padding: 0.2em 0.6em;
@@ -291,7 +327,7 @@ html[data-theme="barbie"] .app-status {
   --success-text: #c8ffe6;
   --warning-text: #ffe9a8;
   --danger-text: #ffe0ea;
-  /* White is 4.69:1 on the top stop; every pale pink fails there. */
+  /* White is 4.53:1 on the top stop; every pale pink fails there. */
   --muted: #ffffff;
 }
 /* Numerals in the rounded face, not Consolas: a square monospace figure
@@ -406,6 +442,27 @@ html[data-theme="barbie"] :is(.window-pane, .window-body > .textarea) { border-r
   padding-inline: 0.9rem;
 }
 :where(html[data-theme="barbie"] fieldset:not([class]) > legend, html[data-theme="barbie"] fieldset.field > legend) { padding-inline: 0.4rem; }
+/* Checkboxes and radios: no browser-grey box. A white pill-cornered well
+   in the pink edge, filled with the logo pink and a white tick when on. */
+html[data-theme="barbie"] :is(.checkbox, .radio) {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid var(--border);
+  background: #ffffff;
+}
+html[data-theme="barbie"] .checkbox { border-radius: 0.35em; }
+html[data-theme="barbie"] .radio { border-radius: 50%; }
+html[data-theme="barbie"] :is(.checkbox, .radio):is(:checked, :indeterminate) { border-color: var(--accent); }
+html[data-theme="barbie"] .checkbox:checked {
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3L12.5 5' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 90% no-repeat;
+}
+html[data-theme="barbie"] .checkbox:indeterminate { background: var(--accent) linear-gradient(#fff, #fff) center / 55% 0.16em no-repeat; }
+html[data-theme="barbie"] .radio:checked { background: radial-gradient(circle closest-side, #ffffff 40%, var(--accent) 42%); }
+html[data-theme="barbie"] :is(.checkbox, .radio):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) {
+  html[data-theme="barbie"] :is(.checkbox, .radio):not(:checked):hover { border-color: var(--accent); }
+}
+
 /* Firefox can paint the filled side of a slider: the gradient up to the
    thumb over a blush rest (Chromium has no CSS hook for it). */
 html[data-theme="barbie"] .slider::-moz-range-progress {

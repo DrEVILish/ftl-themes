@@ -122,18 +122,16 @@ files are vendored unmodified.
 - **Used by:** none currently (`barbie` used it for the brand mark and `h1`,
   as the cursive script signature — never body/button text)
 
-## Leckerli One
+## Shrikhand
 
-- **Family:** Leckerli One (weight vendored: Regular 400, Latin subset —
-  `LeckerliOne-Regular.woff2`, subset with fontTools from `google/fonts`
-  `ofl/leckerlione/LeckerliOne-Regular.ttf`)
-- **Designer:** Gesine Todt
+- **Family:** Shrikhand (weight vendored: Regular 400, Latin subset —
+  `Shrikhand-Regular.woff2`, subset with fontTools from `google/fonts`
+  `ofl/shrikhand/Shrikhand-Regular.ttf`; the Gujarati glyphs are dropped)
+- **Designer:** Jonny Pinhorn
 - **License:** SIL Open Font License, version 1.1 — `google/fonts`
-  `ofl/leckerlione/` (with `OFL.txt`); Reserved Font Names "Leckerli" and
-  "Leckerli One", moot here since the file is only subset, not renamed or
-  redesigned
-- **Source:** https://fonts.google.com/specimen/Leckerli+One
-- **Used by:** `barbie` (wordmark script on the brand mark and `h1` only)
+  `ofl/shrikhand/` (with `OFL.txt`); no Reserved Font Name is declared
+- **Source:** https://fonts.google.com/specimen/Shrikhand
+- **Used by:** `barbie` (wordmark face on the brand mark and `h1` only)
 
 ## Share Tech and Share Tech Mono
 

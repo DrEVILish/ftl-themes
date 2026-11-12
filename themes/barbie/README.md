@@ -26,7 +26,7 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
    panel radius instead of the browser's grey groove. Nothing here has a
    hard corner.
 3. **Gloss over flat.** Every filled control gets a hard-edged bright
-   band over its top third (`--gloss-pink`: `#ff86c8`/`#ff4fb3`, then
+   band over its top third (`--gloss-pink`: `#ff4fb3`/`#ff3da6`, then
    `#e3007f` to the accent): plain, primary, danger (`--gloss-danger`) and
    mint success (`--gloss-success`) buttons, the active nav pill (a deep
    plum gloss in the bar), the active pagination pill and the active
@@ -43,18 +43,31 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
 
 ## Signature details
 
-- **The wordmark.** `h1` and `.nav-brand` are Leckerli One, a fat,
-  upright, bouncy script nearer the logo than a thin brush script, in
-  white letters inside a hot-pink outline (`-webkit-text-stroke` painted
-  under the fill, `0.16em`, so the pink mass about equals the white
-  stroke as on the logo) with a solid pink slab stepped out in three
-  steps to `0.18em` down-right, the logo's extrusion. The brand is set at
-  `1.25em` with a `0.1em` outline and two shallower steps so the counters
-  stay open at bar size. In the app bar the brand sits on its own white
-  sticker pill, so the white/pink-outline/slab stack reads as on white.
-- Headings (`h2`/`h3`) are uppercase, `h2` with a small pink extrusion
-  step, the poster-title voice. On `.hero` and `.band.is-tinted` they stay
-  accent pink (large text, 3:1 floor).
+- **The wordmark.** `h1` and `.nav-brand` are Shrikhand: fat, separate
+  letters with ball terminals and flared slab-like serifs, as on the logo
+  (a connected brush script read as a diner sign). They are white letters
+  inside a hot-pink outline (`-webkit-text-stroke` painted under the fill,
+  `0.14em`, so the pink mass about equals the white stroke as on the logo)
+  with a solid pink slab stepped out in three steps to `0.18em`
+  down-right, the logo's extrusion. The brand is set at `1.2em` with a
+  `0.06em` outline and one `0.06em` step, so the counters stay open at
+  bar size. In the app bar the brand sits on its own white sticker pill,
+  so the white/pink-outline/slab stack reads as on white.
+- Headings (`h2`/`h3`) are uppercase. `h2` is set at weight 800 with a
+  crisp `0.04em` step in 40% `--accent-2`, the poster-title voice; `h3`
+  stays flat. On `.hero` and `.band.is-tinted` they stay accent pink
+  (large text, 3:1 floor).
+- **Glossy pills.** Filled buttons, active nav/segmented/pagination items
+  and checked toggles take `--gloss-pink`: a `#ff4fb3`-`#ff3da6` band over
+  the top 36%, then `#e3007f` to the accent. White labels take a plum
+  `0 1px 0` text-shadow so a cap height or wrapped line in the band reads.
+- **Toggle buttons.** Off is a white pill with a pink edge (like
+  Secondary); on is the glossy pink pill (`.is-danger`: the danger gloss).
+- **Packaging inserts.** Panels and cards have a `2px` pink edge; a panel
+  header is a white-to-blush band under a `3px` `--accent-2` top rule.
+- **Checkboxes and radios.** No browser-grey box: a white well in a `2px`
+  pink edge (`0.35em` corners on checkboxes), filled with the accent and a
+  white tick or dot when on.
 - **Desktop windows.** Inactive title bars stay saturated: a paler candy
   pink (`#ffc2e0` to `#ff99cc`) with plum text, never core's desaturating
   filter (that turned the bar dusty mauve). Caption buttons follow the
@@ -70,8 +83,8 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
   series), not the text-weight green.
 - The accent `#cc0077` is a fully saturated magenta (hue 325°, the logos'
   `#ed008d`/`#ff00a6` family) at the darkest step that still takes white
-  text. Bar and status strip run `#e0007f` to the accent (the logo's
-  `#ec008c` takes white at only 4.3:1, so `#e0007f` is the nearest passing
+  text. Bar and status strip run `#e5007f` to the accent (the logo's
+  `#ec008c` takes white at only 4.25:1, so `#e5007f`, 4.53:1, is the nearest passing
   top stop). Filled chrome leads with the brighter logo pink through the
   gloss band, and the label sits on `#e3007f` (4.6:1) to the accent.
 - **Toy-box sections.** `.hero` sits on a rounded blush panel with the
@@ -118,26 +131,27 @@ card in the middle pop — box art, not a dashboard.
 - **No pastel or desaturated pink.** A washed-out accent is the failure the theme exists to avoid.
 - **No matte flat fills** on primary chrome: keep the highlight band.
 - **No gold.** Nothing on the logo is gold; `--flare` exists only as a required token.
-- **No script face on body or buttons.** Leckerli One is for the wordmark and `h1` only.
+- **No script face on body or buttons.** Shrikhand is for the wordmark and `h1` only.
 - **No generic green success with white text**; keep mint with dark text.
 
 ## Typography
 
 - **Body/UI:** `"Baloo 2"`, then `"Segoe UI", "Helvetica Neue", Arial, sans-serif`. The Baloo 2 **variable** cut (wght 400-800, Latin subset) is **vendored** (`assets/fonts/Baloo2-Variable.woff2`, SIL OFL, see `assets/fonts/NOTICE.md`), so body copy is 400, labels 600 and headings/buttons 700. If it fails to load, the stack falls to Segoe UI/Arial, which is not rounded.
-- **Wordmark voice:** `"Leckerli One", cursive` (Regular, **vendored**, SIL OFL) on `h1` and the nav brand only. The brand's wordmark is a fat bouncy script (`barbie-wordmark-2023-logo.png`, `s-l1200.png`), which Leckerli One approximates; it is not the actual logo lettering. Fallback is the browser's generic `cursive`.
+- **Wordmark voice:** `"Shrikhand", "Cooper Black", Georgia, cursive` (Regular, **vendored** Latin subset, SIL OFL) on `h1` and the nav brand only. The brand's wordmark (`barbie-wordmark-2023-logo.png`, `s-l1200.png`) is fat, separate letters with ball terminals and flared serifs, which Shrikhand approximates; it is not the actual logo lettering. Cooper Black is the nearest common system face.
 - `--font-mono` is the rounded Baloo 2 stack, so readouts, order IDs,
   totals, timecodes and logs stay in the rounded voice (tabular figures on
   table cells, `.mono`, `.stat-value`, `.readout`). Only `code`, `pre`,
   `kbd` and `samp` use a real monospace (`ui-monospace, Consolas`).
 - Known gap: no open face reproduces the logo's custom lettering (its
-  slab-like serifs and ball terminals); Leckerli One is the nearest fat
-  upright script.
+  slab-like serifs and ball terminals); Shrikhand is the nearest open face,
+  though it leans more than the logo's letters.
 
 ## Contrast honesty
 
-- **Accent:** true "Barbie Pink" `#e0218a` (web reference from `RESEARCH.md`; the brand spec is Pantone 219C, which has no exact sRGB) is 4.42:1 under white text, and the logo files sample at `#ed008d`/`#ff00a6`/`#f200a2`. Shipped `--accent` is `#cc0077`: full saturation, 5.48:1 under white text, 4.66:1 as text on `--bg`. The chrome top stop `#e0007f` is 4.69:1 under white.
+- **Accent:** true "Barbie Pink" `#e0218a` (web reference from `RESEARCH.md`; the brand spec is Pantone 219C, which has no exact sRGB) is 4.42:1 under white text, and the logo files sample at `#ed008d`/`#ff00a6`/`#f200a2`. Shipped `--accent` is `#cc0077`: full saturation, 5.48:1 under white text, 4.66:1 as text on `--bg`. The bar and status strip run `#e5007f` (4.53:1 under white, the nearest stop to the logo's `#ec008c` at 4.25:1 that passes) to the accent; nav labels are regular-weight small text, so the 3:1 large-text floor does not apply and the chrome stays one step deeper than the logo.
+- **Gloss band:** white is 3.0-3.25:1 on the band (`#ff4fb3`-`#ff3da6`), large-text level; labels sit mostly on the `#e3007f`+ mass (4.6:1+) and take a plum text-shadow.
 - **Wordmark:** the `h1` fill is white; the glyph is carried by its hot-pink outline and extrusion (5.5:1 against white), so it reads as large outlined text.
-- **Status strip:** `--muted` turns white there (4.69:1 at the top stop; every pale pink fails it).
+- **Status strip:** `--muted` turns white there (4.53:1 at the top stop; every pale pink fails it).
 - **Inactive window title:** plum `#7a1250` on `#ff99cc` is 5.3:1 (on `#ffc2e0` higher).
 - **Sparkline:** `#1f9e74` is 3.4:1 on white (non-text 3:1).
 - **Tinted surfaces:** links, and headings except on the hero/band, on `.hero`, `.band.is-tinted`, `.order-summary` and the plain `.banner` use `--accent-text` (5.57:1 on `#ffd1e8`).
