@@ -66,7 +66,7 @@ html[data-theme="ios-skeuomorphic"] {
      steel of the upper bar is an inset sheen over its top half that keeps
      the bold title at 3:1 or more (see Deliberate deviations). */
   --ios-navbar: linear-gradient(180deg, #5d779c 0%, #5a7499 100%);
-  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 18px 12px -6px rgba(190, 205, 224, 0.55), inset 0 -1px 0 #2d405c;
+  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 7px 5px -2px rgba(220, 229, 240, 0.6), inset 0 18px 12px -6px rgba(190, 205, 224, 0.55), inset 0 -1px 0 #2d405c;
   --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
   --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
   --ios-select: linear-gradient(180deg, #058cf5 0%, #015fe6 100%);
@@ -654,6 +654,21 @@ html[data-theme="ios-skeuomorphic"] .segmented-item.is-active {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
+/* Pagination: a row of bordered white bar buttons; the current page is Done blue. */
+html[data-theme="ios-skeuomorphic"] .pagination-item:is(a, button, label, span) {
+  border-color: #8e9299;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 50%, #e6e6e6 51%, #d9d9d9 100%);
+  color: #4c566c;
+  font-weight: 700;
+  text-shadow: var(--ios-emboss-light);
+}
+html[data-theme="ios-skeuomorphic"] .pagination-item.is-active {
+  border-color: #193f7d;
+  background: var(--pagination-item-bg-active);
+  color: var(--pagination-item-fg-active);
+  text-shadow: var(--ios-emboss-dark);
+}
+
 /* --- Grouped cells: panels, cards, lists, field rows ---------------------- */
 html[data-theme="ios-skeuomorphic"] .panel-header {
   font-size: 0.95rem;
@@ -711,6 +726,7 @@ html[data-theme="ios-skeuomorphic"] .accordion-trigger::after {
 }
 html[data-theme="ios-skeuomorphic"] .accordion-item[open] > .accordion-trigger::after { transform: rotate(135deg); }
 /* Menu rows are table cells: one hairline between them. */
+html[data-theme="ios-skeuomorphic"] :is(.dropdown-item, .context-menu-item) { border-radius: 0; }
 html[data-theme="ios-skeuomorphic"] :is(.dropdown-item, .context-menu-item) + :is(.dropdown-item, .context-menu-item) { border-block-start: 1px solid var(--hairline); }
 html[data-theme="ios-skeuomorphic"] .scrollspy-link { font-weight: 700; text-shadow: var(--ios-emboss-light); }
 
@@ -723,6 +739,8 @@ html[data-theme="ios-skeuomorphic"] .table th {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 }
 html[data-theme="ios-skeuomorphic"] .table td { background-color: #ffffff; }
+/* A field in a cell keeps a 44pt touch width; the table scrolls instead. */
+html[data-theme="ios-skeuomorphic"] .table :is(.input, .select) { min-inline-size: 2.75rem; }
 /* Everything in a selected (blue) cell turns white, status text included. */
 html[data-theme="ios-skeuomorphic"] .table tr:is(.is-selected, [aria-selected="true"]),
 html[data-theme="ios-skeuomorphic"] .list-item.is-active {
@@ -793,6 +811,12 @@ html[data-theme="ios-skeuomorphic"] .badge-danger {
 html[data-theme="ios-skeuomorphic"] .badge-accent { --badge-bg: var(--ios-donebtn); --badge-fg: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .badge-success { --badge-bg: linear-gradient(180deg, #5fb84f, #2b7d1d); --badge-fg: #ffffff; }
 html[data-theme="ios-skeuomorphic"] .badge-warning { --badge-bg: linear-gradient(180deg, #f1b43c, #b06f00); --badge-fg: #ffffff; }
+/* In a selected blue cell the count pill inverts, as Mail's mailbox counts did. */
+html[data-theme="ios-skeuomorphic"] :is(.nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])), .list-item.is-active, .table tr:is(.is-selected, [aria-selected="true"])) .badge:not(.badge-danger) {
+  --badge-bg: #ffffff;
+  --badge-fg: #015fe6;
+  text-shadow: none;
+}
 
 /* --- Alert view ------------------------------------------------------------ *
  * Everything inside the navy glass is white, centered, and its buttons
@@ -839,8 +863,24 @@ html[data-theme="ios-skeuomorphic"] .modal :is(.input, .select, .textarea) { tex
 html[data-theme="ios-skeuomorphic"] .toast { text-shadow: var(--ios-emboss-dark); }
 html[data-theme="ios-skeuomorphic"] .toast :is(strong, b) { font-weight: 700; }
 
-/* --- Inline alerts: a grouped cell with a colored leading cap ------------- */
-html[data-theme="ios-skeuomorphic"] .alert { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), inset 0.3rem 0 0 var(--alert-border, var(--border)); }
+/* The banner stays black-rimmed; its tone is a small glossy app-icon tile,
+   as an iOS 5 banner led with the sending app's icon. */
+html[data-theme="ios-skeuomorphic"] :is(.toast-success, .toast-warning, .toast-danger) { --_ios-tone: var(--success); border-color: #000000; }
+html[data-theme="ios-skeuomorphic"] .toast-warning { --_ios-tone: var(--warning); }
+html[data-theme="ios-skeuomorphic"] .toast-danger { --_ios-tone: var(--danger); }
+html[data-theme="ios-skeuomorphic"] :is(.toast-success, .toast-warning, .toast-danger)::before {
+  content: "";
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-block-start: 0.1em;
+  border-radius: 22%;
+  background: radial-gradient(ellipse 130% 100% at 50% -45%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.25) 94%, transparent 95%), var(--_ios-tone);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+/* --- Inline alerts: a grouped cell with a tinted rim --------------------- */
+html[data-theme="ios-skeuomorphic"] .alert { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75); }
 
 /* --- Textures ------------------------------------------------------------ */
 /* Notes: the yellow legal pad, ruled lines and a double red margin. */
@@ -961,14 +1001,26 @@ html[data-theme="ios-skeuomorphic"] .app-bar::before {
   background: linear-gradient(90deg, #e8e8e8 0 85%, transparent 85%) 1px 1px / calc(100% - 2px) calc(100% - 2px) no-repeat;
   box-shadow: 3px 0 0 -1px #d0d0d0;
 }
+/* The strip's signal dots and its centred bold clock; the empty alt text
+   keeps the decorative time out of the accessibility tree. */
 html[data-theme="ios-skeuomorphic"] .app-bar::after {
-  content: "";
+  content: "9:41 AM" / "";
   position: absolute;
-  top: -0.85rem;
-  left: 0.75rem;
-  width: 2.6rem;
-  height: 0.5rem;
-  background: radial-gradient(circle, #e8e8e8 0 0.18rem, transparent 0.2rem) 0 50% / 0.5rem 0.5rem repeat-x;
+  top: -1.15rem;
+  inset-inline: 0;
+  height: 1.15rem;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.15rem;
+  text-align: center;
+  text-shadow: 0 -1px 0 #000000;
+  pointer-events: none;
+  --_dot: radial-gradient(circle, #e8e8e8 0 0.18rem, transparent 0.2rem);
+  background:
+    var(--_dot) 0.75rem 50% / 0.5rem 0.5rem no-repeat, var(--_dot) 1.27rem 50% / 0.5rem 0.5rem no-repeat,
+    var(--_dot) 1.79rem 50% / 0.5rem 0.5rem no-repeat, var(--_dot) 2.31rem 50% / 0.5rem 0.5rem no-repeat,
+    var(--_dot) 2.83rem 50% / 0.5rem 0.5rem no-repeat;
 }
 html[data-theme="ios-skeuomorphic"] .app-status:not(.taskbar) {
   justify-content: center;
@@ -998,7 +1050,7 @@ html[data-theme="ios-skeuomorphic"] .app-status {
 }
 /* Headings and notes written straight on the pinstripe carry the white
    emboss of grouped-table header and footer text; text inside cells doesn't. */
-html[data-theme="ios-skeuomorphic"] .app-main > :is(h1, h2, h3, p, .breadcrumbs) { text-shadow: var(--ios-emboss-light); }
+html[data-theme="ios-skeuomorphic"] .app-main > :is(h1, h2, h3, p, .breadcrumbs) { color: #4c566c; text-shadow: var(--ios-emboss-light); }
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
  * Phone and tablet: core puts the title and the bar buttons on line 1 and
  * the nav buttons on a scrolling line 2; the 44px bar buttons centre their
@@ -1112,7 +1164,10 @@ html[data-theme="ios-skeuomorphic"] {
   --desktop-icon-text-shadow: 0 1px 2px #000000;
   --home-icon-size: 3.6rem;
   --home-tile-radius: 18%;
-  --home-tile-gloss: radial-gradient(ellipse 140% 65% at 50% -8%, rgba(255, 255, 255, 0.75) 0 48%, rgba(255, 255, 255, 0.12) 49%, transparent 72%);
+  /* The curved highlight over the top half, brightest at the top edge. */
+  --home-tile-gloss: radial-gradient(ellipse 130% 100% at 50% -45%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.22) 94%, transparent 95%);
+  --desktop-icon-glyph: #ffffff;
+  --desktop-icon-glyph-selected: #ffffff;
   --home-tile-shadow: 0 2px 3px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
   --home-dock-icon-size: 3.6rem;
   --home-dock-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(210, 218, 228, 0.28) 48%, rgba(40, 44, 52, 0.6) 49%, rgba(18, 20, 24, 0.8) 100%);

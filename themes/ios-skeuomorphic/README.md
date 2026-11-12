@@ -41,7 +41,9 @@ and the two must never converge.
   (`.badge-button`) on a bar are capsule bar buttons too. The active
   one is the brighter "Done" blue. Every label on a blue bar, switch and
   check labels included, is white and embossed. A black iPhone status strip sits above
-  it in the app shell, with a drawn signal row and battery and no text.
+  it in the app shell, with a drawn signal row, a centred bold "9:41 AM"
+  clock (generated content with empty alt text, so screen readers skip it)
+  and a battery.
   The nav bar and the tab bar are pinned (sticky), as UINavigationBar and
   UITabBar were; on phones, where the demo bar wraps to three rows, only
   the tab bar stays pinned.
@@ -74,8 +76,8 @@ and the two must never converge.
   title, bold `#4c566c` with a white emboss and no bar. `.table th` is the
   slim plain-table strip, a gray-blue gradient with white bold type.
 - **Text on the pinstripe** (headings, intro copy and breadcrumbs placed
-  straight in `.app-main`) carries the white emboss of iOS 6 header and
-  footer text. Text inside cells has none.
+  straight in `.app-main`) is slate `#4c566c` with the white emboss of
+  iOS 6 header and footer text. Text inside cells has none.
 - **Grouped cell titles** (`.field-row > .label`) are 17pt-sized
   (1.0625rem) bold black, as Settings' "Wi-Fi" and "Airplane Mode" are.
 - **The segmented control** splits into equal-width segments, as
@@ -88,6 +90,13 @@ and the two must never converge.
   capsule bar buttons beside the "Done" capsule.
 - **Badges and filter chips** (`.badge`, `.badge-button`) are glossy
   split pills with bold embossed labels; an active chip is the Done blue.
+  A count badge inside a selected blue cell (rail item, list row, table
+  row) inverts to white with a `#015fe6` figure, as Mail's counts did.
+- **Pagination** is a row of bordered white bar buttons (the segmented
+  control's split gradient, `#8e9299` rim, bold slate labels); the
+  current page is the Done blue.
+- **Fields in table cells** keep a 44px minimum width, so a narrow table
+  scrolls instead of squeezing a touch target.
 - **The modal** is the UIAlertView: navy glass with a gloss band at the
   top, a white rim, centered white text and dark glossy capsule buttons
   that stretch to fill the row. The primary button is lighter, as OK was.
@@ -97,12 +106,15 @@ and the two must never converge.
   `.band.is-tinted` is stitched Calendar leather.
 - **Small things:** `.badge-danger` is the SpringBoard red badge with a
   white ring. `kbd` is an iOS keyboard key. A popover gets the iPad's thick
-  navy frame. Toasts are the iOS 5 black notification banner. Tappable
+  navy frame. Toasts are the iOS 5 black notification banner with a black
+  rim; a status toast leads with a small glossy tile in its tone, where the
+  banner showed the app icon. Inline alerts are grouped cells with a 1px
+  tinted rim and no side stripe. Tappable
   list rows (links, buttons and radio-select rows) get a grey disclosure
   chevron; a row that draws its own trailing chevron icon shows it in
   the same `#7b7b7b`. An `.accordion-item` is a grouped cell whose grey
-  chevron turns down when open; dropdown and context-menu rows have
-  hairline separators; `.scrollspy-nav` is a light bordered toolbar.
+  chevron turns down when open; dropdown and context-menu rows are square
+  table cells with straight hairline separators; `.scrollspy-nav` is a light bordered toolbar.
 
 ## Layout
 
@@ -119,8 +131,9 @@ apart from `aqua`.
   on its top half is about 1.7:1. This theme's background gradient spans
   only `#5d779c` to `#5a7499`, so white holds 4.5:1 at every stop
   (`scripts/check.py` measures them). The paler steel of the upper bar
-  is an inset sheen (a shadow) over the upper half of the bar: the top
-  edge renders about `#90a5bf`, and the bold 1.25rem title (large text)
+  is an inset sheen (two stacked shadows) over the upper half of the bar:
+  a 1px `#eff2f7` line, then about `#afbfd4` falling to `#5d779c` by
+  mid-bar, and the bold 1.25rem title (large text)
   stays at 3:1 or more over the sheen; bar buttons sit on their own
   capsules. The bar is smooth, with no 50%
   break, as the reference is. Do not lighten the stops.
