@@ -39,12 +39,15 @@ which doesn't translate to a general-purpose page background.
   bottom left (sampled from `xmb-retroarch-main-menu.jpg`: #0056b9 upper
   left, #0398f6 top right, #021059 bottom left), with a translucent white
   ribbon sweeping across the lower middle of the first screen (from 32vh, so more of it shows between the bar and the
-  content): two layered sheets (13% and 6% white) and a third lobe whose white
-  climbs from 3% at the left to 24% at the right edge, so the band
-  brightens to the right as in the RetroArch capture; wide 4-5% strokes
-  soften the outer edges, one crisp 16% highlight line runs along the top
-  and a few tiny sparkle dots stand in for the PS3's particles. No SVG
-  filter: a blur over the full-width ribbon cost frames on every scroll.
+  content): two overlapping sheets (7.5% and 4.5% white) that taper to a
+  hairline at both ends, and a third lobe whose white climbs from 2% at the
+  left to 14% at the right edge, so the band brightens to the right as in
+  the RetroArch capture; three thin 1px strands (8-14% white) trace the
+  sheets' edges, and a few tiny sparkle dots (their own layer, dropped
+  under 600px to save paint) stand in for the PS3's particles. The sheets
+  stay under 8% white so muted text sitting straight on the ribbon (the
+  inbox's message list) keeps 4.5:1. No SVG filter: a blur over the
+  full-width ribbon cost frames on every scroll.
   The top-right highlight is a broad `ellipse 60% 40%` of #0398f6 at 60%.
   The highlight and ribbon are sized to the viewport,
   so a long page doesn't stretch them; the same ribbon continues in the XL
@@ -59,7 +62,11 @@ which doesn't translate to a general-purpose page background.
   neutralises the demo headers' auto-margin spacers so the row takes the
   free space on both sides. The selected category is the lit one, as the
   XMB's selected icon is twice its neighbours' size: 1.35rem white with a
-  white halo against 0.95rem pale-blue neighbours. A category that carries
+  white halo against 0.95rem pale-blue neighbours. A text-only category
+  still reads as the icon row on wide screens: a 1.05rem glass
+  rounded-square tile sits above each label and a 1.85rem white tile with
+  a glow above the selected one (not on touch tiers, where the bar stays
+  compact). A category that carries
   an icon stacks it (1.6em) over its label, and the selected one's icon
   sits on a 2.6em white rounded tile with a navy glyph, as RetroArch's
   selected icon does (a selected rail item's or nav-list row's icon gets the same white
@@ -69,7 +76,8 @@ which doesn't translate to a general-purpose page background.
   share one row beneath it (the theme picker shrinks); the selected
   category drops to 1.15rem, the arm is dropped (the tools row sits right
   beneath, with no room for it), and a brand followed
-  directly by categories keeps its full width.
+  directly by categories takes a full line, so bare `.nav-item`
+  categories get their own row under it too.
 - Current sub-items are marked by light alone, as on the XMB: no side
   stripe (`--row-active-marker`, `--nav-rail-marker` and
   `--tree-selected-marker` are off), a 9% white lift inside lists (14% on
@@ -113,7 +121,14 @@ which doesn't translate to a general-purpose page background.
   radius of 999px produced odd stadium-shaped alert banners and selects
   on large surfaces; interactive pill-shaped chrome keeps its own
   explicit `--btn-radius`/`--nav-item-radius: 999px` regardless.
-- Thin/glass borders, no hard rectangular chrome. Overlapping desktop
+- Thin/glass borders, no hard rectangular chrome: an input group's addon
+  rounds its outer end (core leaves `.input-addon` square), and the
+  scrollspy bar, a tinted `.band` and inline-bordered wrappers round to
+  `--radius`. Desktop icon cells are 6.5rem so the wide face keeps
+  "Neighborhood" whole. Dropdowns, context menus and popovers follow the
+  PS3 Options column (`modalDialog-optionsMenu.jpg`): a dark near-neutral
+  `rgba(20,28,48,.9)` to `rgba(8,12,28,.94)` vertical gradient, not flat
+  navy. Overlapping desktop
   windows are opaque navy (`--modal-bg` inside `.desktop-window`) so the
   window behind never shows through.
 
@@ -179,7 +194,9 @@ flush left. The theme zeroes those spacers inside `.app-bar` and gives
 the row `margin-inline: auto`, so it centres between the brand and the
 tools. The demo row is text-only (the markup has no category icons), so
 the theme marks the selected category by size (1.35rem against 0.95rem),
-white text and a halo, the text form of the enlarged icon.
+white text and a halo, the text form of the enlarged icon, and on wide
+screens draws an empty glass tile over each label (white for the
+selected one) so the row still reads as RetroArch's icon tiles.
 
 ## v5 layout
 
