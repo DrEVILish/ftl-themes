@@ -78,7 +78,7 @@ sense that the interface is a physical object you could pick up.
   rather than wrap) and use a 0.9rem fieldset radius, so the
   OK/Cancel/Apply footer fits the fixed window height.
 - On touch and narrow screens (`pointer: coarse` or 600px and under) the
-  panel's inset fall-off shrinks from 20px/30px blur to 8px, and lists,
+  panel's inset fall-off becomes a 4px unblurred lip, and lists,
   toolbars and toasts drop the pinstripe, to keep scrolling within the
   render budget.
 - Tangerine keeps its card surface dark (`#8a3a00`, 7.8:1 under white)
