@@ -10,6 +10,28 @@
  * ones the apps used. See references/windows-live/RESEARCH.md.
  */
 
+/* Selawik (SIL OFL, Microsoft): the open, metric-compatible Segoe UI
+   stand-in, vendored unmodified (assets/fonts/NOTICE.md), so the Segoe UI
+   Light headings stay light off Windows. */
+@font-face {
+  font-family: "Selawik";
+  src: url("assets/fonts/Selawik-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Selawik";
+  src: url("assets/fonts/Selawik-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Selawik";
+  src: url("assets/fonts/Selawik-Semibold.woff2") format("woff2");
+  font-weight: 600 700;
+  font-display: swap;
+}
+
 html[data-theme="windows-live"] {
   color-scheme: light;
   --bg: #f4f8fc;
@@ -34,7 +56,9 @@ html[data-theme="windows-live"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 3px;
-  --font: "Segoe UI", "Segoe UI Web", Tahoma, sans-serif;
+  /* Segoe UI where Windows has it, else the bundled Selawik (Light 300,
+     Regular, Semibold), which keeps Segoe's metrics and light headings. */
+  --font: "Segoe UI", Selawik, Tahoma, sans-serif;
   --font-mono: Consolas, "Lucida Console", monospace;
   /* The Windows flag's orange — the Live logo's warm corner. */
   --flare: #f78b1f;
@@ -65,7 +89,7 @@ html[data-theme="windows-live"] {
   --panel-radius: 4px;
   --panel-shadow: 0 1px 3px rgba(30, 60, 100, 0.1);
   --panel-header-bg: linear-gradient(180deg, #fafcfe, #e8eff8);
-  --panel-header-fg: #1e395b;
+  --panel-header-fg: #1e5aa0;
   --card-bg: #ffffff;
   --card-border: #c5d2df;
   --card-radius: 4px;
@@ -97,7 +121,7 @@ html[data-theme="windows-live"] {
 
   /* Messenger's display-picture frame: a rounded square, glossy green
      when online. */
-  --avatar-radius: 6px;
+  --avatar-radius: 8px;
   --avatar-bg: linear-gradient(180deg, #ffffff, #dfe9f5);
   --avatar-fg: #1e395b;
 
@@ -129,6 +153,45 @@ html[data-theme="windows-live"] {
   --scrollbar-thumb: #c2c3c9;
   --scrollbar-track: #f0f0f0;
 
+  /* Explorer's selection, not a saturated fill: pale-blue gradient, a
+     #7da2ce frame and dark text, for every pressed/selected control. */
+  --live-select: linear-gradient(180deg, #e5f3fd, #cce8ff);
+  /* Menus hot-track in that selection too, never a solid accent fill. */
+  --menubar-item-bg-active: var(--live-select);
+  --menubar-item-fg-active: var(--text);
+  --toggle-btn-bg-on: var(--live-select);
+  --toggle-btn-fg-on: var(--text);
+  --toggle-btn-border-on: #7da2ce;
+  --segmented-item-bg-active: var(--live-select);
+  --segmented-item-fg-active: var(--text);
+  --pagination-item-bg-active: var(--live-select);
+  --pagination-item-fg-active: var(--text);
+  --badge-bg-active: var(--live-select);
+  --badge-fg-active: var(--text);
+  /* Fifth series: Live purple, so it never doubles the green of series 2. */
+  --chart-series-5: #8b3fa8;
+
+  /* Windows 7 trackbar (Movie Maker's zoom slider): a thin grey groove with
+     a darker frame, drawn as background on the content box so the hit area
+     stays at --tap-min; a grey-gloss thumb in a #707070 frame. */
+  --slider-height: 5px;
+  --slider-radius: 2px;
+  --slider-bg: linear-gradient(180deg, #e3e6ea, #fbfcfd) content-box 1px 1px / calc(100% - 2px) calc(100% - 2px) no-repeat, #7a8594;
+  --slider-thumb-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%);
+  --slider-thumb-shadow: 0 0 0 1px #707070;
+  --slider-thumb-radius: 2px;
+
+  /* Win7 progress is a tall glossy bar in a grey trough. */
+  --progress-height: 0.9rem;
+
+  /* Transport GO: a Win7 push button, not an outlined label. */
+  --go-bg: var(--btn-bg);
+  --go-bg-hover: var(--btn-bg-hover);
+  --go-fg: var(--text);
+  --go-border: #707070;
+  --go-border-width: 1px;
+  --go-shadow: var(--btn-shadow);
+
   /* The aurora: the pale-blue swooshes behind every Live sign-in, splash
      and welcome screen — soft blue light with a white ribbon of light
      sweeping across it. Fixed px Y so it stays on the first screen. */
@@ -148,19 +211,125 @@ html[data-theme="windows-live"] :is(h2, h3) { font-weight: 300; color: #1e395b; 
 html[data-theme="windows-live"] .stat-value { font-family: var(--font); font-weight: 300; color: #1e395b; }
 html[data-theme="windows-live"] .modal-header { font-weight: 300; font-size: 1.4rem; }
 
+/* The default button: Win7's gloss with a faint blue tint, a #3c7fb1
+   frame and the cyan inner glow; only hover turns it pale blue. */
 html[data-theme="windows-live"] .btn-primary {
-  --btn-bg: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 50%, #bee6fd 51%, #a7d9f5 100%);
+  --btn-bg: linear-gradient(180deg, #f2f8fd 0%, #e6f1fb 50%, #d6e8f8 51%, #c9e0f5 100%);
   --btn-fg: var(--text);
   --btn-border: #3c7fb1;
-  --btn-shadow: inset 0 0 0 1px #9ed7fb, 0 0 4px rgba(51, 153, 255, 0.6);
+  --btn-shadow: inset 0 0 0 1px #9ed7fb;
+  --btn-shadow-hover: inset 0 0 0 1px #9ed7fb, 0 0 4px rgba(51, 153, 255, 0.5);
 }
+/* Win7 had no coloured push buttons: Delete and Confirm are the grey gloss
+   faintly tinted, with the tone only in the label. */
+html[data-theme="windows-live"] .btn-danger {
+  --btn-bg: linear-gradient(180deg, #fdf5f3 0%, #f8e8e4 50%, #f1d9d3 51%, #e9c9c1 100%);
+  --btn-fg: var(--danger-text);
+  --btn-border: #8a5a52;
+}
+html[data-theme="windows-live"] .btn-success {
+  --btn-bg: linear-gradient(180deg, #f4faf2 0%, #e8f4e4 50%, #d8ecd2 51%, #c9e3c1 100%);
+  --btn-fg: var(--success-text);
+  --btn-border: #5d7a55;
+}
+html[data-theme="windows-live"] .toggle-btn.is-danger { --toggle-btn-bg-on: linear-gradient(180deg, #fdf5f3, #f1d9d3); --toggle-btn-fg-on: var(--danger-text); --toggle-btn-border-on: #c98a7f; }
 html[data-theme="windows-live"] .btn-secondary { --btn-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%); --btn-fg: var(--text); --btn-border: #707070; }
+/* Toolbar-style buttons: flat at rest, Win7 hot-track frame on hover. */
+html[data-theme="windows-live"] :is(.btn-tertiary, .btn-ghost) {
+  --btn-shadow: none;
+  --btn-bg-hover: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 50%, #bee6fd 51%, #a7d9f5 100%);
+  --btn-border-hover: #3c7fb1;
+}
+/* Win7 disabled push button: flat grey, grey frame, grey label. */
+html[data-theme="windows-live"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
+  --btn-bg: #f4f4f4;
+  --btn-bg-hover: #f4f4f4;
+  --btn-border: #adb2b5;
+  --btn-border-hover: #adb2b5;
+  --btn-fg: #838383;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  opacity: 1;
+}
+/* Core pads a vertical slider with padding-inline, which in its vertical
+   writing mode is top/bottom, leaving the groove 24px wide; pad the sides
+   physically so it is the same thin groove as the horizontal one. */
+html[data-theme="windows-live"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+html[data-theme="windows-live"] .segmented-item.is-active { box-shadow: inset 0 0 0 1px #7da2ce; }
+html[data-theme="windows-live"] .pagination-item.is-active { border-color: #7da2ce; }
+html[data-theme="windows-live"] .badge-button.is-active { box-shadow: inset 0 0 0 1px #7da2ce; }
+/* Filter chips are toolbar items: flat until hot-tracked. */
+html[data-theme="windows-live"] .badge-button:not(.is-active) { --badge-bg: transparent; --badge-fg: var(--text); --badge-border: transparent; }
+html[data-theme="windows-live"] .badge-button:not(.is-active):hover { box-shadow: inset 0 0 0 1px #99d1ff; }
+
+/* Toggle switch: no Win7 counterpart, so it is drawn from the trackbar —
+   the grey groove, a grey-gloss thumb — and turns Explorer pale blue on. */
+html[data-theme="windows-live"] {
+  --switch-radius: 3px;
+  --switch-bg: linear-gradient(180deg, #e3e6ea, #fbfcfd);
+  --switch-border: #7a8594;
+  --switch-bg-on: var(--live-select);
+  --switch-border-on: #3c7fb1;
+  --switch-thumb-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%);
+  --switch-thumb-bg-on: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 50%, #bee6fd 51%, #a7d9f5 100%);
+  --switch-thumb-radius: 2px;
+}
+html[data-theme="windows-live"] .switch-thumb { box-shadow: 0 0 0 1px #707070; }
+
+/* Status: the information bar's tints per tone, each in its own frame. */
+html[data-theme="windows-live"] .alert-info { --alert-bg: #f2f8fd; --alert-border: #8db2e3; }
+html[data-theme="windows-live"] .alert-warning { --alert-bg: #ffffe1; --alert-border: #e1d38a; }
+html[data-theme="windows-live"] .alert-danger { --alert-bg: #fdf0ee; --alert-border: #e2a39b; }
+html[data-theme="windows-live"] .alert-success { --alert-bg: #f0f8ee; --alert-border: #9fcf8f; }
+
+/* Win7 check boxes and radios: a white-to-grey box in a #8f8f8f frame, a
+   pale inner square, a dark Live-blue tick. Core's size is kept. */
+html[data-theme="windows-live"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 1px solid #8f8f8f;
+  background-image: linear-gradient(135deg, #dcdcdc, #ffffff);
+  box-shadow: inset 0 0 0 2px #f4f4f4, inset 0 0 0 3px #c9cfd6;
+  display: inline-grid;
+  place-content: center;
+}
+html[data-theme="windows-live"] .checkbox { border-radius: 1px; }
+html[data-theme="windows-live"] .radio { border-radius: 50%; }
+html[data-theme="windows-live"] :is(.checkbox, .radio):hover { border-color: #3c7fb1; }
+html[data-theme="windows-live"] .checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2l3 3 6-6.4' fill='none' stroke='%231e395b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"), linear-gradient(135deg, #dcdcdc, #ffffff);
+}
+html[data-theme="windows-live"] .checkbox:indeterminate {
+  background-image: linear-gradient(#2f6fc2, #1e395b), linear-gradient(135deg, #dcdcdc, #ffffff);
+  background-size: 50% 50%, auto;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+html[data-theme="windows-live"] .radio:checked {
+  background-image: radial-gradient(circle, #6fb4ea 0, #1e5aa0 30%, transparent 33%), linear-gradient(135deg, #dcdcdc, #ffffff);
+}
+
+/* Pane headers: Mail's "Quick views", regular-weight Live blue. */
+html[data-theme="windows-live"] .panel-header { font-weight: 400; font-size: 1.05rem; }
+
+/* Live Essentials' full-colour icons, for the glyphs people know them by:
+   yellow folders, red delete, blue mail, gold star, green contacts. Only
+   in panes, lists and toolbar icon buttons; elsewhere icons follow text. */
+html[data-theme="windows-live"] :is(.nav-rail, .tree, .list-item, .toolbar, .btn-ghost.btn-icon:not(:disabled)) .icon:has(use[href$="#icon-folder"]) { color: #c8901a; }
+html[data-theme="windows-live"] :is(.nav-rail, .tree, .list-item, .toolbar, .btn-ghost.btn-icon:not(:disabled)) .icon:has(use[href$="#icon-trash"]) { color: #d03a2a; }
+html[data-theme="windows-live"] :is(.nav-rail, .tree, .list-item, .toolbar, .btn-ghost.btn-icon:not(:disabled)) .icon:has(use:is([href$="#icon-mail"], [href$="#icon-mailbox"], [href$="#icon-mail-forward"], [href$="#icon-mail-opened"], [href$="#icon-message-reply"])) { color: #2f6fc2; }
+html[data-theme="windows-live"] :is(.nav-rail, .tree, .list-item, .toolbar, .btn-ghost.btn-icon:not(:disabled)) .icon:has(use[href$="#icon-star"]) { color: #e0a800; }
+html[data-theme="windows-live"] :is(.nav-rail, .tree, .list-item, .toolbar, .btn-ghost.btn-icon:not(:disabled)) .icon:has(use:is([href$="#icon-user"], [href$="#icon-users"])) { color: #3a8e3a; }
+
 html[data-theme="windows-live"] .stat-value,
 html[data-theme="windows-live"] .table td { font-variant-numeric: tabular-nums; }
 
-/* Messenger presence frame round every avatar: glossy green. */
+/* Messenger's display-picture frame round every avatar: a thick glossy
+   green bezel, light along the top, darker below, in a dark-green edge.
+   Solid shadows only (no blur), so it stays cheap to paint. */
 html[data-theme="windows-live"] .avatar {
-  box-shadow: 0 0 0 1px #3f9a1e, inset 0 0 0 1px #ffffff, 0 0 0 3px #7ad65a, 0 0 0 4px #3f9a1e, 0 2px 5px 3px rgba(40, 120, 20, 0.25);
+  box-shadow: 0 0 0 1px #ffffff, 0 1px 0 4px #4fae2c, 0 -1px 0 4px #b8ef9e, 0 0 0 5px #2f7d14;
 }
 
 /* Ribbon tabs: one row, the selected tab white and joined to the page. */
@@ -171,19 +340,29 @@ html[data-theme="windows-live"] .tab.is-active { position: relative; bottom: -1p
 
 /* --- Layout ------------------------------------------------------------ *
  * A Live app window: the Scenic Ribbon's tab strip across the top with
- * the blue application button at its left end, the white app on the
- * aurora, and the pale status bar ("1 message(s), 0 unread") below. */
+ * the blue application button at its left end, the white work area
+ * (only a faint wash of the aurora under the ribbon) and the pale status
+ * bar ("1 message(s), 0 unread") below. */
 html[data-theme="windows-live"] {
-  --app-bg: var(--live-aurora);
+  --app-bg:
+    radial-gradient(ellipse 60% 220px at 100% 0, rgba(150, 200, 245, 0.3), transparent 70%),
+    linear-gradient(180deg, #eef5fc 0, #ffffff 240px);
   --app-padding: 0;
   --app-gap: 0;
   --app-bar-bg: linear-gradient(180deg, #ffffff 0, #f1f5fb 60%, #e3ebf6 100%);
   --app-bar-fg: #1e395b;
   --app-bar-rule: #b6bccc;
   --app-bar-rule-width: 1px;
-  --app-bar-height: 2.6rem;
+  --app-bar-height: 2.2rem;
   --app-bar-padding: 0.35rem 0.75rem 0;
-  --app-main-padding: 1.25rem;
+  /* Main clears the ribbon band hung under the tab strip (below). */
+  --app-main-padding: calc(1.25rem + 24px) 1.25rem 1.25rem;
+  --app-main-padding-tablet: calc(var(--space-m) + 24px) var(--space-m) var(--space-m);
+  --app-main-padding-mobile: calc(var(--space-s) + 24px) var(--space-s) var(--space-s);
+  /* The ribbon body: a 24px band under the tab strip that the selected tab
+     flows into, white fading to #e3ebf6 and closed by the #b6bccc rule.
+     One background on main, so it takes no layout and never covers a menu. */
+  --app-main-bg: linear-gradient(180deg, #ffffff 0, #ffffff 8px, #f1f5fb 17px, #e3ebf6 23px, #b6bccc 23px, #b6bccc 24px, rgba(30, 60, 100, 0.12) 24px, transparent 29px) top / 100% 29px no-repeat;
   --app-status-bg: linear-gradient(180deg, #f6f9fc, #e3eaf3);
   --app-status-fg: #3b4a5c;
   --app-status-rule: #c5d2df;
@@ -199,6 +378,9 @@ html[data-theme="windows-live"] .app-bar {
   --nav-item-fg-active: #1e395b;
   --nav-item-bg-active: #ffffff;
   --nav-item-radius: 3px 3px 0 0;
+  /* Menu-bar items in the strip are ribbon tabs too. */
+  --menubar-item-radius: 3px 3px 0 0;
+  --menubar-item-bg-active: linear-gradient(180deg, #ffffff, #eef4fb);
 }
 html[data-theme="windows-live"] .app-bar .nav { padding: 0; align-items: flex-end; gap: 0.15rem; }
 /* The application button: blue, rounded on top, a little Windows flag
@@ -215,6 +397,7 @@ html[data-theme="windows-live"] .app-bar .nav-brand {
   background: var(--nav-brand-bg);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.55), inset 0 0.6rem 0.5rem -0.4rem rgba(255, 255, 255, 0.25), 0 0 0 1px #164887;
   font-weight: 400;
+  font-size: 0.875rem;
   white-space: nowrap;
 }
 html[data-theme="windows-live"] .app-bar .nav-brand::before {
@@ -233,14 +416,38 @@ html[data-theme="windows-live"] .app-bar .nav-brand::before {
 }
 /* Nav items are ribbon tabs; the active one white, framed, joined to
    the ribbon below. */
+/* 9pt tab labels with tight padding, as on the Scenic Ribbon; the hit
+   area stays at --tap-min. */
+html[data-theme="windows-live"] :is(.app-bar .nav-item, .app-bar .menubar > li > :is(button, a)) {
+  font-size: 0.8125rem;
+  min-block-size: var(--tap-min);
+}
 html[data-theme="windows-live"] .app-bar .nav-item {
-  padding: 0.3rem 0.9rem;
+  padding: 0.3rem 0.75rem 0.35rem;
   border: 1px solid transparent;
   border-bottom: 0;
   position: relative;
   bottom: -1px;
 }
 html[data-theme="windows-live"] .app-bar .nav-item.is-active { border-color: #b6bccc; }
+/* A ribbon always has one tab open: with no current item, the first tab
+   (Home) is drawn open. */
+html[data-theme="windows-live"] .app-bar .nav:not(:has(.nav-item.is-active)) > .nav-item:first-of-type { background: var(--nav-item-bg-active); border-color: #b6bccc; }
+html[data-theme="windows-live"] .app-bar .menubar > li > :is(button, a) {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  position: relative;
+  bottom: -1px;
+}
+html[data-theme="windows-live"] .app-bar .menubar > li > :is(button, a).is-active { background: #ffffff; border-color: #b6bccc; }
+html[data-theme="windows-live"] .app-bar .menubar > li:hover > :is(button, a):not(.is-active) { border-color: #d5dde8; }
+
+/* Toolbars are ribbon groups: the band's white-to-blue fill, the ribbon
+   rule below, and pale dividers between groups. */
+html[data-theme="windows-live"] {
+  --toolbar-bg: linear-gradient(180deg, #ffffff, #eef3fa);
+}
+html[data-theme="windows-live"] .toolbar { border-bottom-color: #b6bccc; }
 html[data-theme="windows-live"] .app-bar .nav-item:hover:not(.is-active) { background: linear-gradient(180deg, #ffffff, #eef4fb); border-color: #d5dde8; }
 html[data-theme="windows-live"] .app-bar :is(.select, .btn, .avatar) { align-self: center; }
 
@@ -283,4 +490,71 @@ html[data-theme="windows-live"] {
   --bar-chart-bar-alt: linear-gradient(90deg, #2b7a2b, #5fb35f 48%, #3a8e3a 52%, #2b7a2b);
   --bar-chart-radius: 2px 2px 0 0;
   --hero-bg: var(--live-aurora);
+}
+
+/* --- Selection and desktop windows ---------------------------------------- *
+ * Explorer's selection everywhere — desktop icons, file views, the folder
+ * tree: pale blue in a #99d1ff frame with dark text, no accent bar. Window
+ * captions are Windows 7's: plain dark title, grey-gloss minimise and
+ * maximise joined to the wide red close. */
+html[data-theme="windows-live"] {
+  --desktop-icon-label-bg-selected: var(--live-select);
+  --desktop-icon-label-fg-selected: var(--text);
+  --desktop-icon-label-radius: 3px;
+  --tree-item-bg-selected: var(--live-select);
+  --tree-item-fg-selected: var(--text);
+  --tree-selected-marker: inset 0 0 0 1px #99d1ff;
+  --tree-item-radius: 3px;
+  --list-active-marker: inset 0 0 0 1px #99d1ff;
+  /* A featured card is the framed Explorer selection, not an accent outline. */
+  --list-featured-border-width: 1px;
+  --list-featured-border: #99d1ff;
+  /* A plain nav outside the ribbon: Explorer selection for the current item. */
+  --nav-item-bg-active: var(--live-select);
+  --nav-item-fg-active: var(--text);
+  --nav-brand-fg: #1e395b;
+  --nav-rail-marker: transparent;
+}
+html[data-theme="windows-live"] .list-cards > .list-item.is-featured { --list-card-bg: var(--live-select); }
+html[data-theme="windows-live"] .nav:not(.app-bar .nav) > .nav-item:is(.is-active, [aria-current="page"]) { box-shadow: inset 0 0 0 1px #99d1ff; }
+html[data-theme="windows-live"] .nav:not(.app-bar .nav) > .nav-brand { font-weight: 400; }
+/* The page's signature nav patterns paint the current link --accent-text
+   on --accent (near 1:1) from unlayered page CSS; re-pointing those two
+   tokens on the link makes it Explorer's selection: pale blue, dark text. */
+html[data-theme="windows-live"] .pattern-nav a[aria-current="page"] { --accent: #d9edfe; --accent-text: var(--text); box-shadow: inset 0 0 0 1px #99d1ff; }
+/* Mail's folder pane: the current folder is the framed pale-blue box. */
+html[data-theme="windows-live"] .nav-rail { --nav-item-bg-active: var(--live-select); --nav-item-fg-active: var(--text); }
+html[data-theme="windows-live"] .nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) { box-shadow: inset 0 0 0 1px #99d1ff; border-radius: 3px; }
+html[data-theme="windows-live"] .desktop-icon:has(input:checked) > label > span { box-shadow: inset 0 0 0 1px #99d1ff; }
+html[data-theme="windows-live"] .desktop-window {
+  --modal-header-fg: #1e1e1e;
+  --modal-header-close-fg: #1e1e1e;
+  --window-header-fg-inactive: #6d6d6d;
+  --window-header-filter-inactive: none;
+}
+html[data-theme="windows-live"] .desktop-window > .modal > .modal-header { font-weight: 400; font-size: 1rem; }
+/* A .modal with caption buttons is a window too: same plain title. */
+html[data-theme="windows-live"] .modal:has(> .modal-header .btn-min) { --modal-header-fg: #1e1e1e; }
+html[data-theme="windows-live"] .modal > .modal-header:has(.btn-min) { font-weight: 400; font-size: 1rem; }
+html[data-theme="windows-live"] .desktop-window .modal-header > :is(.btn-min, .btn-max) { margin-inline-end: -0.5rem; }
+html[data-theme="windows-live"] .modal-header:has(.btn-min) :is(.btn-min, .btn-max) {
+  --btn-close-bg: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%) center / 25px 18px no-repeat, linear-gradient(#8a8a8a, #8a8a8a) center / 27px 20px no-repeat;
+  --btn-close-bg-hover: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 50%, #bee6fd 51%, #a7d9f5 100%) center / 25px 18px no-repeat, linear-gradient(#3c7fb1, #3c7fb1) center / 27px 20px no-repeat;
+  --btn-close-width: 27px;
+  --btn-close-height: 20px;
+  --btn-close-radius: 0;
+  --btn-close-glyph-size: 1em;
+  --btn-close-fg: #1e1e1e;
+}
+html[data-theme="windows-live"] .modal-header:has(.btn-min) .btn-close {
+  --btn-close-bg: linear-gradient(180deg, #e8a493, #d0573c 45%, #c1301a 55%, #d7612f) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+  --btn-close-bg-hover: linear-gradient(180deg, #f2b8a6, #e5684b 45%, #e81123 55%, #ea7a43) center / 41px 18px no-repeat, linear-gradient(#6b1c10, #6b1c10) center / 43px 20px no-repeat;
+  --btn-close-width: 43px;
+  --btn-close-height: 20px;
+  --btn-close-radius: 0;
+  --btn-close-glyph-size: 1.1em;
+  --modal-header-close-fg: #ffffff;
+  --btn-close-fg: #ffffff;
+  --btn-close-fg-hover: #ffffff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
