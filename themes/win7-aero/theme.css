@@ -67,17 +67,17 @@ html[data-theme="win7-aero"] {
      Every glass surface mixes it into translucent white (or dark, for the
      taskbar), so text contrast holds whatever the tint. */
   --aero-tint: #74b8fc;
-  /* The frost the tint is mixed into: pale sky, half clear, so Sky glass
-     lands near the reference's rgb(160 195 230) and the blurred desktop
+  /* The frost the tint is mixed into: grey-blue, over half clear, so Sky glass
+     lands near the reference glass (#698fb5) and the blurred desktop
      still carries the colour. Dark tints (see the variants) get a denser
      frost, as Win7's colour-intensity slider would, so the black glowing
      caption keeps its contrast. */
-  --w7-frost: rgb(228 238 248 / 0.58);
-  --w7-frost-low: rgb(228 238 248 / 0.5);
+  --w7-frost: rgb(214 226 238 / 0.46);
+  --w7-frost-low: rgb(214 226 238 / 0.4);
   /* How much Window Color goes into the frost (the colour-intensity
-     slider): Sky 35%; the deep tints run it high (variants below). */
-  --w7-mix: 35%;
-  --w7-mix-low: 41%;
+     slider): Sky 25%; the deep tints run it high (variants below). */
+  --w7-mix: 25%;
+  --w7-mix-low: 30%;
   --flare: #7fd8ff;
 
   /* Glass, not plastic: translucent fills over a blurred backdrop, not an
@@ -367,8 +367,9 @@ html[data-theme="win7-aero"] {
 }
 html[data-theme="win7-aero"] .app-bar,
 html[data-theme="win7-aero"] .app-status {
-  backdrop-filter: blur(24px) saturate(0.8);
-  -webkit-backdrop-filter: blur(24px) saturate(0.8);
+  /* saturate(0.45): the desktop reads through as smoky blue-grey. */
+  backdrop-filter: blur(24px) saturate(0.45);
+  -webkit-backdrop-filter: blur(24px) saturate(0.45);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
@@ -431,6 +432,8 @@ html[data-theme="win7-aero"] .app-status { border-top: 0; }
  * top edge instead, as a maximised window's do. */
 @media (max-width: 900px) {
   html[data-theme="win7-aero"] .app-bar { padding-right: 1rem; padding-top: calc(20px + 0.35rem); }
+  /* The title takes the first line whole; the nav wraps below it. */
+  html[data-theme="win7-aero"] .app-bar > .nav-brand { flex: 1 0 100%; }
 }
 /* A phone's window is maximised, and a maximised Win7 window has no side
    frame: the client area runs edge to edge between bar and status strip. */
@@ -804,6 +807,7 @@ html[data-theme="win7-aero"] .panel-header {
 html[data-theme="win7-aero"] .app-status::before { content: none; }
 html[data-theme="win7-aero"] .app-status { padding-inline-start: 0.6rem; }
 html[data-theme="win7-aero"] .app-status:not(.taskbar) { --muted: #000000; }
+html[data-theme="win7-aero"] .app-status:not(.taskbar) .text-muted { color: #000000; text-shadow: 0 0 8px #ffffff, 0 0 2px #ffffff, 0 0 12px rgba(255, 255, 255, 0.8); }
 /* A strip marked .taskbar is the Win7 taskbar: dark glass, white text. */
 html[data-theme="win7-aero"] .app-status.taskbar { --app-status-bg: var(--taskbar-bg); --app-status-fg: #ffffff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.5); }
 html[data-theme="win7-aero"] .app-status > :last-child:not(:first-child) {
@@ -919,9 +923,15 @@ html[data-theme="win7-aero"] .modal-header::after {
   /* Touch: a tighter panel shadow (a 24px one repaints with every scrolled
      panel) and a plain blur, no saturate pass, to keep scrolling cheap. */
   html[data-theme="win7-aero"] { --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 4px rgba(20, 50, 90, 0.2); }
-  html[data-theme="win7-aero"] :is(.modal, .dropdown, .app-bar, .app-status) {
+  html[data-theme="win7-aero"] :is(.modal, .dropdown) {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+  }
+  /* The window frame skips the blur on touch: it repainted on every
+     scrolled frame. The translucent tinted fill alone stays. */
+  html[data-theme="win7-aero"] :is(.app-bar, .app-status) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
 
@@ -934,7 +944,12 @@ html[data-theme="win7-aero"] .meter-v .meter-fill { box-shadow: inset calc(var(-
 /* Details-view header: regular ink labels with a light divider between
    columns, as in Explorer. */
 html[data-theme="win7-aero"] { --table-head-fg: #1e395b; }
-html[data-theme="win7-aero"] .table thead th { font-weight: 400; font-size: 0.85em; }
+html[data-theme="win7-aero"] .table thead th { font-weight: 400; }
+/* Explorer's 9pt UI size (12px) for cells, headers, small buttons, chips
+   and the status strip; chips stay regular weight. */
+html[data-theme="win7-aero"] .table :is(th, td),
+html[data-theme="win7-aero"] :is(.btn-sm, .badge-button, .app-status:not(.taskbar)) { font-size: 0.923rem; }
+html[data-theme="win7-aero"] .badge-button { font-weight: 400; }
 html[data-theme="win7-aero"] .table thead th + th { border-inline-start: 1px solid #d5dfe5; }
 /* A navigation list (settings sections) is Explorer's navigation pane:
    white, unboxed rows; only the current item carries the framed fill. */
@@ -955,9 +970,40 @@ html[data-theme="win7-aero"] .app-bar .avatar {
    bar's rows (core stacks the rows; the controls keep their tap height). */
 @media (max-width: 480px) {
   html[data-theme="win7-aero"] .app-bar { padding-top: 20px; padding-bottom: 0.25rem; }
+  /* Phone desktop: the tray is the status bar along the top edge, so the
+     caption buttons hang under it instead of over the clock and icons. */
+  html[data-theme="win7-aero"] .desktop > .app-bar { padding-top: calc(var(--desktop-statusbar-height, 1.6rem) + 20px + 0.2rem); }
+  html[data-theme="win7-aero"] .desktop > .app-bar::after { top: var(--desktop-statusbar-height, 1.6rem); }
 }
 /* A drawer's caption is the same pale strip with the navy heading (Luna
    points it at the dialog caption's white). */
 html[data-theme="win7-aero"] .drawer.drawer > .panel-header { --panel-header-fg: #1e395b; }
 /* Win7 taskbar buttons pad their label 6px from the frame. */
 html[data-theme="win7-aero"] .app-status.taskbar > .taskbar-task { padding-inline: 0.5em; }
+/* --- Round-3 polish ------------------------------------------------------ */
+html[data-theme="win7-aero"] {
+  /* Explorer's navigation pane is white; only the current item is framed. */
+  --nav-rail-bg: #ffffff;
+  /* Read-only edit boxes stay near-white inside the #abadb3 frame. */
+  --input-readonly-bg: #f4f4f4;
+  --input-mirror-bg: #f4f4f4;
+  /* A spotlit card: Explorer's selection fill in a 2px Win7 focus-blue
+     frame, not a heavy accent bar. */
+  --list-featured-border: #569de5;
+  --list-featured-border-width: 2px;
+  --ranked-spot: #569de5;
+  --ranked-spot-width: 2px;
+  /* Switch: a 3px-radius sunken track; on, Explorer's selection blue; the
+     thumb is the slider's grey-gloss button. */
+  --switch-radius: 3px;
+  --switch-thumb-radius: 2px;
+  --switch-bg: linear-gradient(180deg, #e3e3e3, #f7f7f7);
+  --switch-border: #8e8f8f;
+  --switch-bg-on: var(--w7-select-bg);
+  --switch-border-on: #3c7fb1;
+  --switch-thumb-bg: linear-gradient(180deg, #f2f2f2, #ebebeb 50%, #dddddd 51%, #cfcfcf);
+  --switch-thumb-bg-on: linear-gradient(180deg, #f2f2f2, #ebebeb 50%, #dddddd 51%, #cfcfcf);
+}
+html[data-theme="win7-aero"] .ranked-item.is-spotlight { --ranked-item-bg: var(--w7-select-bg); }
+html[data-theme="win7-aero"] .list-cards > .list-item.is-featured { --list-card-bg: var(--w7-select-bg); }
+html[data-theme="win7-aero"] .switch-thumb { box-shadow: inset 0 0 0 1px #707070, inset 0 0 0 2px rgba(255, 255, 255, 0.75); }

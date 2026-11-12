@@ -40,13 +40,16 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   saturate(0.8)`, the title bar and status strip 24px. The client area is
   opaque white and is not blurred (a full-height blurred scroller cost
   phones most of their frames); buttons, panels and toolbars on it do not
-  blur either. Touch devices drop to a plain `blur(12px)`.
+  blur either. Touch devices drop dialogs and menus to a plain
+  `blur(12px)` and leave the title bar and status strip unblurred (the
+  tinted fill alone), so scrolling stays cheap.
 - The title bar carries Aero's faint diagonal **glare streaks**, a 1px
   dark outer frame, black caption text with a soft **white glow** behind
   it, and the joined **caption-button group** (min / max / red close)
   hanging flush from the top edge, drawn as one inline SVG. The glass
-  desaturates what shows through it (`saturate(0.65)`), so the frame
-  reads as Sky's cool blue-grey over the wallpaper, not cornflower. Bar text and
+  desaturates what shows through it (`saturate(0.45)`), so the frame
+  reads as Sky's smoky blue-grey over the wallpaper (about `#7ca2c7`,
+  HSL s0.40 l0.64, against the reference's `#698fb5`), not cornflower. Bar text and
   breadcrumbs are `#000` with the glow, never Luna's white outline.
 - The window frame: the white client area sits `--w7-frame` (7px) inside
   a tinted glass border down both sides, as dialogs (`--modal-bg`) do.
@@ -99,6 +102,15 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   same green (`#22c018`) with a hard-split pale top half, amber and red
   only for the high bands. Details-view headers are regular-weight navy
   labels with a 1px `#d5dfe5` divider between columns.
+- Type keeps Explorer's 9pt (12px) for table cells and headers, small
+  buttons, filter chips (regular weight) and the status strip; the
+  status strip's secondary text is black with the white glow too.
+- The app rail is the white navigation pane; read-only and mirror
+  fields are `#f4f4f4` in the `#abadb3` frame; a spotlit card is the
+  selection fill in a 2px `#569de5` frame; switches are a 3px sunken
+  grey track (selection blue when on) with the slider's grey-gloss thumb.
+- Phones: the title takes the bar's first line whole, and on the desktop
+  page the caption buttons hang below the top status bar (clock, tray).
 - The account picture in the title bar is an opaque `#dbe8f6` tile in a
   `#7da2ce` frame with a smaller presence dot on its corner.
 
@@ -188,11 +200,11 @@ blur, still legible, just not glassy.
 
 Windows 7's *Personalize → Window Color* tinted all the glass. The theme
 does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
-mixed into a pale sky frost (`--w7-frost`, `rgb(228 238 248 / 0.5–0.58)`)
-on the title bar, dialogs, side frame and status strip (`--w7-mix` 35% fading
-to `--w7-mix-low` 41%; Ruby uses a denser `rgb(236 241 248 / 0.64–0.72)` frost, Twilight, Violet and
+mixed into a grey-blue frost (`--w7-frost`, `rgb(214 226 238 / 0.4–0.46)`)
+on the title bar, dialogs, side frame and status strip (`--w7-mix` 25% fading
+to `--w7-mix-low` 30%; Ruby uses a denser `rgb(236 241 248 / 0.64–0.72)` frost, Twilight, Violet and
 Slate run 62–68% into a thin `0.34–0.4` frost so the glass stays deep, Chocolate 48–54% into `0.54–0.6`), so Sky glass lands near the
-reference's `rgb(160,195,230)`; and into dark blue-grey
+reference's smoky `#698fb5`–`#83aad1`; and into dark blue-grey
 on the taskbar, so the desktop carries the colour and the black caption text with its
 white glow stays readable at every tint. The other fifteen presets are
 variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
