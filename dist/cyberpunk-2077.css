@@ -3824,23 +3824,23 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   transform: translate(-50%, -50%);
 }
 .slider { touch-action: none; }
-@media (max-width: 900px), (any-pointer: coarse) {
-  /* The range input's own box is both its track and its target. On touch
-     it grows to the target height; padding keeps the drawn track the same
-     thin line in the middle (the border can't follow it, so it hides). */
-  .slider:not(.is-range > .slider) {
-    height: var(--tap-min);
-    padding-block: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
-    background-clip: content-box;
-    border-color: transparent;
-  }
-  /* The same, sideways, for a vertical slider. */
-  .slider.is-vertical:not(.is-range > .slider) {
-    width: var(--tap-min);
-    height: var(--slider-length, 4.5rem);
-    padding-block: 0;
-    padding-inline: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
-  }
+/* The range input's own box is both its track and its target. It grows to
+   --tap-min (44px on touch tiers, 24px on desktop); padding keeps the drawn
+   track the same thin line in the middle. The border can't follow it, so it
+   hides: a theme whose track is drawn by the border (a bevelled groove)
+   redraws it with --slider-bg as a background on the content box. */
+.slider:not(.is-range > .slider) {
+  height: var(--tap-min);
+  padding-block: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
+  background-clip: content-box;
+  border-color: transparent;
+}
+/* The same, sideways, for a vertical slider. */
+.slider.is-vertical:not(.is-range > .slider) {
+  width: var(--tap-min);
+  height: var(--slider-length, 4.5rem);
+  padding-block: 0;
+  padding-inline: calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
 }
 /* Inline text links inside running text are exempt (WCAG 2.5.8); links
    that stand alone as navigation are not. */
