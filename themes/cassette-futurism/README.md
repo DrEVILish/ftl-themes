@@ -33,6 +33,8 @@ How it differs from its neighbours:
    recessed displays: `.readout`, `.meter`, `.input`/`.select`, `.log`,
    `.scribble`, the status strip, the one-time-code window and the KPI
    figure (`.stat-value`, a small recessed readout with segment digits).
+   Every VFD glows the same teal: core's `--vfd-ink` is set to `--cf-vfd`
+   (`#6fe8d6`), with amber only on an explicit `.is-amber`.
    Dark brown (`--cf-choc`) is the top deck:
    app bar, table head, modal title, transport.
 2. **Digits are segments.** `.readout` sets DSEG7 Classic Bold Italic in
@@ -48,9 +50,10 @@ How it differs from its neighbours:
    Ghost and tertiary buttons are still caps, just quieter: a lower-contrast
    beige face (`#ebe4d4` to `#d6ccb7`, `#8a7e68` edge), and a dark choc cap
    on the dark bands (app bar, transport, hero, table head, window panes).
-4. **`.switch` is a bat-handle toggle, never a pill.** It is a chrome ball
-   on a thin shaft out of a larger chrome ring nut (dark bore, bright face,
-   dark rim) at the track centre, on a 3.6em x 1.6em slotted plate. Off
+4. **`.switch` is a bat-handle toggle, never a pill.** It is a small chrome ball
+   (0.74em, with a hard dark outline) on a shaft that narrows in two steps
+   out of a chrome ring nut about 1.55x its size (1.16em: dark bore, bright
+   face, dark rim) at the track centre, on a 4.2em x 1.6em slotted plate. Off
    throws the ball left over a dark slot. On throws it right and the slot
    lights orange. Position and colour both carry the state.
 5. **The stripe is trim, used three times.** Yellow, orange, red and brown,
@@ -67,7 +70,8 @@ How it differs from its neighbours:
 ## Signature details
 
 - **Shell = a deck housing**: dark top deck with a 4-band stripe (stacked
-  hard box-shadows), an inset off-white main panel with a moulded edge (lit
+  hard box-shadows; on phones one 12px gradient strip in the bar's bottom
+  border), an inset off-white main panel with a moulded edge (lit
   top lip, shaded lower lip, a 2px `#9d917a` ledge then `#b6aa93`), a
   silk-screened `#b6aa93` hairline frame 8px inside it and a fainter copy
   of the housing stipple on the plate (desktop only), a
@@ -80,7 +84,14 @@ How it differs from its neighbours:
   it on). The current top-level menubar key latches orange with the
   same skirt and drop as the active nav key.
 - KPI cards: the small-caps legend sits over its recessed readout on
-  every card, never inline beside it.
+  every card, never inline beside it (`.stat-label` takes `order: -1`, so
+  markup order doesn't matter).
+- Headings are silk-screen caps, but `code`/`kbd`/`samp` inside them keep
+  their real case (a class name stays `.vu`).
+- Pricing cards (`.card` holding a `.price`) carry the five vent slots
+  before their title, like a panel header. A selected desktop icon's name
+  is black Dymo tape, and a count badge on a lit orange nav key switches
+  to black tape so it doesn't melt into the key.
 - Panel headers start with five black vent slots before the title (3px
   slots on a 7px pitch, each with a 1px lit right edge so it reads as a
   recess, not ink).
@@ -140,8 +151,9 @@ How it differs from its neighbours:
   rows track at 0.03em, wrap rather than truncate, and keep 0.85rem of
   air after the toggle. The main plate drops its frame and stipple.
   To stay inside the phone frame budget, phones (≤480px) also drop the
-  stipple, the VFD and lamp glows, the soft panel drop and the keycaps'
-  top highlight (each keycap keeps two hard shadows: skirt and drop). The housing stipple now sits on the
+  stipple, the VFD and lamp glows, the soft panel drop, the panel-header
+  vent slots and the keycaps' top highlight (each keycap keeps two hard
+  shadows: skirt and drop; segmented keys and tabs keep only the drop). The housing stipple now sits on the
   page root, so it never covers the XL gutters.
 - **Nesting.** A panel inside another surface keeps its moulded header rule
   but drops the vent slots, so only the outer housing reads as vented.

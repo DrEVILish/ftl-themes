@@ -33,8 +33,9 @@
 
 html[data-theme="cassette-futurism"] {
   --motion-leave: power-off;
-  /* Vacuum-fluorescent displays glow amber here (metering.css VFD). */
-  --vfd-ink: #ffb547;
+  /* Core VFD panels glow the same teal as every readout window here;
+     .is-amber stays available as the explicit modifier. */
+  --vfd-ink: var(--cf-vfd);
   color-scheme: light;
   --bg: #d3c9b3;           /* beige ABS housing (PET 2001 / TEAC side panels) */
   --surface: #efe9dc;      /* off-white front panel */
@@ -174,6 +175,9 @@ html[data-theme="cassette-futurism"] {
   --carousel-dot: var(--border);
   --carousel-dot-active: var(--cf-orange);
   --carousel-arrow-bg: var(--key-bg);
+  /* A selected desktop icon's name is black Dymo tape, like every label. */
+  --desktop-icon-label-bg-selected: var(--cf-tape);
+  --desktop-icon-label-fg-selected: #ffffff;
 
   /* Tables: dark top-deck head band over an orange rule, beige zebra. */
   --table-head-bg: var(--cf-choc);
@@ -267,16 +271,19 @@ html[data-theme="cassette-futurism"] {
   --switch-bg-on:
     linear-gradient(var(--cf-orange), var(--cf-orange)) center / calc(100% - 0.7em) 0.3em no-repeat,
     linear-gradient(180deg, #e2dccd, #b8ae9b);
-  /* ball, then the pivot: a chrome ring nut (dark rim, bright face, dark
-     bore) wider than the ball, then the tapered shaft between them */
+  /* ball (dark-outlined, ~0.65x the nut), then the pivot: a chrome ring
+     nut (dark rim, bright face, dark bore), then a two-step shaft that
+     narrows from the nut toward the ball */
   --switch-thumb-bg:
-    radial-gradient(circle at 0.44em 50%, #ffffff 0, #e4e4de 0.12em, #9a9a94 0.28em, #3e3e3a 0.38em, transparent 0.4em),
-    radial-gradient(circle at calc(100% - 0.62em) 50%, #120e0a 0 0.15em, #6a6156 0.18em, #f4f1ea 0.28em, #b9b2a6 0.4em, #ece8de 0.47em, #3e372f 0.53em, transparent 0.56em),
-    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1.2em) 0.24em no-repeat;
+    radial-gradient(circle at 0.4em 50%, #ffffff 0, #e4e4de 0.1em, #9a9a94 0.24em, #3e3e3a calc(0.37em - 1px), #0d0b09 calc(0.37em - 1px) 0.37em, transparent calc(0.37em + 0.5px)),
+    radial-gradient(circle at calc(100% - 0.62em) 50%, #120e0a 0 0.15em, #6a6156 0.18em, #f4f1ea 0.29em, #b9b2a6 0.42em, #ece8de 0.5em, #3e372f 0.56em, transparent 0.58em),
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) right 0.62em center / calc(50% - 0.62em) 0.3em no-repeat,
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1em) 0.17em no-repeat;
   --switch-thumb-bg-on:
-    radial-gradient(circle at calc(100% - 0.44em) 50%, #ffffff 0, #e4e4de 0.12em, #9a9a94 0.28em, #3e3e3a 0.38em, transparent 0.4em),
-    radial-gradient(circle at 0.62em 50%, #120e0a 0 0.15em, #6a6156 0.18em, #f4f1ea 0.28em, #b9b2a6 0.4em, #ece8de 0.47em, #3e372f 0.53em, transparent 0.56em),
-    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1.2em) 0.24em no-repeat;
+    radial-gradient(circle at calc(100% - 0.4em) 50%, #ffffff 0, #e4e4de 0.1em, #9a9a94 0.24em, #3e3e3a calc(0.37em - 1px), #0d0b09 calc(0.37em - 1px) 0.37em, transparent calc(0.37em + 0.5px)),
+    radial-gradient(circle at 0.62em 50%, #120e0a 0 0.15em, #6a6156 0.18em, #f4f1ea 0.29em, #b9b2a6 0.42em, #ece8de 0.5em, #3e372f 0.56em, transparent 0.58em),
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) left 0.62em center / calc(50% - 0.62em) 0.3em no-repeat,
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1em) 0.17em no-repeat;
 
   /* Sliders: slotted rail, square chrome-capped knob. */
   /* A 6px fader slot: shadowed top lip, dark glass, worn lower edge. Drawn
@@ -453,6 +460,8 @@ html[data-theme="cassette-futurism"] :is(h1, h2, h3, h4) {
   font-weight: 700;
 }
 html[data-theme="cassette-futurism"] h1 { letter-spacing: 0.06em; }
+/* Class names in headings keep their real case. */
+html[data-theme="cassette-futurism"] :is(h1, h2, h3, h4) :is(code, kbd, samp) { text-transform: none; letter-spacing: 0; }
 /* The four-colour stripe under h1: the one piece of trim inside content. */
 html[data-theme="cassette-futurism"] h1::after {
   content: "";
@@ -594,7 +603,7 @@ html[data-theme="cassette-futurism"] .panel-header {
   border-bottom: 2px solid #a99d86;
   letter-spacing: 0.12em;
 }
-html[data-theme="cassette-futurism"] .panel-header::before {
+html[data-theme="cassette-futurism"] :is(.panel-header, .card:has(> .price) > :is(h2, h3))::before {
   content: "";
   display: inline-block;
   vertical-align: -0.1em;
@@ -622,6 +631,8 @@ html[data-theme="cassette-futurism"] :is(.badge, .tooltip) {
 }
 html[data-theme="cassette-futurism"] .badge { font-size: 0.7rem; }
 html[data-theme="cassette-futurism"] .badge-accent { --badge-bg: #a84400; --badge-fg: #ffffff; }
+/* On a lit orange nav key, a count badge is black tape, not rust on orange. */
+html[data-theme="cassette-futurism"] :is(.nav-item.is-active, .nav-item[aria-current="page"]) .badge { --badge-bg: var(--cf-tape); --badge-fg: #ffffff; }
 html[data-theme="cassette-futurism"] .badge-danger { --badge-bg: #b01b0b; --badge-fg: #ffffff; }
 html[data-theme="cassette-futurism"] .badge-success { --badge-bg: #1f6326; --badge-fg: #ffffff; }
 html[data-theme="cassette-futurism"] .badge-warning { --badge-bg: var(--cf-yellow); --badge-fg: #1a1408; }
@@ -652,7 +663,7 @@ html[data-theme="cassette-futurism"] .otp {
   border-radius: 2px;
 }
 /* The KPI legend is silk-screened over its window, on every card alike. */
-html[data-theme="cassette-futurism"] .stat-label { display: block; margin-block-end: 0.35rem; }
+html[data-theme="cassette-futurism"] .stat-label { display: block; margin-block-end: 0.35rem; order: -1; }
 /* KPI figures sit behind dark glass too: a recessed readout window. */
 html[data-theme="cassette-futurism"] .stat-value {
   display: inline-block;
@@ -749,25 +760,25 @@ html[data-theme="cassette-futurism"] .carousel-nav > :is(.carousel-prev, .carous
  * slot under it lights orange when on, so the state is carried by lever
  * position AND colour. */
 html[data-theme="cassette-futurism"] .switch:not(button) {
-  width: calc(3.6em * var(--density));
+  width: calc(4.2em * var(--density));
   height: calc(1.6em * var(--density));
 }
 html[data-theme="cassette-futurism"] .switch {
-  --switch-shift: calc(1.8em * var(--density) - 0.62em - 4px);
+  --switch-shift: calc(2.1em * var(--density) - 0.62em - 4px);
 }
 html[data-theme="cassette-futurism"] :is(button.switch, label.switch:has(> .switch-label)) {
   width: auto;
   height: auto;
 }
 html[data-theme="cassette-futurism"] :is(button.switch, label.switch:has(> .switch-label)) > .switch-track {
-  width: calc(3.6em * var(--density));
+  width: calc(4.2em * var(--density));
   height: calc(1.6em * var(--density));
 }
 html[data-theme="cassette-futurism"] .switch-track {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 0 #5d5344;
 }
 html[data-theme="cassette-futurism"] .switch-thumb {
-  width: calc(1.8em * var(--density) + 0.62em - 4px);
+  width: calc(2.1em * var(--density) + 0.62em - 4px);
   top: 1px;
   height: calc(1.6em * var(--density) - 6px);
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
@@ -941,6 +952,16 @@ html[data-theme="cassette-futurism"] {
   html[data-theme="cassette-futurism"] :is(.badge, .badge-warning, .tooltip, .app-bar .nav-brand) { text-shadow: none; }
   html[data-theme="cassette-futurism"] .switch-thumb { filter: none; }
   html[data-theme="cassette-futurism"] :is(.stat-value, .app-status) { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.7); }
+  /* the stripe as one border-image strip, not four stacked shadows; keys
+     keep only the hard drop; no vents */
+  html[data-theme="cassette-futurism"] .app-bar {
+    --app-bar-bg: var(--cf-stripes-h) bottom / 100% 12px no-repeat border-box, linear-gradient(var(--cf-choc), var(--cf-choc)) padding-box;
+    box-shadow: none;
+    border-bottom: 12px solid transparent;
+  }
+  html[data-theme="cassette-futurism"] .segmented-item:not(.is-active) { box-shadow: 0 2px 0 #0d0a07; }
+  html[data-theme="cassette-futurism"] .tab:not(.is-active) { box-shadow: none; }
+  html[data-theme="cassette-futurism"] :is(.panel-header, .card:has(> .price) > :is(h2, h3))::before { content: none; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the housing carries on past the deck.
