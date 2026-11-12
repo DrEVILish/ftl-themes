@@ -41,18 +41,25 @@ a limitation to soften.
   broadcast colour (cyan / green / yellow / magenta), like a page's index
   lines, on both `.nav-item` links and the demo `.menubar`; the current
   item is a red block with black text. A yellow clock (`16:24/41`) closes
-  the row, as on every real header (hidden on phones).
+  the row, as on every real header (hidden on phones). The rest of the
+  row is text only: the theme select and bar buttons have no edge and
+  invert to a cyan cell on hover, the search key hint has a blue edge,
+  and on phones the tools stay on one row with no key hint.
 - `h1` is the section banner: a full-width blue band with the headline
-  in yellow at true double height (`transform: scaleY(2)`, the band
-  stretching with it as the hardware row did). A plain `h2` (no class) in page flow
-  is a strapline: black ink on a full-width green band; `h3` stays cyan
-  ink.
+  in yellow at true double height: body cell size with
+  `transform: scaleY(2)`, so the glyphs keep the body column advance and
+  read tall and narrow, as the SAA5050's double-height row did. It opens
+  with a strip of yellow sextant mosaic cells (U+1FB00 block graphics),
+  the Ceefax wordmark's block lettering at double height. A plain `h2`
+  (no class) in page flow is a body-size strapline band: blue with
+  yellow ink first, then green, cyan and magenta with black ink by
+  position; `h3` stays cyan ink.
 - Panel titles are full-width colour bands (blue / green / magenta /
   yellow by position, each with the text colour it needs); cards carry a
   thick band of the same colour on top. Nothing draws a white line: table
   rules and hairlines are gone, as on the real service, and every edge
   core draws from `--border` (toolbars, drop zones, settings rows, kbd
-  keys, fieldsets, progress) is a blue cell edge. White is kept for the
+  keys, fieldsets, progress, `.divide-y` rules) is a blue cell edge. White is kept for the
   focus ring alone.
 - Tabs are coloured words; the selected one is white on a blue band.
 - **Fastext:** the status strip ends with a blue strapline row (yellow
@@ -67,9 +74,13 @@ a limitation to soften.
   (≤480px) the keys shorten to *News / Sport / Weather / TV* so each sits
   clear in its quarter.
 - **No tints, no circles.** Badges are black cells with colour ink; the
+  notification count is a square red cell with black ink and no ring;
+  transparent buttons hover to a blue cell and press to a cyan cell with
+  black ink, never an accent wash; the
   bulk bar and skeletons are flat blue blocks; avatars are flat palette
   cells; edited cells, poll rows, invalid inputs and sparklines carry no
-  wash. Switches, slider thumbs, icon buttons, avatars, presence dots,
+  wash. The presence cell is a small square outside the avatar's corner,
+  so the initials (at the 0.875rem cell) stay clear. Switches, slider thumbs, icon buttons, avatars, presence dots,
   status dots, lamps, carousel dots, the display-properties monitor and
   the spinner/indicator rings (including a table cell's inline "saving"
   ring) are square; the rings step round a quarter at a time
@@ -95,7 +106,8 @@ a limitation to soften.
   rows, and on phones 16px is the 40-column row.
 - **Colour, not white outlines:** inputs have a cyan edge; menus,
   popovers, lists and logs a blue one. Secondary lines (list meta, stat
-  labels) are cyan, as on an index page; nav links are white and form
+  labels, `.text-muted` text, ledes, breadcrumbs, the status strip and
+  hero copy) are cyan, as on an index page; nav links are white and form
   labels yellow, as a listings page labels its rows. Grey is left only
   for true hint text and the disabled state.
 - Selected/active rows invert to a solid colour fill with black text
