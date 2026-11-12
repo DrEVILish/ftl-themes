@@ -6,34 +6,63 @@
 
 ## What this theme is trying to achieve
 
-A clean, sterile test-chamber control panel: off-white surfaces, quiet
-grey structure, and the two portal colours — blue and orange — used
+A clean, sterile test-chamber control panel: cool off-white surfaces,
+neutral grey structure, and the two portal colours — blue and orange — used
 exactly where the reference used them, as the only saturated colours in an
 otherwise clinical space.
 
 ## Core values
 
-1. **The first light theme in this batch of clinical calm.** Off-white,
-   not stark white — `--bg`/`--surface` sit a shade apart so
+1. **The first light theme in this batch of clinical calm.** Cool,
+   near-neutral off-white (lab, not paper), not stark white — `--bg`/`--surface` sit a shade apart so
    surfaces read as physical panels, not a blank page.
 2. **Blue is primary/interactive; orange is the second portal, reserved
-   for destructive actions** — a direct, deliberate swap of the usual
-   red-for-danger convention, because orange is what the reference uses
-   for its second state.
-3. **No decoration.** Flat fills, quiet 1px borders, small shadows. This is
-   institutional software, not a HUD.
-4. **Grey, understated headings** — a section label on a clipboard, not a
-   marketing headline.
+   for danger** — a direct, deliberate swap of the usual red-for-danger
+   convention across every danger state, because orange is what the
+   reference uses for its second state.
+3. **No decoration.** Flat fills, quiet 1px edges, no shadow on surfaces.
+   Surfaces are rounded sign plates (`--panel-radius: 0.6rem`); controls
+   stay square-ish hardware (`--radius: 0.2rem`). This is institutional
+   software, not a HUD.
+4. **Headings are chamber signs** — black, light and large, never
+   uppercase: the sign plate's numeral, not a marketing headline.
 
 ## Signature details
 
-- Danger buttons fill with the portal orange (`--accent-2`), not red —
-  the one place this theme breaks from every other theme's convention on
-  purpose, with dark text since orange is too light for white to pass.
-- Headings are muted grey, `font-weight: 700`, and never uppercase — a
-  clipboard label, not a marketing headline.
-- Shadows never exceed `0 1px 3px` — this is the flattest, quietest theme
-  in the catalog; anything heavier reads as a different theme entirely.
+- Danger is the portal orange (`--danger: #ff8a1e`, dark `--on-danger`
+  text, `--danger-text: #8f4500`) everywhere — buttons, badges, alerts,
+  invalid fields, status, danger menu items — not red. Warning takes the
+  facility's hazard yellow (`#f4c430`, text `#6b5600`) so the two never
+  share a colour.
+- Blue is portal azure: fills take `--accent: #1a8ad8` under dark
+  `--on-accent: #0d1b26` text (4.7:1), the bright portal rather than a
+  corporate link blue; the same azure (`--aperture-portal`) is every
+  mark that carries no text (focus ring, spinner, slider thumb, chart
+  series 1; 3:1 on the page). Blue text takes the deeper `#13609a`
+  (5.4:1 on the page), including sort headers and scrollspy links.
+- Type: Titillium Web (vendored, OFL) stands in for the chamber signage
+  grotesk — headings light (400) and lightly tracked, panel h3 at 600;
+  readouts and KPI values use the same light face as chamber numerals;
+  Share Tech Mono for code. Headings are `--text` black and never
+  uppercase; h1 gets `margin-block-end: var(--space-xs)` because the
+  face's line box is trimmed for controls.
+- Chamber sign plate: the page h1 sits under a 5px `#2b2b2b` rule with a
+  row of short dashes under it (the chamber progress bar); panel headers
+  are black text over a 2px `#2b2b2b` rule; the app-bar brand (black
+  text), panel headers and KPI labels each carry the plate's black
+  pictogram square; the active tab sits on a black rule, not a blue one.
+- Panels, cards and modals are flat sign plates: `--panel-radius:
+  0.6rem`, a darker `#b5babd` edge and no shadow.
+- Neutrals are cool lab greys: `--bg #e6e8e9`, `--surface #f3f4f5`,
+  `--app-bg #dcdfe1`, `--border #c3c7ca`, `--muted #5a5e62`.
+  `--app-main-bg` is flat; the 128px panel seams live in the XL gutter.
+- Sliders are a 0.375rem grey groove (`--slider-bg: #7f8488`, 3:1 on the
+  page) with a 1.1rem azure thumb; charts use only blue, orange and greys.
+- Surfaces have no shadow and buttons `0 1px 2px` at most — this is the
+  flattest, quietest theme in the catalog; anything heavier reads as a
+  different theme entirely.
+- The warning alert/toast keeps its 1px outline like its siblings, with an
+  8px hazard stripe down the leading edge.
 
 ## Layout
 
@@ -47,7 +76,7 @@ the panel sits in the room rather than filling it.
   first line, the nav scrolling on the second.
 - **XL gutter art.** The test chamber's wall continues past the console:
   square white wall panels with recessed seams and one faint portal ring
-  each side (blue left, orange right). Still, and within about 1.3:1 of
+  each side (azure `#27a7d8` left, orange right). Still, and within about 1.3:1 of
   `--bg`.
 
 ## Tell-tales of an inauthentic result
@@ -55,7 +84,8 @@ the panel sits in the room rather than filling it.
 - Red used for danger instead of orange → loses the portal-colour logic.
 - Any glow, gradient or heavy shadow — this is the calmest theme in the
   catalogue by design.
-- Saturated colour anywhere except the two accents.
+- Saturated colour anywhere except the two accents (and the hazard
+  yellow, which is signage for warnings only).
 
 ## Icons
 
