@@ -148,7 +148,8 @@ files are vendored unmodified.
   `license: "OFL"`)
 - **Source:** https://fonts.google.com/specimen/Titillium+Web
 - **Used by:** `motorsport-telemetry` (UI, timing figures and readouts; its
-  digits are tabular by default, all 560 units wide)
+  digits are tabular by default, all 560 units wide); `xmb` (fallback after
+  M PLUS 1p)
 
 ## Rajdhani
 
@@ -178,6 +179,19 @@ files are vendored unmodified.
   `Selawik_Release.zip`: `selawkl.woff2`, `selawk.woff2`, `selawksb.woff2`)
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
   Light headings)
+
+## M PLUS 1p
+
+- **Family:** M PLUS 1p (weights vendored: Light 300, Regular 400, Bold
+  700 — `MPLUS1p-Light.woff2`, `MPLUS1p-Regular.woff2`,
+  `MPLUS1p-Bold.woff2`; Google Fonts' Latin subset as served, unmodified)
+- **Designer:** Coji Morishita, M+ Fonts Project
+- **License:** SIL Open Font License, version 1.1 (verified in
+  `google/fonts` `ofl/mplus1p/OFL.txt` and its `METADATA.pb`,
+  `license: "OFL"`)
+- **Source:** https://fonts.google.com/specimen/M+PLUS+1p
+- **Used by:** `xmb` (UI face after the proprietary SCE Rodin: a Japanese
+  gothic with the same round, open, wide Latin)
 
 ## Bottom line
 

@@ -38,9 +38,9 @@ which doesn't translate to a general-purpose page background.
 - The wave: royal blue lit from the top right and falling to navy at the
   bottom left (sampled from `xmb-retroarch-main-menu.jpg`: #0056b9 upper
   left, #0398f6 top right, #021059 bottom left), with a translucent white
-  ribbon sweeping across the lower middle of the first screen (from 38vh):
-  two layered sheets (10% and 6% white) and a third lobe whose white
-  climbs from 3% at the left to 15% at the right edge, so the band
+  ribbon sweeping across the lower middle of the first screen (from 32vh, so more of it shows between the bar and the
+  content): two layered sheets (13% and 6% white) and a third lobe whose white
+  climbs from 3% at the left to 24% at the right edge, so the band
   brightens to the right as in the RetroArch capture; wide 4-5% strokes
   soften the outer edges, one crisp 16% highlight line runs along the top
   and a few tiny sparkle dots stand in for the PS3's particles. No SVG
@@ -62,19 +62,23 @@ which doesn't translate to a general-purpose page background.
   white halo against 0.95rem pale-blue neighbours. A category that carries
   an icon stacks it (1.6em) over its label, and the selected one's icon
   sits on a 2.6em white rounded tile with a navy glyph, as RetroArch's
-  selected icon does (a selected rail item's icon gets the same white
+  selected icon does (a selected rail item's or nav-list row's icon gets the same white
   tile, drawn with a spread shadow so the row keeps its height). A 2px
   line of light (2.5rem, white fading out, an 8px white glow) falls from
   the selected category: the cross's vertical arm. On phones the row takes its own line under the brand, and the tools
   share one row beneath it (the theme picker shrinks); the selected
-  category drops to 1.15rem, the arm to 0.9rem, and a brand followed
+  category drops to 1.15rem, the arm is dropped (the tools row sits right
+  beneath, with no room for it), and a brand followed
   directly by categories keeps its full width.
 - Current sub-items are marked by light alone, as on the XMB: no side
   stripe (`--row-active-marker`, `--nav-rail-marker` and
   `--tree-selected-marker` are off), a 9% white lift inside lists (14% on
   table rows) rounded on all four corners, and a tight, even 8px glow
   (`--list-active-marker`). A list inside a `nav` is the sub-column: no
-  box, no rules, 1.1rem rows.
+  box, no rules, 1.1rem rows. The selected sub-item looks the same in a
+  nav rail and a nav list: a 9% white pill (`--nav-item-bg-active`), the
+  8px glow, white haloed text and the icon on the white tile; no hard
+  white edge.
 - System dialogs follow `modalDialog.jpg`: a dark band with thin white
   rules above and below (no side edges, 0.25rem corners), the title over a
   35% white rule instead of a header slab, and the footer's secondary
@@ -82,12 +86,17 @@ which doesn't translate to a general-purpose page background.
   windows keep their full frame.
 - Every selected state (segmented control, pagination, listbox option,
   calendar day, filter chip, toggle, desktop icon label) is a pale glass
-  lift with white text and a blue-white glow (10px). Focus is never a
+  lift with white text and a blue-white glow (10px); the desktop icon
+  label is a 14% white lift with 0.4rem corners. Focus is never a
   coloured fill: `.btn-primary` is a bright white glass lift with navy text
   (the focused "Yes" in `modalDialog.jpg`), and `.btn-danger` is said by
   its `--danger` text and edge on smoked glass, not a salmon block; the
   same goes for a danger `.toggle-btn` when on (14% salmon tint, danger
-  edge and a salmon glow).
+  edge and a salmon glow). `.btn-success` is drawn the same way in mint
+  (mint text and edge on smoked glass, a mint glow on hover), and a
+  disabled button sinks back into the glass (4% white, 18% white edge,
+  muted text, no hover glow, 0.7 opacity) rather than reading as a lit
+  pill.
   `--success` is a pale mint (`#8fe8c0`), not a neon green.
 - Labels are sentence case, as XMB labels are: KPI labels and
   field-group titles drop core's tracked capitals.
@@ -138,7 +147,7 @@ by size) and true circles. The only solids are small dots and badges
 
 ## Typography
 
-`--font` is `"FOT-Rodin Pro", "Rodin", "XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is "XMB Mono" (the library's own `ShareTechMono-Regular.woff2`, a narrow, light-stroked mono) then `Consolas, monospace`, kept for code and logs only: KPI values (`.stat-value`), prices, readouts (`--readout-font`) and inline numerals (`.mono`: order numbers, totals, timecodes) use the theme sans at weight 300 with tabular figures, as the PS3 clock does. h4-h6, panel/modal headers, card and list titles and the brand are capped at 400, so Titillium Bold appears only for inline emphasis. "XMB Titillium" is the library's own `assets/fonts/TitilliumWeb-*.woff2` (OFL, see `assets/fonts/NOTICE.md`): without it Linux fell back to DejaVu Sans, wide and heavy. Body, headings and the category row are weight 300. The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation); the actual PS3 face (SCE Rodin) isn't free, and Titillium is the closest light, open sans the library ships, not a match.
+`--font` is `"FOT-Rodin Pro", "Rodin", "XMB M PLUS", "XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is "XMB Mono" (the library's own `ShareTechMono-Regular.woff2`, a narrow, light-stroked mono) then `Consolas, monospace`, kept for code and logs only: KPI values (`.stat-value`), prices, readouts (`--readout-font`) and inline numerals (`.mono`: order numbers, totals, timecodes) use the theme sans at weight 300 with tabular figures, as the PS3 clock does. h4-h6, panel/modal headers, card and list titles and the brand are capped at 400, so the bold cut appears only for inline emphasis; small labels (KPI labels, table headers, field labels and hints, under 0.8rem) take 400 so they are not hairline-thin over the bright wave. "XMB Titillium" is the library's own `assets/fonts/TitilliumWeb-*.woff2` (OFL, see `assets/fonts/NOTICE.md`): without it Linux fell back to DejaVu Sans, wide and heavy. Body, headings and the category row are weight 300. The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation); the actual PS3 face (SCE Rodin) isn't free. "XMB M PLUS" is M PLUS 1p (Light 300, Regular 400, Bold 700; `assets/fonts/MPLUS1p-*.woff2`, Google Fonts' Latin subset, OFL): a Japanese gothic from the M+ project with the round, open, wide Latin of Rodin and of RetroArch's XMB font, where Titillium (kept as the next fallback) is squarer and semi-condensed. Both get metric overrides to a 1.18em content box with centred caps.
 
 ## Contrast honesty
 
