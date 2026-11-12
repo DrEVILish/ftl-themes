@@ -15,30 +15,59 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 
 1. **Sixteen colours, flat.** No gradients, no glow, no anti-aliasing feel.
 2. **Double-line borders everywhere a real border is drawn** — inputs,
-   buttons, panels, modals — the defining Norton Commander visual.
-3. **Uppercase, always.** Text-mode software shouted in caps.
+   buttons, toggles, switches, panels, modals, menus, popovers, list
+   boxes, alerts and toasts — the defining Norton Commander visual.
+3. **Uppercase for titles, mixed case for text.** Headings, column heads,
+   buttons and title tabs are uppercase; body text, menus and lists are
+   mixed case, as on the DOS setup screens in the references.
 4. **Cyan is the bright accent; yellow is reserved further still** (used
    only as `--flare` and warning) — this is a two-tier bright system,
    not a rainbow.
-5. **Zero radius.** Text-mode has no curves.
+5. **Zero radius.** Text-mode has no curves: badges, switches, avatars,
+   presence dots, carousel dots and arrows, notification dots, the
+   saving marker, icon buttons, status dots and the slider thumb are
+   square cells; checkboxes and radios are `[X]` and `(•)` text;
+   spinners are the stepped `| / - \` text cursor.
+6. **One weight.** The VGA font has no bold, so faux bold is switched off
+   (`font-synthesis-weight: none`); emphasis is colour.
+7. **One cell size.** The 9x16 glyphs are drawn at 16px (h1 and stat
+   figures at 32px), never at a fractional size that smears the pixels;
+   labels, hints, badges, table heads, buttons, menubars, logs, legends,
+   chart text, tree rows, desktop icon labels, readouts and price units
+   are all 16px (a large readout or price is 32px).
 
 ## Signature details
 
-- `border-style: double` at 3px is set on every bordered component in one
-  rule (`.input`, `.select`, `.textarea`, `.btn`,
-  `.panel`, `.modal`, `.dropdown`) — one declaration carries
-  the entire visual signature.
+- `border-style: double` at 3px is set on every bordered component
+  (`.input`, `.select`, `.textarea`, `.btn`, `.panel`, `.modal`,
+  `.dropdown`, `.context-menu`, `.popover`, `.list`, `.alert`, `.toast`,
+  `.toggle-btn`, the switch track) — alerts and toasts keep their state
+  colour as the line colour on the plain `#0000aa` field.
 - `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
   approximation — this theme's background is a real 16-color EGA/VGA value.
-- The nav bar, app bar, and status strip all fill solid cyan
-  (`--accent`) with black text — the one place a "bright" color
-  becomes a background instead of a foreground.
+- The app bar and every in-window menubar are EDIT's grey `#aaaaaa` menu
+  bar with black items; the status strip is black with Norton's F-key row
+  of black-on-cyan label blocks. Cyan becomes a fill only for the cursor
+  bar (selected rows, the active tab, the current nav or folder-rail
+  link) and the
+  panel title tab, always with black text — the `[X]` glyph included.
+- Badges are reverse-video VGA cells: black on grey, cyan, light red,
+  light green or yellow. Lamps are lit cells with no glow; GO is the
+  yellow primary block with the button's hard shadow.
+- Desktop windows have no title icon: the `[■]` close box sits at the
+  left of the title bar, as in DOS dialogs.
+- Tables draw cyan box-drawing column rules (│) and no row hairlines.
+- A dialog's title is cut into its inner double line, centred on a grey
+  patch, as DOS and Norton dialogs drew it.
+- No tinted state washes: invalid fields keep the blue field (the red
+  double line carries it), an answered list card keeps its card fill, the
+  bulk-selection bar is black, and the modal backdrop is a black 50%
+  dither (the ░ shade) instead of translucent black.
 
 ## Layout
 
-A bar and status strip both filled solid cyan with black text — the
-Norton Commander function-key bar — with the rest of the shell staying
-DOS blue.
+A grey EDIT menu bar on top, the DOS-blue work area, and a black status
+strip carrying the Norton Commander function-key bar along the bottom.
 
 ## Tell-tales of an inauthentic result
 
@@ -75,8 +104,9 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 
 - **Cyan on blue:** `--accent` `#00aaaa` on `#0000aa` is 4.64:1 (passes AA by a hair). The Norton cursor bar puts black on cyan, 7.33:1.
 - **Yellow on blue:** `#ffff55` is 12.46:1; light cyan `#55ffff` is 10.84:1.
-- **Cyan as text:** the dim cyan is 4.0:1 on the tinted badge wash, so links, `--accent-text` (accent badges, code keywords) and outlined-button labels use light cyan `#55ffff`. Inside a reverse-video panel title tab every word is black on cyan (VGA greys and brights are 1.2-2.2:1 there), and sheets and the command palette take the grey dialog's black ink.
-- **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa`, 4.83:1 on `--surface-2` `#0000cc`.
+- **Cyan as text:** the dim cyan `#00aaaa` is only 4.64:1 on the blue, so links, `--accent-text` (code keywords) and outlined-button labels use light cyan `#55ffff`; badges are solid cells with black ink (black on cyan 7.33:1). Inside a reverse-video panel title tab every word is black on cyan (VGA greys and brights are 1.2-2.2:1 there), and sheets and the command palette take the grey dialog's black ink.
+- **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa` and 9.04:1 on `--surface-2`, which is VGA black `#000000` (hover cells, code chips, tracks), not an off-palette brighter blue.
+- **Disabled buttons** are VGA dark grey `#555555` on black, below 4.5:1 on purpose: disabled controls are exempt, and that is how DOS greyed them.
 - **The one deviation:** real light red `#ff5555` is only 4.23:1 on the blue, so text uses `--danger-text` `#ff7e7e` (5.40:1) and the raw hex is fill-only.
 
 ## Reference status
@@ -85,7 +115,7 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). Phone and tablet keep the grey menu bar, blue work area and F-key strip; the bar wraps to two lines. Nested titled boxes leave headroom for their title tab. Boxes inside a grey dialog take the screen's white-on-blue inks back, and a drawer or `.scroll` panel puts its title tab inside the box rather than on its top edge, where scrolling would clip it. On XL the gutters show the Turbo Vision desktop: the CP437 light-shade fill (░) in dim VGA blue, about 1.4:1 against `--bg`.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). Phone and tablet keep the grey menu bar, blue work area and F-key strip. On a phone the brand keeps its full name on the bar's first line, and a bar button with a shortcut hint folds to its icon so the controls fit one line. Nested titled boxes leave headroom for their title tab. Boxes inside a grey dialog take the screen's white-on-blue inks back, and a drawer or `.scroll` panel puts its title tab inside the box rather than on its top edge, where scrolling would clip it. On XL the gutters show the Turbo Vision desktop: the CP437 light-shade fill (░) as hard-edged 1px cells in dim blue, about 1.4:1 against `--bg`.
 
 ## Adoption
 
@@ -103,7 +133,11 @@ layout at **L1**.
 - **Boxes:** panels, cards and the work area are cyan `#55ffff`
   double-line boxes, with the panel title set *into* the top line,
   centred, reverse video — Norton's drive tab.
-- **Headings and column heads** are bright yellow `#ffff55`, no fills.
+- **Headings and column heads** are bright yellow `#ffff55`, no fills
+  (an `h1` on a grey dialog, sheet or bar turns VGA blue `#0000aa`).
+- **Charts and loaders** are flat: no translucent area fills, chart
+  strokes are drawn with `shape-rendering: crispEdges`, and a
+  skeleton is a still ░ shade block instead of a shimmer.
 - **Buttons** are solid blocks with a hard black shadow one cell
   down-right, dropped when pressed; primary is yellow.
 - **Dialogs** are grey with black text, an inset white double line and a
@@ -111,6 +145,9 @@ layout at **L1**.
   `#aa0000` is only 3.3:1 on the grey).
 - **F-key bar:** the status strip opens with Norton's `1Help … 10Quit`
   row — grey key numbers on black, black labels on cyan blocks, drawn as
-  two overlaid monospaced pseudo-element strings.
+  two overlaid monospaced pseudo-element strings. From the desktop tier
+  the ten cells divide the strip's full width evenly (tab stops at
+  `10cqi`), as Norton's spanned all 80 columns; below it the keys run at
+  8 cells each and clip.
 - **Font:** the real IBM VGA 9x16 text-mode glyphs (Px437, CC BY-SA 4.0).
 
