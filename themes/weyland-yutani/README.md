@@ -19,19 +19,28 @@ reproduced.
 1. **Utilitarian, never glossy.** `--radius: 0`, no gradients, no
    bevels, no blurs. Panels are thin flat outlines.
 2. **Labels are stencil.** Headings, buttons, table heads, panel titles,
-   badges, nav, menubar, segmented keys, window titles and the status
+   badges, table status labels, nav (including the settings section list),
+   menubar, segmented keys, window titles and the status
    strip are uppercase with wide tracking (`--label-tracking: 0.14em`).
    Headings, panel titles, table heads, tabs, stat labels, title plates
    and the brand are set in Michroma, an extended Microgramma-class face;
-   headings, panel titles and title plates take a 0.07em text stroke
+   headings, panel titles, title plates and the brand (0.09em, as the
+   wordmark is the heaviest line) take a 0.07em text stroke
    painted under the fill (so counters stay open) so they read as the
    Bold Extended plate lettering, and panel titles are in bone `--text`.
+   On phones the heading stroke and the glows are dropped (wider tracking
+   instead) to keep scrolling inside the frame budget; the brand keeps it.
+   Tabs and stat labels take a lighter 0.04em stroke on desktop so they
+   match the stroked titles beside them. A list item's subject (the inbox
+   column) stays mixed case at 0.02em; only its meta line is tracked caps.
    Tabs inside desktop windows and on phones, and panel-header badges,
    drop to Share Tech: the extended face wrapped those rows (and its `%`
    draws as `o/o`).
 3. **Amber is the phosphor, and only readouts glow.** `.readout`, `.meter`
    and stat-tile values (the header rows' values) are in the phosphor with a
-   faint glow; only readouts and meters get scanlines.
+   faint 4px glow; only readouts get scanlines and meters are segmented. A readout is
+   a boxed counter cell: a lit `--wy-line-hi` outline 1px inside its glass
+   frame, after the outlined digit boxes of the Romulus colony contract.
 4. **Hazard striping is a danger signal, not a palette.** Yellow/black
    45deg stripes appear on `.btn-danger`, `.alert-danger`, `.toast-danger`,
    `.badge-danger` and `.status-error` only, as a leading strap. Text never
@@ -42,7 +51,13 @@ reproduced.
 6. **Buttons are chunky caps.** 2px edge, dark underside lip, drops 2px on
    press. Primary is a solid amber block; success is a lit green outline
    on glass black, not a green slab. Icon buttons are square
-   (`--btn-icon-radius: 0`), as are carousel markers and the spinner.
+   (`--btn-icon-radius: 0`), as are the FAB (flat lip, no blur), carousel
+   markers, the spinner, the htmx indicator, the busy-button and saving-cell
+   spinners, count badges and avatar presence marks (in the small bar
+   avatar the mark is shrunk and pushed out past the corner so the initials
+   stay clear). Checkboxes and radios are square keys: glass black in a
+   `--wy-line-hi` frame, amber with a dark tick when checked; the radio's
+   mark is a square block, drawn centred so core's taller target is kept.
 
 ## Signature details
 
@@ -53,12 +68,21 @@ reproduced.
   (the top-left one is drawn on the panel header when there is one); a
   solid amber square before each panel title. A second header further down
   a panel (a sub-section) has no plate or mark of its own.
-- Stat tiles are the terminals' header rows: muted label and amber phosphor
-  value over one long double rule in `--wy-line-hi`, with no box.
+- Stat tiles are the terminals' header rows: muted label stacked over the
+  amber phosphor value, over one long double rule in `--wy-line-hi`, with no box
+  (both `.card > .stat-value` and `.card > .stat` markup; a `.stat` puts its
+  label first).
 - Ghost buttons keep a lit `--wy-line-hi` underside lip (amber on hover) so
   they still read as soft keys.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
-  scanline overlay; amber mono readouts on glass-black.
+  segment gaps (one gradient layer); amber mono readouts on glass-black.
+- Selected rows and edited cells are an opaque inverse-video amber
+  (`--accent` 22% into `--surface`), not a translucent tint.
+- Modals and windows cast a hard 4px machined drop, no blur.
+- Modal and window title plates are set small (0.9rem, 0.02em tracking)
+  and panel titles track at 0.06em, so titles fit one line; on phones the
+  brand shares the bar's first row with the menubar and truncates first,
+  keeping the plate to two rows.
 - Inputs are recessed with a heavy amber underline and amber caret.
 - Slider tracks are drawn in `--wy-line-hi` on the content box (about
   3.2:1 on the bay black), inside core's transparent 24/44px hit area.
@@ -77,8 +101,13 @@ each, from the frames in `references/weyland-yutani/` (see RESEARCH.md).
 In every variant the beige plate becomes an inverse-video phosphor band
 (modal title, tooltips), the top bar becomes the screen's header row
 (phosphor text on black over a phosphor rule), panels get thin phosphor
-outlines, and headings and readouts glow. Body text is a light tint of the
-phosphor and the chart series are phosphor shades; only the status
+outlines, and headings and readouts glow. Short UI lines (table cells,
+helper text, list items, breadcrumbs) go to tracked caps like the
+screens; paragraphs and inputs stay mixed case for reading. Body text is a light tint of the
+phosphor and the chart series are phosphor shades; backgrounds are near
+black with only a trace of the phosphor, so separation comes from the
+phosphor outlines, not tinted fills (a saved cell keeps its tick but
+drops the green fill); only the status
 colours (success, warning, danger) step outside the screen's hue so they
 stay distinguishable.
 
@@ -91,8 +120,11 @@ stay distinguishable.
 
 ### Icons
 
-`themes/weyland-yutani/icons.svg` redraws the full core set (178/178) as
-blocky, machined stencil glyphs:
+`themes/weyland-yutani/icons.svg` redraws 187 of core's 1020 icons (the
+original core set plus the player transport keys) as blocky, machined
+stencil glyphs. Every other icon falls back to core's sprite but takes
+square caps and miter joins from a theme-wide `.icon` rule, so its line
+ends still read as machined:
 - 24 grid, stroke only at 2.2 (`--icon-stroke-width`), with
   `stroke-linecap="square"` and `stroke-linejoin="miter"` on every symbol.
 - Radius 0 everywhere. Circles become squares (small) or chamfered octagons
@@ -115,7 +147,9 @@ a Helvetica/Futura-like face for signage.
   `assets/fonts/ShareTech-Regular.woff2`, family `"WY Share Tech"`), a
   squared Eurostile-spirited grotesque, then Eurostile / Bank Gothic /
   Helvetica Neue / Arial / Liberation Sans, so no system falls through to
-  a wide humanist sans.
+  a wide humanist sans. It has one weight, so body bold (`strong`, `b`,
+  list-item titles) is the regular cut with a 0.03em under-painted stroke,
+  not the browser's smeared synthetic bold.
 - **Mono** (readouts, inputs): the vendored **Share Tech Mono** (SIL OFL,
   `"WY Share Tech Mono"`), a square terminal face close to the MU/TH/UR
   screens, then `"Lucida Console", "DejaVu Sans Mono"`.
@@ -158,7 +192,7 @@ core's default.
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
 - **Phone (≤480) and tablet (481–900):** bar, main and status in one column. On phones the plate tightens (less padding and tracking, menubar at 0.8em, tighter tool keys, no keyboard-shortcut hint) so it stacks as three short rows: brand, menubar, and the tools on one line. The 3rem equipment rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token).
-- **Window caption buttons:** minimise and maximise take the label plate's ink, as close already does.
+- **Window caption buttons:** minimise, maximise and close follow the title bar's own ink (`--modal-header-close-fg: currentColor`): dark on the beige plate, muted on an inactive window's dark bar.
 - **XL gutters (≥1801):** the bay wall: a ruled plotting grid in `--hairline` with the rail's tick-ruler marks, all in the active screen's line colours, so the MU/TH/UR, Emergency and Earth variants follow. Still.
 
 ## Don'ts

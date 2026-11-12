@@ -140,8 +140,13 @@ html[data-theme="weyland-yutani"] {
   --modal-border: var(--wy-line-hi);
   --modal-header-bg: var(--wy-plate);
   --modal-header-fg: var(--wy-plate-fg);
+  /* Caption buttons take the title bar's computed ink: dark on the beige
+     plate, muted on an inactive window's dark bar (the plate ink vanished there). */
+  --modal-header-close-fg: currentColor;
   --modal-radius: 0;
-  --modal-shadow: 0 0 0 1px #000, 0 12px 32px rgba(0, 0, 0, 0.7);
+  --modal-shadow: 0 0 0 1px #000, 4px 4px 0 #000;   /* a hard machined drop, no blur */
+  --fab-radius: 0;
+  --fab-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.55);
   --overlay-bg: rgba(6, 5, 3, 0.8);
   --dropdown-bg: var(--surface-2);
   --dropdown-radius: 0;
@@ -156,7 +161,11 @@ html[data-theme="weyland-yutani"] {
   --table-head-rule: var(--accent);
   --table-head-rule-width: 2px;
   --table-rule: var(--hairline);
-  --row-selected-bg: var(--wy-tint);
+  /* Selected and edited cells read as inverse-video amber, an opaque mix
+     rather than a translucent tint that went olive over the warm black. */
+  --row-selected-bg: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  --cell-dirty-bg: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  --cell-dirty-marker: var(--accent);
   --row-selected-fg: var(--text);
   --row-active-marker: inset 0.25rem 0 0 var(--accent);
 
@@ -245,7 +254,7 @@ html[data-theme="weyland-yutani"] {
   --readout-border: var(--wy-line-dim);
   --readout-padding: max(0.35em, 5px) 0.5em;
   --readout-unit-fg: var(--muted);
-  --readout-glow: 0 0 0.45rem var(--wy-glow);
+  --readout-glow: 0 0 4px var(--wy-glow);
   --meter-track: var(--wy-deep);
   --meter-border: var(--wy-line);
   --meter-radius: 0;
@@ -255,7 +264,13 @@ html[data-theme="weyland-yutani"] {
   --meter-high: var(--danger);
   --meter-peak-fg: var(--text);
   --meter-peak-width: 3px;
+  --desktop-monitor-radius: 0;
 }
+
+/* Core's generic sprite strokes with round caps; the fallback glyphs the
+   theme sprite does not redraw take the machined square ends too (the
+   theme's own symbols already set them per <symbol>). */
+html[data-theme="weyland-yutani"] .icon { stroke-linecap: square; stroke-linejoin: miter; }
 
 /* Core pads the vertical slider with padding-inline, which a vertical
    writing mode turns into top/bottom, so the visible track filled the whole
@@ -280,12 +295,34 @@ html[data-theme="weyland-yutani"] h3 { font-size: 0.95rem; letter-spacing: 0.12e
 /* Michroma has one thin weight; a stroke painted under the fill gives the
    display caps the stamped weight of the Microgramma Bold Extended wordmark
    without clogging the counters. */
-html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header) { -webkit-text-stroke: 0.07em currentColor; paint-order: stroke fill; }
+html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header, .nav-brand) { -webkit-text-stroke: 0.07em currentColor; paint-order: stroke fill; }
+/* The wordmark is the most identity-bearing line and only 16px, so it takes
+   a heavier stroke to match the Bold Extended corporate mark. */
+html[data-theme="weyland-yutani"] .nav-brand { -webkit-text-stroke-width: 0.09em; }
+/* Phones: the stroke and glow cost a frame budget a scroll cannot spare;
+   wider tracking carries the stamped look instead. */
+@media (max-width: 480px) {
+  html[data-theme="weyland-yutani"] :is(h1, h2, .panel-header, .modal-header) { -webkit-text-stroke: 0; letter-spacing: 0.12em; }
+  html[data-theme="weyland-yutani"] { --readout-glow: none; }
+  html[data-theme="weyland-yutani"][data-variant] :is(h1, h2, .nav-brand, .readout) { text-shadow: none; }
+  /* The tray's tracked caps clipped against its own frame on a phone. */
+  html[data-theme="weyland-yutani"] .taskbar .taskbar-tray { letter-spacing: 0.02em; padding-inline: 0.5em; }
+}
 /* <strong> in a title asked for 900, outside the face's 400-700 range,
    which pulled a stray glyph from elsewhere. */
 html[data-theme="weyland-yutani"] :is(.panel-header, .modal-header) :is(strong, b) { font-weight: inherit; }
 /* Small all-caps UI labels speak in the stencil face too. */
 html[data-theme="weyland-yutani"] :is(.tab, .stat-label) { font-family: var(--font-label); letter-spacing: 0.05em; }
+/* Michroma is one thin weight; the same under-painted stroke as the headings
+   keeps tabs and stat labels as heavy as the plate lettering beside them. */
+@media (min-width: 481px) {
+  html[data-theme="weyland-yutani"] :is(.tab, .stat-label) { -webkit-text-stroke: 0.04em currentColor; paint-order: stroke fill; }
+  html[data-theme="weyland-yutani"] .desktop-window .tab { -webkit-text-stroke: 0; }
+}
+/* Share Tech has one weight: body bold is a light stroke on the regular
+   cut, not the browser's smeared synthetic bold. */
+html[data-theme="weyland-yutani"] { --list-item-title-weight: 400; }
+html[data-theme="weyland-yutani"] :is(strong, b, .list-item-title):not(:is(h1, h2, h3, h4, .panel-header, .modal-header, .nav-brand) *) { font-weight: 400; -webkit-text-stroke: 0.03em currentColor; paint-order: stroke fill; }
 /* In a window, the extended face wrapped the tab row and pushed the dialog
    keys out of the frame; there the tabs speak in the narrower Share Tech
    (as they do on phones, below). */
@@ -298,13 +335,19 @@ html[data-theme="weyland-yutani"] :is(.panel-header, .table th, .modal-header, .
 /* Every label surface speaks in stencil caps, including the <button>s whose
    UA style resets the bar's inherited text-transform. */
 html[data-theme="weyland-yutani"] .app-bar .menubar > li > :is(button, a),
-html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .taskbar-start, .bulk-bar-count) {
+html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .taskbar-start, .bulk-bar-count, .master-detail-list .list-item) {
   text-transform: uppercase;
   letter-spacing: var(--label-tracking);
 }
+/* The caps are for short labels: a list item's subject is sentence-length,
+   so it reads in mixed case; its meta line keeps the tracked caps. */
+html[data-theme="weyland-yutani"] .master-detail-list .list-item-title { text-transform: none; letter-spacing: 0.02em; }
 html[data-theme="weyland-yutani"] .nav-brand { text-transform: uppercase; }
-/* Title plates are set in the extended face, which needs little tracking. */
-html[data-theme="weyland-yutani"] :is(.modal-header, .window-title) { letter-spacing: 0.05em; }
+/* Title plates are set in the extended face, which needs little tracking,
+   and small, as the real plates are, so a title fits one line in a narrow
+   dialog or window. */
+html[data-theme="weyland-yutani"] :is(.modal-header, .window-title) { letter-spacing: 0.02em; }
+html[data-theme="weyland-yutani"] .modal-header { font-size: 0.9rem; }
 /* Segment keys sit edge to edge in a fixed row, so they track tighter. */
 html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) {
   text-transform: uppercase;
@@ -313,11 +356,17 @@ html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) {
 html[data-theme="weyland-yutani"] .input,
 html[data-theme="weyland-yutani"] .select,
 html[data-theme="weyland-yutani"] .textarea { font-family: var(--font-mono); }
+/* Table status labels are stencil caps too, a size up so the caps stay open. */
+html[data-theme="weyland-yutani"] .table td .status {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
 html[data-theme="weyland-yutani"] .badge {
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
 }
 html[data-theme="weyland-yutani"] :focus-visible {
   outline: 2px solid var(--accent-2);
@@ -334,7 +383,7 @@ html[data-theme="weyland-yutani"] .panel-header::before {
   margin-right: 0.7em;
   background: var(--accent);
 }
-html[data-theme="weyland-yutani"] .panel-header { letter-spacing: 0.14em; column-gap: 0.75rem; }
+html[data-theme="weyland-yutani"] .panel-header { letter-spacing: 0.06em; column-gap: 0.75rem; }
 /* A header badge sits inline in the title text, so the flex gap misses it.
    It speaks in Share Tech: Michroma's "%" draws as "o/o". */
 html[data-theme="weyland-yutani"] .panel-header .badge {
@@ -394,14 +443,10 @@ html[data-theme="weyland-yutani"] .meter::after {
   background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0 1px, transparent 1px 3px);
 }
 html[data-theme="weyland-yutani"] .meter::after {
-  background-image:
-    repeating-linear-gradient(90deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem),
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px);
+  background-image: repeating-linear-gradient(90deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem);
 }
 html[data-theme="weyland-yutani"] .meter-v::after {
-  background-image:
-    repeating-linear-gradient(0deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem),
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px);
+  background-image: repeating-linear-gradient(0deg, transparent 0 0.4rem, rgba(10, 9, 8, 0.92) 0.4rem 0.5rem);
 }
 
 /* --- Layout -------------------------------------------------------------- *
@@ -461,22 +506,67 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) {
 
 /* Machined parts are square: carousel markers, the arrows and the spinner
    ring have no radius token in core, so it is set here (shape only). */
-html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner) { border-radius: 0; }
+html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner, .indicator),
+html[data-theme="weyland-yutani"] .btn[aria-pressed][aria-busy="true"]::before,
+html[data-theme="weyland-yutani"] :is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after { border-radius: 0; }
+html[data-theme="weyland-yutani"] :is(.has-badge, .avatar, .presence-status)::after { border-radius: 0; }
+/* A square fills the corner a round dot leaves free, so in the small bar
+   avatar it sits outside the corner to keep the initials clear. */
+html[data-theme="weyland-yutani"] .app-bar .avatar[data-status] { --presence-dot-size: 0.45rem; }
+html[data-theme="weyland-yutani"] .app-bar .avatar[data-status]::after { inset-block-end: -3px; inset-inline-end: -3px; }
 html[data-theme="weyland-yutani"] .carousel > .carousel-slide::scroll-marker,
 html[data-theme="weyland-yutani"] .carousel::scroll-button(*) { border-radius: 0; }
+
+/* Checkboxes and radios are machined square keys, not the UA's rounded grey
+   box: glass black in a lit frame, filled amber with a dark mark when on.
+   The radio's mark is a square block, not a dot. Core's size (hit area) stays. */
+html[data-theme="weyland-yutani"] :is(.checkbox, .radio) {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  border: 2px solid var(--wy-line-hi);
+  border-radius: 0;
+  background: var(--wy-deep);
+}
+html[data-theme="weyland-yutani"] :is(.checkbox, .radio):hover { border-color: var(--accent); }
+html[data-theme="weyland-yutani"] .checkbox:is(:checked, :indeterminate) {
+  border-color: var(--accent);
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.8' fill='none' stroke='%230a0908' stroke-width='2.6' stroke-linecap='square'/%3E%3C/svg%3E") center / 90% no-repeat;
+}
+html[data-theme="weyland-yutani"] .checkbox:indeterminate { background: var(--accent) linear-gradient(var(--on-accent), var(--on-accent)) center / 60% 0.18rem no-repeat; }
+/* Core's radio box is taller than wide (a 24px target), so its frame is
+   drawn as a centred square, not with the border. */
+html[data-theme="weyland-yutani"] .radio {
+  --_box: calc(1.1em * var(--density));
+  border: 0;
+  background:
+    linear-gradient(var(--_mark, transparent), var(--_mark, transparent)) center / 0.5em 0.5em no-repeat,
+    linear-gradient(var(--wy-deep), var(--wy-deep)) center / calc(var(--_box) - 4px) calc(var(--_box) - 4px) no-repeat,
+    linear-gradient(var(--_frame, var(--wy-line-hi)), var(--_frame, var(--wy-line-hi))) center / var(--_box) var(--_box) no-repeat;
+}
+html[data-theme="weyland-yutani"] .radio:hover { --_frame: var(--accent); }
+html[data-theme="weyland-yutani"] .radio:checked { --_frame: var(--accent); --_mark: var(--accent); }
+html[data-theme="weyland-yutani"] :is(.checkbox, .radio):disabled { opacity: 0.45; }
 
 /* Ghost soft keys keep a lit lip so they still read as keys on surface-2. */
 html[data-theme="weyland-yutani"] .btn-ghost { --btn-shadow: inset 0 -3px 0 var(--wy-line-hi); --btn-shadow-hover: inset 0 -3px 0 var(--accent); }
 
 /* Stat tiles follow the terminals' header rows: label and value over one
    long double rule, no box (terminal-amber-destination.jpg). */
-html[data-theme="weyland-yutani"] .card:has(> .stat-value) {
+html[data-theme="weyland-yutani"] .card:has(> .stat-value, > .stat > .stat-value) {
   --card-bg: transparent;
   --card-border: transparent;
   border-bottom: 3px double var(--wy-line-hi);
 }
 /* The header rows' values glow in the screen's phosphor; labels stay muted. */
 html[data-theme="weyland-yutani"] .stat-value { color: var(--accent); text-shadow: var(--readout-glow); }
+/* Label over value, as the header rows' label column sits over the figures. */
+html[data-theme="weyland-yutani"] .card:has(> .stat-value) > :is(.stat-label, .stat-value) { display: block; }
+html[data-theme="weyland-yutani"] .stat > .stat-label { order: -1; }
+
+/* The readout is a boxed counter cell (romulus-colony-work-contract.webp):
+   a lit inner outline 1px inside the glass frame. */
+html[data-theme="weyland-yutani"] .readout { outline: 1px solid var(--wy-line-hi); outline-offset: -3px; }
 
 /* Success is a lit outline (like the soft keys), not a solid green block:
    the hardware palette is amber and beige, green is a terminal status. */
@@ -533,6 +623,9 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) > :first-child { bor
 /* One phosphor per screen: chart series are shades of it, so only status
    colours (success/warning/danger) step outside the screen's hue. */
 html[data-theme="weyland-yutani"][data-variant] {
+  /* A saved cell is a phosphor outline, not a green fill, so the screen
+     keeps one hue (the tick still marks it). */
+  --cell-saved-bg: transparent;
   --chart-series-1: var(--accent);
   --chart-series-2: var(--accent-2);
   --chart-series-3: var(--muted);
@@ -541,6 +634,9 @@ html[data-theme="weyland-yutani"][data-variant] {
   --chart-series-6: var(--border);
 }
 html[data-theme="weyland-yutani"][data-variant] :is(h1, h2, .nav-brand, .readout) { text-shadow: 0 0 0.5rem var(--wy-glow); }
+/* The screens set every short line in tracked caps (mother-6000-query-
+   green.jpg); paragraphs and inputs stay mixed case for reading. */
+html[data-theme="weyland-yutani"][data-variant] :is(.table td, .text-muted, .list-item, .breadcrumbs) { text-transform: uppercase; letter-spacing: 0.04em; }
 
 /* MU/TH/UR 6000: the Nostromo's green phosphor. */
 html[data-theme="weyland-yutani"][data-variant="mother"] {
@@ -555,9 +651,9 @@ html[data-theme="weyland-yutani"][data-variant="mother"] {
   --panel-border: var(--wy-line-dim);
   --app-status-bg: var(--bg);
   --wy-rail-base: var(--bg);
-  --bg: #020a05;
-  --surface: #06130a;
-  --surface-2: #0b1d10;
+  --bg: #020603;
+  --surface: #060d08;
+  --surface-2: #0b160e;
   --border: #2f6a3c;
   --hairline: #11301a;
   --text: #a6f7b8;
@@ -592,9 +688,9 @@ html[data-theme="weyland-yutani"][data-variant="emergency"] {
   --panel-border: var(--wy-line-dim);
   --app-status-bg: var(--bg);
   --wy-rail-base: var(--bg);
-  --bg: #0c0302;
-  --surface: #170705;
-  --surface-2: #220c08;
+  --bg: #080202;
+  --surface: #110706;
+  --surface-2: #1a0b09;
   --border: #7a2a1e;
   --hairline: #3a120c;
   --text: #ffbcaa;
@@ -629,9 +725,9 @@ html[data-theme="weyland-yutani"][data-variant="earth"] {
   --panel-border: var(--wy-line-dim);
   --app-status-bg: var(--bg);
   --wy-rail-base: var(--bg);
-  --bg: #02090c;
-  --surface: #061419;
-  --surface-2: #0a1f26;
+  --bg: #020608;
+  --surface: #060e11;
+  --surface-2: #0a171b;
   --border: #23687a;
   --hairline: #0f313b;
   --text: #a4efff;
@@ -648,10 +744,7 @@ html[data-theme="weyland-yutani"][data-variant="earth"] {
   --selection-fg: #02090c;
 }
 
-/* Window caption buttons on the label plate follow the plate's ink, as
-   core already does for the close button: the default muted grey all but
-   vanished on beige. */
-html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, inherit); }
+
 
 /* --- v5 layout (PLAN.md §2–§3) ---------------------------------------------
  * Phones and tablets: bar, main, status in one column. The equipment rail
@@ -671,9 +764,10 @@ html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:h
   /* The tool cluster fits one row: tighter gaps and keys, and no keyboard
      shortcut hint on a touch screen. */
   html[data-theme="weyland-yutani"] .app-bar { row-gap: 0; }
-  /* The brand keeps its full name (the tools wrap instead) and a 24px row,
+  /* The brand shares its row with the menubar and gives way first (core's
+     ellipsis), so the plate is two rows, not three; it keeps a 24px row
      since the bar no longer spaces its rows apart. */
-  html[data-theme="weyland-yutani"] .app-bar .nav-brand { letter-spacing: 0.04em; flex: 1 0 auto; max-width: 100%; min-height: 1.5rem; }
+  html[data-theme="weyland-yutani"] .app-bar .nav-brand { letter-spacing: 0.04em; min-height: 1.5rem; }
   html[data-theme="weyland-yutani"] .app-bar .cluster { --cluster-gap: 0.3rem; }
   html[data-theme="weyland-yutani"] .app-bar .btn { letter-spacing: 0.04em; padding-inline: 0.6em; }
   html[data-theme="weyland-yutani"] .app-bar .btn kbd { display: none; }
