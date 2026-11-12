@@ -142,9 +142,15 @@ html[data-theme="blue-future"] {
   --tab-fg-active: var(--text);
   --tab-underline-active: var(--accent-2);
 
-  /* Cell edit states tint the panel, not the row, so a dirty cell on a
-     selected row stays amber instead of mixing to olive. */
-  --cell-dirty-bg: color-mix(in srgb, var(--warning) 10%, var(--surface)); /* a tint on navy, not a warm slab; the amber edge carries it */
+  /* A dirty cell is the amber edge alone: any amber tint mixes with the
+     blue selection to a dead brown cell. */
+  --cell-dirty-bg: transparent;
+
+  /* Avatars are square cells with a visible blue-cast fill, not dark discs. */
+  --avatar-radius: 2px;
+  --avatar-bg: color-mix(in srgb, var(--accent-2) 22%, var(--surface));
+  --avatar-fg: var(--text);
+  --carousel-arrow-bg: var(--btn-bg);
 
   /* Inputs */
   --input-bg: #08192b;
@@ -237,6 +243,27 @@ html[data-theme="blue-future"] .panel-header {
   padding-left: max(var(--surface-pad, 1rem), 1.75rem);
 }
 html[data-theme="blue-future"] .modal-header { padding-left: max(var(--space-m), 1.75rem); }
+/* A dialog title is an instrument title like a panel's; a desktop window's
+   title (a file name) keeps its own case. */
+html[data-theme="blue-future"] .modal:not(.desktop-window .modal) > .modal-header {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.9em;
+}
+/* A panel titled by an in-body heading clears the L-mark too. */
+html[data-theme="blue-future"] .panel > :is(h1, h2, h3, .cluster:has(> :is(h1, h2, h3))):first-child {
+  padding-left: max(0px, calc(1.75rem - var(--surface-pad, 1rem)));
+}
+html[data-theme="blue-future"] .avatar { box-shadow: inset 0 0 0 1px var(--border); }
+/* Unchecked boxes and radios: a dark field cell with the field edge, not
+   Chromium's grey dark-scheme box. Checked keeps the native cyan mark. */
+html[data-theme="blue-future"] :is(.checkbox, .radio):not(:checked, :indeterminate) {
+  appearance: none;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 2px;
+}
+html[data-theme="blue-future"] .radio:not(:checked) { border-radius: 50%; }
 /* The current section is a selected control: blue cell, blue edge. */
 html[data-theme="blue-future"] .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) {
   --nav-item-bg-active: var(--bf-selected-bg);
@@ -262,7 +289,11 @@ html[data-theme="blue-future"] {
 }
 @media (pointer: coarse) {
   html[data-theme="blue-future"] {
+    /* Touch keeps the vignette only: the tiled grid over a long document
+       is the most expensive paint left on scroll. */
     background-attachment: scroll;
+    background-image: radial-gradient(ellipse at top, #0a1a2e, #020509 70%);
+    background-size: auto;
     /* Blur shadows on every card repaint on scroll; touch keeps the glow
        on what is live (readouts, lamps) only. */
     --panel-shadow: none;
@@ -337,6 +368,12 @@ html[data-theme="blue-future"] .btn-tertiary { --bf-tone: var(--accent); --btn-b
 html[data-theme="blue-future"] .btn-danger { --bf-tone: var(--danger); --bf-ink: #ff7a8f; }
 html[data-theme="blue-future"] .btn-success { --bf-tone: var(--success); }
 html[data-theme="blue-future"] .btn-ghost { --btn-shadow-hover: none; }
+/* Touch: a tap's hover glow is a blur repaint for nothing (after the
+   variants above, which set it). */
+@media (pointer: coarse) {
+  html[data-theme="blue-future"] .btn { --btn-shadow-hover: none; }
+  html[data-theme="blue-future"] :is(.btn-primary, .btn-secondary, .btn-tertiary, .btn-danger, .btn-success) { --btn-shadow-hover: none; }
+}
 /* Disabled: present but off. An unlit cell: no fill, dim text and a dashed
    dim edge, so it never reads as a dimmed primary. */
 html[data-theme="blue-future"] .btn:disabled,
@@ -370,6 +407,10 @@ html[data-theme="blue-future"] .pagination-item {
 html[data-theme="blue-future"] td > :is(.input, .select) { min-inline-size: var(--tap-min); }
 /* Disabled arrows: an unlit cell (dashed dim edge), like a disabled button,
    so the control's place is kept. */
+html[data-theme="blue-future"] .carousel::scroll-button(*) {
+  border: 1px solid var(--btn-border);
+  border-radius: 2px;
+}
 html[data-theme="blue-future"] .pagination-item.is-disabled,
 html[data-theme="blue-future"] .carousel::scroll-button(*):disabled {
   border: 1px dashed var(--muted);
@@ -536,6 +577,20 @@ html[data-theme="blue-future"] {
    buttons. Both become stacking contexts at the same level, so the later
    one in the tree (the bar) paints on top; neither gains a position. */
 html[data-theme="blue-future"] :is(.app-main, .app-status) { isolation: isolate; }
+/* The status strip is the telemetry line: tabular figures, and a lit lamp
+   before its first item so every page carries one live readout. */
+html[data-theme="blue-future"] .app-status { font-variant-numeric: tabular-nums; }
+html[data-theme="blue-future"] .app-status:not(.tabbar) > :first-child::before {
+  content: "";
+  display: inline-block;
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  margin-inline-end: 0.5em;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0.35em var(--accent);
+  vertical-align: 0.1em;
+}
 
 /* Phone: the wide mono face needs its room back. Labels drop the button
    tracking, joined toggles tighten, and the bar's actions stay on one line

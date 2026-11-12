@@ -93,12 +93,15 @@ the two should visibly move the furniture.
 1. **Backdrop.** A fixed radial vignette (ellipse at top, `#0a1a2e` to
    `#020509` at 70%) under a faint cyan 2rem grid (`rgba(47,214,255,0.04)`
    1px lines): the interface reads as a panel in a space, not wallpaper.
-   On touch screens (`pointer: coarse`) it scrolls with the page instead
-   of staying fixed, so phones do not repaint the viewport every frame.
+   On touch screens (`pointer: coarse`) it scrolls with the page and
+   drops the grid, keeping the vignette only, so phones do not repaint a
+   tiled grid over a long document every frame.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
    18px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right,
    inset 4px from the corner like registration marks engraved on a bezel.
-   Panel and modal titles start 1.75rem in so they clear the mark (a
+   Panel and modal titles start 1.75rem in so they clear the mark, a
+   panel titled by an in-body heading included, and a dialog title is
+   tracked uppercase like a panel's (a
    desktop window's title bar pads its start so the icon clears it), and a
    panel title sits on a cyan-cast hairline, the bezel's engraved rule.
    Only the focused desktop window is energized: a cyan hairline under its
@@ -119,7 +122,7 @@ the two should visibly move the furniture.
 3. **Buttons** are dark blue-cast cells with 0.05em tracking (dropped to
    0 on phones, where the wide mono face needs the room). Icon buttons are
    square like everything else. Primary carries only a faint
-   `0 0 0.4rem rgba(47,214,255,0.2)` at rest (none on touch), its full
+   `0 0 0.4rem rgba(47,214,255,0.2)` at rest (no glow at all on touch), its full
    `0 0 1rem` glow on hover, so readouts and lamps stay brightest; secondary/outline hover recolours the
    border to the glow and adds `0 0 8px`; `:disabled` is an unlit cell: no
    fill, `--muted` text and dashed `--muted` edge at 0.7 opacity, no
@@ -134,7 +137,12 @@ the two should visibly move the furniture.
    (`--accent-2` at 20% over the panel, quieter than a control's 35% so
    red and amber status text on them holds 4.5:1); cyan stays for live data. The current page
    is a roomier cell (2.4em, or the touch target) so its digit clears the blue edge; disabled
-   page and carousel arrows are dashed unlit cells.
+   page and carousel arrows are dashed unlit cells; carousel arrows are
+   square bordered cells like the page cells. A dirty (unsaved) cell is
+   marked by its amber edge alone, no tint, so it stays legible on a
+   selected row. Unchecked checkboxes and radios are `#08192b` field cells
+   with the `#2a6a9a` field edge (radios stay round, like lamps); checked
+   ones keep the native cyan mark.
 6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
    in `--text`; `h3`/`h4` 0.8em, 0.2em-tracked and `--muted` (panel labels).
    Headings inside `.prose`/`article` keep their case. Under 480px the
@@ -156,13 +164,17 @@ the two should visibly move the furniture.
    Slides only under `prefers-reduced-motion: no-preference`. Core's
    `.switch` carries the same look through tokens: a square 3px track on
    `#02050a`, a square thumb, cyan when on. Badges, chips and scrollbars
-   are squared to 2px too: nothing on the panel is a pill.
+   are squared to 2px too: nothing on the panel is a pill. Avatars are
+   2px-square blue-cast cells with a 1px `--border` ring.
    Meters sit in a `--deck-trim` (`#1d5c8f`) window edge, the same metal
    as the transport. Tabs inside a window or dialog drop to 0.02em
    tracking so a four-tab strip stays on one row.
    On phones the bar is two 44px target rows with no padding between
    them (brand and actions, then the nav), about 106px.
-9. **Status helpers**: `.status-ok` (success), `.status-error` (danger),
+9. **Telemetry strip**: `.app-status` uses tabular figures and lights a
+   small glowing cyan lamp before its first item, so every page carries
+   one live readout.
+   **Status helpers**: `.status-ok` (success), `.status-error` (danger),
    `.status-rec` or `.status-error.is-rec` (bold danger plus glow),
    `.status-idle` (success, a ready recorder is green).
 10. **Type** is monospace-first (see Typography).
