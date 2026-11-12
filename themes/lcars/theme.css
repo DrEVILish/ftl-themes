@@ -34,7 +34,7 @@ html[data-theme="lcars"] {
   --surface: #000000;
   --surface-2: #1c1c2c;
   /* Hairlines and outlines don't exist in LCARS; structure is bars. */
-  --border: #333333;
+  --border: transparent;
   --hairline: #000000;
   --panel-border-width: 0;
   /* Two text colours only (reference §7): tan for normal display, the
@@ -45,7 +45,8 @@ html[data-theme="lcars"] {
   --accent: #ff9900;
   --accent-2: #9999cc;
   --danger: #d15a5a;
-  --success: #99cc99;
+  /* No green in the candy set: "good" reads as periwinkle (information). */
+  --success: var(--lcars-periwinkle);
   --warning: #ffcc99;
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
@@ -98,7 +99,7 @@ html[data-theme="lcars"] {
   --btn-radius: 999px;
   --btn-border-width: 0;
   --btn-padding: 0.5rem 1rem 0.35rem 2rem;
-  --btn-padding-sm: 0.25rem 0.8rem 0.15rem 1.4rem;
+  --btn-padding-sm: 0.25rem 0.8rem 0.3rem 1.4rem;
   --btn-weight: 400;
   --btn-tracking: 0.06em;
   --btn-transform: uppercase;
@@ -110,9 +111,11 @@ html[data-theme="lcars"] {
   --input-bg: #14141f;
   --input-border: transparent;
   --input-radius: 999px 0.3rem 0.3rem 999px;
+  /* The value starts clear of the cap's curve. */
+  --input-padding: 0.5em 0.75em 0.5em 1.15rem;
   --input-addon-bg: var(--lcars-lavender);
   --input-addon-fg: #000;
-  --log-bg: #0b0b12;
+  --log-bg: #000;
   --log-border: transparent;
   --switch-border: transparent;
   --switch-bg: #2c2c44;
@@ -123,13 +126,16 @@ html[data-theme="lcars"] {
   --table-rule: transparent;
   --focus-ring: 0 0 0 0.2rem rgba(255, 153, 0, 0.25);
   --dropdown-border: transparent;
-  --dropdown-bg: #14141f;
+  /* Menus and popovers are black, framed by a lavender leg (below). Only a
+     text field keeps a dark well, to show where you can type. */
+  --dropdown-bg: #000;
+  --window-pane-bg: #000;
   --kbd-bg: var(--lcars-lavender);
   --kbd-fg: #000;
   --kbd-border: transparent;
   --kbd-radius: 999px;
   --kbd-shadow: none;
-  --dropzone-bg: #14141f;
+  --dropzone-bg: #000;
   --dropzone-border: transparent;
   --dropdown-radius: 0;
   --table-head-bg: var(--accent);
@@ -149,6 +155,24 @@ html[data-theme="lcars"] {
   --nav-item-bg-active: var(--accent);
   --nav-item-fg-active: #000;
   --badge-radius: 999px;
+  --badge-bg: var(--lcars-lavender);
+  --badge-fg: #000;
+  /* Charts draw in the candy set; red stays the alert colour only. */
+  --chart-series-1: var(--accent);
+  --chart-series-2: var(--lcars-periwinkle);
+  --chart-series-3: var(--lcars-lavender);
+  --chart-series-4: var(--lcars-peach);
+  --chart-series-5: var(--lcars-tan);
+  --chart-series-6: var(--lcars-periwinkle);
+  /* Slider: a lavender candy bar; the core keeps the --tap-min hit area
+     round it with a clipped content box. */
+  --slider-bg: var(--lcars-lavender);
+  --slider-height: 0.5rem;
+  --slider-border-width: 0;
+  --slider-radius: 999px;
+  --slider-thumb-bg: var(--accent);
+  --slider-thumb-radius: 0.3rem;
+  --btn-icon-radius: 999px 0.3rem 0.3rem 999px;
   /* Tabs are a row of touching candy blocks, not underlined labels. */
   --tab-radius: 0;
   --tab-bg: var(--lcars-lavender);
@@ -213,7 +237,7 @@ html[data-theme="lcars"] {
   --alert-fg: var(--text);
   --alert-radius: 0.7rem 0 0 0.7rem;
   --context-menu-border: transparent;
-  --context-menu-bg: #14141f;
+  --context-menu-bg: #000;
   --context-menu-radius: 0;
   --context-menu-item-fg-hover: #000;
     --dropzone-radius: 0;
@@ -228,7 +252,7 @@ html[data-theme="lcars"] {
   --tooltip-border: transparent;
   --tooltip-radius: 0;
   --popover-border: transparent;
-  --popover-bg: #14141f;
+  --popover-bg: #000;
   --popover-radius: 0;
   --card-bg: transparent;
   --panel-bg: transparent;
@@ -345,7 +369,12 @@ html[data-theme="lcars"] .alert {
    bottom-right, as on the panels' two-line keys. Minimum widths are kept
    modest so a row of keys can still shrink to fit its frame. */
 html[data-theme="lcars"] :is(.btn:not(.btn-icon):not(.btn-sm), .toggle-btn) { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 4.8rem; min-height: max(2.3rem, var(--tap-min)); line-height: 1.05; }
-html[data-theme="lcars"] .btn-sm { justify-content: flex-end; text-align: right; min-width: 3.4rem; }
+/* Small keys keep the 3:1 block proportion and the bottom-right label. */
+html[data-theme="lcars"] .btn-sm { justify-content: flex-end; align-items: flex-end; text-align: right; min-width: 4.2rem; }
+/* In a joined toggle group the keys share the row: no minimum width, no
+   wrapping, and the row scrolls sideways when it can't fit. */
+html[data-theme="lcars"] .toggle-group { overflow-x: auto; scrollbar-width: none; }
+html[data-theme="lcars"] .toggle-group > .toggle-btn:not(.btn-icon):not(.btn-sm) { min-width: 0; white-space: nowrap; flex: none; }
 html[data-theme="lcars"] .btn-primary { --btn-bg: var(--accent); --btn-bg-hover: var(--lcars-gold); }
 html[data-theme="lcars"] .btn-secondary { --btn-bg: var(--lcars-periwinkle); --btn-fg: #000; }
 html[data-theme="lcars"] .btn-success { --btn-bg: var(--lcars-sky); }
@@ -357,7 +386,7 @@ html[data-theme="lcars"] .tab { border: 0; padding: 0.4em 0.7em 0.25em; font-siz
 html[data-theme="lcars"] .tab.is-active { border-bottom: 0; }
 html[data-theme="lcars"] .tab:hover:not(.is-active) { background: var(--lcars-tan); color: #000; }
 html[data-theme="lcars"] .tab:first-child { border-radius: 999px 0 0 999px; padding-left: 1.1em; }
-html[data-theme="lcars"] .tab:last-child { border-radius: 0 999px 999px 0; padding-right: 1.1em; }
+html[data-theme="lcars"] .tab:last-child { border-radius: 0 999px 999px 0; padding-right: 1.4em; }
 
 html[data-theme="lcars"] .table th:first-child { border-radius: 1rem 0 0 1rem; }
 html[data-theme="lcars"] .table th:last-child { border-radius: 0 1rem 1rem 0; }
@@ -472,7 +501,9 @@ html[data-theme="lcars"] .app-rail {
       var(--lcars-peach) 13.3rem 20rem,
       #000 20rem 20.3rem
     ) top / 100% 20.3rem no-repeat,
-    var(--lcars-tan);
+    /* The leg below breaks into stacked tan segments, not one long slab. */
+    repeating-linear-gradient(180deg, var(--lcars-tan) 0 10rem, #000 10rem 10.3rem) 0 20.3rem / 100% 100% no-repeat,
+    #000;
 }
 /* Each labelled block carries a black code at its lower right, as on the
    on-screen panels. Two pseudo-slots, so the top two blocks. */
@@ -619,19 +650,22 @@ html[data-theme="lcars"][data-variant="voyager"] {
   --focus-ring: 0 0 0 0.2rem rgba(204, 153, 102, 0.3);
 }
 
-/* Picard (2399): a cold 25th-century repaint, blue structure with red
-   and orange accents and pale ice-blue text. */
+/* Picard (2399): a cold 25th-century repaint sampled from the
+   Communications screen (references/lcars/picard): desaturated slate and
+   steel structure, saturated cyan for what is active, a red-orange
+   highlight block now and then, pale ice-blue text. Every fill keeps
+   black labels at >= 4.5:1, so the darkest slate (#5d6b88) is not used. */
 html[data-theme="lcars"][data-variant="picard"] {
-  --accent: #5588ee;
-  --lcars-peach: #ff8844;
-  --lcars-tan: #aabbdd;
-  --lcars-lavender: #88aaee;
-  --lcars-periwinkle: #4477dd;
-  --text: #ddeeff;
-  --muted: #ddeeff;
-  --flare: #ee5555;
+  --accent: #4fb3f6;
+  --lcars-peach: #e8553f;
+  --lcars-tan: #b9c4d6;
+  --lcars-lavender: #8c9ab4;
+  --lcars-periwinkle: #7a8aa8;
+  --text: #dde6f2;
+  --muted: #dde6f2;
+  --flare: #e8553f;
   --link: var(--accent);
-  --focus-ring: 0 0 0 0.2rem rgba(85, 136, 238, 0.35);
+  --focus-ring: 0 0 0 0.2rem rgba(79, 179, 246, 0.35);
 }
 
 /* Mixing-console primitives in LCARS paint: candy knob caps, pill keys
@@ -771,7 +805,11 @@ html[data-theme="lcars"] .panel-header { max-width: calc(100% - 1.5rem - var(--l
 html[data-theme="lcars"] .panel-header > div { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; overflow: hidden; }
 html[data-theme="lcars"] .panel-header .field-hint { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); flex: 0 20 auto; min-width: 0; }
 html[data-theme="lcars"] .panel-header :is(.btn, .btn-sm):not(.btn-icon) { min-width: 0; min-height: 0; padding: 0.05rem 0.6rem; }
-html[data-theme="lcars"] .panel-header > :not(:first-child) { flex: none; }
+/* The title takes priority in the bar break; a badge or sub-line after it
+   gives way (and clips) first when the frame is narrow. */
+html[data-theme="lcars"] .panel-header > :first-child { flex: 0 0 auto; max-width: 100%; }
+html[data-theme="lcars"] .panel-header > :not(:first-child, .btn, .btn-icon) { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+html[data-theme="lcars"] .panel-header > :is(.btn, .btn-icon):not(:first-child) { flex: none; }
 
 /* Gauges vs bars: only vertical meters are MSD tubes with a tick ruler;
    horizontal meters (in tables, cards) get a plain dark track so an empty
@@ -784,6 +822,8 @@ html[data-theme="lcars"] .meter-v:not(.is-segmented) { --meter-thickness: 1.3rem
    rather than truncating labels to nothing. */
 html[data-theme="lcars"] .tabs { flex-wrap: nowrap; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 html[data-theme="lcars"] .tab { flex: none; white-space: nowrap; }
+/* A vertical tab column is as wide as its longest label. */
+html[data-theme="lcars"] .tabs[aria-orientation="vertical"] { min-width: max-content; }
 
 /* No zebra: LCARS has no grey bands. */
 html[data-theme="lcars"] { --row-alt-bg: transparent; }
@@ -797,7 +837,7 @@ html[data-theme="lcars"] .accordion-trigger {
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 0.35rem 1rem 0.2rem 0.8rem;
+  padding: 0.35rem 1rem 0.3rem 0.8rem;
   border-radius: 0 999px 999px 0;
 }
 html[data-theme="lcars"] .accordion-item[open] > .accordion-trigger { background: var(--accent); }
@@ -908,3 +948,62 @@ html[data-theme="lcars"][data-alert="yellow"] {
 }
 html[data-theme="lcars"][data-alert]::after { box-shadow: inset 0 0 0 0.5rem var(--alert-level); }
 html[data-theme="lcars"][data-alert="red"]::after { animation-duration: 1s; animation-timing-function: steps(1); }
+
+/* --- Polish round 1 ------------------------------------------------------ */
+
+/* Black menus, popovers and drop zones: framed by a candy leg, not a well
+   or a stroke. */
+html[data-theme="lcars"] :is(.dropdown, .context-menu, .popover, .menubar [role="menu"]) {
+  border: 0;
+  border-left: 0.6rem solid var(--lcars-lavender);
+}
+html[data-theme="lcars"] .dropzone {
+  border: 0;
+  border-left: 0.6rem solid var(--lcars-lavender);
+  border-right: 0.6rem solid var(--lcars-lavender);
+}
+
+/* Badges are solid candy blocks with black text; red only for danger. */
+html[data-theme="lcars"] .badge-accent { --badge-bg: var(--accent); --badge-fg: #000; }
+html[data-theme="lcars"] .badge-success { --badge-bg: var(--lcars-periwinkle); --badge-fg: #000; }
+html[data-theme="lcars"] .badge-warning { --badge-bg: var(--lcars-tan); --badge-fg: #000; }
+html[data-theme="lcars"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #000; }
+/* A falling sparkline is information, not an alarm: peach, not red. */
+html[data-theme="lcars"] .sparkline.is-down { --sparkline-stroke: var(--lcars-peach); }
+
+/* Upper case throughout (reference §7), prose included. What the user
+   types (.input, .textarea) and code keep their own case. */
+html[data-theme="lcars"] :is(body, button, select, .dropdown, .context-menu, .popover, .toast, .alert, .modal) {
+  text-transform: uppercase;
+}
+html[data-theme="lcars"] :is(input.input, .textarea, code, samp, pre, [contenteditable]) { text-transform: none; }
+/* No strokes: a fieldset is its legend over black, the bulk-action bar a
+   lavender block edge. */
+html[data-theme="lcars"] fieldset { border: 0; padding-inline: 0; }
+html[data-theme="lcars"] { --bulk-bar-border: transparent; --bulk-bar-bg: #000; }
+html[data-theme="lcars"] .bulk-bar { border-left: 0.6rem solid var(--accent); }
+
+/* Three sizes: nothing smaller than the data size. */
+html[data-theme="lcars"] :is(small, .field-hint, .icon-label, .desktop-icon, .window-status, .app-status, .sparkline-label, .legend, .legend-item, figcaption, caption) {
+  font-size: var(--lcars-size-data);
+}
+
+/* Desktop windows: the title bar runs full width with its caption keys
+   after the title — small candy blocks, the close key orange. */
+html[data-theme="lcars"] .desktop-window .modal-header { width: auto; max-width: none; margin-bottom: 0.25rem; }
+html[data-theme="lcars"] .desktop-window > .modal { --lc-pad: 0.6rem; }
+html[data-theme="lcars"] .desktop-window .modal-header > .btn-close { position: static; --btn-close-bg: var(--accent); }
+html[data-theme="lcars"] .desktop-window .modal-header > :is(.btn-min, .btn-max) {
+  --btn-min-glyph: "MIN";
+  --btn-max-glyph: "MAX";
+  --btn-close-width: auto;
+  --btn-close-height: 1.4rem;
+  --btn-close-pad: 0 0.7em;
+  --btn-close-glyph-size: 0.8em;
+  --btn-close-radius: 999px 0.2rem 0.2rem 999px;
+  --btn-close-bg: var(--lcars-lavender);
+  --modal-header-close-fg: #000;
+  letter-spacing: 0.08em;
+}
+html[data-theme="lcars"] .desktop-window .modal-header > .btn-max { --btn-close-bg: var(--lcars-peach); --btn-close-radius: 0.2rem; }
+html[data-theme="lcars"] { --window-header-filter-inactive: opacity(0.8); }

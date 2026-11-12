@@ -25,7 +25,7 @@ plain **LCARS** — the orange-led palette. Select the others with `data-variant
 |---|---|---|
 | *(none)* | LCARS | Orange-led candy: orange, lavender, peach, tan. |
 | `voyager` | Voyager / DS9 | Gold-tan `#cc9966` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
-| `picard` | Picard (2399) | Cold blue `#5588ee` structure, ice-blue text `#ddeeff`, red `#ee5555`/orange `#ff8844` accents. |
+| `picard` | Picard (2399) | Sampled from `picard/graph-dial-dataTable.jpg`: slate/steel structure `#8c9ab4`/`#b9c4d6`/`#7a8aa8`, cyan `#4fb3f6` for active, red-orange `#e8553f` highlight, ice-blue text `#dde6f2`. |
 
 Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
 
@@ -47,7 +47,9 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
    `--density: 1.15`. A cramped LCARS is a wrong LCARS.
 6. **Type is tall, condensed, uppercase.** Antonio stands in for the
    original's Swiss 911/Helvetica Compressed, and sets *everything*, body
-   copy included.
+   copy included — in upper case, prose, table cells, menus and buttons
+   too. Only what the user types (inputs, textareas) and code keep their
+   own case.
 7. **Two text colours, three sizes.** Normal text is tan (`#ffcc99`), the
    highlight orange (`--accent`) — nothing else, never white. Type comes
    in three sizes only: main title (2.4rem), sub header (1.25rem), normal
@@ -90,6 +92,18 @@ this catalog could verify against.
   solid orange elbow (`0 1.4rem 1.4rem 0`), not an outline. On this theme
   the primary action is a *block*, consistent with everything else.
 - **Lamps** are rounded rectangles, not circles: LCARS has few true circles.
+  Icon buttons likewise are capped blocks (`999px 0.3rem 0.3rem 999px`).
+- **No green.** `--success` is periwinkle and charts draw in the candy set
+  (orange, periwinkle, lavender, peach, tan); badges are solid candy blocks
+  with black text. Red is kept for danger/alert only; a falling sparkline
+  is peach.
+- **Black menus.** Dropdowns, context menus, popovers and the dropzone are
+  black framed by a 0.6rem lavender leg; only text fields keep a dark well.
+  `--border` is transparent, so no grey hairline survives anywhere.
+- **Sliders** are a 0.5rem lavender bar with an orange block thumb, drawn
+  in the content box of core's `--tap-min` hit area.
+- **Desktop windows** carry MIN/MAX/CLOSE as small candy keys after the
+  title (lavender, peach, orange).
 
 ### Icons
 
@@ -224,7 +238,9 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
 
 Known remaining difference: original rails label *every* block with a
 code; the shell rail is one empty element with two pseudo-elements, so
-only its top two blocks carry codes.
+only its top two blocks carry codes. The long tan leg below them is cut
+into 10rem segments by 0.3rem black gaps so a tall page doesn't read as
+one slab.
 
 ## Reference rules pass (against `references/lcars/RESEARCH.md`)
 
