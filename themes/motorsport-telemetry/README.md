@@ -26,7 +26,9 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 
 1. **Colour is data.** Purple, green and yellow keep their sector meanings
    (accent/selection, success, warning); red, yellow, white, green and blue
-   keep their compound meanings. Don't use them as decoration elsewhere.
+   keep their compound meanings. Don't use them as decoration elsewhere:
+   secondary/tertiary buttons, the search key, counts and desktop glyphs
+   are white; purple fills only what is selected, pressed or current.
 2. **Every number is tabular.** Titillium Web's digits are fixed-width and
    the root sets `tabular-nums`. A lap time that jitters as it updates is
    wrong.
@@ -34,15 +36,18 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
    muted, tracked caps. The chrome stays dark so the data is the brightest
    thing on screen.
 4. **Carbon is a material, not a pattern.** The twill is a few percent over
-   black. If you can see a checkerboard behind body text, it's too strong.
+   black, one cached 6px SVG tile, woven only into the frame (page, bar,
+   rail). Panels, cards and table rows are flat carbon gradients, so no
+   checkerboard ever sits behind body text.
 5. **Thin, hard-edged marks.** 2px traces, 1-2px radii, no gloss, no glow.
    Broadcast graphics are flat; only the rev lights are lit.
 
 ## Signature details
 
 - The **timing tower** in the rail: "LAP 34/57" over positions 1-20 (the
-  leader boxed in white), a neutral stripe per car, a tabular interval
-  figure per car (one purple for the fastest lap), and a tyre ring per car.
+  leader boxed in white), a 2px neutral stripe per car, a bold 10px
+  tabular interval figure per car (one purple for the fastest lap), and a
+  tyre ring per car.
   Painted as one SVG data URI on a sticky `::before`, so the tower stays in
   view down a long page; the rail stays empty and `aria-hidden`.
 - The **rev-light strip** under the bar: 15 LEDs, 5 green, 5 red, 5 blue,
@@ -71,6 +76,10 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
   4px purple bar, as the fastest lap is on a timing screen.
 - The status strip is race control on a 2px green "track clear" rule.
 - Tooltips are white caption boxes (the lower-third look).
+- Vertical lists (the folder rail, settings sections) share one register:
+  semibold tracked caps at 0.8125rem.
+- Sliders are a 4px groove with a white fader cap; Firefox also paints the
+  purple fill left of the cap (Chromium has no CSS hook for it).
 
 ## Token rationale
 
