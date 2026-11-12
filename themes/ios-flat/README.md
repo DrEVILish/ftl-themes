@@ -77,7 +77,8 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   items spaced evenly in 12px medium text, status text no smaller than
   Caption 2 (11px). A `.tabbar` (or `app-status tabbar`) is the real
   UITabBar: a 26px glyph over a 10px label, the current item in the
-  accent blue, no indicator line. On phones a taskbar's tray
+  tint text blue (`#0068d0`; the accent's 10px label was 4.46:1 on the
+  bar), no indicator line. On phones a taskbar's tray
   drops to a second line so task labels stay readable.
 - Modals are iOS alerts: 14px corners, frosted, title and body centred,
   buttons spanning the bottom edge with hairline dividers, the preferred
@@ -89,7 +90,11 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   Reminders' edit mode; iOS has no square checkbox.
 - Table selection is systemGray5 (`#e5e5ea`; the deeper `#d1d1d6` tap
   flash dropped tinted text under 4.5:1), and the active
-  row carries a trailing blue checkmark; there is no leading marker bar.
+  row carries a trailing blue checkmark over the row's grey fill; there
+  is no leading marker bar. Figures in tables (order numbers, totals,
+  durations) stay in the text face with tabular digits, as iOS's
+  monospacedDigit does; SF Mono is kept for code. A table filling a pane
+  with blank rows is one white rounded cell, unboxed and unstriped.
   An edited, unsaved cell keeps its orange wash and gains a trailing
   orange dot instead of a side stripe; log and feed lines carry no side
   stripe either (warnings and errors lead with a dot in their colour).
@@ -107,7 +112,15 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
   selection, as iPhone Settings does.
 - Text fields use tertiarySystemFill itself (translucent): `#eeeeef` in a
   white cell, `#e3e3e9` on the grouped grey page, so a free-standing
-  field keeps an edge. Dark mode keeps the opaque `#2c2c2e`.
+  field keeps an edge. Dark mode keeps the opaque `#2c2c2e`. An invalid
+  field keeps that fill with no outline; its value turns red and the red
+  footnote under it says why. A select's disclosure is a thin
+  chevron.up.chevron.down in the tint, never a filled caret.
+- Mail rows mark unread with the blue dot in the leading gutter (the
+  "New" badge's word stays for screen readers). Inset hairlines belong to
+  grouped lists only; `.list-cards` stay separate cards, and a featured
+  card is a 10% tint wash rather than a ring. Section headers
+  (`.field-group-title`) have no rule under them.
 - UISwitch keeps its fixed 51px; a hint beside it in a field row
   truncates instead.
 - Sliders have UISlider's blue minimum track: native in Firefox; in
@@ -174,7 +187,7 @@ blocks are SF Mono at Footnote 13, as Xcode and Notes set code.
 | `--on-accent` white on `--accent` `#0071e3` | 4.7 |
 | white on `--danger` `#d70015` / `--success` `#1e7e34` | 5.4 / 5.1 |
 | `--warning-text` `#bf3100` / `--danger-text` `#be0013` / `--success-text` `#1b722f` on a grey fill `#e5e5ea` | 4.6 / 5.2 / 4.8 |
-| `--ios-tint-text` `#006bd6` (links, bar buttons, alert buttons, nav items) on white / bar `#f9f9f9` / alert `#f2f2f2` | 5.2 / 4.9 / 4.6 |
+| `--ios-tint-text` `#0068d0` (links, bar buttons, alert buttons, nav items, the current tab) on white / bar `#f9f9f9` / alert (composites to `#eeeeee`) | 5.4 / 5.1 / 4.65 |
 | `--accent-text` `#005ebc` (gray-button labels, tabs) on the tinted wash / grey button fill | 4.8 / 4.9 |
 | dark: `--muted` `#9d9da3` on `#1c1c1e` / `#2c2c2e` / grey fill `#323236` | 6.3 / 5.2 / 4.7 |
 | dark: `--danger-text` `#ff6961`, `--success-text` `#30d158` on `#1c1c1e` | 6.0 / 8.4 |
@@ -194,7 +207,8 @@ Deviations from Apple's values, all made for the contrast floors:
   so it holds 4.5:1 on the grey fills and bubbles too.
 - **Tinted text.** systemBlue as text is 4.0:1 on white and 3.6:1 on the
   alert. Text on white, the bars and the alert uses `--ios-tint-text`
-  `#006bd6`, the nearest blue to `#007aff` that holds 4.5:1 on the alert;
+  `#0068d0`, the nearest blue to `#007aff` that holds 4.5:1 on the alert
+  (its frosted fill composites to `#eeeeee`, not the nominal `#f2f2f2`);
   only text on a grey fill or tinted wash ("gray" button labels) drops to
   `--accent-text` `#005ebc`.
 - **Toggle off track.** `#e9e9ea` on white is low contrast, as it is on

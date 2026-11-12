@@ -68,10 +68,10 @@ html[data-theme="ios-flat"] {
   --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", "Liberation Sans", Arimo, Arial, "Segoe UI", Roboto, "Noto Sans", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, "DejaVu Sans Mono", Consolas, "Liberation Mono", monospace;
   --flare: #34c759;       /* systemGreen: the toggle, the one colour iOS 7 made famous */
-  /* Tint as text on white, the bar and the alert (#f2f2f2): as near
-     systemBlue as 4.5:1 on the alert allows. --accent-text stays the
-     deeper blue for text on grey fills and tinted washes. */
-  --ios-tint-text: #006bd6;
+  /* Tint as text on white, the bar and the alert (which composites to
+     #eeeeee): as near systemBlue as 4.5:1 on the alert allows (4.65:1).
+     --accent-text stays the deeper blue for text on tinted washes. */
+  --ios-tint-text: #0068d0;
   --link: var(--ios-tint-text);
   --focus: #0071e3;
   --focus-ring: 0 0 0 4px rgba(0, 113, 227, 0.25);
@@ -124,6 +124,9 @@ html[data-theme="ios-flat"] {
   --input-radius: 10px;
   --input-shadow: none;
   --select-arrow-fg: var(--accent);
+  --input-error-bg: var(--input-bg);   /* no pink box: the red footnote carries the error */
+  --list-featured-border-width: 0;
+  --ios-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='%230071e3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --input-addon-bg: var(--surface-2);
   --input-addon-fg: var(--muted);
   --input-readonly-bg: transparent;
@@ -248,7 +251,7 @@ html[data-theme="ios-flat"] {
   --tabbar-rule: var(--ios-separator);
   --tabbar-rule-width: 0.5px;
   --tabbar-fg: var(--muted);
-  --tabbar-fg-active: var(--accent);
+  --tabbar-fg-active: var(--ios-tint-text);   /* #0071e3 was 4.46:1 on the bar */
   --tabbar-indicator: transparent;
   --tabbar-height: 49px;
   --tabbar-icon-size: 26px;
@@ -514,6 +517,7 @@ html[data-theme="ios-flat"][data-variant="dark"] {
 
   --btn-fg: var(--accent-text);   /* #0a84ff is 3.5:1 on the grey fill */
   --select-arrow-fg: var(--ios-blue);
+  --ios-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='%230a84ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --nav-item-fg: var(--ios-blue);
   --tab-fg-active: var(--ios-blue);
   --pagination-item-fg: var(--ios-blue);
@@ -718,7 +722,7 @@ html[data-theme="ios-flat"] :is(.is-success, .is-warning, .is-danger) > .btn:not
 
 /* Lists: inset grouped rows, a disclosure chevron on every tappable one,
    the grey highlight (never a coloured bar) for the selected row. */
-html[data-theme="ios-flat"] .list > :not(:first-child) { border-block-start: 0; box-shadow: inset 1rem 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
+html[data-theme="ios-flat"] .list:not(.list-cards) > :not(:first-child) { border-block-start: 0; box-shadow: inset 1rem 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
 html[data-theme="ios-flat"] .list-item { min-height: 44px; box-sizing: border-box; }
 html[data-theme="ios-flat"] :is(a, button).list-item:not(:has(> .list-item-title))::after {
   content: "";
@@ -733,7 +737,7 @@ html[data-theme="ios-flat"] .list-item.is-active { color: inherit; }
 html[data-theme="ios-flat"] .list-item:focus-visible { outline-offset: -2px; }
 /* A row with a leading glyph insets its separator to the label, past the
    icon, as UITableView does for a cell with an image. */
-html[data-theme="ios-flat"] .list > :not(:first-child):has(> .list-item > .icon + :not(.icon)) { box-shadow: inset 2.8em 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
+html[data-theme="ios-flat"] .list:not(.list-cards) > :not(:first-child):has(> .list-item > .icon + :not(.icon)) { box-shadow: inset 2.8em 0 0 var(--surface), inset 0 1px 0 var(--list-rule); }
 /* A disclosure group: the grey chevron, turned down when open. */
 html[data-theme="ios-flat"] .accordion-trigger::after {
   content: "";
@@ -756,7 +760,58 @@ html[data-theme="ios-flat"] .table th { font-size: 13px; font-weight: 400; borde
 html[data-theme="ios-flat"] .table :is(td.is-editing, tr.is-editing > td) { --input-border-width: 2px; --cell-input-radius: 6px; }
 html[data-theme="ios-flat"] .table tr.is-active td:last-child {
   padding-inline-end: 2.2em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.5' fill='none' stroke='%230071e3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 0.6em center / 1em no-repeat;
+  /* longhands: the selected row's grey fill shows through */
+  background-image: var(--ios-check);
+  background-position: right 0.6em center;
+  background-size: 1em;
+  background-repeat: no-repeat;
+}
+/* Figures in tables stay in the text face with tabular digits, as iOS's
+   monospacedDigit does; SF Mono is for code. */
+html[data-theme="ios-flat"] .table .mono { font-family: var(--font); }
+
+/* A featured card: a tinted wash, not a thick ring. */
+html[data-theme="ios-flat"] .list-cards > .list-item.is-featured:not(.is-success, .is-warning, .is-danger, .is-info) { background-color: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+
+/* Mail's unread mark: a blue dot in the leading gutter, the word kept for
+   screen readers. */
+html[data-theme="ios-flat"] .list-item:has(> .list-item-meta > .badge-accent) { position: relative; }
+html[data-theme="ios-flat"] .list-item-meta > .badge-accent {
+  position: absolute;
+  inset-inline-start: 3px;
+  inset-block-start: 17px;   /* centred on the title line (font-size is 0 here) */
+  width: 9px;
+  height: 9px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  font-size: 0;
+  background-color: var(--ios-blue);
+}
+html[data-theme="ios-flat"] .list-item:is(.is-active, :has(> input:checked)) > .list-item-meta > .badge-accent { color: inherit; background-color: currentColor; }
+
+/* Section headers have no rule: the white group below separates them. */
+html[data-theme="ios-flat"] .field-group-title { border-bottom: 0; }
+
+/* An invalid field keeps its fill and has no outline; its value turns red
+   and the red footnote under it says why. */
+html[data-theme="ios-flat"] :is(.input, .select, .textarea):is(.is-invalid, [aria-invalid="true"]):not(:focus-visible) { border-color: transparent; color: var(--danger-text); }
+
+/* The select's disclosure: chevron.up.chevron.down in thin strokes, drawn
+   from --select-arrow-fg (four half-chevrons, each a diagonal band). */
+html[data-theme="ios-flat"] .select {
+  --_c: var(--select-arrow-fg, var(--muted));
+  --_up: transparent calc(50% - 1.1px), var(--_c) calc(50% - 0.6px) calc(50% + 0.6px), transparent calc(50% + 1.1px);
+  background-image: linear-gradient(to top left, var(--_up)), linear-gradient(to top right, var(--_up)),
+    linear-gradient(to top right, var(--_up)), linear-gradient(to top left, var(--_up));
+  background-size: 4.5px 4px;
+  background-position: calc(100% - 0.8em - 4.5px) calc(50% - 3px), calc(100% - 0.8em) calc(50% - 3px),
+    calc(100% - 0.8em - 4.5px) calc(50% + 3px), calc(100% - 0.8em) calc(50% + 3px);
+}
+html[data-theme="ios-flat"] .select:dir(rtl) {
+  background-position: calc(0.8em + 4.5px) calc(50% - 3px), 0.8em calc(50% - 3px),
+    calc(0.8em + 4.5px) calc(50% + 3px), 0.8em calc(50% + 3px);
 }
 
 /* --- Alerts (modal) -------------------------------------------------- *
@@ -1246,3 +1301,9 @@ html[data-theme="ios-flat"] .desktop-icon > label > span {
   html[data-theme="ios-flat"] .app:has(.app-main h1) .app-bar .nav-brand { display: none; }
   html[data-theme="ios-flat"] .app:has(.app-main h1) .app-bar:has(> .cluster) { top: calc(-0.35rem - 48px); }
 }
+
+/* A table filling a pane with blank rows is one grouped cell: white,
+   rounded, unboxed (the pane's own border follows --border), with no
+   spreadsheet stripes below the last row. */
+html[data-theme="ios-flat"] :has(> .table-blank-rows) { --border: transparent; border-radius: 10px; overflow: hidden; background-color: var(--surface); }
+html[data-theme="ios-flat"] .table-blank-rows { --stripe-b: transparent; border-top-width: 0.5px; }
