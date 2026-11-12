@@ -51,7 +51,9 @@ html[data-theme="vaporwave"] {
      token makes. */
   --on-success: #052e1c;
   --radius: 0.4rem;
-  --font: "Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", sans-serif;
+  /* Japanese faces follow the Latin ones, so katakana in brand copy renders
+     in one gothic wherever it is installed. */
+  --font: "Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #01cdfe;
 
@@ -81,8 +83,23 @@ html[data-theme="vaporwave"] {
   /* Panel and card headers carry the sunset: a 2px bar-gradient rule on
      their bottom edge over a faint magenta wash. */
   --panel-header-bg:
-    linear-gradient(90deg, #ff8c3a, #ff71ce 22%, #b967ff 55%, #01cdfe) 0 100% / 100% 2px no-repeat,
+    linear-gradient(90deg, #ff71ce, #b967ff 50%, #01cdfe) 0 100% / 100% 2px no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 2px, rgba(1, 205, 254, 0.06) 2px 3px),
     linear-gradient(90deg, rgba(255, 113, 206, 0.14), transparent 70%);
+  /* Every surface carries the pair as a 2px top edge (inside the border, so
+     the radius survives). The two color-mix() consumers get a plain fill. */
+  --panel-bg: linear-gradient(90deg, #ff71ce, #01cdfe) 0 0 / 100% 2px no-repeat, var(--surface);
+  --list-card-bg: var(--surface);
+  --ranked-item-bg: var(--surface);
+  /* Data series run the sunset ramp, not the status hues: pink, cyan,
+     violet, orange, gold. Status tokens keep their meaning elsewhere. */
+  --chart-series-1: #ff71ce;
+  --chart-series-2: #01cdfe;
+  --chart-series-3: #b967ff;
+  --chart-series-4: #ff8c3a;
+  --chart-series-5: #ffd319;
+  --meter-low: var(--accent-2);
+  --meter-mid: #b967ff;
   /* Buttons speak the display face (one weight, so no faux bold). */
   --btn-weight: 400;
   --btn-tracking: 0.06em;
@@ -176,7 +193,9 @@ html[data-theme="vaporwave"] :is(.nav-brand, .panel-header, .modal-header, .tab,
 }
 /* Audiowide runs ~25% wider than the body face; a tab strip keeps the
    width it had. */
-html[data-theme="vaporwave"] .tab { font-size: 0.75em; letter-spacing: 0.01em; }
+html[data-theme="vaporwave"] .tab { font-size: 0.8125rem; letter-spacing: 0.01em; }
+/* A rising sparkline is cyan, not status mint; the trend text keeps it. */
+html[data-theme="vaporwave"] .sparkline.is-up { --sparkline-stroke: var(--accent-2); }
 /* Big figures (KPI values, plan prices) are display type too; Audiowide has
    one weight, so no faux bold. */
 html[data-theme="vaporwave"] :is(.stat-value, .price) {
@@ -209,18 +228,21 @@ html[data-theme="vaporwave"] .alert-danger { --alert-bg: color-mix(in srgb, var(
 html[data-theme="vaporwave"] {
   --app-padding: 0.6rem;
   --app-gap: 0.6rem;
-  /* Sunset orange leads into the pink-purple-cyan sweep. */
-  --app-bar-bg: linear-gradient(90deg, #ff8c3a, #ff71ce 22%, #b967ff 55%, #01cdfe);
+  /* The core pair, magenta through violet to cyan. */
+  --app-bar-bg: linear-gradient(90deg, #ff71ce, #b967ff 50%, #01cdfe);
   --app-bar-fg: #1a0b2e;
   --app-bar-rule-width: 0;
   --app-bar-height: 2.6rem;
-  /* The well is the void itself (transparent onto --bg); the haze and the
-     sun are fixed layers behind the shell (body::before/::after below), so
-     a long page repaints nothing on scroll. The bottom padding is the sun's
-     height plus a margin, so at the page end the sun sets on the strip's
-     top edge with no content over it. */
+  /* The well is the void itself (transparent onto --bg) over a fixed
+     starry sky (body::before below). The sun is the well's own background:
+     the references' gold-to-magenta half disc, slits widening toward the
+     horizon, pinned to the bottom of the well's bottom padding (sun height
+     plus a margin), so it sets on the status strip's horizon rule at full
+     strength, never sits behind content, and scrolls with the page (a
+     static image: no fixed layer, no scroll-driven animation). */
   --vw-haze: #3d1250;
-  --vw-sun: min(12rem, 46vw);
+  --vw-sun: clamp(11rem, 24vw, 22rem);
+  --app-main-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='0' y2='100'><stop offset='0' stop-color='%23ffd319'/><stop offset='.45' stop-color='%23ff8c3a'/><stop offset='.75' stop-color='%23ff2975'/><stop offset='1' stop-color='%23c800c8'/></linearGradient><clipPath id='c'><path d='M0 100A100 100 0 0 1 200 100Z'/></clipPath></defs><g clip-path='url(%23c)' fill='url(%23g)'><rect width='200' height='42'/><rect y='44' width='200' height='9'/><rect y='56' width='200' height='8'/><rect y='68.5' width='200' height='7.5'/><rect y='82' width='200' height='6'/><rect y='95' width='200' height='5'/></g></svg>") 50% 100% / var(--vw-sun) calc(var(--vw-sun) / 2) no-repeat;
   --app-main-padding: 1.1rem 1.1rem calc(var(--vw-sun) / 2 + 0.75rem);
   --app-main-padding-tablet: var(--space-m) var(--space-m) calc(var(--vw-sun) / 2 + 0.75rem);
   --app-main-padding-mobile: var(--space-s) var(--space-s) calc(var(--vw-sun) / 2 + 0.75rem);
@@ -255,7 +277,7 @@ html[data-theme="vaporwave"] .app-bar .breadcrumb-item {
 
 /* The horizon: the strip's top edge (--app-status-rule) is the glowing
    pink line, pulled up over the grid gap so the sun at the foot of the
-   well (body::after) sets right on it. Under it the floor fills the
+   well (the well's background) sets right on it. Under it the floor fills the
    strip, in its own stacking context (z-index -1 under the text). */
 html[data-theme="vaporwave"] .app-status {
   position: relative;
@@ -291,51 +313,31 @@ html[data-theme="vaporwave"] .app-status::after {
    strip), so it keeps the horizon rule and drops the floor. */
 html[data-theme="vaporwave"] .app-status.desktop-bar::after { display: none; }
 
-/* The sunset, pinned to the viewport so it is on screen at every scroll
-   position: a fixed haze-and-glow layer (::before) and the references'
-   gold-to-magenta sun with slits (::after, the upper half of a
-   --vw-sun-wide disc), both under the whole shell (z-index -1 over the
-   page background), so panels cover them and they show in the well's
-   gaps. The sun's base sits a status strip's height (~3.9rem) above the
-   viewport bottom, so at the page end it sets right on the horizon rule.
-   While content can still scroll over it, it is dimmed (text over it keeps
-   4.5:1); it brightens over the last stretch of scroll, where the well's
-   bottom padding is all that is in front of it. */
-html[data-theme="vaporwave"] body::before,
-html[data-theme="vaporwave"] body::after {
+/* The sky, pinned to the viewport under the whole shell (z-index -1 over
+   the page background), so panels cover it and it shows in the well's
+   gaps: a sparse star field (one dot per wide, prime-sized tile, so no rows
+   or grid show) over a purple sky that deepens to the warm haze and an orange
+   glow at the horizon. One still layer, composited once: nothing on it
+   animates or repaints on scroll. */
+html[data-theme="vaporwave"] body::before {
   content: "";
   position: fixed;
+  inset: 0;
   pointer-events: none;
   z-index: -1;
-}
-html[data-theme="vaporwave"] body::before {
-  inset: auto 0 0;
-  height: 45vh;
+  will-change: transform;
+  contain: strict;
   background:
-    radial-gradient(ellipse 50% 70% at 50% 100%, rgba(255, 140, 58, 0.18), transparent),
-    linear-gradient(transparent, var(--vw-haze));
-}
-html[data-theme="vaporwave"] body::after {
-  bottom: 3.9rem;
-  left: calc(50% - var(--vw-sun) / 2);
-  width: var(--vw-sun);
-  height: calc(var(--vw-sun) / 2);
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  background: linear-gradient(180deg, #ffd319 0%, #ff8c3a 45%, #ff2975 75%, #c800c8 100%);
-  mask-image: linear-gradient(#000 0 40%, transparent 40% 44%, #000 44% 56%, transparent 56% 61%, #000 61% 70%, transparent 70% 76%, #000 76% 83%, transparent 83% 90%, #000 90%);
-  -webkit-mask-image: linear-gradient(#000 0 40%, transparent 40% 44%, #000 44% 56%, transparent 56% 61%, #000 61% 70%, transparent 70% 76%, #000 76% 83%, transparent 83% 90%, #000 90%);
-  opacity: 0.3;
-}
-@supports (animation-timeline: scroll()) {
-  html[data-theme="vaporwave"] body::after {
-    opacity: 1;
-    animation: vw-sunset linear both;
-    animation-timeline: scroll(root);
-  }
-}
-@keyframes vw-sunset {
-  from, 90% { opacity: 0.3; }
-  to { opacity: 1; }
+    radial-gradient(1.5px 1.5px at 30% 40%, rgba(255, 255, 255, 0.85), transparent) 0 0 / 1031px 487px,
+    radial-gradient(1px 1px at 70% 20%, rgba(255, 255, 255, 0.7), transparent) 0 0 / 773px 353px,
+    radial-gradient(1.5px 1.5px at 15% 75%, rgba(1, 205, 254, 0.7), transparent) 0 0 / 1213px 571px,
+    radial-gradient(1px 1px at 55% 60%, rgba(255, 255, 255, 0.6), transparent) 0 0 / 887px 419px,
+    radial-gradient(1.5px 1.5px at 85% 85%, rgba(255, 113, 206, 0.7), transparent) 0 0 / 1301px 613px,
+    radial-gradient(1px 1px at 40% 10%, rgba(255, 255, 255, 0.75), transparent) 0 0 / 659px 293px,
+    radial-gradient(1px 1px at 10% 30%, rgba(255, 255, 255, 0.65), transparent) 0 0 / 947px 331px,
+    radial-gradient(1.5px 1.5px at 60% 90%, rgba(255, 255, 255, 0.8), transparent) 0 0 / 1109px 457px,
+    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(255, 140, 58, 0.18), transparent),
+    linear-gradient(#1a0b2e, #24103d 55%, var(--vw-haze));
 }
 
 /* --- Print ----------------------------------------------------------------
@@ -350,11 +352,16 @@ html[data-theme="vaporwave"] body::after {
  * -webkit-text-fill-color is reset too. */
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------
  * No breakpoints for the shell: core's tiers stack bar, main and status on
- * phones and tablets. The fixed sunset (above) is the same at every tier;
+ * phones and tablets. The fixed sky and the well's sun are the same at every tier;
  * on XL the gutter floor joins it. */
+/* XL: the sky drops one layer so core's gutter-art layer (html::before,
+   also z-index -1) paints the floor over it. */
+@media (min-width: 1801px) {
+  html[data-theme="vaporwave"] body::before { z-index: -2; }
+}
 /* On a signage screen the whole frame is content: no sunset layers. */
-html[data-theme="vaporwave"][data-surface="signage"] body::before,
-html[data-theme="vaporwave"][data-surface="signage"] body::after { display: none; }
+html[data-theme="vaporwave"][data-surface="signage"] body::before { display: none; }
+html[data-theme="vaporwave"][data-surface="signage"] { --app-main-bg: transparent; }
 
 /* XL gutters: the outrun floor. A perspective grid recedes to a vanishing
    point behind the app (rays in cyan from the centre of the screen,
@@ -373,13 +380,13 @@ html[data-theme="vaporwave"] {
   --message-own-bg: #3d1f6b;
   --message-own-border: var(--accent);
   --bar-chart-bar: linear-gradient(0deg, #ff71ce, #b967ff 55%, #01cdfe);
-  --bar-chart-bar-alt: linear-gradient(0deg, #05ffa1, #01cdfe);
+  --bar-chart-bar-alt: linear-gradient(0deg, #b967ff, #01cdfe);
   --bar-chart-radius: 0.4rem 0.4rem 0 0;
 }
 
 @media print {
+  html[data-theme="vaporwave"] { --app-main-bg: transparent; }
   html[data-theme="vaporwave"] body::before,
-  html[data-theme="vaporwave"] body::after,
   html[data-theme="vaporwave"] .app-status::before,
   html[data-theme="vaporwave"] .app-status::after {
     display: none !important;
@@ -423,7 +430,7 @@ html[data-theme="vaporwave"] { --comment-anchor-bg-active: color-mix(in srgb, va
    ink and the pink nav underline. */
 @media (max-width: 480px) {
   html[data-theme="vaporwave"] {
-    --app-bar-bg: linear-gradient(90deg, #ff8c3a, #ff71ce 22%, #b967ff 55%, #01cdfe) 0 0 / 100% 2.75rem no-repeat, #150822;
+    --app-bar-bg: linear-gradient(90deg, #ff71ce, #b967ff 50%, #01cdfe) 0 0 / 100% 2.75rem no-repeat, #150822;
     --app-bar-fg: var(--text);
     /* A taskbar tray needs the width; 0.5rem still clears the v5 4px edge. */
     --app-status-padding: 0.45rem 0.5rem 2.4rem;

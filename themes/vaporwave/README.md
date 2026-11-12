@@ -33,8 +33,8 @@ HUD.
 4. **Purple is the void.** `--bg`/`--surface` are deep purple, not
    black — black reads as `matrix`/`alienware`, not synthwave.
 5. **The horizon lives at the foot of the shell.** The status strip's top
-   edge is the glowing horizon line, and the sun, pinned to the bottom of
-   the viewport, sets directly on it at the page end; the perspective grid floor fills the
+   edge is the glowing horizon line, and the sun, at the bottom of the
+   content well, sets directly on it at the page end; the perspective grid floor fills the
    strip below: the genre's classic sunset-over-grid composition, with no
    text ever sitting on the sun or on a grid line.
 
@@ -50,9 +50,20 @@ HUD.
 - Title-bar caption controls (minimise, maximise, close, wrapped or not)
   are dark `#1a0b2e` ink on the gradient header with a soft dark hover
   wash; no grey bevel.
-- The app bar is the sunset gradient (orange → magenta → purple → cyan).
-  Panel and card headers carry it too, as a 2px rule on their bottom edge
-  over a faint magenta wash (`--panel-header-bg`).
+- The app bar is the core pair (magenta → purple → cyan, `#ff71ce` →
+  `#b967ff` → `#01cdfe`). Panel and card headers carry it too, as a 2px
+  rule on their bottom edge over faint cyan scanlines (1px every 3px, the
+  CRT banding of the captures) and a magenta wash (`--panel-header-bg`).
+  Every panel, card and modal also has a 2px magenta-to-cyan top edge
+  inside its border (`--panel-bg`, a gradient layer over `--surface`, so
+  the radius survives; `--list-card-bg`/`--ranked-item-bg` stay a plain
+  fill because core mixes them with `color-mix`).
+- Data series follow the sunset, not the status hues: `--chart-series-1..5`
+  are pink `#ff71ce`, cyan `#01cdfe`, violet `#b967ff`, orange `#ff8c3a`,
+  gold `#ffd319` (donut, legend, heatmap via series 1); meters run cyan →
+  violet → danger (`--meter-low`/`--meter-mid`), a rising sparkline is cyan,
+  and the alternate bar is violet-to-cyan. Mint `--success` stays for
+  status (badges, trend text, lamps).
 - Alerts tint their fill with their tone at 12% (`color-mix` over
   `--surface-2`) as well as the edge, so the four states differ at a glance.
 - A disabled button is a flat `--surface-2` chip with a dashed `--border`
@@ -60,20 +71,21 @@ HUD.
   selected primary.
 - The horizon: a gold-to-magenta setting sun
   (`#ffd319` → `#ff8c3a` → `#ff2975` → `#c800c8`, the references' sun),
-  `min(12rem, 46vw)` wide, its upper half with five slits near the
-  horizon, on a fixed layer (`body::after`) under the whole shell, so it is
-  on screen at every scroll position and panels cover it. A second fixed
-  layer (`body::before`) is the magenta haze and warm glow over the bottom
-  45vh of the viewport, so the sunset warmth is above the fold. The well
-  itself is transparent onto `--bg`, so a long page repaints nothing on
-  scroll. The sun's base sits 3.9rem (a status strip) above the viewport
-  bottom, so at the page end it sets right on the strip; the well's bottom
-  padding is the sun's height plus 0.75rem, so no content sits on it there.
-  While content can still scroll over it the sun is dimmed to 0.3 (text
-  over it keeps its contrast); a scroll-driven animation
-  (`animation-timeline: scroll(root)`) brings it to full strength over the
-  last 10% of scroll, and a page that does not scroll shows it at full
-  strength. Browsers without scroll timelines keep it at 0.3. The status
+  `clamp(11rem, 24vw, 22rem)` wide, its upper half with five slits that
+  widen toward the horizon (2%, 3%, 4.5%, 6%, 7%), as in `Vaporwave.webp`.
+  It is the well's own background (`--app-main-bg`, an inline SVG pinned
+  to the bottom of the well's bottom padding, which is the sun's height
+  plus 0.75rem), so it is always at full strength, never behind content,
+  and scrolls with the page: a static image, no fixed layer and no
+  scroll-driven animation. A short page shows it above the fold; a long
+  one at its end.
+- The sky: one fixed, still layer (`body::before`, `will-change` +
+  `contain: strict`, composited once) under the whole shell: a sparse star
+  field (eight single dots, white plus one cyan and one pink, each on a
+  wide prime-sized tile so no rows show) over a purple sky that deepens
+  from `#1a0b2e` to the `#3d1250` haze with a warm orange glow at the
+  bottom. On XL it drops to `z-index: -2` so core's gutter floor paints
+  over it. The status
   strip is pulled up over the grid gap and its top rule is the glowing pink
   `#ff2975` horizon. Below, the floor fills only the strip's 2.4rem bottom
   padding band (sized in rem, not %, so a taller strip never puts a line
@@ -119,7 +131,7 @@ deep-purple void filling the content well between them.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone, tablet and desktop (≤1800):** core's shell. The fixed sunset (haze and sun, under the shell) is the same at every tier; the gradient bar, chrome headings and the status strip's horizon carry the rest. The old top-right sun-and-grid corner emblem is gone (its sun hung at the top of the sky, not on a horizon). Signage surfaces drop the sunset layers.
+- **Phone, tablet and desktop (≤1800):** core's shell. The fixed starry sky and the well's sun are the same at every tier; the gradient bar, chrome headings and the status strip's horizon carry the rest. The old top-right sun-and-grid corner emblem is gone (its sun hung at the top of the sky, not on a horizon). Signage surfaces drop the sky layer and the sun.
 - **XL gutters (≥1801):** the outrun floor. A perspective grid recedes to a vanishing point behind the app (cyan rays from the screen centre, pink cross-lines spaced wider toward the viewer), so each gutter shows the floor sweeping in from the side. Still.
 
 ## Tell-tales of an inauthentic result
@@ -140,9 +152,9 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 ## Typography
 
 - **Big figures:** KPI values (`.stat-value`) and plan prices (`.price`) are Audiowide at weight 400 (it has no bold), `0.04em` tracking.
-- **Chrome titles:** the bar brand, panel and modal headers, tabs, KPI labels (`.stat-label`), buttons and table heads also use Audiowide, uppercase, `0.06em` tracking, weight 400; tabs drop to `0.75em` and buttons to `0.8em` (`--btn-font-size`) so a strip or row keeps its width.
+- **Chrome titles:** the bar brand, panel and modal headers, tabs, KPI labels (`.stat-label`), buttons and table heads also use Audiowide, uppercase, `0.06em` tracking, weight 400; tabs are `0.8125rem` (13px) and buttons to `0.8em` (`--btn-font-size`) so a strip or row keeps its width.
 - **Display (h1–h3):** Audiowide, **vendored** (`assets/fonts/Audiowide-Regular.woff2`, SIL OFL, `assets/fonts/NOTICE.md`), uppercase, `0.14em` tracking (`0.08em` on `h3`), under the gradient-text fill. It is the "wide, chunky geometric" stand-in for vaporwave's extended display type; it is not a true full-width face.
-- **Body:** `--font` is `"Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", sans-serif` — system fonts, **not vendored**. `--font-mono` is `Consolas, monospace`.
+- **Body:** `--font` is `"Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif` — system fonts, **not vendored**; the Japanese gothics follow the Latin faces so katakana renders in one face wherever one is installed. `--font-mono` is `Consolas, monospace`.
 - **Full-width Latin and katakana:** the aesthetic leans on full-width text (ＶＡＰＯＲ) and Japanese katakana, but the theme ships no face for either. Audiowide is a Latin display face; whether the vendored file covers full-width forms or katakana was not checked, so treat both as system-font fallback (`--font`, then the OS's CJK font). Put katakana in body-weight text or set an explicit CJK `font-family` in the app; do not expect Audiowide to render it. `RESEARCH.md` lists the mall/katakana-text target as still uncovered by the captures.
 
 ## Contrast honesty
@@ -150,7 +162,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 - **Danger lifted:** the reference "hot" red-pink `#ff3864` is 3.5:1 under white; shipped `--danger` is `#d81c48` (5.02:1 with white text, 3.69:1 as text on `--bg`, so text uses `--danger-text`).
 - **Border:** `--border` `#8a5fc0` is picked to be ~3.6:1 against `--surface` (the least that keeps a 1px outline perceptible while staying purple).
 - **Accent pair:** `--accent` `#ff71ce` is 7.52:1 on `--bg` (6.86:1 on `--surface`); `--accent-2` `#01cdfe` is 9.87:1 / 9.0:1. The gradient headings therefore pass on every stop; the neon values themselves are not lifted.
-- **Nav bar:** the bright orange-pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a tight light halo (`0 0 2px` white at 0.6) is added to the brand, nav items and breadcrumbs (math passes; the halo is for perceived contrast, kept crisp rather than an embossed glow). `#1a0b2e` is 8.0:1 on the orange stop.
+- **Nav bar:** the bright pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a tight light halo (`0 0 2px` white at 0.6) is added to the brand, nav items and breadcrumbs (math passes; the halo is for perceived contrast, kept crisp rather than an embossed glow). `#1a0b2e` is 7.5:1 on the pink stop.
 - **Haze:** the well's darkest-lightest stop `#3d1250` still gives `--muted` 6.4:1 and `--danger-text` 5.0:1.
 - `--muted` `#b79ee0` is 7.24:1 on `--surface`.
 
