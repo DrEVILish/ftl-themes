@@ -13,38 +13,64 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
 ## Core values
 
 1. **Glass, not solid.** Surfaces are translucent gradients with a blur
-   behind them. A fully opaque panel loses the idiom.
+   behind them (from 901px up; touch tiers skip the blur to keep scrolling
+   smooth). List panes and folder rails use the same top-lit glass. A
+   fully opaque panel loses the idiom.
 2. **Light comes from below.** Blue glow sits under controls and behind the
    bar — the player is lit from inside.
 3. **Cool blue only.** `#3fa9f5`/`#7fd1ff`. Warmth anywhere reads as a
    different era.
-4. **Generously rounded.** `--radius: 0.8rem` — glass panes have soft
-   edges, unlike WinAmp's hard chassis.
+4. **Softly rounded.** `--radius: 0.4rem` and 6px window corners — glass
+   panes have soft edges, unlike WinAmp's hard chassis.
 5. **Restraint.** Vista glass is easy to overdo; the bloom should be
    noticeable only in motion and on hover.
 
 ## Signature details
 
 - **The tab strip.** The app bar is WMP11's black glossy strip (a hard
-  gloss break at 50%): nav items become evenly spaced tabs split by
-  hairline dividers, the current one a blue glossy box with the small ▼
-  under it, and the round back/forward orbs sit at its left end (inline
+  gloss break at 50%): nav items, and the top level of a `.menubar` in
+  the bar (`.is-active` / `aria-current` marks the current one), become
+  evenly spaced 7rem tabs split by a dark-plus-light hairline pair, the
+  current one a blue glossy box with the small ▼ under it, and the round back/forward orbs sit at its left end (inline
   SVG, no markup).
 - **The transport bar.** The status strip is the black glossy player bar
-  with a blue seek line along its top edge and, centred, the transport
-  capsule — stop, prev | round blue play orb | next, volume — drawn as one
-  inline SVG. Decorative only; it is dropped under 1000px so it never
-  covers the app's own status text.
+  with a seek groove along its top edge (dark grey, lit blue only for the
+  played first 28%) and, centred, the transport
+  capsule — stop, a filled silver-grey glossy prev | next pill, the round
+  deep-royal-blue play orb (pale inner ring, white convex cap), and a
+  volume groove with a blue fill and a small blue orb thumb — drawn as one
+  inline SVG. Decorative only (it cannot be clicked or focused); the
+  stop/volume glyphs sit at 45% and the prev/next arrows at 60% so the
+  picture doesn't read as live controls. It is dropped
+  under 901px and on a desktop taskbar (`.app-status.desktop-bar`), so it
+  never covers the app's own status text or task buttons. An app that
+  wants real transport controls puts its own buttons in the status bar.
 - **Blue silk** — WMP11's default visualization — fills the content well
-  (and the bare page, for apps without the shell) as bright light ribbons
-  over deep navy; the black-glass panels float on it.
+  (and the bare page, for apps without the shell) as curved bright-cyan
+  light ribbons (elliptical arcs) over deep navy; the black-glass panels float on it.
+  Every layer is one viewport tall and fades to black at its foot, so a
+  long page keeps the swept arcs instead of stretching them into columns.
+  The lower-right arc is the brightest; the ribbons stay dim enough
+  (brightest pixel about rgb(47,91,123)) that text sitting straight on the
+  silk stays legible.
+- **The address bar.** `.breadcrumbs` in the content well become the
+  Library view's address strip: a dark gloss band split at 50%, a blue ♫
+  at its start and ▸ separators.
 - **Panel headers** are the player's list-pane header bars: dark gloss
   split at the middle, white text, a hairline highlight.
 - **One "selected" look:** the blue glossy capsule of the active tab
-  (`--wmp-capsule`) marks every selection — page tabs, segmented
-  controls, pagination, selected rows and list items.
+  (`--wmp-capsule`) marks every selection — bar tabs and any `.nav`,
+  page tabs, segmented controls, pagination, selected rows and list
+  items, and active filter chips (`.badge-button.is-active`). Its gloss is a thin top band over a deep blue body, and white
+  labels on it carry a dark 1px drop shadow, as WMP11's tab labels did.
+- **Headings** are plain white Segoe UI at 600 with a 1px dark drop
+  shadow — no glow. The glow is kept for the active tab and the orbs. A
+  page `h1` in the content well is capped near 1.35rem and `h2` near
+  1.15rem, with no synthetic bold: WMP11 has no display type, only
+  list-pane titles.
 - **Seek bar:** progress is a thin glowing blue line in a black groove;
-  slider thumbs are small glossy blue orbs.
+  sliders are the volume groove, lit blue from the start up to a small
+  deep-blue glossy orb thumb with a thin dark rim.
 - Panels and the modal carry a genuine specular highlight band across
   their upper half (a bright-to-transparent gradient layer), the actual
   glossy-glass reflection, not just a faint ambient shadow — that band is
@@ -53,10 +79,14 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
 - Buttons are a dark top-lit gradient that gains a strong blue halo on
   hover.
 - The round GO button carries the same idea at its most concentrated: a
-  bright convex highlight cap over its top half plus a wide blue bloom —
+  deep royal-blue orb with a pale inner ring, a bright convex highlight
+  cap over its top half and a wide blue bloom —
   WMP11's single most recognizable lit element.
-- Semantic variants keep gradient fills so danger/success still read
-  against the neutral glass base button.
+- Primary buttons (and checked toggle buttons) are the blue capsule with
+  a white label; danger and success are the same glass recipe in deep
+  red and deep green, gloss break at 50%, white labels — no pastel fills.
+  A lit mute key is deep red (#9a2626) with a white label; `--danger`
+  colours text and rules only.
 - The slider thumb glows — the volume/seek control is the lit part.
 
 ## Icons
@@ -100,20 +130,22 @@ content well, transport bar along the bottom, joined with no gaps and
 
 ## Typography
 
-`--font` is `"Segoe UI", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** `RESEARCH.md` does not name a face; WMP 11 on Vista used Segoe UI and on XP used Tahoma, which is what the stack encodes (unverified against the MiniMode XP/Vista capture). On non-Windows systems the generic sans renders.
+`--font` is `"Segoe UI", Tahoma, "Selawik", "Open Sans", "Noto Sans", sans-serif` (Selawik is Microsoft's open Segoe UI metric match; Open Sans and Noto Sans are the closest common open faces); `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** `RESEARCH.md` does not name a face; WMP 11 on Vista used Segoe UI and on XP used Tahoma, which is what the stack encodes (unverified against the MiniMode XP/Vista capture). On non-Windows systems the open fallbacks, then the generic sans, render. Bar tabs are 0.875em, near WMP11's 12–13px regular tab labels.
 
 ## Contrast honesty
 
 No AA lift is recorded in `theme.css` for this theme, and none is needed: the colours are dark-on-light-accent by design.
 
-- `--accent` `#3fa9f5` is 7.73:1 on `--bg` and 7.17:1 on `--surface`; `--on-accent` `#05050a` is 7.95:1 on it. `--accent-2` `#7fd1ff` (headings) is 10.89:1 on `--surface`.
-- **The blue glow is decoration, not contrast.** The focus ring, slider-thumb bloom and heading `text-shadow` use `rgba(63,169,245,…)` halos; text always sits on its own solid colour, so nothing depends on the glow for legibility.
-- `--muted` `#8888a0` is 5.31:1 on `--surface` and 4.79:1 on `--surface-2`.
+- `--accent` `#3fa9f5` is 7.73:1 on `--bg` and 7.17:1 on `--surface`; `--on-accent` `#05050a` is 7.95:1 on it. `--accent-2` `#7fd1ff` (current breadcrumb) is 10.89:1 on `--surface`.
+- **The capsule.** White on its body is 4.19:1 at the 18% stop (`#2a7fcc`), 5.05:1 by the midline (`#1f70c2`) and 8.06:1 just below it (`#0f4f9a`); only the top 18% gloss band is lighter, above the glyphs' x-height, and the dark drop shadow covers it.
+- **The blue glow is decoration, not contrast.** The focus ring, slider-thumb bloom and active-tab halo use `rgba(63,169,245,…)` halos; text always sits on its own solid colour, so nothing depends on the glow for legibility.
+- `--muted` `#8888a0` is 5.31:1 on `--surface` and 4.79:1 on `--surface-2`. That holds inside the glass panes only: directly on the silk well (`.app-main`) `--muted` is lifted to `#c8ccdc`, 4.6:1 against the brightest ribbon pixel (rgb(47,91,123), 4.52:1). Axe does not measure text over background images, so this was measured from renders.
+- Danger and success buttons: white is 7.9:1 on `#8a1f1f` and 6.6:1 on `#1f6a33` (their upper body).
 - `RESEARCH.md` records no hex, so `#3fa9f5` and the black-glass greys are the theme's own numbers.
 
 ## Reference status
 
-`references/wmp11/` has 4 captures plus `RESEARCH.md`: `Windows_Media_Player_11_in_MiniMode_-_XP,_Vista.png` and `images.jpg` (MiniMode chrome), a Now-Playing visualization webp and `wmp11.jpg` (blue-silk visualization). They back the black glass, the blue glow and the round play button. `RESEARCH.md` names the gap: no clean Library-view capture remains, so the tab strip and breadcrumbs are not evidenced by a file.
+`references/wmp11/` holds `RESEARCH.md` plus captures: `Windows_Media_Player_11_in_MiniMode_-_XP,_Vista.png` and `images.jpg` (MiniMode chrome), a Now-Playing visualization webp and `wmp11.jpg` (blue-silk visualization), `vista-now-playing-empty.png`, `urge-playlists-library.png`, and the Library views `library-music-album-view.png`, `library-pictures-view.png` and `library-search-results.png`. The Library captures back the tab strip (capsule tab with ▼, back/forward orbs), the address strip (♫ ▸ Artist ▸ …) and the transport bar (silver prev/next pill, deep-blue play orb, volume groove with an orb thumb). Deliberate departure: the reference's search field and list panes are light; the theme keeps them dark glass (see Don'ts).
 
 ## Adoption
 
