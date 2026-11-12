@@ -33,15 +33,19 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 7. **One cell size.** The 9x16 glyphs are drawn at 16px (h1 and stat
    figures at 32px), never at a fractional size that smears the pixels;
    labels, hints, badges, table heads, buttons, menubars, logs, legends,
-   chart text, tree rows, desktop icon labels, readouts and price units
-   are all 16px (a large readout or price is 32px).
+   chart text, tree rows, desktop icon labels, readouts, price units,
+   carousel arrows and page numbers, schedule chips, meter labels, the
+   sticky header, Start-menu items, command-palette hints and keys,
+   preference hints and accent swatches are all 16px (a large readout or
+   price is 32px). A heading is followed by one blank text row.
 
 ## Signature details
 
 - `border-style: double` at 3px is set on every bordered component
   (`.input`, `.select`, `.textarea`, `.btn`, `.panel`, `.modal`,
   `.dropdown`, `.context-menu`, `.popover`, `.list`, `.alert`, `.toast`,
-  `.toggle-btn`, the switch track) — alerts and toasts keep their state
+  `.toggle-btn`, the switch track, `.log`, `.dropzone`; a field group's
+  title is underlined with the double rule) — alerts and toasts keep their state
   colour as the line colour on the plain `#0000aa` field.
 - `#0000aa` is the exact classic DOS/VGA "blue" palette index, not an
   approximation — this theme's background is a real 16-color EGA/VGA value.
@@ -52,10 +56,22 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
   link) and the
   panel title tab, always with black text — the `[X]` glyph included.
 - Badges are reverse-video VGA cells: black on grey, cyan, light red,
-  light green or yellow. Lamps are lit cells with no glow; GO is the
+  light green or yellow. Lamps are lit cells with no glow and no fade (a
+  live connection lamp stays lit); a user-coloured avatar is a solid
+  VGA cell with a black glyph. GO is the
   yellow primary block with the button's hard shadow.
-- Desktop windows have no title icon: the `[■]` close box sits at the
-  left of the title bar, as in DOS dialogs.
+- Desktop windows have no title icon: as in Turbo Vision, the `[■]` close
+  box sits at the far left of the title bar, the title is centred and the
+  `_` / `□` boxes sit at the far right edge — on a plain dialog with
+  min/max too, each box cutting its own gap in the double line. A desktop
+  dialog's tab labels never wrap.
+- Progress bars are the DOS 5 setup bar: a yellow block run in a white
+  box. Meters keep their green/yellow/red ramp.
+- The phone home screen and dock are flat reverse-video cells (each app's
+  VGA colour, black glyph): no squircle, gloss, shadow or round page
+  dots, and 16px names that wrap only between words.
+- Presence is a half-cell block standing off the avatar's corner, clear of
+  the initials. A button attached in an `.input-group` drops its shadow.
 - Tables draw cyan box-drawing column rules (│) and no row hairlines.
 - A dialog's title is cut into its inner double line, centred on a grey
   patch, as DOS and Norton dialogs drew it.
@@ -79,7 +95,10 @@ strip carrying the Norton Commander function-key bar along the bottom.
 
 ## Don'ts
 
-- **No radius, no shadow, no gradient, no transitions.** Text-mode cells only.
+- **No radius, no soft shadow, no gradient, no transitions.** Text-mode
+  cells only; the only shadow is the hard black one-cell block under
+  buttons, dialogs, context menus and popovers. Toasts and drawers are
+  flat.
 - **No colour outside the 16-colour VGA set.** Blue, cyan, white, yellow, light greys, light red/green.
 - **No single-line borders** where the double-line box characters belong.
 - **No proportional font.** No smooth weights.
@@ -93,6 +112,9 @@ no arcs anywhere, like a text-mode character cell: circles become squares,
 curves become stepped or 45 degree runs (the cloud and moon are stepped
 outlines, reused by cloud-bolt, cloud-off and moon-stars); dots are 2x2
 stroked cells; nothing is filled. Colour is `currentColor` only.
+Extended icon families outside the core set (coins, clocks, message
+bubbles, hearts, cloud variants) still fall back to the shared rounded
+outline set.
 
 ## Typography
 
@@ -107,6 +129,7 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 - **Cyan as text:** the dim cyan `#00aaaa` is only 4.64:1 on the blue, so links, `--accent-text` (code keywords) and outlined-button labels use light cyan `#55ffff`; badges are solid cells with black ink (black on cyan 7.33:1). Inside a reverse-video panel title tab every word is black on cyan (VGA greys and brights are 1.2-2.2:1 there), and sheets and the command palette take the grey dialog's black ink.
 - **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa` and 9.04:1 on `--surface-2`, which is VGA black `#000000` (hover cells, code chips, tracks), not an off-palette brighter blue.
 - **Disabled buttons** are VGA dark grey `#555555` on black, below 4.5:1 on purpose: disabled controls are exempt, and that is how DOS greyed them.
+- **Body text stays white:** the DOS setup screens run their text in light grey `#aaaaaa`, but that is 5.72:1 on the blue, under the 7:1 body-text floor, so `--text` is white `#ffffff` (8.6:1) and grey is kept for muted text.
 - **The one deviation:** real light red `#ff5555` is only 4.23:1 on the blue, so text uses `--danger-text` `#ff7e7e` (5.40:1) and the raw hex is fill-only.
 
 ## Reference status
@@ -129,12 +152,18 @@ layout at **L1**.
 ## Shell and chrome (2026-09 pass)
 
 - **Menu bar:** the app bar is EDIT/QBasic's grey `#aaaaaa` menu bar with
-  black items; the open item is inverted (black, grey text).
+  black items, each its name with one blank cell either side (so the demo
+  menus fit one phone line); the open item is inverted (black, grey text).
 - **Boxes:** panels, cards and the work area are cyan `#55ffff`
   double-line boxes, with the panel title set *into* the top line,
   centred, reverse video — Norton's drive tab.
 - **Headings and column heads** are bright yellow `#ffff55`, no fills
-  (an `h1` on a grey dialog, sheet or bar turns VGA blue `#0000aa`).
+  (on a grey dialog, sheet or bar they turn VGA blue `#0000aa`). Tiers
+  differ by size and line: `h1` 32px, `h2` 16px over a cyan double rule,
+  `h3` 16px plain; a heading after an `h2` starts one text row down.
+- **Icons:** the core set and the most visible extended ones (player
+  transport, timer, carambola, earphone, drone) are square stepped
+  glyphs; other extended icons still fall back to the shared outline set.
 - **Charts and loaders** are flat: no translucent area fills, chart
   strokes are drawn with `shape-rendering: crispEdges`, and a
   skeleton is a still ░ shade block instead of a shimmer.
@@ -148,6 +177,8 @@ layout at **L1**.
   two overlaid monospaced pseudo-element strings. From the desktop tier
   the ten cells divide the strip's full width evenly (tab stops at
   `10cqi`), as Norton's spanned all 80 columns; below it the keys run at
-  8 cells each and clip.
+  8 cells each and clip. The row is decorative (empty alt text, so screen
+  readers skip it) and is left off the desktop page, whose Start taskbar
+  is the status strip.
 - **Font:** the real IBM VGA 9x16 text-mode glyphs (Px437, CC BY-SA 4.0).
 
