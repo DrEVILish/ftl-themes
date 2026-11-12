@@ -20,27 +20,39 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 ## Core values
 
 1. **Slate e-paper, not black glass.** Surfaces are a desaturated
-   blue-slate (`#17252b`, sampled `#1e2e33` under set light), and the room
+   grey-slate, evenly lit like the prop (page `#1a2b30`, panels
+   `#213238`, sampled `#1e2e33` / `#263b43` under set light), and the room
    around them is near-black (`#070b0d`). Do not use pure black panels
    and do not use neon on black.
-2. **Cyan is the ink.** One cyan (`#4fc8dc`) draws outlines, active
+2. **Cyan is the ink.** One cyan (`#48b9cc`) draws outlines, active
    states, table heads and panel titles. Lime (`#a5d65a`) is reserved for
    values (the vitals readout's HR 111 and the dial's outer bars), and
    it serves as the second chart series.
 3. **Condensed caps for every label.** Headings, buttons, tabs, nav,
-   table heads, badges and panel headers are set in a condensed
-   DIN-like face (Antonio), uppercase. Body copy is a plain sans, because
+   menubar items, toggle buttons, settings-style nav
+   lists, summaries, legends, scrollspy links, table heads, badges and
+   panel headers are set in a semi-condensed squared face (Rajdhani),
+   uppercase. Headings are weight 700, tracked 0.06em, like SECTOR [17].
+   Small caps (table heads, badges, table status text) never drop below
+   12px. Dropdown, context-menu and popover titles use the same face in
+   mixed case, like the phone's Contact / Message / Connect menu; folder
+   trees stay in mixed case, untracked. Body copy is a plain sans, because
    the tablets never set paragraphs.
 4. **Values in brackets.** Badges read `[14]`, `[PAID]` and
    `[LIVE]`, like the matrix's `[14] BULK APPERCEPTION` and the phone's
-   `SECTOR [17]`.
+   `SECTOR [17]`. The brackets sit tight on the value.
 5. **Levels are stacks of squares.** Meters, progress bars and chart bars
-   are segmented ladders, like the attribute sliders. They are never
-   smooth bars.
+   (stacked progress included) are segmented ladders, like the attribute sliders, horizontal and
+   vertical alike; meters keep the cyan / lime / red level bands inside
+   the squares. They are never smooth bars.
 6. **Outlined caps for buttons.** A button has a 1px cyan-slate outline
-   over a faint cyan tint, with a small 0.3rem radius (END / HOLD /
-   UPLOAD). Primary buttons are solid cyan. Hover adds a faint glow, and
-   nothing else glows at rest.
+   over a faint cyan tint, with small chamfered corners (END / HOLD /
+   UPLOAD). The primary button, like HOLD, is a cyan outline over a
+   brighter tint with cyan text; active segmented items, toggles, filter
+   chips, pagination and selected icons use the same tint, never a solid
+   cyan fill. Danger and success buttons follow the same rule in their own
+   colour (red-orange or lime outline over a faint tint), never a solid
+   block. Hover adds a faint glow, and nothing else glows at rest.
 7. **Red belongs to the room.** Delos red `#c8102e` appears in exactly
    one place: the control room's cove light, drawn as the status strip's
    top rule. Danger states use the separate corrupted-tablet red-orange
@@ -50,20 +62,33 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 
 - **Tri-fold shell.** The bar, the main area and the rail are separate
   slate panes, rounded on their outer corners, with dark 0.45rem gaps
-  between them that read as folds. The main pane has a faint
+  between them that read as folds. The main pane has a very faint
   centre-fold crease, like the attribute-matrix tablet.
 - **Attribute-slider rail on the right.** The rail sits on the right, as
-  on the matrix tablet. It is drawn in CSS as three segmented sliders
-  (lime, cyan, cyan), lit from the bottom, each with a triangle marker.
-  It is empty and `aria-hidden`.
+  on the matrix tablet. It is drawn in CSS (on the empty rail's
+  `::before`) as three segmented sliders (lime, cyan, cyan) that run the
+  height of the leaf down to the bottom of the first screen, lit from the
+  bottom, each with a triangle marker, and cyan COORDINATION /
+  AGGRESSION / LOYALTY captions reading bottom-up in the gap right of
+  each ladder (`::after`, `writing-mode: sideways-lr`). It is empty and
+  `aria-hidden`.
 - **DELOS pill brand.** The bar's `.nav-brand` is drawn as an outlined
-  pill, like the DELOS wordmark plate on every device.
-- **Corner tab on panels.** Each panel has a small filled cyan triangle in
-  its top-right corner, and each panel header starts with a short cyan
-  rule.
-- **Chip tabs.** Tabs and nav items are small rounded chips. The active
-  one gets a cyan outline and a cyan tint, like the phone's
-  CODE / HOSTS / SATELLITE row.
+  pill with a second, concentric arc on its right end, like the DELOS
+  wordmark plate on every device (no lettering is reproduced). It never
+  truncates: on touch tiers it keeps its width and the bar's actions
+  wrap below it.
+- **Cut corner on panels.** Each panel's outline is chamfered top-right
+  (`corner-shape: bevel`, 1.2rem) with a cyan line inside the slant, like
+  the ATTRIBUTE MATRIX window. Browsers without `corner-shape` show a
+  small filled cyan corner tab instead. Each panel header starts with a
+  short cyan rule. Modals and windows are cut top-right and bottom-left,
+  like the S2 CORE PERMISSIONS dialog.
+- **Segmented slider track.** `.slider` draws its track as a row of
+  cyan-slate squares (`--ww-line-hi`, 4.4:1 on the page) inside the
+  `--tap-min` hit box; on a vertical fader the squares stack as rungs.
+- **Chip tabs.** Tabs and `.nav` items are small rounded chips, each with
+  its own thin slate outline. The active one gets a cyan outline and a
+  cyan tint, like the phone's CODE / HOSTS / SATELLITE row.
 - **Readouts.** Readouts use Share Tech Mono numerals in cyan with a faint
   glow, like the vitals cluster.
 
@@ -71,11 +96,11 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 
 | Role | Stack | Why |
 |---|---|---|
-| Labels | `Antonio` (vendored OFL, `assets/fonts`, shared with lcars), then Bahnschrift SemiCondensed, DIN Condensed, Arial Narrow | The tablets use a condensed DIN-class grotesque. Antonio is the closest free condensed face already in the repo. |
-| Body | Helvetica Neue, Helvetica, Arial, Liberation Sans | The Delos security panel (an ARG site) sets body text in a plain geometric or grotesque sans. |
+| Labels | `Rajdhani` (vendored OFL, `assets/fonts`, Medium and Bold), then Bahnschrift SemiCondensed, DIN Condensed, Arial Narrow | The tablets use a semi-condensed, squared DIN/Eurostile-class grotesque. Rajdhani is the closest free face in the repo (Antonio was too tall and narrow and read as LCARS), used at 700 for headings and buttons. |
+| Body | `Titillium Web` (vendored OFL), then Helvetica Neue, Helvetica, Inter, Roboto, Noto Sans, Arial, Liberation Sans | A plain technical grotesque that ships with the theme, so no platform falls through to the wide DejaVu Sans. The Delos security panel (an ARG site) sets body text in a plain grotesque sans. |
 | Mono and readouts | `Share Tech Mono` (vendored OFL, shared with prometheus) | It matches the squared numerals of the vitals and code panes. |
 
-No new font files were added.
+No new font files were added; all three faces were already vendored.
 
 ## Contrast honesty
 
@@ -83,21 +108,30 @@ All pairs meet the lint floors. No exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#d6e6ea` on `--surface` `#17252b` / `--bg` `#0f191d` | 12.3 / 13.9 |
-| `--muted` `#8eaab2` on `--surface` / `--surface-2` `#1f323a` | 6.4 / 5.4 |
-| `--muted` on status strip `#070b0d` | 8.0 |
-| `--accent` `#4fc8dc` on `--surface` | 8.0 |
+| `--text` `#d6e6ea` on `--surface` `#213238` / `--bg` `#1a2b30` | 10.4 / 11.4 |
+| `--muted` `#9ab6be` on `--surface` / `--surface-2` `#283a40` | 6.2 / 5.5 |
+| `--muted` on status strip `#070b0d` | 9.2 |
+| `--accent` `#48b9cc` on `--surface` / `--surface-2` | 5.8 / 5.1 |
+| `.badge-accent` text `#66d3e5` on its chip (20% cyan over surface) | 5.3 |
+| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 4.3 / 3.9 |
+| Danger button text `#ffaba4` / success `#9fe06a` on their tints (worst case, tint over a lit row) | 5.1 / 5.8 |
 | `--on-accent` `#071014` on accent | 9.7 |
 | `--on-danger` on `--danger` `#ff5a4f` | 6.2 |
 | `--on-success` on `--success` `#8fd65a` | 10.9 |
-| `--danger-text` `#ff7a70` / `--warning-text` `#f2b632` on `--surface` | 6.2 / 8.6 |
+| `--danger-text` `#ff8f85` / `--warning-text` `#f2b632` on `--surface` | 6.0 / 7.3 |
 
-`--border` `#3a5c66` is 2.2:1 on the surface. It is used as a structural
-line only, never as text.
+`--border` `#3f6570` is 2.1:1 on the surface. It is used as a structural
+line only, never as text. Inactive chip outlines (`--ww-line-hi` at 50%)
+are decoration; the chip's text carries its contrast.
+
+Note on `references/westworld/RESEARCH.md`: its sampled-palette table
+(`#17252b`, `#4fc8dc`, `#3a5c66`) and its mention of Antonio for labels
+record the first draft. The shipped tokens and faces are the ones in this
+README.
 
 Deviations from the reference: the cyan in the stills is photographed off
 an ambient-lit e-paper prop (sampled `#3f96a6` to `#5c9ba4`). It has been
-raised to the brightness the screen would emit. Danger, warning and
+raised only partway toward the brightness the screen would emit. Danger, warning and
 success are not established in the show's UI as semantic colours. They
 are taken from the corrupted S2 tablet (red), the diagnostic node graph
 (amber) and the vitals (lime).
@@ -115,7 +149,9 @@ hidden.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** the tri-fold tablet folds shut to one leaf: bar, main, status. The attribute-slider rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token). The DELOS wordmark pill hugs its text (`max-width: max-content`) instead of stretching across the bar's first line.
+- **Phone (≤480) and tablet (481–900):** the tri-fold tablet folds shut to one leaf: bar, main, status. The attribute-slider rail is switched off up to 900px (its `--app-rail-empty-display` opt-in outranks core's per-tier rail token). The DELOS wordmark pill hugs its text (`max-width: max-content`) instead of stretching across the bar's first line, and keeps its full width (`flex: 0 0 auto`) instead of truncating to an ellipsis; the bar's actions wrap below it.
+- **Dense tables:** fields in a table cell keep a minimum width (inputs 3rem, selects 6rem), so a wide native date picker makes the table scroll instead of squeezing a Qty field below the tap target.
+- **Main-pane foot:** `--app-main-padding` has 4rem at the bottom so open demo menus end above the status strip.
 - **XL gutters (≥1801):** the Maze: concentric rings centred on the screen (behind the tablet) and broken by corridors, in a slate barely above `--bg`. Still.
 
 ## Don'ts

@@ -6,22 +6,34 @@
  * interviewed by Tobias van Schneider on DESK, plus wiki stills. See
  * references/westworld/RESEARCH.md for every frame and the sampled hexes.
  *
- * Fonts: labels use Antonio (OFL, already vendored in assets/fonts for
- * lcars) as the closest free match to the tablets' condensed DIN-like caps;
- * readouts use Share Tech Mono (OFL, vendored for prometheus). Body copy
- * stays a system sans, because the tablets never set paragraphs and a
- * condensed face at body size is hard to read.
+ * Fonts: labels use Rajdhani (OFL, vendored in assets/fonts) as the
+ * closest free match to the tablets' semi-condensed, squared DIN/Eurostile
+ * caps (ATTRIBUTE MATRIX, SECTOR [17]); readouts use Share Tech Mono (OFL).
+ * Body copy is Titillium Web (OFL), a plain technical grotesque, so no
+ * platform falls back to a wide generic sans.
  */
 @font-face {
-  font-family: "Antonio";
-  src: url("assets/fonts/Antonio-Regular.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Rajdhani";
+  src: url("assets/fonts/Rajdhani-Medium.woff2") format("woff2");
+  font-weight: 400 600;
   font-display: swap;
 }
 @font-face {
-  font-family: "Antonio";
-  src: url("assets/fonts/Antonio-Bold.woff2") format("woff2");
+  font-family: "Rajdhani";
+  src: url("assets/fonts/Rajdhani-Bold.woff2") format("woff2");
   font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 700;
   font-display: swap;
 }
 @font-face {
@@ -34,14 +46,14 @@
 html[data-theme="westworld"] {
   --motion-leave: iris;
   color-scheme: dark;
-  --bg: #0f191d;           /* the tablet's dark e-paper behind content */
-  --surface: #17252b;      /* sampled slate #1e2e33 under set lighting */
-  --surface-2: #1f323a;
-  --border: #3a5c66;
-  --hairline: #24383f;
+  --bg: #1a2b30;           /* the tablet's evenly lit grey-slate e-paper (sampled #1e2e33 / #263b43) */
+  --surface: #213238;      /* one step up: panels on the sheet */
+  --surface-2: #283a40;
+  --border: #3f6570;
+  --hairline: #2d4750;
   --text: #d6e6ea;
-  --muted: #8eaab2;
-  --accent: #4fc8dc;       /* the tablet cyan (sampled #3f96a6-#5c9ba4, lifted to emitted brightness) */
+  --muted: #9ab6be;
+  --accent: #48b9cc;       /* the tablet cyan (sampled #3f96a6-#5c9ba4, lifted only to emitted brightness) */
   --accent-2: #a5d65a;     /* vitals lime: HR 111, the radial dial's outer bars */
   --danger: #ff5a4f;       /* the S2 corrupted-tablet red */
   --success: #8fd65a;
@@ -49,21 +61,22 @@ html[data-theme="westworld"] {
   --on-accent: #071014;
   --on-danger: #071014;
   --on-success: #071014;
-  --danger-text: #ff7a70;
+  --danger-text: #ff8f85;
   --success-text: #9fe06a;
   --warning-text: #f2b632;
   --radius: 0.3rem;
-  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --font: "Titillium Web", "Helvetica Neue", Helvetica, Inter, Roboto, "Noto Sans", Arial, "Liberation Sans", sans-serif;
   --font-mono: "Share Tech Mono", "DejaVu Sans Mono", Consolas, monospace;
   --flare: #c8102e;        /* the Mesa control room's red cove light; status rule only */
 
-  --ww-label: Antonio, "Bahnschrift SemiCondensed", "DIN Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
+  --ww-label: Rajdhani, "Bahnschrift SemiCondensed", "DIN Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
   --ww-deep: #070b0d;      /* the dark room around the tablet */
   --ww-well: #0b1417;      /* recessed fields and tracks */
-  --ww-tint: rgba(79, 200, 220, 0.12);
-  --ww-tint-hi: rgba(79, 200, 220, 0.22);
-  --ww-glow: rgba(79, 200, 220, 0.45);
-  --ww-line-hi: #4f7c87;
+  --ww-tint: rgba(72, 185, 204, 0.1);
+  --ww-tint-hi: rgba(72, 185, 204, 0.15);
+  --ww-glow: rgba(72, 185, 204, 0.45);
+  --ww-ink: #66d3e5;       /* cyan text on a cyan tint: the lit chip's label (>= 4.5:1 on every tint) */
+  --ww-line-hi: #5f939f;   /* >= 3:1 on --bg: button outlines, slider track */
   --density: 0.95;
   --icon-stroke-width: 1.6;
 
@@ -100,6 +113,7 @@ html[data-theme="westworld"] {
   --panel-bg:
     linear-gradient(225deg, var(--accent) 0 50%, transparent 50%) top right / 0.7rem 0.7rem no-repeat,
     var(--surface);
+  --ww-chamfer: 1.2rem;
   --panel-border: var(--border);
   --panel-radius: 0.4rem;
   --panel-shadow: none;
@@ -115,7 +129,7 @@ html[data-theme="westworld"] {
   --modal-header-bg: var(--surface-2);
   --modal-header-fg: var(--accent);
   --modal-radius: 0.5rem;
-  --modal-shadow: 0 0 0 1px #000, 0 0 2rem rgba(79, 200, 220, 0.18), 0 16px 40px rgba(0, 0, 0, 0.7);
+  --modal-shadow: 0 0 0 1px #000, 0 0 2rem rgba(72, 185, 204, 0.18), 0 16px 40px rgba(0, 0, 0, 0.7);
   --overlay-bg: rgba(5, 9, 11, 0.78);
   --overlay-blur: blur(2px);
   --dropdown-bg: var(--surface-2);
@@ -137,11 +151,11 @@ html[data-theme="westworld"] {
   --nav-bg: var(--surface);
   --nav-brand-fg: var(--text);
   --nav-item-fg: var(--muted);
-  --nav-item-fg-active: var(--accent);
+  --nav-item-fg-active: var(--ww-ink);
   --nav-item-bg-active: var(--ww-tint-hi);
   --nav-item-radius: 0.25rem;
   --tab-fg: var(--muted);
-  --tab-fg-active: var(--accent);
+  --tab-fg-active: var(--ww-ink);
   --tab-bg-active: var(--ww-tint-hi);
   --tab-border-active: var(--accent);
   --tab-underline-active: var(--accent);
@@ -150,8 +164,16 @@ html[data-theme="westworld"] {
   --segmented-border: var(--border);
   --segmented-radius: 0.3rem;
   --segmented-item-radius: 0.2rem;
-  --segmented-item-bg-active: var(--accent);
-  --segmented-item-fg-active: var(--on-accent);
+  /* Active states are the HOLD button: a cyan tint and cyan text, never a fill. */
+  --segmented-item-bg-active: var(--ww-tint-hi);
+  --segmented-item-fg-active: var(--ww-ink);
+  --toggle-btn-bg-on: var(--ww-tint-hi);
+  --toggle-btn-fg-on: var(--ww-ink);
+  --toggle-btn-border-on: var(--accent);
+  --desktop-icon-label-bg-selected: var(--ww-tint-hi);
+  --desktop-icon-label-fg-selected: var(--ww-ink);
+  --badge-bg-active: var(--ww-tint-hi);
+  --badge-fg-active: var(--ww-ink);
 
   --badge-radius: 0.2rem;
   --badge-border: var(--ww-line-hi);
@@ -170,12 +192,15 @@ html[data-theme="westworld"] {
   --switch-bg-on: var(--ww-tint-hi);
   --switch-border-on: var(--accent);
   --switch-thumb-bg-on: var(--accent);
-  --slider-bg: var(--ww-well);
-  --slider-border: var(--border);
+  /* The attribute slider: a segmented cyan-slate track drawn inside the
+     content box (core keeps the box at --tap-min with a transparent border). */
+  --slider-height: 0.5rem;
+  --slider-bg: repeating-linear-gradient(90deg, var(--ww-line-hi) 0 0.5rem, transparent 0.5rem 0.65rem);
+  --slider-border: transparent;
   --slider-radius: 0;
   --slider-thumb-radius: 0.15rem;
   --slider-thumb-bg: var(--accent);
-  --slider-thumb-shadow: 0 0 0.45rem var(--ww-glow);
+  --slider-thumb-shadow: none;
 
   /* Progress and meters: the attribute matrix's stacked-square sliders. */
   --progress-bg: var(--ww-well);
@@ -195,7 +220,6 @@ html[data-theme="westworld"] {
   --meter-seg: 0.5rem;
   --meter-seg-gap: 0.18rem;
   --meter-unlit: 0.2;
-  --meter-fill-image: repeating-linear-gradient(90deg, var(--accent) 0 var(--meter-seg), transparent var(--meter-seg) calc(var(--meter-seg) + var(--meter-seg-gap)));
 
   /* Readouts: the HR 111 / SpO2 92 vitals: mono numerals, faint glow. */
   --readout-bg: transparent;
@@ -224,6 +248,7 @@ html[data-theme="westworld"] {
   --kbd-radius: 0.25rem;
   --code-bg: var(--ww-well);
   --code-fg: var(--accent-2);
+  --code-highlight-bg: var(--ww-tint);
   --selection-bg: var(--accent);
   --selection-fg: #071014;
   --scrollbar-thumb: var(--border);
@@ -231,8 +256,8 @@ html[data-theme="westworld"] {
   --scrollbar-track: var(--ww-deep);
   --avatar-radius: 50%;
   --pagination-item-radius: 0.25rem;
-  --pagination-item-bg-active: var(--accent);
-  --pagination-item-fg-active: var(--on-accent);
+  --pagination-item-bg-active: var(--ww-tint-hi);
+  --pagination-item-fg-active: var(--ww-ink);
   --skeleton-bg: var(--surface-2);
 
   --message-bg: var(--surface-2);
@@ -250,28 +275,110 @@ html[data-theme="westworld"] {
   --bar-chart-axis-width: 1px;
 }
 
+/* Levels are stacks of squares in both orientations: the low/mid/high bands
+   cut by track-coloured gaps. Set on .meter so a meter's own --meter-warn-at
+   / --meter-peak-at still move the bands. */
+html[data-theme="westworld"] .meter {
+  --meter-fill-image:
+    repeating-linear-gradient(90deg, transparent 0 var(--meter-seg), var(--meter-track) 0 calc(var(--meter-seg) + var(--meter-seg-gap))),
+    linear-gradient(90deg, var(--meter-low) 0 var(--meter-warn-at, 70%), var(--meter-mid) 0 var(--meter-peak-at, 90%), var(--meter-high) 0);
+  --meter-fill-image-v:
+    repeating-linear-gradient(0deg, transparent 0 var(--meter-seg), var(--meter-track) 0 calc(var(--meter-seg) + var(--meter-seg-gap))),
+    linear-gradient(0deg, var(--meter-low) 0 var(--meter-warn-at, 70%), var(--meter-mid) 0 var(--meter-peak-at, 90%), var(--meter-high) 0);
+}
+/* The fader: the same ladder, its rungs stacked up the vertical track. */
+html[data-theme="westworld"] .slider.is-vertical {
+  --slider-bg: repeating-linear-gradient(0deg, var(--ww-line-hi) 0 0.5rem, transparent 0.5rem 0.65rem);
+}
+/* Primary is the HOLD cap: cyan outline over a brighter tint, cyan text. */
+html[data-theme="westworld"] .btn-primary {
+  --btn-bg: var(--ww-tint-hi);
+  --btn-fg: var(--ww-ink);
+  --btn-border: var(--accent);
+  --btn-bg-hover: rgba(72, 185, 204, 0.25);
+  --btn-weight: 700;
+}
+/* Danger and success are outlined caps too: their colour as a 1px line
+   over a faint tint of it, never a solid block. */
+html[data-theme="westworld"] .btn-danger {
+  --btn-bg: rgba(255, 90, 79, 0.14);
+  --btn-fg: #ffaba4;       /* a lighter danger ink: >= 4.5:1 on the tint over every surface */
+  --btn-border: var(--danger);
+  --btn-bg-hover: rgba(255, 90, 79, 0.2);
+  --btn-border-hover: var(--danger-text);
+  --btn-shadow-hover: 0 0 0.55rem rgba(255, 90, 79, 0.4);
+}
+html[data-theme="westworld"] .btn-success {
+  --btn-bg: rgba(143, 214, 90, 0.12);
+  --btn-fg: var(--success-text);
+  --btn-border: var(--success);
+  --btn-bg-hover: rgba(143, 214, 90, 0.22);
+  --btn-border-hover: var(--success-text);
+  --btn-shadow-hover: 0 0 0.55rem rgba(143, 214, 90, 0.35);
+}
+/* The stacked bar is cut into squares like every other level. */
+html[data-theme="westworld"] .progress-stack > .progress-bar {
+  mask-image: repeating-linear-gradient(90deg, #000 0 0.5rem, transparent 0.5rem 0.65rem);
+}
+
 /* --- Voice: condensed caps for every label ------------------------------- */
 html[data-theme="westworld"] :is(h1, h2, h3, h4, .btn, .nav-brand, .nav-item, .tab, .segmented > *,
   .panel-header, .modal-header, th, .badge, .label, .app-status) {
   font-family: var(--ww-label);
 }
-html[data-theme="westworld"] :is(.nav-item, .tab, .segmented > *, .modal-header) {
+html[data-theme="westworld"] :is(.nav-item, .tab, .segmented > *, .modal-header, .toggle-btn,
+  .list-group-item, nav .list-item:not(:has(.list-item-title)), summary:not(.tree *), legend, .scrollspy-link, .menubar li > :is(button, a)) {
+  font-family: var(--ww-label);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
+/* Menu items keep the phone menu's mixed case (Contact / Message /
+   Connect) in the condensed face; folder trees are list content. */
+html[data-theme="westworld"] :is(.dropdown-item, .context-menu-item, .context-menu li > :is(button, a),
+  .menubar li li > :is(button, a), .popover > strong:first-child) {
+  font-family: var(--ww-label);
+  font-size: 1.05em;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+html[data-theme="westworld"] .tree summary { text-transform: none; letter-spacing: 0; }
+/* The CODE / HOSTS / SATELLITE row: every chip has its own thin outline;
+   the lit one adds the cyan outline and tint (core's active rules). */
+html[data-theme="westworld"] .nav .nav-item { border: 1px solid transparent; }
+html[data-theme="westworld"] :is(.tabs > .tab, .nav .nav-item):not(.is-active, [aria-current="page"], [aria-selected="true"], :hover) {
+  border-color: rgba(95, 147, 159, 0.5);
+}
+html[data-theme="westworld"] .nav .nav-item:is(.is-active, [aria-current="page"], :hover) { border-color: var(--accent); }
+/* Table status text: 13px semi-condensed caps, like the bracketed values. */
+html[data-theme="westworld"] td .status {
+  font: 700 max(0.8125rem, 0.85em) var(--ww-label);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+/* A window's tab row keeps one line inside the window's fixed width. */
+html[data-theme="westworld"] .modal .tabs > .tab { letter-spacing: 0.03em; padding-inline: 0.65em; }
+/* Titillium's tall ascenders need a slightly taller page chip. */
+html[data-theme="westworld"] .pagination-item { min-block-size: max(2.25em, var(--tap-min)); min-inline-size: max(2.25em, var(--tap-min)); }
+/* Small caps labels stay at 12px+ (13px on touch tiers). */
+html[data-theme="westworld"] th { font-size: max(0.8rem, 1em); font-weight: 700; }
+@media (pointer: coarse) {
+  html[data-theme="westworld"] :is(th, .badge) { font-size: max(0.85rem, 1em); }
+}
+/* Medium-bold, semi-condensed like the tablets' SECTOR [17] / UPLOAD caps. */
 html[data-theme="westworld"] :is(h1, h2, h3, h4) {
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--text);
 }
-html[data-theme="westworld"] h1 { font-size: 2rem; }
+html[data-theme="westworld"] h1 { font-size: 1.9rem; }
 html[data-theme="westworld"] h2 { font-size: 1.45rem; }
-html[data-theme="westworld"] h3 { font-size: 1.1rem; letter-spacing: 0.1em; }
+html[data-theme="westworld"] h3 { font-size: 1.2rem; }
 html[data-theme="westworld"] .panel-header {
-  font-size: 0.95em;
+  font-size: 1.05em;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   border-bottom-color: var(--hairline);
 }
 /* A short cyan rule leads each panel title, like the matrix window's tab. */
@@ -284,22 +391,52 @@ html[data-theme="westworld"] .panel-header::before {
   vertical-align: middle;
   background: var(--accent);
 }
+/* The matrix window's cut corner: where corner-shape is supported the
+   panel's own outline is chamfered top-right, with a cyan line inside the
+   slant; elsewhere the small corner tab above stands in for it. */
+@supports (corner-shape: bevel) {
+  html[data-theme="westworld"] {
+    --panel-bg:
+      linear-gradient(225deg, var(--accent) 0 calc(50% + 2px), transparent 0) top right / var(--ww-chamfer) var(--ww-chamfer) no-repeat,
+      var(--surface);
+  }
+  html[data-theme="westworld"] .panel {
+    border-top-right-radius: var(--ww-chamfer);
+    corner-shape: round bevel round round;
+  }
+  html[data-theme="westworld"] .panel > .panel-header { border-top-right-radius: var(--ww-chamfer); corner-shape: round bevel round round; }
+  /* The CORE PERMISSIONS dialog: cut top-right and bottom-left. */
+  html[data-theme="westworld"] .modal {
+    border-top-right-radius: var(--ww-chamfer);
+    border-bottom-left-radius: var(--ww-chamfer);
+    corner-shape: round bevel round bevel;
+  }
+  html[data-theme="westworld"] .modal > .modal-header { border-top-right-radius: var(--ww-chamfer); corner-shape: round bevel round round; }
+  /* END / HOLD caps: small chamfers on every corner. */
+  html[data-theme="westworld"] .btn:not(.btn-icon, .btn-clear, .btn-close) { --btn-radius: 0.3rem; corner-shape: bevel; }
+}
+/* Cyan chip text a touch brighter: core tints the chip 20% cyan. */
+html[data-theme="westworld"] .badge-accent { --badge-fg: var(--ww-ink); }
 html[data-theme="westworld"] .badge {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 /* Bracketed values: "[14] BULK APPERCEPTION", "SECTOR [17]". */
-html[data-theme="westworld"] .badge::before { content: "["; margin-right: 0.15em; opacity: 0.75; }
-html[data-theme="westworld"] .badge::after { content: "]"; margin-left: 0.15em; opacity: 0.75; }
+html[data-theme="westworld"] .badge::before { content: "["; margin-inline: 0 0.05em; letter-spacing: 0; opacity: 0.75; }
+html[data-theme="westworld"] .badge::after { content: "]"; margin-inline: 0.05em 0; letter-spacing: 0; opacity: 0.75; }
 html[data-theme="westworld"] :is(.input, .select, .textarea) { font-family: var(--font-mono); }
+/* Fields in a dense table row keep a usable width: a native date picker
+   claims ~180px and would squeeze its neighbours below the tap target;
+   the table scrolls sideways instead. */
+html[data-theme="westworld"] td > .input { min-inline-size: 3rem; }
+html[data-theme="westworld"] td > .select { min-inline-size: 6rem; }
 html[data-theme="westworld"] .readout { font-family: var(--font-mono); }
 html[data-theme="westworld"] :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-html[data-theme="westworld"] .btn-primary { --btn-shadow: 0 0 0.5rem var(--ww-glow); }
 
 /* --- Layout: the tri-fold tablet ----------------------------------------- *
  * The shell is a Delos tri-fold tablet lying in the dark control room:
@@ -311,7 +448,7 @@ html[data-theme="westworld"] .btn-primary { --btn-shadow: 0 0 0.5rem var(--ww-gl
 html[data-theme="westworld"] {
   --app-bg: var(--ww-deep);
   --app-areas: "bar bar" "main rail" "status status";
-  --app-columns: minmax(0, 1fr) 5.1rem;
+  --app-columns: minmax(0, 1fr) 5.6rem;
   --app-gap: 0.45rem;
   --app-padding: 0.45rem;
   --app-bar-bg: var(--surface);
@@ -325,24 +462,12 @@ html[data-theme="westworld"] {
   --app-rail-display: block;
   --app-rail-empty-display: block;
   --app-rail-radius: 0.2rem 0.6rem 0.2rem 0.2rem;
-  /* Three attribute sliders in a fixed 26rem stack at the top of the
-   * leaf (rem-sized, so the lit share does not depend on page height). */
-  --app-rail-bg:
-    linear-gradient(45deg, transparent 50%, var(--accent-2) 50%) 0.45rem 10.5rem / 0.5rem 0.5rem no-repeat,
-    linear-gradient(45deg, transparent 50%, var(--accent) 50%) 1.95rem 15.5rem / 0.5rem 0.5rem no-repeat,
-    linear-gradient(45deg, transparent 50%, var(--accent) 50%) 3.45rem 6.5rem / 0.5rem 0.5rem no-repeat,
-    repeating-linear-gradient(0deg, var(--accent-2) 0 0.55rem, transparent 0.55rem 0.8rem) 1rem 11rem / 0.6rem 16rem no-repeat,
-    repeating-linear-gradient(0deg, var(--accent) 0 0.55rem, transparent 0.55rem 0.8rem) 2.5rem 16rem / 0.6rem 11rem no-repeat,
-    repeating-linear-gradient(0deg, var(--accent) 0 0.55rem, transparent 0.55rem 0.8rem) 4rem 7rem / 0.6rem 20rem no-repeat,
-    repeating-linear-gradient(0deg, #24404a 0 0.55rem, transparent 0.55rem 0.8rem) 1rem 1rem / 0.6rem 26rem no-repeat,
-    repeating-linear-gradient(0deg, #24404a 0 0.55rem, transparent 0.55rem 0.8rem) 2.5rem 1rem / 0.6rem 26rem no-repeat,
-    repeating-linear-gradient(0deg, #24404a 0 0.55rem, transparent 0.55rem 0.8rem) 4rem 1rem / 0.6rem 26rem no-repeat,
-    var(--surface);
-  --app-main-bg:
-    linear-gradient(90deg, transparent calc(50% - 1px), rgba(0, 0, 0, 0.35) calc(50% - 1px) 50%, rgba(214, 230, 234, 0.05) 50% calc(50% + 1px), transparent calc(50% + 1px)),
-    var(--bg);
+  --app-rail-bg: var(--surface);
+  --app-main-bg: var(--bg);
   --app-main-radius: 0.2rem;
-  --app-main-padding: 1.5rem;
+  /* Extra room at the foot so open demo menus end above the status strip. */
+  --app-main-padding: 1.5rem 1.5rem 4rem;
+  --app-main-padding-sm: var(--space-s) var(--space-s) 12rem;
   --app-status-bg: var(--ww-deep);
   --app-status-fg: var(--muted);
   --app-status-rule: var(--flare);
@@ -354,6 +479,48 @@ html[data-theme="westworld"] {
 html[data-theme="westworld"] .app-bar .nav-brand { max-width: max-content; }
 html[data-theme="westworld"] .app-rail { border: 1px solid var(--hairline); margin-block: 0; }
 html[data-theme="westworld"] .app-main { border: 1px solid var(--hairline); }
+/* The rail leaf: three attribute sliders (lime, cyan, cyan), lit from the
+   bottom to 61% / 42% / 77% with a triangle marker at each level, and the
+   matrix's rotated captions beside them. The ladders fill the leaf down to
+   the bottom of the first screen (a page-tall leaf would push the lit part
+   out of view). Marker offsets add pct x 0.5rem because a background
+   position % resolves against (box - marker). The rail is aria-hidden
+   decoration, so the generated caption text is never announced. */
+html[data-theme="westworld"] .app-rail:empty { position: relative; overflow: clip; }
+html[data-theme="westworld"] .app-rail:empty::before {
+  content: "";
+  position: absolute;
+  inset: 1rem 0 auto;
+  height: min(100% - 2rem, 100dvh - 8rem);
+  background:
+    linear-gradient(45deg, transparent 50%, var(--accent-2) 50%) left 0.25rem bottom calc(61.5% + 0.31rem) / 0.5rem 0.5rem no-repeat,
+    linear-gradient(45deg, transparent 50%, var(--accent) 50%) left 1.75rem bottom calc(42% + 0.21rem) / 0.5rem 0.5rem no-repeat,
+    linear-gradient(45deg, transparent 50%, var(--accent) 50%) left 3.25rem bottom calc(77% + 0.39rem) / 0.5rem 0.5rem no-repeat,
+    repeating-linear-gradient(0deg, var(--accent-2) 0 0.55rem, transparent 0.55rem 0.8rem) left 0.8rem bottom 0 / 0.6rem 61.5% no-repeat,
+    repeating-linear-gradient(0deg, var(--accent) 0 0.55rem, transparent 0.55rem 0.8rem) left 2.3rem bottom 0 / 0.6rem 42% no-repeat,
+    repeating-linear-gradient(0deg, var(--accent) 0 0.55rem, transparent 0.55rem 0.8rem) left 3.8rem bottom 0 / 0.6rem 77% no-repeat,
+    repeating-linear-gradient(0deg, #2c4b56 0 0.55rem, transparent 0.55rem 0.8rem) left 0.8rem bottom 0 / 0.6rem 100% no-repeat,
+    repeating-linear-gradient(0deg, #2c4b56 0 0.55rem, transparent 0.55rem 0.8rem) left 2.3rem bottom 0 / 0.6rem 100% no-repeat,
+    repeating-linear-gradient(0deg, #2c4b56 0 0.55rem, transparent 0.55rem 0.8rem) left 3.8rem bottom 0 / 0.6rem 100% no-repeat;
+  pointer-events: none;
+}
+html[data-theme="westworld"] .app-rail:empty::after {
+  content: "COORDINATION\A AGGRESSION\A LOYALTY";
+  position: absolute;
+  top: 1rem;
+  left: 1.1rem;
+  height: min(100% - 2rem, 100dvh - 8rem);
+  /* Read bottom-up, one caption in the gap right of each ladder. */
+  writing-mode: sideways-lr;
+  text-align: start;
+  padding-inline-start: 0.4rem;
+  box-sizing: border-box;
+  white-space: pre;
+  font: 700 0.75rem/1.5rem var(--ww-label);
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  pointer-events: none;
+}
 html[data-theme="westworld"] .app-bar {
   --nav-bg: transparent;
   text-transform: uppercase;
@@ -366,13 +533,31 @@ html[data-theme="westworld"] .app-bar .nav-brand {
   padding: 0.3em 0.8em;
   font-weight: 700;
   letter-spacing: 0.14em;
+  position: relative;
+}
+/* The plate's second, concentric arc on its right end. */
+html[data-theme="westworld"] .app-bar .nav-brand::after {
+  content: "";
+  position: absolute;
+  inset-block: -2px;
+  inset-inline-end: -6px;
+  width: 0.55em;
+  border: 1px solid currentColor;
+  border-inline-start: 0;
+  border-radius: 0 999px 999px 0;
+  pointer-events: none;
+}
+/* ...and never truncates to an ellipsis: core zeroes the brand's basis on
+   touch tiers; the plate keeps its width and the actions wrap instead. */
+@media (max-width: 900px) {
+  html[data-theme="westworld"] .app-bar > .nav-brand { flex: 0 0 auto; min-width: max-content; overflow: visible; letter-spacing: 0.1em; padding-inline: 0.65em; }
 }
 /* The red cove light: a 2px glowing line, nothing else is red. */
 html[data-theme="westworld"] .app-status {
   border-top-width: 2px;
   box-shadow: 0 -0.35rem 0.8rem -0.35rem rgba(200, 16, 46, 0.7);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   font-size: 0.85rem;
 }
 
@@ -383,6 +568,14 @@ html[data-theme="westworld"] .app-status {
  * outranks the per-tier rail token, so it is switched off here. */
 @media (max-width: 900px) {
   html[data-theme="westworld"] { --app-rail-empty-display: none; }
+}
+/* The main leaf's centre crease, only where the tablet is unfolded. */
+@media (min-width: 901px) {
+  html[data-theme="westworld"] {
+    --app-main-bg:
+      linear-gradient(90deg, transparent calc(50% - 1px), rgba(0, 0, 0, 0.14) calc(50% - 1px) 50%, rgba(214, 230, 234, 0.025) 50% calc(50% + 1px), transparent calc(50% + 1px)),
+      var(--bg);
+  }
 }
 
 /* XL gutters: the Maze. Concentric rings around the centre of the screen
