@@ -109,6 +109,7 @@ html[data-theme="nokia-3310"] {
   --avatar-radius: 0;
   --status-dot-radius: 0;
   --lamp-radius: 0;
+  --lamp-glow: none;
   --presence-radius: 0;
   --fab-radius: 0;
   --swatch-radius: 0;
@@ -224,6 +225,30 @@ html[data-theme="nokia-3310"] .btn[aria-pressed]::before { border-radius: 0; box
 /* Core hard-codes these two as discs (no token): the count badge and the
    presence dot are square pixels here. */
 html[data-theme="nokia-3310"] :is(.has-badge, .avatar[data-status], .presence-status)::after { border-radius: 0; }
+/* Checkboxes and radios: a 2px ink cell on the LCD, not the browser's
+   white rounded box. Checked fills an inner pixel block in the cell's own
+   ink (currentColor), so it still reads in an inverted (selected) row; a
+   radio's block is smaller, a mixed box shows a bar. Core keeps the size. */
+html[data-theme="nokia-3310"] :is(.checkbox, .radio) {
+  appearance: none;
+  -webkit-appearance: none;
+  color: inherit;
+  border: 2px solid currentColor;
+  border-radius: 0;
+  padding: 2px;
+  background-clip: content-box;
+}
+html[data-theme="nokia-3310"] .radio { padding: 3px; }
+html[data-theme="nokia-3310"] :is(.checkbox, .radio):checked { background-color: currentColor; }
+html[data-theme="nokia-3310"] .checkbox:indeterminate {
+  background: linear-gradient(currentColor, currentColor) center / 100% 3px no-repeat content-box;
+}
+html[data-theme="nokia-3310"] :is(.checkbox, .radio):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+html[data-theme="nokia-3310"] :is(.checkbox, .radio):disabled { opacity: 0.45; }
+/* A table's select box takes the row's ink, so it flips with an inverted row. */
+html[data-theme="nokia-3310"] .table td { --check-fg: currentColor; }
+/* Status labels keep the 0.8rem floor, even inside a small table cell. */
+html[data-theme="nokia-3310"] .status { font-size: max(0.8rem, 0.85em); }
 /* Group frames are the same 2px ink rule as every other edge. */
 html[data-theme="nokia-3310"] fieldset:not(.radio-group) { border: 2px solid var(--border); }
 /* Inactive window titles are LCD tone; an ink rule keeps them a bar. */
@@ -492,7 +517,7 @@ html[data-theme="nokia-3310"] .app-status::before {
    the fade. */
 html[data-theme="nokia-3310"] {
   --app-gutter-fade: 2rem;
-  --_nokia-keypad: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 240' font-family='sans-serif' font-weight='700' text-anchor='middle'%3E%3Cstyle%3Eellipse%7Bfill:%23c9cbc6%3Bfill-opacity:.38%7Dtext%7Bfill:%231b1d27%3Bfill-opacity:.75%7D%3C/style%3E%3Cg transform='translate(26 34) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E1%3C/text%3E%3C/g%3E%3Cg transform='translate(80 44) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E2%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Eabc%3C/text%3E%3C/g%3E%3Cg transform='translate(134 34) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E3%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Edef%3C/text%3E%3C/g%3E%3Cg transform='translate(26 92) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E4%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Eghi%3C/text%3E%3C/g%3E%3Cg transform='translate(80 102) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E5%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Ejkl%3C/text%3E%3C/g%3E%3Cg transform='translate(134 92) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E6%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Emno%3C/text%3E%3C/g%3E%3Cg transform='translate(26 150) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E7%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Epqrs%3C/text%3E%3C/g%3E%3Cg transform='translate(80 160) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E8%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Etuv%3C/text%3E%3C/g%3E%3Cg transform='translate(134 150) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E9%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Ewxyz%3C/text%3E%3C/g%3E%3Cg transform='translate(26 208) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E%2A%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3E%2B%3C/text%3E%3C/g%3E%3Cg transform='translate(80 218) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E0%3C/text%3E%3C/g%3E%3Cg transform='translate(134 208) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E%23%3C/text%3E%3C/g%3E%3C/svg%3E");
+  --_nokia-keypad: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 240' font-family='sans-serif' font-weight='700' text-anchor='middle'%3E%3Cstyle%3Eellipse%7Bfill:%23b9bbb6%7Dtext%7Bfill:%231a1c24%7D%3C/style%3E%3Cg transform='translate(26 34) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E1%3C/text%3E%3C/g%3E%3Cg transform='translate(80 44) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E2%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Eabc%3C/text%3E%3C/g%3E%3Cg transform='translate(134 34) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E3%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Edef%3C/text%3E%3C/g%3E%3Cg transform='translate(26 92) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E4%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Eghi%3C/text%3E%3C/g%3E%3Cg transform='translate(80 102) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E5%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Ejkl%3C/text%3E%3C/g%3E%3Cg transform='translate(134 92) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E6%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Emno%3C/text%3E%3C/g%3E%3Cg transform='translate(26 150) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E7%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Epqrs%3C/text%3E%3C/g%3E%3Cg transform='translate(80 160) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E8%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Etuv%3C/text%3E%3C/g%3E%3Cg transform='translate(134 150) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E9%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3Ewxyz%3C/text%3E%3C/g%3E%3Cg transform='translate(26 208) rotate(-12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='-5' y='5' font-size='14'%3E%2A%3C/text%3E%3Ctext x='9' y='3' font-size='7'%3E%2B%3C/text%3E%3C/g%3E%3Cg transform='translate(80 218) rotate(0)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E0%3C/text%3E%3C/g%3E%3Cg transform='translate(134 208) rotate(12)'%3E%3Cellipse rx='24' ry='15'/%3E%3Ctext x='0' y='5' font-size='14'%3E%23%3C/text%3E%3C/g%3E%3C/svg%3E");
   --app-gutter-art:
     var(--_nokia-keypad) left max(0px, calc((100vw - 1800px) / 4 - 1rem - 100px)) center / 200px 300px no-repeat,
     var(--_nokia-keypad) right max(0px, calc((100vw - 1800px) / 4 - 1rem - 100px)) center / 200px 300px no-repeat,
@@ -522,7 +547,7 @@ html[data-theme="nokia-3310"] .modal-header > .btn-close:not(.desktop-window *, 
 
 /* Destructive buttons: the hue can't say it, so a leading "!" pixel does
    (hidden from the accessible name; the label still says what it does). */
-html[data-theme="nokia-3310"] .btn-danger::before {
+html[data-theme="nokia-3310"] .btn-danger:not(.btn-icon)::before {
   content: "!" / "";
   margin-inline-end: 0.35em;
 }

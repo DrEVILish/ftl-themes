@@ -28,7 +28,8 @@ background, never from introducing a new colour.
    display has none of these; every corner is square and every fill is
    flat. Every core round default is set to 0 (switch track and thumb,
    icon buttons, badges, avatars, status dots, lamps, presence, steps,
-   calendar dates, swatches, scrollbars, the desktop monitor and more), and
+   calendar dates, swatches, scrollbars, the desktop monitor and more),
+   lit lamps lose core's glow halo (`--lamp-glow: none`), and
    the two discs core hard-codes (the count badge on `.has-badge` and the
    presence dot) are squared by a rule, as are the loaders and dots core
    draws round: the htmx indicator and spinners (a square whose ink edge
@@ -70,8 +71,8 @@ background, never from introducing a new colour.
   deep above the LCD and 1.25rem at the sides and bottom. From 901px up,
   the top of the silver Navi-key with its cyan `#3aa0d8` line sits on the
   casing just below the screen. On XL
-  each gutter carries one 3x4 number pad: silver oval keys with their
-  numerals and letters, the outer columns tilted out and sitting higher
+  each gutter carries one 3x4 number pad: opaque lens-ring silver
+  (`#b9bbb6`) oval keys with near-black (`#1a1c24`) numerals and letters, the outer columns tilted out and sitting higher
   than the centre one, on otherwise plain casing. A sidebar
   beside the shell (an `aside` sibling of `.app`) is its own LCD panel.
 - The slider is an ink rail (`--slider-bg: var(--text)`) with a square
@@ -94,14 +95,20 @@ background, never from introducing a new colour.
   and a danger alert or toast inverts as a whole, so severity reads by
   structure, not hue.
 - A destructive button leads with a "!" pixel (hidden from the accessible
-  name), so Delete differs from Confirm by structure, not hue.
+  name), so Delete differs from Confirm by structure, not hue. A square
+  icon-only danger button skips the "!" and keeps just its full invert.
+- Checkboxes and radios are a square 2px ink cell, never the browser's
+  white rounded box: checked fills an inner pixel block (smaller for a
+  radio), mixed shows a bar. The cell draws in its row's ink, so a table
+  select box flips with an inverted (selected) row.
+- Status labels (`.status`) keep the 0.8rem floor inside table cells.
 - On a phone the bar links sit closer (0.3em inline padding, still
   `--tap-min` tall) so the menu takes one row.
 
 ## Icons
 
 `themes/nokia-3310/icons.svg` redraws the full core icon set (178/178,
-plus `sun-moon`) as coarse monochrome LCD glyphs. Style rules, taken from
+plus `sun-moon` and the four `circle-caret-*` as octagons) as coarse monochrome LCD glyphs. Style rules, taken from
 the original hand-drawn subset and followed by every later addition:
 
 - **Grid:** 24×24 viewBox, integer coordinates (half units only where a
