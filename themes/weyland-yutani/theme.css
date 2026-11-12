@@ -156,7 +156,11 @@ html[data-theme="weyland-yutani"] {
   --table-head-rule: var(--accent);
   --table-head-rule-width: 2px;
   --table-rule: var(--hairline);
-  --row-selected-bg: var(--wy-tint);
+  /* Selected and edited cells read as inverse-video amber, an opaque mix
+     rather than a translucent tint that went olive over the warm black. */
+  --row-selected-bg: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  --cell-dirty-bg: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  --cell-dirty-marker: var(--accent);
   --row-selected-fg: var(--text);
   --row-active-marker: inset 0.25rem 0 0 var(--accent);
 
@@ -245,7 +249,7 @@ html[data-theme="weyland-yutani"] {
   --readout-border: var(--wy-line-dim);
   --readout-padding: max(0.35em, 5px) 0.5em;
   --readout-unit-fg: var(--muted);
-  --readout-glow: 0 0 0.45rem var(--wy-glow);
+  --readout-glow: 0 0 4px var(--wy-glow);
   --meter-track: var(--wy-deep);
   --meter-border: var(--wy-line);
   --meter-radius: 0;
@@ -255,7 +259,13 @@ html[data-theme="weyland-yutani"] {
   --meter-high: var(--danger);
   --meter-peak-fg: var(--text);
   --meter-peak-width: 3px;
+  --desktop-monitor-radius: 0;
 }
+
+/* Core's generic sprite strokes with round caps; the fallback glyphs the
+   theme sprite does not redraw take the machined square ends too (the
+   theme's own symbols already set them per <symbol>). */
+html[data-theme="weyland-yutani"] .icon { stroke-linecap: square; stroke-linejoin: miter; }
 
 /* Core pads the vertical slider with padding-inline, which a vertical
    writing mode turns into top/bottom, so the visible track filled the whole
@@ -303,8 +313,11 @@ html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .
   letter-spacing: var(--label-tracking);
 }
 html[data-theme="weyland-yutani"] .nav-brand { text-transform: uppercase; }
-/* Title plates are set in the extended face, which needs little tracking. */
-html[data-theme="weyland-yutani"] :is(.modal-header, .window-title) { letter-spacing: 0.05em; }
+/* Title plates are set in the extended face, which needs little tracking,
+   and small, as the real plates are, so a title fits one line in a narrow
+   dialog or window. */
+html[data-theme="weyland-yutani"] :is(.modal-header, .window-title) { letter-spacing: 0.02em; }
+html[data-theme="weyland-yutani"] .modal-header { font-size: 0.9rem; }
 /* Segment keys sit edge to edge in a fixed row, so they track tighter. */
 html[data-theme="weyland-yutani"] :is(.segmented-item, .toggle-btn) {
   text-transform: uppercase;
@@ -315,9 +328,9 @@ html[data-theme="weyland-yutani"] .select,
 html[data-theme="weyland-yutani"] .textarea { font-family: var(--font-mono); }
 html[data-theme="weyland-yutani"] .badge {
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
 }
 html[data-theme="weyland-yutani"] :focus-visible {
   outline: 2px solid var(--accent-2);
@@ -334,7 +347,7 @@ html[data-theme="weyland-yutani"] .panel-header::before {
   margin-right: 0.7em;
   background: var(--accent);
 }
-html[data-theme="weyland-yutani"] .panel-header { letter-spacing: 0.14em; column-gap: 0.75rem; }
+html[data-theme="weyland-yutani"] .panel-header { letter-spacing: 0.06em; column-gap: 0.75rem; }
 /* A header badge sits inline in the title text, so the flex gap misses it.
    It speaks in Share Tech: Michroma's "%" draws as "o/o". */
 html[data-theme="weyland-yutani"] .panel-header .badge {
@@ -478,6 +491,10 @@ html[data-theme="weyland-yutani"] .card:has(> .stat-value) {
 /* The header rows' values glow in the screen's phosphor; labels stay muted. */
 html[data-theme="weyland-yutani"] .stat-value { color: var(--accent); text-shadow: var(--readout-glow); }
 
+/* The readout is a boxed counter cell (romulus-colony-work-contract.webp):
+   a lit inner outline 1px inside the glass frame. */
+html[data-theme="weyland-yutani"] .readout { outline: 1px solid var(--wy-line-hi); outline-offset: -3px; }
+
 /* Success is a lit outline (like the soft keys), not a solid green block:
    the hardware palette is amber and beige, green is a terminal status. */
 html[data-theme="weyland-yutani"] .btn-success {
@@ -541,6 +558,9 @@ html[data-theme="weyland-yutani"][data-variant] {
   --chart-series-6: var(--border);
 }
 html[data-theme="weyland-yutani"][data-variant] :is(h1, h2, .nav-brand, .readout) { text-shadow: 0 0 0.5rem var(--wy-glow); }
+/* The screens set every short line in tracked caps (mother-6000-query-
+   green.jpg); paragraphs and inputs stay mixed case for reading. */
+html[data-theme="weyland-yutani"][data-variant] :is(.table td, .text-muted, .list-item, .breadcrumbs) { text-transform: uppercase; letter-spacing: 0.04em; }
 
 /* MU/TH/UR 6000: the Nostromo's green phosphor. */
 html[data-theme="weyland-yutani"][data-variant="mother"] {
@@ -671,9 +691,10 @@ html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:h
   /* The tool cluster fits one row: tighter gaps and keys, and no keyboard
      shortcut hint on a touch screen. */
   html[data-theme="weyland-yutani"] .app-bar { row-gap: 0; }
-  /* The brand keeps its full name (the tools wrap instead) and a 24px row,
+  /* The brand shares its row with the menubar and gives way first (core's
+     ellipsis), so the plate is two rows, not three; it keeps a 24px row
      since the bar no longer spaces its rows apart. */
-  html[data-theme="weyland-yutani"] .app-bar .nav-brand { letter-spacing: 0.04em; flex: 1 0 auto; max-width: 100%; min-height: 1.5rem; }
+  html[data-theme="weyland-yutani"] .app-bar .nav-brand { letter-spacing: 0.04em; min-height: 1.5rem; }
   html[data-theme="weyland-yutani"] .app-bar .cluster { --cluster-gap: 0.3rem; }
   html[data-theme="weyland-yutani"] .app-bar .btn { letter-spacing: 0.04em; padding-inline: 0.6em; }
   html[data-theme="weyland-yutani"] .app-bar .btn kbd { display: none; }

@@ -31,7 +31,9 @@ reproduced.
    draws as `o/o`).
 3. **Amber is the phosphor, and only readouts glow.** `.readout`, `.meter`
    and stat-tile values (the header rows' values) are in the phosphor with a
-   faint glow; only readouts and meters get scanlines.
+   faint 4px glow; only readouts and meters get scanlines. A readout is
+   a boxed counter cell: a lit `--wy-line-hi` outline 1px inside its glass
+   frame, after the outlined digit boxes of the Romulus colony contract.
 4. **Hazard striping is a danger signal, not a palette.** Yellow/black
    45deg stripes appear on `.btn-danger`, `.alert-danger`, `.toast-danger`,
    `.badge-danger` and `.status-error` only, as a leading strap. Text never
@@ -59,6 +61,12 @@ reproduced.
   they still read as soft keys.
 - Segmented LED-style meter bars (amber, then pale amber, then red) with a
   scanline overlay; amber mono readouts on glass-black.
+- Selected rows and edited cells are an opaque inverse-video amber
+  (`--accent` 22% into `--surface`), not a translucent tint.
+- Modal and window title plates are set small (0.9rem, 0.02em tracking)
+  and panel titles track at 0.06em, so titles fit one line; on phones the
+  brand shares the bar's first row with the menubar and truncates first,
+  keeping the plate to two rows.
 - Inputs are recessed with a heavy amber underline and amber caret.
 - Slider tracks are drawn in `--wy-line-hi` on the content box (about
   3.2:1 on the bay black), inside core's transparent 24/44px hit area.
@@ -77,7 +85,9 @@ each, from the frames in `references/weyland-yutani/` (see RESEARCH.md).
 In every variant the beige plate becomes an inverse-video phosphor band
 (modal title, tooltips), the top bar becomes the screen's header row
 (phosphor text on black over a phosphor rule), panels get thin phosphor
-outlines, and headings and readouts glow. Body text is a light tint of the
+outlines, and headings and readouts glow. Short UI lines (table cells,
+helper text, list items, breadcrumbs) go to tracked caps like the
+screens; paragraphs and inputs stay mixed case for reading. Body text is a light tint of the
 phosphor and the chart series are phosphor shades; only the status
 colours (success, warning, danger) step outside the screen's hue so they
 stay distinguishable.
@@ -91,8 +101,11 @@ stay distinguishable.
 
 ### Icons
 
-`themes/weyland-yutani/icons.svg` redraws the full core set (178/178) as
-blocky, machined stencil glyphs:
+`themes/weyland-yutani/icons.svg` redraws 187 of core's 1020 icons (the
+original core set plus the player transport keys) as blocky, machined
+stencil glyphs. Every other icon falls back to core's sprite but takes
+square caps and miter joins from a theme-wide `.icon` rule, so its line
+ends still read as machined:
 - 24 grid, stroke only at 2.2 (`--icon-stroke-width`), with
   `stroke-linecap="square"` and `stroke-linejoin="miter"` on every symbol.
 - Radius 0 everywhere. Circles become squares (small) or chamfered octagons
