@@ -22,9 +22,10 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 2. **Restraint over Luna's saturation.** The blue is cooler and less
    saturated than Luna's `#0054e3`; gloss highlights are soft edges, not
    hard gradient stops.
-3. **The desktop shows through.** Content areas are semi-transparent over
-   the Aero blue gradient backdrop — the window is a pane of glass over
-   the desktop, not an opaque card floating on it.
+3. **The desktop shows through the frame.** The title bar, the side
+   borders and the status strip are tinted glass over the Aero blue
+   desktop; the client area inside them is near-opaque white, as in
+   Explorer and every Win7 dialog.
 4. **Rounded, not sharp.** `--radius: 6px` — softer than Luna's 8px
    pill-adjacent buttons, closer to a subtle window-corner round.
 5. **Glass is chrome, controls are not.** Title bar, frame and status
@@ -35,13 +36,29 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 
 ## Signature details
 
-- Panels, modals, dropdowns, the toolbar and the content well carry a real
-  `backdrop-filter: blur(20px) saturate(1.6)`; the title bar and status
-  strip 24px — the property that makes glass read as glass.
+- Modals and dropdowns carry a real `backdrop-filter: blur(20px)
+  saturate(1.6)`, the title bar and status strip 24px, the client area a
+  plain `blur(20px)`; buttons, panels and toolbars on the white client
+  area do not blur again. Touch devices drop to `blur(12px)`.
 - The title bar carries Aero's faint diagonal **glare streaks**, a 1px
   dark outer frame, black caption text with a soft **white glow** behind
   it, and the joined **caption-button group** (min / max / red close)
-  tucked under the top edge, drawn as one inline SVG.
+  hanging flush from the top edge, drawn as one inline SVG. Bar text and
+  breadcrumbs are `#000` with the glow, never Luna's white outline.
+- The window frame: the white client area sits `--w7-frame` (7px) inside
+  a tinted glass border down both sides, as dialogs (`--modal-bg`) do.
+- Panel captions are a full-width glass strip across the panel top,
+  padded in from its edges; headings are Segoe UI regular in Explorer's
+  navy `#1e395b`.
+- Desktop windows: glass frame and black-with-glow caption whether active
+  or not, glass minimise/maximise beside the 43×20 red close with its
+  white ×. The taskbar (and any `.app-status.taskbar`) is dark tinted
+  glass with a transparent tray; the Start button is the round orb.
+- Explorer's command bar (`--toolbar-bg`, pale blue `#f5faff → #dce8f6`),
+  details-view headers (white → `#f1f5fb`, `#d5dfe5` divider), the Win7
+  trackbar (a 4px groove with a `#8e8f8f` top edge, grey-gloss thumb),
+  check boxes with a `#4a5f97` tick — no Luna beige, orange or green
+  left on controls.
 - The desktop is the Windows 7 **"Harmony"** wallpaper: deep-to-bright
   blue, glowing light swooshes and a bloom where the logo sits — sharp
   enough shapes that the frost visibly softens them.
@@ -64,16 +81,17 @@ repeat, dots) have no highlight.
 
 ## Layout
 
-The shell becomes **one glass window**: title bar, a near-white frosted
-client area (`rgba(255,255,255,0.72)`, so only a hint of desktop colour
-comes through, as in a real Win7 window) and a frosted status strip,
-joined inside one dark hairline frame over the Harmony desktop.
+The shell becomes **one glass window**: title bar, a white client area
+(`rgb(255 255 255 / 0.94)`) inset in a 7px tinted glass border on both
+sides, and a frosted status strip, joined inside one dark hairline frame
+over the Harmony desktop. Outside the window the page is the light `--bg`
+the text tokens are built for.
 
 ## v5 layout
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** core puts brand and actions on the bar's first line and the nav on a second. The caption buttons get their own 20px strip along the top edge instead of the desktop's 7.5rem right-hand reserve, which on a phone had pushed the actions onto two extra lines.
+- **Phone (≤480) and tablet (481–900):** core puts brand and actions on the bar's first line and the nav on a second. The caption buttons get their own 20px strip along the top edge instead of the desktop's right-hand reserve (the group's 104px plus 1rem), which on a phone had pushed the actions onto two extra lines.
 - **Nested surfaces step down:** only a top-level panel is a glass window with a caption bar. A panel inside a panel, card, dialog, drawer or flyout is a group box: a pale tinted label strip, no reflection and no second blur. Buttons, toolbars and navs inside a surface skip the blur too. The title-bar reflection now paints under the header's content (isolated, `z-index: -1`) and follows the corners with `border-radius: inherit` instead of `overflow: hidden`, so it never washes over a title or clips a menu opened from a header control. Minimise and maximise take the caption's black.
 - **XL gutters (≥1801):** the Harmony desktop either side of the window: two soft light swooshes and Aero's faint diagonal glare over the blue desktop. Still.
 
@@ -81,14 +99,15 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 - No `backdrop-filter` anywhere — an opaque theme with a blue accent is
   `winxp-luna`, not this.
-- A solid, non-transparent content background.
+- A solid, untinted window frame, or a client area tinted cyan by the
+  desktop behind it.
 - Saturated Luna-blue instead of Aero's cooler, calmer tone.
 - A flat page backdrop instead of the desktop gradient.
 
 ## Don'ts
 
 - **No opaque grey window frames.** Glass means real `backdrop-filter` blur over a coloured backdrop.
-- **No flat, unblurred panels** on the frame, nav, toolbar and main well.
+- **No flat, unblurred frame:** the title bar, side borders and status strip are glass.
 - **No dark caption text without the light glow/shadow** on glass; captions are readable because of the halo.
 - **No hard 1px black outlines.** Glass edges are pale inner highlights.
 - **No Windows XP/Luna gloss or square Windows 95 bevels** as decoration.
@@ -102,7 +121,8 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 - **Accent lifted from the reference:** the Aero blue `#1c6fd1` is 2.69:1 against the desktop backdrop `--bg` `#a6c2e0` (a fail for text on the backdrop). Shipped `--accent` is `#1265c7`: 3.08:1 on `--bg` (the 3.0:1 soft floor), 5.21:1 on `--surface`, 5.66:1 under white text.
 - **Primary button:** dark `#1a1a1a` text on the pale-blue gloss.
-- **App bar:** brand `#000000` and nav items `#1a1a1a` on the frosted bar, with a white glow behind them.
+- **App bar:** brand, nav items and bar text `#000000` on the frosted bar, with a white glow behind them (`#1a1a1a` measured 4.4:1 on the Chocolate tint).
+- **Status strip:** its muted text is `#2b3540`, not `--muted`, on the glass.
 - **`--muted`** `#55606b` is 5.91:1 on `--surface` but 3.49:1 directly on `--bg`; do not set muted text on the bare backdrop.
 - `--danger`, `--success`, `--warning` on `--bg` are 2.96 / 2.79 / 1.77:1: fills only; use the `-text` variants for copy.
 
@@ -127,8 +147,8 @@ blur, still legible, just not glassy.
 
 Windows 7's *Personalize → Window Color* tinted all the glass. The theme
 does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
-mixed into translucent white on the title bar, status strip and panel
-captions (into dark on the taskbar), so the black caption text with its
+mixed into translucent white on the title bar (32–45%), the side frame
+and status strip (36–50%) and panel captions (into dark on the taskbar), so the black caption text with its
 white glow stays readable at every tint. The other fifteen presets are
 variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
 `fuchsia`, `blush`, `violet`, `lavender`, `taupe`, `chocolate`, `slate`,
