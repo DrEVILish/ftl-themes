@@ -75,6 +75,7 @@ html[data-theme="westworld"] {
   --ww-tint: rgba(72, 185, 204, 0.1);
   --ww-tint-hi: rgba(72, 185, 204, 0.15);
   --ww-glow: rgba(72, 185, 204, 0.45);
+  --ww-ink: #66d3e5;       /* cyan text on a cyan tint: the lit chip's label (>= 4.5:1 on every tint) */
   --ww-line-hi: #5f939f;   /* >= 3:1 on --bg: button outlines, slider track */
   --density: 0.95;
   --icon-stroke-width: 1.6;
@@ -150,11 +151,11 @@ html[data-theme="westworld"] {
   --nav-bg: var(--surface);
   --nav-brand-fg: var(--text);
   --nav-item-fg: var(--muted);
-  --nav-item-fg-active: var(--accent);
+  --nav-item-fg-active: var(--ww-ink);
   --nav-item-bg-active: var(--ww-tint-hi);
   --nav-item-radius: 0.25rem;
   --tab-fg: var(--muted);
-  --tab-fg-active: var(--accent);
+  --tab-fg-active: var(--ww-ink);
   --tab-bg-active: var(--ww-tint-hi);
   --tab-border-active: var(--accent);
   --tab-underline-active: var(--accent);
@@ -165,14 +166,14 @@ html[data-theme="westworld"] {
   --segmented-item-radius: 0.2rem;
   /* Active states are the HOLD button: a cyan tint and cyan text, never a fill. */
   --segmented-item-bg-active: var(--ww-tint-hi);
-  --segmented-item-fg-active: var(--accent);
+  --segmented-item-fg-active: var(--ww-ink);
   --toggle-btn-bg-on: var(--ww-tint-hi);
-  --toggle-btn-fg-on: var(--accent);
+  --toggle-btn-fg-on: var(--ww-ink);
   --toggle-btn-border-on: var(--accent);
   --desktop-icon-label-bg-selected: var(--ww-tint-hi);
-  --desktop-icon-label-fg-selected: var(--accent);
+  --desktop-icon-label-fg-selected: var(--ww-ink);
   --badge-bg-active: var(--ww-tint-hi);
-  --badge-fg-active: var(--accent);
+  --badge-fg-active: var(--ww-ink);
 
   --badge-radius: 0.2rem;
   --badge-border: var(--ww-line-hi);
@@ -247,6 +248,7 @@ html[data-theme="westworld"] {
   --kbd-radius: 0.25rem;
   --code-bg: var(--ww-well);
   --code-fg: var(--accent-2);
+  --code-highlight-bg: var(--ww-tint);
   --selection-bg: var(--accent);
   --selection-fg: #071014;
   --scrollbar-thumb: var(--border);
@@ -255,7 +257,7 @@ html[data-theme="westworld"] {
   --avatar-radius: 50%;
   --pagination-item-radius: 0.25rem;
   --pagination-item-bg-active: var(--ww-tint-hi);
-  --pagination-item-fg-active: var(--accent);
+  --pagination-item-fg-active: var(--ww-ink);
   --skeleton-bg: var(--surface-2);
 
   --message-bg: var(--surface-2);
@@ -291,7 +293,7 @@ html[data-theme="westworld"] .slider.is-vertical {
 /* Primary is the HOLD cap: cyan outline over a brighter tint, cyan text. */
 html[data-theme="westworld"] .btn-primary {
   --btn-bg: var(--ww-tint-hi);
-  --btn-fg: var(--accent);
+  --btn-fg: var(--ww-ink);
   --btn-border: var(--accent);
   --btn-bg-hover: rgba(72, 185, 204, 0.25);
   --btn-weight: 700;
@@ -303,14 +305,15 @@ html[data-theme="westworld"] :is(h1, h2, h3, h4, .btn, .nav-brand, .nav-item, .t
   font-family: var(--ww-label);
 }
 html[data-theme="westworld"] :is(.nav-item, .tab, .segmented > *, .modal-header, .toggle-btn,
-  .list-group-item, nav .list-item:not(:has(.list-item-title)), summary, legend, .scrollspy-link, .menubar li > :is(button, a),
-  .context-menu-item, .context-menu li > :is(button, a)) {
+  .list-group-item, nav .list-item:not(:has(.list-item-title)), summary, legend, .scrollspy-link, .menubar li > :is(button, a)) {
   font-family: var(--ww-label);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 /* A window's tab row keeps one line inside the window's fixed width. */
 html[data-theme="westworld"] .modal .tabs > .tab { letter-spacing: 0.03em; padding-inline: 0.65em; }
+/* Titillium's tall ascenders need a slightly taller page chip. */
+html[data-theme="westworld"] .pagination-item { min-block-size: max(2.25em, var(--tap-min)); min-inline-size: max(2.25em, var(--tap-min)); }
 /* Small caps labels stay at 12px+ (13px on touch tiers). */
 html[data-theme="westworld"] th { font-size: max(0.8rem, 1em); font-weight: 700; }
 @media (pointer: coarse) {
@@ -367,7 +370,7 @@ html[data-theme="westworld"] .panel-header::before {
   html[data-theme="westworld"] .btn:not(.btn-icon, .btn-clear, .btn-close) { --btn-radius: 0.3rem; corner-shape: bevel; }
 }
 /* Cyan chip text a touch brighter: core tints the chip 20% cyan. */
-html[data-theme="westworld"] .badge-accent { --badge-fg: #66d3e5; }
+html[data-theme="westworld"] .badge-accent { --badge-fg: var(--ww-ink); }
 html[data-theme="westworld"] .badge {
   font-size: 0.85rem;
   font-weight: 700;
@@ -418,6 +421,7 @@ html[data-theme="westworld"] {
   --app-main-radius: 0.2rem;
   /* Extra room at the foot so open demo menus end above the status strip. */
   --app-main-padding: 1.5rem 1.5rem 4rem;
+  --app-main-padding-sm: var(--space-s) var(--space-s) 12rem;
   --app-status-bg: var(--ww-deep);
   --app-status-fg: var(--muted);
   --app-status-rule: var(--flare);
@@ -494,7 +498,7 @@ html[data-theme="westworld"] .app-status {
   border-top-width: 2px;
   box-shadow: 0 -0.35rem 0.8rem -0.35rem rgba(200, 16, 46, 0.7);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   font-size: 0.85rem;
 }
 
