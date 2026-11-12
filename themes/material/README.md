@@ -26,7 +26,8 @@ not plastic or glass.
    and attached text buttons
    share the same fill and underline, and an invalid field keeps the grey
    fill, turning only its underline red. Distinct from every boxed-input
-   theme in the catalog.
+   theme in the catalog. Fields are 40px tall, and one-time-code cells
+   are drawn as the same filled fields (fill and underline, no box).
 4. **Uppercase button labels.** Buttons set their text
    `text-transform: uppercase` in Medium weight with MD2's 1.25px
    (0.089em) tracking, on a 36px-tall button — the MD2 button-label voice.
@@ -49,39 +50,48 @@ not plastic or glass.
 - Pressing a button grows a 16% currentColor ripple from its centre (the
   growth animates only when motion is allowed).
 - Menus, context menus and popovers are borderless white sheets; toasts
-  are the MD2 snackbar (dark #323232, white text, #bb86fc links), keeping
-  their state as a 4px leading bar.
+  are the MD2 snackbar (dark #323232, white text, #bb86fc links) with no
+  state bar; a stated toast shows only a small leading dot.
 - The switch is the MD2 switch: a borderless track (secondary at 50% on,
   42% black off) under a larger white thumb that overhangs it, with the
   MD2 thumb shadow and a 12% ring. Checkboxes, radios and the on switch
   take the baseline secondary in its darker variant #018786 (3:1 on
   white). Sliders are a 4px accent track at 55% (3.2:1 on the page; MD2's
-  inactive track is 24%) with an accent thumb.
+  inactive track is 24%) with an accent thumb; Firefox also fills the
+  active track in solid accent.
 - `.btn-primary.btn-icon` is the mini FAB: 40px, baseline secondary teal
   (#03dac6) with black icon.
 - Table headers are sentence-case Medium at body size, on roomier rows.
 - Headings follow MD2 weights: h1-h3 Regular, h4-h6 Medium.
+- Elevated cards and panels have no outline, only their shadow; a sheet
+  nested in another surface drops to 0dp and draws a 1px outline instead.
+  At phone width resting buttons and sheets use one shadow layer, and
+  non-primary buttons inside sheets and tables none, to keep scrolling
+  cheap.
 - Primary buttons fill solid `--accent` with white text; secondary and
   ghost buttons drop the shadow entirely — Material's "text button" and
-  "outlined button" variants have no elevation. A ghost button is the MD2
-  text button with an accent label (ghost icon buttons stay neutral).
+  "outlined button" variants have no elevation. A ghost or clear button is
+  the MD2 text button with an accent label (ghost icon buttons stay neutral).
 - `.btn-go` is an extended FAB: filled accent, pill-shaped, dp6, Medium
   tracked label, no outline.
+- Filter chips are 32px pills with 14px Medium text; on touch the 44px
+  target extends invisibly past the painted chip.
 - Selected filter chips and the selected range button are a 12% accent
   tint with accent text, never a solid fill. The bulk-selection bar is the
   contextual action bar: a 12% accent tint with no outline.
-- Featured and status list cards keep the card hairline and show their
+- Featured and status list cards show their
   state as a 4px leading bar (status cards add an 8% tint).
 - Pagination items are 36px squares; the active one is filled accent.
 - Selected/active rows, list items and nav items tint with a translucent
   accent wash, never a leading accent bar.
-- Card, panel and dialog titles are Headline 6: 20px Medium in the text
+- Card, panel and dialog titles (including a card's leading h2) are Headline 6: 20px Medium in the text
   color, with no rule under them. Dialog actions are text buttons
   (accent label, no outline or fill).
 - Segmented controls and toggle groups are one 12%-black outlined strip;
   the selected segment is a 12% accent tint with accent text. Range
   button groups are outlined, not raised.
-- Tabs are MD2 tabs: uppercase Medium with 1.25px tracking.
+- Tabs are MD2 tabs: uppercase Medium with 1.25px tracking. Inside a
+  window body the strip scrolls on one row rather than wrapping.
 - Alerts are white dp1 sheets with the state as a 4px leading bar (no
   boxed outline); banners are white with a 12% divider below.
 - Setting rows (`.field-row`) are list items with only a 12% divider
@@ -106,10 +116,10 @@ no border, no gradient, just color and shadow.
 ## Known gaps
 
 - Field labels sit above the filled field, not inside it as MD2 floating
-  labels; that needs markup or core support. Fields keep core height
-  rather than MD2's 56px so dense layouts don't grow.
-- The slider has no filled (active) track left of the thumb: core exposes
-  no value-driven fill token.
+  labels; that needs markup or core support. Fields are 40px, not MD2's
+  56px, so dense layouts don't grow much.
+- Outside Firefox the slider has no filled (active) track left of the
+  thumb: core exposes no value-driven fill token.
 
 ## Tell-tales of an inauthentic result
 
