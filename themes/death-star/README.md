@@ -34,6 +34,7 @@ push-buttons in red, blue, yellow, white and green.
 - **Push-button chips.** Badges are solid square chips: default pale tile
   grey with black text, accent red with white, danger/success/warning solid
   with black. On a red header the accent chip turns black.
+- **GO** label uses `--accent-text` (6.86:1); its 2px frame stays accent.
 - **Lamps** are square, borderless and carry a `0 0 10px` glow in their
   own state colour — the only `box-shadow` the theme sets.
 - **Selected rows and options** fill solid red with white text.
@@ -92,7 +93,7 @@ Headings (h1–h3), panel and modal headers and the nav brand use
 **Michroma** (Vernon Adams, SIL OFL 1.1, already vendored as
 `assets/fonts/Michroma-Regular.woff2`) in uppercase with 0.08em tracking:
 the squared, extended labelling of a 1970s console. Michroma ships one
-weight, so these stay at 400. Body text is a neutral sans
+weight, so these stay at 400, with line-height 1.15 to tighten its tall ascent. Body text is a neutral sans
 (`"Helvetica Neue", Arial, sans-serif`) and `--font-mono` is
 `Consolas, monospace`. Code inside a heading keeps its case.
 
