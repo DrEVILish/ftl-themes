@@ -163,6 +163,19 @@ files are vendored unmodified.
 - **Used by:** `cyberpunk-2077` (all UI text; stand-in for the game's
   commercial condensed face)
 
+## Barlow Semi Condensed
+
+- **Family:** Barlow Semi Condensed (weights vendored: Medium 500, Bold 700
+  — `BarlowSemiCondensed-Medium.woff2`, `BarlowSemiCondensed-Bold.woff2`;
+  Google Fonts' Latin subset, unmodified)
+- **Designer:** Jeremy Tribby
+- **License:** SIL Open Font License, version 1.1 (verified in the
+  `google/fonts` repo, `ofl/barlowsemicondensed/METADATA.pb`
+  `license: "OFL"`)
+- **Source:** https://fonts.google.com/specimen/Barlow+Semi+Condensed
+- **Used by:** `westworld` (condensed caps labels; free stand-in for the
+  Delos tablets' DIN Condensed-class face)
+
 ## Selawik
 
 - **Family:** Selawik (weights vendored: Light 300, Regular 400, Semibold
