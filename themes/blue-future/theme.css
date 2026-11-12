@@ -194,8 +194,10 @@ html[data-theme="blue-future"] :is(.prose, article) :is(h1, h2, h3, h4) {
   letter-spacing: 0.02em;
 }
 
-/* Browser fieldsets draw a light groove; keep the blue-cast rule. */
-html[data-theme="blue-future"] fieldset { border: 1px solid var(--border); }
+/* Browser fieldsets draw a light groove; keep the blue-cast rule. Zero
+   specificity, so a component that styles its own fieldset (.radio-group)
+   keeps its own border. */
+:where(html[data-theme="blue-future"] fieldset) { border: 1px solid var(--border); }
 
 /* Buttons */
 /* Button hierarchy: primary is a solid 80% accent with black text and a
@@ -397,6 +399,9 @@ html[data-theme="blue-future"] {
   /* The nav takes the second row (as core does for .nav), so brand and
      actions share the first. */
   html[data-theme="blue-future"] .app-bar > nav { order: 10; }
+  /* Nav items and the taskbar tray give back padding the mono text needs. */
+  html[data-theme="blue-future"] .nav-item { padding-inline: 0.45em; }
+  html[data-theme="blue-future"] .taskbar-tray { padding-inline: 0.35em; gap: 0.3em; }
   /* A shortcut hint means nothing without a keyboard. */
   html[data-theme="blue-future"] .app-bar > .cluster kbd { display: none; }
 }
