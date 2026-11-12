@@ -23,7 +23,8 @@ tactile, unmistakably pre-flat-design.
    popovers, toasts, drawers) get large blurred shadows at low opacity;
    group boxes (panels, cards) sit flat in a 1px `#b8b8b8` rim with only a
    faint 2px shadow. Corners are small (`--radius` 0.35rem, ~5px), as on
-   Snow Leopard group boxes and menus; only the window itself is rounder.
+   Snow Leopard group boxes and menus; only the window itself is rounder,
+   and push buttons are full capsules (`--btn-radius` 999px).
 4. **The window floats.** The shell has rounded corners and sits on a
    desktop gradient with a real shadow beneath it.
 5. **Light theme discipline.** This is the catalogue's first light theme,
@@ -37,18 +38,31 @@ tactile, unmistakably pre-flat-design.
   gradient over a neutral `#ededed`→`#dcdcdc` gradient (surfaces are
   R=G=B grey, as on the capture). Phones drop the stripe for scroll cost
   and keep the gradient.
-- The modal header is centred, with its own metal gradient — a Mac sheet.
-- Selected table rows fill solid Aqua blue with white text.
+- The modal header is centred, with its own metal gradient — a Mac sheet,
+  with no traffic lights. A modal header that carries close / minimize /
+  zoom buttons is a window title bar: it gets the lights, and the buttons
+  sit over the red, yellow and green ones, clear until hovered.
+- Traffic lights belong to windows only (the app shell, window title
+  bars). A panel header is a group box title: bold near-black, no lights.
+- Selections are the source-list gradient (`#3a75c8`→`#2a68c4`→`#1f56b0`
+  under a 1px lighter top line, white text at 4.6:1 or better): nav items,
+  list items, tree items. Selected table rows use the mid stop `#2a68c4`
+  with the top line as an inset shadow, since core layers the selection
+  over frozen cells in a way that can't take a gradient.
 - Focus adds a soft 3px blue halo rather than a hard ring.
-- Every push button is gel with a black label, secondary, tertiary and
-  ghost included (the quieter two with a lighter #9a9a9a rim).
+- Every push button is a gel capsule with a black label, secondary,
+  tertiary and ghost included (the quieter two with a lighter #9a9a9a
+  rim). Latched `.toggle-btn`s keep the square 4px 'Textured' corner.
+- Off filter chips (`.badge-button`) are small grey push gels in the
+  #9a9a9a rim with a near-black label.
 - Latched states are the blue gel with a black label: a switch's on
   track (off: grey push gel; knob: a white gel ball in a grey rim), the
   current pagination page and an active filter chip (both in a `#2a2190`
   rim). Badges keep their tints under a gel highlight.
 - Horizontal tabs, `.segmented` and latched `.toggle-btn`s are joined gel
   segments: grey push gel, the selected one the measured blue tab gel with
-  a black label. Vertical tab rails keep core's shape.
+  a black label, sized to their content. Vertical tab rails keep core's
+  shape.
 - Sliders are a ~5.6px dark grey groove (`#8a8a8a`→`#c4c4c4`, a `#5f5f5f`
   top and `#bdbdbd` bottom rim) with a blue gel knob, painted on the
   content box (border zeroed) so core's 24/44px hit area stays.
@@ -57,7 +71,8 @@ tactile, unmistakably pre-flat-design.
   blue gel with a black mark; progress bars are the capture's 16px,
   3px-cornered bar (blue gel fill with a faint ripple in a light grey gel
   track, `#9a9a9a` rim), and an indeterminate `<progress>` is the blue
-  barber pole.
+  barber pole. A `.spinner.is-grow` dot is a blue gel ball; skeletons are
+  light grey (`#e4e4e4`) with a `#f4f4f4` shimmer.
 - Alerts and toasts are grey gel sheets with a neutral rim; their state is
   a 3px start bar in the state's text colour.
 - A source-list selection (`.nav-rail`) is a blue gradient bar with a
@@ -78,11 +93,13 @@ status strip, with a 28px blurred shadow under the whole frame.
   without a brand centres them as before. On phones the status strip's
   tray truncates rather than run under the rounded corner. On phones (≤480px) the
   window goes nearly full-screen and the bar's lights shrink to
-  panel-header size so the brand keeps some room.
+  three-quarter size; with a brand, only the brand steps clear of them, so
+  the bar's wrapped rows start at its normal edge. Phones also trade the
+  large blurred shadows (window, panels, floating surfaces) for tight ones
+  and hold the default button still, for scroll cost.
 - **Nesting.** A panel or card inside another surface becomes an Aqua group
   box: a lighter flat inset (the parent's pinstripe shows through), no
-  drop shadow, and no traffic lights, since only a window has window
-  controls.
+  drop shadow.
 - **XL gutter art.** The original Aqua pinstripe carried out across the
   gradient desktop either side of the window. Still, and within about
   1.2:1 of `--bg`.
