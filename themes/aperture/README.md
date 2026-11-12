@@ -46,7 +46,9 @@ otherwise clinical space.
   (`--aperture-portal`) is every mark that carries no text (focus ring,
   spinner, slider thumb, chart series 1; 3:1 on the page). The brighter
   in-game `#2fa3e0` is kept to the black brand tile and the XL gutter
-  ring, where it does not have to clear 3:1 on the light page. Blue text takes the deeper `#13609a`
+  ring, where it does not have to clear 3:1 on the light page; chart
+  series 1 and the rising sparkline, which sit on the white plate, take
+  the brighter `#1a9ad8` (3.15:1 on `#fff`). Blue text takes the deeper `#13609a`
   (5.4:1 on the page), including sort headers and scrollspy links.
 - Type: `--font` names Univers (`"Univers LT Std", Univers`) first, the
   chamber signage face; Inter (vendored as `"Aperture Inter"`, OFL, one
@@ -58,15 +60,21 @@ otherwise clinical space.
   Tech Mono for code. Headings are `--text` black and never
   uppercase; h1 gets `margin-block-end: var(--space-xs)` because the
   face's line box is trimmed for controls.
-- Chamber sign plate: the page h1 sits under a 5px `#2b2b2b` rule (at
-  least 18.5rem wide, so it is the same object on every page), led by a
-  light muted "04" chamber numeral at 1.5em; under it, the chamber
-  progress bar — eleven 1.25rem × 0.5rem dashes, the first four black and
-  the rest `#c3c7ca` — with an "04/11" counter, then the strip of four 2rem
-  pictogram tiles (cube, button, water, pellet), as on the in-game sign.
-  Both pseudo-elements are hidden from assistive tech. Panel headers are
-  black text over a 2px `#2b2b2b` rule; the active tab sits on a 4px black
-  rule, not a blue one.
+- Chamber sign plate: the page h1 is its own white plate (`--panel-bg`,
+  `--panel-radius`, 1px `--panel-border` edge, sized to the sign, at
+  least 18.5rem wide) under a 5px `#2b2b2b` rule, led by a light black
+  "04" chamber numeral at 1.5em; under it, the chamber progress bar —
+  eleven 1.25rem × 0.5rem dashes, the first four black and the rest
+  `#c3c7ca` — with an "04/11" counter, then the hazard row of eight 2rem
+  tiles: this chamber's hazards lit black (cube, button, water, pellet)
+  and the rest unlit, a white glyph on a `#c3c7ca` tile (fling, turret,
+  laser, cake), as on the in-game sign. On a phone the hazard row drops
+  so content starts on the first screen. A hero h1 keeps the rule and
+  strip but no plate. Both pseudo-elements are hidden from assistive
+  tech. Panel headers, modal headers and window title bars are black
+  text over a 2px `#2b2b2b` rule; the active tab sits on a 4px black rule
+  (core's 2px `--tab-underline-active` border plus a 2px inset), not a
+  blue one.
 - Sign pictograms: the app-bar brand carries a black tile with the blue
   and orange portal pair, at every width; panel headers and KPI labels
   carry a black tile (1.5em, at least 20px; 1.4em on KPI labels) with a
@@ -75,7 +83,9 @@ otherwise clinical space.
   dashboard shows a row of them like a chamber sign (inline SVG data
   URIs, `--aperture-picto-*`).
 - Panels, cards and modals are flat sign plates: `--panel-radius:
-  0.6rem`, a darker `#b5babd` edge and no shadow.
+  0.6rem`, a darker `#b5babd` edge and no shadow. Initials avatars are a
+  `--surface` disc with a 1px `--border` ring, so they read on the white
+  plate.
 - Neutrals are cool lab greys: `--bg #e6e8e9`, `--surface #f3f4f5`,
   `--app-bg #dcdfe1`, `--border #c3c7ca`, `--muted #5a5e62`.
   `--app-main-bg` is flat; the 128px panel seams live in the XL gutter.
@@ -99,8 +109,8 @@ the panel sits in the room rather than filling it.
 - **Tiers.** No rail and no bar decoration, so phone (≤480px) and tablet
   (481–900px) use core's one-column shell, except that on a phone the
   brand takes its own full line so its name is not elided to the tile,
-  and the actions keep one row (the switcher shrinks, the search button
-  drops its Ctrl K hint).
+  the actions keep one row (the switcher shrinks, the search button
+  drops its Ctrl K hint), and the page sign drops its hazard row.
 - **XL gutter art.** The test chamber's wall continues past the console:
   square white wall panels with recessed seams and one faint portal ring
   each side (azure `#27a7d8` left, orange `#ff9a1f` right). Still, and within about 1.3:1 of
