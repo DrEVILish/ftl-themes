@@ -58,9 +58,43 @@ and what was derived rather than measured is in
   with dark glyphs (XenoMorph, ALX, AlienMorph), dark with white or red
   glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
   (Area-51), beige with an orange close (Aurora).
-- The Start button follows the suite: XenoMorph's blue orb in a silver ring,
-  the light "START" rectangle (AlienMorph, ALX), Invader's cyan START,
-  Darkstar's dark button, Area-51's red, Aurora's gold pill.
+- The Start button follows the suite: XenoMorph's 36px blue orb in a
+  silver ring, with no label, rising out of the 31px taskbar; the light
+  "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
+  dark button, Area-51's red, Aurora's gold pill.
+- Push buttons, primary and secondary included, wear each suite's face:
+  XenoMorph's grey gloss (light top, darker bottom, white lip) in a 1px
+  black frame, Darkstar's black with white text, Area-51's red with bold
+  yellow text, silver or beige in the others. XenoMorph's hover and
+  default (primary) button take the blue glow fill of the hovered Cancel
+  in its Display Properties; the suite draws that label white, the theme
+  keeps it black for 4.5:1.
+- GO and play buttons take the suite's highlight gloss in its button
+  frame, not Luna's green; switches read as the trackbar (square groove,
+  dark glossy thumb). Green stays for success states only.
+- The trackbar is XenoMorph's black-edged blue groove (`#0374f4`; the
+  suite's highlight in the others): 1px black, 4px groove, 1px black, with
+  a dark glossy grey thumb, inside core's full-height hit area; the
+  vertical fader draws the same thin groove, not a filled box.
+- Tabs are grey gloss with the selected one in the pane's surface,
+  rising 2px. Checkboxes are XenoMorph's dark square with a white tick
+  (its Recording Control); the other suites keep a light well with a tick
+  in their text colour. No Luna orange hot-track or green tick anywhere.
+  Invader centres its caption title.
+- Title-bar items stop 6px short of the caption buttons.
+- XenoMorph's content headings and group-box captions are black, as in
+  its dialogs, not Luna blue.
+- Panels and cards are the suite's surface (XenoMorph's pure white), not
+  Luna's `#fcfcfe`.
+- Toolbars, table heads, skeletons, toasts and every field and group-box
+  border take the suite's own face, surface and border, so Luna's beige
+  and `#7f9db9` blue never show. The gap around a full-page app window is
+  the suite's wallpaper, not Bliss (XenoMorph's: a royal-blue band with
+  cyan light arcs over a black top); pages without the shell keep the
+  face grey so no page text sits on the dark wallpaper.
+- Where Tahoma and Arial are missing, the stacks fall back to DejaVu Sans
+  Condensed and Arimo/Liberation Sans, closer in width to the originals
+  than DejaVu Sans.
 
 ## Accessibility notes
 
@@ -71,8 +105,16 @@ companion carries text:
 - `--accent-text` is a darker shade of each highlight for links, headings
   and accent text; `--on-accent` is black where XP drew white on a light
   highlight (XenoMorph `#0093f0`, AlienMorph/ALX `#12acfe`, Invader `#01bdfe`).
-- Area-51's headings and breadcrumbs are black: its page face is the
-  measured blue `#2877cb`, where dark red fails.
+- Area-51's headings, breadcrumbs and group-box captions are black: its
+  page face is the measured blue `#2877cb`, where dark red fails. Its
+  callouts sit on a pale chip for the same reason.
+- `--success-text` is `#0f5a24` (`#073514` for tip callouts on the darker
+  Darkstar and ALX faces) so the tip callout passes 4.5:1.
+- The taskbar's status text uses the taskbar's own foreground.
+- Area-51's yellow button text sits on the darker middle of its red gloss
+  (`#b01a14`, 5.2:1).
+- Selected rows keep black text on XenoMorph's `#0093f0`. The Theme
+  Manager drew white bold there, which is 3.3:1 at this size.
 - ALX's and Area-51's page app bars use a gentler cut of the caption
   gradient so their text passes 4.5:1 against every stop; windows keep the
   measured gradient. Aurora's status strip drops a 1px dark edge stop into
