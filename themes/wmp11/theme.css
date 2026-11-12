@@ -3,6 +3,22 @@
  * Description: WMP11's black-glass skin with a cool blue glow — the last Windows Media Player skin before the Zune-era flattening.
  */
 
+/* Selawik (SIL OFL, Microsoft): the open, metric-compatible Segoe UI
+   stand-in, vendored unmodified (assets/fonts/NOTICE.md), so off Windows
+   the 600 headings get a real semibold instead of a stand-in's heavy bold. */
+@font-face {
+  font-family: "Selawik";
+  src: url("assets/fonts/Selawik-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Selawik";
+  src: url("assets/fonts/Selawik-Semibold.woff2") format("woff2");
+  font-weight: 600 700;
+  font-display: swap;
+}
+
 html[data-theme="wmp11"] {
   --motion-leave: iris;
   color-scheme: dark;
@@ -22,7 +38,7 @@ html[data-theme="wmp11"] {
   --on-danger: #1a0000;
   --on-success: #03140a;
   --radius: 0.4rem;
-  --font: "Segoe UI", Tahoma, "Selawik", "Open Sans", "Noto Sans", sans-serif;
+  --font: "Segoe UI", "Selawik", Tahoma, "Open Sans", "Noto Sans", sans-serif;
   --font-mono: Consolas, monospace;
   --flare: #7fd1ff;
 
@@ -88,6 +104,14 @@ html[data-theme="wmp11"] {
   --progress-fill: linear-gradient(180deg, #bfeaff 0, #3fa9f5 45%, #1a64b4 100%);
   --progress-radius: 999px;
   --slider-thumb-bg: radial-gradient(circle at 35% 30%, #d6f2ff, #2a6fe0 45%, #0c2f8a 80%, #061a4d);
+  --scrubber-thumb: var(--slider-thumb-bg);
+  /* Desktop shell: one selected look (the capsule), and window captions
+     are the pane-header gloss, lit at the top and split at the middle. */
+  --desktop-icon-label-bg-selected: var(--wmp-capsule);
+  --desktop-icon-label-fg-selected: #ffffff;
+  --desktop-icon-label-radius: 3px;
+  --modal-header-bg: linear-gradient(180deg, #4a4f5c 0, #2a2d35 30%, #1b1d22 50%, #07080a 50%, #121318 100%);
+  --modal-header-fg: #ffffff;
   /* Primary and "on" toggles are the lit capsule, white label. */
   --toggle-btn-bg-on: var(--wmp-capsule);
   --toggle-btn-fg-on: #ffffff;
@@ -107,6 +131,18 @@ html[data-theme="wmp11"] { background: var(--wmp-silk); }
 /* Pinned behind the page on desktop only: a fixed root background repaints
    the whole phone screen on every scroll frame (and iOS ignores it). */
 @media (min-width: 901px) { html[data-theme="wmp11"] { background-attachment: fixed; } }
+/* Touch tiers: scroll cost. Silk cut to its base and brightest arc, painted
+   once (the content well, not the page behind the shell too), and panes
+   drop their wide soft drop shadow. */
+@media (max-width: 900px) {
+  html[data-theme="wmp11"] {
+    --wmp-silk:
+      radial-gradient(ellipse 130% 60% at 75% 115%, transparent 56%, rgba(159, 224, 255, 0.24) 60%, rgba(79, 184, 232, 0.08) 63%, transparent 68%) 0 0 / 100% 100lvh no-repeat,
+      linear-gradient(160deg, #021428, #053666 40%, #021b35 72%, #000000) 0 0 / 100% 100lvh no-repeat #000000;
+    --panel-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 0 1px rgba(127, 209, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  }
+  html[data-theme="wmp11"]:has(.app-main) { background: #000000; }
+}
 /* Muted text sitting straight on the silk is lifted: #c8ccdc stays at
    4.6:1 on the brightest ribbon pixel (rgb(32,89,135)). The black-glass
    panes keep the quieter #8888a0 (5.3:1 on --surface). */
@@ -114,6 +150,11 @@ html[data-theme="wmp11"] .app-main { --muted: #c8ccdc; }
 html[data-theme="wmp11"] .app-main :is(.panel, .card, .modal, .drawer, .popover, .dropdown) { --muted: #8888a0; }
 html[data-theme="wmp11"] .slider::-webkit-slider-thumb { border: 1px solid #0a2b4d; }
 html[data-theme="wmp11"] .slider::-moz-range-thumb { border: 1px solid #0a2b4d; }
+/* The player's seek and volume orbs: the same ring and glow as .slider. */
+html[data-theme="wmp11"] :is(.scrubber, .volume) > input[type="range"]::-webkit-slider-thumb { box-shadow: 0 0 0 1px #0a2b4d, var(--slider-thumb-shadow); }
+html[data-theme="wmp11"] :is(.scrubber, .volume) > input[type="range"]::-moz-range-thumb { box-shadow: 0 0 0 1px #0a2b4d, var(--slider-thumb-shadow); }
+/* A pending cell in a capsule row keeps only its yellow marker. */
+html[data-theme="wmp11"] .table tr:is(.is-selected, [aria-selected="true"]) { --cell-dirty-bg: transparent; }
 /* The played part of the groove is lit blue up to the orb. Firefox has a
    progress pseudo; Chromium gets a band painted by the thumb's border-image
    outset to its left, clipped at the track start (no JS, hit area kept). */
@@ -209,23 +250,22 @@ html[data-theme="wmp11"] .btn-go::after {
 }
 
 /* Library breadcrumbs: WMP11's Library view is a breadcrumb trail
-   (Music > Library > Album Artist > …), not a tab bar — give the current
-   crumb the same accent glow as everything else interactive. */
+   (Music > Library > Album Artist > …) on a pale slate-silver address
+   strip (measured rgb(228,233,240)) under the dark tab strip, dark text,
+   a dark-blue ♫ and ▸ separators. */
 html[data-theme="wmp11"] .app-main .breadcrumbs {
-  --breadcrumb-separator: #9fb4cc;
+  --breadcrumb-separator: #4a5570;
+  --breadcrumb-current-fg: #0d3f7a;
+  --breadcrumb-fg-hover: #0d3f7a;
   padding: 0.35rem 0.75rem;
   border: 1px solid #000000;
   border-radius: 3px;
-  background: linear-gradient(180deg, #2a2a34 0, #1a1a22 48%, #0e0e14 52%, #15151c 100%);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.12);
-  color: #c8ccdc;
+  background: linear-gradient(180deg, #eef2f7 0, #e4e9f0 50%, #c9d1dc 100%);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.8);
+  color: #1a2033;
 }
-html[data-theme="wmp11"] .app-main .breadcrumbs::before { content: "\266b"; color: var(--accent); margin-inline-end: 0.2em; }
+html[data-theme="wmp11"] .app-main .breadcrumbs::before { content: "\266b"; color: #1a4f8a; margin-inline-end: 0.2em; }
 html[data-theme="wmp11"] .app-main .breadcrumb-item:not(:last-child)::after { content: "\25b8"; }
-html[data-theme="wmp11"] .breadcrumb-item.is-current {
-  color: var(--accent-2);
-  text-shadow: 0 0 6px rgba(63, 169, 245, 0.5);
-}
 
 /* Glass fills for the semantic variants, so they keep their meaning
    against the neutral glass base button. */
@@ -242,7 +282,9 @@ html[data-theme="wmp11"] .btn-success { --btn-bg: linear-gradient(180deg, #4f9a6
 html[data-theme="wmp11"] {
   --app-padding: 0.5rem;
   --app-gap: 0;
-  --app-bar-bg: linear-gradient(180deg, #4a4a54 0, #262630 8%, #16161c 48%, #000000 52%, #0b0b10 100%);
+  /* Slate-blue gloss, not neutral black: measured off the Library tab strip
+     (upper half rgb(78,87,109), dark midline, blue under-glow at the foot). */
+  --app-bar-bg: linear-gradient(180deg, #6a7590 0, #4e576d 45%, #121216 50%, #1a2033 80%, #2f3a5e 100%);
   --app-bar-rule: #000000;
   --app-bar-radius: 6px 6px 0 0;
   --app-bar-height: 2.6rem;
@@ -252,8 +294,11 @@ html[data-theme="wmp11"] {
   --app-main-bg: var(--wmp-silk);
   --app-main-radius: 0;
   --app-main-padding: 1.1rem;
-  --app-status-bg: linear-gradient(180deg, #2e2e36 0, #16161c 45%, #000000 52%, #121218 100%);
-  --app-status-fg: #c8c8d4;
+  /* The reference's pale top edge (rgb(136,143,162)) is a 1px inset
+     highlight on .app-status, so every stop under the status text holds
+     4.5:1 for --app-status-fg. */
+  --app-status-bg: linear-gradient(180deg, #5d6377 0, #3f4657 30%, #20222a 55%, #0d0e10 100%);
+  --app-status-fg: #e8e8f0;
   --app-status-radius: 0 0 6px 6px;
   --app-status-rule: transparent;
   --app-status-padding: 0.9rem 1rem;
@@ -263,21 +308,27 @@ html[data-theme="wmp11"] .app-bar {
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.25);
   --nav-bg: transparent;
   --nav-rule-width: 0;
-  --nav-item-fg: #e6e6ee;
+  --nav-item-fg: #ffffff;
   --nav-brand-fg: #ffffff;
 }
 html[data-theme="wmp11"] .app-bar .nav { padding: 0; gap: 0; }
-html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 1rem; }
+html[data-theme="wmp11"] .app-bar .nav-brand { margin-right: 1rem; font-size: 0.95rem; font-weight: 600; }
 /* Tabs: evenly spaced labels split by hairline dividers; the current one
    is a blue glossy box with the small ▼ that drops its menu. */
 html[data-theme="wmp11"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) {
   position: relative;
   min-width: 7rem;
   text-align: center;
-  padding: 0.3em 1em;
-  border-radius: 3px;
-  font-size: 0.875em;
+  padding: 0.6em 1em;
+  border-radius: 4px 4px 0 0;
+  font-size: 0.8125em;
+  font-weight: 400;
   text-shadow: 0 1px 1px #000;
+}
+/* The capsule nearly fills the strip and stands on its bottom edge (the
+   bar's 0.25rem bottom padding), as WMP11's Library tab did. */
+@media (min-width: 901px) {
+  html[data-theme="wmp11"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { top: 0.25rem; }
 }
 /* Hairline dividers between tabs: a dark line plus a light one. */
 html[data-theme="wmp11"] .app-bar :is(.nav-item + .nav-item, .menubar > li + li > :is(button, a)) {
@@ -316,7 +367,7 @@ html[data-theme="wmp11"] .app-bar::before {
 }
 html[data-theme="wmp11"] .app-status {
   position: relative;
-  box-shadow: 0 0 24px rgba(63, 169, 245, 0.25);
+  box-shadow: 0 0 24px rgba(63, 169, 245, 0.25), inset 0 1px 0 #888fa2;
 }
 /* The seek groove along the bar's top: dark grey, blue only where played. */
 html[data-theme="wmp11"] .app-status::after {

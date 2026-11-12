@@ -177,7 +177,8 @@ files are vendored unmodified.
 - **Source:** https://github.com/microsoft/Selawik (release 1.01,
   `Selawik_Release.zip`: `selawkl.woff2`, `selawk.woff2`, `selawksb.woff2`)
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
-  Light headings)
+  Light headings); `wmp11` (Regular and Semibold only; stand-in for
+  Segoe UI)
 
 ## Bottom line
 
