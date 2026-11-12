@@ -28,7 +28,7 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
    carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
    So a selected or pressed control (toggle, segment, current page, filter
-   or reaction chip, active tab, open menu item, selected desktop icon) is a blue-tinted cell
+   or reaction chip, active tab, open menu item, current nav item, selected desktop icon) is a blue-tinted cell
    (`--accent-2` at 35% over the panel) with a blue edge and `--text`
    label, never a solid cyan slab; solid cyan is kept for the primary
    action and live readouts.
@@ -93,23 +93,37 @@ the two should visibly move the furniture.
 1. **Backdrop.** A fixed radial vignette (ellipse at top, `#0a1a2e` to
    `#020509` at 70%) under a faint cyan 2rem grid (`rgba(47,214,255,0.04)`
    1px lines): the interface reads as a panel in a space, not wallpaper.
-   On touch screens (`pointer: coarse`) it scrolls with the page instead
-   of staying fixed, so phones do not repaint the viewport every frame.
+   On touch screens (`pointer: coarse`) it scrolls with the page and
+   drops the grid, keeping the vignette only, so phones do not repaint a
+   tiled grid over a long document every frame.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
-   14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right. They
+   18px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right,
+   inset 4px from the corner like registration marks engraved on a bezel.
+   Panel and modal titles start 1.75rem in so they clear the mark, a
+   panel titled by an in-body heading included, and a dialog title is
+   tracked uppercase like a panel's (a
+   desktop window's title bar pads its start so the icon clears it), and a
+   panel title sits on a cyan-cast hairline, the bezel's engraved rule.
+   Only the focused desktop window is energized: a cyan hairline under its
+   title bar, while the others dim their title to `--muted`. They
    are painted as background layers (`--brackets` inside `--panel-bg`,
    `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
    surface gains a `position` and popovers, dropdowns and context menus
    keep anchoring to their true offset parent; they also stay put when a
    modal scrolls. Cards (KPI tiles, pricing, slides) set `--card-bg` to a
-   plain surface: they are hairline cells, and the L-marks stay on the
-   instruments. The status bar and `.app-main` are isolated stacking
+   plain surface with no outer glow: they are hairline cells, and the
+   L-marks stay on the instruments. A featured list card or spotlighted
+   question takes a 1px cyan edge with an inner glow, not a heavy frame.
+   Bar charts are instrument bargraphs: a 30% tinted column under a 2px
+   bright cap, so bars never outshine the live readouts. On touch screens
+   panel, card and transport glows are dropped to keep scrolling smooth. The status bar and `.app-main` are isolated stacking
    contexts so a menu spilling out of the page never covers the bar's
    buttons.
 3. **Buttons** are dark blue-cast cells with 0.05em tracking (dropped to
    0 on phones, where the wide mono face needs the room). Icon buttons are
-   square like everything else. Primary carries
-   `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
+   square like everything else. Primary carries only a faint
+   `0 0 0.4rem rgba(47,214,255,0.2)` at rest (no glow at all on touch), its full
+   `0 0 1rem` glow on hover, so readouts and lamps stay brightest; secondary/outline hover recolours the
    border to the glow and adds `0 0 8px`; `:disabled` is an unlit cell: no
    fill, `--muted` text and dashed `--muted` edge at 0.7 opacity, no
    shadow (present but off, never a dimmed primary). All via
@@ -119,6 +133,16 @@ the two should visibly move the furniture.
    keeps the outline and adds `0 0 8px rgba(0,217,255,0.35)`.
 5. **Tables**: dim, 0.08em-tracked uppercase headers, hairline row rules,
    and an accent select bar (`inset 0.35rem`) on active and selected rows.
+   Selected rows and list items fill blue like every other selection
+   (`--accent-2` at 20% over the panel, quieter than a control's 35% so
+   red and amber status text on them holds 4.5:1); cyan stays for live data. The current page
+   is a roomier cell (2.4em, or the touch target) so its digit clears the blue edge; disabled
+   page and carousel arrows are dashed unlit cells; carousel arrows are
+   square bordered cells like the page cells. A dirty (unsaved) cell is
+   marked by its amber edge alone, no tint, so it stays legible on a
+   selected row. Unchecked checkboxes and radios are `#08192b` field cells
+   with the `#2a6a9a` field edge (radios stay round, like lamps); checked
+   ones keep the native cyan mark.
 6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
    in `--text`; `h3`/`h4` 0.8em, 0.2em-tracked and `--muted` (panel labels).
    Headings inside `.prose`/`article` keep their case. Under 480px the
@@ -140,13 +164,17 @@ the two should visibly move the furniture.
    Slides only under `prefers-reduced-motion: no-preference`. Core's
    `.switch` carries the same look through tokens: a square 3px track on
    `#02050a`, a square thumb, cyan when on. Badges, chips and scrollbars
-   are squared to 2px too: nothing on the panel is a pill.
+   are squared to 2px too: nothing on the panel is a pill. Avatars are
+   2px-square blue-cast cells with a 1px `--border` ring.
    Meters sit in a `--deck-trim` (`#1d5c8f`) window edge, the same metal
    as the transport. Tabs inside a window or dialog drop to 0.02em
    tracking so a four-tab strip stays on one row.
    On phones the bar is two 44px target rows with no padding between
    them (brand and actions, then the nav), about 106px.
-9. **Status helpers**: `.status-ok` (success), `.status-error` (danger),
+9. **Telemetry strip**: `.app-status` uses tabular figures and lights a
+   small glowing cyan lamp before its first item, so every page carries
+   one live readout.
+   **Status helpers**: `.status-ok` (success), `.status-error` (danger),
    `.status-rec` or `.status-error.is-rec` (bold danger plus glow),
    `.status-idle` (success, a ready recorder is green).
 10. **Type** is monospace-first (see Typography).
@@ -158,14 +186,15 @@ Also: the meters, readouts, lamps and transport described under
 
 ## Typography
 
-`Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular",
-"Roboto Mono", "Noto Sans Mono", monospace` (`--font-mono` is the same
-stack). Consolas is the reference face but ships only with Windows and
-Microsoft Office; nothing is vendored. The fallbacks are the narrow,
-Consolas-like monos in the order they match it, all local only, so on a
-bare Linux/Android device the generic `monospace` (DejaVu Sans Mono, about
-9% wider) still renders. On phones the bar and joined toggles take
--0.01em tracking to give that width back.
+`Consolas, "BF Inconsolata", "Cascadia Mono", Inconsolata, "IBM Plex Mono",
+"SFMono-Regular", "Roboto Mono", "Noto Sans Mono", monospace` (`--font-mono`
+is the same stack). Consolas is the reference face but ships only with
+Windows and Microsoft Office, so Inconsolata (SIL OFL, the open
+Consolas-inspired mono) is vendored as `BF Inconsolata`, regular and bold
+Latin woff2 (`assets/fonts/Inconsolata-*.woff2`), with `size-adjust: 110%`
+so its 0.5em cell matches Consolas's 0.55em advance and x-height. Every
+machine without Consolas renders the same compact instrument face instead
+of the ~9% wider DejaVu Sans Mono.
 
 ## Contrast note
 

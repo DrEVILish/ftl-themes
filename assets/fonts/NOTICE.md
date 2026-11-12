@@ -133,6 +133,16 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Source:** https://fonts.google.com/specimen/Shrikhand
 - **Used by:** `barbie` (wordmark face on the brand mark and `h1` only)
 
+## Inconsolata
+
+- **Family:** Inconsolata (weights vendored: Regular 400, Bold 700, Latin
+  subset — `Inconsolata-Regular.woff2`, `Inconsolata-Bold.woff2`)
+- **Designer:** Raph Levien (The Inconsolata Project Authors)
+- **License:** SIL Open Font License, version 1.1
+- **Source:** https://fonts.google.com/specimen/Inconsolata (files from
+  the `@fontsource/inconsolata` 5.1.0 Latin subset, unmodified)
+- **Used by:** `blue-future` (stand-in for Consolas, the reference face)
+
 ## Share Tech and Share Tech Mono
 
 - **Family:** Share Tech (Regular 400 — `ShareTech-Regular.woff2`) and
