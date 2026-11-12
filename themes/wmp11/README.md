@@ -18,31 +18,40 @@ panels. The Vista-era "glass" idiom done in its most restrained form.
    bar — the player is lit from inside.
 3. **Cool blue only.** `#3fa9f5`/`#7fd1ff`. Warmth anywhere reads as a
    different era.
-4. **Generously rounded.** `--radius: 0.8rem` — glass panes have soft
-   edges, unlike WinAmp's hard chassis.
+4. **Softly rounded.** `--radius: 0.4rem` and 6px window corners — glass
+   panes have soft edges, unlike WinAmp's hard chassis.
 5. **Restraint.** Vista glass is easy to overdo; the bloom should be
    noticeable only in motion and on hover.
 
 ## Signature details
 
 - **The tab strip.** The app bar is WMP11's black glossy strip (a hard
-  gloss break at 50%): nav items become evenly spaced tabs split by
-  hairline dividers, the current one a blue glossy box with the small ▼
-  under it, and the round back/forward orbs sit at its left end (inline
+  gloss break at 50%): nav items, and the top level of a `.menubar` in
+  the bar (`.is-active` / `aria-current` marks the current one), become
+  evenly spaced 7rem tabs split by a dark-plus-light hairline pair, the
+  current one a blue glossy box with the small ▼ under it, and the round back/forward orbs sit at its left end (inline
   SVG, no markup).
 - **The transport bar.** The status strip is the black glossy player bar
   with a blue seek line along its top edge and, centred, the transport
   capsule — stop, prev | round blue play orb | next, volume — drawn as one
-  inline SVG. Decorative only; it is dropped under 1000px so it never
-  covers the app's own status text.
+  inline SVG. Decorative only (it cannot be clicked or focused), so only
+  the play orb carries full colour; the stop/prev/next/volume glyphs sit
+  at 45% so the picture doesn't read as live controls. It is dropped
+  under 901px and on a desktop taskbar (`.app-status.desktop-bar`), so it
+  never covers the app's own status text or task buttons. An app that
+  wants real transport controls puts its own buttons in the status bar.
 - **Blue silk** — WMP11's default visualization — fills the content well
-  (and the bare page, for apps without the shell) as bright light ribbons
-  over deep navy; the black-glass panels float on it.
+  (and the bare page, for apps without the shell) as curved bright-cyan
+  light ribbons (elliptical arcs) over deep navy; the black-glass panels float on it.
 - **Panel headers** are the player's list-pane header bars: dark gloss
   split at the middle, white text, a hairline highlight.
 - **One "selected" look:** the blue glossy capsule of the active tab
-  (`--wmp-capsule`) marks every selection — page tabs, segmented
-  controls, pagination, selected rows and list items.
+  (`--wmp-capsule`) marks every selection — bar tabs and any `.nav`,
+  page tabs, segmented controls, pagination, selected rows and list
+  items. Its gloss is a thin top band over a deep blue body, and white
+  labels on it carry a dark 1px drop shadow, as WMP11's tab labels did.
+- **Headings** are plain white Segoe UI at 600 with a 1px dark drop
+  shadow — no glow. The glow is kept for the active tab and the orbs.
 - **Seek bar:** progress is a thin glowing blue line in a black groove;
   slider thumbs are small glossy blue orbs.
 - Panels and the modal carry a genuine specular highlight band across
@@ -106,8 +115,9 @@ content well, transport bar along the bottom, joined with no gaps and
 
 No AA lift is recorded in `theme.css` for this theme, and none is needed: the colours are dark-on-light-accent by design.
 
-- `--accent` `#3fa9f5` is 7.73:1 on `--bg` and 7.17:1 on `--surface`; `--on-accent` `#05050a` is 7.95:1 on it. `--accent-2` `#7fd1ff` (headings) is 10.89:1 on `--surface`.
-- **The blue glow is decoration, not contrast.** The focus ring, slider-thumb bloom and heading `text-shadow` use `rgba(63,169,245,…)` halos; text always sits on its own solid colour, so nothing depends on the glow for legibility.
+- `--accent` `#3fa9f5` is 7.73:1 on `--bg` and 7.17:1 on `--surface`; `--on-accent` `#05050a` is 7.95:1 on it. `--accent-2` `#7fd1ff` (current breadcrumb) is 10.89:1 on `--surface`.
+- **The capsule.** White on its body is 4.19:1 at the 18% stop (`#2a7fcc`), 5.05:1 by the midline (`#1f70c2`) and 8.06:1 just below it (`#0f4f9a`); only the top 18% gloss band is lighter, above the glyphs' x-height, and the dark drop shadow covers it.
+- **The blue glow is decoration, not contrast.** The focus ring, slider-thumb bloom and active-tab halo use `rgba(63,169,245,…)` halos; text always sits on its own solid colour, so nothing depends on the glow for legibility.
 - `--muted` `#8888a0` is 5.31:1 on `--surface` and 4.79:1 on `--surface-2`.
 - `RESEARCH.md` records no hex, so `#3fa9f5` and the black-glass greys are the theme's own numbers.
 
