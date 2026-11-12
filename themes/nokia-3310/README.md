@@ -30,8 +30,11 @@ background, never from introducing a new colour.
    icon buttons, badges, avatars, status dots, lamps, presence, steps,
    calendar dates, swatches, scrollbars, the desktop monitor and more), and
    the two discs core hard-codes (the count badge on `.has-badge` and the
-   presence dot) are squared by a rule. SVG chart points stay circles: core
-   draws them as `<circle>` elements.
+   presence dot) are squared by a rule, as are the loaders and dots core
+   draws round: the htmx indicator and spinners (a square whose ink edge
+   steps round in quarter turns), carousel markers and arrows, and the
+   typing dots; the skeleton is a flat block with no shimmer. SVG chart
+   points stay circles: core draws them as `<circle>` elements.
 3. **danger/success/warning are a documented compromise.** True hardware
    has no second colour at all; those three tokens use barely-different
    dark tones within the same LCD family specifically so the theme stays
@@ -48,29 +51,35 @@ background, never from introducing a new colour.
   the viewport tall (`clamp(9rem, 32vh, 26rem)`), in a gutter that the
   main area's inline padding (`--app-main-padding: 1rem 2.3rem`) keeps
   clear; on touch tiers they shrink into the bar's first-line corners.
-  Stepped bars widest at the top, an antenna and a battery glyph at the
-  base, drawn as pixel SVGs in the ink colour.
+  Stepped bars widest at the top, a Y antenna and a battery glyph at the
+  base, drawn as pixel SVGs in the ink colour. On desktop only the bars
+  stretch down the edge; the antenna and battery are a separate 7x8 layer
+  that keeps its shape, about one bar tall.
 - One LCD tone top to bottom, as in both lit captures: the top line is
   plain LCD with a 2px ink rule; the bottom line carries a single centred
   "Menu" (the Navi-key's one softkey label) on its own row, the heaviest
-  line on the screen: 1.6rem pixel type (2rem on XL) thickened with a
-  0.04em text stroke, clock-sized as in the photo. No
-  inverted strips; inversion is kept for selection. On the desktop page
+  line on the screen: 1.6rem bold pixel type (2rem on XL), clock-sized
+  as in the photo. No
+  inverted strips; inversion is kept for selection, so a free-standing
+  `.nav` strip is the LCD with a 2px ink rule and only its current item
+  inverts. On the desktop page
   only the front window's title is inverted; the others stay LCD tone
   above a 2px ink rule.
-- The handset around the screen: navy casing (`#3c3e4e`, sampled), a
-  silver lens ring (`#b9bbb6`) and a darker navy bezel (`#343849`). On XL
+- The handset around the screen: navy casing (`#3c3e4e`, sampled), a 9px
+  silver lens ring (`#b9bbb6`) and a darker navy bezel (`#343849`), 2rem
+  deep above the LCD and 1.25rem at the sides and bottom. From 901px up,
+  the top of the silver Navi-key with its cyan `#3aa0d8` line sits on the
+  casing just below the screen. On XL
   the gutters carry faint silver oval keys, three to a row. A sidebar
   beside the shell (an `aside` sibling of `.app`) is its own LCD panel.
 - The slider is an ink rail (`--slider-bg: var(--text)`) with a square
   ink thumb.
-- Pixel type for all screen chrome: headings, the bar brand, window
-  titles, the "Menu" softkey, and the short UI strings (nav links, menubar
-  items, buttons, tabs, badges, table heads, labels, h4) are set in
-  Bedstead, a character-generator matrix face, at its one weight with a
-  0.03em text stroke instead of synthetic bold. Prose stays in a bold,
-  chunky mono (600), `-webkit-font-smoothing: none` where honoured; avatar
-  initials stay mono because the matrix is illegible that small.
+- Pixel type throughout, in Jersey 15, a squat bold pixel sans: headings,
+  the bar brand, window titles, the "Menu" softkey, the short UI strings
+  and body text alike (code stays in the mono). Its small x-height is
+  lifted with `font-size-adjust: ex-height 0.5`; table heads and badges
+  never drop below 0.75rem, so their pixels stay whole on the LCD.
+  `-webkit-font-smoothing: none` where honoured.
 - Dialogs close with a "Back" softkey label; a desktop window's title bar
   keeps the square × beside its other window buttons.
 - A destructive button leads with a "!" pixel (hidden from the accessible
@@ -122,13 +131,13 @@ the original hand-drawn subset and followed by every later addition:
 
 ## Typography
 
-`--font` and `--font-mono` are both `"Consolas", "Courier New", monospace`, at weight 600 for prose. `--font-pixel` is **Bedstead** (CC0, already vendored in `assets/fonts/` for `teletext`; see `assets/fonts/NOTICE.md`), used at weight 400 for h1–h4, `.nav-brand`, window/modal titles, the "Menu" softkey and the short UI strings (nav, menubar, buttons, tabs, badges, `th`, labels), with a small `-webkit-text-stroke` for weight. Its 5×9 SAA5050 matrix is the nearest shipped relative of the 3310's 5×7 Series-20 font (`nokia-3310-blue.png` shows that font in "Menü" and the clock). It is not the same face: SAA5050 rounds its diagonals, and the letters are taller. A true Series-20 copy (or an OFL face such as Pixelify Sans or Silkscreen) would need adding to `assets/fonts/` with a NOTICE entry, and that is outside this theme's folder. Body copy stays in the mono so long text stays readable. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
+`--font` and `--font-pixel` are `"Jersey 15", "Consolas", "Courier New", monospace`; `--font-mono` (code) is `"Consolas", "Courier New", monospace`. **Jersey 15** (SIL OFL 1.1, vendored as a Latin subset in `assets/fonts/Jersey15-Regular.woff2`; see `assets/fonts/NOTICE.md`) is a bold, squat, proportional pixel sans with open counters (C, 2 and 8 stay distinct at UI sizes), the nearest open relative of the 3310's Series-20 screen font (`nokia-3310-blue.png` shows that font in "Menü" and the clock). It has one weight, already heavy; the `@font-face` claims weights 100–900 so the browser never adds synthetic bold, and no text stroke is used. `font-size-adjust: ex-height 0.5` lifts its 0.41em x-height to body size. It is not the Series-20 face itself: Nokia's font was never released. Pixelify Sans was tried first and dropped: its C and 2 close up into O and 8 at body sizes. `RESEARCH.md` also records that a native screen capture is still missing, so the face is judged only from that one photo.
 
 ## Contrast honesty
 
-- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The lit screen samples at `#749964`, `#76956a` and `#75945f`. The shipped tones keep that yellow-green chroma and sit as close to the sample as a near-black ink allows at 7:1: `--bg` `#82a563`, `--surface` `#88aa68`, `--surface-2` `#789a5a`, ink `#060b03` (7.1:1 on `--bg`, 7.6:1 on `--surface`, 6.2:1 on `--surface-2`). The true sampled tone would give even this ink only about 6:1, so the last few points of lightness give way to the AAA floor.
-- **AAA:** `--text` clears 7:1 on `--bg` and `--surface` but is 6.2:1 on `--surface-2`; that is the real LCD's low contrast.
-- **`--muted`** `#0b1007` (6.0:1 on `--surface-2`) is not really a second shade. On a free-standing dark `.nav` strip `--muted` and the state-text tokens flip to `--bg`.
+- **Reference hue reconciled.** `RESEARCH.md`'s outsider read says "blue-green" LCD; the README and `theme.css` say yellow-green. The one capture that shows a lit screen (`nokia-3310-blue.png`) reads as a pale yellow-green with dark olive ink, and the casing is dark blue, which is probably the source of "blue". The lit screen samples at `#749468`, `#789a68` and `#759b61`, a greyish, slightly bluish green. The shipped tones keep that hue (blue added rather than lightness) and sit as close to the sample as a near-black ink allows at 7:1: `--bg` `#80a56d`, `--surface` `#87ab73`, `--surface-2` `#789b64`, ink `#060b03` (7.1:1 on `--bg`, 7.7:1 on `--surface`, 6.3:1 on `--surface-2`). The true sampled tone would give even this ink only about 6:1, so the last few points of lightness give way to the AAA floor.
+- **AAA:** `--text` clears 7:1 on `--bg` and `--surface` but is 6.3:1 on `--surface-2`; that is the real LCD's low contrast.
+- **`--muted`** `#0b1007` (6.1:1 on `--surface-2`) is not really a second shade.
 - **State inks are a departure.** `--danger` `#101306` (6.7:1 on `--bg`), `--success` `#081308` (6.8:1) and `--warning` `#14150a` (6.6:1) are within a few percent of the ink, so a Delete or Confirm button reads as ink, not as a brown or teal. The labels and shapes say which is which, not the hue; a danger button also leads with a "!". The real phone had no such colours.
 - **Waveform cue tags** mix 30% of their ink into `--waveform-bg`; under the tag the theme sets a lighter LCD segment (`#b4cc9e`) so the ink stays above 4.5:1.
 - `--on-accent` (`--bg`) on `--accent` is the same 7.1:1 invert used for selection.

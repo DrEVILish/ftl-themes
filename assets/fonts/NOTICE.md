@@ -189,3 +189,15 @@ diligence reasons `docs/icon-license-research.md` and
 `assets/logos/README.md` document their sources: so "we checked" isn't
 just asserted from memory, and so a future addition to this directory has
 a template to follow instead of reinventing the check.
+
+## Jersey 15
+
+- **Family:** Jersey 15 (Regular, subset to Latin-1 plus common
+  punctuation, arrows and the euro sign — `Jersey15-Regular.woff2`)
+- **Designer:** Sarah Cadigan-Fried (The Soft Type Project Authors)
+- **License:** SIL Open Font License, version 1.1 (the `OFL.txt` in the
+  family's `google/fonts` `ofl/jersey15/` directory)
+- **Source:** https://fonts.google.com/specimen/Jersey+15
+  (https://github.com/google/fonts/tree/main/ofl/jersey15)
+- **Used by:** `nokia-3310` (the pixel face for the whole screen, standing
+  in for the 3310's Series-20 screen font)

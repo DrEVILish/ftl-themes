@@ -12,12 +12,13 @@
 html[data-theme="nokia-3310"] {
   --motion-leave: power-off;
   color-scheme: light;
-  /* Sampled from the lit screen in nokia-3310-blue.png (#749964, #76956a,
-     #75945f), lifted only as far as a near-black ink keeps 7:1 on the
-     page tone; panels sit a hair lighter, so it stays one screen tone. */
-  --bg: #82a563;
-  --surface: #88aa68;
-  --surface-2: #789a5a;
+  /* Sampled from the lit screen in nokia-3310-blue.png (#749468, #789a68,
+     #759b61): the same greyish, slightly bluish green, lifted only as far
+     as a near-black ink keeps 7:1 on the page tone; panels sit a hair
+     lighter, so it stays one screen tone. */
+  --bg: #80a56d;
+  --surface: #87ab73;
+  --surface-2: #789b64;
   /* The ink. Was #2b3320, which cleared 4.5:1 on the plain LCD but not on
      core's tinted fills (accent badges, avatars, calendar events, a
      selected range): the darker olive keeps every tint above 4.5:1. */
@@ -50,10 +51,16 @@ html[data-theme="nokia-3310"] {
   --on-danger: #d8dcc0;
   --on-success: #d8dcc0;
   --radius: 0;
-  --font: "Consolas", "Courier New", monospace;
+  /* Jersey 15 (OFL, vendored): a bold, squat, proportional pixel sans,
+     the nearest open cousin of the Series-20 screen font; code and other
+     true monospace stays in the mono. */
+  --font: "Jersey 15", "Consolas", "Courier New", monospace;
   --font-mono: "Consolas", "Courier New", monospace;
   --flare: #060b03;
-  font-weight: 600;
+  font-weight: 500;
+  /* Jersey 15 has a small x-height (0.41em): lift it to 0.5em so body
+     text is as big on the LCD as the phone's own lines. */
+  font-size-adjust: ex-height 0.5;
   -webkit-font-smoothing: none;
 
   /* A "button" on this device is a softkey label — no fill, no border, no
@@ -84,7 +91,11 @@ html[data-theme="nokia-3310"] {
      the whole row flips from dark-on-light to light-on-dark instead. */
   --row-selected-bg: var(--text);
   --row-selected-fg: var(--bg);
-  --nav-bg: var(--text);
+  /* A free-standing nav strip is the LCD with an ink rule, like the top
+     line; only its current item inverts. */
+  --nav-bg: var(--bg);
+  --nav-rule: var(--text);
+  --nav-rule-width: 2px;
   /* No curve anywhere on this screen: every core round default squared. */
   --badge-radius: 0;
   --switch-radius: 0;
@@ -165,24 +176,23 @@ html[data-theme="nokia-3310"] {
   --chart-series-4: #4c6438;
   --chart-series-5: #314527;
   --chart-series-6: var(--hairline);
-  /* The pixel face: Bedstead (CC0, already vendored for teletext) is a
-     character-generator matrix font, the nearest shipped cousin of the
-     3310's 5x7 Series-20 type. Used for the screen's "big" lines only;
-     body copy stays monospace for long-form legibility. */
-  --font-pixel: "Bedstead", "Consolas", "Courier New", monospace;
+  /* The same face for the screen's bold lines (headings, softkeys, menu
+     rows). It has one, already heavy, weight; the @font-face claims the
+     whole weight range so the browser never smears it with synthetic
+     bold. */
+  --font-pixel: "Jersey 15", "Consolas", "Courier New", monospace;
 }
 
 @font-face {
-  font-family: "Bedstead";
-  src: url("assets/fonts/Bedstead.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Jersey 15";
+  src: url("assets/fonts/Jersey15-Regular.woff2") format("woff2");
+  font-weight: 100 900;
   font-display: swap;
 }
-/* Pixel lines: headings, the bar title and the softkey. Weight 400 because
-   synthetic bold smears pixels. */
+/* Pixel lines: headings, the bar title and the softkey. */
 html[data-theme="nokia-3310"] :is(h1, h2, h3, .nav-brand, .app-bar-title, .modal-header) {
   font-family: var(--font-pixel);
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0;
 }
 /* Clear/icon buttons: the lit state is the hard invert, so the label flips
@@ -210,18 +220,17 @@ html[data-theme="nokia-3310"] :is(h4, th, label, .nav-item, .btn, .tab) {
   letter-spacing: 0.01em;
 }
 /* Short UI strings (nav, buttons, tabs, chips, table heads, labels) are
-   screen chrome, so they are pixel type too; only prose stays in the mono.
-   The matrix face has one weight: a hairline text stroke thickens each
-   pixel the way the phone's bold menu font does, without synthetic bold. */
+   the phone's bold menu lines. */
 html[data-theme="nokia-3310"] :is(h4, th, label, .nav a, .nav-item, .menubar li > :is(button, a), .btn, .tab, .badge, .toggle-btn) {
   font-family: var(--font-pixel);
-  font-weight: 400;
-  -webkit-text-stroke: 0.03em currentColor;
+  font-weight: 700;
 }
-/* Avatar initials are too small for the matrix: they stay in the mono.
-   Core tints a coloured avatar with 28% of its (ink) user colour, which
+/* The pixel face needs about 12px to keep its pixels whole on the
+   low-contrast LCD: small heads and badges never go below that. */
+html[data-theme="nokia-3310"] .table th { font-size: max(0.75rem, 0.78em); }
+html[data-theme="nokia-3310"] .badge { font-size: max(0.75rem, 0.75em); }
+/* Core tints a coloured avatar with 28% of its (ink) user colour, which
    sinks the ink initials to 4.3:1 on this darker LCD; 20% keeps 5:1. */
-html[data-theme="nokia-3310"] .avatar { font-family: var(--font); -webkit-text-stroke: 0; }
 html[data-theme="nokia-3310"] .avatar[data-color] { --avatar-bg: color-mix(in srgb, var(--user-color) 20%, var(--surface)); }
 
 /* --- Layout ------------------------------------------------------------ *
@@ -244,20 +253,6 @@ html[data-theme="nokia-3310"] {
   /* A clear LCD line above the status readouts, so a menu hanging out of
      the page's last row never sits on the status bar's buttons. */
   --app-status-padding: 1.1rem 1rem 0.3rem;
-}
-/* A free-standing .nav sits on the dark --nav-bg strip, so its items are
-   LCD-light with a hard invert for the active one. A nav inside the app
-   bar sits on the LCD and keeps the root ink/invert tokens. */
-html[data-theme="nokia-3310"] .nav:not(.app-bar *) {
-  --muted: var(--bg);
-  --success-text: var(--bg);
-  --warning-text: var(--bg);
-  --danger-text: var(--bg);
-  /* An avatar keeps its own light disc, so it keeps dark ink. */
-  --avatar-fg: var(--text);
-  --nav-item-fg: var(--bg);
-  --nav-item-fg-active: var(--text);
-  --nav-item-bg-active: var(--bg);
 }
 /* Badges and filter chips: an ink outline on the LCD, never a tint. */
 html[data-theme="nokia-3310"] .badge:not(.badge-solid) {
@@ -332,6 +327,19 @@ html[data-theme="nokia-3310"] .app-bar::after {
     transform: none;
     width: 1.1rem;
     height: clamp(9rem, 32vh, 26rem);
+    /* Only the bars stretch down the edge; the antenna and battery glyph
+       keep their 7x8 pixel shape (about one bar tall) at the base. */
+    background:
+      var(--_nokia-bars) top / 100% calc(100% - 1.7rem) no-repeat,
+      var(--_nokia-icon) bottom / 100% auto no-repeat;
+  }
+  html[data-theme="nokia-3310"] .app-bar::before {
+    --_nokia-bars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 11' preserveAspectRatio='none' shape-rendering='crispEdges' fill='%23060b03'%3E%3Cpath d='M0 0h7v2H0zM0 3h6v2H0zM0 6h5v2H0zM0 9h4v2H0z'/%3E%3C/svg%3E");
+    --_nokia-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 8' preserveAspectRatio='xMidYMax meet' shape-rendering='crispEdges' fill='%23060b03'%3E%3Cpath d='M1 0h1v2H1zM5 0h1v2H5zM2 2h3v1H2zM3 3h1v5H3z'/%3E%3C/svg%3E");
+  }
+  html[data-theme="nokia-3310"] .app-bar::after {
+    --_nokia-bars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 11' preserveAspectRatio='none' shape-rendering='crispEdges' fill='%23060b03'%3E%3Cpath d='M0 0h7v2H0zM1 3h6v2H1zM2 6h5v2H2zM3 9h4v2H3z'/%3E%3C/svg%3E");
+    --_nokia-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 8' preserveAspectRatio='xMidYMax meet' shape-rendering='crispEdges' fill='%23060b03'%3E%3Cpath fill-rule='evenodd' d='M2 0h3v1H2zM1 1h5v7H1zM2 2h3v5H2z'/%3E%3C/svg%3E");
   }
 }
 @media (min-width: 1801px) {
@@ -345,8 +353,14 @@ html[data-theme="nokia-3310"] .app-bar::after {
  * `body`: in the shell markup body IS .app. Only with the shell adopted:
  * at L0 the page stays the plain LCD. */
 html[data-theme="nokia-3310"]:has(.app) {
-  background: #3c3e4e;
-  padding: 1.5rem;
+  /* Below the screen, the top of the silver Navi-key with its cyan line,
+     drawn on the casing in the page's bottom padding, so content is never
+     covered. */
+  background:
+    linear-gradient(#3aa0d8 0 0) 50% calc(100% - 1rem) / 5rem 4px no-repeat,
+    radial-gradient(50% 100% at 50% 100%, #c9cbc6 0 96%, transparent) 50% 100% / 24rem 2.1rem no-repeat,
+    #3c3e4e;
+  padding: 1.5rem 1.5rem 2.75rem;
 }
 /* Anything beside the shell (a sidebar on the page) is its own LCD panel,
    not ink printed on the navy casing. */
@@ -355,23 +369,26 @@ html[data-theme="nokia-3310"] :has(> .app) > aside {
 }
 html[data-theme="nokia-3310"] .app {
   position: relative;
-  border: 14px solid #343849;
+  /* The navy bezel between the lens ring and the LCD, deepest above the
+     screen as on the handset. */
+  border: solid #343849;
+  border-width: 2rem 1.25rem 1.25rem;
   border-radius: 1.6rem;
   box-shadow:
-    0 0 0 5px #b9bbb6,
-    0 0 0 7px #2a2d3a,
+    0 0 0 9px #b9bbb6,
+    0 0 0 11px #2a2d3a,
     0 24px 48px rgba(0, 0, 0, 0.45);
   /* clip, not hidden: hidden would make the shell a scroll container and
      stop sticky headers inside it sticking to the screen. */
   overflow: clip;
-  min-height: calc(100vh - 3rem);
-  min-height: calc(100dvh - 3rem);
+  min-height: calc(100vh - 4.25rem);
+  min-height: calc(100dvh - 4.25rem);
 }
 /* Earpiece speaker slit, centered above the title bar. */
 html[data-theme="nokia-3310"] .app::before {
   content: "";
   position: absolute;
-  top: 0.4rem;
+  top: -1.15rem;
   left: 50%;
   transform: translateX(-50%);
   width: 2.4rem;
@@ -392,10 +409,8 @@ html[data-theme="nokia-3310"] .app-status::before {
   order: 99;
   flex: 1 0 100%;
   text-align: center;
-  /* The heaviest line on the screen, clock-sized: one weight in the
-     face, so a text stroke fakes the 2px pixel stroke. */
-  font: 400 1.6rem/1.1 var(--font-pixel);
-  -webkit-text-stroke: 0.04em currentColor;
+  /* The heaviest line on the screen, clock-sized. */
+  font: 700 1.6rem/1.1 var(--font-pixel);
   color: var(--text);
   pointer-events: none;
 }
@@ -406,7 +421,7 @@ html[data-theme="nokia-3310"] .app-status::before {
  * and actions, then the scrolling nav), so the signal and battery stacks
  * sit on the first line instead of straddling both. */
 @media (max-width: 900px) {
-  html[data-theme="nokia-3310"]:has(.app) { padding: 0.75rem; }
+  html[data-theme="nokia-3310"]:has(.app) { padding: 0.75rem; background: #3c3e4e; }
   html[data-theme="nokia-3310"] .app {
     border-width: 10px;
     border-radius: 1.2rem;
@@ -499,4 +514,28 @@ html[data-theme="nokia-3310"][data-alert]::after {
 @keyframes nokia-backlight { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: no-preference) {
   html[data-theme="nokia-3310"][data-alert="red"]::after { animation: nokia-backlight 1s steps(1) infinite; }
+}
+
+/* Core's round loaders and dots, squared: spinners are a square whose one
+   ink edge steps round in quarter turns, the grow dot a stepped square;
+   carousel markers and arrows are square keys; the typing dots are pixels;
+   the skeleton is a flat LCD block with no soft shimmer. */
+html[data-theme="nokia-3310"] :is(.indicator, .spinner) {
+  border-radius: 0;
+  animation-timing-function: steps(4);
+}
+html[data-theme="nokia-3310"] .spinner.is-grow { animation-timing-function: steps(3); }
+html[data-theme="nokia-3310"] .carousel-nav > a { border-radius: 0; }
+html[data-theme="nokia-3310"] .carousel > .carousel-slide::scroll-marker,
+html[data-theme="nokia-3310"] .carousel::scroll-button(*) { border-radius: 0; }
+html[data-theme="nokia-3310"] .typing::before {
+  background-image:
+    linear-gradient(var(--typing-dot, currentColor) 0 0),
+    linear-gradient(var(--typing-dot, currentColor) 0 0),
+    linear-gradient(var(--typing-dot, currentColor) 0 0);
+  animation-timing-function: steps(2);
+}
+html[data-theme="nokia-3310"] .skeleton {
+  background-image: none;
+  animation: none;
 }
