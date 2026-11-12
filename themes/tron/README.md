@@ -50,13 +50,15 @@ looks *drawn in light* rather than painted.
   alerts and toasts). Where `corner-shape: bevel` is supported it is a real
   bevelled border; elsewhere a `clip-path` polygon with two background
   layers tracing each diagonal in the component's border colour.
+  Text inputs, selects and textareas take one 6px bevel on the trailing
+  corner where `corner-shape` exists, and focus adds a faint inner glow.
 - Surfaces are light-lines: a second 1px inner ring makes the edge read
-  2px lit, with an inner glow and, above phone width, a 10px outer bloom.
-  The bloom shows only with `corner-shape`, because `clip-path` cuts it
-  away. Phones keep the clip-path chamfer and the 1px inner ring but drop
-  the inner glow, the readout/table-head text glow and the h2/h3 glow
-  (h1 keeps one layer), since glow on every
-  surface drops frames while scrolling on a mid-range phone. Keyboard focus is drawn inside the cut: a 2px
+  2px lit and, above phone width, top-level surfaces cast a 10px outer
+  bloom (nested panels and cards keep only the ring). The bloom shows only
+  with `corner-shape`, because `clip-path` cuts it away. Table heads carry
+  no text glow. Phones keep the clip-path chamfer and the 1px inner ring
+  but drop the readout and h2/h3 glow (h1 keeps one layer), since glow on
+  every surface drops frames while scrolling on a mid-range phone. Keyboard focus is drawn inside the cut: a 2px
   outline inset 5px plus an inner bloom.
 - Alerts and toasts carry a lit 0.2rem bar down the start edge in their
   status colour.
@@ -65,6 +67,8 @@ looks *drawn in light* rather than painted.
   selected labels are outlined in their colour over a faint tint. Filter
   chips (`.badge-button`) are a dim 35% ring at rest and a full lit ring
   with a bloom when active.
+- Switches trace too: off is an unlit square node ringed in muted cyan on a
+  muted-cyan track; on is the white-hot core with a bloom.
 - Checkboxes are lit square frames holding a square node when checked.
   Avatars are a 1px lit frame over a faint tint, with a small square
   presence node on the frame corner, clear of the initials; skeleton loaders are
@@ -119,7 +123,7 @@ carries body text.
 
 On phones, and in browsers without `corner-shape`, chamfered surfaces can't cast an outer
 glow: `clip-path` clips box-shadow and any filter on the same element, so
-only the inset glow shows there.
+only the inner ring shows there.
 
 ## Tell-tales of an inauthentic result
 

@@ -66,11 +66,10 @@ html[data-theme="tron"] {
   --btn-border: var(--accent);
   --btn-shadow-hover: inset 0 0 14px rgba(108, 236, 250, 0.45);
   --input-bg: #000;
-  --focus-ring: 0 0 10px var(--accent);
   /* Light-lines: a second 1px inner ring makes the edge read 2px lit. Above
      phone width an outer bloom spills into the dark too (see the chamfer
      block). */
-  --panel-shadow: inset 0 0 0 1px rgba(108, 236, 250, 0.5), inset 0 0 18px rgba(108, 236, 250, 0.18);
+  --panel-shadow: inset 0 0 0 1px rgba(108, 236, 250, 0.5);
   --table-head-fg: var(--accent);
   --table-head-rule: var(--accent);
   --row-selected-bg: rgba(108, 236, 250, 0.08);
@@ -87,6 +86,11 @@ html[data-theme="tron"] {
   /* No round shapes: every knob, chip, pin and avatar is square-cut. */
   --switch-radius: 0;
   --switch-thumb-radius: 0;
+  /* Off: an unlit traced node. On: the white-hot core with a bloom. */
+  --switch-thumb-bg: transparent;
+  --switch-thumb-bg-on: #e8fdff;
+  --switch-border: var(--muted);
+  --focus-ring: 0 0 10px var(--accent), inset 0 0 8px rgba(108, 236, 250, 0.3);
   --slider-thumb-radius: 0;
   --badge-radius: 0;
   --avatar-radius: 0;
@@ -214,7 +218,7 @@ html[data-theme="tron"] :is(.stat-label, .table th) { font-weight: 700; }
    1px inner ring and border stay, so edges still read as lit lines. */
 @media (max-width: 480px) {
   html[data-theme="tron"] { --panel-shadow: inset 0 0 0 1px rgba(108, 236, 250, 0.5); }
-  html[data-theme="tron"] :is(.stat-value, .table th, h2, h3) { text-shadow: none; }
+  html[data-theme="tron"] :is(.stat-value, h2, h3) { text-shadow: none; }
   html[data-theme="tron"] h1 { text-shadow: 0 0 8px var(--accent); }
 }
 /* Michroma is already extended, so it carries less extra tracking than the
@@ -242,8 +246,10 @@ html[data-theme="tron"] .popover > :is(strong, b, h1, h2, h3, h4):first-child { 
    diagonal is orange-red. clip-path also cuts away anything painted outside the
    box: the outer glow and core's :focus-visible outline. Glow is therefore
    inset, and focus is drawn inside the box (see below). */
+/* The default cut sits in :where() so every per-component size below wins;
+   the shape rule itself keeps its weight against core's own radius rules. */
+html[data-theme="tron"] :where(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast, .list, .master-detail > .nav-rail) { --tron-cut: 18px; }
 html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast, .list, .master-detail > .nav-rail) {
-  --tron-cut: 18px;
   clip-path: polygon(var(--tron-cut) 0, 100% 0, 100% calc(100% - var(--tron-cut)), calc(100% - var(--tron-cut)) 100%, 0 100%, 0 var(--tron-cut));
   background-image:
     linear-gradient(to bottom right, transparent 50%, var(--tron-edge, var(--border)) 0 calc(50% + 1.25px), transparent 0),
@@ -300,8 +306,15 @@ html[data-theme="tron"] :is(.panel, .modal, .card):has(.anchor) { clip-path: non
    about a dropped frame in five while scrolling. */
 @supports (corner-shape: bevel) { @media (min-width: 481px) {
   html[data-theme="tron"] {
-    --panel-shadow: 0 0 10px rgba(108, 236, 250, 0.45), inset 0 0 0 1px rgba(108, 236, 250, 0.5), inset 0 0 18px rgba(108, 236, 250, 0.18);
+    --panel-shadow: 0 0 10px rgba(108, 236, 250, 0.45), inset 0 0 0 1px rgba(108, 236, 250, 0.5);
   }
+  /* Only top-level surfaces bloom; nested ones keep the lit ring. */
+  html[data-theme="tron"] :is(.panel, .modal, .card, .drawer, .popover) :is(.panel, .card) {
+    --panel-shadow: inset 0 0 0 1px rgba(108, 236, 250, 0.5);
+    --card-shadow: var(--panel-shadow);
+  }
+  /* Fields take one small bevel on the trailing corner, beside the cut buttons. */
+  html[data-theme="tron"] :is(.input, .select, .textarea) { border-end-end-radius: 6px; corner-shape: bevel; }
   html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast, .list, .master-detail > .nav-rail) {
     clip-path: none;
     background-image: none;
@@ -377,12 +390,16 @@ html[data-theme="tron"] .btn-success {
   --btn-border: var(--success);
   --btn-shadow-hover: inset 0 0 12px rgba(200, 255, 246, 0.4);
 }
+html[data-theme="tron"] .switch input:checked ~ .switch-track .switch-thumb,
+html[data-theme="tron"] .switch[aria-checked="true"] .switch-thumb { box-shadow: 0 0 2px #fff, 0 0 6px var(--accent); }
+html[data-theme="tron"] .switch-thumb { box-shadow: inset 0 0 0 1px var(--muted); }
+/* Hints stay at a size where the thin strokes hold over the grid lines. */
+html[data-theme="tron"] .field-hint { font-size: 0.8rem; }
 html[data-theme="tron"] .bulk-bar { box-shadow: 0 0 12px rgba(108, 236, 250, 0.35), inset 0 0 12px rgba(108, 236, 250, 0.12); }
 /* Desktop windows are fixed-height dialogs: wide label tracking wraps a
    four-tab strip onto a second row and pushes the footer out of the window. */
 html[data-theme="tron"] .desktop-window { --label-tracking: 0.04em; }
 html[data-theme="tron"] .desktop-window .tab { padding-inline: 0.55em; }
-html[data-theme="tron"] .table th { text-shadow: 0 0 6px rgba(108, 236, 250, 0.5); }
 
 /* --- Layout ------------------------------------------------------------ *
  * The Grid: a glowing cyan frame with cut corners, a thin lit rail down the
