@@ -54,7 +54,7 @@ html[data-theme="vaporwave"] {
   /* Japanese faces follow the Latin ones, so katakana in brand copy renders
      in one gothic wherever it is installed. */
   --font: "Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  --font-mono: Consolas, monospace;
+  --font-mono: Consolas, "Liberation Mono", "DejaVu Sans Mono", "Noto Sans Mono", monospace;
   --flare: #01cdfe;
 
   /* Plain buttons are the quiet purple chip; the gradient is kept for the
@@ -119,6 +119,20 @@ html[data-theme="vaporwave"] {
 @media (hover: hover) and (pointer: fine) {
   html[data-theme="vaporwave"] {
     --panel-shadow: 0 0 0 1px rgba(255, 113, 206, 0.35), 0 0 18px -4px rgba(255, 113, 206, 0.45), 0 0 28px -8px rgba(1, 205, 254, 0.35);
+    /* Full-frame CRT scanlines, faint (2.5%) so text contrast is untouched;
+       fine pointers only, given the phone render budget. */
+    --panel-bg:
+      linear-gradient(90deg, #ff71ce, #01cdfe) 0 0 / 100% 2px no-repeat,
+      repeating-linear-gradient(180deg, transparent 0 2px, rgba(1, 205, 254, 0.025) 2px 3px),
+      var(--surface);
+  }
+}
+/* Phones and touch scroll on a budget: flat header strip and panel fill
+   (the pair's top edge becomes a plain pink border), no scanline layers. */
+@media (max-width: 480px), (pointer: coarse) {
+  html[data-theme="vaporwave"] {
+    --panel-header-bg: linear-gradient(90deg, rgba(255, 113, 206, 0.14), transparent 70%);
+    --panel-bg: var(--surface);
   }
 }
 
@@ -203,6 +217,22 @@ html[data-theme="vaporwave"] :is(.stat-value, .price) {
   font-weight: 400;
   letter-spacing: 0.04em;
 }
+/* KPI figures get chrome: a white-to-pink-to-ice vertical fill (every stop
+   11:1+ on --surface), quieter than the headings' pink-cyan sweep. Not on
+   .price, whose was/sale/period children carry their own colors. */
+html[data-theme="vaporwave"] .stat-value {
+  /* 4px of painted box around the glyphs (v5 edge rule), given back by
+     the negative margin so the KPI row does not move. */
+  padding: 0.25rem;
+  margin: -0.25rem;
+  background-image: linear-gradient(180deg, #ffffff 30%, #ffd1f0 60%, #b9f3ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+/* Core's status labels run ~12px; a touch larger reads easier on glow. */
+html[data-theme="vaporwave"] .status { font-size: 0.8125rem; }
 
 html[data-theme="vaporwave"] .panel,
 html[data-theme="vaporwave"] .modal { border: 1px solid var(--border); }
@@ -242,7 +272,7 @@ html[data-theme="vaporwave"] {
      static image: no fixed layer, no scroll-driven animation). */
   --vw-haze: #3d1250;
   --vw-sun: clamp(11rem, 24vw, 22rem);
-  --app-main-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='0' y2='100'><stop offset='0' stop-color='%23ffd319'/><stop offset='.45' stop-color='%23ff8c3a'/><stop offset='.75' stop-color='%23ff2975'/><stop offset='1' stop-color='%23c800c8'/></linearGradient><clipPath id='c'><path d='M0 100A100 100 0 0 1 200 100Z'/></clipPath></defs><g clip-path='url(%23c)' fill='url(%23g)'><rect width='200' height='42'/><rect y='44' width='200' height='9'/><rect y='56' width='200' height='8'/><rect y='68.5' width='200' height='7.5'/><rect y='82' width='200' height='6'/><rect y='95' width='200' height='5'/></g></svg>") 50% 100% / var(--vw-sun) calc(var(--vw-sun) / 2) no-repeat;
+  --app-main-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-30 -30 260 130'><defs><radialGradient id='h' gradientUnits='userSpaceOnUse' cx='100' cy='100' r='130'><stop offset='.7' stop-color='%23ff2975' stop-opacity='.4'/><stop offset='.85' stop-color='%23ff8c3a' stop-opacity='.14'/><stop offset='1' stop-color='%23ff2975' stop-opacity='0'/></radialGradient><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='0' y2='100'><stop offset='0' stop-color='%23ffd319'/><stop offset='.45' stop-color='%23ff8c3a'/><stop offset='.75' stop-color='%23ff2975'/><stop offset='1' stop-color='%23c800c8'/></linearGradient><clipPath id='c'><path d='M0 100A100 100 0 0 1 200 100Z'/></clipPath></defs><rect x='-30' y='-30' width='260' height='130' fill='url(%23h)'/><g clip-path='url(%23c)' fill='url(%23g)'><rect width='200' height='42'/><rect y='44' width='200' height='9'/><rect y='56' width='200' height='8'/><rect y='68.5' width='200' height='7.5'/><rect y='82' width='200' height='6'/><rect y='95' width='200' height='5'/></g></svg>") 50% 100% / calc(var(--vw-sun) * 1.3) calc(var(--vw-sun) * 0.65) no-repeat;
   --app-main-padding: 1.1rem 1.1rem calc(var(--vw-sun) / 2 + 0.75rem);
   --app-main-padding-tablet: var(--space-m) var(--space-m) calc(var(--vw-sun) / 2 + 0.75rem);
   --app-main-padding-mobile: var(--space-s) var(--space-s) calc(var(--vw-sun) / 2 + 0.75rem);
@@ -250,9 +280,14 @@ html[data-theme="vaporwave"] {
   --app-status-fg: var(--accent-2);
   /* The text rides the top band; the bottom padding is the floor's bright
      near rows, so no grid line ever crosses a glyph. */
-  --app-status-padding: 0.45rem 1rem 2.4rem;
+  --app-status-padding: 0.45rem 1rem var(--vw-floor);
+  /* The floor band's depth: deeper on wider screens (below). */
+  --vw-floor: 2.4rem;
   /* The strip's top edge is the glowing horizon the sun sets on. */
   --app-status-rule: #ff2975;
+}
+@media (min-width: 768px) {
+  html[data-theme="vaporwave"] { --vw-floor: 3.75rem; }
 }
 /* The bar is a bright magenta-purple-cyan gradient — .nav-brand/-item's
    default colors were tuned for the dark page background and go
@@ -294,17 +329,18 @@ html[data-theme="vaporwave"] .app-status {
 html[data-theme="vaporwave"] .app-status::after {
   content: "";
   position: absolute;
-  /* Only the 2.4rem bottom padding band (lengths, not %), so a tall strip
-     such as a taskbar never puts a ray or cross-line behind its text. */
+  /* Only the --vw-floor bottom padding band (lengths, not %), so a tall
+     strip such as a taskbar never puts a ray or cross-line behind its text. */
   inset: auto 0 0;
-  height: 2.4rem;
+  height: var(--vw-floor);
   background-image:
+    /* Each cross-line is a hot core with a soft magenta bloom either side. */
     linear-gradient(180deg,
-      transparent 0 calc(18% - 1px), rgba(255, 113, 206, 0.9) 18%, transparent calc(18% + 1px),
-      transparent calc(38% - 1px), rgba(255, 113, 206, 0.9) 38%, transparent calc(38% + 1px),
-      transparent calc(64% - 1.5px), rgba(255, 113, 206, 0.9) 64%, transparent calc(64% + 1.5px),
-      transparent calc(94% - 1.5px), rgba(255, 113, 206, 0.9) 94%, transparent calc(94% + 1.5px)),
-    repeating-conic-gradient(from 0deg at 50% -5rem, transparent 0deg, rgba(1, 205, 254, 0.85) 0.3deg, transparent 0.6deg, transparent 5deg);
+      transparent calc(18% - 3px), rgba(255, 41, 117, 0.3) calc(18% - 1px), #ff71ce 18%, rgba(255, 41, 117, 0.3) calc(18% + 1px), transparent calc(18% + 3px),
+      transparent calc(38% - 3px), rgba(255, 41, 117, 0.3) calc(38% - 1px), #ff71ce 38%, rgba(255, 41, 117, 0.3) calc(38% + 1px), transparent calc(38% + 3px),
+      transparent calc(64% - 4.5px), rgba(255, 41, 117, 0.3) calc(64% - 1.5px), #ff71ce 64%, rgba(255, 41, 117, 0.3) calc(64% + 1.5px), transparent calc(64% + 4.5px),
+      transparent calc(94% - 4.5px), rgba(255, 41, 117, 0.3) calc(94% - 1.5px), #ff71ce 94%, rgba(255, 41, 117, 0.3) calc(94% + 1.5px), transparent calc(94% + 4.5px)),
+    repeating-conic-gradient(from 0deg at 50% calc(-2 * var(--vw-floor)), transparent 0deg, rgba(1, 205, 254, 0.25) 0.1deg, #01cdfe 0.3deg, rgba(1, 205, 254, 0.25) 0.5deg, transparent 0.6deg, transparent 5deg);
   mask-image: linear-gradient(transparent, #000 0.9rem);
   -webkit-mask-image: linear-gradient(transparent, #000 0.9rem);
   z-index: -1;
@@ -336,8 +372,9 @@ html[data-theme="vaporwave"] body::before {
     radial-gradient(1px 1px at 40% 10%, rgba(255, 255, 255, 0.75), transparent) 0 0 / 659px 293px,
     radial-gradient(1px 1px at 10% 30%, rgba(255, 255, 255, 0.65), transparent) 0 0 / 947px 331px,
     radial-gradient(1.5px 1.5px at 60% 90%, rgba(255, 255, 255, 0.8), transparent) 0 0 / 1109px 457px,
-    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(255, 140, 58, 0.18), transparent),
-    linear-gradient(#1a0b2e, #24103d 55%, var(--vw-haze));
+    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(255, 140, 58, 0.2), transparent),
+    radial-gradient(ellipse 80% 45% at 50% 100%, rgba(255, 41, 117, 0.12), transparent),
+    linear-gradient(#1a0b2e, #24103d 35%, var(--vw-haze) 60%);
 }
 
 /* --- Print ----------------------------------------------------------------
@@ -366,12 +403,14 @@ html[data-theme="vaporwave"][data-surface="signage"] { --app-main-bg: transparen
 /* XL gutters: the outrun floor. A perspective grid recedes to a vanishing
    point behind the app (rays in cyan from the centre of the screen,
    cross-lines in pink spaced wider toward the viewer), so each gutter shows
-   the floor sweeping in from the side. Faint (each line ~1.3:1 on --bg,
-   far less on average) and still. */
+   the floor sweeping in from the side, under a glowing #ff2975 horizon at
+   42% with only stars above it. Every line lies below the horizon (rays
+   96-264deg). Still, and never behind content. */
 html[data-theme="vaporwave"] {
   --app-gutter-art:
-    linear-gradient(transparent calc(42% - 1px), rgba(255, 113, 206, 0.2) calc(42% - 1px) 42%, transparent 42%, transparent calc(43.2% - 1px), rgba(255, 113, 206, 0.2) calc(43.2% - 1px) 43.2%, transparent 43.2%, transparent calc(45% - 1px), rgba(255, 113, 206, 0.2) calc(45% - 1px) 45%, transparent 45%, transparent calc(47.5% - 1px), rgba(255, 113, 206, 0.2) calc(47.5% - 1px) 47.5%, transparent 47.5%, transparent calc(51% - 1px), rgba(255, 113, 206, 0.2) calc(51% - 1px) 51%, transparent 51%, transparent calc(55.5% - 1px), rgba(255, 113, 206, 0.2) calc(55.5% - 1px) 55.5%, transparent 55.5%, transparent calc(61% - 1px), rgba(255, 113, 206, 0.2) calc(61% - 1px) 61%, transparent 61%, transparent calc(68% - 1px), rgba(255, 113, 206, 0.2) calc(68% - 1px) 68%, transparent 68%, transparent calc(76.5% - 1px), rgba(255, 113, 206, 0.2) calc(76.5% - 1px) 76.5%, transparent 76.5%, transparent calc(87% - 1px), rgba(255, 113, 206, 0.2) calc(87% - 1px) 87%, transparent 87%, transparent 0),
-    conic-gradient(from 0deg at 50% 42%, transparent 90deg, transparent 95.88deg, rgba(1, 205, 254, 0.14) 95.88deg 96.12deg, transparent 96.12deg, transparent 101.88deg, rgba(1, 205, 254, 0.14) 101.88deg 102.12deg, transparent 102.12deg, transparent 107.88deg, rgba(1, 205, 254, 0.14) 107.88deg 108.12deg, transparent 108.12deg, transparent 113.88deg, rgba(1, 205, 254, 0.14) 113.88deg 114.12deg, transparent 114.12deg, transparent 119.88deg, rgba(1, 205, 254, 0.14) 119.88deg 120.12deg, transparent 120.12deg, transparent 125.88deg, rgba(1, 205, 254, 0.14) 125.88deg 126.12deg, transparent 126.12deg, transparent 131.88deg, rgba(1, 205, 254, 0.14) 131.88deg 132.12deg, transparent 132.12deg, transparent 137.88deg, rgba(1, 205, 254, 0.14) 137.88deg 138.12deg, transparent 138.12deg, transparent 143.88deg, rgba(1, 205, 254, 0.14) 143.88deg 144.12deg, transparent 144.12deg, transparent 149.88deg, rgba(1, 205, 254, 0.14) 149.88deg 150.12deg, transparent 150.12deg, transparent 155.88deg, rgba(1, 205, 254, 0.14) 155.88deg 156.12deg, transparent 156.12deg, transparent 161.88deg, rgba(1, 205, 254, 0.14) 161.88deg 162.12deg, transparent 162.12deg, transparent 167.88deg, rgba(1, 205, 254, 0.14) 167.88deg 168.12deg, transparent 168.12deg, transparent 173.88deg, rgba(1, 205, 254, 0.14) 173.88deg 174.12deg, transparent 174.12deg, transparent 179.88deg, rgba(1, 205, 254, 0.14) 179.88deg 180.12deg, transparent 180.12deg, transparent 185.88deg, rgba(1, 205, 254, 0.14) 185.88deg 186.12deg, transparent 186.12deg, transparent 191.88deg, rgba(1, 205, 254, 0.14) 191.88deg 192.12deg, transparent 192.12deg, transparent 197.88deg, rgba(1, 205, 254, 0.14) 197.88deg 198.12deg, transparent 198.12deg, transparent 203.88deg, rgba(1, 205, 254, 0.14) 203.88deg 204.12deg, transparent 204.12deg, transparent 209.88deg, rgba(1, 205, 254, 0.14) 209.88deg 210.12deg, transparent 210.12deg, transparent 215.88deg, rgba(1, 205, 254, 0.14) 215.88deg 216.12deg, transparent 216.12deg, transparent 221.88deg, rgba(1, 205, 254, 0.14) 221.88deg 222.12deg, transparent 222.12deg, transparent 227.88deg, rgba(1, 205, 254, 0.14) 227.88deg 228.12deg, transparent 228.12deg, transparent 233.88deg, rgba(1, 205, 254, 0.14) 233.88deg 234.12deg, transparent 234.12deg, transparent 239.88deg, rgba(1, 205, 254, 0.14) 239.88deg 240.12deg, transparent 240.12deg, transparent 245.88deg, rgba(1, 205, 254, 0.14) 245.88deg 246.12deg, transparent 246.12deg, transparent 251.88deg, rgba(1, 205, 254, 0.14) 251.88deg 252.12deg, transparent 252.12deg, transparent 257.88deg, rgba(1, 205, 254, 0.14) 257.88deg 258.12deg, transparent 258.12deg, transparent 263.88deg, rgba(1, 205, 254, 0.14) 263.88deg 264.12deg, transparent 264.12deg, transparent 270deg);
+    linear-gradient(transparent calc(42% - 7px), rgba(255, 41, 117, 0.3) calc(42% - 2px), #ff2975 42%, rgba(255, 41, 117, 0.3) calc(42% + 2px), transparent calc(42% + 7px)),
+    linear-gradient(transparent calc(42% - 1px), rgba(255, 113, 206, 0.34) calc(42% - 1px) 42%, transparent 42%, transparent calc(43.2% - 1px), rgba(255, 113, 206, 0.34) calc(43.2% - 1px) 43.2%, transparent 43.2%, transparent calc(45% - 1px), rgba(255, 113, 206, 0.34) calc(45% - 1px) 45%, transparent 45%, transparent calc(47.5% - 1px), rgba(255, 113, 206, 0.34) calc(47.5% - 1px) 47.5%, transparent 47.5%, transparent calc(51% - 1px), rgba(255, 113, 206, 0.34) calc(51% - 1px) 51%, transparent 51%, transparent calc(55.5% - 1px), rgba(255, 113, 206, 0.34) calc(55.5% - 1px) 55.5%, transparent 55.5%, transparent calc(61% - 1px), rgba(255, 113, 206, 0.34) calc(61% - 1px) 61%, transparent 61%, transparent calc(68% - 1px), rgba(255, 113, 206, 0.34) calc(68% - 1px) 68%, transparent 68%, transparent calc(76.5% - 1px), rgba(255, 113, 206, 0.34) calc(76.5% - 1px) 76.5%, transparent 76.5%, transparent calc(87% - 1px), rgba(255, 113, 206, 0.34) calc(87% - 1px) 87%, transparent 87%, transparent 0),
+    conic-gradient(from 0deg at 50% 42%, transparent 90deg, transparent 95.88deg, rgba(1, 205, 254, 0.26) 95.88deg 96.12deg, transparent 96.12deg, transparent 101.88deg, rgba(1, 205, 254, 0.26) 101.88deg 102.12deg, transparent 102.12deg, transparent 107.88deg, rgba(1, 205, 254, 0.26) 107.88deg 108.12deg, transparent 108.12deg, transparent 113.88deg, rgba(1, 205, 254, 0.26) 113.88deg 114.12deg, transparent 114.12deg, transparent 119.88deg, rgba(1, 205, 254, 0.26) 119.88deg 120.12deg, transparent 120.12deg, transparent 125.88deg, rgba(1, 205, 254, 0.26) 125.88deg 126.12deg, transparent 126.12deg, transparent 131.88deg, rgba(1, 205, 254, 0.26) 131.88deg 132.12deg, transparent 132.12deg, transparent 137.88deg, rgba(1, 205, 254, 0.26) 137.88deg 138.12deg, transparent 138.12deg, transparent 143.88deg, rgba(1, 205, 254, 0.26) 143.88deg 144.12deg, transparent 144.12deg, transparent 149.88deg, rgba(1, 205, 254, 0.26) 149.88deg 150.12deg, transparent 150.12deg, transparent 155.88deg, rgba(1, 205, 254, 0.26) 155.88deg 156.12deg, transparent 156.12deg, transparent 161.88deg, rgba(1, 205, 254, 0.26) 161.88deg 162.12deg, transparent 162.12deg, transparent 167.88deg, rgba(1, 205, 254, 0.26) 167.88deg 168.12deg, transparent 168.12deg, transparent 173.88deg, rgba(1, 205, 254, 0.26) 173.88deg 174.12deg, transparent 174.12deg, transparent 179.88deg, rgba(1, 205, 254, 0.26) 179.88deg 180.12deg, transparent 180.12deg, transparent 185.88deg, rgba(1, 205, 254, 0.26) 185.88deg 186.12deg, transparent 186.12deg, transparent 191.88deg, rgba(1, 205, 254, 0.26) 191.88deg 192.12deg, transparent 192.12deg, transparent 197.88deg, rgba(1, 205, 254, 0.26) 197.88deg 198.12deg, transparent 198.12deg, transparent 203.88deg, rgba(1, 205, 254, 0.26) 203.88deg 204.12deg, transparent 204.12deg, transparent 209.88deg, rgba(1, 205, 254, 0.26) 209.88deg 210.12deg, transparent 210.12deg, transparent 215.88deg, rgba(1, 205, 254, 0.26) 215.88deg 216.12deg, transparent 216.12deg, transparent 221.88deg, rgba(1, 205, 254, 0.26) 221.88deg 222.12deg, transparent 222.12deg, transparent 227.88deg, rgba(1, 205, 254, 0.26) 227.88deg 228.12deg, transparent 228.12deg, transparent 233.88deg, rgba(1, 205, 254, 0.26) 233.88deg 234.12deg, transparent 234.12deg, transparent 239.88deg, rgba(1, 205, 254, 0.26) 239.88deg 240.12deg, transparent 240.12deg, transparent 245.88deg, rgba(1, 205, 254, 0.26) 245.88deg 246.12deg, transparent 246.12deg, transparent 251.88deg, rgba(1, 205, 254, 0.26) 251.88deg 252.12deg, transparent 252.12deg, transparent 257.88deg, rgba(1, 205, 254, 0.26) 257.88deg 258.12deg, transparent 258.12deg, transparent 263.88deg, rgba(1, 205, 254, 0.26) 263.88deg 264.12deg, transparent 264.12deg, transparent 270deg);
 }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
@@ -393,7 +432,8 @@ html[data-theme="vaporwave"] {
   }
   html[data-theme="vaporwave"] h1,
   html[data-theme="vaporwave"] h2,
-  html[data-theme="vaporwave"] h3 {
+  html[data-theme="vaporwave"] h3,
+  html[data-theme="vaporwave"] .stat-value {
     background-image: none !important;
     color: #000 !important;
     -webkit-text-fill-color: #000 !important;
@@ -433,7 +473,7 @@ html[data-theme="vaporwave"] { --comment-anchor-bg-active: color-mix(in srgb, va
     --app-bar-bg: linear-gradient(90deg, #ff71ce, #b967ff 50%, #01cdfe) 0 0 / 100% 2.75rem no-repeat, #150822;
     --app-bar-fg: var(--text);
     /* A taskbar tray needs the width; 0.5rem still clears the v5 4px edge. */
-    --app-status-padding: 0.45rem 0.5rem 2.4rem;
+    --app-status-padding: 0.45rem 0.5rem var(--vw-floor);
   }
   html[data-theme="vaporwave"] .app-bar {
     --nav-brand-fg: #1a0b2e;
@@ -442,4 +482,16 @@ html[data-theme="vaporwave"] { --comment-anchor-bg-active: color-mix(in srgb, va
     --nav-item-bg-active: rgba(255, 113, 206, 0.15);
   }
   html[data-theme="vaporwave"] .app-bar :is(.nav-item, .breadcrumb-item) { text-shadow: none; }
+}
+
+/* Phones and touch (after the .panel border shorthand above): the pair's
+   top edge is a plain pink border, and the sky is one still gradient with
+   no star tiles. */
+@media (max-width: 480px), (pointer: coarse) {
+  html[data-theme="vaporwave"] :is(.panel, .card) { border-top-color: var(--accent); }
+  html[data-theme="vaporwave"] body::before {
+    background:
+      radial-gradient(ellipse 80% 45% at 50% 100%, rgba(255, 41, 117, 0.12), transparent),
+      linear-gradient(#1a0b2e, #24103d 35%, var(--vw-haze) 60%);
+  }
 }
