@@ -19,8 +19,9 @@ interface were machined rather than rendered.
    nowhere else.
 3. **Serif type, small-caps headings.** This is Victorian print, not a
    sans-serif dashboard.
-4. **Warm and dark.** Leather-brown plates on an olive perforated-metal
-   backplate; never a cool grey.
+4. **Warm and dark.** Walnut-brown plates (`#4e3522` → `#33241a`, after
+   the recorder's Nixie plate) on an olive perforated-metal backplate;
+   never a cool grey.
 
 ## Signature details
 
@@ -115,7 +116,14 @@ layout at **L1**.
   installed. The scrollspy nav, disclosure summaries, empty-state titles
   and popover titles also take the display face.
 - **Brass nameplates:** every `.panel-header` is a pale polished-brass
-  plate with engraved dark lettering and a slotted screw at each end.
+  plate with engraved dark lettering and a slotted screw at each end. On a
+  phone a title-plus-badge plate tightens its tracking and lets the badge
+  ellipsize rather than wrap into a two-row slab.
+- **Lamps and labels on the backplate:** `.connection` feed lamps burn in
+  the text-weight success/danger tints, which hold 3:1 on the olive;
+  muted labels and quiet buttons lying straight on the perforated metal
+  take full ink and a dark cut. Stacked-table labels and every tree node
+  are set in the display face at one size, on one line.
 - **Steam pipes:** a copper pipe with bolted flanges every 220px runs
   along the foot of the app bar and the head of the status strip.
 - **Gear train:** a brass and a copper cog (solid teeth grown from the
@@ -177,3 +185,5 @@ instrument glyphs, after the brass icon buttons and gauges in
   the line. Transport legends (play, pause, stop, skip) are solid castings.
 - `currentColor` everywhere, so icons follow brass text, engraved plates
   and selected states.
+- Ids outside the core set (the extended sprite) fall back to the generic
+  outline glyphs, drawn at the same 1.4 line via `--icon-stroke-width`.
