@@ -16,8 +16,9 @@ at arm's length in a dark room.
 
 ## Core values
 
-1. **Bold everywhere.** Every label is in the bold face, small. A regular
-   weight reads as a web page, not a console.
+1. **Bold everywhere.** Every label is in the bold face, small and mixed
+   case: form labels, hints, table heads and stat labels included. A
+   regular weight or an uppercase tracked label reads as a web page.
 2. **Keys light in their own colour.** Mute orange-red, solo olive-gold,
    monitor and select yellow, on green; unlit keys are neutral grey bevels.
    Never tint an unlit key.
@@ -38,7 +39,12 @@ at arm's length in a dark room.
 - `--meter-*`: green / yellow / red segments on black with dim unlit LEDs.
 - `--presence-color-1..6`: the console's name-tag colours (yellow, magenta,
   orange, blue, green, grey) for `data-color` tags.
-- `--btn-*`: grey bevelled buttons; `.btn-primary` is the navy preset key.
+- `--btn-*`: grey bevelled buttons; `.btn-primary` is the navy preset key,
+  `.btn-secondary` the grey copy/paste key, `.btn-tertiary` a flat grey key
+  and `.btn-ghost` a key outline (never bare text on the desk).
+- `--card-bg`: the strip blue (its darker lower band), so the console blue
+  shows on every page; `--panel-bg` is the sidebar lavender.
+- `--slider-bg`: the black fader slot; `--badge-radius`/`--switch-radius`: square.
 - `--app-*`: black home bar, no rail, a radial desk backdrop.
 
 ## Signature details
@@ -48,18 +54,21 @@ at arm's length in a dark room.
 - Brushed-metal and leather faceplates are drawn in CSS (`data-finish`), never copied from the console.
 - The home bar: a two-tone "home" tab, a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
+  On every page the bar's current item is the two-tone tab, the brand gets
+  the round back key and fields in the bar are the black yellow scene field.
 - The splash: a deep-blue sky with a gold "ProSeries" wordmark (no logos).
-- Badges are solid lit tiles with dark text, never tints.
+- Badges and filter chips are square solid lit tiles with dark text, never tints or pills.
+- Lit keys carry near-black text over their glowing face.
 - Leaves with a CRT-style power-off when you switch theme.
 
 ## Layout
 
 Black home bar across the top, no rail, the content on a radial
-navy-violet desk. Panels are lavender-blue with light headers.
+navy-violet desk. Panels are lavender-blue with light headers; cards are strip blue.
 
 ## v5 layout
 
-- **Tiers:** phone and tablet keep the bar (it wraps); the desk scrolls.
+- **Tiers:** phone and tablet keep the bar (it wraps, tightened on phones); the desk scrolls.
 - **Gutter art:** a dark navy field with faint specks, within 1.5:1 of `--bg`.
 - **Nesting:** nested panels keep the same lavender with no second bevel.
 
