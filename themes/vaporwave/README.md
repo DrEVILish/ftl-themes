@@ -18,8 +18,9 @@ HUD.
    color alone as a single accent. A version of this theme using only one
    has missed the point.
 2. **Chrome text.** Headings are a magenta-to-cyan gradient clipped to the
-   glyphs (`background-clip: text`), the genre's signature title treatment
-   — not a solid color.
+   glyphs (`background-clip: text`), led by the references' hot pink
+   `#ff2975` (5.2:1 on `--bg`) through `--accent` at 35% to `--accent-2`,
+   the genre's signature title treatment — not a solid color.
 3. **Glow over grid-lines, not a clean HUD.** This is the deliberate
    contrast point against `tron`: tron is a crisp cyan grid on black with
    sharp edges; this is soft glow, saturated gradient fills, and a
@@ -32,8 +33,8 @@ HUD.
 4. **Purple is the void.** `--bg`/`--surface` are deep purple, not
    black — black reads as `matrix`/`alienware`, not synthwave.
 5. **The horizon lives at the foot of the shell.** The status strip's top
-   edge is the glowing horizon line, and the sun at the bottom of the
-   content well sets directly on it; the perspective grid floor fills the
+   edge is the glowing horizon line, and the sun, at the bottom of the
+   content well, sets directly on it at the page end; the perspective grid floor fills the
    strip below: the genre's classic sunset-over-grid composition, with no
    text ever sitting on the sun or on a grid line.
 
@@ -49,31 +50,69 @@ HUD.
 - Title-bar caption controls (minimise, maximise, close, wrapped or not)
   are dark `#1a0b2e` ink on the gradient header with a soft dark hover
   wash; no grey bevel.
-- The app bar is the sunset gradient (orange → magenta → purple → cyan);
-  the content well deepens from the void into a magenta haze toward the
-  status strip.
-- The horizon: a 4.5rem gold-to-magenta setting sun
-  (`#ffd319` → `#ff8c3a` → `#ff2975` → `#c800c8`, the references' sun)
-  with slits near the horizon, drawn in `--app-main-bg` at the bottom
-  centre of the well (inside 3rem of bottom padding the content never
-  reaches) under a warm sunset glow; the well's haze starts a third of the
-  way down, so the sunset warmth reaches above the fold. The status strip
-  is pulled up over the grid gap and its top rule is the glowing pink
-  `#ff2975` horizon, so the sun's base sits on it. Below, the floor fills
-  the strip with no 3D transform: cyan rays (0.85 alpha, soft-edged
-  `repeating-conic-gradient`) fanning from a vanishing point above the
-  strip, and four pink cross-lines spaced wider toward the viewer. The
-  status text rides the top band (2.4rem of bottom padding holds the
-  floor's bright rows), where a mask fades the floor out, so no line
-  crosses or underlines a glyph.
+- The app bar is the core pair (magenta → purple → cyan, `#ff71ce` →
+  `#b967ff` → `#01cdfe`). Panel and card headers carry it too, as a 2px
+  rule on their bottom edge over faint cyan scanlines (1px every 3px, the
+  CRT banding of the captures) and a magenta wash (`--panel-header-bg`).
+  Every panel, card and modal also has a 2px magenta-to-cyan top edge
+  inside its border (`--panel-bg`, a gradient layer over `--surface`, so
+  the radius survives; `--list-card-bg`/`--ranked-item-bg` stay a plain
+  fill because core mixes them with `color-mix`). With a fine pointer the
+  whole panel also carries the faint CRT scanlines (cyan at 2.5% alpha,
+  1px every 3px). On phones and touch screens, to keep scrolling inside
+  the render budget, the header strip is the magenta wash alone, the
+  panel fill is flat `--surface`, and the top edge is a plain `--accent`
+  border.
+- Data series follow the sunset, not the status hues: `--chart-series-1..5`
+  are pink `#ff71ce`, cyan `#01cdfe`, violet `#b967ff`, orange `#ff8c3a`,
+  gold `#ffd319` (donut, legend, heatmap via series 1); meters run cyan →
+  violet → danger (`--meter-low`/`--meter-mid`), a rising sparkline is cyan,
+  and the alternate bar is violet-to-cyan. Mint `--success` stays for
+  status (badges, trend text, lamps).
+- Alerts tint their fill with their tone at 12% (`color-mix` over
+  `--surface-2`) as well as the edge, so the four states differ at a glance.
+- A disabled button is a flat `--surface-2` chip with a dashed `--border`
+  edge and `--muted` ink, never a dimmed gradient that could read as the
+  selected primary.
+- The horizon: a gold-to-magenta setting sun
+  (`#ffd319` → `#ff8c3a` → `#ff2975` → `#c800c8`, the references' sun),
+  `clamp(11rem, 24vw, 22rem)` wide, its upper half with five slits that
+  widen toward the horizon (2%, 3%, 4.5%, 6%, 7%), as in `Vaporwave.webp`.
+  It is the well's own background (`--app-main-bg`, an inline SVG pinned
+  to the bottom of the well's bottom padding, which is the sun's height
+  plus 0.75rem), so it is always at full strength, with a soft `#ff2975`
+  bloom (an SVG radial gradient to 1.3x the sun's radius, no blur filter)
+  glowing into the sky around it. It is, never behind content,
+  and scrolls with the page: a static image, no fixed layer and no
+  scroll-driven animation. A short page shows it above the fold; a long
+  one at its end.
+- The sky: one fixed, still layer (`body::before`, `will-change` +
+  `contain: strict`, composited once) under the whole shell: a sparse star
+  field (eight single dots, white plus one cyan and one pink, each on a
+  wide prime-sized tile so no rows show) over a purple sky that deepens
+  from `#1a0b2e` to the `#3d1250` haze from 60% of the viewport down, with
+  a broad magenta (`#ff2975`, 12%) and a warm orange glow rising from the
+  bottom. Phones and touch screens get the same sky without the star
+  tiles (one gradient layer). On XL it drops to `z-index: -2` so core's gutter floor paints
+  over it. The status
+  strip is pulled up over the grid gap and its top rule is the glowing pink
+  `#ff2975` horizon. Below, the floor fills only the strip's bottom
+  padding band (`--vw-floor`: 2.4rem, 3.75rem from 768px up) (sized in rem, not %, so a taller strip never puts a line
+  behind its text), with no 3D transform: solid `#01cdfe` rays with a
+  soft cyan fringe (`repeating-conic-gradient`) fanning from a vanishing point
+  above the strip, and four `#ff71ce` cross-lines, each with a soft
+  `#ff2975` bloom either side, spaced wider toward the viewer, faded in from the band's top edge. A desktop taskbar
+  (`.desktop-bar`) has no reserved band, so it keeps the horizon rule and
+  drops the floor.
 - Heading boxes hug their glyphs (`width: fit-content`; auto inline
   margins in core's centred `.hero`/`.band-head`/`.empty-state`/`.dropzone`
   and inline `text-align: center` blocks), so every title, however short,
   runs the whole magenta-to-cyan sweep. They carry 4px of padding inside
   the gradient box (with a matching negative margin, so layout is
   unchanged), so the glyphs never touch the painted edge.
-- On phones (≤480px) the bar is the dark strip colour under a 4px sunset
-  rule with light nav ink, so the wrapped bar is not a slab of gradient.
+- On phones (≤480px) only the brand row (2.75rem) keeps the sunset band,
+  with dark brand ink; the wrapped nav rows below are the dark strip colour
+  with light nav ink, so the wrapped bar is not a slab of gradient.
 - Danger is one step darker than the "hot" reference red-pink — the
   literal value fails 4.5:1 against white button text.
 
@@ -101,8 +140,8 @@ deep-purple void filling the content well between them.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone, tablet and desktop (≤1800):** core's shell. The fixed sun-and-grid corner emblem stands down up to 1800px, because there it sat on top of the bar's actions, the breadcrumb and the top-right content. The gradient bar, chrome headings and the status strip's sunset horizon carry the look. The emblem's layer now uses `--z-sticky`.
-- **XL gutters (≥1801):** the outrun floor. A perspective grid recedes to a vanishing point behind the app (cyan rays from the screen centre, pink cross-lines spaced wider toward the viewer), so each gutter shows the floor sweeping in from the side. Still; the emblem sits in the right gutter.
+- **Phone, tablet and desktop (≤1800):** core's shell. The fixed starry sky and the well's sun are the same at every tier; the gradient bar, chrome headings and the status strip's horizon carry the rest. The old top-right sun-and-grid corner emblem is gone (its sun hung at the top of the sky, not on a horizon). Signage surfaces drop the sky layer and the sun.
+- **XL gutters (≥1801):** the outrun floor. A perspective grid recedes to a vanishing point behind the app (cyan rays from the screen centre, pink cross-lines spaced wider toward the viewer), so each gutter shows the floor sweeping in from the side, under a glowing `#ff2975` horizon rule at 42% height; every ray and cross-line lies below it, so above the horizon the gutter is starry sky only. Still.
 
 ## Tell-tales of an inauthentic result
 
@@ -121,10 +160,11 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-- **Big figures:** KPI values (`.stat-value`) and plan prices (`.price`) are Audiowide at weight 400 (it has no bold), `0.04em` tracking.
-- **Chrome titles:** the bar brand, panel and modal headers, tabs and KPI labels (`.stat-label`) also use Audiowide, uppercase, `0.06em` tracking, weight 400; tabs drop to `0.75em` so a strip keeps its width.
+- **Big figures:** KPI values (`.stat-value`) and plan prices (`.price`) are Audiowide at weight 400 (it has no bold), `0.04em` tracking. KPI values are chrome: a vertical `#ffffff` → `#ffd1f0` → `#b9f3ff` fill clipped to the glyphs (every stop 11:1+ on `--surface`), quieter than the headings' sweep. Prices stay solid, since their was/sale/period parts carry their own colors.
+- **Status labels** (`.status`) are `0.8125rem` (13px), up from core's ~12px in tables.
+- **Chrome titles:** the bar brand, panel and modal headers, tabs, KPI labels (`.stat-label`), buttons and table heads also use Audiowide, uppercase, `0.06em` tracking, weight 400; tabs are `0.8125rem` (13px) and buttons to `0.8em` (`--btn-font-size`) so a strip or row keeps its width.
 - **Display (h1–h3):** Audiowide, **vendored** (`assets/fonts/Audiowide-Regular.woff2`, SIL OFL, `assets/fonts/NOTICE.md`), uppercase, `0.14em` tracking (`0.08em` on `h3`), under the gradient-text fill. It is the "wide, chunky geometric" stand-in for vaporwave's extended display type; it is not a true full-width face.
-- **Body:** `--font` is `"Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", sans-serif` — system fonts, **not vendored**. `--font-mono` is `Consolas, monospace`.
+- **Body:** `--font` is `"Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif` — system fonts, **not vendored**; the Japanese gothics follow the Latin faces so katakana renders in one face wherever one is installed. `--font-mono` is `Consolas, "Liberation Mono", "DejaVu Sans Mono", "Noto Sans Mono", monospace`.
 - **Full-width Latin and katakana:** the aesthetic leans on full-width text (ＶＡＰＯＲ) and Japanese katakana, but the theme ships no face for either. Audiowide is a Latin display face; whether the vendored file covers full-width forms or katakana was not checked, so treat both as system-font fallback (`--font`, then the OS's CJK font). Put katakana in body-weight text or set an explicit CJK `font-family` in the app; do not expect Audiowide to render it. `RESEARCH.md` lists the mall/katakana-text target as still uncovered by the captures.
 
 ## Contrast honesty
@@ -132,8 +172,8 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 - **Danger lifted:** the reference "hot" red-pink `#ff3864` is 3.5:1 under white; shipped `--danger` is `#d81c48` (5.02:1 with white text, 3.69:1 as text on `--bg`, so text uses `--danger-text`).
 - **Border:** `--border` `#8a5fc0` is picked to be ~3.6:1 against `--surface` (the least that keeps a 1px outline perceptible while staying purple).
 - **Accent pair:** `--accent` `#ff71ce` is 7.52:1 on `--bg` (6.86:1 on `--surface`); `--accent-2` `#01cdfe` is 9.87:1 / 9.0:1. The gradient headings therefore pass on every stop; the neon values themselves are not lifted.
-- **Nav bar:** the bright orange-pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a tight light halo (`0 0 2px` white at 0.6) is added to the brand, nav items and breadcrumbs (math passes; the halo is for perceived contrast, kept crisp rather than an embossed glow). `#1a0b2e` is 8.0:1 on the orange stop.
-- **Haze:** the well's darkest-lightest stop `#3d1250` still gives `--muted` 6.4:1 and `--danger-text` 5.0:1.
+- **Nav bar:** the bright pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a tight light halo (`0 0 2px` white at 0.6) is added to the brand, nav items and breadcrumbs (math passes; the halo is for perceived contrast, kept crisp rather than an embossed glow). `#1a0b2e` is 7.5:1 on the pink stop.
+- **Haze:** the well's haze stop `#3d1250` still gives `--muted` 6.4:1 and `--danger-text` 5.0:1. At the very bottom centre, where the magenta and orange glows add up (about `#561654` before the orange), `--muted` is 5.5:1 and `--danger-text` 4.2:1; that is the sun's zone in the well's bottom padding, where no text sits.
 - `--muted` `#b79ee0` is 7.24:1 on `--surface`.
 
 ## Reference status
