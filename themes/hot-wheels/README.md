@@ -14,25 +14,37 @@ menu, not a calm productivity tool.
 
 ## Core values
 
-1. **Blue is the field, orange is the track.** `--bg` `#1638a6`,
+1. **Blue is the field, orange is the track.** `--bg` `#12309a`,
    `--surface` `#1c44bc`, `--surface-2` `#224dcc` and the bar's
    `--hw-blue` `#1f4fd1` follow the electric royal blue of the PC set's
-   plastic and the menu backdrop. Orange (`#ff5f00`, and `#ff8a1a` as
+   plastic and the menu backdrop. The main well has the menu backdrop's
+   depth: a radial lift to `#1f4cc4` near the top, sinking to `--bg` at
+   the edges, so panels lift off the field. Every tinted surface stays a
+   saturated blue (`--hw-lift` `#2a5ad6` for the own-message bubble, bulk
+   bar, kanban drop and similar; translucent `#4a8cf5` for row hover and
+   ranges; the self-mention is the yellow band): core's default of mixing
+   the yellow accent into the blue greys it to slate. Orange (`#ff5f00`, and `#ff8a1a` as
    `--hw-flame`/`--accent-2`) is every fill and the track lip, never the
    background and never small text; `--accent` is the flame's yellow core
    `#ffd21a`, because core paints the accent as text (links, active tabs,
    GO, readouts). A washed-out or brown orange has missed the point.
-2. **Condensed, heavy, italic, uppercase.** Headings, buttons, nav, tabs
-   and the brand use Antonio Bold slanted, white with a hard dark drop
+2. **Semi-condensed, heavy, italic, uppercase.** Headings, buttons, nav,
+   tabs and the brand use Barlow Semi Condensed ExtraBold Italic (800, a
+   true italic), white with a hard dark drop
    `2px 2px 0` shadow with no blur (h1 in flame yellow), like the menu's `MULTIPLAYER / BASEMENT` labels.
    Panel and dialog headers, toggle buttons, filter chips (`.badge-button`),
    segmented items, disclosure summaries and popover titles take the same
    bold italic caps; panel headers carry a `1px 1px 0` drop. Button labels
-   never go below `0.875rem`, because the condensed face thins out under that. No glow.
+   never go below `0.875rem`. Window and dialog controls (close,
+   minimize, maximize) drop back to the upright body face at `1rem` so the
+   glyphs stay legible. No glow.
 3. **Angles, not curves.** `--radius: 0.2rem`; badges and avatars
    `0.15rem`, switches `0.2rem`, switch and slider thumbs `0.1rem`, icon
-   buttons follow `--radius` (no circles). Buttons use an angled (`135deg`)
-   flame gradient.
+   buttons follow `--radius` (no circles). The primary button carries the
+   angled (`135deg`) flame gradient (`#ffb400` to `#ff5f00`) with dark
+   ink; default buttons sit on `--surface-2` with a 1px orange track rim,
+   so the flame marks the one main action. Disabled buttons are a dull
+   blue `#3a4f8f` with `#b9c6ee` text, not a faded grey.
 4. **The flame, the band and the checkered flag are the signature shapes.**
    The brand badge is the flame logo; the bar sits on the PC set's yellow
    band with orange and red pinstripes; the status strip is a checkered
@@ -42,19 +54,23 @@ menu, not a calm productivity tool.
 
 ## Signature details
 
-- The brand badge carries the flame: three hard-edged tongues (red
-  `#e3171b`, orange `#ff5f00`, yellow core `#ffcc00`) swept back to points
-  on the left, a red body behind the white wordmark, a slanted right edge.
-  It is an inline SVG background, so nothing decorative ever sits behind
-  nav text.
+- The brand badge carries the flame: three curved tongues (red
+  `#e3171b`, orange `#ff5f00`, yellow core `#ffcc00`) sweeping about 3rem
+  back to long points on the left, the inner tongues tapering into a red
+  body (`#e3171b` to `#b0080c` top to bottom, kept red so the white
+  wordmark holds 4.77:1) that ends in a point on the right, all outlined
+  in a 1.5px `#ffcc00` line. It is two inline SVG backgrounds, so nothing
+  decorative ever sits behind nav text.
 - Dialog headers carry a second flame: the same three tongues at the
   start edge of the yellow band, with the title padded clear of it.
 - The app bar is solid `--hw-blue` with a 4px yellow rule and orange then
   red 3px pinstripes under it, the PC monitor's band. Dialog headers are
   the same yellow band with the pinstripes along their bottom edge.
-- The selected nav item and tab are the game menu's slanted bright-blue bar
-  (`#2a64e8`, painted as a background with angled ends, not clip-path, so
-  focus rings are never clipped) with white italic text; selected table
+- The selected nav item and tab are the game menu's slanted bright-blue
+  plate (`#2a64e8` with a lighter `#3f7cf0` upper half and a 2px pale cyan
+  `#a8dcff` top edge, so it reads as glossy; painted as backgrounds with
+  angled ends, not clip-path, so focus rings are never clipped) with white
+  italic text; selected table
   and list rows use the same blue.
 - Table headers are the yellow band with deep-blue text.
 - Panels, cards, popovers and dialogs are edged in a darker blue
@@ -68,10 +84,10 @@ menu, not a calm productivity tool.
   lips on the drawn track) and a yellow thumb.
 - The bar chart's highlight bar is the flame's yellow core under a short
   checkered finish-line cap.
-- The status bar's checkered flag uses a small `0.6rem` tile so it reads
-  as a flag trim, not a chessboard; on a desktop taskbar the bar is
-  `--hw-blue` with the flag as one cap along its top edge. The checkers
-  are a tiny SVG tile, not a conic gradient, to keep scrolling cheap.
+- The status bar is `--hw-blue` with the checkered flag as one `0.5rem`
+  cap along its top edge (the same on a desktop taskbar), a trim rather
+  than a chessboard; readouts sit straight on the blue. The checkers are
+  a tiny SVG tile, not a conic gradient, to keep scrolling cheap.
 - Heatmaps run up the flame (deep red `#7a1800` to yellow, through orange)
   instead of greying out on a blue-to-yellow mix; chart area fills sink to
   a deeper blue well (`#0a2170`) under the line.
@@ -82,7 +98,7 @@ menu, not a calm productivity tool.
 
 The app shell becomes a **blue track panel**: a blue bar with the flame
 logo badge, a yellow rule with orange/red pinstripes under it, a royal-blue
-main well, and a checkered-flag status strip along the bottom.
+main well, and a blue status strip capped with a checkered flag.
 
 ## Tell-tales of an inauthentic result
 
@@ -112,13 +128,13 @@ filled, marker dots are r1.2 rings, colour is always `currentColor`.
 
 ## Typography
 
-`--font-display` is Antonio Bold (OFL, vendored in `assets/fonts/` for lcars), slanted by the browser, falling back to `"Arial Narrow", "Liberation Sans Narrow", Impact`; it sets headings, buttons, nav items, the app bar's menubar links, tabs, the brand, panel headers and dialog headers. Because the slant is synthetic, labels inside buttons, nav items and tabs get `0.15em` of end padding so a clipped label never cuts its last letter. It is the closest free condensed heavy face to the game menu's italic caps, not the real logo lettering. Body `--font` is a plain system sans (`Arial, "Helvetica Neue", "Liberation Sans"`); `--font-mono` is `"Courier New", Consolas, monospace`.
+`--font-display` is Barlow Semi Condensed ExtraBold Italic (OFL, vendored in `assets/fonts/`, see `NOTICE.md`), falling back to Antonio Bold (vendored for lcars, slanted by the browser), then `"Arial Narrow", "Liberation Sans Narrow", Impact`; it sets headings, buttons, nav items, the app bar's menubar links, tabs, the brand, panel headers and dialog headers at weight 800 with `0.01em` tracking. Labels inside buttons, nav items and tabs get `0.15em` of end padding so the italic's last letter is never clipped. It is the closest free match to the game menu's heavy, squarish semi-condensed italic caps (`MULTIPLAYER`, `BASEMENT`), not the real logo lettering. Body `--font` is a plain system sans (`Arial, "Helvetica Neue", "Liberation Sans"`); `--font-mono` is `"Courier New", Consolas, monospace`.
 
 ## Contrast honesty
 
 - **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--accent` (links, secondary buttons, GO, readouts, active tabs, the current breadcrumb) is the flame yellow `#ffd21a`: 4.68:1 on the bar, 4.83:1 on `--surface-2`, 5.5:1 on `--surface`. h1 uses `#ffcc00`. Orange stays a fill (buttons, avatars, pagination, accent badges, progress) and the track lip. Code blocks and their inserted/deleted lines sit in a darker `#0f2c88` well so token colours keep their margin.
 - **Dark text on the fills.** `--on-accent` `#1a0900` is 8.22:1 on `#ff8a1a`; `--on-danger` `#1a0000` 5.23:1 on `#ff2d2d`. Yellow fills (table header, dialog header) carry `#0a1a4a` at 11.0:1.
-- **On the blues** `--text` white is 8.07:1 on `--surface` and 7.00:1 on `--surface-2`; `--muted` `#dbe4ff` is 6.36:1 on `--surface`, 5.52:1 on `--surface-2` and 5.34:1 on the bar. White on the selection blue `#2a64e8` is 5.14:1 and on the brand red `#e3171b` 4.77:1.
+- **On the blues** `--text` white is 8.07:1 on `--surface` and 7.00:1 on `--surface-2`; `--muted` `#dbe4ff` is 6.36:1 on `--surface`, 5.52:1 on `--surface-2` and 5.34:1 on the bar. White on the selection blue `#2a64e8` is 5.14:1 and on the brand red `#e3171b` 4.77:1. On `--hw-lift` `#2a5ad6` white is 5.95:1 and `--muted` 4.69:1. Dark ink `#1a0900` on the primary flame's darkest stop `#ff5f00` is 6.36:1. The disabled `#b9c6ee` on `#3a4f8f` is 4.59:1.
 - **Badges** are solid: `#1a0900` on `#ff8a1a` 8.22:1, `#0a1a4a` on `#ffcc00` 11.0:1, white on `#e3171b` 4.77:1, `#04220f` on `#29d17a` 8.46:1.
 - **State colours as text:** `--danger-text` `#ffcccc` is 5.67:1 on `--surface`, `--success-text` `#9dffc8` 6.75:1.
 - **The hexes are read off the captures by eye, not measured:** `RESEARCH.md` records no hex values.
@@ -131,7 +147,7 @@ filled, marker dots are r1.2 rings, colour is always `currentColor`.
 
 - **Tiers.** No rail at any size. On phones and tablets (up to 900px) core puts the brand and the app's actions on the bar's first line and the nav on a second line. Core's rule makes that line a non-wrapping, sideways-scrolling strip when the nav is a direct child of the bar; on the demo dashboard the items still wrap onto a second row (the same in every theme), so this is not a theme override. The flame badge keeps its own width instead of stretching across the free space. The bar is plain blue at every width, so nothing turns into vertical slabs when it grows taller.
 - **Nesting.** Each surface draws only its darker-blue edge and its bottom orange lip, so nested panels and cards need no step-down rules.
-- **XL gutter art (1801px+).** A length of burnt-orange track (`#b84400` lips, `#8a3300` body) runs down each side, with blue joints every 120px.
+- **XL gutter art (1801px+).** A length of burnt-orange track (`#b84400` lips, `#8a3300` body) runs down each side, one repeating gradient.
 
 ## Adoption
 

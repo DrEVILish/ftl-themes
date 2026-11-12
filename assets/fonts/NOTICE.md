@@ -179,9 +179,21 @@ files are vendored unmodified.
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
   Light headings)
 
+## Barlow Semi Condensed
+
+- **Family:** Barlow Semi Condensed (weight vendored: ExtraBold Italic 800
+  — `BarlowSemiCondensed-ExtraBoldItalic.woff2`; Google Fonts' Latin
+  subset, unmodified)
+- **Designer:** Jeremy Tribby
+- **License:** SIL Open Font License, version 1.1 (verified in
+  `google/fonts` `ofl/barlowsemicondensed/METADATA.pb`, `license: "OFL"`)
+- **Source:** https://fonts.google.com/specimen/Barlow+Semi+Condensed
+- **Used by:** `hot-wheels` (display type: headings, buttons, nav, tabs;
+  stand-in for the game menu's heavy semi-condensed italic caps)
+
 ## Bottom line
 
-Twenty-one files, fifteen families: thirteen SIL OFL 1.1, Bedstead CC0 and Px437
+Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
 CC BY-SA 4.0, all verified per family rather than assumed from "it's on
 Google Fonts." Attribution is optional under
 OFL (unlike, say, CC BY), but is included here anyway for the same
