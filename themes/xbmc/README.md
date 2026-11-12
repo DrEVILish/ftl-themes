@@ -21,9 +21,12 @@ hover glow and the selection underline.
    (`:is(.nav-item, .menubar > li > button).is-active::after`), a slim 2px
    line with a 6px glow so the white label carries the focus. Toggle
    buttons and segmented items select with a lighter glass and a blue edge,
-   not a blue fill.
-2. **Blue backdrop, neutral chrome.** The page is a blue radial
-   (`#065080` → `#033a70` → navy `#001542` at the edges) under a field of
+   not a blue fill; so do the current page, active filter chips, a range
+   picker's chosen button and selected table/list rows (opaque `#26292d`
+   with the blue edge marker).
+2. **Blue backdrop, neutral chrome.** The page is a high-contrast radial
+   (cyan-blue `#1690c4` → `#075a92` → near-black `#03264a` by 55% → navy
+   `#001542` at the edges) under a vivid cyan bloom above centre under a field of
    saturated royal-blue bokeh discs and soft diagonal light rays; surfaces are neutral
    `#121314` / `#1d1f22` glass, not blue-tinted.
 3. **One blue, used as light.** `--accent` (`#1e90ff`) is a glow colour;
@@ -32,30 +35,62 @@ hover glow and the selection underline.
 ## Signature details
 
 - The backdrop: a fixed, viewport-sized `body::before` layer
-  (`contain: strict`, so scrolling never repaints it) holding 15 crisp
-  `radial-gradient` discs of 1.5-10rem — royal blue `rgba(20,80,215,.42)`
-  and `rgba(25,95,225,.32)`, overlapping in a cluster upper right, one small
-  bright cyan `rgba(70,190,240,.5)` — each with a 1px `rgba(90,170,250,.5)`
-  rim, plus two 60° light rays (`rgba(80,170,255,.06-.08)`), over the blue
-  radial. Phones draw six discs instead.
+  (`contain: strict`, so scrolling never repaints it) holding lens bokeh at
+  three depths: 14 near discs of 1.5-9rem — filled, a `rgba(20,80,215,.32)`
+  centre only a small step dimmer than royal blue `rgba(20,80,215,.42)` /
+  `rgba(25,95,225,.32)`, overlapping in a cluster upper right, one small
+  bright cyan `rgba(70,190,240,.5)` — each with a soft 4-5px
+  edge (a faint `rgba(90,170,250,.3)` rim fading through a `.15` halo); five far discs
+  (fill `.12`, rim `.2`); and four fully defocused solid blobs melting into
+  the field. Over them a cyan bloom above centre (an 18rem by
+  12rem ellipse of `rgba(40,180,215,.45)` at 50% 30%, cyan haze around
+  it), three small `#38bbd9` discs on the top edge and gutters where
+  content seldom sits, soft blue blobs and two 60° light rays (`rgba(80,170,255,.12-.14)`),
+  all over the blue radial. Phones draw the cyan glow and three discs on the
+  radial only (no rays, haze or halos), to keep the fixed layer cheap.
 - The menu strip: a tall 4rem band,
   `--app-bar-bg: linear-gradient(180deg, #232323, #141414 50%, #050505)`
-  with a 1px `rgba(255,255,255,.18)` top hairline; items in large
-  (up to 1.25rem) uppercase bold `#8a9096` with a `0 1px 0 #000` emboss, in
-  even centred cells `min(9.5rem, 11vw)` wide, split by 1px faint separators.
+  with a bevelled lip (1px `rgba(255,255,255,.28)` top, a fainter bottom
+  hairline, `0 2px 0 #000` and a soft drop shadow under it); items in large
+  uppercase bold neutral `#8e8e8e` caps, recessed into the glass
+  (`0 -1px 0 #000, 0 1px 0 rgba(255,255,255,.07)`; the active label is
+  white with a plain `0 1px 0 #000`). From 1200px the strip is a size
+  container and the caps take `clamp(1rem, max(1.6vw, 2.7cqi), 2.5rem)`,
+  growing toward the band-filling 'VIDEOS' as far as the brand and tools
+  leave room (about 27px on a sparse bar at 1280, 38px at 2400); below
+  that `clamp(1rem, 1.6vw, 1.75rem)`. Cells are centred across the band, split by 1px faint
+  separators. On phones the strip scrolls sideways and the tools stay on
+  one row, the theme picker shrinking so the account button stays visible.
+- Strip caps, emboss and underline are scoped to `.app-bar` (and
+  menubars); a vertical sidebar `.nav` stays sentence case with only
+  core's left edge marker.
+- Focus: a two-tone ring, `0 0 0 2px #000, 0 0 0 4px #7fc4ff`, so it
+  clears 3:1 on the glass and on the bright backdrop.
+- Ghost icon buttons (reading-pane toolbars) drop the glass's inset top
+  highlight, so no stray hairline floats over the glyph.
 - The active item's underline: 2px `--accent`,
   `box-shadow: 0 0 6px 1px rgba(30,144,255,.8)`.
+- Tabs inside a window, dialog, panel or card step down to 0.75rem caps
+  on one sideways-scrolling row, so a dialog's buttons stay in its frame.
+- Page-level text straight on the backdrop (title, lede, breadcrumbs, the
+  control rows) carries a dark `0 1px 2px #000, 0 0 4px` shadow halo.
 - The submenu shelf: `.segmented` is a black gradient whose bottom corners
-  are cut on a 1.25rem diagonal by `clip-path` (the 'Dateien | Addons'
-  trapezoid), 1.5rem end padding, dark separators, and regular-weight
+  are cut on a 1.75rem diagonal by `clip-path` (the 'Dateien | Addons'
+  trapezoid); it is `fit-content` wide, never stretched to the column,
+  with 2.25rem end padding, dark separators, and regular-weight
   sentence-case `#c4cad0` items, as 'Dateien' is.
 - The bottom bar: `.app-status` is a tall grey glass band (at least 3.5rem,
   `linear-gradient(180deg, #3a3a3a, #1a1a1a)`, 1rem padding) with a light
   top hairline; its icon buttons are framed glass squares (1px `#000`,
   inset top highlight).
 - Flat rectangles: square slider thumb and switch knobs, a grey `#70767e`
-  slider track; icon buttons, badges/chips and avatars take `--radius`
-  (no circles or pills).
+  slider track; icon buttons, badges/chips and avatars take `--radius`;
+  status, carousel (including the native `::scroll-marker` dots and
+  `::scroll-button` arrows), dock and page dots are small squares (no
+  circles or pills).
+- Phone home screen and dock: framed black-glass keys
+  (`linear-gradient(180deg,#2a2d31,#141517)`, `--radius`, white glyphs), as
+  the star and power keys; no coloured squircles, square dock.
 
 ## Tell-tales of an inauthentic result
 
@@ -83,17 +118,20 @@ rectangular geometry with no circles (round things become squares, the cloud
 is stepped). Solid accents (note heads, dots, sand, pause bars, chart bars)
 are `fill="currentColor" stroke="none"` rects; several nav/media icons carry
 the 1px glowing-underline accent bar. Colour is always `currentColor`.
+Extended (non-core) icons such as `coin-*`, `camera-*`, `map-pin-*` and
+`circle-caret-*` still come from the generic outline set and keep their
+circles; redrawing them is open work.
 
 ## Typography
 
-`--font` is `"Titillium Web", "Arial Narrow", "Segoe UI", sans-serif`;
-`--font-mono` is `Consolas, monospace`. Titillium Web (OFL, already vendored
-in `assets/fonts/`) stands in for Confluence's bold, slightly condensed
-sans; the skin's own face is not named. Headings are 700. Strip items and
-tabs use a wider bold for Confluence's broad menu caps —
-`Roboto, "Segoe UI", "DejaVu Sans"`, then Titillium — uppercase 700, no
-extra tracking. Segmented items (the submenu shelf) stay Titillium 400 in
-sentence case.
+`--font` is `"DejaVu Sans", Roboto, "Segoe UI", Arial, sans-serif`:
+Confluence draws strip, shelf, search and ticker in one face, Kodi's
+bundled DejaVu-derived sans (shipped as `arial.ttf`). Headings are 700.
+Strip items and tabs are the same face, uppercase 700, no extra tracking;
+segmented items (the submenu shelf) are 400 in sentence case. KPI values
+use the bold sans too (`--readout-font: var(--font)`, tabular numbers), as
+Confluence's clock does. `--font-mono` is
+`"DejaVu Sans Mono", Consolas, "Liberation Mono", monospace` (Kodi's bundled mono family first).
 
 ## Contrast honesty
 
@@ -104,19 +142,22 @@ sentence case.
   muted is lifted above the reference's darker grey so it also clears 4.5:1
   on the backdrop's brightest blue. Links use `--accent-2` `#7fc4ff` for
   the same reason.
-- The backdrop centre is held at `#065080`; the capture's centre is
-  brighter (`#0365a2`), which would drop muted text over it below 4.5:1.
-  The hue (~205) matches; the value is the trade-off.
+- The backdrop's open centre is `#0a6aa8` under the bloom, reaching about
+  `#1e71b8`, near the capture's `#0b8cc8`. Muted `#c4cad0` over that is
+  about 3:1 by colour alone; page-level text there carries a dark shadow
+  halo instead of the backdrop being dimmed (the reference's brightness
+  wins). Text on surfaces is on opaque `#121314` / `#1d1f22` glass and is
+  unaffected.
 - The discs are royal blue (hue ~220), which is vivid but low in luminance,
   so muted text over a disc still clears 4.5:1. The capture's bright cyan
   discs (`#057ac9`, `#38bbd9`) would not; only one small cyan disc is kept,
   and text that happens to cross it can fall below 4.5:1.
-- Strip labels `#8a9096` clear 4.5:1 on the strip's lightest stop; the
+- Strip labels `#8e8e8e` (neutral, no blue cast) clear 4.5:1 on the strip's lightest stop; the
   brand is white, as the KODI wordmark is.
 - The backdrop and strip hexes are sampled from `xbmc-confluence-14.jpg`
   (strip `#191919`-`#2c2c2c`, backdrop `#0365a2` → `#043e6c` → `#031637`);
   the strip label is lifted from the capture's `#4d4d4d`-`#515151` to
-  `#8a9096`, the darkest grey that keeps 4.5:1.
+  `#8e8e8e`, the darkest neutral grey that keeps 4.5:1.
 
 ## Reference status
 
@@ -132,7 +173,9 @@ Not backed: the glowing blue underline itself (Confluence marks focus by whiteni
 
 - **Tiers.** Desktop and tablet are the same shell (there is no rail to
   drop). On mobile the category tiles lose the big home-screen padding and
-  their outer blur shadow, cards and panels go opaque (cheaper scrolling),
+  their outer blur shadow, cards and panels go opaque and drop their outer
+  shadow (cheaper scrolling), segmented
+  and toggle rows scroll sideways instead of wrapping a label,
   the strip's caps step down to 0.8rem so the strip stays one row (a plain
   `.nav` in the bar scrolls sideways instead of wrapping), the bar's tool
   cluster stays one row and scrolls sideways, and the taskbar
