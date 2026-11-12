@@ -14,9 +14,14 @@ push-buttons in red, blue, yellow, white and green.
 
 ## Core values
 
-1. **One white outline box per zone.** `.panel`, `.card`, `.modal` and
-   `.transport` draw a 3px `#e6e6e6` outline with a small 4px inlay corner;
-   a surface nested in another steps down to 2px. Inner padding stays black.
+1. **One white inlay box per zone.** `.panel`, `.card` and `.modal` have a
+   4px black border and draw a 3px `#e6e6e6` line as an outline just inside
+   it (`outline-offset` minus border and line), so black shows outside the
+   line, as on the diorama, with rounded corners (`--panel-radius: 10px`);
+   the red band runs under the line. A surface nested in another steps
+   down to a 3px black margin and 2px line. `.transport`, sheets, the
+   command palette and list cards keep a plain white edge. Inner padding
+   stays black.
 2. **Red is a band, not a tint.** Top-level panel and modal headers are
    solid brick red `#c4352a` (sampled from the diorama's bands) with white
    text. Red stays about 15% of the surface, as on the diorama, and bands
@@ -37,11 +42,17 @@ push-buttons in red, blue, yellow, white and green.
 - **Tile row.** The app bar carries a 2.5rem-tall row of pale green-grey
   `#d7e4df` tiles in bays of four, as on the diorama: portrait 1.75rem
   slabs (~0.7 w:h) with 4px black seams and a one-tile gap between bays,
-  ending on whole bays (`background-repeat: space`, 1rem margins), above the bar content and
-  its 3px red rule.
+  ending on whole bays (`background-repeat: space`, 1rem margins), set
+  0.6rem below the top edge (a black module margin), above the bar content
+  and its 3px red rule. At ≤480px the row is one continuous run of whole
+  tiles inside 1rem gutters, so two bays never leave a void.
 - **Push-button cluster.** A top-level panel header with no controls of its
-  own carries five 0.75rem square nubs with 4px seams at its right end (black, `#5281b8`
-  blue, `#ffcf2f`, `#e6e6e6`, `#5cc872`), one still SVG image layer.
+  own carries five 0.75rem raised caps (1-unit corner radius, a darker
+  lower lip) with 4px seams at its right end (`#e6e6e6`, `#5281b8` blue,
+  `#ffcf2f`, `#5cc872`, `#e6e6e6`; no red or black cap, which would vanish
+  or read as a hole on the red band), one still SVG on the band's floated
+  `::before`. The band is an inline-size container, so a band narrower
+  than 22rem drops the cluster instead of wrapping its title.
 - **Red header bands.** `--panel-header-bg`/`--modal-header-bg` are the
   accent with white text (5.4:1); muted and success text on the band are
   re-pointed to `#fff0f0` and `#c8ffd8`.
@@ -52,8 +63,8 @@ push-buttons in red, blue, yellow, white and green.
 - **Focus** is a white outline (`--focus: #fff`): 16:1 on black and 5.4:1
   on the red bands, bulk bar and selected rows, where red focus vanished.
 - **White labelling.** The nav brand, table header text, GO label and
-  desktop icon glyphs are white, as the diorama's linework; red stays a
-  fill or rule (the table head keeps its red rule, GO its red frame).
+  desktop icon glyphs and in-window file and drive glyphs are white, as
+  the diorama's linework; red stays a fill or rule (the table head keeps its red rule, GO its red frame).
   `--accent-text` is kept for links, readouts and text buttons.
 - **Avatars** are pale `#d7e4df` chips with black caps; an avatar with a
   user colour is a solid chip in that colour with black or white caps
@@ -71,7 +82,7 @@ push-buttons in red, blue, yellow, white and green.
   own state colour — the only glow the theme sets (the selected-row red block is a flat inset).
 - **Selected rows and options** are a lit `#1c1c1c` key with white text
   and a 4px red block at the leading edge (lists keep core's red marker).
-- **Lists** (settings nav, inbox list) carry a 2px white inlay outline;
+- **Lists** (settings nav, inbox list and folder rail) carry a 2px white inlay outline;
   other framed boxes (field rows, code, kbd, messages) use `--border:
   #6a6a6a`, the field linework.
 - **Alerts and toasts** are a dark block with a 4px solid colour block at
@@ -108,8 +119,9 @@ The bar and status strip are black; the bar has the tile row on top and a
   as one SVG layer. Still.
 - **Phone brand.** At ≤480px the Michroma brand drops to 0.8rem with
   0.02em tracking and keeps its natural width, so it reads in full; panel
-  and modal header bands drop to 0.75rem with 0.04em tracking so a title,
-  badge and icon buttons share one band line.
+  and modal header bands drop to 0.8125rem with 0.04em tracking so a title,
+  badge and icon buttons share one band line. `.btn-sm` never drops below
+  0.8125rem, so the thin red caps of compact secondary keys stay legible.
 
 ## Tell-tales of an inauthentic result
 
@@ -147,8 +159,8 @@ the tall caps clear the text below. Body text is a neutral sans
 (`"Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans",
 sans-serif`) and `--font-mono` is **Share Tech Mono** (SIL OFL, vendored
 as `assets/fonts/ShareTechMono-Regular.woff2`), squared console figures,
-then `Consolas, monospace`. `h1` tracks tighter (0.03em) so the widest
-heading does not outweigh the nearly text-free console. Code inside a
+then `Consolas, monospace`. `h1` is 1.5rem and tracks tighter (0.03em),
+`h2` 1.15rem, so page titles do not outweigh the nearly text-free console. Code inside a
 heading keeps its case. Headings inside a panel, card, modal or drawer
 (a message subject, a settings section) are the body sans in bold tracked
 caps (0.06em), not Michroma: the diorama is nearly text-free, so the wide

@@ -53,11 +53,20 @@ html[data-theme="death-star"] {
      rounded corners; solid red bands across the middle; a row of pale grey
      tiles along the top; small square push-buttons in five colours. */
   --line: #e6e6e6;
-  --panel-border-width: 3px;
-  --panel-border: var(--line);
-  --panel-radius: 4px;
-  --card-border-width: 3px;
-  --modal-border: var(--line);
+  /* The white line is an inlay, not the box edge: a black border keeps a
+     black margin outside it and the line is an outline drawn just inside
+     (rule below), with the diorama's rounded corners. */
+  --panel-border-width: 4px;
+  --panel-border: #000;
+  --panel-radius: 10px;
+  --card-border-width: 4px;
+  --modal-border: #000;
+  --inlay-width: 3px;
+  /* Sheets, command palette and list cards keep a plain white edge. */
+  --sheet-border: var(--line);
+  --command-border: var(--line);
+  --list-card-border: var(--line);
+  --list-card-border-width: 3px;
   --transport-border-width: 3px;
   --transport-border: var(--line);
   --transport-edge-width: 3px;
@@ -142,6 +151,8 @@ html[data-theme="death-star"] {
   --lamp-radius: 0;
   --status-dot-radius: 0;
   --desktop-icon-glyph: var(--text);
+  /* File and drive glyphs inside windows are white linework too. */
+  --window-icon-glyph: var(--text);
   /* Edit states: only the leading bar / tick / ring, never a tint. */
   --row-editing-bg: transparent;
   --cell-dirty-bg: transparent;
@@ -191,6 +202,9 @@ html[data-theme="death-star"] :is(h1, h2, h3, .panel-header, .modal-header, .nav
 html[data-theme="death-star"] :is(h1, h2, h3) { line-height: 1.25; margin-block-end: 0.35em; }
 /* The console is nearly text-free: the widest heading is tracked tighter. */
 html[data-theme="death-star"] h1 { letter-spacing: 0.03em; }
+/* The console is zones, not lettering: page titles stay small. */
+html[data-theme="death-star"] h1 { font-size: 1.5rem; }
+html[data-theme="death-star"] h2 { font-size: 1.15rem; }
 /* Badge after a header title: keep a gap from the Michroma caps. */
 html[data-theme="death-star"] :is(.panel-header, .modal-header) > * + .badge { margin-inline-start: 0.5rem; }
 /* Badges in a header band are push-button labels, not headings. */
@@ -212,7 +226,7 @@ html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) :is(h1, h2, h3
    a header band with controls wrapped them onto a second red line. */
 @media (max-width: 480px) {
   html[data-theme="death-star"] :is(.panel-header, .modal-header) {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     letter-spacing: 0.04em;
     column-gap: 0.25rem;
   }
@@ -248,6 +262,8 @@ html[data-theme="death-star"] .btn-secondary {
   --btn-bg: #1c1c1c;
   --btn-shadow: inset 0 0 0 2px #6a6a6a;
 }
+/* Small keys never drop below 13px: the thin red caps blur under that. */
+html[data-theme="death-star"] .btn-sm { font-size: max(0.78em, 0.8125rem); }
 /* Bulk bar: red outline plus the selected-row leading block. */
 html[data-theme="death-star"] .bulk-bar { border-width: 2px; border-inline-start-width: 6px; }
 /* Toolbar icons near the sprite's native 24px (core sizes them 1.1em of
@@ -291,7 +307,7 @@ html[data-theme="death-star"] [data-tooltip]::after { border-width: 0; }
 html[data-theme="death-star"] .app-bar {
   --nav-item-fg: #8a8a8a;
   --nav-brand-fg: #ffffff;
-  --app-bar-padding: calc(2.5rem + 0.6rem) 1rem 0.6rem;
+  --app-bar-padding: calc(2.5rem + 1.2rem) 1rem 0.6rem;
   border-bottom: 3px solid var(--accent);
   /* One bay with a 1rem margin each side; `space` fits whole bays only, so
      the row never ends on a cut tile (round's scaling blurs the seams). */
@@ -302,8 +318,24 @@ html[data-theme="death-star"] .app-bar {
     #d7e4df 0 calc(6.25rem + 8px), transparent 0 calc(6.25rem + 12px),
     #d7e4df 0 calc(8rem + 12px), transparent 0);
   background-size: calc(9rem + 12px) 2.5rem;
-  background-position: 0 0;
+  /* Black margin above the row, as the console module's top edge. */
+  background-position: 0 0.6rem;
   background-repeat: space no-repeat;
+}
+/* Phone: two bays left a void between them; one continuous row of whole
+   tiles inside the 1rem gutters instead. */
+@media (max-width: 480px) {
+  html[data-theme="death-star"] .app-bar {
+    /* Top layer: black gutters masking the part tiles `space` repeats
+       into the padding; the bar itself is #000. */
+    background-image:
+      linear-gradient(90deg, #000 0 1rem, transparent 0 calc(100% - 1rem), #000 0),
+      linear-gradient(90deg, #d7e4df 0 1.75rem, transparent 0);
+    background-size: 100% 100%, calc(1.75rem + 4px) 2.5rem;
+    background-origin: border-box, content-box;
+    background-position: 0 0, 0 calc(-2.5rem - 0.6rem);
+    background-repeat: no-repeat, space no-repeat;
+  }
 }
 
 /* Text on the red header band: muted, success and close glyphs re-pointed
@@ -321,24 +353,45 @@ html[data-theme="death-star"] :is(.panel-header, .modal-header) {
    page's unlayered style otherwise. */
 html[data-theme="death-star"] .pattern-nav a[aria-current="page"] { color: var(--on-accent) !important; }
 
-/* Push-buttons: a still cluster of five small square nubs set into the
-   right end of a top-level header band (the red one reads black on red),
-   only where the band carries no controls of its own. */
+/* Push-buttons: a still cluster of five small raised caps (rounded, a
+   darker lower lip) set into the right end of a top-level header band,
+   only where the band carries no controls of its own. No red cap: it
+   would vanish on the red band. The band is a size container so a narrow
+   panel drops the cluster instead of wrapping its title. */
 html[data-theme="death-star"] .panel:not(:has(> .card-dismiss)) > .panel-header:not(:has(button, .btn, input, select, a)) {
-  padding-inline-end: calc(var(--surface-pad, 1rem) + 5.5rem);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 6'%3E%3Crect width='6' height='6' fill='%23000'/%3E%3Crect x='8' width='6' height='6' fill='%235281b8'/%3E%3Crect x='16' width='6' height='6' fill='%23ffcf2f'/%3E%3Crect x='24' width='6' height='6' fill='%23e6e6e6'/%3E%3Crect x='32' width='6' height='6' fill='%235cc872'/%3E%3C/svg%3E");
-  /* 12px caps, 4px seams: legible at a glance, as the diorama's clusters. */
-  background-size: 4.75rem 0.75rem;
-  background-position: right var(--surface-pad, 1rem) center;
-  background-repeat: no-repeat;
+  container-type: inline-size;
+}
+html[data-theme="death-star"] .panel:not(:has(> .card-dismiss)) > .panel-header:not(:has(button, .btn, input, select, a))::before {
+  content: "";
+  float: right;
+  inline-size: 4.75rem;
+  block-size: 0.75rem;
+  margin-block-start: calc((1lh - 0.75rem) / 2);
+  margin-inline-start: 1rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 6'%3E%3Crect x='0' width='6' height='6' rx='1' fill='%23e6e6e6'/%3E%3Crect x='1' y='5' width='4' height='1' fill='%23000' fill-opacity='.4'/%3E%3Crect x='8' width='6' height='6' rx='1' fill='%235281b8'/%3E%3Crect x='9' y='5' width='4' height='1' fill='%23000' fill-opacity='.4'/%3E%3Crect x='16' width='6' height='6' rx='1' fill='%23ffcf2f'/%3E%3Crect x='17' y='5' width='4' height='1' fill='%23000' fill-opacity='.4'/%3E%3Crect x='24' width='6' height='6' rx='1' fill='%235cc872'/%3E%3Crect x='25' y='5' width='4' height='1' fill='%23000' fill-opacity='.4'/%3E%3Crect x='32' width='6' height='6' rx='1' fill='%23e6e6e6'/%3E%3Crect x='33' y='5' width='4' height='1' fill='%23000' fill-opacity='.4'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+@container (max-width: 22rem) {
+  html[data-theme="death-star"] .panel-header::before { display: none; }
+}
+
+/* Inlaid linework: the white line sits just inside a black margin, its
+   corners rounded, and the red band runs under it. Focus rings win. */
+html[data-theme="death-star"] :is(.panel, .modal):not(:focus-visible) {
+  outline: var(--inlay-width) solid var(--line);
+  outline-offset: calc(-1 * var(--panel-border-width) - var(--inlay-width));
+}
+html[data-theme="death-star"] .card:not(:focus-visible) {
+  outline: var(--inlay-width) solid var(--line);
+  outline-offset: calc(-1 * var(--card-border-width) - var(--inlay-width));
 }
 
 /* Nesting steps down: a surface inside another draws a thinner 2px
    outline, and a nested panel's header is a slim red block at its left
    edge instead of another full red band under the parent's. */
 html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer, .transport) :is(.panel, .card) {
-  --panel-border-width: 2px;
-  --card-border-width: 2px;
+  --panel-border-width: 3px;
+  --card-border-width: 3px;
+  --inlay-width: 2px;
 }
 html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
   background: linear-gradient(var(--accent), var(--accent)) left / 0.35rem 100% no-repeat;
@@ -348,6 +401,11 @@ html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .pane
   --success-text: var(--success);
   --btn-close-fg: var(--muted);
   --btn-close-bg-hover: var(--surface-2);
+}
+html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header::before { display: none; }
+/* Folder rail beside a framed message list: the same white inlay box. */
+html[data-theme="death-star"] .master-detail > .nav-rail {
+  border: var(--list-border-width) solid var(--list-border);
 }
 
 /* --- v5 tiers --------------------------------------------------------------
