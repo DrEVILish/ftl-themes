@@ -25,6 +25,16 @@
  * WCAG relative-luminance calc, not by eye).
  */
 
+/* Baloo 2 (SIL OFL, vendored in assets/fonts) for headings only: the
+   round, friendly display voice of the case. The UI body stays a system
+   sans; Chicago/Charcoal aren't free to vendor, so they aren't named. */
+@font-face {
+  font-family: "Baloo 2";
+  src: url("assets/fonts/Baloo2-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 html[data-theme="imac-g3"] {
   --motion-leave: genie;
   color-scheme: dark;
@@ -74,12 +84,14 @@ html[data-theme="imac-g3"] {
   --on-danger: #ffffff;
   --on-success: #04261a;
   --radius: 1.3rem;
-  --font: "Chicago", "Charcoal", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: Monaco, Consolas, monospace;
   --flare: #ffe14d;
 
   /* Translucent gloss shell: a light highlight band over the flat colour. */
-  --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.05) 40%, #0f7d92);
+  /* The gel's base stop is the colorway's own plastic, per variant below. */
+  --imac-g3-gel: #0f7d92;
+  --btn-bg: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.05) 40%, var(--imac-g3-gel));
   /* The gloss is clear down to its last 60%, so the label sits on the
      panel's own teal (or a variant's fruit colour): white, not the dark
      --on-accent, which read at ~2.3:1 there. */
@@ -99,7 +111,27 @@ html[data-theme="imac-g3"] {
   --imac-g3-panel-fill: var(--imac-g3-pinstripe), linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 30%, var(--surface));
   /* The diagonal sheen (below) rides on top of the fill. */
   --panel-bg: var(--imac-g3-sheen), var(--imac-g3-panel-fill);
-  --panel-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 6px 18px rgba(0,0,0,0.3);
+  /* Thickness: a bright inner lip on top, a darker inner fall-off at the
+     bottom, so the plastic reads as a moulded slab, not a painted card. */
+  --panel-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 0 0 1px rgba(255,255,255,0.18) inset, 0 -8px 16px rgba(0,0,0,0.16) inset, 0 6px 18px rgba(0,0,0,0.3);
+  /* Ice: the frosted white plastic the colour sits in. A milky rim on
+     every panel/card so the coloured body reads as a tinted insert. */
+  --panel-border: rgba(232, 248, 252, 0.6);
+  --panel-border-width: 2px;
+  /* Columns and lists are plastic too, not flat fills. */
+  --nav-rail-bg: var(--imac-g3-panel-fill);
+  --list-bg: var(--imac-g3-panel-fill);
+  /* Slider: a recessed white-ice groove (dark top, light bottom), drawn on
+     core's content box so the hit area stays --tap-min; the thumb is a gel
+     bead in the button gradient. */
+  --slider-height: 0.45rem;
+  --slider-bg: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(255,255,255,0.6) 70%);
+  --slider-border: rgba(255,255,255,0.35);
+  --slider-thumb-size: 1.15rem;
+  --slider-thumb-bg: radial-gradient(circle at 50% 28%, rgba(255,255,255,0.9), rgba(255,255,255,0) 55%), var(--accent);
+  --slider-thumb-shadow: 0 1px 3px rgba(0,0,0,0.45);
+  /* Lit pads: 30% accent over surface-2 left their white label at 4.26:1. */
+  --pad-lit-alpha: 18%;
   --modal-header-bg: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
   --table-head-bg: rgba(255,255,255,0.15);
   /* A lighter frost than 0.25, which left white text at 3.1-3.9:1. */
@@ -115,7 +147,10 @@ html[data-theme="imac-g3"] {
   --app-bar-bg: var(--imac-g3-pinstripe), var(--surface);
   --app-bar-radius: 1.3rem 1.3rem 0 0;
   --app-bar-height: 3rem;
-  --app-main-bg: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 20%);
+  /* The case body between bar and foot: pinstriped translucent colour,
+     walled by ice (see .app-main below), so bar, body and foot are one
+     moulding. */
+  --app-main-bg: var(--imac-g3-pinstripe), linear-gradient(180deg, rgba(255,255,255,0.1), color-mix(in srgb, var(--surface) 60%, transparent) 30%, color-mix(in srgb, var(--surface) 75%, transparent));
   --app-main-padding: 1.1rem;
   --app-status-bg: linear-gradient(180deg, var(--surface), rgba(255,255,255,0.1));
   /* Explicit rather than relying on the core default's implicit fallback to
@@ -127,6 +162,8 @@ html[data-theme="imac-g3"] {
      status strip below the floor without touching this line too. */
   --app-status-fg: var(--muted);
   --app-status-radius: 0 0 1.3rem 1.3rem;
+  /* Clear the 1.3rem corner so the tray's last readout isn't under it. */
+  --app-status-padding: 0.4rem 1.5rem;
   --app-padding: 0.75rem;
 
   /* Alternate colorways: --accent stays the swatch picker's shorthand,
@@ -141,7 +178,25 @@ html[data-theme="imac-g3"] {
 
 html[data-theme="imac-g3"] h1,
 html[data-theme="imac-g3"] h2,
-html[data-theme="imac-g3"] h3 { text-shadow: 0 1px 0 rgba(255,255,255,0.4); }
+html[data-theme="imac-g3"] h3,
+html[data-theme="imac-g3"] .nav-brand {
+  font-family: "Baloo 2", var(--font);
+  font-weight: 700;
+  /* A moulded drop, not a white blur. */
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+}
+
+/* Ice side walls: the frosted rim joins the bar to the status foot. */
+html[data-theme="imac-g3"] .app-main {
+  border-inline: 2px solid rgba(232, 248, 252, 0.45);
+}
+html[data-theme="imac-g3"] .nav-rail { border-radius: var(--radius); }
+/* Unchecked boxes as white wells like the text inputs, not dark-scheme grey. */
+html[data-theme="imac-g3"] :is(.checkbox, .radio) { color-scheme: light; }
+html[data-theme="imac-g3"] .slider:disabled { opacity: 0.5; }
+/* Marker chips mix over the darker surface: on surface-2 the 30% accent
+   chip left white at 4.26:1. */
+html[data-theme="imac-g3"] .waveform-marker { --waveform-bg: var(--surface); }
 
 /* The bar's gloss is an inset highlight rather than a translucent-white
    gradient stop, so nav text sits on the solid surface (the cyan brand was
@@ -160,7 +215,9 @@ html[data-theme="imac-g3"] .app-bar {
    thick curved plastic. Kept to panel/card/modal — the shapes with real
    surface area for the streak to travel across. */
 html[data-theme="imac-g3"] {
-  --imac-g3-sheen: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.55) 42%, rgba(255, 255, 255, 0.15) 50%, transparent 62%);
+  /* Fixed to the viewport, so one soft streak sweeps across the whole
+     case and side-by-side cards share it rather than each repeating it. */
+  --imac-g3-sheen: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.28) 45%, rgba(255, 255, 255, 0.08) 55%, transparent 75%) fixed;
 }
 /* Painted as the surfaces' top background layer (through --panel-bg, which
    cards and modals inherit) rather than a clipped pseudo-element: an
@@ -178,12 +235,14 @@ html[data-theme="imac-g3"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card
 html[data-theme="imac-g3"][data-variant="blueberry"] {
   --bg: #0d2a5c; --surface: #1c4fb0; --surface-2: #3a6fd6;
   --border: #08194a; --hairline: #12275c; --accent: #8fb0ff;
-  --on-accent: #04102c; --app-bg: radial-gradient(ellipse at top, #1c4fb0, #04102c 85%);
+  --on-accent: #04102c; --imac-g3-gel: #2a5fc4; --accent-2: #b8ccff; --accent-text: #fafcff;
+  --app-bg: radial-gradient(ellipse at top, #1c4fb0, #04102c 85%);
 }
 html[data-theme="imac-g3"][data-variant="grape"] {
   --bg: #3a0d5c; --surface: #6b2f9e; --surface-2: #8b4fc0;
   --border: #240838; --hairline: #401a52; --accent: #c9a6ee;
-  --on-accent: #1a0426; --app-bg: radial-gradient(ellipse at top, #6b2f9e, #1a0426 85%);
+  --on-accent: #1a0426; --imac-g3-gel: #7a3fae; --accent-2: #dcc0f5; --accent-text: #f7efff;
+  --app-bg: radial-gradient(ellipse at top, #6b2f9e, #1a0426 85%);
 }
 /* Burnt tangerine: the brighter #d1621f/#e08a4a put this theme's white text
    at 3.8:1 / 2.7:1 — a hard-floor failure the lint never saw, because it
@@ -194,7 +253,8 @@ html[data-theme="imac-g3"][data-variant="grape"] {
 html[data-theme="imac-g3"][data-variant="tangerine"] {
   --bg: #5c2408; --surface: #823a0a; --surface-2: #91430c;
   --border: #3e1704; --hairline: #4e1e06; --accent: #ffb066;
-  --on-accent: #2c1000; --app-bg: radial-gradient(ellipse at top, #823a0a, #2c1000 85%);
+  --on-accent: #2c1000; --imac-g3-gel: #8e420c; --accent-2: #ffc48a; --accent-text: #ffe6cf;
+  --app-bg: radial-gradient(ellipse at top, #823a0a, #2c1000 85%);
 }
 
 /* Secondary buttons: accent-colored text measured 2.6:1 on the lighter
@@ -234,4 +294,20 @@ html[data-theme="imac-g3"] .modal-header > .btn-close {
   --btn-close-radius: 0;
   --btn-close-order: -1;
   --btn-close-push: 0;
+}
+
+/* A filled pill (accent fill) takes the dark on-accent label: the pale
+   --accent-text is for accent on the case colour, 2.2:1 on the fill. */
+html[data-theme="imac-g3"] .pattern-nav [aria-current="page"] { --accent-text: var(--on-accent); }
+
+/* Phones: a slimmer case lip, so the status foot's last readout clears
+   its rounded corner instead of running under it. */
+@media (max-width: 480px) {
+  html[data-theme="imac-g3"] {
+    --app-padding: 0.4rem;
+    --app-bar-radius: 0.9rem 0.9rem 0 0;
+    --app-status-radius: 0 0 0.9rem 0.9rem;
+    --app-status-padding: 0.4rem 0.75rem;
+  }
+  html[data-theme="imac-g3"] .app-status { gap: 0.45rem; }
 }
