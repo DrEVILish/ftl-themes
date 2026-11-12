@@ -28,7 +28,7 @@ html[data-theme="proseries"] {
   --danger: #ff6a3d;
   --success: #57d37a;
   --warning: #f1c232;
-  --danger-text: #ffd8cc;
+  --danger-text: #ffe4dc;
   --success-text: #a8f7bc;
   --warning-text: #fff0b0;
   --on-accent: #111111;
@@ -74,19 +74,19 @@ html[data-theme="proseries"] {
   --table-head-transform: none;
   --table-head-tracking: 0;
 
-  /* --- Surfaces: lavender-blue panels, navy title bars ------------------- */
-  /* Lifted toward the sidebar's sampled #6b77aa as far as small bold
-     muted text keeps 4.5:1. */
-  --panel-bg: linear-gradient(180deg, #56629c, #4a5690);
+  /* --- Surfaces: royal-blue panels, navy title bars ---------------------- */
+  /* The sidebar's saturated royal-blue section, flat (one fill keeps
+     scroll frames cheap), as light as small bold muted text keeps 4.5:1. */
+  --panel-bg: #4b5ca8;
   --panel-border: #1a1f3d;
   --panel-radius: 4px;
-  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.45);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 0 rgba(0, 0, 0, 0.5);
   --panel-header-bg: linear-gradient(180deg, #a9b0d6, #8e97c4);
   --panel-header-fg: #14193a;
-  /* Cards are the console's blue channel strip (flat: a gradient here
-     costs scroll frames), darkened to the strip's
-     lower band so small text keeps 4.5:1. */
-  --card-bg: #2e52a6;
+  /* Cards are the console's blue channel strip, flat at the strip's
+     #3a62b4 band (a gradient here costs scroll frames); muted text in a
+     card lifts to near-white instead of darkening the blue. */
+  --card-bg: #3a62b4;
   --card-border: #1d2a5e;
   --modal-bg: #4a578f;
   --modal-header-bg: linear-gradient(180deg, #4e63b3 0, #2c3d8e 55%, #23327a 100%);
@@ -236,6 +236,26 @@ html[data-theme="proseries"] {
   /* The slider track is the console's black fader slot. */
   --slider-bg: #050505;
   --slider-height: 4px;
+  /* The thumb is the fader cap turned on its side: black hourglass body,
+     grey disc, the centre line across the travel. */
+  --slider-thumb-bg:
+    linear-gradient(#1a1a1a, #1a1a1a) 50% 50% / 2px 86% no-repeat,
+    radial-gradient(circle at 50% 50%, #b4b4b4 0 27%, #2a2a2a 28% 31%, transparent 32%),
+    radial-gradient(ellipse 10% 60% at 92% 50%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(ellipse 10% 60% at 6% 50%, rgba(255, 255, 255, 0.45), transparent 70%),
+    linear-gradient(180deg, #000 0, #2b2b2b 18%, #0c0c0c 50%, #2b2b2b 82%, #000 100%);
+  --slider-thumb-radius: 22% 22% 22% 22% / 46% 46% 46% 46%;
+  --slider-thumb-shadow: var(--fader-cap-shadow);
+  /* Yellow tints over the bright royal-blue panel wash out small text:
+     tinted rows, callouts and chips sit darker than the panel instead. */
+  --notification-unread-bg: rgba(0, 0, 0, 0.2);
+  --callout-bg: rgba(0, 0, 0, 0.22);
+  --btn-clear-bg-hover: rgba(0, 0, 0, 0.25);
+  --btn-clear-bg-active: #2c4fa8;
+  --comment-anchor-bg-active: color-mix(in srgb, #f1c232 30%, #1d2448);
+  --mention-self-bg: color-mix(in srgb, #f1c232 30%, #1d2448);
+  /* Icon keys are square bevels like every other soft key. */
+  --btn-icon-radius: var(--btn-radius);
 
   /* --- Layout: black home bar over the desk, no rail, no status strip ---- */
   --app-bar-bg: linear-gradient(180deg, #111111, #000000);
@@ -244,7 +264,8 @@ html[data-theme="proseries"] {
   --app-bar-rule: #6b77aa;
   --app-bar-rule-width: 2px;
   --app-bg: #191d36;
-  --app-main-bg: radial-gradient(120% 90% at 50% 30%, #4a5895 0, #39457d 45%, #252c55 100%);
+  /* Flat desk behind the scroller (a radial here repaints on scroll). */
+  --app-main-bg: #39457d;
   --app-main-padding: 0.6rem;
   --app-padding: 0;
   --app-gap: 0;
@@ -275,7 +296,10 @@ html[data-theme="proseries"] {
 
 /* Bold everywhere: the console sets every label in the bold face. */
 html[data-theme="proseries"] body { font-weight: 700; font-size: 0.9rem; }
-html[data-theme="proseries"] :is(h1, h2, h3, h4) { font-weight: 800; letter-spacing: -0.01em; }
+html[data-theme="proseries"] :is(h1, h2, h3, h4) { font-weight: 700; letter-spacing: -0.01em; }
+/* Running text is the one exception: the console has no paragraphs, and
+   long bold lines in a wide face tire the eye. Labels stay bold. */
+html[data-theme="proseries"] :is(.prose, textarea) { font-weight: 400; line-height: 1.5; }
 
 /* Knobs: scale dots outside the cap (white, every 27°), then the cap:
    a ribbed rim, a domed centre in --knob-color and the pointer line. A
@@ -385,7 +409,25 @@ html[data-theme="proseries"] {
   --btn-close-width: 1.25rem;
   --btn-close-height: 1.25rem;
   --btn-close-radius: 50%;
+  /* Dark glyph on the white disc (hover falls back to navy + white). */
+  --btn-close-fg: #14193a;
+  --modal-header-close-fg: #14193a;
 }
+html[data-theme="proseries"] .btn-close.is-danger { --btn-close-fg: #9a1e0a; }
+html[data-theme="proseries"] .card { --muted: #eef1ff; }
+
+/* Slider caps: wider along the travel than across it, black rim. */
+html[data-theme="proseries"] .slider::-webkit-slider-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
+html[data-theme="proseries"] .slider::-moz-range-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
+/* A vertical slider is the upright fader: the full cap and a 4px slot
+   centred in the touch-sized box (the slot is drawn, not the box). */
+html[data-theme="proseries"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 2px), #050505 0 calc(50% + 2px), transparent 0);
+  --slider-thumb-bg: var(--fader-cap-bg);
+  --slider-thumb-radius: var(--fader-cap-radius);
+}
+html[data-theme="proseries"] .slider.is-vertical::-webkit-slider-thumb { width: 0.95rem; height: 1.4rem; }
+html[data-theme="proseries"] .slider.is-vertical::-moz-range-thumb { width: 0.95rem; height: 1.4rem; }
 
 /* Strips keep their dark dividers and the black send block. */
 html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.25); }
@@ -396,6 +438,14 @@ html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shad
   /* Keep the black bar short on a phone: tighter gaps and smaller nav. */
   html[data-theme="proseries"] .app-bar { font-size: 0.85rem; gap: 0.25rem 0.5rem; padding: 0.3rem 0.6rem; }
   html[data-theme="proseries"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.45em; }
+  /* Two rows at most: brand + a nav that scrolls on one line, then the
+     scene field, search, bell and avatar. */
+  html[data-theme="proseries"] .app-bar { flex-wrap: wrap; row-gap: 0.25rem; }
+  html[data-theme="proseries"] .app-bar > nav { flex: 1 1 0; min-inline-size: 0; overflow-x: auto; scrollbar-width: none; }
+  html[data-theme="proseries"] .app-bar .menubar { flex-wrap: nowrap; }
+  html[data-theme="proseries"] .app-bar :is(.select, .input) { font-size: 0.8rem; min-block-size: var(--tap-min); padding-block: 0; max-inline-size: 8.5rem; }
+  html[data-theme="proseries"] .app-bar .cluster { flex-wrap: nowrap; gap: 0.35rem; }
+  html[data-theme="proseries"] .app-bar kbd { display: none; }
 }
 
 /* Primary keys are the navy "store preset / load preset" kind, not the
@@ -420,6 +470,14 @@ html[data-theme="proseries"] .btn-ghost {
   --btn-border: #6b77aa;
   --btn-bg-hover: #6b77aa;
   --btn-border-hover: #a2a8ca;
+}
+/* A ghost icon button is a grey soft key, not a ring on the desk. */
+html[data-theme="proseries"] .btn-icon.btn-ghost {
+  --btn-bg: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
+  --btn-bg-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  --btn-fg: #111111;
+  --btn-border: #2a2a2a;
+  --btn-border-hover: #2a2a2a;
 }
 html[data-theme="proseries"] .btn-primary { --btn-bg: var(--ps-primary-bg); --btn-fg: var(--ps-primary-fg); --btn-border: var(--ps-primary-border); }
 
