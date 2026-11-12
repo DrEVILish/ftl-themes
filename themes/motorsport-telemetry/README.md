@@ -26,7 +26,9 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 
 1. **Colour is data.** Purple, green and yellow keep their sector meanings
    (accent/selection, success, warning); red, yellow, white, green and blue
-   keep their compound meanings. Don't use them as decoration elsewhere.
+   keep their compound meanings. Don't use them as decoration elsewhere:
+   secondary/tertiary buttons, the search key, counts and desktop glyphs
+   are white; purple fills only what is selected, pressed or current.
 2. **Every number is tabular.** Titillium Web's digits are fixed-width and
    the root sets `tabular-nums`. A lap time that jitters as it updates is
    wrong.
@@ -34,31 +36,50 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
    muted, tracked caps. The chrome stays dark so the data is the brightest
    thing on screen.
 4. **Carbon is a material, not a pattern.** The twill is a few percent over
-   black. If you can see a checkerboard behind body text, it's too strong.
+   black, one cached 6px SVG tile, woven only into the frame (page, bar,
+   rail). Panels, cards and table rows are flat carbon gradients, so no
+   checkerboard ever sits behind body text.
 5. **Thin, hard-edged marks.** 2px traces, 1-2px radii, no gloss, no glow.
    Broadcast graphics are flat; only the rev lights are lit.
 
 ## Signature details
 
 - The **timing tower** in the rail: "LAP 34/57" over positions 1-20 (the
-  leader boxed in white), a neutral stripe per car, interval bars (one
-  purple for the fastest lap), and a tyre ring per car. Painted as one SVG
-  data URI; the rail stays empty and `aria-hidden`.
+  leader boxed in white), a 2px neutral stripe per car, a bold 10px
+  tabular interval figure per car (one purple for the fastest lap), and a
+  tyre ring per car.
+  Painted as one SVG data URI on a sticky `::before`, so the tower stays in
+  view down a long page; the rail stays empty and `aria-hidden`.
 - The **rev-light strip** under the bar: 15 LEDs, 5 green, 5 red, 5 blue,
-  11 lit.
-- **Tyre chips**: every `.badge` is a dark disc with a 2px compound ring:
-  default hard white, `.badge-warning` medium yellow, `.badge-danger` soft
-  red, `.badge-success` intermediate green, `.badge-accent` purple.
+  11 lit; 10px lamps with a darker 1px rim, about 250px wide.
+- **Tyre chips**: every `.badge` is a square timing cell led by a dark
+  disc with a 2px compound ring: default hard white, `.badge-warning` medium yellow, `.badge-danger` soft
+  red, `.badge-success` intermediate green, `.badge-accent` purple. Filter
+  `.badge-button`s are the same chip at badge size in a hairline cell,
+  filled purple only while pressed.
 - **Panel headers** with a slanted purple tab at the left and bold italic
   caps; modals carry a 3px purple top edge.
 - **Rev counter**: `.gauge-dial` with a green working band (yellow on
   `.is-warn`, red on `.is-error`), a red redline sector and a red needle.
 - **Close** is a square black steering-wheel key with a cross; it lights
-  soft red on hover.
+  soft red on hover. Icon buttons are square 2px keys too, never circles.
+- **Sector cells**: in a table, `.status-ok/-warn/-error` is a solid
+  green/yellow/red timing cell with dark bold caps; `td.mono` figures stay
+  in Titillium so the table is one timing face. An unsaved edit shows only
+  the yellow leading bar, so it never muddies a purple selected row.
+- Charts are bare 2px traces: small unringed points (only the active one
+  is marked), a 5% area fill, and sequential scales such as the heatmap
+  ramp in personal-best green, leaving purple for "best".
+- Log, code and notepad text is Share Tech Mono (OFL, vendored), the
+  square terminal face of the timing software.
 - Table heads sit on a 2px purple rule; the selected row is purple with a
   4px purple bar, as the fastest lap is on a timing screen.
 - The status strip is race control on a 2px green "track clear" rule.
 - Tooltips are white caption boxes (the lower-third look).
+- Vertical lists (the folder rail, settings sections) share one register:
+  semibold tracked caps at 0.8125rem.
+- Sliders are a 4px groove with a white fader cap; Firefox also paints the
+  purple fill left of the cap (Chromium has no CSS hook for it).
 
 ## Token rationale
 
