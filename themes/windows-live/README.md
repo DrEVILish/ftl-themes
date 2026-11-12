@@ -21,10 +21,12 @@ frame.
    ribbon tabs, the aurora and the presence frames.
 2. **The ribbon.** The app bar is a Scenic Ribbon tab strip: a blue
    rounded application button at the left (with a small Windows flag),
-   then tabs (nav items and menu-bar items alike); the selected tab is
+   then tabs (nav items and menu-bar items alike) with 13px (9pt) labels
+   and tight padding, still --tap-min tall; the selected tab is
    white, framed in `#b6bccc` and joined to a 24px ribbon band hung under
-   the strip, white fading to `#e3ebf6` (box-shadows on the bar, so it
-   takes no layout; main pads 24px more to clear it). A ribbon always has
+   the strip, white fading to `#e3ebf6` (one `--app-main-bg` gradient at
+   the top of main, which pads 24px more to clear it, so it takes no
+   layout and never covers a menu). A ribbon always has
    one tab open: with no current nav item the first is drawn open.
    Toolbars are ribbon groups: the white-to-`#eef3fa` band over a
    `#b6bccc` rule.
@@ -38,7 +40,12 @@ frame.
    tree, folder pane, desktop and file-view icons; no accent bar); Win7 tooltips; tall glossy green
    progress. Every pressed/selected control (toggle buttons, segmented,
    pagination, filter chips) uses that pale-blue selection with a
-   `#7da2ce` frame and dark text, never a saturated fill. Check boxes and
+   `#7da2ce` frame and dark text, never a saturated fill. Delete and
+   Confirm (`.btn-danger`, `.btn-success`, a danger toggle) are the same
+   grey gloss faintly tinted red or green, the tone only in the label.
+   A plain `.nav` outside the ribbon, the featured list card and the
+   navigation patterns' current link take the same pale-blue selection
+   in a `#99d1ff` frame; a bare nav brand is regular-weight dark blue. Check boxes and
    radios are the Win7 grey-gradient boxes with a dark-blue tick; the
    slider is the trackbar's thin grey groove with a grey-gloss thumb;
    disabled buttons are flat `#f4f4f4` with grey text; GO is a grey-gloss
@@ -47,8 +54,9 @@ frame.
    trackbar: grey groove, grey-gloss thumb, pale-blue track when on.
    Alerts take the information-bar tints per tone (info `#f2f8fd`,
    warning `#ffffe1`, danger `#fdf0ee`, success `#f0f8ee`).
-5. **Presence.** Every avatar is a Messenger display picture: a rounded
-   square in a glossy green frame.
+5. **Presence.** Every avatar is a Messenger display picture: an 8px
+   rounded square in a thick glossy green bezel (light top, darker
+   bottom, dark-green edge), drawn with solid shadows only.
 
 ## Signature details
 
@@ -56,10 +64,15 @@ frame.
   ribbon of light sweeping across the top, behind heroes, the XL gutters
   and any page without the shell. Inside the shell the work area is
   white, with only a faint wash of it under the ribbon (gone by 240px).
-- Desktop windows have Windows 7 captions: a plain dark title (grey when
-  inactive), grey-gloss minimise/maximise joined to the wide red close.
+- Windows (desktop windows and any modal with caption buttons) have
+  Windows 7 captions: a plain dark title (grey when inactive),
+  grey-gloss minimise/maximise beside the wide red close.
 - Pane headers are the pale-blue gradient bars of Mail's "Quick views"
-  and Gallery's folder pane.
+  and Gallery's folder pane, titled in regular-weight Live blue `#1e5aa0`.
+- Full-colour icons where Live had them: in folder panes, trees, lists,
+  toolbars and toolbar icon buttons, folders are yellow `#c8901a`, trash
+  red `#d03a2a`, mail glyphs blue `#2f6fc2`, the star gold `#e0a800` and
+  people green `#3a8e3a` (CSS `color`, the sprite stays `currentColor`).
 - The status bar is Mail's pale strip ("1 message(s), 0 unread").
 - The fifth chart series is a Live purple `#8b3fa8`, so it never doubles
   series 2's green.
@@ -108,6 +121,8 @@ platform.
   glossy icons, done without hard-coded colours. Small silhouettes (play,
   star, bookmark, pins) are solid.
 - `currentColor` only, so the icons follow text, hover and selected states.
+  The theme CSS colours a few ids in panes and toolbars (see Signature
+  details).
   Ids outside the core set fall back to the generic outline set.
 
 ## Reference status
