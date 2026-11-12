@@ -22,15 +22,20 @@ saturated fill is a **yellow-green "granted" band**.
 ## Core values
 
 1. **Teal is the phosphor.** All text and every line is one teal family
-   (`--text #52dec2`, `--border #1c8a72`) on green-black glass. Other hues
-   are there to carry meaning, never to decorate.
+   (`--text #52dec2`, `--border #1c8a72`) on black glass. Other hues
+   are there to carry meaning, never to decorate. The glass itself is a
+   near-neutral black (`--bg #03100e`); the teal cast comes from the text
+   and a radial bloom, not the base fill.
 2. **Yellow-green fill means granted, selected or primary.** Examples are
    `.btn-primary`, the active segment, switch-on, pagination, progress and
-   the bulk-selection bar. It never appears as decoration. Danger and
+   the bulk-selection bar. It is the reference band's muted sage-lime
+   (`--accent #9fca6e`, sampled `#91be6c`..`#95c26f`), not a highlighter.
+   It never appears as decoration. Danger and
    success buttons, and a pressed danger toggle, are outlined keys in their
    state colour, not fills.
 3. **Pale yellow outline means "this one".** The focus ring, active tab,
-   active nav entry and selected row all use the yellow box the hard-drive
+   active nav entry (in the app bar and in any in-page `.nav`) and
+   selected row all use the yellow box the hard-drive
    browser draws around the highlighted file (`--accent-2 #e6dc8c`).
 4. **Title bars are solid pale-teal plates with dark text.** This covers
    the brand, modal header, tooltip and status strip. Nothing else is a
@@ -78,17 +83,19 @@ saturated fill is a **yellow-green "granted" band**.
 - Sliders draw their track as a teal rule (`--border`) with the pale
   yellow thumb; the hit area stays the core's `--tap-min` box.
 - `kbd` uses the beige keycaps of the pull-out keyboards.
-- Static scanlines, a vignette and a faint bloom on all text, on glass
-  with the reference's teal cast (`--bg #021712`).
-- At phone width the bar's picker gives up width and the search key's
-  keyboard hint is dropped, so the controls stay on one row.
+- Static scanlines and a vignette on near-black glass, with the teal cast
+  in a radial bloom (`--silo-haze`). Titles and big stat values glow; body
+  copy, tables and lists do not, which keeps phone scrolling cheap.
+- At phone width the bar is two rows: the brand plate (truncating if it
+  must) shares the first with the picker and actions, the search key
+  drops its label and keyboard hint, and the numbered nav is the second.
 
 ## Variants
 
 | Variant | Label | Source |
 |---|---|---|
 | (default) | Silo | Season 1 IT, Judicial and PACT terminals (teal). |
-| `legacy` | The Legacy (gold tablet) | Territory Studio's Season 2 Legacy tablet: gold `#f2b84b` on warm black, cream plate, lighter brushed-metal bezel. References in `references/silo/legacy/`. |
+| `legacy` | The Legacy (gold tablet) | Territory Studio's Season 2 Legacy tablet: gold `#f2b84b` on warm black. Not a CRT: no bezel, plates, scanlines or double rules. A hairline gold frame, warm bokeh glow, a cream pill brand ("LIBRARY INTEL UNIT"), nav numbers in circular nodes, panel titles on a single 1px rule with a ring glyph, pill tabs, badges and readouts, circular pagination, field cells reduced to an underline, and the status strip as small tracked mono labels in the margin. References in `references/silo/legacy/`. |
 
 ## Typography
 
@@ -97,11 +104,14 @@ vendored in `assets/fonts/` under SIL OFL (see `assets/fonts/NOTICE.md`).
 They are the closest open match to the show's squared, round-cornered
 all-caps techno face, which has not been identified. Fallbacks: Eurostile,
 DIN Alternate, Bahnschrift, Arial Narrow. Share Tech is narrower than the
-show's extended face, so headings and values are widened with tracking
-(0.14em on headings, 0.05em on stat values) and values run about 2.5x
-their labels. Headings, labels, tabs, badges, buttons, toggle keys,
-segments, chips, selects, menu entries and short list labels are
-uppercase and tracked (keys packed into a row, toggles and segments, track
+show's extended, heavier face, so headings and values are widened with
+tracking (0.08em on H1, 0.14em on other headings, 0.05em on stat values)
+and thickened with a hairline `-webkit-text-stroke` (0.025em on H1-H3 and
+stat values, 0.02em on field-cell values); values run about 2.5x their
+labels. Headings, labels, tabs, badges, buttons, toggle keys,
+segments, chips, selects, menu entries, short list labels, legends,
+field labels, summaries, input addons, scrollspy links, an in-page nav
+brand and status-strip taskbar keys are uppercase and tracked (keys packed into a row, toggles and segments, track
 0.06em so the longest label fits a phone). Text inputs show caps too, except email, URL,
 password and search fields and textareas, which keep the case the user
 typed. Body copy and titled list rows keep their case so long text stays
@@ -114,22 +124,22 @@ All pairs meet the lint floors and no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#52dec2` on `--surface` `#041d17` / `--bg` `#021712` | 10.5 / 11.1 |
-| `--muted` `#3fb69a` on `--surface` / `--surface-2` | 7.0 / 6.2 |
-| `--accent` `#b9dc78` on `--surface` | 11.4 |
-| `--on-accent` `#06201a` on accent | 11.0 |
-| `--danger-text` `#ff8a76` / `--success-text` `#5ce89f` on `--surface` (outlined keys) | 7.7 / 11.3 |
-| slider track `--border` `#1c8a72` on `--bg` | 4.3 |
-| field-cell outline `--silo-field` `#33735c` on `--surface` | 3.1 |
+| `--text` `#52dec2` on `--surface` `#061815` / `--bg` `#03100e` | 11.0 / 11.6 |
+| `--muted` `#3fb69a` on `--surface` / `--surface-2` `#0a2420` | 7.3 / 6.5 |
+| `--accent` `#9fca6e` on `--surface` | 9.7 |
+| `--on-accent` `#06201a` on accent | 9.1 |
+| `--danger-text` `#ff8a76` / `--success-text` `#5ce89f` on `--surface` (outlined keys) | 8.0 / 11.7 |
+| slider track `--border` `#1c8a72` on `--bg` | 4.5 |
+| field-cell outline `--silo-field` `#33735c` on `--surface` | 3.3 |
 | waveform marker ink `#d4f8ee` on the tinted chips | 6.6+ |
 | tinted avatar chips take the same ink; a lit pad tints at 24% so `--text` stays at 5.1 | 7.3 / 5.1 |
-| dark ink `#06201a` / danger ink `#7a1406` on the yellow-green band | 11.0 / 7.0 |
+| dark ink `#06201a` / danger ink `#7a1406` on the yellow-green band | 9.1 / 5.8 |
 | plate text `#052019` on plate `#8fd3cc` | 10.1 |
 | legacy `--text` `#f1dcae` / `--muted` `#c4a46a` on surface | 14.3 / 8.2 |
 
 The real screens are dimmer: the sampled phosphor core is `#28c6aa`. Text
 is lifted only as far as `#52dec2`, on the same cyan-teal hue, so long
-copy reads at 10.5:1 or more and stays above 4.5:1 on the tinted chips without
+copy reads at 11:1 or more and stays above 4.5:1 on the tinted chips without
 turning minty; links use the brighter
 `#6fe8cc`.
 
@@ -179,7 +189,7 @@ glyphs, after the outlined document glyphs on the file grids (see
 
 ## Print
 
-Bloom, glow, the bezel, scanlines and the meter segment overlay are
+Title bloom, glow, the bezel, scanlines and the meter segment overlay are
 dropped in a small `@media print` block.
 
 ## Reference status

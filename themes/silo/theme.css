@@ -33,14 +33,14 @@
 html[data-theme="silo"] {
   --motion-leave: power-off;
   color-scheme: dark;
-  --bg: #021712;           /* the CRT glass, a teal-black (sampled #011d15..#022c25) */
-  --surface: #041d17;
-  --surface-2: #07291f;
+  --bg: #03100e;           /* the CRT glass, near-neutral black (relic database #05070b); the teal cast lives in --silo-haze */
+  --surface: #061815;
+  --surface-2: #0a2420;
   --border: #1c8a72;       /* teal rule lines (sampled #0a6950..#268f6c) */
   --hairline: #0c3a2e;
   --text: #52dec2;         /* phosphor teal (sampled #28c6aa core, lifted just enough for long text and tinted chips) */
   --muted: #3fb69a;
-  --accent: #b9dc78;       /* yellow-green "JUDICIAL: SIMS" band / capacity bar (sampled #95c26f) */
+  --accent: #9fca6e;       /* muted sage-lime "JUDICIAL: SIMS" band / capacity bar (sampled #91be6c..#95c26f) */
   --accent-2: #e6dc8c;     /* pale yellow: selection outline, the PACT double rules */
   --danger: #ff6b55;
   --success: #43e08f;
@@ -65,7 +65,7 @@ html[data-theme="silo"] {
   --silo-bezel: #2b302b;    /* painted steel monitor housing */
   --silo-bezel-hi: #3d433c;
   --silo-glow: rgba(40, 198, 170, 0.3);
-  --silo-tint: rgba(185, 220, 120, 0.12);
+  --silo-tint: rgba(159, 202, 110, 0.12);
   --silo-num: #f0c060;      /* amber countdown numerals */
   --silo-field: #33735c;    /* field-box outline, olive-teal (3.1:1 on the glass) */
   --silo-haze: rgba(40, 198, 170, 0.1);
@@ -196,7 +196,7 @@ html[data-theme="silo"] {
   --progress-bg: transparent;
   --progress-border: var(--border);
   --progress-border-width: 1px;
-  --progress-fill: repeating-linear-gradient(90deg, var(--accent) 0 3px, rgba(185, 220, 120, 0.55) 3px 4px);
+  --progress-fill: repeating-linear-gradient(90deg, var(--accent) 0 3px, rgba(159, 202, 110, 0.55) 3px 4px);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
   --spinner-fg: var(--accent);
@@ -279,7 +279,7 @@ html[data-theme="silo"] {
   --attachment-bg: transparent;
   --attachment-border: var(--border);
   --attachment-radius: 0;
-  --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 3px, rgba(185, 220, 120, 0.55) 3px 4px);
+  --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 3px, rgba(159, 202, 110, 0.55) 3px 4px);
   --bar-chart-bar-alt: repeating-linear-gradient(0deg, var(--border) 0 3px, transparent 3px 4px);
   --bar-chart-radius: 0;
   --bar-chart-axis: var(--border);
@@ -289,15 +289,18 @@ html[data-theme="silo"] {
 
 /* --- Phosphor voice ------------------------------------------------------ *
  * Everything is caps, the way the screens are; body copy keeps its case so
- * long text stays readable. A faint bloom on all text, stronger on titles. */
-html[data-theme="silo"] body { text-shadow: 0 0 0.3em var(--silo-glow); }
+ * long text stays readable. The bloom sits on titles and big values only:
+ * a blurred shadow on every glyph costs too much to scroll on a phone. */
 html[data-theme="silo"] :is(h1, h2, h3, h4) {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-weight: 400;
-  text-shadow: 0 0 0.45em var(--silo-glow);
 }
-html[data-theme="silo"] h1 { font-size: 1.9rem; }
+html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: 0 0 0.45em var(--silo-glow); }
+/* Share Tech is light; the show's squared face is heavier. A hairline
+   stroke thickens titles, big values and field-cell values. */
+html[data-theme="silo"] :is(h1, h2, h3, .stat-value) { -webkit-text-stroke: 0.025em currentColor; }
+html[data-theme="silo"] h1 { font-size: 1.9rem; letter-spacing: 0.08em; }
 html[data-theme="silo"] h2 { font-size: 1.2rem; }
 html[data-theme="silo"] h3 { font-size: 0.95rem; letter-spacing: 0.18em; }
 html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th, .toggle-btn, .segmented-item, .chip, .stat-label) { letter-spacing: 0.14em; text-transform: uppercase; }
@@ -308,6 +311,13 @@ html[data-theme="silo"] .stat-label { font-size: 0.68rem; }
 html[data-theme="silo"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0.06em; }
 html[data-theme="silo"] .stat-value { font-size: 1.85rem; letter-spacing: 0.05em; font-weight: 400; }
 html[data-theme="silo"] .badge { font-size: 0.7rem; }
+/* Small labels outside the field cell are tracked caps too: legends, field
+   labels, accordion and tree summaries, input addons, an in-page brand,
+   scrollspy links and the entries of a status-strip taskbar. */
+html[data-theme="silo"] :is(legend, .field-label, details > summary, .input-group > .input-addon, .nav .nav-brand, .scrollspy-link, .app-status :is(button, a)) {
+  text-transform: uppercase;
+  letter-spacing: var(--label-tracking);
+}
 /* Menu entries and short list labels are tracked caps too (FILE / VIEW /
    GO), as are list rows used as navigation; content lists keep their case. */
 html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-menu, .menubar) li > :is(button, a), nav .list-item > span:not([class])) {
@@ -344,7 +354,12 @@ html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .sel
 html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) > :is(.input, .select, .textarea) {
   font-size: 1.15rem;
   min-block-size: var(--tap-min, 24px);
+  -webkit-text-stroke: 0.02em currentColor;
 }
+/* The larger value font pulls core's em-placed chevron halves apart; keep
+   them exactly one 6px tile apart so the triangle stays whole. */
+html[data-theme="silo"] .field > .select { background-position: calc(100% - 0.75em - 6px) calc(50% - 3px), calc(100% - 0.75em) calc(50% - 3px); }
+html[data-theme="silo"] .field > .select:dir(rtl) { background-position: calc(0.75em + 6px) calc(50% - 3px), 0.75em calc(50% - 3px); }
 html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)):focus-within { border-color: var(--accent-2); }
 html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)):has(> :is(.is-invalid, [aria-invalid="true"])) { border-color: var(--danger); }
 
@@ -524,8 +539,7 @@ html[data-theme="silo"] .app-bar :is(.nav-item, .menubar > li > [role="menuitem"
   color: var(--accent-2);
   font-family: var(--font-mono);
 }
-html[data-theme="silo"] .app-bar .nav-item.is-active,
-html[data-theme="silo"] .app-bar .nav-item[aria-current],
+html[data-theme="silo"] .nav-item:is(.is-active, [aria-current]),
 html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"]:is(.is-active, [aria-current], [aria-expanded="true"]) { box-shadow: inset 0 0 0 1px var(--accent-2); }
 html[data-theme="silo"] .app-main { box-shadow: inset 0 0 3rem rgba(0, 0, 0, 0.75); }
 html[data-theme="silo"] .app-rail { border-left: 1px solid var(--border); }
@@ -546,7 +560,7 @@ html[data-theme="silo"] .app-status {
    glass notches after the first entry and before the last one. Text
    entries (spans) only: a toolbar of controls keeps the core layout. */
 html[data-theme="silo"] .app-status > span { align-self: stretch; display: flex; align-items: center; margin-block: -0.25rem; }
-html[data-theme="silo"] .app-status > span:first-child:not(:only-child) { border-inline-end: 0.45rem solid var(--bg); padding-inline-end: 1rem; }
+html[data-theme="silo"] .app-status > :is(span, .taskbar-start):first-child:not(:only-child) { border-inline-end: 0.45rem solid var(--bg); padding-inline-end: 1rem; }
 html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-inline-start: auto; border-inline-start: 0.45rem solid var(--bg); padding-inline-start: 1rem; }
 /* Touch tiers: core lets the brand flex to fill the first line so it can
    truncate; this brand is a filled plate, so cap it at its own width. */
@@ -559,8 +573,17 @@ html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-
   html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"] { padding-inline: 0.4em; letter-spacing: 0; }
   /* Keep the bar's controls on one row: the picker gives up width and the
      keyboard hint (no keyboard on a phone) goes, so the header stays short. */
-  html[data-theme="silo"] .app-bar .cluster > .select { flex: 1 1 5rem; inline-size: auto; min-inline-size: 0; }
+  html[data-theme="silo"] .app-bar .cluster > .select { flex: 0 1 5.5rem; inline-size: auto; min-inline-size: 0; padding-inline: 0.5em 1.7em; }
   html[data-theme="silo"] .app-bar .btn > kbd { display: none; }
+  /* Brand plate and actions share the first row (the plate truncates
+     before it wraps); the numbered nav is the second row. */
+  html[data-theme="silo"] .app-bar { --app-bar-padding: 0.35rem 0.6rem; column-gap: 0.4rem; }
+  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; padding: 0.3rem 0.6rem; letter-spacing: 0.08em; align-self: center; }
+  html[data-theme="silo"] .app-bar > .cluster { flex: 0 0 auto; flex-wrap: nowrap; gap: 0.25rem; }
+  /* The search key keeps its icon and its accessible name, not its label. */
+  html[data-theme="silo"] .app-bar .cluster > .btn:has(> kbd) { font-size: 0; padding-inline: 0.7rem; }
+  html[data-theme="silo"] .app-bar .cluster > .btn:has(> kbd) > .icon { width: 1rem; height: 1rem; min-width: 1rem; }
+  html[data-theme="silo"] .app-bar > nav:not(.breadcrumbs) { order: 10; flex: 1 0 100%; }
 }
 @media (min-width: 481px) and (max-width: 900px) {
   html[data-theme="silo"] { --app-padding: 0.75rem 0.9rem 1rem; }
@@ -613,12 +636,109 @@ html[data-theme="silo"][data-variant="legacy"] {
   --bar-chart-bar: repeating-linear-gradient(0deg, var(--accent) 0 3px, rgba(242, 184, 75, 0.55) 3px 4px);
   --readout-glow: 0 0 0.4rem rgba(255, 210, 122, 0.5);
 }
-html[data-theme="silo"][data-variant="legacy"] .app-status {
-  --muted: #4a3410;
+/* The tablet is not a CRT: no steel bezel, plates, scanlines or double
+   rules. A hairline gold frame on warm black with bokeh glow, a cream pill
+   for the brand ("LIBRARY INTEL UNIT"), circular numbered nodes, single
+   1px rules with a ring glyph, and small tracked labels in the margins. */
+html[data-theme="silo"][data-variant="legacy"] {
+  --app-bg: var(--bg);
+  --app-padding: 0.6rem;
+  --app-bar-rule: var(--border);
+  --app-bar-rule-width: 1px;
+  --app-main-bg:
+    radial-gradient(circle at 12% 35%, rgba(242, 184, 75, 0.1), transparent 28%),
+    radial-gradient(circle at 85% 75%, rgba(242, 184, 75, 0.07), transparent 32%),
+    radial-gradient(circle at 60% 10%, rgba(241, 220, 174, 0.05), transparent 25%),
+    var(--bg);
+  --app-status-bg: transparent;
+  --app-status-fg: var(--muted);
+  --app-status-rule: var(--hairline);
+  --modal-header-bg: transparent;
+  --modal-header-fg: var(--accent-2);
+  --modal-border: var(--border);
+  --modal-radius: 0.5rem;
+  --tooltip-bg: var(--silo-plate);
+  --table-head-rule-width: 1px;
+  --tab-radius: 999px;
+  --badge-radius: 999px;
+  --readout-radius: 999px;
+  --readout-border-width: 1px;
+  --pagination-item-radius: 50%;
+  --avatar-radius: 50%;
+  --status-dot-radius: 50%;
+  --lamp-radius: 50%;
+  --app-gutter-art:
+    radial-gradient(circle at 20% 30%, rgba(242, 184, 75, 0.06), transparent 30%),
+    radial-gradient(circle at 80% 70%, rgba(242, 184, 75, 0.05), transparent 30%),
+    var(--bg);
 }
+html[data-theme="silo"][data-variant="legacy"] .app {
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+html[data-theme="silo"][data-variant="legacy"] .app-bar {
+  border-top: 1px solid var(--hairline);
+  border-bottom-style: solid;
+  border-radius: 0;
+}
+html[data-theme="silo"][data-variant="legacy"] .app-bar .nav-brand {
+  align-self: center;
+  border-radius: 999px;
+  padding: 0.3rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+/* Numbered nav entries become the cipher graph's circular nodes. */
+html[data-theme="silo"][data-variant="legacy"] .app-bar :is(.nav-item, .menubar > li > [role="menuitem"])::before {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.7em;
+  block-size: 1.7em;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.8em;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+html[data-theme="silo"][data-variant="legacy"] :is(.nav-item, .menubar > li > [role="menuitem"]) { border-radius: 999px; }
+html[data-theme="silo"][data-variant="legacy"] .panel-header {
+  border-block: 0;
+  border-bottom: 1px solid var(--border);
+}
+html[data-theme="silo"][data-variant="legacy"] .panel-header::before {
+  content: "\25c9";
+  margin-inline-end: 0.6em;
+  color: var(--accent);
+}
+html[data-theme="silo"][data-variant="legacy"] .panel-header::after { content: none; }
+html[data-theme="silo"][data-variant="legacy"] .modal { border-width: 1px; }
+html[data-theme="silo"][data-variant="legacy"] .modal-header {
+  --btn-close-fg: var(--muted);
+  --btn-close-fg-hover: var(--accent-2);
+  --btn-fg: var(--accent-2);
+  --btn-border: var(--border);
+  --text: var(--accent-2);
+  border-bottom: 1px solid var(--border);
+}
+html[data-theme="silo"][data-variant="legacy"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)):not(:focus-within, :has(> :is(.is-invalid, [aria-invalid="true"]))) {
+  border-color: transparent transparent var(--silo-field);
+}
+html[data-theme="silo"][data-variant="legacy"] .tab::after { content: none; }
+/* Status strip: small tracked mono labels in the margin, not a plate. */
+html[data-theme="silo"][data-variant="legacy"] .app-status {
+  --muted: #c4a46a;
+  --success-text: #c6dc7e;
+  --warning-text: #f0b74e;
+  --danger-text: #ff8a76;
+  border-radius: 0;
+  border-top-width: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+html[data-theme="silo"][data-variant="legacy"] .app-status > * { border-inline-color: transparent; }
 
 @media print {
-  html[data-theme="silo"] body { text-shadow: none; }
+  html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: none; }
   html[data-theme="silo"] .meter::after { content: none; }
   html[data-theme="silo"] {
     --app-main-bg: #ffffff;
