@@ -22,7 +22,8 @@ looks *drawn in light* rather than painted.
    the signature.
 3. **Cyan builds, orange opposes.** `--accent` cyan is the system;
    `--accent-2` orange is the adversary — reserved for danger and
-   warning. Never use orange decoratively.
+   warning. Never use orange decoratively. Success is not a new hue but
+   brighter, whiter light (`#c8fff6`); the film has no green.
 4. **The grid is always present.** A 2.5rem cyan line-grid at 6% underlies
    everything.
 5. **Wide tracking, uppercase.** Headings and the brand in Michroma (a wide
@@ -43,7 +44,8 @@ looks *drawn in light* rather than painted.
   2px lit, with an inner glow and, above phone width, a 10px outer bloom.
   The bloom shows only with `corner-shape`, because `clip-path` cuts it
   away. Phones keep the clip-path chamfer and the 1px inner ring but drop
-  the inner glow and the readout/table-head text glow, since glow on every
+  the inner glow, the readout/table-head text glow and the h2/h3 glow
+  (h1 keeps one layer), since glow on every
   surface drops frames while scrolling on a mid-range phone. Keyboard focus is drawn inside the cut: a 2px
   outline inset 5px plus an inner bloom.
 - Alerts and toasts carry a lit 0.2rem bar down the start edge in their
@@ -58,8 +60,15 @@ looks *drawn in light* rather than painted.
   inside a --tap-min hit area, with a white-hot square thumb; the h1
   glow has a white-hot core under the cyan.
 - Numeric readouts (`.stat-value`) glow faintly in Share Tech Mono.
-- Your own chat messages are framed in white light. Charts use one orange
-  (warning) and white for the fifth series, so no two series share a colour.
+- Your own chat messages are framed in white light. Chart series are the
+  Grid's own light — cyan, white, deep cyan, pale cyan, stepped in
+  luminance — with orange only as a fifth series. Meters, progress and
+  sparklines run in cyan; orange and red appear only past the warn and
+  peak marks. Bar-chart columns are traced: a faint tint, a 1px lit ring
+  and a white-hot top edge.
+- Modal and window title bars are a lit header band: uppercase, tracked
+  `0.12em`, over a cyan rule with a faint glow. Popover titles take the
+  same caps. Content titles (list items, messages) stay mixed case.
 - The top bar casts a 12px cyan bloom downward.
 - Selected rows and list/nav items carry a cyan marker. Only the
   playing/now table row (`.is-current`, `aria-current="time"`) is marked
@@ -71,6 +80,9 @@ looks *drawn in light* rather than painted.
 The shell becomes **an enclosure**: 0.75rem padding all round, a thin
 0.35rem lit conduit down the left edge (the rail, drawn as a vertical light
 gradient with a bloom rather than as a panel), and a glowing bar above.
+The rail is decorative, so an app's empty rail slot still lights at desktop
+width (`--app-rail-empty-display: block`); an app with no rail element at
+all gets no conduit.
 
 ## v5 layout
 
@@ -112,8 +124,11 @@ layout at **L1**.
 ## Icons
 
 `icons.svg` redraws the 178 original core icons as lines drawn in light.
-Icons added to core later fall back to the generic set, drawn with square
-caps and mitred joins so they sit closer to the redrawn ones:
+A further 227 later core icons built on a full circle (circle-caret-*,
+coin-*, camera-*, music-*, the small "search/cancel/cog" badges, …) keep
+the generic drawing with every full circle swapped for an octagon. The
+rest fall back to the generic set, drawn with square caps and mitred
+joins so they sit closer to the redrawn ones:
 
 - 24×24 grid, 2px stroke, square caps, mitred joins.
 - Every box is chamfered top-left and bottom-right like the theme's

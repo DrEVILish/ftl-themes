@@ -51,11 +51,11 @@ html[data-theme="tron"] {
   --accent-text: #0af0ff;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #ff8c1a;
   --danger: #ff3d3d;
-  --success: #5effc8;  /* a cyan-leaning green: the film has no mint */
+  --success: #c8fff6;  /* success is brighter, whiter light: the film has no mint */
   --warning: #ff8c1a;
   --on-accent: #001114;
   --on-danger: #1a0000;
-  --on-success: #00110c;
+  --on-success: #001114;
   --radius: 0;
   --font: "Titillium Web", sans-serif;
   --font-mono: "Share Tech Mono", Consolas, monospace;
@@ -121,13 +121,23 @@ html[data-theme="tron"] {
   --desktop-icon-label-fg-selected: var(--accent);
   --bulk-bar-bg: #000;
   --cell-dirty-bg: rgba(255, 140, 26, 0.06);
-  --cell-saved-bg: rgba(94, 255, 200, 0.06);
+  --cell-saved-bg: rgba(200, 255, 246, 0.06);
   --comment-pin-resolved-bg: #000;
   --comment-pin-resolved-fg: var(--text);
 
-  /* Charts: one orange (the adversary) only; the fifth series is white
-     light, so no two series share a colour. */
-  --chart-series-5: #ffffff;
+  /* Charts are drawn in the Grid's light: cyan, white, deep and pale cyan,
+     stepped in luminance. Orange (the adversary) is only a fifth series. */
+  --chart-series-1: var(--accent);
+  --chart-series-2: #ffffff;
+  --chart-series-3: #0a8fa8;
+  --chart-series-4: #7fe9f5;
+  --chart-series-5: var(--accent-2);
+  /* Levels run in cyan; orange and red only past the warn/peak marks. */
+  --meter-low: var(--accent);
+  --sparkline-stroke: var(--accent);
+
+  /* Title bars (modals, windows) are a lit header band, like panels. */
+  --modal-header-bg: rgba(10, 240, 255, 0.06);
 }
 
 html[data-theme="tron"] {
@@ -204,7 +214,8 @@ html[data-theme="tron"] :is(.stat-label, .table th) { font-weight: 600; }
    1px inner ring and border stay, so edges still read as lit lines. */
 @media (max-width: 480px) {
   html[data-theme="tron"] { --panel-shadow: inset 0 0 0 1px rgba(10, 240, 255, 0.5); }
-  html[data-theme="tron"] :is(.stat-value, .table th) { text-shadow: none; }
+  html[data-theme="tron"] :is(.stat-value, .table th, h2, h3) { text-shadow: none; }
+  html[data-theme="tron"] h1 { text-shadow: 0 0 8px var(--accent); }
 }
 /* Michroma is already extended, so it carries less extra tracking than the
    old sans did; it ships one weight, so headings don't fake a bold. */
@@ -213,6 +224,15 @@ html[data-theme="tron"] :is(h1, h2, h3, .nav-brand) {
   font-weight: 400;
 }
 html[data-theme="tron"] .nav-brand { text-transform: uppercase; letter-spacing: 0.04em; }
+/* Title bars and popover titles speak in the label voice: caps, tracked,
+   over a lit rule. Content titles (list items, messages) stay mixed case. */
+html[data-theme="tron"] .modal-header {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-block-end: 1px solid var(--modal-border, var(--accent));
+  box-shadow: 0 1px 6px rgba(10, 240, 255, 0.35);
+}
+html[data-theme="tron"] .popover > :is(strong, b, h1, h2, h3, h4):first-child { text-transform: uppercase; letter-spacing: 0.12em; }
 
 /* Cut corners — the theme's signature shape. clip-path cuts the box, and
    two background layers draw the lit diagonal along each cut so the frame
@@ -334,10 +354,10 @@ html[data-theme="tron"] .btn-danger {
   --btn-shadow-hover: inset 0 0 12px rgba(255, 61, 61, 0.45);
 }
 html[data-theme="tron"] .btn-success {
-  --btn-bg: rgba(94, 255, 200, 0.08);
+  --btn-bg: rgba(200, 255, 246, 0.08);
   --btn-fg: var(--success);
   --btn-border: var(--success);
-  --btn-shadow-hover: inset 0 0 12px rgba(94, 255, 200, 0.4);
+  --btn-shadow-hover: inset 0 0 12px rgba(200, 255, 246, 0.4);
 }
 html[data-theme="tron"] .bulk-bar { box-shadow: 0 0 12px rgba(10, 240, 255, 0.35), inset 0 0 12px rgba(10, 240, 255, 0.12); }
 /* Desktop windows are fixed-height dialogs: wide label tracking wraps a
@@ -354,6 +374,8 @@ html[data-theme="tron"] {
   --app-gap: 0.75rem;
   --app-columns: 0.35rem minmax(0, 1fr);
   --app-rail-display: block;
+  /* The rail is purely decorative, so an app's empty rail slot still lights. */
+  --app-rail-empty-display: block;
   --app-bar-bg: #000;
   --app-bar-rule: var(--accent);
   --app-bar-height: 3rem;
@@ -361,6 +383,9 @@ html[data-theme="tron"] {
   --app-status-bg: #000;
   --app-status-rule: var(--hairline);
 }
+/* Core gives the shell one track up to 900px; drop the empty-rail opt-in
+   there so the conduit leaves no gutter. */
+@media (max-width: 900px) { html[data-theme="tron"] { --app-rail-empty-display: none; } }
 html[data-theme="tron"] .app-bar { box-shadow: 0 1px 12px rgba(10, 240, 255, 0.4); }
 /* A single lit conduit rather than a panel — the rail as light, not as UI. */
 html[data-theme="tron"] .app-rail {
@@ -376,9 +401,9 @@ html[data-theme="tron"] {
   --message-shadow: 0 0 0.4rem rgba(10, 240, 255, 0.35);
   --message-own-border: var(--text);
   --message-own-shadow: 0 0 0.4rem rgba(216, 250, 255, 0.4);
-  --bar-chart-bar: color-mix(in srgb, var(--accent) 18%, transparent);
-  --bar-chart-bar-alt: color-mix(in srgb, var(--accent) 45%, transparent);
-  --bar-chart-shadow: inset 0 0 0 1px var(--accent), 0 0 0.5rem rgba(10, 240, 255, 0.45);
+  --bar-chart-bar: rgba(10, 240, 255, 0.1);
+  --bar-chart-bar-alt: rgba(10, 240, 255, 0.2);
+  --bar-chart-shadow: inset 0 2px 0 #e8fdff, inset 0 0 0 1px var(--accent), 0 0 0.5rem rgba(10, 240, 255, 0.45);
   --bar-chart-radius: 0;
 }
 
