@@ -41,23 +41,29 @@ and the two must never converge.
   (`.badge-button`) on a bar are capsule bar buttons too. The active
   one is the brighter "Done" blue. Every label on a blue bar, switch and
   check labels included, is white and embossed. A black iPhone status strip sits above
-  it in the app shell, with a drawn signal row and battery and no text.
+  it in the app shell, with a drawn signal row, a centred bold "9:41 AM"
+  clock (generated content with empty alt text, so screen readers skip it)
+  and a battery.
   The nav bar and the tab bar are pinned (sticky), as UINavigationBar and
   UITabBar were; on phones, where the demo bar wraps to three rows, only
   the tab bar stays pinned.
 - **The tab bar** is the black glossy `UITabBar`. It is used both for the
   app shell's status strip and for `.tabs`. Tab items keep a fixed width and
   centre as a group, as on an iPad, and share the bar evenly on phones
-  (icon over label when a tab has one). The selected tab is a lit square
+  (icon over label when a tab has one; text-only labels are 0.8rem bold).
+  The selected tab is a lit square
   whose label glows blue. Status text and ghost buttons on the black bars
   (status strip, `.transport`) take light inks.
 - **The slider** is the `UISlider` groove: a blue minimum track and a
   white-to-grey maximum track, each with a rim and an inset shade along
   its top, round-capped, painted inside the padded 24/44px hit area, and
-  a white pearl knob. Firefox (`::-moz-range-progress`) and the two-thumb
-  `.slider.is-range` show both; Chromium exposes no fill, so a single
-  slider there shows the white groove. A vertical slider turns
-  the rim and shade 90 degrees.
+  a white pearl knob. Firefox draws the blue track with
+  `::-moz-range-progress`; Chromium has no fill pseudo-element, so the
+  knob paints it as a border-image reaching back from the knob's left
+  edge (it paints above the knob's fill, so it stops there) to the groove's start,
+  cut to the rounded end by a clip-path notch (left-to-right horizontal
+  sliders; the two-thumb `.slider.is-range` draws its own). A vertical
+  slider turns the rim and shade 90 degrees.
 - **A side rail** (`.nav-rail`) is Mail's mailbox list: one rounded white
   cell group with bold black labels and single hairline separators; the current
   mailbox is the blue selected cell. Capsule bar buttons stay on bars.
@@ -70,11 +76,38 @@ and the two must never converge.
 - **Section headers:** a `.panel-header` is the grouped-table section
   title, bold `#4c566c` with a white emboss and no bar. `.table th` is the
   slim plain-table strip, a gray-blue gradient with white bold type.
-- **Text on the pinstripe** (headings, intro copy and breadcrumbs placed
-  straight in `.app-main`) carries the white emboss of iOS 6 header and
-  footer text. Text inside cells has none.
+- **Text on the pinstripe** (intro copy and breadcrumbs placed straight
+  in `.app-main`, and every `h1`-`h3` in `.app-main` that is not inside a
+  cell, card, panel, list, table, modal or other filled surface) is slate
+  `#4c566c` with the white emboss of iOS 6 header and footer text, so a
+  page title is the same colour on every page. Text inside cells has none.
+- **Grouped cell titles** (`.field-row > .label`) are 17pt-sized
+  (1.0625rem) bold black, as Settings' "Wi-Fi" and "Airplane Mode" are.
+  Adjacent `.field-row`s join into one grouped section: no gap, a single
+  `#cacaca` separator, and rounded corners only on the first and last row.
+- **Checkboxes and radios** (iOS 6 had neither) are glossy white wells in
+  the `#8e9299` bar-button rim; checked, they show the `#385487` checkmark
+  of a selected table cell (a dot for a radio).
+- **Content toolbar icons** (`.btn-ghost.btn-icon`) are plain `#385487`
+  glyphs with a 44px hit area that show the bordered white bar-button
+  capsule on hover and focus. Every button and badge label is bold (700).
+- **The segmented control** splits into equal-width segments, as
+  `UISegmentedControl` always did.
+- **Avatars** are the Contacts photo well: pale `#e4e6ea` with slate
+  `#4c566c` initials inside a white mat and a soft drop shadow.
+- **Message bubbles** are the iOS 6 SMS bubbles (grey received, green
+  sent) with a curved tail at the bottom corner toward the sender.
+- **Window controls** (`.btn-min`, `.btn-max`) in a modal header are dark
+  capsule bar buttons beside the "Done" capsule.
 - **Badges and filter chips** (`.badge`, `.badge-button`) are glossy
   split pills with bold embossed labels; an active chip is the Done blue.
+  A count badge inside a selected blue cell (rail item, list row, table
+  row) inverts to white with a `#015fe6` figure, as Mail's counts did.
+- **Pagination** is a row of bordered white bar buttons (the segmented
+  control's split gradient, `#8e9299` rim, bold slate labels); the
+  current page is the Done blue.
+- **Fields in table cells** keep a 44px minimum width, so a narrow table
+  scrolls instead of squeezing a touch target.
 - **The modal** is the UIAlertView: navy glass with a gloss band at the
   top, a white rim, centered white text and dark glossy capsule buttons
   that stretch to fill the row. The primary button is lighter, as OK was.
@@ -84,12 +117,15 @@ and the two must never converge.
   `.band.is-tinted` is stitched Calendar leather.
 - **Small things:** `.badge-danger` is the SpringBoard red badge with a
   white ring. `kbd` is an iOS keyboard key. A popover gets the iPad's thick
-  navy frame. Toasts are the iOS 5 black notification banner. Tappable
+  navy frame. Toasts are the iOS 5 black notification banner with a black
+  rim; a status toast leads with a small glossy tile in its tone, where the
+  banner showed the app icon. Inline alerts are grouped cells with a 1px
+  tinted rim and no side stripe. Tappable
   list rows (links, buttons and radio-select rows) get a grey disclosure
   chevron; a row that draws its own trailing chevron icon shows it in
   the same `#7b7b7b`. An `.accordion-item` is a grouped cell whose grey
-  chevron turns down when open; dropdown and context-menu rows have
-  hairline separators; `.scrollspy-nav` is a light bordered toolbar.
+  chevron turns down when open; dropdown and context-menu rows are square
+  table cells with straight hairline separators; `.scrollspy-nav` is a light bordered toolbar.
 
 ## Layout
 
@@ -106,9 +142,12 @@ apart from `aqua`.
   on its top half is about 1.7:1. This theme's background gradient spans
   only `#5d779c` to `#5a7499`, so white holds 4.5:1 at every stop
   (`scripts/check.py` measures them). The paler steel of the upper bar
-  is an inset sheen (a shadow) that fades out by the label's x-height:
-  the bar's top edge renders about `#7e95b4`, and the bold 1.25rem
-  title (large text) stays above 4:1. The bar is smooth, with no 50%
+  is an inset sheen (two stacked shadows) over the upper half of the bar:
+  a 1px `#eff2f7` line, then about `#afc0d4` falling to `#5d779c` a
+  little above mid-bar (about 40%; any lower and small bar text drops
+  under 4.5:1), and the bold 1.25rem title (large
+  text) stays at 3:1 or more from its cap line down; bar buttons sit on their own
+  capsules. The bar is smooth, with no 50%
   break, as the reference is. Do not lighten the stops.
 - The count badge (`#8795af` in the reference) and the plain-table
   header strip are darkened for the same reason: their white labels are
@@ -116,7 +155,8 @@ apart from `aqua`.
 - Instrument readouts keep extra padding (`0.3em 0.5em`) inside their
   black gloss box, so the figures never touch the painted edge.
 - The pinstripe contrast is raised slightly, so it still reads on a
-  desktop panel.
+  desktop panel. It is drawn as one 7px tile (not a repeating gradient)
+  to keep scrolling cheap on phones.
 
 ## Tell-tales of an inauthentic result
 
