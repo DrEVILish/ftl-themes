@@ -32,8 +32,10 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    key-edge border and a hard 2px shadow underneath. Pressing moves a key
    down 1px. No gradients that read as gloss.
 4. **Black means selected.** Active nav items, segmented items, pagination,
-   active badges, the highlighted menu item and command row are the black
-   of the OP-1's note dots with white text, not the accent colour.
+   active badges, the highlighted menu item and command row, checked toggle
+   buttons and the selected desktop icon label are the black of the OP-1's
+   note dots with white text, not the accent colour. Selected list, inbox and
+   table rows are a pressed (darker) key with a black edge bar.
 5. **Tight grotesque, silkscreen labels.** Headings are bold with negative
    tracking; panel heads, table heads and form labels are tiny tracked caps
    like the printing beside a key. Display surfaces use the monospace.
@@ -44,11 +46,20 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
   standing in a recessed collar, with a thin value arc around it. The
   cylinder's side (2px, darker shade of the cap) and its shadow are painted
   on the dial, which doesn't turn, so they stay underneath at any value.
-  `.knob-hf/-hmf/-lmf/-lf` are the four encoders.
+  `.knob-hf/-hmf/-lmf/-lf` are the four encoders. The cap top is a flat
+  matte fill with only a 1px lighter rim, no highlight.
 - The rail is a key-face column: the speaker grille (an SVG dot field) on
   top, the four encoder dots under it.
 - The bar's brand sits in a tiny display window (black glass, mono, white).
-- The status strip is display glass.
+- The status strip is display glass. On a phone it wraps to two lines
+  rather than cutting items to one glyph.
+- The slider is a thin black slot (0.3rem, 0.15rem ends) under a small
+  encoder-cap thumb; the hit area stays at the tap minimum.
+- Level meters (`.visualizer`) and `.trace` are small glass windows with
+  white bars and a teal line. A `.bar-chart` on a light key prints its bars
+  in note-key black; sparklines are a thin line with no tinted area.
+- The inbox folder rail and a tinted `.band` are keys too (rounded, key-edge
+  border, 2px side).
 - Every tab carries its encoder's colour dot; the active one is larger and
   pops in three stepped frames (motion-gated), with an underline in its ink.
 - The modal close is one of the black round note keys with a white ×; it
@@ -112,8 +123,9 @@ pictograms (see the key legends in `references/teenage-engineering/`):
 - **L1 (app shell):** the frame, the grille-and-encoder rail, the display
   brand window and the status display strip.
 - Fonts: the manufacturer's grotesque is not free; the system stack
-  (Helvetica Neue, Helvetica, Arial, Liberation Sans) stands in. Nothing is
-  vendored.
+  (Helvetica Neue, Helvetica, Arimo, Arial, Liberation Sans, Nimbus Sans,
+  TeX Gyre Heros, FreeSans) stands in. Nothing is vendored, so a machine
+  with none of these (a bare Linux box) falls back to its default sans.
 
 ## Reference status
 

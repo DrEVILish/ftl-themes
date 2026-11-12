@@ -64,7 +64,7 @@ html[data-theme="teenage-engineering"] {
   --on-danger: #0d0300;
   --on-success: #020a02;
   --radius: 0.5rem;
-  --font: "Helvetica Neue", Helvetica, "Inter", Arial, "Liberation Sans", "Nimbus Sans", sans-serif;
+  --font: "Helvetica Neue", Helvetica, Arimo, Arial, "Liberation Sans", "Nimbus Sans", "Nimbus Sans L", "TeX Gyre Heros", "FreeSans", sans-serif;
   --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
   --flare: var(--te-orange);
   --density: 1;
@@ -188,10 +188,11 @@ html[data-theme="teenage-engineering"] {
   --table-head-fg-hover: var(--text);
   --table-rule: var(--hairline);
   --row-alt-bg: transparent;
-  --row-hover-bg: rgba(10, 143, 208, 0.06);
-  --row-selected-bg: rgba(10, 143, 208, 0.13);
+  --row-hover-bg: rgba(0, 0, 0, 0.04);
+  /* Black means selected: a pressed (darker) key with the black note-key bar. */
+  --row-selected-bg: var(--te-surface-3);
   --row-selected-fg: var(--text);
-  --row-active-marker: inset 3px 0 0 var(--te-blue);
+  --row-active-marker: inset 3px 0 0 var(--te-dot);
 
   /* --- Navigation --------------------------------------------------------- */
   --nav-bg: transparent;
@@ -221,9 +222,15 @@ html[data-theme="teenage-engineering"] {
   --list-border: var(--te-key-edge);
   --list-radius: 0.65rem;
   --list-rule: var(--hairline);
-  --list-active-marker: inset 3px 0 0 var(--te-blue);
+  --list-active-marker: inset 3px 0 0 var(--te-dot);
   --nav-rail-bg: var(--surface);
-  --nav-rail-marker: var(--te-blue);
+  --nav-rail-marker: var(--te-dot);
+  --nav-rail-rule: transparent;
+  --toggle-btn-bg-on: var(--te-dot);
+  --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: var(--te-dot);
+  --desktop-icon-label-bg-selected: var(--te-dot);
+  --desktop-icon-label-fg-selected: #ffffff;
 
   /* --- Small parts --------------------------------------------------------- */
   --badge-bg: var(--te-key-hi);
@@ -261,7 +268,9 @@ html[data-theme="teenage-engineering"] {
   --switch-border-on: #1f7a1f;
   --switch-thumb-bg-on: #ffffff;
   --slider-height: 0.3rem;
-  --slider-radius: 999px;
+  /* Sparklines: a thin printed line, no tinted area. */
+  --sparkline-area-opacity: 0;
+  --slider-radius: 0.15rem;  /* half the 0.3rem slot: the content-box track keeps flat, rounded ends */
   --slider-bg: var(--te-dot);
   --slider-border-width: 0;
   --slider-thumb-size: 1.1rem;
@@ -317,8 +326,7 @@ html[data-theme="teenage-engineering"] {
   --eq-grid: #2a2d31;
   --eq-line: var(--te-glyph);
   --eq-fill: rgba(67, 206, 191, 0.22);
-  --bar-chart-bar: var(--te-blue);
-  --bar-chart-bar-alt: var(--te-orange);
+  --bar-chart-bar: var(--te-dot);  /* bars on a light key print in note-key black, not a blue fill */
   --bar-chart-radius: 2px;
   --bar-chart-axis: var(--border);
 
@@ -521,6 +529,22 @@ html[data-theme="teenage-engineering"] .chart {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 html[data-theme="teenage-engineering"] .readout { font-weight: 400; }
+/* Level meters and traces are machine values: thin white/teal on the glass. */
+html[data-theme="teenage-engineering"] :is(.visualizer, .trace) {
+  --visualizer-fg: var(--te-glyph);
+  --trace-fg: var(--te-teal);
+  --trace-axis: #3a3e42;
+  padding: 0.35rem;
+  border-radius: 0.5rem;
+  background: var(--te-screen);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+/* The folder rail and a tinted band are keys too: rounded, with a 2px side. */
+html[data-theme="teenage-engineering"] :is(.nav-rail, .band.is-tinted) {
+  border: 1px solid var(--te-key-edge);
+  border-radius: 0.6rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 0 var(--te-key-edge);
+}
 /* The scribble strip is display glass on a light key: give its text room. */
 html[data-theme="teenage-engineering"] .scribble { padding: 0.3rem 0.45rem; font-family: var(--font-mono); }
 /* A readout printed inside a gauge is already on the gauge's glass. */
@@ -583,9 +607,10 @@ html[data-theme="teenage-engineering"] .knob-dial::after {
   inset: calc(var(--knob-arc-width, 3px) + 3px);
   background:
     linear-gradient(var(--knob-pointer, #fff), var(--knob-pointer, #fff)) 50% 6% / 3px 42% no-repeat,
-    radial-gradient(circle, color-mix(in srgb, var(--knob-color, var(--te-blue)) 86%, #fff) 0, var(--knob-color, var(--te-blue)) 72%);
+    var(--knob-color, var(--te-blue));
   border: 1px solid color-mix(in srgb, var(--knob-color, var(--te-blue)) 72%, #000);
-  box-shadow: none;
+  /* Flat matte top: only a 1px lighter rim where the top meets the side. */
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--knob-color, var(--te-blue)) 80%, #fff);
 }
 html[data-theme="teenage-engineering"] .knob-label { letter-spacing: 0.1em; }
 
@@ -714,6 +739,9 @@ html[data-theme="teenage-engineering"] .app-status { box-shadow: inset 0 1px 3px
 /* Touch tiers: a thinner frame. */
 @container style(--tier: mobile) {
   html[data-theme="teenage-engineering"] .app { --app-padding: 0.35rem; --app-gap: 0.35rem; }
+  /* The wide mono face does not fit one phone line: the strip wraps to two
+     instead of cutting each item to one glyph. */
+  html[data-theme="teenage-engineering"] .app-status { flex-wrap: wrap; row-gap: 0.2rem; letter-spacing: 0; font-size: 0.75rem; }
 }
 
 /* --- XL gutters (v5): the key bed carries on ----------------------------- *
