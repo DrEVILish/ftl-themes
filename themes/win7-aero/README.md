@@ -37,13 +37,15 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 ## Signature details
 
 - Modals and dropdowns carry a real `backdrop-filter: blur(20px)
-  saturate(1.6)`, the title bar and status strip 24px, the client area a
+  saturate(0.65)`, the title bar and status strip 24px, the client area a
   plain `blur(20px)`; buttons, panels and toolbars on the white client
   area do not blur again. Touch devices drop to `blur(12px)`.
 - The title bar carries Aero's faint diagonal **glare streaks**, a 1px
   dark outer frame, black caption text with a soft **white glow** behind
   it, and the joined **caption-button group** (min / max / red close)
-  hanging flush from the top edge, drawn as one inline SVG. Bar text and
+  hanging flush from the top edge, drawn as one inline SVG. The glass
+  desaturates what shows through it (`saturate(0.65)`), so the frame
+  reads as Sky's cool blue-grey over the wallpaper, not cornflower. Bar text and
   breadcrumbs are `#000` with the glow, never Luna's white outline.
 - The window frame: the white client area sits `--w7-frame` (7px) inside
   a tinted glass border down both sides, as dialogs (`--modal-bg`) do.
@@ -52,17 +54,22 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   navy `#1e395b`.
 - Desktop windows: glass frame and black-with-glow caption whether active
   or not, glass minimise/maximise beside the 43×20 red close with its
-  white ×. The taskbar (and any `.app-status.taskbar`) is dark tinted
-  glass with a transparent tray; the Start button is the round orb.
+  white ×, also when the buttons are wrapped in their own span. The
+  taskbar (and any `.app-status.taskbar`) is translucent blue-grey glass
+  (`rgb(40 70 100 / 0.55)` plus 22% tint) with a white top highlight and
+  white text on a dark text-shadow; the Start button is the round orb.
 - Explorer's command bar (`--toolbar-bg`, pale blue `#f5faff → #dce8f6`),
   details-view headers (white → `#f1f5fb`, `#d5dfe5` divider), the Win7
-  trackbar (a 4px groove with a `#8e8f8f` top edge, grey-gloss thumb),
+  trackbar (a 4px groove with a `#8e8f8f` top edge and white bottom
+  edge, drawn on the content box inside core's 24/44px hit area, sideways
+  for vertical faders; grey-gloss thumb),
   check boxes with a `#4a5f97` tick — no Luna beige, orange or green
   left on controls.
 - The desktop is the Windows 7 **"Harmony"** wallpaper: deep-to-bright
   blue, glowing light swooshes and a bloom where the logo sits — sharp
   enough shapes that the frost visibly softens them.
-- Selection is Explorer's pale-blue fill in a `#99d1ff` frame; tabs are
+- Selection is Explorer's pale-blue fill in a 1px `#7da2ce` frame, never
+  a leading accent bar (tables, lists, side nav, ticket cards); tabs are
   raised gloss tabs, the selected one white; progress is the glossy
   green bar.
 
@@ -115,7 +122,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-`--font` is `"Segoe UI", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not, so there Tahoma or the generic sans renders and the look shifts noticeably. Segoe UI is not open-licensed, so vendoring is not an option.
+`--font` is `"Segoe UI", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not, so there Tahoma or the generic sans renders and the look shifts noticeably. Segoe UI is not open-licensed, so vendoring is not an option. Its open (OFL) metric-compatible stand-in, Selawik, would belong after it in the stack once it is vendored into `assets/fonts/` (requested; not done in this theme folder).
 
 ## Contrast honesty
 
@@ -147,8 +154,10 @@ blur, still legible, just not glassy.
 
 Windows 7's *Personalize → Window Color* tinted all the glass. The theme
 does the same through one token, `--aero-tint` (default Sky `#74b8fc`),
-mixed into translucent white on the title bar (32–45%), the side frame
-and status strip (36–50%) and panel captions (into dark on the taskbar), so the black caption text with its
+mixed into a thin blue-grey frost (`--w7-frost`, `rgb(214 222 232 / 0.26–0.34)`)
+on the title bar and dialogs (26–34%), the side frame (30–38%) and status
+strip (28–34%), into near-white on panel captions and into dark blue-grey
+on the taskbar, so the desktop carries the colour and the black caption text with its
 white glow stays readable at every tint. The other fifteen presets are
 variants: `twilight`, `sea`, `leaf`, `lime`, `sun`, `pumpkin`, `ruby`,
 `fuchsia`, `blush`, `violet`, `lavender`, `taupe`, `chocolate`, `slate`,
