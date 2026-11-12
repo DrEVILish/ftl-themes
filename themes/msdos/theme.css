@@ -314,7 +314,8 @@ html[data-theme="msdos"] .panel-header > :first-child { flex: none; max-width: 1
 /* A drawer has no top frame line to set the title into, and a drawer or
    a .scroll panel scrolls, so it would clip a title pulled up over its
    edge: there the tab sits at the top of the content instead. */
-html[data-theme="msdos"] :is(.drawer, .scroll) > .panel-header { margin-top: 0; }
+/* Its top gap matches the half-cell the tab has elsewhere. */
+html[data-theme="msdos"] :is(.drawer, .scroll) > .panel-header { margin-top: 0.25rem; }
 /* The header is only as wide as its title, so a close button goes to the
    modal's top-right corner instead of the header row. */
 /* Close (v5): DOS dialogs closed with [■] at the left of the frame. */
@@ -349,6 +350,8 @@ html[data-theme="msdos"] {
   --app-status-bg: #000000;
   --app-status-fg: #aaaaaa;
   --app-status-padding: 0.35rem 0.5rem;
+  /* The desktop taskbar is the status strip too: same 4px+ text inset. */
+  --taskbar-padding: 0.35rem 0.3rem;
   --app-main-padding: 0.75rem;
 }
 /* The Norton Commander F-key row is the single most recognizable DOS/NC
@@ -397,6 +400,13 @@ html[data-theme="msdos"] .app-status::before {
 html[data-theme="msdos"] .app-status::after {
   content: "1       2       3       4       5       6       7       8       9       10     ";
   color: #aaaaaa;
+}
+/* A phone desktop (dock or home screen) lifts the taskbar tray into
+   the menu bar: no F-key row there (it landed over the tray). */
+@container style(--_shell: dock) or style(--_shell: home) {
+  html[data-theme="msdos"] .desktop-bar { padding-top: 0; }
+  html[data-theme="msdos"] .desktop-bar::before,
+  html[data-theme="msdos"] .desktop-bar::after { content: none; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the Turbo Vision desktop. Beyond the
