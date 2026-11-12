@@ -45,7 +45,10 @@ lookalike. The colours are chosen, not sampled.
    shadow. Depth cues cost scanning time and add nothing to a list.
 3. **Density is a feature.** `--density: 0.85`, plus cue-list row padding
    (`--cell-pad-y: 0.25rem`, `--list-item-padding: 0.35rem 0.75rem`, about a
-   26px table row). Touch pointers keep core's padding as the tap floor.
+   26px table row; a checkbox column's 24px tick reaches into the cell
+   padding instead of stretching the row). Body text is 14px on fine
+   pointers, the size QLab and Eos read at; touch keeps 16px and core's
+   padding as the tap floor.
    Fitting more of the cue list on screen is worth more than breathing room.
 4. **Amber is state, not decoration.** `#ff8c1a` marks the active cue, the
    armed transport, the thing that is about to happen. Brand text, the
@@ -76,9 +79,8 @@ lookalike. The colours are chosen, not sampled.
 - **The transport is the theme.** A flat strip with a 0.3rem amber left
   edge, carrying GO. GO is the only solid amber block at rest (1.9rem,
   dark legend) and blooms on hover — a deliberate, and the *only*,
-  exception to the no-glow rule. `.btn-primary` is an amber outline so it
-  never out-shouts GO; `.btn-primary` is a light-grey rim and secondary and
-  tertiary labels are plain `--text`.
+  exception to the no-glow rule. `.btn-primary` is a light-grey rim so it
+  never out-shouts GO, and secondary and tertiary labels are plain `--text`.
 - **The playhead.** The cue standing by (`tr.is-active`, `.list-item.is-active`)
   carries QLab's light right-pointing triangle (0.55 by 0.7rem) in a
   shared 1.2rem leading gutter, over the amber tint, with a 1px amber
@@ -92,17 +94,23 @@ lookalike. The colours are chosen, not sampled.
   radio tab), the current `.nav-item` and the current page link in a
   `.nav`/`.sidebar`/`.navbar`/app-bar nav (`aria-current="page"`) carry the
   same light triangle, with no extra amber; in a vertical `.nav-rail` it sits
-  in a shared gutter so the folder labels line up. The current item of any
-  list is the cue standing by.
+  in a shared gutter so the folder labels line up (the rail's amber leading
+  edge is off, `--nav-rail-marker: transparent`), and counts in nav items
+  are neutral badges. A `.list` inside a `nav` (settings sections, mail
+  folders and messages) is navigation too: its current item is the triangle
+  on the neutral `#333` lift, with no amber tint or outline. The current
+  item of any other list is the cue standing by.
 - **Headings are console labels.** Section h2/h3 are small uppercase
-  `--muted` labels with the same 0.08em tracking as every other legend
-  (`--label-tracking`), h3 a step smaller but bold; h1 (the page or workspace title), marketing headlines
+  labels with the same 0.08em tracking as every other legend
+  (`--label-tracking`): h2 0.9rem in `--text` with 0.5rem below it, h3
+  0.72rem bold in `--muted`; h1 (the page or workspace title), marketing headlines
   and content titles (an article's h2, prose headings) stay `--text` in
   mixed case with normal tracking, the way show-control apps title their
   windows.
 - **Square everything.** Badges, avatars, switches, slider thumbs, icon
   buttons, carousel dots/arrows and avatar presence lamps use `--radius`
-  (or 0), not pills or circles. The square presence lamp is 0.5rem with a
+  (or 0), not pills or circles. Line charts use square-ended traces, small
+  2px points and a faint area fill (`--chart-area-opacity: 0.06`). The square presence lamp is 0.5rem with a
   1px ring, smaller than core's round dot, so it clears the initials. Overlay shadows are
   set to `none` explicitly (`--panel-shadow` and friends).
 - **Filter chips are keys.** An idle `.badge-button` has a 1px `--border`
@@ -110,7 +118,8 @@ lookalike. The colours are chosen, not sampled.
 - **Selection is neutral.** A selected row lifts to `#333`, and so does the
   bulk-action bar, which keeps only a 2px amber leading edge; the amber tint
   belongs to the one standing-by row. Table heads, brand, info alerts,
-  icons (desktop, window and tree glyphs), context-menu hover and the
+  icons (desktop, window and tree glyphs, selected or not; a selected
+  desktop icon's label alone turns amber), context-menu hover and the
   default chart series are neutral.
 - **Meters** use conventional green/amber/red banding, squared off
   (`--meter-radius: 0`).
@@ -133,7 +142,8 @@ whole shell.
   (481–900px) use core's one-column shell. On phone the bar holds two
   lines at most: brand and actions share the first (the brand truncates,
   the select narrows and the Ctrl K hint is hidden), the nav takes the
-  second.
+  second. Segmented and toggle-group legends stay on one line; the strip
+  scrolls instead.
 - **Table cells with inputs** keep a 2.75rem minimum width, so a narrow
   table scrolls instead of squeezing an input below a tap target.
 - **XL gutter art.** The stage floor beside the console: a hairline
