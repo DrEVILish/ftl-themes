@@ -53,19 +53,24 @@ and what was derived rather than measured is in
 ## Signature details
 
 - Captions use Arial Bold (XenoMorph's `.uis`: `FontName=Arial`,
-  `FontWeight=700`, `FontHeight=14`); XenoMorph's caption text glows blue.
+  `FontWeight=700`, `FontHeight=14`); XenoMorph's caption text stays
+  near-white with a faint blue halo.
 - Caption buttons are drawn per suite (`--luna-caption`): silver squares
   with dark glyphs (XenoMorph, ALX, AlienMorph), dark with white or red
   glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
-  (Area-51), beige with an orange close (Aurora).
+  (Area-51), beige with an orange close (Aurora). XenoMorph's min, max
+  and close join into one black-framed silver strip with 1px dividers and
+  rounded outer corners; close lights blue on hover.
 - The Start button follows the suite: XenoMorph's 36px blue orb in a
   silver ring, with no label, rising out of the 31px taskbar; the light
   "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
-  dark button, Area-51's red, Aurora's gold pill.
+  dark button, Area-51's red, Aurora's gold pill. A status bar that
+  already holds a real Start button draws no second one.
 - Push buttons, primary and secondary included, wear each suite's face:
   XenoMorph's grey gloss (light top, darker bottom, white lip) in a 1px
   black frame, Darkstar's black with white text, Area-51's red with bold
-  yellow text, silver or beige in the others. XenoMorph's hover and
+  yellow text, Invader's silver with a black frame and bold black label
+  (its Theme Manager), silver or beige in the others. XenoMorph's hover and
   default (primary) button take the blue glow fill of the hovered Cancel
   in its Display Properties; the suite draws that label white, the theme
   keeps it black for 4.5:1.
@@ -94,7 +99,8 @@ and what was derived rather than measured is in
   face grey so no page text sits on the dark wallpaper.
 - Where Tahoma and Arial are missing, the stacks fall back to DejaVu Sans
   Condensed and Arimo/Liberation Sans, closer in width to the originals
-  than DejaVu Sans.
+  than DejaVu Sans. Monospace is Lucida Console, then Courier New and its
+  metric twins Liberation Mono and Cousine.
 
 ## Accessibility notes
 
@@ -110,6 +116,11 @@ companion carries text:
   callouts sit on a pale chip for the same reason.
 - `--success-text` is `#0f5a24` (`#073514` for tip callouts on the darker
   Darkstar and ALX faces) so the tip callout passes 4.5:1.
+- Focus is XP's black rectangle: `--focus` is black in every suite (the
+  highlights reached only 1.1-2.3:1 on the faces), and fields get an
+  opaque 2px ring. On the title bars, taskbar and Start-menu columns the
+  focus takes that bar's own text colour, so it stays visible on dark
+  chrome.
 - The taskbar's status text uses the taskbar's own foreground.
 - Area-51's yellow button text sits on the darker middle of its red gloss
   (`#b01a14`, 5.2:1).
