@@ -22,8 +22,11 @@ not plastic or glass.
    painted solid — no gradient, no gloss highlight.
 3. **Underlined text fields.** Inputs are MD2 filled fields: a #f5f5f5
    fill with no box border, only a 1px underline at 42% black (3:1 on the
-   fill) that thickens to a 2px accent line on focus. Distinct from every
-   boxed-input theme in the catalog.
+   fill) that thickens to a 2px accent line on focus. Input-group addons
+   and attached text buttons
+   share the same fill and underline, and an invalid field keeps the grey
+   fill, turning only its underline red. Distinct from every boxed-input
+   theme in the catalog.
 4. **Uppercase button labels.** Buttons set their text
    `text-transform: uppercase` in Medium weight with MD2's 1.25px
    (0.089em) tracking, on a 36px-tall button — the MD2 button-label voice.
@@ -41,9 +44,11 @@ not plastic or glass.
 - Menus, context menus and popovers are borderless white sheets; toasts
   are the MD2 snackbar (dark #323232, white text, #bb86fc links), keeping
   their state as a 4px leading bar.
-- The switch is the MD2 switch: a borderless track (accent at 50% on,
-  42% black off) under a larger thumb that overhangs it and casts a
-  shadow. Sliders are a 4px accent track at 38% with an accent thumb.
+- The switch is the MD2 switch: a borderless track (secondary at 50% on,
+  42% black off) under a larger white thumb that overhangs it, with the
+  MD2 thumb shadow and a 12% ring. Checkboxes, radios and the on switch
+  take the baseline secondary in its darker variant #018786 (3:1 on
+  white). Sliders are a 4px accent track at 38% with an accent thumb.
 - `.btn-primary.btn-icon` is the mini FAB: 40px, baseline secondary teal
   (#03dac6) with black icon.
 - Table headers are sentence-case Medium at body size, on roomier rows.
@@ -51,14 +56,27 @@ not plastic or glass.
 - Primary buttons fill solid `--accent` with white text; secondary and
   ghost buttons drop the shadow entirely — Material's "text button" and
   "outlined button" variants have no elevation.
-- Selected/active table rows tint with a translucent accent wash rather
-  than a hard fill, keeping to flat-color discipline.
+- Selected/active rows, list items and nav items tint with a translucent
+  accent wash, never a leading accent bar.
+- Card, panel and dialog titles are Headline 6: 20px Medium in the text
+  color, with no rule under them. Dialog actions are text buttons
+  (accent label, no outline or fill).
+- Segmented controls and toggle groups are one 12%-black outlined strip;
+  the selected segment is a 12% accent tint with accent text. Range
+  button groups are outlined, not raised.
+- At XL (1801px+) the purple app bar still spans the full viewport.
 
 ## Layout
 
 The shell keeps the page background flat and puts all its depth into the
 **app bar**, which floats above the content on its own elevation shadow —
 no border, no gradient, just color and shadow.
+
+## Known gaps
+
+- Roboto isn't vendored (fonts live outside the theme folder), so the
+  stack falls back to the platform sans; on Linux that is DejaVu Sans,
+  which is wider than Roboto.
 
 ## Tell-tales of an inauthentic result
 
