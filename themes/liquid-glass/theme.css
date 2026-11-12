@@ -194,6 +194,24 @@ html[data-theme="liquid-glass"] {
   --badge-radius: 999px;
   --badge-bg: rgba(118, 118, 128, 0.14);
   --badge-fg: var(--muted);
+  /* A selected filter chip is the grey lens with a blue label, like every
+     other selection here — never a solid blue chip. */
+  --badge-bg-active: var(--lg-lens);
+  --badge-fg-active: var(--accent-text);
+
+  /* The trigger (.btn-go) is the prominent tinted-glass capsule, the same
+     piece of glass as .btn-primary. */
+  --go-radius: 999px;
+  --go-bg: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #ffffff), var(--accent) 60%);
+  --go-bg-hover: linear-gradient(180deg, color-mix(in srgb, var(--accent) 72%, #ffffff), color-mix(in srgb, var(--accent) 92%, #ffffff) 60%);
+  --go-fg: #ffffff;
+  --go-border: transparent;
+  --go-border-width: 0;
+  --go-shadow: var(--lg-rim), 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent);
+  --go-shadow-hover: var(--lg-rim), 0 8px 24px color-mix(in srgb, var(--accent) 45%, transparent);
+
+  /* Cell states and in-cell editors are rounded lenses, not sharp boxes. */
+  --cell-input-radius: 8px;
 
   /* Surfaces in the CONTENT layer are a standard thick material, not
      Liquid Glass: HIG — "Don't use Liquid Glass in the content layer."
@@ -402,6 +420,10 @@ html[data-theme="liquid-glass"] h3 {
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 2px rgba(255, 255, 255, 0.6);
 }
 html[data-theme="liquid-glass"] h1 { font-size: 2.1rem; letter-spacing: -0.025em; }
+/* SF Text runs slightly tight at text sizes (apple.com sets about
+   -0.016em at 14-17px); code keeps its monospace rhythm. */
+html[data-theme="liquid-glass"] body { letter-spacing: -0.012em; }
+html[data-theme="liquid-glass"] :is(code, kbd, pre, samp, .mono, .log) { letter-spacing: normal; }
 
 /* --- Glass, applied --------------------------------------------------------
  * Shape and the backdrop filter only; fills come from the tokens above, so
@@ -453,6 +475,29 @@ html[data-theme="liquid-glass"] .btn-ghost {
   --btn-shadow-hover: none;
 }
 html[data-theme="liquid-glass"] .btn-ghost:not(:hover) { -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* The trigger speaks in Apple sentence case, semibold, not tracked caps. */
+html[data-theme="liquid-glass"] .btn-go { --btn-transform: none; --btn-tracking: normal; --btn-weight: 600; }
+
+/* Filter chips: the toolbar's own size and weight; selected = grey lens. */
+html[data-theme="liquid-glass"] .badge-button { font-size: 0.8em; font-weight: 500; }
+html[data-theme="liquid-glass"] .badge-button.is-active { font-weight: 600; }
+
+/* Section headers are sentence case, semibold, grey, separated by space
+   rather than a rule (Settings' inset grouped lists). */
+html[data-theme="liquid-glass"] .field-group-title {
+  border-bottom: 0;
+  font-size: 0.85em;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Editable-cell states: rounded 8px lenses (the dirty bar curves with the
+   corner), never a sharp box. */
+html[data-theme="liquid-glass"] .table tr > td:is(.is-dirty, .is-saving, .htmx-request, .is-saved, .is-editing, .is-editable:focus-visible, [aria-invalid="true"], :has(> [aria-invalid="true"])) { border-radius: 8px; }
+
+/* Log rows sit inside the rounded console, their level bars rounded too. */
+html[data-theme="liquid-glass"] .log { padding-inline: 6px; }
+html[data-theme="liquid-glass"] .log-line { border-radius: 6px; }
 
 /* Grouped toolbar buttons share one capsule of glass (Safari's back/
    forward pair, Preview's zoom cluster). */
@@ -483,7 +528,7 @@ html[data-theme="liquid-glass"] .input-group > :not(:first-child) { border-start
 
 /* Switch: the wider iOS 26 track with a capsule knob that is a little
    wider than tall. */
-html[data-theme="liquid-glass"] .switch { --switch-shift: calc(1.25em * var(--density)); }
+html[data-theme="liquid-glass"] .switch { --switch-shift: calc(1.25em * var(--density)); flex-shrink: 0; }
 html[data-theme="liquid-glass"] .switch:not(button),
 html[data-theme="liquid-glass"] button.switch .switch-track {
   width: calc(3.1em * var(--density));
@@ -511,6 +556,17 @@ html[data-theme="liquid-glass"] .slider:not(.is-vertical, .is-range > .slider) {
 html[data-theme="liquid-glass"] .slider:not(.is-vertical, .is-range > .slider)::-webkit-slider-thumb {
   border-image: linear-gradient(transparent calc(50% - var(--slider-height) / 2), var(--accent-2) 0 calc(50% + var(--slider-height) / 2), transparent 0) 0 0 0 100% / 0 0 0 calc(100vw + 1px) / 0 0 0 100vw;
 }
+/* Vertical: the same thin capsule standing up. Core's --tap-min padding is
+   logical, which under vertical-lr lands top and bottom; physical left and
+   right padding put it beside the track. The fill runs up from the bottom
+   (min) to the thumb. */
+html[data-theme="liquid-glass"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+  overflow: hidden;
+}
+html[data-theme="liquid-glass"] .slider.is-vertical:not(.is-range > .slider)::-webkit-slider-thumb {
+  border-image: linear-gradient(90deg, transparent calc(50% - var(--slider-height) / 2), var(--accent-2) 0 calc(50% + var(--slider-height) / 2), transparent 0) 0 0 100% 0 / 0 0 calc(100vh + 1px) 0 / 0 0 100vh 0;
+}
 
 /* Segmented: the selected segment is a lifted white lens. */
 html[data-theme="liquid-glass"] .segmented-item.is-active {
@@ -533,6 +589,10 @@ html[data-theme="liquid-glass"] .toggle-group {
   background: var(--segmented-bg);
 }
 html[data-theme="liquid-glass"] .toggle-group > .toggle-btn { border-radius: 999px; margin: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+html[data-theme="liquid-glass"] :is(.toggle-group:not(.is-block, .is-stacked) > .toggle-btn, .segmented-item) { flex-shrink: 0; white-space: nowrap; }
+/* A segmented control never wraps a label: the track scrolls sideways. */
+html[data-theme="liquid-glass"] :is(.toggle-group, .segmented):not(.is-block, .is-stacked) { overflow-x: auto; scrollbar-width: none; }
+html[data-theme="liquid-glass"] :is(.toggle-group > .toggle-btn, .segmented-item):has(input:focus-visible) { outline-offset: -3px; }
 html[data-theme="liquid-glass"] .toggle-group > .toggle-btn:has(input:checked) {
   box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.04), 0 3px 8px rgba(0, 0, 0, 0.12);
   font-weight: 600;
@@ -743,6 +803,11 @@ html[data-theme="liquid-glass"] {
   --app-status-radius: 999px;
   --app-status-padding: 0.35rem 0.5rem 0.35rem 1.1rem;
 }
+/* Desktop: the window stands 1.5rem off the screen edge so the Tahoe
+   waves frame it, as the wallpaper frames a Mac window. */
+@media (min-width: 901px) {
+  html[data-theme="liquid-glass"] { --app-padding: 1.5rem; }
+}
 html[data-theme="liquid-glass"] .app-bar,
 html[data-theme="liquid-glass"] .app-status {
   -webkit-backdrop-filter: var(--lg-blur);
@@ -828,9 +893,10 @@ html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .toolbar, .tabs, .tra
     grid-row: auto;
     margin-top: 0;
     padding: 1rem 0.75rem 4.8rem;
-    /* Touch tiers: a lighter blur on the big pane keeps scrolling smooth. */
-    -webkit-backdrop-filter: blur(16px) saturate(110%) brightness(1.04);
-    backdrop-filter: blur(16px) saturate(110%) brightness(1.04);
+    /* Touch tiers: a lighter, single-pass blur on the big pane keeps
+       scrolling smooth (the soft wallpaper behind it needs no more). */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
   /* Anything inside the near-white pane has nothing visible to blur (its
      fill and rim carry the look); on phones and tablets it skips the
@@ -1014,19 +1080,20 @@ html[data-theme="liquid-glass"][data-variant="dark"] .desktop-window > .modal { 
    bar (close, minimise, zoom: 12px discs with a 0.5px ring, glyphs only on
    hover), no window icon, no menu-bar strip or hairline. Each light keeps a
    --tap-min box around its 12px disc. */
-html[data-theme="liquid-glass"] .desktop-window .modal-header {
+html[data-theme="liquid-glass"] :is(.desktop-window .modal-header, .modal-header:has(.btn-min, .btn-max)) {
   --btn-close-push: 0;
   --btn-close-width: var(--tap-min);
   --btn-close-height: var(--tap-min);
   --btn-close-radius: 50%;
   --btn-close-glyph-size: 0.62rem;
+  --btn-close-fg: transparent;
   --btn-close-fg-hover: rgba(0, 0, 0, 0.6);
   --modal-header-close-fg: transparent;
   --btn-min-glyph: "\2212";
   --btn-max-glyph: "+";
   --window-header-filter-inactive: grayscale(1) opacity(0.7);
-  padding: 0.4rem 0.75rem;
 }
+html[data-theme="liquid-glass"] .desktop-window .modal-header { padding: 0.4rem 0.75rem; }
 html[data-theme="liquid-glass"] .desktop-window .modal-header > .icon { display: none; }
 /* The Tahoe window title: 13px semibold, centred in the title bar. */
 html[data-theme="liquid-glass"] .desktop-window .window-title {
@@ -1040,16 +1107,29 @@ html[data-theme="liquid-glass"] .desktop-window .window-title {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-html[data-theme="liquid-glass"] .desktop-window .modal-header > :is(.btn-close, .btn-min, .btn-max) {
+/* A window whose caption buttons sit in their own wrapper (the generic
+   window pattern): the wrapper moves to the leading edge and the title
+   takes the rest of the bar, which uses up the free space a trailing
+   margin-left:auto would otherwise push with. */
+html[data-theme="liquid-glass"] .modal-header:has(.btn-min, .btn-max) > :has(> :is(.btn-close, .btn-min, .btn-max)) { order: -1; }
+html[data-theme="liquid-glass"] .modal-header:has(.btn-min, .btn-max) > :not(:has(.btn-close, .btn-min, .btn-max), .icon, .btn-close, .btn-min, .btn-max) {
+  flex: 1;
+  min-inline-size: 0;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+html[data-theme="liquid-glass"] :is(.desktop-window .modal-header, .modal-header:has(.btn-min, .btn-max)) :is(.btn-close, .btn-min, .btn-max) {
   order: -1;
   margin-inline-end: -0.2rem;
   font-weight: 700;
   --btn-close-bg: radial-gradient(circle, var(--lg-light) 5.5px, rgba(0, 0, 0, 0.12) 5.5px 6px, transparent 6.5px);
   --btn-close-bg-hover: var(--btn-close-bg);
 }
-html[data-theme="liquid-glass"] .desktop-window .modal-header > .btn-close { order: -2; --lg-light: #ff5f57; }
-html[data-theme="liquid-glass"] .desktop-window .modal-header > .btn-min { --lg-light: #febc2e; }
-html[data-theme="liquid-glass"] .desktop-window .modal-header > .btn-max { --lg-light: #28c840; margin-inline-end: 0.35rem; }
+html[data-theme="liquid-glass"] :is(.desktop-window .modal-header, .modal-header:has(.btn-min, .btn-max)) .btn-close { order: -2; --lg-light: #ff5f57; }
+html[data-theme="liquid-glass"] :is(.desktop-window .modal-header, .modal-header:has(.btn-min, .btn-max)) .btn-min { --lg-light: #febc2e; }
+html[data-theme="liquid-glass"] :is(.desktop-window .modal-header, .modal-header:has(.btn-min, .btn-max)) .btn-max { --lg-light: #28c840; margin-inline-end: 0.35rem; }
 html[data-theme="liquid-glass"] .desktop-window .menubar { --menubar-bg: transparent; --menubar-rule-width: 0; }
 /* A dialog's buttons stay in view at the foot of the window as it scrolls. */
 html[data-theme="liquid-glass"] .desktop-window .window-body > .modal-footer {

@@ -41,7 +41,7 @@ touching the edge of the screen.
 5. **Legibility beats transparency.** Small controls use the *clear*
    weight; anything carrying body text uses the *regular* weight (a 70–80%
    white scrim), and the window pane under the content is 84–88% white,
-   blurred without the saturate boost, so the content layer reads as white
+   blurred without the saturate boost (a plain `blur(10px)` up to 900px), so the content layer reads as white
    and `--muted` text holds 4.5:1 over the darkest wallpaper blue. Headings
    that can land on the wallpaper carry a faint white halo. Text never sits
    on the bare wallpaper: an L0 page (no app shell) and any block beside
@@ -50,8 +50,9 @@ touching the edge of the screen.
    selected labels and focus; selection is a grey lens with a blue label
    (or, in segmented controls, toggle groups and a `.btn-group`'s
    `.btn-primary`, a lifted white lens on a grey track), not a blue fill.
-   Lists and sidebars select the same way; only table multi-select keeps a
-   pale blue band, as Finder does.
+   Lists, sidebars and selected filter chips (`.badge-button.is-active`)
+   select the same way; only table multi-select keeps a pale blue band, as
+   Finder does.
 
 ## Signature details
 
@@ -66,14 +67,16 @@ touching the edge of the screen.
   reference's `#ededed` bar. The selection lens is `rgba(120,120,128,0.18)`
   (about `#dadadc` over the grey glass, near the sampled `#e1e1e3`).
 - `backdrop-filter: blur(14px) saturate(160%) brightness(1.08)` on clear
-  glass; `blur(28px)` on sheets and the window (16px on the window up to
-  900px). The saturate is what makes controls pick up the wallpaper's
+  glass; `blur(28px)` on sheets and the window (a single `blur(10px)` pass
+  on the window up to 900px, to keep phone scrolling smooth). The saturate is what makes controls pick up the wallpaper's
   colour. Glass inside a blurred bar, and anything inside the window pane
   on phones and tablets, skips its own backdrop pass: there is nothing new
   behind it to blur.
 - Prominent buttons are *tinted glass*: the accent fill keeps the rim and
-  a lit top edge and casts a coloured bloom. On press glass **swells**
-  (`scale(1.04)`) instead of sinking.
+  a lit top edge and casts a coloured bloom. The `.btn-go` trigger is the
+  same tinted-glass capsule (`--go-*` tokens), sentence case and semibold,
+  not tracked caps. On press glass **swells** (`scale(1.04)`) instead of
+  sinking.
 - Tabs, the nav, the scrollspy nav and the status strip read as the iOS 26
   tab bar: a glass capsule whose selected item is a grey lens with a blue
   label. The capsule never wraps; it scrolls sideways.
@@ -87,17 +90,27 @@ touching the edge of the screen.
   capsule track (`rgba(120,120,128,0.36)`) filled in systemBlue from the
   start to a white capsule thumb (`::-moz-range-progress` in Firefox, a
   left-only thumb border image in Chromium; the hit area stays
-  `--tap-min`).
+  `--tap-min`). A vertical slider is the same thin capsule standing up,
+  filled from the bottom: the theme pads it with physical left/right
+  padding, because core's logical padding lands top and bottom under
+  `writing-mode: vertical-lr`. The switch never flex-shrinks in a row.
 - The traffic lights (`#ff5f57 #febc2e #28c840`, 12px discs with a 0.5px
   ring) sit at the start of the toolbar, as in Safari on Tahoe. Desktop
-  windows get real ones: close, minimise and zoom at the start of a clear
+  windows, and any `.modal` window with `.btn-min` / `.btn-max`, get real
+  ones: close, minimise and zoom at the start of a clear
   title bar, glyphs only on hover, each in a `--tap-min` hit box; the title
   is 13px semibold and centred; no window icon and no menu-bar strip.
 - An in-window sidebar (`.nav-rail`) is the Tahoe sidebar: a 20px rounded
   pane of clear glass, no divider, rows as 10px grey lenses with a blue
   selected label and no edge marker.
 - Segmented controls and toggle groups: a grey capsule track with a lifted
-  white lens on the selected item.
+  white lens on the selected item. Labels never wrap; a track too wide for
+  the screen scrolls sideways.
+- Editable table cells (dirty, saving, saved, editing, invalid) are 8px
+  rounded lenses, the dirty bar curving with the corner; `.log` rows sit
+  6px inside the rounded console so their level bars are not clipped.
+- Section headers (`.field-group-title`) are sentence-case semibold grey
+  with no rule under them. Only tiny stat labels stay uppercase.
 - Alerts and toasts are Lock Screen notifications: rounded glass with the
   rim, no coloured stroke; a leading status dot carries the meaning.
 - Numbers (`.stat-value`, `.readout-lg`) are SF Pro bold with tabular
@@ -107,7 +120,8 @@ touching the edge of the screen.
 
 ## Layout
 
-A macOS Tahoe window over the desktop. The content **window** is one large
+A macOS Tahoe window over the desktop, standing 1.5rem off the screen
+edge above 900px so the wallpaper frames it. The content **window** is one large
 frosted pane (radius 28px) that spans all three shell rows; the capsule
 **toolbar** (traffic lights at its start) floats inside its top edge and
 the capsule **tab bar** (`.app-status`) floats centred inside its bottom
@@ -157,8 +171,9 @@ to two lines (as a 26px rounded rectangle).
 vendored, so it renders only on Apple platforms; elsewhere Helvetica Neue
 or the system UI face stands in. Inter (OFL) would be the closest free
 stand-in, but it is not vendored in `assets/fonts/` yet, so the stack does
-not name it. Headings are bold with slight
-negative tracking (the large-title voice); table headers are sentence-case
+not name it. Body text runs at -0.012em, as
+apple.com sets SF Text (code keeps normal spacing). Headings are bold with
+slight negative tracking (the large-title voice); table headers are sentence-case
 semibold, never uppercase.
 
 ## Contrast honesty
