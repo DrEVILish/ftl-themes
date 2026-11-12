@@ -24,7 +24,7 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    `#24363c`, sampled `#1e2e33` / `#263b43` under set light), and the room
    around them is near-black (`#070b0d`). Do not use pure black panels
    and do not use neon on black.
-2. **Cyan is the ink.** One steel-cyan (`#52b3c3`, a low-chroma lift of the sampled `#3f96a6`-`#5c9ba4`) draws outlines, active
+2. **Cyan is the ink.** One steel-cyan (`#5cbbca`, a low-chroma lift of the sampled `#3f96a6`-`#5c9ba4`) draws outlines, active
    states, table heads and panel titles. Lime (`#a5d65a`) is reserved for
    values (the vitals readout's HR 111 and the dial's outer bars), and
    it serves as the second chart series.
@@ -99,7 +99,8 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 - **Chevron pills.** Pagination's prev / next are outlined pills with a
   bold chevron, like the phone's `< FOCUS >` / `< CONTROL ROOM >` column.
 - **Readouts.** Readouts use Share Tech Mono numerals in cyan with a faint
-  glow, like the vitals cluster.
+  glow, like the vitals cluster (touch tiers drop the glow so scrolling
+  stays cheap).
 
 ## Typography
 
@@ -122,11 +123,11 @@ All pairs meet the lint floors. No exemptions are claimed.
 | `--text` `#d6e6ea` on `--surface` `#24363c` / `--bg` `#1d2d33` | 9.8 / 11.1 |
 | `--muted` `#9ab6be` on `--surface` / `--surface-2` `#2a3d43` | 5.9 / 5.3 |
 | `--muted` on status strip `#070b0d` | 9.2 |
-| `--accent` `#52b3c3` on `--surface` / `--surface-2` | 5.2 / 4.7 |
-| `.badge-accent` text `#76cedd` on its chip (20% cyan over surface) | 4.9 |
+| `--accent` `#5cbbca` on `--surface` / `--surface-2` | 5.6 / 5.1 |
+| `.badge-accent` text `#84d5e2` on its chip (20% cyan over surface) | 5.2 |
 | `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 4.2 / 3.7 |
 | Danger button text `#ffaba4` / success `#9fe06a` on their tints (worst case, tint over a lit row) | 5.1 / 5.8 |
-| `--on-accent` `#071014` on accent | 7.9 |
+| `--on-accent` `#071014` on accent | 8.6 |
 | `--on-danger` on `--danger` `#ff5a4f` | 6.2 |
 | `--on-success` on `--success` `#8fd65a` | 10.9 |
 | `--danger-text` `#ff8f85` / `--warning-text` `#f2b632` on `--surface` | 5.7 / 6.9 |
