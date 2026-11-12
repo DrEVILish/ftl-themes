@@ -33,8 +33,19 @@ interface were machined rather than rendered.
   frame's corners; nested plates drop to a plain 2px leather edge.
 - Headings, nameplates, buttons and tabs are set in IM Fell English SC, a
   true small-capitals face (not `font-variant` or `text-transform`) — the
-  Victorian-print detail uppercase-heading themes skip. Button and tab
-  labels keep a size floor, since an all-small-caps face reads small.
+  Victorian-print detail uppercase-heading themes skip. Table column heads,
+  stat labels, list titles, side-nav items and (above phone width) the
+  bar's nav use it too, at weight 400 with no forced uppercase. Small
+  buttons, segmented controls and tabs keep a 1rem floor (1.05rem in a
+  `.tabs` row), since an all-small-caps face needs ~15-20% more size to
+  match a lowercase x-height.
+- Accent brass is champagne (`#c7a35a` / `#dcc08a`), after the recorder
+  plate, not a saturated mustard.
+- Secondary plates (menus, context menus, popovers, lists, the nav rail)
+  are carved walnut: a fine vertical grain, a polish line along the top
+  edge, a brass rule just inside the edge and a dark seam outside. No
+  rivets; list cards keep the bezel but drop the corner scrollwork, which
+  would sit on their text.
 - Buttons are polished brass: a vertical `#e8c06a` → `#a97a24` 55% →
   `#6e4c14` gradient with a narrow polish streak on the left shoulder
   (clear of the label), inside a double bezel (dark border, pale inner
@@ -83,14 +94,20 @@ layout at **L1**.
   along the foot of the app bar and the head of the status strip.
 - **Gear train:** a brass and a copper cog mesh at the bar's right end
   and turn slowly in opposite directions (only under
-  `prefers-reduced-motion: no-preference`); hidden on phones.
+  `prefers-reduced-motion: no-preference`); hidden on phones. From desktop
+  width up, two large still gears sit dimly in the backplate behind the
+  plates.
+- **Bezel jewels:** GO is a round cast-brass bezel round a dark enamel
+  face with a lit green legend, like the recorder's play button; window
+  and dialog title-band controls are engraved in dark ink on the brass.
 - **Controls are plant, not widgets:** knobs are valve handwheels (enamel
   rim and five spokes in the band colours — oxblood, racing green, navy,
   walnut — round a brass hub, turning with the value); faders are sight
   glasses whose copper liquid stands at the fader's level, worked by a
   brass T-handle; progress bars and sliders are horizontal sight glasses
   (a slider's brass tube and dark glass are drawn in its background, so
-  the full-height hit area core gives it stays intact);
+  the full-height hit area core gives it stays intact, and its thumb is a
+  knurled brass knob: a lit dome inside a milled rim);
   console keys are brass-bezelled push-buttons that glow like a filament
   lamp when lit; scribble strips are brass nameplates; the EQ curve is
   inked on a chart recorder's parchment roll.

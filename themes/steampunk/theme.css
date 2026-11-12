@@ -32,8 +32,10 @@ html[data-theme="steampunk"] {
   --hairline: #5c3d22;
   --text: #f0e0c0;
   --muted: #c0a379;
-  --accent: #c9962c;
-  --accent-2: #e0b04a;
+  /* Champagne brass, after the recorder plate (#b8a070-#c8a060), not
+     a mustard paint. */
+  --accent: #c7a35a;
+  --accent-2: #dcc08a;
   --danger: #9e3a2b;
   --success: #3f5c26;
   --warning: #c9962c;
@@ -43,7 +45,7 @@ html[data-theme="steampunk"] {
   --success-text: #7fb750;
   --warning-text: #d4a23a;
   /* Brass as text on its own tinted wash (badges, code keywords). */
-  --accent-text: #d4a23b;
+  --accent-text: #d8b46e;
   --danger-text: #df9488;
   --on-accent: #241a12;
   --on-danger: #f0e0c0;
@@ -60,6 +62,22 @@ html[data-theme="steampunk"] {
   --steampunk-pipe-flanges: repeating-linear-gradient(90deg, transparent 0 200px, #3a2008 200px 202px, #d99a5a 202px 208px, #8a4a1c 208px 214px, #3a2008 214px 216px, transparent 216px 220px);
   --steampunk-pipe: linear-gradient(180deg, #4a2810, #f2b98a 30%, #c07038 55%, #7a3e16 80%, #3a2008);
   --flare: #7a8c93;
+  /* Carved walnut for secondary plates (menus, popovers, lists, side
+     nav): a fine vertical grain and a polish line along the top edge.
+     No rivets: those belong to top-level panels only. */
+  --steampunk-walnut:
+    linear-gradient(rgba(255, 226, 170, 0.3), rgba(255, 226, 170, 0.3)) top / 100% 1px no-repeat,
+    repeating-linear-gradient(91deg, rgba(255, 220, 170, 0.04) 0 1px, transparent 1px 5px, rgba(0, 0, 0, 0.08) 5px 7px, transparent 7px 11px),
+    linear-gradient(180deg, #46301f, #33241a);
+  /* A brass rule set just inside the edge, then the dark seam outside. */
+  --steampunk-walnut-shadow: inset 0 0 0 1px rgba(138, 94, 26, 0.5), inset 0 0 0 3px rgba(20, 12, 4, 0.35), 0 0 0 1px #1a1008, 0 4px 10px rgba(0, 0, 0, 0.5);
+  --dropdown-bg: var(--steampunk-walnut);
+  --context-menu-bg: var(--steampunk-walnut);
+  --popover-shadow: var(--steampunk-walnut-shadow);
+  --list-bg: var(--steampunk-walnut);
+  --nav-rail-bg: var(--steampunk-walnut);
+  /* List cards are too short for corner scrollwork: bezel only. */
+  --list-card-bg: var(--steampunk-leather-inset), var(--steampunk-bezel);
 
   /* Polished brass: a hard vertical gradient plus one sharp diagonal
      polish streak — the highlight a curved metal surface throws under a
@@ -113,7 +131,7 @@ html[data-theme="steampunk"] {
   --btn-radius: 6px;
   --input-bg: #1c130c;
   --input-fg: var(--text);
-  --focus-ring: 0 0 0 3px rgba(201, 150, 44, 0.35);
+  --focus-ring: 0 0 0 3px rgba(199, 163, 90, 0.4);
   --panel-bg: var(--steampunk-frame-rivets), var(--steampunk-leather-inset), var(--steampunk-bezel);
   --panel-border: transparent;
   --panel-border-width: 6px;
@@ -127,7 +145,10 @@ html[data-theme="steampunk"] {
   --modal-header-fg: #241a12;
   --table-head-bg: #46301f;
   --table-head-fg: var(--accent-2);
-  --row-selected-bg: rgba(201, 150, 44, 0.18);
+  --table-head-transform: none;
+  --table-head-tracking: 0.04em;
+  --list-item-title-weight: 400;
+  --row-selected-bg: rgba(199, 163, 90, 0.18);
   --nav-bg: linear-gradient(180deg, #33241a, #241a12);
   --nav-rule: var(--border);
   --overlay-bg: rgba(20, 14, 9, 0.75);
@@ -285,6 +306,7 @@ html[data-theme="steampunk"] .app-bar::after {
   content: "";
   position: absolute;
   pointer-events: none;
+  will-change: transform;
 }
 html[data-theme="steampunk"] .app-bar::before {
   width: 72px;
@@ -311,7 +333,7 @@ html[data-theme="steampunk"] .app-bar::after {
    goes and the bar loses its gear bay; tablets keep both. The display
    face steps down so a heading isn't half the screen. */
 @media (max-width: 480px) {
-  html[data-theme="steampunk"] .app-bar { padding-right: 1rem; }
+  html[data-theme="steampunk"] .app-bar { padding: 0.35rem 1rem calc(0.3rem + 14px); }
   html[data-theme="steampunk"] .app-bar::before,
   html[data-theme="steampunk"] .app-bar::after { content: none; }
   html[data-theme="steampunk"] h1 { font-size: 1.9rem; }
@@ -408,7 +430,12 @@ html[data-theme="steampunk"] {
     linear-gradient(180deg, #f0d08a, #b8892f 50%, #6e4c14);
   --slider-height: 0.7rem;
   --slider-radius: 999px;
-  --slider-thumb-bg: radial-gradient(circle at 35% 30%, #f5e2b0, #b8892f 60%, #5c3d15);
+  /* A knurled brass knob, as on the recorder's slider: a lit dome inside
+     a milled rim. */
+  --slider-thumb-bg:
+    radial-gradient(circle at 40% 35%, #f5e2b0, #c8a060 40%, #6e4c14 58%, transparent 60%),
+    radial-gradient(circle, transparent 70%, rgba(20, 12, 4, 0.6) 71%),
+    repeating-conic-gradient(#5c3d15 0 10deg, #e8c88a 10deg 20deg);
 }
 /* The handwheel itself: rim, spokes and hub painted in one turning disc. */
 html[data-theme="steampunk"] .knob-dial::after {
@@ -585,5 +612,62 @@ html[data-theme="steampunk"] .slider.is-vertical {
    than they are: buttons and tabs keep a floor, and a little tracking. */
 html[data-theme="steampunk"] :is(.tab, .btn) { letter-spacing: 0.03em; }
 html[data-theme="steampunk"] .btn { --btn-font-size: max(0.95rem, 0.9em); }
-html[data-theme="steampunk"] .btn-sm { font-size: max(0.875rem, 0.78em); }
-html[data-theme="steampunk"] .tab { font-size: max(0.9rem, 0.85em); }
+/* SC floors: an all-small-caps face needs ~15-20% more size than
+   lowercase body text to reach the same x-height. */
+html[data-theme="steampunk"] :is(.btn-sm, .segmented .btn) { font-size: max(1rem, 0.9em); }
+html[data-theme="steampunk"] .tab { font-size: max(1rem, 0.9em); }
+html[data-theme="steampunk"] .tabs .tab { font-size: max(1.05rem, 0.9em); }
+
+/* Column heads, stat labels and list titles are engraved in the SC face:
+   the face supplies its own capitals, so no forced uppercase or bold. */
+html[data-theme="steampunk"] :is(.table th, .stat-label, .list-item-title, .nav-item) {
+  font-family: var(--steampunk-display);
+  font-weight: 400;
+}
+html[data-theme="steampunk"] .table th { font-size: max(0.95rem, 0.95em); }
+html[data-theme="steampunk"] .list-item-title { font-size: 1.08em; letter-spacing: 0.02em; }
+html[data-theme="steampunk"] .stat-label { text-transform: none; font-size: 0.95em; letter-spacing: 0.04em; }
+html[data-theme="steampunk"] .nav-item { font-size: max(1.05rem, 1em); letter-spacing: 0.03em; }
+/* The bar's menubar too, above phone width: on a phone the wider SC face
+   would wrap the nav to a second row, so it keeps the book serif there. */
+@media (min-width: 481px) {
+  html[data-theme="steampunk"] .app-bar .menubar > li > :is(a, button) { font-family: var(--steampunk-display); font-weight: 400; font-size: max(1.05rem, 1em); letter-spacing: 0.03em; }
+}
+
+/* Menus and context menus are walnut plates with a brass inner rule. */
+html[data-theme="steampunk"] :is(.dropdown, .context-menu, .list:not(.list-cards), .nav-rail) { box-shadow: var(--steampunk-walnut-shadow); }
+
+/* Title-band controls are engraved into the brass: dark ink, lit lip. */
+html[data-theme="steampunk"] .modal-header {
+  --btn-close-fg: #2a1c0e;
+  --btn-close-fg-hover: #140d08;
+  --btn-close-bg-hover: rgba(42, 28, 14, 0.18);
+}
+html[data-theme="steampunk"] .modal-header :is(.btn-close, .btn-min, .btn-max) { text-shadow: 0 1px 0 rgba(255, 240, 200, 0.6); }
+
+/* The current item of a pattern nav is accent-text on an accent fill
+   (page CSS, unlayered, so only a token can reach it): inside that nav the
+   accent text is the on-accent ink. */
+html[data-theme="steampunk"] .pattern-nav { --accent-text: var(--on-accent); }
+
+/* GO is a round brass-bezel jewel, as on the recorder: a dark enamel face
+   in a cast bezel with a lit green legend. */
+html[data-theme="steampunk"] {
+  --go-bg: radial-gradient(circle at 50% 40%, #4a3322, #140d08 75%) padding-box, var(--steampunk-bezel);
+  --go-bg-hover: radial-gradient(circle at 50% 40%, #5a4030, #1c130c 75%) padding-box, var(--steampunk-bezel);
+  --go-fg: #8fd060;
+  --go-border: transparent;
+  --go-border-width: 4px;
+  --go-radius: 999px;
+  --go-shadow: inset 0 0 0 1px #3a2610, inset 0 3px 8px rgba(0, 0, 0, 0.7), 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Desktop: the plant room's big gears behind the plates, dim. */
+@media (min-width: 901px) {
+  html[data-theme="steampunk"] {
+    --app-bg:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.12'%3E%3Ccircle cx='160' cy='160' r='128' fill='none' stroke='%238a5a2e' stroke-width='40' stroke-dasharray='25.1 25.1'/%3E%3Ccircle cx='160' cy='160' r='112' fill='%235c3d22'/%3E%3Ccircle cx='160' cy='160' r='78' fill='none' stroke='%23241a12' stroke-width='22' stroke-dasharray='61.3 61.3'/%3E%3Ccircle cx='160' cy='160' r='22' fill='%23241a12'/%3E%3C/svg%3E") right -140px bottom -140px / 480px 480px no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.1'%3E%3Ccircle cx='160' cy='160' r='128' fill='none' stroke='%238a5a2e' stroke-width='40' stroke-dasharray='25.1 25.1'/%3E%3Ccircle cx='160' cy='160' r='112' fill='%235c3d22'/%3E%3Ccircle cx='160' cy='160' r='22' fill='%23241a12'/%3E%3C/svg%3E") left -90px top 40% / 260px 260px no-repeat,
+      var(--steampunk-perforated);
+  }
+}
