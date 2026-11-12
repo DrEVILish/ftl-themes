@@ -148,7 +148,51 @@ html[data-theme="winamp-classic"] {
   --btn-border-width: 1px;
   --panel-border-width: 2px;
   --input-border-width: 2px;
+
+  /* The main display: green LCD digits on black in a recessed well (the
+     time readout, top-left of the base skin). The bevel colours are set
+     on .readout below; the border shorthand takes one colour. */
+  --readout-fg: var(--lcd);
+  --readout-bg: #000000;
+  --readout-border-width: 1px;
+  --readout-border: #1b1b2b;
+  --readout-unit-fg: #00a000;
+  /* Digits keep a 4px inset from the well's edge. */
+  --readout-padding: max(0.2em, 6px) max(0.4em, 6px);
+  /* Now-playing seek/volume: the same ribbed gold bar on a dark groove,
+     square, no fill (the skin's seek bar shows position by the bar). */
+  --scrubber-thumb-radius: 0;
+  --scrubber-thumb: repeating-linear-gradient(90deg, #ffefa6 0 1px, #c7b070 1px 3px);
+  --scrubber-thumb-size: 0.85rem;
+  --scrubber-height: 0.4rem;
+  --scrubber-track: #0d0e14;
+  --scrubber-fill: #0d0e14;
+  /* GO / PLAY is a transport key like STOP: the silver key, dark label. */
+  --go-bg: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
+  --go-bg-hover: linear-gradient(180deg, #ffffff 0 1px, #eaf7f9 1px 85%, #dce8ee);
+  --go-fg: #1b1b2b;
+  --go-border: #414f61;
+  --go-border-width: 1px;
+  --go-shadow: inset -1px -1px 0 #8e9cad;
+  /* Indicator lamps are the skin's square LED blocks (EQ/PL, ON/AUTO),
+     no bloom; avatars are square too. */
+  --lamp-radius: 0;
+  --lamp-glow: none;
+  --lamp-off: #1b1b2b;
+  --deck-lamp-glow: 0px;
+  --avatar-radius: 0;
+  /* Line charts are the visualiser: green trace on a black field, the
+     previous series in the pale chassis grey (as the bar chart's alt).
+     Labels stay small (SVG text scales with the chart's width). */
+  --chart-bg: #000000;
+  --chart-series-1: var(--lcd);
+  --chart-series-2: #c8c8b8;
+  --chart-point-ring: #000000;
+  --chart-grid: #2f2f4b;
+  --chart-font: var(--font-mono);
+  --chart-text-size: 7px;
 }
+html[data-theme="winamp-classic"] .readout { border-color: #1b1b2b #686883 #686883 #1b1b2b; }
 
 html[data-theme="winamp-classic"] {
   /* The 4px brushed body stripe, as a tiled SVG (see --panel-bg). */
@@ -232,6 +276,8 @@ html[data-theme="winamp-classic"] .slider { background-origin: content-box; }
    cap across its groove. Core keeps the input's tap-sized box. */
 html[data-theme="winamp-classic"] .slider::-webkit-slider-thumb { width: 1.75rem; height: 0.85rem; }
 html[data-theme="winamp-classic"] .slider::-moz-range-thumb { width: 1.75rem; height: 0.85rem; }
+html[data-theme="winamp-classic"] :is(.scrubber, .volume) > input[type="range"]::-webkit-slider-thumb { inline-size: 1.75rem; box-shadow: inset -1px -1px 0 #414f61; }
+html[data-theme="winamp-classic"] :is(.scrubber, .volume) > input[type="range"]::-moz-range-thumb { inline-size: 1.75rem; box-shadow: inset -1px -1px 0 #414f61; }
 html[data-theme="winamp-classic"] .slider.is-vertical::-webkit-slider-thumb { width: 1.4rem; height: 0.7rem; }
 html[data-theme="winamp-classic"] .slider.is-vertical::-moz-range-thumb { width: 1.4rem; height: 0.7rem; }
 html[data-theme="winamp-classic"] .switch-track {
@@ -412,6 +458,10 @@ html[data-theme="winamp-classic"] .app-bar::after {
   pointer-events: none;
 }
 html[data-theme="winamp-classic"] .app-bar::after { min-inline-size: 0; }
+/* A strip keeps a one-line title between real ridge runs. */
+html[data-theme="winamp-classic"] .modal-header { white-space: nowrap; }
+html[data-theme="winamp-classic"] .modal-header::before,
+html[data-theme="winamp-classic"] .modal-header::after { min-inline-size: 1rem; }
 html[data-theme="winamp-classic"] .app-bar > .push { order: 1; }
 html[data-theme="winamp-classic"] .modal-header > .icon { order: -1; }
 html[data-theme="winamp-classic"] .modal-header > :is(.btn-min, .btn-max, .btn-close) { order: 1; }
@@ -426,9 +476,9 @@ html[data-theme="winamp-classic"] .panel-header {
 }
 html[data-theme="winamp-classic"] .panel-header > :not(:first-child) { order: 1; }
 html[data-theme="winamp-classic"] .modal-header {
-  font-size: 0.85em;
+  font-size: 0.8em;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -440,6 +490,8 @@ html[data-theme="winamp-classic"] :is(.nav-brand, .app-bar .nav-item, .app-bar [
   text-transform: uppercase;
 }
 html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"], .tab) { font-size: 0.85em; }
+/* Strip legends are the skin's tiny tracked caps (11.2px at the 14px body). */
+html[data-theme="winamp-classic"] .panel-header { font-size: 0.8em; letter-spacing: 0.1em; }
 /* Inside a window the strip is a property sheet's (Winamp's own
    Preferences are native dialogs): bold mixed case, no tracking, so a
    fixed-height dialog's tabs keep one row and its footer stays in view. */
@@ -477,7 +529,7 @@ html[data-theme="winamp-classic"] .table :is(th, td) {
      bundle, so only !important reaches it (as for .pattern-nav above). */
   html[data-theme="winamp-classic"] .app-bar { row-gap: 0 !important; }
   html[data-theme="winamp-classic"] .app-bar > .nav-brand { flex: 1 0 auto; }
-  html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > [role="menuitem"]) { padding-inline: 0.3em; }
+  html[data-theme="winamp-classic"] :is(.app-bar .nav-item, .app-bar .menubar > li > :is([role="menuitem"], button)) { padding-inline: 0.3em; min-inline-size: var(--tap-min, 44px); justify-content: center; text-align: center; }
   /* No keyboard shortcut hint on a phone; the actions and avatar then
      share one row. */
   html[data-theme="winamp-classic"] .app-bar .btn > kbd { display: none; }

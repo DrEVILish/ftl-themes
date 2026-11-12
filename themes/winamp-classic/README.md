@@ -22,6 +22,8 @@ green LCD-style readout. It really whips the llama's ass.
    repeating gradients, so they rasterise once and scrolling stays cheap.
 3. **The readout is green-on-black.** Track info and values set in the
    monospace face on true black — an LCD panel inset into the chassis.
+   `.readout` (timecodes, counters, dB values) is the main display:
+   `--lcd` digits on black in a 1px recessed well, units in dim green.
 4. **Beveled hardware.** Like Windows 95 but subtler: 1px two-tone borders,
    inverted on press.
 5. **Uppercase micro-labels.** Buttons, the brand, bar nav, tabs, panel
@@ -55,11 +57,18 @@ green LCD-style readout. It really whips the llama's ass.
   with `--slider-bg` inside core's tap-sized box, with a wide ribbed gold
   seek-bar thumb; vertical sliders are tall EQ faders with a short, wide
   ribbed cap (1.4rem by 0.7rem, 1px light / 2px dark ribs, a `#414f61`
-  outline so it reads at 1x).
+  outline so it reads at 1x). The now-playing seek and volume bars use the
+  same square ribbed thumb on a dark groove, with no fill.
 - Every text button but ghost is a pale silver key (`#deeff1` face, dark
   label, bevel), like ADD/REM/SEL and PRESETS; icon buttons are square
   silver keys like the transport row; toggles show a dark-green lamp glyph
-  when on.
+  when on. GO / PLAY (`.btn-go`) is the same silver transport key.
+- Lamps are square LED blocks with no bloom (the EQ/PL and ON/AUTO
+  indicators); avatars are square too.
+- Line charts are the visualiser: a green trace on a black field, the
+  previous series in chassis grey, small mono labels.
+- Panel and window titles are 0.8em caps tracked 0.1em, one line between
+  the ridge runs.
 - No gold active fills: gold is the ridge colour. Like the EQ/PL and
   ON/AUTO keys, an on switch is a silver track with a lit green lamp
   thumb, an active filter chip a silver key with dark-green (`#006400`)
