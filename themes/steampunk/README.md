@@ -26,11 +26,13 @@ interface were machined rather than rendered.
 
 - Rivets are background layers, not pseudo-elements: one radial-gradient
   dome (lit off-centre, ringed by its dark shadow, transparent past 4.5px)
-  in a 10px tile, laid at all four corners. Top-level panels, cards and
-  dialogs sit in a 10px cast-brass moulding (6px at phone width): a
+  in a 10px tile, laid at all four corners. Top-level panels and
+  dialogs sit in a 10px cast-brass moulding (6px at phone width); cards
+  and stat tiles, and fixed-height desktop windows, take a 6px one: a
   diagonal `#f5e2b0` → `#c9962c` → `#8a5e1a` → `#4a3010` outer lip under
   a transparent border, a dark fillet, then a stepped inner band lit the
-  opposite way, leather kept to the padding box, a dark recess inside,
+  opposite way (`#d9b062` at its brightest, so the lower edges read as
+  cast brass, not a cream gilt frame), leather kept to the padding box, a dark recess inside,
   with the rivets centred on the frame's corners; nested plates drop to a
   plain 2px leather edge.
 - Emphasised controls are never flat paint: `.btn-primary`, the active
@@ -57,8 +59,13 @@ interface were machined rather than rendered.
   edge, a brass rule just inside the edge and a dark seam outside. No
   rivets; list cards keep the bezel but drop the corner scrollwork, which
   would sit on their text. Alerts, toasts, toolbars, field rows, drop
-  zones and tinted bands are the same walnut, with a 2px tone-coloured
-  edge on alerts and toasts.
+  zones, tinted bands, banners (the sticky-header bar) and the scrollspy
+  nav are the same walnut, with a 2px tone-coloured edge on alerts and
+  toasts and a `#c7a35a` brass rule at the foot of banners and the
+  scrollspy, whose current link wears a brass underline plate.
+- Text fields, selects and textareas are slots let into a brass bezel: a
+  `#6e4c14` border, a 1px `#c7a35a` outer ring, an inset recess and a faint
+  lit lip at the foot; focus brightens the ring to `#f2d690`.
 - Badges are brass-rimmed enamel plaques (a `#c7a35a` rim round a fill in
   the tone's own enamel; danger is `#f2c4b8` on oxblood); avatars are
   brass-rimmed medallions.
@@ -84,7 +91,7 @@ console reads as a cabinet fitted with brass hardware.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. Phones also drop the leather and walnut grain (repeating gradients on every plate) to keep scrolling inside the frame budget. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the perforated backplate. The gutter art is still; only the bar's small gears turn.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. Phones also drop the leather and walnut grain (repeating gradients on every plate), give cards and stat tiles a two-stop casting without rivets or scrollwork (panels keep the full moulding), and lay a solid `#2f3322` backplate in place of the dot grid, to keep scrolling inside the frame budget. Filter chips stay wider than tall, and a toggle group keeps its labels on one line and scrolls sideways. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the perforated backplate. The gutter art is still; only the bar's small gears turn.
 
 ## Adoption
 
@@ -116,8 +123,8 @@ layout at **L1**.
   above the pipe) mesh at the bar's right end and turn slowly in opposite directions (only under
   `prefers-reduced-motion: no-preference`); hidden on phones. From desktop
   width up, two large still flywheels (one silhouette each: teeth, rim,
-  six spokes and hub in one colour) sit dimly in the backplate behind the
-  plates.
+  six spokes and hub in one colour, one brass at 20% and one copper at
+  16%) sit dimly in the backplate behind the plates.
 - **Bezel jewels:** GO is a round cast-brass bezel round a dark enamel
   face with a lit green legend, like the recorder's play button; window
   and dialog title-band controls are engraved in dark ink on the brass.
@@ -150,8 +157,8 @@ layout at **L1**.
   state is not carried by the angle alone.
 - **Filigree**: cards are brass-scrollwork plates (panels keep their
   rivets); dialogs carry smaller (1.6rem) scrolls in their lower corners
-  under the brass title band, so less of a fixed-height window is held
-  back for them.
+  under the brass title band. Desktop windows have a fixed height, so
+  they carry no scrollwork and reserve no foot for it.
 
 
 ## Icons

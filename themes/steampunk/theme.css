@@ -51,7 +51,7 @@ html[data-theme="steampunk"] {
   --border: #8a5a2e;
   --hairline: #5c3d22;
   --text: #f0e0c0;
-  --muted: #c0a379;
+  --muted: #d0b68f;
   /* Champagne brass, after the recorder plate (#b8a070-#c8a060), not
      a mustard paint. */
   --accent: #c7a35a;
@@ -155,7 +155,7 @@ html[data-theme="steampunk"] {
      from the top-left, then a stepped inner band lit the other way, with a
      dark fillet between, so the frame reads as two faces, not a rule. */
   --steampunk-bezel-cast:
-    linear-gradient(315deg, #f0d9a0, #c9962c 35%, #6e4c14) center / calc(100% - 8px) calc(100% - 8px) no-repeat border-box,
+    linear-gradient(315deg, #d9b062, #c9962c 35%, #6e4c14) center / calc(100% - 8px) calc(100% - 8px) no-repeat border-box,
     linear-gradient(#3a2610, #3a2610) center / calc(100% - 6px) calc(100% - 6px) no-repeat border-box,
     var(--steampunk-bezel);
   /* Rivets centred on the frame, whatever its width. */
@@ -177,6 +177,10 @@ html[data-theme="steampunk"] {
   --btn-shadow: inset 0 0 0 1px rgba(255, 236, 190, 0.55), inset 0 -3px 4px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
   --btn-radius: 6px;
   --input-bg: #1c130c;
+  /* Fields are slots let into a brass bezel: dark rim, lit brass ring,
+     a recess, and a faint lip catching light at the foot. */
+  --input-border: #6e4c14;
+  --input-shadow: 0 0 0 1px #c7a35a, inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -1px 0 rgba(242, 214, 144, 0.15);
   --input-fg: var(--text);
   --focus-ring: 0 0 0 3px rgba(199, 163, 90, 0.4);
   --panel-bg: var(--steampunk-frame-rivets), var(--steampunk-leather-inset), var(--steampunk-bezel-cast);
@@ -184,7 +188,8 @@ html[data-theme="steampunk"] {
   /* A chunky 10px casting at desktop (6px on a phone, below). */
   --panel-border-width: 10px;
   --modal-border: transparent;
-  --card-border-width: 10px;
+  /* Cards (stat tiles included) are lesser plates: a 6px casting. */
+  --card-border-width: 6px;
   --list-card-border-width: 2px;
   --list-card-border: var(--border);
   /* Outer seam, then the dark recess where the frame meets the leather. */
@@ -706,6 +711,17 @@ html[data-theme="steampunk"] :is(.panel, .card, .modal, .drawer) :is(.panel, .ca
 /* A dialog's lower scrollwork is 1.6rem: its content (a footer's buttons,
    a scrolling panel) ends above it instead of running over it. */
 html[data-theme="steampunk"] .modal { padding-block-end: max(var(--surface-pad, 1.5rem), calc(1.6rem + 4px)); }
+/* A desktop window has a fixed height: a 6px casting, no scrollwork and
+   no reserved foot, so its content box keeps the height. */
+html[data-theme="steampunk"] .desktop-window > .modal {
+  --panel-border-width: 6px;
+  --modal-bg: var(--steampunk-leather-inset), var(--steampunk-bezel-cast);
+  padding-block-end: var(--surface-pad);
+}
+/* Focus brightens the field's brass ring. */
+html[data-theme="steampunk"] :is(.input, .select, .textarea) {
+  --focus-ring: 0 0 0 1px #f2d690, 0 0 0 4px rgba(199, 163, 90, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
 
 /* Vertical sliders: the same tube, turned on end. */
 html[data-theme="steampunk"] .slider.is-vertical {
@@ -773,8 +789,8 @@ html[data-theme="steampunk"] {
 @media (min-width: 901px) {
   html[data-theme="steampunk"] {
     --app-bg:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.12'%3E%3Cg fill='none' stroke='%238a5a2e'%3E%3Ccircle cx='160' cy='160' r='144' stroke-width='24' stroke-dasharray='22.62 22.62'/%3E%3Ccircle cx='160' cy='160' r='121' stroke-width='22'/%3E%3Cpath d='M160 50V270M64.7 105L255.3 215M64.7 215L255.3 105' stroke-width='18'/%3E%3Ccircle cx='160' cy='160' r='26' stroke-width='22'/%3E%3C/g%3E%3C/svg%3E") right -140px bottom -140px / 480px 480px no-repeat,
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.1'%3E%3Cg fill='none' stroke='%238a5a2e'%3E%3Ccircle cx='160' cy='160' r='144' stroke-width='24' stroke-dasharray='22.62 22.62'/%3E%3Ccircle cx='160' cy='160' r='121' stroke-width='22'/%3E%3Cpath d='M160 50V270M64.7 105L255.3 215M64.7 215L255.3 105' stroke-width='18'/%3E%3Ccircle cx='160' cy='160' r='26' stroke-width='22'/%3E%3C/g%3E%3C/svg%3E") left -90px top 40% / 260px 260px no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.2'%3E%3Cg fill='none' stroke='%238a5a2e'%3E%3Ccircle cx='160' cy='160' r='144' stroke-width='24' stroke-dasharray='22.62 22.62'/%3E%3Ccircle cx='160' cy='160' r='121' stroke-width='22'/%3E%3Cpath d='M160 50V270M64.7 105L255.3 215M64.7 215L255.3 105' stroke-width='18'/%3E%3Ccircle cx='160' cy='160' r='26' stroke-width='22'/%3E%3C/g%3E%3C/svg%3E") right -140px bottom -140px / 480px 480px no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' opacity='0.16'%3E%3Cg fill='none' stroke='%23b0642c'%3E%3Ccircle cx='160' cy='160' r='144' stroke-width='24' stroke-dasharray='22.62 22.62'/%3E%3Ccircle cx='160' cy='160' r='121' stroke-width='22'/%3E%3Cpath d='M160 50V270M64.7 105L255.3 215M64.7 215L255.3 105' stroke-width='18'/%3E%3Ccircle cx='160' cy='160' r='26' stroke-width='22'/%3E%3C/g%3E%3C/svg%3E") left -90px top 40% / 260px 260px no-repeat,
       var(--steampunk-perforated);
   }
 }
@@ -794,6 +810,16 @@ html[data-theme="steampunk"] {
   --dropzone-bg: var(--steampunk-walnut);
   --skeleton-bg: #46301f;
   --band-tint-bg: var(--steampunk-walnut);
+  /* Secondary bars (banners, scrollspy) are walnut with a brass rule at
+     the foot; the current section wears a brass underline plate. */
+  --banner-bg: var(--steampunk-walnut);
+  --banner-border: #c7a35a;
+  --scrollspy-nav-bg: var(--steampunk-walnut);
+  --scrollspy-nav-rule: #c7a35a;
+  --scrollspy-link-active-fg: var(--accent-2);
+  --scrollspy-link-active-marker: inset 0 -3px 0 #c7a35a, inset 0 -4px 0 #3a2610;
+  /* Icon labels: the wide book serif would split "Neighborhood". */
+  --desktop-icon-font-size: 0.74rem;
 }
 html[data-theme="steampunk"] :is(.alert, .toolbar:not(.is-plain), .field-row, .dropzone) {
   box-shadow: inset 0 0 0 1px rgba(199, 163, 90, 0.35), inset 0 0 0 3px rgba(20, 12, 4, 0.3), 0 2px 6px rgba(0, 0, 0, 0.45);
@@ -845,5 +871,14 @@ html[data-theme="steampunk"] .master-detail-list .list-item {
     --steampunk-walnut:
       linear-gradient(rgba(255, 226, 170, 0.3), rgba(255, 226, 170, 0.3)) top / 100% 1px no-repeat,
       linear-gradient(180deg, #46301f, #33241a);
+    /* Cards and stat tiles: a two-stop casting, no rivets or scrollwork;
+       only panels keep the full moulding. The backplate is solid. */
+    --card-bg: var(--steampunk-leather-inset), linear-gradient(135deg, #c9962c, #6e4c14) border-box;
+    --card-pad: calc(var(--space-m) * var(--density));
+    --steampunk-perforated: #2f3322;
   }
+  /* Filter chips stay wider than tall; toggles keep one line and scroll. */
+  html[data-theme="steampunk"] .badge-button { padding-inline: 1em; min-inline-size: 4.25rem; }
+  html[data-theme="steampunk"] .toggle-btn { white-space: nowrap; }
+  html[data-theme="steampunk"] .toggle-group { max-inline-size: 100%; overflow-x: auto; }
 }
