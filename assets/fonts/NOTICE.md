@@ -167,6 +167,21 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
   the `@fontsource/inconsolata` 5.1.0 Latin subset, unmodified)
 - **Used by:** `blue-future` (stand-in for Consolas, the reference face)
 
+## Roboto Condensed
+
+- **Family:** Roboto Condensed (Regular 400, Bold 700 —
+  `RobotoCondensed-Regular.woff2`, `RobotoCondensed-Bold.woff2`; static
+  instances of the variable font, subset to Latin-1 plus common
+  punctuation)
+- **Designer:** Christian Robertson (The Roboto Project Authors)
+- **License:** SIL Open Font License, version 1.1 (`google/fonts` `ofl/robotocondensed/OFL.txt`;
+  older Roboto releases were Apache-2.0, and the file's own name table
+  still carries that line — both permit embedding and redistribution)
+- **Source:** https://fonts.google.com/specimen/Roboto+Condensed and
+  https://github.com/google/fonts/tree/main/ofl/robotocondensed
+- **Used by:** `pipboy` (body, headings, tabs and labels: Fallout 4's Pip-Boy face) and `bloomberg`
+  (all UI text and figures; open stand-in for the terminal's narrow screen sans)
+
 ## Share Tech and Share Tech Mono
 
 - **Family:** Share Tech (Regular 400 — `ShareTech-Regular.woff2`) and
@@ -175,20 +190,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `bloomberg` (Share Tech Mono: code and readouts)
-
-## Roboto Condensed
-
-- **Family:** Roboto Condensed (Latin subset, weights vendored: Regular 400,
-  Bold 700 — `RobotoCondensed-Regular.woff2`, `RobotoCondensed-Bold.woff2`,
-  taken unmodified from the `@fontsource/roboto-condensed` 5.0.14 package)
-- **Designer:** Christian Robertson (Google)
-- **License:** SIL Open Font License, version 1.1
-- **Source:** https://fonts.google.com/specimen/Roboto+Condensed
-- **Used by:** `bloomberg` (all UI text and figures; open stand-in for the
-  terminal's proprietary narrow screen sans, with a real bold)
-
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `matrix` (Share Tech Mono: app bar and headings)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `bloomberg`, `pipboy` (Share Tech Mono: code and readouts), `matrix` (Share Tech Mono: app bar and headings)
 
 ## DSEG7 Classic
 

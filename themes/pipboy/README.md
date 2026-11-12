@@ -22,20 +22,30 @@ the screen.
 3. **Scanlines are decoration, not motion.** A static repeating gradient,
    `pointer-events: none`, never an animated flicker — nothing here should
    fight `prefers-reduced-motion` for a cosmetic effect.
-4. **Uppercase, tracked labels** — headings, tabs, panel headers and buttons
-   and the app bar (brand included) are terminal readouts, not a
-   stylized logo.
-5. **Rectangular hardware.** No pills, circles or teardrops: badges, avatars,
-   switches, slider thumbs, comment pins, status dots and lamps, presence
-   dots, carousel dots, the pressed-button LED, the round minimap, the
-   achievement icon and map pins are square.
-6. **Little boxing.** Panels and cards are a dim hairline with bright
-   corner brackets, not a full phosphor box.
+4. **Uppercase, lightly tracked labels** (0.04em) — headings, tabs, panel,
+   modal, sheet, popover and window title headers, buttons and the app bar (brand included) are Pip-Boy headers,
+   not a stylized logo; list rows and body copy stay mixed case.
+5. **Rectangular hardware.** No pills, circles or teardrops: `--radius` is
+   0, so fields, buttons, cards and dropdowns are square, as are badges,
+   avatars, switches, slider thumbs, comment pins, status dots and lamps,
+   presence dots, carousel dots and arrows, typing dots, the pressed-button
+   LED, the round minimap, the achievement icon and map pins. (Radio
+   buttons stay round, since the native checked radio is. Line-chart
+   points are SVG circles CSS cannot square; they shrink to 2.5-unit
+   pips instead.)
+6. **Little boxing.** Fallout 4's Pip-Boy content is unboxed: panels and
+   cards are a flat near-black surface on a dim hairline, with no frame
+   corners. Grouped figures (KPI cards with a `.stat-value`, `.stat`) are
+   FO4 stat rows: a dim-filled block (20% phosphor) with no border. Lists (`.list`, so the inbox
+   message list and settings nav) are an unboxed column of rows on faint
+   hairline rules, as the INV / DATA lists are; only the cursor bar marks
+   the selection.
 
 ## Signature details
 
 - The phosphor is Fallout 4's default Pip-Boy colour, `#1aff80`
-  (RGB 26, 255, 128), on a green-black `#04140a`. Chart series are
+  (RGB 26, 255, 128), on a green-black `#04140a`; surfaces stay near
+  black (`#051a0c`, `#082511`) so the glyphs and glow carry the green. Chart series are
   brightnesses of that one green; no second hue outside hazard states.
   Meter peak segments (`--meter-mid`) are the bright phosphor
   `--accent-2`; only the clip zone (`--meter-high`) turns amber.
@@ -44,12 +54,17 @@ the screen.
 - **Media through the phosphor.** Images, videos, card/map SVGs and the
   HUD scene take one CSS filter chain (`--pipboy-phosphor`: grayscale,
   sepia, hue-rotate, saturate), so photos render in green, never colour.
-- Native controls follow the phosphor via `accent-color`.
+- Native controls follow the phosphor via `accent-color`; unchecked
+  checkboxes and radios are a `--border` outline on a transparent fill, not
+  the grey dark-scheme box.
+- Placeholders are a dimmed phosphor (`#15994d`, 5.1:1 on the field) with
+  no glow, so an empty field reads unlit next to a typed value.
+- Window minimise is a centred minus bar, level with the max box and BACK.
 - **The cursor bar.** Selected rows, active list/sidebar nav items and
   hovered menu items are a solid `--accent` bar with the text knocked out in
   `--on-accent` (the INV/DATA list cursor), with no left marker.
 - **The tab header.** `.tabs` is one 2px phosphor rule that breaks under
-  the active tab; short ticks rise from the rule at the active tab's ends,
+  the active tab; ticks rise from the rule at the active tab's ends to about 70% of the tab height,
   bracketing the uppercase label (the STAT / INV / DATA strip). The
   `.tab-add` button carries the rule too. The app bar nav is the same
   header: brand and nav uppercase (tracked above the phone tier), its
@@ -59,13 +74,29 @@ the screen.
   header stays on one continuous rule.
 - **The status strip** (`.app-status`, not the taskbar variant) reads as
   the HP | LEVEL | AP bar: solid dim-green blocks (22% phosphor) with
-  bright uppercase text, under a 2px phosphor rule.
-- Type is Share Tech Mono (OFL, vendored), the closest free narrow,
-  rounded monospace to the game's Monofonto (not OFL, so not named).
-  Only the Regular face exists, so `font-synthesis-weight: none`:
-  headings and `strong` stay at 400 and show emphasis by brightness (a
-  stronger glow), never a smeared faux bold. At the phone
-  tier tables set at 0.85em without the glow, and inputs in cells keep a
+  bright uppercase text, under a 2px phosphor rule. A filler block fills
+  the space before the last readout, so the strip is one segmented bar
+  across the full width, with 4px gaps.
+- Reaction chips go through `--pipboy-phosphor`, so colour emoji render
+  green. A picked reaction is a lit 1px outline on the dim block, not the
+  solid cursor bar, which would swallow the filtered emoji.
+- A checked danger `.toggle-btn` is a lit amber outline on a 22% amber
+  tint, not a solid block: a solid fill is only the cursor bar.
+- The avatar presence LED is a small square pip (0.45rem) just outside the
+  avatar's corner, so it never covers the initials. The current carousel
+  marker is a double-width lit bar, so it differs by shape, not only
+  brightness.
+- Disabled pager keys are the unlit placeholder green at full opacity
+  (about 5:1), not core's 40% opacity.
+- Type is Roboto Condensed (OFL, vendored Regular and Bold, Latin
+  subset), Fallout 4's Pip-Boy `$MAIN_Font`, with "Arial Narrow" and
+  "Liberation Sans Narrow" fallbacks. Numbers (`.readout` via
+  `--readout-font`, `.stat-value`, mono table cells) are set in the same
+  Roboto Condensed with tabular figures, as FO4's stat values are. Share
+  Tech Mono (OFL, vendored) stays as `--font-mono` for code and kbd. `font-synthesis-weight:
+  none`, so only the real weights render; headings glow a little more
+  (4px at 40%) but stay crisp. At the phone tier tables set at 0.85em,
+  badges keep an 11px (0.7rem) floor, and inputs in cells keep a
   `--tap-min` floor.
 - Slider tracks are drawn in `--border` green (3:1 on bg and surface) on
   the content box, so the hit area stays at `--tap-min`.
@@ -75,11 +106,16 @@ the screen.
   black (light enough that ~10px badge text keeps its strokes), plus a soft inset vignette for the curved glass, so they never
   intercept a click and never need JavaScript. The overlay is its own
   layer (`will-change`, `contain: strict`) so scrolling never repaints it. The vignette is a radial
-  gradient in the same layer (no blurred shadow, so no frame cost).
+  gradient in the same layer (no blurred shadow); at the phone tier, and
+  under `update: slow` or reduced transparency, the vignette is dropped and
+  only the scanlines stay, to keep a throttled phone in its frame budget.
 - All body text carries a faint `text-shadow: 0 0 3px` phosphor glow in its
   own colour (`currentColor` at 35%, so dim text glows dim), not
   just headings — the whole screen glows a little, not just the display
-  face.
+  face. At the phone tier, and under `update: slow` or
+  `prefers-reduced-transparency: reduce`, only headings and the app bar
+  keep the glow: a blurred shadow on every glyph costs a throttled phone
+  its frame budget.
 - `--success` and `--accent` are the *same* green — this theme has
   no separate "success" hue at all, only the one phosphor color and the
   two genuine hazard departures (danger amber, warning yellow).
