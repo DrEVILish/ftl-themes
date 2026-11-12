@@ -42,8 +42,10 @@ html[data-theme="blue-future"] {
   --on-danger: #1a0007;
   --on-success: #001a10;
   --radius: 0.25rem;
-  --font: Consolas, "IBM Plex Mono", "SFMono-Regular", monospace;
-  --font-mono: Consolas, "IBM Plex Mono", monospace;
+  /* Consolas first; then the narrow, Consolas-metric local monos, so a
+     machine without it keeps the compact instrument face before a generic. */
+  --font: Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular", "Roboto Mono", "Noto Sans Mono", monospace;
+  --font-mono: var(--font);
   --flare: #d85cff;
   --density: 1;
 
@@ -97,13 +99,33 @@ html[data-theme="blue-future"] {
   --badge-radius: 2px;
   --scrollbar-radius: 2px;
 
+  /* Cyan means live, blue means interactive: a selected or pressed control
+     (toggle, segment, page, filter chip, tab, menu item) is a blue-tinted
+     cell with a blue edge, never a solid cyan slab. Solid cyan stays for
+     the primary action and live readouts. */
+  --bf-selected-bg: color-mix(in srgb, var(--accent-2) 35%, var(--surface));
+  --toggle-btn-bg-on: var(--bf-selected-bg);
+  --toggle-btn-fg-on: var(--text);
+  --toggle-btn-border-on: var(--accent-2);
+  --segmented-item-bg-active: var(--bf-selected-bg);
+  --segmented-item-fg-active: var(--text);
+  --pagination-item-bg-active: var(--bf-selected-bg);
+  --pagination-item-fg-active: var(--text);
+  --badge-bg-active: var(--bf-selected-bg);
+  --badge-fg-active: var(--text);
+  --menubar-item-bg-active: var(--bf-selected-bg);
+  --menubar-item-fg-active: var(--text);
+  --tab-fg-active: var(--text);
+  --tab-underline-active: var(--accent-2);
+
   /* Cell edit states tint the panel, not the row, so a dirty cell on a
      selected row stays amber instead of mixing to olive. */
   --cell-dirty-bg: color-mix(in srgb, var(--warning) 14%, var(--surface));
 
   /* Inputs */
   --input-bg: #08192b;
-  --input-border: var(--border);
+  /* Field edge at 3:1 on the field (WCAG 1.4.11); panels keep --border. */
+  --input-border: #2a6a9a;
 
   /* Tables: dim tracked headers, hairline rules, accent left select bar. */
   --table-head-fg: var(--muted);
@@ -132,7 +154,7 @@ html[data-theme="blue-future"] {
   /* Instrument primitives: a recorder's meters and counters are the
      content, so they get the brightest colors while the chrome stays dim. */
   --meter-track: #020509;
-  --meter-border: #0f3a5c;
+  --meter-border: var(--deck-trim); /* a VFD window edge, as on the transport */
   --meter-radius: 2px;
   --meter-low: #0aff9d;
   --meter-mid: #ffe400;
@@ -228,11 +250,24 @@ html[data-theme="blue-future"] .btn-tertiary { --bf-tone: var(--accent); --btn-b
 html[data-theme="blue-future"] .btn-danger { --bf-tone: var(--danger); --bf-ink: #ff7a8f; }
 html[data-theme="blue-future"] .btn-success { --bf-tone: var(--success); }
 html[data-theme="blue-future"] .btn-ghost { --btn-shadow-hover: none; }
+/* Disabled: present but off. Half strength with a dashed edge, so the
+   control still reads as a control. */
 html[data-theme="blue-future"] .btn:disabled,
 html[data-theme="blue-future"] .btn[aria-disabled="true"] {
-  opacity: 0.35;
+  opacity: 0.5;
+  border-style: dashed;
   box-shadow: none;
 }
+
+/* Segments and pagination have no border of their own: the selected cell
+   draws its blue edge inset, matching the toggle and filter chip. */
+html[data-theme="blue-future"] :is(.segmented-item.is-active, .pagination-item.is-active, .badge-button.is-active, .message-reactions > .badge-button[aria-pressed="true"]) {
+  box-shadow: inset 0 0 0 1px var(--accent-2);
+}
+
+/* In a window or dialog the tab strip is short of room: tighter tracking
+   keeps four tabs on one row so the action buttons stay above the fold. */
+html[data-theme="blue-future"] :is(.desktop-window, .modal) .tab { --label-tracking: 0.02em; padding-inline: 0.6em; }
 
 /* Table select bar: selected rows carry it too, not just the active row. */
 html[data-theme="blue-future"] .table tr.is-selected td:first-child {
@@ -352,7 +387,7 @@ html[data-theme="blue-future"] .sci-switch:has(> input:focus-visible) {
   outline-offset: 2px;
 }
 html[data-theme="blue-future"] .sci-switch:has(> input:disabled) {
-  opacity: 0.35;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -399,6 +434,18 @@ html[data-theme="blue-future"] {
   /* The nav takes the second row (as core does for .nav), so brand and
      actions share the first. */
   html[data-theme="blue-future"] .app-bar > nav { order: 10; }
+  /* Both rows are 44px touch targets; everything around them goes, so the
+     bar is two target rows tall and no more. Dense labels tighten a hair. */
+  html[data-theme="blue-future"] .app-bar {
+    --app-bar-padding: 0.15rem 0.6rem;
+    --menubar-pad: 0;
+    row-gap: 0;
+    letter-spacing: -0.01em;
+  }
+  /* A linked brand on a row of its own needs the target height itself now
+     that the bar's padding is gone. */
+  html[data-theme="blue-future"] .app-bar > .nav-brand { min-block-size: 24px; align-content: center; }
+  html[data-theme="blue-future"] :is(.toggle-btn, .segmented-item) { letter-spacing: -0.01em; }
   /* Nav items and the taskbar tray give back padding the mono text needs. */
   html[data-theme="blue-future"] .nav-item { padding-inline: 0.45em; }
   html[data-theme="blue-future"] .taskbar-tray { padding-inline: 0.35em; gap: 0.3em; }

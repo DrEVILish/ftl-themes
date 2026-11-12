@@ -27,6 +27,11 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
 3. **Cyan means live data; blue means interactive.** `--accent` (cyan)
    carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
+   So a selected or pressed control (toggle, segment, current page, filter
+   or reaction chip, active tab, open menu item) is a blue-tinted cell
+   (`--accent-2` at 35% over the panel) with a blue edge and `--text`
+   label, never a solid cyan slab; solid cyan is kept for the primary
+   action and live readouts.
 4. **Structure over ornament.** Headings are tracked and uppercase. The
    page and section titles (`h1`, `h2`) are bright and step up in size so
    the panel has a title level; `h3`/`h4` are *dim* labels on a panel. The
@@ -99,10 +104,12 @@ the two should visibly move the furniture.
    0 on phones, where the wide mono face needs the room). Icon buttons are
    square like everything else. Primary carries
    `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
-   border to the glow and adds `0 0 8px`; `:disabled` is flat at 0.35
-   opacity with no shadow. All via `--btn-*` tokens.
-4. **Inputs** are `#08192b` cells; focus recolours the border, keeps the
-   outline and adds `0 0 8px rgba(0,217,255,0.35)`.
+   border to the glow and adds `0 0 8px`; `:disabled` is flat at 0.5
+   opacity with a dashed edge and no shadow (present but off). All via
+   `--btn-*` tokens.
+4. **Inputs** are `#08192b` cells with a `#2a6a9a` edge (3:1 on the field,
+   so a field still shows inside a panel); focus recolours the border,
+   keeps the outline and adds `0 0 8px rgba(0,217,255,0.35)`.
 5. **Tables**: dim, 0.08em-tracked uppercase headers, hairline row rules,
    and an accent select bar (`inset 0.35rem`) on active and selected rows.
 6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
@@ -123,6 +130,11 @@ the two should visibly move the furniture.
    `.switch` carries the same look through tokens: a square 3px track on
    `#02050a`, a square thumb, cyan when on. Badges, chips and scrollbars
    are squared to 2px too: nothing on the panel is a pill.
+   Meters sit in a `--deck-trim` (`#1d5c8f`) window edge, the same metal
+   as the transport. Tabs inside a window or dialog drop to 0.02em
+   tracking so a four-tab strip stays on one row.
+   On phones the bar is two 44px target rows with no padding between
+   them (brand and actions, then the nav), about 106px.
 9. **Status helpers**: `.status-ok` (success), `.status-error` (danger),
    `.status-rec` or `.status-error.is-rec` (bold danger plus glow),
    `.status-idle` (success, a ready recorder is green).
@@ -135,11 +147,14 @@ Also: the meters, readouts, lamps and transport described under
 
 ## Typography
 
-`Consolas, "IBM Plex Mono", "SFMono-Regular", monospace`. Consolas is the
-reference face but ships only with Windows and Microsoft Office; nothing is
-vendored. IBM Plex Mono and SFMono are used only if installed locally, so on
-most Linux/Android devices the final generic `monospace` (DejaVu Sans Mono,
-Roboto Mono, ...) renders. Metrics are close but not identical.
+`Consolas, "Cascadia Mono", Inconsolata, "IBM Plex Mono", "SFMono-Regular",
+"Roboto Mono", "Noto Sans Mono", monospace` (`--font-mono` is the same
+stack). Consolas is the reference face but ships only with Windows and
+Microsoft Office; nothing is vendored. The fallbacks are the narrow,
+Consolas-like monos in the order they match it, all local only, so on a
+bare Linux/Android device the generic `monospace` (DejaVu Sans Mono, about
+9% wider) still renders. On phones the bar and joined toggles take
+-0.01em tracking to give that width back.
 
 ## Contrast note
 
