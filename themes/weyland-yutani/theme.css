@@ -140,6 +140,9 @@ html[data-theme="weyland-yutani"] {
   --modal-border: var(--wy-line-hi);
   --modal-header-bg: var(--wy-plate);
   --modal-header-fg: var(--wy-plate-fg);
+  /* Caption buttons take the title bar's computed ink: dark on the beige
+     plate, muted on an inactive window's dark bar (the plate ink vanished there). */
+  --modal-header-close-fg: currentColor;
   --modal-radius: 0;
   --modal-shadow: 0 0 0 1px #000, 4px 4px 0 #000;   /* a hard machined drop, no blur */
   --fab-radius: 0;
@@ -310,6 +313,16 @@ html[data-theme="weyland-yutani"] .nav-brand { -webkit-text-stroke-width: 0.09em
 html[data-theme="weyland-yutani"] :is(.panel-header, .modal-header) :is(strong, b) { font-weight: inherit; }
 /* Small all-caps UI labels speak in the stencil face too. */
 html[data-theme="weyland-yutani"] :is(.tab, .stat-label) { font-family: var(--font-label); letter-spacing: 0.05em; }
+/* Michroma is one thin weight; the same under-painted stroke as the headings
+   keeps tabs and stat labels as heavy as the plate lettering beside them. */
+@media (min-width: 481px) {
+  html[data-theme="weyland-yutani"] :is(.tab, .stat-label) { -webkit-text-stroke: 0.04em currentColor; paint-order: stroke fill; }
+  html[data-theme="weyland-yutani"] .desktop-window .tab { -webkit-text-stroke: 0; }
+}
+/* Share Tech has one weight: body bold is a light stroke on the regular
+   cut, not the browser's smeared synthetic bold. */
+html[data-theme="weyland-yutani"] { --list-item-title-weight: 400; }
+html[data-theme="weyland-yutani"] :is(strong, b, .list-item-title):not(:is(h1, h2, h3, h4, .panel-header, .modal-header, .nav-brand) *) { font-weight: 400; -webkit-text-stroke: 0.03em currentColor; paint-order: stroke fill; }
 /* In a window, the extended face wrapped the tab row and pushed the dialog
    keys out of the frame; there the tabs speak in the narrower Share Tech
    (as they do on phones, below). */
@@ -326,6 +339,9 @@ html[data-theme="weyland-yutani"] :is(.modal-header, .nav-item, .window-title, .
   text-transform: uppercase;
   letter-spacing: var(--label-tracking);
 }
+/* The caps are for short labels: a list item's subject is sentence-length,
+   so it reads in mixed case; its meta line keeps the tracked caps. */
+html[data-theme="weyland-yutani"] .master-detail-list .list-item-title { text-transform: none; letter-spacing: 0.02em; }
 html[data-theme="weyland-yutani"] .nav-brand { text-transform: uppercase; }
 /* Title plates are set in the extended face, which needs little tracking,
    and small, as the real plates are, so a title fits one line in a narrow
@@ -490,17 +506,54 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) {
 
 /* Machined parts are square: carousel markers, the arrows and the spinner
    ring have no radius token in core, so it is set here (shape only). */
-html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner) { border-radius: 0; }
+html[data-theme="weyland-yutani"] :is(.carousel-nav > a, .spinner, .indicator),
+html[data-theme="weyland-yutani"] .btn[aria-pressed][aria-busy="true"]::before,
+html[data-theme="weyland-yutani"] :is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after { border-radius: 0; }
 html[data-theme="weyland-yutani"] :is(.has-badge, .avatar, .presence-status)::after { border-radius: 0; }
+/* A square fills the corner a round dot leaves free, so in the small bar
+   avatar it sits outside the corner to keep the initials clear. */
+html[data-theme="weyland-yutani"] .app-bar .avatar[data-status] { --presence-dot-size: 0.45rem; }
+html[data-theme="weyland-yutani"] .app-bar .avatar[data-status]::after { inset-block-end: -3px; inset-inline-end: -3px; }
 html[data-theme="weyland-yutani"] .carousel > .carousel-slide::scroll-marker,
 html[data-theme="weyland-yutani"] .carousel::scroll-button(*) { border-radius: 0; }
+
+/* Checkboxes and radios are machined square keys, not the UA's rounded grey
+   box: glass black in a lit frame, filled amber with a dark mark when on.
+   The radio's mark is a square block, not a dot. Core's size (hit area) stays. */
+html[data-theme="weyland-yutani"] :is(.checkbox, .radio) {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  border: 2px solid var(--wy-line-hi);
+  border-radius: 0;
+  background: var(--wy-deep);
+}
+html[data-theme="weyland-yutani"] :is(.checkbox, .radio):hover { border-color: var(--accent); }
+html[data-theme="weyland-yutani"] .checkbox:is(:checked, :indeterminate) {
+  border-color: var(--accent);
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.8' fill='none' stroke='%230a0908' stroke-width='2.6' stroke-linecap='square'/%3E%3C/svg%3E") center / 90% no-repeat;
+}
+html[data-theme="weyland-yutani"] .checkbox:indeterminate { background: var(--accent) linear-gradient(var(--on-accent), var(--on-accent)) center / 60% 0.18rem no-repeat; }
+/* Core's radio box is taller than wide (a 24px target), so its frame is
+   drawn as a centred square, not with the border. */
+html[data-theme="weyland-yutani"] .radio {
+  --_box: calc(1.1em * var(--density));
+  border: 0;
+  background:
+    linear-gradient(var(--_mark, transparent), var(--_mark, transparent)) center / 0.5em 0.5em no-repeat,
+    linear-gradient(var(--wy-deep), var(--wy-deep)) center / calc(var(--_box) - 4px) calc(var(--_box) - 4px) no-repeat,
+    linear-gradient(var(--_frame, var(--wy-line-hi)), var(--_frame, var(--wy-line-hi))) center / var(--_box) var(--_box) no-repeat;
+}
+html[data-theme="weyland-yutani"] .radio:hover { --_frame: var(--accent); }
+html[data-theme="weyland-yutani"] .radio:checked { --_frame: var(--accent); --_mark: var(--accent); }
+html[data-theme="weyland-yutani"] :is(.checkbox, .radio):disabled { opacity: 0.45; }
 
 /* Ghost soft keys keep a lit lip so they still read as keys on surface-2. */
 html[data-theme="weyland-yutani"] .btn-ghost { --btn-shadow: inset 0 -3px 0 var(--wy-line-hi); --btn-shadow-hover: inset 0 -3px 0 var(--accent); }
 
 /* Stat tiles follow the terminals' header rows: label and value over one
    long double rule, no box (terminal-amber-destination.jpg). */
-html[data-theme="weyland-yutani"] .card:has(> .stat-value) {
+html[data-theme="weyland-yutani"] .card:has(> .stat-value, > .stat > .stat-value) {
   --card-bg: transparent;
   --card-border: transparent;
   border-bottom: 3px double var(--wy-line-hi);
@@ -509,6 +562,7 @@ html[data-theme="weyland-yutani"] .card:has(> .stat-value) {
 html[data-theme="weyland-yutani"] .stat-value { color: var(--accent); text-shadow: var(--readout-glow); }
 /* Label over value, as the header rows' label column sits over the figures. */
 html[data-theme="weyland-yutani"] .card:has(> .stat-value) > :is(.stat-label, .stat-value) { display: block; }
+html[data-theme="weyland-yutani"] .stat > .stat-label { order: -1; }
 
 /* The readout is a boxed counter cell (romulus-colony-work-contract.webp):
    a lit inner outline 1px inside the glass frame. */
@@ -569,6 +623,9 @@ html[data-theme="weyland-yutani"] .app-status:not(.taskbar) > :first-child { bor
 /* One phosphor per screen: chart series are shades of it, so only status
    colours (success/warning/danger) step outside the screen's hue. */
 html[data-theme="weyland-yutani"][data-variant] {
+  /* A saved cell is a phosphor outline, not a green fill, so the screen
+     keeps one hue (the tick still marks it). */
+  --cell-saved-bg: transparent;
   --chart-series-1: var(--accent);
   --chart-series-2: var(--accent-2);
   --chart-series-3: var(--muted);
@@ -687,10 +744,7 @@ html[data-theme="weyland-yutani"][data-variant="earth"] {
   --selection-fg: #02090c;
 }
 
-/* Window caption buttons on the label plate follow the plate's ink, as
-   core already does for the close button: the default muted grey all but
-   vanished on beige. */
-html[data-theme="weyland-yutani"] .modal-header > :is(.btn-min, .btn-max):not(:hover) { color: var(--modal-header-fg, inherit); }
+
 
 /* --- v5 layout (PLAN.md §2–§3) ---------------------------------------------
  * Phones and tablets: bar, main, status in one column. The equipment rail
