@@ -41,12 +41,14 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 ## Signature details
 
 - The **timing tower** in the rail: "LAP 34/57" over positions 1-20 (the
-  leader boxed in white), a neutral stripe per car, interval bars (one
-  purple for the fastest lap), and a tyre ring per car. Painted as one SVG
-  data URI; the rail stays empty and `aria-hidden`.
+  leader boxed in white), a neutral stripe per car, a tabular interval
+  figure per car (one purple for the fastest lap), and a tyre ring per car.
+  Painted as one SVG data URI on a sticky `::before`, so the tower stays in
+  view down a long page; the rail stays empty and `aria-hidden`.
 - The **rev-light strip** under the bar: 15 LEDs, 5 green, 5 red, 5 blue,
-  11 lit.
-- **Tyre chips**: every `.badge` is a dark disc with a 2px compound ring:
+  11 lit; 10px lamps with a darker 1px rim, about 250px wide.
+- **Tyre chips**: every `.badge` is a square timing cell led by a dark
+  disc with a 2px compound ring (filter `.badge-button`s stay square too):
   default hard white, `.badge-warning` medium yellow, `.badge-danger` soft
   red, `.badge-success` intermediate green, `.badge-accent` purple.
 - **Panel headers** with a slanted purple tab at the left and bold italic
@@ -55,6 +57,8 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
   `.is-warn`, red on `.is-error`), a red redline sector and a red needle.
 - **Close** is a square black steering-wheel key with a cross; it lights
   soft red on hover.
+- Table status reads at row size in bold caps, and `td.mono` figures stay
+  in Titillium so the table is one timing face.
 - Table heads sit on a 2px purple rule; the selected row is purple with a
   4px purple bar, as the fastest lap is on a timing screen.
 - The status strip is race control on a 2px green "track clear" rule.
