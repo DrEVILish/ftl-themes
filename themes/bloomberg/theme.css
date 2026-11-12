@@ -7,11 +7,19 @@
  * not decoration.
  */
 
-/* Share Tech (SIL OFL, vendored): the modern terminal screen sets labels,
-   names and figures in a narrow proportional sans, not a mono. */
+/* Roboto Condensed (SIL OFL, vendored Latin 400/700): the terminal screen
+   sets labels, names and figures in a narrow humanist sans with open bowls
+   and a real bold ('BIO', 'EC'), not a mono or a squared techno face. */
 @font-face {
-  font-family: "Share Tech";
-  src: url("assets/fonts/ShareTech-Regular.woff2") format("woff2");
+  font-family: "Roboto Condensed";
+  src: url("assets/fonts/RobotoCondensed-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("assets/fonts/RobotoCondensed-Bold.woff2") format("woff2");
+  font-weight: 700;
   font-display: swap;
 }
 
@@ -54,7 +62,7 @@ html[data-theme="bloomberg"] {
   --radius: 0;
   /* The screen's narrow proportional sans (labels, names, headers and
      figures); mono stays for code and readouts. Figures are tabular. */
-  --font: "Share Tech", "Arial Narrow", "Roboto Condensed", "Liberation Sans Narrow", sans-serif;
+  --font: "Bloomberg Terminal", "Roboto Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
   --font-mono: "Share Tech Mono", Consolas, "Liberation Mono", monospace;
   --flare: #ffcc00;
 
@@ -78,8 +86,8 @@ html[data-theme="bloomberg"] {
   --panel-bg: #000000;
   /* Every terminal window has a thin amber outer frame; inputs, cards and
      hairlines stay grey. */
-  --panel-border: #cc7a00;
-  --modal-border: #cc7a00;
+  --panel-border: #e0983f;
+  --modal-border: #e0983f;
   --card-border: var(--border);
   --panel-pad: 0.25rem;
   --tab-panel-pad: 0.35rem;
@@ -100,7 +108,8 @@ html[data-theme="bloomberg"] {
   --mention-self-bg: color-mix(in srgb, var(--warning) 22%, transparent);
   --comment-anchor-bg: color-mix(in srgb, var(--warning) 14%, transparent);
   --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 22%, transparent);
-  --row-active-marker: inset 0.2rem 0 0 var(--accent-2);
+  /* The selection bar is the yellow function key; cyan stays a data colour. */
+  --row-active-marker: inset 0.2rem 0 0 var(--accent);
   --nav-bg: #000000;
   --nav-rule: var(--border);
   --badge-radius: 0;
@@ -152,7 +161,7 @@ html[data-theme="bloomberg"] {
 
   /* Role colors from the terminal screen: grey column-header bar with
      light text, dark-red section bars with white text. */
-  --table-head-bg: #2a2a2a;
+  --table-head-bg: #1a1a1a;
   --table-head-fg: #c8c8c8;
   --panel-header-bg: #800414;
   --panel-header-fg: #ffffff;
@@ -162,6 +171,9 @@ html[data-theme="bloomberg"] {
   --card-pad: 0.4rem;
   --toolbar-pad: 0.25rem;
   --toggle-btn-padding: 0.25rem 0.45rem;
+  /* Sunken panes (explorer tree, file list) are grey wells; the blue rule
+     belongs to the command line's inputs only. */
+  --window-pane-border: var(--border);
 
   /* The green <GO> key from the real keyboard, filled with black text. */
   --go-bg: #2ecc40;
@@ -175,8 +187,8 @@ html[data-theme="bloomberg"] {
 html[data-theme="bloomberg"] :is(.panel-header, .modal-header) { --muted: #f0c8a0; }
 
 /* Data values are white on the terminal; amber stays for labels and names.
-   Figures are the same narrow sans as the labels at regular weight (Share
-   Tech's digits are already equal-width), not the mono. */
+   Figures are the same narrow sans as the labels at regular weight, set
+   tabular, not the mono. */
 html[data-theme="bloomberg"] .stat-value { --text: #e8e8e8; }
 html[data-theme="bloomberg"] :is(.stat-value, .table td.mono) { font-family: var(--font); font-weight: 400; }
 html[data-theme="bloomberg"] body { font-variant-numeric: tabular-nums; }
@@ -231,8 +243,36 @@ html[data-theme="bloomberg"] .tabs:not([aria-orientation="vertical"]) {
   --tab-fg-active: #000000;
   --tab-border-active: var(--accent);
   --tab-underline-active: var(--accent);
-  gap: 2px;
+  /* One continuous crimson section bar across the panel, thin dividers
+     between items. */
+  gap: 0;
+  border-bottom: 0;
+  background: #800414;
 }
+html[data-theme="bloomberg"] .tabs:not([aria-orientation="vertical"]) > .tab { border-inline-end: 1px solid rgba(255, 255, 255, 0.25); }
+
+/* Labels keep the terminal's voice: mixed case, no tracking ('Index',
+   '2 Day', '%YTD'), not core's uppercase eyebrow. */
+html[data-theme="bloomberg"] :is(.stat-label, .field-group-title, .strip-label) { text-transform: none; letter-spacing: 0; }
+
+/* Every content region sits under a crimson section bar, as panels do:
+   the settings and reading-pane titles become that bar. */
+html[data-theme="bloomberg"] .master-detail-pane.panel > :is(.cluster:first-child, h2) {
+  margin-inline: calc(-1 * var(--surface-pad));
+  margin-block-start: calc(-1 * var(--surface-pad));
+  padding: var(--panel-header-pad);
+  background: var(--panel-header-bg);
+  color: var(--panel-header-fg);
+  --text: var(--panel-header-fg);
+  --muted: #f0c8a0;
+}
+html[data-theme="bloomberg"] .master-detail-pane.panel > .toolbar:first-child + h2 { margin-block-start: 0; }
+
+/* The status strip is one cyan data row; its right-hand meta too. */
+html[data-theme="bloomberg"] .app-status { --muted: var(--app-status-fg); }
+
+/* Secondary text never falls under 12px at --density 0.7. */
+html[data-theme="bloomberg"] :is(.status, .field-hint, .hint, .stat-trend) { font-size: max(0.75em, 0.75rem); }
 
 /* Desktop windows: a black top row inside the amber frame with amber
    title and controls; crimson stays for in-content section bars. */
