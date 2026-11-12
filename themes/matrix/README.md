@@ -25,35 +25,43 @@ directly rather than an interface built for you.
    Only semantic variants take a fill, so a delete button still reads as
    dangerous.
 5. **Uppercase headings, tracked.** Terminal banner conventions.
-6. **Hard rectangles.** Badges, filter chips, switches, slider thumbs and
-   checkboxes are square terminal cells, never capsules.
+6. **Hard rectangles.** Badges, filter chips, switches, slider thumbs,
+   icon buttons, avatars, carousel arrows and dots, and checkboxes are
+   square terminal cells, never capsules or discs (radios stay round).
 
 ## Signature details
 
 - **The digital rain**: real glyph columns filling the frame top to bottom,
   mixing mirrored digits and capitals with katakana-like stroke glyphs drawn
   as SVG paths (about a third of the near layer's cells), each streak a
-  bright `#00ff41` tail ending in a white head with a blur glow, plus faint
+  bright `#00ff41` tail (full strength from 40% of its length) ending in a
+  white-hot head with a doubled green blur glow, plus faint
   residual glyphs between streaks, at uneven column pitch. Two SVG tiles
   with coprime widths, so the wall never visibly repeats: a near 997px tile
-  at 14px on `html::after` (layer opacity 0.85) and a far 613px, dimmer
-  text-only tile at 10px on `body::before` (0.4). Streaks wrap across the
+  at 14px on `html::after` (layer opacity 1) and a far 613px, dimmer
+  text-only tile at 10px on `body::before` (0.5; dropped on touch screens to keep the frame
+  budget). Streaks wrap across the
   tile's bottom edge, so the loop has no seam. Each layer falls by `transform: translateY` of one
   tile height (13s and 19s), so it loops seamlessly and composites rather
-  than repainting. With reduced motion the columns stand still.
-- Light text carries the bloom plus a tight black halo, so glyphs standing
-  on the rain (an unpanelled sidebar) have a dark moat. The halo's alpha is
+  than repainting (both layers carry `will-change: transform`). With reduced motion the columns stand still.
+- Light text carries the bloom plus a black halo (2px twice, then 8px), so
+  glyphs standing on the rain have a dark moat; a bare `aside` standing on
+  the rain also gets an 80% black backing, at zero class specificity so a
+  drawer or panel keeps its own fill. The halo's alpha is
   computed from the text's own lightness (relative colour from
   `currentColor`), so dark labels on lit fills get none; controls keep
   bloom only.
-  The content well is a 60% black wash over the rain; panels and tables
+  The content well is a 35% black wash over the rain, so the code wall
+  stays bright between panels; panels and tables
   are opaque.
 - Panel rules are a lit `#1a9a2a` with a 24px inward glow; modals, toasts
   and alerts get the SYSTEM FAILURE double rule (black gap, then a 1px lit
   line, in the alert's state colour). The app bar and panel headers carry
   the operator console's ruled LCD plate: faint 3px phosphor scanlines.
 - Checkboxes and radios are drawn as green-ruled cells (phosphor fill and
-  black tick when checked); the slider track is the lit rule colour.
+  black tick when checked); the slider track is the lit rule colour (in Firefox the part up to
+  the thumb lights `#00ff41`). The bar chart's highlighted column is a
+  solid brighter step `#7dff9a`, not a pale gradient.
 
 - A heading flicker animation, gated behind
   `@media (prefers-reduced-motion: no-preference)` and never carrying state
