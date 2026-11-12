@@ -24,7 +24,7 @@ than XP's opaque plastic. The generation that replaced "shiny" with
    hard gradient stops.
 3. **The desktop shows through the frame.** The title bar, the side
    borders and the status strip are tinted glass over the Aero blue
-   desktop; the client area inside them is near-opaque white, as in
+   desktop; the client area inside them is opaque white, as in
    Explorer and every Win7 dialog.
 4. **Rounded, not sharp.** `--radius: 6px` — softer than Luna's 8px
    pill-adjacent buttons, closer to a subtle window-corner round.
@@ -54,13 +54,17 @@ than XP's opaque plastic. The generation that replaced "shiny" with
   navy `#1e395b`.
 - Desktop windows: glass frame and black-with-glow caption whether active
   or not, glass minimise/maximise beside the 43×20 red close with its
-  white ×, also when the buttons are wrapped in their own span. The
+  white ×, also when the buttons are wrapped in their own span: one
+  flush strip hanging from the top edge (min rounded bottom-left only,
+  neighbours share a 1px `#1d3a5c` divider, a wrapper's gap is
+  cancelled, the drawn close is dropped once a real one exists). The
   taskbar (and any `.app-status.taskbar`) is translucent blue-grey glass
   (`rgb(40 70 100 / 0.55)` plus 22% tint) with a white top highlight and
   white text on a dark text-shadow; the Start button is the round orb.
 - Explorer's command bar (`--toolbar-bg`, pale blue `#f5faff → #dce8f6`),
   details-view headers (white → `#f1f5fb`, `#d5dfe5` divider), the Win7
-  trackbar (a 4px groove with a `#8e8f8f` top edge and white bottom
+  trackbar (a 4px `#d6d9dc` groove with a `#6e6e6e` top edge, 3:1 on
+  white, and a white bottom
   edge, drawn on the content box inside core's 24/44px hit area, sideways
   for vertical faders; grey-gloss thumb),
   check boxes with a `#4a5f97` tick — no Luna beige, orange or green
@@ -68,10 +72,14 @@ than XP's opaque plastic. The generation that replaced "shiny" with
 - The desktop is the Windows 7 **"Harmony"** wallpaper: deep-to-bright
   blue, glowing light swooshes and a bloom where the logo sits — sharp
   enough shapes that the frost visibly softens them.
-- Selection is Explorer's pale-blue fill in a 1px `#7da2ce` frame, never
-  a leading accent bar (tables, lists, side nav, ticket cards); tabs are
-  raised gloss tabs, the selected one white; progress is the glossy
-  green bar.
+- Selection is Explorer's pale-blue fill (`#e5f1fd → #c4dcf9`) in a 1px
+  `#7da2ce` frame with black text, never a leading accent bar or a solid
+  blue block: tables (a stacked phone row frames the whole card, not each
+  cell), lists, side nav, ticket cards, segmented and toggle buttons, the
+  current page and pressed filter chips. Chips and badges are 3px boxes,
+  not pills. Solid `#1265c7` is for links and focus. Tabs are raised gloss
+  tabs, the selected one white; progress is the glossy green bar in a
+  15px sunken grey trough (meters 12px).
 
 ## Icons
 
@@ -122,7 +130,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-`--font` is `"Segoe UI", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not, so there Tahoma or the generic sans renders and the look shifts noticeably. Segoe UI is not open-licensed, so vendoring is not an option. Its open (OFL) metric-compatible stand-in, Selawik, would belong after it in the stack once it is vendored into `assets/fonts/` (requested; not done in this theme folder).
+`--font` is `"Segoe UI", Selawik, "Noto Sans", "Open Sans", "Liberation Sans", Tahoma, sans-serif`; `--font-mono` is `Consolas, monospace`. Segoe UI is the reference face (`references/win7-aero/RESEARCH.md` and the `Segoe_UI_Revision_Differences.png` capture) and is **system-only, not vendored**: Windows ships it, macOS/Linux do not. Segoe UI is not open-licensed, so vendoring is not an option; Selawik, its open (OFL) metric-compatible stand-in, comes next and is used where installed (vendoring it into `assets/fonts/` is requested; not done in this theme folder), then the nearest humanist faces. The page sets `font-size-adjust: 0.5`, Segoe UI's own x-height ratio, so it changes nothing where Segoe UI renders but scales a wide fallback (DejaVu, Tahoma) down to Segoe's x-height and keeps Win7's compact 9pt proportions.
 
 ## Contrast honesty
 
