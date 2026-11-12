@@ -17,8 +17,11 @@ stress. Everything in this theme serves that moment.
 
 ## Core values
 
-1. **One loud thing.** GO is the only element allowed a glow. If a second
-   element competes with it, the theme has failed at its one job.
+1. **One loud thing.** GO is the only element allowed a glow, and the only
+   solid amber block at rest. Other "on" states (segmented, toggle,
+   pagination, filter chips, a selected desktop icon) are amber text on the
+   neutral lift with an amber rule, never a fill. If a second element
+   competes with GO, the theme has failed at its one job.
 2. **Flat everywhere else.** No gradients, no elevation, no decorative
    shadow. Depth cues cost scanning time and add nothing to a list.
 3. **Density is a feature.** `--density: 0.85`. Fitting more of the cue
@@ -49,14 +52,20 @@ stress. Everything in this theme serves that moment.
   dark legend) and blooms on hover — a deliberate, and the *only*,
   exception to the no-glow rule. `.btn-primary` is an amber outline so it
   never out-shouts GO; secondary and tertiary labels are plain `--text`.
-- **Headings are console labels.** h2/h3 are small uppercase `--muted`
-  labels; h1 and marketing headlines stay full-size `--text`.
+- **The playhead.** The cue standing by (`tr.is-active`, `.list-item.is-active`)
+  carries QLab's light right-pointing triangle at its leading edge over
+  the amber tint, with a thin 2px amber edge kept underneath. A row ticked
+  by its selection checkbox is a selection, not a cue: it gets a grey edge.
+- **Headings are console labels.** Section h2/h3 are small uppercase
+  `--muted` labels; h1, marketing headlines and content titles (an
+  article's h2, prose headings) stay `--text` in normal case.
 - **Square everything.** Badges, avatars, switches, slider thumbs and icon
   buttons use `--radius` (or 0), not pills or circles. Overlay shadows are
   set to `none` explicitly (`--panel-shadow` and friends).
 - **Selection is neutral.** A selected row lifts to `#333`; the amber tint
   belongs to the one standing-by row. Table heads, brand, info alerts,
-  icons and the default chart series are neutral.
+  icons (desktop, window and tree glyphs), context-menu hover and the
+  default chart series are neutral.
 - **Meters** use conventional green/amber/red banding, squared off
   (`--meter-radius: 0`).
 - **Lamps** are square and unlit-dark with no bloom: panel LEDs, not
@@ -76,7 +85,8 @@ whole shell.
   (481–900px) use core's one-column shell as is.
 - **XL gutter art.** The stage floor beside the console: a hairline
   stage-plot grid with a scatter of faint amber spike-tape crosses on its
-  intersections. Still, and within about 1.3:1 of `--bg`.
+  intersections, drawn as one SVG tile. Still, and within about 1.3:1 of
+  `--bg`.
 
 ## Extending it
 
