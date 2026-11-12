@@ -20,7 +20,40 @@ html[data-theme="msdos"] {
   color-scheme: dark;
   --bg: #0000aa;
   --surface: #0000aa;
-  --surface-2: #0000cc;
+  /* The raised field is VGA black, not an off-palette brighter blue:
+     hover cells, code chips, tracks. Alerts, menus and badges below take
+     the #0000aa field (or a solid VGA cell) and a double line instead. */
+  --surface-2: #000000;
+  --alert-bg: #0000aa;
+  --toast-bg: #0000aa;
+  --dropdown-bg: #0000aa;
+  --context-menu-bg: #0000aa;
+  --popover-bg: #0000aa;
+  /* Badges are reverse-video VGA cells; the variants are set below. */
+  --badge-bg: #aaaaaa;
+  --badge-fg: #000000;
+  /* Lamps are lit cells, never a glow. */
+  --lamp-glow: none;
+  --deck-lamp-glow: 0px;
+  --deck-lamp-rec-glow: 0px;
+  /* GO is the primary trigger: the yellow primary block with the button shadow. */
+  --go-bg: #ffff55;
+  --go-bg-hover: #ffffff;
+  --go-fg: #000000;
+  --go-border: #ffff55;
+  --go-shadow: 0.6ch 0.4em 0 #000000;
+  --go-size: 1rem;
+  /* Toggle buttons: off is a blue double-line cell, on is the lit block. */
+  --toggle-btn-bg: #0000aa;
+  --toggle-btn-fg: #ffffff;
+  --toggle-btn-border: #ffffff;
+  --toggle-btn-border-width: 3px;
+  --toggle-btn-padding: 0.25em 1ch;
+  --switch-border-width: 3px;
+  /* One text cell size: 16px everywhere (hierarchy is colour). */
+  --btn-font-size: 1rem;
+  --input-font-size-sm: 1rem;
+  --taskbar-font-size: 1rem;
   --border: #ffffff;
   --hairline: #5555ff;
   --text: #ffffff;
@@ -124,7 +157,7 @@ html[data-theme="msdos"] {
   --table-rule: transparent;
   --cell-dirty-bg: transparent;
   --cell-saved-bg: transparent;
-  --cell-saved-flash: #0000cc;
+  --cell-saved-flash: #000000;
   /* Tabs: the active tab is reverse video, like a highlighted menu. */
   --tab-bg-active: #00aaaa;
   --tab-fg-active: #000000;
@@ -141,6 +174,16 @@ html[data-theme="msdos"] .dropdown,
 html[data-theme="msdos"] .app-main,
 html[data-theme="msdos"] .transport,
 html[data-theme="msdos"] .card { border-style: double; border-width: 3px; border-color: #ffffff; }
+/* Menus, popovers, list boxes, alerts and toasts are double-line boxes too;
+   alerts and toasts keep their state colour as the line colour. */
+html[data-theme="msdos"] :is(.context-menu, .popover, .list, .alert, .toast, .switch-track) { border-style: double; border-width: 3px; }
+html[data-theme="msdos"] .toggle-btn { border-style: double; }
+/* A lone toggle is a button: shadowed off, pressed in when on. Joined
+   toggles (a .toggle-group) stay flat; the lit cell marks the choice. */
+html[data-theme="msdos"] :not(.toggle-group) > .toggle-btn { box-shadow: var(--btn-shadow); }
+html[data-theme="msdos"] :not(.toggle-group) > .toggle-btn:has(input:checked) { box-shadow: none; transform: translate(0.6ch, 0.4em); }
+html[data-theme="msdos"] .toggle-group { flex-wrap: wrap; }
+html[data-theme="msdos"] .switch-thumb { inset-block-start: 0; inset-inline-start: 0; }
 /* Panels and the main well are Norton's cyan double-line boxes. */
 html[data-theme="msdos"] :is(.panel, .card, .app-main) { border-color: #55ffff; }
 html[data-theme="msdos"] .btn:active { box-shadow: none; transform: translate(0.6ch, 0.4em); }
@@ -162,7 +205,7 @@ html[data-theme="msdos"] .modal {
   --table-head-rule: #000000;
   outline: 3px double #ffffff;
   outline-offset: -0.6em;
-  /* Code chips stay blue (surface-2) inside the dialog: white ink. */
+  /* Code chips stay black (surface-2) inside the dialog: white ink. */
   --code-fg: #ffffff;
   --input-addon-fg: #aaaaaa;
 }
@@ -194,7 +237,7 @@ html[data-theme="msdos"] .modal :is(.panel, .card, .drawer, .window-pane) {
   --warning-text: var(--warning);
   --table-head-fg: #ffff55;
   --table-head-rule: #55ffff;
-  --dropdown-bg: var(--surface-2);
+  --dropdown-bg: #0000aa;
   --heading-fg: #ffff55;
 }
 html[data-theme="msdos"] .modal {
@@ -204,6 +247,9 @@ html[data-theme="msdos"] .modal {
   --field-row-bg: transparent;
   --field-row-border: #000000;
   --dropdown-bg: #aaaaaa;
+  /* A grey badge would vanish on the grey: plain badges go blue. */
+  --badge-bg: #0000aa;
+  --badge-fg: #ffffff;
   /* A list box on the dialog is blue: white ink. */
   --list-item-fg: #ffffff;
   /* Headings on the grey: the screen's yellow is 2.2:1 here. */
@@ -229,9 +275,11 @@ html[data-theme="msdos"] kbd {
 html[data-theme="msdos"] .btn:disabled,
 html[data-theme="msdos"] .btn[aria-disabled="true"] {
   opacity: 1;
-  --btn-bg: var(--surface-2);
-  --btn-border: #8888cc;
-  --btn-fg: #8888cc;
+  /* VGA dark grey on black: disabled controls are exempt from AA. */
+  --btn-bg: #000000;
+  --btn-border: #555555;
+  --btn-fg: #555555;
+  box-shadow: none;
 }
 
 /* Hierarchy: flat before this — h1/h2/h3 differed only in font-size, all
@@ -367,7 +415,6 @@ html[data-theme="msdos"] .app-status {
      instead of running past the strip's edge. */
   flex-wrap: wrap;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
   letter-spacing: 0;
 }
 html[data-theme="msdos"] .app-bar {
@@ -407,6 +454,26 @@ html[data-theme="msdos"] .app-status::before {
 html[data-theme="msdos"] .app-status::after {
   content: "1       2       3       4       5       6       7       8       9       10     ";
   color: #aaaaaa;
+}
+/* From the desktop tier the ten keys share the strip's full width, as
+   Norton's spanned all 80 columns: each label ends in a tab, and the tab
+   stops sit every tenth of the strip, matching the cyan blocks drawn at
+   10% steps (a 1ch black gap closes each block before the next number). */
+@media (min-width: 901px) {
+  html[data-theme="msdos"] .app-status { container-type: inline-size; }
+  html[data-theme="msdos"] .app-status::before,
+  html[data-theme="msdos"] .app-status::after {
+    inset-inline: 0.5rem;
+    max-width: none;
+    tab-size: 10cqi;
+  }
+  html[data-theme="msdos"] .app-status::before {
+    content: "1Help\9 2Menu\9 3View\9 4Edit\9 5Copy\9 6RenMov\9 7Mkdir\9 8Delete\9 9PullDn\9 10Quit";
+    background:
+      linear-gradient(90deg, #000 0 2ch, transparent 2ch) 100% 0 / 10% 100% no-repeat,
+      repeating-linear-gradient(90deg, #000 0 1ch, #00aaaa 1ch calc(10% - 1ch), #000 calc(10% - 1ch) 10%);
+  }
+  html[data-theme="msdos"] .app-status::after { content: "1\9 2\9 3\9 4\9 5\9 6\9 7\9 8\9 9\9 10"; }
 }
 /* A phone desktop (dock or home screen) lifts the taskbar tray into
    the menu bar: no F-key row there (it landed over the tray). */
@@ -496,4 +563,57 @@ html[data-theme="msdos"] .skeleton {
   background-repeat: repeat;
   border-radius: 0;
   animation: none;
+}
+
+/* Badges: solid reverse-video VGA cells, black ink (no tinted washes). */
+html[data-theme="msdos"] .badge-accent { --badge-bg: #00aaaa; --badge-fg: #000000; }
+html[data-theme="msdos"] .badge-danger { --badge-bg: #ff5555; --badge-fg: #000000; }
+html[data-theme="msdos"] .badge-success { --badge-bg: #55ff55; --badge-fg: #000000; }
+html[data-theme="msdos"] .badge-warning { --badge-bg: #ffff55; --badge-fg: #000000; }
+html[data-theme="msdos"] .badge.badge-outline { --badge-fg: var(--text); }
+/* The cursor bar is black on cyan for every glyph, the [X] included. */
+html[data-theme="msdos"] :is(tr.is-selected, tr[aria-selected="true"], [aria-selected="true"]) :is(.checkbox, .radio)::before { color: #000000; }
+/* No curves anywhere: core hard-codes 50% on these. */
+html[data-theme="msdos"] :is(.spinner, .indicator, .carousel-nav > a) { border-radius: 0; }
+html[data-theme="msdos"] .avatar[data-status]::after,
+html[data-theme="msdos"] .presence-status::after,
+html[data-theme="msdos"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+/* Spinners are the text-mode | / - \ cursor, stepped, not a ring. */
+html[data-theme="msdos"] :is(.spinner:not(.is-grow), .indicator) {
+  border: 0;
+  animation: none;
+  inline-size: 1ch;
+  block-size: auto;
+  line-height: 1;
+  text-align: center;
+}
+html[data-theme="msdos"] :is(.spinner:not(.is-grow), .indicator)::before { content: "/"; color: var(--spinner-fg, var(--indicator-fg, var(--accent-2))); }
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="msdos"]:not([data-motion="reduced"], [data-motion="none"]) :is(.spinner:not(.is-grow), .indicator)::before { animation: msdos-spin 0.6s steps(1) infinite; }
+}
+@keyframes msdos-spin { 0% { content: "|"; } 25% { content: "/"; } 50% { content: "-"; } 75% { content: "\\"; } }
+/* A table cell's input keeps a whole tap target when wide glyphs squeeze the column. */
+html[data-theme="msdos"] td > .input { min-inline-size: var(--tap-min); }
+/* Text-mode windows had no title icon: the close box sits at the left. */
+html[data-theme="msdos"] .desktop-window .modal-header > .icon { display: none; }
+html[data-theme="msdos"] .desktop-window .modal-header { padding-inline-start: calc(0.5rem + 4ch); }
+/* One cell size: the 9x16 glyphs are drawn at 16px (h1 and stat figures
+   at 32px), never at a fractional size that smears the pixels. */
+html[data-theme="msdos"] :is(small, th, td, label, .label, .btn, .btn-sm, .badge, .tab, .nav-item, .breadcrumb-item,
+  .stat-label, .stat-trend, .status, .field-hint, .field-error, .field-valid, .switch-label, .toggle-btn, .alert, .toast,
+  .pagination-item, .list-item-meta, .figure-caption, figcaption, .log-time, .command-hint, .chart-tooltip, .input-addon,
+  .avatar, .message-meta > *, .attachment-size, .window-status, .empty-state-hint, .panel-header, .app-status, h2, h3, h4, h5, h6) { font-size: 1rem; }
+html[data-theme="msdos"] .stat-value { font-size: 2rem; }
+/* Inline code and keys run at the surrounding text's size. */
+html[data-theme="msdos"] :is(code, kbd) { font-size: 1em; }
+/* A tab is its label with one blank cell either side, like a menu title. */
+html[data-theme="msdos"] .tab { padding: 0.25em 1ch; }
+/* Phone: the brand keeps its full name on the menu bar's first line
+   instead of ellipsizing to "N..". */
+@media (max-width: 480px) {
+  html[data-theme="msdos"] .app-bar > .nav-brand { flex: 1 0 100%; min-inline-size: max-content; }
+  /* A bar button with a shortcut hint folds to its icon (the text stays
+     its accessible name), so the controls fit one line. */
+  html[data-theme="msdos"] .app-bar .btn:has(> kbd) { font-size: 0; padding: 0; min-inline-size: var(--tap-min); justify-content: center; }
+  html[data-theme="msdos"] .app-bar .btn:has(> kbd) > .icon { font-size: 1rem; }
 }
