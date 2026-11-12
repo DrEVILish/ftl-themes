@@ -177,6 +177,19 @@ html[data-theme="teletext"] {
   --heatmap-gap: 0;
   /* A saving cell keeps full-brightness ink, not a 0.8 blend. */
   --pending-opacity: 1;
+  /* The count badge: a square red cell at the one cell size, no ring. */
+  --has-badge-font-size: 0.75rem;
+  --has-badge-x: -0.6rem;
+  --has-badge-ring-width: 0;
+  /* Transparent buttons hover to a blue cell and press to a cyan invert:
+     flat palette colours, never an accent wash. */
+  --btn-clear-bg-hover: #0000ff;
+  --btn-clear-bg-active: #00ffff;
+  /* The presence cell sits outside the avatar's corner, small. */
+  --presence-dot-size: 0.5rem;
+  --kbd-border: #0000ff;
+  --kbd-shadow: none;
+  --kbd-hint-border: #0000ff;
 }
 
 /* Headline double-height: real teletext hardware could stretch a text row
@@ -191,12 +204,16 @@ html[data-theme="teletext"] h1 {
   color: var(--warning);
   text-transform: uppercase;
   font-weight: 400;
-  font-size: 1.5rem;
+  /* The body cell size: the SAA5050 doubled only the height, so the
+     headline keeps the 40-column advance and reads tall and narrow. */
+  font-size: 1rem;
   line-height: 1.2;
-  padding: 0 0.5ch;
+  /* Block padding keeps the mosaic cells, which fill the whole cell
+     height, clear of the band's edge. */
+  padding: 0.2em 0.5ch;
   transform: scaleY(2);
   transform-origin: left top;
-  margin-bottom: calc(1.2em + 0.4rem);
+  margin-bottom: calc(1.6em + 0.4rem);
 }
 html[data-theme="teletext"] :is(h1, h2, h3, .panel-header, .stat-value) { font-weight: 400; }
 html[data-theme="teletext"] .stat-value { color: var(--warning); }
@@ -238,13 +255,24 @@ html[data-theme="teletext"] h3 {
   color: var(--accent);
   text-transform: uppercase;
 }
-/* A plain section heading is a strapline: a green band, black ink, as a
-   Ceefax index set its lead lines in a colour block. h3 stays cyan ink,
-   the next step down. */
+/* A plain section heading is a strapline: a colour band at the body cell
+   size, blue with yellow ink first (the Ceefax lead colour), then green,
+   cyan and magenta with black ink down the page. h3 stays cyan ink. */
 html[data-theme="teletext"] :is(main, section, article, .stack) > h2:not([class]) {
-  background: #00ff00;
-  color: #000000;
+  background: #0000ff;
+  color: #ffff00;
+  font-size: 1rem;
   padding: 0.25em 0.5ch;
+}
+html[data-theme="teletext"] :is(main, section, article, .stack) > h2:not([class]):nth-of-type(4n+2) { background: #00ff00; color: #000000; }
+html[data-theme="teletext"] :is(main, section, article, .stack) > h2:not([class]):nth-of-type(4n+3) { background: #00ffff; color: #000000; }
+html[data-theme="teletext"] :is(main, section, article, .stack) > h2:not([class]):nth-of-type(4n+4) { background: #ff00ff; color: #000000; }
+/* The headline band opens with a strip of yellow sextant mosaic, the
+   Ceefax wordmark's block graphics at double height. Decorative. */
+html[data-theme="teletext"] h1::before {
+  content: "\1FB1E\1FB39\2588\1FB2D\1FB0F\2590\1FB39\1FB1E" / "";
+  margin-inline-end: 1ch;
+  color: #ffff00;
 }
 
 /* The page-number header: every real teletext page opens with a cyan
@@ -420,10 +448,7 @@ html[data-theme="teletext"] {
 
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------
  * No breakpoints of its own: core's tiers stack bar, main and status on
- * phones and tablets, and "P100" leads the brand line at every size. The
- * double-height headline shrinks on touch tiers so OVERVIEW still fits a
- * 393px screen at its doubled height. */
-html[data-theme="teletext"] h1 { font-size: clamp(1.1rem, 4vw + 0.3rem, 1.5rem); }
+ * phones and tablets, and "P100" leads the brand line at every size. */
 
 /* XL gutters: a dark teletext page beside the frame. Character cells 12x20
    (the SAA5050 grid), a dim blue header band every ten rows, and sparse
@@ -504,3 +529,35 @@ html[data-theme="teletext"] .app-bar .nav-brand::before {
 }
 /* A bare fieldset's UA groove reads as a white box: a blue cell edge. */
 html[data-theme="teletext"] fieldset:not(.radio-group) { border: 2px solid var(--border); }
+/* No circles: the count badge is a square cell (core hard-codes 999px). */
+html[data-theme="teletext"] .has-badge::after { border-radius: 0; }
+html[data-theme="teletext"] :is(.btn-clear, .btn-icon.is-clear):is(:active, [aria-pressed="true"], [aria-expanded="true"]) { --btn-fg: #000000; }
+html[data-theme="teletext"] .avatar[data-status]::after { inset-block-end: -0.25rem; inset-inline-end: -0.25rem; }
+/* Initials at the one cell size. */
+html[data-theme="teletext"] .avatar-sm { font-size: 0.875rem; }
+/* The header row is text only: the bar's select and buttons lose their
+   edges and invert to a cyan cell on hover, as a page's index lines did. */
+html[data-theme="teletext"] .app-bar .select { --input-border: transparent; --input-fg: #00ffff; }
+html[data-theme="teletext"] .app-bar :is(.btn-secondary, .btn-tertiary, .btn-ghost) {
+  --btn-border: transparent;
+  --btn-bg-hover: #00ffff;
+  --btn-border-hover: transparent;
+}
+@media (hover: hover) {
+  html[data-theme="teletext"] .app-bar :is(.btn-secondary, .btn-tertiary, .btn-ghost):hover { --btn-fg: #000000; }
+}
+/* On a phone the tools stay one row: no keyboard hint, no wrap. */
+@media (max-width: 480px) {
+  html[data-theme="teletext"] .app-bar kbd { display: none; }
+  html[data-theme="teletext"] .app-bar .cluster { flex-wrap: nowrap; min-inline-size: 0; }
+  html[data-theme="teletext"] .app-bar .cluster > .select { flex: 0 1 auto; min-inline-size: 0; }
+}
+/* Secondary text in cyan, as an index page's: real teletext had no grey,
+   which stays for hints and the disabled state only. */
+/* Set on the regions, so a colour band that sets its own --muted (panel
+   headers, selected rows) still wins for the text on it. */
+html[data-theme="teletext"] :is(.app-main, .app-status) { --muted: #00ffff; }
+html[data-theme="teletext"] :is(.field-hint, :disabled) { --muted: #b3b3b3; }
+/* .divide-y rules are blue cell edges, not the black table hairline. */
+html[data-theme="teletext"] .divide-y { --hairline: #0000ff; }
+html[data-theme="teletext"] ::-webkit-resizer { background: #0000ff; }
