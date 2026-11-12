@@ -458,17 +458,20 @@ html[data-theme="lcars"] .app-bar::before {
 html[data-theme="lcars"] .app-bar::after {
   content: "";
   position: absolute;
-  right: 0;
+  /* 1px past the bar, so its anti-aliased edge can't show the orange. */
+  right: -1px;
   bottom: -1.1rem;
   width: 62%;
   height: 1.1rem;
   /* The bar breaks into segments along its run, as on the TNG frames:
      a short gold block, a long lavender run, a thin tan strip riding the
      bar's top edge, a peach run, then a gap and a short tan end cap. */
+  /* The end cap is a half-disc painted with black outside its curve, so
+     the frame's orange border underneath can't show past it. */
   background:
+    radial-gradient(circle calc(var(--lcars-bar) / 2) at 0 50%, var(--lcars-tan) calc(100% - 0.5px), #000 100%) 100% 0 / calc(var(--lcars-bar) / 2) 100% no-repeat,
     linear-gradient(var(--lcars-tan), var(--lcars-tan)) 58% 0 / 12% 35% no-repeat,
     linear-gradient(90deg, #000 0 0.3rem, var(--lcars-gold) 0.3rem 5%, #000 5% calc(5% + 0.3rem), var(--lcars-lavender) calc(5% + 0.3rem) 50%, #000 50% calc(50% + 0.3rem), #000 calc(50% + 0.3rem) 66%, #000 66% calc(66% + 0.3rem), var(--lcars-peach) calc(66% + 0.3rem) calc(100% - 2rem), #000 calc(100% - 2rem) calc(100% - 1.7rem), var(--lcars-tan) 0);
-  border-radius: 0 999px 999px 0;
   pointer-events: none;
 }
 
@@ -508,6 +511,10 @@ html[data-theme="lcars"] .app-rail {
       var(--lcars-peach) 13.3rem 20rem,
       #000 20rem 20.3rem
     ) top / 100% 20.3rem no-repeat,
+    /* Every block further down carries its code too, painted into a tile
+       that repeats with the leg's blocks (two runs, six codes). The top
+       layer above is opaque, so the tile never shows over the first run. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='700.8'%3E%3Cg font-family='Antonio,Arial Narrow,Liberation Sans Narrow,sans-serif' font-stretch='condensed' font-size='13.6' letter-spacing='1' text-anchor='end' fill='%23000'%3E%3Ctext x='104' y='108'%3E04-2271%3C/text%3E%3Ctext x='104' y='176.8'%3E05-3390%3C/text%3E%3Ctext x='104' y='341.6'%3E06-8812%3C/text%3E%3Ctext x='104' y='458.4'%3E07-1176%3C/text%3E%3Ctext x='104' y='527.2'%3E08-4078%3C/text%3E%3Ctext x='104' y='692'%3E09-5523%3C/text%3E%3C/g%3E%3C/svg%3E") 100% 20.3rem / 7rem 43.8rem repeat-y,
     /* The leg below breaks into blocks of varied height and colour
        (7rem / 4rem tan, 10rem lavender), not a run of equal slabs. */
     repeating-linear-gradient(180deg, var(--lcars-tan) 0 7rem, #000 7rem 7.3rem, var(--lcars-tan) 7.3rem 11.3rem, #000 11.3rem 11.6rem, var(--lcars-lavender) 11.6rem 21.6rem, #000 21.6rem 21.9rem) 0 20.3rem / 100% 100% no-repeat,
@@ -648,8 +655,9 @@ html[data-theme="lcars"] .app-bar {
    and blue-violet, with a muted brick red. */
 html[data-theme="lcars"][data-variant="voyager"] {
   --accent: #cc9966;
-  --lcars-peach: #ff9966;
-  --lcars-tan: #ffcc99;
+  /* Brick and a dimmer gold-tan, so the rail and bars change era too. */
+  --lcars-peach: #cc6666;
+  --lcars-tan: #ddbb88;
   --lcars-lavender: #9999cc;
   --lcars-periwinkle: #6688cc;
   --text: #ffcc99;
@@ -1009,8 +1017,8 @@ html[data-theme="lcars"] :is(small, legend, .field-group-title, .prefs-hint, .fi
 html[data-theme="lcars"] .desktop-window .modal-header { width: auto; max-width: none; margin-bottom: 0.25rem; }
 html[data-theme="lcars"] .desktop-window > .modal { --lc-pad: 0.6rem; }
 html[data-theme="lcars"] .desktop-window .modal-header > .btn-close { position: static; --btn-close-bg: var(--accent); }
-html[data-theme="lcars"] :is(.desktop-window .modal-header > *, .modal-header * > *):is(.btn-min, .btn-max),
-html[data-theme="lcars"] .modal-header * > .btn-close {
+html[data-theme="lcars"] :is(.modal-header > *, .modal-header * > *):is(.btn-min, .btn-max),
+html[data-theme="lcars"] :is(.modal-header * > .btn-close, .modal-header:has(> .btn-min) > .btn-close) {
   --btn-min-glyph: "MIN";
   --btn-max-glyph: "MAX";
   --btn-close-width: auto;
@@ -1022,10 +1030,10 @@ html[data-theme="lcars"] .modal-header * > .btn-close {
   --modal-header-close-fg: #000;
   letter-spacing: 0.08em;
 }
-html[data-theme="lcars"] :is(.desktop-window .modal-header > *, .modal-header * > *).btn-max { --btn-close-bg: var(--lcars-peach); --btn-close-radius: 0.2rem; }
+html[data-theme="lcars"] :is(.modal-header > *, .modal-header * > *).btn-max { --btn-close-bg: var(--lcars-peach); --btn-close-radius: 0.2rem; }
 /* A close key nested in the header's own key group (the window pattern). */
-html[data-theme="lcars"] .modal-header * > .btn-close { --btn-close-glyph: "CLOSE"; --btn-close-bg: var(--accent); --btn-close-radius: 0.2rem 999px 999px 0.2rem; --btn-close-fg: #000; --btn-close-fg-hover: #000; --btn-close-bg-hover: var(--lcars-tan); }
-html[data-theme="lcars"] .modal-header * > :is(.btn-min, .btn-max) { --btn-close-fg: #000; --btn-close-fg-hover: #000; --btn-close-bg-hover: var(--lcars-tan); }
+html[data-theme="lcars"] :is(.modal-header * > .btn-close, .modal-header:has(> .btn-min) > .btn-close) { position: static; --btn-close-glyph: "CLOSE"; --btn-close-bg: var(--accent); --btn-close-radius: 0.2rem 999px 999px 0.2rem; --btn-close-fg: #000; --btn-close-fg-hover: #000; --btn-close-bg-hover: var(--lcars-tan); }
+html[data-theme="lcars"] .modal-header :is(.btn-min, .btn-max) { --btn-close-fg: #000; --btn-close-fg-hover: #000; --btn-close-bg-hover: var(--lcars-tan); }
 html[data-theme="lcars"] { --window-header-filter-inactive: opacity(0.8); }
 
 /* --- Polish round 2 ------------------------------------------------------ */
@@ -1155,3 +1163,118 @@ html[data-theme="lcars"] .desktop-window .modal-header { container-type: inline-
   html[data-theme="lcars"] .toggle-group > .toggle-btn:first-child { padding-left: 0.8em; }
   html[data-theme="lcars"] .toggle-group > .toggle-btn:last-child { padding-right: 0.8em; }
 }
+
+/* --- Polish round 4 ------------------------------------------------------ */
+
+/* The panel title's bar break: everything in it is sized to the break, so
+   a badge or icon key can't push the title below the bar. Icon keys keep
+   their touch area through an invisible ::before (::after is the tooltip). */
+html[data-theme="lcars"] .panel-header { overflow: clip visible; flex-wrap: nowrap; }
+html[data-theme="lcars"] .panel-header > :is(.badge, .btn-icon) { min-height: 0; padding-block: 0; }
+html[data-theme="lcars"] .panel-header > .badge { height: 1.3rem; line-height: 1.3rem; }
+html[data-theme="lcars"] .panel-header > .btn-icon { position: relative; height: 1.6rem; line-height: 1.6rem; }
+html[data-theme="lcars"] .panel-header > .btn-icon::before { content: ""; position: absolute; inset: min(0px, (1.6rem - var(--tap-min)) / 2) 0; }
+
+/* The shell's menubar keys are candy pills along the top of the frame,
+   label bottom-right; the current section is lit orange. */
+html[data-theme="lcars"] .app-bar .menubar {
+  --menubar-gap: 0.3rem;
+  --menubar-item-radius: 999px;
+  --menubar-font-size: var(--lcars-size-data);
+  --menubar-item-bg-active: var(--accent);
+  --menubar-item-fg-active: #000;
+  padding: 0;
+}
+html[data-theme="lcars"] .app-bar .menubar > li > :is(button, a) {
+  background: var(--lcars-lavender);
+  color: #000;
+  justify-content: flex-end;
+  align-items: flex-end;
+  min-block-size: max(2rem, var(--tap-min));
+  padding: 0.3em 0.65em 0.3em 1.1em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+/* Phones: tighter keys, so the four fit one row under the frame. */
+@media (max-width: 900px) {
+  html[data-theme="lcars"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.75em 0.55em; letter-spacing: 0.02em; min-inline-size: 0; }
+}
+html[data-theme="lcars"] .app-bar .menubar > li:is(:hover, :focus-within) > :is(button, a) { background: var(--lcars-tan); }
+html[data-theme="lcars"] .app-bar .menubar > li > :is(button, a):is(.is-active, [aria-current="page"], [aria-expanded="true"]) { background: var(--accent); }
+
+/* A master-detail section list is a column of capped candy blocks, like
+   the inbox folders: label bottom-right, the open section orange. */
+html[data-theme="lcars"] .master-detail-list .list > li { border: 0; }
+html[data-theme="lcars"] .master-detail-list .list > li + li { margin-top: 0.3rem; }
+/* Rich rows (a title, meta and statuses, as in fleet) stay data rows. */
+html[data-theme="lcars"] .master-detail-list .list-item:not(:has(.list-item-meta, .list-item-title)) {
+  background: var(--lcars-lavender);
+  color: #000;
+  box-shadow: none;
+  border-radius: 0 999px 999px 0;
+  align-items: flex-end;
+  min-block-size: max(2.4rem, var(--tap-min));
+  padding-block: 0.3rem 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+html[data-theme="lcars"] .master-detail-list .list-item:not(:has(.list-item-meta, .list-item-title)) > span { margin-inline-start: auto; }
+html[data-theme="lcars"] .master-detail-list .list-item:not(:has(.list-item-meta, .list-item-title)):hover { background: var(--lcars-tan); }
+html[data-theme="lcars"] .master-detail-list .list-item:not(:has(.list-item-meta, .list-item-title)):has(input:checked) { background: var(--accent); }
+
+/* Small glyph keys (clear selection, carousel and page arrows) are candy
+   keys too, so they read on black. */
+html[data-theme="lcars"] {
+  --carousel-arrow-bg: var(--lcars-lavender);
+  --carousel-arrow-fg: #000;
+}
+html[data-theme="lcars"] .bulk-bar .btn-close {
+  --btn-close-bg: var(--lcars-lavender);
+  --btn-close-fg: #000;
+  --btn-close-bg-hover: var(--lcars-tan);
+  --btn-close-fg-hover: #000;
+  --btn-close-radius: 999px 0.3rem 0.3rem 999px;
+  /* Antonio's × is a speck; the key says what it does, as CLOSE does. */
+  --btn-close-glyph: "CLEAR";
+  --btn-close-width: auto;
+  --btn-close-pad: 0.15em 0.8em 0 1.3em;
+  --btn-close-height: max(1.7rem, var(--tap-min));
+  --btn-close-font-size: var(--lcars-size-data);
+  --btn-close-glyph-size: 1em;
+  letter-spacing: 0.06em;
+}
+html[data-theme="lcars"] .carousel-nav > :is(.carousel-prev, .carousel-next) {
+  min-width: 2.6rem;
+  height: 1.7rem;
+  line-height: 1.7rem;
+  font-size: var(--lcars-size-sub);
+  border-radius: 999px 0.3rem 0.3rem 999px;
+}
+html[data-theme="lcars"] .carousel-nav > .carousel-next { border-radius: 0.3rem 999px 999px 0.3rem; }
+html[data-theme="lcars"] .pagination > .pagination-item:is(:first-child, :last-child) {
+  background: var(--lcars-lavender);
+  color: #000;
+  font-size: var(--lcars-size-sub);
+  min-width: 2.6rem;
+}
+html[data-theme="lcars"] .pagination > .pagination-item:first-child { border-radius: 999px 0.3rem 0.3rem 999px; }
+html[data-theme="lcars"] .pagination > .pagination-item:last-child { border-radius: 0.3rem 999px 999px 0.3rem; }
+html[data-theme="lcars"] :is(.checkbox, .radio) { width: max(1.25rem, 24px); height: max(1.25rem, 24px); }
+/* Antonio's single guillemets are specks; the arrow keys borrow a bold
+   sans for the glyph alone. */
+html[data-theme="lcars"] :is(.carousel-nav > :is(.carousel-prev, .carousel-next), .pagination > .pagination-item:is(:first-child, :last-child)) {
+  font-family: Arial, "Liberation Sans", sans-serif;
+  font-weight: 700;
+}
+@supports selector(::scroll-button(*)) {
+  html[data-theme="lcars"] .carousel::scroll-button(*) {
+    inline-size: 2.6rem;
+    font: 700 var(--lcars-size-sub) Arial, "Liberation Sans", sans-serif;
+    border-radius: 999px 0.3rem 0.3rem 999px;
+  }
+  html[data-theme="lcars"] .carousel::scroll-button(right) { border-radius: 0.3rem 999px 999px 0.3rem; }
+}
+
+/* Three sizes: chart legends come up to the data size wherever they sit. */
+html[data-theme="lcars"] :is(.legend, .chart-legend) { --legend-size: var(--lcars-size-data); }
+html[data-theme="lcars"] :is(.legend, .chart-legend) > li { font-size: var(--lcars-size-data); }

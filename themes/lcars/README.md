@@ -24,7 +24,7 @@ plain **LCARS** — the orange-led palette. Select the others with `data-variant
 | `data-variant` | Era | Palette |
 |---|---|---|
 | *(none)* | LCARS | Orange-led candy: orange, lavender, peach, tan. |
-| `voyager` | Voyager / DS9 | Gold-tan `#cc9966` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
+| `voyager` | Voyager / DS9 | Gold-tan `#cc9966`/`#ddbb88` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
 | `picard` | Picard (2399) | Sampled from `picard/graph-dial-dataTable.jpg`: slate/steel structure `#8c9ab4`/`#b9c4d6`/`#7a8aa8` (shell frame, elbows, table head), cyan `#4fb3f6` for active/selected only, red-orange `#e8553f` highlight, ice-blue text `#dde6f2`. |
 
 Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
@@ -99,8 +99,9 @@ this catalog could verify against.
   the primary action is a *block*, consistent with everything else.
 - **Lamps** are rounded rectangles, not circles: LCARS has few true circles.
   Icon buttons likewise are capped blocks (`999px 0.3rem 0.3rem 999px`),
-  ghost ones included (lavender, black glyph); only glyphs sitting in a
-  panel's title break stay bare. A lit lamp is full candy and steady; an
+  ghost ones included (lavender, black glyph), and so are the small
+  glyph keys (bulk-bar clear, carousel and page arrows); only glyphs
+  sitting in a panel's title break stay bare, sized to the break. A lit lamp is full candy and steady; an
   off one is the unlit dim lavender (`--surface-2`).
 - **No green.** `--success` is periwinkle and charts draw in the candy set
   (orange, periwinkle, lavender, peach, tan); badges are solid candy blocks
@@ -141,13 +142,14 @@ Selecting LCARS re-arranges the app shell, it does not merely recolour it:
 
 - a **7rem candy rail** appears down the left (`--app-columns`), drawn
   entirely in CSS as fixed-height blocks (rem stops, so a long page doesn't
-  stretch them into slabs) separated by black gaps, the top two carrying
-  black block codes at their lower right, the last running on to the
-  bottom;
+  stretch them into slabs) separated by black gaps, every block carrying a black block code at
+  its lower right, the last running on to the bottom;
 - the **top bar becomes an orange elbow**: a thick leg over the rail that
   curves into a thin bar running right, ending in separate pill-capped
-  segments; the brand becomes the large right-aligned screen title and nav
-  items become pills on the black above the bar;
+  segments (the tan end cap a true half-disc on black); the brand becomes
+  the large right-aligned screen title and nav items — `.nav-item` and the
+  top-level `.menubar` keys — become lavender pills on the black above the
+  bar, label bottom-right, the current one orange;
 - the **status strip is the mirrored bottom elbow**, in tan, closing the
   frame.
 
@@ -251,9 +253,11 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
 6. **Labels bottom-right.** Button labels now sit in the bottom-right
    corner of taller blocks, as on every LCARS key.
 
-Known remaining difference: original rails label *every* block with a
-code; the shell rail is one empty element with two pseudo-elements, so
-only its top two blocks carry codes. The leg below them repeats a run of
+The shell rail is one empty element: its top two blocks carry codes from
+its two pseudo-elements, and every block below them gets its code from an
+SVG tile painted into the rail's background (six codes, repeating with
+the blocks; the tile can't load Antonio, so it falls back to a narrow
+sans). The leg below them repeats a run of
 varied blocks — 7rem tan, 4rem tan, 10rem lavender — split by 0.3rem
 black gaps, so a tall page doesn't read as a column of equal slabs.
 
@@ -350,5 +354,23 @@ Needs markup (left as is):
   they get no frame; the chat's narrow side columns squeeze names.
 - Long button labels should switch to the flat-ended variant — an app
   decision, not visible to CSS.
-- Only two rail blocks can carry codes without rail markup.
+- Settings' Profile title is a plain heading in the pane, not a
+  `.panel-header`, so it sits under the bar rather than in a break of it.
+
+## Polish round 4
+
+- **Panel titles** in the bar break are no longer cut: badges and icon
+  keys are sized to the break (icon keys keep their touch area through an
+  invisible overlay).
+- **Menubar keys** in the shell bar are lavender pills, current orange.
+- **Window keys** render on a window whose MIN/MAX/CLOSE sit straight in
+  `.modal-header` (no `.desktop-window`); CLOSE stays in the title row.
+- **Master-detail section lists** (settings) are capped lavender blocks,
+  the open section orange, matching the inbox folders.
+- **Small glyph keys** (bulk-bar clear, carousel and page arrows) are
+  candy keys with the glyph at the sub size; checkboxes and radios are at
+  least 24px.
+- **Chart legends** are at the data size everywhere.
+- **Voyager** repaints the structure too: peach becomes brick `#cc6666`
+  and tan a dimmer gold-tan `#ddbb88`, so rail and bars change era.
 
