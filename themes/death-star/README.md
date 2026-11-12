@@ -22,15 +22,19 @@ push-buttons in red, blue, yellow, white and green.
    from the diorama's bands) with white text.
 3. **Everything else is square.** Buttons, inputs, switches, avatars,
    badges, lamps, alerts, toasts, the slider and fader caps and carousel
-   dots have zero radius (native checkboxes keep the UA shape); buttons and inputs
-   have no border and sit one visible step above the panel black.
+   dots, lamps, the connection lamp and table status dots have zero radius
+   (native checkboxes keep the UA shape; core's avatar presence dot stays
+   round because its shape encodes status). Buttons have no border; buttons
+   and inputs sit one visible step above the panel black, and inputs carry a
+   2px `#6a6a6a` inlay outline (3.7:1 on black) so fields read as sub-boxes.
 4. **True black, not near-black.** `--bg: #000`.
 
 ## Signature details
 
-- **Tile row.** The app bar carries a 1.25rem-tall row of pale green-grey
-  `#d7e4df` tiles (2.5rem wide, 5px black gaps) above its content and its
-  3px red rule, so the tiles read as blocks, not a dashed line.
+- **Tile row.** The app bar carries a 2.25rem-tall row of pale green-grey
+  `#d7e4df` tiles in bays of four, as on the diorama: near-portrait 2rem
+  blocks with 5px black seams, whole bays only (`background-repeat: space`),
+  inset 1rem from the edges, above the bar content and its 3px red rule.
 - **Red header bands.** `--panel-header-bg`/`--modal-header-bg` are the
   accent with white text (5.4:1); muted and success text on the band are
   re-pointed to `#fff0f0` and `#c8ffd8`.
@@ -39,7 +43,17 @@ push-buttons in red, blue, yellow, white and green.
   with black. On a red header the accent chip turns black.
 - **Focus** is a white outline (`--focus: #fff`): 16:1 on black and 5.4:1
   on the red bands, bulk bar and selected rows, where red focus vanished.
-- **GO** label uses `--accent-text` (7.47:1); its 2px frame stays accent.
+- **White labelling.** The nav brand, table header text, GO label and
+  desktop icon glyphs are white, as the diorama's linework; red stays a
+  fill or rule (the table head keeps its red rule, GO its red frame).
+  `--accent-text` is kept for links, readouts and text buttons.
+- **Avatars** are pale `#d7e4df` chips with black caps; an avatar with a
+  user colour is a solid chip in that colour with black or white caps
+  (computed from its lightness), never a tint.
+- **Disabled buttons** are an unlit `#1c1c1c` key with `#777` text, not a
+  dimmed red one.
+- **Edit states** in tables keep only their non-colour signal (leading
+  bar, tick, ring): no dirty, saved, editing or error tint.
 - **Lamps** are square, borderless and carry a `0 0 10px` glow in their
   own state colour — the only `box-shadow` the theme sets.
 - **Selected rows and options** fill solid red with white text.
@@ -47,8 +61,8 @@ push-buttons in red, blue, yellow, white and green.
   the leading edge, no frame.
 - **Floating menus** (dropdown, popover, context menu) are `#161616` with
   a 2px white outline, so an open menu reads as a raised surface.
-- **Slider track** is `#8a8a8a` linework (5.9:1 on black) with a square
-  white cap; core's transparent border and content-box clip keep the
+- **Slider track** is `#8a8a8a` linework (5.9:1 on black) with an 18px
+  square white cap; core's transparent border and content-box clip keep the
   24px/44px hit area.
 - **Inactive windows** take a neutral `#1c1c1c` title band with no filter,
   the own-message bubble is the same neutral step, and chart/sparkline
@@ -105,12 +119,16 @@ Headings (h1–h3), panel and modal headers and the nav brand use
 the squared, extended labelling of a 1970s console. Michroma ships one
 weight, so these stay at 400, with line-height 1.25 and a 0.35em bottom margin so
 the tall caps clear the text below. Body text is a neutral sans
-(`"Helvetica Neue", Arial, sans-serif`) and `--font-mono` is
-`Consolas, monospace`. Code inside a heading keeps its case.
+(`"Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans",
+sans-serif`) and `--font-mono` is **Share Tech Mono** (SIL OFL, vendored
+as `assets/fonts/ShareTechMono-Regular.woff2`), squared console figures,
+then `Consolas, monospace`. `h1` tracks tighter (0.03em) so the widest
+heading does not outweigh the nearly text-free console. Code inside a
+heading keeps its case.
 
 ## Contrast honesty
 
-- **Accent red fails as text.** `--accent` `#c4352a` is 3.89:1 on black; white on it is 5.4:1, so red is safe only as a fill/lamp/rule. Red as text — links, the brand, the active tab, accent badges, readouts, code keywords and the secondary button — uses `--accent-text` `#ff6a5c` (7.47:1 on black).
+- **Accent red fails as text.** `--accent` `#c4352a` is 3.89:1 on black; white on it is 5.4:1, so red is safe only as a fill/lamp/rule. Red as text — links, the active tab, accent badges, readouts, code keywords and the secondary button — uses `--accent-text` `#ff6a5c` (7.47:1 on black).
 - **Muted lifted:** `#6a6a6a` (3.8:1) to `#777777`, then to `#888888` (5.92:1 on black, 4.81:1 on the `#1c1c1c` current-time schedule row). On the red header block `--muted` is re-pointed to `#fff0f0` (4.88:1) and `--success-text` to `#c8ffd8` (4.82:1).
 - **Nav items** `#8a8a8a` (6.08:1 on black), a hair above `--muted`.
 - `--text` `#e6e6e6` is 16.83:1. Semantic fills (`#ff3b3b`, muted phosphor green `#5cc872` from the reference readout, `#ffcf2f`) are 5.9–15.7:1 on black with black `--on-*` text.

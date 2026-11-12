@@ -36,13 +36,14 @@ html[data-theme="death-star"] {
   --link: var(--accent-text);
   --readout-fg: var(--accent-text);
   --tab-fg-active: var(--accent-text);
-  --nav-brand-fg: var(--accent-text);
+  /* Labelling is white, as the diorama's linework; red stays a fill. */
+  --nav-brand-fg: #ffffff;
   --on-accent: #ffffff;
   --on-danger: #000000;
   --on-success: #000000;
   --radius: 0;
-  --font: "Helvetica Neue", Arial, sans-serif;
-  --font-mono: Consolas, monospace;
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", sans-serif;
+  --font-mono: "Share Tech Mono", Consolas, monospace;
   --flare: #ffcf2f;
 
   /* Construction (reference: the console diorama in references/death-star/):
@@ -77,7 +78,7 @@ html[data-theme="death-star"] {
   --btn-radius: 0;
   --btn-icon-radius: 0;
   /* GO label as text: the brighter red (6.86:1); the 2px frame stays accent. */
-  --go-fg: var(--accent-text);
+  --go-fg: #ffffff;
   --dropdown-bg: #161616;
   --dropdown-border: var(--line);
   --dropdown-border-width: 2px;
@@ -86,7 +87,9 @@ html[data-theme="death-star"] {
   /* One step above --surface-2: a borderless field on a surface-2 panel
      was the same black as the panel and vanished entirely. */
   --input-bg: #121212;
-  --input-border-width: 0;
+  /* Grey inlay outline (3.7:1 on black): fields read as sub-boxes in a bay. */
+  --input-border-width: 2px;
+  --input-border: #6a6a6a;
   /* Focus is white linework: red-on-red was invisible on the header bands,
      bulk bar and selected rows. White is 16:1 on black, 5.4:1 on the red. */
   --focus: #ffffff;
@@ -97,6 +100,7 @@ html[data-theme="death-star"] {
   /* Square slide cap and fader cap: nothing on the console is round. */
   --slider-thumb-radius: 0;
   --slider-thumb-bg: #ffffff;
+  --slider-thumb-size: 1.125rem;
   --fader-cap-radius: 0;
   --switch-radius: 0;
   --switch-thumb-radius: 0;
@@ -106,12 +110,15 @@ html[data-theme="death-star"] {
   --switch-bg-on: var(--accent);
   --switch-thumb-bg-on: #ffffff;
   --avatar-radius: 0;
+  /* Avatars are pale push-button chips, like the plain badges. */
+  --avatar-bg: #d7e4df;
+  --avatar-fg: #000000;
   --badge-bg: #d9d9d9;
   --badge-fg: #000000;
   --alert-radius: 0;
   --toast-radius: 0;
   --table-head-bg: #000000;
-  --table-head-fg: var(--accent-text);
+  --table-head-fg: var(--text);
   --table-head-rule: var(--accent);
   --row-selected-bg: var(--accent);
   --row-selected-fg: #ffffff;
@@ -119,6 +126,16 @@ html[data-theme="death-star"] {
   --nav-rule-width: 0;
   --overlay-bg: rgba(0, 0, 0, 0.9);
   --indicator-fg: var(--accent);
+  /* Square indicator blocks: lamps, connection lamp and status dots. */
+  --lamp-radius: 0;
+  --status-dot-radius: 0;
+  --desktop-icon-glyph: var(--text);
+  /* Edit states: only the leading bar / tick / ring, never a tint. */
+  --row-editing-bg: transparent;
+  --cell-dirty-bg: transparent;
+  --cell-saved-bg: transparent;
+  --cell-saved-flash: transparent;
+  --cell-error-bg: transparent;
   /* Non-overridden extended icons thin toward the pack's 1px hairline. */
   --icon-stroke-width: 1.5;
 
@@ -141,6 +158,11 @@ html[data-theme="death-star"] {
 }
 
 @font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
   font-family: "Michroma";
   src: url("assets/fonts/Michroma-Regular.woff2") format("woff2");
   font-display: swap;
@@ -155,6 +177,8 @@ html[data-theme="death-star"] :is(h1, h2, h3, .panel-header, .modal-header, .nav
 }
 /* Michroma's tall ascent leaves wrapped headings loosely spaced. */
 html[data-theme="death-star"] :is(h1, h2, h3) { line-height: 1.25; margin-block-end: 0.35em; }
+/* The console is nearly text-free: the widest heading is tracked tighter. */
+html[data-theme="death-star"] h1 { letter-spacing: 0.03em; }
 /* Badge after a header title: keep a gap from the Michroma caps. */
 html[data-theme="death-star"] :is(.panel-header, .modal-header) > * + .badge { margin-inline-start: 0.5rem; }
 /* Carousel dots and checkboxes: square, like the push-buttons. */
@@ -165,6 +189,19 @@ html[data-theme="death-star"] :is(h1, h2, h3) :is(code, kbd) { text-transform: n
 html[data-theme="death-star"] .lamp.is-on { box-shadow: 0 0 10px var(--success); }
 html[data-theme="death-star"] .lamp.is-error { box-shadow: 0 0 10px var(--danger); }
 html[data-theme="death-star"] :is(.badge, .btn-icon) { border-radius: 0; }
+/* A user colour is a solid chip with black or white caps, never a tint. */
+html[data-theme="death-star"] .avatar[data-color] {
+  --avatar-bg: var(--user-color);
+  --avatar-fg: #000000;
+  --avatar-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
+}
+/* Disabled: an unlit grey key, not a dimmed red one. */
+html[data-theme="death-star"] .btn:is(:disabled, [aria-disabled="true"]) {
+  --btn-bg: #1c1c1c;
+  --btn-fg: #777777;
+  --btn-border: #1c1c1c;
+  opacity: 1;
+}
 /* Badges are the console's small square push-buttons: solid chips in the
    panel colours (pale tile grey, red, green, yellow) with dark or white
    caps, not tints. On a red header band the red chip turns black. */
@@ -177,7 +214,6 @@ html[data-theme="death-star"] :is(.panel-header, .modal-header) .badge-accent { 
 html[data-theme="death-star"] .lamp {
   --lamp-border-width: 0;
   border-width: 0;
-  --lamp-radius: 0;
 }
 /* Alerts and toasts: a solid colour block at the leading edge, no frame. */
 html[data-theme="death-star"] :is(.alert, .toast) {
@@ -186,17 +222,23 @@ html[data-theme="death-star"] :is(.alert, .toast) {
 }
 html[data-theme="death-star"] [data-tooltip]::after { border-width: 0; }
 
-/* App-bar: the console's row of large pale tiles (green-grey #d7e4df,
-   2.5rem x 1.25rem blocks, 5px black gaps) above the bar content, then the
-   red rule. Inactive nav items #8a8a8a (6.1:1 on black). */
+/* App-bar: the console's tile row, in bays of four like the diorama's
+   (pale green-grey #d7e4df, 2rem x 2.25rem near-portrait blocks, 5px black
+   seams, whole bays only, inset 1rem from the edges), above the bar
+   content, then the red rule. Inactive nav items #8a8a8a (6.1:1 on black). */
 html[data-theme="death-star"] .app-bar {
   --nav-item-fg: #8a8a8a;
-  --nav-brand-fg: var(--accent-text);
-  --app-bar-padding: calc(1.25rem + 0.6rem) 1rem 0.6rem;
+  --nav-brand-fg: #ffffff;
+  --app-bar-padding: calc(2.25rem + 0.6rem) 1rem 0.6rem;
   border-bottom: 3px solid var(--accent);
-  background-image: repeating-linear-gradient(90deg, #d7e4df 0 2.5rem, transparent 2.5rem calc(2.5rem + 5px));
-  background-size: 100% 1.25rem;
-  background-repeat: no-repeat;
+  background-image: linear-gradient(90deg,
+    transparent 0 1rem,
+    #d7e4df 0 3rem, transparent 0 calc(3rem + 5px),
+    #d7e4df 0 calc(5rem + 5px), transparent 0 calc(5rem + 10px),
+    #d7e4df 0 calc(7rem + 10px), transparent 0 calc(7rem + 15px),
+    #d7e4df 0 calc(9rem + 15px), transparent 0);
+  background-size: calc(10rem + 15px) 2.25rem;
+  background-repeat: space no-repeat;
 }
 
 /* Text on the red header band: muted, success and close glyphs re-pointed
@@ -250,7 +292,7 @@ html[data-theme="death-star"] {
     linear-gradient(#1a1a1a, #1a1a1a) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
     linear-gradient(#1a1a1a, #1a1a1a) 10rem 78% / 2.5rem 2.5rem no-repeat,
     /* Short tile row echo, then the lattice. */
-    repeating-linear-gradient(90deg, #d7e4df 0 2.5rem, transparent 2.5rem calc(2.5rem + 5px)) 5rem calc(30% - 3rem) / calc(4 * 2.5rem + 15px) 1.25rem no-repeat,
+    repeating-linear-gradient(90deg, #d7e4df 0 2rem, transparent 2rem calc(2rem + 5px)) 5rem calc(30% - 4rem) / calc(4 * 2rem + 15px) 2.25rem no-repeat,
     linear-gradient(rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem,
     linear-gradient(90deg, rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem;
 }
