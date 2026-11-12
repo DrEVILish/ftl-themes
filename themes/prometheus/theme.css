@@ -168,6 +168,14 @@ html[data-theme="prometheus"] {
   --pagination-item-radius: 4px;
   --pagination-item-bg-active: var(--accent);
   --pagination-item-fg-active: var(--on-accent);
+  --pagination-item-fg: var(--accent-text);
+  /* Carousel arrows are outlined holo circles, like the pill toggles. */
+  --carousel-arrow-fg: var(--accent-text);
+  --carousel-arrow-bg: transparent;
+  /* The selection bar is glass with the bracket's left edge, right side open. */
+  --bulk-bar-bg: color-mix(in srgb, var(--accent) 10%, transparent);
+  --bulk-bar-border: transparent;
+  --bulk-bar-radius: 0.5rem 0 0 0.5rem;
   --skeleton-bg: #123d5a;
   --kbd-bg: var(--surface-2);
   --kbd-border: var(--border);
@@ -313,6 +321,15 @@ html[data-theme="prometheus"] :is(.pagination-item, .btn-icon, .btn-close, .btn-
   min-inline-size: max(2rem, var(--tap-min));
 }
 html[data-theme="prometheus"] :is(.checkbox, .radio) { inline-size: 1.15rem; block-size: 1.15rem; }
+/* Icon-button glyphs read at 1rem and in the holo cyan, not a 10px grey. */
+html[data-theme="prometheus"] .btn-ghost.btn-icon { --btn-fg: var(--accent-text); }
+html[data-theme="prometheus"] .btn-icon > .icon { inline-size: max(1.15rem, 1.1em); block-size: max(1.15rem, 1.1em); min-inline-size: max(1.15rem, 1.1em); }
+html[data-theme="prometheus"] .pagination-item { font-size: max(0.85em, 0.9rem); }
+html[data-theme="prometheus"] .bulk-bar { border-inline-start: 3px solid var(--pm-line); }
+html[data-theme="prometheus"] .carousel-nav > :is(.carousel-prev, .carousel-next) { box-shadow: inset 0 0 0 1.5px var(--accent); font-size: 1em; }
+@supports selector(::scroll-button(*)) {
+  html[data-theme="prometheus"] .carousel::scroll-button(*) { box-shadow: inset 0 0 0 1.5px var(--accent); font-size: 1em; }
+}
 /* Both faces ship one weight; never smear a faux bold. */
 html[data-theme="prometheus"] { font-synthesis: none; }
 /* KPI numbers are holo readouts: light glowing digits, not bold white. */
@@ -379,13 +396,18 @@ html[data-theme="prometheus"] .panel-header > strong:first-child { flex-shrink: 
    filled and the caption glyphs sit on the glass at the right, in cyan. */
 html[data-theme="prometheus"] .modal-header { --modal-header-close-fg: var(--accent-text); }
 html[data-theme="prometheus"] .modal-header > .btn-close { --btn-close-glyph-size: 1.6em; position: absolute; top: 0.25rem; right: 0.5rem; }
+/* The pill tab's fill: a clear dark notch 0.55em in ("MSCN_51/2"), then
+   clear tab before the caption. Set on the header so a local --accent holds. */
+html[data-theme="prometheus"] :is(.panel-header, .modal-header, .app-bar .nav-brand) {
+  --pm-tab-bg: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 85%, var(--accent)) 0.55em calc(0.55em + 3px), var(--accent) 0);
+}
 html[data-theme="prometheus"] .panel-header strong:first-child,
 html[data-theme="prometheus"] .modal-header {
-  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
+  background: var(--pm-tab-bg);
   color: var(--on-accent);
   border-radius: 0.5em;
   box-shadow: var(--pm-glow-box);
-  padding: 0.4em 1.4em 0.4em 1.1em;
+  padding: 0.4em var(--pm-tab-pad-end, 1.4em) 0.4em 1.35em;
   font-weight: 400;
 }
 /* A tab is always one short line ("SUM EVA"); a long title truncates. */
@@ -408,11 +430,11 @@ html[data-theme="prometheus"] .table:not(:is(.panel, .card, .modal, .drawer, .po
 html[data-theme="prometheus"] .panel-header:not(:has(> *)) {
   width: fit-content;
   max-width: 100%;
-  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
+  background: var(--pm-tab-bg);
   color: var(--on-accent);
   border-radius: 0.5em;
   box-shadow: var(--pm-glow-box);
-  padding: 0.4em 1.4em 0.4em 1.1em;
+  padding: 0.4em var(--pm-tab-pad-end, 1.4em) 0.4em 1.35em;
   /* Top level with the bracket's top return, as in the film. */
   margin-block: calc(-1 * var(--surface-pad, 1rem)) var(--space-m);
 }
@@ -432,8 +454,11 @@ html[data-theme="prometheus"] :is(.panel, .card, .modal, .drawer) :is(.panel, .c
 html[data-theme="prometheus"] .modal-header {
   width: fit-content;
   margin: -0.5rem 0 1.1rem;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   border-bottom: 0;
+  /* Dialogs can be narrow: tighter tracking and tail before any ellipsis. */
+  letter-spacing: 0.04em;
+  --pm-tab-pad-end: 0.9em;
 }
 html[data-theme="prometheus"] .modal-header:has(> :not(.btn-min, .btn-max, .btn-close)) {
   width: auto;
@@ -444,10 +469,10 @@ html[data-theme="prometheus"] .modal-header:has(> :not(.btn-min, .btn-max, .btn-
 }
 html[data-theme="prometheus"] .modal-header:has(> :not(.btn-min, .btn-max, .btn-close)) > .btn-close { position: static; }
 html[data-theme="prometheus"] .modal-header > :not(.btn-min, .btn-max, .btn-close, .icon):first-of-type {
-  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
+  background: var(--pm-tab-bg);
   border-radius: 0.5em;
   box-shadow: var(--pm-glow-box);
-  padding: 0.4em 1.4em 0.4em 1.1em;
+  padding: 0.4em var(--pm-tab-pad-end, 1.4em) 0.4em 1.35em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -516,9 +541,12 @@ html[data-theme="prometheus"] :where(.panel, .card, .list, .alert, .toast, .nav-
 }
 /* An image card clips to its corners and its media would cover the
    bracket, so the bracket sits on the edge, above the image. */
-/* Touch: the halo is the first thing to go when scrolling on a phone. */
+/* Touch: the halo is the first thing to go when scrolling on a phone; the
+   glass goes opaque and the text glow drops, so nothing composites over
+   the grid while scrolling. */
 @media (pointer: coarse) {
-  html[data-theme="prometheus"] { --pm-glow-halo: none; --pm-glow-box: none; }
+  html[data-theme="prometheus"][data-theme] { --pm-glow-halo: none; --pm-glow-box: none; --pm-glass: var(--surface); --readout-glow: none; }
+  html[data-theme="prometheus"][data-theme] h1 { text-shadow: none; }
 }
 html[data-theme="prometheus"] .card.has-media { --pm-bracket-x: 0; }
 html[data-theme="prometheus"] .card.has-media::before { z-index: 1; }
@@ -577,9 +605,9 @@ html[data-theme="prometheus"] {
 }
 html[data-theme="prometheus"] .app-bar { font-size: 0.72rem; }
 html[data-theme="prometheus"] .app-bar .nav-brand {
-  background: linear-gradient(90deg, var(--accent) 0 0.55em, color-mix(in srgb, var(--on-accent) 70%, var(--accent)) 0.55em calc(0.55em + 2px), var(--accent) 0);
+  background: var(--pm-tab-bg);
   color: var(--on-accent);
-  padding: 0.4em 1.2em 0.4em 1.1em;
+  padding: 0.4em 1.2em 0.4em 1.35em;
   border-radius: 0.5em;
   box-shadow: var(--pm-glow-box);
   font-size: 0.72rem;
@@ -597,9 +625,9 @@ html[data-theme="prometheus"] .app-rail::before {
   translate: -50% 0;
   writing-mode: vertical-rl;
   rotate: 180deg;
-  font: 0.62rem var(--font-mono);
+  font: 0.5rem var(--font-label);
   letter-spacing: 0.1em;
-  color: var(--flare);
+  color: color-mix(in srgb, var(--flare) 70%, var(--bg));  /* dim rust: recedes behind the panels */
   white-space: nowrap;
 }
 html[data-theme="prometheus"] .app-status {
@@ -622,7 +650,7 @@ html[data-theme="prometheus"] .app-status::before {
   block-size: calc(var(--pm-step-h) + 1px);
   background:
     linear-gradient(var(--pm-step-c), var(--pm-step-c)) left bottom / calc(70% + 1px) 2px no-repeat,
-    linear-gradient(to top right, transparent calc(50% - 1px), var(--pm-step-c) 0 calc(50% + 1px), transparent 0) calc(70% + 0.7 * var(--pm-step-h)) 0 / var(--pm-step-h) var(--pm-step-h) no-repeat,
+    linear-gradient(to bottom right, transparent calc(50% - 1px), var(--pm-step-c) 0 calc(50% + 1px), transparent 0) calc(70% + 0.7 * var(--pm-step-h)) 0 / var(--pm-step-h) var(--pm-step-h) no-repeat,
     linear-gradient(var(--pm-step-c), var(--pm-step-c)) right top / calc(30% - var(--pm-step-h) + 1px) 2px no-repeat;
   pointer-events: none;
 }
@@ -631,6 +659,8 @@ html[data-theme="prometheus"] .app-status::before {
   html[data-theme="prometheus"] .app-status::before { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 45%, transparent)); }
 }
 /* The ship's own sign-off, bottom right of every console screen. */
+/* Inline data in the bar (a tray's "48 kHz") stays readable. */
+html[data-theme="prometheus"] .app-status .mono { font-size: 0.7rem; }
 html[data-theme="prometheus"] .app-status::after {
   content: "ENDO SY OS / MUTHUR PRQ 12-5 B" / "";
   margin-inline-start: auto;

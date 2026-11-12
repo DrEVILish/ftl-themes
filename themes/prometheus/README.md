@@ -27,8 +27,8 @@ reproduced.
    accent lifted 15% toward white, brighter than the barely tinted glass.
 2. **Names sit on pill tabs.** A panel header's first child, the modal
    title and the app brand are filled accent tabs with dark text, like
-   "TAG.NM" or "SUM EVA": ends rounded to half an em, a thin dark divider
-   about half an em in from the left, a soft halo, and the tab growing out
+   "TAG.NM" or "SUM EVA": ends rounded to half an em, a clear 3px dark notch
+   about half an em in from the left with clear tab before the caption, a soft halo, and the tab growing out
    of the bracket's top-left return (its left end on the bracket line). A
    window's tab carries only its name (no app glyph before it); minimise,
    maximise and close sit on the glass at the top right in cyan. An
@@ -63,8 +63,8 @@ reproduced.
 - Bracketed panels with filled pill title tabs (rounded ends, dark divider
   near the left end); pill-tab modal title.
 - Holo grid of dashes and crosses on a navy glow behind the whole shell.
-- Orange edge codes ("0034529", "963409IN_CHY0432") running up the
-  empty rail, drawn in CSS.
+- Dim rust edge codes ("0034529", "963409IN_CHY0432") in the wide label
+  face running up the empty rail, drawn in CSS.
 - A thin cyan rule under the top bar; the brand is a pill tab.
 - A stepped 2px frame line over the status bar: it runs flat for 70% of
   the width, then rises 1.4rem at 45deg into a raised section over the
@@ -114,7 +114,7 @@ is decoration under the panels and carries no text.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On tablet the brand tab stays as wide as its text; on phone it shares the first line with the bell and avatar (truncating if it must) and the nav reads in Share Tech tracked capitals on one line. Pager items and icon buttons are at least 2rem. On touch pointers the bracket halo and the tab glow drop out to keep scrolling cheap; headings and readouts keep their glow. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). The edge-code rail is hidden up to 900px, because content width matters more there. On tablet the brand tab stays as wide as its text; on phone it shares the first line with the bell and avatar (truncating if it must) and the nav reads in Share Tech tracked capitals on one line. Pager items and icon buttons are at least 2rem. On touch pointers the bracket halo, the tab glow and the heading and readout glow drop out and the glass goes opaque, to keep scrolling cheap. Icon-button glyphs are at least 1.15rem in the accent cyan; carousel arrows are outlined accent circles; the bulk-selection bar keeps only a left bracket edge. Modal tabs track tighter (0.04em) before they ellipsize. A button attached in an `.input-group` squares off to match the input. A header that is only a title is drawn as the filled pill tab. Nested glass steps down: a thinner, dimmer bracket and an outlined tab. A table standing straight on the page gets a glass wash, so the tick grid doesn't run through its rows. On XL the gutters show the Engineers' star map: a dim orrery of thin orbit rings in each gutter among hologram stars, in cyan (amber for `suit`), about 1.0:1.
 
 ## Icons
 
