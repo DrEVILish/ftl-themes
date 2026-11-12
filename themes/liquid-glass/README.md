@@ -63,8 +63,8 @@ touching the edge of the screen.
   near-white window.
 - Clear glass is a faint grey (`rgba(244,244,247,0.66)` to
   `rgba(232,232,237,0.56)`), not white: over the white pane it reads as the
-  reference's `#ededed` bar. The selection lens is `rgba(120,120,128,0.22)`
-  (`#e1e1e3` over white).
+  reference's `#ededed` bar. The selection lens is `rgba(120,120,128,0.18)`
+  (about `#dadadc` over the grey glass, near the sampled `#e1e1e3`).
 - `backdrop-filter: blur(14px) saturate(160%) brightness(1.08)` on clear
   glass; `blur(28px)` on sheets and the window (16px on the window up to
   900px). The saturate is what makes controls pick up the wallpaper's
@@ -122,7 +122,7 @@ to two lines (as a 26px rounded rectangle).
 
 - `dark` — the same material over the Tahoe night wallpaper: smoked glass
   (`rgba(30–60,…,0.4–0.5)`), dimmer cool rims, dark HIG label colours
-  (`#f5f5f7` / `#a1a1a6`, accent text `#4aa3ff`). It declares
+  (`#f5f5f7` / `#a1a1a6`, accent text `#6cb4ff`, light enough for 4.5:1 on the grey lens). It declares
   `color-scheme: dark` so native controls follow it.
 
 ## Tell-tales of an inauthentic result
