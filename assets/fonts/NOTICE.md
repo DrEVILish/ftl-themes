@@ -353,6 +353,32 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `material` (all UI text and the mono face; MD2's own type
   family, Medium for button, tab and title roles)
 
+## Barlow Condensed
+
+- **Family:** Barlow Condensed (weights vendored: Medium 500, SemiBold 600
+  — `BarlowCondensed-Medium.woff2`, `BarlowCondensed-SemiBold.woff2`;
+  Latin subset converted to woff2 from the upstream TTFs, glyphs unmodified)
+- **Designer:** Jeremy Tribby
+- **License:** SIL Open Font License, version 1.1 (the upstream `OFL.txt`:
+  "Copyright 2017 The Barlow Project Authors"; `google/fonts`
+  `ofl/barlowcondensed`)
+- **Source:** https://fonts.google.com/specimen/Barlow+Condensed
+- **Used by:** `westworld` (condensed caps labels; the closest free
+  stand-in for the Delos tablets' DIN Condensed-class face)
+
+## Barlow Semi Condensed
+
+- **Family:** Barlow Semi Condensed (weights vendored: Medium 500, Bold 700
+  — `BarlowSemiCondensed-Medium.woff2`, `BarlowSemiCondensed-Bold.woff2`;
+  Google Fonts' Latin subset, unmodified)
+- **Designer:** Jeremy Tribby
+- **License:** SIL Open Font License, version 1.1 (verified in the
+  `google/fonts` repo, `ofl/barlowsemicondensed/METADATA.pb`
+  `license: "OFL"`)
+- **Source:** https://fonts.google.com/specimen/Barlow+Semi+Condensed
+- **Used by:** `westworld` (condensed caps labels; free stand-in for the
+  Delos tablets' DIN Condensed-class face)
+
 ## Selawik
 
 - **Family:** Selawik (weights vendored: Light 300, Regular 400, Semibold
