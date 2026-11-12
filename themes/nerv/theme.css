@@ -2,11 +2,13 @@
  * Theme-Name: NERV Terminal
  * Description: NERV's bunker terminal: deep black, hazard-stripe orange, and a signal-red danger state reserved for real alerts.
  *
- * Note on fonts: NERV's title cards use Matisse EB and its readouts a
- * compressed Helvetica-style sans; neither is vendored or named. Headings,
- * buttons and frame headers use the vendored Antonio Bold (Vernon Adams,
- * SIL OFL 1.1), a tight condensed bold; body text stays in a plain
- * Helvetica/Arial stack for legibility.
+ * Note on fonts: NERV's title cards use Matisse EB (proprietary), named
+ * first in --nerv-title; the vendored stand-in is Noto Serif Display
+ * instanced at wdth 62.5 / wght 900 (SIL OFL 1.1), a compressed heavy
+ * serif, for page titles (h1) and hero titles only; its hairlines break
+ * apart below ~32px, so h2/h3 stay in Antonio. Buttons, tabs, table heads and frame
+ * headers use the vendored Antonio Bold (Vernon Adams, SIL OFL 1.1), a
+ * tight condensed bold; body text stays in a plain Helvetica/Arial stack.
  */
 
 /* url() is relative to the served stylesheet; scripts/build.sh rewrites it. */
@@ -16,6 +18,12 @@
   font-weight: 700;
   font-display: swap;
 }
+@font-face {
+  font-family: "NERV Title";
+  src: url("assets/fonts/NotoSerifDisplay-CondensedBlack.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 html[data-theme="nerv"] {
   --motion-leave: power-off;
@@ -23,27 +31,28 @@ html[data-theme="nerv"] {
   --bg: #050505;
   --surface: #0d0d0d;
   --surface-2: #181818;
-  --border: #ff6600;
+  --border: #ff8a00;  /* EVA's amber-orange: 8.6:1, and well clear of signal red */
   --hairline: #3a2200;
   --text: #f2f2f2;
-  --muted: #b8b8b8;  /* cool grey, 10:1 on --bg: orange stays a marker, not the body tint */
-  --accent: #ff6600;
-  --accent-text: #ff6600;  /* labels read this, so an app that sets --accent keeps them legible */
-  --accent-2: #ff9640;
+  --muted: #d9a066;  /* amber phosphor for labels and readouts, 8.9:1 on --bg */
+  --accent: #ff8a00;
+  --accent-text: #ff8a00;  /* labels read this, so an app that sets --accent keeps them legible */
+  --accent-2: #ffb366;
   --danger: #e0001b;  /* signal red: 4.1:1 on --bg, 4.9:1 under white text */
   --success: #3cd070;  /* phosphor green */
-  --warning: #ff6600;
+  --warning: #ff8a00;
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --danger-text: #eb4c5a;
+  --danger-text: #ff6b78;
   --on-accent: #1a0900;
   --on-danger: #ffffff;
   --on-success: #05170a;
   --radius: 0;
   --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-display: "Antonio", "Arial Narrow", "Helvetica Neue", sans-serif;
-  --font-mono: Consolas, monospace;
+  --nerv-title: "Matisse EB", "NERV Title", "Noto Serif Display", "Liberation Serif", serif;
+  --font-mono: Consolas, "Liberation Mono", "Courier New", monospace;
   --flare: #8a0f1a;
 
   --btn-bg: #111;
@@ -53,7 +62,7 @@ html[data-theme="nerv"] {
   --btn-transform: uppercase;
   --btn-tracking: 0.05em;
   --btn-padding-sm: 0.4em 0.8em;  /* Antonio's tall caps need the extra 1px */
-  --btn-shadow-hover: 0 0 0 2px rgba(255, 102, 0, 0.3);
+  --btn-shadow-hover: 0 0 0 2px rgba(255, 138, 0, 0.3);
   --input-bg: #0d0d0d;
   --input-border: var(--accent);
   --focus: var(--accent);
@@ -62,15 +71,15 @@ html[data-theme="nerv"] {
   --table-head-fg: #000;
   --table-head-tracking: 0.08em;  /* NERV's small readouts run wide-tracked */
   --toolbar-bg: var(--bg);
-  --row-selected-bg: rgba(224, 0, 27, 0.2);
-  --row-active-marker: inset 0.3rem 0 0 var(--danger);
+  /* Selection inverts into orange; red stays reserved for EMERGENCY. */
+  --row-selected-bg: #2a1600;
+  --row-active-marker: inset 0.3rem 0 0 var(--accent);
   --nav-bg: #000;
   --nav-rule-width: 3px;
   --overlay-bg: rgba(0, 0, 0, 0.85);
   --indicator-fg: var(--accent);
 
   --app-bar-bg: #000;
-  --app-bar-rule-width: 3px;
   --app-status-bg: #000;
   --app-status-fg: var(--accent);
   --app-status-rule: var(--accent);
@@ -85,6 +94,7 @@ html[data-theme="nerv"] {
   --badge-radius: 0;
   --switch-radius: 0;
   --switch-thumb-radius: 0;
+  --switch-thumb-bg: #5a2e00;  /* off is an unlit lamp; on lights up in --accent */
   --avatar-radius: 0;
   --scrollbar-radius: 0;
   --status-dot-radius: 0;
@@ -93,8 +103,8 @@ html[data-theme="nerv"] {
   --btn-icon-radius: 0;
 
   /* Content-box slider: the track is --slider-bg, a dim orange at 3.2:1
-     on the black (WCAG 1.4.11); the square thumb stays --accent. */
-  --slider-bg: #a04400;
+     on the black (3.8:1, WCAG 1.4.11); the square thumb stays --accent. */
+  --slider-bg: #a85400;
   --slider-thumb-radius: 0;
   --lamp-radius: 0;
 
@@ -113,15 +123,45 @@ html[data-theme="nerv"] {
   --nerv-hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='25,6 75,6 100,50 75,94 25,94 0,50'/%3E%3C/svg%3E");
   --panel-header-bg: var(--nerv-hex) no-repeat var(--surface-pad, 1rem) 50% / 1.1em 1.1em, var(--accent);
   --panel-header-pad: var(--space-xs) var(--surface-pad, 1rem) var(--space-xs) calc(var(--surface-pad, 1rem) + 1.5em);
+
+  /* Chart series differ in lightness as well as hue: amber, phosphor
+     green, grey, signal red, deep orange, pale amber. */
+  --chart-series-3: #b8b8b8;
+  --chart-series-5: #8a3a00;
+  --chart-series-6: var(--accent-2);
+
+  /* Danger alerts are the EVA emergency card: a red frame on a red-black
+     ground (white text 20:1), with a hazard-tape band painted on top. */
+  --alert-border-width: 2px;
+
+  /* The MAGI screen grid: a faint orange 24px lattice (stroke-opacity .07)
+     behind main and inside panel bodies, so body text barely moves.
+     Cards and list cards keep the flat surface (core color-mixes theirs). */
+  --nerv-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0V24H0' fill='none' stroke='%23ff8a00' stroke-opacity='.07'/%3E%3C/svg%3E") 0 0 / 24px 24px;
+  --app-main-bg: var(--nerv-grid), var(--bg);
+  --panel-bg: var(--nerv-grid), var(--surface);
+  --card-bg: var(--surface);
 }
+html[data-theme="nerv"] .alert-danger { --alert-bg: #1a0003; }
 /* Caption buttons nested in a wrapper miss core's direct-child header-ink
-   rule; give every header caption the black ink, and a black hover chip
-   with orange glyph that also reads on the unlit inactive strip. */
+   rule; every header caption takes the header's own ink, with a black
+   hover chip and orange glyph. */
 html[data-theme="nerv"] .modal-header {
-  --btn-close-fg: #000;
+  --btn-close-fg: currentColor;  /* the header ink: black on orange, orange on the unlit inactive strip */
+  --modal-header-close-fg: currentColor;
   --btn-close-fg-hover: var(--accent);
   --btn-close-bg-hover: #000;
+  /* One stamped cluster: equal 1.4em squares in a 2px black frame, the
+     glyphs drawn from one face at one size. */
+  --btn-close-width: 1.4em;
+  --btn-close-height: 1.4em;
+  --btn-close-border-width: 2px;
+  --btn-close-border: currentColor;
+  --btn-close-glyph-size: 1em;
+  --btn-min-glyph: "\2013";
+  --btn-max-glyph: "\25a1";
 }
+html[data-theme="nerv"] .modal-header :is(.btn-close, .btn-min, .btn-max) { font-family: var(--font); font-weight: 700; }
 /* Modal and window headers carry the same hex, except where an app icon
    already leads the title (desktop windows). */
 html[data-theme="nerv"] .modal-header:not(:has(> .icon)) {
@@ -140,11 +180,17 @@ html[data-theme="nerv"] .app-main h1::before {
   inline-size: 0.8em;
   block-size: 0.7em;
   margin-inline-end: 0.3em;
-  background: currentColor;
+  background: var(--accent);
   clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
 }
 /* NERV's twin warning rule under the bar: orange, a black gap, signal red. */
-html[data-theme="nerv"] .app-bar { box-shadow: 0 2px 0 #000, 0 4px 0 var(--danger); }
+/* Lifted one layer so main's grid ground does not paint over the shadows. */
+html[data-theme="nerv"] .app-bar {
+  --app-bar-rule-width: 4px;
+  box-shadow: 0 3px 0 #000, 0 6px 0 var(--danger);
+  position: relative;
+  z-index: 1;
+}
 /* Toolbars sit on the bunker black inside a painted 2px rule. */
 html[data-theme="nerv"] .toolbar:not(.is-plain) { border-bottom-width: 2px; }
 
@@ -162,12 +208,20 @@ html[data-theme="nerv"] .carousel-nav > a { border-radius: 0; }
   }
 }
 html[data-theme="nerv"] .slider.is-vertical {
-  --slider-bg: linear-gradient(90deg, transparent calc(50% - 3px), #a04400 0 calc(50% + 3px), transparent 0);
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 3px), #a85400 0 calc(50% + 3px), transparent 0);
 }
 /* Phones: the fallback mono is wide enough that the tray (which cannot
-   shrink) runs past the status bar's padding; trim its inline padding. */
+   shrink) runs past the status bar's padding; trim its inline padding.
+   The bar's buttons track tighter and drop the shortcut hint (no keyboard
+   on a phone), so the core two-line bar holds two rows. */
 @media (max-width: 480px) {
   html[data-theme="nerv"] .taskbar-tray { padding-inline: 0.25em; }
+  html[data-theme="nerv"] .app-bar .btn { letter-spacing: 0.02em; padding-inline: 0.5em; }
+  html[data-theme="nerv"] .app-bar .btn > kbd { display: none; }
+  html[data-theme="nerv"] .app-bar .cluster { column-gap: 0.5rem; }
+  html[data-theme="nerv"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0.02em; padding-inline: 0.5em; white-space: nowrap; }
+  /* The brand takes its own line rather than truncating to three letters. */
+  html[data-theme="nerv"] .app-bar .nav-brand { flex: 0 0 auto; min-inline-size: max-content; }
 }
 
 html[data-theme="nerv"] .app-status { border-top-width: 3px; }
@@ -179,24 +233,50 @@ html[data-theme="nerv"] h3 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  line-height: 1.05;
+  margin-block-end: 0.25em;
   color: var(--accent);
 }
+/* Page and hero titles take the title card: white compressed heavy serif
+   on black (orange stays on the terminal chrome). Only at title size; h2
+   and below stay in orange Antonio. Headings in frame headers keep Antonio. */
+html[data-theme="nerv"] :is(h1, .hero h2):not(:is(.panel-header, .modal-header, .card-header) *) {
+  font-family: var(--nerv-title);
+  font-weight: 900;
+  letter-spacing: 0;
+  color: var(--text);
+  /* Thickens the instance's hairlines (about 0.6px a side at 32px) so H
+     and E hold together; under the fill, so counters stay open. */
+  -webkit-text-stroke: 0.04em currentColor;
+  paint-order: stroke fill;
+}
 /* Condensed stencil voice on the controls and frame headers. */
-html[data-theme="nerv"] :is(.btn, .panel-header, .modal-header, .tab, .table th, .badge, .badge-button, .segmented-item, .toggle-btn, .nav-brand, .stat-value, .app-bar .menubar > li > [role="menuitem"]) {
+html[data-theme="nerv"] :is(.btn, .panel-header, .modal-header, .tab, .table th, .badge, .badge-button, .segmented-item, .toggle-btn, .nav-brand, .stat-value, .nav-item, .app-bar .menubar > li > [role="menuitem"]) {
   font-family: var(--font-display);
   font-weight: 700;
 }
 /* Every label-sized readout is uppercase; Antonio is never mixed case. */
-html[data-theme="nerv"] :is(.badge, .badge-button, .segmented-item, .toggle-btn, .nav-item, .nav-brand) {
+html[data-theme="nerv"] :is(.badge, .badge-button, .segmented-item, .toggle-btn, .nav-item, .nav-brand, .stat-value) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+/* Field, KPI and group labels are compressed bold readouts, not tracked
+   Helvetica; body copy stays in Helvetica. */
+html[data-theme="nerv"] :is(.label, .stat-label, .field-group-title, .radio-group > legend) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: max(0.85rem, 0.82em);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 /* Antonio is too condensed below ~13px: floor the small readouts and track
    them wide, as NERV's small screen labels are. */
 html[data-theme="nerv"] .table th { font-size: max(0.8rem, 0.78em); }
-html[data-theme="nerv"] .badge { font-size: max(0.8rem, 0.75em); letter-spacing: 0.08em; }
+html[data-theme="nerv"] .badge { font-size: max(0.85rem, 0.75em); letter-spacing: 0.08em; }
+/* Page markup runs title and badge together; keep them apart. */
+html[data-theme="nerv"] .panel-header > .badge { margin-inline-start: 0.5em; }
 /* Plain text inside the orange strip switches to dark inks (all 5:1 or
-   better on #ff6600). Badges and buttons keep their own dark fills, so
+   better on #ff8a00). Badges and buttons keep their own dark fills, so
    they keep the normal inks. */
 html[data-theme="nerv"] :is(.panel-header, .modal-header) :is(.text-muted, .text-accent, .text-success, .text-danger, .text-warning, .status, .field-hint, .updated, small, time):not(.badge, .btn) {
   --muted: #1a0900;
@@ -210,17 +290,60 @@ html[data-theme="nerv"] :is(.panel-header, .modal-header) {
   letter-spacing: 0.06em;
   font-size: 0.95em;
 }
+/* The whole frame's top-right corner is cut, as on NERV's angled warning
+   boxes; the orange header strip draws the diagonal. The polygon reaches
+   far past the other edges so focus rings and overflow are not clipped.
+   Panels whose header holds controls stay square. */
+html[data-theme="nerv"] .panel:has(> .panel-header):not(:has(> .panel-header :is(.btn, .input, .select, .input-group, .badge-button))) {
+  clip-path: polygon(-100vw -100vh, calc(100% - 1em) -100vh, calc(100% - 1em) 0, 100% 1em, calc(100% + 100vw) 1em, calc(100% + 100vw) calc(100% + 100vh), -100vw calc(100% + 100vh));
+}
+/* Caution notes take the orange label-box voice: a solid bar along the
+   inline start and the stencilled display face (no stripes). */
+html[data-theme="nerv"] :is(.alert-warning, .toast-warning) {
+  border-inline-start-width: 0.5em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1em;
+}
+/* Unchecked boxes are dim orange frames on the input ground (3.8:1), not
+   the browser's grey; checked ones light up in --accent. Radios stay round. */
+html[data-theme="nerv"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 2px solid #a85400;
+  background: var(--input-bg);
+  border-radius: 0;
+}
+html[data-theme="nerv"] .radio { border-radius: 50%; }
+html[data-theme="nerv"] :is(.checkbox, .radio):checked { border-color: var(--accent); }
+html[data-theme="nerv"] .checkbox:checked {
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%231a0900' stroke-width='2.6'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+html[data-theme="nerv"] .checkbox:indeterminate {
+  border-color: var(--accent);
+  background: linear-gradient(var(--on-accent) 0 0) center / 60% 2px no-repeat, var(--accent);
+}
+html[data-theme="nerv"] .radio:checked { background: radial-gradient(var(--accent) 0 38%, var(--input-bg) 44%); }
+html[data-theme="nerv"] .switch-thumb { box-shadow: inset 0 0 0 2px #a85400; }
+html[data-theme="nerv"] :is(.switch input:checked ~ .switch-track, .switch[aria-checked="true"]) .switch-thumb { box-shadow: none; }
 /* Hazard stripes on the danger variant — the one place stripes appear. */
 html[data-theme="nerv"] .btn-danger {
   background-image: repeating-linear-gradient(135deg, var(--danger) 0 10px, #000 10px 20px);
   --btn-border: var(--danger);
 }
-/* Danger alerts carry the same tape as a 6px edge at the start. */
+/* Danger alerts are the emergency card: a hazard-tape band along the top,
+   the message stencilled in the condensed display face. */
 html[data-theme="nerv"] .alert-danger {
   background-image: repeating-linear-gradient(135deg, var(--danger) 0 6px, #000 6px 12px);
-  background-size: 6px 100%;
+  background-size: 100% 8px;
   background-repeat: no-repeat;
-  padding-inline-start: calc(1em + 6px);
+  padding-block-start: calc(0.75em + 8px);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1em;
 }
 /* Confirm is an outlined phosphor-green button, not a solid green slab:
    the palette stays orange-forward, green stays a status signal. */
@@ -247,7 +370,7 @@ html[data-theme="nerv"] {
    1.4:1 against --bg. Still: no motion. */
 html[data-theme="nerv"] {
   --app-gutter-art:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='34.64'%3E%3Cpath d='M0 17.32 10 0h20l10 17.32L30 34.64H10ZM40 17.32h20' fill='none' stroke='%23ff6600' stroke-opacity='.3' stroke-width='1.2'/%3E%3C/svg%3E") 0 0 / 60px 34.64px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='34.64'%3E%3Cpath d='M0 17.32 10 0h20l10 17.32L30 34.64H10ZM40 17.32h20' fill='none' stroke='%23ff8a00' stroke-opacity='.3' stroke-width='1.2'/%3E%3C/svg%3E") 0 0 / 60px 34.64px,
     var(--bg);
 }
 
@@ -256,9 +379,12 @@ html[data-theme="nerv"] {
    with compartments, not three alarms. */
 html[data-theme="nerv"] :is(.panel, .card, .modal, .drawer) .panel {
   --panel-border-width: 1px;
-  --panel-border: #8a3a00;
+  --panel-border: #a85400;  /* 3.8:1, a UI boundary under WCAG 1.4.11 */
 }
 
 /* The condensed table heads narrow a phone-width table enough to bring its
    shrunken in-cell number fields on screen; keep them a full tap wide. */
 html[data-theme="nerv"] .table td > .input { min-inline-size: var(--tap-min); }
+
+/* KPI readouts glow pale amber, like the MAGI's numeric displays. */
+html[data-theme="nerv"] .stat-value { color: var(--accent-2); }

@@ -316,3 +316,17 @@ diligence reasons `docs/icon-license-research.md` and
 `assets/logos/README.md` document their sources: so "we checked" isn't
 just asserted from memory, and so a future addition to this directory has
 a template to follow instead of reinventing the check.
+
+## Noto Serif Display (condensed black instance)
+
+- **Family:** Noto Serif Display, the variable font instanced at
+  `wdth=62.5`, `wght=900` and subset to Basic Latin, Latin-1 and common
+  punctuation with fontTools (`NotoSerifDisplay-CondensedBlack.woff2`).
+  The file is a modified version, so it is served under the CSS family name
+  `"NERV Title"`, not the original name.
+- **Designer:** Google (Noto project)
+- **License:** SIL Open Font License, version 1.1
+- **Source:** https://fonts.google.com/specimen/Noto+Serif+Display
+  (`google/fonts`, `ofl/notoserifdisplay/`)
+- **Used by:** `nerv` (title-card serif for `h1`/`h2`, standing in for
+  the proprietary Matisse EB)
