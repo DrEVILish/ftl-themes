@@ -50,7 +50,8 @@ html[data-theme="ios-skeuomorphic"] {
   --flare: #e3101a;        /* the SpringBoard unread badge */
 
   /* --- Shared materials ------------------------------------------------ */
-  --ios-pinstripe: repeating-linear-gradient(90deg, #d1d6df 0 4px, #cbd1da 4px 7px);
+  /* One 7px tile, rasterised once, not a repeating gradient re-evaluated per paint. */
+  --ios-pinstripe: linear-gradient(90deg, #d1d6df 4px, #cbd1da 4px) 0 0 / 7px 7px;
   /* Linen: a fine weave of two thread directions at prime periods so the
      repeat never lines up, over the Notification Center slate (#434852). */
   --ios-linen:
@@ -62,10 +63,10 @@ html[data-theme="ios-skeuomorphic"] {
     #434852;
   /* The iOS 6 steel-blue bar: a smooth fall to the reference's own bottom
      stop #5d779c, no hard break. Every stop holds white at 4.5:1; the paler
-     steel of the upper bar is a soft inset sheen fading out above the
-     label's x-height (see Deliberate deviations). */
+     steel of the upper bar is an inset sheen over its top half that keeps
+     the bold title at 3:1 or more (see Deliberate deviations). */
   --ios-navbar: linear-gradient(180deg, #5d779c 0%, #5a7499 100%);
-  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 14px 14px -6px rgba(184, 201, 222, 0.5), inset 0 -1px 0 #2d405c;
+  --ios-navbar-highlight: inset 0 1px 0 #eff2f7, inset 0 18px 12px -6px rgba(190, 205, 224, 0.55), inset 0 -1px 0 #2d405c;
   --ios-barbtn: linear-gradient(180deg, #5d77a0 0%, #4a6590 50%, #3e5a85 51%, #3a557f 100%);
   --ios-donebtn: linear-gradient(180deg, #5d93e6 0%, #3a77d6 50%, #2a68c8 51%, #2459b0 100%);
   --ios-select: linear-gradient(180deg, #058cf5 0%, #015fe6 100%);
@@ -259,8 +260,9 @@ html[data-theme="ios-skeuomorphic"] {
   --badge-fg: #ffffff;
   --badge-border: transparent;
   --badge-radius: 999px;
-  --avatar-bg: linear-gradient(180deg, #c9ced6 0%, #9aa2ae 100%);
-  --avatar-fg: #ffffff;
+  /* The Contacts photo well: pale grey in a white frame, slate initials (7:1). */
+  --avatar-bg: #e4e6ea;
+  --avatar-fg: #4c566c;
   --avatar-radius: 0.4rem;
 
   /* --- Toasts: the iOS 5 notification banner ----------------------------- */
@@ -326,7 +328,7 @@ html[data-theme="ios-skeuomorphic"] {
   --drawer-bg: var(--ios-linen);
   --drawer-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
   --message-radius: 1rem;
-  --message-tail-radius: 0.3rem;
+  --message-tail-radius: var(--message-radius);  /* the tail is drawn at the bottom instead */
   --message-bg: linear-gradient(180deg, #f2f2f4 0%, #e3e3e7 50%, #d8d8dd 100%);
   --message-fg: #000000;
   --message-border: #b2b4ba;
@@ -566,7 +568,7 @@ html[data-theme="ios-skeuomorphic"] .tabs {
   --tab-fg-active: #ffffff;
 }
 html[data-theme="ios-skeuomorphic"] .tab {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
   border-bottom-width: 1px;
   text-shadow: 0 -1px 0 #000;
@@ -620,6 +622,19 @@ html[data-theme="ios-skeuomorphic"] .slider::-moz-range-progress {
   background: var(--ios-slider-min);
 }
 
+/* Chromium has no fill pseudo-element: the thumb paints the blue minimum
+   track as a border-image reaching 100vw back, and a clip-path notch cuts
+   it at the groove's rounded start (outline and thumb still overflow). */
+html[data-theme="ios-skeuomorphic"] .slider:not(.is-vertical, .is-range > .slider, .is-bipolar, :dir(rtl)) {
+  --ios-r: calc(var(--slider-height) / 2);
+  clip-path: polygon(-1rem -1rem, calc(100% + 1rem) -1rem, calc(100% + 1rem) calc(100% + 1rem), -1rem calc(100% + 1rem),
+    -1rem calc(50% + var(--ios-r)), var(--ios-r) calc(50% + var(--ios-r)), calc(var(--ios-r) * 0.3) calc(50% + var(--ios-r) * 0.7), 0 50%,
+    calc(var(--ios-r) * 0.3) calc(50% - var(--ios-r) * 0.7), var(--ios-r) calc(50% - var(--ios-r)), -1rem calc(50% - var(--ios-r)));
+}
+html[data-theme="ios-skeuomorphic"] .slider:not(.is-vertical, .is-range > .slider, .is-bipolar, :dir(rtl))::-webkit-slider-thumb {
+  border-image: linear-gradient(180deg, transparent calc(50% - var(--ios-r)), #2b5fae 0 calc(50% - var(--ios-r) + 1px), #3b7fe0 0, #7cb3f6 calc(50% + var(--ios-r) - 1px), #2b5fae 0 calc(50% + var(--ios-r)), transparent 0) 0 0 0 50% / 0 0 0 calc(100vw + 50%) / 0 0 0 100vw;
+}
+
 /* --- Segmented control (bordered style) ---------------------------------- */
 html[data-theme="ios-skeuomorphic"] .segmented {
   overflow: hidden;
@@ -628,6 +643,8 @@ html[data-theme="ios-skeuomorphic"] .segmented {
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 html[data-theme="ios-skeuomorphic"] .segmented-item {
+  flex: 1 1 0;  /* UISegmentedControl segments are always equal width */
+  justify-content: center;
   font-weight: 700;
   text-shadow: var(--ios-emboss-light);
 }
@@ -670,7 +687,8 @@ html[data-theme="ios-skeuomorphic"] :is(a, button, label:has(> input[type="radio
 /* A row that draws its own trailing chevron icon gets the cell's grey. */
 html[data-theme="ios-skeuomorphic"] .list-item > .icon:last-child:not(:first-child) { display: block; margin-inline-start: auto; color: #7b7b7b; }
 html[data-theme="ios-skeuomorphic"] .list-item.is-active > .icon:last-child { color: inherit; }
-html[data-theme="ios-skeuomorphic"] .field-row > .label { font-weight: 700; }
+/* A Settings cell title: 17pt bold black, a little over body size. */
+html[data-theme="ios-skeuomorphic"] .field-row > .label { font-weight: 700; font-size: 1.0625rem; --label-fg: #000000; }
 
 /* Disclosure rows: an accordion is a grouped cell with a grey chevron
    that turns down when open. */
@@ -1025,6 +1043,53 @@ html[data-theme="ios-skeuomorphic"] .modal-header > .btn-close {
   --btn-close-fg-hover: #fff;
   font-weight: 700;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Minimise / maximise: the same dark capsule bar buttons as the alert's Cancel. */
+html[data-theme="ios-skeuomorphic"] .modal-header > :is(.btn-min, .btn-max) {
+  --btn-close-width: 30px;
+  --btn-close-height: 30px;
+  --btn-close-bg: var(--ios-barbtn);
+  --btn-close-bg-hover: var(--ios-barbtn);
+  --btn-close-border: #1d2a45;
+  --btn-close-border-width: 1px;
+  --btn-close-radius: 5px;
+  --modal-header-close-fg: #fff;
+  --btn-close-fg-hover: #fff;
+  text-shadow: var(--ios-emboss-dark);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* The Contacts photo frame: a white mat with a soft drop shadow. */
+html[data-theme="ios-skeuomorphic"] .avatar { box-shadow: 0 0 0 2px #ffffff, 0 1px 3px 2px rgba(0, 0, 0, 0.35); }
+
+/* The SMS bubble tail at the bottom corner, toward the sender: the
+   bubble's bottom stop, its rim drawn as an ellipse edge. */
+html[data-theme="ios-skeuomorphic"] .message-bubble { position: relative; }
+html[data-theme="ios-skeuomorphic"] .message-bubble::after {
+  --ios-tail-fill: #d8d8dd;
+  --ios-tail-rim: #b2b4ba;
+  content: "";
+  position: absolute;
+  inset-block-end: -1px;
+  inset-inline-start: -8px;
+  inline-size: 18px;
+  block-size: 14px;
+  background:
+    linear-gradient(0deg, var(--ios-tail-rim) 1px, transparent 1px),
+    radial-gradient(8px 14px at 0 0, transparent 87%, var(--ios-tail-rim) 87% 100%, var(--ios-tail-fill) 100%);
+  mask: radial-gradient(8px 14px at 0 0, transparent 87%, #000 87%);
+  pointer-events: none;
+}
+html[data-theme="ios-skeuomorphic"] .message.is-own > .message-bubble::after {
+  --ios-tail-fill: #9bd965;
+  --ios-tail-rim: #7cb24a;
+  inset-inline-start: auto;
+  inset-inline-end: -8px;
+  background:
+    linear-gradient(0deg, var(--ios-tail-rim) 1px, transparent 1px),
+    radial-gradient(8px 14px at 100% 0, transparent 87%, var(--ios-tail-rim) 87% 100%, var(--ios-tail-fill) 100%);
+  mask: radial-gradient(8px 14px at 100% 0, transparent 87%, #000 87%);
 }
 
 /* A file chip in the alert keeps its light cell, so it keeps the cell's

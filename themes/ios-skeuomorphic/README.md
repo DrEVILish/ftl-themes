@@ -48,16 +48,19 @@ and the two must never converge.
 - **The tab bar** is the black glossy `UITabBar`. It is used both for the
   app shell's status strip and for `.tabs`. Tab items keep a fixed width and
   centre as a group, as on an iPad, and share the bar evenly on phones
-  (icon over label when a tab has one). The selected tab is a lit square
+  (icon over label when a tab has one; text-only labels are 0.8rem bold).
+  The selected tab is a lit square
   whose label glows blue. Status text and ghost buttons on the black bars
   (status strip, `.transport`) take light inks.
 - **The slider** is the `UISlider` groove: a blue minimum track and a
   white-to-grey maximum track, each with a rim and an inset shade along
   its top, round-capped, painted inside the padded 24/44px hit area, and
-  a white pearl knob. Firefox (`::-moz-range-progress`) and the two-thumb
-  `.slider.is-range` show both; Chromium exposes no fill, so a single
-  slider there shows the white groove. A vertical slider turns
-  the rim and shade 90 degrees.
+  a white pearl knob. Firefox draws the blue track with
+  `::-moz-range-progress`; Chromium has no fill pseudo-element, so the
+  knob paints it as a border-image reaching back to the groove's start,
+  cut to the rounded end by a clip-path notch (left-to-right horizontal
+  sliders; the two-thumb `.slider.is-range` draws its own). A vertical
+  slider turns the rim and shade 90 degrees.
 - **A side rail** (`.nav-rail`) is Mail's mailbox list: one rounded white
   cell group with bold black labels and single hairline separators; the current
   mailbox is the blue selected cell. Capsule bar buttons stay on bars.
@@ -73,6 +76,16 @@ and the two must never converge.
 - **Text on the pinstripe** (headings, intro copy and breadcrumbs placed
   straight in `.app-main`) carries the white emboss of iOS 6 header and
   footer text. Text inside cells has none.
+- **Grouped cell titles** (`.field-row > .label`) are 17pt-sized
+  (1.0625rem) bold black, as Settings' "Wi-Fi" and "Airplane Mode" are.
+- **The segmented control** splits into equal-width segments, as
+  `UISegmentedControl` always did.
+- **Avatars** are the Contacts photo well: pale `#e4e6ea` with slate
+  `#4c566c` initials inside a white mat and a soft drop shadow.
+- **Message bubbles** are the iOS 6 SMS bubbles (grey received, green
+  sent) with a curved tail at the bottom corner toward the sender.
+- **Window controls** (`.btn-min`, `.btn-max`) in a modal header are dark
+  capsule bar buttons beside the "Done" capsule.
 - **Badges and filter chips** (`.badge`, `.badge-button`) are glossy
   split pills with bold embossed labels; an active chip is the Done blue.
 - **The modal** is the UIAlertView: navy glass with a gloss band at the
@@ -106,9 +119,10 @@ apart from `aqua`.
   on its top half is about 1.7:1. This theme's background gradient spans
   only `#5d779c` to `#5a7499`, so white holds 4.5:1 at every stop
   (`scripts/check.py` measures them). The paler steel of the upper bar
-  is an inset sheen (a shadow) that fades out by the label's x-height:
-  the bar's top edge renders about `#7e95b4`, and the bold 1.25rem
-  title (large text) stays above 4:1. The bar is smooth, with no 50%
+  is an inset sheen (a shadow) over the upper half of the bar: the top
+  edge renders about `#90a5bf`, and the bold 1.25rem title (large text)
+  stays at 3:1 or more over the sheen; bar buttons sit on their own
+  capsules. The bar is smooth, with no 50%
   break, as the reference is. Do not lighten the stops.
 - The count badge (`#8795af` in the reference) and the plain-table
   header strip are darkened for the same reason: their white labels are
@@ -116,7 +130,8 @@ apart from `aqua`.
 - Instrument readouts keep extra padding (`0.3em 0.5em`) inside their
   black gloss box, so the figures never touch the painted edge.
 - The pinstripe contrast is raised slightly, so it still reads on a
-  desktop panel.
+  desktop panel. It is drawn as one 7px tile (not a repeating gradient)
+  to keep scrolling cheap on phones.
 
 ## Tell-tales of an inauthentic result
 
