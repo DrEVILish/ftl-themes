@@ -12,12 +12,16 @@ than as a HUD's telemetry glow.
 
 ## Core values
 
-1. **Purple structures, green signals.** `--flare` (purple) is the
-   theme's borders, rules and headings; `--accent` (toxic green) is
-   reserved for primary/interactive/success — the two must not swap roles.
+1. **Purple structures, green signals.** Purple is the blacklight
+   ambience: dim `--line` (`#9030d8`) and `--border` (`#7a1fbf`) for
+   control outlines, rules and panel edges, hot `--flare` only for the
+   bar sawtooth and the display headings. `--accent` (toxic green) is
+   the one neon, reserved for primary/interactive/success — the two must
+   not swap roles.
 2. **Black vinyl gloss, not matte.** Panels and buttons carry a lit 1px
    lip and a specular band over their top ~40% (`--gloss`), then a dark
-   body — plastic under a club light, not flat paint.
+   body — plastic under a club light, not flat paint. Alerts, menus,
+   popovers and lists take the same gloss on a 3px slab.
 3. **Glow is UV bloom.** Hover/focus glows are wide and colour-matched to
    whichever hue is glowing, not a tight HUD ring.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
@@ -34,12 +38,15 @@ than as a HUD's telemetry glow.
 - Primary buttons' hover glow (`0 0 14px rgba(214, 31, 255, 0.6)`) is
   purple even though the button fill is green — the bloom always reads as
   the *structural* colour, never the signal one.
-- Table headers and rules pick up `--flare` (purple), not the accent —
-  structure stays purple everywhere, including inside components.
+- Table header text uses `--flare-text`, and table rules, input, button
+  and slider outlines the dimmer `--line` purple, never the accent:
+  structure stays purple everywhere, including inside components. Info
+  alerts are outlined in `--flare`, so green outlines only success.
 - A jagged sawtooth trim (a repeating 45°/-45° gradient pair, the classic
   "torn ticket edge" CSS technique) runs along the app bar, nav and modal
-  headers at full glow; panel headers get a smaller, unlit strip so the
-  bars stay the loudest structure. A studded-collar silhouette, not a
+  headers at full glow; panel headers get a smaller, unlit strip (7px,
+  10px period, no solid rule under it) so the bars stay the loudest
+  structure. A studded-collar silhouette, not a
   smooth bevel like `alienware`'s clip-path corners and not `matrix`'s
   monospace rain. It's a decorative pseudo-element strip with room left
   under it, so it never covers the next line.
@@ -50,8 +57,9 @@ than as a HUD's telemetry glow.
   cuts both opposing corners at matching size; this cuts one, deliberately
   uneven. Round icon buttons and avatars keep core's circle. Focus rings
   sit 4px inside the cut so the clip never hides them.
-- Panels, cards and modals sit on a 4px offset plate edged in purple, with
-  two cone studs riveted into the top corners.
+- Panels, cards and modals sit on a 4px offset plate (`#2a0e3a`, edged
+  `#6a2d96`), with a 10px cone stud (lit tip, violet cone, dark rim)
+  riveted into each corner, like a collar's.
 - Panel headers are uppercase Audiowide in `--flare-text`.
 
 ## Layout
@@ -102,12 +110,12 @@ survive only where the concept needs them (cloud, moon, heart, droplet).
 
 ## Typography
 
-Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons and tabs are uppercase and tracked. `--font-mono` is `Consolas, monospace`. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows tube-letterform construction that no web font reproduces, so the theme does not try.
+Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons and tabs are uppercase and tracked. `--font-mono` is **Share Tech Mono** (vendored, same squared techno family) for readouts and stat values, at its single regular weight. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows tube-letterform construction that no web font reproduces, so the theme does not try.
 
 ## Contrast honesty
 
 - **Neon green on black is far above the floor:** `--accent` `#39ff5a` (EL-wire green, from `cyber-goth-el-wire-closeup.jpg`: glow mean `#3de65d`, core `#87faac`) is 15.48:1 on `--bg`; `--on-accent` `#0a0f00` is 14.45:1 on it.
-- **Purple:** `--accent-2`/`--flare` `#d61fff` is 5.45:1 on `--bg` but 4.41:1 on the tinted `#2d1137`, so text (headings, panel titles, table heads) uses `--flare-text` `#e04dff` (5.35:1 there); `--flare` stays for rules, borders and the slider track. `--border` `#7a1fbf` is only 2.75:1 on `--bg` (a structural line, not text).
+- **Purple:** `--accent-2`/`--flare` `#d61fff` is 5.45:1 on `--bg` but 4.41:1 on the tinted `#2d1137`, so text (headings, panel titles, table heads) uses `--flare-text` `#e04dff` (5.35:1 there); `--flare` stays for the sawtooth trims and bar rules. Control outlines (inputs, buttons, slider track, table rules) use `--line` `#9030d8`, 3.57:1 on `--bg` and 3.45:1 on the input fill, above the 3:1 non-text floor. `--border` `#7a1fbf` is only 2.75:1 on `--bg` (a decorative panel edge, not text or a control boundary). The status strip text is `--muted`.
 - **Danger:** `--danger` `#d61048` is 3.99:1 as text on `--bg` (fails), so copy uses `--danger-text` `#f03d70`; the fill takes white text at 5.21:1.
 - **Muted** `#9d7ec2` is 5.87:1 on `--surface`, 4.92:1 on the brightest gloss stop.
 - **Why purple exists at all.** The captures show a single green UV-reactive neon (`cyber-goth-el-wire-closeup.jpg`) on black; `RESEARCH.md`'s outsider read is "a single UV-reactive neon accent". The hot purple `#d61fff`/`#7a1fbf` structure is **not in any capture**. It is a design decision (blacklight club association, and to stop the theme reading as a green-only cousin of `matrix`), documented here rather than sourced. The hexes are unmeasured.

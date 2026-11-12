@@ -6,10 +6,18 @@
  * the rave-flyer display face for headings and panel/modal titles;
  * Titillium Web, a squared techno sans in Eurostile's family tree, carries
  * body, buttons and tabs. Eurostile itself is commercial and not named.
+ * Share Tech Mono, from the same squared techno family, sets readouts
+ * and stat values.
  */
 @font-face {
   font-family: "Audiowide";
   src: url("assets/fonts/Audiowide-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
@@ -64,7 +72,9 @@ html[data-theme="cyber-goth"] {
   --radius: 0.2rem;
   --font: "Titillium Web", sans-serif;
   --font-display: "Audiowide", var(--font);
-  --font-mono: Consolas, monospace;
+  --font-mono: "Share Tech Mono", Consolas, monospace;
+  /* Share Tech Mono ships one weight: keep it unsynthesised. */
+  --readout-weight: 400;
   --flare: #d61fff;
   /* Text weight of --flare: the same purple lifted to 4.5:1 on the
      glossiest tinted surfaces (#d61fff is 4.4:1 on #2d1137). */
@@ -75,25 +85,31 @@ html[data-theme="cyber-goth"] {
   --gloss: linear-gradient(180deg, rgba(255,255,255,0.09) 0 1px, rgba(255,255,255,0.045) 1px 36%, transparent 44%);
   --btn-bg: var(--gloss), linear-gradient(180deg, #1c0f26, #0a0510);
   --btn-fg: var(--accent-text);
-  --btn-border: var(--flare);
+  /* Control outlines take a dimmer purple than the hot --flare: the
+     blacklight ambience, with green carrying the one neon. 3.5:1 on --bg,
+     so input and track boundaries clear the 3:1 non-text floor. */
+  --line: #9030d8;
+  --btn-border: var(--line);
   --btn-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
   --btn-shadow-hover: 0 0 14px rgba(214, 31, 255, 0.6);
   --input-bg: #0a0510;
-  --input-border: var(--flare);
+  --input-border: var(--line);
   --focus-ring: 0 0 10px var(--accent);
-  /* Two cone studs riveted into the top corners, then the gloss. */
-  --stud: radial-gradient(circle at 35% 35%, #c9a3e8 0 0.6px, #6a2d96 1.4px, #2a0e3a 2.4px, transparent 2.9px);
-  --panel-bg: var(--stud) 4px 4px / 6px 6px no-repeat, var(--stud) calc(100% - 4px) 4px / 6px 6px no-repeat,
+  /* Four cone studs riveted into the corners, like a collar's, then the
+     gloss: a lit tip, a violet cone and a dark rim. */
+  --stud: radial-gradient(circle at 42% 42%, #e6c8ff 0 1px, #8a3fc0 3px, #2a0e3a 4.5px, transparent 5px);
+  --panel-bg: var(--stud) 3px 3px / 12px 12px no-repeat, var(--stud) calc(100% - 3px) 3px / 12px 12px no-repeat,
+    var(--stud) 3px calc(100% - 3px) / 12px 12px no-repeat, var(--stud) calc(100% - 3px) calc(100% - 3px) / 12px 12px no-repeat,
     var(--gloss), linear-gradient(180deg, #1a0f22, #08040c);
   --panel-shadow: 0 0 24px rgba(122, 31, 191, 0.25), inset 0 1px 0 rgba(255,255,255,0.04);
   --table-head-fg: var(--flare-text);
   --panel-header-fg: var(--flare-text);
   /* The track is purple structure; the core content-box clip keeps the
      24/44px hit area around it. */
-  --slider-bg: var(--flare);
+  --slider-bg: var(--line);
   --slider-height: 0.3rem;
   --slider-thumb-shadow: 0 0 8px var(--accent);
-  --table-head-rule: var(--flare);
+  --table-head-rule: var(--line);
   --row-selected-bg: rgba(214, 31, 255, 0.18);
   --nav-bg: #050006;
   --nav-rule: var(--flare);
@@ -106,7 +122,12 @@ html[data-theme="cyber-goth"] {
   --app-bar-bg: #050006;
   --app-bar-rule: var(--flare);
   --app-status-bg: #050006;
-  --app-status-fg: var(--flare);
+  --app-status-fg: var(--muted);
+
+  /* Alerts, menus, popovers and lists share the vinyl gloss. */
+  --alert-bg: var(--gloss), var(--surface-2);
+  --dropdown-bg: var(--gloss), var(--surface-2);
+  --list-bg: var(--gloss), var(--surface);
 }
 
 html[data-theme="cyber-goth"] h1,
@@ -117,7 +138,7 @@ html[data-theme="cyber-goth"] h3 {
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  text-shadow: 0 0 10px rgba(214, 31, 255, 0.6);
+  text-shadow: 0 0 10px rgba(214, 31, 255, 0.35);
 }
 /* Kanban column titles sit on a tinted column: the purple bloom behind
    them dropped the title to 4.4:1, so they keep the colour, not the glow. */
@@ -182,20 +203,22 @@ html[data-theme="cyber-goth"] .modal-header {
 html[data-theme="cyber-goth"] .panel-header::after {
   content: "";
   position: absolute;
-  inset: auto 0 -5px 0;
-  height: 5px;
+  inset: auto 0 -7px 0;
+  height: 7px;
   background:
-    linear-gradient(-45deg, var(--flare) 4px, transparent 0),
-    linear-gradient(45deg, var(--flare) 4px, transparent 0);
+    linear-gradient(-45deg, var(--flare) 5px, transparent 0),
+    linear-gradient(45deg, var(--flare) 5px, transparent 0);
   background-position: left bottom;
   background-repeat: repeat-x;
-  background-size: 8px 8px;
-  opacity: 0.6;
+  background-size: 10px 10px;
+  opacity: 0.85;
   pointer-events: none;
 }
 html[data-theme="cyber-goth"] .panel-header {
   overflow: visible;
-  margin-bottom: calc(var(--space-m) + 5px);
+  margin-bottom: calc(var(--space-m) + 7px);
+  /* No solid rule under the teeth, or the two merge into a dashed line. */
+  border-bottom-color: transparent;
   font-family: var(--font-display);
   font-weight: 400;
   --label-transform: uppercase;
@@ -257,8 +280,17 @@ html[data-theme="cyber-goth"] :is(.btn-primary, .btn-success, .btn-danger):not(.
 html[data-theme="cyber-goth"] .panel,
 html[data-theme="cyber-goth"] .modal,
 html[data-theme="cyber-goth"] .card {
-  box-shadow: 4px 4px 0 #1e0a2a, 4px 4px 0 1px #4a1a6e, var(--panel-shadow);
+  box-shadow: 4px 4px 0 #2a0e3a, 4px 4px 0 1px #6a2d96, var(--panel-shadow);
 }
+/* Lighter surfaces ride a 3px slab, so they stay below the panels. */
+html[data-theme="cyber-goth"] :is(.alert, .dropdown, .context-menu, .popover, .list) {
+  box-shadow: 3px 3px 0 #2a0e3a, 3px 3px 0 1px #6a2d96;
+}
+/* Info is a notice, not a success: it takes the structural purple. */
+html[data-theme="cyber-goth"] .alert-info { --alert-border: var(--flare); }
+/* Desktop windows are fixed-height: a slimmer title gap leaves their
+   button row room. */
+html[data-theme="cyber-goth"] .desktop-window .modal-header { margin-bottom: calc(var(--space-s) + 9px); }
 
 /* --- v5 tiers --------------------------------------------------------------
  * No rail on any tier. On phone and tablet core gives the bar's nav its own
@@ -284,5 +316,5 @@ html[data-theme="cyber-goth"] {
    writing mode, so the content box stays full width. Paint the track as a
    centred strip instead, keeping the full-width hit area. */
 html[data-theme="cyber-goth"] .slider.is-vertical {
-  --slider-bg: linear-gradient(to right, transparent calc(50% - 0.15rem), var(--flare) 0 calc(50% + 0.15rem), transparent 0);
+  --slider-bg: linear-gradient(to right, transparent calc(50% - 0.15rem), var(--line) 0 calc(50% + 0.15rem), transparent 0);
 }
