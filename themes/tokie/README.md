@@ -34,7 +34,8 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
    Small elements (buttons, inputs, badges, transport, list cards) are
    not stitched. Content keeps 8px or more clear of it at every tier:
    `--panel-pad` / `--card-pad` start at the 9.5px stitch strip plus
-   0.75rem / 0.6rem, and desktop windows pad their body inside it.
+   0.75rem / 0.6rem, and desktop windows keep 8px clear of it at the
+   bottom too (the dialog footer sits above the stitch, not on it).
 4. **Gold foil, not gold paint.** Type on leather is flat gold with a
    deboss shadow (dark above, faint light below), tracked uppercase in a
    Didone serif (h1 to h3, brand, titles). The foil is a worn, greyed
@@ -49,17 +50,27 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 ## Signature details
 
 - Pebble grain is an SVG `feTurbulence` + `feDiffuseLighting` tile
-  (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
+  (200px, data-URI) under a 92%-opaque black wash on the page and an
+  88% wash on raised panels, so the pebble shows on panels as it does in
+  the references. There are no bitmaps.
 - The saddle stitch (`--tokie-stitch`) is twelve background layers: four
-  runs of slanted champagne thread beads (a 60° repeating gradient in a
-  2.5px strip, 6px pitch, each bead followed by about half a pitch of
-  dark channel, like a pricking iron sets them, in a half-strength
-  champagne thread), four corner arcs that turn the stitch on a 5px
-  radius, and four creased grooves (75% black) with a faint lit lip. It
+  runs of slanted thread beads (a 60° repeating gradient in a 3px strip,
+  8px pitch: about 3.8px of tone-on-tone taupe thread, `rgba(176,156,114,.38)`,
+  a 0.8px dark shade on one side so the slant reads, then about 2.4px of
+  dark channel, like a pricking iron sets them; the references' thread is
+  dark on dark, so the stitch shows when you look for it), four corner arcs that turn the stitch on a 5px
+  radius, and four creased grooves (88% black) with a faint lit lip. It
   costs no pseudo-elements, so any surface can wear it. On phones
-  (≤480px) it drops to the four bead runs, and raised and recessed
-  leather drop the grain tile (the page keeps it), to keep scrolling
-  within the frame budget on a throttled phone.
+  (≤480px) it drops to the four bead runs on panels, dialogs, drawers
+  and the bar, and cards keep a top and bottom bead run (flat raised
+  leather, no highlight gradient), and every SVG-filter tile
+  (pebble grain, brushed hairlines) is switched off: flat leather and
+  gradient-only gold keep scrolling within the frame budget on a
+  throttled phone.
+- The gold is aged brass, not new jewellery: brushed is a greyed satin
+  brass, `#c4b585 → #ad9e6c → #988a5a` (the references sample
+  `#9E9B70`–`#C3BF94`), and polished highlights cap at
+  `#f0d68c` above a `#7a5718` horizon.
 - Brushed gold is anisotropic noise (`baseFrequency='0.002 0.9'`),
   stretched into horizontal hairlines over a satin vertical gradient. The
   spine rail uses the same noise rotated so its hairlines run vertically.
@@ -70,17 +81,33 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
   input to `--tap-min` and hides its border): a gold upper edge, a black
   channel and a faint lit lower lip; vertical sliders turn it on its side.
 - Switch thumbs are brushed-gold domes when off and polished gold when on.
+- Menus, dropdowns and popovers are lined tray compartments: a dim
+  `#3a3226` crease, a sunk top edge and a drop shadow; gold marks only the
+  hovered or active item, as a 2px lead rule. Toolbar ghost buttons keep a
+  dim `#4a3f2c` bezel. A highlighted chart bar is a darker satin brass, not
+  a grey third metal.
+- Window caption buttons (`_ □ ×`) use the UI sans at 700, not the
+  Didone title face, so their strokes hold contrast.
   No third metal.
 - Buttons: the default is a leather key with a gold bezel; primary is
   polished gold with engraved dark text; danger and success are enamelled
   oxblood and bottle-green leather that keep the gold bezel. Toggle
-  buttons speak the same voice (tracked caps; sentence case up to 900px,
-  where toggle rows are packed tight) and turn polished gold when on; a danger toggle turns oxblood enamel.
+  buttons speak the same voice (tracked caps, lighter tracking up to 900px;
+  a joined `.toggle-group` drops to sentence case there so five segments
+  fit a phone row), as does the taskbar's Start key, and turn polished gold when on; a danger toggle turns oxblood enamel.
 - Readouts are black lacquer dials with applied gold Didone numerals and
-  a thin gold chapter ring. Knobs are polished watch crowns with a fluted
+  a thin gold chapter ring; padding `max(8px, .4em) max(9px, .6em)` keeps
+  the numerals 4px+ off the ring (Bodoni's glyph box overhangs its line
+  box). The active pagination page is a polished plate 2.3em tall, so
+  its numeral keeps 4px of gold above and below. Knobs are polished watch crowns with a fluted
   edge.
 - Alerts are debossed into the leather like inputs; alerts and toasts
-  carry a 3px state-coloured lead rule on their leading edge. Folder
+  carry a 3px state-coloured lead rule on their leading edge; their other
+  three sides are a dim `#3a3226` hairline so the rule reads as a state.
+  List-card states use the same idiom on neutral leather (no tint); the
+  spotlight card is a 1px aged-brass bezel with a gold lead rule. A
+  `fieldset` group box is a dim `#3a3226` crease, not the browser's grey
+  groove. Folder
   rails (`.nav-rail`) are a raised leather flap edged in dark gold.
 - The focus ring is 2px polished gold at a 3px offset with a soft gold
   halo. It is visible on every control, on leather and on gold.
@@ -104,25 +131,37 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
-Nothing is vendored. Display: `Didot, "Bodoni 72", "Bodoni MT",
-"Bodoni Moda", "Libre Bodoni", "Playfair Display", "Libre Caslon
-Display", "Noto Serif Display", "Linux Libertine", "Nimbus Roman",
-Georgia, serif`, set in tracked uppercase for headings, brand, panel
-titles, stat values and prices. UI: `Optima, "Optima nova", "URW
-Classico", "Linux Biolinum", Candara, "Segoe UI", "Noto
+Display: `Didot, "Bodoni 72", "Bodoni MT", "Bodoni Moda", "Libre
+Bodoni", "Playfair Display", "Linux Libertine", Georgia, "Liberation
+Serif", …, serif`, set in tracked uppercase for headings, brand, panel
+titles, stat values and prices. Bodoni Moda (OFL, Latin subset, wght
+400–700 and opsz 6–96 axes) is vendored as
+`assets/fonts/BodoniModa-Variable.woff2`; its optical-size axis follows
+the font size, so h3 and panel titles get sturdier hairlines than h1
+instead of losing their crossbars. h3, panel and dialog titles are set at
+weight 500; badges inside them use the UI sans at 600. Stat values,
+prices and readouts are set at 600 with `font-variation-settings:
+"opsz" 11`, so the '4' crossbar and the '$' stem keep their hairlines
+at 28px. h1/h2 are
+weight 500 at `"opsz" 24`, so their hairlines hold toward the struck-foil
+weight. UI: `Optima, "Optima nova", "URW
+Classico", "Linux Biolinum O", Candara, "Segoe UI", "Noto
 Sans", Lato, "Open Sans", …, sans-serif`, the engraved-sans of luxury
-packaging. On a bare Linux box with none of these you get the system
-serif and sans (DejaVu); the tracking and foil colour carry the look but
-the Didone hairlines are lost. Vendoring an OFL Didone (Bodoni Moda)
-into `assets/fonts/` is the open follow-up; it needs a shared-assets
-change outside this theme folder. Inside desktop windows the tabs drop to sentence case
+packaging. Linux Biolinum O (OFL, a flared Optima-class face) is
+vendored as `assets/fonts/LinBiolinum-Regular.woff2`, Regular only to stay
+in the 64 KiB per-theme font budget (bold is synthesised), so a bare
+Linux box keeps the flared UI voice; the vendored Bodoni Moda keeps the
+Didone. Inside desktop windows the tabs drop to sentence case
 so four fit on one row.
 
 ## Contrast honesty
 
-All lint pairs pass. `--text` `#ede4d1` on `--surface` `#151311` is
-above 14:1; `--muted` `#b0a184` reaches 4.5:1 on both surfaces; dark
-`#1b1408` on every polished and brushed gold stop is above 7:1. The
+All lint pairs pass. `--text` `#ede4d1` on `--surface` `#1b1a18` is
+about 13.8:1; `--muted` `#b0a184` reaches 4.5:1 on both surfaces; dark
+`#1b1408` is above 7:1 on the polished highlights and the light brushed
+stops and 5.3:1 on the darkest brushed stop (`#988a5a`); the status
+plate's state inks were darkened to about 4:1 or better on that stop; the polished
+horizon band is decorative and sits away from the text's centre. The
 stitch thread is decorative and is never behind text. For that reason
 the bar's stitch is laid in the `.app-bar` rule, not in `--app-bar-bg`.
 
