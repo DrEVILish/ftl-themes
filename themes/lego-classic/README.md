@@ -44,17 +44,24 @@ when clicked — a physical toy, not a flat icon of one.
   wall 3px below it and one black outline round both, at a 27px pitch
   (gap about 0.64x the diameter, the real 4.8mm-stud-on-8mm-pitch
   proportion). Each host colour is one small inline SVG
-  tile (`--stud-tile`: light grey `#e9e9e9` over a `#7a7a7a` wall on cards,
-  so the studs read as bumps and not as holes; a lighter `#1a9be0` top face over navy on the bar, so each reads as a raised cylinder), cheap to repaint while scrolling. Tiles use
+  tile (`--stud-tile`: a white `#ffffff` top over a `#9a9a9a` wall on the white
+  cards, so the stud is the card's own colour, raised; a lighter `#1a9be0` top face over navy on the bar, so each reads as a raised cylinder), cheap to repaint while scrolling. Tiles use
   `background-repeat: space`, so every strip shows whole, evenly inset
   studs: zero markup, purely decorative CSS.
 - The app bar carries its own blue stud row along its bottom edge, since
-  it's the single largest, most-visible brick-top surface on the page.
+  it's the single largest, most-visible brick-top surface on the page. The
+  row sits on a band of the booklet's lit `#0090dc` face; the bar's text
+  stays on the deeper `--flare`. Unfilled bar buttons keep the black
+  moulding line.
   Desktop window title bars carry no strip, so studs never cross a title.
 - Sliders are a white groove with a black moulding line and a square red
-  1x1 thumb; switches are square-cornered with a 1x1 knob; filter chips
+  1x1 thumb; switches are square-cornered with a 1x1 knob, the track blue (`--flare`)
+  with a white knob when on; filter chips
   are white bricks with a 2px black rule (blue when on); a toggle group's chosen item is the blue
   brick pressed down, the rest white bricks with their shadow.
+- Callouts borrow the booklet's parts-callout box: no fill, a 2px black
+  frame and the state stripe, no drop. Fieldsets and logs take the same
+  2px small-piece line; the 3px brick line stays on cards and controls.
 - Tables are white bricks: a 3px black frame and the 4px drop under the
   blue head. Pagination items and carousel arrows are 1x1 bricks with a
   2px moulding line (the CSS carousel's scroll buttons too); bar-chart
@@ -86,7 +93,7 @@ when clicked — a physical toy, not a flat icon of one.
   from the booklet's `#0090dc` print: `--brick-blue` `#0090dc` fills
   everything without text (chart series 1, bar chart, progress, carousel
   dot); `--flare` `#007ac0` is the bar, table heads and active
-  segment/page/toggle (white text 4.62:1); `--flare-text` `#0857a8` is
+  segment/page/toggle (white text 4.62:1); `--flare-text` `#064a8f` is
   the link and active-tab ink. The status strip uses the same `--flare`
   as the bar, with white text. Structural chrome is always blue regardless of which
   primary colour a button uses.
@@ -95,8 +102,8 @@ when clicked — a physical toy, not a flat icon of one.
 
 A solid blue bar and status strip with a thick black rule — a base plate
 in a specific colour. The page ground is the booklet's yellow sand
-(`#e6d68a`, toward the print's `#dbc570`-`#e7db63` while blue, red and grey
-text still clear 4.5:1), with white bricks built on it. Toolbars sit straight on the
+(`#dcc95a`, sampled from the print's `#d8c451`-`#ddc94e`; the text tokens
+are darkened, not the sand lifted, so blue, red and grey text clear 4.5:1), with white bricks built on it. Toolbars sit straight on the
 sand, no white band.
 
 ## Tell-tales of an inauthentic result
@@ -117,7 +124,9 @@ sand, no white band.
 ## Icons
 
 `themes/lego-classic/icons.svg` covers the full core set (178/178). Style
-rules: 24 grid; a thick uniform 3px stroke with round caps and joins,
+rules: 24 grid; a thick uniform 3px stroke (glyphs from the generic
+sprite take `--icon-stroke-width: 2.5` so file-type letters, pins and badge
+marks stay open) with round caps and joins,
 `fill: none`, so each glyph reads as an outlined moulded piece; rects rx
 1.5; true curves; dots and small marks (more-horizontal, sand in the
 hourglass, gamepad buttons) are filled `currentColor` circles, the
@@ -131,11 +140,11 @@ so the heavy stroke does not close them up. Colour is `currentColor` only.
 
 ## Contrast honesty
 
-- **Filled primaries carry white text:** red `--danger` `#d0111b` is 5.56:1 under white (`--accent` is a step darker, `#b80f18`, 6.73:1, so red text clears 4.5:1 on the sand, 4.6:1, and the `#e6e6e6` grey, 5.39:1); green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
-- **Yellow `#f2d43a`** (the booklet's lemon brick yellow) is near 1.3:1 on `--bg` and 1.5:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#6e5700` (6.94:1 on white).
-- **Red as small text** uses `--danger-text` `#b80f18` / `--accent-text` `#a50d15`.
-- `--muted` `#5a5a5a` is 6.90:1 on white, 4.71:1 on the sand `--bg`; links are `--flare-text` `#0857a8`, 4.88:1 on the sand and 7.15:1 on white; `--success-text` is `#1e6638` (4.76:1 on sand); `--warning-text` `#6e5700` is 4.74:1 on sand; `--code-function` is `#6b5718`.
-- The booklet's brick blue `#0090dc` is used only for non-text fills (3.5:1 on white); white text sits on `--flare` `#007ac0` (4.62:1). The focus ring in `--flare` is 3.16:1 on the sand. The bar stays `#007ac0` rather than the booklet's brighter `#0090dc`, which carries white text at only 3.49:1.
+- **Filled primaries carry white text:** red `--danger` `#d0111b` is 5.56:1 under white (`--accent` is a step darker, `#b80f18`, 6.73:1, so it holds white text with room; red text uses `--accent-text`); green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
+- **Yellow `#f2d43a`** (the booklet's lemon brick yellow) is near 1.3:1 on `--bg` and 1.5:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#5e4a00` (8.6:1 on white).
+- **Red as small text** uses `--danger-text` / `--accent-text` `#9a0c14` (5.15:1 on the sand).
+- `--muted` `#474747` is 5.55:1 on the sand `--bg`; links are `--flare-text` `#064a8f`, 5.26:1 on the sand; `--success-text` is `#1a5a31` (4.92:1 on sand); `--warning-text` `#5e4a00` is 5.11:1 on sand; `--code-function` is `#5a4818` (5.28:1).
+- The booklet's brick blue `#0090dc` is used only for non-text fills (3.5:1 on white); white text sits on `--flare` `#007ac0` (4.62:1). The focus ring is `--flare-text`, 5.26:1 on the sand. The bar stays `#007ac0` rather than the booklet's brighter `#0090dc`, which carries white text at only 3.49:1.
 - On the blue status strip (`#007ac0`), muted text and state words are white (4.62:1); the active pattern-nav link on its red fill is white.
 
 ## Reference status

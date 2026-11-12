@@ -1,6 +1,6 @@
 /* ftl-themes: LEGO Classic
  * Theme-Name: LEGO Classic
- * Description: Primary-colour blocks, thick borders, and circular corner studs on every panel — a physical brick, not just a palette.
+ * Description: Primary-colour bricks with thick black outlines, a press-shadow and a row of studs along every panel top, on the booklet's lemon sand.
  */
 
 /* Jost (OFL), a Futura revival: the booklet's geometric step numerals.
@@ -21,13 +21,13 @@
 html[data-theme="lego-classic"] {
   --motion-leave: drop;
   color-scheme: light;
-  --bg: #e6d68a;   /* the booklet's yellow sand (#dbc570-#e7db63), lifted just enough for 4.5:1 text */
+  --bg: #dcc95a;   /* the booklet's lemon sand (#d8c451-#ddc94e); text tokens darken to keep 4.5:1 */
   --surface: #ffffff;
   --surface-2: #e6e6e6;
   --border: #1b1b1b;
   --hairline: #cccccc;
   --text: #1b1b1b;
-  --muted: #5a5a5a;
+  --muted: #474747;
   --accent: #b80f18;   /* LEGO red, a hair deep so red text clears 4.5:1 on the sand */
   --accent-2: #f2d43a;
   --danger: #d0111b;
@@ -36,11 +36,11 @@ html[data-theme="lego-classic"] {
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
-  --success-text: #1e6638;
-  --warning-text: #6e5700;
-  --danger-text: #b80f18;
+  --success-text: #1a5a31;
+  --warning-text: #5e4a00;
+  --danger-text: #9a0c14;
   /* Accent as small text (accent badges) on a tint of itself. */
-  --accent-text: #a50d15;
+  --accent-text: #9a0c14;
   --on-accent: #ffffff;
   --on-danger: #ffffff;
   --on-success: #ffffff;
@@ -52,7 +52,7 @@ html[data-theme="lego-classic"] {
      deeper so white text on it clears 4.6:1; --flare-text is the link ink. */
   --brick-blue: #0090dc;
   --flare: #007ac0;
-  --flare-text: #0857a8;
+  --flare-text: #064a8f;
 
   /* A plain button is a white brick; red is kept for the one primary
      action per view, as the booklet keeps red for the odd accent part. */
@@ -66,8 +66,8 @@ html[data-theme="lego-classic"] {
   --btn-shadow-hover: 0 1px 0 #1b1b1b;
   --input-bg: #ffffff;
   --input-border-width: 3px;
-  /* Opaque brick-blue ring over a ground-coloured gap: 4.8:1 on sand. */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 5px var(--flare);
+  /* Opaque deep-blue ring over a ground-coloured gap: 5.2:1 on sand. */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 5px var(--flare-text);
   --panel-border-width: 3px;
   --panel-shadow: 0 4px 0 #1b1b1b;
   /* Every brick gets the 3px moulding line: cards, list groups, list cards. */
@@ -159,7 +159,11 @@ html[data-theme="lego-classic"] {
   --sparkline-area-opacity: 0;
   --chart-area-opacity: 0;
   --list-tone-tint: 0%;
-  --callout-bg: var(--surface);
+  /* Callouts are the booklet's parts-callout box: an unfilled frame on the sand. */
+  --callout-bg: transparent;
+  --callout-important-text: var(--warning-text);
+  --log-border: #1b1b1b;
+  --log-border-width: 2px;
   --callout-rule-width: 8px;
   /* Blue, red, yellow, green, black, grey: the six brick colours, led by
      the booklet's dominant blue. */
@@ -181,10 +185,11 @@ html[data-theme="lego-classic"] {
   /* Schedule times and event bars in brick blue: the yellow is 1.5:1 as text. */
   --schedule-color: var(--flare-text);
   /* Code functions: core mixes the yellow, 4.1:1 at best; a deep ochre. */
-  --code-function: #6b5718;
+  --code-function: #5a4818;
 
-  /* Thick, bold strokes to match the 3px brick borders everywhere else. */
-  --icon-stroke-width: 3;
+  /* The theme's own glyphs draw at 3px; the generic sprite's denser glyphs
+     (file types, pins, badge marks) take 2.5 so their detail stays open. */
+  --icon-stroke-width: 2.5;
 
   /* Brick outlines on the controls core draws thin by default. */
   --panel-header-fg: var(--text);
@@ -200,6 +205,9 @@ html[data-theme="lego-classic"] {
   --switch-border-width: 3px;
   --switch-border: #1b1b1b;
   --switch-border-on: #1b1b1b;
+  /* On is the blue structure brick with a white knob, as toggles and chips. */
+  --switch-bg-on: var(--flare);
+  --switch-thumb-bg-on: #ffffff;
   --progress-border-width: 3px;
   --progress-border: #1b1b1b;
   --alert-border-width: 3px;
@@ -233,7 +241,7 @@ html[data-theme="lego-classic"] h3 { font-weight: 800; }
    at the real 4.8mm-on-8mm proportion (16.5px studs on a 27px pitch). One cached SVG tile per host colour, repeated with `space`
    so a strip only ever shows whole studs, never a half disc at the border. */
 html[data-theme="lego-classic"] {
-  --stud-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='18'%3E%3Cpath d='M5.25 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M6.5 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%237a7a7a'/%3E%3Cellipse cx='13.5' cy='7.5' rx='7' ry='5.5' fill='%23e9e9e9'/%3E%3C/svg%3E");
+  --stud-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='18'%3E%3Cpath d='M5.25 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M6.5 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%239a9a9a'/%3E%3Cellipse cx='13.5' cy='7.5' rx='7' ry='5.5' fill='%23ffffff'/%3E%3C/svg%3E");
   --stud-tile-blue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='27' height='18'%3E%3Cpath d='M5.25 7.5a8.25 6.75 0 0 1 16.5 0v3a8.25 6.75 0 0 1-16.5 0z' fill='%231b1b1b'/%3E%3Cpath d='M6.5 7.5h14v3a7 5.5 0 0 1-14 0z' fill='%2300457a'/%3E%3Cellipse cx='13.5' cy='7.5' rx='7' ry='5.5' fill='%231a9be0'/%3E%3C/svg%3E");
 }
 html[data-theme="lego-classic"] .panel-header::before,
@@ -247,6 +255,7 @@ html[data-theme="lego-classic"] .app-bar::after {
   height: 18px;
   background: var(--stud-tile) 0 0 / 27px 18px space no-repeat;
   pointer-events: none;
+  contain: strict;   /* the strip paints alone, never invalidating its brick */
 }
 /* Studs sit as a strip ABOVE the header text, never behind it. */
 html[data-theme="lego-classic"] .panel-header,
@@ -273,7 +282,17 @@ html[data-theme="lego-classic"] .app-bar {
   padding-bottom: calc(var(--app-bar-padding-y, 0.6rem) + 16px);
   --stud-tile: var(--stud-tile-blue);
 }
-html[data-theme="lego-classic"] .app-bar::after { inset: auto 6px 0 6px; }
+/* The stud row sits on the brick's lit top face: the booklet's brighter
+   #0090dc band, the text above stays on the deeper --flare. */
+html[data-theme="lego-classic"] .app-bar::after {
+  inset: auto 0 0 0;
+  padding-inline: 6px;
+  background-origin: content-box;
+  background-clip: border-box;
+  background-color: var(--brick-blue);
+}
+/* Unfilled bar buttons keep the black moulding line, not a glassy tint. */
+html[data-theme="lego-classic"] .app-bar .btn-secondary { --btn-border: #1b1b1b; --btn-border-hover: #1b1b1b; }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * black-outlined brick messages and bricks for bars. */
@@ -403,6 +422,9 @@ html[data-theme="lego-classic"] .carousel-nav > :is(.carousel-prev, .carousel-ne
 }
 /* Disabled stays outlined and legible, only dimmed. */
 html[data-theme="lego-classic"] .pagination-item.is-disabled { opacity: 0.55; }
+/* Small framed groups carry the 2px small-piece line, never a grey hairline. */
+html[data-theme="lego-classic"] fieldset.field { border: 2px solid #1b1b1b; }
+html[data-theme="lego-classic"] :is(.markdown-alert, [data-callout]) { border: 2px solid #1b1b1b; border-inline-start: 8px solid var(--_callout); }
 html[data-theme="lego-classic"] .skeleton { outline: 2px solid #1b1b1b; outline-offset: -2px; }
 
 /* XL: the page column is a brick standing on the baseplate, hard-edged. */
