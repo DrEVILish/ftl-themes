@@ -195,7 +195,7 @@ or anything from iOS 7 itself in a resolution worth keeping.
 
 ## v5 layout
 
-- **Tiers.** Phones and tablets (up to 900px): the large title moves up beside the trailing buttons, as the Photos and App Store tabs do (30px, 26px on phones, truncating), and the segmented nav takes its own line and scrolls sideways instead of wrapping into a second row of segments. The title keeps at least `min(50%, 12ch)`; loose bar items and a menubar nav move to the last line. Toggle groups keep their labels on one line and scroll. The bars sit on the `--z-sticky` layer.
+- **Tiers.** Phones and tablets (up to 900px): the large title moves up beside the trailing buttons, as the Photos and App Store tabs do (30px, 26px on phones, truncating), and the segmented nav takes its own line and scrolls sideways instead of wrapping into a second row of segments. The title keeps at least `min(50%, 12ch)`; loose bar items and a menubar nav move to the last line. Toggle groups keep their labels on one line and scroll; a free-standing `.nav` wraps on phones rather than cutting an item at the scroll edge. The bars sit on the `--z-sticky` layer.
 - **Nesting.** Grouped sections are flat by design; nested panels need no step-down rules. Field rows inside a panel or card reach the cell's edges, with their text and hairline 1rem in.
 - **XL gutter art (1801px+).** The home screen beside the app: its icon grid reduced to faint squircles (white ones on the dark variant).
 
