@@ -19,13 +19,15 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
    point.
 2. **Round, everywhere, generously.** `--radius: 1.4rem`, pill buttons,
    pill badges, pill pagination, pill sliders (a hot-pink gradient track),
-   and input-group addons keep the input's round outer ends. Nothing here
-   has a hard corner.
+   and input-group addons keep the input's round outer ends. The selected
+   desktop-icon label is a pill and tree rows take a `0.6rem` row-sized
+   radius. Nothing here has a hard corner.
 3. **Gloss over flat.** Every filled surface gets a light highlight band —
    the same "shiny plastic" cue as the button chrome, panels, and the app
    bar. Losing the highlight reads as a cheaper, flatter knockoff.
 4. **Gold is the sparkle, not the workhorse.** `--flare` (gold) shows
-   up only as a crisp 1px foil edge under the uppercase headings — it's the
+   up only as a crisp 1px unblurred foil lip straight under the uppercase
+   headings — it's the
    tiara, not a token you build components out of.
 5. **Deep pink text, not black.** Body text is `#7a1250`, a pink-shifted
    dark plum — legible, but never plain black, which would read as a
@@ -35,10 +37,20 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
 
 - **The wordmark.** `h1` and `.nav-brand` are Pacifico script in white
   letters inside a thick hot-pink outline (`-webkit-text-stroke` painted
-  under the fill) with a hard stepped pink extrusion, the logo's treatment.
-  In the app bar the outline and extrusion go deep pink `#8f1458`.
-- Headings (`h2`/`h3`) are uppercase with a hard 1px gold offset, the
-  poster-title voice.
+  under the fill, `0.12em`) with a deep solid pink slab stepped out to
+  `0.14em` down-right, the logo's extrusion, sized in em so it reads at
+  bar-brand size. In the app bar the outline and slab go deep pink `#8f1458`.
+- Headings (`h2`/`h3`) are uppercase with a hard 1px gold lip underneath,
+  the poster-title voice. On `.hero` and `.band.is-tinted` they stay
+  accent pink (large text, 3:1 floor).
+- **Desktop windows.** Inactive title bars stay saturated: a paler candy
+  pink (`#ffc2e0` to `#ff99cc`) with plum text, never core's desaturating
+  filter (that turned the bar dusty mauve). Caption buttons follow the
+  title text colour.
+- Sliders are slim pills in both orientations: the vertical slider insets
+  its track on the physical sides so it is not a 24px pillar.
+- Rising sparklines draw in toy mint-teal `#1f9e74` (the bar chart's alt
+  series), not the text-weight green.
 - The accent `#cc0077` is a fully saturated magenta (hue 325°, the logos'
   `#ed008d`/`#ff00a6` family) at the darkest step that still takes white
   text. Bar and status strip run `#e0007f` to `#b8006f`; gloss buttons run
@@ -99,7 +111,9 @@ card in the middle pop — box art, not a dashboard.
 - **Accent:** true "Barbie Pink" `#e0218a` (web reference from `RESEARCH.md`; the brand spec is Pantone 219C, which has no exact sRGB) is 4.42:1 under white text, and the logo files sample at `#ed008d`/`#ff00a6`/`#f200a2`. Shipped `--accent` is `#cc0077`: full saturation, 5.48:1 under white text, 4.66:1 as text on `--bg`. The chrome top stop `#e0007f` is 4.69:1 under white.
 - **Wordmark:** the `h1` fill is white; the glyph is carried by its hot-pink outline and extrusion (5.5:1 against white), so it reads as large outlined text.
 - **Status strip:** `--muted` turns white there (4.69:1 at the top stop; every pale pink fails it).
-- **Tinted surfaces:** headings and links on `.hero`, `.band.is-tinted`, `.order-summary` and the plain `.banner` use `--accent-text` (5.57:1 on `#ffd1e8`).
+- **Inactive window title:** plum `#7a1250` on `#ff99cc` is 5.3:1 (on `#ffc2e0` higher).
+- **Sparkline:** `#1f9e74` is 3.4:1 on white (non-text 3:1).
+- **Tinted surfaces:** links, and headings except on the hero/band, on `.hero`, `.band.is-tinted`, `.order-summary` and the plain `.banner` use `--accent-text` (5.57:1 on `#ffd1e8`).
 - **`--muted` lifted:** `#b5507e` (3.5:1) to `#9b416a` (5.32:1 on `--bg`, 6.25:1 on white, 4.63:1 on `--surface-2`).
 - **Mint success:** `--success` `#3ddc97` is too light for white, so the foreground is dark `#052e1c` (8.40:1) instead of dulling the fill. As text, `--success-text` `#146c46`.
 - **Nav gradient:** the pink-to-magenta bar range was chosen so white nav text stays 4.5:1 at every stop (per the `theme.css` comment: white bottomed out at 2.1:1 on earlier lighter stops and the darkest plum at 3.2:1).

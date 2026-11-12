@@ -114,16 +114,35 @@ html[data-theme="barbie"] {
   --overlay-bg: rgba(122, 18, 80, 0.35);
   --indicator-fg: var(--accent);
   --indicator-track: var(--hairline);
+  /* Inactive desktop windows stay saturated: a paler candy pink with plum
+     title text (5.3:1 at the deeper stop), not core's desaturating filter,
+     which turned the bar dusty mauve. */
+  --window-header-filter-inactive: none;
+  --window-header-bg-inactive: linear-gradient(180deg, #ffc2e0, #ff99cc);
+  --window-header-fg-inactive: var(--text);
+  /* Caption buttons follow the title text (white on the active bar, plum
+     on an inactive one), including when the page wraps them in a span. */
+  --modal-header-close-fg: currentColor;
+  /* No hard corners: the selected desktop-icon label is a pill; tree rows
+     take a radius sized to their row, not the 1.4rem panel radius. */
+  --desktop-icon-label-radius: 999px;
+  --tree-item-radius: 0.6rem;
 }
+html[data-theme="barbie"] .modal-header { --btn-close-fg: currentColor; }
+/* Rising sparklines in the bright toy mint (3.4:1 on white), the bar
+   chart's alt series, not the dark text-weight green. */
+html[data-theme="barbie"] .sparkline.is-up { --sparkline-stroke: #1f9e74; }
 
 /* Gold is a crisp foil edge, not a blurred halo (at 12px/.35 it read as
-   a smudge): a hairline offset below-right of the pink letters. */
+   a smudge): a 1px unblurred lip straight under the pink letters, in a
+   richer gold, so it reads as a foil edge rather than a misregistered
+   diagonal print. */
 html[data-theme="barbie"] h2,
 html[data-theme="barbie"] h3 {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--heading-fg, var(--accent));
-  text-shadow: 1px 1px 0 var(--flare);
+  text-shadow: 0 1px 0 var(--flare);
 }
 /* A kanban column is a pink tint, so its title heading takes the deeper
    pink (the accent was 3.4-4.0:1 there). */
@@ -133,6 +152,9 @@ html[data-theme="barbie"] :is(.kanban-column, .hero, .band.is-tinted, .order-sum
   --heading-fg: var(--accent-text);
   --link: var(--accent-text);
 }
+/* Hero and band headings are poster titles, large text (3:1 floor): the
+   accent pink clears that on their blush fills and polka dots (4.3:1+). */
+html[data-theme="barbie"] :is(.hero, .band.is-tinted) { --heading-fg: var(--accent); }
 /* h1 and the brand carry the wordmark: white script letters inside a thick
    hot-pink outline with a hard stepped extrusion, as on the logo. The glyph
    is read by its pink outline (5.5:1 on white), not by the fill. */
@@ -141,12 +163,16 @@ html[data-theme="barbie"] :is(h1, .nav-brand) {
   text-transform: none;
   letter-spacing: 0.03em;
   font-weight: 400;
-  -webkit-text-stroke: 0.1em var(--wordmark-ink, var(--accent));
+  -webkit-text-stroke: 0.12em var(--wordmark-ink, var(--accent));
   paint-order: stroke fill;
+  /* The logo's deep solid slab: steps out to 0.14em down-right so the
+     depth still reads at bar-brand size (Pacifico's thin strokes need the
+     thick outline and slab to carry the logo's weight). */
   text-shadow:
-    0.03em 0.03em 0 var(--wordmark-ink, var(--accent)),
-    0.06em 0.06em 0 var(--wordmark-ink, var(--accent)),
-    0.09em 0.09em 0 var(--wordmark-ink, var(--accent));
+    0.035em 0.035em 0 var(--wordmark-ink, var(--accent)),
+    0.07em 0.07em 0 var(--wordmark-ink, var(--accent)),
+    0.105em 0.105em 0 var(--wordmark-ink, var(--accent)),
+    0.14em 0.14em 0 var(--wordmark-ink, var(--accent));
 }
 html[data-theme="barbie"] h1 { color: #ffffff; }
 
@@ -308,3 +334,11 @@ html[data-theme="barbie"] .input-group > .input-addon:last-child {
    --accent fill; on this theme that pair is 1.4:1, so there the deep-pink
    text token resolves to white. */
 html[data-theme="barbie"] .pattern-nav { --accent-text: var(--on-accent); }
+
+/* Vertical slider: core insets its track with padding-inline, which runs
+   along the track under writing-mode: vertical-lr, so the pill drew as a
+   fat 24px pillar. Inset the physical sides instead; the box stays
+   --tap-min wide for the hit area. */
+html[data-theme="barbie"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
