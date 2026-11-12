@@ -1,7 +1,34 @@
 /* ftl-themes: Aperture Science
  * Theme-Name: Aperture Science
  * Description: Sterile Aperture Science test-chamber off-white and grey, with portal blue/orange as the only saturated colours — Portal's signature palette split.
+ *
+ * Note on fonts: the chamber signage face (Univers) is not free, so it is
+ * not named. Titillium Web (vendored, OFL) stands in as the nearest open
+ * technical grotesk, set light and tracked; Share Tech Mono (vendored, OFL)
+ * is the instrument face for code.
  */
+
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Titillium Web";
+  src: url("assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 html[data-theme="aperture"] {
   --motion-leave: iris;
@@ -14,32 +41,41 @@ html[data-theme="aperture"] {
   --text: #2b2b2b;
   /* Readable on selected-row tint over the page (4.5:1); was #6b6863. */
   --muted: #605e59;
-  --accent: #1a72ac;
+  /* Portal blue, as bright as white text allows (4.7:1). */
+  --accent: #0b78c2;
   --accent-2: #ff8a1e;
-  --danger: #d1453b;
+  /* The second portal is danger, everywhere: badges, alerts, invalid
+     fields, status, danger menu items — not only the button. */
+  --danger: #ff8a1e;
   --success: #2f7d46;
-  --warning: #ff8a1e;
+  /* Warning takes the facility's hazard yellow so it never reads as danger. */
+  --warning: #f4c430;
+  --on-warning: #2b2b2b;
   /* Text-weight variants of the state colors, for .status, trends,
      colored badges and danger menu items: same hue, adjusted to 4.5:1 on
      this theme's surfaces. The fills above stay as-is for lamps/buttons. */
   --success-text: #286b3c;
-  /* Warning/danger text darkened so it also holds 4.5:1 on its own 20%
-     badge tint and on tinted table rows (was #a34e00 / #bc362c, 4.0-4.5:1). */
-  --warning-text: #8f4500;
-  --danger-text: #a02b23;
+  /* Warning/danger text: dark steps of yellow and orange, 5.6:1+ on --bg
+     and on their own 20% badge tint, and distinct from each other. */
+  --warning-text: #6b5600;
+  --danger-text: #8f4500;
   /* Blue as text (links, tabs, secondary buttons, accent badges, readouts,
-     code keywords): #1a72ac is 4.2:1 on --bg and 3.6:1 on its own badge
-     tint, so text takes a deeper step of the same blue. Fills keep it. */
+     code keywords): the fill is 3.8:1 on --bg, so text takes a deeper
+     step of the same blue. Fills keep it. */
   --accent-text: #145a88;
   --link: var(--accent-text);
   --tab-fg-active: var(--accent-text);
   --readout-fg: var(--accent-text);
   --on-accent: #ffffff;
-  --on-danger: #ffffff;
+  --on-danger: #2b2b2b;
   --on-success: #ffffff;
   --radius: 0.2rem;
-  --font: "Univers", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: Consolas, monospace;
+  --font: "Titillium Web", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Share Tech Mono", Consolas, monospace;
+  /* Readouts are chamber numerals: the light sign face, not a code font. */
+  --readout-font: var(--font);
+  --readout-weight: 400;
+  --readout-tracking: 0.03em;
   --flare: #ff8a1e;
 
   --btn-bg: var(--surface-2);
@@ -55,6 +91,16 @@ html[data-theme="aperture"] {
   --nav-bg: #ffffff;
   --overlay-bg: rgba(43, 43, 43, 0.35);
   --indicator-fg: var(--accent);
+  /* A grey groove (3.1:1 on --bg); core keeps the --tap-min hit area. */
+  --slider-bg: #848179;
+  --slider-height: 0.3rem;
+  /* Charts stay inside "two accents + greys". */
+  --chart-series-1: var(--accent);
+  --chart-series-2: var(--accent-2);
+  --chart-series-3: #2b2b2b;
+  --chart-series-4: #8a8780;
+  --chart-series-5: #c7c4bd;
+  --chart-series-6: #605e59;
 
   /* Safety yellow, reserved for the hazard stripe alone — not the same
      color as --accent-2 (portal orange), which stays the danger/
@@ -68,15 +114,28 @@ html[data-theme="aperture"] {
 
   --app-bg: #dedcd6;
   --app-bar-bg: #ffffff;
-  --app-main-bg: #e8e6e1;
+  /* The chamber wall behind the console at every width: 128px panel seams
+     about 1.05:1 on the page, flat. */
+  --app-main-bg:
+    linear-gradient(90deg, #dfddd7 2px, transparent 2px) 0 0 / 128px 128px,
+    linear-gradient(#dfddd7 2px, transparent 2px) 0 0 / 128px 128px,
+    #e8e6e1;
   --app-status-bg: #ffffff;
 }
 
 html[data-theme="aperture"] h1,
 html[data-theme="aperture"] h2,
-html[data-theme="aperture"] h3 { color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 700; }
-html[data-theme="aperture"] .btn-primary { --btn-bg: var(--accent); }
-html[data-theme="aperture"] .btn-danger { --btn-bg: var(--accent-2); --btn-fg: #2b2b2b; --btn-border: var(--accent-2); }
+html[data-theme="aperture"] h3 { color: var(--muted); text-transform: none; letter-spacing: 0.01em; font-weight: 400; }
+html[data-theme="aperture"] h3 { font-weight: 600; letter-spacing: 0.02em; }
+/* Chamber-sign rule: a 2px dark line above the page title, as on the
+   test-chamber number plates. */
+html[data-theme="aperture"] h1 { border-top: 2px solid #2b2b2b; padding-top: 0.2em; }
+html[data-theme="aperture"] .stat-value { font-family: var(--font); font-weight: 400; letter-spacing: 0.02em; }
+/* Core pads a vertical fader with padding-inline, which is top/bottom in
+   vertical-lr; pad the physical sides so only a thin groove is painted. */
+html[data-theme="aperture"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2);
+}
 
 /* The hazard stripe: facility caution tape on the one control that's
    genuinely asking for care (a drop target that's about to act on
@@ -119,7 +178,7 @@ html[data-theme="aperture"] .toast-warning {
    still. */
 html[data-theme="aperture"] {
   --app-gutter-art:
-    radial-gradient(ellipse 58px 96px at 190px 42%, transparent 82%, rgba(26, 114, 172, 0.22) 86% 94%, transparent 98%),
+    radial-gradient(ellipse 58px 96px at 190px 42%, transparent 82%, rgba(11, 120, 194, 0.22) 86% 94%, transparent 98%),
     radial-gradient(ellipse 58px 96px at calc(100% - 190px) 58%, transparent 82%, rgba(255, 138, 30, 0.24) 86% 94%, transparent 98%),
     linear-gradient(90deg, #d6d3cc 2px, transparent 2px) 0 0 / 128px 128px,
     linear-gradient(#d6d3cc 2px, transparent 2px) 0 0 / 128px 128px,
