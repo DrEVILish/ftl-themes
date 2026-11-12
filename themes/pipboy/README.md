@@ -16,17 +16,40 @@ the screen.
    even danger where possible) is a shade of the same phosphor green;
    `--danger`/`--warning` are the only deliberate departures,
    reserved for genuine hazard states.
-2. **Outline buttons, not fills.** A Pip-Boy button is drawn, not painted.
+2. **Outline buttons, not fills.** A Pip-Boy button is drawn, not painted —
+   danger and success included (a 12% tint plus a coloured outline). A solid
+   phosphor fill means one thing only: *selected* (the cursor bar).
 3. **Scanlines are decoration, not motion.** A static repeating gradient,
    `pointer-events: none`, never an animated flicker — nothing here should
    fight `prefers-reduced-motion` for a cosmetic effect.
-4. **Uppercase, tracked headings** — terminal readouts, not a stylized logo.
+4. **Uppercase, tracked labels** — headings, tabs, panel headers and buttons
+   are terminal readouts, not a stylized logo.
+5. **Rectangular hardware.** No pills, circles or teardrops: badges, avatars,
+   switches, slider thumbs, comment pins and status dots are square.
 
 ## Signature details
 
-- Scanlines are a fixed `::after` overlay on `.app` at `z-index: 999`
-  with `pointer-events: none` — a 1px-on/2px-off repeating gradient, so
-  they never intercept a click and never need JavaScript.
+- The phosphor is Fallout 4's default Pip-Boy colour, `#1aff80`
+  (RGB 26, 255, 128), on a green-black `#04140a`. Chart series are
+  brightnesses of that one green; no second hue outside hazard states.
+- **The cursor bar.** Selected rows, active nav items and hovered menu
+  items are a solid `--accent` bar with the text knocked out in
+  `--on-accent` (the INV/DATA list cursor), with no left marker.
+- **The tab header.** `.tabs` is one 2px phosphor rule that breaks under
+  the active tab; short ticks rise from the rule at the active tab's ends,
+  bracketing the uppercase label (the STAT / INV / DATA strip).
+- **The status strip** (`.app-status`, not the taskbar variant) reads as
+  boxed readout segments, like the HP | LEVEL | AP bar.
+- Type is Share Tech Mono (OFL, vendored), the closest free narrow,
+  rounded monospace to the game's Monofonto (not OFL, so not named).
+- Slider tracks are drawn in `--border` green (3:1 on bg and surface) on
+  the content box, so the hit area stays at `--tap-min`.
+
+- Scanlines are a fixed `::after` overlay on `.app` with
+  `pointer-events: none` — a 1px-on/2px-off repeating gradient at 28%
+  black, plus a soft inset vignette for the curved glass, so they never
+  intercept a click and never need JavaScript. The vignette is a radial
+  gradient in the same layer (no blurred shadow, so no frame cost).
 - All body text carries a faint `text-shadow: 0 0 3px` phosphor glow in its
   own colour (`currentColor` at 35%, so dim text glows dim), not
   just headings — the whole screen glows a little, not just the display
