@@ -25,7 +25,7 @@ html[data-theme="steampunk"] {
   /* Vacuum-fluorescent displays glow amber here (metering.css VFD). */
   --vfd-ink: #ffb547;
   color-scheme: dark;
-  --bg: #241a12;
+  --bg: #2c3020;
   --surface: #33241a;
   --surface-2: #46301f;
   --border: #8a5a2e;
@@ -49,8 +49,10 @@ html[data-theme="steampunk"] {
   --on-danger: #f0e0c0;
   --on-success: #f0e0c0;
   --radius: 0.3rem;
-  --font: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-mono: Consolas, monospace;
+  /* Book serifs of the period first; none are vendored yet, so a system
+     Georgia/Times is what most readers get. Mono is a typewriter. */
+  --font: "IM Fell English", "Libre Caslon Text", "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-mono: "Courier Prime", "Courier New", Courier, monospace;
   --steampunk-display: "IM Fell English SC", Georgia, serif;
   /* A copper steam pipe: a lit cylinder, and bolted flanges every 220px.
      Two separate layers, positioned where they're used (bar foot, status
@@ -63,36 +65,64 @@ html[data-theme="steampunk"] {
      polish streak — the highlight a curved metal surface throws under a
      single light source, not a soft all-over sheen. */
   --steampunk-brass:
-    linear-gradient(115deg, transparent 40%, rgba(255, 245, 220, 0.55) 46%, transparent 52%),
+    linear-gradient(115deg, transparent 8%, rgba(255, 245, 220, 0.45) 12%, transparent 17%),
     linear-gradient(180deg, #e8c06a, #a97a24 55%, #6e4c14);
   --steampunk-leather:
     repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px),
     repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px),
     linear-gradient(180deg, #3c2a1c, #241a12);
+  /* The same leather kept inside a bezel (padding box only). */
+  --steampunk-leather-inset:
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px) padding-box,
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px) padding-box,
+    linear-gradient(180deg, #3c2a1c, #241a12) padding-box;
   /* Four brass rivet domes, one at each corner — background layers, not
      ::before/::after, because a plate only has two pseudo-elements to
      spend and this needs four. Stacks on top of --steampunk-leather
      for anything riveted (panel/card/modal/transport), not the page/bar/
      status strips, which have no "corners" to rivet. */
-  --steampunk-rivet: radial-gradient(circle at 35% 30%, #f0d9a0, #a97a24 55%, #5c3d15);
+  /* A domed head, lit off-centre, ringed by its dark shadow on the plate.
+     One layer (it is sized per use) and transparent past r=4.5px. */
+  --steampunk-rivet: radial-gradient(circle 4.5px at 45% 42%, #fbecc4 0, #d9ab4a 30%, #8a5e1a 62%, #3a2610 78%, rgba(20, 12, 4, 0.55) 90%, transparent 100%);
   --steampunk-riveted-leather:
-    var(--steampunk-rivet) 7px 7px / 7px 7px no-repeat,
-    var(--steampunk-rivet) calc(100% - 7px) 7px / 7px 7px no-repeat,
-    var(--steampunk-rivet) 7px calc(100% - 7px) / 7px 7px no-repeat,
-    var(--steampunk-rivet) calc(100% - 7px) calc(100% - 7px) / 7px 7px no-repeat,
+    var(--steampunk-rivet) 3px 3px / 10px 10px no-repeat,
+    var(--steampunk-rivet) calc(100% - 3px) 3px / 10px 10px no-repeat,
+    var(--steampunk-rivet) 3px calc(100% - 3px) / 10px 10px no-repeat,
+    var(--steampunk-rivet) calc(100% - 3px) calc(100% - 3px) / 10px 10px no-repeat,
     var(--steampunk-leather);
+  /* The cast-brass bezel of a top-level plate: the border is transparent
+     and a diagonal brass gradient (light top-left, dark bottom-right)
+     fills the border box under it; the leather sits in the padding box,
+     and the rivets sit on the frame's corners. */
+  --steampunk-bezel: linear-gradient(135deg, #f5e2b0, #c9962c 30%, #8a5e1a 65%, #4a3010) border-box;
+  --steampunk-frame-rivets:
+    var(--steampunk-rivet) 0 0 / 10px 10px no-repeat border-box,
+    var(--steampunk-rivet) 100% 0 / 10px 10px no-repeat border-box,
+    var(--steampunk-rivet) 0 100% / 10px 10px no-repeat border-box,
+    var(--steampunk-rivet) 100% 100% / 10px 10px no-repeat border-box;
+  /* Olive perforated metal: the plant-room backplate behind the plates. */
+  --steampunk-perforated:
+    radial-gradient(circle, #1a1d12 1.2px, transparent 1.7px) 0 0 / 8px 8px,
+    linear-gradient(180deg, #363a27, #262a1c);
 
   --btn-bg: var(--steampunk-brass);
   --btn-fg: #241a12;
   --btn-border: #5c3d15;
-  --btn-shadow: 0 1px 0 rgba(255,230,180,0.4) inset, 0 2px 4px rgba(0,0,0,0.4);
+  /* A double bezel: dark border, a polished inner rim, a shaded foot. */
+  --btn-shadow: inset 0 0 0 1px rgba(255, 236, 190, 0.55), inset 0 -3px 4px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --btn-radius: 6px;
   --input-bg: #1c130c;
   --input-fg: var(--text);
   --focus-ring: 0 0 0 3px rgba(201, 150, 44, 0.35);
-  --panel-bg: var(--steampunk-riveted-leather);
-  --card-bg: var(--steampunk-riveted-leather);
-  --panel-border-width: 2px;
-  --panel-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  --panel-bg: var(--steampunk-frame-rivets), var(--steampunk-leather-inset), var(--steampunk-bezel);
+  --panel-border: transparent;
+  --panel-border-width: 6px;
+  --modal-border: transparent;
+  --card-border-width: 6px;
+  --list-card-border-width: 2px;
+  --list-card-border: var(--border);
+  /* Outer seam, then the dark recess where the frame meets the leather. */
+  --panel-shadow: 0 0 0 1px #3a2610, inset 0 0 0 1px #3a2610, inset 0 2px 5px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.5);
   --modal-header-bg: var(--steampunk-brass);
   --modal-header-fg: #241a12;
   --table-head-bg: #46301f;
@@ -115,13 +145,13 @@ html[data-theme="steampunk"] {
   --app-bar-bg: var(--steampunk-leather);
   --app-bar-rule: var(--border);
   --app-status-bg: var(--steampunk-leather);
-  --app-bg: var(--steampunk-leather);
+  --app-bg: var(--steampunk-perforated);
   --transport-bg: var(--steampunk-riveted-leather);
 }
 
 /* The page backdrop at L0 (no app shell adopted): same leather the shell
    uses at L1, so recoloring alone doesn't lose the material. */
-html[data-theme="steampunk"] { background: var(--steampunk-leather); }
+html[data-theme="steampunk"] { background: var(--steampunk-perforated); }
 
 html[data-theme="steampunk"] h1,
 html[data-theme="steampunk"] h2,
@@ -137,7 +167,7 @@ html[data-theme="steampunk"] h3 { color: var(--accent-2); font-variant: small-ca
 html[data-theme="steampunk"] .readout {
   position: relative;
   white-space: nowrap;
-  padding: 0.15em 0.7em;
+  padding: 0.3em 0.7em;
   /* The needle is a background layer in the left padding, canted down to
      the dial's centre line: it never crosses the digits. */
   background:
@@ -208,11 +238,11 @@ html[data-theme="steampunk"] .panel-header {
   width: fit-content;
   max-width: 100%;
   margin: 0 0 calc(1rem * var(--density));
-  padding: 0.2rem 1.6rem;
+  padding: 0.3rem 1.6rem;
   background:
     radial-gradient(circle, #f0d9a0 0 2px, #5c3d15 2.5px 3px, #a97a24 3.5px 4px, transparent 4.5px) 0.55rem 50% / 9px 9px no-repeat,
     radial-gradient(circle, #f0d9a0 0 2px, #5c3d15 2.5px 3px, #a97a24 3.5px 4px, transparent 4.5px) calc(100% - 0.55rem) 50% / 9px 9px no-repeat,
-    linear-gradient(115deg, transparent 35%, rgba(255, 250, 230, 0.5) 42%, transparent 50%),
+    linear-gradient(115deg, transparent 4%, rgba(255, 250, 230, 0.5) 8%, transparent 13%),
     linear-gradient(180deg, #f5e2b0, #d9ab4a 55%, #b8892f);
   color: #241a12;
   border: 1px solid #5c3d15;
@@ -299,7 +329,7 @@ html[data-theme="steampunk"] {
     linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.16) 35%, rgba(122, 62, 22, 0.2) 60%, rgba(58, 32, 8, 0.5)) 196px 0 / 14px 100% no-repeat,
     linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.2) 35%, rgba(122, 62, 22, 0.25) 60%, rgba(58, 32, 8, 0.5)) right 120px top 0 / 22px 100% no-repeat,
     linear-gradient(90deg, rgba(74, 40, 16, 0.5), rgba(192, 112, 56, 0.16) 35%, rgba(122, 62, 22, 0.2) 60%, rgba(58, 32, 8, 0.5)) right 196px top 0 / 14px 100% no-repeat,
-    var(--steampunk-leather);
+    var(--steampunk-perforated);
 }
 
 /* --- Controls as plant: valves, sight glasses, brass push-buttons ------ */
@@ -366,9 +396,14 @@ html[data-theme="steampunk"] {
   --progress-border: #8a5a2e;
   --progress-border-width: 2px;
   --progress-radius: 999px;
-  --slider-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 50%), linear-gradient(180deg, #241a12, #140d08);
-  --slider-border: #8a5a2e;
-  --slider-height: 0.55rem;
+  /* Core hides the border and clips this to the content box, so the brass
+     rim is a layer too: glass highlight, dark liquid inset 2px (square
+     ends sit inside the brass end-caps), then the full brass tube. */
+  --slider-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 50%) center / calc(100% - 0.8rem) calc(var(--slider-height) - 4px) no-repeat,
+    linear-gradient(#140d08, #140d08) center / calc(100% - 0.8rem) calc(var(--slider-height) - 4px) no-repeat,
+    linear-gradient(180deg, #f0d08a, #b8892f 50%, #6e4c14);
+  --slider-height: 0.7rem;
   --slider-radius: 999px;
   --slider-thumb-bg: radial-gradient(circle at 35% 30%, #f5e2b0, #b8892f 60%, #5c3d15);
 }
@@ -389,7 +424,7 @@ html[data-theme="steampunk"] {
   --message-bg: var(--steampunk-riveted-leather);
   --message-border: #8a5a2e;
   --message-padding: 0.6rem 1rem;
-  --message-own-bg: var(--steampunk-rivet) 7px 7px / 7px 7px no-repeat, var(--steampunk-rivet) calc(100% - 7px) 7px / 7px 7px no-repeat, var(--steampunk-brass);
+  --message-own-bg: var(--steampunk-rivet) 3px 3px / 10px 10px no-repeat, var(--steampunk-rivet) calc(100% - 3px) 3px / 10px 10px no-repeat, var(--steampunk-brass);
   --message-own-fg: #241a12;
   --message-own-meta-fg: #3c2a1c;
   --message-own-border: #6e4c14;
@@ -424,14 +459,15 @@ html[data-theme="steampunk"] {
     var(--steampunk-filigree-br) calc(100% - 3px) calc(100% - 3px) / 1.3rem 1.3rem no-repeat;
   /* Cards are filigreed plates (panels keep their rivets); a dialog's
      brass title band covers its top edge, so it carries the lower pair. */
-  --card-bg: var(--steampunk-filigree), var(--steampunk-leather);
+  --card-bg: var(--steampunk-filigree), var(--steampunk-leather-inset), var(--steampunk-bezel);
   /* A little more pad than core so a card's first line clears the
      1.3rem scrollwork in its corners. */
   --card-pad: calc(var(--space-m) * var(--density) + 0.4rem);
   --modal-bg:
-    var(--steampunk-filigree-bl) 4px calc(100% - 4px) / 2.2rem 2.2rem no-repeat,
-    var(--steampunk-filigree-br) calc(100% - 4px) calc(100% - 4px) / 2.2rem 2.2rem no-repeat,
-    var(--steampunk-leather);
+    var(--steampunk-filigree-bl) 4px calc(100% - 4px) / 1.6rem 1.6rem no-repeat,
+    var(--steampunk-filigree-br) calc(100% - 4px) calc(100% - 4px) / 1.6rem 1.6rem no-repeat,
+    var(--steampunk-leather-inset),
+    var(--steampunk-bezel);
 
   /* Knife switch: a slate base with a hinge post and a copper clip; the
      blade (thumb) is copper with a black insulated handle. */
@@ -464,7 +500,9 @@ html[data-theme="steampunk"] .switch:dir(rtl) .switch-thumb { transform-origin: 
    readout): orange neon numerals in a smoked-glass envelope with the
    tube's honeycomb anode mesh, in place of the brass dial. */
 html[data-theme="steampunk"] :is(.readout-lg, .transport .readout) {
-  padding: 0.1em 0.45em;
+  padding: 0.3em 0.55em;
+  /* The last digit's tracking would otherwise hang past the glass. */
+  padding-inline-end: calc(0.55em - 0.18em);
   font-family: "Antonio", "Arial Narrow", sans-serif;
   font-weight: 400;
   letter-spacing: 0.18em;
@@ -513,6 +551,9 @@ html[data-theme="steampunk"] :is(.panel, .card, .modal, .drawer) :is(.panel, .ca
   --panel-bg: var(--steampunk-leather);
   --card-bg: var(--steampunk-leather);
   --card-pad: calc(var(--space-m) * var(--density));
+  --panel-border: var(--border);
+  --panel-border-width: 2px;
+  --card-border-width: 1px;
   --panel-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
@@ -523,8 +564,23 @@ html[data-theme="steampunk"] :is(.panel, .card, .modal, .drawer) :is(.panel, .ca
     linear-gradient(180deg, #d9b468, #a97a24);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
   font-size: 0.88rem;
-  padding: 0.25rem 1.3rem;
+  padding: 0.3rem 1.3rem;
 }
-/* A dialog's lower scrollwork is 2.2rem: its content (a footer's buttons,
+/* A dialog's lower scrollwork is 1.6rem: its content (a footer's buttons,
    a scrolling panel) ends above it instead of running over it. */
-html[data-theme="steampunk"] .modal { padding-block-end: max(var(--surface-pad, 1.5rem), calc(2.2rem + 6px)); }
+html[data-theme="steampunk"] .modal { padding-block-end: max(var(--surface-pad, 1.5rem), calc(1.6rem + 4px)); }
+
+/* Vertical sliders: the same tube, turned on end. */
+html[data-theme="steampunk"] .slider.is-vertical {
+  --slider-bg:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 50%) center / calc(var(--slider-height) - 4px) calc(100% - 0.8rem) no-repeat,
+    linear-gradient(#140d08, #140d08) center / calc(var(--slider-height) - 4px) calc(100% - 0.8rem) no-repeat,
+    linear-gradient(90deg, #f0d08a, #b8892f 50%, #6e4c14);
+}
+
+/* IM Fell SC is all small capitals, so its labels read a size smaller
+   than they are: buttons and tabs keep a floor, and a little tracking. */
+html[data-theme="steampunk"] :is(.tab, .btn) { letter-spacing: 0.03em; }
+html[data-theme="steampunk"] .btn { --btn-font-size: max(0.95rem, 0.9em); }
+html[data-theme="steampunk"] .btn-sm { font-size: max(0.875rem, 0.78em); }
+html[data-theme="steampunk"] .tab { font-size: max(0.9rem, 0.85em); }

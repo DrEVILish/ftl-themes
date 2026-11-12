@@ -14,22 +14,34 @@ interface were machined rather than rendered.
 
 1. **Brass is metal, not paint.** Buttons and accents are a light-to-dark
    gradient with a warm highlight — a cast, polished surface.
-2. **Riveted plating.** Panels carry corner rivets (small brass dots) —
-   the one recurring decorative motif, used consistently and nowhere else.
+2. **Riveted plating.** Panels sit in heavy brass bezels with domed corner
+   rivets — the one recurring decorative motif, used consistently and
+   nowhere else.
 3. **Serif type, small-caps headings.** This is Victorian print, not a
    sans-serif dashboard.
-4. **Warm and dark.** Mahogany brown surfaces, never grey or cool-toned.
+4. **Warm and dark.** Leather-brown plates on an olive perforated-metal
+   backplate; never a cool grey.
 
 ## Signature details
 
-- Rivets are two `::before`/`::after` pseudo-elements per panel — 6px
-  radial-gradient circles at each top corner, zero markup, pure CSS.
-- Headings use `font-variant: small-caps`, not `text-transform:
-  uppercase` — genuine small capitals, the Victorian-print detail every
-  uppercase-heading theme elsewhere in the catalog skips.
-- Buttons carry a three-stop vertical gradient (`#d9ab4a` → `#a97a24` →
-  `#7a5416`) — brass needs the extra middle stop other themes' two-stop
-  gloss buttons don't bother with, or it reads as plastic, not metal.
+- Rivets are background layers, not pseudo-elements: one radial-gradient
+  dome (lit off-centre, ringed by its dark shadow, transparent past 4.5px)
+  in a 10px tile, laid at all four corners. Top-level panels, cards and
+  dialogs sit in a 6px cast-brass bezel (a diagonal `#f5e2b0` → `#c9962c`
+  → `#8a5e1a` → `#4a3010` gradient under a transparent border, leather
+  kept to the padding box, a dark recess inside) with the rivets on the
+  frame's corners; nested plates drop to a plain 2px leather edge.
+- Headings, nameplates, buttons and tabs are set in IM Fell English SC, a
+  true small-capitals face (not `font-variant` or `text-transform`) — the
+  Victorian-print detail uppercase-heading themes skip. Button and tab
+  labels keep a size floor, since an all-small-caps face reads small.
+- Buttons are polished brass: a vertical `#e8c06a` → `#a97a24` 55% →
+  `#6e4c14` gradient with a narrow polish streak on the left shoulder
+  (clear of the label), inside a double bezel (dark border, pale inner
+  rim, shaded foot).
+- The page and app backdrop is olive perforated metal (a dark dot grid
+  over `#363a27` → `#262a1c`), the plant-room backplate of the
+  references; leather stays for the plates and the bar and status strips.
 
 ## Layout
 
@@ -45,7 +57,7 @@ console reads as a cabinet fitted with brass hardware.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the leather (about 1.1:1). The gutter art is still; only the bar's small gears turn.
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). On a phone the bar's gear train is dropped (it would sit on the actions), and so is the space reserved for it; tablets keep it. The `h1` steps down on a phone. Nested plates are plain leather, without rivets or scrollwork, and carry a smaller, flatter brass name tag. Cards get extra padding to clear their scrollwork, and dialogs end their content above the lower scrollwork. On XL the gutters show the plant room: copper pipe runs with flange collars and a large, half-hidden flywheel gear at each outer edge, dimmed into the perforated backplate. The gutter art is still; only the bar's small gears turn.
 
 ## Adoption
 
@@ -61,7 +73,10 @@ layout at **L1**.
 - **Type:** IM Fell English SC (vendored, OFL — see `assets/fonts/NOTICE.md`)
   sets headings, panel nameplates, buttons, tabs, the brand and stat
   figures; headings are engraved (dark cut below, faint polish above).
-  Body copy stays a book serif.
+  Body copy asks for a period book serif (IM Fell English, Libre Caslon,
+  EB Garamond, then Georgia/Times) and figures for a typewriter mono
+  (Courier Prime, Courier New); none of these are vendored yet, so the
+  system fallback is what renders where they are missing.
 - **Brass nameplates:** every `.panel-header` is a pale polished-brass
   plate with engraved dark lettering and a slotted screw at each end.
 - **Steam pipes:** a copper pipe with bolted flanges every 220px runs
@@ -73,7 +88,9 @@ layout at **L1**.
   rim and five spokes in the band colours — oxblood, racing green, navy,
   walnut — round a brass hub, turning with the value); faders are sight
   glasses whose copper liquid stands at the fader's level, worked by a
-  brass T-handle; progress bars and sliders are horizontal sight glasses;
+  brass T-handle; progress bars and sliders are horizontal sight glasses
+  (a slider's brass tube and dark glass are drawn in its background, so
+  the full-height hit area core gives it stays intact);
   console keys are brass-bezelled push-buttons that glow like a filament
   lamp when lit; scribble strips are brass nameplates; the EQ curve is
   inked on a chart recorder's parchment roll.
@@ -89,8 +106,9 @@ layout at **L1**.
   hinged on a slate base; off, it stands raised at 32 degrees; on, it
   lies seated in the copper clip.
 - **Filigree**: cards are brass-scrollwork plates (panels keep their
-  rivets); dialogs carry the scrolls in their lower corners under the
-  brass title band.
+  rivets); dialogs carry smaller (1.6rem) scrolls in their lower corners
+  under the brass title band, so less of a fixed-height window is held
+  back for them.
 
 
 ## Icons
