@@ -51,7 +51,10 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
    too. Only what the user types (inputs, textareas) and code keep their
    own case.
 7. **Two text colours, three sizes.** Normal text is tan (`#ffcc99`), the
-   highlight orange (`--accent`) — nothing else, never white. Type comes
+   highlight orange (`--accent`), never white. Two on-screen exceptions:
+   a frame's title takes the frame's own colour (as on the ship displays),
+   and periwinkle marks information text (trend deltas, ARMED/CONNECTED,
+   message times). Type comes
    in three sizes only: main title (2.4rem), sub header (1.25rem), normal
    data (0.95rem); only printed ruler numerals on scales are exempt.
 
@@ -81,9 +84,11 @@ this catalog could verify against.
   candy leg down the left that sweeps round a curved elbow into a bar
   across the top (two borders; the inner curve falls out of the outer
   radius minus the border widths). A panel's `.panel-header` is pulled up
-  into that bar and set black, flush right — the on-screen section-title
-  position. Frame colours rotate orange → lavender → peach → periwinkle by
-  position.
+  into that bar at the left, in a black break cut out of it, the text in
+  the frame's colour — the on-screen section-title position. The title
+  wins the bar's room over the decoration up to the bar's end cap; every
+  panel, card and modal top bar ends in that separate pill cap. Frame
+  colours rotate orange → lavender → peach → periwinkle by position.
 
 - **Meters** are MSD-panel gauges — black tubes with a lavender tick ruler, filled from the bottom — banded periwinkle → orange → alert red rather than
   green/amber/red. A traffic-light meter instantly reads as a modern audio
@@ -93,13 +98,20 @@ this catalog could verify against.
   solid orange elbow (`0 1.4rem 1.4rem 0`), not an outline. On this theme
   the primary action is a *block*, consistent with everything else.
 - **Lamps** are rounded rectangles, not circles: LCARS has few true circles.
-  Icon buttons likewise are capped blocks (`999px 0.3rem 0.3rem 999px`).
+  Icon buttons likewise are capped blocks (`999px 0.3rem 0.3rem 999px`),
+  ghost ones included (lavender, black glyph); only glyphs sitting in a
+  panel's title break stay bare. A lit lamp is full candy and steady; an
+  off one is the unlit dim lavender (`--surface-2`).
 - **No green.** `--success` is periwinkle and charts draw in the candy set
   (orange, periwinkle, lavender, peach, tan); badges are solid candy blocks
   with black text. Red is kept for danger/alert only; a falling sparkline
   is peach.
 - **Black menus.** Dropdowns, context menus, popovers and the dropzone are
   black framed by a 0.6rem lavender leg; only text fields keep a dark well.
+  File chips and sticky header bars take the same leg; card lists are black
+  blocks with a leg in the state colour (lavender, orange featured,
+  periwinkle success). `--surface-2` is unlit lavender, not navy-grey, so
+  skeletons, off tracks and placeholders read as dark candy blocks.
   `--border` is transparent, so no grey hairline survives anywhere.
 - **Sliders** are a 0.5rem lavender bar with an orange block thumb, drawn
   in the content box of core's `--tap-min` hit area.

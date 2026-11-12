@@ -30,9 +30,10 @@ html[data-theme="lcars"] {
   color-scheme: dark;
   --bg: #000000;
   /* No grey cards: surfaces are black, so every panel is candy framing on
-     the black substrate. --surface-2 survives only for "off" tracks. */
+     the black substrate. --surface-2 is an unlit candy block (dim
+     lavender), never a navy-grey well: off tracks, off lamps, skeletons. */
   --surface: #000000;
-  --surface-2: #1c1c2c;
+  --surface-2: color-mix(in srgb, var(--lcars-lavender) 24%, #000);
   /* Hairlines and outlines don't exist in LCARS; structure is bars. */
   --border: transparent;
   --hairline: #000000;
@@ -318,7 +319,7 @@ html[data-theme="lcars"] :is(.panel, .card):nth-child(4n+4) { --lc: var(--lcars-
 html[data-theme="lcars"] .modal { --lc: var(--lcars-lavender); --lc-pad: 1.5rem; }
 /* The top arm of a panel ends flat, then — after the in-frame gap — in a
    short separate cap: the bar's full stop (reference §4). */
-html[data-theme="lcars"] :is(.panel, .modal)::after {
+html[data-theme="lcars"] :is(.panel, .card, .modal)::after {
   content: "";
   position: absolute;
   top: calc(-1 * var(--lc-top));
@@ -340,8 +341,8 @@ html[data-theme="lcars"] .panel-header,
 html[data-theme="lcars"] .modal-header {
   width: fit-content;
   max-width: calc(100% - 2rem);
-  margin: calc(-1 * var(--lc-pad) - var(--lc-top) - (1.6rem - var(--lc-top)) / 2) 0 calc(1rem * var(--density)) 1.5rem;
-  padding: 0 0.55rem;
+  margin: calc(-1 * var(--lc-pad) - var(--lc-top) - (1.6rem - var(--lc-top)) / 2) 0 calc(1rem * var(--density)) 1rem;
+  padding: 0 0.45rem;
   height: 1.6rem;
   line-height: 1.6rem;
   display: flex;
@@ -813,7 +814,8 @@ html[data-theme="lcars"] .modal-footer { margin-top: 0.6rem; }
 /* A panel title never runs into the cap at the end of its bar, and a
    header carrying a sub-line or controls stays on the bar: sub-lines sit
    inline after the title, buttons drop their minimum width. */
-html[data-theme="lcars"] .panel-header { max-width: calc(100% - 1.5rem - var(--lc-top) * 1.5 - 1rem); }
+/* The bar's right padding is free run for the title up to the cap. */
+html[data-theme="lcars"] .panel-header { max-width: calc(100% + var(--lc-pad) - 1rem - var(--lc-top) * 1.5 - 0.3rem); }
 html[data-theme="lcars"] .panel-header > div { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; overflow: hidden; }
 html[data-theme="lcars"] .panel-header .field-hint { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); flex: 0 20 auto; min-width: 0; }
 html[data-theme="lcars"] .panel-header :is(.btn, .btn-sm):not(.btn-icon) { min-width: 0; min-height: 0; padding: 0.05rem 0.6rem; }
@@ -826,7 +828,7 @@ html[data-theme="lcars"] .panel-header > :is(.btn, .btn-icon):not(:first-child) 
 /* Gauges vs bars: only vertical meters are MSD tubes with a tick ruler;
    horizontal meters (in tables, cards) get a plain dark track so an empty
    one still reads as a meter. */
-html[data-theme="lcars"] .meter:not(.meter-v) { --meter-track: #1c1c2c; }
+html[data-theme="lcars"] .meter:not(.meter-v) { --meter-track: var(--surface-2); }
 html[data-theme="lcars"] .meter-v:not(.is-segmented) { --meter-thickness: 1.3rem; }
 
 /* Tabs stay one row — wrapping would leave pill caps in the middle of a
@@ -888,8 +890,9 @@ html[data-theme="lcars"] {
   --message-own-bg: #000000;
   --message-own-shadow: inset -0.6rem 0 0 var(--accent);
   --message-meta-fg: var(--lcars-periwinkle);
-  --attachment-bg: #1c1c2c;
+  --attachment-bg: #000;
   --attachment-border: transparent;
+  --attachment-padding: 0.45rem 0.9rem 0.45rem 1.3rem;
   --attachment-radius: 999px;
   --bar-chart-bar: var(--lcars-periwinkle);
   --bar-chart-bar-alt: var(--accent);
@@ -1095,3 +1098,60 @@ html[data-theme="lcars"] .nav-rail > .nav-item > .badge { order: 1; margin-inlin
 }
 html[data-theme="lcars"] .graph-card > :is(.legend, .chart-legend) { --legend-size: var(--lcars-size-data); }
 html[data-theme="lcars"] :is(.graph-card, .chart) .u-legend { font-size: var(--lcars-size-data); }
+
+/* --- Polish round 3 ------------------------------------------------------ */
+
+/* No grey wells: chips and sticky bars are black blocks hung off a
+   lavender leg (as the menus are); loading bars are unlit lavender; a
+   sparkline's area is its own hue, dimmed. */
+html[data-theme="lcars"] {
+  --banner-bg: #000;
+  --banner-border: transparent;
+  --skeleton-bg: color-mix(in srgb, var(--lcars-lavender) 35%, #000);
+  --sparkline-area-opacity: 0.3;
+  --list-card-bg: #000;
+  --list-card-border-width: 0;
+  --list-card-radius: 0;
+  --list-featured-border-width: 0;
+  --list-tone-tint: 0%;
+}
+html[data-theme="lcars"] :is(.attachment, .banner) { box-shadow: inset 0.6rem 0 0 var(--lcars-lavender); }
+html[data-theme="lcars"] .banner { padding-left: 1.3rem; }
+
+/* Card lists are LCARS data blocks: black, a solid leg in the state
+   colour (lavender plain, orange featured, the tone for a status). */
+html[data-theme="lcars"] .list-cards > .list-item { --list-card-shadow: inset 0.6rem 0 0 var(--_list-tone, var(--lcars-lavender)); padding-left: 1.3rem; }
+html[data-theme="lcars"] .list-cards > .list-item.is-featured { --_list-tone: var(--accent); }
+
+/* A lit lamp is lit: full candy, no soft breathing that reads as off. */
+/* (:root matches core's motion-gated selector so this wins.) */
+html[data-theme="lcars"]:root .connection[data-state="live"]::before { animation: none; }
+
+/* Icon-only keys are capped candy blocks too, ghost ones included. */
+html[data-theme="lcars"] .btn-ghost.btn-icon:not(.is-clear, .app-bar *, .panel-header *) {
+  --btn-bg: var(--lcars-lavender);
+  --btn-fg: #000;
+  --btn-bg-hover: var(--lcars-tan);
+}
+
+/* Window title wins over its keys: in a narrow window the MIN/MAX/CLOSE
+   keys fall back to glyph width before the title ellipsizes. */
+html[data-theme="lcars"] .desktop-window .modal-header { container-type: inline-size; }
+@container (max-width: 30rem) {
+  html[data-theme="lcars"] .modal-header * > :is(.btn-min, .btn-max, .btn-close),
+  html[data-theme="lcars"] .desktop-window .modal-header > :is(.btn-min, .btn-max, .btn-close) {
+    --btn-min-glyph: "\2013";
+    --btn-max-glyph: "+";
+    --btn-close-glyph: "\00d7";
+    --btn-close-pad: 0 0.45em;
+    --btn-close-glyph-size: 1em;
+  }
+}
+
+/* A row of switch keys keeps every key on screen on a phone: tighter
+   keys before the row has to scroll. */
+@media (max-width: 480px) {
+  html[data-theme="lcars"] .toggle-group > .toggle-btn:not(.btn-icon):not(.btn-sm) { padding-inline: 0.45em; min-width: var(--tap-min); }
+  html[data-theme="lcars"] .toggle-group > .toggle-btn:first-child { padding-left: 0.8em; }
+  html[data-theme="lcars"] .toggle-group > .toggle-btn:last-child { padding-right: 0.8em; }
+}
