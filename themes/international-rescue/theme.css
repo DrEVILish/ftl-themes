@@ -110,7 +110,9 @@ html[data-theme="international-rescue"] {
   --table-rule: var(--hairline);
   --row-alt-bg: #efe9d7;
   --row-hover-bg: #fff3c4;
-  --row-selected-bg: #cfe0fb;
+  /* Selected rows take a gold wash (craft palette), deeper than the
+     #fff3c4 hover, plus the TB1 tab. */
+  --row-selected-bg: color-mix(in srgb, var(--ir-gold) 30%, var(--surface));
   --row-selected-fg: var(--text);
   --row-active-marker: inset 0.35rem 0 0 var(--accent);
 
@@ -172,7 +174,11 @@ html[data-theme="international-rescue"] {
   --list-radius: 0.8rem;
   --message-border: var(--ir-navy);
   --message-border-width: 2px;
-  --window-header-filter-inactive: opacity(0.8);
+  /* Inactive title bars stay IR navy (a filter muddied them to slate);
+     the caption dims to the on-navy muted ink instead. */
+  --window-header-filter-inactive: none;
+  --window-header-fg-inactive: #c7d3ee;
+  --window-caption-opacity-inactive: 0.75;
   --toast-bg: var(--ir-navy);
   --toast-fg: #f6f1e3;
   --toast-border: var(--ir-gold);
@@ -255,6 +261,13 @@ html[data-theme="international-rescue"] {
   --lamp-on: var(--ir-tb2);
   --lamp-active: var(--ir-tb1);
   --lamp-glow: 0 0 0 3px var(--ir-navy), inset 0 0 0 3px rgba(255, 255, 255, 0.45);
+  /* The connection light is a mini craft lamp: TB2 live, TB4 attention,
+     TB3 offline, TB1 recovering, all in a navy bezel. */
+  --connection-lamp-size: 0.75em;
+  --connection-live: var(--ir-tb2);
+  --connection-reconnecting: var(--ir-tb4);
+  --connection-attention: var(--ir-tb4);
+  --connection-offline: var(--ir-tb3);
 }
 
 /* --- Page: a 1960s map-room graticule behind the console ----------------- */
@@ -284,7 +297,12 @@ html[data-theme="international-rescue"] h3 {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: var(--ir-navy);
+  /* Michroma has one weight: a hairline stroke gives it the console's heft. */
+  -webkit-text-stroke: 0.6px currentColor;
 }
+/* The extended face needs air under h2/h3 before the next line. */
+html[data-theme="international-rescue"] :is(h2, h3) { margin-block-end: 0.4em; }
+html[data-theme="international-rescue"] h3 { letter-spacing: 0.01em; }
 /* The h1 underline is the IR sash: one wide gold band with a diagonal end,
    on its own line so the heading text keeps clear of it. */
 html[data-theme="international-rescue"] h1 { margin-block-end: 0.6rem; }
@@ -321,6 +339,7 @@ html[data-theme="international-rescue"] :is(.panel-header, .modal-header) {
   font-family: var(--ir-display);
   font-weight: 400;
   border-bottom: 0.4rem solid var(--ir-gold);
+  -webkit-text-stroke: 0.5px currentColor;
   border-radius: 0.75rem 0.75rem 0 0;
   padding: 0.55rem 1rem;
 }
@@ -396,6 +415,14 @@ html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"])
    border takes the bezel colour). */
 html[data-theme="international-rescue"] .slider::-webkit-slider-thumb { border-color: var(--ir-navy); }
 html[data-theme="international-rescue"] .slider::-moz-range-thumb { border-color: var(--ir-navy); }
+/* Vertical fader: core centres the groove with padding-inline, which is the
+   vertical axis under writing-mode: vertical-lr, so the navy fill spanned
+   the whole --tap-min width. Padding-block is horizontal here: same hit
+   box, thin groove. */
+html[data-theme="international-rescue"] .slider.is-vertical:not(.is-range > .slider) {
+  padding-inline: 0;
+  padding-block: calc((var(--tap-min) - var(--slider-height)) / 2);
+}
 
 /* Everything painted navy re-points the text tokens for its descendants, so
    muted captions, ghost buttons, breadcrumbs and state text stay legible
@@ -439,6 +466,10 @@ html[data-theme="international-rescue"] .lamp.is-active {
   box-shadow: 0 0 0 3px var(--ir-navy), inset 0 0 0 3px rgba(255, 255, 255, 0.45);
 }
 html[data-theme="international-rescue"] .lamp { margin: 3px; }
+/* Connection lamp: a flat craft lamp in a 2px navy bezel, no halo or pulse. */
+/* (doubled class: outranks core's :root:not(...) motion selector) */
+html[data-theme="international-rescue"] .connection.connection[data-state]::before { box-shadow: 0 0 0 2px var(--ir-navy); animation: none; }
+html[data-theme="international-rescue"] .connection[data-state="recovering"] { --connection-lamp: var(--ir-tb1); }
 
 /* --- Layout: the control room ------------------------------------------- *
  * A navy IR bar with a gold/navy diagonal band along its lower edge, a
@@ -513,6 +544,17 @@ html[data-theme="international-rescue"] .app-rail {
     radial-gradient(circle, var(--ir-tb3) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
     radial-gradient(circle, var(--ir-tb4) 0 44%, var(--ir-tb5) 44% 52%, var(--ir-navy) 52% 68%, transparent 70%),
     radial-gradient(circle, var(--ir-tb5) 0 44%, var(--ir-gold) 44% 56%, var(--ir-navy) 56% 68%, transparent 70%);
+}
+/* The rail lamps carry their craft numbers, 1-5, in the title-card face. */
+@media (min-width: 901px) {
+  html[data-theme="international-rescue"] .app-rail::before {
+    content: "1\A 2\A 3\A 4\A 5";
+    white-space: pre;
+    padding-block-start: 2.3rem;
+    text-align: center;
+    font: 400 0.7rem/3.6rem var(--ir-display);
+    color: var(--ir-navy);
+  }
 }
 /* --- v5 tiers (PLAN.md §2) -------------------------------------------------
  * Phone: the lamp rail turns into a horizontal strip of the five craft

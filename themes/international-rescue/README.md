@@ -47,12 +47,16 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
   instrument rail with five bezelled lamps (blue, green, orange-red, yellow,
   silver-gold) drawn purely with `radial-gradient`; a cream console panel with
   a hard navy drop; navy status strip with a gold rule; a map-room graticule
-  shows through the backdrop. On phones the rail becomes a horizontal lamp row.
+  shows through the backdrop. On desktop each rail lamp carries its craft
+  number (1-5) in the display face. On phones the rail becomes a horizontal
+  lamp row.
 - **Segmented LED meters** (green to yellow to orange-red bands under a white
   slit mask), and a navy readout window with gold digits.
 - **Rocker switch**: square-shouldered thumb in a stout slot; gold slot when on.
 - Panel, modal and desktop-window headers: navy caption bar with a gold
   underline band, captioned in the display face (a thinner band when nested).
+  Inactive desktop windows keep the navy bar (no fading filter, which turned
+  it slate); only the caption dims to #c7d3ee.
 - Keys share one keycap: `.btn`, `.toggle-btn` and filter chips
   (`.badge-button`, same size and 2px navy outline as `.badge`; idle chips are
   cream with navy ink, the active one TB1 blue). Toggle keys carry the 4px
@@ -66,7 +70,15 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 - Sliders are faders: a navy groove with a chunky gold knob in a navy bezel
   (the thumb border is navy, so no cream ring). The groove keeps square ends:
   core paints it on the content box with `background-clip`, which a radius
-  does not reach.
+  does not reach. The vertical fader uses physical-axis padding
+  (`padding-block` under `vertical-lr`) so its groove stays 0.5rem wide inside
+  the --tap-min hit box (core centres it on the wrong axis).
+- `.connection` is a mini craft lamp: flat TB2 (live), TB4 (delayed,
+  reconnecting), TB3 (offline) or TB1 (recovering) in a 2px navy bezel, with
+  no halo or pulse.
+- Selected rows and active list items take a gold wash
+  (`--ir-gold` 30% into cream) with the 4px TB1 tab; hover is the paler
+  #fff3c4.
 - Lists and chat bubbles keep the navy outline (3px, 2px inside a console);
   ghost and tertiary keys have no keycap drop until hovered.
 - Navy surfaces re-point `--text/--muted/--link` and state-text tokens locally
@@ -91,7 +103,9 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 Headings and panel headers (`--ir-display`): Eurostile Extended, Microgramma
 D Extended, Microgramma, then **Michroma** (SIL OFL, already vendored in
 `assets/fonts/`, see `assets/fonts/NOTICE.md`), uppercase, upright, weight
-400. Microgramma is the reported credits/title-card face; Michroma is an
+400 with a 0.6px `-webkit-text-stroke` (0.5px on panel captions) so the
+single-weight face holds its own beside 3px outlines; h2/h3 get 0.4em below.
+Microgramma is the reported credits/title-card face; Michroma is an
 open Microgramma-alike, not the original. The bar brand, window titles and
 the GO key use the same face, upright (the earlier heavy italic was an
 invention and is gone). Univers 59 (craft lettering) is not matched; bar nav
