@@ -226,6 +226,23 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- `nesting.html`: the always-open three-level context menu has room below it and opens its
+  submenus towards the inside, so on a phone it no longer spills over the status bar's Save button.
+- `.now-playing` docked in `.app` on a phone: the shell holds the screen height and `.app-main`
+  scrolls above the bar, so the bar never covers the last visible track row.
+- Closable tabs: the documented `.tabs.is-scroll` markup puts the tabs in an inner
+  `.tabs[role="tablist"]` (laid out with `display: contents`) and keeps `.tab-add` outside it, with
+  pointer-only close buttons `aria-hidden`, so the tablist owns only tabs.
+- Demo pages: labelled buttons include their visible text in the accessible name (`.clip`, track
+  play buttons, cockpit `RNG±` keys, the comment pin), presence and account buttons name themselves
+  with visually hidden text, `.compass-strip` and `.heatmap` items in a `role="img"` list are
+  `role="none"`, and the scrolling sticky-header demo in `components.html` is keyboard-focusable.
+- `.taskbar-tray` shrinks on a narrow bar and its text readouts truncate instead of running to the
+  bar's edge; `.taskbar-start` reaches `--tap-min` wide on touch tiers.
+- The demo pages' theme picker shows the selected palette variant for `?theme=slug~variant`, and
+  falls back to the base theme for an unknown variant instead of showing a blank value.
+- `components.html`: the Uploads window's minimise, maximise and close buttons are direct children
+  of `.modal-header` (the documented window pattern), so they take the title bar's colour.
 - `.icon` is `inline-block`: an icon before text in a block (a `.dropdown-item`, an `.alert`, a
   modal title, a label) stayed on its own line because the reset makes every `svg` a block.
 - `.context-menu-item` keeps a leading icon beside its label (it was pushed to the opposite edge);

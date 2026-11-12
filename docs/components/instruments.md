@@ -131,8 +131,8 @@ Extends `.meter` (div form or native `<meter class="meter">`) with marks.
 <div class="compass is-north-up" style="--heading:72" role="img" aria-label="Heading 72°">…</div>
 
 <ol class="compass-strip" style="--heading:215" role="img" aria-label="Heading 215°. Gate at 250°.">
-  <li>N</li><li>NE</li><li>E</li><li>SE</li><li>S</li><li>SW</li><li>W</li><li>NW</li>
-  <li class="is-marker" data-series="2" style="--at:250"><svg class="icon"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
+  <li role="none">N</li><li role="none">NE</li><li role="none">E</li><li role="none">SE</li><li role="none">S</li><li role="none">SW</li><li role="none">W</li><li role="none">NW</li>
+  <li role="none" class="is-marker" data-series="2" style="--at:250"><svg class="icon" aria-hidden="true"><use href="assets/icons/icons.svg#icon-map-pin"/></svg></li>
 </ol>
 ```
 

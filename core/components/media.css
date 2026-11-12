@@ -42,7 +42,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 /* ---- Track rows ------------------------------------------------------------
  * <ol class="tracklist">
  *   <li class="track">
- *     <button class="track-play" aria-label="Play Night Drive"><span class="track-num">1</span><svg class="icon">…#icon-play</svg></button>
+ *     <button class="track-play" aria-label="Play track 1, Night Drive"><span class="track-num">1</span><svg class="icon">…#icon-play</svg></button>
  *     <img src="art.jpg" alt="">
  *     <span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span>
  *     <span class="track-album">Harbour Lights</span>
@@ -687,7 +687,8 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
  * Desktop: art and title | transport over the scrubber | extras. Tablet: the
  * scrubber takes its own row and the extras (volume, queue…) hide. Mobile and .is-mini: art, title, like and play/next only. As a
  * direct child of .app it takes the shell's status slot and sticks to the
- * bottom of the screen, clear of the home indicator. */
+ * bottom of the screen, clear of the home indicator; on a phone .app-main
+ * scrolls above it instead. */
 .now-playing {
   --_areas: "art meta like transport extras" "art meta like progress extras";
   --_cols: auto minmax(0, 1fr) auto minmax(0, 2fr) minmax(0, 1fr);
@@ -758,6 +759,11 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
     --_np-secondary: none;
     --_np-extras: none;
   }
+  /* On a phone the docked bar is a big share of the screen, so the shell
+     holds the screen height and .app-main scrolls above the bar: no row
+     ever sits under it. */
+  .app:has(> .now-playing) { block-size: 100dvh; }
+  .app:has(> .now-playing) > .app-main { overflow-y: auto; overscroll-behavior: contain; }
 }
 /* Mini player: the mobile layout at any width, as a card. */
 .now-playing.is-mini {

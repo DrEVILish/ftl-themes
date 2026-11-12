@@ -1364,8 +1364,8 @@ close skins all three coherently; each doubles as a `<button>` or as a
 <div class="modal" role="dialog" aria-labelledby="w1title" tabindex="-1">
   <div class="modal-header">
     <span id="w1title">Uploads</span>
-    <label for="w1min" class="btn-min" aria-label="Minimize"></label>
-    <label for="w1max" class="btn-max" aria-label="Maximize"></label>
+    <label for="w1min" class="btn-min"><span class="visually-hidden">Minimize</span></label>
+    <label for="w1max" class="btn-max"><span class="visually-hidden">Maximize</span></label>
     <button class="btn-close" aria-label="Close"></button>
   </div>
   …

@@ -2664,6 +2664,8 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Task buttons take the squeeze before the tray does. */
+.taskbar > .taskbar-task { flex-shrink: 1000; }
 .taskbar-task:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
   background: var(--taskbar-task-bg-active, var(--taskbar-task-bg, transparent));
   border-color: var(--taskbar-task-border-active, var(--taskbar-task-border, transparent));
@@ -2675,7 +2677,10 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
-  flex: none;
+  /* The tray gives way last on a narrow bar (see .taskbar > .taskbar-task):
+     its readouts then truncate rather than push the bar past its edge. */
+  flex: 0 1 auto;
+  min-inline-size: 0;
   margin-inline-start: auto;
   padding: 0.3em 0.8em;
   border: var(--taskbar-border-width, 1px) solid var(--taskbar-tray-border, transparent);
@@ -2683,6 +2688,14 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   background: var(--taskbar-tray-bg, transparent);
   color: var(--taskbar-tray-fg, inherit);
   font-variant-numeric: tabular-nums;
+}
+.taskbar-tray > * { flex: none; }
+.taskbar-tray > :is(span, time):not(.lamp) {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* .breadcrumbs */
@@ -3819,7 +3832,7 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   touch-action: manipulation;
 }
 /* Short labels ("EQ", "L1") too: toggles, tabs, segments, scrollspy, keys. */
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button,
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .taskbar-start, .badge-button,
     .toggle-btn, .tab, .segmented-item, .scrollspy-link, .key) {
   min-inline-size: var(--tap-min);
 }
@@ -4311,7 +4324,7 @@ progress.progress:indeterminate::-moz-progress-bar { background: transparent; }
 .meter-pair:has(> .meter-v) { grid-auto-flow: column; justify-content: start; block-size: 100%; }
 
 /* --- .clip — a clip light that holds, with a count -------------------------
- *   <button class="clip" type="button" aria-pressed="true" aria-label="Clipped 3 times, reset">CLIP <span class="clip-count">3</span></button>
+ *   <button class="clip" type="button" aria-pressed="true" aria-label="Clip 3, press to reset">CLIP <span class="clip-count">3</span></button>
  * aria-pressed="true" (or .is-clipped) lights it; the app holds it after a
  * clip and clears it when the user presses it. */
 .clip {
@@ -9984,7 +9997,7 @@ html[data-motion="reduced"] .track > .track-play::before { animation: none; }
 /* ---- Track rows ------------------------------------------------------------
  * <ol class="tracklist">
  *   <li class="track">
- *     <button class="track-play" aria-label="Play Night Drive"><span class="track-num">1</span><svg class="icon">…#icon-play</svg></button>
+ *     <button class="track-play" aria-label="Play track 1, Night Drive"><span class="track-num">1</span><svg class="icon">…#icon-play</svg></button>
  *     <img src="art.jpg" alt="">
  *     <span class="track-main"><span class="track-title">Night Drive</span><span class="track-artist">Lumen Coast</span></span>
  *     <span class="track-album">Harbour Lights</span>
@@ -10635,7 +10648,8 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
  * Desktop: art and title | transport over the scrubber | extras. Tablet: the
  * scrubber takes its own row and the extras (volume, queue…) hide. Mobile and .is-mini: art, title, like and play/next only. As a
  * direct child of .app it takes the shell's status slot and sticks to the
- * bottom of the screen, clear of the home indicator. */
+ * bottom of the screen, clear of the home indicator; on a phone .app-main
+ * scrolls above it instead. */
 .now-playing {
   --_areas: "art meta like transport extras" "art meta like progress extras";
   --_cols: auto minmax(0, 1fr) auto minmax(0, 2fr) minmax(0, 1fr);
@@ -10706,6 +10720,11 @@ button.waveform-marker:focus-visible { outline: 2px solid var(--focus); outline-
     --_np-secondary: none;
     --_np-extras: none;
   }
+  /* On a phone the docked bar is a big share of the screen, so the shell
+     holds the screen height and .app-main scrolls above the bar: no row
+     ever sits under it. */
+  .app:has(> .now-playing) { block-size: 100dvh; }
+  .app:has(> .now-playing) > .app-main { overflow-y: auto; overscroll-behavior: contain; }
 }
 /* Mini player: the mobile layout at any width, as a card. */
 .now-playing.is-mini {
@@ -11894,13 +11913,18 @@ html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pau
  * the --z-* scale from there. Docs: docs/components/navigation.md. */
 
 /* --- Closable tabs (#37) ---------------------------------------------------
- *   <div class="tabs is-scroll" role="tablist">
- *     <div class="tab is-active"><button role="tab" aria-selected="true">a.css</button>
- *       <button class="btn-close" tabindex="-1" aria-label="Close a.css"></button></div>
+ *   <div class="tabs is-scroll">
+ *     <div class="tabs" role="tablist" aria-label="Open files">
+ *       <div class="tab is-active"><button role="tab" aria-selected="true">a.css</button>
+ *         <button class="btn-close" tabindex="-1" aria-hidden="true" aria-label="Close a.css"></button></div>
+ *     </div>
  *     <button class="tab-add" aria-label="New tab"></button>
  *   </div>
  * A <button> can't hold a second button, so a closable .tab is a wrapper:
- * the first child is the tab itself, the .btn-close sits beside it. */
+ * the first child is the tab itself, the .btn-close sits beside it. A
+ * tablist may own only tabs, so the add button sits beside an inner
+ * .tabs[role=tablist] that lends its tabs to the outer strip. */
+.tabs > .tabs { display: contents; }
 .tabs.is-scroll {
   /* max-inline-size: a theme may make .tabs inline-flex (a capsule), which
      would otherwise grow with its tabs and never scroll. */
@@ -11911,7 +11935,7 @@ html:is([data-motion="reduced"],[data-motion="none"]) :is(:is(.is-paused,.is-pau
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb, var(--border)) transparent;
 }
-.tabs.is-scroll > * { flex-shrink: 0; }
+.tabs.is-scroll > *, .tabs.is-scroll > .tabs > * { flex-shrink: 0; }
 .tab:has(> .btn-close) {
   display: inline-flex;
   align-items: center;

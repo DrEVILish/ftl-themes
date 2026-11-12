@@ -95,7 +95,7 @@ Give every image real `alt` text, or `alt=""` when the title says it all.
 <div class="modal" data-drag role="dialog" aria-labelledby="w1title">
   <div class="modal-header" tabindex="0" aria-describedby="drag-hint">
     <span id="w1title">Uploads</span>
-    <label for="w1max" class="btn-max" aria-label="Maximize"></label>
+    <label for="w1max" class="btn-max"><span class="visually-hidden">Maximize</span></label>
     <button class="btn-close" aria-label="Close"></button>
   </div>
   …

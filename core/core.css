@@ -2579,6 +2579,8 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Task buttons take the squeeze before the tray does. */
+.taskbar > .taskbar-task { flex-shrink: 1000; }
 .taskbar-task.is-active {
   background: var(--taskbar-task-bg-active, var(--taskbar-task-bg, transparent));
   border-color: var(--taskbar-task-border-active, var(--taskbar-task-border, transparent));
@@ -2590,7 +2592,10 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
-  flex: none;
+  /* The tray gives way last on a narrow bar (see .taskbar > .taskbar-task):
+     its readouts then truncate rather than push the bar past its edge. */
+  flex: 0 1 auto;
+  min-inline-size: 0;
   margin-inline-start: auto;
   padding: 0.3em 0.8em;
   border: var(--taskbar-border-width, 1px) solid var(--taskbar-tray-border, transparent);
@@ -2598,6 +2603,14 @@ html[data-motion="reduced"] .scrollspy-body { scroll-behavior: auto; }
   background: var(--taskbar-tray-bg, transparent);
   color: var(--taskbar-tray-fg, inherit);
   font-variant-numeric: tabular-nums;
+}
+.taskbar-tray > * { flex: none; }
+.taskbar-tray > :is(span, time):not(.lamp) {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* .breadcrumbs */
@@ -3739,7 +3752,7 @@ html[data-pointer="touch"] { --tap-min: 44px; }
   touch-action: manipulation;
 }
 /* Short labels ("EQ", "L1") too: toggles, tabs, segments, scrollspy, keys. */
-:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .badge-button,
+:is(.btn-icon, .btn-close, .btn-min, .btn-max, .pagination-item, .nav-toggle, .taskbar-task, .taskbar-start, .badge-button,
     .toggle-btn, .tab, .segmented-item, .scrollspy-link, .key) {
   min-inline-size: var(--tap-min);
 }

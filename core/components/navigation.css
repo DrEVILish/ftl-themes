@@ -4,13 +4,18 @@
  * the --z-* scale from there. Docs: docs/components/navigation.md. */
 
 /* --- Closable tabs (#37) ---------------------------------------------------
- *   <div class="tabs is-scroll" role="tablist">
- *     <div class="tab is-active"><button role="tab" aria-selected="true">a.css</button>
- *       <button class="btn-close" tabindex="-1" aria-label="Close a.css"></button></div>
+ *   <div class="tabs is-scroll">
+ *     <div class="tabs" role="tablist" aria-label="Open files">
+ *       <div class="tab is-active"><button role="tab" aria-selected="true">a.css</button>
+ *         <button class="btn-close" tabindex="-1" aria-hidden="true" aria-label="Close a.css"></button></div>
+ *     </div>
  *     <button class="tab-add" aria-label="New tab"></button>
  *   </div>
  * A <button> can't hold a second button, so a closable .tab is a wrapper:
- * the first child is the tab itself, the .btn-close sits beside it. */
+ * the first child is the tab itself, the .btn-close sits beside it. A
+ * tablist may own only tabs, so the add button sits beside an inner
+ * .tabs[role=tablist] that lends its tabs to the outer strip. */
+.tabs > .tabs { display: contents; }
 .tabs.is-scroll {
   /* max-inline-size: a theme may make .tabs inline-flex (a capsule), which
      would otherwise grow with its tabs and never scroll. */
@@ -21,7 +26,7 @@
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb, var(--border)) transparent;
 }
-.tabs.is-scroll > * { flex-shrink: 0; }
+.tabs.is-scroll > *, .tabs.is-scroll > .tabs > * { flex-shrink: 0; }
 .tab:has(> .btn-close) {
   display: inline-flex;
   align-items: center;

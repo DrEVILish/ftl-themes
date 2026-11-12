@@ -56,10 +56,11 @@
   // automation) must not overwrite the stored preference.
   // A picker value is "slug" or "slug:variant" (CONTRACT.md "Palette
   // variants"); the variant only ever lands in a data attribute, but is
-  // held to the same charset as a slug anyway.
+  // held to the same charset as a slug anyway. "slug~variant" (the audit
+  // scripts' spelling) is read the same way.
   function apply(value, persist) {
     var before = document.documentElement.dataset.theme + ":" + (document.documentElement.dataset.variant || "");
-    var parts = String(value).split(":");
+    var parts = String(value).split(/[:~]/);
     var slug = parts[0], variant = parts[1];
     document.documentElement.dataset.theme = slug;
     if (variant && /^[a-z0-9-]+$/.test(variant)) document.documentElement.dataset.variant = variant;
@@ -87,7 +88,12 @@
     if (persist) {
       try { localStorage.setItem("example-theme", value); } catch (e) {}
     }
-    if (picker) picker.value = value;
+    // A variant with no option of its own (unknown id) shows its base theme
+    // rather than a blank picker.
+    if (picker) {
+      picker.value = slug + (document.documentElement.dataset.variant ? ":" + variant : "");
+      if (picker.selectedIndex < 0) picker.value = slug;
+    }
     // Theme tint (CONTRACT.md "Theme tint"): a user-picked sub-theme
     // replaces any custom colour; a load from storage/URL keeps it.
     if (window.themeTint) window.themeTint(picker, entries[slug], persist && before !== slug + ":" + (variant || ""));
@@ -124,7 +130,7 @@
     try { if (!document.documentElement.hasAttribute("data-theme-default")) stored = localStorage.getItem("example-theme"); } catch (e) {}
     var wanted = params.get("theme") && params.get("variant") ? params.get("theme") + ":" + params.get("variant") : params.get("theme");
     // Page default (its own data-theme) before the first theme alphabetically.
-    var initial = [wanted, stored, document.documentElement.dataset.theme, known[0]].filter(function (v) { return v && valid(String(v).split(":")[0]); })[0];
+    var initial = [wanted, stored, document.documentElement.dataset.theme, known[0]].filter(function (v) { return v && valid(String(v).split(/[:~]/)[0]); })[0];
     if (picker) {
       picker.textContent = "";
       list.forEach(function (t) {

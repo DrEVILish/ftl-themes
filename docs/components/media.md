@@ -24,7 +24,7 @@ the [audio component guide](audio.md) and [audio showcase](../../audio-component
 ```html
 <ol class="tracklist">
   <li class="track">
-    <button class="track-play" aria-label="Play Night Drive">
+    <button class="track-play" aria-label="Play track 1, Night Drive">
       <span class="track-num">1</span>
       <svg class="icon"><use href="assets/icons/icons.svg#icon-play"/></svg>
     </button>
@@ -490,7 +490,9 @@ and synchronization.
   in the status position on desktop and docks on phones and tablets. Its
   bottom and side padding add `env(safe-area-inset-*)`, so it clears the
   home indicator (the page needs `viewport-fit=cover`). It sits at
-  `--z-sticky`. Being in flow, it never covers the end of the page.
+  `--z-sticky`. Being in flow, it never covers the end of the page. On the
+  mobile tier the shell holds the screen height (`100dvh`) and `.app-main`
+  scrolls above the bar, so no row ever sits under it.
 - **Anywhere else** (a panel, a sidebar) it is an ordinary box in the flow.
 - **Transport:** core's `.transport` with its chrome zeroed (bg, border,
   edge, padding, shadow) inside the bar; `.btn-go.btn-icon` is the play

@@ -24,14 +24,16 @@ Shared rules for everything below:
 ## Closable tabs (`.tab` + `.btn-close`, `.tabs.is-scroll`, `.tab-add`)
 
 ```html
-<div class="tabs is-scroll" role="tablist" aria-label="Open files">
-  <div class="tab is-active">
-    <button role="tab" aria-selected="true" aria-controls="p1">index.html</button>
-    <button class="btn-close" tabindex="-1" aria-label="Close index.html"></button>
-  </div>
-  <div class="tab is-dirty">
-    <button role="tab" aria-selected="false" tabindex="-1">app.css</button>
-    <button class="btn-close" tabindex="-1" aria-label="Close app.css (unsaved)"></button>
+<div class="tabs is-scroll">
+  <div class="tabs" role="tablist" aria-label="Open files">
+    <div class="tab is-active">
+      <button role="tab" aria-selected="true" aria-controls="p1">index.html</button>
+      <button class="btn-close" tabindex="-1" aria-hidden="true" aria-label="Close index.html"></button>
+    </div>
+    <div class="tab is-dirty">
+      <button role="tab" aria-selected="false" tabindex="-1">app.css</button>
+      <button class="btn-close" tabindex="-1" aria-hidden="true" aria-label="Close app.css (unsaved)"></button>
+    </div>
   </div>
   <button class="tab-add" aria-label="New tab"></button>
 </div>
@@ -61,10 +63,13 @@ strip while it scrolls. Put an `.icon` inside `.tab-add` to replace the
 reach `--tap-min`. On a touch tier the close button is a full 44px target
 inside the tab.
 
-**Accessibility:** give each close button `tabindex="-1"` and a name that
-includes the tab's name. Let Delete (or Ctrl+W) on the focused tab close
-it. This is the pattern browsers and editors use. It keeps the tablist
-holding only tabs in the Tab order.
+**Accessibility:** a tablist may own only tabs. Put the tabs in an inner
+`.tabs[role="tablist"]` (it renders as `display: contents`, so the outer
+strip still lays them out and scrolls) and keep `.tab-add` outside it.
+Give each close button `tabindex="-1"`, `aria-hidden="true"` and a name
+that includes the tab's name (shown as its tooltip). Let Delete (or
+Ctrl+W) on the focused tab close it. This is the pattern browsers and
+editors use, and it keeps the tablist holding only tabs.
 
 ---
 
