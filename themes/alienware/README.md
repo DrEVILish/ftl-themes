@@ -58,9 +58,21 @@ and what was derived rather than measured is in
   with dark glyphs (XenoMorph, ALX, AlienMorph), dark with white or red
   glyphs (Darkstar), black with cyan glyphs (Invader), red with yellow
   (Area-51), beige with an orange close (Aurora).
-- The Start button follows the suite: XenoMorph's blue orb in a silver ring,
-  the light "START" rectangle (AlienMorph, ALX), Invader's cyan START,
-  Darkstar's dark button, Area-51's red, Aurora's gold pill.
+- The Start button follows the suite: XenoMorph's 36px blue orb in a
+  silver ring, with no label, rising out of the 31px taskbar; the light
+  "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
+  dark button, Area-51's red, Aurora's gold pill.
+- The trackbar is XenoMorph's black-edged blue groove (`#0374f4`; the
+  suite's highlight in the others) with a dark glossy grey thumb.
+- Tabs are silver with no Luna orange hot-track; Invader centres its
+  caption title.
+- Toolbars, table heads, skeletons, toasts and every field and group-box
+  border take the suite's own face, surface and border, so Luna's beige
+  and `#7f9db9` blue never show. The page around the window is the
+  suite's wallpaper, not Bliss.
+- Where Tahoma and Arial are missing, the stacks fall back to DejaVu Sans
+  Condensed and Arimo/Liberation Sans, closer in width to the originals
+  than DejaVu Sans.
 
 ## Accessibility notes
 
@@ -71,8 +83,14 @@ companion carries text:
 - `--accent-text` is a darker shade of each highlight for links, headings
   and accent text; `--on-accent` is black where XP drew white on a light
   highlight (XenoMorph `#0093f0`, AlienMorph/ALX `#12acfe`, Invader `#01bdfe`).
-- Area-51's headings and breadcrumbs are black: its page face is the
-  measured blue `#2877cb`, where dark red fails.
+- Area-51's headings, breadcrumbs and group-box captions are black: its
+  page face is the measured blue `#2877cb`, where dark red fails. Its
+  callouts sit on a pale chip for the same reason.
+- `--success-text` is `#0f5a24` (`#073514` for tip callouts on the darker
+  Darkstar and ALX faces) so the tip callout passes 4.5:1.
+- The taskbar's status text uses the taskbar's own foreground.
+- Selected rows keep black text on XenoMorph's `#0093f0`. The Theme
+  Manager drew white bold there, which is 3.3:1 at this size.
 - ALX's and Area-51's page app bars use a gentler cut of the caption
   gradient so their text passes 4.5:1 against every stop; windows keep the
   measured gradient. Aurora's status strip drops a 1px dark edge stop into
