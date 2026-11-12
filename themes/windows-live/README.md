@@ -19,18 +19,20 @@ frame.
 1. **The app is white; colour is in the chrome.** Panes are white with a
    `#c5d2df` frame; the colour lives in the blue application button, the
    ribbon tabs, the aurora and the presence frames.
-2. **The ribbon.** The app bar is a Scenic Ribbon tab strip: a blue
+2. **The ribbon.** The app bar is a Scenic Ribbon tab strip, flat pale
+   blue (`#e4edf8` to `#dfe9f5`), with a blue
    rounded application button at the left (with a small Windows flag),
    then tabs (nav items and menu-bar items alike) with 13px (9pt) labels
    and tight padding, still --tap-min tall; the selected tab is
-   white, framed in `#b6bccc` and joined to a 44px ribbon body hung under
-   the strip, white fading to `#e3ebf6` and split into groups by pale
-   `#d5dde8` dividers (one `--app-main-bg` background at the top of main,
-   which pads 44px more to clear it, so it takes no layout and never
-   covers a menu). A ribbon always has
+   white to `#f5faff`, framed in `#9faec2` and joined to a 10px ribbon
+   lip hung under the strip, `#f5faff` to `#dce6f4` over the ribbon's
+   `#9faec2` rule (one `--app-main-bg` background at the top of main,
+   which pads 10px more to clear it, so it takes no layout and never
+   covers a menu; no painted command groups, the page's toolbars are the
+   commands). A ribbon always has
    one tab open: with no current nav item the first is drawn open.
    Toolbars are ribbon groups: the white-to-`#eef3fa` band over a
-   `#b6bccc` rule.
+   `#9faec2` rule.
 3. **Light type.** Segoe UI Light (bundled Selawik Light off Windows) for headings — dialog/page titles in
    Live green `#2b7a2b` ("Add your email accounts"), section headings in
    dark Live blue `#1e395b`.
@@ -56,16 +58,17 @@ frame.
    Alerts take the information-bar tints per tone (info `#f2f8fd`,
    warning `#ffffe1`, danger `#fdf0ee`, success `#f0f8ee`).
 5. **Presence.** Every avatar is a Messenger display picture: an 8px
-   rounded square in a thick glossy green bezel (light top, darker
-   bottom, dark-green edge), drawn with solid shadows only.
+   rounded square in a glossy green bezel (lime `#9be27a` top, darker
+   `#3f9a22` bottom, dark-green edge) whose thickness follows the picture
+   (3px small, 4px default, 6px large), drawn with solid shadows only.
 
 ## Signature details
 
 - The **aurora** (`--live-aurora`): pale-blue light pools with a white
   ribbon of light sweeping across the top, behind heroes, the XL gutters
   and any page without the shell, and as the desktop page's wallpaper.
-  Inside the shell it is a band under the ribbon body (a white ribbon of
-  light over pale blue, gone by ~240px, never darker than about `#dceaf8`
+  Inside the shell it is a band under the ribbon lip (a white ribbon of
+  light over pale blue, gone by ~210px; phones keep only the plain wash, never darker than about `#dceaf8`
   so muted text keeps 4.5:1). A sign-in card (one holding a password or
   code field) carries it across its head, Mail's "Add your email
   accounts" dialog, with a green Light title.
@@ -78,8 +81,15 @@ frame.
   separators.
 - Windows (desktop windows and any modal with caption buttons) have
   Windows 7 captions: a plain dark title (grey when inactive),
-  grey-gloss minimise/maximise joined to each other and to the wide red
-  close, sharing their frames.
+  blue-grey glass minimise/maximise (`#dbe6f3` to `#c3d4e7`, white top
+  highlight, slate frame) joined to each other and to the wide glossy
+  red close, the group's outer bottom corners rounded 4px. The glyphs are
+  drawn: a thick white bar and a 2px white box, each in a dark edge, and
+  a bold white X outlined in dark red.
+- Text-link actions (`a.btn-clear`: "Forgot password?", "Back to sign
+  in") are Live's blue hyperlinks `#1e6fbf`, underlined on hover.
+- A dirty cell in a selected row keeps the Explorer selection, marked
+  only by its amber leading bar.
 - Pane headers are the pale-blue gradient bars of Mail's "Quick views"
   and Gallery's folder pane, titled in regular-weight Live blue `#1e5aa0`.
 - Full-colour icons where Live had them: in folder panes, trees, lists,
@@ -111,7 +121,8 @@ Segoe UI stand-in (SIL OFL 1.1), vendored unmodified from its 1.01 release
 as `assets/fonts/Selawik-Light.woff2` (300), `-Regular` (400) and
 `-Semibold` (600–700), about 44 KiB in all, and recorded in
 `assets/fonts/NOTICE.md`. The Light headings stay light on every
-platform.
+platform. Body copy is 15px, a step under the browser default, so text
+and tables sit close to the 9pt controls as in the Essentials apps.
 
 ## Contrast honesty
 
