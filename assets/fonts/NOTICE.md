@@ -91,6 +91,20 @@ files are vendored unmodified.
   edition)
 - **Used by:** `msdos` (every glyph on the page)
 
+## Jost
+
+- **Family:** Jost (variable, `wght` 100-900, Latin subset as served by
+  Google Fonts — `Jost-Variable.woff2`)
+- **Designer:** Owen Earl (indestructible type*), a Futura-inspired
+  geometric sans
+- **License:** SIL Open Font License, version 1.1 — the file's own
+  copyright string reads "Copyright 2020 The Jost Project Authors
+  (https://github.com/indestructible-type/Jost)", and the family sits at
+  `google/fonts` `ofl/jost/`
+- **Source:** https://fonts.google.com/specimen/Jost
+- **Used by:** `lego-classic` (every glyph; Futura is named first when
+  installed)
+
 ## Michroma
 
 - **Family:** Michroma (weight vendored: Regular 400 —

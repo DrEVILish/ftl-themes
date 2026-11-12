@@ -27,12 +27,15 @@ when clicked — a physical toy, not a flat icon of one.
    (blue) carries structure and selection (nav, table heads, links, the
    active tab, segment, toggle, filter chip and page, info alerts), as
    blue dominates the booklet; red stays reserved for buttons and danger.
-   Chart series run red, blue, yellow, green, black, grey with no repeats.
-4. **Bold, geometric type.** Heavy weight headings.
+   Chart series run blue, red, yellow, green, black, grey with no repeats;
+   bar charts are blue bricks, line charts have no area fill, and heatmaps
+   step through solid grey, yellow, blue and black instead of a tint ramp.
+4. **Bold, geometric type.** Jost (a Futura revival) at 800-900 for headings, stat values and step numerals.
 5. **Studs are big and everywhere a brick's top face would show one** —
    the app bar, every panel/card top, and every panel/modal header. A
    stud is a cylinder in its brick's colour with a darker side wall, packed
-   tight, and a strip only ever shows whole studs.
+   tight, and a strip only ever shows whole studs. A second header lower in
+   the same panel is a section label and carries no strip.
 
 ## Signature details
 
@@ -40,8 +43,8 @@ when clicked — a physical toy, not a flat icon of one.
   draws them: an elliptical top face in the host colour, a darker side
   wall 3px below it and one black outline round both, at a 22px pitch
   (gap about 0.4x the diameter). Each host colour is one small inline SVG
-  tile (`--stud-tile`: white over grey on cards, brick blue over navy on
-  the bar), cheap to repaint while scrolling. Tiles use
+  tile (`--stud-tile`: light grey `#e9e9e9` over a `#7a7a7a` wall on cards,
+  so the studs read as bumps and not as holes; bar blue over navy on the bar), cheap to repaint while scrolling. Tiles use
   `background-repeat: space`, so every strip shows whole, evenly inset
   studs: zero markup, purely decorative CSS.
 - The app bar carries its own blue stud row along its bottom edge, since
@@ -68,18 +71,21 @@ when clicked — a physical toy, not a flat icon of one.
 - `.btn:active` drops the shadow to `0 1px 0` and nudges the button
   `translateY(2px)` — the brick visibly sinks into the plate, not just
   darkens.
-- `--flare` (Classic Space blue, `#0a64c2`, a step from LEGO's `#0055bf`
-  toward the booklet's lighter print while keeping white text at 5.8:1) carries links, the status
-  strip and table headers; the app bar and nav bars take the brighter
-  brick blue `#1a78cc` (white text 4.56:1) — structural chrome is always blue regardless
-  of which primary color a button uses.
+- Classic Space blue comes in three steps of one cyan-blue hue, sampled
+  from the booklet's `#0090dc` print: `--brick-blue` `#0090dc` fills
+  everything without text (chart series 1, bar chart, progress, carousel
+  dot); `--flare` `#007ac0` is the bar, table heads and active
+  segment/page/toggle (white text 4.62:1); `--flare-text` `#0857a8` is
+  the link and active-tab ink. The status strip keeps `#0a64c2` for its
+  pale small text. Structural chrome is always blue regardless of which
+  primary colour a button uses.
 
 ## Layout
 
 A solid blue bar and status strip with a thick black rule — a base plate
-in a specific colour. The page ground is the booklet's pale sand
-(`#f0e5c2`, warmed toward the print while blue and red text still clear
-4.5:1), with white bricks built on it. Toolbars sit straight on the
+in a specific colour. The page ground is the booklet's yellow sand
+(`#eedf9f`, toward the print's `#dbc570`-`#e7db63` while blue, red and grey
+text still clear 4.5:1), with white bricks built on it. Toolbars sit straight on the
 sand, no white band.
 
 ## Tell-tales of an inauthentic result
@@ -90,7 +96,7 @@ sand, no white band.
 
 ## Don'ts
 
-- **No pills or fully round buttons**; bricks are square-cornered (`--radius: 0.4rem`).
+- **No pills or fully round buttons**; bricks are near-square (`--radius: 0.125rem`, 2px; nav items 0).
 - **No thin or soft borders.** Borders are thick and near-black.
 - **No yellow as text or white on yellow.** Yellow is a fill only.
 - **No gradients, gloss or blur.** Flat moulded plastic.
@@ -110,15 +116,15 @@ so the heavy stroke does not close them up. Colour is `currentColor` only.
 
 ## Typography
 
-`--font` is `"Futura", "Jost", "Century Gothic", "URW Gothic", "URW Gothic L", "Avenir Next", Avenir, Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. Futura and Century Gothic are **system fonts, not vendored**: Futura is on macOS, Century Gothic on Windows/Office, and Linux picks up Jost or URW Gothic when installed and otherwise falls to Arial or the platform sans. No geometric OFL face is vendored yet (that needs `assets/fonts/`). `RESEARCH.md` names no face, and the booklet captures show a geometric sans that Futura only approximates. Buttons use weight 800.
+`--font` is `"Futura", "Jost", "Century Gothic", "URW Gothic", "URW Gothic L", "Avenir Next", Avenir, Arial, sans-serif`; `--font-mono` is `Consolas, "Liberation Mono", "Courier New", monospace`. Futura (macOS) is named first as the booklet-era geometric face; **Jost** (OFL, a Futura revival) is vendored as one variable Latin woff2 (`assets/fonts/Jost-Variable.woff2`, weights 100-900), so every platform without Futura gets the geometric face rather than Arial. `RESEARCH.md` names no face; the booklet's heavy step numerals are matched with Jost 900 on page titles, stat values and step markers. Buttons use 800, stat labels 700. The @font-face trims Jost's tall 1.45em line box to Arial's 1.12em (ascent/descent overrides) so text keeps its padding inside fixed-height bricks.
 
 ## Contrast honesty
 
-- **Filled primaries carry white text:** red `--danger` `#d0111b` is 5.56:1 under white (`--accent` is a hair darker, `#cc111a`, 5.7:1, so red links clear 4.5:1 on the `#e6e6e6` grey too); green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
-- **Yellow `#f5c400`** is only 1.47:1 on `--bg` and 1.64:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#6e5700` (6.94:1 on white).
+- **Filled primaries carry white text:** red `--danger` `#d0111b` is 5.56:1 under white (`--accent` is a hair darker, `#c4101a`, 6.1:1, so red text clears 4.5:1 on the sand, 4.57:1, and the `#e6e6e6` grey, 4.9:1); green `--success` `#237841` is 5.48:1. No before-hex is recorded for these (`RESEARCH.md` gives no LEGO hex, and I did not verify them against official brick colours), so treat them as darkened-enough-for-white primaries, not sampled values.
+- **Yellow `#f2d43a`** (the booklet's lemon brick yellow) is near 1.3:1 on `--bg` and 1.5:1 on white: it is never text. Text on yellow is dark, and copy that needs the yellow's meaning uses `--warning-text` `#6e5700` (6.94:1 on white).
 - **Red as small text** uses `--danger-text` `#b80f18` / `--accent-text` `#a50d15`.
-- `--muted` `#5a5a5a` is 6.90:1 on white, 5.48:1 on the sand `--bg`; links are `--flare` `#0a64c2`, 4.62:1 on the sand and 5.82:1 on white.
-- Brighter brick blue `#2a85d4` (closer to the booklet print) is used only for non-text fills: chart series 2 and the progress fill (3.9:1 on white).
+- `--muted` `#5a5a5a` is 6.90:1 on white, 5.15:1 on the sand `--bg`; links are `--flare-text` `#0857a8`, 5.34:1 on the sand and 7.15:1 on white; `--success-text` is `#1e6638` (5.2:1 on sand).
+- The booklet's brick blue `#0090dc` is used only for non-text fills (3.5:1 on white); white text sits on `--flare` `#007ac0` (4.62:1). The focus ring in `--flare` is 3.45:1 on the sand.
 - On the blue status strip, muted text is `#eef3fa` (5.21:1) and warning words `#ffea8a` (4.81:1); the active pattern-nav link on its red fill is white.
 
 ## Reference status
