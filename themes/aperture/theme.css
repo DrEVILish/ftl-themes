@@ -39,14 +39,14 @@
 html[data-theme="aperture"] {
   --motion-leave: iris;
   color-scheme: light;
-  --bg: #e8e6e1;
-  --surface: #f5f4f1;
+  --bg: #e6e8e9;
+  --surface: #f3f4f5;
   --surface-2: #ffffff;
-  --border: #c7c4bd;
-  --hairline: #d8d5cf;
+  --border: #c3c7ca;
+  --hairline: #d6d9db;
   --text: #2b2b2b;
-  /* Readable on selected-row tint over the page (4.5:1); was #6b6863. */
-  --muted: #605e59;
+  /* Cool chamber grey, readable on the selected-row tint (4.8:1). */
+  --muted: #5a5e62;
   /* Portal blue, as bright as white text allows (4.7:1). */
   --accent: #0b78c2;
   --accent-2: #ff8a1e;
@@ -67,8 +67,8 @@ html[data-theme="aperture"] {
   --danger-text: #8f4500;
   /* Blue as text (links, tabs, secondary buttons, accent badges, readouts,
      code keywords): the fill is 3.8:1 on --bg, so text takes a deeper
-     step of the same blue. Fills keep it. */
-  --accent-text: #145a88;
+     step of the same blue (5.4:1). Fills keep it. */
+  --accent-text: #13609a;
   --link: var(--accent-text);
   --tab-fg-active: var(--accent-text);
   --readout-fg: var(--accent-text);
@@ -91,24 +91,29 @@ html[data-theme="aperture"] {
   --btn-border: var(--border);
   --btn-shadow: 0 1px 2px rgba(0,0,0,0.08);
   --input-bg: #ffffff;
-  --focus-ring: 0 0 0 3px rgba(47, 158, 224, 0.3);
+  /* The portal's own bright azure, wherever no text sits on it: focus
+     ring, spinner, slider thumb, chart series 1 (3:1 on --bg). */
+  --aperture-portal: #1a8ad8;
+  --focus-ring: 0 0 0 3px rgba(26, 138, 216, 0.4);
   --panel-bg: #ffffff;
   --panel-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  --table-head-bg: #f0efec;
+  --table-head-bg: #eef0f1;
   --row-selected-bg: rgba(47, 158, 224, 0.12);
   --nav-bg: #ffffff;
   --overlay-bg: rgba(43, 43, 43, 0.35);
-  --indicator-fg: var(--accent);
-  /* A grey groove (3.1:1 on --bg); core keeps the --tap-min hit area. */
-  --slider-bg: #848179;
-  --slider-height: 0.3rem;
+  --indicator-fg: var(--aperture-portal);
+  --slider-thumb-bg: var(--aperture-portal);
+  --slider-thumb-size: 1.1rem;
+  /* A grey groove (3:1 on --bg); core keeps the --tap-min hit area. */
+  --slider-bg: #7f8488;
+  --slider-height: 0.375rem;
   /* Charts stay inside "two accents + greys". */
-  --chart-series-1: var(--accent);
+  --chart-series-1: var(--aperture-portal);
   --chart-series-2: var(--accent-2);
   --chart-series-3: #2b2b2b;
-  --chart-series-4: #8a8780;
-  --chart-series-5: #c7c4bd;
-  --chart-series-6: #605e59;
+  --chart-series-4: #868b8f;
+  --chart-series-5: #c3c7ca;
+  --chart-series-6: #5a5e62;
 
   /* Safety yellow, reserved for the hazard stripe alone — not the same
      color as --accent-2 (portal orange), which stays the danger/
@@ -120,24 +125,44 @@ html[data-theme="aperture"] {
   --aperture-hazard-stripe: repeating-linear-gradient(
     45deg, var(--aperture-hazard) 0 8px, #2b2b2b 8px 16px);
 
-  --app-bg: #dedcd6;
+  --app-bg: #dcdfe1;
   --app-bar-bg: #ffffff;
-  /* The chamber wall behind the console at every width: 128px panel seams
-     about 1.05:1 on the page, flat. */
-  --app-main-bg:
-    linear-gradient(90deg, #dfddd7 2px, transparent 2px) 0 0 / 128px 128px,
-    linear-gradient(#dfddd7 2px, transparent 2px) 0 0 / 128px 128px,
-    #e8e6e1;
+  /* Flat behind content; the panel seams live in the XL gutter only. */
+  --app-main-bg: var(--bg);
+  /* Panel headers read as a sign plate: black text over a heavy rule. */
+  --panel-header-fg: var(--text);
   --app-status-bg: #ffffff;
 }
 
 html[data-theme="aperture"] h1,
 html[data-theme="aperture"] h2,
-html[data-theme="aperture"] h3 { color: var(--muted); text-transform: none; letter-spacing: 0.01em; font-weight: 400; }
+html[data-theme="aperture"] h3 { color: var(--text); text-transform: none; letter-spacing: 0.01em; font-weight: 400; }
 html[data-theme="aperture"] h3 { font-weight: 600; letter-spacing: 0.02em; }
-/* Chamber-sign rule: a 2px dark line above the page title, as on the
-   test-chamber number plates. */
-html[data-theme="aperture"] h1 { border-top: 2px solid #2b2b2b; padding-top: 0.2em; }
+/* The test-chamber sign plate: a heavy rule over the big light title and a
+   chamber progress row of dashes under it. The face's trimmed line box
+   needs the extra end margin so the lede doesn't crowd the title. */
+html[data-theme="aperture"] h1 { border-top: 5px solid #2b2b2b; padding-top: 0.15em; margin-block-end: var(--space-xs); }
+html[data-theme="aperture"] h1::after {
+  content: "";
+  display: block;
+  inline-size: min(11rem, 100%);
+  block-size: 0.3rem;
+  margin-block-start: 0.4rem;
+  background: repeating-linear-gradient(90deg, #2b2b2b 0 0.75rem, transparent 0.75rem 1rem);
+}
+html[data-theme="aperture"] .hero h1::after { margin-inline: auto; }
+html[data-theme="aperture"] .panel-header { border-bottom: 2px solid #2b2b2b; }
+/* KPI labels carry the plate's black pictogram square. */
+html[data-theme="aperture"] .stat-label::before {
+  content: "";
+  display: inline-block;
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  margin-inline-end: 0.4em;
+  vertical-align: -0.05em;
+  border-radius: 2px;
+  background: #2b2b2b;
+}
 html[data-theme="aperture"] .stat-value { font-family: var(--font); font-weight: 400; letter-spacing: 0.02em; }
 /* Core pads a vertical fader with padding-inline, which is top/bottom in
    vertical-lr; pad the physical sides so only a thin groove is painted. */
@@ -188,8 +213,8 @@ html[data-theme="aperture"] {
   --app-gutter-art:
     radial-gradient(ellipse 58px 96px at 190px 42%, transparent 82%, rgba(11, 120, 194, 0.22) 86% 94%, transparent 98%),
     radial-gradient(ellipse 58px 96px at calc(100% - 190px) 58%, transparent 82%, rgba(255, 138, 30, 0.24) 86% 94%, transparent 98%),
-    linear-gradient(90deg, #d6d3cc 2px, transparent 2px) 0 0 / 128px 128px,
-    linear-gradient(#d6d3cc 2px, transparent 2px) 0 0 / 128px 128px,
+    linear-gradient(90deg, #d0d4d7 2px, transparent 2px) 0 0 / 128px 128px,
+    linear-gradient(#d0d4d7 2px, transparent 2px) 0 0 / 128px 128px,
     linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 60%) 0 0 / 128px 128px;
 }
 
