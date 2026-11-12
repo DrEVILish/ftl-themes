@@ -42,20 +42,26 @@ at arm's length in a dark room.
 - `--meter-*`: green / yellow / red segments on black with dim unlit LEDs.
 - `--presence-color-1..6`: the console's name-tag colours (yellow, magenta,
   orange, blue, green, grey) for `data-color` tags.
-- `--btn-*`: grey bevelled buttons; `.btn-primary` is the navy preset key,
+- `--btn-*`: grey bevelled buttons; `.btn-primary` is the blue preset key (#4a63c0 graded, a step
+  brighter than the desk), a disabled key the unlit darker grey key,
   `.btn-secondary` the grey copy/paste key, `.btn-tertiary` a flat grey key
   and `.btn-ghost` a key outline (never bare text on the desk).
-- `--card-bg`: a strip block graded #4568b8 to #3157a6 through the strip's
-  #3a62b4 band, with a light top edge and a dark foot line; muted text in a
+- `--card-bg`: a strip block with a bright #5682d2 top edge over the
+  strip's #3a62b4 band, graded to #3157a6 within 4rem, with a light top edge and a dark foot line; muted text in a
   card lifts to near-white. `--panel-bg` (and `--surface`, `--modal-bg`) is
-  the input screen's strip blue, #3a62b4 graded to #3157a6, so big panels
+  the input screen's strip blue, a #4a76c6 top edge over the #3a62b4 band graded to #3157a6 within 4rem (so status text in a
+  table row keeps 4.5:1), so big panels
   read as the console's saturated blue; the sidebar's #6b77aa lavender is a
   mid-tone neither white nor navy text clears 4.5:1 on, so it is used only
   for the flat light-lavender `--panel-header-bg` band with dark bold text
   (muted/status tones in the band go dark to keep 4.5:1).
   Both are static two-stop fills with a hard 1px drop, no blur. On touch
   screens (`pointer: coarse`) cards, panels and key bevels flatten to one
-  fill plus an inset line.
+  fill, keys, tabs and strips drop their bevel shadows, and knobs and
+  faders contain their paint; table heads keep a 0.75rem floor.
+- `--toolbar-bg`/`--band-tint-bg`: the #3a62b4 strip band, not a deeper royal blue.
+- `.accordion-trigger`: the effects sidebar's section header, the lavender
+  band with a bold dark heading over a strip-blue open body.
 - `--tab-*`: the patching screen's dark tabs (#0d0f1c, a #3b4782 edge, a
   bevelled top); the current tab lifts to the panel blue with a light top
   line and joins the page below. No coloured underline.
@@ -88,15 +94,15 @@ at arm's length in a dark room.
   white bold text that sits wholly on the navy), a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
   On every page the bar's current item is the two-tone tab, the brand gets
-  the round back key, fields in the bar are the black yellow scene field and
+  the round back key (a smaller disc on a phone), fields in the bar are the black yellow scene field and
   the bar's icon keys are status keys with a small red lamp (tap tempo needs
   page markup, so it appears only on `proseries.html`).
 - The splash: a deep-blue sky with a gold "ProSeries" wordmark (no logos).
 - Badges and filter chips are square solid lit tiles with dark text, never tints or pills.
 - Lit keys carry near-black text over their glowing face.
 - Checkboxes are square grey keys that light yellow with a dark tick.
-- Status toasts and alerts keep the blue body and light a thick bar in their
-  colour at the start edge.
+- Status toasts and alerts share the blue toast body (`--alert-bg`) with a
+  dark rule round it and light a thick bar in their colour at the start edge.
 - Every slider thumb is the black hourglass fader cap with its grey disc,
   never the default accent dot.
 - Icon buttons, pagination, carousel arrows (2rem) and window min/max are square bevelled soft
