@@ -52,8 +52,20 @@ someone says "Windows XP."
   inline SVG. Trebuchet falls back to Noto Sans (narrower than DejaVu)
   before the Tahoma stack. When the app bar has a `.nav-brand`, the
   caption is the brand row alone and the nav and actions wrap below it
-  onto XP's menu bar: the tan face, black Tahoma, `#316ac5` highlight
-  with white text, a `--border` rule above the content.
+  onto XP's menu bar: the tan face, black Tahoma with no caption shadow
+  (whether the items sit directly in the bar or inside a wrapper), tight
+  `0.2em 0.55em` items, `#316ac5` highlight with white text, a
+  `--border` rule above the content.
+- Menus (`.context-menu`, `.dropdown`, menu-bar submenus) are XP's: white,
+  square, framed and divided in `--border` (`#aca899` on Luna Blue), a
+  hard `2px 2px 3px` shadow, `3px 20px` rows in a 2px well (the row
+  height still meets core's `--tap-min`).
+- Page and section titles (`h1`–`h3`) are dark navy `#1c3f94`, as in
+  Explorer and Control Panel; the bright `#0046d5` stays on group-box
+  captions.
+- The Start flag is XP's waving flag, one inline SVG (`--luna-flag`):
+  four curved, radially lit panes with dark gaps and a short motion
+  tail, never the flat four-square logo, and exactly one per button.
 - Push buttons: `#ffffff → #ecebe6 → #d6d0c5` face, 1px `#003c74` border
   (`--luna-btn-frame`; neutral `#3a3a3a` on Royale Noir and Zune),
   3px corners; hover lights XP's orange inner glow, the primary/default
@@ -108,7 +120,7 @@ someone says "Windows XP."
 - The trackbar groove's `#9d9da1` edge is painted into its 4px content box
   (no border, `background-origin: content-box`, sideways on a vertical
   fader), since core's 24px/44px hit area hides the border.
-- **Boot screen** (`.splash`): black, the four-pane flag, and three blue
+- **Boot screen** (`.splash`): black, the waving flag, and three blue
   blocks marching through a rounded grey track (core's indeterminate
   sweep). `gallery.html` shows it while the themes load.
 
@@ -179,7 +191,7 @@ Luna background filling the well between them.
 
 ## Typography
 
-`--font` is `Tahoma, Verdana, "DejaVu Sans Condensed", "Noto Sans", "Droid Sans", Arial, "Liberation Sans", sans-serif` (no Segoe UI; Verdana is Tahoma's wide sibling and the later faces are nearer Tahoma's width than a generic DejaVu Sans); `--font-mono` is `"Lucida Console", "Courier New", monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Verdana, DejaVu Sans Condensed or the generic sans render instead.
+`--font` is `Tahoma, "DejaVu Sans Condensed", Verdana, "Noto Sans", "Droid Sans", Arial, "Liberation Sans", sans-serif` (no Segoe UI; DejaVu Sans Condensed is the nearest Tahoma width on Linux and comes before Verdana, Tahoma's wide sibling, which Linux often aliases to the wider DejaVu Sans; the later faces are nearer Tahoma's width than a generic DejaVu Sans); `--font-mono` is `"Lucida Console", "Courier New", monospace`. Tahoma is the authentic XP face (named in `references/winxp-luna/RESEARCH.md`) but it is a **system font, not vendored**: Windows and macOS ship it, most Linux installs do not, and there Verdana, DejaVu Sans Condensed or the generic sans render instead.
 
 ## Contrast honesty
 
