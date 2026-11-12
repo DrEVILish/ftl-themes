@@ -441,6 +441,9 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `windows95` (mouse tier, after "Microsoft Sans Serif" / "MS
   Sans Serif": the stand-in for the 8pt bitmap face off Windows)
 
+  Light headings); `wmp11` (Regular and Semibold only; stand-in for
+  Segoe UI)
+
 ## Bottom line
 
 Twenty-two files, sixteen families: fourteen SIL OFL 1.1, Bedstead CC0 and Px437
