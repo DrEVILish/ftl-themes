@@ -17,29 +17,42 @@ green LCD-style readout. It really whips the llama's ass.
    corner of the screen, not a full-page app. Type is small (root 87.5%,
    14px body); the title bar is 1.8rem.
 2. **Steel texture, not flat grey.** A 4px repeating horizontal gradient
-   gives the brushed-metal body.
+   gives the brushed-metal body; panels and cards carry a finer 3px rib of
+   the same chassis bands.
 3. **The readout is green-on-black.** Track info and values set in the
    monospace face on true black — an LCD panel inset into the chassis.
 4. **Beveled hardware.** Like Windows 95 but subtler: 1px two-tone borders,
    inverted on press.
 5. **Uppercase micro-labels.** Buttons, the brand, bar nav, tabs, panel
    and window titles are tiny bold caps, as on the original's chassis.
+   Below the h1 readout, h2 (1.1em) and h3 (0.9em) are two distinct caps
+   steps.
 
 ## Signature details
 
 - Inputs are black with green monospace text — they read as the display,
   not as form fields.
 - Title bars carry the base skin's gold ridge lines (`#ffefa6` over
-  `#c7b070`, sampled): window and modal titles sit centred between two
-  ridge runs, and on the app bar one run fills the space from the nav to
-  the actions.
-- Sliders are a recessed groove (dark top edge, light foot, tick notches)
-  drawn with `--slider-bg` inside core's tap-sized box, with the ribbed
-  gold seek-bar thumb.
-- Icon buttons are square silver keys like the transport row; toggles show
-  a dark-green lamp glyph when on.
-- Lists, menus, segmented controls and the pager select like the
-  playlist: `#0000ff` with white text.
+  `#c7b070`, sampled): window, modal and panel titles sit centred between
+  two ridge runs on the title-strip gradient (`#484861` to `#32324f`), like
+  the WINAMP EQUALIZER / PLAYLIST strips; badges and actions follow the
+  right run. On the app bar one run fills the space from the nav to the
+  actions (hidden on phones, where the bar wraps).
+- Tables and lists are the playlist editor: a black field with green
+  (`#00e000`) Arial rows, `.mono` cells keeping the readout face for
+  numbers and times.
+- Selection follows pledit: `#0000ff`. A multi-selected table row keeps its
+  green text (the playlist's selected, non-current look); the current
+  entry (an active list item, a table row with `.is-active` or
+  `aria-current`), menus, segmented controls and the pager use white.
+- Sliders are a plain recessed groove (dark top edge, light foot) drawn
+  with `--slider-bg` inside core's tap-sized box, with a wide ribbed gold
+  seek-bar thumb; vertical sliders are tall EQ faders with a short, wide
+  ribbed cap.
+- Every text button but ghost is a pale silver key (`#deeff1` face, dark
+  label, bevel), like ADD/REM/SEL and PRESETS; icon buttons are square
+  silver keys like the transport row; toggles show a dark-green lamp glyph
+  when on.
 - The status strip repeats the chassis gradient, framing the window.
 
 ## Icons
@@ -70,7 +83,7 @@ Everything is snug against everything else.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** core's one-column shell; the compact player chrome already fits a phone. The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
+- **Phone (≤480) and tablet (481–900):** core's one-column shell. On phones the bar's ridge run is dropped and nav items are tightened, since the bar wraps. The bar's right padding now clears the dotted grip, so the last action never sits on it (on desktop too).
 - **XL gutters (≥1801):** the spectrum analyser along the foot of the desk: twelve-band bars in a dim, translucent analyser green, with the page's brushed 4px ribbing showing through as LED segments. Paused, not animated.
 
 ## Tell-tales of an inauthentic result
@@ -82,14 +95,14 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Don'ts
 
-- **No LCD green as a general accent.** `--accent` is the ridge gold `#c7b070` and `--accent-text` its highlight `#ffefa6`; LCD green (`--lcd`) is confined to readouts (h1, inputs, table digits), meters, the playlist's selected row text and the default (`.btn-primary`) button, drawn as the LCD (green on black).
+- **No LCD green as a general accent.** `--accent` is the ridge gold `#c7b070` and `--accent-text` its highlight `#ffefa6`; LCD green (`--lcd`) is confined to readouts (h1, inputs, table digits), the playlist (table and list rows), meters, the playlist's selected row text and the default (`.btn-primary`) button, drawn as the LCD (green on black).
 - **No radius above `0.1rem`, no gloss.** Chunky 2px bevels only.
 - **No body copy in the LCD face.** Only h1 and the readout/table digits use the mono stack.
 - **No yellow fader caps here** without knowing this deviates from the reference (see Contrast honesty).
 
 ## Typography
 
-`--font` is `Arial, Helvetica, sans-serif` (the base skin's playlist font). `--font-mono` is `"Share Tech Mono", "Fixedsys", "Courier New", Consolas, monospace`; Share Tech Mono (OFL) is already vendored in `assets/fonts/`. The real skin's readout is a bitmap face; Share Tech Mono's square, narrow digits are closer to it than Courier New. Labels are tiny bold caps.
+`--font` is `Arial, Helvetica, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif` (the base skin's playlist font, then Arial's metric-compatible clones so a box without Arial does not fall to a wider face). `--font-mono` is `"Share Tech Mono", "Fixedsys", "Courier New", Consolas, monospace`; Share Tech Mono (OFL) is already vendored in `assets/fonts/`. The real skin's readout is a bitmap face; Share Tech Mono's square, narrow digits are closer to it than Courier New. Labels are tiny bold caps.
 
 ## Contrast honesty
 

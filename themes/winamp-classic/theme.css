@@ -52,7 +52,10 @@ html[data-theme="winamp-classic"] {
   --on-danger: #ffffff;
   --on-success: #001a00;
   --radius: 0.1rem;
-  --font: Arial, Helvetica, sans-serif;
+  /* Arial metrics: Liberation Sans / Arimo / Nimbus Sans are metric-
+     compatible, so a box without Arial keeps the skin's narrow playlist
+     face instead of falling to a ~15% wider DejaVu. */
+  --font: Arial, Helvetica, "Liberation Sans", Arimo, "Nimbus Sans", sans-serif;
   --font-mono: "Share Tech Mono", "Fixedsys", "Courier New", Consolas, monospace;
   --flare: var(--lcd);
 
@@ -69,11 +72,24 @@ html[data-theme="winamp-classic"] {
   /* Placeholder is the display's dim segment: 6.27:1 on black, but
      clearly weaker than a green value. */
   --input-placeholder: #5f9a5f;
-  --panel-bg: var(--surface);
+  /* Panels carry the chassis striping (RESEARCH.md: #525266/#2f2f4b
+     bands), a 3px rib, so the steel shows inside the window too. Cards in
+     tinted lists mix a colour, so they keep the flat face. */
+  --panel-bg: repeating-linear-gradient(180deg, #35355a 0 1px, #32324f 1px 2px, #2c2c47 2px 3px);
+  --list-card-bg: var(--surface);
+  /* Panel headers are the sub-window title strip (WINAMP EQUALIZER,
+     WINAMP PLAYLIST): title-bar gradient, gold ridges either side. */
+  --panel-header-bg: linear-gradient(180deg, #484861, #32324f);
+  --panel-header-fg: var(--text);
+  /* The playlist editor (pledit, webamp baseSkin.json): black field,
+     green text, #0000ff selection, white for the current entry. */
+  --list-bg: #000000;
+  --list-item-fg: #00e000;
   --table-head-bg: var(--surface-2);
   --table-head-fg: var(--muted);
   /* The playlist's selected row: base skin pledit SelectedBG #0000FF
-     (webamp's baseSkin.json), green text over it at 6.3:1. */
+     (webamp's baseSkin.json), the row's normal green text kept over it
+     (6.3:1), as the playlist draws a selected, non-current entry. */
   --row-selected-bg: #0000ff;
   --row-selected-fg: var(--lcd);
   /* Lists, menus, segmented controls and the pager select the way the
@@ -105,7 +121,6 @@ html[data-theme="winamp-classic"] {
   --slider-height: 0.6rem;
   --slider-border-width: 0;
   --slider-bg:
-    repeating-linear-gradient(90deg, #414f61 0 1px, transparent 1px 7px),
     linear-gradient(180deg, #0d0e14 0 2px, #1b1b2b 2px calc(100% - 2px), #8e9cad calc(100% - 2px));
   --slider-thumb-bg: repeating-linear-gradient(90deg, #ffefa6 0 1px, #c7b070 1px 3px);
   --slider-thumb-shadow: inset -1px -1px 0 #414f61;
@@ -134,10 +149,12 @@ html[data-theme="winamp-classic"] {
 html[data-theme="winamp-classic"] h1,
 html[data-theme="winamp-classic"] h2,
 html[data-theme="winamp-classic"] h3 {
-  font-size: 0.8em;
   text-transform: uppercase;
   color: var(--text);
 }
+/* Two distinct caps steps under the h1 readout, spaced off each other. */
+html[data-theme="winamp-classic"] h2 { font-size: 1.1em; letter-spacing: 0.06em; margin-block: 0.4em; }
+html[data-theme="winamp-classic"] h3 { font-size: 0.9em; letter-spacing: 0.03em; margin-block: 0.4em; }
 
 /* h1 alone gets the LCD-readout treatment: a real Winamp skin never scales
    a heading up into a plain bold sans headline — it puts weight into a
@@ -157,6 +174,7 @@ html[data-theme="winamp-classic"] h1 {
   padding: 0.5em 0.9em;
   border: 2px solid;
   border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
+  margin-block-end: 0.35rem;
 }
 /* The default action reads as the LCD: green on black, as the display
    and playlist draw it. */
@@ -186,16 +204,42 @@ html[data-theme="winamp-classic"] .textarea {
 /* Sliders and switches are physical hardware in the reference skin too —
    same recessed track, raised thumb logic as the controls above. */
 html[data-theme="winamp-classic"] .slider.is-vertical {
-  --slider-bg:
-    repeating-linear-gradient(0deg, #414f61 0 1px, transparent 1px 7px),
-    linear-gradient(90deg, #0d0e14 0 2px, #1b1b2b 2px calc(100% - 2px), #8e9cad calc(100% - 2px));
+  --slider-length: 6.5rem;
+  /* Drawn as a centred 0.6rem groove: in vertical writing mode core's
+     padding-inline pads top/bottom, so the content box spans the full
+     tap width. */
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 0.3rem), #0d0e14 0 calc(50% - 0.3rem + 2px), #1b1b2b 0 calc(50% + 0.3rem - 2px), #8e9cad 0 calc(50% + 0.3rem), transparent 0);
+  --slider-thumb-bg: repeating-linear-gradient(180deg, #ffefa6 0 1px, #c7b070 1px 3px);
 }
+/* Core clips the track to the content box; the groove's edges have to be
+   measured from it too, or they land in the clipped-away padding. */
+html[data-theme="winamp-classic"] .slider { background-origin: content-box; }
+/* The seek bar's thumb is a wide ribbed bar, the EQ fader's a short wide
+   cap across its groove. Core keeps the input's tap-sized box. */
+html[data-theme="winamp-classic"] .slider::-webkit-slider-thumb { width: 1.75rem; height: 0.85rem; }
+html[data-theme="winamp-classic"] .slider::-moz-range-thumb { width: 1.75rem; height: 0.85rem; }
+html[data-theme="winamp-classic"] .slider.is-vertical::-webkit-slider-thumb { width: 1.1rem; height: 0.6rem; }
+html[data-theme="winamp-classic"] .slider.is-vertical::-moz-range-thumb { width: 1.1rem; height: 0.6rem; }
 html[data-theme="winamp-classic"] .switch-track {
   border: 2px solid;
   border-color: #0d0e14 #8e9cad #8e9cad #0d0e14;
 }
 
-html[data-theme="winamp-classic"] .table td { font-family: var(--font-mono); font-size: 0.85em; }
+/* Tables are the playlist editor: a black field with green Arial rows
+   (the .mono cells keep the readout face for numbers and times), white
+   for the current/active row, #0000ff selection. */
+html[data-theme="winamp-classic"] .table { --row-alt-bg: #14141f; }
+html[data-theme="winamp-classic"] .table tbody { background: #000000; color: #00e000; }
+html[data-theme="winamp-classic"] .table tr:is(.is-active, [aria-current]) td { color: #ffffff; }
+html[data-theme="winamp-classic"] .list { --row-selected-fg: #ffffff; }
+
+/* Text buttons are the silver hardware keys too (ADD/REM/SEL, PRESETS):
+   only ghost stays bare. */
+html[data-theme="winamp-classic"] :is(.btn-secondary, .btn-tertiary) {
+  --btn-bg: linear-gradient(180deg, #f0ffff 0 1px, #deeff1 1px 85%, #d2dfe7);
+  --btn-bg-hover: linear-gradient(180deg, #ffffff 0 1px, #eaf7f9 1px 85%, #dce8ee);
+  --btn-fg: #1b1b2b;
+}
 
 /* --- Layout ------------------------------------------------------------ *
  * A skinned player window: compact beveled titlebar, tight content, and a
@@ -228,10 +272,8 @@ html[data-theme="winamp-classic"] .app-bar {
 }
 
 /* Winamp's chrome carries texture, not just color: a dotted grip on the
-   titlebar (the drag handle every classic-skin window has at its edge) and
-   tick notches on every slider track (volume/balance/EQ), not a bare
-   groove. Both are static decoration layered under the functional
-   gradient/thumb, never intercepting input. */
+   titlebar (the drag handle every classic-skin window has at its edge),
+   static decoration under the bar gradient, never intercepting input. */
 html[data-theme="winamp-classic"] .app-bar {
   background-image:
     radial-gradient(circle, #9a9a9a 1.4px, transparent 1.5px),
@@ -262,7 +304,7 @@ html[data-theme="winamp-classic"] {
 }
 
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------
- * No breakpoints of its own: core's tiers stack bar, main and status on
+ * One small phone rule of its own (end of file): core's tiers stack bar, main and status on
  * phones and tablets; the compact player chrome already fits a phone.
 
  * XL gutters: the spectrum analyser, running along the foot of the desk
@@ -329,6 +371,8 @@ html[data-theme="winamp-classic"] {
 }
 html[data-theme="winamp-classic"] .modal-header::before,
 html[data-theme="winamp-classic"] .modal-header::after,
+html[data-theme="winamp-classic"] .panel-header::before,
+html[data-theme="winamp-classic"] .panel-header::after,
 html[data-theme="winamp-classic"] .app-bar::after {
   content: "";
   flex: 1 1 0;
@@ -342,6 +386,15 @@ html[data-theme="winamp-classic"] .app-bar > .push { order: 1; }
 html[data-theme="winamp-classic"] .modal-header > .icon { order: -1; }
 html[data-theme="winamp-classic"] .modal-header > :is(.btn-min, .btn-max, .btn-close) { order: 1; }
 html[data-theme="winamp-classic"] .modal-header > .window-title { flex: 0 1 auto; }
+/* Panel headers: title between the two runs, any badge or action after
+   the right run, like the strip's close box. */
+html[data-theme="winamp-classic"] .panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+}
+html[data-theme="winamp-classic"] .panel-header > :not(:first-child) { order: 1; }
 html[data-theme="winamp-classic"] .modal-header {
   font-size: 0.85em;
   font-weight: 700;
@@ -378,4 +431,11 @@ html[data-theme="winamp-classic"] .input { min-inline-size: var(--tap-min); }
 html[data-theme="winamp-classic"] .table td > .field-error { padding-block-end: max(var(--space-2xs), 5px); }
 html[data-theme="winamp-classic"] .table :is(th, td) {
   padding: max(calc(0.5em * var(--density)), 6px) max(calc(0.75em * var(--density)), 8px);
+}
+
+/* Phone: the bar wraps, so the ridge run would take a row of its own;
+   drop it and tighten the nav so the player chrome stays compact. */
+@media (max-width: 480px) {
+  html[data-theme="winamp-classic"] .app-bar::after { display: none; }
+  html[data-theme="winamp-classic"] .app-bar .nav-item { padding-inline: 0.4em; }
 }
