@@ -24,14 +24,17 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    only as `--flare` and warning) — this is a two-tier bright system,
    not a rainbow.
 5. **Zero radius.** Text-mode has no curves: badges, switches, avatars,
-   presence dots, carousel dots, icon buttons, status dots and the slider
-   thumb are square cells; checkboxes and radios are `[X]` and `(•)` text;
+   presence dots, carousel dots and arrows, notification dots, the
+   saving marker, icon buttons, status dots and the slider thumb are
+   square cells; checkboxes and radios are `[X]` and `(•)` text;
    spinners are the stepped `| / - \` text cursor.
 6. **One weight.** The VGA font has no bold, so faux bold is switched off
    (`font-synthesis-weight: none`); emphasis is colour.
 7. **One cell size.** The 9x16 glyphs are drawn at 16px (h1 and stat
    figures at 32px), never at a fractional size that smears the pixels;
-   labels, hints, badges, table heads and buttons are all 16px.
+   labels, hints, badges, table heads, buttons, menubars, logs, legends,
+   chart text, tree rows, desktop icon labels, readouts and price units
+   are all 16px (a large readout or price is 32px).
 
 ## Signature details
 
@@ -45,7 +48,8 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 - The app bar and every in-window menubar are EDIT's grey `#aaaaaa` menu
   bar with black items; the status strip is black with Norton's F-key row
   of black-on-cyan label blocks. Cyan becomes a fill only for the cursor
-  bar (selected rows, the active tab, the current nav link) and the
+  bar (selected rows, the active tab, the current nav or folder-rail
+  link) and the
   panel title tab, always with black text — the `[X]` glyph included.
 - Badges are reverse-video VGA cells: black on grey, cyan, light red,
   light green or yellow. Lamps are lit cells with no glow; GO is the
@@ -53,6 +57,12 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
 - Desktop windows have no title icon: the `[■]` close box sits at the
   left of the title bar, as in DOS dialogs.
 - Tables draw cyan box-drawing column rules (│) and no row hairlines.
+- A dialog's title is cut into its inner double line, centred on a grey
+  patch, as DOS and Norton dialogs drew it.
+- No tinted state washes: invalid fields keep the blue field (the red
+  double line carries it), an answered list card keeps its card fill, the
+  bulk-selection bar is black, and the modal backdrop is a black 50%
+  dither (the ░ shade) instead of translucent black.
 
 ## Layout
 
@@ -125,7 +135,8 @@ layout at **L1**.
   centred, reverse video — Norton's drive tab.
 - **Headings and column heads** are bright yellow `#ffff55`, no fills
   (an `h1` on a grey dialog, sheet or bar turns VGA blue `#0000aa`).
-- **Charts and loaders** are flat: no translucent area fills, and a
+- **Charts and loaders** are flat: no translucent area fills, chart
+  strokes are drawn with `shape-rendering: crispEdges`, and a
   skeleton is a still ░ shade block instead of a shimmer.
 - **Buttons** are solid blocks with a hard black shadow one cell
   down-right, dropped when pressed; primary is yellow.

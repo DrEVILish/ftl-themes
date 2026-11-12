@@ -112,7 +112,20 @@ html[data-theme="msdos"] {
   --nav-bg: #aaaaaa;
   --nav-brand-fg: #000000;
   --nav-item-fg: #000000;
-  --overlay-bg: rgba(0, 0, 0, 0.6);
+  /* No translucency: the backdrop is a black 50% dither (the ░ shade),
+     the screen showing through every other pixel. */
+  --overlay-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E") 0 0 / 2px 2px;
+  /* State washes stay in the 16 colours: the border or glyph carries it. */
+  --bulk-bar-bg: #000000;
+  --input-error-bg: var(--input-bg);
+  --list-tone-tint: 0%;
+  --cell-saved-bg: transparent;
+  --cell-error-bg: transparent;
+  /* Chart text is the one 16px cell too. */
+  --chart-text-size: 16px;
+  --chart-font-size: 1rem;
+  /* Icon labels are 16px cells: a 12-letter name fits one 8rem cell. */
+  --desktop-icon-cell: 8rem;
   --indicator-fg: var(--accent-2);
   /* Text mode has no translucency: a dragged card stays solid. */
   --kanban-drag-opacity: 1;
@@ -577,9 +590,13 @@ html[data-theme="msdos"] .badge-outline.badge-danger { --badge-fg: var(--danger-
 html[data-theme="msdos"] .badge-outline.badge-success { --badge-fg: var(--success-text, var(--success)); }
 html[data-theme="msdos"] .badge-outline.badge-warning { --badge-fg: var(--warning-text, var(--warning)); }
 /* The cursor bar is black on cyan for every glyph, the [X] included. */
-html[data-theme="msdos"] :is(tr.is-selected, tr[aria-selected="true"], [aria-selected="true"]) :is(.checkbox, .radio)::before { color: #000000; }
+/* Only the rows that really take the cyan fill: a bare [aria-selected]
+   would also match any label holding a checked box (the build widens it). */
+html[data-theme="msdos"] :is(tr.is-selected, tr[aria-selected="true"], .list-item[aria-selected="true"], .list-item.is-selected) :is(.checkbox, .radio)::before { color: #000000; }
 /* No curves anywhere: core hard-codes 50% on these. */
-html[data-theme="msdos"] :is(.spinner, .indicator, .carousel-nav > a) { border-radius: 0; }
+html[data-theme="msdos"] :is(.spinner, .indicator, .carousel-nav > a, .desktop-monitor) { border-radius: 0; }
+html[data-theme="msdos"] :is(.has-badge, :is(.table tr > td, .editable):is(.is-saving, .htmx-request))::after,
+html[data-theme="msdos"] .carousel::scroll-button(*) { border-radius: 0; }
 html[data-theme="msdos"] .avatar[data-status]::after,
 html[data-theme="msdos"] .presence-status::after,
 html[data-theme="msdos"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
@@ -609,8 +626,13 @@ html[data-theme="msdos"] .desktop-window .modal-header { padding-inline-start: c
 html[data-theme="msdos"] :is(small, th, .input, .select, .textarea, td, label, .label, .btn, .btn-sm, .badge, .tab, .nav-item, .breadcrumb-item,
   .stat-label, .stat-trend, .status, .field-hint, .field-error, .field-valid, .switch-label, .toggle-btn, .alert, .toast,
   .pagination-item, .list-item-meta, .figure-caption, figcaption, .log-time, .command-hint, .chart-tooltip, .input-addon,
-  .avatar, .message-meta > *, .attachment-size, .window-status, .empty-state-hint, .panel-header, .app-status, h2, h3, h4, h5, h6) { font-size: 1rem; }
-html[data-theme="msdos"] .stat-value { font-size: 2rem; }
+  .avatar, .message-meta > *, .attachment-size, .window-status, .empty-state-hint, .panel-header, .app-status, h2, h3, h4, h5, h6,
+  .menubar, .menubar *, .log, .log *, .connection, .legend, .chart-legend, .accordion-trigger, .segmented-item, .typing, .scrollspy-link,
+  .field-group-title, .thread-divider, .desktop-icon span, .tree *, .donut, .price-period, .readout-unit) { font-size: 1rem; }
+html[data-theme="msdos"] :is(.stat-value, .price) { font-size: 2rem; }
+html[data-theme="msdos"] .donut :is(strong, .donut-value) { font-size: 1em; }
+html[data-theme="msdos"] .readout { --readout-size: 1rem; }
+html[data-theme="msdos"] .readout-lg { --readout-size: 2rem; }
 /* Inline code and keys run at the surrounding text's size. */
 html[data-theme="msdos"] :is(code, kbd) { font-size: 1em; }
 /* Full-size code wraps at the box edge, as text mode wrapped at column 80. */
@@ -626,3 +648,35 @@ html[data-theme="msdos"] .tab { padding: 0.25em 1ch; }
   html[data-theme="msdos"] .app-bar .btn:has(> kbd) { font-size: 0; padding: 0; min-inline-size: var(--tap-min); justify-content: center; }
   html[data-theme="msdos"] .app-bar .btn:has(> kbd) > .icon { font-size: 1rem; }
 }
+
+/* --- Polish round 3 ------------------------------------------------------ */
+/* Chart strokes are hard pixel steps, never anti-aliased slopes. */
+html[data-theme="msdos"] :is(.sparkline, .chart) :is(path, line, polyline, polygon, rect, circle) { shape-rendering: crispEdges; }
+/* The inbox folder rail's current folder is the cyan cursor bar too. */
+html[data-theme="msdos"] .nav-rail {
+  --nav-item-bg-active: #00aaaa;
+  --nav-item-fg-active: #000000;
+  --nav-rail-marker: transparent;
+}
+/* A badge on the cyan bar is a black cell, not cyan on cyan. */
+html[data-theme="msdos"] .nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) .badge { --badge-bg: #000000; --badge-fg: #ffffff; }
+/* A dialog's title is cut into its inner double line, centred, as DOS
+   and Norton drew it: the inner line drops to the title cell's middle.
+   It is drawn as inset shadows, not the outline, because an outline
+   paints over the title's grey patch and would strike through it. */
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) {
+  outline: 0;
+  --modal-shadow: inset 0 0 0 11px #aaaaaa, inset 0 0 0 12px #ffffff, inset 0 0 0 13px #aaaaaa, inset 0 0 0 14px #ffffff, 2ch 1em 0 #000000;
+}
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header {
+  /* Half a cell clear of the dialog's top edge (the 4px text inset). */
+  margin-block-start: calc(4px - var(--surface-pad));
+  padding: 0 1ch;
+  line-height: 1;
+  background: #aaaaaa;
+}
+/* The [■] close box sits on the same line, clear of the corner. */
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > .btn-close { --btn-close-bg: #aaaaaa; left: 2ch; }
+/* Desktop dialogs: the tab row stays one line so the body never clips
+   the OK / CANCEL row. */
+html[data-theme="msdos"] .desktop-window .tabs { flex-wrap: nowrap; gap: 0; }
