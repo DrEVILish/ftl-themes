@@ -15,16 +15,33 @@ half-watching the stage, glancing down. They must find the current cue,
 the next cue, and the GO button in under a second, in a dark room, under
 stress. Everything in this theme serves that moment.
 
+## Reference
+
+Not a skin of any one product, and no captures are checked in. The
+vocabulary is the generic show/lighting desk: a neutral grey console body,
+backlit hardware keys, and amber as the "armed / standing by" colour of
+lighting-desk playback (the ETC Eos family's amber/gold is the closest
+named model). One element is borrowed from QLab specifically: the light
+right-pointing playhead triangle on the cue standing by. QLab's own chrome
+colours (green running cues, blue selection, white-outlined GO) are
+deliberately **not** used, so the theme should not be judged as a QLab
+lookalike. The colours are chosen, not sampled.
+
 ## Core values
 
-1. **One loud thing.** GO is the only element allowed a glow. If a second
-   element competes with it, the theme has failed at its one job.
+1. **One loud thing.** GO is the only element allowed a glow, and the only
+   solid amber block at rest. Other "on" states (segmented, toggle,
+   pagination, filter chips, a selected desktop icon) are amber text on the
+   neutral lift with an amber rule, never a fill. The bulk-action bar, an
+   own chat message and an edited table cell are neutral surfaces too. If a second element
+   competes with GO, the theme has failed at its one job.
 2. **Flat everywhere else.** No gradients, no elevation, no decorative
    shadow. Depth cues cost scanning time and add nothing to a list.
 3. **Density is a feature.** `--density: 0.85`. Fitting more of the cue
    list on screen is worth more than breathing room.
 4. **Amber is state, not decoration.** `#ff8c1a` marks the active cue, the
-   armed transport, the thing that is about to happen.
+   armed transport, the thing that is about to happen. Brand text, table
+   heads, icons and default chart series stay neutral.
 5. **Neutral greys carry the chrome.** `#141414`/`#1d1d1d`/`#262626` — a
    console body, not a brand colour.
 6. **Numbers are tabular.** Cue numbers and times must not reflow as they
@@ -36,6 +53,7 @@ stress. Everything in this theme serves that moment.
 |---|---|---|
 | `--bg` / `--surface` / `-2` | `#141414` / `#1d1d1d` / `#262626` | A near-neutral grey ladder. Warm-free so amber stays the only colour with a job. |
 | `--accent` | `#ff8c1a` | Amber: active, armed, current. |
+| `--warning` | `#e6c84d` | Yellower than the accent, so a warning or a dirty-cell edge never reads as "current cue". |
 | `--danger` | `#d63a3f` | Darkened from a brighter red so white text on a destructive button clears 4.5:1. |
 | `--radius` | `0.2rem` | Nearly square — hardware, not app. |
 | `--density` | `0.85` | Tight rows. The single most consequential token here. |
@@ -44,14 +62,35 @@ stress. Everything in this theme serves that moment.
 ## Signature details
 
 - **The transport is the theme.** A flat strip with a 0.3rem amber left
-  edge, carrying GO. GO is a 2px amber outline that fills faintly and
-  blooms on hover — a deliberate, and the *only*, exception to the
-  no-glow rule.
+  edge, carrying GO. GO is the only solid amber block at rest (1.9rem,
+  dark legend) and blooms on hover — a deliberate, and the *only*,
+  exception to the no-glow rule. `.btn-primary` is an amber outline so it
+  never out-shouts GO; secondary and tertiary labels are plain `--text`.
+- **The playhead.** The cue standing by (`tr.is-active`, `.list-item.is-active`)
+  carries QLab's light right-pointing triangle at its leading edge over
+  the amber tint, with a thin 2px amber edge kept underneath. A row ticked
+  by its selection checkbox is a selection, not a cue: it gets a grey edge.
+- **Headings are console labels.** Section h2/h3 are small uppercase
+  `--muted` labels; h1 (the page or workspace title), marketing headlines
+  and content titles (an article's h2, prose headings) stay `--text` in
+  mixed case with normal tracking, the way show-control apps title their
+  windows.
+- **Square everything.** Badges, avatars, switches, slider thumbs, icon
+  buttons, carousel dots/arrows and avatar presence lamps use `--radius`
+  (or 0), not pills or circles. Overlay shadows are
+  set to `none` explicitly (`--panel-shadow` and friends).
+- **Selection is neutral.** A selected row lifts to `#333`, and so does the
+  bulk-action bar, which keeps only a 2px amber leading edge; the amber tint
+  belongs to the one standing-by row. Table heads, brand, info alerts,
+  icons (desktop, window and tree glyphs), context-menu hover and the
+  default chart series are neutral.
 - **Meters** use conventional green/amber/red banding, squared off
   (`--meter-radius: 0`).
 - **Lamps** are square and unlit-dark with no bloom: panel LEDs, not
   indicators on a web page.
 - **Readouts** are plain, heavy, amber — a cue number, not a spectacle.
+  Readout units and badges never drop below 0.7rem: they are read at
+  console glance distance.
 
 ## Layout
 
@@ -63,10 +102,13 @@ whole shell.
 ## v5 layout
 
 - **Tiers.** No rail and a thin flat bar, so phone (≤480px) and tablet
-  (481–900px) use core's one-column shell as is.
+  (481–900px) use core's one-column shell, except that on phone the brand
+  takes its own first line of the bar instead of truncating behind the
+  actions.
 - **XL gutter art.** The stage floor beside the console: a hairline
   stage-plot grid with a scatter of faint amber spike-tape crosses on its
-  intersections. Still, and within about 1.3:1 of `--bg`.
+  intersections, drawn as one SVG tile. Still, and within about 1.3:1 of
+  `--bg`.
 
 ## Extending it
 
@@ -81,8 +123,8 @@ Don't:
 - Introduce a gradient or a shadow anywhere.
 - Round corners to soften the look.
 - Use a universal `!important` reset to enforce flatness — that erases
-  state indicators like the active-row marker. Express flatness by leaving
-  the `--*-shadow` properties unset.
+  state indicators like the active-row marker. Express flatness through
+  the `--*-shadow` tokens, set to `none` where core has a fallback shadow.
 
 ## Tell-tales of an inauthentic result
 
