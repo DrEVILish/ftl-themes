@@ -5,11 +5,16 @@
  * Fonts (SIL OFL, vendored in assets/fonts): Michroma, a wide squared
  * face and the closest shipped stand-in for the film's extended Eurostile,
  * for headings and the brand; Titillium Web, a squared technical sans,
- * for body text. Eurostile itself is not web-available.
+ * for body text; Share Tech Mono, a squared mono, for readouts. Eurostile itself is not web-available.
  */
 @font-face {
   font-family: "Michroma";
   src: url("assets/fonts/Michroma-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
   font-display: swap;
 }
 @font-face {
@@ -53,7 +58,7 @@ html[data-theme="tron"] {
   --on-success: #00110c;
   --radius: 0;
   --font: "Titillium Web", sans-serif;
-  --font-mono: Consolas, monospace;
+  --font-mono: "Share Tech Mono", Consolas, monospace;
   --flare: #ff8c1a;
 
   --btn-bg: transparent;
@@ -62,7 +67,10 @@ html[data-theme="tron"] {
   --btn-shadow-hover: inset 0 0 14px rgba(10, 240, 255, 0.45);
   --input-bg: #000;
   --focus-ring: 0 0 10px var(--accent);
-  --panel-shadow: inset 0 0 18px rgba(10, 240, 255, 0.1);
+  /* Light-lines: a second 1px inner ring makes the edge read 2px lit. Above
+     phone width an outer bloom spills into the dark too (see the chamfer
+     block). */
+  --panel-shadow: inset 0 0 0 1px rgba(10, 240, 255, 0.5), inset 0 0 18px rgba(10, 240, 255, 0.18);
   --table-head-fg: var(--accent);
   --table-head-rule: var(--accent);
   --row-selected-bg: rgba(10, 240, 255, 0.08);
@@ -92,13 +100,18 @@ html[data-theme="tron"] {
      grow to --tap-min; the track is the content box's background). */
   --slider-height: 3px;
   --slider-bg: color-mix(in srgb, var(--accent) 70%, transparent);
-  --slider-thumb-shadow: 0 0 8px var(--accent);
+  --slider-thumb-shadow: 0 0 2px #fff, 0 0 8px var(--accent);
+  --slider-thumb-bg: #e8fdff;  /* white-hot core where the light is brightest */
 
   /* Active states trace, they don't fill. */
   --segmented-item-bg-active: rgba(10, 240, 255, 0.15);
   --segmented-item-fg-active: var(--accent);
   --toggle-btn-bg-on: rgba(10, 240, 255, 0.22);
   --toggle-btn-fg-on: #ffffff;
+  --toggle-btn-border-on: var(--accent);
+  --status-dot-radius: 0;
+  --lamp-radius: 0;
+  --presence-radius: 0;
   --badge-bg-active: rgba(10, 240, 255, 0.15);
   --badge-fg-active: var(--accent);
   --desktop-icon-label-bg-selected: rgba(10, 240, 255, 0.15);
@@ -130,7 +143,7 @@ html[data-theme="tron"] {
   --toast-shadow: 0 0 14px rgba(10, 240, 255, 0.4);
   --alert-bg: #000;
   --alert-fg: var(--text);
-  --card-shadow: inset 0 0 14px rgba(10, 240, 255, 0.1);
+  --card-shadow: var(--panel-shadow);
   --context-menu-bg: #000;
   --context-menu-border: var(--accent);
   --dropzone-border: var(--accent);
@@ -159,6 +172,17 @@ html[data-theme="tron"] h3 {
   color: var(--accent);
   text-shadow: 0 0 8px rgba(10, 240, 255, 0.6);
 }
+html[data-theme="tron"] h1 { text-shadow: 0 0 2px #fff, 0 0 10px var(--accent); }
+/* Code in a heading is a literal: no caps, no tracking, the readout face. */
+html[data-theme="tron"] :is(h1, h2, h3) code { text-transform: none; letter-spacing: normal; font-family: var(--font-mono); }
+/* Phones: the extended face at full tracking breaks one word per line. */
+@media (max-width: 480px) {
+  html[data-theme="tron"] :is(h1, h2, h3) { letter-spacing: 0.08em; }
+  html[data-theme="tron"] h1 { font-size: 1.4em; }
+  html[data-theme="tron"] h2 { font-size: 1.15em; }
+}
+/* Readouts are lit numerals; the mono ships one weight, so no faux bold. */
+html[data-theme="tron"] .stat-value { font-weight: 400; text-shadow: 0 0 8px rgba(10, 240, 255, 0.45); }
 /* Michroma is already extended, so it carries less extra tracking than the
    old sans did; it ships one weight, so headings don't fake a bold. */
 html[data-theme="tron"] :is(h1, h2, h3, .nav-brand) {
@@ -174,7 +198,7 @@ html[data-theme="tron"] .nav-brand { text-transform: uppercase; letter-spacing: 
    diagonal is red. clip-path also cuts away anything painted outside the
    box: the outer glow and core's :focus-visible outline. Glow is therefore
    inset, and focus is drawn inside the box (see below). */
-html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover) {
+html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast) {
   --tron-cut: 18px;
   clip-path: polygon(var(--tron-cut) 0, 100% 0, 100% calc(100% - var(--tron-cut)), calc(100% - var(--tron-cut)) 100%, 0 100%, 0 var(--tron-cut));
   background-image:
@@ -187,6 +211,26 @@ html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-men
 }
 html[data-theme="tron"] .btn { --tron-cut: 10px; --tron-edge: var(--btn-border, var(--border)); }
 html[data-theme="tron"] .btn-sm { --tron-cut: 7px; }
+html[data-theme="tron"] .toggle-btn { --tron-cut: 10px; --tron-edge: var(--toggle-btn-border, var(--btn-border, var(--border))); }
+html[data-theme="tron"] .toggle-btn:has(input:checked) { --tron-edge: var(--toggle-btn-border-on, var(--accent)); }
+html[data-theme="tron"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: rgba(255, 61, 61, 0.15);
+  --toggle-btn-fg-on: var(--danger);
+  --toggle-btn-border-on: var(--danger);
+}
+html[data-theme="tron"] .segmented { --tron-cut: 10px; --tron-edge: var(--segmented-border, var(--border)); }
+/* Feedback frames: a small bevel and a lit bar down the start edge in the
+   status colour. */
+html[data-theme="tron"] .alert {
+  --tron-cut: 7px;
+  --tron-edge: var(--alert-border, var(--border));
+  box-shadow: inset 0.2rem 0 0 var(--alert-border, var(--border)), 0 0 8px color-mix(in srgb, var(--alert-border, var(--border)) 35%, transparent);
+}
+html[data-theme="tron"] .toast {
+  --tron-cut: 7px;
+  --tron-edge: var(--toast-border, var(--border));
+  --toast-shadow: inset 0.2rem 0 0 var(--toast-border, var(--accent)), 0 0 14px color-mix(in srgb, var(--toast-border, var(--accent)) 40%, transparent);
+}
 html[data-theme="tron"] .panel { --tron-edge: var(--panel-border, var(--border)); }
 html[data-theme="tron"] .modal { --tron-edge: var(--modal-border, var(--border)); }
 html[data-theme="tron"] .card { --tron-edge: var(--card-border, var(--panel-border, var(--border))); }
@@ -199,13 +243,58 @@ html[data-theme="tron"] :is(.panel, .modal, .card, .drawer, .popover) :is(.panel
    corners rather than cutting the menu off at its own edge. Top-layer
    popovers escape either way. */
 html[data-theme="tron"] :is(.panel, .modal, .card):has(.anchor) { clip-path: none; background-image: none; }
+/* Where corner-shape exists, the bevel is a real border shape: the border
+   draws the diagonal itself and the outer bloom follows it, so the clip
+   and the traced layers are dropped. clip-path stays as the fallback. */
+/* Phones keep the clip-path chamfer and inset glow only: the bevelled
+   border plus an outer bloom on every surface costs a mid-range phone
+   about a dropped frame in five while scrolling. */
+@supports (corner-shape: bevel) { @media (min-width: 481px) {
+  html[data-theme="tron"] {
+    --panel-shadow: 0 0 10px rgba(10, 240, 255, 0.45), inset 0 0 0 1px rgba(10, 240, 255, 0.5), inset 0 0 18px rgba(10, 240, 255, 0.18);
+  }
+  html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast) {
+    clip-path: none;
+    background-image: none;
+    border-radius: var(--tron-cut) 0;
+    corner-shape: bevel;
+  }
+} }
 /* Focus inside the cut: an inset outline plus an inner bloom, both inside
    the clip so they can't be cut away. */
+html[data-theme="tron"] .toggle-btn:has(input:focus-visible) { outline-offset: -5px; }
 html[data-theme="tron"] :is(.btn, .panel, .modal, .card):focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: -5px;
   box-shadow: inset 0 0 12px var(--focus);
 }
+
+/* No round shapes: rings, dots and markers core draws round go square. */
+html[data-theme="tron"] :is(.spinner, .indicator, .carousel-nav > a) { border-radius: 0; }
+html[data-theme="tron"] :is(.avatar[data-status], .presence-status)::after,
+html[data-theme="tron"] .notification.is-unread::before { border-radius: 0; }
+/* Separate rules: an unsupported pseudo-element drops its whole rule. */
+html[data-theme="tron"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+html[data-theme="tron"] .carousel::scroll-button(*) { border-radius: 0; }
+html[data-theme="tron"] .icon { stroke-linecap: square; stroke-linejoin: miter; }
+/* Checkboxes are lit square frames holding a square node when checked;
+   radios are the same frame turned to a diamond. */
+html[data-theme="tron"] :is(.checkbox, .radio) {
+  appearance: none;
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 6px rgba(10, 240, 255, 0.4);
+  display: inline-grid;
+  place-content: center;
+}
+html[data-theme="tron"] .radio { rotate: 45deg; scale: 0.85; }
+html[data-theme="tron"] :is(.checkbox, .radio)::before {
+  content: "";
+  inline-size: 0.5em;
+  block-size: 0.5em;
+}
+html[data-theme="tron"] :is(.checkbox, .radio):checked::before { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+html[data-theme="tron"] .checkbox:indeterminate::before { block-size: 2px; background: var(--accent); }
+html[data-theme="tron"] :is(.checkbox, .radio):disabled { opacity: 0.45; }
 
 html[data-theme="tron"] .btn-primary { --btn-bg: rgba(10, 240, 255, 0.1); --btn-fg: var(--accent-text); }
 /* Danger and success trace their edge in their own colour like primary,

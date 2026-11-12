@@ -16,29 +16,44 @@ looks *drawn in light* rather than painted.
    filled, non-glowing surface reads as off.
 2. **Cut corners, never rounded ones.** `--radius: 0` plus `clip-path`
    corner cuts on buttons and panels, with the diagonal drawn in light so the
-   frame never breaks. Switches, slider thumbs, chips, avatars, icon buttons
-   and comment pins are square too. The chamfer is the signature.
+   frame never breaks. Switches, slider thumbs, chips, avatars, icon buttons,
+   comment pins, status dots, lamps, spinners, carousel dots and checkboxes
+   are square too (radios are a square turned to a diamond). The chamfer is
+   the signature.
 3. **Cyan builds, orange opposes.** `--accent` cyan is the system;
    `--accent-2` orange is the adversary — reserved for danger and
    warning. Never use orange decoratively.
 4. **The grid is always present.** A 2.5rem cyan line-grid at 6% underlies
    everything.
 5. **Wide tracking, uppercase.** Headings and the brand in Michroma (a wide
-   squared face) at `0.18em` — display type from a title sequence. Body in
-   Titillium Web.
+   squared face) at `0.18em` — display type from a title sequence. On
+   phones (≤480px) tracking drops to `0.08em` and h1/h2 shrink so a heading
+   doesn't break one word per line. Code inside a heading stays literal (no
+   caps, no tracking). Body in Titillium Web; readouts in Share Tech Mono.
 
 ## Signature details
 
-- Buttons, panels, cards, modals and menus share one chamfer polygon (18px,
-  10px for buttons and nested surfaces, 7px for small buttons). Two
-  background layers trace each diagonal in the component's border colour.
-- Glow is inset on chamfered surfaces, because `clip-path` cuts away
-  anything painted outside the box. Keyboard focus is drawn inside the cut:
-  a 2px outline inset 5px plus an inner bloom.
+- Buttons, panels, cards, modals, menus, toggle buttons, segmented
+  controls, alerts and toasts share one chamfer (18px; 10px for buttons,
+  toggles, segmented controls and nested surfaces; 7px for small buttons,
+  alerts and toasts). Where `corner-shape: bevel` is supported it is a real
+  bevelled border; elsewhere a `clip-path` polygon with two background
+  layers tracing each diagonal in the component's border colour.
+- Surfaces are light-lines: a second 1px inner ring makes the edge read
+  2px lit, with an inner glow and, above phone width, a 10px outer bloom.
+  The bloom shows only with `corner-shape`, because `clip-path` cuts it
+  away; phones keep the clip-path chamfer and inset glow, since the bloom
+  on every surface drops frames while scrolling on a mid-range phone. Keyboard focus is drawn inside the cut: a 2px
+  outline inset 5px plus an inner bloom.
+- Alerts and toasts carry a lit 0.2rem bar down the start edge in their
+  status colour.
 - Active and destructive states trace rather than fill: danger and success
-  buttons, toggles, active chips and selected labels are outlined in their
-  colour over a faint tint.
-- The slider track is a 3px lit line with a glowing square thumb.
+  buttons, toggles (a danger toggle that is on included), active chips and
+  selected labels are outlined in their colour over a faint tint.
+- Checkboxes are lit square frames holding a square node when checked.
+- The slider track is a 3px lit line with a white-hot square thumb; the h1
+  glow has a white-hot core under the cyan.
+- Numeric readouts (`.stat-value`) glow faintly in Share Tech Mono.
 - Your own chat messages are framed in white light. Charts use one orange
   (warning) and white for the fifth series, so no two series share a colour.
 - The top bar casts a 12px cyan bloom downward.
@@ -66,8 +81,9 @@ Eurostile, the reference face, is not web-available. Michroma (vendored,
 SIL OFL) stands in for the extended display cut; Titillium Web (vendored)
 carries body text.
 
-Chamfered surfaces can't cast an outer glow: `clip-path` clips box-shadow
-and any filter on the same element. The glow is inset instead.
+On phones, and in browsers without `corner-shape`, chamfered surfaces can't cast an outer
+glow: `clip-path` clips box-shadow and any filter on the same element, so
+only the inset glow shows there.
 
 ## Tell-tales of an inauthentic result
 
@@ -87,7 +103,9 @@ layout at **L1**.
 
 ## Icons
 
-`icons.svg` redraws the whole core set (178/178) as lines drawn in light:
+`icons.svg` redraws the 178 original core icons as lines drawn in light.
+Icons added to core later fall back to the generic set, drawn with square
+caps and mitred joins so they sit closer to the redrawn ones:
 
 - 24×24 grid, 2px stroke, square caps, mitred joins.
 - Every box is chamfered top-left and bottom-right like the theme's
