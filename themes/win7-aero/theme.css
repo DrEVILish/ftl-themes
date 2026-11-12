@@ -131,7 +131,7 @@ html[data-theme="win7-aero"] {
 
 /* Outside the window (QA sidebars, gutters) the page is the light --bg the
    text tokens are built for; the Harmony desktop lives on --app-bg. */
-html[data-theme="win7-aero"] { background: var(--bg); }
+html[data-theme="win7-aero"] { background: color-mix(in srgb, var(--bg) 35%, #ffffff); }
 
 html[data-theme="win7-aero"] h1,
 html[data-theme="win7-aero"] h2,
@@ -156,6 +156,10 @@ html[data-theme="win7-aero"] .dropdown {
 html[data-theme="win7-aero"] .app-main {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  /* The blur already isolates the client area; saying so keeps a menu
+     that overflows it under the status strip for tools (axe) that do
+     not count backdrop-filter as a stacking context. */
+  isolation: isolate;
 }
 
 /* The default button: the same gloss, marked by Win7's cyan-blue frame and
@@ -287,11 +291,12 @@ html[data-theme="win7-aero"] {
      --w7-frame into a tinted glass border down both sides (the bar and
      status strip are the top and bottom of the frame). */
   --app-main-bg:
-    linear-gradient(rgb(255 255 255 / 0.94), rgb(255 255 255 / 0.94)) var(--w7-frame) 0 / calc(100% - 2 * var(--w7-frame)) 100% no-repeat,
+    linear-gradient(rgb(255 255 255 / 0.94), rgb(255 255 255 / 0.94)) var(--w7-side) 0 / calc(100% - 2 * var(--w7-side)) 100% no-repeat,
     linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 40%, rgb(255 255 255 / 0.5)), color-mix(in srgb, var(--aero-tint) 50%, rgb(255 255 255 / 0.4)));
-  --app-main-padding: 1rem calc(1rem + var(--w7-frame));
-  --app-main-padding-mobile: var(--space-s) calc(var(--space-s) + var(--w7-frame));
-  --app-main-padding-tablet: var(--space-m) calc(var(--space-m) + var(--w7-frame));
+  --w7-side: var(--w7-frame);
+  --app-main-padding: 1rem calc(1rem + var(--w7-side));
+  --app-main-padding-mobile: var(--space-s) calc(var(--space-s) + var(--w7-side));
+  --app-main-padding-tablet: var(--space-m) calc(var(--space-m) + var(--w7-side));
   --app-status-bg: linear-gradient(180deg, color-mix(in srgb, var(--aero-tint) 36%, rgb(255 255 255 / 0.55)), color-mix(in srgb, var(--aero-tint) 45%, rgb(255 255 255 / 0.5)));
   --app-status-fg: #1a1a1a;
   --app-status-radius: 0 0 8px 8px;
@@ -362,6 +367,11 @@ html[data-theme="win7-aero"] .app-status { border-top: 0; }
  * top edge instead, as a maximised window's do. */
 @media (max-width: 900px) {
   html[data-theme="win7-aero"] .app-bar { padding-right: 1rem; padding-top: calc(20px + 0.35rem); }
+}
+/* A phone's window is maximised, and a maximised Win7 window has no side
+   frame: the client area runs edge to edge between bar and status strip. */
+@media (max-width: 480px) {
+  html[data-theme="win7-aero"] { --w7-side: 0px; }
 }
 
 /* XL gutters: the Harmony desktop either side of the window. Two soft
@@ -626,6 +636,13 @@ html[data-theme="win7-aero"] {
   --skeleton-bg: #e3ebf5;
   --avatar-bg: #dfe9f5;
   --dropzone-bg-active: #e3ebf5;
+  /* The 13px desktop root (inherited from Luna's 8pt scale) made the
+     smallest spacing steps ~3px; text needs 4px+ clear of a box edge. */
+  --space-3xs: max(0.125rem, 2px);
+  --space-2xs: max(0.25rem, 5px);
+  /* Segmented toggles: Win7 command-button padding, so a five-way group
+     fits a phone row without the labels touching their edges. */
+  --toggle-btn-padding: calc(0.3em * var(--density)) calc(0.6em * var(--density));
   --toast-bg: linear-gradient(180deg, #ffffff, #e4ecf7);
   --card-border: #b9cde5;
   --card-bg: #ffffff;
@@ -642,6 +659,7 @@ html[data-theme="win7-aero"] {
 }
 html[data-theme="win7-aero"] .toolbar { border-bottom-color: #c5d5e8; }
 html[data-theme="win7-aero"] .table th { padding-block: max(5px, var(--cell-pad-y, calc(0.5em * var(--density)))); }
+html[data-theme="win7-aero"] .table :is(td.is-editing, tr.is-editing > td) > .field-error { padding-block: 4px 5px; }
 
 /* Captions: a full-width glass strip across the top of each panel, text
    padded in from its edges — not Luna's group-box label on the frame. */
