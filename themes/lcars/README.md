@@ -25,7 +25,7 @@ plain **LCARS** — the orange-led palette. Select the others with `data-variant
 |---|---|---|
 | *(none)* | LCARS | Orange-led candy: orange, lavender, peach, tan. |
 | `voyager` | Voyager / DS9 | Gold-tan `#cc9966` structure with blue-violet `#9999cc`/`#6688cc` and brick `#cc6666`. |
-| `picard` | Picard (2399) | Cold blue `#5588ee` structure, ice-blue text `#ddeeff`, red `#ee5555`/orange `#ff8844` accents. |
+| `picard` | Picard (2399) | Sampled from `picard/graph-dial-dataTable.jpg`: slate/steel structure `#8c9ab4`/`#b9c4d6`/`#7a8aa8` (shell frame, elbows, table head), cyan `#4fb3f6` for active/selected only, red-orange `#e8553f` highlight, ice-blue text `#dde6f2`. |
 
 Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
 
@@ -47,9 +47,14 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
    `--density: 1.15`. A cramped LCARS is a wrong LCARS.
 6. **Type is tall, condensed, uppercase.** Antonio stands in for the
    original's Swiss 911/Helvetica Compressed, and sets *everything*, body
-   copy included.
+   copy included — in upper case, prose, table cells, menus and buttons
+   too. Only what the user types (inputs, textareas) and code keep their
+   own case.
 7. **Two text colours, three sizes.** Normal text is tan (`#ffcc99`), the
-   highlight orange (`--accent`) — nothing else, never white. Type comes
+   highlight orange (`--accent`), never white. Two on-screen exceptions:
+   a frame's title takes the frame's own colour (as on the ship displays),
+   and periwinkle marks information text (trend deltas, ARMED/CONNECTED,
+   message times). Type comes
    in three sizes only: main title (2.4rem), sub header (1.25rem), normal
    data (0.95rem); only printed ruler numerals on scales are exempt.
 
@@ -62,7 +67,8 @@ Every fill keeps black text at 4.5:1 or better (lowest: `#cc6666` 5.66:1).
 | `--lcars-lavender` / `-periwinkle` / `-peach` / `-tan` | `#cc99cc` `#9999ff` `#ff9966` `#ffcc99` | With `--accent` `#ff9900`, the five structural colours: orange = active/real-time, lavender = idle controls, periwinkle = information, peach and tan = frame (tan is also the text colour). `--lcars-sky`, `-rose` and `-gold` survive only as aliases into these five, so no sixth hue appears. `--danger` is the one alert colour. |
 | `--surface` | `#000000` | Panels have no fill; they are candy elbow frames on the black substrate. |
 | `--text` / `--muted` | `#ffcc99` / `#ffcc99` | One normal text colour; the highlight is `--accent`. |
-| `--radius` | `1.4rem` | Large by default — everything wants to be a pill. |
+| `--radius` | `0` | Blocks are square; only caps are round, and pill components (buttons, tabs, badges, keys) say so through their own tokens. |
+| `--lcars-frame` / `--lcars-title` | `var(--accent)` | Shell elbows, first panel frame and screen title. The Picard era repaints them slate / ice-blue so cyan stays for selection. |
 | `--on-accent` | `#000000` | Black text on candy fills. LCARS never sets light text on a colour block. |
 | `--density` | `1.15` | Deliberately loose. |
 
@@ -78,9 +84,11 @@ this catalog could verify against.
   candy leg down the left that sweeps round a curved elbow into a bar
   across the top (two borders; the inner curve falls out of the outer
   radius minus the border widths). A panel's `.panel-header` is pulled up
-  into that bar and set black, flush right — the on-screen section-title
-  position. Frame colours rotate orange → lavender → peach → periwinkle by
-  position.
+  into that bar at the left, in a black break cut out of it, the text in
+  the frame's colour — the on-screen section-title position. The title
+  wins the bar's room over the decoration up to the bar's end cap; every
+  panel, card and modal top bar ends in that separate pill cap. Frame
+  colours rotate orange → lavender → peach → periwinkle by position.
 
 - **Meters** are MSD-panel gauges — black tubes with a lavender tick ruler, filled from the bottom — banded periwinkle → orange → alert red rather than
   green/amber/red. A traffic-light meter instantly reads as a modern audio
@@ -90,6 +98,25 @@ this catalog could verify against.
   solid orange elbow (`0 1.4rem 1.4rem 0`), not an outline. On this theme
   the primary action is a *block*, consistent with everything else.
 - **Lamps** are rounded rectangles, not circles: LCARS has few true circles.
+  Icon buttons likewise are capped blocks (`999px 0.3rem 0.3rem 999px`),
+  ghost ones included (lavender, black glyph); only glyphs sitting in a
+  panel's title break stay bare. A lit lamp is full candy and steady; an
+  off one is the unlit dim lavender (`--surface-2`).
+- **No green.** `--success` is periwinkle and charts draw in the candy set
+  (orange, periwinkle, lavender, peach, tan); badges are solid candy blocks
+  with black text. Red is kept for danger/alert only; a falling sparkline
+  is peach.
+- **Black menus.** Dropdowns, context menus, popovers and the dropzone are
+  black framed by a 0.6rem lavender leg; only text fields keep a dark well.
+  File chips and sticky header bars take the same leg; card lists are black
+  blocks with a leg in the state colour (lavender, orange featured,
+  periwinkle success). `--surface-2` is unlit lavender, not navy-grey, so
+  skeletons, off tracks and placeholders read as dark candy blocks.
+  `--border` is transparent, so no grey hairline survives anywhere.
+- **Sliders** are a 0.5rem lavender bar with an orange block thumb, drawn
+  in the content box of core's `--tap-min` hit area.
+- **Desktop windows** carry MIN/MAX/CLOSE as small candy keys after the
+  title (lavender, peach, orange).
 
 ### Icons
 
@@ -216,7 +243,9 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
    a bottom bar with its own elbow. Panels, cards and modals now close
    along the bottom too.
 5. **No strokes.** LCARS has no outlines or hairlines, only fills. Inputs
-   are dark wells with a candy pill cap, the log/switches/toggles lose
+   are dark wells with a 0.8rem candy cap on the left end (lavender;
+   red when invalid, periwinkle when valid, orange in a table cell being
+   edited — the cap carries the state, never a stroke), the log/switches/toggles lose
    their outlines, table rules and hairlines are gone, strips are filled
    blocks.
 6. **Labels bottom-right.** Button labels now sit in the bottom-right
@@ -224,7 +253,31 @@ Checked against the TNG wallpaper frame and the Sovereign-class display in
 
 Known remaining difference: original rails label *every* block with a
 code; the shell rail is one empty element with two pseudo-elements, so
-only its top two blocks carry codes.
+only its top two blocks carry codes. The leg below them repeats a run of
+varied blocks — 7rem tan, 4rem tan, 10rem lavender — split by 0.3rem
+black gaps, so a tall page doesn't read as a column of equal slabs.
+
+## Polish round 2
+
+- **Alerts and toasts** keep core's variant colour on their leg: info
+  orange, success periwinkle, warning tan, danger red.
+- **Settings rows** (`.field-row`) hang off a short lavender leg on
+  black; **segmented controls** are touching lavender blocks (active
+  orange) capped only at the two ends, like the tabs.
+- **Checkboxes and radios** are flat: a black square (or disc) in a
+  lavender ring, lit orange with a black mark when on.
+- **Side nav columns** (`.nav-rail`, the inbox folders) are blocks flat
+  against the frame, capped on the free end, label bottom-right, count
+  as a code at the left.
+- **Window keys** (MIN lavender, MAX peach, CLOSE orange) render on any
+  window header, not only `.desktop-window`.
+- **Three sizes**: stacked-table labels, legends, group titles, preference
+  hints and connection labels are set at the data size; placeholders are
+  upper case.
+- **Picard** frames, elbows, the screen title and the table head are
+  slate / ice-blue (`--lcars-frame`, `--lcars-title`); cyan is kept for
+  active and selected states only.
+- A bare-text panel title ellipsizes instead of being cut mid-letter.
 
 ## Reference rules pass (against `references/lcars/RESEARCH.md`)
 
