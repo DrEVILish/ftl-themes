@@ -56,7 +56,9 @@ html[data-theme="msdos"] {
   --taskbar-font-size: 1rem;
   --border: #ffffff;
   --hairline: #5555ff;
-  --text: #ffffff;
+  /* Running text is VGA light grey, as DOS setup and EDIT drew it; bright
+     white is kept for emphasis (titles, strong, the key column). */
+  --text: #aaaaaa;
   --muted: #aaaaaa;
   --accent: #00aaaa;
   --accent-2: #55ffff;
@@ -175,6 +177,46 @@ html[data-theme="msdos"] {
   --tab-bg-active: #00aaaa;
   --tab-fg-active: #000000;
   --tab-underline-active: #00aaaa;
+  /* The DOS setup progress bar: a yellow block run in a white box. Meters
+     keep their own green/yellow/red ramp. */
+  --progress-fill: #ffff55;
+  --progress-border: #ffffff;
+  /* Presence is a half-cell block standing off the avatar's corner, so it
+     never covers the initials. */
+  --presence-dot-size: 0.5rem;
+  /* Phone home screen and dock: flat reverse-video cells, no squircle,
+     gloss or shadow (a flat image layer hides core's gradient). */
+  --home-tile-radius: 0;
+  --home-tile-shadow: none;
+  --home-glyph: #000000;
+  --home-label-size: 1rem;
+  /* Three 7rem columns: a 12-letter name fits one 16px line. */
+  --home-cell-min: 6.5rem;
+  --home-dot: #aaaaaa;
+  --home-dot-active: #55ffff;
+  --dock-tile-radius: 0;
+  --dock-tile-shadow: none;
+  --dock-glyph: #000000;
+  --dock-radius: 0;
+  --dock-shadow: none;
+}
+/* Emphasis is bright white over the grey body. */
+html[data-theme="msdos"] :is(strong, b, .stat-value, .table td:first-of-type:not(:has(.checkbox, .radio)), .table td:has(.checkbox, .radio) + td) { color: #ffffff; }
+html[data-theme="msdos"] .modal :is(strong, b) { color: inherit; }
+/* Set on the tile itself so --_tile resolves per app, not at the root. */
+html[data-theme="msdos"] .desktop .icon {
+  --home-tile: linear-gradient(var(--_tile, var(--accent)), var(--_tile, var(--accent)));
+  --dock-tile: var(--home-tile);
+}
+html[data-theme="msdos"] .avatar[data-status]::after { inset-block-end: -0.35rem; inset-inline-end: -0.35rem; }
+/* An attached button sits flush in its group: no shadow over the next line. */
+html[data-theme="msdos"] .input-group > .btn { box-shadow: none; }
+/* Core hard-codes round page dots; a selected tile keeps its black glyph. */
+@container style(--_shell: home) {
+  html[data-theme="msdos"] .desktop-pages > span { border-radius: 0; }
+  html[data-theme="msdos"] .desktop-icon .icon { --desktop-icon-glyph-selected: #000000; }
+  /* Names wrap at words only: a 9px cell never splits "Neighborhood". */
+  html[data-theme="msdos"] .desktop-icon span { padding-inline: 0; overflow-wrap: normal; hyphens: manual; }
 }
 
 html[data-theme="msdos"] .input,
@@ -243,7 +285,7 @@ html[data-theme="msdos"] .modal .btn:not(.btn-primary):not(.btn-danger) { --btn-
    chips) keep white ink; rows and menus sit on the grey in black. */
 html[data-theme="msdos"] .modal :is(.panel, .card, .drawer, .window-pane) {
   --on-surface: #ffffff;
-  --text: #ffffff;
+  --text: #aaaaaa;
   --muted: #aaaaaa;
   --danger-text: #ff7e7e;
   --success-text: var(--success);
@@ -444,7 +486,8 @@ html[data-theme="msdos"] .app-bar .nav-item { padding: 0.1em 1ch; }
    blocks, 8 cells each. Two layers of the same monospaced string: ::before
    paints the cyan blocks and the black labels, ::after only the numbers
    (labels blanked with spaces) in grey on top, cell for cell. */
-html[data-theme="msdos"] .app-status { position: relative; padding-top: 1.6rem; }
+html[data-theme="msdos"] .app-status { position: relative; }
+html[data-theme="msdos"] .app-status:not(.desktop-bar) { padding-top: 1.6rem; }
 html[data-theme="msdos"] .app-status::before,
 html[data-theme="msdos"] .app-status::after {
   position: absolute;
@@ -458,14 +501,14 @@ html[data-theme="msdos"] .app-status::after {
   max-width: calc(100% - 1rem);
 }
 html[data-theme="msdos"] .app-status::before {
-  content: "1Help   2Menu   3View   4Edit   5Copy   6RenMov 7Mkdir  8Delete 9PullDn 10Quit ";
+  content: "1Help   2Menu   3View   4Edit   5Copy   6RenMov 7Mkdir  8Delete 9PullDn 10Quit " / "";
   color: #000000;
   background:
     linear-gradient(90deg, #000 0 2ch, #00aaaa 2ch 7.5ch, #000 7.5ch) 72ch 0 / 8ch 100% no-repeat,
     repeating-linear-gradient(90deg, #000 0 1ch, #00aaaa 1ch 7.5ch, #000 7.5ch 8ch) 0 0 / 72ch 100% no-repeat;
 }
 html[data-theme="msdos"] .app-status::after {
-  content: "1       2       3       4       5       6       7       8       9       10     ";
+  content: "1       2       3       4       5       6       7       8       9       10     " / "";
   color: #aaaaaa;
 }
 /* From the desktop tier the ten keys share the strip's full width, as
@@ -481,20 +524,17 @@ html[data-theme="msdos"] .app-status::after {
     tab-size: 10cqi;
   }
   html[data-theme="msdos"] .app-status::before {
-    content: "1Help\9 2Menu\9 3View\9 4Edit\9 5Copy\9 6RenMov\9 7Mkdir\9 8Delete\9 9PullDn\9 10Quit";
+    content: "1Help\9 2Menu\9 3View\9 4Edit\9 5Copy\9 6RenMov\9 7Mkdir\9 8Delete\9 9PullDn\9 10Quit" / "";
     background:
       linear-gradient(90deg, #000 0 2ch, transparent 2ch) 100% 0 / 10% 100% no-repeat,
       repeating-linear-gradient(90deg, #000 0 1ch, #00aaaa 1ch calc(10% - 1ch), #000 calc(10% - 1ch) 10%);
   }
-  html[data-theme="msdos"] .app-status::after { content: "1\9 2\9 3\9 4\9 5\9 6\9 7\9 8\9 9\9 10"; }
+  html[data-theme="msdos"] .app-status::after { content: "1\9 2\9 3\9 4\9 5\9 6\9 7\9 8\9 9\9 10" / ""; }
 }
-/* A phone desktop (dock or home screen) lifts the taskbar tray into
-   the menu bar: no F-key row there (it landed over the tray). */
-@container style(--_shell: dock) or style(--_shell: home) {
-  html[data-theme="msdos"] .desktop-bar { padding-top: 0; }
-  html[data-theme="msdos"] .desktop-bar::before,
-  html[data-theme="msdos"] .desktop-bar::after { content: none; }
-}
+/* The desktop's Start taskbar is its own status strip: no Norton F-key
+   row stacked over it. */
+html[data-theme="msdos"] .desktop-bar::before,
+html[data-theme="msdos"] .desktop-bar::after { content: none; }
 
 /* XL gutters (v5, PLAN.md §3): the Turbo Vision desktop. Beyond the
    capped shell the blue screen carries the CP437 light-shade fill (░)
@@ -628,7 +668,8 @@ html[data-theme="msdos"] :is(small, th, .input, .select, .textarea, td, label, .
   .pagination-item, .list-item-meta, .figure-caption, figcaption, .log-time, .command-hint, .chart-tooltip, .input-addon,
   .avatar, .message-meta > *, .attachment-size, .window-status, .empty-state-hint, .panel-header, .app-status, h2, h3, h4, h5, h6,
   .menubar, .menubar *, .log, .log *, .connection, .legend, .chart-legend, .accordion-trigger, .segmented-item, .typing, .scrollspy-link,
-  .field-group-title, .thread-divider, .desktop-icon span, .tree *, .donut, .price-period, .readout-unit) { font-size: 1rem; }
+  .field-group-title, .thread-divider, .desktop-icon span, .tree *, .donut, .price-period, .readout-unit,
+  .carousel-nav, .carousel-nav *, .schedule, .schedule *, .sticky-top, .meter-bank span) { font-size: 1rem; }
 html[data-theme="msdos"] :is(.stat-value, .price) { font-size: 2rem; }
 html[data-theme="msdos"] .donut :is(strong, .donut-value) { font-size: 1em; }
 html[data-theme="msdos"] .readout { --readout-size: 1rem; }

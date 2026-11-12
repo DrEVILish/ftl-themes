@@ -29,12 +29,15 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
    square cells; checkboxes and radios are `[X]` and `(•)` text;
    spinners are the stepped `| / - \` text cursor.
 6. **One weight.** The VGA font has no bold, so faux bold is switched off
-   (`font-synthesis-weight: none`); emphasis is colour.
+   (`font-synthesis-weight: none`); emphasis is colour: running text is
+   VGA light grey `#aaaaaa`, as on the DOS setup screens, and bright white
+   marks emphasis (`strong`, stat figures, a table's key column).
 7. **One cell size.** The 9x16 glyphs are drawn at 16px (h1 and stat
    figures at 32px), never at a fractional size that smears the pixels;
    labels, hints, badges, table heads, buttons, menubars, logs, legends,
-   chart text, tree rows, desktop icon labels, readouts and price units
-   are all 16px (a large readout or price is 32px).
+   chart text, tree rows, desktop icon labels, readouts, price units,
+   carousel arrows and page numbers, schedule chips, meter labels and the
+   sticky header are all 16px (a large readout or price is 32px).
 
 ## Signature details
 
@@ -56,6 +59,13 @@ DOS text mode used them — as the two "bright" colours in an otherwise flat
   yellow primary block with the button's hard shadow.
 - Desktop windows have no title icon: the `[■]` close box sits at the
   left of the title bar, as in DOS dialogs.
+- Progress bars are the DOS 5 setup bar: a yellow block run in a white
+  box. Meters keep their green/yellow/red ramp.
+- The phone home screen and dock are flat reverse-video cells (each app's
+  VGA colour, black glyph): no squircle, gloss, shadow or round page
+  dots, and 16px names that wrap only between words.
+- Presence is a half-cell block standing off the avatar's corner, clear of
+  the initials. A button attached in an `.input-group` drops its shadow.
 - Tables draw cyan box-drawing column rules (│) and no row hairlines.
 - A dialog's title is cut into its inner double line, centred on a grey
   patch, as DOS and Norton dialogs drew it.
@@ -93,6 +103,9 @@ no arcs anywhere, like a text-mode character cell: circles become squares,
 curves become stepped or 45 degree runs (the cloud and moon are stepped
 outlines, reused by cloud-bolt, cloud-off and moon-stars); dots are 2x2
 stroked cells; nothing is filled. Colour is `currentColor` only.
+Extended icon families outside the core set (coins, clocks, message
+bubbles, hearts, cloud variants) still fall back to the shared rounded
+outline set.
 
 ## Typography
 
@@ -105,7 +118,7 @@ The palette is the standard 16-colour VGA text palette (blue `#0000aa`, cyan `#0
 - **Cyan on blue:** `--accent` `#00aaaa` on `#0000aa` is 4.64:1 (passes AA by a hair). The Norton cursor bar puts black on cyan, 7.33:1.
 - **Yellow on blue:** `#ffff55` is 12.46:1; light cyan `#55ffff` is 10.84:1.
 - **Cyan as text:** the dim cyan `#00aaaa` is only 4.64:1 on the blue, so links, `--accent-text` (code keywords) and outlined-button labels use light cyan `#55ffff`; badges are solid cells with black ink (black on cyan 7.33:1). Inside a reverse-video panel title tab every word is black on cyan (VGA greys and brights are 1.2-2.2:1 there), and sheets and the command palette take the grey dialog's black ink.
-- **Grey on blue:** `--muted` `#aaaaaa` is 5.72:1 on `#0000aa` and 9.04:1 on `--surface-2`, which is VGA black `#000000` (hover cells, code chips, tracks), not an off-palette brighter blue.
+- **Grey on blue:** `--text` and `--muted` `#aaaaaa` are 5.72:1 on `#0000aa` and 9.04:1 on `--surface-2`, which is VGA black `#000000` (hover cells, code chips, tracks), not an off-palette brighter blue.
 - **Disabled buttons** are VGA dark grey `#555555` on black, below 4.5:1 on purpose: disabled controls are exempt, and that is how DOS greyed them.
 - **The one deviation:** real light red `#ff5555` is only 4.23:1 on the blue, so text uses `--danger-text` `#ff7e7e` (5.40:1) and the raw hex is fill-only.
 
@@ -148,6 +161,8 @@ layout at **L1**.
   two overlaid monospaced pseudo-element strings. From the desktop tier
   the ten cells divide the strip's full width evenly (tab stops at
   `10cqi`), as Norton's spanned all 80 columns; below it the keys run at
-  8 cells each and clip.
+  8 cells each and clip. The row is decorative (empty alt text, so screen
+  readers skip it) and is left off the desktop page, whose Start taskbar
+  is the status strip.
 - **Font:** the real IBM VGA 9x16 text-mode glyphs (Px437, CC BY-SA 4.0).
 
