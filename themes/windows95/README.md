@@ -33,9 +33,12 @@ poster.
 ## Signature details
 
 - Modal headers take the solid navy `#000080` title bar with white bold text (measured flat on `dialog-font.png`; the navy→blue gradient is Windows 98).
-- The content well is *sunken* (`#808080 #ffffff #ffffff #808080` plus an
-  inner black line); the status strip is *raised*. The shell itself obeys
-  the 3D language, not just the controls.
+- The shell is one window: a grey frame (`#c0c0c0` then `#ffffff` top and
+  left, `#000000` then `#808080` bottom and right, measured on
+  `dialog-font.png`) holds the caption, the content well and the status
+  bar with 2px of face between them and no desktop showing through. The
+  well is *sunken* (`#808080 #ffffff #ffffff #808080` plus an inner black
+  line); the status strip is *raised*.
 - Tables are Explorer's details view: raised push-button column headers
   (regular weight) over a white well with light horizontal rules only,
   no vertical body grid; selection is navy.
@@ -55,6 +58,8 @@ poster.
   box inside core's `--tap-min` hit area, and an 11x21 raised grey pointer.
 - Filter chips, `.toggle-btn` and `.segmented` items are toolbar push
   buttons: raised, and pressed (sunken, white/grey 50% dither) while on.
+  A pressed danger toggle (`.toggle-btn.is-danger`) sinks onto the same
+  dither with a `#800000` label, never a maroon slab.
   Switches, which 95 never had, are a sunken white well holding a raised
   grey block; the well fills navy when on.
 - No blended state tints: the bulk-selection bar is the plain face in a
@@ -102,9 +107,11 @@ icon set. Style rules:
   simplification the real set used at 16×16/32×32.
 - `currentColor` only, so icons follow text colour and every state —
   except the shell icons (`icon-device-desktop`, `icon-folder`,
-  `icon-trash`, `icon-globe`, `icon-file-text`, `icon-network`), which are
-  95's colour desktop icons in the 16-colour VGA palette (yellow folder,
-  teal-screened computer, wire bin, blue/green globe) with a 1px black
+  `icon-trash`, `icon-globe`, `icon-file-text`, `icon-network`,
+  `icon-hard-drive`, `icon-disc`, `icon-print`, `icon-save`), which are
+  95's colour icons in the 16-colour VGA palette (yellow folder,
+  teal-screened computer, wire bin, blue/green globe, grey drive with a
+  green lamp, silver CD, grey printer, navy floppy) with a 1px black
   outline and no stroke-width token.
 - Shared geometry: from "Round 2" on, the shapes are the same as
   `winamp-classic`, `winxp-luna` and `wmp11`; only the rendering differs.
@@ -114,17 +121,19 @@ icon set. Style rules:
 
 ## Layout
 
-The app shell becomes a **desktop window**: the teal backdrop shows at the
-edges, a 1.6rem solid navy title bar sits on top, the content is a sunken
-well, and the status bar is raised. Switching to this theme visibly boxes
+The app shell becomes a **desktop window**: the teal backdrop shows in a
+0.25rem margin round one grey window frame, which holds a 1.6rem solid navy
+title bar, the sunken content well and the raised status bar. Switching to this theme visibly boxes
 the app up.
 
 ## Known compromise
 
 MS Sans Serif is a bitmap font browsers do not render, so the stack
 starts with "Microsoft Sans Serif" (its TrueType cut, on every Windows),
-then Tahoma, then Arial. Off Windows (Linux render boxes have only
-DejaVu) a wide humanist fallback renders. No openly-licensed pixel face is vendored yet (that needs a new
+then Arial and its metric clones (Liberation Sans, Arimo), then Tahoma.
+Microsoft Sans Serif shares Arial's metrics, so off Windows Liberation
+Sans renders; Tahoma comes last because it is a wider 98/2000 face and is
+often aliased to DejaVu Sans on Linux. No openly-licensed pixel face is vendored yet (that needs a new
 file in `assets/fonts/`, outside this theme's folder).
 
 ## Tell-tales of an inauthentic result
@@ -138,14 +147,14 @@ file in `assets/fonts/`, outside this theme's folder).
 
 - **No radius.** `--radius: 0`, `--badge-radius: 0`, `--progress-radius: 0`. Not "just 2px".
 - **No drop shadow, no blur, no glow.** Depth is the two-tone bevel only.
-- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in tabs, the taskbar and Start menu, badges and striped rows, where no 95 capture has been measured yet; readonly and mirror fields, setting rows, skeletons, sliders and switches use the `#c0c0c0` face, and an answered Q&A row is the face with a 4px `#008000` bar.
+- **No tints or in-between greys.** Stay on `#c0c0c0` / `#808080` / white / black plus navy and teal. `#dfdfdf` (98's "3D light") survives only in the taskbar and Start menu and badges, where no 95 capture has been measured yet; striped rows are white like an unstriped 95 list, and readonly and mirror fields, setting rows, skeletons, sliders and switches use the `#c0c0c0` face, and an answered Q&A row is the face with a 4px `#008000` bar.
 - **No flat 1px border in place of the bevel**, and no bevel that fails to invert on `:active`. The bevel is two 1px lines per side (a 1px border plus a 1px inset shadow), not a 2px border: raised is `#ffffff` then face on the top-left and `#808080` then `#000000` on the bottom-right; sunken is `#808080` then `#000000`, and `#c0c0c0` then `#ffffff`. Measured on `references/windows95/dialog-font.png`; see its `RESEARCH.md`.
 - **No transitions or fades.** Windows 95 repainted instantly.
 - **No modern-weight, anti-aliased title-bar type**, and no Segoe UI in place of Tahoma/MS Sans Serif when a system copy is available.
 
 ## Typography
 
-`--font` is `"Microsoft Sans Serif", "MS Sans Serif", Tahoma, Arial, "Liberation Sans", Arimo, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font; touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on Windows Microsoft Sans Serif renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
+`--font` is `"Microsoft Sans Serif", "MS Sans Serif", Arial, "Liberation Sans", Arimo, Tahoma, sans-serif`; `--font-mono` is `"Courier New", Consolas, monospace`. **Nothing is vendored** — all system fonts. Arial sits before the generic so a machine without either 95 face gets a narrow neutral sans, not a wide humanist default. With a fine pointer the root is 81.25% (13px), close to 95's 8pt system font, and table headers, badges and field hints stop at 11px (8pt); touch keeps the browser size. The authentic face (MS Sans Serif, a bitmap font) is not a web font, so on Windows Microsoft Sans Serif renders, a close relative rather than the real thing. No capture in `references/windows95/` was measured for face; the claim rests on RESEARCH-level knowledge. No pixel face is vendored yet.
 
 ## Contrast honesty
 
@@ -177,7 +186,10 @@ layout at **L1**.
   inline SVG; the active nav item is a grey raised block.
 - **Panels are child windows:** every `.panel-header` is a navy caption
   bar (with light tints for muted and state text on it).
-- **Tabs** are raised 95 tabs; the selected one lifts and joins its page.
+- **Tabs** are raised 95 tabs with the corners cut one pixel on the
+  diagonal and a 1px edge (`#ffffff`, then `#000000`/`#808080` on the
+  right); the selected one stands 2px taller, overlaps its neighbours and
+  covers the sheet's top line. The dotted focus box sits inside the tab.
 - **Progress** is the segmented navy block bar in a sunken well.
 - **Status bar** items sit in sunken fields.
 - **Mixing console:** sunken bay, raised strips, keys that sink and light
