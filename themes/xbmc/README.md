@@ -1,56 +1,79 @@
 # XBMC
 
-> The original Xbox Media Center: a near-black home-theatre shell, a wide horizontal top menu, and a glowing blue underline marking whichever item is selected — driven by a remote, not a mouse.
+> XBMC in its Confluence skin (Kodi 14): a deep blue bokeh backdrop, a black glass menu strip of bold grey caps, and the focused label turning white over a glowing blue underline — driven by a remote, not a mouse.
 
-**Requires: L1** — sets `--app-*` layout properties (the wide top menu bar); recolours correctly at L0 but the horizontal-menu-plus-underline composition needs the app shell.
+**Requires: L1** — sets `--app-*` layout properties (the menu strip and bottom bar); recolours correctly at L0 but the strip-plus-underline composition needs the app shell.
 
 ## What this theme is trying to achieve
 
 XBMC (later renamed Kodi) ran a horizontal top-level menu — Pictures,
-Music, Videos, Weather, Programs, System — navigated with a d-pad/remote
-from a couch, not a mouse from a desk. Its brand colour was always a
-clean, saturated blue, carried through as a glow rather than a filled
-highlight, against a near-black "home theatre" backdrop that vignettes
-toward the edges.
+Music, Videos, Programs, System — navigated with a d-pad/remote from a
+couch. The theme commits to the Confluence era (`xbmc-confluence-14.jpg`):
+the blue lives in the out-of-focus backdrop, the chrome over it is neutral
+black glass with grey labels, and `#1e90ff` appears only as light — focus,
+hover glow and the selection underline.
 
 ## Core values
 
-1. **The underline is the selection state, not a filled pill.** A glowing
-   blue line beneath the active label, never a solid background block —
-   see `.nav-item.is-active::after`.
-2. **Near-black, not pure black, and vignetted.** The frame should read
-   as a dim room, darkening toward the edges via the radial-gradient page
-   background, not a flat single colour.
-3. **One blue, used as light, not as fill.** `--accent` (`#1e90ff`)
-   is a glow colour — box-shadow and border-highlight — more often than a
-   background fill.
+1. **The focused label is white over a glowing underline, never a filled
+   block.** Strip items are grey bold caps; the active one turns white
+   with a blue underline glowing beneath it
+   (`:is(.nav-item, .menubar > li > button).is-active::after`), a slim 2px
+   line with a 6px glow so the white label carries the focus. Toggle
+   buttons and segmented items select with a lighter glass and a blue edge,
+   not a blue fill.
+2. **Blue backdrop, neutral chrome.** The page is a blue radial
+   (`#065080` → `#033a70` → navy `#001542` at the edges) under a field of
+   saturated royal-blue bokeh discs and soft diagonal light rays; surfaces are neutral
+   `#121314` / `#1d1f22` glass, not blue-tinted.
+3. **One blue, used as light.** `--accent` (`#1e90ff`) is a glow colour;
+   only primary buttons still fill with it.
 
 ## Signature details
 
-- The glowing underline on the active top-menu item
-  (`box-shadow: 0 0 8px rgba(30,144,255,0.8)`).
-- The vignette page background (radial-gradient darkening from top-centre
-  outward).
-- Thin, quiet chrome: 1px borders, small border-radius, no gloss or
-  gradient buttons — a remote-driven UI has no hover state to sell with
-  gloss.
+- The backdrop: a fixed, viewport-sized `body::before` layer
+  (`contain: strict`, so scrolling never repaints it) holding 15 crisp
+  `radial-gradient` discs of 1.5-10rem — royal blue `rgba(20,80,215,.42)`
+  and `rgba(25,95,225,.32)`, overlapping in a cluster upper right, one small
+  bright cyan `rgba(70,190,240,.5)` — each with a 1px `rgba(90,170,250,.5)`
+  rim, plus two 60° light rays (`rgba(80,170,255,.06-.08)`), over the blue
+  radial. Phones draw six discs instead.
+- The menu strip: a tall 4rem band,
+  `--app-bar-bg: linear-gradient(180deg, #232323, #141414 50%, #050505)`
+  with a 1px `rgba(255,255,255,.18)` top hairline; items in large
+  (up to 1.25rem) uppercase bold `#8a9096` with a `0 1px 0 #000` emboss, in
+  even centred cells `min(9.5rem, 11vw)` wide, split by 1px faint separators.
+- The active item's underline: 2px `--accent`,
+  `box-shadow: 0 0 6px 1px rgba(30,144,255,.8)`.
+- The submenu shelf: `.segmented` is a black gradient whose bottom corners
+  are cut on a 1.25rem diagonal by `clip-path` (the 'Dateien | Addons'
+  trapezoid), 1.5rem end padding, dark separators, and regular-weight
+  sentence-case `#c4cad0` items, as 'Dateien' is.
+- The bottom bar: `.app-status` is a tall grey glass band (at least 3.5rem,
+  `linear-gradient(180deg, #3a3a3a, #1a1a1a)`, 1rem padding) with a light
+  top hairline; its icon buttons are framed glass squares (1px `#000`,
+  inset top highlight).
+- Flat rectangles: square slider thumb and switch knobs, a grey `#70767e`
+  slider track; icon buttons, badges/chips and avatars take `--radius`
+  (no circles or pills).
 
 ## Tell-tales of an inauthentic result
 
-- A filled/solid highlight block on the active nav item instead of an
+- A filled blue block on the active nav item instead of a white label and
   underline glow.
-- A flat, unvignetted background — the "home theatre" read depends on the
-  edges going darker than the centre.
-- Rounded, glossy buttons — this UI's affordances are flat rectangles with
-  a border, not skeuomorphic buttons.
+- Blue-tinted panels — the chrome is neutral black glass; the blue is the
+  backdrop.
+- A flat, unvignetted backdrop.
+- Thin or light-weight menu type — Confluence labels are bold caps.
+- Round, glossy buttons or knobs.
 
 ## Don'ts
 
-- **No filled highlight block on the active menu item**; the selection is a glowing underline.
+- **No filled highlight block on the active menu item.**
+- **No blue-tinted surfaces**; keep chrome neutral.
 - **No flat, unvignetted backdrop.**
-- **No gloss, gradient buttons or large radii.** Flat rectangles with a border.
+- **No large radii or circles** on affordances.
 - **No second brand colour.** One blue, used as light.
-- **No saturated pure black**; the shell is a blue-tinted near-black.
 
 ## Icons
 
@@ -63,13 +86,37 @@ the 1px glowing-underline accent bar. Colour is always `currentColor`.
 
 ## Typography
 
-`--font` is `"Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`. **System fonts, nothing vendored.** The captures show wide-tracked bold/condensed caps on the menu (`xbmc-confluence-14.jpg`: grey all-caps blade labels; the 2007 skins: bold sans labels) (the theme sets some menu text at weight 300 instead). No face was identified from the captures, so the stack is a neutral sans, not a match.
+`--font` is `"Titillium Web", "Arial Narrow", "Segoe UI", sans-serif`;
+`--font-mono` is `Consolas, monospace`. Titillium Web (OFL, already vendored
+in `assets/fonts/`) stands in for Confluence's bold, slightly condensed
+sans; the skin's own face is not named. Headings are 700. Strip items and
+tabs use a wider bold for Confluence's broad menu caps —
+`Roboto, "Segoe UI", "DejaVu Sans"`, then Titillium — uppercase 700, no
+extra tracking. Segmented items (the submenu shelf) stay Titillium 400 in
+sentence case.
 
 ## Contrast honesty
 
-- **Blue on near-black is comfortable:** `--accent` `#1e90ff` is 5.98:1 on `--bg` `#0a0e14` and 5.61:1 on `--surface`; `--on-accent` `#04101f` is 5.90:1 on it. Accent as text (`--accent-text` `#2d98ff`) is lifted a touch so it clears 4.5:1 on its own 20% badge tint.
-- **Muted** `#93a7c7` is 7.43:1 on `--surface`; text `#dbe6f5` is 14.4:1.
-- **Reference vs shipped colour (uncertain).** `RESEARCH.md` says "dark blue-grey" blades; the two 2007-skin captures show neutral charcoal/black brushed panels with a lime-green selection LED, and only `xbmc-confluence-14.jpg` shows the blue (a blue bokeh backdrop with a black horizontal strip). So `#1e90ff` follows the Kodi/Confluence-era brand blue for the selection glow, not the 2007 blade colours, and the blue-tinted `#0a0e14` is a compromise between them. The hexes were not sampled.
+- `--accent` `#1e90ff` is a glow on black glass; `--on-accent` `#04101f`
+  carries text on the few accent fills. `--accent-text` `#2d98ff` clears
+  4.5:1 on its own 20% badge tint.
+- Text `#e8e8e8` and muted `#c4cad0` sit on neutral `#121314` / `#1d1f22`;
+  muted is lifted above the reference's darker grey so it also clears 4.5:1
+  on the backdrop's brightest blue. Links use `--accent-2` `#7fc4ff` for
+  the same reason.
+- The backdrop centre is held at `#065080`; the capture's centre is
+  brighter (`#0365a2`), which would drop muted text over it below 4.5:1.
+  The hue (~205) matches; the value is the trade-off.
+- The discs are royal blue (hue ~220), which is vivid but low in luminance,
+  so muted text over a disc still clears 4.5:1. The capture's bright cyan
+  discs (`#057ac9`, `#38bbd9`) would not; only one small cyan disc is kept,
+  and text that happens to cross it can fall below 4.5:1.
+- Strip labels `#8a9096` clear 4.5:1 on the strip's lightest stop; the
+  brand is white, as the KODI wordmark is.
+- The backdrop and strip hexes are sampled from `xbmc-confluence-14.jpg`
+  (strip `#191919`-`#2c2c2c`, backdrop `#0365a2` → `#043e6c` → `#031637`);
+  the strip label is lifted from the capture's `#4d4d4d`-`#515151` to
+  `#8a9096`, the darkest grey that keeps 4.5:1.
 
 ## Reference status
 
@@ -79,19 +126,23 @@ the 1px glowing-underline accent bar. Colour is always `currentColor`.
 - `xbmc-musik.jpg` — a German 2007 skin variant with the same blades plus system-information and now-playing widgets. Backs the widget layout and dark glass panels.
 - `xbmc-confluence-14.jpg` — Kodi 14 Confluence: a horizontal caps menu strip with a sub-menu drop under a blue bokeh backdrop. Backs the horizontal top menu, on which the theme's layout is based.
 
-Not backed: the theme's glowing underline itself (none of the captures shows one — selection is a green LED or a lighter blade) and the specific hexes. (An earlier note here saying no `references/xbmc/` folder exists was wrong.)
+Not backed: the glowing blue underline itself (Confluence marks focus by whitening the label; the 2007 skins use a green LED) — it is kept as the theme's remote-focus cue, under the white label the capture does show. The 2007 blade/LED language is not used. (An earlier note here saying no `references/xbmc/` folder exists was wrong.)
 
 ## v5 layout
 
 - **Tiers.** Desktop and tablet are the same shell (there is no rail to
-  drop). On mobile the category tiles keep their centred label and blue
-  edge but lose the big home-screen padding, and the top menu tightens.
+  drop). On mobile the category tiles lose the big home-screen padding and
+  their outer blur shadow, cards and panels go opaque (cheaper scrolling),
+  the strip's caps step down to 0.8rem so the strip stays one row (a plain
+  `.nav` in the bar scrolls sideways instead of wrapping), the bar's tool
+  cluster stays one row and scrolls sideways, and the taskbar
+  tray keeps a small inline-end margin off the status-bar edge. A number field in a
+  table cell keeps at least `--tap-min` of width.
 - **Nesting.** The home-screen tile look (big padding, centred label,
-  glowing blue bottom edge, hover lift) is for top-level cards. A card
-  nested in a panel, card, dialog or drawer steps down to normal padding,
-  left-aligned text and a 1px accent edge; a card holding a table, form or
-  list stays left-aligned. The hover lift only applies on devices that can
-  hover.
-- **XL gutter art.** The home screen's category tiles, out of focus: a dim
-  grid of flat tiles, each with a faint blue bottom edge, within about
-  1.2:1 of `--bg`. Still.
+  black glass with a light top edge, hover glow and lift) is for top-level
+  cards. A card nested in a panel, card, dialog or drawer steps down to
+  normal padding, left-aligned text and a hairline frame; a card holding a
+  table, form, list or KPI (`.stat-*`, `.sparkline`) stays left-aligned. The hover lift only applies on
+  devices that can hover.
+- **XL gutter art.** More of the out-of-focus backdrop: faint bokeh discs,
+  within about 1.2:1 of `--bg`. Still.
