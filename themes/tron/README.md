@@ -1,6 +1,6 @@
 # TRON
 
-> Electric cyan line-grid on black — glowing, angular edges.
+> Ice-cyan line-grid on black — glowing, angular edges.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
@@ -12,17 +12,26 @@ looks *drawn in light* rather than painted.
 
 ## Core values
 
-1. **Light is the material.** Edges glow; surfaces stay near-black. A
-   filled, non-glowing surface reads as off.
+1. **Light is the material.** Edges glow in the film's pale ice cyan
+   (`#6cecfa`) with a white-hot core where the light is brightest; the void
+   is near-black and panels are a faint blue-grey glass (`#08121c`,
+   `#0c1824`). A filled, non-glowing surface reads as off.
 2. **Cut corners, never rounded ones.** `--radius: 0` plus `clip-path`
    corner cuts on buttons and panels, with the diagonal drawn in light so the
    frame never breaks. Switches, slider thumbs, chips, avatars, icon buttons,
    comment pins, status dots, lamps, spinners, carousel dots and checkboxes
-   are square too (radios are a square turned to a diamond). The chamfer is
+   are square too (radios are a square turned to a diamond), as are the
+   inline saving ring in table cells, timeline and LED nodes, peak lamps,
+   colour dots and presence nodes. Dials, gauges, progress rings and
+   donuts stay round: they are instruments. SVG line-chart points can't be
+   squared, so only the active or focused point keeps a node and the line
+   reads as a light trail. The chamfer is
    the signature.
 3. **Cyan builds, orange opposes.** `--accent` cyan is the system;
    `--accent-2` orange is the adversary — reserved for danger and
-   warning. Never use orange decoratively. Success is not a new hue but
+   warning. Danger is a hotter orange-red (`#ff5a1f`) in the same family,
+   not a third hue; it differs from warning by heat and by the lit bar.
+   Never use orange decoratively. Success is not a new hue but
    brighter, whiter light (`#c8fff6`); the film has no green.
 4. **The grid is always present.** A 2.5rem cyan line-grid at 6% underlies
    everything.
@@ -35,8 +44,9 @@ looks *drawn in light* rather than painted.
 ## Signature details
 
 - Buttons, panels, cards, modals, menus, toggle buttons, segmented
-  controls, alerts, toasts and framed lists share one chamfer (18px; 10px
-  for buttons, toggles, segmented controls, framed lists and nested surfaces; 7px for small buttons,
+  controls, alerts, toasts, framed lists and a mail-folder rail beside a
+  list share one chamfer (18px; 10px for buttons, toggles, segmented
+  controls, framed lists, folder rails and nested surfaces; 7px for small buttons,
   alerts and toasts). Where `corner-shape: bevel` is supported it is a real
   bevelled border; elsewhere a `clip-path` polygon with two background
   layers tracing each diagonal in the component's border colour.
@@ -52,9 +62,12 @@ looks *drawn in light* rather than painted.
   status colour.
 - Active and destructive states trace rather than fill: danger and success
   buttons, toggles (a danger toggle that is on included), active chips and
-  selected labels are outlined in their colour over a faint tint.
+  selected labels are outlined in their colour over a faint tint. Filter
+  chips (`.badge-button`) are a dim 35% ring at rest and a full lit ring
+  with a bloom when active.
 - Checkboxes are lit square frames holding a square node when checked.
-  Avatars are a 1px lit frame over a faint tint; skeleton loaders are
+  Avatars are a 1px lit frame over a faint tint, with a small square
+  presence node on the frame corner, clear of the initials; skeleton loaders are
   traced outlines, not filled slabs.
 - The slider track (and the vertical fader's column) is a 3px lit line
   inside a --tap-min hit area, with a white-hot square thumb; the h1
@@ -95,8 +108,11 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Known compromise
 
-Eurostile, the reference face, is not web-available. Stat labels and table
-heads use Titillium at 600 rather than Michroma, whose width overflows
+Eurostile, the reference face, is not web-available; the display stack
+names `Eurostile Extended` and `Microgramma` first so a machine that has
+them uses the true face, then vendored Michroma, whose bowls are softer
+than the film's hard-cornered caps. Stat labels and table heads use
+Titillium Bold (700, vendored) rather than Michroma, whose width overflows
 narrow table columns at label size. Michroma (vendored,
 SIL OFL) stands in for the extended display cut; Titillium Web (vendored)
 carries body text.
@@ -127,6 +143,8 @@ layout at **L1**.
 A further 227 later core icons built on a full circle (circle-caret-*,
 coin-*, camera-*, music-*, the small "search/cancel/cog" badges, …) keep
 the generic drawing with every full circle swapped for an octagon. The
+message-circle-* and heart-* families take the redrawn octagonal bubble
+and 45° heart, opened where their badge sits. The
 rest fall back to the generic set, drawn with square caps and mitred
 joins so they sit closer to the redrawn ones:
 
