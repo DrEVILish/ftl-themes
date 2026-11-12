@@ -81,7 +81,7 @@ is the catalog's extreme-density stress test as much as a period theme.
 - Diverging heatmaps code net change: green `#2ecc40` up, red `#ff3333`
   down, `#141414` flat, never the yellow function-key colour.
 - Table cells get vertical rules between columns (`border-right`) and no
-  visible horizontal row rules (`--table-rule: transparent`):
+  visible horizontal row rules (`--table-rule: #0a0a0a`, 1.1:1 on black):
   the terminal's column grid, not boxed cells.
 - The status strip text is cyan, not amber, including its right-hand meta — a second information channel,
   distinct at a glance from the primary data color. The colored
@@ -105,10 +105,10 @@ is the catalog's extreme-density stress test as much as a period theme.
   black arrow, like the reference's "Standard" select (about 10:1). In
   the app bar it is a small field at cap height (0.85rem text, thin
   padding) so the green key row leads the bar.
-- Data rows are tight (`0.125rem` block padding, line-height 1.15, about
-  21-22px per row like the reference's index grid; a cell holding a
-  `--tap-min` control drops its padding so the control alone sets the
-  row) and
+- Data rows are tight (`--cell-pad-y: 0.25rem`, the 4px text-to-edge
+  floor, line-height 1.15: about 25px per row, against the reference's
+  21px, which the edge floor and the 24px target minimum rule out; a row
+  checkbox overlaps the cell padding so the control alone sets the row) and
   panels inset only `0.25rem`, so grids run nearly edge to edge under the
   red section bar.
 - Section bars, window titles and list-row names are regular weight
