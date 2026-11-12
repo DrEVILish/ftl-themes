@@ -23,10 +23,11 @@ frame.
    rounded application button at the left (with a small Windows flag),
    then tabs (nav items and menu-bar items alike) with 13px (9pt) labels
    and tight padding, still --tap-min tall; the selected tab is
-   white, framed in `#b6bccc` and joined to a 24px ribbon band hung under
-   the strip, white fading to `#e3ebf6` (one `--app-main-bg` gradient at
-   the top of main, which pads 24px more to clear it, so it takes no
-   layout and never covers a menu). A ribbon always has
+   white, framed in `#b6bccc` and joined to a 44px ribbon body hung under
+   the strip, white fading to `#e3ebf6` and split into groups by pale
+   `#d5dde8` dividers (one `--app-main-bg` background at the top of main,
+   which pads 44px more to clear it, so it takes no layout and never
+   covers a menu). A ribbon always has
    one tab open: with no current nav item the first is drawn open.
    Toolbars are ribbon groups: the white-to-`#eef3fa` band over a
    `#b6bccc` rule.
@@ -62,11 +63,23 @@ frame.
 
 - The **aurora** (`--live-aurora`): pale-blue light pools with a white
   ribbon of light sweeping across the top, behind heroes, the XL gutters
-  and any page without the shell. Inside the shell the work area is
-  white, with only a faint wash of it under the ribbon (gone by 240px).
+  and any page without the shell, and as the desktop page's wallpaper.
+  Inside the shell it is a band under the ribbon body (a white ribbon of
+  light over pale blue, gone by ~240px, never darker than about `#dceaf8`
+  so muted text keeps 4.5:1). A sign-in card (one holding a password or
+  code field) carries it across its head, Mail's "Add your email
+  accounts" dialog, with a green Light title.
+- Menus are Live 2011's: white with a pale `#f1f4f8` icon gutter, labels
+  past it, items hot-tracked in the framed pale-blue selection. Dropdown
+  lists are plain white with the same hot-track.
+- Labels are sentence case: stat labels, field-group titles and footer
+  headings drop core's tracked capitals. Table headers are Explorer's:
+  regular weight on a white-to-`#f1f4f8` header with `#e3e8ef` column
+  separators.
 - Windows (desktop windows and any modal with caption buttons) have
   Windows 7 captions: a plain dark title (grey when inactive),
-  grey-gloss minimise/maximise beside the wide red close.
+  grey-gloss minimise/maximise joined to each other and to the wide red
+  close, sharing their frames.
 - Pane headers are the pale-blue gradient bars of Mail's "Quick views"
   and Gallery's folder pane, titled in regular-weight Live blue `#1e5aa0`.
 - Full-colour icons where Live had them: in folder panes, trees, lists,
@@ -86,7 +99,7 @@ it), white work area, pale status bar. No rail.
 
 Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (the shell is capped at 1800px and centred, with gutter art beside it).
 
-- **Phone (≤480) and tablet (481–900):** core puts the application button and the actions on the first line and the ribbon tabs on a scrolling second line. The application button is now a block with `max-width: max-content`, so its label ends in an ellipsis instead of being cut off, and it no longer stretches across the bar. The green h1 steps down a little on phones.
+- **Phone (≤480) and tablet (481–900):** core puts the application button and the actions on the first line and the ribbon tabs on a scrolling second line. The application button becomes Photo Gallery's square blue menu button: the flag alone (the label stays in the accessibility tree). The green h1 steps down a little on phones.
 - **XL gutters (≥1801):** the aurora carries on beside the app window, as behind a Live sign-in screen: pale blue light down each side with two white ribbons of light sweeping through it. Still.
 
 ## Typography
@@ -107,8 +120,10 @@ platform.
   which clear 4.5:1 on the badge tints and code diff rows.
 - `--muted` `#5b6878` is 5.6:1 on white.
 - The application button's white label is checked against its own blue
-  gradient (`--nav-brand-bg`), deepened from the reference's brighter
-  `#4f8fd9` top so it clears 4.5:1 end to end.
+  gradient (`--nav-brand-bg`, `#3574c7` to `#1d5cb0` split at 50%),
+  deeper than the reference's brighter `#4f8fd9` top so it clears 4.5:1
+  end to end; the gloss comes from inset white highlights and a dark
+  1px text shadow instead.
 
 ## Icons
 

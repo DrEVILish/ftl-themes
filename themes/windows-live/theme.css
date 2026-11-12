@@ -101,7 +101,7 @@ html[data-theme="windows-live"] {
   --modal-shadow: 0 10px 30px rgba(30, 60, 100, 0.3);
 
   /* Explorer-style lists: pale blue selection in a #99d1ff frame. */
-  --table-head-bg: #ffffff;
+  --table-head-bg: linear-gradient(180deg, #ffffff, #f1f4f8);
   --table-head-fg: #4c607a;
   --table-head-transform: none;
   --table-head-tracking: normal;
@@ -140,9 +140,16 @@ html[data-theme="windows-live"] {
   --tooltip-radius: 3px;
   --popover-bg: #ffffff;
   --popover-border: #8db2e3;
-  --dropdown-bg: #f0f0f0;
-  --context-menu-bg: #f0f0f0;
+  /* Live 2011 menus: white, a pale icon gutter down the left behind its
+     hairline, items hot-tracked in Explorer's pale blue. */
+  --dropdown-bg: #ffffff;
+  --dropdown-border: #979797;
+  --dropdown-item-bg-hover: var(--live-select);
+  --dropdown-item-fg-hover: var(--text);
+  --context-menu-bg: linear-gradient(90deg, #f1f4f8 29px, #e3e8ef 29px 30px, #ffffff 30px);
   --context-menu-border: #979797;
+  --context-menu-item-bg-hover: var(--live-select);
+  --context-menu-item-fg-hover: var(--text);
   --badge-radius: 3px;
   --overlay-bg: rgba(20, 50, 90, 0.35);
   --indicator-fg: var(--accent);
@@ -344,9 +351,7 @@ html[data-theme="windows-live"] .tab.is-active { position: relative; bottom: -1p
  * (only a faint wash of the aurora under the ribbon) and the pale status
  * bar ("1 message(s), 0 unread") below. */
 html[data-theme="windows-live"] {
-  --app-bg:
-    radial-gradient(ellipse 60% 220px at 100% 0, rgba(150, 200, 245, 0.3), transparent 70%),
-    linear-gradient(180deg, #eef5fc 0, #ffffff 240px);
+  --app-bg: #ffffff;
   --app-padding: 0;
   --app-gap: 0;
   --app-bar-bg: linear-gradient(180deg, #ffffff 0, #f1f5fb 60%, #e3ebf6 100%);
@@ -355,14 +360,26 @@ html[data-theme="windows-live"] {
   --app-bar-rule-width: 1px;
   --app-bar-height: 2.2rem;
   --app-bar-padding: 0.35rem 0.75rem 0;
-  /* Main clears the ribbon band hung under the tab strip (below). */
-  --app-main-padding: calc(1.25rem + 24px) 1.25rem 1.25rem;
-  --app-main-padding-tablet: calc(var(--space-m) + 24px) var(--space-m) var(--space-m);
-  --app-main-padding-mobile: calc(var(--space-s) + 24px) var(--space-s) var(--space-s);
-  /* The ribbon body: a 24px band under the tab strip that the selected tab
-     flows into, white fading to #e3ebf6 and closed by the #b6bccc rule.
-     One background on main, so it takes no layout and never covers a menu. */
-  --app-main-bg: linear-gradient(180deg, #ffffff 0, #ffffff 8px, #f1f5fb 17px, #e3ebf6 23px, #b6bccc 23px, #b6bccc 24px, rgba(30, 60, 100, 0.12) 24px, transparent 29px) top / 100% 29px no-repeat;
+  /* Main clears the ribbon body hung under the tab strip (below). */
+  --app-main-padding: calc(1.25rem + 44px) 1.25rem 1.25rem;
+  --app-main-padding-tablet: calc(var(--space-m) + 44px) var(--space-m) var(--space-m);
+  --app-main-padding-mobile: calc(var(--space-s) + 44px) var(--space-s) var(--space-s);
+  /* The ribbon body: a 44px band under the tab strip that the selected tab
+     flows into, white fading to #e3ebf6, split into groups by pale
+     dividers and closed by the #b6bccc rule. Under it the aurora, the Live
+     brand light behind Messenger's sign-in: a pale-blue band with a white
+     ribbon of light, fading out by ~240px and kept pale enough (>= #dceaf8)
+     that muted text on it holds 4.5:1. One background on main, so it takes
+     no layout and never covers a menu. */
+  --app-main-bg:
+    linear-gradient(#d5dde8, #d5dde8) 168px 5px / 1px 33px no-repeat,
+    linear-gradient(#d5dde8, #d5dde8) 300px 5px / 1px 33px no-repeat,
+    linear-gradient(#d5dde8, #d5dde8) 486px 5px / 1px 33px no-repeat,
+    linear-gradient(180deg, #ffffff 0, #ffffff 10px, #f3f7fc 26px, #e3ebf6 43px, #b6bccc 43px, #b6bccc 44px, rgba(30, 60, 100, 0.12) 44px, transparent 49px) top / 100% 49px no-repeat,
+    radial-gradient(ellipse 140% 130px at 25% -40px, transparent 60%, rgba(255, 255, 255, 0.95) 67%, transparent 76%) 0 44px / 100% 200px no-repeat,
+    radial-gradient(ellipse 55% 100% at 90% 0, rgba(140, 195, 245, 0.3), transparent 70%) 0 44px / 100% 200px no-repeat,
+    radial-gradient(ellipse 40% 90% at 0 20%, rgba(150, 200, 245, 0.22), transparent 70%) 0 44px / 100% 200px no-repeat,
+    linear-gradient(180deg, #e6f0fa, rgba(255, 255, 255, 0)) 0 44px / 100% 200px no-repeat;
   --app-status-bg: linear-gradient(180deg, #f6f9fc, #e3eaf3);
   --app-status-fg: #3b4a5c;
   --app-status-rule: #c5d2df;
@@ -373,7 +390,7 @@ html[data-theme="windows-live"] .app-bar {
   --nav-brand-fg: #ffffff;
   /* The brand is the blue application button; the lint measures the
      white label against this, not the pale bar behind it. */
-  --nav-brand-bg: linear-gradient(180deg, #2f6fc2 0, #2563b8 48%, #1a54a3 52%, #2262b5 100%);
+  --nav-brand-bg: linear-gradient(180deg, #3574c7 0, #2f6fc2 48%, #1d5cb0 52%, #2867bb 100%);
   --nav-item-fg: #1e395b;
   --nav-item-fg-active: #1e395b;
   --nav-item-bg-active: #ffffff;
@@ -395,7 +412,8 @@ html[data-theme="windows-live"] .app-bar .nav-brand {
   padding: 0.3rem 0.8rem 0.3rem 0.6rem;
   border-radius: 3px 3px 0 0;
   background: var(--nav-brand-bg);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.55), inset 0 0.6rem 0.5rem -0.4rem rgba(255, 255, 255, 0.25), 0 0 0 1px #164887;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.6), inset 0 0.6rem 0.5rem -0.4rem rgba(255, 255, 255, 0.3), 0 0 0 1px #164887;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
   font-weight: 400;
   font-size: 0.875rem;
   white-space: nowrap;
@@ -521,7 +539,7 @@ html[data-theme="windows-live"] .nav:not(.app-bar .nav) > .nav-brand { font-weig
 /* The page's signature nav patterns paint the current link --accent-text
    on --accent (near 1:1) from unlayered page CSS; re-pointing those two
    tokens on the link makes it Explorer's selection: pale blue, dark text. */
-html[data-theme="windows-live"] .pattern-nav a[aria-current="page"] { --accent: #d9edfe; --accent-text: var(--text); box-shadow: inset 0 0 0 1px #99d1ff; }
+html[data-theme="windows-live"] .pattern-nav a[aria-current="page"] { --accent: #d9edfe; --accent-text: var(--text); --on-accent: var(--text); box-shadow: inset 0 0 0 1px #99d1ff; }
 /* Mail's folder pane: the current folder is the framed pale-blue box. */
 html[data-theme="windows-live"] .nav-rail { --nav-item-bg-active: var(--live-select); --nav-item-fg-active: var(--text); }
 html[data-theme="windows-live"] .nav-rail > .nav-item:is(.is-active, [aria-current]:not([aria-current="false"])) { box-shadow: inset 0 0 0 1px #99d1ff; border-radius: 3px; }
@@ -558,3 +576,50 @@ html[data-theme="windows-live"] .modal-header:has(.btn-min) .btn-close {
   --btn-close-fg-hover: #ffffff;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
+
+/* --- Round-2 polish ------------------------------------------------------ */
+/* The window pattern outside the desktop: minimise and maximise joined to
+   the red close, sharing their 1px frames, as on the desktop page. */
+html[data-theme="windows-live"] .modal:not(.desktop-window > .modal) > .modal-header:has(.btn-min) { gap: 0; }
+html[data-theme="windows-live"] .modal:not(.desktop-window > .modal) > .modal-header > :is(.btn-min, .btn-max) { margin-inline-end: -1px; }
+
+/* Live labels are sentence-case Segoe UI 9pt grey, never tracked caps. */
+html[data-theme="windows-live"] :is(.stat-label, .field-group-title, .site-footer nav h2) { text-transform: none; letter-spacing: normal; }
+html[data-theme="windows-live"] .stat-label { font-size: 0.85em; }
+html[data-theme="windows-live"] .field-group-title { font-size: 0.9em; font-weight: 400; }
+
+/* Explorer list headers: regular weight, a pale header, thin vertical
+   separators between columns. */
+html[data-theme="windows-live"] .table th { font-weight: 400; font-size: 0.9em; }
+html[data-theme="windows-live"] .table th:not(:last-child) { border-inline-end: 1px solid #e3e8ef; }
+
+/* An in-table date field takes its content width, so a number field in the
+   same row keeps a usable target on narrow screens. */
+html[data-theme="windows-live"] .table td .input[type="date"] { inline-size: 9.5em; min-inline-size: 0; }
+html[data-theme="windows-live"] .table td .input[type="number"] { min-inline-size: 3.5em; }
+
+/* Menu labels start past the icon gutter, as do the separators. */
+html[data-theme="windows-live"] :is(.context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)) { padding-inline-start: 2.1rem; }
+html[data-theme="windows-live"] :is(.context-menu-divider, .context-menu li[role="separator"], .menubar li li[role="separator"]) { margin-inline-start: 1.75rem; }
+/* Menus hot-track as a framed Explorer selection. */
+html[data-theme="windows-live"] :is(.dropdown-item, .context-menu-item, .context-menu li > :is(button, a), .menubar li li > :is(button, a)):is(:hover, :focus-visible) { box-shadow: inset 0 0 0 1px #99d1ff; }
+
+/* A sign-in card is Messenger's / Mail's account dialog: the aurora across
+   its head and a green Segoe UI Light title. */
+html[data-theme="windows-live"] .card:has(input[type="password"], .otp) {
+  --card-bg:
+    radial-gradient(ellipse 120% 70px at 30% -20px, transparent 60%, rgba(255, 255, 255, 0.95) 67%, transparent 76%) 0 0 / 100% 110px no-repeat,
+    radial-gradient(ellipse 60% 100% at 85% 0, rgba(140, 195, 245, 0.35), transparent 70%) 0 0 / 100% 110px no-repeat,
+    linear-gradient(180deg, #e3eefa, #ffffff 110px);
+}
+html[data-theme="windows-live"] .card:has(input[type="password"], .otp) > h2:first-child { color: #2b7a2b; }
+
+/* Touch tiers: the application button is Photo Gallery's square blue menu
+   button, the flag alone; the label stays for assistive tech. */
+@media (max-width: 900px) {
+  html[data-theme="windows-live"] .app-bar .nav-brand { flex: none; font-size: 0; padding: 0.55rem 0.6rem; }
+  html[data-theme="windows-live"] .app-bar .nav-brand::before { margin-right: 0; vertical-align: top; }
+}
+/* The desktop page is a wallpaper, not an app pane: no ribbon body, the
+   aurora instead. */
+html[data-theme="windows-live"] .app-main.desktop-screen { --app-main-bg: var(--live-aurora); }
