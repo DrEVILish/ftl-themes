@@ -18,6 +18,12 @@
   font-weight: 400;
   font-display: swap;
   size-adjust: 96.15%;
+  /* Arial's line box (0.905 / 0.212), so "normal" line-height and every
+     box sized by it match the Arial-metric fallbacks; W95FA's own is a
+     cramped 0.94em. */
+  ascent-override: 90.5%;
+  descent-override: 21.2%;
+  line-gap-override: 0%;
 }
 
 html[data-theme="windows95"] {
@@ -1243,21 +1249,24 @@ html[data-theme="windows95"] .app-bar .btn-icon:not(.is-clear) {
    last. The actions group dissolves so its items wrap one by one. */
 @media (max-width: 480px) {
   html[data-theme="windows95"] .app-bar > .cluster { display: contents; }
-  html[data-theme="windows95"] .app-bar > .nav-brand:has(~ .cluster) { flex: 1 0 auto; max-width: 100%; }
+  html[data-theme="windows95"] .app-bar > .nav-brand { flex: 1 0 auto; max-width: 100%; }
   html[data-theme="windows95"] .app-bar > .cluster > :is(.select, .btn:not(.btn-icon)) { order: 5; }
-  html[data-theme="windows95"] .app-bar > .cluster > .select { flex: 1 1 9rem; min-width: 0; }
+  html[data-theme="windows95"] .app-bar > .cluster > .select,
+  html[data-theme="windows95"] .app-bar > .select.select { flex: 1 1 9rem; min-width: 0; }
 }
 
 /* Property sheet: the selected tab's page is a raised frame (white left,
    #808080 + black right and bottom) that the tab row's white top edge
-   runs into. */
-html[data-theme="windows95"] .tabset > .tab-panel {
-  border: 1px solid;
-  border-top: 0;
-  border-color: #ffffff #000000 #000000 #ffffff;
-  box-shadow: inset -1px -1px 0 #808080;
-  padding-inline: 8px;
-  padding-block-end: 8px;
+   runs into. Phones keep the full width for the page itself. */
+@media (min-width: 481px) {
+  html[data-theme="windows95"] .tabset > .tab-panel {
+    border: 1px solid;
+    border-top: 0;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    box-shadow: inset -1px -1px 0 #808080;
+    padding-inline: 8px;
+    padding-block-end: 8px;
+  }
 }
 
 /* Setting rows are etched group frames like hr and nested panels, not a
@@ -1279,3 +1288,13 @@ html[data-theme="windows95"] .master-detail-pane > .prose {
   border-color: #808080 #ffffff #ffffff #808080;
   box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #c0c0c0;
 }
+/* A linked brand on the caption keeps the 24px target now the menu strip
+   sits right under it. */
+html[data-theme="windows95"] .app-bar > a.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tap-min);
+}
+/* A bare select on the caption sizes to its text and stays on the caption
+   line (core's full-width field wrapped it to a line of its own). */
+html[data-theme="windows95"] .app-bar > .select { inline-size: auto; flex: 0 1 auto; }

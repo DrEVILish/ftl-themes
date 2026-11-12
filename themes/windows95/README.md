@@ -202,7 +202,7 @@ layout at **L1**.
   covers the sheet's top line. The dotted focus box sits inside the tab.
   A `.tabset`'s `.tab-panel` is the property sheet: a raised frame
   (white left, `#808080` + black right and bottom) padded 8px, which the
-  tab row's white top line closes.
+  tab row's white top line closes (tablet and up; phones keep the width).
 - **Wells:** the `.log` console and an inbox reading pane's message body
   are sunken white edit wells; setting rows (`.field-row`) are etched
   group frames; an input-group addon is a plain static label on the face.
