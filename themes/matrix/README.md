@@ -55,8 +55,8 @@ directly rather than an interface built for you.
   bare `aside` and the page-level lines (breadcrumb, h1/h2, lede, a
   control row) also get an 80% black backing, the lines cut to their own
   width with 6px of black round the text, at zero class specificity so a
-  drawer or panel keeps its own fill. Small labels on the rain (desktop
-  icon names, figure and demo captions) get the same black cell. The halo's alpha is
+  drawer or panel keeps its own fill. Desktop icon names on the rain get
+  the same black cell. The halo's alpha is
   computed from the text's own lightness (relative colour from
   `currentColor`), so dark labels on lit fills get none; controls keep
   bloom only.
@@ -78,7 +78,7 @@ directly rather than an interface built for you.
 - Warning is white-hot only in its text: the warning alert's rules and the
   solid warning badge use the brighter green step `#7dff9a`; the soft
   warning badge is a `#0f2a14` cell under a `#7dff9a` rule. A comment's anchored
-  text sits on the same `#0f2a14` cell, `#1d5a2a` when active.
+  text and highlighted `mark` text sit on the same `#0f2a14` cell (an anchor is `#1d5a2a` when active).
 - Checkboxes and radios are drawn as green-ruled cells (phosphor fill and
   black tick when checked); the slider track is the lit rule colour (in Firefox the part up to
   the thumb lights `#00ff41`). The bar chart's highlighted column is a
