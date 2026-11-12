@@ -28,7 +28,7 @@ shell, monospaced readouts, thin cyan rules, and glow used to mark what is
    carries live/active/telemetry. `--accent-2` (blue) carries
    interactive-but-not-live. If both land on the same element, that's a bug.
    So a selected or pressed control (toggle, segment, current page, filter
-   or reaction chip, active tab, open menu item) is a blue-tinted cell
+   or reaction chip, active tab, open menu item, selected desktop icon) is a blue-tinted cell
    (`--accent-2` at 35% over the panel) with a blue edge and `--text`
    label, never a solid cyan slab; solid cyan is kept for the primary
    action and live readouts.
@@ -93,19 +93,26 @@ the two should visibly move the furniture.
 1. **Backdrop.** A fixed radial vignette (ellipse at top, `#0a1a2e` to
    `#020509` at 70%) under a faint cyan 2rem grid (`rgba(47,214,255,0.04)`
    1px lines): the interface reads as a panel in a space, not wallpaper.
+   On touch screens (`pointer: coarse`) it scrolls with the page instead
+   of staying fixed, so phones do not repaint the viewport every frame.
 2. **Corner brackets** on `.panel`, `.modal` and `.transport` (the GO bar):
    14px L-marks, 2px stroke, 0.8 opacity, top-left and bottom-right. They
    are painted as background layers (`--brackets` inside `--panel-bg`,
    `--modal-bg`, `--transport-bg`), not positioned pseudo-elements, so no
    surface gains a `position` and popovers, dropdowns and context menus
    keep anchoring to their true offset parent; they also stay put when a
-   modal scrolls.
+   modal scrolls. Cards (KPI tiles, pricing, slides) set `--card-bg` to a
+   plain surface: they are hairline cells, and the L-marks stay on the
+   instruments. The status bar and `.app-main` are isolated stacking
+   contexts so a menu spilling out of the page never covers the bar's
+   buttons.
 3. **Buttons** are dark blue-cast cells with 0.05em tracking (dropped to
    0 on phones, where the wide mono face needs the room). Icon buttons are
    square like everything else. Primary carries
    `0 0 0.7rem rgba(47,214,255,0.3)`; secondary/outline hover recolours the
-   border to the glow and adds `0 0 8px`; `:disabled` is flat at 0.5
-   opacity with a dashed edge and no shadow (present but off). All via
+   border to the glow and adds `0 0 8px`; `:disabled` is an unlit cell: no
+   fill, `--muted` text and dashed `--muted` edge at 0.7 opacity, no
+   shadow (present but off, never a dimmed primary). All via
    `--btn-*` tokens.
 4. **Inputs** are `#08192b` cells with a `#2a6a9a` edge (3:1 on the field,
    so a field still shows inside a panel); focus recolours the border,
@@ -114,8 +121,12 @@ the two should visibly move the furniture.
    and an accent select bar (`inset 0.35rem`) on active and selected rows.
 6. **Headings** are uppercase: `h1` 1.4em and `h2` 1.05em, 0.12em-tracked
    in `--text`; `h3`/`h4` 0.8em, 0.2em-tracked and `--muted` (panel labels).
-   Headings inside `.prose`/`article` keep their case.
-7. **Glow range inputs**: 4px `#0e3a5c` to cyan gradient track (a vertical
+   Headings inside `.prose`/`article` keep their case. Under 480px the
+   `h3`/`h4` tracking drops to 0.08em so panel labels do not wrap to
+   three lines.
+7. **Glow range inputs**: a dim 4px `#0e3a5c` to `#1d5c8f` rail (an
+   unlit scale: the rail cannot know the value, so the glow lives only
+   on the thumb) (a vertical
    fader ramps bottom to top and keeps the same 4px rail inside its
    full-size hit area), 14px
    near-square `#02050a` thumb with a glow border and glow shadow

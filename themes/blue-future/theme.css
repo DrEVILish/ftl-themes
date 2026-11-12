@@ -76,6 +76,9 @@ html[data-theme="blue-future"] {
     linear-gradient(var(--bracket), var(--bracket)) bottom right / 2px 14px no-repeat;
   --panel-bg: var(--brackets), var(--surface);
   --modal-bg: var(--brackets), var(--surface);
+  /* Cards (KPI tiles, pricing, slides) are plain hairline cells: the
+     L-marks stay on the instruments (panel, modal, transport). */
+  --card-bg: var(--surface);
   --panel-shadow: 0 0 20px rgba(0, 180, 255, 0.08), inset 0 0 30px rgba(0, 180, 255, 0.03);
   --panel-radius: 0.25rem;
 
@@ -140,7 +143,9 @@ html[data-theme="blue-future"] {
   --slider-height: 4px;
   --slider-radius: 2px;
   --slider-border-width: 0;
-  --slider-bg: linear-gradient(90deg, #0e3a5c, var(--accent));
+  /* A dim scale, not a fill: the rail never knows the value, so the glow
+     lives on the thumb and the rail stays the same unlit blue end to end. */
+  --slider-bg: linear-gradient(90deg, #0e3a5c, #1d5c8f);
   --slider-thumb-size: 14px;
   --slider-thumb-radius: 2px;
   --slider-thumb-bg: #02050a;
@@ -173,10 +178,19 @@ html[data-theme="blue-future"] {
   --lamp-off: #0d2b4a;
   --lamp-on: var(--accent);
   --lamp-glow: 0 0 0.5rem rgba(0, 217, 255, 0.7);
+
+  /* A selected desktop icon is a blue-tinted cell, like every other
+     selected state; solid cyan is for live data only. */
+  --desktop-icon-label-bg-selected: color-mix(in srgb, var(--accent-2) 35%, var(--surface));
+  --desktop-icon-label-fg-selected: var(--text);
+}
+html[data-theme="blue-future"] .desktop-icon:has(input:checked) > label > span {
+  box-shadow: inset 0 0 0 1px var(--accent-2);
 }
 
 /* Backdrop: a fixed radial vignette plus a faint 2rem cyan grid, so the
-   panel sits in a space instead of on flat color. */
+   panel sits in a space instead of on flat color. Touch screens scroll it
+   with the page: a fixed root background repaints the viewport each frame. */
 html[data-theme="blue-future"] {
   background-color: var(--bg);
   background-attachment: fixed;
@@ -185,6 +199,9 @@ html[data-theme="blue-future"] {
     linear-gradient(90deg, rgba(47, 214, 255, 0.04) 1px, transparent 1px),
     radial-gradient(ellipse at top, #0a1a2e, #020509 70%);
   background-size: 2rem 2rem, 2rem 2rem, auto;
+}
+@media (pointer: coarse) {
+  html[data-theme="blue-future"] { background-attachment: scroll; }
 }
 
 /* Headings: tracked uppercase throughout. A page title (h1) and a section
@@ -250,13 +267,19 @@ html[data-theme="blue-future"] .btn-tertiary { --bf-tone: var(--accent); --btn-b
 html[data-theme="blue-future"] .btn-danger { --bf-tone: var(--danger); --bf-ink: #ff7a8f; }
 html[data-theme="blue-future"] .btn-success { --bf-tone: var(--success); }
 html[data-theme="blue-future"] .btn-ghost { --btn-shadow-hover: none; }
-/* Disabled: present but off. Half strength with a dashed edge, so the
-   control still reads as a control. */
+/* Disabled: present but off. An unlit cell: no fill, dim text and a dashed
+   dim edge, so it never reads as a dimmed primary. */
 html[data-theme="blue-future"] .btn:disabled,
 html[data-theme="blue-future"] .btn[aria-disabled="true"] {
-  opacity: 0.5;
+  --btn-bg: transparent;
+  --btn-bg-hover: transparent;
+  --btn-fg: var(--muted);
+  --btn-border: var(--muted);
+  --btn-border-hover: var(--muted);
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  opacity: 0.7;
   border-style: dashed;
-  box-shadow: none;
 }
 
 /* Segments and pagination have no border of their own: the selected cell
@@ -278,7 +301,7 @@ html[data-theme="blue-future"] .table tr.is-selected td:first-child {
    same thin rail as a horizontal one. In vertical-lr the physical left/right
    padding is padding-block; the element keeps its full --tap-min width. */
 html[data-theme="blue-future"] .slider.is-vertical {
-  --slider-bg: linear-gradient(0deg, #0e3a5c, var(--accent));
+  --slider-bg: linear-gradient(0deg, #0e3a5c, #1d5c8f);
 }
 html[data-theme="blue-future"] .slider.is-vertical:not(.is-range > .slider) {
   padding-inline: 0;
@@ -417,6 +440,11 @@ html[data-theme="blue-future"] {
   --app-status-bg: rgba(3, 8, 15, 0.94);
   --app-status-rule: var(--border);
 }
+/* The status bar stays above anything spilling out of the page: a menu or
+   submenu open near the bottom of .app-main must not sit on the bar's
+   buttons. Both become stacking contexts at the same level, so the later
+   one in the tree (the bar) paints on top; neither gains a position. */
+html[data-theme="blue-future"] :is(.app-main, .app-status) { isolation: isolate; }
 
 /* Phone: the wide mono face needs its room back. Labels drop the button
    tracking, joined toggles tighten, and the bar's actions stay on one line
@@ -449,6 +477,8 @@ html[data-theme="blue-future"] {
   /* Nav items and the taskbar tray give back padding the mono text needs. */
   html[data-theme="blue-future"] .nav-item { padding-inline: 0.45em; }
   html[data-theme="blue-future"] .taskbar-tray { padding-inline: 0.35em; gap: 0.3em; }
+  /* Panel labels: 0.2em tracking wraps them to three lines here. */
+  html[data-theme="blue-future"] :is(h3, h4) { letter-spacing: 0.08em; }
   /* A shortcut hint means nothing without a keyboard. */
   html[data-theme="blue-future"] .app-bar > .cluster kbd { display: none; }
 }
