@@ -52,9 +52,16 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 
 - The app bar is a large-title navigation bar: a top row of controls with
   the page nav drawn as one iOS 13 segmented control, and the brand below
-  it as a 34px bold large title. It is sticky and frosted.
+  it as a 34px bold large title. It is sticky and frosted. A `.nav` of
+  items carries the grey track itself; loose items in the bar join into
+  one strip with no notches.
+- Horizontal `.tabs` and `.toggle-group`s in content are segmented
+  controls too (grey track, white pill with its shadow, 13px labels,
+  hairlines between unselected neighbours); there is no in-page tab strip
+  or blue-filled segment on iOS 13+.
 - The status strip is a tab bar: 49px, frosted, sticky to the bottom,
-  items spaced evenly in 12px medium text.
+  items spaced evenly in 12px medium text. On phones a taskbar's tray
+  drops to a second line so task labels stay readable.
 - Modals are iOS alerts: 14px corners, frosted, title and body centred,
   buttons spanning the bottom edge with hairline dividers, the preferred
   (primary) one bold, the destructive one red. With window controls the
@@ -65,12 +72,19 @@ Its siblings cover the other two eras: `ios-skeuomorphic` (iOS 6) and
 - Table selection is systemGray5 (`#e5e5ea`; the deeper `#d1d1d6` tap
   flash dropped tinted text under 4.5:1), and the active
   row carries a trailing blue checkmark as well as the leading marker.
+- The `.nav-rail` is Mail's mailbox list: black labels, tint glyphs, the
+  selected row a systemGray5 fill with no leading bar.
+- Sliders have UISlider's blue minimum track: native in Firefox, and in
+  other engines wherever `--value` (0-1) is set on the slider.
 - Buttons follow iOS 15's styles: primary is "filled", secondary is
   "tinted" (a wash of the tint), ghost is "plain" text, the default is
   "gray". A tap dims to 55% opacity instead of moving.
 - `.btn-sm` is a capsule (the App Store "GET" button).
-- Toasts are notification banners with a small coloured app-icon tile.
+- Toasts are notification banners with a small coloured app-icon tile;
+  inline `.alert`s are white cells led by the same tile (no side stripe).
+- Small buttons on a state-washed row sit on a white chip.
 - Badges are capsules; the danger badge is the red notification badge.
+  `.badge-button` filter chips use Subheadline (15px medium).
 - Readouts use thin (300) tabular digits like the Stopwatch; stat values
   use SF Rounded (`ui-rounded`) like iOS 14 widgets.
 - Mixer pieces borrow from the system: faders are Control Center slabs,
@@ -181,8 +195,8 @@ or anything from iOS 7 itself in a resolution worth keeping.
 
 ## v5 layout
 
-- **Tiers.** Phones and tablets (up to 900px): the large title moves up beside the trailing buttons, as the Photos and App Store tabs do (30px, 26px on phones, truncating), and the segmented nav takes its own line and scrolls sideways instead of wrapping into a second row of segments. The bars sit on the `--z-sticky` layer.
-- **Nesting.** Grouped sections are flat by design; nested panels need no step-down rules.
+- **Tiers.** Phones and tablets (up to 900px): the large title moves up beside the trailing buttons, as the Photos and App Store tabs do (30px, 26px on phones, truncating), and the segmented nav takes its own line and scrolls sideways instead of wrapping into a second row of segments. The title keeps at least `min(50%, 12ch)`; loose bar items and a menubar nav move to the last line. Toggle groups keep their labels on one line and scroll. The bars sit on the `--z-sticky` layer.
+- **Nesting.** Grouped sections are flat by design; nested panels need no step-down rules. Field rows inside a panel or card reach the cell's edges, with their text and hairline 1rem in.
 - **XL gutter art (1801px+).** The home screen beside the app: its icon grid reduced to faint squircles (white ones on the dark variant).
 
 ## Adoption
