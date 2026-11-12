@@ -59,7 +59,10 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   cut bottom-right corner whose diagonal is part of the frame.
 - `.btn`: dark red plate, red rule, cut corner with a matching diagonal;
   hover turns border and label cyan with an inner cyan glow. `.btn-primary`
-  is a solid red slab that turns cyan on hover.
+  is the deep red selected plate (`#7c2527`) with a cyan label and red rule,
+  turning cyan on hover; only `.btn-danger` is a hot-red slab.
+- `.modal`: the confirm dialog's translucent red plate (`#431c24`, sampled
+  `#481c22`) with pale `#ffe4e1` body text.
 - `.modal-header > .btn-close` is the game's `[ESC]` key cap, cyan outline;
   minimise and maximise are matching cyan boxes.
 - `kbd` is a cyan outlined key cap, as in the key-hint strip.
@@ -68,8 +71,9 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   corners (drawn over a bulk bar above it).
 - `.switch`: the settings OFF / ON slab pair, 4.5em wide; a red OFF slab
   on the left or a dim cyan ON slab on the right covers half the navy
-  track. `.segmented` and `.toggle-group`: the active choice is the
-  filled red plate; cyan is only hover and focus.
+  track. `.segmented` and `.toggle-group`: each choice is its own plate,
+  4px apart, with a dim red rule, a cut corner and a cyan label (EASY /
+  NORMAL); the active choice is the filled red plate.
 - `.slider`: the value bar, a tall navy track (fills core's `--tap-min`
   box, up to 2rem) in a dim red rule with a 6px cut bottom-right corner,
   all drawn in `--slider-bg`, with a 1.75rem full-height red slab thumb
@@ -77,11 +81,12 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 - `.list`: every row is its own plate, a dim red rule with an 8px cut
   corner, 4px apart; the selected row is the solid red plate. A
   `.nav-rail`'s current row is the same red plate with a red marker.
-- App-bar menu items are the top tab row: SemiBold caps, 0.06em tracking.
+- App-bar menu items are the top tab row: Medium caps at 0.95rem, 0.06em tracking;
+  tabs and side-nav items are Medium too.
 - `.field-group-title` is the game's section header band, the only white
   text: `#e8e6ea` sentence case on `#16111f` over a cyan hairline.
 - The page field is lit from the top: a maroon wash over the top half
-  that falls into a cool `#090b10` lower down, on its own fixed layer
+  that falls into a teal-black `#060f13` lower down, on its own fixed layer
   (`html::after`) so scrolling composites it instead of repainting.
 - Disabled pagination ends and carousel arrows keep a dim red rule and
   never fade below 0.6, so the control still reads.
@@ -91,7 +96,12 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   Share Tech Mono is only for code, logs and samples.
 - On phones the page layer drops its scanlines to stay in the paint budget.
 - `.badge-accent` (NEW, unread counts) is the game's solid yellow tag with
-  dark caps; the plain badge stays a red-tint tag.
+  dark caps; the plain badge stays a red-tint tag. Badges and table heads
+  never drop under 12px.
+- `.alert-info` and plain `.toast` are the teal tutorial pop-up: a
+  `#0d2a2c` body, cyan frame and a 6px `#06e5c3` start slab.
+- Stacked phone tables keep the breach identity: yellow-green cell labels
+  and a 2px `#cfec58` top rule on each card.
 - `.hud-bar`: flat fill with a glow in its own colour and an angled end;
   health red, RAM (mana) cyan, stamina yellow; slots glow in the game's
   rarity colours.

@@ -147,6 +147,7 @@ html[data-theme="cyberpunk-2077"] {
   --toggle-btn-border-on: var(--cp-red);
   --toggle-btn-fg-on: var(--row-selected-fg);
   --toggle-btn-radius: 0;
+  --toggle-btn-fg: var(--cp-cyan);
   --go-bg: rgba(255, 95, 88, 0.12);
   --go-border: var(--cp-red);
   --go-fg: var(--text);
@@ -188,7 +189,8 @@ html[data-theme="cyberpunk-2077"] {
   --card-border-width: 0;
   --card-radius: 0;
   --card-shadow: none;
-  --modal-bg: var(--cp-frame), var(--cp-scanlines), linear-gradient(180deg, rgba(255, 95, 88, 0.14), transparent 7rem), linear-gradient(315deg, transparent calc(var(--cp-cut) * 0.7071), #1d1119 calc(var(--cp-cut) * 0.7071));
+  /* The confirm dialog: a clearly translucent red plate (sampled #481c22). */
+  --modal-bg: var(--cp-frame), var(--cp-scanlines), linear-gradient(180deg, rgba(255, 95, 88, 0.1), transparent), linear-gradient(315deg, transparent calc(var(--cp-cut) * 0.7071), #431c24 calc(var(--cp-cut) * 0.7071));
   --modal-border: transparent;
   --modal-radius: 0;
   --modal-shadow: none;
@@ -217,7 +219,7 @@ html[data-theme="cyberpunk-2077"] {
   --tooltip-border: var(--cp-cyan);
   --tooltip-radius: 0;
   /* Toasts: the cyan tutorial / LEVEL UP plate. */
-  --toast-bg: linear-gradient(90deg, rgba(94, 246, 255, 0.16), rgba(94, 246, 255, 0.05)), #0f1a1f;
+  --toast-bg: linear-gradient(90deg, rgba(6, 229, 195, 0.2), rgba(6, 229, 195, 0.05)), #0d2a2c;
   --toast-fg: #d7fbff;
   --toast-border: var(--cp-cyan);
   --toast-radius: 0;
@@ -277,11 +279,13 @@ html[data-theme="cyberpunk-2077"] {
   --tab-underline-active: var(--cp-cyan);
   --tab-radius: 0;
   /* Segmented: the OFF / ON pair. Off is the red slab, on is cyan. */
-  --segmented-bg: #110d15;
-  --segmented-border: #4a1c22;
+  /* Each choice is its own framed plate with a cyan label (EASY / NORMAL). */
+  --segmented-bg: transparent;
+  --segmented-border-width: 0;
+  --segmented-padding: 0;
   --segmented-radius: 0;
   --segmented-item-radius: 0;
-  --segmented-item-fg: var(--muted);
+  --segmented-item-fg: var(--cp-cyan);
   --segmented-item-bg-active: #8a2a2e;   /* the filled red choice (HARD) */
   --segmented-item-fg-active: #ffe4e1;
   --segmented-item-fg-hover: var(--cp-cyan);
@@ -559,6 +563,7 @@ html[data-theme="cyberpunk-2077"] {
   --window-header-fg-inactive: var(--muted);
   --window-header-filter-inactive: none;
   --desktop-icon-glyph-selected: var(--cp-cyan);
+  --desktop-monitor-radius: 0;
   --rarity-common: #a7a9b0;
   --rarity-uncommon: #3fcf5c;
   --rarity-rare: #3a9bff;
@@ -569,7 +574,7 @@ html[data-theme="cyberpunk-2077"] {
 /* --- Page: a maroon wash over the top half that falls into a cool
    teal-black lower down (the menu is lit from the top), with scanlines. -- */
 html[data-theme="cyberpunk-2077"] {
-  background-color: #090b10;
+  background-color: #060f13;
   font-family: var(--font);
 }
 /* On its own fixed layer so scrolling composites it instead of repainting
@@ -584,7 +589,7 @@ html[data-theme="cyberpunk-2077"]::after {
     var(--cp-scanlines),
     radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.3), transparent 80%),
     linear-gradient(180deg, #24101a, rgba(48, 16, 22, 0.45) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
-    linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
+    linear-gradient(180deg, var(--bg) 40vh, #060f13 85vh);
 }
 /* Phone: the page layer drops its scanlines (paint budget on small GPUs). */
 @media (max-width: 480px) {
@@ -592,7 +597,7 @@ html[data-theme="cyberpunk-2077"]::after {
     background-image:
       radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.3), transparent 80%),
       linear-gradient(180deg, #24101a, rgba(48, 16, 22, 0.45) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
-      linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
+      linear-gradient(180deg, var(--bg) 40vh, #060f13 85vh);
   }
 }
 html[data-theme="cyberpunk-2077"] body { font-weight: 500; letter-spacing: 0.01em; }
@@ -623,7 +628,7 @@ html[data-theme="cyberpunk-2077"] kbd { font-family: var(--font); font-weight: 7
  * Buttons cut their bottom-right corner; the diagonal border is a
  * background-image layer in the button's own border colour. clip-path
  * would eat the focus outline, so focus becomes a drop-shadow (tron). */
-html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go) {
+html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go, .segmented-item) {
   --cp-btn-cut: 9px;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cp-btn-cut)), calc(100% - var(--cp-btn-cut)) 100%, 0 100%);
   background-image: linear-gradient(to top left, transparent calc(50% - 1px), var(--btn-border, var(--cp-line)) calc(50% - 1px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
@@ -632,15 +637,22 @@ html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go) {
   background-repeat: no-repeat;
   background-origin: border-box;
 }
-html[data-theme="cyberpunk-2077"] :is(.btn-sm, .btn-icon) { --cp-btn-cut: 6px; }
+html[data-theme="cyberpunk-2077"] :is(.btn-sm, .btn-icon, .segmented-item) { --cp-btn-cut: 6px; }
+html[data-theme="cyberpunk-2077"] .segmented { gap: 4px; }
+html[data-theme="cyberpunk-2077"] .segmented-item { --btn-border: var(--cp-row-line); border: 1px solid var(--btn-border); }
+html[data-theme="cyberpunk-2077"] .segmented-item.is-active { --btn-border: var(--cp-red); }
+html[data-theme="cyberpunk-2077"] .toggle-group:not(.is-stacked) { gap: 4px; }
+html[data-theme="cyberpunk-2077"] .toggle-group:not(.is-stacked) > .toggle-btn:not(:first-child) { margin-inline-start: 0; }
 /* Rajdhani's small x-height: small caps buttons keep the 13px floor. */
 html[data-theme="cyberpunk-2077"] .btn-sm { font-size: max(0.8em, 0.8125rem); }
-html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go):focus-visible {
+html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go, .segmented-item):focus-visible {
   filter: drop-shadow(0 0 1px var(--focus)) drop-shadow(0 0 1px var(--focus)) drop-shadow(0 0 5px var(--focus));
 }
+/* Primary is the deep red selected plate with a cyan label (HARD, CONFIRM);
+   only .btn-danger is a hot-red slab. */
 html[data-theme="cyberpunk-2077"] .btn-primary {
-  --btn-bg: var(--cp-red);
-  --btn-fg: #0b0a0f;
+  --btn-bg: #7c2527;
+  --btn-fg: var(--cp-cyan);
   --btn-border: var(--cp-red);
   --btn-bg-hover: var(--cp-cyan);
   --btn-border-hover: var(--cp-cyan);
@@ -659,6 +671,7 @@ html[data-theme="cyberpunk-2077"] .btn-ghost { --btn-border: transparent; }
 
 /* Badges: angled tags (the yellow NEW chip). */
 html[data-theme="cyberpunk-2077"] .badge {
+  font-size: max(0.75em, 0.75rem);
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -668,6 +681,7 @@ html[data-theme="cyberpunk-2077"] .badge:not(.badge-button) {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%);
 }
 html[data-theme="cyberpunk-2077"] .badge-warning { --badge-border: var(--cp-yellow); }
+html[data-theme="cyberpunk-2077"] .badge-danger:not(.badge-solid) { --badge-fg: #ff6b8e; }
 /* The game's yellow NEW tag: a solid yellow chip with dark caps. */
 html[data-theme="cyberpunk-2077"] .badge-accent { --badge-bg: var(--cp-yellow); --badge-fg: #0b0a0f; --badge-border: var(--cp-yellow); font-weight: 700; }
 
@@ -784,11 +798,11 @@ html[data-theme="cyberpunk-2077"] .pagination-item.is-disabled { opacity: 0.6; b
 html[data-theme="cyberpunk-2077"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border: 1px solid var(--cp-row-line); border-radius: 0; }
 html[data-theme="cyberpunk-2077"] .carousel::scroll-button(*) { border: 1px solid var(--cp-row-line); border-radius: 0; }
 html[data-theme="cyberpunk-2077"] .carousel::scroll-button(*):disabled { opacity: 0.6; }
-html[data-theme="cyberpunk-2077"] :is(.tab, .nav-item) { font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+html[data-theme="cyberpunk-2077"] :is(.tab, .nav-item) { font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
 html[data-theme="cyberpunk-2077"] .tabs { border-bottom-color: var(--cp-line); }
 html[data-theme="cyberpunk-2077"] .nav-item.is-active { text-shadow: 0 0 0.6rem rgba(94, 246, 255, 0.55); }
 /* App-bar menus are the game's top tab row: always tracked caps. */
-html[data-theme="cyberpunk-2077"] .app-bar .menubar > li > :is(button, a) { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+html[data-theme="cyberpunk-2077"] .app-bar .menubar > li > :is(button, a) { font-weight: 500; font-size: 0.95rem; letter-spacing: 0.06em; text-transform: uppercase; }
 /* A side nav's current row is the same solid red plate as a selected list
    row; cyan stays for the cursor (hover). */
 html[data-theme="cyberpunk-2077"] .nav-rail {
@@ -831,13 +845,14 @@ html[data-theme="cyberpunk-2077"] .table {
   --row-selected-fg: var(--cp-cyan);
   --row-hover-bg: var(--cp-breach-band);
   --row-active-bg: var(--cp-breach-band);
+  --table-label-fg: var(--cp-breach);
   color: var(--cp-breach);
   font-variant-numeric: tabular-nums;
   background: var(--cp-breach-bg);
   outline: 1px solid rgba(207, 236, 88, 0.45);
   outline-offset: 0;
 }
-html[data-theme="cyberpunk-2077"] .table th { font-weight: 700; }
+html[data-theme="cyberpunk-2077"] .table th { font-weight: 700; font-size: max(0.78em, 0.75rem); }
 html[data-theme="cyberpunk-2077"] .table :is(td, th) + :is(td, th) { border-inline-start: 1px solid rgba(207, 236, 88, 0.1); }
 html[data-theme="cyberpunk-2077"] .table th + th { border-inline-start-color: rgba(16, 20, 10, 0.25); }
 html[data-theme="cyberpunk-2077"] .table :is(a, .text-muted) { color: inherit; }
@@ -863,14 +878,21 @@ html[data-theme="cyberpunk-2077"] .table td > .select { min-inline-size: 6rem; }
    boxes); its cards take the breach plate, so the head bar goes unfilled. */
 @media (max-width: 480px) {
   html[data-theme="cyberpunk-2077"] .table.is-stacked > thead { --table-head-bg: transparent; }
+  html[data-theme="cyberpunk-2077"] .table.is-stacked > * > tr { border-block-start: 2px solid var(--cp-breach); }
 }
 @container (max-width: 480px) {
   html[data-theme="cyberpunk-2077"] .table.is-stacked > thead { --table-head-bg: transparent; }
+  html[data-theme="cyberpunk-2077"] .table.is-stacked > * > tr { border-block-start: 2px solid var(--cp-breach); }
 }
 
 /* --- Alerts and toasts: a hard left bar in the state colour. ------------ */
 html[data-theme="cyberpunk-2077"] :is(.alert, .toast) { border-inline-start-width: 4px; }
 html[data-theme="cyberpunk-2077"] .alert-danger { --alert-bg: rgba(255, 42, 61, 0.12); }
+/* Info alerts and plain toasts are the teal tutorial pop-up: a dark-teal
+   body, a cyan frame and a solid teal slab at the start edge. */
+html[data-theme="cyberpunk-2077"] .alert-info { --alert-bg: #0d2a2c; --alert-fg: #d7fbff; --alert-border: var(--cp-cyan); }
+html[data-theme="cyberpunk-2077"] :is(.alert-info, .toast:not(.toast-danger, .toast-warning, .toast-success)) { border-inline-start: 6px solid #06e5c3; }
+html[data-theme="cyberpunk-2077"] .modal { --on-surface: #ffe4e1; }
 html[data-theme="cyberpunk-2077"] .toast-danger { --toast-bg: linear-gradient(90deg, rgba(255, 42, 61, 0.22), rgba(255, 42, 61, 0.06)), #1d0d12; --toast-fg: var(--text); --toast-border: var(--danger); }
 html[data-theme="cyberpunk-2077"] .toast-warning { --toast-bg: linear-gradient(90deg, rgba(252, 238, 10, 0.16), rgba(252, 238, 10, 0.04)), #17150a; --toast-fg: #fff6a6; --toast-border: var(--cp-yellow); }
 
