@@ -59,6 +59,13 @@
   descent-override: 26%;
   line-gap-override: 0%;
 }
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 html[data-theme="motorsport-telemetry"] {
   --motion-leave: warp;
@@ -84,7 +91,8 @@ html[data-theme="motorsport-telemetry"] {
   --danger-text: #ff4d5e;
   --radius: 2px;
   --font: "Titillium Web", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SF Mono", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  /* Share Tech Mono: the square terminal face of the timing software (OFL, vendored). */
+  --font-mono: "Share Tech Mono", ui-monospace, "SF Mono", Consolas, monospace;
   --flare: #2fa8ff;           /* the blue shift light */
   --focus: #b57dff;
   --focus-ring: 0 0 0 4px rgba(139, 63, 240, 0.35);
@@ -122,6 +130,7 @@ html[data-theme="motorsport-telemetry"] {
   --btn-border: #3a404a;
   --btn-border-hover: #c18cff;
   --btn-radius: 2px;
+  --btn-icon-radius: 2px;
   --btn-tracking: 0.06em;
   --btn-transform: uppercase;
   --btn-weight: 700;
@@ -183,6 +192,8 @@ html[data-theme="motorsport-telemetry"] {
   --row-selected-fg: #ffffff;
   --row-active-marker: inset 4px 0 0 var(--mt-purple);
   --table-group-bg: #1a1d23;
+  /* Unsaved edit: the yellow bar only, so it never muddies a purple selected row. */
+  --cell-dirty-bg: transparent;
 
   /* --- Navigation: broadcast caps, purple underline ----------------------- */
   --nav-bg: var(--mt-carbon-deep);
@@ -323,7 +334,6 @@ html[data-theme="motorsport-telemetry"] {
   --compass-lubber: var(--mt-medium);
   --sparkline-stroke: #c18cff;
   --donut-track: #1b1f25;
-  --donut-hole: var(--surface);
   --donut-gap-color: var(--surface);
   --heatmap-radius: 1px;
   --timeline-line: #2e333b;
@@ -361,10 +371,13 @@ html[data-theme="motorsport-telemetry"] {
   --chart-highlight: #ffffff;
   --chart-selection: rgba(139, 63, 240, 0.18);
   --chart-annotation: var(--mt-medium);
-  --chart-seq-hue: var(--mt-purple);
+  /* Sequential scales ramp in personal-best green; purple stays for "best". */
+  --chart-seq-hue: var(--mt-inter);
   --chart-div-neg: #df4a4a;
   --chart-div-pos: #169e74;
   --legend-swatch-radius: 1px;
+  --legend-size: max(0.8rem, 0.85em);
+  --chart-area-opacity: 0.05;
   --bar-chart-bar: var(--mt-purple);
   --bar-chart-bar-alt: #3a404a;
   --bar-chart-axis: #3a404a;
@@ -628,7 +641,7 @@ html[data-theme="motorsport-telemetry"] .badge {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-html[data-theme="motorsport-telemetry"] .badge:not(.badge-button, .badge-solid)::before {
+html[data-theme="motorsport-telemetry"] .badge:not(.badge-solid, .badge-button.is-active, .badge-button[aria-pressed="true"])::before {
   content: "";
   flex: none;
   inline-size: 0.85em;
@@ -642,6 +655,16 @@ html[data-theme="motorsport-telemetry"] .badge-danger { --badge-border: var(--mt
 html[data-theme="motorsport-telemetry"] .badge-warning { --badge-border: var(--mt-medium); }
 html[data-theme="motorsport-telemetry"] .badge-success { --badge-border: var(--mt-inter); }
 html[data-theme="motorsport-telemetry"] .badge-accent { --badge-border: var(--mt-purple); }
+/* Filter chips are tyre chips too: badge-sized caps in a hairline cell,
+   filled purple only while pressed. */
+html[data-theme="motorsport-telemetry"] .badge-button {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  border: 1px solid #3a404a;
+}
+html[data-theme="motorsport-telemetry"] .badge-button:is(.is-active, [aria-pressed="true"]) { border-color: var(--mt-purple); }
+/* The italic title overhangs; give a trailing header chip room. */
+html[data-theme="motorsport-telemetry"] .panel-header > strong + .badge { margin-inline-start: 0.6em; }
 
 /* --- Tables: timing-screen rows ------------------------------------------- */
 html[data-theme="motorsport-telemetry"] .table th { font-size: 0.75em; font-weight: 700; }
@@ -651,6 +674,20 @@ html[data-theme="motorsport-telemetry"] .table th:is([data-num], .num, .is-num) 
    stay in Titillium (already tabular) so the table keeps one timing face. */
 html[data-theme="motorsport-telemetry"] .table .status { font-size: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 html[data-theme="motorsport-telemetry"] .table td.mono { font-family: var(--font); }
+/* Sector cells: in a table a status is a solid timing-screen cell (green,
+   yellow, red) with dark figures; the dot and the word still carry it. */
+html[data-theme="motorsport-telemetry"] .table :is(.status-ok, .status-warn, .status-error) {
+  padding: calc(0.1em + 4px) 0.55em;
+  border-radius: 1px;
+  background: var(--state-fg);
+  color: #0b0c0f;
+}
+/* Inline inputs keep a touch-sized floor in a narrow column. */
+html[data-theme="motorsport-telemetry"] td > .input { min-inline-size: var(--tap-min); }
+/* Legible small print: hints at 0.8rem at least. */
+html[data-theme="motorsport-telemetry"] .field-hint { font-size: max(0.8rem, 0.78em); }
+/* Line traces are bare like the telemetry screen; only the live point is marked. */
+html[data-theme="motorsport-telemetry"] .chart-point:not(.is-active, [aria-selected="true"], :focus-visible, :hover) { r: 2px; stroke-width: 0; }
 html[data-theme="motorsport-telemetry"] .table tr.is-selected td:first-child { box-shadow: inset 4px 0 0 var(--mt-purple); }
 
 /* --- Tabs and nav: the active item gets the purple sector bar ------------- */
@@ -729,6 +766,8 @@ html[data-theme="motorsport-telemetry"] .app-status {
   font-size: 0.8em;
   font-weight: 600;
 }
+/* The tray readout keeps tight tracking so it fits a phone. */
+html[data-theme="motorsport-telemetry"] .app-status .taskbar-tray { letter-spacing: 0.02em; }
 html[data-theme="motorsport-telemetry"] .app-status .readout { --readout-size: 1em; --readout-bg: transparent; --readout-border-width: 0; }
 
 /* --- v5 tiers -------------------------------------------------------------- *

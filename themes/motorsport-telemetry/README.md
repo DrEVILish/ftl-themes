@@ -48,17 +48,25 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 - The **rev-light strip** under the bar: 15 LEDs, 5 green, 5 red, 5 blue,
   11 lit; 10px lamps with a darker 1px rim, about 250px wide.
 - **Tyre chips**: every `.badge` is a square timing cell led by a dark
-  disc with a 2px compound ring (filter `.badge-button`s stay square too):
-  default hard white, `.badge-warning` medium yellow, `.badge-danger` soft
-  red, `.badge-success` intermediate green, `.badge-accent` purple.
+  disc with a 2px compound ring: default hard white, `.badge-warning` medium yellow, `.badge-danger` soft
+  red, `.badge-success` intermediate green, `.badge-accent` purple. Filter
+  `.badge-button`s are the same chip at badge size in a hairline cell,
+  filled purple only while pressed.
 - **Panel headers** with a slanted purple tab at the left and bold italic
   caps; modals carry a 3px purple top edge.
 - **Rev counter**: `.gauge-dial` with a green working band (yellow on
   `.is-warn`, red on `.is-error`), a red redline sector and a red needle.
 - **Close** is a square black steering-wheel key with a cross; it lights
-  soft red on hover.
-- Table status reads at row size in bold caps, and `td.mono` figures stay
-  in Titillium so the table is one timing face.
+  soft red on hover. Icon buttons are square 2px keys too, never circles.
+- **Sector cells**: in a table, `.status-ok/-warn/-error` is a solid
+  green/yellow/red timing cell with dark bold caps; `td.mono` figures stay
+  in Titillium so the table is one timing face. An unsaved edit shows only
+  the yellow leading bar, so it never muddies a purple selected row.
+- Charts are bare 2px traces: small unringed points (only the active one
+  is marked), a 5% area fill, and sequential scales such as the heatmap
+  ramp in personal-best green, leaving purple for "best".
+- Log, code and notepad text is Share Tech Mono (OFL, vendored), the
+  square terminal face of the timing software.
 - Table heads sit on a 2px purple rule; the selected row is purple with a
   4px purple bar, as the fastest lap is on a timing screen.
 - The status strip is race control on a 2px green "track clear" rule.
