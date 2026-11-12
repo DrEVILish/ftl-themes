@@ -34,16 +34,17 @@ looks *drawn in light* rather than painted.
 ## Signature details
 
 - Buttons, panels, cards, modals, menus, toggle buttons, segmented
-  controls, alerts and toasts share one chamfer (18px; 10px for buttons,
-  toggles, segmented controls and nested surfaces; 7px for small buttons,
+  controls, alerts, toasts and framed lists share one chamfer (18px; 10px
+  for buttons, toggles, segmented controls, framed lists and nested surfaces; 7px for small buttons,
   alerts and toasts). Where `corner-shape: bevel` is supported it is a real
   bevelled border; elsewhere a `clip-path` polygon with two background
   layers tracing each diagonal in the component's border colour.
 - Surfaces are light-lines: a second 1px inner ring makes the edge read
   2px lit, with an inner glow and, above phone width, a 10px outer bloom.
   The bloom shows only with `corner-shape`, because `clip-path` cuts it
-  away; phones keep the clip-path chamfer and inset glow, since the bloom
-  on every surface drops frames while scrolling on a mid-range phone. Keyboard focus is drawn inside the cut: a 2px
+  away. Phones keep the clip-path chamfer and the 1px inner ring but drop
+  the inner glow and the readout/table-head text glow, since glow on every
+  surface drops frames while scrolling on a mid-range phone. Keyboard focus is drawn inside the cut: a 2px
   outline inset 5px plus an inner bloom.
 - Alerts and toasts carry a lit 0.2rem bar down the start edge in their
   status colour.
@@ -51,14 +52,19 @@ looks *drawn in light* rather than painted.
   buttons, toggles (a danger toggle that is on included), active chips and
   selected labels are outlined in their colour over a faint tint.
 - Checkboxes are lit square frames holding a square node when checked.
-- The slider track is a 3px lit line with a white-hot square thumb; the h1
+  Avatars are a 1px lit frame over a faint tint; skeleton loaders are
+  traced outlines, not filled slabs.
+- The slider track (and the vertical fader's column) is a 3px lit line
+  inside a --tap-min hit area, with a white-hot square thumb; the h1
   glow has a white-hot core under the cyan.
 - Numeric readouts (`.stat-value`) glow faintly in Share Tech Mono.
 - Your own chat messages are framed in white light. Charts use one orange
   (warning) and white for the fifth series, so no two series share a colour.
 - The top bar casts a 12px cyan bloom downward.
-- The active-row marker is *orange* against cyan selection — the one place
-  the two colours meet, and only to separate "selected" from "playing".
+- Selected rows and list/nav items carry a cyan marker. Only the
+  playing/now table row (`.is-current`, `aria-current="time"`) is marked
+  *orange* — the one place the two colours meet, to separate "selected"
+  from "playing".
 
 ## Layout
 
@@ -77,7 +83,9 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Known compromise
 
-Eurostile, the reference face, is not web-available. Michroma (vendored,
+Eurostile, the reference face, is not web-available. Stat labels and table
+heads use Titillium at 600 rather than Michroma, whose width overflows
+narrow table columns at label size. Michroma (vendored,
 SIL OFL) stands in for the extended display cut; Titillium Web (vendored)
 carries body text.
 

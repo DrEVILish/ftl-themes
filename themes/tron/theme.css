@@ -46,7 +46,7 @@ html[data-theme="tron"] {
   --border: #0af0ff;
   --hairline: #0a3844;
   --text: #d8faff;
-  --muted: #4fa8b8;
+  --muted: #66c2d1;
   --accent: #0af0ff;
   --accent-text: #0af0ff;  /* labels read this, so an app that sets --accent keeps them legible */
   --accent-2: #ff8c1a;
@@ -74,7 +74,8 @@ html[data-theme="tron"] {
   --table-head-fg: var(--accent);
   --table-head-rule: var(--accent);
   --row-selected-bg: rgba(10, 240, 255, 0.08);
-  --row-active-marker: inset 0.2rem 0 0 var(--accent-2);
+  /* Selection traces in cyan; orange marks only the playing/now row (below). */
+  --row-active-marker: inset 0.2rem 0 0 var(--accent);
   --nav-bg: #000;
   --nav-rule: var(--accent);
   --overlay-bg: rgba(1, 4, 9, 0.82);
@@ -96,10 +97,12 @@ html[data-theme="tron"] {
   --desktop-monitor-radius: 0;
   --desktop-icon-label-radius: 0;
 
-  /* The slider track is a lit line (core hides the border so the box can
-     grow to --tap-min; the track is the content box's background). */
+  /* The slider track is a lit line: the box grows to --tap-min and the
+     track is its content box's background, so the border goes to 0 or it
+     would eat 2px of the 3px line. */
   --slider-height: 3px;
-  --slider-bg: color-mix(in srgb, var(--accent) 70%, transparent);
+  --slider-border-width: 0;
+  --slider-bg: var(--accent);
   --slider-thumb-shadow: 0 0 2px #fff, 0 0 8px var(--accent);
   --slider-thumb-bg: #e8fdff;  /* white-hot core where the light is brightest */
 
@@ -149,7 +152,7 @@ html[data-theme="tron"] {
   --dropzone-border: var(--accent);
   --dropzone-bg-active: rgba(10, 240, 255, 0.08);
   --dropzone-fg-active: var(--accent);
-  --avatar-bg: var(--hairline);
+  --avatar-bg: rgba(10, 240, 255, 0.08);
   --avatar-fg: var(--accent);
   --pagination-item-radius: 0;
   --pagination-item-bg-active: rgba(10, 240, 255, 0.15);
@@ -161,8 +164,20 @@ html[data-theme="tron"] {
   --popover-bg: #000;
   --popover-border: var(--accent);
   --popover-radius: 0;
-  --skeleton-bg: var(--hairline);
+  --skeleton-bg: rgba(10, 240, 255, 0.04);
 }
+/* Placeholders and avatars are traced in light, not filled. */
+html[data-theme="tron"] .skeleton { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent); }
+html[data-theme="tron"] .avatar { box-shadow: inset 0 0 0 1px var(--accent); }
+/* Core pads a vertical fader with logical properties, which its own
+   vertical writing mode turns sideways; physical padding keeps the lit
+   column 3px wide inside the --tap-min target. */
+html[data-theme="tron"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+/* The one place orange meets cyan: the playing/now row, against cyan
+   selection. */
+html[data-theme="tron"] .table tr:is(.is-current, [aria-current="time"]) > td:first-child { box-shadow: inset 0.2rem 0 0 var(--accent-2); }
 
 html[data-theme="tron"] h1,
 html[data-theme="tron"] h2,
@@ -183,6 +198,14 @@ html[data-theme="tron"] :is(h1, h2, h3) code { text-transform: none; letter-spac
 }
 /* Readouts are lit numerals; the mono ships one weight, so no faux bold. */
 html[data-theme="tron"] .stat-value { font-weight: 400; text-shadow: 0 0 8px rgba(10, 240, 255, 0.45); }
+/* Micro-labels carry the bold technical cut so small caps hold on the grid. */
+html[data-theme="tron"] :is(.stat-label, .table th) { font-weight: 600; }
+/* Phones: glow on every surface and readout repaints while scrolling; the
+   1px inner ring and border stay, so edges still read as lit lines. */
+@media (max-width: 480px) {
+  html[data-theme="tron"] { --panel-shadow: inset 0 0 0 1px rgba(10, 240, 255, 0.5); }
+  html[data-theme="tron"] :is(.stat-value, .table th) { text-shadow: none; }
+}
 /* Michroma is already extended, so it carries less extra tracking than the
    old sans did; it ships one weight, so headings don't fake a bold. */
 html[data-theme="tron"] :is(h1, h2, h3, .nav-brand) {
@@ -198,7 +221,7 @@ html[data-theme="tron"] .nav-brand { text-transform: uppercase; letter-spacing: 
    diagonal is red. clip-path also cuts away anything painted outside the
    box: the outer glow and core's :focus-visible outline. Glow is therefore
    inset, and focus is drawn inside the box (see below). */
-html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast) {
+html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast, .list) {
   --tron-cut: 18px;
   clip-path: polygon(var(--tron-cut) 0, 100% 0, 100% calc(100% - var(--tron-cut)), calc(100% - var(--tron-cut)) 100%, 0 100%, 0 var(--tron-cut));
   background-image:
@@ -238,6 +261,9 @@ html[data-theme="tron"] :is(.dropdown, .context-menu) { --tron-edge: var(--conte
 html[data-theme="tron"] .popover { --tron-edge: var(--popover-border, var(--border)); }
 /* Nested surfaces step down to the smaller bevel. */
 html[data-theme="tron"] :is(.panel, .modal, .card, .drawer, .popover) :is(.panel, .card) { --tron-cut: 10px; }
+/* Framed lists (mail folders, message list, settings nav) take the nested
+   bevel so they match the chamfered pane beside them. */
+html[data-theme="tron"] .list { --tron-cut: 10px; --tron-edge: var(--list-border, var(--border)); }
 /* clip-path clips descendants like overflow: hidden does, so a surface
    holding an in-flow anchored menu (the v4 .anchor pattern) keeps square
    corners rather than cutting the menu off at its own edge. Top-layer
@@ -253,13 +279,15 @@ html[data-theme="tron"] :is(.panel, .modal, .card):has(.anchor) { clip-path: non
   html[data-theme="tron"] {
     --panel-shadow: 0 0 10px rgba(10, 240, 255, 0.45), inset 0 0 0 1px rgba(10, 240, 255, 0.5), inset 0 0 18px rgba(10, 240, 255, 0.18);
   }
-  html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast) {
+  html[data-theme="tron"] :is(.btn, .panel, .modal, .card, .dropdown, .context-menu, .popover, .toggle-btn, .segmented, .alert, .toast, .list) {
     clip-path: none;
     background-image: none;
     border-radius: var(--tron-cut) 0;
     corner-shape: bevel;
   }
 } }
+/* A card list has no frame of its own: each item is the card. */
+html[data-theme="tron"] .list.list-cards { clip-path: none; background-image: none; border-radius: 0; }
 /* Focus inside the cut: an inset outline plus an inner bloom, both inside
    the clip so they can't be cut away. */
 html[data-theme="tron"] .toggle-btn:has(input:focus-visible) { outline-offset: -5px; }
