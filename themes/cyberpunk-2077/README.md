@@ -25,13 +25,13 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 ## Core values
 
 1. **Red is the ink, not an alarm.** Body text, labels and frames are the
-   menu red (`--text #ff7562`, rules `#ff5f58`). Danger is a different,
+   menu red (`--text #ff7473`, rules `#f5504f`). Danger is a different,
    hotter red used as a *fill* (`--danger #ff2a3d`) and a pink-red as text
    (`--danger-text #ff4d7a`). Don't "fix" the theme by making body text
    white. The one white is the section-header band.
 2. **Cyan means live; red plates mean selected.** Active tab, ON, focus,
    values, readouts and the hover cursor are cyan `#5ef6ff`. A selected
-   list row, side-nav row, segmented or toggle-group choice is the game's solid red plate (`#a8343a`,
+   list row, side-nav row, segmented or toggle-group choice is the game's solid deep-maroon plate (`#8a2a2e`,
    pale `#ffe4e1` text), as in the journal and difficulty screens; only the
    breach-grid table keeps a cyan selection. Nothing decorative is cyan
    except the breach corner brackets.
@@ -72,8 +72,8 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   filled red plate; cyan is only hover and focus.
 - `.slider`: the value bar, a tall navy track (fills core's `--tap-min`
   box, up to 2rem) in a dim red rule with a 6px cut bottom-right corner,
-  all drawn in `--slider-bg`, with a full-height red slab thumb whose
-  lower-left corner is cut.
+  all drawn in `--slider-bg`, with a 1.75rem full-height red slab thumb
+  whose top-right corner is cut, as in the settings screen.
 - `.list`: every row is its own plate, a dim red rule with an 8px cut
   corner, 4px apart; the selected row is the solid red plate. A
   `.nav-rail`'s current row is the same red plate with a red marker.
@@ -85,7 +85,11 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   (`html::after`) so scrolling composites it instead of repainting.
 - Disabled pagination ends and carousel arrows keep a dim red rule and
   never fade below 0.6, so the control still reads.
-- Field hints, errors and `.status` chips never drop under 13px.
+- Field hints, errors, `.status` chips and `.btn-sm` never drop under 13px.
+- Figures (`.stat-value`, `.price`, `.table .mono`) are set in the menu
+  face with tabular numerals, like the eddies and CODE MATRIX cells;
+  Share Tech Mono is only for code, logs and samples.
+- On phones the page layer drops its scanlines to stay in the paint budget.
 - `.badge-accent` (NEW, unread counts) is the game's solid yellow tag with
   dark caps; the plain badge stays a red-tint tag.
 - `.hud-bar`: flat fill with a glow in its own colour and an angled end;
@@ -93,13 +97,15 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   rarity colours.
 - The rail is a 1.5rem data strip of tick marks and code bars, like the
   micro-print along the game's screen edge; the bar is a maroon strip cut
-  off by one long glowing red rule.
+  off by one long glowing red rule, broken at its centre by a short cyan
+  tick where the game prints the screen subtitle (BACKPACK, DATABASE).
 
 ## Typography
 
 The game's menu face is a squared condensed technical sans,
 community-identified as **Blender Pro** (commercial; not verified from the
-game files). It is not vendored and not named in the stack. The theme
+game files). It is not vendored; it is named first in the stack so a
+user who owns it gets the real face. The theme
 vendors **Rajdhani** Medium and Bold (Indian Type Foundry, SIL OFL 1.1,
 `assets/fonts/Rajdhani-*.woff2`, Latin subset, about 15 KB each), whose
 squared counters and short descenders are the closest open match, and
@@ -115,11 +121,11 @@ All pairs meet the lint floors; no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#ff7562` on `--surface` `#1a1119` | 7.0 |
-| Inactive window title `--muted` `#e3645d` on its title strip `#361a20` | 4.7 |
-| Selected plate `#ffe4e1` on `#a8343a` | 5.4 |
+| `--text` `#ff7473` on `--surface` `#1a1119` | 7.0 |
+| Inactive window title `--muted` `#ea5d5f` on its title strip `#361a20` | 4.7 |
+| Selected plate `#ffe4e1` on `#8a2a2e` | 7.1 |
 | Yellow tag `#0b0a0f` on `#fcee0a` | 16.3 |
-| `--muted` `#e3645d` on `--surface` / `--surface-2` `#110d15` | 5.5 / 5.7 |
+| `--muted` `#ea5d5f` on `--surface` / `--surface-2` `#110d15` | 5.5 / 5.7 |
 | `--accent` `#5ef6ff` on `--surface` | 14.2 |
 | `--on-accent` / `--on-danger` / `--on-success` `#0b0a0f` on their fills | 15.1 / 5.3 / 10.6 |
 | `--danger-text` `#ff4d7a` / `--warning-text` `#fcee0a` / `--success-text` `#2bd97c` on surface | 5.8 / 15.3 / 10.0 |
@@ -133,7 +139,7 @@ and waveform chips (a 30% state tint) take a pale red `#ffd2ce`.
 ## Layout
 
 The shell becomes a **menu screen**: a transparent maroon top bar ended by
-one long glowing red rule (the LEVEL / tabs / eddies strip), a 1.5rem data
+one long glowing red rule broken at its centre (the LEVEL / tabs / eddies strip), a 1.5rem data
 rail of tick marks down the left edge, content on the dark field (maroon
 over the top half, cool teal-black below), and a
 key-hint status strip along the bottom.

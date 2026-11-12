@@ -48,8 +48,8 @@ html[data-theme="cyberpunk-2077"] {
   --surface-2: #110d15;   /* recessed: inputs, tracks, menus */
   --border: #a8383d;      /* the long red rule, dimmed for structure */
   --hairline: #3b1a21;
-  --text: #ff7562;        /* menu red: labels, item names, descriptions (sampled #f75a52, lifted to 7:1 at the same hue) */
-  --muted: #e3645d;       /* inactive tabs, column heads: dimmer red */
+  --text: #ff7473;        /* menu red: labels, item names, descriptions (brightest label pixels #fa686a/#f86368, hue ~0, lifted to 7:1) */
+  --muted: #ea5d5f;       /* inactive tabs, column heads: dimmer red */
   --accent: #5ef6ff;      /* live / selected / ON / values: the cyan */
   --accent-2: #fcee0a;    /* the yellow: NEW tags, quest marks */
   --danger: #ff2a3d;      /* hostile red, hotter than the menu red */
@@ -64,14 +64,14 @@ html[data-theme="cyberpunk-2077"] {
   --on-success: #0b0a0f;
   --on-surface: var(--text);
   --radius: 0;
-  --font: "Rajdhani", "Arial Narrow", "Roboto Condensed", "Nimbus Sans Narrow", sans-serif;
+  --font: "Blender Pro", "Rajdhani", "Arial Narrow", "Roboto Condensed", "Nimbus Sans Narrow", sans-serif;
   --font-mono: "Share Tech Mono", "DejaVu Sans Mono", "Consolas", monospace;
   --flare: #cfec58;       /* breach-protocol yellow-green */
   --density: 1;
 
   /* Theme flourishes. */
-  --cp-red: #ff5f58;
-  --cp-line: rgba(255, 95, 88, 0.62);
+  --cp-red: #f5504f;
+  --cp-line: rgba(245, 80, 79, 0.62);
   --cp-cyan: #5ef6ff;
   --cp-yellow: #fcee0a;
   --cp-breach: #cfec58;
@@ -243,7 +243,7 @@ html[data-theme="cyberpunk-2077"] {
   --row-hover-bg: rgba(255, 95, 88, 0.1);   /* lists, trees, menus; tables get the steel band below */
   /* Selected rows are the game's solid red plate (journal, database);
      tables keep the breach grid's cyan (see .table below). */
-  --row-selected-bg: #a8343a;
+  --row-selected-bg: #8a2a2e;   /* the deep maroon slab of the selected journal row (#7c2527) */
   --row-selected-fg: #ffe4e1;
   --row-active-bg: rgba(255, 95, 88, 0.08);
   --row-active-marker: inset 3px 0 0 var(--cp-cyan);
@@ -282,7 +282,7 @@ html[data-theme="cyberpunk-2077"] {
   --segmented-radius: 0;
   --segmented-item-radius: 0;
   --segmented-item-fg: var(--muted);
-  --segmented-item-bg-active: #a8343a;   /* the filled red choice (HARD) */
+  --segmented-item-bg-active: #8a2a2e;   /* the filled red choice (HARD) */
   --segmented-item-fg-active: #ffe4e1;
   --segmented-item-fg-hover: var(--cp-cyan);
   --pagination-item-radius: 0;
@@ -582,9 +582,18 @@ html[data-theme="cyberpunk-2077"]::after {
   pointer-events: none;
   background-image:
     var(--cp-scanlines),
-    radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.5), transparent 80%),
-    linear-gradient(180deg, #24101a, rgba(64, 20, 24, 0.55) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
+    radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.3), transparent 80%),
+    linear-gradient(180deg, #24101a, rgba(48, 16, 22, 0.45) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
     linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
+}
+/* Phone: the page layer drops its scanlines (paint budget on small GPUs). */
+@media (max-width: 480px) {
+  html[data-theme="cyberpunk-2077"]::after {
+    background-image:
+      radial-gradient(ellipse 90% 45vh at 50% 0%, rgba(120, 28, 38, 0.3), transparent 80%),
+      linear-gradient(180deg, #24101a, rgba(48, 16, 22, 0.45) 18vh, rgba(40, 14, 20, 0.3) 32vh, transparent 50vh),
+      linear-gradient(180deg, var(--bg) 40vh, #090b10 85vh);
+  }
 }
 html[data-theme="cyberpunk-2077"] body { font-weight: 500; letter-spacing: 0.01em; }
 
@@ -597,7 +606,16 @@ html[data-theme="cyberpunk-2077"] :is(h1, h2, h3, h4) {
   color: var(--text);
 }
 html[data-theme="cyberpunk-2077"] h1 { font-weight: 700; letter-spacing: 0.04em; }
-html[data-theme="cyberpunk-2077"] :is(.stat-value, .price) { color: var(--cp-cyan); font-weight: 600; }
+html[data-theme="cyberpunk-2077"] :is(.stat-value, .price) {
+  color: var(--cp-cyan);
+  font-family: var(--font);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+/* Figures in tables (times, ids, money) take the menu face too, as the
+   CODE MATRIX cells do; mono stays for code, logs and kbd. */
+html[data-theme="cyberpunk-2077"] .table .mono { font-family: var(--font); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; font-weight: 600; }
 html[data-theme="cyberpunk-2077"] :is(code, kbd, samp, pre) { font-family: var(--font-mono); }
 html[data-theme="cyberpunk-2077"] kbd { font-family: var(--font); font-weight: 700; }
 
@@ -615,6 +633,8 @@ html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go) {
   background-origin: border-box;
 }
 html[data-theme="cyberpunk-2077"] :is(.btn-sm, .btn-icon) { --cp-btn-cut: 6px; }
+/* Rajdhani's small x-height: small caps buttons keep the 13px floor. */
+html[data-theme="cyberpunk-2077"] .btn-sm { font-size: max(0.8em, 0.8125rem); }
 html[data-theme="cyberpunk-2077"] :is(.btn, .toggle-btn, .btn-go):focus-visible {
   filter: drop-shadow(0 0 1px var(--focus)) drop-shadow(0 0 1px var(--focus)) drop-shadow(0 0 5px var(--focus));
 }
@@ -652,17 +672,17 @@ html[data-theme="cyberpunk-2077"] .badge-warning { --badge-border: var(--cp-yell
 html[data-theme="cyberpunk-2077"] .badge-accent { --badge-bg: var(--cp-yellow); --badge-fg: #0b0a0f; --badge-border: var(--cp-yellow); font-weight: 700; }
 
 /* Slider: the value bar. The track rule is drawn on the content box; the
-   thumb is a red slab with its lower-left corner cut, no ring. */
+   thumb is a red slab with its top-right corner cut, no ring. */
 html[data-theme="cyberpunk-2077"] .slider { background-origin: content-box; }
 html[data-theme="cyberpunk-2077"] .slider::-webkit-slider-thumb {
-  width: 1.4rem;
+  width: 1.75rem;
   border: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0.55rem 100%, 0 calc(100% - 0.55rem));
+  clip-path: polygon(0 0, calc(100% - 0.55rem) 0, 100% 0.55rem, 100% 100%, 0 100%);
 }
 html[data-theme="cyberpunk-2077"] .slider::-moz-range-thumb {
-  width: 1.4rem;
+  width: 1.75rem;
   border: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0.55rem 100%, 0 calc(100% - 0.55rem));
+  clip-path: polygon(0 0, calc(100% - 0.55rem) 0, 100% 0.55rem, 100% 100%, 0 100%);
 }
 html[data-theme="cyberpunk-2077"] .slider.is-vertical::-webkit-slider-thumb { width: var(--slider-thumb-size); height: 1.4rem; }
 html[data-theme="cyberpunk-2077"] .slider.is-vertical::-moz-range-thumb { width: var(--slider-thumb-size); height: 1.4rem; }
@@ -832,6 +852,9 @@ html[data-theme="cyberpunk-2077"] .table::after {
   background: var(--cp-brackets);
 }
 html[data-theme="cyberpunk-2077"] .table-wrap:has(> .table) { padding: 6px; }
+/* Blank filler rows continue the breach plate, so a short table in a tall
+   box reads as one grid rather than an empty band under it. */
+html[data-theme="cyberpunk-2077"] .table-blank-rows { --stripe-a: var(--cp-breach-bg); --stripe-b: color-mix(in srgb, var(--cp-breach) 3%, var(--cp-breach-bg)); }
 /* Form cells keep a usable width; a narrow box scrolls or clips the table
    rather than squeezing a field below the target size. */
 html[data-theme="cyberpunk-2077"] .table td > :is(.input, .select) { min-inline-size: max(var(--tap-min, 24px), 3.5rem); }
@@ -900,7 +923,7 @@ html[data-theme="cyberpunk-2077"] {
   --app-columns: 1.5rem minmax(0, 1fr);
   --app-gap: 0;
   --app-padding: 0;
-  --app-bar-bg: linear-gradient(180deg, rgba(48, 18, 24, 0.92), rgba(30, 12, 17, 0.88));
+    --app-bar-bg: linear-gradient(180deg, rgba(48, 18, 24, 0.92), rgba(30, 12, 17, 0.88));
   --app-bar-fg: var(--text);
   --app-bar-rule: var(--cp-red);
   --app-bar-rule-width: 2px;
@@ -924,7 +947,10 @@ html[data-theme="cyberpunk-2077"] {
   --app-status-rule: var(--cp-line);
   --app-status-padding: 0.4rem 1.75rem;
 }
+/* The long red rule under the tabs, broken at its centre by a cyan tick
+   where the game prints the screen subtitle (BACKPACK, DATABASE). */
 html[data-theme="cyberpunk-2077"] .app-bar {
+  border-image: linear-gradient(90deg, var(--cp-red) calc(50% - 5rem), transparent 0 calc(50% - 1.25rem), var(--cp-cyan) 0 calc(50% + 1.25rem), transparent 0 calc(50% + 5rem), var(--cp-red) 0) 0 0 1 0 / 0 0 var(--app-bar-rule-width) 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   box-shadow: 0 2px 0.9rem rgba(255, 95, 88, 0.35);
