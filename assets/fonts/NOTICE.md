@@ -188,6 +188,8 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `bloomberg` (all UI text and figures; open stand-in for the
   terminal's proprietary narrow screen sans, with a real bold)
 
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `matrix` (Share Tech Mono: app bar and headings)
+
 ## DSEG7 Classic
 
 - **Family:** DSEG7 Classic (Bold Italic — `DSEG7Classic-BoldItalic.woff2`)
