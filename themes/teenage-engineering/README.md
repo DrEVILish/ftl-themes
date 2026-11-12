@@ -35,9 +35,12 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    active badges, the highlighted menu item and command row, checked toggle
    buttons and the selected desktop icon label are the black of the OP-1's
    note dots with white text, not the accent colour. Selected list, inbox and
-   table rows are a pressed (darker) key with a black edge bar.
-5. **Tight grotesque, silkscreen labels.** Headings are bold with negative
-   tracking; panel heads, table heads and form labels are tiny tracked caps
+   table rows are a pressed (darker) key with a black edge bar. The bulk
+   selection bar is a strip of display glass; an accent badge is a white key
+   with a blue dot; an unsaved cell is a white key with an orange edge bar.
+5. **Light grotesque, silkscreen labels.** Headings are regular/medium
+   (h1 400, h2-h4 500) with negative tracking, so the display numerals stay
+   the loudest type; panel heads, table heads and form labels are tiny tracked caps
    like the printing beside a key. Display surfaces use the monospace.
 
 ## Signature details
@@ -49,12 +52,18 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
   `.knob-hf/-hmf/-lmf/-lf` are the four encoders. The cap top is a flat
   matte fill with only a 1px lighter rim, no highlight.
 - The rail is a key-face column: the speaker grille (an SVG dot field) on
-  top, the four encoder dots under it.
+  top, the four encoder dots under it, then four black round note keys.
+- Every page has a screen: a KPI `.stat-value` sits in a small display
+  window. Every panel is a labelled key: its header's first item carries an
+  encoder colour dot (blue, green, white, orange by position).
+- The page is a flat near-white aluminium (`#d5d9da`); keys read by their
+  key-edge seams and 2px side, not by a dark field around them.
 - The bar's brand sits in a tiny display window (black glass, mono, white).
 - The status strip is display glass. On a phone it wraps to two lines
   rather than cutting items to one glyph.
-- The slider is a thin black slot (0.3rem, 0.15rem ends) under a small
-  encoder-cap thumb; the hit area stays at the tap minimum.
+- The slider is a thin, square-cut black slot (0.3rem) under a small
+  encoder-cap thumb; the hit area stays at core's tap minimum (the content-box
+  clip that keeps it there leaves no room for rounded ends).
 - Level meters (`.visualizer`) and `.trace` are small glass windows with
   white bars and a teal line. A `.bar-chart` on a light key prints its bars
   in note-key black; sparklines are a thin line with no tinted area.
@@ -87,7 +96,9 @@ to its right.
   `0.4rem 0.25rem`.
 - **Mobile (≤ 480px):** the same single column with a thinner frame
   (0.35rem, set through `@container style(--tier: mobile)`, never a width
-  query) and main inset `0.4rem 0.3rem`. The brand window truncates first.
+  query) and main inset `0.4rem 0.3rem`. The brand window stays a small
+  window (content width, at most 60%, truncating first) instead of stretching
+  across its line, and the bar's `kbd` shortcut hints are hidden.
 - **XL (≥ 1801px):** the shell caps at 1800px; the gutters continue the key
   bed: rounded key outlines with a round dot, embossed a few percent off
   `--bg` (well within 1.5:1), still.
@@ -96,8 +107,10 @@ to its right.
 
 ## Icons
 
-`icons.svg` redraws the whole core set (178/178) as OP-1 silkscreen
-pictograms (see the key legends in `references/teenage-engineering/`):
+`icons.svg` redraws 178 of core's 1020 symbols as OP-1 silkscreen
+pictograms (see the key legends in `references/teenage-engineering/`); the
+rest are core fallbacks, drawn at the same 1.5 stroke via
+`--icon-stroke-width`:
 
 - 24×24 grid, 1.5 monoline stroke, round caps and round joins.
 - True circles and arcs; boxes get soft 2-unit corners like the keys.
@@ -125,7 +138,9 @@ pictograms (see the key legends in `references/teenage-engineering/`):
 - Fonts: the manufacturer's grotesque is not free; the system stack
   (Helvetica Neue, Helvetica, Arimo, Arial, Liberation Sans, Nimbus Sans,
   TeX Gyre Heros, FreeSans) stands in. Nothing is vendored, so a machine
-  with none of these (a bare Linux box) falls back to its default sans.
+  with none of these (a bare Linux box) falls back to its default sans,
+  usually DejaVu Sans, which runs wide; the light heading weights keep it
+  calm.
 
 ## Reference status
 
