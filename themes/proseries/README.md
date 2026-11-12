@@ -8,19 +8,23 @@
 
 The GUI of a large-format digital live console from the 2010s, as seen
 on its 15-inch touch screens: everything bold and small, saturated blue
-strips on a dark violet desk, grey bevelled push keys with dark labels
-that light in their own colour, black knobs inside rings of white ticks,
+strips on a dark violet desk, grey bevelled soft keys with dark labels,
+function keys that sit dark in their own colour and light up, black knobs inside rings of white ticks,
 and a black title bar carrying the page name, the scene and tap tempo.
 It is an engineering screen, not a consumer app: dense, square, legible
 at arm's length in a dark room.
 
 ## Core values
 
-1. **Bold everywhere.** Every label is in the bold face, small. A regular
-   weight reads as a web page, not a console.
+1. **Bold everywhere.** Every label is in the bold face, small and mixed
+   case: form labels, hints, table heads and stat labels included. A
+   regular weight or an uppercase tracked label reads as a web page. The
+   one exception is running text (`.prose`, textareas), which the console
+   never shows: it is regular weight at 1.5 line height.
 2. **Keys light in their own colour.** Mute orange-red, solo olive-gold,
-   monitor and select yellow, on green; unlit keys are neutral grey bevels.
-   Never tint an unlit key.
+   monitor and select yellow, on green. Unlit keys are dark faces tinted
+   with their function colour and a dark LED, with white labels; lit keys
+   brighten and the LED glows.
 3. **Dark text on lit keys and tags.** Channel name tags and lit keys carry
    near-black text, as on the console.
 4. **Blue strips, black inserts.** Strips are a vivid blue gradient; send
@@ -32,36 +36,65 @@ at arm's length in a dark room.
 ## How the tokens carry that
 
 - `--strip-bg`, `--strip-border`, `--strip-rule`: the strip gradient and its dark dividers.
-- `--key-*`: grey bevel unlit, each function key's own lit colour.
+- `--key-*`: a dark face tinted with the key's colour unlit, the same colour bright and glowing when lit.
 - `--knob-*`: black cap, white pointer, white tick ring, yellow arc.
 - `--fader-cap-bg`: the black hourglass cap with its grey disc; `--fader-slot`: the black slot.
 - `--meter-*`: green / yellow / red segments on black with dim unlit LEDs.
 - `--presence-color-1..6`: the console's name-tag colours (yellow, magenta,
   orange, blue, green, grey) for `data-color` tags.
-- `--btn-*`: grey bevelled buttons; `.btn-primary` is the navy preset key.
-- `--app-*`: black home bar, no rail, a radial desk backdrop.
+- `--btn-*`: grey bevelled buttons; `.btn-primary` is the navy preset key,
+  `.btn-secondary` the grey copy/paste key, `.btn-tertiary` a flat grey key
+  and `.btn-ghost` a key outline (never bare text on the desk).
+- `--card-bg`: the strip blue (flat #3a62b4), so the console blue shows on
+  every page; muted text in a card lifts to near-white. `--panel-bg` is the
+  sidebar's royal-blue section, flat, under a flat light-lavender
+  `--panel-header-bg` band with dark bold text (muted/status tones in the
+  band go dark to keep 4.5:1). Both are single fills with a
+  hard 1px drop, no blur, to keep scrolling cheap. On touch screens
+  (`pointer: coarse`) the key bevels flatten to one fill plus an inset line.
+- `--slider-bg`: the 6px black fader slot with a light lower lip;
+  `--slider-thumb-*`: the fader cap on its side (upright on
+  `.slider.is-vertical`, which draws a 6px slot in its touch-sized box).
+  `--badge-radius`/`--switch-radius`/`--btn-icon-radius`: square.
+- `--switch-*`: the square ON key: a narrow grey cap in a black slot that
+  lights as a green LED bar when on.
+- `--carousel-arrow-*`: grey soft keys (square). `--chart-text-size`: small
+  tick labels; h1/h2 capped at 1.5rem/1.2rem (the bar title is the largest type).
+- `--btn-close-*`: a white round close disc with a dark glyph (dark red on `.is-danger`);
+  window minimise/maximise are square grey soft keys.
+- `--app-*`: black home bar, no rail, a flat navy desk.
 
 ## Signature details
 
 - Knob tick rings drawn with a repeating conic gradient behind the value arc; the console's other
   pointer styles (chicken heads, clock, lobed, sculpted, LED ring, LED dot) are `data-pointer` values.
 - Brushed-metal and leather faceplates are drawn in CSS (`data-finish`), never copied from the console.
-- The home bar: a two-tone "home" tab, a round back key, the page title,
+- The home bar: a two-tone "home" tab (light grey cap over navy, white bold text), a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
+  On every page the bar's current item is the two-tone tab, the brand gets
+  the round back key and fields in the bar are the black yellow scene field.
 - The splash: a deep-blue sky with a gold "ProSeries" wordmark (no logos).
-- Badges are solid lit tiles with dark text, never tints.
+- Badges and filter chips are square solid lit tiles with dark text, never tints or pills.
+- Lit keys carry near-black text over their glowing face.
+- Every slider thumb is the black hourglass fader cap with its grey disc,
+  never the default accent dot.
+- Icon buttons, carousel arrows and window min/max are square bevelled soft
+  keys (ghost ones grey); the round back key and close disc are the only
+  round controls.
 - Leaves with a CRT-style power-off when you switch theme.
 
 ## Layout
 
-Black home bar across the top, no rail, the content on a radial
-navy-violet desk. Panels are lavender-blue with light headers.
+Black home bar across the top, no rail, the content on a flat
+navy-violet desk. Panels are royal blue with light headers; cards are strip blue.
 
 ## v5 layout
 
-- **Tiers:** phone and tablet keep the bar (it wraps); the desk scrolls.
+- **Tiers:** phone and tablet keep the bar. On a phone it is two rows at
+  most: the brand beside a nav that scrolls on one line, then the scene
+  field, search, bell and avatar. The desk scrolls.
 - **Gutter art:** a dark navy field with faint specks, within 1.5:1 of `--bg`.
-- **Nesting:** nested panels keep the same lavender with no second bevel.
+- **Nesting:** nested panels keep the same blue with no second bevel.
 
 ## Tell-tales of an inauthentic result
 

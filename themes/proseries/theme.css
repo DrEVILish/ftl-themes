@@ -28,7 +28,7 @@ html[data-theme="proseries"] {
   --danger: #ff6a3d;
   --success: #57d37a;
   --warning: #f1c232;
-  --danger-text: #ffcbbb;
+  --danger-text: #ffe4dc;
   --success-text: #a8f7bc;
   --warning-text: #fff0b0;
   --on-accent: #111111;
@@ -46,8 +46,11 @@ html[data-theme="proseries"] {
   --mark-fg: #111111;
 
   /* --- Buttons: grey bevels with dark bold text --------------------------- */
-  --btn-bg: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
-  --btn-bg-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  /* The grey soft-key face, shared by every grey key (flat on touch). */
+  --ps-key-face: linear-gradient(180deg, #ececec, #c4c4c4 48%, #a9a9a9 52%, #bdbdbd);
+  --ps-key-face-hover: linear-gradient(180deg, #ffffff, #d6d6d6 48%, #bcbcbc 52%, #cdcdcd);
+  --btn-bg: var(--ps-key-face);
+  --btn-bg-hover: var(--ps-key-face-hover);
   --btn-fg: #111111;
   --btn-border: #2a2a2a;
   --btn-radius: 3px;
@@ -68,15 +71,27 @@ html[data-theme="proseries"] {
   --input-border: #6b77aa;
   --input-radius: 2px;
   --label-fg: #dfe4ff;
+  /* Labels are bold mixed case, never uppercase tracked. */
+  --label-transform: none;
+  --label-tracking: 0;
+  --table-head-transform: none;
+  --table-head-tracking: 0;
 
-  /* --- Surfaces: lavender-blue panels, navy title bars ------------------- */
-  --panel-bg: linear-gradient(180deg, #4f5c98, #424e86);
+  /* --- Surfaces: royal-blue panels, navy title bars ---------------------- */
+  /* The sidebar's saturated royal-blue section, flat (one fill keeps
+     scroll frames cheap), as light as small bold muted text keeps 4.5:1. */
+  --panel-bg: #4b5ca8;
   --panel-border: #1a1f3d;
   --panel-radius: 4px;
-  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.45);
-  --panel-header-bg: linear-gradient(180deg, #a9b0d6, #8e97c4);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 0 rgba(0, 0, 0, 0.5);
+  /* The effects-page sidebar's light lavender section band, flat. */
+  --panel-header-bg: #a4aacb;
   --panel-header-fg: #14193a;
-  --card-bg: linear-gradient(180deg, #4f5c98, #424e86);
+  /* Cards are the console's blue channel strip, flat at the strip's
+     #3a62b4 band (a gradient here costs scroll frames); muted text in a
+     card lifts to near-white instead of darkening the blue. */
+  --card-bg: #3a62b4;
+  --card-border: #1d2a5e;
   --modal-bg: #4a578f;
   --modal-header-bg: linear-gradient(180deg, #4e63b3 0, #2c3d8e 55%, #23327a 100%);
   --modal-header-fg: #ffffff;
@@ -108,7 +123,7 @@ html[data-theme="proseries"] {
   --mixer-border: #0e1230;
   --mixer-radius: 0;
   --mixer-gap: 2px;
-  --strip-bg: linear-gradient(180deg, #4d74c4 0, #3a62b4 30%, #5d86d2 70%, #4677c9 100%);
+  --strip-bg: linear-gradient(180deg, #2f4fae 0, #3a62b4 30%, #5a82d0 70%, #3256ac 100%);
   --strip-border: #1d2a5e;
   --strip-radius: 0;
   --strip-rule: #2e3c7a;
@@ -124,13 +139,13 @@ html[data-theme="proseries"] {
   --key-border: #0b0b10;
   --key-radius: 3px;
   --key-mute: #ff2a1a;
-  --key-mute-fg: #ffffff;
+  --key-mute-fg: #111111;
   --key-solo: #f2d21a;
-  --key-solo-fg: #ffffff;
+  --key-solo-fg: #111111;
   --key-sel: #ffe82a;
-  --key-sel-fg: #ffffff;
+  --key-sel-fg: #111111;
   --key-on: #3df05a;
-  --key-on-fg: #ffffff;
+  --key-on-fg: #111111;
   /* Knobs: a ribbed black cap with a white pointer and a ring of white
      scale dots (no value arc; the console has none). */
   --knob-color: #1b1b1f;
@@ -218,7 +233,45 @@ html[data-theme="proseries"] {
   --rack-selected: #ffe33b;
   --log-bg: #000000;
   --progress-fill: linear-gradient(180deg, #8fb4ff, #3a62b4);
-  --switch-bg-on: #57d37a;
+  /* Switches are the console's square ON key: a grey key cap in a black
+     slot that lights as the green LED bar when on. */
+  --switch-bg: #07080f;
+  --switch-bg-on: #07080f;
+  --switch-border: #6b77aa;
+  --switch-border-on: #3df05a;
+  --switch-thumb-bg: #c4c4c4;
+  --switch-thumb-bg-on: #3df05a;
+  --switch-thumb-radius: 2px;
+  /* Square and bevelled: tiles and toggles, not pills. */
+  --badge-radius: 2px;
+  --switch-radius: 2px;
+  /* The slider track is the console's black fader slot. */
+  --slider-bg: linear-gradient(180deg, #050505 0 calc(100% - 1px), rgba(255, 255, 255, 0.4) 0);
+  --slider-height: 6px;
+  /* The thumb is the fader cap turned on its side: black hourglass body,
+     grey disc, the centre line across the travel. */
+  --slider-thumb-bg:
+    linear-gradient(#1a1a1a, #1a1a1a) 50% 50% / 2px 86% no-repeat,
+    radial-gradient(circle at 50% 50%, #b4b4b4 0 27%, #2a2a2a 28% 31%, transparent 32%),
+    radial-gradient(ellipse 10% 60% at 92% 50%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(ellipse 10% 60% at 6% 50%, rgba(255, 255, 255, 0.45), transparent 70%),
+    linear-gradient(180deg, #000 0, #2b2b2b 18%, #0c0c0c 50%, #2b2b2b 82%, #000 100%);
+  --slider-thumb-radius: 22% 22% 22% 22% / 46% 46% 46% 46%;
+  --slider-thumb-shadow: var(--fader-cap-shadow);
+  /* Yellow tints over the bright royal-blue panel wash out small text:
+     tinted rows, callouts and chips sit darker than the panel instead. */
+  --notification-unread-bg: rgba(0, 0, 0, 0.2);
+  --callout-bg: rgba(0, 0, 0, 0.22);
+  --btn-clear-bg-hover: rgba(0, 0, 0, 0.25);
+  --btn-clear-bg-active: #2c4fa8;
+  --comment-anchor-bg-active: color-mix(in srgb, #f1c232 30%, #1d2448);
+  --mention-self-bg: color-mix(in srgb, #f1c232 30%, #1d2448);
+  /* Icon keys are square bevels like every other soft key. */
+  --btn-icon-radius: var(--btn-radius);
+  --carousel-arrow-bg: var(--ps-key-face);
+  --carousel-arrow-fg: #111111;
+  /* Chart ticks: small bold labels, not display type (SVG text scales). */
+  --chart-text-size: 8px;
 
   /* --- Layout: black home bar over the desk, no rail, no status strip ---- */
   --app-bar-bg: linear-gradient(180deg, #111111, #000000);
@@ -227,7 +280,8 @@ html[data-theme="proseries"] {
   --app-bar-rule: #6b77aa;
   --app-bar-rule-width: 2px;
   --app-bg: #191d36;
-  --app-main-bg: radial-gradient(120% 90% at 50% 30%, #4a5895 0, #39457d 45%, #252c55 100%);
+  /* Flat desk behind the scroller (a radial here repaints on scroll). */
+  --app-main-bg: #39457d;
   --app-main-padding: 0.6rem;
   --app-padding: 0;
   --app-gap: 0;
@@ -235,8 +289,12 @@ html[data-theme="proseries"] {
   --app-status-bg: #000000;
   --app-status-fg: #d3d8f3;
   --nav-item-fg: #d3d8f3;
-  --nav-item-fg-active: #000000;
-  --nav-item-bg-active: linear-gradient(180deg, #d6e0ea, #8396a8);
+  /* The current item is the two-tone "home" tab: a light grey cap over a
+     navy lower half, bold white text with a dark outline. */
+  --nav-item-fg-active: #ffffff;
+  --nav-item-bg-active: linear-gradient(180deg, #d9dce6 0 42%, #2c3d8e 42%);
+  --menubar-item-bg-active: linear-gradient(180deg, #d9dce6 0 42%, #2c3d8e 42%);
+  --menubar-item-fg-active: #ffffff;
   --nav-brand-fg: #ffffff;
   --app-gutter-art:
     radial-gradient(1px 1px at 25% 35%, rgba(255, 255, 255, 0.35) 50%, transparent 51%) 0 0 / 9rem 9rem,
@@ -255,7 +313,10 @@ html[data-theme="proseries"] {
 
 /* Bold everywhere: the console sets every label in the bold face. */
 html[data-theme="proseries"] body { font-weight: 700; font-size: 0.9rem; }
-html[data-theme="proseries"] :is(h1, h2, h3, h4) { font-weight: 800; letter-spacing: -0.01em; }
+html[data-theme="proseries"] :is(h1, h2, h3, h4) { font-weight: 700; letter-spacing: -0.01em; }
+/* Running text is the one exception: the console has no paragraphs, and
+   long bold lines in a wide face tire the eye. Labels stay bold. */
+html[data-theme="proseries"] :is(.prose, textarea) { font-weight: 400; line-height: 1.5; }
 
 /* Knobs: scale dots outside the cap (white, every 27°), then the cap:
    a ribbed rim, a domed centre in --knob-color and the pointer line. A
@@ -281,6 +342,14 @@ html[data-theme="proseries"] .knob-dial::after {
 }
 html[data-theme="proseries"] .knob-label { text-transform: none; letter-spacing: 0; font-weight: 700; }
 
+/* Bold mixed-case labels everywhere (core uppercases a few directly). */
+html[data-theme="proseries"] :is(.stat-label, .field-group-title, .table th, .strip-label, .readout-unit) { text-transform: none; letter-spacing: 0; font-weight: 700; }
+html[data-theme="proseries"] :is(.label, .radio-group > legend, .field-hint, .switch-label, .badge) { font-weight: 700; }
+html[data-theme="proseries"] .label { letter-spacing: -0.01em; }
+/* Mixed-case heads are narrower than core's uppercase ones; keep a field
+   in a table cell a full touch target wide. */
+html[data-theme="proseries"] .table td > :is(.input, .select) { min-inline-size: var(--tap-min); }
+
 /* Keys: tinted dark face with the LED at the right end; the label sits
    left of it. Lit: the LED and a glow in the key's colour. */
 html[data-theme="proseries"] :is(.key, .btn) { text-transform: none; letter-spacing: 0; }
@@ -289,7 +358,6 @@ html[data-theme="proseries"] .key {
   --key-bg: linear-gradient(180deg, color-mix(in srgb, var(--_tone) 45%, #3a3a44) 0, color-mix(in srgb, var(--_tone) 36%, #141418) 55%, color-mix(in srgb, var(--_tone) 28%, #0a0a0c) 100%);
   --key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.6);
   --key-glow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 7px color-mix(in srgb, var(--_tone) 80%, transparent), 0 1px 2px rgba(0, 0, 0, 0.6);
-  --key-lit-fg: #ffffff;
   justify-content: flex-start;
   padding-inline: 0.35em 0.95rem;
   font-size: 0.66rem;
@@ -310,6 +378,7 @@ html[data-theme="proseries"] .key::after {
 html[data-theme="proseries"] :is(.key:has(input:checked), .key[aria-pressed="true"], .key.is-on) {
   background: linear-gradient(180deg, color-mix(in srgb, var(--_tone) 70%, #ffffff) 0, color-mix(in srgb, var(--_tone) 62%, #2a2a2a) 50%, color-mix(in srgb, var(--_tone) 48%, #000) 100%);
   border-color: color-mix(in srgb, var(--_tone) 55%, #000);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 html[data-theme="proseries"] :is(.key:has(input:checked), .key[aria-pressed="true"], .key.is-on)::after {
   background: radial-gradient(ellipse at 50% 40%, #ffffff 0 18%, var(--_tone) 55%, color-mix(in srgb, var(--_tone) 70%, #000));
@@ -318,7 +387,38 @@ html[data-theme="proseries"] :is(.key:has(input:checked), .key[aria-pressed="tru
 
 /* The home bar: a "home" tab, page title, black scene field. */
 html[data-theme="proseries"] .app-bar { font-size: 1rem; }
-html[data-theme="proseries"] .nav-brand { font-size: 1.35rem; font-weight: 800; }
+html[data-theme="proseries"] .nav-brand { font-size: 1.35rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.45rem; }
+/* The round back key before the page title (proseries.html draws its own). */
+html[data-theme="proseries"] .app-bar:not(.ps-bar) .nav-brand::before {
+  content: "\25C0";
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  border-radius: 50%;
+  border: 1px solid #000000;
+  background: radial-gradient(circle at 40% 30%, #8fa4d8, #2c3d8e 70%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  font-size: 0.6rem;
+  text-indent: -0.1em;
+  flex: none;
+}
+/* The current section in the bar is the two-tone grey "home" tab. */
+html[data-theme="proseries"] .app-bar .menubar > li > .is-active {
+  background: var(--menubar-item-bg-active);
+  color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 2px;
+  text-shadow: 0 1px 1px #000000, 0 0 2px #000000;
+}
+/* Fields in the bar are the black scene field with the name in yellow. */
+html[data-theme="proseries"] .app-bar {
+  --input-bg: #000000;
+  --input-fg: var(--ps-scene);
+  --input-border: #3a3a3a;
+  --select-arrow-fg: var(--ps-scene);
+}
 
 /* Modal and window titles: navy bars, bold white, the round close. */
 html[data-theme="proseries"] .modal-header { font-weight: 800; }
@@ -328,17 +428,118 @@ html[data-theme="proseries"] {
   --btn-close-width: 1.25rem;
   --btn-close-height: 1.25rem;
   --btn-close-radius: 50%;
+  /* Dark glyph on the white disc (hover falls back to navy + white). */
+  --btn-close-fg: #14193a;
+  --modal-header-close-fg: #14193a;
 }
+/* Minimise and maximise are square grey soft keys; only close is round. */
+html[data-theme="proseries"] :is(.btn-min, .btn-max) {
+  --btn-close-radius: 2px;
+  --btn-close-bg: var(--ps-key-face);
+  --btn-close-bg-hover: var(--ps-key-face-hover);
+  --btn-close-border-width: 1px;
+  --btn-close-border: #2a2a2a;
+  --btn-close-fg: #111111;
+  --btn-close-fg-hover: #111111;
+  --modal-header-close-fg: #111111;
+}
+html[data-theme="proseries"] .btn-close.is-danger { --btn-close-fg: #9a1e0a; }
+html[data-theme="proseries"] .card { --muted: #eef1ff; }
+/* Text tones on the light lavender header band go dark (the band is the
+   effects sidebar's section head, dark bold text on light). */
+html[data-theme="proseries"] .panel-header {
+  --muted: #262c55;
+  --link: #14193a;
+  --success-text: #0a3a16;
+  --warning-text: #4a3500;
+  --danger-text: #6a1404;
+}
+/* Dark chips inside the band keep the desk's light tones. */
+html[data-theme="proseries"] .panel-header .badge {
+  --muted: #dde2fb;
+  --success-text: #a8f7bc;
+  --warning-text: #fff0b0;
+  --danger-text: #ffe4dc;
+}
+
+/* Slider caps: wider along the travel than across it, black rim. */
+html[data-theme="proseries"] .slider::-webkit-slider-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
+html[data-theme="proseries"] .slider::-moz-range-thumb { width: 1.4rem; height: 0.95rem; border-color: #000000; }
+/* A vertical slider is the upright fader: the full cap and a 6px slot
+   centred in the touch-sized box (the slot is drawn, not the box). */
+html[data-theme="proseries"] .slider.is-vertical {
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 3px), #050505 0 calc(50% + 3px), transparent 0);
+  --slider-thumb-bg: var(--fader-cap-bg);
+  --slider-thumb-radius: var(--fader-cap-radius);
+}
+html[data-theme="proseries"] .slider.is-vertical::-webkit-slider-thumb { width: 0.95rem; height: 1.4rem; }
+html[data-theme="proseries"] .slider.is-vertical::-moz-range-thumb { width: 0.95rem; height: 1.4rem; }
+
+/* Switch thumb: a narrow upright key cap; on, it slides to the far end. */
+html[data-theme="proseries"] .switch-thumb { width: calc((1.4em * var(--density) - 6px) * 0.6); }
+html[data-theme="proseries"] :is(.switch input:checked ~ .switch-track, .switch[aria-checked="true"]) .switch-thumb {
+  margin-inline-start: calc((1.4em * var(--density) - 6px) * 0.4);
+  box-shadow: 0 0 5px #3df05a;
+}
+/* Carousel arrows are square soft keys like every icon key. */
+html[data-theme="proseries"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border-radius: 2px; border: 1px solid #2a2a2a; }
+html[data-theme="proseries"] .carousel::scroll-button(*) { border-radius: 2px; border: 1px solid #2a2a2a; }
+
+/* Headings stay console-sized: the largest type on the screen is the
+   page title in the black bar. */
+html[data-theme="proseries"] h1 { font-size: 1.5rem; }
+html[data-theme="proseries"] h2 { font-size: 1.2rem; }
 
 /* Strips keep their dark dividers and the black send block. */
 html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.25); }
 
 @container style(--tier: mobile) {
-  html[data-theme="proseries"] .nav-brand { font-size: 1.1rem; }
+  html[data-theme="proseries"] .nav-brand { font-size: 1.1rem; flex: none; }
+  html[data-theme="proseries"] .app-bar:not(.ps-bar) .nav-brand::before { display: none; }
+  /* Keep the black bar short on a phone: tighter gaps and smaller nav. */
+  html[data-theme="proseries"] .app-bar { font-size: 0.85rem; gap: 0.25rem 0.5rem; padding: 0.3rem 0.6rem; }
+  html[data-theme="proseries"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.45em; }
+  /* Two rows at most: brand + a nav that scrolls on one line, then the
+     scene field, search, bell and avatar. */
+  html[data-theme="proseries"] .app-bar { flex-wrap: wrap; row-gap: 0.25rem; }
+  html[data-theme="proseries"] .app-bar > nav { flex: 1 1 0; min-inline-size: 0; overflow-x: auto; scrollbar-width: none; }
+  html[data-theme="proseries"] .app-bar .menubar { flex-wrap: nowrap; }
+  html[data-theme="proseries"] .app-bar :is(.select, .input) { font-size: 0.8rem; min-block-size: var(--tap-min); padding-block: 0; max-inline-size: 8.5rem; }
+  html[data-theme="proseries"] .app-bar .cluster { flex-wrap: nowrap; gap: 0.35rem; }
+  html[data-theme="proseries"] .app-bar kbd { display: none; }
 }
 
 /* Primary keys are the navy "store preset / load preset" kind, not the
    yellow accent. */
+/* Secondary is the grey copy/paste key; tertiary a flat grey key; ghost a
+   key outline. No button is bare text on the desk. */
+html[data-theme="proseries"] .btn-secondary {
+  --btn-bg: var(--ps-key-face);
+  --btn-bg-hover: var(--ps-key-face-hover);
+  --btn-fg: #111111;
+  --btn-border: #2a2a2a;
+  --btn-border-hover: #2a2a2a;
+}
+html[data-theme="proseries"] .btn-tertiary {
+  --btn-bg: #9a9a9a;
+  --btn-bg-hover: #b4b4b4;
+  --btn-fg: #111111;
+  --btn-border: #2a2a2a;
+  --btn-border-hover: #2a2a2a;
+}
+html[data-theme="proseries"] .btn-ghost {
+  --btn-border: #6b77aa;
+  --btn-bg-hover: #6b77aa;
+  --btn-border-hover: #a2a8ca;
+}
+/* A ghost icon button is a grey soft key, not a ring on the desk. */
+html[data-theme="proseries"] .btn-icon.btn-ghost {
+  --btn-bg: var(--ps-key-face);
+  --btn-bg-hover: var(--ps-key-face-hover);
+  --btn-fg: #111111;
+  --btn-border: #2a2a2a;
+  --btn-border-hover: #2a2a2a;
+}
 html[data-theme="proseries"] .btn-primary { --btn-bg: var(--ps-primary-bg); --btn-fg: var(--ps-primary-fg); --btn-border: var(--ps-primary-border); }
 
 /* Channel name colours (data-color on a .scribble): the console's tag
@@ -358,3 +559,24 @@ html[data-theme="proseries"] .badge-accent { --badge-bg: var(--accent); --badge-
 html[data-theme="proseries"] .badge-success { --badge-bg: var(--success); --badge-fg: #0b1a10; }
 html[data-theme="proseries"] .badge-warning { --badge-bg: var(--warning); --badge-fg: #111111; }
 html[data-theme="proseries"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #111111; }
+
+/* Touch screens: one flat fill per key and band, so phone scrolling stays
+   inside the frame budget (the bevel survives as a single inset line). */
+@media (pointer: coarse) {
+  html[data-theme="proseries"] {
+    --ps-key-face: #c4c4c4;
+    --ps-key-face-hover: #d6d6d6;
+    --ps-primary-bg: #33479b;
+    --go-bg: #3faa58;
+    --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    --panel-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    --modal-header-bg: #2c3d8e;
+    --toast-bg: #2c3d8e;
+    --app-bar-bg: #000000;
+    --progress-fill: #5a86d8;
+  }
+  html[data-theme="proseries"] .key {
+    --key-bg: color-mix(in srgb, var(--_tone) 36%, #141418);
+    --key-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+}
