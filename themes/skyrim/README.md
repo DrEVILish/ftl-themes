@@ -30,21 +30,28 @@ reproduced.
 
 1. **Smoke, not glass and not solid.** Surfaces are near-black warm smoke
    (`#161512`–`#24231f`, sampled from SkyUI lists). They fade at the edges,
-   with no blur and no colour tint. Don't make them opaque grey slabs.
+   with no blur and no colour tint, and stay translucent (78–86% alpha)
+   so the cold mist behind reads through, as the world does in game.
+   Only modals and windows, which stack, get an opaque base. Don't make
+   them opaque grey slabs.
 2. **Thin silver rules with knotwork corners.** Frames are 1px
    `#6f6f6c` lines. Every panel and modal has a faint inner second rule
    and, over each outer corner, a small silver knot: two offset Ls joined
    at their tails by curls, and a looped strand in the corner woven over
-   the outer L and under the inner one. Don't add rounded corners or
-   thick borders.
+   the outer L and under the inner one. Rules, inner rule and knots are
+   one 9-slice `border-image`, so the frame costs one paint. Don't add
+   rounded corners (inputs included) or thick borders.
 3. **Condensed, white, quiet type.** One condensed sans for everything.
    Titles are uppercase with almost no tracking. Column heads are tiny grey
    caps. Body text is sentence case. Nothing is bold except emphasis.
 4. **Selection is light, not colour.** A selected row or item is a white
    band that fades out at both ends (`--sky-select`). In tables it ends in
-   an arrow tip, as in SkyUI. Primary buttons, pressed toggles, active
-   chips and menubar items use the same white light in a bright silver
-   rule. Selected list items and the active nav-rail folder take the
+   an arrow tip, as in SkyUI (a stacked phone card drops the tip and
+   takes a bright leading rule). Grouped choices (range chips, toggle
+   groups, segmented controls) are bare text entries with no box; the
+   chosen one is lit by the band, as are ghost buttons on hover. A lone
+   primary button is the lit plate with chevron end caps (the skills
+   menu's "Perks to increase"). Selected list items and the active nav-rail folder take the
    same fading band instead of an edge marker. There are no blue
    highlight fills.
 5. **Colour belongs to the game state.** Health red `#b33e3f` is danger,
@@ -56,7 +63,8 @@ reproduced.
    only a small leading `◆`.
 6. **Chevrons and diamonds are the ornament vocabulary.** Title bars and
    bars end in points. The active tab, and the active item of a
-   horizontal nav, is flanked by `◁ ▷`. Checkboxes and
+   horizontal nav, is flanked by bold silver arrowheads with a dark notch
+   (`◁ ▷`). Checkboxes and
    switch thumbs are diamonds (SkyUI's MCM). Section rules end in an open
    diamond.
 
@@ -66,16 +74,23 @@ reproduced.
   all round by a 1px silver rule that follows both diagonals of each
   point, with an interlaced double-diamond knot inside each point (the
   creation / journal title bar). On a phone the knot is dropped.
-- `.tab.is-active` reads `◁ OVERVIEW ▷`, and so does the active
-  `.nav-item` in a `.nav` or the app bar (the vertical rail keeps its
-  fading band instead). Inactive tabs are dimmed grey.
-- `.table`: tiny uppercase grey heads over one silver rule, row rules at a 4% hairline,
+- `.tab.is-active` reads `◁ OVERVIEW ▷`, the arrowheads drawn as filled
+  silver SVG triangles with a dark inner notch at about cap height, and
+  so does the active `.nav-item` in a `.nav` or the app bar (the vertical
+  rail keeps its fading band instead). Inactive tabs are the same size,
+  only dimmed grey.
+- `.table`: small uppercase grey heads (never under 12px) over one silver rule, row rules at a 4% hairline,
   and a selected row (`.is-selected` or `aria-selected`) drawn once on
   the row as one white band (clear at the start, brightest past the
   middle) ending in an arrow tip; its cells stay clear, and a cell state
   keeps only its leading bar while the row is lit. Data
   cells (`.mono`) use the condensed face with tabular figures, and a
-  trailing value column sits flush right.
+  trailing value column sits flush right. Stacked on a phone, the
+  selected card is the fading band with a bright 2px leading rule.
+- `.btn-primary` alone is a lit plate between filled chevron points with
+  silver rules top and bottom (no clip-path, so the focus ring is whole);
+  inside a `.btn-group` it is just the lit band. `.btn-group`,
+  `.toggle-group` and `.segmented` items have no box.
 - `.panel-header`: white caps followed by a thin rule running to an open
   diamond (the MCM section header).
 - `.progress` and horizontal `.meter`: diamond end caps (clip-path). The
@@ -106,20 +121,19 @@ reproduced.
 The game uses a condensed Futura (community-identified as Futura Condensed
 / Futura Std Condensed; not verified from the game files). Futura is
 commercial and is not vendored. The stack names `"Futura PT Cond"`,
-`"Futura Condensed"` and `"Futura Std Condensed"` first, then falls back to
-**Antonio** (Vernon Adams, SIL OFL 1.1). Antonio is already vendored in
-`assets/fonts/` for LCARS, so this theme adds no files. Antonio is
-narrower and more squared than Futura Condensed, but it keeps the tall,
-condensed, light voice. Stat values (`.stat-value`) use the UI font, not
-monospace, because the game has no monospace anywhere. `.mono` inside
-tables, logs and the status strip, `kbd`, whole `.log` lines and
-`.readout` use it too, with tabular figures; `code` and `pre` keep the
-mono stack. Body text uses 0.01em tracking and slightly wider word
-spaces (Antonio's are tighter than Futura's), and small text (hints,
-captions, the status strip) uses 0.03em tracking so it doesn't run
-together; `pre` and `code` keep normal spacing. No rounder condensed face is vendored in the repo, so Antonio
-stays the only fallback; a closer Futura stand-in would need a new font
-in `assets/fonts/`.
+`"Futura Condensed"` and `"Futura Std Condensed"` first, then
+**Sofia Sans Condensed** (Lettersoup, SIL OFL 1.1), vendored as a Latin
+subset of the variable font (weights 300–700,
+`assets/fonts/SofiaSansCondensed.woff2`, see `assets/fonts/NOTICE.md`).
+It has Futura Condensed's round O/C/G bowls and light stroke, where the
+repo's Antonio (next in the stack) is squarer and heavier. Text is set
+tight, with no added tracking or word space; only small grey text
+(hints, captions, the status strip) opens to 0.02em. Stat values
+(`.stat-value`) use the UI font, not monospace, because the game has no
+monospace anywhere. `.mono` inside tables, logs, the status strip,
+`.value-row` and `.meter-bank`, attachment file names, `kbd`, whole
+`.log` lines and `.readout` use it too, with tabular figures; `code` and
+`pre` keep the mono stack.
 
 ## Contrast honesty
 
@@ -176,7 +190,7 @@ it; the theme does not invent key glyphs for shell demos that have none.
 
 ## Print
 
-Smoke, the knotwork panel background, the rail and the clip-path end
+Smoke, the knotwork panel frame, the rail and the clip-path end
 caps are neutralised in a small `@media print` block.
 
 ## Reference status
