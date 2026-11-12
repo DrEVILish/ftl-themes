@@ -18712,9 +18712,8 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * a readout fall through to the mono stack instead of rendering as
  * garbled segments. The mono stack uses the repo's already-vendored Share
  * Tech Mono (assets/fonts/, OFL). The UI face is the Helvetica/Univers
- * silk-screen voice from the system; where none of those is installed it
- * falls to the repo's vendored Titillium Web (OFL, assets/fonts/), a tight
- * engineering grotesque, rather than a wide rounded system sans.
+ * silk-screen voice from the system, with the metric-compatible Arimo /
+ * Liberation Sans and Arial as fallbacks (every platform has one of them).
  *
  * Signature rules: beige is the housing, dark glass is only ever a
  * recessed window (readouts, inputs, meters, status strip). The four-colour
@@ -18731,25 +18730,6 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
   unicode-range: U+0030-0039, U+002D, U+002E, U+003A, U+0020;
 }
 @font-face {
-  font-family: "CF Grotesk";
-  src: url("../assets/fonts/TitilliumWeb-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-  /* Titillium's own 1.52em content area, trimmed to the glyphs. */
-  ascent-override: 96%;
-  descent-override: 26%;
-  line-gap-override: 0%;
-}
-@font-face {
-  font-family: "CF Grotesk";
-  src: url("../assets/fonts/TitilliumWeb-Bold.woff2") format("woff2");
-  font-weight: 600 800;
-  font-display: swap;
-  ascent-override: 96%;
-  descent-override: 26%;
-  line-gap-override: 0%;
-}
-@font-face {
   font-family: "Share Tech Mono";
   src: url("../assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
   font-display: swap;
@@ -18757,8 +18737,9 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
 
 html[data-theme="cassette-futurism"] {
   --motion-leave: power-off;
-  /* Vacuum-fluorescent displays glow amber here (metering.css VFD). */
-  --vfd-ink: #ffb547;
+  /* Core VFD panels glow the same teal as every readout window here;
+     .is-amber stays available as the explicit modifier. */
+  --vfd-ink: var(--cf-vfd);
   color-scheme: light;
   --bg: #d3c9b3;           /* beige ABS housing (PET 2001 / TEAC side panels) */
   --surface: #efe9dc;      /* off-white front panel */
@@ -18781,7 +18762,7 @@ html[data-theme="cassette-futurism"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 3px;
-  --font: "Helvetica Neue", Helvetica, "Nimbus Sans", Univers, Arimo, "Liberation Sans", Arial, "CF Grotesk", sans-serif;
+  --font: "Helvetica Neue", Helvetica, "Nimbus Sans", Univers, Arimo, "Liberation Sans", Arial, sans-serif;
   --font-mono: "Share Tech Mono", "IBM Plex Mono", "DejaVu Sans Mono", Consolas, monospace;
   --flare: #6fe8d6;        /* vacuum-fluorescent cyan: only inside dark windows */
   --focus: #1f6fd1;        /* a cool blue ring reads on beige, orange and the dark glass */
@@ -18898,6 +18879,9 @@ html[data-theme="cassette-futurism"] {
   --carousel-dot: var(--border);
   --carousel-dot-active: var(--cf-orange);
   --carousel-arrow-bg: var(--key-bg);
+  /* A selected desktop icon's name is black Dymo tape, like every label. */
+  --desktop-icon-label-bg-selected: var(--cf-tape);
+  --desktop-icon-label-fg-selected: #ffffff;
 
   /* Tables: dark top-deck head band over an orange rule, beige zebra. */
   --table-head-bg: var(--cf-choc);
@@ -18991,14 +18975,19 @@ html[data-theme="cassette-futurism"] {
   --switch-bg-on:
     linear-gradient(var(--cf-orange), var(--cf-orange)) center / calc(100% - 0.7em) 0.3em no-repeat,
     linear-gradient(180deg, #e2dccd, #b8ae9b);
+  /* ball (dark-outlined, ~0.65x the nut), then the pivot: a chrome ring
+     nut (dark rim, bright face, dark bore), then a two-step shaft that
+     narrows from the nut toward the ball */
   --switch-thumb-bg:
-    radial-gradient(circle at 0.45em 50%, #ffffff 0, #e4e4de 0.1em, #9a9a94 0.27em, #3e3e3a 0.39em, transparent 0.41em),
-    radial-gradient(circle at calc(100% - 0.48em) 50%, #2d2721 0 0.17em, #a9a196 0.19em, #e6e1d6 0.3em, #6a6156 0.42em, transparent 0.44em),
-    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1em) 0.34em no-repeat;
+    radial-gradient(circle at 0.4em 50%, #ffffff 0, #e4e4de 0.1em, #9a9a94 0.24em, #3e3e3a calc(0.37em - 1px), #0d0b09 calc(0.37em - 1px) 0.37em, transparent calc(0.37em + 0.5px)),
+    radial-gradient(circle at calc(100% - 0.62em) 50%, #120e0a 0 0.15em, #6a6156 0.18em, #f4f1ea 0.29em, #b9b2a6 0.42em, #ece8de 0.5em, #3e372f 0.56em, transparent 0.58em),
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) right 0.62em center / calc(50% - 0.62em) 0.3em no-repeat,
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1em) 0.17em no-repeat;
   --switch-thumb-bg-on:
-    radial-gradient(circle at calc(100% - 0.45em) 50%, #ffffff 0, #e4e4de 0.1em, #9a9a94 0.27em, #3e3e3a 0.39em, transparent 0.41em),
-    radial-gradient(circle at 0.48em 50%, #2d2721 0 0.17em, #a9a196 0.19em, #e6e1d6 0.3em, #6a6156 0.42em, transparent 0.44em),
-    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1em) 0.34em no-repeat;
+    radial-gradient(circle at calc(100% - 0.4em) 50%, #ffffff 0, #e4e4de 0.1em, #9a9a94 0.24em, #3e3e3a calc(0.37em - 1px), #0d0b09 calc(0.37em - 1px) 0.37em, transparent calc(0.37em + 0.5px)),
+    radial-gradient(circle at 0.62em 50%, #120e0a 0 0.15em, #6a6156 0.18em, #f4f1ea 0.29em, #b9b2a6 0.42em, #ece8de 0.5em, #3e372f 0.56em, transparent 0.58em),
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) left 0.62em center / calc(50% - 0.62em) 0.3em no-repeat,
+    linear-gradient(180deg, #f4f4ef, #9d9d97 40%, #3a3a36) center / calc(100% - 1em) 0.17em no-repeat;
 
   /* Sliders: slotted rail, square chrome-capped knob. */
   /* A 6px fader slot: shadowed top lip, dark glass, worn lower edge. Drawn
@@ -19175,6 +19164,8 @@ html[data-theme="cassette-futurism"] :is(h1, h2, h3, h4) {
   font-weight: 700;
 }
 html[data-theme="cassette-futurism"] h1 { letter-spacing: 0.06em; }
+/* Class names in headings keep their real case. */
+html[data-theme="cassette-futurism"] :is(h1, h2, h3, h4) :is(code, kbd, samp) { text-transform: none; letter-spacing: 0; }
 /* The four-colour stripe under h1: the one piece of trim inside content. */
 html[data-theme="cassette-futurism"] h1::after {
   content: "";
@@ -19196,6 +19187,25 @@ html[data-theme="cassette-futurism"] .toggle-btn:active {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -2px 0 rgba(0, 0, 0, 0.16), 0 0 0 #4f4538;
 }
 html[data-theme="cassette-futurism"] .btn-go:active:not(:disabled) { transform: translateY(3px); }
+/* Ghost and tertiary keys are still keys: a lower-contrast cap (no 808
+   key is a bare legend), so the inherited skirt and drop sit under a
+   face. On the dark bands the cap is a dark choc key. */
+html[data-theme="cassette-futurism"] {
+  --cf-quiet-cap: linear-gradient(180deg, #ebe4d4, #d6ccb7);
+  --cf-quiet-cap-hover: linear-gradient(180deg, #f6f0e2, #e0d7c3);
+  --cf-quiet-edge: #8a7e68;
+}
+html[data-theme="cassette-futurism"] :is(.app-bar, .transport, .hero, .window-pane, .table th) {
+  --cf-quiet-cap: linear-gradient(180deg, #4a4036, #2e261f);
+  --cf-quiet-cap-hover: linear-gradient(180deg, #5a4e42, #3a3128);
+  --cf-quiet-edge: #120c06;
+}
+html[data-theme="cassette-futurism"] :is(.btn-ghost, .btn-tertiary) {
+  --btn-bg: var(--cf-quiet-cap);
+  --btn-bg-hover: var(--cf-quiet-cap-hover);
+  --btn-border: var(--cf-quiet-edge);
+  --btn-border-hover: var(--cf-quiet-edge);
+}
 /* Toggle buttons (and radio rows of them) are keycaps like .btn. */
 html[data-theme="cassette-futurism"] .toggle-btn { box-shadow: var(--btn-shadow); font-weight: 700; }
 html[data-theme="cassette-futurism"] :is(.toggle-btn[aria-pressed="true"], .toggle-btn:has(input:checked)) {
@@ -19223,7 +19233,7 @@ html[data-theme="cassette-futurism"] .tab:not(:is(.is-active, :where(:has(> inpu
 html[data-theme="cassette-futurism"] .tab { font-weight: 700; }
 /* Inside a fixed-height desktop window the four dialog tabs must fit one
    row, or the extra row pushes OK/CANCEL out of the window. */
-html[data-theme="cassette-futurism"] .desktop-window .tab { letter-spacing: 0.03em; padding-inline: 0.5em; }
+html[data-theme="cassette-futurism"] .desktop-window .tab { letter-spacing: 0.03em; padding-inline: 0.5em; font-size: 0.78rem; }
 /* A wider face (Helvetica Bold) still won't wrap: the row scrolls, as
    core's touch-tier tab rows do. */
 html[data-theme="cassette-futurism"] .desktop-window .tabs:not([aria-orientation="vertical"]) {
@@ -19278,12 +19288,26 @@ html[data-theme="cassette-futurism"] .hero {
   box-shadow: inset 0 0 0 6px var(--cf-choc), inset 0 0 0 7px var(--cf-orange);
 }
 
+/* Title bars and nav keys take the same tracked silk-screen caps as
+   headings and buttons; body and list text stays sentence case. */
+html[data-theme="cassette-futurism"] :is(.modal-header, .window-title, .popover > strong:first-child) {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+html[data-theme="cassette-futurism"] .nav :is(.nav-item, .nav-brand) {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
 /* --- Panels: ribbed vent slots ahead of the title -------------------------- */
 html[data-theme="cassette-futurism"] .panel-header {
   border-bottom: 2px solid #a99d86;
   letter-spacing: 0.12em;
 }
-html[data-theme="cassette-futurism"] .panel-header::before {
+html[data-theme="cassette-futurism"] :is(.panel-header, .card:has(> .price) > :is(h2, h3))::before {
   content: "";
   display: inline-block;
   vertical-align: -0.1em;
@@ -19311,6 +19335,8 @@ html[data-theme="cassette-futurism"] :is(.badge, .tooltip) {
 }
 html[data-theme="cassette-futurism"] .badge { font-size: 0.7rem; }
 html[data-theme="cassette-futurism"] .badge-accent { --badge-bg: #a84400; --badge-fg: #ffffff; }
+/* On a lit orange nav key, a count badge is black tape, not rust on orange. */
+html[data-theme="cassette-futurism"] :is(.nav-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .nav-item[aria-current="page"]) .badge { --badge-bg: var(--cf-tape); --badge-fg: #ffffff; }
 html[data-theme="cassette-futurism"] .badge-danger { --badge-bg: #b01b0b; --badge-fg: #ffffff; }
 html[data-theme="cassette-futurism"] .badge-success { --badge-bg: #1f6326; --badge-fg: #ffffff; }
 html[data-theme="cassette-futurism"] .badge-warning { --badge-bg: var(--cf-yellow); --badge-fg: #1a1408; }
@@ -19340,6 +19366,8 @@ html[data-theme="cassette-futurism"] .otp {
   background: var(--cf-window);
   border-radius: 2px;
 }
+/* The KPI legend is silk-screened over its window, on every card alike. */
+html[data-theme="cassette-futurism"] .stat-label { display: block; margin-block-end: 0.35rem; order: -1; }
 /* KPI figures sit behind dark glass too: a recessed readout window. */
 html[data-theme="cassette-futurism"] .stat-value {
   display: inline-block;
@@ -19376,18 +19404,30 @@ html[data-theme="cassette-futurism"] .meter-v:not(.is-segmented) > .meter-fill {
 /* --- Lamps on alerts and toasts: a round LED in a chrome bezel, lit in
    the message's own colour, ahead of the text. */
 html[data-theme="cassette-futurism"] :is(.alert, .toast)::before {
-  --_lamp: var(--alert-border, var(--border));
   content: "";
   flex: none;
-  inline-size: var(--lamp-size);
-  block-size: var(--lamp-size);
+  inline-size: 0.85em;
+  block-size: 0.85em;
   margin-block-start: 0.2em;
   border-radius: 50%;
   border: var(--lamp-border-width) solid var(--lamp-border);
-  background: var(--_lamp);
-  box-shadow: inset 0 -2px 2px rgba(0, 0, 0, 0.3), 0 0 0.4rem var(--_lamp);
+  background: radial-gradient(circle at 40% 35%, rgba(255, 255, 255, 0.75) 0, var(--_led) 45%, color-mix(in srgb, var(--_led), #000 35%));
+  box-shadow: 0 0 0.4rem var(--_led);
 }
-html[data-theme="cassette-futurism"] .toast::before { --_lamp: var(--toast-border); }
+/* Each lamp is the bright LED, not the darkened text-safe token; a
+   neutral message keeps an unlit dome. */
+html[data-theme="cassette-futurism"] :is(.alert, .toast) { --_led: #6b5f50; }
+html[data-theme="cassette-futurism"] .alert-info { --_led: #ff8a1f; }
+html[data-theme="cassette-futurism"] :is(.alert-success, .toast-success) { --_led: #3fd04a; }
+html[data-theme="cassette-futurism"] :is(.alert-warning, .toast-warning) { --_led: #ffc21a; }
+html[data-theme="cassette-futurism"] :is(.alert-danger, .toast-danger) { --_led: #ff3b25; }
+/* Alerts are moulded plates like panels: a hairline housing, lit top lip,
+   hard ledge, and the message colour as a label strip down the lead edge. */
+html[data-theme="cassette-futurism"] .alert {
+  border-color: #a99d86;
+  border-inline-start: 0.4rem solid var(--alert-border, var(--border));
+  box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
+}
 /* The live-feed lamp is the same LED: a chrome bezel round a lit core. */
 html[data-theme="cassette-futurism"] .connection[data-state="live"]::before {
   border-color: var(--lamp-border);
@@ -19423,18 +19463,28 @@ html[data-theme="cassette-futurism"] .carousel-nav > :is(.carousel-prev, .carous
  * the pivot stays put while the ball throws left (off) or right (on). The
  * slot under it lights orange when on, so the state is carried by lever
  * position AND colour. */
-html[data-theme="cassette-futurism"] .switch:not(button) { width: calc(3.4em * var(--density)); }
-html[data-theme="cassette-futurism"] .switch {
-  --switch-shift: calc(1.22em * var(--density) - 4px);
+html[data-theme="cassette-futurism"] .switch:not(button) {
+  width: calc(4.2em * var(--density));
+  height: calc(1.6em * var(--density));
 }
-html[data-theme="cassette-futurism"] button.switch .switch-track { width: calc(3.4em * var(--density)); }
+html[data-theme="cassette-futurism"] .switch {
+  --switch-shift: calc(2.1em * var(--density) - 0.62em - 4px);
+}
+html[data-theme="cassette-futurism"] :is(button.switch, label.switch:has(> .switch-label)) {
+  width: auto;
+  height: auto;
+}
+html[data-theme="cassette-futurism"] :is(button.switch, label.switch:has(> .switch-label)) > .switch-track {
+  width: calc(4.2em * var(--density));
+  height: calc(1.6em * var(--density));
+}
 html[data-theme="cassette-futurism"] .switch-track {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 0 #5d5344;
 }
 html[data-theme="cassette-futurism"] .switch-thumb {
-  width: calc(2.18em * var(--density) - 4px);
+  width: calc(2.1em * var(--density) + 0.62em - 4px);
   top: 1px;
-  height: calc(1.4em * var(--density) - 6px);
+  height: calc(1.6em * var(--density) - 6px);
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
 }
 
@@ -19465,7 +19515,7 @@ html[data-theme="cassette-futurism"] {
   --app-rail-padding: 0;
   --app-rail-bg:
     var(--cf-stripes) center 0.8rem / 1.6rem 0.5rem no-repeat,
-    repeating-linear-gradient(180deg, #3a3129 0 4px, #c4b9a2 4px 6px, var(--bg) 6px 10px) center 2rem / 1.6rem calc(100% - 3rem) no-repeat,
+    repeating-linear-gradient(180deg, #4a4034 0 3px, rgba(255, 253, 247, 0.6) 3px 4px, transparent 4px 7px) center 2rem / 1.6rem min(40%, 18rem) no-repeat,
     var(--surface-2);
   --app-main-bg: var(--surface);
   --app-main-padding: 1.4rem;
@@ -19496,6 +19546,21 @@ html[data-theme="cassette-futurism"] .app-bar {
   position: relative;
   z-index: var(--z-raised);
 }
+/* Menubar keys are buttons, which do not inherit the deck's caps. */
+html[data-theme="cassette-futurism"] .app-bar .menubar > li > :is(button, a) {
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+html[data-theme="cassette-futurism"] .app-bar .menubar {
+  --menubar-item-bg-active: var(--cf-orange);
+  --menubar-item-fg-active: #120c06;
+}
+/* The current top-level key latches like the active nav key. */
+html[data-theme="cassette-futurism"] .app-bar .menubar > li > :is(button, a):is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-expanded="true"], [aria-current="page"]) {
+  background: var(--cf-orange);
+  color: #120c06;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.2), 0 2px 0 #4f4538;
+}
 /* Brand on red Dymo tape. */
 html[data-theme="cassette-futurism"] .app-bar .nav-brand {
   background: #b01b0b;
@@ -19508,8 +19573,16 @@ html[data-theme="cassette-futurism"] .app-bar .nav-brand {
 }
 html[data-theme="cassette-futurism"] .app-main {
   border: 1px solid #a99d86;
-  box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
+  /* moulded: lit top lip, shaded lower lip, then a hard ledge onto the housing */
+  box-shadow: inset 0 1px 0 #ffffff, inset 0 -2px 0 #ddd4c2,
+    inset 0 0 0 8px var(--surface), inset 0 0 0 9px #b6aa93,
+    0 2px 0 #9d917a, 0 4px 0 #b6aa93;
+  /* the housing's ABS stipple, fainter on the front plate */
+  background-image: radial-gradient(rgba(80, 60, 30, 0.045) 1px, transparent 1.2px);
+  background-size: 5px 5px;
 }
+/* Status in a table row reads at the row's size, not core's 0.85em. */
+html[data-theme="cassette-futurism"] td .status { font-size: inherit; }
 html[data-theme="cassette-futurism"] .app-rail {
   border: 1px solid #a99d86;
   box-shadow: inset 0 1px 0 #ffffff, 0 3px 0 #b6aa93;
@@ -19545,6 +19618,18 @@ html[data-theme="cassette-futurism"] {
   html[data-theme="cassette-futurism"] .app-bar > .nav-brand { flex: 0 1 auto; letter-spacing: 0.1em; }
   /* The LED strip's wide tracking and bezel would push the tray out. */
   html[data-theme="cassette-futurism"] .app-status { letter-spacing: 0.04em; font-size: 0.74rem; }
+  /* Deck in three rows: brand with the icon keys, then links, then the
+     wide controls. The action cluster unwraps so its icon keys can join
+     the brand row. */
+  html[data-theme="cassette-futurism"] .app-bar { row-gap: 0.4rem; }
+  html[data-theme="cassette-futurism"] .app-bar > .cluster { display: contents; }
+  html[data-theme="cassette-futurism"] .app-bar > .nav-brand { order: -2; margin-inline-end: auto; }
+  html[data-theme="cassette-futurism"] .app-bar > .cluster > .btn-icon { order: -1; }
+  html[data-theme="cassette-futurism"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.5em; letter-spacing: 0.02em; }
+  /* Setting rows: tighter tracking so the legend fits, wrap if not, and
+     air between the toggle and the row's edge. */
+  html[data-theme="cassette-futurism"] .field-row { padding-inline-end: 0.85rem; }
+  html[data-theme="cassette-futurism"] .field-row > .label { letter-spacing: 0.03em; white-space: normal; }
 }
 
 /* Phone render budget: the stipple, VFD glows and soft drop shadows are
@@ -19562,6 +19647,25 @@ html[data-theme="cassette-futurism"] {
     --go-shadow-hover: inset 0 -6px 0 rgba(0, 0, 0, 0.16), 0 3px 0 #2a221c;
   }
   html[data-theme="cassette-futurism"] .app-status { text-shadow: none; }
+  /* flat plate; the 8px frame would sit under the phone's thinner padding */
+  html[data-theme="cassette-futurism"] .app-main {
+    background-image: none;
+    box-shadow: inset 0 1px 0 #ffffff, inset 0 -2px 0 #ddd4c2, 0 2px 0 #9d917a, 0 4px 0 #b6aa93;
+  }
+  /* no emboss, no filter, no blurred inset wells */
+  html[data-theme="cassette-futurism"] :is(.badge, .badge-warning, .tooltip, .app-bar .nav-brand) { text-shadow: none; }
+  html[data-theme="cassette-futurism"] .switch-thumb { filter: none; }
+  html[data-theme="cassette-futurism"] :is(.stat-value, .app-status) { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.7); }
+  /* the stripe as one border-image strip, not four stacked shadows; keys
+     keep only the hard drop; no vents */
+  html[data-theme="cassette-futurism"] .app-bar {
+    --app-bar-bg: var(--cf-stripes-h) bottom / 100% 12px no-repeat border-box, linear-gradient(var(--cf-choc), var(--cf-choc)) padding-box;
+    box-shadow: none;
+    border-bottom: 12px solid transparent;
+  }
+  html[data-theme="cassette-futurism"] .segmented-item:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { box-shadow: 0 2px 0 #0d0a07; }
+  html[data-theme="cassette-futurism"] .tab:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { box-shadow: none; }
+  html[data-theme="cassette-futurism"] :is(.panel-header, .card:has(> .price) > :is(h2, h3))::before { content: none; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the housing carries on past the deck.
@@ -19575,7 +19679,7 @@ html[data-theme="cassette-futurism"] {
 }
 
 @media print {
-  html[data-theme="cassette-futurism"] { background-image: none; }
+  html[data-theme="cassette-futurism"], html[data-theme="cassette-futurism"] .app-main { background-image: none; }
   html[data-theme="cassette-futurism"] {
     --readout-glow: none;
     --readout-bg: #ffffff;

@@ -18797,6 +18797,18 @@ html[data-theme="msdos"] {
   --modal-bg: #aaaaaa;
   --modal-border: #ffffff;
   --modal-shadow: 2ch 1em 0 #000000;
+  /* Floating boxes: never core's soft blur. Menus and popovers drop the
+     same hard one-cell black shadow as a dialog (Norton / Turbo Vision);
+     toasts, drawers, knobs and fader caps are flat. */
+  --panel-shadow: none;
+  --context-menu-shadow: 2ch 1em 0 #000000;
+  --popover-shadow: 2ch 1em 0 #000000;
+  --toast-shadow: none;
+  --drawer-shadow: none;
+  --knob-shadow: none;
+  --fader-cap-shadow: none;
+  /* The start menu is one cell size too. */
+  --start-menu-font-size: 1rem;
   --modal-header-bg: transparent;
   --modal-header-fg: #000000;
   --input-bg: #0000aa;
@@ -18834,7 +18846,7 @@ html[data-theme="msdos"] {
   /* Text mode has no translucency: a dragged card stays solid. */
   --kanban-drag-opacity: 1;
   /* The VGA font has one weight: never smear it into a faux bold.
-     Emphasis is colour (white over the grey body, yellow headings). */
+     Emphasis is colour (white text over grey muted text, yellow headings). */
   font-synthesis-weight: none;
   /* Headings: bright yellow on the blue screen; dialogs reset it. */
   --heading-fg: #ffff55;
@@ -18879,6 +18891,43 @@ html[data-theme="msdos"] {
   --tab-bg-active: #00aaaa;
   --tab-fg-active: #000000;
   --tab-underline-active: #00aaaa;
+  /* The DOS setup progress bar: a yellow block run in a white box. Meters
+     keep their own green/yellow/red ramp. */
+  --progress-fill: #ffff55;
+  --progress-border: #ffffff;
+  /* Presence is a half-cell block standing off the avatar's corner, so it
+     never covers the initials. */
+  --presence-dot-size: 0.5rem;
+  /* Phone home screen and dock: flat reverse-video cells, no squircle,
+     gloss or shadow (a flat image layer hides core's gradient). */
+  --home-tile-radius: 0;
+  --home-tile-shadow: none;
+  --home-glyph: #000000;
+  --home-label-size: 1rem;
+  /* Three 7rem columns: a 12-letter name fits one 16px line. */
+  --home-cell-min: 6.5rem;
+  --home-dot: #aaaaaa;
+  --home-dot-active: #55ffff;
+  --dock-tile-radius: 0;
+  --dock-tile-shadow: none;
+  --dock-glyph: #000000;
+  --dock-radius: 0;
+  --dock-shadow: none;
+}
+/* Set on the tile itself so --_tile resolves per app, not at the root. */
+html[data-theme="msdos"] .desktop .icon {
+  --home-tile: linear-gradient(var(--_tile, var(--accent)), var(--_tile, var(--accent)));
+  --dock-tile: var(--home-tile);
+}
+html[data-theme="msdos"] .avatar[data-status]::after { inset-block-end: -0.35rem; inset-inline-end: -0.35rem; }
+/* An attached button sits flush in its group: no shadow over the next line. */
+html[data-theme="msdos"] .input-group > .btn { box-shadow: none; }
+/* Core hard-codes round page dots; a selected tile keeps its black glyph. */
+@container style(--_shell: home) {
+  html[data-theme="msdos"] .desktop-pages > span { border-radius: 0; }
+  html[data-theme="msdos"] .desktop-icon .icon { --desktop-icon-glyph-selected: #000000; }
+  /* Names wrap at words only: a 9px cell never splits "Neighborhood". */
+  html[data-theme="msdos"] .desktop-icon span { padding-inline: 0; overflow-wrap: normal; hyphens: manual; }
 }
 
 html[data-theme="msdos"] .input,
@@ -18893,7 +18942,9 @@ html[data-theme="msdos"] .transport,
 html[data-theme="msdos"] .card { border-style: double; border-width: 3px; border-color: #ffffff; }
 /* Menus, popovers, list boxes, alerts and toasts are double-line boxes too;
    alerts and toasts keep their state colour as the line colour. */
-html[data-theme="msdos"] :is(.context-menu, .popover, .list, .alert, .toast, .switch-track) { border-style: double; border-width: 3px; }
+html[data-theme="msdos"] :is(.context-menu, .popover, .list, .alert, .toast, .switch-track, .log, .dropzone) { border-style: double; border-width: 3px; }
+/* A field group's title is underlined with the double rule too. */
+html[data-theme="msdos"] .field-group-title { border-bottom: 3px double var(--hairline); }
 html[data-theme="msdos"] .toggle-btn { border-style: double; }
 /* A lone toggle is a button: shadowed off, pressed in when on. Joined
    toggles (a .toggle-group) stay flat; the lit cell marks the choice. */
@@ -19014,19 +19065,21 @@ html[data-theme="msdos"] h1 {
   text-transform: uppercase;
 }
 html[data-theme="msdos"] h2 {
-  /* Medium: bright text plus a double-line rule underneath, echoing the
-     theme's double-line box borders instead of introducing a new motif. */
-  color: var(--accent-2);
+  /* Medium: the same yellow plus a double-line rule underneath, echoing
+     the theme's double-line box borders instead of introducing a new motif. */
+  color: var(--heading-fg);
   text-transform: uppercase;
   border-bottom: 3px double var(--accent-2);
   padding-bottom: 0.3em;
 }
 html[data-theme="msdos"] h3 {
-  /* Mildest: accent color only, no rule and no fill — still a step above
+  /* Mildest: yellow only, no rule and no fill — still a step above
      plain body text, a step below h2. */
-  color: var(--accent-2);
+  color: var(--heading-fg);
   text-transform: uppercase;
 }
+/* A heading under h2's double rule starts on its own text row. */
+html[data-theme="msdos"] h2 + :is(h1, h2, h3, h4) { margin-block-start: 1lh; }
 
 /* .panel-header previously fell back to transparent/muted-grey — dimmer
    than the panel's own white body text, the opposite of a header reading
@@ -19148,7 +19201,8 @@ html[data-theme="msdos"] .app-bar .nav-item { padding: 0.1em 1ch; }
    blocks, 8 cells each. Two layers of the same monospaced string: ::before
    paints the cyan blocks and the black labels, ::after only the numbers
    (labels blanked with spaces) in grey on top, cell for cell. */
-html[data-theme="msdos"] .app-status { position: relative; padding-top: 1.6rem; }
+html[data-theme="msdos"] .app-status { position: relative; }
+html[data-theme="msdos"] .app-status:not(.desktop-bar) { padding-top: 1.6rem; }
 html[data-theme="msdos"] .app-status::before,
 html[data-theme="msdos"] .app-status::after {
   position: absolute;
@@ -19162,14 +19216,14 @@ html[data-theme="msdos"] .app-status::after {
   max-width: calc(100% - 1rem);
 }
 html[data-theme="msdos"] .app-status::before {
-  content: "1Help   2Menu   3View   4Edit   5Copy   6RenMov 7Mkdir  8Delete 9PullDn 10Quit ";
+  content: "1Help   2Menu   3View   4Edit   5Copy   6RenMov 7Mkdir  8Delete 9PullDn 10Quit " / "";
   color: #000000;
   background:
     linear-gradient(90deg, #000 0 2ch, #00aaaa 2ch 7.5ch, #000 7.5ch) 72ch 0 / 8ch 100% no-repeat,
     repeating-linear-gradient(90deg, #000 0 1ch, #00aaaa 1ch 7.5ch, #000 7.5ch 8ch) 0 0 / 72ch 100% no-repeat;
 }
 html[data-theme="msdos"] .app-status::after {
-  content: "1       2       3       4       5       6       7       8       9       10     ";
+  content: "1       2       3       4       5       6       7       8       9       10     " / "";
   color: #aaaaaa;
 }
 /* From the desktop tier the ten keys share the strip's full width, as
@@ -19185,20 +19239,17 @@ html[data-theme="msdos"] .app-status::after {
     tab-size: 10cqi;
   }
   html[data-theme="msdos"] .app-status::before {
-    content: "1Help\9 2Menu\9 3View\9 4Edit\9 5Copy\9 6RenMov\9 7Mkdir\9 8Delete\9 9PullDn\9 10Quit";
+    content: "1Help\9 2Menu\9 3View\9 4Edit\9 5Copy\9 6RenMov\9 7Mkdir\9 8Delete\9 9PullDn\9 10Quit" / "";
     background:
       linear-gradient(90deg, #000 0 2ch, transparent 2ch) 100% 0 / 10% 100% no-repeat,
       repeating-linear-gradient(90deg, #000 0 1ch, #00aaaa 1ch calc(10% - 1ch), #000 calc(10% - 1ch) 10%);
   }
-  html[data-theme="msdos"] .app-status::after { content: "1\9 2\9 3\9 4\9 5\9 6\9 7\9 8\9 9\9 10"; }
+  html[data-theme="msdos"] .app-status::after { content: "1\9 2\9 3\9 4\9 5\9 6\9 7\9 8\9 9\9 10" / ""; }
 }
-/* A phone desktop (dock or home screen) lifts the taskbar tray into
-   the menu bar: no F-key row there (it landed over the tray). */
-@container style(--_shell: dock) or style(--_shell: home) {
-  html[data-theme="msdos"] .desktop-bar { padding-top: 0; }
-  html[data-theme="msdos"] .desktop-bar::before,
-  html[data-theme="msdos"] .desktop-bar::after { content: none; }
-}
+/* The desktop's Start taskbar is its own status strip: no Norton F-key
+   row stacked over it. */
+html[data-theme="msdos"] .desktop-bar::before,
+html[data-theme="msdos"] .desktop-bar::after { content: none; }
 
 /* XL gutters (v5, PLAN.md §3): the Turbo Vision desktop. Beyond the
    capped shell the blue screen carries the CP437 light-shade fill (░)
@@ -19327,7 +19378,10 @@ html[data-theme="msdos"] :is(.spinner:not(.is-grow), .indicator)::before { conte
 html[data-theme="msdos"] td > .input { min-inline-size: var(--tap-min); }
 /* Text-mode windows had no title icon: the close box sits at the left. */
 html[data-theme="msdos"] .desktop-window .modal-header > .icon { display: none; }
-html[data-theme="msdos"] .desktop-window .modal-header { padding-inline-start: calc(0.5rem + 4ch); }
+html[data-theme="msdos"] .desktop-window .modal-header { padding-inline-start: calc(0.5rem + 4ch); width: auto; margin-inline: 0; }
+/* Turbo Vision: the title centred in the top line, [■] at the far left,
+   the _ and □ boxes at the far right edge. */
+html[data-theme="msdos"] .desktop-window .modal-header > .window-title { flex: 1; text-align: center; }
 /* One cell size: the 9x16 glyphs are drawn at 16px (h1 and stat figures
    at 32px), never at a fractional size that smears the pixels. */
 html[data-theme="msdos"] :is(small, th, .input, .select, .textarea, td, label, .label, .btn, .btn-sm, .badge, .tab, .nav-item, .breadcrumb-item,
@@ -19335,7 +19389,11 @@ html[data-theme="msdos"] :is(small, th, .input, .select, .textarea, td, label, .
   .pagination-item, .list-item-meta, .figure-caption, figcaption, .log-time, .command-hint, .chart-tooltip, .input-addon,
   .avatar, .message-meta > *, .attachment-size, .window-status, .empty-state-hint, .panel-header, .app-status, h2, h3, h4, h5, h6,
   .menubar, .menubar *, .log, .log *, .connection, .legend, .chart-legend, .accordion-trigger, .segmented-item, .typing, .scrollspy-link,
-  .field-group-title, .thread-divider, .desktop-icon span, .tree *, .donut, .price-period, .readout-unit) { font-size: 1rem; }
+  .field-group-title, .thread-divider, .desktop-icon span, .tree *, .donut, .price-period, .readout-unit,
+  .carousel-nav, .carousel-nav *, .schedule, .schedule *, .sticky-top, .meter-bank span,
+  .start-menu *, .command *, .prefs-hint, .prefs-accents *, .demo-heat-days li) { font-size: 1rem; }
+/* Core's command-palette hint rule is more specific than the list above. */
+html[data-theme="msdos"] .command-list :is([role="option"] > .command-hint, [role="group"] > [role="presentation"]) { font-size: 1rem; }
 html[data-theme="msdos"] :is(.stat-value, .price) { font-size: 2rem; }
 html[data-theme="msdos"] .donut :is(strong, .donut-value) { font-size: 1em; }
 html[data-theme="msdos"] .readout { --readout-size: 1rem; }
@@ -19354,7 +19412,15 @@ html[data-theme="msdos"] .tab { padding: 0.25em 1ch; }
      its accessible name), so the controls fit one line. */
   html[data-theme="msdos"] .app-bar .btn:has(> kbd) { font-size: 0; padding: 0; min-inline-size: var(--tap-min); justify-content: center; }
   html[data-theme="msdos"] .app-bar .btn:has(> kbd) > .icon { font-size: 1rem; }
+  /* Its folded hint would still paint a speck of border and padding. */
+  html[data-theme="msdos"] .app-bar .btn:has(> kbd) > kbd { display: none; }
 }
+/* EDIT's menu bar: each title is its name with one blank cell either side,
+   so the demo menus fit one line of a phone. */
+html[data-theme="msdos"] .app-bar .menubar { --menubar-pad: 0; }
+html[data-theme="msdos"] .app-bar .menubar > li > :is(button, a) { padding-inline: 1ch; }
+/* The cyan cursor bar is black ink throughout: a trailing chevron too. */
+html[data-theme="msdos"] .list-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { --muted: var(--row-selected-fg); }
 
 /* --- Polish round 3 ------------------------------------------------------ */
 /* Chart strokes are hard pixel steps, never anti-aliased slopes. */
@@ -19386,6 +19452,24 @@ html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal
 html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > .btn-close { --btn-close-bg: #aaaaaa; left: 2ch; }
 /* Desktop dialogs: the tab row stays one line so the body never clips
    the OK / CANCEL row. */
-html[data-theme="msdos"] .desktop-window .tabs { flex-wrap: nowrap; gap: 0; }
+html[data-theme="msdos"] .desktop-window .tabs { flex-wrap: nowrap; gap: 0; overflow-x: auto; }
+/* A text-mode tab label never wraps. */
+html[data-theme="msdos"] .desktop-window .tab { white-space: nowrap; }
+/* A plain dialog with _ / □ boxes: the grey patch sits behind the title
+   only, and the boxes cut their own gap in the double line at the far
+   right edge, as on a desktop window. */
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header:has(> .btn-min, > .btn-max) { background: transparent; width: auto; margin-inline: 0; padding-inline: 5ch 1ch; }
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header:has(> .btn-min, > .btn-max) > span:first-of-type { background: #aaaaaa; padding-inline: 1ch; margin-inline-start: auto; }
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > :is(.btn-min, .btn-max) { background: #aaaaaa; }
+html[data-theme="msdos"] .modal:not(.desktop-window, .desktop-window *) > .modal-header > :is(.btn-min, .btn-max:not(.btn-min ~ *)) { margin-inline-start: auto; }
+/* A lamp is lit or dark, never a smooth fade (core's lamp-pulse); :root
+   outranks core's motion-gated rule. */
+html:root[data-theme="msdos"] :is(.connection[data-state="live"], .status-rec)::before,
+html:root[data-theme="msdos"] .lamp:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { animation: none; }
+/* A user-coloured avatar is a solid VGA cell with a black glyph, not a
+   tint mixed into the blue. */
+html[data-theme="msdos"] .avatar[data-color] { --avatar-bg: var(--user-color); --avatar-fg: #000000; }
+/* Blank text row after a heading, as the DOS setup screens spaced blocks. */
+html[data-theme="msdos"] :is(h1, h2, h3) + :is(p, ul, ol, dl, h2, h3, h4, pre, blockquote) { margin-block-start: 1rem; }
 
 }

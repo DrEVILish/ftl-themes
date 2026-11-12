@@ -18707,9 +18707,22 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * Navigation-Patterns: category-tabs
  * Description: Fallout's Pip-Boy 3000: monochrome phosphor green with a scanline overlay — every state reads as one green, on purpose.
  *
- * Note on fonts: the in-game face is Monofonto (Typodermic, not OFL). Share
- * Tech Mono (OFL, vendored) is the closest free narrow, rounded monospace.
+ * Note on fonts: Fallout 4's Pip-Boy sets its lists, stats and headers in
+ * Roboto Condensed ($MAIN_Font); it is OFL now, so a Latin subset is vendored.
+ * Share Tech Mono (OFL, vendored) stays for code and kbd; numbers use Roboto.
  */
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("../assets/fonts/RobotoCondensed-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("../assets/fonts/RobotoCondensed-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
 @font-face {
   font-family: "Share Tech Mono";
   src: url("../assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
@@ -18720,8 +18733,8 @@ html[data-theme="pipboy"] {
   --motion-leave: power-off;
   color-scheme: dark;
   --bg: #04140a;
-  --surface: #06200f;
-  --surface-2: #0a2e15;
+  --surface: #051a0c;
+  --surface-2: #082511;
   --border: #1f7a3f;
   --hairline: #123d1e;
   --text: #1aff80;   /* Fallout 4 default Pip-Boy colour, RGB 26,255,128 */
@@ -18738,17 +18751,21 @@ html[data-theme="pipboy"] {
   --on-accent: #04140a;
   --on-danger: #221200;
   --on-success: #04140a;
-  --radius: 0.15rem;
-  --font: "Share Tech Mono", "Courier New", monospace;
+  --radius: 0;
+  --font: "Roboto Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
   --font-mono: "Share Tech Mono", Consolas, monospace;
   --flare: #1aff80;
 
   --btn-bg: transparent;
   --btn-fg: var(--accent-text);
   --btn-transform: uppercase;
-  --btn-tracking: 0.05em;
+  --btn-tracking: 0.04em;
   --btn-shadow-hover: 0 0 8px rgba(26, 255, 128, 0.6);
   --input-bg: #04140a;
+  /* Dimmed phosphor: an empty field reads unlit next to a typed value. */
+  --input-placeholder: #15994d;
+  /* Window minimise: a centred bar, level with the max box and BACK. */
+  --btn-min-glyph: "\2212";
   --focus-ring: 0 0 8px rgba(26, 255, 128, 0.5);
   --panel-shadow: inset 0 0 24px rgba(26, 255, 128, 0.06);
   --table-head-fg: var(--accent);
@@ -18786,8 +18803,8 @@ html[data-theme="pipboy"] {
   --tab-fg-active: var(--accent);
   --tab-underline-active: transparent;
   --tab-bg-active:
-    linear-gradient(var(--accent) 0 0) left bottom / 2px 50% no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right bottom / 2px 50% no-repeat border-box;
+    linear-gradient(var(--accent) 0 0) left bottom / 2px 70% no-repeat border-box,
+    linear-gradient(var(--accent) 0 0) right bottom / 2px 70% no-repeat border-box;
   --nav-bg: #04140a;
   --overlay-bg: rgba(2, 10, 5, 0.85);
   --indicator-fg: var(--accent);
@@ -18806,25 +18823,22 @@ html[data-theme="pipboy"] {
 
   /* Native controls (bare checkboxes, radios, ranges) take the phosphor. */
   accent-color: var(--accent);
-  /* Only the Regular face is vendored, and the game sets everything at one
-     weight: no smeared faux bold; emphasis is brightness (see below). */
+  /* Real Regular and Bold faces only: never a smeared faux weight. */
   font-synthesis-weight: none;
 
-  /* Little boxing: panels and cards are a dim hairline with bright corner
-     brackets, not a full phosphor box. Consumers that color-mix the panel
-     fill get the flat surface instead of the gradient stack. */
+  /* Little boxing: Fallout 4's Pip-Boy content is unboxed. Panels and
+     cards are a flat surface on a dim hairline, with no frame corners;
+     grouped figures (KPI cards, .stat) are the dim stat-row block below. */
   --panel-border: var(--hairline);
-  --panel-bg:
-    linear-gradient(var(--accent) 0 0) left top / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) left top / 2px 12px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right top / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right top / 2px 12px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) left bottom / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) left bottom / 2px 12px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right bottom / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right bottom / 2px 12px no-repeat border-box,
-    var(--surface);
+  --panel-bg: var(--surface);
+  /* Numbers read in the label face, as FO4's stat values do; Share Tech
+     Mono stays for code and kbd. */
+  --readout-font: var(--font);
   --list-card-bg: var(--surface);
+  /* INV / DATA lists: an unboxed column of rows on faint rules; only the
+     cursor bar marks the selection. */
+  --list-bg: transparent;
+  --list-border: transparent;
   --ranked-item-bg: var(--surface);
 
   /* HUD: rarity is brightness of the one phosphor, HP reads green as in
@@ -18862,8 +18876,7 @@ html[data-theme="pipboy"] .btn-success {
    that breaks under the active tab, whose ends rise as short ticks
    (--tab-bg-active). The rule is drawn per tab plus a filler so it can
    break; tab gaps are closed so it stays continuous. */
-html[data-theme="pipboy"] .tab,
-html[data-theme="pipboy"] .panel-header { text-transform: uppercase; letter-spacing: 0.08em; }
+html[data-theme="pipboy"] :is(.tab, .panel-header, .modal-header, .sheet-header, .window-title, .popover > strong:first-child) { text-transform: uppercase; letter-spacing: 0.04em; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) { gap: 0; border-bottom: 0; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) > .tab:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) { border-inline-width: 0; border-bottom: 2px solid var(--accent); }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before,
@@ -18887,7 +18900,7 @@ html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :i
 html[data-theme="pipboy"] .app-bar > .nav-brand { flex-basis: auto; flex-shrink: 0; }
 /* Tracked only where the bar has room; on phones it would wrap the nav. */
 @media (min-width: 481px) {
-  html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.08em; }
+  html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.04em; }
 }
 
 /* Media through the phosphor: no second hue sneaks in via photos. */
@@ -18897,37 +18910,115 @@ html[data-theme="pipboy"] :is(.card-media, .map) > svg { filter: var(--pipboy-ph
 /* Rectangular hardware on the map too. */
 html[data-theme="pipboy"] .map.hud-minimap.is-round { border-radius: 0; }
 html[data-theme="pipboy"] .map-pin::before { border-radius: 0; rotate: 45deg; }
+/* The presence LED: a small square pip outside the avatar's corner, so it
+   never covers the initials. */
+html[data-theme="pipboy"] .avatar[data-status] { --presence-dot-size: 0.45rem; }
+html[data-theme="pipboy"] .avatar[data-status]::after { inset-block-end: -3px; inset-inline-end: -3px; }
+/* Current carousel slide: a double-width lit bar, not just a brighter dot. */
+html[data-theme="pipboy"] .carousel > .carousel-slide::scroll-marker:target-current { inline-size: calc(var(--tap-min) + 0.49em); }
+html[data-theme="pipboy"] .carousel-nav > a[aria-current="true"] { min-width: 1.4em; }
 /* Square LEDs where core hardcodes a circle (no token). */
 html[data-theme="pipboy"] :is(.avatar[data-status], .presence-status)::after,
 html[data-theme="pipboy"] .carousel-nav > a,
 html[data-theme="pipboy"] .carousel > .carousel-slide::scroll-marker,
 html[data-theme="pipboy"] .btn[aria-pressed]::before { border-radius: 0; }
+/* Core's typing dots are radial circles (no shape token): square LEDs. */
+html[data-theme="pipboy"] .typing::before {
+  background:
+    linear-gradient(var(--typing-dot, currentColor) 0 0) 0 50% / 0.4em 0.4em no-repeat,
+    linear-gradient(var(--typing-dot, currentColor) 0 0) 50% 50% / 0.4em 0.4em no-repeat,
+    linear-gradient(var(--typing-dot, currentColor) 0 0) 100% 50% / 0.4em 0.4em no-repeat;
+}
+/* Core's carousel arrows hard-code a 999px radius: a drawn square key. */
+@supports selector(::scroll-button(*)) {
+  html[data-theme="pipboy"] .carousel::scroll-button(*) { border-radius: 0; border: 1px solid var(--border); background: transparent; }
+}
+/* Unchecked boxes: the dark-scheme UA box is grey; draw a phosphor outline.
+   Checked keeps the native glyph, tinted by accent-color. */
+html[data-theme="pipboy"] :is(.checkbox, .radio):not(:checked, :indeterminate) {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: transparent;
+}
+html[data-theme="pipboy"] .radio:not(:checked) { border-radius: 50%; }
+
+/* FO4 stat rows: grouped figures sit in dim-filled blocks (22% phosphor)
+   with no frame, the same block as the HP | LEVEL | AP strip. */
+html[data-theme="pipboy"] .card:has(> .stat-value) {
+  --card-bg: color-mix(in srgb, var(--accent) 20%, var(--bg));
+  --card-border: transparent;
+}
+html[data-theme="pipboy"] .stat { padding: 0.4rem 0.6rem; background: color-mix(in srgb, var(--accent) 20%, var(--bg)); }
+/* Labels in the block are full phosphor, as in FO4 (muted fell under 4.5:1). */
+html[data-theme="pipboy"] :is(.stat, .card:has(> .stat-value)) > .stat-label { color: var(--text); }
+html[data-theme="pipboy"] :is(.stat-value, .table .mono) { font-family: var(--font); font-variant-numeric: tabular-nums; }
+/* A checked danger toggle is a lit amber outline, not a solid block: a
+   solid fill means only the cursor bar. */
+html[data-theme="pipboy"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: color-mix(in srgb, var(--danger) 22%, transparent);
+  --toggle-btn-fg-on: var(--danger);
+}
 
 /* HP | LEVEL | AP: solid dim-green blocks with bright uppercase text,
    under the same 2px phosphor rule as the bar. */
-html[data-theme="pipboy"] .app-status:not(.taskbar) { border-top-width: 2px; }
+html[data-theme="pipboy"] .app-status:not(.taskbar) { border-top-width: 2px; gap: 4px; }
+/* A filler block before the last readout: the strip reads as one
+   segmented bar (HP | LEVEL | AP), not two badges over empty space. */
+html[data-theme="pipboy"] .app-status:not(.taskbar)::after {
+  content: "";
+  order: 1;
+  flex: 1;
+  align-self: stretch;
+  background: color-mix(in srgb, var(--accent) 22%, var(--bg));
+}
+html[data-theme="pipboy"] .app-status:not(.taskbar) > :last-child:not(:first-child) { order: 2; }
 html[data-theme="pipboy"] .app-status:not(.taskbar) > * {
   padding: 0.3rem 0.6rem;
   border: 1px solid transparent;
   background: color-mix(in srgb, var(--accent) 22%, var(--bg));
   color: var(--text);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
 }
 html[data-theme="pipboy"] h1,
 html[data-theme="pipboy"] h2,
-html[data-theme="pipboy"] h3 { text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400; }
-/* Emphasis is a brighter phosphor, not a heavier stroke. */
-html[data-theme="pipboy"] :is(h1, h2, h3) { text-shadow: 0 0 6px color-mix(in srgb, currentColor 55%, transparent); }
-html[data-theme="pipboy"] :is(strong, b) { font-weight: 400; text-shadow: 0 0 5px color-mix(in srgb, currentColor 60%, transparent); }
+html[data-theme="pipboy"] h3 { text-transform: uppercase; letter-spacing: 0.04em; }
+/* Headings glow a little more than body text, still crisp. */
+html[data-theme="pipboy"] :is(h1, h2, h3) { text-shadow: 0 0 4px color-mix(in srgb, currentColor 40%, transparent); }
+html[data-theme="pipboy"] :is(.input, .textarea)::placeholder { text-shadow: none; }
 
 /* Wide mono cells: at the phone tier, tables set smaller so inputs inside
-   cells keep a usable width; the glow is dropped there too (dense text,
-   and the cheapest frame on a throttled phone). */
+   cells keep a usable width. Badges keep an 11px floor through the
+   scanlines. */
 @media (max-width: 480px) {
-  html[data-theme="pipboy"] .table { font-size: 0.85em; text-shadow: none; }
+  html[data-theme="pipboy"] .table { font-size: 0.85em; }
   html[data-theme="pipboy"] td > :is(.input, .select) { min-inline-size: var(--tap-min); }
+  html[data-theme="pipboy"] .badge { font-size: max(0.75em, 0.7rem); }
 }
+/* A blurred shadow on every glyph costs a throttled phone its frame budget:
+   there, and for slow or reduced-transparency displays, only headings and
+   the bar keep the glow. */
+@media (max-width: 480px), (update: slow), (prefers-reduced-transparency: reduce) {
+  html[data-theme="pipboy"] { text-shadow: none; }
+  html[data-theme="pipboy"] .app-bar { text-shadow: 0 0 3px color-mix(in srgb, currentColor 35%, transparent); }
+  /* Scanlines only: the vignette layer costs a throttled phone frames. */
+  html[data-theme="pipboy"] .app::after { background-image: repeating-linear-gradient(180deg, rgba(0,0,0,0.2) 0 1px, transparent 1px 3px); }
+}
+
+/* Disabled pager keys: unlit phosphor, still readable through the
+   scanlines (core's 0.4 opacity dropped the chevrons under 3:1). */
+html[data-theme="pipboy"] .pagination-item.is-disabled { opacity: 1; color: var(--input-placeholder); }
+/* Chart points shrink toward pixel pips (SVG cannot square a circle). */
+html[data-theme="pipboy"] .chart-point { r: 2.5px; stroke-width: 1; }
+/* Colour emoji in reaction chips go through the phosphor too. A picked
+   reaction is a lit outline on the dim block, not the solid cursor bar:
+   the filtered emoji would vanish into a solid-green fill. */
+html[data-theme="pipboy"] .message-reactions {
+  --badge-bg-active: color-mix(in srgb, var(--accent) 22%, var(--bg));
+  --badge-fg-active: var(--accent);
+}
+html[data-theme="pipboy"] .message-reactions > :is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--accent); }
+html[data-theme="pipboy"] .message-reactions > .badge-button { filter: var(--pipboy-phosphor); }
 
 /* CRT scanlines: a repeating horizontal gradient over the whole app,
    pointer-events:none so it never intercepts clicks. Static, not animated —

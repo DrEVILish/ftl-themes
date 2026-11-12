@@ -94,8 +94,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 
 - **Family:** Baloo 2 (variable cut, wght 400-800, Latin subset —
   `Baloo2-Variable.woff2`, subset with fontTools from
-  `google/fonts` `ofl/baloo2/Baloo2[wght].ttf`). The older static
-  `Baloo2-Bold.woff2` (700) is kept for existing references.
+  `google/fonts` `ofl/baloo2/Baloo2[wght].ttf`).
 - **Designer:** Ek Type
 - **License:** SIL Open Font License, version 1.1 — `google/fonts`
   `ofl/baloo2/` (with `OFL.txt`)
@@ -209,16 +208,6 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Source:** https://fonts.google.com/specimen/Oxanium
 - **Used by:** `silo` (UI, headings, plates and field values)
 
-## Pacifico
-
-- **Family:** Pacifico (weight vendored: Regular 400 —
-  `Pacifico-Regular.woff2`)
-- **Designer:** Vernon Adams (commissioned by Google)
-- **License:** SIL Open Font License, version 1.1
-- **Source:** https://fonts.google.com/specimen/Pacifico
-- **Used by:** none currently (`barbie` used it for the brand mark and `h1`,
-  as the cursive script signature — never body/button text)
-
 ## Shrikhand
 
 - **Family:** Shrikhand (weight vendored: Regular 400, Latin subset —
@@ -263,9 +252,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `bloomberg`, `pipboy` (Share Tech Mono: code and readouts), `matrix` (Share Tech Mono: app bar and headings)
-
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `silo` (Share Tech Mono: readouts and data)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `bloomberg`, `pipboy` (Share Tech Mono: code and readouts), `matrix` (Share Tech Mono: app bar and headings), `silo` (Share Tech Mono: readouts and data)
 
 ## DSEG7 Classic
 
@@ -396,7 +383,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
 - **Used by:** `windows-live` (all UI text; stand-in for Segoe UI and its
   Light headings); `win7-aero` (Regular and Semibold; stand-in for Segoe UI)
 
-## Barlow Semi Condensed
+## Barlow Semi Condensed ExtraBold Italic
 
 - **Family:** Barlow Semi Condensed (weight vendored: ExtraBold Italic 800
   — `BarlowSemiCondensed-ExtraBoldItalic.woff2`; Google Fonts' Latin

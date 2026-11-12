@@ -18737,18 +18737,23 @@ html[data-theme="cue-lab"] {
   --on-danger: #ffffff;
   --on-success: #0c1410;
   --radius: 0.2rem;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, monospace;
+  /* QLab draws in the macOS system face, Eos in a plain Windows sans: the
+     platform UI face first, then metric-compatible Arial/Helvetica stand-ins
+     (DejaVu Sans, the generic fallback here, sets far wider). */
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Liberation Sans", "Noto Sans", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace;
   --flare: #ff8c1a;
 
   --btn-border-width: 2px;
   --btn-weight: 600;
   --input-bg: var(--surface-2);
   --nav-rule-width: 2px;
-  --nav-rule: var(--accent);
+  /* Chrome rules are neutral: amber is reserved for state (core value 4). */
+  --nav-rule: var(--border);
   --table-head-fg: var(--muted);
-  --table-head-rule: var(--accent);
-  --row-active-bg: rgba(255, 140, 26, 0.14);
+  --table-head-rule: var(--border);
+  /* The standing-by row is the strongest amber field after GO. */
+  --row-active-bg: rgba(255, 140, 26, 0.22);
   /* Selection is a neutral lift: amber stays for the one standing-by row. */
   --row-selected-bg: #333333;
   /* A selected row's own text is full white: inherited --muted (e.g. in an
@@ -18756,7 +18761,8 @@ html[data-theme="cue-lab"] {
   --row-selected-fg: var(--text);
   --overlay-bg: rgba(0, 0, 0, 0.7);
   --label-transform: uppercase;
-  --label-tracking: 0.06em;
+  /* One tracking for every console legend: labels, h2/h3, tabs. */
+  --label-tracking: 0.08em;
   --tab-fg-active: var(--accent);
   --indicator-fg: var(--accent);
   /* QLab's most-referenced single element: the light-colored, right-
@@ -18764,7 +18770,7 @@ html[data-theme="cue-lab"] {
      stands in for "standing by" on a generic table row; the triangle is
      drawn below, the thin amber edge stays for forced colours and
      themes-agnostic markup. */
-  --row-active-marker: inset 2px 0 0 var(--accent);
+  --row-active-marker: inset 2px 0 0 var(--accent), inset 0 1px 0 var(--accent), inset 0 -1px 0 var(--accent);
   /* A ticked selection checkbox is a selection, not a cue standing by. */
   --row-checked-marker: inset 2px 0 0 #777777;
 
@@ -18773,6 +18779,19 @@ html[data-theme="cue-lab"] {
      control — GO — that is unmistakably the thing you hit. Everything else
      stays flat and quiet. */
   --density: 0.85;
+  /* Cue-list rows: QLab/Eos pitch (~24px a table row), not web comfort.
+     Touch pointers keep core's padding (see the coarse-pointer rule). */
+  --cell-pad-y: 0.25rem;
+  --list-item-padding: 0.35rem 0.75rem;
+  /* Resting controls are neutral keys: ticks, switch thumbs, progress and
+     links are light grey, not amber. */
+  --switch-thumb-bg-on: var(--text);
+  --switch-border-on: #8a8a8a;
+  --progress-fill: #cfcfcf;
+  --slider-thumb-bg: #cfcfcf;
+  --link: #e6e6e6;
+  /* Stripes every other row, as QLab's cue list does. */
+  --row-alt-bg: #222222;
   --meter-track: #0d0d0d;
   --meter-border: var(--hairline);
   --meter-radius: 0;
@@ -18801,7 +18820,7 @@ html[data-theme="cue-lab"] {
   /* Amber is state, not decoration: chrome and default series go neutral. */
   --nav-brand-fg: var(--text);
   --desktop-icon-glyph: var(--text);
-  --desktop-icon-glyph-selected: var(--accent);
+  --desktop-icon-glyph-selected: var(--text);
   --tree-selected-marker: inset 0.2rem 0 0 #777777;
   --window-icon-glyph: var(--text);
   --desktop-icon-label-bg-selected: #333333;
@@ -18817,9 +18836,22 @@ html[data-theme="cue-lab"] {
   --pagination-item-bg-active: transparent;
   --pagination-item-fg-active: var(--accent);
   --badge-bg-active: transparent;
+  /* A featured card is not a cue: neutral frame, amber leading edge (below). */
+  --list-featured-border: var(--border);
+  --list-featured-border-width: 1px;
+  /* A square panel LED, smaller than core's round dot so it clears initials. */
+  --presence-dot-size: 0.5rem;
+  --presence-dot-ring-width: 1px;
   --badge-fg-active: var(--accent);
   --toggle-btn-bg-on: #333333;
   --toggle-btn-fg-on: var(--accent);
+  --toggle-btn-border-on: var(--border);
+  /* Tabs sit tight on their panel: no blank band before the toolbar. */
+  --tab-panel-pad: var(--space-xs);
+  /* The rail's current folder is marked by the playhead alone. */
+  --nav-rail-marker: transparent;
+  /* Charts on a console: thin square-ended traces, small points, a faint fill. */
+  --chart-area-opacity: 0.06;
   /* A bulk selection, an own message and an edited cell are not cues:
      neutral surfaces, so the standing-by row stays the one amber field. */
   --bulk-bar-bg: #333333;
@@ -18861,13 +18893,14 @@ html[data-theme="cue-lab"] {
    in --text. rem, so nesting can't shrink them. */
 html[data-theme="cue-lab"] :is(h2, h3) {
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--label-tracking);
   font-weight: 600;
 }
 /* Window and workspace titles are mixed case, as show-control apps title them. */
 html[data-theme="cue-lab"] h1 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-block-end: 0.25rem; }
-html[data-theme="cue-lab"] h2 { font-size: 0.9rem; color: var(--muted); }
-html[data-theme="cue-lab"] h3 { font-size: 0.8rem; color: var(--muted); }
+html[data-theme="cue-lab"] h2 { font-size: 0.9rem; color: var(--text); }
+html[data-theme="cue-lab"] h3 { font-size: 0.72rem; font-weight: 700; color: var(--muted); }
+html[data-theme="cue-lab"] :is(section, main, article, aside) > h2:not(:last-child) { margin-block-end: 0.5rem; }
 html[data-theme="cue-lab"] :is(article > h2, .prose :is(h2, h3)) {
   font-size: 1.05rem;
   text-transform: none;
@@ -18886,10 +18919,12 @@ html[data-theme="cue-lab"] .panel-header > .badge { margin-inline-start: 0.5rem;
 
 html[data-theme="cue-lab"] .table { font-variant-numeric: tabular-nums; }
 /* The bulk bar's one state cue: a thin amber leading edge on the neutral slab. */
-html[data-theme="cue-lab"] .bulk-bar { box-shadow: inset 2px 0 0 var(--accent); }
+html[data-theme="cue-lab"] :is(.bulk-bar, .list-cards > .list-item.is-featured) { box-shadow: inset 2px 0 0 var(--accent); }
 
 /* Console-glance floor for small secondary text. */
 html[data-theme="cue-lab"] .badge { font-size: max(0.7rem, 0.75em); }
+/* Accent badges are amber text on nothing: no tinted slab competing with GO. */
+html[data-theme="cue-lab"] .badge-accent:not(.badge-solid) { --badge-bg: transparent; }
 html[data-theme="cue-lab"] .readout-unit { font-size: max(0.7rem, 0.45em); }
 
 /* Square everything: carousel dots/arrows and presence lamps too. */
@@ -18907,20 +18942,81 @@ html[data-theme="cue-lab"] .carousel::scroll-button(*) { border-radius: 0; }
 html[data-theme="cue-lab"] :is(.table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):not(:has(> td:first-child input[type="checkbox"]:checked)) > td:first-child, .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='10'%3E%3Cpath d='M0 0l8 5-8 5z' fill='%23f2f2f0'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: 0.35rem 50%;
-  background-size: 0.5rem 0.625rem;
-  padding-inline-start: 1.2rem;
+  background-position: 0.45rem 50%;
+  background-size: 0.55rem 0.7rem;
 }
+/* QLab's playhead column: every row of a list (and the first cell of every
+   row of a table that has a cue standing by) keeps the same 1.2rem leading
+   gutter, so labels line up and nothing shifts as the cue moves. */
+html[data-theme="cue-lab"] :is(.list .list-item, .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .table:has(tr.is-active) tr > :first-child) { padding-inline-start: 1.2rem; }
+/* The standing-by list row: amber tint and a full amber outline, the
+   QLab-style full-row cue, so the cue-list read survives without a GO. */
+html[data-theme="cue-lab"] .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) {
+  --row-selected-bg: rgba(255, 140, 26, 0.22);
+  --list-active-marker: inset 2px 0 0 var(--accent), inset 0 0 0 1px var(--accent);
+}
+html[data-theme="cue-lab"] .table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):not(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) > td:not(:first-child) {
+  box-shadow: inset 0 1px 0 var(--accent), inset 0 -1px 0 var(--accent);
+}
+html[data-theme="cue-lab"] .table tr:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))):not(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) > td:last-child:not(:first-child) {
+  box-shadow: inset 0 1px 0 var(--accent), inset 0 -1px 0 var(--accent), inset -1px 0 0 var(--accent);
+}
+/* A navigation list (settings sections, mail folders and messages) marks its
+   current item like the nav: playhead on the neutral lift, no amber. */
+html[data-theme="cue-lab"] nav .list-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { --row-selected-bg: #333333; --list-active-marker: none; }
+/* Counts in navigation are neutral: amber stays for the row standing by. */
+html[data-theme="cue-lab"] :is(.nav-item, .nav-rail) > .badge { --badge-bg: var(--surface-2); --badge-fg: var(--text); }
+/* The 24px selection tick reaches into the cell padding, so a checkbox
+   column keeps the cue-list pitch instead of forcing a 33px row. */
+html[data-theme="cue-lab"] .table td > .check { margin-block: -0.2rem; }
+html[data-theme="cue-lab"] .chart-point { r: 2px; }
+html[data-theme="cue-lab"] .chart-series :is(polyline, path) { stroke-linejoin: miter; stroke-linecap: square; }
+/* Desktop pointers read at console size; touch keeps 16px. */
+@media (pointer: fine) {
+  html[data-theme="cue-lab"] body { font-size: 0.875rem; }
+}
+/* Touch keeps core's row padding as the tap floor. */
+@media (pointer: coarse) {
+  html[data-theme="cue-lab"] { --cell-pad-y: calc(0.5em * var(--density)); --list-item-padding: 0.55em 0.9em; }
+}
+/* The current tab or page is the cue standing by in its list: same playhead,
+   no extra amber. */
+html[data-theme="cue-lab"] :is(.tab:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :has(> input:checked)), :is(.nav, .sidebar, .navbar) a[aria-current="page"], .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"], :has(> input:checked)), .app-bar nav a[aria-current="page"]:not([role="menuitem"]))::before {
+  content: "";
+  display: inline-block;
+  flex: none;
+  inline-size: 0.55rem;
+  block-size: 0.7rem;
+  margin-inline-end: 0.4rem;
+  background: var(--text);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  vertical-align: 0.05em;
+}
+/* In a vertical rail the playhead sits in a shared leading gutter, so the
+   current folder's label lines up with its siblings. */
+html[data-theme="cue-lab"] .nav-rail:has(> .nav-item:is(.is-active, [aria-current="page"])) > .nav-item { position: relative; padding-inline-start: 1.4rem; }
+html[data-theme="cue-lab"] .nav-rail > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current="page"])::before { position: absolute; inset-inline-start: 0.45rem; margin: 0; }
 html[data-theme="cue-lab"] .table tr:has(> td:first-child input[type="checkbox"]:checked) > td:first-child { box-shadow: var(--row-checked-marker); }
 
 /* "On" states other than GO: amber text and an amber rule, never a fill. */
-html[data-theme="cue-lab"] .segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { box-shadow: inset 0 -2px 0 var(--accent); }
+html[data-theme="cue-lab"] :is(.segmented-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), .toggle-btn:has(input:checked)) { box-shadow: inset 0 -2px 0 var(--accent); }
+/* A primary inside a button group is the picked option (7d/30d/90d), so it
+   takes the segmented treatment, not an amber box. */
+html[data-theme="cue-lab"] .btn-group > .btn-primary {
+  --btn-bg: #333333;
+  --btn-border: var(--border);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
 html[data-theme="cue-lab"] .pagination-item:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-color: var(--accent); }
 html[data-theme="cue-lab"] .badge-button:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--accent); }
+/* An idle filter chip is a key, not a disabled label: rim and full text. */
+html[data-theme="cue-lab"] .badge-button:not(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-pressed="true"]) { --badge-fg: var(--text); box-shadow: inset 0 0 0 1px var(--border); }
+/* Ticks are a selection, not a cue: light grey, like a backlit key. */
+html[data-theme="cue-lab"] input:is([type="checkbox"], [type="radio"]) { accent-color: #cfcfcf; }
 
 /* GO owns the solid amber fill, so a primary is an amber outline and
    secondary/tertiary labels are plain text. */
-html[data-theme="cue-lab"] .btn-primary { --btn-bg: transparent; --btn-fg: var(--accent); --btn-border: var(--accent); }
+html[data-theme="cue-lab"] .btn-primary { --btn-bg: transparent; --btn-fg: var(--text); --btn-border: #cfcfcf; }
 html[data-theme="cue-lab"] :is(.btn-secondary, .btn-tertiary) { --btn-fg: var(--text); }
 html[data-theme="cue-lab"] .alert-info { --alert-border: var(--info); }
 html[data-theme="cue-lab"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
@@ -18935,7 +19031,7 @@ html[data-theme="cue-lab"] :is(.btn:disabled, .btn[aria-disabled="true"]) {
 html[data-theme="cue-lab"] {
   --app-bar-bg: var(--surface);
   --app-bar-rule-width: 2px;
-  --app-bar-rule: var(--accent);
+  --app-bar-rule: var(--border);
   --app-bar-height: 2.6rem;
   --app-bar-padding: 0.35rem 0.8rem;
   --app-main-padding: 0.6rem;
@@ -18947,8 +19043,18 @@ html[data-theme="cue-lab"] {
  * shell as is, except that on phone the brand takes its own first line:
  * core's zero-basis brand would otherwise collapse behind wide actions. */
 @media (max-width: 480px) {
-  html[data-theme="cue-lab"] .app-bar > .nav-brand { flex: 1 0 100%; }
+  /* Two lines at most: brand and actions share the first, the nav takes the
+     second. The select and the brand give way; a phone has no Ctrl K. */
+  html[data-theme="cue-lab"] .app-bar > :is(nav, .demo-nav) { order: 10; flex: 1 0 100%; }
+  html[data-theme="cue-lab"] .app-bar > .cluster { flex: 0 1 auto; flex-wrap: nowrap; min-inline-size: 0; }
+  html[data-theme="cue-lab"] .app-bar > .cluster > .select { flex: 0 1 5.5rem; inline-size: 5.5rem; min-inline-size: 0; }
+  html[data-theme="cue-lab"] .app-bar > .cluster kbd { display: none; }
+  /* Segments stay one line; the strip scrolls rather than wrap a legend. */
+  html[data-theme="cue-lab"] :is(.segmented, .toggle-group) { max-inline-size: 100%; overflow-x: auto; }
+  html[data-theme="cue-lab"] :is(.segmented-item, .toggle-group > .toggle-btn) { white-space: nowrap; }
 }
+/* Cells with inputs keep a tappable minimum when a narrow table squeezes them. */
+html[data-theme="cue-lab"] .table td > :is(.input, .select) { min-inline-size: 2.75rem; }
 
 /* XL gutters (v5, PLAN.md §3): the stage floor beside the console. A
    hairline stage-plot grid on black-grey with a scatter of faint amber

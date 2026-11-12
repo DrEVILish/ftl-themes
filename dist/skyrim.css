@@ -18716,12 +18716,19 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * Note on fonts: the game sets every menu in a condensed Futura (Futura
  * Condensed / Futura Std Condensed Light-Medium, per the SkyUI and modding
  * community; not verified from the game files). Futura is not free, so this
- * theme reuses the repo's already-vendored Antonio (Vernon Adams, SIL OFL
- * 1.1, assets/fonts/, see NOTICE.md) as the condensed face. Futura PT Cond /
- * Futura Condensed are still named first so a machine that has them uses
- * them.
+ * theme vendors Sofia Sans Condensed (Lettersoup, SIL OFL 1.1, a Latin
+ * subset of the variable font, assets/fonts/, see NOTICE.md): condensed,
+ * with Futura's round O/C/G bowls and a light stroke. Antonio (already in
+ * the repo) is the squarer fallback. Futura PT Cond / Futura Condensed are
+ * still named first so a machine that has them uses them.
  */
 
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  src: url("../assets/fonts/SofiaSansCondensed.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
 @font-face {
   font-family: "Antonio";
   src: url("../assets/fonts/Antonio-Regular.woff2") format("woff2");
@@ -18759,26 +18766,29 @@ html[data-theme="skyrim"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0;
-  --font: "Futura PT Cond", "Futura Condensed", "Futura Std Condensed", "Antonio", "Roboto Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
+  --font: "Futura PT Cond", "Futura Condensed", "Futura Std Condensed", "Sofia Sans Condensed", "Antonio", "Roboto Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
   --font-mono: "Consolas", "DejaVu Sans Mono", "Liberation Mono", monospace;
   --flare: #e3c35a;       /* legendary gold: stars, the one warm note */
 
-  --sky-smoke: linear-gradient(90deg, rgba(8, 8, 7, 0.94), rgba(24, 23, 20, 0.9) 55%, rgba(14, 14, 12, 0.94));
+  /* Translucent: the mist behind reads through, as the world does in game. */
+  --sky-smoke: linear-gradient(90deg, rgba(8, 8, 7, 0.86), rgba(24, 23, 20, 0.78) 55%, rgba(14, 14, 12, 0.86));
   --sky-line: #6f6f6c;
   --sky-line-hi: #b9b9b5;
   --sky-diamond: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='%230b0b0a' stroke='%23b9b9b5' stroke-width='1.2'%3E%3Cpath d='M6 1 11 6 6 11 1 6Z'/%3E%3C/svg%3E");
-  --sky-select: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.2) 35%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.07));
+  /* SkyUI's band: clear on the left, brightest past the middle, held to the tip. */
+  --sky-select: linear-gradient(90deg, rgba(255, 255, 255, 0) 15%, rgba(255, 255, 255, 0.22) 75%, rgba(255, 255, 255, 0.22));
   /* Knotwork corner: two offset silver Ls (the outer one bevelled, with a
      light top edge) joined at their tails by small curls, and a looped
      strand in the corner that passes over the outer L and under the inner
      one; every strand has a dark under-stroke, so the under-crossings read
-     as gaps. Drawn once per corner orientation, laid over the frame corner.
+     as gaps. One 70px image holds all four corners plus the outer rule and
+     the faint inner rule; it is the panels' 9-slice border-image (one paint,
+     not eight background layers). -sm is the phone cut: knots at 16px with
+     the rules redrawn thicker so they still land at 1px.
      The app bar's ends: a chevron outline (stretched, 1px non-scaling
      stroke) and the interlaced double-diamond knot inside each point. */
-  --sky-knot-tl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='none' stroke-linecap='round'%3E%3Cg transform=''%3E%3Cpath d='M2.5 27V2.5H27' stroke='%230b0b0a' stroke-width='4.0'/%3E%3Cpath d='M2.5 27V2.5H27' stroke='%23b9b9b5' stroke-width='2.2'/%3E%3Cpath d='M1.6 27V1.6H27' stroke='%23d0d0cc' stroke-width='0.7'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%23d0d0cc' stroke-width='1.5'/%3E%3Cpath d='M7 22V7H22' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22V7H22' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E");
-  --sky-knot-tr: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='none' stroke-linecap='round'%3E%3Cg transform='matrix(-1 0 0 1 28 0)'%3E%3Cpath d='M2.5 27V2.5H27' stroke='%230b0b0a' stroke-width='4.0'/%3E%3Cpath d='M2.5 27V2.5H27' stroke='%23b9b9b5' stroke-width='2.2'/%3E%3Cpath d='M1.6 27V1.6H27' stroke='%23d0d0cc' stroke-width='0.7'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%23d0d0cc' stroke-width='1.5'/%3E%3Cpath d='M7 22V7H22' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22V7H22' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E");
-  --sky-knot-bl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='none' stroke-linecap='round'%3E%3Cg transform='matrix(1 0 0 -1 0 28)'%3E%3Cpath d='M2.5 27V2.5H27' stroke='%230b0b0a' stroke-width='4.0'/%3E%3Cpath d='M2.5 27V2.5H27' stroke='%23b9b9b5' stroke-width='2.2'/%3E%3Cpath d='M1.6 27V1.6H27' stroke='%23d0d0cc' stroke-width='0.7'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%23d0d0cc' stroke-width='1.5'/%3E%3Cpath d='M7 22V7H22' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22V7H22' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E");
-  --sky-knot-br: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='none' stroke-linecap='round'%3E%3Cg transform='rotate(180 14 14)'%3E%3Cpath d='M2.5 27V2.5H27' stroke='%230b0b0a' stroke-width='4.0'/%3E%3Cpath d='M2.5 27V2.5H27' stroke='%23b9b9b5' stroke-width='2.2'/%3E%3Cpath d='M1.6 27V1.6H27' stroke='%23d0d0cc' stroke-width='0.7'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%23d0d0cc' stroke-width='1.5'/%3E%3Cpath d='M7 22V7H22' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22V7H22' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M22 7q4 0 4-4.5' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22q0 4-4.5 4' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E");
+  --sky-frame-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' fill='none' stroke-linecap='round'%3E%3Crect x='2.5' y='2.5' width='65' height='65' stroke='%236f6f6c' stroke-opacity='.35' stroke-width='1'/%3E%3Cg id='k'%3E%3Cpath d='M2.5 27V2.5H27' stroke='%230b0b0a' stroke-width='4'/%3E%3Cpath d='M2.5 27V2.5H27' stroke='%23b9b9b5' stroke-width='2.2'/%3E%3Cpath d='M1.6 27V1.6H27' stroke='%23d0d0cc' stroke-width='.7'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%23d0d0cc' stroke-width='1.5'/%3E%3Cpath d='M7 22V7H22M22 7q4 0 4-4.5M7 22q0 4-4.5 4' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22V7H22M22 7q4 0 4-4.5M7 22q0 4-4.5 4' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3C/g%3E%3Cuse href='%23k' transform='matrix(-1 0 0 1 70 0)'/%3E%3Cuse href='%23k' transform='matrix(1 0 0 -1 0 70)'/%3E%3Cuse href='%23k' transform='rotate(180 35 35)'/%3E%3Crect x='0.5' y='0.5' width='69' height='69' stroke='%236f6f6c' stroke-width='1'/%3E%3C/svg%3E");
+  --sky-frame-img-sm: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' fill='none' stroke-linecap='round'%3E%3Crect x='4.375' y='4.375' width='61.25' height='61.25' stroke='%236f6f6c' stroke-opacity='.35' stroke-width='1.75'/%3E%3Cg id='k'%3E%3Cpath d='M2.5 27V2.5H27' stroke='%230b0b0a' stroke-width='4'/%3E%3Cpath d='M2.5 27V2.5H27' stroke='%23b9b9b5' stroke-width='2.2'/%3E%3Cpath d='M1.6 27V1.6H27' stroke='%23d0d0cc' stroke-width='.7'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M12 7a5 5 0 1 1-10 0 5 5 0 1 1 10 0' stroke='%23d0d0cc' stroke-width='1.5'/%3E%3Cpath d='M7 22V7H22M22 7q4 0 4-4.5M7 22q0 4-4.5 4' stroke='%230b0b0a' stroke-width='3.3'/%3E%3Cpath d='M7 22V7H22M22 7q4 0 4-4.5M7 22q0 4-4.5 4' stroke='%23a9a9a5' stroke-width='1.5'/%3E%3C/g%3E%3Cuse href='%23k' transform='matrix(-1 0 0 1 70 0)'/%3E%3Cuse href='%23k' transform='matrix(1 0 0 -1 0 70)'/%3E%3Cuse href='%23k' transform='rotate(180 35 35)'/%3E%3Crect x='0.875' y='0.875' width='68.25' height='68.25' stroke='%236f6f6c' stroke-width='1.75'/%3E%3C/svg%3E");
   --sky-chev-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 28' preserveAspectRatio='none'%3E%3Cpath d='M14 0.5 1.4 14 14 27.5' fill='none' stroke='%239a9a96' stroke-width='1' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   --sky-chev-r: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 28' preserveAspectRatio='none'%3E%3Cpath d='M0 0.5 12.6 14 0 27.5' fill='none' stroke='%239a9a96' stroke-width='1' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   --sky-bar-knot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 14' fill='none'%3E%3Cpath d='M7 1.5 12.5 7 7 12.5 1.5 7Z' stroke='%230b0b0a' stroke-width='3'/%3E%3Cpath d='M7 1.5 12.5 7 7 12.5 1.5 7Z' stroke='%23b9b9b5' stroke-width='1.3'/%3E%3Cpath d='M15 1.5 20.5 7 15 12.5 9.5 7Z' stroke='%230b0b0a' stroke-width='3'/%3E%3Cpath d='M15 1.5 20.5 7 15 12.5 9.5 7Z' stroke='%23b9b9b5' stroke-width='1.3'/%3E%3Cpath d='M11.4 8.1 8.6 10.9' stroke='%230b0b0a' stroke-width='3'/%3E%3Cpath d='M11.4 8.1 8.6 10.9' stroke='%23b9b9b5' stroke-width='1.3'/%3E%3C/svg%3E");
@@ -18790,13 +18800,13 @@ html[data-theme="skyrim"] {
   --focus-ring: 0 0 0.6rem rgba(255, 255, 255, 0.45);
   --link: #c9d6e5;
 
-  /* Buttons: smoke plates in a silver rule; hover lights them like a
-     selected menu entry. Primary is the white-light band, not a colour. */
-  --btn-bg: rgba(12, 12, 11, 0.85);
+  /* Buttons: bare uppercase menu entries (the key-hint strip), lit by the
+     white band on hover. Primary is the plate with chevron caps. */
+  --btn-bg: transparent;
   --btn-fg: var(--text);
-  --btn-border: var(--sky-line);
-  --btn-border-hover: var(--sky-line-hi);
-  --btn-bg-hover: rgba(70, 68, 62, 0.9);
+  --btn-border: transparent;
+  --btn-border-hover: transparent;
+  --btn-bg-hover: var(--sky-select);
   --btn-radius: 0;
   --btn-tracking: 0.04em;
   --btn-transform: uppercase;
@@ -18806,40 +18816,27 @@ html[data-theme="skyrim"] {
   /* Inputs: SkyUI's black filter box. */
   --input-bg: #0b0b0a;
   --input-border: var(--sky-line);
-  --input-radius: 0.15rem;
+  --input-radius: 0;
   --input-placeholder: #8c8c89;
   --input-caret: #ffffff;
   --select-arrow-fg: var(--text);
 
   /* Panels: smoke behind a thin silver frame, knotwork in the corners. */
-  /* The inner second rule (a faint silver line inside the frame) is
-     drawn in the background, not as an inset shadow, because an inset
-     shadow paints over the background and would hide the knots. */
+  /* The frame (rules + knots) is a border-image on .panel/.modal, below;
+     the background is only the smoke, translucent so the page shows through. */
   --sky-knot-size: 28px;
-  --sky-frame:
-    linear-gradient(rgba(111, 111, 108, 0.35), rgba(111, 111, 108, 0.35)) left 2px top 2px / calc(100% - 4px) 1px no-repeat,
-    linear-gradient(rgba(111, 111, 108, 0.35), rgba(111, 111, 108, 0.35)) left 2px bottom 2px / calc(100% - 4px) 1px no-repeat,
-    linear-gradient(rgba(111, 111, 108, 0.35), rgba(111, 111, 108, 0.35)) left 2px top 2px / 1px calc(100% - 4px) no-repeat,
-    linear-gradient(rgba(111, 111, 108, 0.35), rgba(111, 111, 108, 0.35)) right 2px top 2px / 1px calc(100% - 4px) no-repeat;
-  --panel-bg:
-    var(--sky-knot-tl) top -1px left -1px / var(--sky-knot-size) var(--sky-knot-size) no-repeat,
-    var(--sky-knot-tr) top -1px right -1px / var(--sky-knot-size) var(--sky-knot-size) no-repeat,
-    var(--sky-knot-bl) bottom -1px left -1px / var(--sky-knot-size) var(--sky-knot-size) no-repeat,
-    var(--sky-knot-br) bottom -1px right -1px / var(--sky-knot-size) var(--sky-knot-size) no-repeat,
-    var(--sky-frame),
-    var(--sky-smoke),
-    var(--surface);
+  --panel-bg: var(--sky-smoke);
   --panel-border: var(--sky-line);
-  --panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --panel-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
   --panel-header-bg: transparent;
   --panel-header-fg: var(--text);
-  --card-bg: var(--sky-smoke), var(--surface);
+  --card-bg: var(--sky-smoke);
   --card-border: var(--sky-line);
   --card-radius: 0;
-  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.45);
 
   /* Modal: the spell/item info card from SkyUI. */
-  --modal-bg: var(--panel-bg);
+  --modal-bg: var(--sky-smoke), var(--surface);  /* opaque: windows stack */
   --modal-border: var(--sky-line);
   --modal-header-bg: transparent;
   --modal-header-fg: var(--text);
@@ -18888,11 +18885,11 @@ html[data-theme="skyrim"] {
   --tab-bg-active: transparent;
   --tab-underline-active: transparent;
   --tab-radius: 0;
-  --segmented-bg: #0b0b0a;
-  --segmented-border: var(--sky-line);
+  --segmented-bg: transparent;
+  --segmented-border: transparent;
   --segmented-radius: 0;
   --segmented-item-radius: 0;
-  --segmented-item-bg-active: rgba(255, 255, 255, 0.18);
+  --segmented-item-bg-active: var(--sky-select);
   --segmented-item-fg-active: #ffffff;
   --toggle-btn-bg-on: rgba(255, 255, 255, 0.18);
   --toggle-btn-fg-on: #ffffff;
@@ -18910,8 +18907,9 @@ html[data-theme="skyrim"] {
   --desktop-icon-label-fg-selected: #ffffff;
   --desktop-icon-glyph-selected: #ffffff;
   --pagination-item-radius: 0;
-  --pagination-item-bg-active: rgba(255, 255, 255, 0.18);
+  --pagination-item-bg-active: var(--sky-select);
   --pagination-item-fg-active: #ffffff;
+  --pagination-item-fg: var(--text);  /* only .is-disabled dims (core's opacity) */
   --breadcrumb-separator: "\25C7";
 
   --badge-radius: 0;
@@ -18983,7 +18981,7 @@ html[data-theme="skyrim"] {
   --toast-border: var(--sky-line);
   --toast-radius: 0;
   --toast-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --alert-bg: var(--sky-smoke), var(--surface);
+  --alert-bg: var(--sky-smoke);
   --alert-border: var(--sky-line);
   --alert-fg: var(--text);
   --alert-radius: 0;
@@ -19009,11 +19007,16 @@ html[data-theme="skyrim"] {
   --readout-border: var(--sky-line);
   --readout-unit-fg: var(--muted);
   --readout-font: var(--font);
-  --readout-padding: calc(0.13em + 4px) 0.45em;  /* Antonio overhangs the 1.1 line box by ~0.125em; core's 0.1em let it touch the frame */
+  --readout-padding: calc(0.13em + 4px) 0.45em;  /* the condensed face overhangs the 1.1 line box; core's 0.1em let it touch the frame */
   --lamp-radius: 0;
   --lamp-off: #0b0b0a;
   --lamp-border: var(--sky-line);
-  --lamp-glow: 0 0 0.5rem currentColor;
+  --lamp-glow: none;
+  --lamp-on: var(--success-text);
+  --connection-live: var(--success-text);
+  --connection-offline: var(--danger-text);
+  --connection-attention: var(--warning-text);
+  --connection-reconnecting: var(--warning-text);
 
   --message-bg: rgba(12, 12, 11, 0.9);
   --message-border: var(--hairline);
@@ -19029,30 +19032,30 @@ html[data-theme="skyrim"] {
   --bar-chart-axis: var(--sky-line);
   --chart-series-1: #aec0d5;
   --chart-series-2: #8f9fe6;
+  --chart-series-5: #97bba5;  /* stamina highlight; core maps 5 to --accent-2, the same as 2 */
 }
 
 /* --- Page: cold mist behind the menu ------------------------------------- */
 html[data-theme="skyrim"] {
+  /* Three layers (was five): less to rasterise over a long page. */
   background:
-    radial-gradient(ellipse 120% 100% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55)),
-    radial-gradient(ellipse 45% 35% at 70% 40%, rgba(60, 56, 50, 0.16), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 25% 0%, rgba(120, 132, 140, 0.22), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 85% 100%, rgba(80, 92, 100, 0.2), transparent 70%),
+    radial-gradient(ellipse 70% 55% at 25% 0%, rgba(130, 142, 150, 0.3), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 85% 100%, rgba(80, 92, 100, 0.24), transparent 70%),
     linear-gradient(180deg, #1a1d1f, var(--bg) 60%);
   background-color: var(--bg);
   font-family: var(--font);
 }
-/* Antonio is tighter than the game's Futura Condensed, above all in its
-   word space: open the spaces a little everywhere, and the tracking of the
-   small text (hints, captions, meta) so it doesn't run together. */
-html[data-theme="skyrim"] body { font-size: 1.04rem; letter-spacing: 0.01em; word-spacing: 0.12em; }
-html[data-theme="skyrim"] :is(pre, code, samp) { word-spacing: normal; letter-spacing: normal; }  /* code keeps its own columns */
-html[data-theme="skyrim"] :is(small, .field-hint, .text-muted, .text-sm, figcaption, .qa-note, .app-status) { letter-spacing: 0.03em; }
+/* The game sets tight: no extra tracking or word space, small text included
+   (the condensed face already has open sidebearings at small sizes). Small
+   grey text floors at 13px: the face has a low x-height. */
+html[data-theme="skyrim"] body { font-size: 1.06rem; }
+html[data-theme="skyrim"] :is(small, .field-hint, .text-sm, figcaption, .qa-note) { font-size: max(0.8125rem, 0.8em); }
+html[data-theme="skyrim"] .nav-brand { letter-spacing: 0.01em; }
 
 /* --- Voice: condensed, white, uppercase titles with no tracking ---------- */
 html[data-theme="skyrim"] :is(h1, h2, h3) {
   text-transform: uppercase;
-  font-weight: 400;
+  font-weight: 500;  /* the title face is a medium condensed */
   letter-spacing: 0.02em;
   color: #ffffff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
@@ -19072,7 +19075,7 @@ html[data-theme="skyrim"] .panel-header {
   align-items: center;
   gap: 0.6em;
   font-size: 1.05em;
-  font-weight: 400;
+  font-weight: 500;
   text-transform: uppercase;
   border-bottom: 0;
 }
@@ -19087,8 +19090,11 @@ html[data-theme="skyrim"] :is(.panel, .modal) > .panel-header {
 /* Nested frames step down: a panel inside a panel, card, modal or drawer
    keeps its silver rule but drops the knotwork corners and the drop
    shadow, so a three-deep stack isn't three sets of corners. */
+/* The frame: silver rule, faint inner rule and the four knots, one
+   9-slice image painted in place of the 1px border. */
+html[data-theme="skyrim"] :is(.panel, .modal) { border-image: var(--sky-frame-img) 30 / calc(var(--sky-knot-size) * 30 / 28); }
 html[data-theme="skyrim"] :is(.panel, .card, .modal, .drawer) .panel {
-  --panel-bg: var(--sky-smoke), var(--surface);
+  border-image: none;
   --panel-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.4);
 }
 html[data-theme="skyrim"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
@@ -19113,17 +19119,33 @@ html[data-theme="skyrim"] .modal-header {
   position: relative;
 }
 /* Info-card title: centred over its rule; the Exit key sits at the end. */
-html[data-theme="skyrim"] .modal-header:not(.desktop-window *) > :first-child:not(.btn-close) { flex: 1; text-align: center; }
-html[data-theme="skyrim"] .modal-header:not(.desktop-window *) > .btn-close { position: absolute; inset-inline-end: 0.4rem; top: 50%; translate: 0 -50%; }
+html[data-theme="skyrim"] .modal-header:not(.desktop-window *):not(:has(.btn-min, .btn-max)) > :first-child:not(.btn-close) { flex: 1; text-align: center; }
+html[data-theme="skyrim"] .modal-header:not(.desktop-window *):not(:has(.btn-min, .btn-max)) > .btn-close { position: absolute; inset-inline-end: 0.4rem; top: 50%; translate: 0 -50%; }
 
 /* --- Tabs: the chevron-flanked title bar ---------------------------------- *
- * The active tab is framed by small open chevrons, the rest sit dimmed. */
+ * The active tab sits between two bold silver arrowheads, each with a dark
+ * notch (the journal's ◁ GENERAL STATS ▷); the rest are the same size,
+ * only dimmer. */
+html[data-theme="skyrim"] {
+  --sky-tab-chev-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M11 1 1.5 7 11 13Z' fill='%23d0d0cc' stroke='%230b0b0a' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M8.6 4.6 4.8 7 8.6 9.4Z' fill='%230b0b0a'/%3E%3C/svg%3E");
+  --sky-tab-chev-r: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M1 1 10.5 7 1 13Z' fill='%23d0d0cc' stroke='%230b0b0a' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M3.4 4.6 7.2 7 3.4 9.4Z' fill='%230b0b0a'/%3E%3C/svg%3E");
+}
 html[data-theme="skyrim"] .tabs { border-bottom-color: var(--sky-line); gap: 0.25rem; }
 html[data-theme="skyrim"] .tab { font-size: 1em; text-transform: uppercase; }
-html[data-theme="skyrim"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))::before { content: "\25C1\00a0"; font-size: 0.7em; vertical-align: 0.12em; }
-html[data-theme="skyrim"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))::after { content: "\00a0\25B7"; font-size: 0.7em; vertical-align: 0.12em; }
-html[data-theme="skyrim"] :is(.nav, .app-bar) > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"]))::before { content: "\25C1\00a0" / ""; font-size: 0.7em; vertical-align: 0.12em; }
-html[data-theme="skyrim"] :is(.nav, .app-bar) > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"]))::after { content: "\00a0\25B7" / ""; font-size: 0.7em; vertical-align: 0.12em; }
+html[data-theme="skyrim"] :is(.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is(.nav, .app-bar) > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])))::before,
+html[data-theme="skyrim"] :is(.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is(.nav, .app-bar) > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])))::after {
+  content: "" / "";
+  display: inline-block;
+  inline-size: 0.78em;
+  block-size: 0.92em;
+  vertical-align: -0.1em;
+  background: var(--sky-tab-chev-l) center / contain no-repeat;
+  margin-inline-end: 0.4em;
+}
+html[data-theme="skyrim"] :is(.tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :is(.nav, .app-bar) > .nav-item:is(:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), [aria-current]:not([aria-current="false"])))::after {
+  background-image: var(--sky-tab-chev-r);
+  margin-inline: 0.4em 0;
+}
 html[data-theme="skyrim"] .tabs[aria-orientation="vertical"] > .tab { text-align: end; }
 html[data-theme="skyrim"] .tabs[aria-orientation="vertical"] > .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-inline-end-color: var(--sky-line-hi); }
 html[data-theme="skyrim"] :is(.list, .master-detail-list) { --row-selected-bg: var(--sky-select); }
@@ -19144,15 +19166,35 @@ html[data-theme="skyrim"] .table tr:is(.is-selected, :is([aria-selected="true"],
   /* The tip is two half-height triangles at the end, not a clip: a
      clipped cell repaints the row's band from its own edge (a seam). */
   background:
-    linear-gradient(to top right, rgba(255, 255, 255, 0.16) 50%, transparent 50%) right top / 0.7em 50% no-repeat,
-    linear-gradient(to bottom right, rgba(255, 255, 255, 0.16) 50%, transparent 50%) right bottom / 0.7em 50% no-repeat,
-    linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.14) 18%, rgba(255, 255, 255, 0.24) 60%, rgba(255, 255, 255, 0.16)) left top / calc(100% - 0.7em) 100% no-repeat;
+    linear-gradient(to top right, rgba(255, 255, 255, 0.22) 50%, transparent 50%) right top / 0.7em 50% no-repeat,
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.22) 50%, transparent 50%) right bottom / 0.7em 50% no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, 0) 15%, rgba(255, 255, 255, 0.22) 75%) left top / calc(100% - 0.7em) 100% no-repeat;
 }
 html[data-theme="skyrim"] .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) > td:last-child { padding-inline-end: 1.4em; }
+/* A stacked phone card is many rows tall: no arrow tip (it would stretch
+   into a wedge), just the fading band and a bright leading rule. */
+@media (max-width: 480px) {
+  html[data-theme="skyrim"] .table.is-stacked > * > tr > td:nth-child(n) { text-align: start; }  /* a card's labels line up */
+  html[data-theme="skyrim"] .table.is-stacked > * > tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.1));
+    box-shadow: inset 2px 0 0 var(--sky-line-hi);
+  }
+}
+@container (max-width: 480px) {
+  html[data-theme="skyrim"] .table.is-stacked > * > tr > td:nth-child(n) { text-align: start; }
+  html[data-theme="skyrim"] .table.is-stacked > * > tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked)))) {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.1));
+    box-shadow: inset 2px 0 0 var(--sky-line-hi);
+  }
+}
+/* Column heads and stacked-card labels: small grey caps, never under 12px. */
+html[data-theme="skyrim"] .table th { font-size: max(0.75rem, 0.85em); }
+html[data-theme="skyrim"] .table.is-stacked > * > tr > [data-label]::before { font-size: max(0.75rem, 0.78em); }
 /* SkyUI has no monospace: data cells, log times and the status strip use the condensed face
    with tabular figures, and a trailing value column sits flush right.
    `code` and pre keep the mono stack. */
-html[data-theme="skyrim"] :is(.table, .log, .app-status, .qa-row) .mono,
+html[data-theme="skyrim"] :is(.table, .log, .app-status, .qa-row, .value-row, .meter-bank) .mono,
+html[data-theme="skyrim"] .attachment-name,
 html[data-theme="skyrim"] :is(kbd, .log) { font-family: var(--font); font-variant-numeric: tabular-nums; }
 /* Inline inputs in a phone-width table keep a full touch target. */
 @media (max-width: 900px) {
@@ -19179,11 +19221,51 @@ html[data-theme="skyrim"] .btn-primary {
   --btn-border: var(--sky-line-hi);
   --btn-bg-hover: rgba(255, 255, 255, 0.26);
 }
-/* State buttons stay smoke plates: the state is the text colour only. */
-html[data-theme="skyrim"] :is(.btn-danger, .btn-success) { --btn-bg: rgba(12, 12, 11, 0.85); --btn-border: var(--sky-line); --btn-bg-hover: rgba(40, 39, 35, 0.95); --btn-weight: 400; }
+/* A lone primary is the lit plate with chevron end caps (the skills
+   menu's "Perks to increase"): the caps are filled points in the
+   background and the top/bottom rules stop where they start, so nothing
+   is clipped (the focus ring stays whole). */
+html[data-theme="skyrim"] .btn-primary {
+  --sky-cap: 0.45rem;
+  --btn-bg:
+    var(--sky-cap-l) left top / var(--sky-cap) 100% no-repeat,
+    var(--sky-cap-r) right top / var(--sky-cap) 100% no-repeat,
+    linear-gradient(#b9b9b5, #b9b9b5) center top / calc(100% - 2 * var(--sky-cap)) 1px no-repeat,
+    linear-gradient(#b9b9b5, #b9b9b5) center bottom / calc(100% - 2 * var(--sky-cap)) 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)) center / calc(100% - 2 * var(--sky-cap)) 100% no-repeat;
+  --btn-bg-hover: var(--btn-bg);
+  --btn-border: transparent;
+  --btn-border-hover: transparent;
+  --btn-shadow-hover: none;
+  --btn-border-width: 0;
+  --btn-padding: calc(0.4em * var(--density) + 1px) calc(1.2em * var(--density) + 1px);
+}
+html[data-theme="skyrim"] {
+  --sky-cap-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 28' preserveAspectRatio='none'%3E%3Cpath d='M8 0 0.6 14 8 28Z' fill='%23ffffff' fill-opacity='.18'/%3E%3Cpath d='M8 0.5 0.6 14 8 27.5' fill='none' stroke='%23b9b9b5' stroke-width='1' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --sky-cap-r: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 28' preserveAspectRatio='none'%3E%3Cpath d='M0 0 7.4 14 0 28Z' fill='%23ffffff' fill-opacity='.18'/%3E%3Cpath d='M0 0.5 7.4 14 0 27.5' fill='none' stroke='%23b9b9b5' stroke-width='1' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+/* Grouped choices (range chips, toggle groups, segmented controls) are
+   bare menu entries: no box, the chosen one lit by the fading band. */
+html[data-theme="skyrim"] :is(.btn-group, .toggle-group) {
+  --btn-bg: transparent;
+  --btn-border: transparent;
+  --btn-border-hover: transparent;
+  --btn-bg-hover: var(--sky-select);
+  --toggle-btn-bg: transparent;
+  --toggle-btn-border: transparent;
+  --toggle-btn-border-hover: transparent;
+  --toggle-btn-bg-on: var(--sky-select);
+  --toggle-btn-border-on: transparent;
+}
+html[data-theme="skyrim"] .btn-group > .btn-primary { --btn-bg: var(--sky-select); --btn-padding: calc(0.4em * var(--density)) calc(1.2em * var(--density)); --btn-border-width: 1px; }
+html[data-theme="skyrim"] .btn-ghost { --btn-bg-hover: var(--sky-select); }
+/* State buttons are bare too: the state is the text colour only. */
+html[data-theme="skyrim"] :is(.btn-danger, .btn-success) { --btn-bg: transparent; --btn-border: transparent; --btn-border-hover: transparent; --btn-bg-hover: var(--sky-select); --btn-weight: 400; }
 html[data-theme="skyrim"] .btn-danger { --btn-fg: var(--danger-text); }
 html[data-theme="skyrim"] .btn-success { --btn-fg: var(--success-text); }
-html[data-theme="skyrim"] .btn-secondary { --btn-fg: var(--text); }
+html[data-theme="skyrim"] .btn-secondary { --btn-fg: var(--text); --btn-border: transparent; }
+/* A key joined to a field keeps the field's silver rule, so it reads as one control. */
+html[data-theme="skyrim"] .input-group > .btn:not(.btn-primary) { --btn-border: var(--sky-line); --btn-border-hover: var(--sky-line-hi); }
 /* A lit danger toggle is the Delete key's smoke plate: red label, red rule. */
 html[data-theme="skyrim"] .toggle-btn.is-danger {
   --toggle-btn-bg-on: rgba(12, 12, 11, 0.85);
@@ -19365,6 +19447,7 @@ html[data-theme="skyrim"] .desktop-window { --window-header-pad: 0.25rem calc(va
   html[data-theme="skyrim"] {
     --panel-pad: 1rem;
     --sky-knot-size: 16px;
+    --sky-frame-img: var(--sky-frame-img-sm);
   }
   html[data-theme="skyrim"] h1 { font-size: 1.75rem; }
 }
@@ -19401,6 +19484,7 @@ html[data-theme="skyrim"] {
   }
   html[data-theme="skyrim"] .app-bar,
   html[data-theme="skyrim"] :is(.progress, .meter) { clip-path: none; }
+  html[data-theme="skyrim"] :is(.panel, .modal) { border-image: none; }
 }
 
 /* Close (v5): Skyrim's menus close with an "Exit" key hint. */
@@ -19451,6 +19535,45 @@ html[data-theme="skyrim"][data-easter-eggs][data-egg-knee] body::after {
   text-shadow: 0 0 6px #000, 0 0 2px #000;
   pointer-events: none;
   animation: skyrim-knee 6s ease both;
+}
+
+/* --- Round-2 polish -------------------------------------------------------- */
+/* One weight: hierarchy is size, case and white vs grey, never bold. */
+html[data-theme="skyrim"] { --list-item-title-weight: 400; }
+html[data-theme="skyrim"] :is(.popover strong, .message-meta strong, .panel-header strong, summary, .nav-brand, .taskbar-start, .taskbar-start-label, .price, .price *, .empty-state-title, .field-group-title, .bulk-bar-count, .table th) { font-weight: 400; }
+/* A name in a grey byline is white, not bold. */
+html[data-theme="skyrim"] :is(.text-muted > strong, .avatar + div > strong) { font-weight: 400; color: var(--text); }
+/* State lamps are the ◆ diamond: the square turned, so off, dotted and
+   dashed states keep their rule. */
+html[data-theme="skyrim"] .lamp,
+html[data-theme="skyrim"] .connection::before,
+html[data-theme="skyrim"] .status::before { rotate: 45deg; scale: 0.8; }
+/* Cards and the message list get the frame too, at the small knot size. */
+html[data-theme="skyrim"] :is(.card, .master-detail-list > .list):not(:is(.panel, .card, .modal, .drawer) *) { border-image: var(--sky-frame-img-sm) 30 / calc(16px * 30 / 28); }
+/* The condensed face has a low x-height: state labels never go under 12px. */
+html[data-theme="skyrim"] .status { font-size: max(0.75rem, 0.85em); }
+html[data-theme="skyrim"] .badge { font-size: max(0.75rem, 0.75em); }
+/* The game has no monospace face: Notepad's prose is the condensed face. */
+html[data-theme="skyrim"] .desktop-window textarea { font-family: var(--font); font-variant-numeric: tabular-nums; }
+
+/* --- Round-3 polish -------------------------------------------------------- */
+/* State badges keep the grey chrome: the state is the text colour only. */
+html[data-theme="skyrim"] .badge:is(.badge-danger, .badge-success, .badge-warning):not(.badge-solid) { --badge-bg: transparent; --badge-border: var(--sky-line); }
+/* Filter chips are bare menu entries, the chosen one lit by the row band. */
+html[data-theme="skyrim"] .badge.badge-button { --badge-bg: transparent; --badge-border: transparent; --badge-bg-active: var(--sky-select); }
+/* Carousel markers and the typing dots are diamonds, not circles. */
+html[data-theme="skyrim"] { --carousel-dot: var(--sky-line); --carousel-dot-active: #ffffff; }
+html[data-theme="skyrim"] .carousel-nav > a:not(.carousel-prev, .carousel-next) { min-width: 0.7em; padding: 0; border-radius: 0; rotate: 45deg; scale: 0.8; }
+html[data-theme="skyrim"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; rotate: 45deg; }
+html[data-theme="skyrim"] .typing::before {
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 4' preserveAspectRatio='none'%3E%3Cpath d='M2 0 4 2 2 4 0 2ZM8 0 10 2 8 4 6 2ZM14 0 16 2 14 4 12 2Z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
+}
+/* Phone: cards drop the knotwork image (the 1px silver rule stays, as
+   nested panels do) and the smoke is opaque, so scrolling does not
+   re-composite translucent layers over the mist. */
+@media (max-width: 480px) {
+  html[data-theme="skyrim"] { --sky-smoke: linear-gradient(90deg, #0f0f0e, #1b1a17 55%, #121210); }
+  html[data-theme="skyrim"] :is(.card, .master-detail-list > .list):not(:is(.panel, .card, .modal, .drawer) *) { border-image: none; }
 }
 
 }

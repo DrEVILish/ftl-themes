@@ -18711,11 +18711,19 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * not decoration.
  */
 
-/* Share Tech (SIL OFL, vendored): the modern terminal screen sets labels,
-   names and figures in a narrow proportional sans, not a mono. */
+/* Roboto Condensed (SIL OFL, vendored Latin 400/700): the terminal screen
+   sets labels, names and figures in a narrow humanist sans with open bowls
+   and a real bold ('BIO', 'EC'), not a mono or a squared techno face. */
 @font-face {
-  font-family: "Share Tech";
-  src: url("../assets/fonts/ShareTech-Regular.woff2") format("woff2");
+  font-family: "Roboto Condensed";
+  src: url("../assets/fonts/RobotoCondensed-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto Condensed";
+  src: url("../assets/fonts/RobotoCondensed-Bold.woff2") format("woff2");
+  font-weight: 700;
   font-display: swap;
 }
 
@@ -18758,7 +18766,7 @@ html[data-theme="bloomberg"] {
   --radius: 0;
   /* The screen's narrow proportional sans (labels, names, headers and
      figures); mono stays for code and readouts. Figures are tabular. */
-  --font: "Share Tech", "Arial Narrow", "Roboto Condensed", "Liberation Sans Narrow", sans-serif;
+  --font: "Bloomberg Terminal", "Roboto Condensed", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
   --font-mono: "Share Tech Mono", Consolas, "Liberation Mono", monospace;
   --flare: #ffcc00;
 
@@ -18776,12 +18784,20 @@ html[data-theme="bloomberg"] {
   --focus: #ffffff;
   --focus-ring: none;
   --input-bg: #000000;
-  --input-border: var(--border);
+  /* Command-line and reading text is the screen's light grey ('Enter all
+     values and hit <GO>'); amber stays for names, labels and options. */
+  --input-fg: #e0e0e0;
+  --prose-fg: #e0e0e0;
+  /* Row names are regular weight; bold is only for function mnemonics. */
+  --list-item-title-weight: 400;
+  /* The command line's blue rule ('Enter all values and hit <GO>'): the
+     screen's third structural colour, at 3.1:1 on black. */
+  --input-border: #2a52c8;
   --panel-bg: #000000;
   /* Every terminal window has a thin amber outer frame; inputs, cards and
      hairlines stay grey. */
-  --panel-border: #cc7a00;
-  --modal-border: #cc7a00;
+  --panel-border: #e0983f;
+  --modal-border: #e0983f;
   --card-border: var(--border);
   --panel-pad: 0.25rem;
   --tab-panel-pad: 0.35rem;
@@ -18792,6 +18808,9 @@ html[data-theme="bloomberg"] {
      (1.1:1 on black), so rows read as the terminal's unruled grid while
      each cell keeps its edge. */
   --table-rule: #0a0a0a;
+  /* Body cells keep the 4px text-to-edge floor; core's in-cell editors and
+     tree toggles read the same token, so their hit areas stay aligned. */
+  --cell-pad-y: 0.25rem;
   --row-selected-bg: rgba(255, 204, 0, 0.15);
   /* A selected row's own text is the full amber: inherited --muted (e.g. in
      an accordion) fell to 3.7:1 on the yellow tint. */
@@ -18802,7 +18821,8 @@ html[data-theme="bloomberg"] {
   --mention-self-bg: color-mix(in srgb, var(--warning) 22%, transparent);
   --comment-anchor-bg: color-mix(in srgb, var(--warning) 14%, transparent);
   --comment-anchor-bg-active: color-mix(in srgb, var(--warning) 22%, transparent);
-  --row-active-marker: inset 0.2rem 0 0 var(--accent-2);
+  /* The selection bar is the yellow function key; cyan stays a data colour. */
+  --row-active-marker: inset 0.2rem 0 0 var(--accent);
   --nav-bg: #000000;
   --nav-rule: var(--border);
   --badge-radius: 0;
@@ -18846,10 +18866,15 @@ html[data-theme="bloomberg"] {
      series 1. The function-key purple from the reference's key row takes
      its place (white mixed into avatar tints left amber at 4.27:1). */
   --chart-series-3: #b05cff;
+  /* Diverging maps read as net change: green up, red down, never the
+     yellow function-key colour. */
+  --chart-div-pos: #2ecc40;
+  --chart-div-neg: #ff3333;
+  --chart-div-mid: #141414;
 
   /* Role colors from the terminal screen: grey column-header bar with
      light text, dark-red section bars with white text. */
-  --table-head-bg: #2a2a2a;
+  --table-head-bg: #1a1a1a;
   --table-head-fg: #c8c8c8;
   --panel-header-bg: #800414;
   --panel-header-fg: #ffffff;
@@ -18859,6 +18884,9 @@ html[data-theme="bloomberg"] {
   --card-pad: 0.4rem;
   --toolbar-pad: 0.25rem;
   --toggle-btn-padding: 0.25rem 0.45rem;
+  /* Sunken panes (explorer tree, file list) are grey wells; the blue rule
+     belongs to the command line's inputs only. */
+  --window-pane-border: var(--border);
 
   /* The green <GO> key from the real keyboard, filled with black text. */
   --go-bg: #2ecc40;
@@ -18871,11 +18899,23 @@ html[data-theme="bloomberg"] {
    reads in a light tone instead. */
 html[data-theme="bloomberg"] :is(.panel-header, .modal-header) { --muted: #f0c8a0; }
 
-/* Data values are white on the terminal; amber stays for labels and names. */
+/* Data values are white on the terminal; amber stays for labels and names.
+   Figures are the same narrow sans as the labels at regular weight, set
+   tabular, not the mono. */
 html[data-theme="bloomberg"] .stat-value { --text: #e8e8e8; }
+html[data-theme="bloomberg"] :is(.stat-value, .table td.mono) { font-family: var(--font); font-weight: 400; }
 html[data-theme="bloomberg"] body { font-variant-numeric: tabular-nums; }
 /* Up/down cells keep core's green/red net-change colour. */
 html[data-theme="bloomberg"] .table td.mono:not(.is-up, .is-down) { color: #e8e8e8; }
+
+/* Running text is light grey like the command line and function
+   descriptions; headings, names and labels keep the amber. */
+html[data-theme="bloomberg"] :is(section, .panel, .card, .stack, .modal, .window-body) > p:not([class]) { color: #e0e0e0; }
+
+/* Section bars and window titles are regular weight ('News', 'Indices'),
+   their <strong> titles too. */
+html[data-theme="bloomberg"] :is(.panel-header, .modal-header, .panel-title, .modal-title),
+html[data-theme="bloomberg"] :is(.panel-header, .modal-header) > :is(strong, b) { font-weight: 400; }
 
 /* Screen titles are small and regular weight, the same family and close
    to the size of the data, not code-editor headlines. */
@@ -18887,8 +18927,18 @@ html[data-theme="bloomberg"] h3 { font-size: 1rem; }
 /* Header cells keep at least 4px around their text at --density 0.7; data
    rows are as tight as the terminal's grid (touch tiers reach --tap-min
    through the controls inside the row, not padding). */
-html[data-theme="bloomberg"] .table th { padding-block: 0.3rem; font-size: inherit; }
-html[data-theme="bloomberg"] .table td { padding-block: 0.25rem; line-height: 1.25; }
+html[data-theme="bloomberg"] .table thead th { padding-block: 0.3rem; }
+html[data-theme="bloomberg"] .table th { font-size: inherit; }
+html[data-theme="bloomberg"] .table tbody th { line-height: 1.15; }
+html[data-theme="bloomberg"] .table td { line-height: 1.15; }
+/* Stacked phone rows keep core's leading: a status chip in a filled
+   stacked cell otherwise sits under the 4px edge floor. */
+@container style(--tier: mobile) {
+  html[data-theme="bloomberg"] .table.is-stacked td { line-height: 1.25; }
+}
+/* A row checkbox's --tap-min label overlaps the cell padding, as core's
+   tree toggle does, so the control alone sets the row height. */
+html[data-theme="bloomberg"] .table td > .check { margin-block: calc(-1 * var(--cell-pad-y)); }
 /* A wide fallback face must never squeeze a cell input under the target. */
 html[data-theme="bloomberg"] .table td > :is(.input, .select) { min-inline-size: calc(var(--tap-min) + 1ch); }
 
@@ -18910,6 +18960,74 @@ html[data-theme="bloomberg"] .btn-group > .btn:not(.btn-primary, .btn-danger) {
   --btn-border: #2ecc40;
   --btn-bg-hover: var(--accent);
 }
+
+/* Secondary keys keep the outline, a step down in dim amber. */
+html[data-theme="bloomberg"] .btn-secondary { --btn-border: var(--muted); }
+
+/* Horizontal tabs are labels on the red section bar ('News / Settings'),
+   the current one a filled yellow key; no underline. */
+html[data-theme="bloomberg"] .tabs:not([aria-orientation="vertical"]) {
+  --tab-bg: #800414;
+  --tab-fg: #ffffff;
+  --tab-bg-hover: #a0061a;
+  --tab-fg-hover: #ffffff;
+  --tab-bg-active: var(--accent);
+  --tab-fg-active: #000000;
+  --tab-border-active: var(--accent);
+  --tab-underline-active: var(--accent);
+  /* One continuous crimson section bar across the panel, thin dividers
+     between items. */
+  gap: 0;
+  border-bottom: 0;
+  background: #800414;
+}
+html[data-theme="bloomberg"] .tabs:not([aria-orientation="vertical"]) > .tab { border-inline-end: 1px solid rgba(255, 255, 255, 0.25); }
+
+/* Labels keep the terminal's voice: mixed case, no tracking ('Index',
+   '2 Day', '%YTD'), not core's uppercase eyebrow. */
+html[data-theme="bloomberg"] :is(.stat-label, .field-group-title, .strip-label) { text-transform: none; letter-spacing: 0; }
+
+/* Every content region sits under a crimson section bar, as panels do:
+   the settings and reading-pane titles become that bar. */
+html[data-theme="bloomberg"] .master-detail-pane.panel > :is(.cluster:first-child, h2) {
+  margin-inline: calc(-1 * var(--surface-pad));
+  margin-block-start: calc(-1 * var(--surface-pad));
+  padding: var(--panel-header-pad);
+  background: var(--panel-header-bg);
+  color: var(--panel-header-fg);
+  --text: var(--panel-header-fg);
+  --muted: #f0c8a0;
+}
+html[data-theme="bloomberg"] .master-detail-pane.panel > .toolbar:first-child + h2 { margin-block-start: 0; }
+
+/* The status strip is one cyan data row; its right-hand meta too. */
+html[data-theme="bloomberg"] .app-status { --muted: var(--app-status-fg); }
+
+/* Secondary text never falls under 12px at --density 0.7. */
+html[data-theme="bloomberg"] :is(.status, .field-hint, .hint, .stat-trend) { font-size: max(0.75em, 0.75rem); }
+
+/* Windows (desktop and draggable): a black top row inside the amber frame
+   with a white title and white min/max/close glyphs; crimson stays for
+   in-content section bars. Inactive windows dim to muted amber, without
+   core's desaturating filter (which turned the title tan). */
+html[data-theme="bloomberg"] :is(.desktop-window, .modal[data-drag]) {
+  --modal-header-bg: #000000;
+  --modal-header-fg: #e8e8e8;
+  --modal-header-close-fg: #ffffff;
+  --window-header-fg-inactive: var(--muted);
+  --window-header-filter-inactive: none;
+}
+
+/* Disabled arrows stay readable as present-but-off: a dim amber at about
+   2.6:1, not core's 40% opacity (about 1.5:1). */
+html[data-theme="bloomberg"] .pagination-item.is-disabled { opacity: 1; color: #6b4400; }
+html[data-theme="bloomberg"] .carousel::scroll-button(*):disabled { opacity: 1; color: #6b4400; }
+
+/* Presence dots are square like everything else (core hard-codes 50%). */
+html[data-theme="bloomberg"] :is(.avatar[data-status], .presence-status)::after { border-radius: 0; }
+/* Initials are data white, not amber on an amber tint, and never tiny. */
+html[data-theme="bloomberg"] .avatar { --avatar-fg: #e8e8e8; }
+html[data-theme="bloomberg"] .avatar-sm { font-size: max(0.7em, 0.7rem); }
 
 /* Carousel dots and arrows are hard-coded pills in core. */
 html[data-theme="bloomberg"] .carousel-nav > a,
@@ -18988,14 +19106,14 @@ html[data-theme="bloomberg"] {
    when a page happens to render a <kbd>. */
 html[data-theme="bloomberg"] .app-status:not(.taskbar, .desktop-bar)::before {
   content: "";
-  flex: 0 0 3.6rem;
-  height: 0.6rem;
+  flex: 0 0 7.4rem;
+  height: 0.9rem;
   background-image: linear-gradient(90deg,
     #ff4136 0 18%, #0a0a0a 18% 20%,
     #ffcc00 20% 38%, #0a0a0a 38% 40%,
     #2ecc40 40% 58%, #0a0a0a 58% 60%,
     #00ccff 60% 78%, #0a0a0a 78% 80%,
-    #e8e8e8 80% 98%, #0a0a0a 98% 100%
+    #9a9a9a 80% 98%, #0a0a0a 98% 100%
   );
 }
 
@@ -19009,7 +19127,7 @@ html[data-theme="bloomberg"] {
   --nav-item-fg: var(--text);
   --nav-item-bg-active: #ffcc00;
   --nav-item-fg-active: #000000;
-  --desktop-icon-font-size: 0.72rem;
+  --desktop-icon-font-size: 0.8rem;
 }
 html[data-theme="bloomberg"] .app-bar { --nav-item-bg: #2ecc40; --nav-item-fg: #000000; }
 html[data-theme="bloomberg"] .app-bar .nav-item { padding: 0.25rem 0.45em; min-inline-size: var(--tap-min); justify-content: center; text-align: center; }
@@ -19021,6 +19139,9 @@ html[data-theme="bloomberg"] .app-bar .menubar > li:not(:hover, :focus-within) >
   background: #2ecc40;
   color: #000000;
 }
+/* The bar's select is a small filled field at cap height, like the
+   reference's 'Standard' select, so the green key row leads the bar. */
+html[data-theme="bloomberg"] .app-bar .select { --input-padding: 0.1em 0.45em; font-size: 0.85rem; inline-size: auto; }
 /* Phone: tighter bar gaps keep the actions on one line under the brand. */
 @container style(--tier: mobile) {
   html[data-theme="bloomberg"] :is(.app-bar, .app-bar > .cluster) { gap: 0.35rem; }

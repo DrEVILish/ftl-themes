@@ -18714,8 +18714,10 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  *
  * Fonts: the on-screen face is a squared, rounded-corner techno sans (caps
  * only) for the hard-drive/relic screens and a DIN-like grotesque for PACT.
- * Neither is identified. Share Tech / Share Tech Mono (SIL OFL, already
- * vendored in assets/fonts/, see NOTICE.md) are the closest open faces: the
+ * Neither is identified. Oxanium (SIL OFL, vendored in assets/fonts/ as a
+ * Latin subset of its 400-700 axis, see NOTICE.md) has the same squared,
+ * rounded-corner caps at the screens' width and weight; Share Tech Mono
+ * (SIL OFL) sets the data. Like the original pick, the
  * same squared counters and narrow caps.
  *
  * Colour rule: teal is the phosphor (all text and lines). Yellow-green is
@@ -18724,8 +18726,9 @@ html[data-contrast="high"] { --cursor-default: default !important; --cursor-text
  * the countdown readouts and for warnings.
  */
 @font-face {
-  font-family: "Share Tech";
-  src: url("../assets/fonts/ShareTech-Regular.woff2") format("woff2");
+  font-family: "Oxanium";
+  src: url("../assets/fonts/Oxanium-Variable.woff2") format("woff2");
+  font-weight: 400 700;
   font-display: swap;
 }
 @font-face {
@@ -18742,7 +18745,7 @@ html[data-theme="silo"] {
   --surface-2: #0a2420;
   --border: #1c8a72;       /* teal rule lines (sampled #0a6950..#268f6c) */
   --hairline: #0c3a2e;
-  --text: #52dec2;         /* phosphor teal (sampled #28c6aa core, lifted just enough for long text and tinted chips) */
+  --text: #3fd6bd;         /* phosphor teal (sampled #25c9af / #28c6aa, lifted only a step for long text) */
   --muted: #3fb69a;
   --accent: #9fca6e;       /* muted sage-lime "JUDICIAL: SIMS" band / capacity bar (sampled #91be6c..#95c26f) */
   --accent-2: #e6dc8c;     /* pale yellow: selection outline, the PACT double rules */
@@ -18756,22 +18759,22 @@ html[data-theme="silo"] {
   --on-danger: #1a0602;
   --on-success: #021a0e;
   --radius: 3px;
-  --font: "Share Tech", "Eurostile", "DIN Alternate", "Bahnschrift", "Arial Narrow", sans-serif;
+  --font: "Oxanium", "Eurostile", "DIN Alternate", "Bahnschrift", "Arial Narrow", sans-serif;
   --font-mono: "Share Tech Mono", "Lucida Console", "DejaVu Sans Mono", Consolas, monospace;
   --flare: #e5a93c;
-  --link: #6fe8cc;
+  --link: #5fe0c8;
   --focus: var(--accent-2);
   --focus-ring: 0 0 0.5rem rgba(230, 220, 140, 0.45);
 
   /* Theme hooks; the legacy variant redefines these. */
   --silo-plate: #8fd3cc;    /* pale teal header plate (sampled #88cfcb / #83aba9) */
   --silo-plate-fg: #052019;
-  --silo-bezel: #2b302b;    /* painted steel monitor housing */
-  --silo-bezel-hi: #3d433c;
+  --silo-bezel: #2b3832;    /* grey-green painted steel housing (sampled #23382f) */
+  --silo-bezel-hi: #3c4b43;
   --silo-glow: rgba(40, 198, 170, 0.3);
   --silo-tint: rgba(159, 202, 110, 0.12);
   --silo-num: #f0c060;      /* amber countdown numerals */
-  --silo-field: #33735c;    /* field-box outline, olive-teal (3.1:1 on the glass) */
+  --silo-field: #4a7a4c;    /* field-box outline, olive (sampled #477544; 3.6:1 on the glass) */
   --silo-haze: rgba(40, 198, 170, 0.1);
 
   --density: 0.9;
@@ -18788,10 +18791,11 @@ html[data-theme="silo"] {
   --btn-bg-hover: var(--silo-tint);
   --btn-transform: uppercase;
   --btn-tracking: 0.16em;
-  --btn-weight: 400;
+  --btn-weight: 500;
   --btn-shadow: none;
   --btn-shadow-hover: 0 0 0.5rem var(--silo-glow);
   --btn-radius: 2px;
+  --btn-icon-radius: 2px;  /* icon keys are square-cornered keys too */
 
   /* Inputs: the relic database's outlined field cells. */
   --input-bg: transparent;
@@ -18823,7 +18827,7 @@ html[data-theme="silo"] {
   --modal-header-bg: var(--silo-plate);
   --modal-header-fg: var(--silo-plate-fg);
   --modal-radius: 6px;
-  --modal-shadow: 0 0 1.5rem var(--silo-glow), 0 0 0 1rem rgba(0, 0, 0, 0.35);
+  --modal-shadow: 0 0 1.5rem var(--silo-glow);
   --overlay-bg: rgba(0, 6, 4, 0.82);
   --dropdown-bg: var(--bg);
   --dropdown-border: var(--border);
@@ -18844,9 +18848,14 @@ html[data-theme="silo"] {
   --table-head-rule-width: 3px;
   --table-rule: var(--hairline);
   --row-hover-bg: rgba(111, 232, 204, 0.06);
-  --row-selected-bg: var(--silo-tint);
+  --row-selected-bg: rgba(230, 220, 140, 0.05);
+  /* A resolved comment pin keeps full phosphor ink: it sits over any content. */
+  --comment-pin-resolved-fg: var(--text);
   --row-selected-fg: var(--accent-2);
   --row-active-marker: inset 3px 0 0 var(--accent-2);
+  /* A selected desktop icon or drive is the file grid's yellow box, not a fill. */
+  --desktop-icon-label-bg-selected: transparent;
+  --desktop-icon-label-fg-selected: var(--accent-2);
 
   --nav-bg: var(--surface);
   --nav-brand-fg: var(--text);
@@ -18997,13 +19006,10 @@ html[data-theme="silo"] {
  * a blurred shadow on every glyph costs too much to scroll on a phone. */
 html[data-theme="silo"] :is(h1, h2, h3, h4) {
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-weight: 400;
+  letter-spacing: 0.12em;
+  font-weight: 600;
 }
 html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: 0 0 0.45em var(--silo-glow); }
-/* Share Tech is light; the show's squared face is heavier. A hairline
-   stroke thickens titles, big values and field-cell values. */
-html[data-theme="silo"] :is(h1, h2, h3, .stat-value) { -webkit-text-stroke: 0.025em currentColor; }
 html[data-theme="silo"] h1 { font-size: 1.9rem; letter-spacing: 0.08em; }
 html[data-theme="silo"] h2 { font-size: 1.2rem; }
 html[data-theme="silo"] h3 { font-size: 0.95rem; letter-spacing: 0.18em; }
@@ -19013,7 +19019,20 @@ html[data-theme="silo"] :is(.label, .badge, .tab, .nav-item, th, .toggle-btn, .s
 html[data-theme="silo"] .stat-label { font-size: 0.68rem; }
 /* Keys in a packed row track less so the longest label fits a phone. */
 html[data-theme="silo"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0.06em; }
-html[data-theme="silo"] .stat-value { font-size: 1.85rem; letter-spacing: 0.05em; font-weight: 400; }
+/* So do soft keys inside a window or dialog: the row stays one row and
+   scrolls sideways before it would wrap. */
+html[data-theme="silo"] .modal .tabs:not([aria-orientation="vertical"]) { flex-wrap: nowrap; overflow-x: auto; }
+html[data-theme="silo"] .modal .tab { flex-shrink: 0; letter-spacing: 0.06em; margin-inline-end: 0.2rem; padding-inline: 0.6em; }
+/* Titles of small surfaces are tracked caps like every other label. */
+html[data-theme="silo"] :is(:is(.popover, .card) > strong:first-child, .empty-state-title, .value-row > span:first-child) {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+/* Unit suffixes and key hints stay legible at desktop scale. */
+html[data-theme="silo"] .readout-unit { font-size: max(0.45em, 0.65rem); }
+html[data-theme="silo"] .btn > kbd { font-size: max(0.85em, 0.68rem); }
+html[data-theme="silo"] .stat-value { font-size: 1.85rem; letter-spacing: 0.04em; font-weight: 600; }
 html[data-theme="silo"] .badge { font-size: 0.7rem; }
 /* Small labels outside the field cell are tracked caps too: legends, field
    labels, accordion and tree summaries, input addons, an in-page brand,
@@ -19022,6 +19041,10 @@ html[data-theme="silo"] :is(legend, .field-label, details > summary, .input-grou
   text-transform: uppercase;
   letter-spacing: var(--label-tracking);
 }
+/* Tree nodes track less and wrap only between words in the narrow pane. */
+html[data-theme="silo"] .tree details > summary { letter-spacing: 0.04em; overflow-wrap: normal; }
+/* A bare group box is a field-cell outline, not the browser's grey groove. */
+html[data-theme="silo"] fieldset { border: 1px solid var(--silo-field); padding-inline: 0.5rem; }
 /* Menu entries and short list labels are tracked caps too (FILE / VIEW /
    GO), as are list rows used as navigation; content lists keep their case. */
 html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-menu, .menubar) li > :is(button, a), nav .list-item > span:not([class])) {
@@ -19031,10 +19054,11 @@ html[data-theme="silo"] :is(.dropdown-item, .context-menu-item, :is(.context-men
 /* Header cells keep at least 0.45rem above and below their small caps at
    this density. */
 html[data-theme="silo"] .table th { padding-block: max(0.45rem, calc(0.5em * var(--density))); }
-/* Values are set in the screens' sans, in caps; case-sensitive fields and
-   free text keep the case the user typed (placeholders stay caps). */
+/* Values are set in the screens' sans. A select shows its option in caps;
+   typed values keep the case the user typed, at rest and while editing
+   (placeholders stay caps). */
 html[data-theme="silo"] :is(.input, .select, .textarea) { font-family: var(--font); letter-spacing: 0.04em; }
-html[data-theme="silo"] :is(.select, .input:not([type="email"], [type="url"], [type="password"], [type="search"])) { text-transform: uppercase; }
+html[data-theme="silo"] .select { text-transform: uppercase; }
 html[data-theme="silo"] :is(.input, .textarea)::placeholder { text-transform: uppercase; }
 /* In a table cell the control gives up its tracking and a date input
    tightens, so a row of controls fits a narrow modal with a full-size Qty. */
@@ -19051,14 +19075,14 @@ html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .sel
   --input-padding: 0.2em 0.15em;
 }
 html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) > .label {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.16em;
   margin-block-end: 0.1em;
 }
 html[data-theme="silo"] .field:not(.is-floating):has(> .label + :is(.input, .select, .textarea)) > :is(.input, .select, .textarea) {
   font-size: 1.15rem;
   min-block-size: var(--tap-min, 24px);
-  -webkit-text-stroke: 0.02em currentColor;
+  font-weight: 500;
 }
 /* The larger value font pulls core's em-placed chevron halves apart; keep
    them exactly one 6px tile apart so the triangle stays whole. */
@@ -19113,7 +19137,7 @@ html[data-theme="silo"] .btn-primary { box-shadow: 0 0 0 1px var(--bg), 0 0 0 3p
 html[data-theme="silo"] .btn:active { transform: translateY(1px); }
 /* Only the yellow-green band is a fill: danger and success are outlined
    keys in their state colour, and a disabled key is an inert teal outline. */
-html[data-theme="silo"] .btn-danger { --btn-bg: transparent; --btn-fg: var(--danger-text); --btn-border: var(--danger); --btn-weight: 400; }
+html[data-theme="silo"] .btn-danger { --btn-bg: transparent; --btn-fg: var(--danger-text); --btn-border: var(--danger); }
 html[data-theme="silo"] .btn-success { --btn-bg: transparent; --btn-fg: var(--success-text); --btn-border: var(--success); }
 /* Tinted avatar chips take the pale phosphor ink, like the waveform markers. */
 html[data-theme="silo"] .avatar[data-color] { --avatar-fg: var(--waveform-marker-fg); }
@@ -19146,8 +19170,43 @@ html[data-theme="silo"] .bulk-bar :focus-visible { outline-color: var(--on-accen
 /* Tabs as a row of outlined soft keys with a ">" cue. */
 html[data-theme="silo"] .tab { border: 1px solid var(--border); margin-inline-end: 0.35rem; }
 html[data-theme="silo"] .tab::after { content: " \203a"; opacity: 0.7; }
+/* A key that already carries a glyph (close, add, icon-only) takes no cue. */
+html[data-theme="silo"] .tab:has(.btn-close, .btn-icon, > .icon:only-child)::after { content: none; }
+/* Short state cells are tracked caps like the headers above them. */
+html[data-theme="silo"] .status { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85em; }
 html[data-theme="silo"] .tab:is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))),
 html[data-theme="silo"] .tab:is(.is-active, :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))) { border-color: var(--accent-2); }
+
+/* A count badge in a section title keeps a gap from the title text. */
+html[data-theme="silo"] .panel-header > .badge { margin-inline-start: 0.6em; }
+
+/* Check boxes are outlined field cells on the glass; checked is the
+   yellow-green fill with a dark tick, a radio a filled square pip. */
+html[data-theme="silo"] :is(.checkbox, .radio) {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  border: 1px solid var(--border);
+  border-radius: 1px;
+}
+html[data-theme="silo"] .checkbox:is(:checked, :indeterminate) { background: var(--accent); border-color: var(--accent); }
+html[data-theme="silo"] .checkbox:checked::before {
+  content: "";
+  width: 0.55em;
+  height: 0.3em;
+  border: solid var(--on-accent);
+  border-width: 0 0 2px 2px;
+  transform: translateY(-0.08em) rotate(-45deg);
+}
+html[data-theme="silo"] .checkbox:indeterminate::before { content: ""; width: 0.55em; height: 2px; background: var(--on-accent); }
+html[data-theme="silo"] .radio:checked::before { content: ""; width: 0.45em; height: 0.45em; background: var(--accent); }
+html[data-theme="silo"] :is(.checkbox, .radio):disabled { border-color: var(--hairline); }
+
+/* Selection is the file grid's pale-yellow box: on a selected desktop
+   icon or drive, and around a selected table row (a faint wash, no bar). */
+html[data-theme="silo"] .desktop-icon:has(input:checked) > label > span { outline: 1px solid var(--accent-2); outline-offset: -1px; }
+html[data-theme="silo"] .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :has(> td:first-child input[type="checkbox"]:checked)) { outline: 1px solid var(--accent-2); outline-offset: -1px; }
+html[data-theme="silo"] .table tr:is(.is-selected, :is([aria-selected="true"], :where(:has(> input:is([type="radio"], [type="checkbox"]):checked, > td:first-child input[type="checkbox"]:checked))), :has(> td:first-child input[type="checkbox"]:checked)) > td:first-child { box-shadow: none; }
 
 /* --- CRT: static scanlines on the glass, inner vignette ------------------- *
  * Static only, so prefers-reduced-motion needs nothing. */
@@ -19266,23 +19325,80 @@ html[data-theme="silo"] .app-status {
 html[data-theme="silo"] .app-status > span { align-self: stretch; display: flex; align-items: center; margin-block: -0.25rem; }
 html[data-theme="silo"] .app-status > :is(span, .taskbar-start):first-child:not(:only-child) { border-inline-end: 0.45rem solid var(--bg); padding-inline-end: 1rem; }
 html[data-theme="silo"] .app-status > span:last-child:not(:only-child) { margin-inline-start: auto; border-inline-start: 0.45rem solid var(--bg); padding-inline-start: 1rem; }
+/* Desktop tiers: the chunky housing of the workbench monitor, with the
+   glass recessed in it on four rounded corners, and the bar's controls on
+   a third header plate (SYSTEM / RUN), cut off from the dark glass by a
+   notch like the status strip's. */
+@media (min-width: 901px) {
+  html[data-theme="silo"] { --app-padding: 2.2rem 2.6rem 2.6rem; }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app { border-radius: 1.6rem; }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-bar { border-radius: 1.1rem 1.1rem 0 0; box-shadow: inset 2px 2px 0 #0008, inset -2px 0 0 #0008; }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-status { border-radius: 0 0 1.1rem 1.1rem; }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-main { box-shadow: inset 0 0 3rem rgba(0, 0, 0, 0.75), inset 2px 0 0 #0008; }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-rail { box-shadow: inset -2px 0 0 #0008; }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-bar > .cluster:last-child {
+    align-self: stretch;
+    align-items: center;
+    margin-block: -0.35rem;
+    margin-inline-end: -1.25rem;
+    padding: 0.3rem 1.25rem 0.3rem 0.9rem;
+    border-inline-start: 0.45rem solid var(--bg);
+    border-start-end-radius: 0.9rem;
+    background: var(--silo-plate);
+    --text: var(--silo-plate-fg);
+    --muted: var(--silo-plate-fg);
+    --btn-fg: var(--silo-plate-fg);
+    --btn-border: var(--silo-plate-fg);
+    --btn-border-hover: var(--silo-plate-fg);
+    --btn-bg-hover: rgba(5, 32, 25, 0.12);
+    --input-fg: var(--silo-plate-fg);
+    --input-border: var(--silo-plate-fg);
+    --select-arrow-fg: var(--silo-plate-fg);
+    --kbd-fg: var(--silo-plate-fg);
+    --kbd-border: var(--silo-plate-fg);
+    --kbd-bg: transparent;
+    text-shadow: none;
+  }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-bar > .cluster:last-child :focus-visible { outline-color: var(--silo-plate-fg); }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-bar > .cluster:last-child > .btn { --btn-fg: var(--silo-plate-fg); --btn-bg-hover: rgba(5, 32, 25, 0.12); }
+  html[data-theme="silo"]:not([data-variant="legacy"]) .app-bar > .cluster:last-child > .btn:not(.btn-ghost, .is-clear) { --btn-border: var(--silo-plate-fg); }
+}
 /* Touch tiers: core lets the brand flex to fill the first line so it can
    truncate; this brand is a filled plate, so cap it at its own width. */
 @media (max-width: 900px) {
   html[data-theme="silo"] .app-bar > .nav-brand { flex: 0 0 auto; max-width: 100%; }
 }
 @media (max-width: 480px) {
-  html[data-theme="silo"] { --app-padding: 0.5rem; }
+  /* Scanlines and the stat bloom are dropped on a phone: a full-screen
+     repeating gradient and blurred glyphs cost too much to scroll. */
+  html[data-theme="silo"] {
+    --app-padding: 0.8rem;
+    --app-main-bg: var(--bg);
+  }
+  /* The vignette and the title bloom go too: they repaint on every scroll. */
+  html[data-theme="silo"] .app-main { box-shadow: none; }
+  html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: none; }
+  /* A tab row that scrolls fades at its far edge until scrolled to the end. */
+  @supports (animation-timeline: scroll()) {
+    html[data-theme="silo"] .tabs:not([aria-orientation="vertical"]) {
+      mask: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent) 0 0 / calc(100% + 2.5rem) 100% no-repeat;
+      animation: silo-tabs-fade linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
   /* Numbered entries stay on one line at phone width. */
-  html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"] { padding-inline: 0.4em; letter-spacing: 0; }
+  html[data-theme="silo"] .app-bar .menubar > li > [role="menuitem"] { padding-inline: 0.35em; letter-spacing: 0; font-size: 0.75rem; }
+  /* Oxanium is wider than the old face: a packed key row drops its tracking. */
+  html[data-theme="silo"] :is(.segmented-item, .toggle-btn) { letter-spacing: 0; }
+  html[data-theme="silo"] .toggle-group > .toggle-btn { font-size: 0.82rem; padding-inline: 0.6em; }
   /* Keep the bar's controls on one row: the picker gives up width and the
      keyboard hint (no keyboard on a phone) goes, so the header stays short. */
-  html[data-theme="silo"] .app-bar .cluster > .select { flex: 0 1 5.5rem; inline-size: auto; min-inline-size: 0; padding-inline: 0.5em 1.7em; }
+  html[data-theme="silo"] .app-bar .cluster > .select { flex: 0 1 4.75rem; inline-size: auto; min-inline-size: 0; padding-inline: 0.5em 1.7em; }
   html[data-theme="silo"] .app-bar .btn > kbd { display: none; }
   /* Brand plate and actions share the first row (the plate truncates
      before it wraps); the numbered nav is the second row. */
   html[data-theme="silo"] .app-bar { --app-bar-padding: 0.35rem 0.6rem; column-gap: 0.4rem; }
-  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; padding: 0.3rem 0.6rem; letter-spacing: 0.08em; align-self: center; }
+  html[data-theme="silo"] .app-bar > .nav-brand { flex: 1 1 0; min-width: 2.5rem; max-width: max-content; display: block; align-content: center; min-block-size: var(--tap-min, 2.75rem); padding: 0.3rem 0.6rem; letter-spacing: 0.06em; font-size: 0.75rem; align-self: stretch; }
   html[data-theme="silo"] .app-bar > .cluster { flex: 0 0 auto; flex-wrap: nowrap; gap: 0.25rem; }
   /* The search key keeps its icon and its accessible name, not its label. */
   html[data-theme="silo"] .app-bar .cluster > .btn:has(> kbd) { font-size: 0; padding-inline: 0.7rem; }
@@ -19371,6 +19487,7 @@ html[data-theme="silo"][data-variant="legacy"] {
   --avatar-radius: 50%;
   --status-dot-radius: 50%;
   --lamp-radius: 50%;
+  --btn-icon-radius: 50%;
   --app-gutter-art:
     radial-gradient(circle at 20% 30%, rgba(242, 184, 75, 0.06), transparent 30%),
     radial-gradient(circle at 80% 70%, rgba(242, 184, 75, 0.05), transparent 30%),
@@ -19440,6 +19557,23 @@ html[data-theme="silo"][data-variant="legacy"] .app-status {
   font-size: 0.68rem;
 }
 html[data-theme="silo"][data-variant="legacy"] .app-status > * { border-inline-color: transparent; }
+/* The scroll-track ladder becomes one hairline with a vertical mono edge
+   label, and small labels take the tablet's typewriter mono. */
+html[data-theme="silo"][data-variant="legacy"] {
+  --app-rail-bg: var(--bg);
+}
+html[data-theme="silo"][data-variant="legacy"] .app-rail:empty::before {
+  content: "STRUCTURE 02.45" / "";
+  writing-mode: vertical-rl;
+  margin: 1rem auto 0;
+  padding-block: 0.4rem;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+html[data-theme="silo"][data-variant="legacy"] :is(.stat-label, .label, .field-label, th, .badge) { font-family: var(--font-mono); }
 
 @media print {
   html[data-theme="silo"] :is(h1, h2, h3, h4, .stat-value) { text-shadow: none; }
@@ -19450,5 +19584,7 @@ html[data-theme="silo"][data-variant="legacy"] .app-status > * { border-inline-c
     --readout-glow: none;
   }
 }
+
+@keyframes silo-tabs-fade { from { mask-position: 100% 0; } to { mask-position: 0 0; } }
 
 }
