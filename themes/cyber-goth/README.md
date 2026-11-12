@@ -12,42 +12,68 @@ than as a HUD's telemetry glow.
 
 ## Core values
 
-1. **Purple structures, green signals.** `--flare` (purple) is the
-   theme's borders, rules and headings; `--accent` (toxic green) is
-   reserved for primary/interactive/success — the two must not swap roles.
-2. **Black vinyl gloss, not matte.** Panels and buttons carry a subtle
-   top-lit gradient — plastic under a club light, not flat paint.
+1. **Purple structures, green signals.** Purple is the blacklight
+   ambience: dim `--line` (`#9030d8`) and `--border` (`#7a1fbf`) for
+   control outlines, rules and panel edges, `--flare-text` for h3, panel
+   and window titles. Page titles (h1/h2) are pale `--text` under a purple
+   bloom, and the bar sawtooth is a dimmer `#a020d8`, so the green neon
+   carries the eye as the captures show. `--accent` (toxic green) is
+   the one neon, reserved for primary/interactive/success — the two must
+   not swap roles.
+2. **Black vinyl gloss, not matte.** Panels and buttons carry a lit 1px
+   lip and a specular band over their top ~40%, capped at 28-40px so tall panels
+   show no seam (`--gloss`), then a dark
+   body — plastic under a club light, not flat paint. Alerts, menus,
+   popovers and lists take the same gloss on a 3px slab.
 3. **Glow is UV bloom.** Hover/focus glows are wide and colour-matched to
    whichever hue is glowing, not a tight HUD ring.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
    sans.
 5. **Spiked, studded-leather chrome, not just neon-on-black.** Colour
    alone doesn't distinguish this from any other neon cyberpunk theme in
-   the catalog — a jagged sawtooth trim on every structural bar and a
-   hard-edged, riveted drop-shadow on buttons/panels are the theme's own
-   silhouette, legible even in a colourless crop.
+   the catalog — a jagged sawtooth trim on the structural bars, a
+   hard-edged offset slab under buttons/panels and cone studs in panel
+   corners are the theme's own silhouette, legible even in a colourless
+   crop.
 
 ## Signature details
 
 - Primary buttons' hover glow (`0 0 14px rgba(214, 31, 255, 0.6)`) is
   purple even though the button fill is green — the bloom always reads as
   the *structural* colour, never the signal one.
-- Table headers and rules pick up `--flare` (purple), not the accent —
-  structure stays purple everywhere, including inside components.
+- Table header text uses `--flare-text`, and table rules, input, button
+  and slider outlines the dimmer `--line` purple, never the accent:
+  structure stays purple everywhere, including inside components. Info
+  alerts are outlined in `--flare`, so green outlines only success.
 - A jagged sawtooth trim (a repeating 45°/-45° gradient pair, the classic
-  "torn ticket edge" CSS technique) runs along the app bar, nav, and
-  panel/modal headers — a studded-collar silhouette, not a smooth bevel
-  like `alienware`'s clip-path corners and not `matrix`'s monospace rain.
-  It's a decorative pseudo-element strip, so it never clips a focus ring,
-  click target or label.
-- Buttons carry a single asymmetric fang cut on the top-right corner only
-  (`clip-path`) plus a hard black offset shadow underneath the neon
-  bloom — riveted vinyl, not a soft glow alone. `alienware` cuts both
-  opposing corners at matching size; this cuts one corner, deliberately
-  uneven.
-- The font stack leads with Eurostile, the same unvendored-face situation
-  as `tron`/`death-star` — it silently falls back to a system sans on most
-  real machines rather than the intended geometric face.
+  "torn ticket edge" CSS technique) runs along the app bar, nav and modal
+  headers at full glow; panel headers get a smaller, unlit strip (7px,
+  10px period, no solid rule under it) so the bars stay the loudest
+  structure. A studded-collar silhouette, not a
+  smooth bevel like `alienware`'s clip-path corners and not `matrix`'s
+  monospace rain. It's a decorative pseudo-element strip with room left
+  under it, so it never covers the next line. On phone and tablet the
+  teeth drop their `drop-shadow` filter (a scroll cost) and paint in the
+  brighter `--flare` instead.
+- Text buttons carry a single asymmetric fang cut on the top-right corner
+  only (`clip-path`), with the border redrawn along the diagonal, over a
+  hard dark-violet 3px offset slab (`#3a1550`; pure black vanished on the
+  near-black page) that the clip polygon extends to include. `alienware`
+  cuts both opposing corners at matching size; this cuts one, deliberately
+  uneven. Standalone `.toggle-btn` shares the cut and slab; a
+  `.toggle-group` row is cut on its last segment only, without a slab.
+  Round icon buttons and avatars keep core's circle. Focus rings
+  sit 4px inside the cut so the clip never hides them.
+- Panels, cards and modals sit on a 4px offset plate (`#2a0e3a`, edged
+  `#6a2d96`), with an 8px cone stud (lit tip, violet cone, dark rim)
+  riveted into the outer 9px of each corner, like a collar's. Titled
+  modals and desktop windows keep only the bottom pair, so the title bar
+  and its icon never sit on a stud.
+- Panel, modal and window titles are uppercase Audiowide in `--flare-text`.
+- Charts: series 1 is the green, series 2 the structural purple
+  (`--flare-text`) and series 5 lavender `#b98cff`, since `--accent` and
+  `--success` are the same green.
+- Stat labels read a lighter lavender (`#b9a0d8`) than `--muted`.
 
 ## Layout
 
@@ -82,7 +108,7 @@ content area carrying the same vinyl-gloss panels throughout.
 - **No swapping of roles.** Purple is structure; green signals. Never a purple primary action or green borders.
 - **No third neon colour.** Danger and warning exist for states only.
 - **No matte flat panels.** Keep the top-lit vinyl gradient, sawtooth trim and hard offset shadow.
-- **No smooth bevels or soft glows alone**; the fang cut and riveted shadow carry the silhouette.
+- **No smooth bevels or soft glows alone**; the fang cut, offset slab and studs carry the silhouette.
 - **No lowercase, corporate sans headings.**
 
 ## Icons
@@ -97,14 +123,14 @@ survive only where the concept needs them (cloud, moon, heart, droplet).
 
 ## Typography
 
-`--font` is `"Eurostile", "IBM Plex Sans", sans-serif`; `--font-mono` is `Consolas, monospace`. **Neither named face is vendored**: Eurostile is a commercial face, IBM Plex Sans only renders if installed, so on most machines the generic sans-serif is what shows. Headings are uppercase and geometric by CSS (case and tracking), not by the face. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows tube-letterform construction that no web font reproduces, so the theme does not try.
+Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons and tabs are uppercase and tracked. `--font-mono` is **Share Tech Mono** (vendored, same squared techno family) for readouts and stat values, at its single regular weight. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows tube-letterform construction that no web font reproduces, so the theme does not try.
 
 ## Contrast honesty
 
-- **Neon green on black is far above the floor:** `--accent` `#b6ff1a` is 17.15:1 on `--bg`, 16.41:1 on `--surface`; `--on-accent` `#0a0f00` is 16.01:1 on it.
-- **Purple:** `--accent-2`/`--flare` `#d61fff` is 5.45:1 on `--bg`, 5.21:1 on `--surface`; `--border` `#7a1fbf` is only 2.75:1 on `--surface` (a structural line, not text).
+- **Neon green on black is far above the floor:** `--accent` `#39ff5a` (EL-wire green, from `cyber-goth-el-wire-closeup.jpg`: glow mean `#3de65d`, core `#87faac`) is 15.48:1 on `--bg`; `--on-accent` `#0a0f00` is 14.45:1 on it.
+- **Purple:** `--accent-2`/`--flare` `#d61fff` is 5.45:1 on `--bg` but 4.41:1 on the tinted `#2d1137`, so text (headings, panel titles, table heads) uses `--flare-text` `#e04dff` (5.35:1 there); `--flare` stays for the sawtooth trims and bar rules. Control outlines (inputs, buttons, slider track, table rules) use `--line` `#9030d8`, 3.57:1 on `--bg` and 3.45:1 on the input fill, above the 3:1 non-text floor. `--border` `#7a1fbf` is only 2.75:1 on `--bg` (a decorative panel edge, not text or a control boundary). The status strip text is `--muted`.
 - **Danger:** `--danger` `#d61048` is 3.99:1 as text on `--bg` (fails), so copy uses `--danger-text` `#f03d70`; the fill takes white text at 5.21:1.
-- **Muted** `#9d7ec2` is 5.87:1 on `--surface`.
+- **Muted** `#9d7ec2` is 5.87:1 on `--surface`, 4.92:1 on the brightest gloss stop.
 - **Why purple exists at all.** The captures show a single green UV-reactive neon (`cyber-goth-el-wire-closeup.jpg`) on black; `RESEARCH.md`'s outsider read is "a single UV-reactive neon accent". The hot purple `#d61fff`/`#7a1fbf` structure is **not in any capture**. It is a design decision (blacklight club association, and to stop the theme reading as a green-only cousin of `matrix`), documented here rather than sourced. The hexes are unmeasured.
 
 ## Reference status
