@@ -35,9 +35,10 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
    depresses 5px on `:active`.
 5. **Big round lamps with a bezel.** `.lamp` is a 1.3rem circle inside a navy
    ring; the rail carries five bezelled craft lamps.
-6. **The sash is the only ornament.** One wide gold diagonal crosses the
-   bar's left end over a solid gold rule (the uniform sash; phones keep only
-   the rule); under `h1` a single wide gold sash with a diagonal end. Built
+6. **The sash is the only ornament.** One wide (3.6rem) gold diagonal
+   crosses the bar's left end over a solid gold rule (the uniform sash; on
+   phones a shortened diagonal clipped to the brand row); the rule's right
+   end carries a five-segment craft-colour strip (TB1-TB5); under `h1` a single wide gold sash with a diagonal end. Built
    from CSS only. Solid gold fills are kept for GO, the sash, rules and the
    fader knob; selection (rows, options, the current folder) is a 30% gold
    wash with a TB1 tab.
@@ -48,7 +49,8 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 
 ## Signature details
 
-- **App shell = control room**: navy bar with the gold sash and rule; a 4.5rem putty
+- **App shell = control room**: navy bar with the gold sash and rule (its right
+  end a TB1-TB5 craft-colour strip); a 4.5rem putty
   instrument rail with five bezelled lamps (blue, green, orange-red, yellow,
   silver-gold) drawn purely with `radial-gradient`; a cream console panel with
   a hard navy drop; navy status strip with a gold rule; a map-room graticule
@@ -59,7 +61,8 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
   slit mask), and a navy readout window with gold digits.
 - **Rocker switch**: square-shouldered thumb in a stout slot; gold slot when on.
 - Panel, modal and desktop-window headers: navy caption bar with a gold
-  underline band, captioned in the display face (a thinner band when nested).
+  underline band, captioned uppercase in the display face (a thinner band
+  when nested), the same voice as h1-h3.
   Inactive desktop windows keep the navy bar (no fading filter, which turned
   it slate); only the caption dims to #c7d3ee.
 - Keys share one keycap: `.btn`, `.toggle-btn` and filter chips
@@ -67,7 +70,8 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
   cream with navy ink, the active one TB1 blue). Toggle keys carry the 4px
   navy drop and press flat.
 - Tabs sit on a 3px navy rail; the active tab is a TB1-blue key outlined on
-  three sides.
+  three sides. Inside windows and modals tabs track tighter and run smaller,
+  so a four-tab dialog keeps one row.
 - Rail lamps have a TB1/TB5 silver ring inside the navy bezel.
 - Tables: navy head, gold rule, italic uppercase captions, cream zebra.
 - Alerts carry a 1rem tab in the craft status colour (TB1 blue info, TB2
@@ -116,7 +120,9 @@ Microgramma is the reported credits/title-card face; Michroma is an
 open Microgramma-alike, not the original. The bar brand, window titles and
 the GO key use the same face, upright (the earlier heavy italic was an
 invention and is gone). Univers 59 (craft lettering) is not matched; bar nav
-and key labels use the bold uppercase body stack.
+(`--app-bar-font: var(--font)`) and key labels use the bold uppercase body
+stack. Readouts (`--font-mono`): Lucida Console, then DejaVu Sans Mono and
+Liberation Mono, so the instrument digits stay sturdy where Lucida is absent.
 
 ## Contrast honesty
 

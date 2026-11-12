@@ -32,7 +32,7 @@ html[data-theme="international-rescue"] {
   --radius: 0.75rem;
   /* 1960s signage grotesque: Univers/Helvetica, else Arial (Liberation Sans). */
   --font: "Univers", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
-  --font-mono: "Lucida Console", "Courier New", monospace;
+  --font-mono: "Lucida Console", "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace;
   --flare: #f5b800;        /* IR gold trim */
   --link: var(--accent);
   --focus: #0a4fb4;
@@ -363,6 +363,7 @@ html[data-theme="international-rescue"] :is(.panel-header, .modal-header) {
   font-family: var(--ir-display);
   font-weight: 400;
   border-bottom: 0.4rem solid var(--ir-gold);
+  text-transform: uppercase;
   letter-spacing: 0.04em;
   border-radius: 0.75rem 0.75rem 0 0;
   padding: 0.55rem 1rem;
@@ -445,6 +446,9 @@ html[data-theme="international-rescue"] .badge-button {
 html[data-theme="international-rescue"] .toggle-btn { box-shadow: 0 4px 0 var(--ir-navy); }
 html[data-theme="international-rescue"] .toggle-btn:has(input:checked) { --toggle-btn-border-on: var(--ir-navy); }
 html[data-theme="international-rescue"] .toggle-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ir-navy); }
+/* Window tabs track tighter so a four-tab dialog keeps one row. */
+html[data-theme="international-rescue"] :is(.modal, .window) .tabs { --label-tracking: 0; gap: 0.15rem; }
+html[data-theme="international-rescue"] :is(.modal, .window) .tabs > .tab { padding-inline: 0.5em; font-size: 0.8em; }
 /* Tabs sit on a 3px navy rail; the active tab is a key outlined on three sides. */
 html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"]) { border-bottom: 3px solid var(--ir-navy); }
 html[data-theme="international-rescue"] .tabs:not([aria-orientation="vertical"]) > .tab.is-active {
@@ -526,7 +530,7 @@ html[data-theme="international-rescue"] {
   --app-bar-radius: 1.1rem;
   --app-bar-height: 4rem;
   --app-bar-padding: 0.6rem 1.25rem 1rem;
-  --app-bar-font: "Arial Rounded MT Bold", "Trebuchet MS", "Arial Black", Verdana, sans-serif;
+  --app-bar-font: var(--font);
   --app-rail-display: flex;
   --app-rail-empty-display: flex;
   --app-rail-radius: 1.1rem;
@@ -548,14 +552,17 @@ html[data-theme="international-rescue"] .app-bar {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   /* The IR uniform sash: one wide gold diagonal crossing the bar's left
-     end, over a solid gold rule along its lower edge. */
-  background-image:
-    linear-gradient(115deg, transparent 0 calc(50% - 0.45rem), var(--ir-gold) calc(50% - 0.45rem) calc(50% + 0.45rem), transparent 0),
-    linear-gradient(var(--ir-gold), var(--ir-gold));
-  background-size: 2.2rem 100%, 100% 0.4rem;
-  background-position: 0.6rem 0, bottom;
+     end, over a solid gold rule along its lower edge whose right end
+     carries the five craft colours (TB1-TB5), like the lamp rail. */
+  --ir-sash:
+    linear-gradient(115deg, transparent 0 calc(50% - 0.75rem), var(--ir-gold) calc(50% - 0.75rem) calc(50% + 0.75rem), transparent 0);
+  --ir-craft-rule:
+    linear-gradient(90deg, var(--ir-tb1) 0 20%, var(--ir-tb2) 0 40%, var(--ir-tb3) 0 60%, var(--ir-tb4) 0 80%, var(--ir-tb5) 0);
+  background-image: var(--ir-sash), var(--ir-craft-rule), linear-gradient(var(--ir-gold), var(--ir-gold));
+  background-size: 3.6rem 100%, 10rem 0.4rem, 100% 0.4rem;
+  background-position: 0.5rem 0, right 1.1rem bottom, bottom;
   background-repeat: no-repeat;
-  padding-inline-start: 3.2rem;
+  padding-inline-start: 4.4rem;
   box-shadow: 0 5px 0 #06214f;
 }
 /* The brand is the title card: the display face, upright and wide. */
@@ -608,7 +615,7 @@ html[data-theme="international-rescue"] .app-rail {
  * console keeps all of its width and height. */
 html[data-theme="international-rescue"] {
   --app-areas-mobile: "bar" "rail" "main" "status";
-  --app-rows-mobile: auto 3rem minmax(0, 1fr) auto;
+  --app-rows-mobile: auto 2.6rem minmax(0, 1fr) auto;
   --app-rail-display-mobile: block;
   --app-main-padding-mobile: 1rem;
   --app-main-padding-tablet: 1.25rem;
@@ -636,17 +643,18 @@ html[data-theme="international-rescue"] {
   /* The wide brand takes its own line rather than truncate to "F..", and
      the nav keys tighten so they share the next one. */
   html[data-theme="international-rescue"] .app-bar > .nav-brand { flex: 1 0 100%; }
-  html[data-theme="international-rescue"] .app-bar .nav-item { padding-inline: 0.5em; letter-spacing: 0.02em; }
+  html[data-theme="international-rescue"] .app-bar .nav-item { padding-inline: 0.35em; letter-spacing: 0; }
   /* Phone bar: the demo menubar keys share one row, and the bar loses its
      extra bottom padding, so less of the first screen is chrome. */
-  /* The sash would stretch down the tall wrapped bar: phones keep the rule. */
+  /* The sash is cut short to the brand row rather than stretched down the
+     tall wrapped bar; the brand steps right to clear it. */
   html[data-theme="international-rescue"] .app-bar {
-    --app-bar-padding: 0.5rem 0.75rem 0.8rem;
+    --app-bar-padding: 0.5rem 0.75rem 0.6rem;
     padding-inline-start: 0.75rem;
-    background-image: linear-gradient(var(--ir-gold), var(--ir-gold));
-    background-size: 100% 0.4rem;
-    background-position: bottom;
+    background-size: 2.6rem 2.6rem, 6rem 0.4rem, 100% 0.4rem;
+    background-position: 0.4rem 0, right 0.9rem bottom, bottom;
   }
+  html[data-theme="international-rescue"] .app-bar > .nav-brand { padding-inline-start: 2.4rem; }
   html[data-theme="international-rescue"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.4em; letter-spacing: 0; }
   /* Segmented keys keep their label on one line. */
   html[data-theme="international-rescue"] :is(.segmented, .toggle-group) > * { white-space: nowrap; font-size: 0.85em; }
@@ -655,7 +663,7 @@ html[data-theme="international-rescue"] {
   /* A one-line code block wraps instead of turning into a scroll box. */
   html[data-theme="international-rescue"] pre { white-space: pre-wrap; overflow-wrap: anywhere; }
   html[data-theme="international-rescue"] .app-rail {
-    background-size: 2.3rem 2.3rem;
+    background-size: 2.1rem 2.1rem;
     background-position:
       calc(50% - 8rem) 50%, calc(50% - 4rem) 50%, 50% 50%, calc(50% + 4rem) 50%, calc(50% + 8rem) 50%;
   }
