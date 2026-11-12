@@ -936,9 +936,11 @@ html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel {
 html[data-theme="windows95"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
   width: fit-content;
   max-width: calc(100% - 12px);
-  margin: calc(-0.6em - var(--surface-pad, 1rem)) 0 calc(0.4rem * var(--density)) calc(6px - var(--surface-pad, 1rem));
-  padding: 0 3px;
-  background: var(--surface);
+  /* The caption is an opaque plate on the frame line, its text 4px clear
+     of the plate's edge (the v5 floor) and centred on the line. */
+  margin: calc(-0.6em - 4px - var(--surface-pad, 1rem)) 0 calc(0.4rem * var(--density) - 4px) calc(4px - var(--surface-pad, 1rem));
+  padding: 4px;
+  background: linear-gradient(var(--panel-bg, var(--surface)), var(--panel-bg, var(--surface)));
   border-bottom: 0;
   box-shadow: none;
   font-weight: 400;
@@ -955,9 +957,11 @@ html[data-theme="windows95"] .divider-v {
   border-inline-start-color: #808080;
   box-shadow: 1px 0 0 #ffffff;
 }
+/* Drawn by the bottom border alone (no shadow), so the row stays a
+   one-sided rule, not a box round the trigger text. */
 html[data-theme="windows95"] .accordion-item {
-  border-bottom-color: #808080;
-  box-shadow: 0 1px 0 #ffffff;
+  border-bottom: 2px solid #808080;
+  border-image: linear-gradient(to top, #ffffff 1px, #808080 1px) 0 0 2 0 / 0 0 2px 0;
 }
 
 /* List views and table scrollers are white sunken wells with no row
