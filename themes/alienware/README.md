@@ -62,14 +62,22 @@ and what was derived rather than measured is in
   silver ring, with no label, rising out of the 31px taskbar; the light
   "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
   dark button, Area-51's red, Aurora's gold pill.
+- Push buttons, primary and secondary included, wear each suite's face:
+  XenoMorph's grey gloss in a 1px black frame, Darkstar's black with white
+  text, Area-51's red with bold yellow text, silver or beige in the others.
 - The trackbar is XenoMorph's black-edged blue groove (`#0374f4`; the
-  suite's highlight in the others) with a dark glossy grey thumb.
-- Tabs are silver with no Luna orange hot-track; Invader centres its
-  caption title.
+  suite's highlight in the others): 1px black, 4px groove, 1px black, with
+  a dark glossy grey thumb, inside core's full-height hit area.
+- Tabs, checkboxes and radios have no Luna orange hot-track; Invader
+  centres its caption title.
+- XenoMorph's content headings and group-box captions are black, as in
+  its dialogs, not Luna blue.
 - Toolbars, table heads, skeletons, toasts and every field and group-box
   border take the suite's own face, surface and border, so Luna's beige
-  and `#7f9db9` blue never show. The page around the window is the
-  suite's wallpaper, not Bliss.
+  and `#7f9db9` blue never show. The gap around a full-page app window is
+  the suite's wallpaper, not Bliss (XenoMorph's: a royal-blue band with
+  cyan light arcs over a black top); pages without the shell keep the
+  face grey so no page text sits on the dark wallpaper.
 - Where Tahoma and Arial are missing, the stacks fall back to DejaVu Sans
   Condensed and Arimo/Liberation Sans, closer in width to the originals
   than DejaVu Sans.
@@ -89,6 +97,8 @@ companion carries text:
 - `--success-text` is `#0f5a24` (`#073514` for tip callouts on the darker
   Darkstar and ALX faces) so the tip callout passes 4.5:1.
 - The taskbar's status text uses the taskbar's own foreground.
+- Area-51's yellow button text sits on the darker middle of its red gloss
+  (`#b01a14`, 5.2:1).
 - Selected rows keep black text on XenoMorph's `#0093f0`. The Theme
   Manager drew white bold there, which is 3.3:1 at this size.
 - ALX's and Area-51's page app bars use a gentler cut of the caption
