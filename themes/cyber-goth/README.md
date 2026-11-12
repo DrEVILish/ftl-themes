@@ -15,10 +15,11 @@ than as a HUD's telemetry glow.
 1. **Purple structures, green signals.** Purple is the blacklight
    ambience: dim `--line` (`#9030d8`) and `--border` (`#7a1fbf`) for
    control outlines and rules, a dimmer `#4a1a70` (`--panel-border`,
-   `--modal-border`) for decorative panel and window edges, `--flare-text` for h3, panel
-   and window titles. Page titles (h1/h2) are pale `--text` under a purple
-   bloom, and the bar sawtooth is a dimmer `#a020d8`, so the green neon
-   carries the eye as the captures show. `--accent` (toxic green) is
+   `--modal-border`) for decorative panel and window edges. Titles are not
+   hot purple: h3, panel, window and table-head text is a dim lavender
+   `--title` (`#b9a0d8`), page titles (h1/h2) pale `--text` under a purple
+   bloom, and the bar sawtooth `#7a1fbf`, so the green neon is the
+   brightest and most saturated thing on every page, as the captures show. `--accent` (toxic green) is
    the one neon, reserved for primary/interactive/success — the two must
    not swap roles. Green is lit, not just coloured: green signals carry an
    EL-wire bloom at rest, so they stay the brightest light on the page.
@@ -26,15 +27,19 @@ than as a HUD's telemetry glow.
    (`--surface` `#0b090c`, `--surface-2` `#141117`, vinyl `#151217` to
    `#070608`), as the leather capture; purple lives in rules, teeth,
    plates and titles, not in the fills. Panels and buttons carry a lit 1px
-   lip and a 7.5% specular band over their top ~40%, capped at 28-40px so
-   tall panels show no seam (`--gloss`), a faint 115° diagonal sheen, and
-   on panels and windows a static 4% feTurbulence leather grain. Alerts,
+   lip and a specular band that fades from 7% through 3.5% (at 30%, max
+   24px) to nothing at 60% (max 56px), so tall panels show a soft sheen,
+   not a two-tone strip (`--gloss`), a faint 115° diagonal sheen, and on
+   panels and windows a static 7% feTurbulence leather grain. Alerts,
    menus, popovers, lists, nav rails and boxed toolbars take the same
    gloss on a 3px slab.
 3. **Glow is UV bloom.** Hover/focus glows are wide and colour-matched to
    whichever hue is glowing, not a tight HUD ring.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
-   sans.
+   sans. Headings, panel titles, buttons, tabs, the brand (Audiowide) and
+   navigation labels (bar nav and menubar, nav rails, settings section
+   lists) are uppercase and tracked; body copy, message lists and data
+   cells stay mixed case.
 5. **Spiked, studded-leather chrome, not just neon-on-black.** Colour
    alone doesn't distinguish this from any other neon cyberpunk theme in
    the catalog — a jagged sawtooth trim on the structural bars, a
@@ -49,27 +54,28 @@ than as a HUD's telemetry glow.
   take a two-layer bloom (`0 0 3px` at 0.5, `0 0 14px` at 0.4 of
   `#39ff5a`); the active tab, brand and current nav item a green
   `text-shadow`; sparklines and chart lines a 3px `drop-shadow` in their
-  own series hue (desktop tiers only). The button clip polygon runs 12px
-  out on every side and along the fang's cut line, so the bloom shows
-  while the cut corner stays empty.
+  own series hue (desktop tiers only). The button clip polygon is the box
+  grown 12px on every side minus only the cut triangle (and its 3px slab
+  shadow), reached by a zero-width slit, so the bloom wraps the fang
+  evenly while the cut corner stays empty.
 - Primary buttons' hover glow (`0 0 14px rgba(214, 31, 255, 0.6)`) is
   purple even though the button fill is green — the bloom always reads as
   the *structural* colour, never the signal one.
-- Table header text uses `--flare-text`, and table rules, input, button
+- Table header text uses the lavender `--title`, and table rules, input, button
   and slider outlines the dimmer `--line` purple, never the accent:
   structure stays purple everywhere, including inside components. Info
   alerts are outlined in `--flare`, so green outlines only success.
 - A jagged sawtooth trim (a repeating 45°/-45° gradient pair, the classic
   "torn ticket edge" CSS technique) runs along the app bar, nav and modal
-  headers at full glow; panel headers get a smaller, unlit strip (7px,
-  10px period, no solid rule under it) so the bars stay the loudest
+  headers at full glow (`#7a1fbf`); panel headers get a smaller, unlit
+  strip in `--border` (7px, 10px period, no solid rule under it) so the bars stay the loudest
   structure. The bar teeth glow at a 4px, 0.45-alpha purple `drop-shadow`,
   kept below the green signals. A studded-collar silhouette, not a
   smooth bevel like `alienware`'s clip-path corners and not `matrix`'s
   monospace rain. It's a decorative pseudo-element strip with room left
   under it, so it never covers the next line. On phone and tablet the
   teeth drop their `drop-shadow` filter (a scroll cost) and paint in the
-  brighter `--flare` instead.
+  slightly brighter `--line` instead.
 - Text buttons carry a single asymmetric fang cut on the top-right corner
   only (`clip-path`), with the border redrawn along the diagonal, over a
   hard dark-violet 3px offset slab (`#3a1550`; pure black vanished on the
@@ -90,16 +96,21 @@ than as a HUD's telemetry glow.
   studs, grain, diagonal sheen, 12px halo, plate edge, line glows and
   heading blooms (scroll paint budget) and keep one plain plate and the
   gloss.
-- Panel, modal and window titles are uppercase Audiowide in `--flare-text`,
-  including h2/h3 used inside a panel; popover titles, accordion triggers
+- Panel, modal and window titles are uppercase Audiowide in the lavender
+  `--title`, including h2/h3 used inside a panel, at no less than 0.9rem
+  with 0.05em tracking; popover titles, accordion triggers
   and kanban card titles take the same uppercase Audiowide at 0.9em; panel titles carry no bloom (it
   softened Audiowide's counters at that size). Window caption buttons are
-  all `--muted`, lit green on hover.
+  all `--muted` with no title bloom, lit green on hover.
 - Green is never an edge: own-message bubbles and the bulk-selection bar
-  keep a green-tinted fill but a `--line` purple outline. Selected rows
+  keep a green-tinted fill but a `--line` purple outline; current-row,
+  list, tree and nav-rail markers are `--line` purple bars; a featured
+  list card takes a 2px `--flare` border. Only a semantic `is-success`
+  card is outlined green. Selected rows
   take a 10% purple wash. A pending (dirty) cell keeps core's yellow bar
   over only a 5% yellow wash, so it never muddies a selected row.
-- Table heads and stat labels never drop under 0.75rem.
+- Table heads, stat labels and status chips never drop under 0.75rem. A
+  disabled pager item sits at 0.6 opacity, not a near-background tone.
 - Charts: series 1 is the green, series 2 the structural purple
   (`--flare-text`) and series 5 lavender `#b98cff`, since `--accent` and
   `--success` are the same green.
@@ -113,8 +124,9 @@ content area carrying the same vinyl-gloss panels throughout.
 ## v5 layout
 
 - **Tiers.** No rail on any tier. On phone and tablet (≤900px) the nav
-  gets its own scrolling line in the bar; its own sawtooth is dropped
-  there (the scroller clipped it, and the bar's sawtooth already edges the
+  gets its own scrolling line in the bar, untracked so it stays one row,
+  and the brand keeps its full name on the first line; the nav's own
+  sawtooth is dropped there (the scroller clipped it, and the bar's sawtooth already edges the
   whole bar).
 - **Nesting.** A panel inside another surface gets a smaller, unlit
   sawtooth. Headers leave a wider gap below them so the teeth never touch
@@ -153,12 +165,12 @@ survive only where the concept needs them (cloud, moon, heart, droplet).
 
 ## Typography
 
-Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles, popover titles, accordion triggers and kanban card titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons and tabs are uppercase and tracked. `--font-mono` is **Share Tech Mono** (vendored, same squared techno family) for readouts and stat values, at its single regular weight. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows rounded monoline tube letters; Audiowide's squared terminals are a rave-flyer reading, not a tube imitation. A rounded face (Righteous, Comfortaa) was considered for h1 and not adopted: a second display face would split the headline voice from the panel titles for a small fidelity gain.
+Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles, popover titles, accordion triggers and kanban card titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons, tabs and navigation labels are uppercase and tracked, and the brand is set in Audiowide. `--font-mono` is **Share Tech Mono** (vendored, same squared techno family) for readouts and stat values, at its single regular weight. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows rounded monoline tube letters; Audiowide's squared terminals are a rave-flyer reading, not a tube imitation. A rounded face (Righteous, Comfortaa) was considered for h1 and not adopted: a second display face would split the headline voice from the panel titles for a small fidelity gain.
 
 ## Contrast honesty
 
 - **Neon green on black is far above the floor:** `--accent` `#39ff5a` (EL-wire green, from `cyber-goth-el-wire-closeup.jpg`: glow mean `#3de65d`, core `#87faac`) is 15.48:1 on `--bg`; `--on-accent` `#0a0f00` is 14.45:1 on it.
-- **Purple:** `--accent-2`/`--flare` `#d61fff` is 5.45:1 on `--bg` but 4.41:1 on the tinted `#2d1137`, so text (headings, panel titles, table heads) uses `--flare-text` `#e04dff` (5.35:1 there); `--flare` stays for the sawtooth trims and bar rules. Control outlines (inputs, buttons, slider track, table rules) use `--line` `#9030d8`, 3.57:1 on `--bg` and 3.45:1 on the input fill, above the 3:1 non-text floor. `--border` `#7a1fbf` is only 2.75:1 on `--bg` (decorative, not text or a control boundary); panel and window edges go dimmer still, `#4a1a70`. The status strip text is `--muted`.
+- **Purple:** `--accent-2`/`--flare` `#d61fff` is 5.45:1 on `--bg` but 4.41:1 on the tinted `#2d1137`, so purple text (chart series 2) uses `--flare-text` `#e04dff` (5.35:1 there); titles and table heads take the lavender `--title` `#b9a0d8` instead (8.85:1 on `--bg`, 7.28:1 on `#2d1137`); `--flare` stays for the sawtooth trims and bar rules. Control outlines (inputs, buttons, slider track, table rules) use `--line` `#9030d8`, 3.57:1 on `--bg` and 3.45:1 on the input fill, above the 3:1 non-text floor. `--border` `#7a1fbf` is only 2.75:1 on `--bg` (decorative, not text or a control boundary); panel and window edges go dimmer still, `#4a1a70`. The status strip text is `--muted`.
 - **Danger:** `--danger` `#d61048` is 3.99:1 as text on `--bg` (fails), so copy uses `--danger-text` `#f03d70`; the fill takes white text at 5.21:1.
 - **Muted** `#9d7ec2` is 5.87:1 on `--surface`, 4.92:1 on the brightest gloss stop.
 - **Why purple exists at all.** The captures show a single green UV-reactive neon (`cyber-goth-el-wire-closeup.jpg`) on black; `RESEARCH.md`'s outsider read is "a single UV-reactive neon accent". The hot purple `#d61fff`/`#7a1fbf` structure is **not in any capture**. It is a design decision (blacklight club association, and to stop the theme reading as a green-only cousin of `matrix`), documented here rather than sourced. The hexes are unmeasured.
