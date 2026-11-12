@@ -20,11 +20,15 @@ than as a HUD's telemetry glow.
    carries the eye as the captures show. `--accent` (toxic green) is
    the one neon, reserved for primary/interactive/success — the two must
    not swap roles.
-2. **Black vinyl gloss, not matte.** Panels and buttons carry a lit 1px
-   lip and a specular band over their top ~40%, capped at 28-40px so tall panels
-   show no seam (`--gloss`), then a dark
-   body — plastic under a club light, not flat paint. Alerts, menus,
-   popovers and lists take the same gloss on a 3px slab.
+2. **Black vinyl gloss, not matte.** Surfaces are near-neutral black
+   (`--surface` `#0b090c`, `--surface-2` `#141117`, vinyl `#151217` to
+   `#070608`), as the leather capture; purple lives in rules, teeth,
+   plates and titles, not in the fills. Panels and buttons carry a lit 1px
+   lip and a 7.5% specular band over their top ~40%, capped at 28-40px so
+   tall panels show no seam (`--gloss`), a faint 115° diagonal sheen, and
+   on panels and windows a static 4% feTurbulence leather grain. Alerts,
+   menus, popovers, lists, nav rails and boxed toolbars take the same
+   gloss on a 3px slab.
 3. **Glow is UV bloom.** Hover/focus glows are wide and colour-matched to
    whichever hue is glowing, not a tight HUD ring.
 4. **Uppercase, geometric type** — flyer/rave typography, not corporate
@@ -68,8 +72,18 @@ than as a HUD's telemetry glow.
   `#6a2d96`), with an 8px cone stud (lit tip, violet cone, dark rim)
   riveted into the outer 9px of each corner, like a collar's. Titled
   modals and desktop windows keep only the bottom pair, so the title bar
-  and its icon never sit on a stud.
-- Panel, modal and window titles are uppercase Audiowide in `--flare-text`.
+  and its icon never sit on a stud; a resizable window keeps only the
+  bottom-left one, clear of the grip. On phone and tablet panels drop the
+  studs, grain, 12px halo and heading blooms (scroll paint budget) and
+  keep the plate and gloss.
+- Panel, modal and window titles are uppercase Audiowide in `--flare-text`,
+  including h2/h3 used inside a panel; panel titles carry no bloom (it
+  softened Audiowide's counters at that size). Window caption buttons are
+  all `--muted`, lit green on hover.
+- Green is never an edge: own-message bubbles and the bulk-selection bar
+  keep a green-tinted fill but a `--line` purple outline. Selected rows
+  take a 10% purple wash.
+- Table heads and stat labels never drop under 0.75rem.
 - Charts: series 1 is the green, series 2 the structural purple
   (`--flare-text`) and series 5 lavender `#b98cff`, since `--accent` and
   `--success` are the same green.
@@ -123,7 +137,7 @@ survive only where the concept needs them (cloud, moon, heart, droplet).
 
 ## Typography
 
-Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons and tabs are uppercase and tracked. `--font-mono` is **Share Tech Mono** (vendored, same squared techno family) for readouts and stat values, at its single regular weight. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows tube-letterform construction that no web font reproduces, so the theme does not try.
+Both faces are vendored (SIL OFL, `assets/fonts/`). `--font-display` is **Audiowide**, the rave-flyer face, for h1-h3, panel and modal titles. `--font` is **Titillium Web**, a squared techno sans in Eurostile's family tree (Eurostile itself is commercial and not named), for body, buttons and tabs; buttons, toggle buttons and tabs are uppercase and tracked. `--font-mono` is **Share Tech Mono** (vendored, same squared techno family) for readouts and stat values, at its single regular weight. `references/cyber-goth/cyber-goth-neon-sign-typography.jpg` shows rounded monoline tube letters; Audiowide's squared terminals are a rave-flyer reading, not a tube imitation. A rounded face (Righteous, Comfortaa) was considered for h1 and not adopted: a second display face would split the headline voice from the panel titles for a small fidelity gain.
 
 ## Contrast honesty
 
