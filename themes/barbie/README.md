@@ -23,14 +23,18 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
    desktop-icon label is a pill; tree rows, desktop window panes, the
    notepad field and table corners (header band and last row) take a
    `0.6rem` row-sized radius; fieldsets get a pink hairline box at the
-   panel radius instead of the browser's grey groove. Nothing here has a
-   hard corner.
+   panel radius instead of the browser's grey groove. The white
+   `.app-main` card takes a `1rem` radius inside the rounded ribbon.
+   Nothing here has a hard corner.
 3. **Gloss over flat.** Every filled control gets a hard-edged bright
    band over its top third (`--gloss-pink`: `#ff4fb3`/`#ff3da6`, then
-   `#e3007f` to the accent): plain, primary, danger (`--gloss-danger`) and
+   `#e3007f` to the accent): primary, danger (`--gloss-danger`) and
    mint success (`--gloss-success`) buttons, the active nav pill (a deep
    plum gloss in the bar), the active pagination pill and the active
-   segmented item. Core re-sets `--btn-bg` on `.btn-primary`/`-danger`/
+   segmented item. A plain `.btn` is the lighter candy pill (white band
+   over a `#ffe0ef`-`#ffc2e0` blush, `--accent-text` label, `2px` accent
+   edge), so the primary action and a selected range stand out. Disabled
+   buttons are a flat blush pill with a dashed `#f7a8cf` edge. Core re-sets `--btn-bg` on `.btn-primary`/`-danger`/
    `-success`, so the theme re-points it on those classes too. Losing the
    highlight reads as a cheaper, flatter knockoff.
 4. **Pink on pink, no foil.** The logo is white, hot pink and a pink
@@ -49,7 +53,10 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
   inside a hot-pink outline (`-webkit-text-stroke` painted under the fill,
   `0.14em`, so the pink mass about equals the white stroke as on the logo)
   with a solid pink slab stepped out in three steps to `0.18em`
-  down-right, the logo's extrusion. The brand is set at `1.2em` with a
+  down-right, the logo's extrusion. `word-spacing: 0.22em` (`0.1em` on the
+  brand) keeps the outline and slab from filling word gaps. The `h1` takes
+  a `skewX(11deg)` counter-skew, so Shrikhand's lean stands upright like
+  the logo's letters (the brand is not skewed, so its pill stays round). The brand is set at `1.2em` with a
   `0.06em` outline and one `0.06em` step, so the counters stay open at
   bar size. In the app bar the brand sits on its own white sticker pill,
   so the white/pink-outline/slab stack reads as on white.
@@ -61,6 +68,9 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
   and checked toggles take `--gloss-pink`: a `#ff4fb3`-`#ff3da6` band over
   the top 36%, then `#e3007f` to the accent. White labels take a plum
   `0 1px 0` text-shadow so a cap height or wrapped line in the band reads.
+- **Error fields.** Invalid inputs and selects stay white with a `2px`
+  danger edge and a soft danger halo, so they never share the readonly
+  blush.
 - **Toggle buttons.** Off is a white pill with a pink edge (like
   Secondary); on is the glossy pink pill (`.is-danger`: the danger gloss).
 - **Packaging inserts.** Panels and cards have a `2px` pink edge; a panel
@@ -90,7 +100,8 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
 - **Toy-box sections.** `.hero` sits on a rounded blush panel with the
   gutter's polka dots; `.band.is-tinted` on a blush gradient panel. A
   full-bleed one (a direct child of `body`) is inset by `--app-padding`
-  so its rounded edge never meets the window edge.
+  so its rounded edge never meets the window edge. A band right after a
+  hero is spaced off by `--space-m`, so the two read as separate inserts.
 - Small uppercase labels (stat labels, table heads) are Baloo 600 with
   `0.06em` tracking, never under `0.75rem`.
 - Success state uses Barbie mint (`#3ddc97`) with dark text, not a generic
@@ -110,7 +121,9 @@ card in the middle pop — box art, not a dashboard.
   so phone (≤480px) and tablet (481–900px) use the one-column shell as is.
 - **Phone tier.** For scroll paint cost: a flat `#ffe6f2` backdrop
   instead of the radial gradient, no card/panel drop-glow (the 1px pink
-  border separates them), no `h2` extrusion step.
+  border separates them), no `h2` extrusion step, a flat accent bar and
+  status strip, a single `0.08em` `h1` step, and no inset highlight on
+  the bar, hero or bands.
 - **Nesting.** A panel or card inside another surface drops the pink
   drop-glow, so stacked levels read as inserts in one toy box.
 - **XL gutter art.** The packaging either side of the doll: soft polka
@@ -144,7 +157,8 @@ card in the middle pop — box art, not a dashboard.
   `kbd` and `samp` use a real monospace (`ui-monospace, Consolas`).
 - Known gap: no open face reproduces the logo's custom lettering (its
   slab-like serifs and ball terminals); Shrikhand is the nearest open face,
-  though it leans more than the logo's letters.
+  though it leans more than the logo's letters (the `h1` counter-skew
+  stands it up; the brand in the bar still leans).
 
 ## Contrast honesty
 
