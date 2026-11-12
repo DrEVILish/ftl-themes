@@ -9,7 +9,9 @@ html[data-theme="death-star"] {
   --bg: #000000;
   --surface: #000000;
   --surface-2: #050505;
-  --border: #1a1a1a;
+  /* Mid-grey linework (3.7:1, as the fields): list, field-row, code and
+     message boxes read as framed sub-zones, never a near-invisible 1px. */
+  --border: #6a6a6a;
   --hairline: #0d0d0d;
   --text: #e6e6e6;
   /* Muted carries labels, table headers and schedule/message meta, so it
@@ -120,8 +122,16 @@ html[data-theme="death-star"] {
   --table-head-bg: #000000;
   --table-head-fg: var(--text);
   --table-head-rule: var(--accent);
-  --row-selected-bg: var(--accent);
+  /* Selection is a lit key, not another red block: one step up from black
+     with the red leading block (rule below). Red stays ~15% of the surface. */
+  --row-selected-bg: #1c1c1c;
   --row-selected-fg: #ffffff;
+  /* Lists are framed zones: the white inlay outline, 2px as nested boxes. */
+  --list-border: var(--line);
+  --list-border-width: 2px;
+  /* Series 4 was --danger, beside --accent on a donut: the diorama's blue
+     push-button keeps the six series distinct. */
+  --chart-series-4: #5281b8;
   --nav-bg: #000;
   --nav-rule-width: 0;
   --overlay-bg: rgba(0, 0, 0, 0.9);
@@ -181,6 +191,21 @@ html[data-theme="death-star"] :is(h1, h2, h3) { line-height: 1.25; margin-block-
 html[data-theme="death-star"] h1 { letter-spacing: 0.03em; }
 /* Badge after a header title: keep a gap from the Michroma caps. */
 html[data-theme="death-star"] :is(.panel-header, .modal-header) > * + .badge { margin-inline-start: 0.5rem; }
+/* Badges in a header band are push-button labels, not headings. */
+html[data-theme="death-star"] :is(.panel-header, .modal-header) .badge {
+  font-family: var(--font);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+}
+/* Phone: the wide tracked caps lost the whole brand to an ellipsis. */
+@media (max-width: 480px) {
+  html[data-theme="death-star"] .app-bar > .nav-brand {
+    flex: 0 1 auto;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+}
 /* Carousel dots and checkboxes: square, like the push-buttons. */
 html[data-theme="death-star"] .carousel-nav > a,
 html[data-theme="death-star"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
@@ -220,25 +245,29 @@ html[data-theme="death-star"] :is(.alert, .toast) {
   border-width: 0;
   border-inline-start-width: 4px;
 }
+/* Informational is the diorama's blue push-button, not error red. */
+html[data-theme="death-star"] .alert-info { --alert-border: #5281b8; }
+/* Selected table row: the red leading block on the lifted row. */
+html[data-theme="death-star"] .table tr:is(.is-selected, [aria-selected="true"]) td:first-child { box-shadow: inset 4px 0 var(--accent); }
 html[data-theme="death-star"] [data-tooltip]::after { border-width: 0; }
 
 /* App-bar: the console's tile row, in bays of four like the diorama's
-   (pale green-grey #d7e4df, 2rem x 2.25rem near-portrait blocks, 5px black
-   seams, whole bays only, inset 1rem from the edges), above the bar
-   content, then the red rule. Inactive nav items #8a8a8a (6.1:1 on black). */
+   (pale green-grey #d7e4df, 1.75rem x 2.5rem portrait slabs ~0.7 w:h, 4px
+   black seams, a one-tile gap between bays, running edge to edge), above
+   the bar content, then the red rule. Inactive nav items #8a8a8a (6.1:1). */
 html[data-theme="death-star"] .app-bar {
   --nav-item-fg: #8a8a8a;
   --nav-brand-fg: #ffffff;
-  --app-bar-padding: calc(2.25rem + 0.6rem) 1rem 0.6rem;
+  --app-bar-padding: calc(2.5rem + 0.6rem) 1rem 0.6rem;
   border-bottom: 3px solid var(--accent);
   background-image: linear-gradient(90deg,
-    transparent 0 1rem,
-    #d7e4df 0 3rem, transparent 0 calc(3rem + 5px),
-    #d7e4df 0 calc(5rem + 5px), transparent 0 calc(5rem + 10px),
-    #d7e4df 0 calc(7rem + 10px), transparent 0 calc(7rem + 15px),
-    #d7e4df 0 calc(9rem + 15px), transparent 0);
-  background-size: calc(10rem + 15px) 2.25rem;
-  background-repeat: space no-repeat;
+    #d7e4df 0 1.75rem, transparent 0 calc(1.75rem + 4px),
+    #d7e4df 0 calc(3.5rem + 4px), transparent 0 calc(3.5rem + 8px),
+    #d7e4df 0 calc(5.25rem + 8px), transparent 0 calc(5.25rem + 12px),
+    #d7e4df 0 calc(7rem + 12px), transparent 0);
+  background-size: calc(8.75rem + 12px) 2.5rem;
+  background-position: 1rem 0;
+  background-repeat: repeat-x;
 }
 
 /* Text on the red header band: muted, success and close glyphs re-pointed
@@ -255,6 +284,17 @@ html[data-theme="death-star"] :is(.panel-header, .modal-header) {
    is 5.4:1. !important because theme CSS sits in a layer that loses to the
    page's unlayered style otherwise. */
 html[data-theme="death-star"] .pattern-nav a[aria-current="page"] { color: var(--on-accent) !important; }
+
+/* Push-buttons: a still cluster of five small square nubs set into the
+   right end of a top-level header band (the red one reads black on red),
+   only where the band carries no controls of its own. */
+html[data-theme="death-star"] .panel:not(:has(> .card-dismiss)) > .panel-header:not(:has(button, .btn, input, select, a)) {
+  padding-inline-end: calc(var(--surface-pad, 1rem) + 4.5rem);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 6'%3E%3Crect width='6' height='6' fill='%23000'/%3E%3Crect x='10' width='6' height='6' fill='%235281b8'/%3E%3Crect x='20' width='6' height='6' fill='%23ffcf2f'/%3E%3Crect x='30' width='6' height='6' fill='%23e6e6e6'/%3E%3Crect x='40' width='6' height='6' fill='%235cc872'/%3E%3C/svg%3E");
+  background-size: 3.833rem 0.5rem;
+  background-position: right var(--surface-pad, 1rem) center;
+  background-repeat: no-repeat;
+}
 
 /* Nesting steps down: a surface inside another draws a thinner 2px
    outline, and a nested panel's header is a slim red block at its left
@@ -283,11 +323,8 @@ html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .pane
    it. Still. */
 html[data-theme="death-star"] {
   --app-gutter-art:
-    linear-gradient(#c4352a, #c4352a) 6rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#5281b8, #5281b8) 7.25rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#e0b020, #e0b020) 8.5rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#e6e6e6, #e6e6e6) 9.75rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#5cc872, #5cc872) 11rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    /* The five push-buttons as one image layer, not five gradients. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 6'%3E%3Crect width='6' height='6' fill='%23c4352a'/%3E%3Crect x='10' width='6' height='6' fill='%235281b8'/%3E%3Crect x='20' width='6' height='6' fill='%23e0b020'/%3E%3Crect x='30' width='6' height='6' fill='%23e6e6e6'/%3E%3Crect x='40' width='6' height='6' fill='%235cc872'/%3E%3C/svg%3E") 6rem calc(30% + 3.5rem) / 5.75rem 0.75rem no-repeat,
     linear-gradient(#1a1a1a, #1a1a1a) 5rem 30% / 5rem 2.5rem no-repeat,
     linear-gradient(#1a1a1a, #1a1a1a) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
     linear-gradient(#1a1a1a, #1a1a1a) 10rem 78% / 2.5rem 2.5rem no-repeat,
