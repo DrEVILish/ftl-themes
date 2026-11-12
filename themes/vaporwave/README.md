@@ -25,14 +25,17 @@ HUD.
    sharp edges; this is soft glow, saturated gradient fills, and a
    perspective horizon, not straight technical lines. Panels and cards
    carry a pink edge ring plus, on fine-pointer screens, a pink-and-cyan outer bloom (`--panel-shadow`; phones skip the blur for scroll cost), `h1`/`h2` a soft
-   pink drop-shadow, focus a cyan glow ring, and the slider track is the
-   pink-to-cyan pair with a glowing thumb.
+   pink drop-shadow (dropped on phones and touch screens, where the filter
+   layer costs scroll frames), focus a cyan glow ring, and the slider track
+   is the pink-to-cyan pair with a glowing thumb (bottom-to-top on a
+   vertical fader, kept to the thin track).
 4. **Purple is the void.** `--bg`/`--surface` are deep purple, not
    black — black reads as `matrix`/`alienware`, not synthwave.
-5. **The horizon lives at the foot of the shell.** The sun rises from the
-   status strip's top edge at the bottom of the content well, and the
-   perspective grid floor fills the strip below it: the genre's classic
-   sunset-over-grid composition, with no text ever sitting on the sun.
+5. **The horizon lives at the foot of the shell.** The status strip's top
+   edge is the glowing horizon line, and the sun at the bottom of the
+   content well sets directly on it; the perspective grid floor fills the
+   strip below: the genre's classic sunset-over-grid composition, with no
+   text ever sitting on the sun or on a grid line.
 
 ## Signature details
 
@@ -53,14 +56,22 @@ HUD.
   (`#ffd319` → `#ff8c3a` → `#ff2975` → `#c800c8`, the references' sun)
   with slits near the horizon, drawn in `--app-main-bg` at the bottom
   centre of the well (inside 3rem of bottom padding the content never
-  reaches) under a faint warm sunset glow. The status strip below is the
-  floor: a glowing pink horizon line and a perspective grid whose cyan
-  rays (0.85 alpha) converge on the sun and whose pink cross-lines widen
-  toward the viewer. Status text carries a halo in the
-  strip colour so it stays clear of the lines.
-- Headings carry 4px of padding inside their gradient box (with a
-  matching negative margin, so layout is unchanged), so the glyphs never
-  touch the painted edge.
+  reaches) under a warm sunset glow; the well's haze starts a third of the
+  way down, so the sunset warmth reaches above the fold. The status strip
+  is pulled up over the grid gap and its top rule is the glowing pink
+  `#ff2975` horizon, so the sun's base sits on it. Below, the floor fills
+  the strip with no 3D transform: cyan rays (0.85 alpha, soft-edged
+  `repeating-conic-gradient`) fanning from a vanishing point above the
+  strip, and four pink cross-lines spaced wider toward the viewer. The
+  status text rides the top band (2.4rem of bottom padding holds the
+  floor's bright rows), where a mask fades the floor out, so no line
+  crosses or underlines a glyph.
+- Heading boxes hug their glyphs (`width: fit-content`; auto inline
+  margins in core's centred `.hero`/`.band-head`/`.empty-state`/`.dropzone`
+  and inline `text-align: center` blocks), so every title, however short,
+  runs the whole magenta-to-cyan sweep. They carry 4px of padding inside
+  the gradient box (with a matching negative margin, so layout is
+  unchanged), so the glyphs never touch the painted edge.
 - On phones (≤480px) the bar is the dark strip colour under a 4px sunset
   rule with light nav ink, so the wrapped bar is not a slab of gradient.
 - Danger is one step darker than the "hot" reference red-pink — the
@@ -110,6 +121,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 
 ## Typography
 
+- **Big figures:** KPI values (`.stat-value`) and plan prices (`.price`) are Audiowide at weight 400 (it has no bold), `0.04em` tracking.
 - **Chrome titles:** the bar brand, panel and modal headers, tabs and KPI labels (`.stat-label`) also use Audiowide, uppercase, `0.06em` tracking, weight 400; tabs drop to `0.75em` so a strip keeps its width.
 - **Display (h1–h3):** Audiowide, **vendored** (`assets/fonts/Audiowide-Regular.woff2`, SIL OFL, `assets/fonts/NOTICE.md`), uppercase, `0.14em` tracking (`0.08em` on `h3`), under the gradient-text fill. It is the "wide, chunky geometric" stand-in for vaporwave's extended display type; it is not a true full-width face.
 - **Body:** `--font` is `"Segoe UI", "Trebuchet MS", Verdana, "DejaVu Sans", sans-serif` — system fonts, **not vendored**. `--font-mono` is `Consolas, monospace`.
@@ -120,7 +132,7 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 - **Danger lifted:** the reference "hot" red-pink `#ff3864` is 3.5:1 under white; shipped `--danger` is `#d81c48` (5.02:1 with white text, 3.69:1 as text on `--bg`, so text uses `--danger-text`).
 - **Border:** `--border` `#8a5fc0` is picked to be ~3.6:1 against `--surface` (the least that keeps a 1px outline perceptible while staying purple).
 - **Accent pair:** `--accent` `#ff71ce` is 7.52:1 on `--bg` (6.86:1 on `--surface`); `--accent-2` `#01cdfe` is 9.87:1 / 9.0:1. The gradient headings therefore pass on every stop; the neon values themselves are not lifted.
-- **Nav bar:** the bright orange-pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a light text-shadow halo is added to the brand, nav items and breadcrumbs (math passes; the halo is for perceived contrast). `#1a0b2e` is 8.0:1 on the orange stop.
+- **Nav bar:** the bright orange-pink-purple-cyan bar makes the default nav colours near-invisible. Dark `#1a0b2e` text clears 5.7:1 at the mid-purple stop, but reads weakly on a busy gradient, so a tight light halo (`0 0 2px` white at 0.6) is added to the brand, nav items and breadcrumbs (math passes; the halo is for perceived contrast, kept crisp rather than an embossed glow). `#1a0b2e` is 8.0:1 on the orange stop.
 - **Haze:** the well's darkest-lightest stop `#3d1250` still gives `--muted` 6.4:1 and `--danger-text` 5.0:1.
 - `--muted` `#b79ee0` is 7.24:1 on `--surface`.
 
