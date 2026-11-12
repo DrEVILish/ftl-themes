@@ -24,7 +24,7 @@ menu, not a calm productivity tool.
    GO, readouts). A washed-out or brown orange has missed the point.
 2. **Condensed, heavy, italic, uppercase.** Headings, buttons, nav, tabs
    and the brand use Antonio Bold slanted, white with a hard dark drop
-   shadow stacked at 1px and 3px with no blur (h1 in flame yellow), like the menu's `MULTIPLAYER / BASEMENT` labels.
+   `2px 2px 0` shadow with no blur (h1 in flame yellow), like the menu's `MULTIPLAYER / BASEMENT` labels.
    No glow.
 3. **Angles, not curves.** `--radius: 0.35rem`; badges `0.15rem`, switches
    `0.2rem`. Buttons use an angled (`135deg`) flame gradient.
@@ -103,7 +103,7 @@ filled, marker dots are r1.2 rings, colour is always `currentColor`.
 
 ## Contrast honesty
 
-- **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--accent` (links, secondary buttons, GO, readouts, active tabs, the current breadcrumb) is the flame yellow `#ffd21a`: 4.68:1 on the bar, 4.83:1 on `--surface-2`, 5.5:1 on `--surface`. h1 uses `#ffcc00`. Orange stays a fill (buttons, avatars, pagination, accent badges, progress) and the track lip. Code blocks sit in a darker `#0f2c88` well so token colours keep their margin.
+- **Orange is not text on the bright blue.** `#ff8a1a` is 3.42:1 on `--surface` and 2.97:1 on `--surface-2`, so `--accent` (links, secondary buttons, GO, readouts, active tabs, the current breadcrumb) is the flame yellow `#ffd21a`: 4.68:1 on the bar, 4.83:1 on `--surface-2`, 5.5:1 on `--surface`. h1 uses `#ffcc00`. Orange stays a fill (buttons, avatars, pagination, accent badges, progress) and the track lip. Code blocks and their inserted/deleted lines sit in a darker `#0f2c88` well so token colours keep their margin.
 - **Dark text on the fills.** `--on-accent` `#1a0900` is 8.22:1 on `#ff8a1a`; `--on-danger` `#1a0000` 5.23:1 on `#ff2d2d`. Yellow fills (table header, dialog header) carry `#0a1a4a` at 11.0:1.
 - **On the blues** `--text` white is 8.07:1 on `--surface` and 7.00:1 on `--surface-2`; `--muted` `#dbe4ff` is 6.36:1 on `--surface`, 5.52:1 on `--surface-2` and 5.34:1 on the bar. White on the selection blue `#2a64e8` is 5.14:1 and on the brand red `#e3171b` 4.77:1.
 - **Badges** are solid: `#1a0900` on `#ff8a1a` 8.22:1, `#0a1a4a` on `#ffcc00` 11.0:1, white on `#e3171b` 4.77:1, `#04220f` on `#29d17a` 8.46:1.
