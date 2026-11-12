@@ -63,15 +63,29 @@ and what was derived rather than measured is in
   "START" rectangle (AlienMorph, ALX), Invader's cyan START, Darkstar's
   dark button, Area-51's red, Aurora's gold pill.
 - Push buttons, primary and secondary included, wear each suite's face:
-  XenoMorph's grey gloss in a 1px black frame, Darkstar's black with white
-  text, Area-51's red with bold yellow text, silver or beige in the others.
+  XenoMorph's grey gloss (light top, darker bottom, white lip) in a 1px
+  black frame, Darkstar's black with white text, Area-51's red with bold
+  yellow text, silver or beige in the others. XenoMorph's hover and
+  default (primary) button take the blue glow fill of the hovered Cancel
+  in its Display Properties; the suite draws that label white, the theme
+  keeps it black for 4.5:1.
+- GO and play buttons take the suite's highlight gloss in its button
+  frame, not Luna's green; switches read as the trackbar (square groove,
+  dark glossy thumb). Green stays for success states only.
 - The trackbar is XenoMorph's black-edged blue groove (`#0374f4`; the
   suite's highlight in the others): 1px black, 4px groove, 1px black, with
-  a dark glossy grey thumb, inside core's full-height hit area.
-- Tabs, checkboxes and radios have no Luna orange hot-track; Invader
-  centres its caption title.
+  a dark glossy grey thumb, inside core's full-height hit area; the
+  vertical fader draws the same thin groove, not a filled box.
+- Tabs are grey gloss with the selected one in the pane's surface,
+  rising 2px. Checkboxes are XenoMorph's dark square with a white tick
+  (its Recording Control); the other suites keep a light well with a tick
+  in their text colour. No Luna orange hot-track or green tick anywhere.
+  Invader centres its caption title.
+- Title-bar items stop 6px short of the caption buttons.
 - XenoMorph's content headings and group-box captions are black, as in
   its dialogs, not Luna blue.
+- Panels and cards are the suite's surface (XenoMorph's pure white), not
+  Luna's `#fcfcfe`.
 - Toolbars, table heads, skeletons, toasts and every field and group-box
   border take the suite's own face, surface and border, so Luna's beige
   and `#7f9db9` blue never show. The gap around a full-page app window is

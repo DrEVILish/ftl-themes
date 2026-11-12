@@ -54,7 +54,7 @@ html[data-theme="alienware"] {
   --warning: #b86e00;
   --warning-text: #7a4a00;
   --radius: 3px;
-  --font: Tahoma, "Segoe UI", "DejaVu Sans Condensed", Verdana, sans-serif;
+  --font: Tahoma, "Segoe UI", "DejaVu Sans Condensed", Arimo, "Liberation Sans", Verdana, sans-serif;
   --font-mono: "Lucida Console", Consolas, monospace;
   /* Window chrome. */
   --luna-titlebar: linear-gradient(180deg, #717171 0%, #6c6c6c 4%, #5d5d5d 18%, #4b4b4b 33%, #464646 37%, #252525 40%, #252525 88%, #272727 92%, #242424 96%, #000000 100%);
@@ -115,13 +115,16 @@ html[data-theme="alienware"] {
   --window-task-link-fg: #005a96;
   --window-task-link-fg-hover: #005a96;
   /* Controls. */
-  --btn-bg: linear-gradient(180deg, #f4f4f4, #d7d7d7 50%, #c8c8c8);
-  --btn-bg-hover: linear-gradient(180deg, #f4f4f4, #d7d7d7 50%, #c8c8c8);
+  /* Grey gloss with a white lip (the OK button); hover and the default
+     button take the blue glow fill (the hovered Cancel), black text kept
+     for 4.5:1 where the suite draws white. */
+  --btn-bg: linear-gradient(180deg, #f2f2f2, #e2e5e5 35%, #c6c8c9 55%, #a8abac);
+  --btn-bg-hover: linear-gradient(180deg, #a5cae5, #6aa3d6 40%, #2f85ce 55%, #0189df);
   --btn-border: #000000;
-  --btn-border-hover: #0093f0;
+  --btn-border-hover: #00162d;
   --btn-fg: #000000;
-  --btn-shadow-hover: inset 0 0 0 1px #0093f0;
-  --btn-primary-shadow: inset 0 0 0 1px #0093f0, inset 0 0 4px color-mix(in srgb, #0093f0 60%, transparent);
+  --btn-shadow-hover: inset 0 1px #a5cae5, 0 0 3px #35bdfb;
+  --btn-primary-shadow: inset 0 1px #a5cae5, 0 0 3px #35bdfb;
   --scrollbar-thumb: #b5b5b5;
   --scrollbar-thumb-hover: #0093f0;
   --scrollbar-track: #e6e6e6;
@@ -960,9 +963,31 @@ html[data-theme="alienware"] {
   --panel-border: var(--border);
   --card-border: var(--border);
   --divide-y-pad: max(5px, var(--space-2xs));
-  /* Tabs: silver, no Luna orange hot-track. */
-  --tab-bg: linear-gradient(180deg, var(--surface), var(--surface-2));
+  /* Panes and group boxes are the suite's own surface, not Luna's #fcfcfe. */
+  --panel-bg: var(--surface);
+  --card-bg: var(--surface);
+  /* Tabs: grey gloss, the selected one the pane's own surface; no Luna
+     orange hot-track. */
+  --tab-bg: linear-gradient(180deg, color-mix(in srgb, var(--surface-2) 40%, #ffffff), color-mix(in srgb, var(--surface-2) 85%, #000000));
+  --tab-bg-active: var(--surface);
   --tab-border-active: var(--border);
+  /* GO / play: the suite's highlight gloss in its button frame, not Luna's
+     green Start pill. */
+  --go-bg: linear-gradient(180deg, var(--accent-2), var(--accent) 55%);
+  --go-fg: var(--on-accent);
+  --go-border: var(--btn-border);
+  --go-shadow: inset 0 1px rgba(255, 255, 255, 0.5);
+  /* Switches read as the trackbar: square groove, dark glossy thumb. */
+  --switch-radius: 2px;
+  --switch-thumb-radius: 2px;
+  --switch-thumb-bg: linear-gradient(180deg, #6a6a6a, #2a2a2a 50%, #111111);
+  --switch-thumb-bg-on: linear-gradient(180deg, #6a6a6a, #2a2a2a 50%, #111111);
+  --switch-bg-on: var(--aw-groove, var(--accent));
+  --switch-border-on: #000000;
+}
+/* Caption buttons stand alone: the bar's items stop 6px short of them. */
+@media (min-width: 481px) {
+  html[data-theme="alienware"] { --app-bar-padding: 0.2rem calc(67px + 0.35rem + 6px) 0.2rem 0.6rem; }
 }
 /* The wallpaper shows only in the gap round a full-page shell, where no
    page text sits on it; text outside a shell (L0 pages, the QA sidebar)
@@ -978,6 +1003,15 @@ html[data-theme="alienware"] :is(.btn-primary, .btn-secondary) {
   --btn-fg: inherit;
   --btn-weight: inherit;
 }
+html[data-theme="alienware"]:not([data-variant]) .btn:not(.btn-ghost, .btn-tertiary, .btn-go) { --btn-shadow: inset 0 1px #ffffff; }
+html[data-theme="alienware"]:not([data-variant]) .btn-primary { --btn-bg: var(--btn-bg-hover); --btn-border: var(--btn-border-hover); --btn-shadow: var(--btn-primary-shadow); }
+/* Checkboxes: XenoMorph's dark square with a white tick (the Recording
+   Control's Select boxes); the other suites keep the light well with a
+   tick in their text colour. No Luna green anywhere. */
+html[data-theme="alienware"] .checkbox:checked::before { border-color: var(--aw-check, var(--text)); }
+html[data-theme="alienware"] .radio:checked::before { background: radial-gradient(circle at 35% 35%, var(--accent-2), var(--accent)); }
+html[data-theme="alienware"] :is(.checkbox, .radio) { border-color: var(--btn-border); }
+html[data-theme="alienware"]:not([data-variant]) :is(.checkbox, .radio) { --aw-check: #ffffff; background: linear-gradient(180deg, #5a5a5a, #2a2a2a 50%, #111111); box-shadow: inset 0 1px #8a8a8a; }
 /* No Luna orange hot-track on checkboxes and radios. */
 html[data-theme="alienware"] :is(.checkbox, .radio):hover { box-shadow: inset 0 0 0 1px var(--aw-groove, var(--accent)); }
 /* The taskbar's status text takes the taskbar's own foreground. */
@@ -986,7 +1020,7 @@ html[data-theme="alienware"] .tabs { border-bottom-color: var(--border); }
 html[data-theme="alienware"] .tab { border-color: var(--border); padding-block: max(4px, 0.2em); }
 html[data-theme="alienware"] .tab:hover { box-shadow: inset 0 2px var(--accent); }
 html[data-theme="alienware"] .tab:is(.is-active, [aria-selected="true"]) {
-  padding-top: max(4px, 0.35em);
+  padding-top: calc(max(4px, 0.2em) + 2px);
   padding-bottom: calc(max(4px, 0.2em) + 1px);
   box-shadow: inset 0 1px #ffffff;
 }
@@ -1011,14 +1045,15 @@ html[data-theme="alienware"] .slider {
   /* 6px content box: 1px black, 4px groove, 1px black; no border, so the
      edges are not eaten by core's transparent one. The gradient is laid
      out on the padding box (core clips it to the content box), so its
-     stops are placed round the centre line. */
+     stops are placed round the centre line with transparent outside, so
+     a box wider than 6px (the vertical fader's) still shows a groove. */
   --slider-height: 6px;
   --slider-border-width: 0;
-  --slider-bg: linear-gradient(180deg, #000000 calc(50% - 3px) calc(50% - 2px), var(--aw-groove, var(--accent)) calc(50% - 2px) calc(50% + 2px), #000000 calc(50% + 2px) calc(50% + 3px));
+  --slider-bg: linear-gradient(180deg, transparent calc(50% - 3px), #000000 calc(50% - 3px) calc(50% - 2px), var(--aw-groove, var(--accent)) calc(50% - 2px) calc(50% + 2px), #000000 calc(50% + 2px) calc(50% + 3px), transparent calc(50% + 3px));
 }
 html[data-theme="alienware"]:not([data-variant]) { --aw-groove: #0374f4; }
 html[data-theme="alienware"] .slider.is-vertical {
-  --slider-bg: linear-gradient(90deg, #000000 calc(50% - 3px) calc(50% - 2px), var(--aw-groove, var(--accent)) calc(50% - 2px) calc(50% + 2px), #000000 calc(50% + 2px) calc(50% + 3px));
+  --slider-bg: linear-gradient(90deg, transparent calc(50% - 3px), #000000 calc(50% - 3px) calc(50% - 2px), var(--aw-groove, var(--accent)) calc(50% - 2px) calc(50% + 2px), #000000 calc(50% + 2px) calc(50% + 3px), transparent calc(50% + 3px));
 }
 html[data-theme="alienware"] .slider::-webkit-slider-thumb {
   border-color: #000000;
