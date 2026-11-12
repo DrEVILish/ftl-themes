@@ -109,6 +109,16 @@ files are vendored unmodified.
 - **Source:** https://fonts.google.com/specimen/Orbitron
 - **Used by:** `alienware` (AlienFX display/heading face)
 
+## Oxanium
+
+- **Family:** Oxanium (variable, weight axis cut to 400-700, Latin subset —
+  `Oxanium-Variable.woff2`)
+- **Designer:** Severin Meyer (The Oxanium Project Authors)
+- **License:** SIL Open Font License, version 1.1 (`ofl/oxanium/OFL.txt` in
+  the `google/fonts` repository)
+- **Source:** https://fonts.google.com/specimen/Oxanium
+- **Used by:** `silo` (UI, headings, plates and field values)
+
 ## Pacifico
 
 - **Family:** Pacifico (weight vendored: Regular 400 —
@@ -127,7 +137,7 @@ files are vendored unmodified.
 - **License:** SIL Open Font License, version 1.1
 - **Source:** https://fonts.google.com/specimen/Share+Tech and
   https://fonts.google.com/specimen/Share+Tech+Mono
-- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs)
+- **Used by:** `prometheus` (body text and data readouts), `cyberpunk-2077` (Share Tech Mono: code and logs), `silo` (Share Tech Mono: readouts and data)
 
 ## DSEG7 Classic
 

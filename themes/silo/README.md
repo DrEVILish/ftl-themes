@@ -22,7 +22,7 @@ saturated fill is a **yellow-green "granted" band**.
 ## Core values
 
 1. **Teal is the phosphor.** All text and every line is one teal family
-   (`--text #52dec2`, `--border #1c8a72`) on black glass. Other hues
+   (`--text #3fd6bd`, `--border #1c8a72`) on black glass. Other hues
    are there to carry meaning, never to decorate. The glass itself is a
    near-neutral black (`--bg #03100e`); the teal cast comes from the text
    and a radial bloom, not the base fill.
@@ -34,11 +34,14 @@ saturated fill is a **yellow-green "granted" band**.
    success buttons, and a pressed danger toggle, are outlined keys in their
    state colour, not fills.
 3. **Pale yellow outline means "this one".** The focus ring, active tab,
-   active nav entry (in the app bar and in any in-page `.nav`) and
-   selected row all use the yellow box the hard-drive
-   browser draws around the highlighted file (`--accent-2 #e6dc8c`).
+   active nav entry (in the app bar and in any in-page `.nav`), a selected
+   table row (no side bar, only a faint wash), a selected list row and a
+   selected desktop icon or drive all use the yellow box the hard-drive
+   browser draws around the highlighted file (`--accent-2 #e6dc8c`), with
+   the label turned yellow rather than filled.
 4. **Title bars are solid pale-teal plates with dark text.** This covers
-   the brand, modal header, tooltip and status strip. Nothing else is a
+   the brand, the bar's control group on desktop, the modal header,
+   tooltip and status strip. Nothing else is a
    light surface apart from the yellow-green band.
 5. **Everything is boxed and labelled.** A form field is one outlined cell
    with a tiny tracked-caps label at its top-left and a large bare value
@@ -50,13 +53,18 @@ saturated fill is a **yellow-green "granted" band**.
 ## Signature details
 
 - The whole `.app` is a rounded **steel monitor bezel** (`--silo-bezel`)
-  with the bar, main and status on one piece of CRT glass. The glass is
-  rounded at the top of the bar and the bottom of the status strip.
+  with the bar, main and status on one piece of CRT glass. On desktop the
+  housing is chunky (2.2-2.6rem of steel, 1.6rem outer radius) and the
+  glass is recessed in it with a dark 2px lip and 1.1rem corners at the top
+  of the bar and the bottom of the status strip.
 - The top bar is PACT's header. It sits between **pale-yellow double
   rules**, its nav entries and the top-level entries of a menubar in the
   bar are **auto-numbered `01 02 03`** by a CSS counter in tracked caps,
   the active entry is outlined in pale yellow, and the brand is a
-  full-height pale-teal plate ("RELIC DATABASE").
+  full-height pale-teal plate ("RELIC DATABASE"). On desktop the bar's
+  last control group (picker, search, bell, avatar) is a third plate with
+  dark ink behind a dark notch ("SYSTEM / RUN"), so plates frame the top
+  of the glass as the status strip frames its bottom.
 - The **right-hand rail is the screen's scroll track**: a thumb block over
   tick marks.
 - The **status strip is three pale-teal plates** ("DISK 10% RAM 40% ...")
@@ -85,7 +93,10 @@ saturated fill is a **yellow-green "granted" band**.
 - `kbd` uses the beige keycaps of the pull-out keyboards.
 - Static scanlines and a vignette on near-black glass, with the teal cast
   in a radial bloom (`--silo-haze`). Titles and big stat values glow; body
-  copy, tables and lists do not, which keeps phone scrolling cheap.
+  copy, tables and lists do not. On a phone the scanlines and the stat
+  glow are dropped, which keeps scrolling cheap.
+- Check boxes and radios are outlined cells on the glass (`--border`);
+  checked is the yellow-green fill with a dark tick, a radio a square pip.
 - At phone width the bar is two rows: the brand plate (truncating if it
   must) shares the first with the picker and actions, the search key
   drops its label and keyboard hint, and the numbered nav is the second.
@@ -99,20 +110,19 @@ saturated fill is a **yellow-green "granted" band**.
 
 ## Typography
 
-Share Tech (UI and field values) and Share Tech Mono (readouts, data) are already
-vendored in `assets/fonts/` under SIL OFL (see `assets/fonts/NOTICE.md`).
-They are the closest open match to the show's squared, round-cornered
-all-caps techno face, which has not been identified. Fallbacks: Eurostile,
-DIN Alternate, Bahnschrift, Arial Narrow. Share Tech is narrower than the
-show's extended, heavier face, so headings and values are widened with
-tracking (0.08em on H1, 0.14em on other headings, 0.05em on stat values)
-and thickened with a hairline `-webkit-text-stroke` (0.025em on H1-H3 and
-stat values, 0.02em on field-cell values); values run about 2.5x their
+Oxanium (UI, headings, plates and field values; a Latin subset of its
+400-700 weight axis) and Share Tech Mono (readouts, data) are vendored in
+`assets/fonts/` under SIL OFL (see `assets/fonts/NOTICE.md`). The show's
+squared, round-cornered all-caps techno face has not been identified;
+Oxanium has the same rectangular counters at the screens' width and
+weight. Fallbacks: Eurostile, DIN Alternate, Bahnschrift, Arial Narrow.
+Headings are 600 with 0.08-0.18em tracking, stat values 600, field-cell
+values 500 and keys 500; body copy is 400. Values run about 2.5x their
 labels. Headings, labels, tabs, badges, buttons, toggle keys,
 segments, chips, selects, menu entries, short list labels, legends,
 field labels, summaries, input addons, scrollspy links, an in-page nav
 brand and status-strip taskbar keys are uppercase and tracked (keys packed into a row, toggles and segments, track
-0.06em so the longest label fits a phone). Text inputs show caps too, except email, URL,
+0.06em, and none on a phone, so the longest label fits). Text inputs show caps too, except email, URL,
 password and search fields and textareas, which keep the case the user
 typed. Body copy and titled list rows keep their case so long text stays
 readable. In a table cell a control drops its tracking and a date input
@@ -124,7 +134,7 @@ All pairs meet the lint floors and no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#52dec2` on `--surface` `#061815` / `--bg` `#03100e` | 11.0 / 11.6 |
+| `--text` `#3fd6bd` on `--surface` `#061815` / `--bg` `#03100e` | 10.1 / 10.7 |
 | `--muted` `#3fb69a` on `--surface` / `--surface-2` `#0a2420` | 7.3 / 6.5 |
 | `--accent` `#9fca6e` on `--surface` | 9.7 |
 | `--on-accent` `#06201a` on accent | 9.1 |
@@ -138,15 +148,15 @@ All pairs meet the lint floors and no exemptions are claimed.
 | legacy `--text` `#f1dcae` / `--muted` `#c4a46a` on surface | 14.3 / 8.2 |
 
 The real screens are dimmer: the sampled phosphor core is `#28c6aa`. Text
-is lifted only as far as `#52dec2`, on the same cyan-teal hue, so long
-copy reads at 11:1 or more and stays above 4.5:1 on the tinted chips without
-turning minty; links use the brighter
-`#6fe8cc`.
+is lifted only a step, to `#3fd6bd` on the same cyan-teal hue, so long
+copy reads at 10:1 and stays above 4.5:1 on the tinted chips without
+turning minty; links use the brighter `#5fe0c8`.
 
 ## Layout
 
-The shell is a monitor. The bezel padding is 1.4-1.8rem of painted steel
-around the glass. The rail is a 1.4rem scroll track on the **right**, the
+The shell is a monitor. The bezel padding is 2.2-2.6rem of painted steel
+around the glass on desktop and XL, 0.75-1rem on tablet and 0.5rem on a
+phone. The rail is a 1.4rem scroll track on the **right**, the
 opposite side from most rail themes. At ≤720px the bezel thins to 0.5rem
 and the rail collapses per core.
 
@@ -156,7 +166,7 @@ and the rail collapses per core.
   the identity, and amber or green would read as `pipboy` or `bloomberg`.
 - Don't fill surfaces. Panels, inputs and buttons are outlines on glass,
   and only the plates and the yellow-green "granted" fill are solid.
-- Don't round things beyond 2-6px or add gloss or gradients to components.
+- Don't round things beyond 2-6px (icon keys too: they are square) or add gloss or gradients to components.
 - Don't animate the scanlines or add flicker. Everything here is static.
 - Don't spend the yellow-green on decoration, or the pale-yellow outline
   on anything but selection and focus.
