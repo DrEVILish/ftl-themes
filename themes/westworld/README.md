@@ -20,8 +20,8 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 ## Core values
 
 1. **Slate e-paper, not black glass.** Surfaces are a desaturated
-   grey-slate, evenly lit like the prop (page `#1d2d33`, panels
-   `#24363c`, sampled `#1e2e33` / `#263b43` under set light), and the room
+   grey-slate, evenly lit like the prop (page `#22343a`, panels
+   `#283c43`, sampled `#1e2e33` / `#263b43` under set light), and the room
    around them is near-black (`#070b0d`). Do not use pure black panels
    and do not use neon on black.
 2. **Cyan is the ink.** One steel-cyan (`#5cbbca`, a low-chroma lift of the sampled `#3f96a6`-`#5c9ba4`) draws outlines, active
@@ -29,13 +29,13 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    values (the vitals readout's HR 111 and the dial's outer bars), and
    it serves as the second chart series. The chart ramp is cyan, lime,
    node-graph amber, deep teal `#2f8797`, steel grey and dark steel `#6f8c95`, never
-   red; chart ticks are cyan condensed caps and an area under a line is
-   only a 0.1 wash.
+   red; chart ticks and series labels are cyan condensed caps and an area
+   under a line is only a 0.1 wash.
 3. **Condensed caps for every label.** Headings, buttons, tabs, nav,
    menubar items, toggle buttons, settings-style nav
    lists, summaries, legends, scrollspy links, table heads, badges and
    panel headers are set in a DIN-class condensed grotesque (DIN Condensed
-   where installed, else vendored Barlow Semi Condensed), uppercase.
+   where installed, else vendored Barlow Condensed), uppercase.
    Headings, panel titles and buttons are the Medium cut (600), tracked
    only 0.03em, like ATTRIBUTE MATRIX and SECTOR [17]; h1 is 1.7rem.
    700 is kept for the small 12-13px caps. The status strip, taskbar
@@ -59,7 +59,8 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    UPLOAD). The primary button, like HOLD, is a cyan outline over a
    brighter tint with cyan text; active segmented items, toggles, filter
    chips, pagination and selected icons use the same tint, never a solid
-   cyan fill. Danger and success buttons, and a checked danger toggle
+   cyan fill; filter chips and page numbers also carry the chip outline
+   (slate at rest, cyan when on), like the tabs. Danger and success buttons, and a checked danger toggle
    (UNMUTE), follow the same rule in their own colour (red-orange or lime outline over a faint tint), never a solid
    block. Hover adds a faint glow, and nothing else glows at rest; dialogs
    cast a plain drop shadow and the overlay dims without a blur.
@@ -97,16 +98,18 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
   small filled cyan corner tab instead. Each panel header starts with a
   short cyan rule. Modals and windows are cut top-right and bottom-left,
   like the S2 CORE PERMISSIONS dialog. Cards echo the cut with a smaller
-  0.7rem chamfer and no cyan line.
+  0.7rem chamfer and no cyan line. Touch tiers keep the cut on panels and
+  windows only (buttons and cards go round there, to keep scrolling cheap).
 - **Segmented slider track.** `.slider` draws its track as a row of
-  cyan-slate squares (`--ww-line-hi`, 4.4:1 on the page) inside the
+  cyan-slate squares (`--ww-line-hi`, 3.8:1 on the page) inside the
   `--tap-min` hit box; on a vertical fader the squares stack as rungs.
 - **Chip tabs.** Tabs and `.nav` items are small rounded chips, each with
   its own thin slate outline. The active one gets a cyan outline and a
   cyan tint, like the phone's CODE / HOSTS / SATELLITE row.
-- **Chevron pills.** Pagination's prev / next are outlined pills with a
-  chevron at text size that the pill hugs, like the phone's `< FOCUS >` /
-  `< CONTROL ROOM >` column; the disabled pill keeps a slate outline.
+- **Chevron pills.** Pagination's prev / next and the carousel arrows are
+  outlined horizontal pills with a chevron larger than the text, like the
+  phone's `< FOCUS >` / `< CONTROL ROOM >` column; the disabled pill keeps
+  a muted outline that stays visible at core's 0.4 opacity.
 - **Readouts.** Readouts use Share Tech Mono numerals in cyan with a faint
   glow, like the vitals cluster (touch tiers drop the glow so scrolling
   stays cheap).
@@ -115,13 +118,13 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 
 | Role | Stack | Why |
 |---|---|---|
-| Labels | DIN Condensed, Bahnschrift SemiCondensed, DIN 2014 Narrow, then `Barlow Semi Condensed` (vendored OFL, `assets/fonts`, Medium and Bold), Arial Narrow | The tablets use a tight DIN Condensed-style grotesque with straight-sided rounds and a tall x-height. The real DIN faces come first; Barlow Semi Condensed is the closest free DIN-alike (Rajdhani's wide rounded O/C/S read as a game HUD; Antonio was too tall and narrow and read as LCARS), its Medium cut set at 600 for headings, panel titles and buttons, Bold only for small caps. |
+| Labels | DIN Condensed, Bahnschrift SemiCondensed, DIN 2014 Narrow, then `Barlow Condensed` (vendored OFL, `assets/fonts`, Medium and SemiBold), `Barlow Semi Condensed` (vendored, Medium and Bold), Arial Narrow | The tablets use a narrow, tall DIN Condensed-style grotesque with straight-sided rounds. The real DIN faces come first; Barlow Condensed is the closest free DIN Condensed-alike at its true condensed width (Semi Condensed set titles 15-20% too wide; Rajdhani's wide rounded O/C/S read as a game HUD; Antonio was too tall and narrow and read as LCARS). Its SemiBold cut sets headings, panel titles and buttons at 600 and the small caps at 700. |
 | Body | `Titillium Web` (vendored OFL), then Helvetica Neue, Helvetica, Inter, Roboto, Noto Sans, Arial, Liberation Sans | A plain technical grotesque that ships with the theme, so no platform falls through to the wide DejaVu Sans. The Delos security panel (an ARG site) sets body text in a plain grotesque sans. |
-| Mono and readouts | `Share Tech Mono` (vendored OFL, shared with prometheus) | It matches the squared numerals of the vitals and code panes. |
+| Mono and readouts | `Share Tech Mono` (vendored OFL, shared with prometheus) | It matches the squared numerals of the vitals and code panes. Form fields use it only for readings (number, time and `.mono` fields); text fields use the body face. |
 
-Barlow Semi Condensed (Medium and Bold, Latin woff2) was added to
-`assets/fonts` with a `NOTICE.md` entry; the other two faces were already
-vendored.
+Barlow Condensed (Medium and SemiBold) and Barlow Semi Condensed (Medium
+and Bold), Latin woff2, are in `assets/fonts` with `NOTICE.md` entries;
+the other two faces were already vendored.
 
 ## Contrast honesty
 
@@ -129,12 +132,12 @@ All pairs meet the lint floors. No exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#d6e6ea` on `--surface` `#24363c` / `--bg` `#1d2d33` | 9.8 / 11.1 |
-| `--muted` `#9ab6be` on `--surface` / `--surface-2` `#2a3d43` | 5.9 / 5.3 |
+| `--text` `#d6e6ea` on `--surface` `#283c43` / `--bg` `#22343a` | 9.0 / 10.1 |
+| `--muted` `#9ab6be` on `--surface` / `--surface-2` `#2e434a` | 5.4 / 4.9 |
 | `--muted` on status strip `#070b0d` | 9.2 |
-| `--accent` `#5cbbca` on `--surface` / `--surface-2` | 5.6 / 5.1 |
-| `.badge-accent` text `#84d5e2` on its chip (20% cyan over surface) | 5.2 |
-| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 4.2 / 3.7 |
+| `--accent` `#5cbbca` on `--surface` / `--surface-2` | 5.2 / 4.7 |
+| `.badge-accent` text `#84d5e2` on its chip (20% cyan over surface) | 4.9 |
+| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 3.8 / 3.4 |
 | Danger button text `#ffaba4` / success `#9fe06a` on their tints (worst case, tint over a lit row) | 5.1 / 5.8 |
 | `--on-accent` `#071014` on accent | 8.6 |
 | `--on-danger` on `--danger` `#ff5a4f` | 6.2 |

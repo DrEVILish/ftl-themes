@@ -7,12 +7,25 @@
  * references/westworld/RESEARCH.md for every frame and the sampled hexes.
  *
  * Fonts: labels name the tablets' DIN-class condensed caps first (DIN
- * Condensed, Bahnschrift SemiCondensed), then Barlow Semi Condensed (OFL,
- * vendored in assets/fonts) as the closest free DIN-alike for ATTRIBUTE
+ * Condensed, Bahnschrift SemiCondensed), then Barlow Condensed (OFL,
+ * vendored in assets/fonts; Semi Condensed behind it) as the closest free
+ * DIN Condensed-alike for ATTRIBUTE
  * MATRIX / SECTOR [17]; readouts use Share Tech Mono (OFL).
  * Body copy is Titillium Web (OFL), a plain technical grotesque, so no
  * platform falls back to a wide generic sans.
  */
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("assets/fonts/BarlowCondensed-Medium.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("assets/fonts/BarlowCondensed-SemiBold.woff2") format("woff2");
+  font-weight: 600 700;
+  font-display: swap;
+}
 @font-face {
   font-family: "Barlow Semi Condensed";
   src: url("assets/fonts/BarlowSemiCondensed-Medium.woff2") format("woff2");
@@ -47,11 +60,11 @@
 html[data-theme="westworld"] {
   --motion-leave: iris;
   color-scheme: dark;
-  --bg: #1d2d33;           /* the tablet's evenly lit grey-slate e-paper (sampled #1e2e33 / #263b43) */
-  --surface: #24363c;      /* one step up: panels on the sheet */
-  --surface-2: #2a3d43;
+  --bg: #22343a;           /* the tablet's evenly lit grey-slate e-paper (sampled #1e2e33 / #263b43) */
+  --surface: #283c43;      /* one step up: panels on the sheet */
+  --surface-2: #2e434a;
   --border: #3f6570;
-  --hairline: #2d4750;
+  --hairline: #315059;
   --text: #d6e6ea;
   --muted: #9ab6be;
   --accent: #5cbbca;       /* the tablet steel-cyan (sampled #3f96a6-#5c9ba4, lifted only to emitted brightness) */
@@ -70,7 +83,7 @@ html[data-theme="westworld"] {
   --font-mono: "Share Tech Mono", "DejaVu Sans Mono", Consolas, monospace;
   --flare: #c8102e;        /* the Mesa control room's red cove light; status rule only */
 
-  --ww-label: "DIN Condensed", "Bahnschrift SemiCondensed", "DIN 2014 Narrow", "Barlow Semi Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
+  --ww-label: "DIN Condensed", "Bahnschrift SemiCondensed", "DIN 2014 Narrow", "Barlow Condensed", "Barlow Semi Condensed", "Arial Narrow", "Nimbus Sans Narrow", sans-serif;
   --ww-deep: #070b0d;      /* the dark room around the tablet */
   --ww-well: #0b1417;      /* recessed fields and tracks */
   --ww-tint: rgba(92, 187, 202, 0.1);
@@ -259,6 +272,7 @@ html[data-theme="westworld"] {
   --pagination-item-radius: 0.25rem;
   --pagination-item-bg-active: var(--ww-tint-hi);
   --pagination-item-fg-active: var(--ww-ink);
+  --chart-label-fg: var(--accent);
   --skeleton-bg: var(--surface-2);
 
   --message-bg: var(--surface-2);
@@ -360,6 +374,8 @@ html[data-theme="westworld"] :is(.dropdown-item, .context-menu-item, .context-me
   text-transform: none;
   letter-spacing: 0.02em;
 }
+/* Series annotations speak in the tick voice: condensed cyan caps. */
+html[data-theme="westworld"] .chart .chart-label { text-transform: uppercase; letter-spacing: 0.06em; }
 html[data-theme="westworld"] .tree summary { text-transform: none; letter-spacing: 0; }
 /* The CODE / HOSTS / SATELLITE row: every chip has its own thin outline;
    the lit one adds the cyan outline and tint (core's active rules). */
@@ -368,6 +384,10 @@ html[data-theme="westworld"] :is(.tabs > .tab, .nav .nav-item):not(.is-active, [
   border-color: rgba(95, 147, 159, 0.5);
 }
 html[data-theme="westworld"] .nav .nav-item:is(.is-active, [aria-current="page"], :hover) { border-color: var(--accent); }
+/* Filter chips and the current page are lit the same way: outlined at rest,
+   cyan outline plus tint when on. */
+html[data-theme="westworld"] .badge-button { border: 1px solid rgba(95, 147, 159, 0.5); }
+html[data-theme="westworld"] :is(.badge-button, .pagination-item):is(.is-active, [aria-current="page"], :has(> input:checked)) { border-color: var(--accent); }
 /* Table status text: 13px semi-condensed caps, like the bracketed values. */
 html[data-theme="westworld"] td .status {
   font: 700 max(0.8125rem, 0.85em) var(--ww-label);
@@ -384,17 +404,38 @@ html[data-theme="westworld"] .pagination-item:is(:first-child, :last-child) {
   --pagination-item-fg: var(--text);
   border-color: var(--ww-line-hi);
   min-block-size: max(2.25rem, var(--tap-min));
-  padding-inline: 0.8em;
-  font: 700 1.05em/1 var(--ww-label);
+  padding-inline: 1.1em;
+  font: 600 1.35em/1 var(--ww-label);
 }
 /* The disabled pill keeps its outline visible at core's 0.4 opacity. */
-html[data-theme="westworld"] .pagination-item.is-disabled:is(:first-child, :last-child) { border-color: var(--border); }
+html[data-theme="westworld"] .pagination-item.is-disabled:is(:first-child, :last-child) { border-color: var(--muted); }
+/* Carousel arrows are the same chevron pills. */
+html[data-theme="westworld"] :is(.carousel-nav, .carousel) { --carousel-arrow-bg: var(--ww-tint); }
+html[data-theme="westworld"] .carousel-nav > :is(.carousel-prev, .carousel-next) {
+  border: 1px solid var(--ww-line-hi);
+  border-radius: 999px;
+  padding-inline: 0.9em;
+  font: 600 1.35em/1 var(--ww-label);
+}
+/* The native arrows sit in fixed tap-sized slots: same outline and glyph. */
+html[data-theme="westworld"] .carousel::scroll-button(*) {
+  border: 1px solid var(--ww-line-hi);
+  font: 600 1.35em/1 var(--ww-label);
+}
+html[data-theme="westworld"] .carousel::scroll-button(*):disabled { border-color: var(--muted); }
 /* Small caps labels stay at 12px+ (13px on touch tiers). */
 html[data-theme="westworld"] th { font-size: max(0.8rem, 1em); font-weight: 700; }
 @media (pointer: coarse) {
   html[data-theme="westworld"] :is(th, .badge) { font-size: max(0.85rem, 1em); }
   /* Phones drop the readout glow: blurred text shadows repaint on every scroll frame. */
   html[data-theme="westworld"] { --readout-glow: none; }
+  /* ...and the cove light is a plain red rule there, not a blurred glow. */
+  html[data-theme="westworld"] .app-status { box-shadow: none; }
+  /* The stacked bar's cut: a track-coloured overlay, not a per-frame mask. */
+  html[data-theme="westworld"] .progress-stack > .progress-bar {
+    mask-image: none;
+    background-image: repeating-linear-gradient(90deg, transparent 0 0.5rem, var(--ww-well) 0.5rem 0.65rem);
+  }
 }
 /* Medium semi-condensed caps like the tablets' ATTRIBUTE MATRIX / SECTOR;
    700 is kept for the small 12-13px caps (th, badge, status). */
@@ -451,6 +492,11 @@ html[data-theme="westworld"] .panel-header::before {
   /* END / HOLD caps: small chamfers on every corner. */
   html[data-theme="westworld"] .btn:not(.btn-icon, .btn-clear, .btn-close) { --btn-radius: 0.3rem; corner-shape: bevel; }
 }
+/* Touch tiers keep the cut on windows only; dozens of bevelled buttons
+   and cards cost frames while scrolling. */
+@media (pointer: coarse) {
+  html[data-theme="westworld"] :is(.card, .btn) { corner-shape: round; }
+}
 /* Cyan chip text a touch brighter: core tints the chip 20% cyan. */
 html[data-theme="westworld"] .badge-accent { --badge-fg: var(--ww-ink); }
 html[data-theme="westworld"] .badge {
@@ -465,7 +511,8 @@ html[data-theme="westworld"] .badge::after { content: "]"; margin-inline: 0.05em
 /* Reaction chips and icon badges are controls, not bracketed values. */
 html[data-theme="westworld"] :is(.message-reactions .badge, .badge:has(> svg, > img))::before,
 html[data-theme="westworld"] :is(.message-reactions .badge, .badge:has(> svg, > img))::after { content: none; }
-html[data-theme="westworld"] :is(.input, .select, .textarea) { font-family: var(--font-mono); }
+/* Mono only where the field holds a reading: numbers, times, codes. */
+html[data-theme="westworld"] :is(.input.mono, input:is([type="number"], [type="time"], [inputmode="numeric"], [inputmode="decimal"])) { font-family: var(--font-mono); }
 /* Fields in a dense table row keep a usable width: a native date picker
    claims ~180px and would squeeze its neighbours below the tap target;
    the table scrolls sideways instead. */
@@ -644,7 +691,7 @@ html[data-theme="westworld"] {
   --app-gutter-art:
     repeating-conic-gradient(from 8deg at 50% 50%, var(--bg) 0 2.2deg, transparent 2.2deg 41deg),
     repeating-conic-gradient(from 27deg at 50% 50%, transparent 0 9deg, var(--bg) 9deg 10.5deg, transparent 10.5deg 67deg),
-    repeating-radial-gradient(circle at 50% 50%, transparent 0 40px, #233a42 40px 42px),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 40px, #284149 40px 42px),
     var(--bg);
 }
 
