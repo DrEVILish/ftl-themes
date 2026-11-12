@@ -1,13 +1,13 @@
 # NERV Terminal
 
-> Industrial military-alert styling — deep black, hazard orange, dark crimson.
+> Industrial military-alert styling — deep black, hazard orange, signal red.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
 ## What this theme is trying to achieve
 
 A command-bunker terminal under permanent alert status: black steel,
-stencilled orange warnings, and crimson reserved for the moment something
+stencilled orange warnings, and signal red reserved for the moment something
 is actually wrong.
 
 ## Core values
@@ -15,10 +15,13 @@ is actually wrong.
 1. **Orange is "operational alert" — always on, never urgent.** It is the
    accent, the border colour, the heading colour. It marks that this
    terminal is a war-room fixture, not a calm state.
-2. **Crimson is reserved for danger alone**, and gets the one decorative
+2. **Signal red (`#e0001b`) is reserved for danger alone**, and gets the one decorative
    flourish in the theme: diagonal hazard stripes on destructive actions.
-3. **Sharp, stencilled, uppercase.** `--radius: 0`; tracked uppercase
-   headings; a bold, geometric font stack.
+3. **Sharp, condensed, uppercase.** `--radius: 0`, carried to badges,
+   chips, switches and avatars (radios stay round); headings, buttons
+   and frame headers in the vendored Antonio Bold, a tight
+   condensed bold standing in for NERV's compressed readout sans. Body
+   text stays in a plain Helvetica/Arial stack.
 4. **Thick rules.** 2–3px borders and bars, not hairlines — a bunker's
    markings are painted, not printed.
 
@@ -27,15 +30,19 @@ is actually wrong.
 - Danger buttons alone get a `repeating-linear-gradient(135deg, ...)`
   hazard-stripe fill instead of a flat color — the theme's single
   decorative flourish, reserved exclusively for that one state.
-- The active-row marker is crimson (`--danger`) even though every
-  other structural accent in the theme is orange — the one place danger's
-  color, not orange, gets to mark something.
-- Headings carry `letter-spacing: 0.15em`, the widest tracking in the
-  catalog — a stencilled, painted-on-metal feel rather than a printed one.
+- The active-row marker is signal red (`--danger`, about 4:1 on the
+  black) even though every other structural accent in the theme is
+  orange — the one place danger's color, not orange, gets to mark something.
+- Panel, card and window headers reverse out like the table head: a solid
+  orange strip with black, uppercase condensed text — the NERV warning-box
+  label.
+- Headings are condensed bold uppercase set tight (`0.04em`), not airy
+  wide tracking.
 
 ## Layout
 
-A black bar and status strip both edged in a thick orange rule — the
+A black bar and status strip (and the desktop taskbar) both edged in a
+3px orange rule — the
 terminal's own frame — with the content area reading as the screen set
 into that frame.
 
@@ -45,10 +52,17 @@ into that frame.
   orange-forward everywhere.
 - Hazard stripes anywhere other than a destructive action.
 - Thin, quiet borders — NERV's markings are bold.
+- Wide, airy tracked headings → NERV type is condensed and tight.
+
+## Note on fonts
+
+NERV's title cards use Matisse EB and its readouts a compressed
+Helvetica-style sans; neither is vendored or named. The theme vendors
+Antonio Bold (SIL OFL 1.1, already in `assets/fonts/`) for display type.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.0:1).
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.2:1 against the black, deliberately quiet).
 
 ## Icons
 
