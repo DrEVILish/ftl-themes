@@ -7,7 +7,8 @@
 ## What this theme is trying to achieve
 
 **Mac OS X circa 10.6**: glossy "candy" controls, brushed-metal window
-chrome, pinstriped surfaces, and generous soft shadows. Optimistic,
+chrome, flat grey group boxes on a pinstriped desktop, and generous soft
+shadows on floating sheets and menus. Optimistic,
 tactile, unmistakably pre-flat-design.
 
 ## Core values
@@ -15,14 +16,15 @@ tactile, unmistakably pre-flat-design.
 1. **Gel, lit from above and glowing below.** A push button is a flat
    light upper third, a hard step darker, then lighter again to a lit
    underside (measured on the Snow Leopard capture; see `RESEARCH.md`).
-   Panels and bars still run light to dark. That convention produces most
+   Bars still run light to dark. That convention produces most
    of the look.
-2. **Gloss on fills, gloss only.** Gradients belong on buttons, bars and
-   panels — never on text or borders.
+2. **Gloss on fills, gloss only.** Gradients belong on buttons and bars —
+   never on text, borders or group boxes.
 3. **Depth is soft, not hard.** Floating surfaces (sheets, menus,
    popovers, toasts, drawers) get large blurred shadows at low opacity;
-   group boxes (panels, cards) sit flat in a 1px `#b8b8b8` rim with only a
-   faint 2px shadow. Corners are small (`--radius` 0.35rem, ~5px), as on
+   group boxes (panels, cards) sit flat (`#e4e4e4`) in a 1px `#c6c6c6`
+   rim with a faint darker line under the top edge and no lift (measured on
+   the Snow Leopard capture). Corners are small (`--radius` 0.35rem, ~5px), as on
    Snow Leopard group boxes and menus; only the window itself is rounder,
    and push buttons are full capsules (`--btn-radius` 999px).
 4. **The window floats.** The shell has rounded corners and sits on a
@@ -34,11 +36,21 @@ tactile, unmistakably pre-flat-design.
 
 ## Signature details
 
-- Panels carry an actual **pinstripe**: one 3px background tile (a 1px
-  white-at-35% line, a texture hint: the 10.2 stripe kept faint on 10.6
-  group boxes, and cheaper to raster than a repeating gradient) over a neutral `#ededed`→`#dcdcdc` gradient (surfaces are
-  R=G=B grey, as on the capture). Phones drop the stripe for scroll cost
-  and keep the gradient.
+- **13px Lucida Grande.** With a mouse the root is 81.25% (13px from the
+  browser default; user font settings and `data-text-size` still scale
+  it), so body text, controls and list rows sit at Aqua's scale; touch
+  screens keep the browser size. Traffic lights and their clearances are
+  in px so the 14px discs hold on every root size.
+- Panels and cards are 10.6 **group boxes**: flat `#e4e4e4` in a `#c6c6c6`
+  rim (R=G=B grey, as on the capture), no pinstripe and no drop shadow. The
+  pinstripe lives on in the XL gutters. A panel used as a master-detail
+  pane (Mail's reading pane) is white.
+- **Source lists.** A `.nav-rail`, and the list pane of a master-detail
+  with no folder rail in front of it (System Preferences / Finder
+  sidebar), is the Leopard source list: a pale blue-grey `#e6ebf0` column
+  (measured on `02.png`), no box or dividers, the selection a full-width
+  square gradient bar.
+- `.band.is-tinted` takes a quiet blue-grey `#e2e6ec`.
 - The modal header is centred, with its own metal gradient — a Mac sheet,
   with no traffic lights. A modal header that carries close / minimize /
   zoom buttons is a window title bar: it gets the lights, and the buttons
@@ -48,7 +60,7 @@ tactile, unmistakably pre-flat-design.
   Window title bars carry the full-size set (13-14px on a 21px pitch, as
   on the app bar); their title is regular-weight 13px `#3c3c3c` with a
   white engraved shadow, while a sheet header stays bold.
-- Tables are Finder list views: mixed-case regular headers on the light
+- Tables are Finder list views: mixed-case regular-weight 11px headers on the light
   gel strip with `#c8c8c8` column separators, and white / `#edf3fe` pale
   blue zebra rows. `.stat-label` is mixed-case too.
 - Scrollbars are the Aqua scroller: a 15px blue gel thumb (lit across
@@ -60,7 +72,8 @@ tactile, unmistakably pre-flat-design.
   with the top line as an inset shadow, since core layers the selection
   over frozen cells in a way that can't take a gradient.
 - Focus adds a soft 3px blue halo rather than a hard ring.
-- Every push button is a gel capsule with a black label, secondary,
+- Every push button is a regular-weight gel capsule (`.btn-danger`'s white
+  label on the red gel too, with a dark engraving). Black labels: secondary,
   tertiary and ghost included (the quieter two with a lighter #9a9a9a
   rim). Latched `.toggle-btn`s keep the square 4px 'Textured' corner; a
   latched danger toggle takes the `.btn-danger` red gel.
@@ -70,7 +83,7 @@ tactile, unmistakably pre-flat-design.
 - `.btn-go` is the default-button gel capsule with a black, mixed-case,
   regular-weight label.
 - Off filter chips (`.badge-button`) are small grey push gels in the
-  #9a9a9a rim with a near-black label.
+  #9a9a9a rim with a near-black regular-weight label.
 - Latched states are the blue gel with a black label: a switch's on
   track (off: grey push gel; knob: a white gel ball in a grey rim), the
   current pagination page and an active filter chip (both in a `#2a2190`
@@ -109,8 +122,12 @@ deliberate choice for an app shell.
 
 On the desktop page the wallpaper is the 10.5/10.6 Aurora (violet and
 magenta over deep purple, a soft white streak lower left), and the Dock is
-the Leopard glass shelf: square-ended grey glass with a bright top line and
-front edge, and a glowing blue-white dot under each running app.
+the Leopard glass shelf: clear over the icons' upper half, then a light
+glass floor tapered toward the back (`clip-path`) with a bright back line
+and a white front lip, no outline, and a glowing blue-white dot under each
+running app. The menu bar's first menu (the frontmost app's name) is bold.
+Desktop and large-icon-view glyphs sit on a blue gel tile under the Dock's
+gloss, the nearest a line icon gets to Aqua's glossy icons.
 
 ## v5 layout
 
@@ -122,11 +139,11 @@ front edge, and a glowing blue-white dot under each running app.
   window goes nearly full-screen and the bar's lights shrink to
   three-quarter size; with a brand, only the brand steps clear of them, so
   the bar's wrapped rows start at its normal edge. Phones also trade the
-  large blurred shadows (window, panels, floating surfaces) for tight ones
-  and hold the default button still, for scroll cost.
+  large blurred shadows (window, floating surfaces) for tight ones, drop
+  the button and group-box shadows, and hold the default button still, for
+  scroll cost.
 - **Nesting.** A panel or card inside another surface becomes an Aqua group
-  box: a lighter flat inset (the parent's pinstripe shows through), no
-  drop shadow.
+  box: a lighter flat translucent-white inset, no drop shadow.
 - **XL gutter art.** The original Aqua pinstripe carried out across the
   gradient desktop either side of the window. Still, and within about
   1.2:1 of `--bg`.

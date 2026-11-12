@@ -1,12 +1,27 @@
 /* ftl-themes: Aqua (Snow Leopard)
  * Theme-Name: Aqua
  * Navigation-Patterns: dock
- * Description: macOS X 10.6 Snow Leopard: candy-gloss buttons, a 3px pinstripe texture on every panel, brushed-metal chrome.
+ * Description: macOS X 10.6 Snow Leopard: candy-gloss buttons, flat grey group boxes, source lists, brushed-metal chrome.
  *
  * The first light theme in the catalog, so it's the one that proves the
  * --on-* tokens: without them core would paint filled controls with
  * --bg, i.e. near-white text on a light blue button.
  */
+
+/* Aqua sets its UI in 13px Lucida Grande (11px for small labels). With a
+   mouse, an 81.25% root (13px from the browser default, so user font
+   settings and data-text-size still scale it) brings every rem-sized part
+   to that scale; touch screens keep the browser size so text and targets
+   stay large. Window chrome (traffic lights) is sized in px so it holds
+   the reference's 14px discs either way. */
+@media (pointer: fine) {
+  html[data-theme="aqua"] { --root-font-size: 81.25%; font-size: 81.25%; }
+}
+/* The smaller root shrinks core's rem paddings under 4px; these keep text
+   off the edge of its box (same guards as winxp-luna). */
+html[data-theme="aqua"] .chart-tooltip { padding-block: max(5px, var(--space-2xs)); }
+html[data-theme="aqua"] { --divide-y-pad: max(4.5px, var(--space-2xs)); }
+html[data-theme="aqua"] .table td.is-editing > .field-error { padding-block-end: max(5px, var(--space-2xs)); }
 
 html[data-theme="aqua"] {
   --motion-leave: genie;
@@ -72,9 +87,12 @@ html[data-theme="aqua"] {
   /* Neutral greys (the capture's window body and group box are R=G=B). A
      group box sits flat in a 1px rim; only floating surfaces (sheet, menu,
      popover, toast, drawer) keep the large soft shadow. */
-  --panel-bg: linear-gradient(180deg, #ededed, #dcdcdc);
-  --panel-border: #b8b8b8;
-  --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* Measured on references/aqua/31db2b68338d1ae9.png (x=155-915,
+     y=145-592): a flat #e4e4e4 box in a #c6c6c6 rim, a faint darker line
+     under its top edge, no pinstripe and no lift. */
+  --panel-bg: #e4e4e4;
+  --panel-border: #c6c6c6;
+  --panel-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   /* A group box's title is bold near-black, with no window controls. */
   --panel-header-fg: #1c1c1e;
   --aqua-float-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 14px rgba(0, 0, 0, 0.18);
@@ -223,23 +241,26 @@ html[data-theme="aqua"] h3 { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7); }
 html[data-theme="aqua"] h1 { font-size: 1.75rem; font-weight: 700; }
 html[data-theme="aqua"] h2 { font-size: 1.35rem; font-weight: 700; }
 
-/* Pinstripe texture on panels AND cards, over the gradient set above —
-   applying it to only one component made the texture look like a stray
-   artifact confined to a single card rather than a theme-wide signature
-   (confirmed by rendering a page with both side by side). */
-html[data-theme="aqua"] .panel,
-html[data-theme="aqua"] .card {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
-    linear-gradient(180deg, #ededed, #dcdcdc);
-  /* One 3px tile, not a repeating gradient: far cheaper to raster. Kept at
-     0.35 so the 10.2 pinstripe is a texture hint on 10.6 group boxes. */
-  background-size: 100% 3px, auto;
+/* A Mail.app reading pane (a panel used as a master-detail pane) is a
+   white page, not a group box. */
+html[data-theme="aqua"] .master-detail-pane { --panel-bg: var(--surface-2); }
+/* Leopard/Snow Leopard source lists (Finder, Mail and System Preferences
+   sidebars, references/aqua/02.png x=166-257): a pale blue-grey #e6ebf0
+   column, no box or dividers, the selection a full-width square gradient
+   bar. A master-detail's list pane is one when no folder rail precedes it
+   (with a rail, the list is the message list). */
+html[data-theme="aqua"] {
+  --nav-rail-bg: #e6ebf0;
+  --nav-rail-rule: #b8b8b8;
+  --nav-rail-pad: var(--space-xs) 0;
+  --band-tint-bg: #e2e6ec;
 }
-/* Phones skip the pinstripe (scrolling a page of repeating gradients cost
-   ~25ms a frame at 4x CPU); the gel gradient stays. */
-@container style(--tier: mobile) {
-  html[data-theme="aqua"] :is(.panel, .card) { background-image: linear-gradient(180deg, #ededed, #dcdcdc); }
+html[data-theme="aqua"] .nav-rail { --nav-item-radius: 0; }
+html[data-theme="aqua"] .master-detail:not(:has(> .nav-rail)) > .master-detail-list > .list {
+  --list-bg: #e6ebf0;
+  --list-border-width: 0;
+  --list-radius: 0;
+  --list-rule: transparent;
 }
 /* A Mac sheet's title is centred: core's header is a flex row, so centre
    the row and balance the lights' start padding at the end. */
@@ -248,7 +269,7 @@ html[data-theme="aqua"] .modal-header {
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
-html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-inline-end: 4.6rem; }
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-inline-end: 74px; }
 
 /* Traffic lights belong to windows only: a group box (.panel-header) or a
    sheet (a modal header with no window buttons) never carries them. A
@@ -261,31 +282,31 @@ html[data-theme="aqua"] .modal-header { position: relative; }
    (references/aqua/31db2b68338d1ae9.png); a sheet header stays bold. */
 html[data-theme="aqua"] :is(.modal-header:has(.btn-close, .btn-min, .btn-max), .modal-header:has(.btn-close, .btn-min, .btn-max) > :is(h1, h2, h3, h4, .window-title)) {
   font-weight: 400;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   color: #3c3c3c;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
-html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-left: 4.6rem; }
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-left: 74px; }
 html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max)::before {
   content: "";
   position: absolute;
-  left: 1rem;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 3.475rem;
-  height: 0.875rem;
+  width: 56px;
+  height: 14px;
   background: var(--aqua-lights);
-  background-size: 0.875rem 0.875rem;
+  background-size: 14px 14px;
   background-repeat: no-repeat;
-  background-position: 0 0, 1.3rem 0, 2.6rem 0;
+  background-position: 0 0, 21px 0, 42px 0;
   mask: var(--aqua-lights-mask);
-  mask-size: 0.875rem 0.875rem;
+  mask-size: 14px 14px;
   mask-repeat: no-repeat;
-  mask-position: 0 0, 1.3rem 0, 2.6rem 0;
+  mask-position: 0 0, 21px 0, 42px 0;
 }
 
 /* Nesting steps down to an Aqua group box: a panel or card inside another
-   surface is a lighter, flat inset (the parent's pinstripe shows through)
+   surface is a lighter, flat translucent-white inset
    with no drop shadow. Full-strength gloss at every level stacked
    windows inside windows. */
 html[data-theme="aqua"] :is(.panel, .card, .modal, .drawer) :is(.panel, .card) {
@@ -359,7 +380,9 @@ html[data-theme="aqua"] .stat-value { font-family: var(--font); }
 html[data-theme="aqua"] .app-status .mono { font-family: var(--font); }
 /* The touch pencil follows a selected row's white label. */
 html[data-theme="aqua"] .table tr:is(.is-selected, [aria-selected="true"]) { --cell-edit-glyph-fg: currentColor; }
-html[data-theme="aqua"] .btn-danger { --btn-bg: linear-gradient(180deg, #ef7b68, #c8321f 55%, #97200f); --btn-border: #97200f; }
+/* Every Snow Leopard push button is regular weight; the darker engraving
+   keeps the white label legible on the red gel. */
+html[data-theme="aqua"] .btn-danger { --btn-bg: linear-gradient(180deg, #ef7b68, #c8321f 55%, #97200f); --btn-border: #97200f; --btn-weight: 400; text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35); }
 html[data-theme="aqua"] .btn-success { --btn-bg: linear-gradient(180deg, #74c266, #3a7d2f 55%, #2a5f22); --btn-border: #2a5f22; }
 
 /* Tables inside a pinstriped panel/card sit on their own opaque surface
@@ -381,6 +404,8 @@ html[data-theme="aqua"] .table tr:is(.is-selected, [aria-selected="true"]) td { 
 html[data-theme="aqua"] .table tr:nth-child(even):not(.is-selected, [aria-selected="true"]) td { background: #edf3fe; }
 /* List-view column separators on the header gel. */
 html[data-theme="aqua"] .table th:not(:last-child) { border-inline-end: 1px solid #c8c8c8; }
+/* Finder list-view headers are regular 11px Lucida, not bold. */
+html[data-theme="aqua"] .table th { font-weight: 400; font-size: 0.85rem; }
 html[data-theme="aqua"] .stat-label { text-transform: none; letter-spacing: 0; }
 
 /* Scroller details core's tokens can't carry: the thumb's dark-blue rim,
@@ -433,7 +458,7 @@ html[data-theme="aqua"] .app-bar {
   --accent-text: #0f3260;
   position: relative;
   /* Room for the traffic lights on the left, same as a real Mac window. */
-  padding-left: 5.1rem;
+  padding-left: 82px;
 }
 /* The traffic lights: THE single most recognizable Aqua/OS X window-chrome
    detail, drawn from --aqua-lights (measured, see the top of this file)
@@ -443,19 +468,19 @@ html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before,
 html[data-theme="aqua"] .app-bar > .nav-brand::before {
   content: "";
   position: absolute;
-  left: 1rem;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 3.475rem;
-  height: 0.875rem;
+  width: 56px;
+  height: 14px;
   background: var(--aqua-lights);
-  background-size: 0.875rem 0.875rem;
+  background-size: 14px 14px;
   background-repeat: no-repeat;
-  background-position: 0 0, 1.3rem 0, 2.6rem 0;
+  background-position: 0 0, 21px 0, 42px 0;
   mask: var(--aqua-lights-mask);
-  mask-size: 0.875rem 0.875rem;
+  mask-size: 14px 14px;
   mask-repeat: no-repeat;
-  mask-position: 0 0, 1.3rem 0, 2.6rem 0;
+  mask-position: 0 0, 21px 0, 42px 0;
 }
 
 /* With a brand, the lights hang off it: the brand isn't positioned, so the
@@ -466,7 +491,7 @@ html[data-theme="aqua"] .app-bar > .nav-brand::before {
 html[data-theme="aqua"] .app-bar > .nav-brand::before {
   top: auto;
   transform: none;
-  margin-top: calc((1lh - 0.875rem) / 2);
+  margin-top: calc((1lh - 14px) / 2);
 }
 
 /* --- v5 tiers --------------------------------------------------------------
@@ -482,24 +507,25 @@ html[data-theme="aqua"] .app-bar > .nav-brand::before {
   /* Smaller lights leave the brand room to show on a phone; with a brand
      only the brand steps clear of them, so the wrapped rows below start
      at the bar's normal edge. */
-  html[data-theme="aqua"] .app-bar { padding-left: 3.6rem; }
+  html[data-theme="aqua"] .app-bar { padding-left: 58px; }
   html[data-theme="aqua"] .app-bar:has(> .nav-brand) { padding-left: 0.75rem; }
-  html[data-theme="aqua"] .app-bar > .nav-brand { margin-inline-start: 3.1rem; }
+  html[data-theme="aqua"] .app-bar > .nav-brand { margin-inline-start: 50px; }
   /* Scroll cost on a phone: tight shadows instead of large blurs, and a
      still default button. */
   html[data-theme="aqua"] .app { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); }
   html[data-theme="aqua"] {
-    --panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --panel-shadow: none;
+    --btn-shadow: none;
     --aqua-float-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
   }
   html[data-theme="aqua"] { --aqua-pulse: none; }
   html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before {
-    left: 0.75rem;
+    left: 12px;
     transform: translateY(-50%) scale(0.75);
     transform-origin: left center;
   }
   html[data-theme="aqua"] .app-bar > .nav-brand::before {
-    left: 0.75rem;
+    left: 12px;
     transform: scale(0.75);
     transform-origin: left center;
   }
@@ -659,7 +685,7 @@ html[data-theme="aqua"] .pagination-item.is-active { border-color: #2a2190; }
 html[data-theme="aqua"] .badge { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -0.45em 0.4em rgba(0, 0, 0, 0.05); }
 /* An off filter chip is a small grey push gel in the tertiary rim (drawn
    as a ring: core gives .badge-button no border). */
-html[data-theme="aqua"] .badge-button { --badge-bg: var(--aqua-push-gel); box-shadow: inset 0 0 0 1px #9a9a9a, 0 1px 1px rgba(0, 0, 0, 0.12); }
+html[data-theme="aqua"] .badge-button { font-weight: 400; --badge-bg: var(--aqua-push-gel); box-shadow: inset 0 0 0 1px #9a9a9a, 0 1px 1px rgba(0, 0, 0, 0.12); }
 html[data-theme="aqua"] .badge-button:not(.badge-accent, .badge-danger, .badge-success, .badge-warning) { --badge-fg: #1c1c1e; }
 html[data-theme="aqua"] .badge-button.is-active { box-shadow: inset 0 0 0 1px #2a2190, 0 1px 1px rgba(0, 0, 0, 0.12); }
 
@@ -724,7 +750,7 @@ html[data-theme="aqua"] .modal-header .btn-close {
   --btn-close-glyph-size: 0.6rem;
   --btn-close-fg-hover: #4d0000;
   position: absolute;
-  left: 1.4375rem;
+  left: 23px;
   top: 50%;
   transform: translate(-50%, -50%);
 }
@@ -753,9 +779,16 @@ html[data-theme="aqua"] {
   --desktop-icon-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
   --desktop-icon-glyph: #e8edf3;
   --desktop-icon-filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45));
-  --desktop-icon-size: 3rem;
-  --desktop-icon-cell: 6.5rem;
-  --desktop-icon-row: 5.75rem;
+  /* Icons sit on a blue gel tile (the Leopard folder blue under the Dock's
+     gloss): the nearest a line glyph gets to Aqua's glossy icons. */
+  --desktop-icon-tile: var(--dock-tile-gloss), linear-gradient(180deg, #8cc0f2, #3f7fd6 55%, #2a62bc);
+  --desktop-icon-tile-pad: 0.55rem;
+  --desktop-icon-tile-radius: 22%;
+  --desktop-icon-tile-shadow: inset 0 0 0 1px rgba(20, 50, 110, 0.5);
+  --window-icon-glyph: #ffffff;
+  --desktop-icon-size: 3.5rem;
+  --desktop-icon-cell: 7rem;
+  --desktop-icon-row: 6.5rem;
   --desktop-icon-label-bg-selected: #3069c9;
   --desktop-icon-label-radius: 0.6rem;
   --desktop-icon-glyph-selected: #ffffff;
@@ -765,13 +798,16 @@ html[data-theme="aqua"] {
   --window-header-filter-inactive: grayscale(1) opacity(0.85);
   --window-pane-bg: #ffffff;
   --window-pane-border: var(--border);
+  /* The glass shelf: clear over the icons' upper part, then a light glass
+     floor (lit at its far edge) ending in a bright front lip; the ends are
+     tapered by clip-path below. */
   --dock-bg:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0 1px, transparent 1px calc(100% - 3px), rgba(255, 255, 255, 0.9) calc(100% - 3px)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(200, 210, 220, 0.55) 60%, rgba(255, 255, 255, 0.8));
-  --dock-border: rgba(255, 255, 255, 0.6);
+    linear-gradient(180deg, transparent 0 calc(45% + 1px), rgba(255, 255, 255, 0.85) calc(45% + 1px) calc(45% + 2px), rgba(255, 255, 255, 0.35) calc(45% + 2px), rgba(200, 210, 225, 0.55) calc(100% - 4px), #ffffff calc(100% - 4px) calc(100% - 2px), rgba(120, 130, 145, 0.7) calc(100% - 2px));
+  --dock-border: transparent;
   --dock-radius: 0;
   --dock-gap-below: 0;
-  --dock-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 -2px 10px rgba(0, 0, 0, 0.18);
+  --dock-shadow: none;
+  --dock-blur: none;
   --dock-tile-gloss: radial-gradient(ellipse 85% 55% at 50% 0%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%);
   --dock-glyph: #ffffff;
   --dock-tile-radius: 24%;
@@ -789,6 +825,7 @@ html[data-theme="aqua"]:has(.desktop-screen) {
   --app-main-padding: 0;
   --app-status-bg: transparent;
   --app-status-radius: 0;
+  --app-status-rule: transparent;
   --app-bar-radius: 0;
   --app-bar-height: var(--desktop-menubar-height);
   --app-bar-padding: 0 0.6rem;
@@ -800,15 +837,17 @@ html[data-theme="aqua"] .desktop > .app-bar {
   --nav-brand-fg: #000000;
   --nav-item-fg: #000000;
   --menubar-item-radius: 0;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
 html[data-theme="aqua"] .desktop > .app-bar::before,
 html[data-theme="aqua"] .desktop > .app-bar > .nav-brand::before { content: none; }
-html[data-theme="aqua"] .desktop > .app-bar .select { padding-block: 0; min-block-size: 0; font-size: 0.8rem; }
+html[data-theme="aqua"] .desktop > .app-bar .select { padding-block: 0; min-block-size: 0; font-size: 1rem; }
+/* The frontmost application's name is the bold first menu. */
+html[data-theme="aqua"] .desktop > .app-bar > .nav-brand { font-weight: 700; }
 html[data-theme="aqua"] .desktop-bar > .taskbar-start { font-size: 1rem; }
-html[data-theme="aqua"] .desktop-bar > .taskbar-tray { font-size: 0.85rem; }
+html[data-theme="aqua"] .desktop-bar > .taskbar-tray { font-size: 1rem; }
 html[data-theme="aqua"]:has(.desktop-screen) {
   --app-bar-fg: #000000;
   --taskbar-start-bg-open: #2a74d0;
@@ -829,8 +868,8 @@ html[data-theme="aqua"] .modal-header :is(.btn-min, .btn-max) {
   margin: 0;
   transform: translate(-50%, -50%);
 }
-html[data-theme="aqua"] .modal-header .btn-min { left: 2.7375rem; }
-html[data-theme="aqua"] .modal-header .btn-max { left: 4.0375rem; --btn-close-fg-hover: #0d4a00; }
+html[data-theme="aqua"] .modal-header .btn-min { left: 44px; }
+html[data-theme="aqua"] .modal-header .btn-max { left: 65px; --btn-close-fg-hover: #0d4a00; }
 html[data-theme="aqua"] .modal-header .btn-min:is(:hover, :focus-visible) { --btn-min-glyph: "\2212"; }
 html[data-theme="aqua"] .modal-header .btn-max:is(:hover, :focus-visible) { --btn-max-glyph: "+"; }
 html[data-theme="aqua"] .desktop-window .modal-header > .icon { display: none; }
@@ -838,6 +877,14 @@ html[data-theme="aqua"] .desktop-window .window-status { justify-content: center
 html[data-theme="aqua"] .desktop-window .window-status > * { flex: none; border: 0; }
 html[data-theme="aqua"] .desktop-window > .modal { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
 html[data-theme="aqua"] .start-menu-header .avatar { border-radius: 0.35rem; }
+/* Perspective: the shelf's floor narrows toward the back. Above the floor
+   the clip reaches far out, so magnified tiles and their labels pass. */
+html[data-theme="aqua"] .desktop-dock {
+  clip-path: polygon(-50% -400%, 150% -400%, 150% 45%, calc(100% - 1.25rem) 45%, 100% 100%, 0 100%, 1.25rem 45%, -50% 45%);
+  padding-inline: 1.6rem;
+  /* Lay the shelf under the (clear) border too, so it doesn't tile into it. */
+  background-origin: border-box;
+}
 
 /* Frozen first-column header: core layers --table-head-bg over the cell's
    opaque base as linear-gradient(colour 0 0), which can't wrap this theme's
