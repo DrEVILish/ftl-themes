@@ -36,7 +36,7 @@ html[data-theme="aqua"] {
   --on-danger: #ffffff;
   --on-success: #ffffff;
   --radius: 0.9rem;
-  --font: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: Monaco, Consolas, monospace;
   --flare: #5aa6ff;
 
@@ -44,13 +44,19 @@ html[data-theme="aqua"] {
      references/aqua/31db2b68338d1ae9.png (a 2x capture; column x=560):
      a flat #f2f2f2 upper 37%, a hard step to #e5e5e5, then lighter to
      white at the bottom (the gel's lit underside), in a #5d5d5d rim. */
-  --btn-bg: linear-gradient(180deg, #f2f2f2 0 37%, #e5e5e5 37%, #ffffff);
+  --aqua-push-gel: linear-gradient(180deg, #f2f2f2 0 37%, #e5e5e5 37%, #ffffff);
+  --aqua-push-gel-hover: linear-gradient(180deg, #e8e8e8 0 37%, #d9d9d9 37%, #f6f6f6);
+  /* The selected tab segment, same capture ('Tab', column x=480): #d7e3f2
+     to #bfd8f2 over the upper half, a step to #7db0e4, lighter below. */
+  --aqua-blue-gel: linear-gradient(180deg, #d7e3f2, #bfd8f2 50%, #7db0e4 50%, #a9d0f5 80%, #d4ecfc);
+  --btn-bg: var(--aqua-push-gel);
   --btn-border: #5d5d5d;
   --btn-fg: var(--text);
   --btn-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 2px rgba(0, 0, 0, 0.15);
   --input-bg: #ffffff;
-  --input-radius: 0.6rem;
-  --input-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+  /* The square Snow Leopard text field with its inset top shadow. */
+  --input-radius: 2px;
+  --input-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
   --focus-ring: 0 0 0 3px rgba(42, 116, 208, 0.35);
   --panel-bg: linear-gradient(180deg, #e7eaee, #cfd3d8);
   --panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 14px rgba(0, 0, 0, 0.18);
@@ -63,6 +69,44 @@ html[data-theme="aqua"] {
   --overlay-bg: rgba(0, 0, 0, 0.28);
   --indicator-fg: var(--accent);
   --indicator-track: var(--border);
+
+  /* Slider: a dark grey groove (same capture, y=472) painted on the content
+     box, so the 24/44px hit area core gives the input is kept, and a blue
+     gel knob. */
+  --slider-bg: linear-gradient(180deg, #8a8a8a, #c4c4c4);
+  --slider-height: 0.3rem;
+  --slider-radius: 999px;
+  --slider-border: #7a7a7a;
+  --slider-thumb-bg: radial-gradient(circle at 50% 30%, #fff 0 18%, transparent 40%), linear-gradient(180deg, #4a7fd0, #9cc8f6);
+  --slider-thumb-shadow: 0 0 0 1px #1f3f86, 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  /* Segmented control ('Test | One | Two'): joined grey gel segments in
+     one #5d5d5d rim, the selected one the blue tab gel with a black label. */
+  --segmented-bg: var(--aqua-push-gel);
+  --segmented-border: #5d5d5d;
+  --segmented-padding: 0;
+  --segmented-radius: 6px;
+  --segmented-item-radius: 0;
+  --segmented-item-fg: #1c1c1e;
+  --segmented-item-fg-hover: #000000;
+  --segmented-item-bg-active: var(--aqua-blue-gel);
+  --segmented-item-fg-active: #000000;
+  /* A latched toggle button (and a group of them) takes the same blue gel. */
+  --toggle-btn-bg-on: var(--aqua-blue-gel);
+  --toggle-btn-fg-on: #000000;
+  --toggle-btn-border-on: #2a2190;
+
+  /* Progress: the gel bar's colour stays a plain colour (core also uses it
+     in colour-only places); the gloss is an overlay further down. */
+  --progress-fill: #3b86e0;
+  --progress-border: #8a8a8a;
+  --progress-bg: #e4e4e4;
+
+  /* Source-list selection (Finder sidebar): a blue gradient bar with a
+     white label, deepened from #5d94d6/#2a62c0 so white holds 4.5:1. */
+  --nav-item-bg-active: linear-gradient(180deg, #3a75c8, #1f56b0);
+  --nav-item-fg-active: #ffffff;
+  --nav-rail-marker: transparent;
 }
 
 html[data-theme="aqua"] { background: linear-gradient(180deg, #eef1f4, #c9ced4); }
@@ -209,7 +253,9 @@ html[data-theme="aqua"] {
   --app-bar-rule: #5f5f5f;
   --app-bar-radius: 0.75rem 0.75rem 0 0;
   --app-bar-height: 2.75rem;
-  --app-main-bg: #f7f8fa;
+  /* The neutral grey window body (#ececec on the capture); white stays for
+     fields, tables and list views. */
+  --app-main-bg: #ececec;
   --app-main-padding: 1.1rem;
   --app-status-bg: linear-gradient(180deg, #eef1f4, #dce0e5);
   --app-status-fg: #3a3c40;
@@ -238,7 +284,8 @@ html[data-theme="aqua"] .app-bar {
    detail, drawn from --aqua-lights (measured, see the top of this file)
    so no extra markup is needed in the app shell. Full size here: 14px
    discs on a 21px pitch, as on the reference window. */
-html[data-theme="aqua"] .app-bar::before {
+html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before,
+html[data-theme="aqua"] .app-bar > .nav-brand::before {
   content: "";
   position: absolute;
   left: 1rem;
@@ -256,23 +303,42 @@ html[data-theme="aqua"] .app-bar::before {
   mask-position: 0 0, 1.3rem 0, 2.6rem 0;
 }
 
+/* With a brand, the lights hang off it: the brand isn't positioned, so the
+   bar stays their containing block (the brand's overflow clip on touch
+   tiers doesn't reach them), and top:auto leaves them at the brand's
+   static position, centred on its first line whichever row the bar wraps
+   it onto. */
+html[data-theme="aqua"] .app-bar > .nav-brand::before {
+  top: auto;
+  transform: none;
+  margin-top: calc((1lh - 0.875rem) / 2);
+}
+
 /* --- v5 tiers --------------------------------------------------------------
  * Phone and tablet: the window goes nearly full-screen (a thinner desktop
  * margin), and the traffic lights stay level with the bar's first line
  * (brand and actions) instead of centring on the wrapped two-line bar,
  * where they landed beside the nav. No rail on any tier. */
 @container style(--tier: mobile) or style(--tier: tablet) {
-  html[data-theme="aqua"] .app-bar::before { top: calc(0.6rem + var(--tap-min, 44px) / 2); }
+  html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before { top: calc(0.6rem + var(--tap-min, 44px) / 2); }
 }
 @container style(--tier: mobile) {
   html[data-theme="aqua"] .app { padding: 0.35rem; }
   /* Panel-header-sized lights leave the brand room to show on a phone. */
   html[data-theme="aqua"] .app-bar { padding-left: 3.6rem; }
-  html[data-theme="aqua"] .app-bar::before {
+  html[data-theme="aqua"] .app-bar:not(:has(> .nav-brand))::before {
     left: 0.75rem;
     transform: translateY(-50%) scale(0.75);
     transform-origin: left center;
   }
+  html[data-theme="aqua"] .app-bar > .nav-brand::before {
+    left: 0.75rem;
+    transform: scale(0.75);
+    transform-origin: left center;
+  }
+  /* The tray gives way before it runs under the strip's rounded corner. */
+  html[data-theme="aqua"] .app-status > .taskbar-tray { flex-shrink: 1; min-width: 0; }
+  html[data-theme="aqua"] .app-status > .taskbar-tray > :last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 /* XL gutters (v5, PLAN.md §3): the original Aqua pinstripe, the desktop
@@ -298,6 +364,120 @@ html[data-theme="aqua"] {
   --readout-fg: var(--accent-text);
 }
 html[data-theme="aqua"] .btn-secondary { --btn-fg: var(--accent-text); }
+/* Every push button is gel: flat is the one thing Aqua never was. Quieter
+   buttons keep the gel with a lighter rim. */
+html[data-theme="aqua"] :is(.btn-secondary, .btn-tertiary, .btn-ghost) {
+  --btn-bg: var(--aqua-push-gel);
+  --btn-bg-hover: var(--aqua-push-gel-hover);
+  --btn-border: #5d5d5d;
+}
+html[data-theme="aqua"] :is(.btn-tertiary, .btn-ghost) { --btn-border: #9a9a9a; }
+
+/* Tabs: Aqua's tab view is a centred row of joined gel segments, not an
+   underline. Horizontal tabs only; a vertical rail keeps core's shape. */
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) {
+  --tab-bg: var(--aqua-push-gel);
+  --tab-bg-hover: var(--aqua-push-gel-hover);
+  --tab-bg-active: var(--aqua-blue-gel);
+  --tab-fg: #1c1c1e;
+  --tab-fg-hover: #000000;
+  --tab-fg-active: #000000;
+  --tab-border-hover: #5d5d5d;
+  --tab-border-active: #2a2190;
+  --tab-underline-active: #2a2190;
+  --tab-radius: 0;
+  justify-content: safe center;
+  gap: 0;
+  border-bottom: 0;
+}
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab {
+  border-color: #5d5d5d;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab + .tab { margin-inline-start: -1px; }
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab:first-child { border-start-start-radius: 6px; border-end-start-radius: 6px; }
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab:last-child { border-start-end-radius: 6px; border-end-end-radius: 6px; }
+html[data-theme="aqua"] .tabs:not([aria-orientation="vertical"]) > .tab.is-active { border-bottom-width: 1px; position: relative; }
+html[data-theme="aqua"] .segmented { gap: 0; overflow: hidden; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); }
+html[data-theme="aqua"] .segmented-item + .segmented-item { border-inline-start: 1px solid #8a8a8a; }
+
+/* The groove runs across a vertical fader too. */
+html[data-theme="aqua"] .slider.is-vertical { --slider-bg: linear-gradient(90deg, #8a8a8a, #c4c4c4); }
+/* Core pads a vertical slider with logical padding, which writing-mode
+   turns sideways (the groove filled the whole 24px box); physical padding
+   narrows it back to the groove. */
+html[data-theme="aqua"] .slider.is-vertical:not(.is-range > .slider) {
+  padding: 0 calc((var(--tap-min) - var(--slider-height)) / 2);
+}
+
+/* Pop-up menu: the blue gel cap with its double arrow at the right end. */
+html[data-theme="aqua"] .select {
+  padding-inline-end: 2.4em;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='12'%3E%3Cpath d='M1 4.5 4 1.5 7 4.5M1 7.5 4 10.5 7 7.5' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, #5d6d8a 0 1px, transparent 1px),
+    var(--aqua-blue-gel);
+  background-position: calc(100% - 0.6em) 50%, 100% 0, 100% 0;
+  background-size: 8px 12px, 1.6em 100%, 1.6em 100%;
+  background-repeat: no-repeat;
+}
+html[data-theme="aqua"] .select:dir(rtl) { background-position: 0.6em 50%, 0 0, 0 0; }
+
+/* Checkboxes and radios: white gel wells in a grey rim; checked, the blue
+   gel with a black mark. */
+html[data-theme="aqua"] :is(.checkbox, .radio) {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  border: 1px solid #7a7a7a;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffffff, #e8e8e8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  min-block-size: 0;
+}
+html[data-theme="aqua"] .radio { border-radius: 50%; }
+html[data-theme="aqua"] :is(.checkbox, .radio):is(:checked, :indeterminate) { background: var(--aqua-blue-gel); border-color: #45508a; }
+html[data-theme="aqua"] .checkbox:checked::before {
+  content: "";
+  width: 0.55em;
+  height: 0.3em;
+  border: solid #000000;
+  border-width: 0 0 2px 2px;
+  transform: translateY(-0.08em) rotate(-45deg);
+}
+html[data-theme="aqua"] .checkbox:indeterminate::before { content: ""; width: 0.55em; height: 2px; background: #000000; }
+html[data-theme="aqua"] .radio:checked::before {
+  content: "";
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: #000000;
+}
+
+/* Progress: the gel gloss over the fill and a recessed grey trough; an
+   indeterminate bar is the blue barber pole. */
+html[data-theme="aqua"] .progress:not(:indeterminate) {
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.6) 50%, rgba(0, 0, 0, 0.04));
+}
+html[data-theme="aqua"] .progress-bar,
+html[data-theme="aqua"] progress.progress::-webkit-progress-value {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 45%, rgba(0, 0, 0, 0.08) 55%, rgba(255, 255, 255, 0.35));
+}
+html[data-theme="aqua"] progress.progress:indeterminate {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.08)),
+    repeating-linear-gradient(-45deg, #4a8fe6 0 0.5rem, #e8f2fd 0.5rem 1rem);
+  background-size: 100% 100%, 1.42rem 100%;
+  background-repeat: no-repeat, repeat;
+}
+
+/* In the title bar the selected nav item is a darker inset, not the
+   source-list blue. */
+html[data-theme="aqua"] .app-bar {
+  --nav-item-bg-active: linear-gradient(180deg, #9c9c9c, #b8b8b8);
+  --nav-item-fg-active: #000000;
+}
+html[data-theme="aqua"] .app-bar :is(.nav-item.is-active, .nav-item[aria-current="page"]) { box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35); }
 
 /* --- Conversation, file chips, bar chart (v4.1) --------------------------- *
  * iChat gel bubbles (yours glossy blue) and Aqua gel columns, graphite for the highlight. */
@@ -401,7 +581,8 @@ html[data-theme="aqua"] .desktop > .app-bar {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
-html[data-theme="aqua"] .desktop > .app-bar::before { content: none; }
+html[data-theme="aqua"] .desktop > .app-bar::before,
+html[data-theme="aqua"] .desktop > .app-bar > .nav-brand::before { content: none; }
 html[data-theme="aqua"] .desktop > .app-bar .select { padding-block: 0; min-block-size: 0; font-size: 0.8rem; }
 html[data-theme="aqua"] .desktop-bar > .taskbar-start { font-size: 1rem; }
 html[data-theme="aqua"] .desktop-bar > .taskbar-tray { font-size: 0.85rem; }

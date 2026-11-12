@@ -35,18 +35,34 @@ tactile, unmistakably pre-flat-design.
 - The modal header is centred, with its own metal gradient — a Mac sheet.
 - Selected table rows fill solid Aqua blue with white text.
 - Focus adds a soft 3px blue halo rather than a hard ring.
+- Every push button is gel, secondary, tertiary and ghost included (the
+  quieter two with a lighter #9a9a9a rim).
+- Horizontal tabs, `.segmented` and latched `.toggle-btn`s are joined gel
+  segments: grey push gel, the selected one the measured blue tab gel with
+  a black label. Vertical tab rails keep core's shape.
+- Sliders are a dark grey groove (`#8a8a8a`→`#c4c4c4`) with a blue gel
+  knob, painted on the content box so core's 24/44px hit area stays.
+- Square text fields with an inset top shadow; selects carry the blue gel
+  double-arrow cap; checkboxes and radios are white gel wells that turn
+  blue gel with a black mark; progress bars carry a gel gloss, and an
+  indeterminate `<progress>` is the blue barber pole.
+- A source-list selection (`.nav-rail`) is a blue gradient bar with a
+  white label; in the title bar the current nav item is a darker grey inset.
 
 ## Layout
 
 The shell becomes a **Mac window**: 0.75rem desktop margin, a rounded
-brushed-metal title bar, a near-white content area, and a rounded metal
+brushed-metal title bar, a neutral grey (`#ececec`) window body with white
+kept for fields, tables and list views, and a rounded metal
 status strip, with a 28px blurred shadow under the whole frame.
 
 ## v5 layout
 
-- **Tiers.** No rail on any tier. On phone and tablet (≤900px) the
-  traffic lights stay level with the bar's first line (brand and actions)
-  instead of centring on the wrapped two-line bar. On phones (≤480px) the
+- **Tiers.** No rail on any tier. On every tier the traffic lights hang
+  off the brand (its `::before`, positioned against the bar), so they stay
+  centred on the brand's line whichever row a wrapped bar puts it on; a bar
+  without a brand centres them as before. On phones the status strip's
+  tray truncates rather than run under the rounded corner. On phones (≤480px) the
   window goes nearly full-screen and the bar's lights shrink to
   panel-header size so the brand keeps some room.
 - **Nesting.** A panel or card inside another surface becomes an Aqua group
@@ -72,7 +88,7 @@ fill without checking the contrast floor.
 
 ## Typography
 
-`--font` is `"Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif`; `--font-mono` is `Monaco, Consolas, monospace`. Lucida Grande is the authentic face (named in `references/aqua/RESEARCH.md`) and it is **system-only, not vendored**: it ships with macOS and is absent on Windows and most Linux, where Helvetica Neue/Arial render instead. Headings get a 1px white `text-shadow` (the "engraved" look); do not swap it for a heavier weight.
+`--font` is `"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Helvetica Neue", Helvetica, Arial, sans-serif`; `--font-mono` is `Monaco, Consolas, monospace`. Lucida Grande is the authentic face (named in `references/aqua/RESEARCH.md`) and it is **system-only, not vendored**: it ships with macOS and is absent on Windows and most Linux, where Lucida Sans Unicode (Windows, a close match) or Helvetica Neue/Arial render instead. Headings get a 1px white `text-shadow` (the "engraved" look); do not swap it for a heavier weight.
 
 ## Contrast honesty
 
