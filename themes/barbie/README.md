@@ -56,7 +56,10 @@ glamorous," not "pastel and quiet" — this theme is loud on purpose.
   down-right, the logo's extrusion. `word-spacing: 0.22em` (`0.1em` on the
   brand) keeps the outline and slab from filling word gaps. The `h1` takes
   a `skewX(11deg)` counter-skew, so Shrikhand's lean stands upright like
-  the logo's letters (the brand is not skewed, so its pill stays round). The brand is set at `1.2em` with a
+  the logo's letters (the brand is not skewed, so its pill stays round).
+  The skew is pinned top-left with a `0.5em` end margin, so it never
+  crosses the column's left edge; a wrapped title steps each line about
+  `0.2em` right. The brand is set at `1.2em` with a
   `0.06em` outline and one `0.06em` step, so the counters stay open at
   bar size. In the app bar the brand sits on its own white sticker pill,
   so the white/pink-outline/slab stack reads as on white.
@@ -165,7 +168,7 @@ card in the middle pop — box art, not a dashboard.
 - **Accent:** true "Barbie Pink" `#e0218a` (web reference from `RESEARCH.md`; the brand spec is Pantone 219C, which has no exact sRGB) is 4.42:1 under white text, and the logo files sample at `#ed008d`/`#ff00a6`/`#f200a2`. Shipped `--accent` is `#cc0077`: full saturation, 5.48:1 under white text, 4.66:1 as text on `--bg`. The bar and status strip run `#e5007f` (4.53:1 under white, the nearest stop to the logo's `#ec008c` at 4.25:1 that passes) to the accent; nav labels are regular-weight small text, so the 3:1 large-text floor does not apply and the chrome stays one step deeper than the logo.
 - **Gloss band:** white is 3.0-3.25:1 on the band (`#ff4fb3`-`#ff3da6`), large-text level; labels sit mostly on the `#e3007f`+ mass (4.6:1+) and take a plum text-shadow.
 - **Wordmark:** the `h1` fill is white; the glyph is carried by its hot-pink outline and extrusion (5.5:1 against white), so it reads as large outlined text.
-- **Status strip:** `--muted` turns white there (4.53:1 at the top stop; every pale pink fails it).
+- **Status strip:** `--muted` turns white there (4.53:1 at the top stop; every pale pink fails it). On the phone tier the strip is flat accent, so `--danger-text` there steps to `#fff0f5` (4.9:1).
 - **Inactive window title:** plum `#7a1250` on `#ff99cc` is 5.3:1 (on `#ffc2e0` higher).
 - **Sparkline:** `#1f9e74` is 3.4:1 on white (non-text 3:1).
 - **Tinted surfaces:** links, and headings except on the hero/band, on `.hero`, `.band.is-tinted`, `.order-summary` and the plain `.banner` use `--accent-text` (5.57:1 on `#ffd1e8`).
