@@ -85,6 +85,22 @@ html[data-theme="aqua"] {
   --drawer-shadow: var(--aqua-float-shadow);
   --modal-header-bg: linear-gradient(180deg, #eaeaea, #d2d2d2);
   --table-head-bg: linear-gradient(180deg, #f4f4f4, #dddddd);
+  /* Finder list-view headers: mixed-case regular Lucida, not web caps. */
+  --table-head-transform: none;
+  --table-head-tracking: 0;
+  --table-head-fg: var(--text);
+
+  /* The Aqua scroller: a blue gel thumb (lit across its width) in a pale
+     grey trough. Chromium only honours ::-webkit-scrollbar while
+     scrollbar-color/-width stay auto; a gradient token leaves core's
+     scrollbar-color invalid, so it does. Firefox gets a flat colour below. */
+  --scrollbar-width: auto;
+  --scrollbar-size: 15px;
+  --scrollbar-radius: 999px;
+  --scrollbar-thumb-border: 2px solid transparent;
+  --scrollbar-track: linear-gradient(90deg, #d4d4d4, #f4f4f4 40%, #f4f4f4 60%, #e2e2e2);
+  --scrollbar-thumb: linear-gradient(90deg, #5a8fd8, #9ccaf6 35%, #cde6fd 50%, #8fc1f3 70%, #6a9fe2);
+  --scrollbar-thumb-hover: linear-gradient(90deg, #4c82cf, #8ebfef 35%, #bfdcf9 50%, #80b5ec 70%, #5b92da);
   /* Source-list selection (Panther/Snow Leopard sidebar, references/aqua/
      01.png): a vertical blue gradient under a 1px lighter top line. Every
      stop keeps white text at 4.6:1 or better (#3a75c8 is the lightest). */
@@ -232,32 +248,40 @@ html[data-theme="aqua"] .modal-header {
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
-html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-inline-end: 3.6rem; }
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-inline-end: 4.6rem; }
 
 /* Traffic lights belong to windows only: a group box (.panel-header) or a
    sheet (a modal header with no window buttons) never carries them. A
    modal header that has close/minimize/zoom buttons is a window title bar,
-   so it gets its own (smaller) set, and the buttons sit over the lights. */
+   so it gets the same full-size set as the main window (document windows
+   don't shrink them; only HUD panels do), and the buttons sit over them. */
 html[data-theme="aqua"] .panel-header { font-weight: 700; }
 html[data-theme="aqua"] .modal-header { position: relative; }
-html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-left: 3.6rem; }
+/* A window title is regular-weight 13px Lucida in dark grey, engraved
+   (references/aqua/31db2b68338d1ae9.png); a sheet header stays bold. */
+html[data-theme="aqua"] :is(.modal-header:has(.btn-close, .btn-min, .btn-max), .modal-header:has(.btn-close, .btn-min, .btn-max) > :is(h1, h2, h3, h4, .window-title)) {
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: #3c3c3c;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max) { padding-left: 4.6rem; }
 html[data-theme="aqua"] .modal-header:has(.btn-close, .btn-min, .btn-max)::before {
   content: "";
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  /* Smaller than the window's own set, on the same 2:3 size-to-pitch. */
-  width: 2.4rem;
-  height: 0.6rem;
+  width: 3.475rem;
+  height: 0.875rem;
   background: var(--aqua-lights);
-  background-size: 0.6rem 0.6rem;
+  background-size: 0.875rem 0.875rem;
   background-repeat: no-repeat;
-  background-position: 0 0, 0.9rem 0, 1.8rem 0;
+  background-position: 0 0, 1.3rem 0, 2.6rem 0;
   mask: var(--aqua-lights-mask);
-  mask-size: 0.6rem 0.6rem;
+  mask-size: 0.875rem 0.875rem;
   mask-repeat: no-repeat;
-  mask-position: 0 0, 0.9rem 0, 1.8rem 0;
+  mask-position: 0 0, 1.3rem 0, 2.6rem 0;
 }
 
 /* Nesting steps down to an Aqua group box: a panel or card inside another
@@ -354,7 +378,24 @@ html[data-theme="aqua"] .card .table {
    selection is the gradient's mid stop with the lit top line as a shadow. */
 html[data-theme="aqua"] .table { --row-selected-bg: #2a68c4; }
 html[data-theme="aqua"] .table tr:is(.is-selected, [aria-selected="true"]) td { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
-html[data-theme="aqua"] .table tr:nth-child(even):not(.is-selected, [aria-selected="true"]) td { background: rgba(0, 0, 0, 0.035); }
+html[data-theme="aqua"] .table tr:nth-child(even):not(.is-selected, [aria-selected="true"]) td { background: #edf3fe; }
+/* List-view column separators on the header gel. */
+html[data-theme="aqua"] .table th:not(:last-child) { border-inline-end: 1px solid #c8c8c8; }
+html[data-theme="aqua"] .stat-label { text-transform: none; letter-spacing: 0; }
+
+/* Scroller details core's tokens can't carry: the thumb's dark-blue rim,
+   and the horizontal bar lit top-to-bottom instead of across. */
+html[data-theme="aqua"]::-webkit-scrollbar-thumb,
+html[data-theme="aqua"] ::-webkit-scrollbar-thumb { box-shadow: inset 0 0 0 1px #3d6fb8; }
+html[data-theme="aqua"]::-webkit-scrollbar-thumb:horizontal,
+html[data-theme="aqua"] ::-webkit-scrollbar-thumb:horizontal { background-image: linear-gradient(180deg, #5a8fd8, #9ccaf6 35%, #cde6fd 50%, #8fc1f3 70%, #6a9fe2); }
+html[data-theme="aqua"]::-webkit-scrollbar-track:horizontal,
+html[data-theme="aqua"] ::-webkit-scrollbar-track:horizontal { background: linear-gradient(180deg, #d4d4d4, #f4f4f4 40%, #f4f4f4 60%, #e2e2e2); }
+html[data-theme="aqua"]::-webkit-scrollbar-corner,
+html[data-theme="aqua"] ::-webkit-scrollbar-corner { background: #e8e8e8; }
+@supports not selector(::-webkit-scrollbar) {
+  html[data-theme="aqua"] { scrollbar-color: #6aa6e8 #ececec; }
+}
 
 /* --- Layout ------------------------------------------------------------ *
  * A Mac window: brushed-metal titlebar with rounded top corners, floating
@@ -680,10 +721,10 @@ html[data-theme="aqua"] .modal-header .btn-close {
   --btn-close-push: 0;
   --btn-close-bg-hover: transparent;
   --btn-close-radius: 50%;
-  --btn-close-glyph-size: 0.5rem;
+  --btn-close-glyph-size: 0.6rem;
   --btn-close-fg-hover: #4d0000;
   position: absolute;
-  left: 1.3rem;
+  left: 1.4375rem;
   top: 50%;
   transform: translate(-50%, -50%);
 }
@@ -693,16 +734,19 @@ html[data-theme="aqua"] .modal-header .btn-close:is(:hover, :focus-visible) { --
  * core/components/desktop.css drawn as Mac OS X: the app bar becomes the
  * menu bar across the top (a generic mark opens the Start menu as its
  * first menu; the clock sits at its right end), the desktop is the blue
- * Aqua wallpaper with its icons down the right edge, windows keep their
+ * 10.5/10.6 Aurora wallpaper with its icons down the right edge, windows keep their
  * traffic lights (grey when inactive) and lose their menu bars, and the
- * Dock is a translucent shelf of gel tiles that magnify under the pointer,
- * with a black triangle under each running app. */
+ * Dock is the 10.5/10.6 glass shelf (bright front edge) of gel tiles that
+ * magnify under the pointer, with a glowing blue-white dot under each
+ * running app. */
 html[data-theme="aqua"] {
   --desktop-shell: dock;
   --desktop-bg:
-    radial-gradient(ellipse 120% 70% at 85% 115%, rgba(120, 190, 255, 0.55), transparent 60%),
-    radial-gradient(ellipse 90% 40% at 20% 35%, rgba(110, 170, 245, 0.45), transparent 70%),
-    linear-gradient(160deg, #0f3a8c 0%, #2a68c4 45%, #1d4fa6 70%, #0b2a6b 100%);
+    radial-gradient(ellipse 55% 14% at 22% 82%, rgba(255, 255, 255, 0.4), transparent 70%),
+    radial-gradient(ellipse 70% 45% at 30% 75%, rgba(192, 74, 154, 0.75), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 75% 40%, rgba(90, 58, 154, 0.8), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 60% 95%, rgba(150, 60, 170, 0.6), transparent 70%),
+    linear-gradient(170deg, #120a26 0%, #2a1a4a 50%, #1a0f30 100%);
   --desktop-menubar-height: max(1.55rem, var(--tap-min));
   --desktop-tray-room: 8rem;
   --desktop-icon-fg: #ffffff;
@@ -721,17 +765,20 @@ html[data-theme="aqua"] {
   --window-header-filter-inactive: grayscale(1) opacity(0.85);
   --window-pane-bg: #ffffff;
   --window-pane-border: var(--border);
-  --dock-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(225, 232, 240, 0.4));
-  --dock-border: rgba(255, 255, 255, 0.75);
-  --dock-radius: 0.55rem 0.55rem 0 0;
+  --dock-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0 1px, transparent 1px calc(100% - 3px), rgba(255, 255, 255, 0.9) calc(100% - 3px)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(200, 210, 220, 0.55) 60%, rgba(255, 255, 255, 0.8));
+  --dock-border: rgba(255, 255, 255, 0.6);
+  --dock-radius: 0;
   --dock-gap-below: 0;
   --dock-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 -2px 10px rgba(0, 0, 0, 0.18);
   --dock-tile-gloss: radial-gradient(ellipse 85% 55% at 50% 0%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%);
   --dock-glyph: #ffffff;
   --dock-tile-radius: 24%;
-  --dock-indicator: #000000;
-  --dock-indicator-radius: 0;
-  --dock-indicator-shape: polygon(50% 0, 100% 100%, 0 100%);
+  --dock-indicator: radial-gradient(circle, #ffffff 0 25%, rgba(120, 190, 255, 0.9) 45%, transparent 70%);
+  --dock-indicator-size: 0.5rem;
+  --dock-indicator-radius: 50%;
+  --dock-indicator-shape: none;
   --dock-label-bg: rgba(20, 20, 20, 0.75);
   --home-dock-bg: var(--dock-bg);
   --home-label-fg: #ffffff;
@@ -769,26 +816,24 @@ html[data-theme="aqua"]:has(.desktop-screen) {
 }
 /* Minimize and zoom sit on the yellow and green lights, as close sits on
    the red one: clear until pointed at. */
-html[data-theme="aqua"] .modal-header:has(.btn-min, .btn-max) { padding-left: 3.8rem; }
 html[data-theme="aqua"] .modal-header :is(.btn-min, .btn-max) {
   --btn-min-glyph: "";
   --btn-max-glyph: "";
   --btn-close-bg: transparent;
   --btn-close-bg-hover: transparent;
   --btn-close-radius: 50%;
-  --btn-close-glyph-size: 0.55rem;
+  --btn-close-glyph-size: 0.6rem;
   --btn-close-fg-hover: #5a3a00;
   position: absolute;
   top: 50%;
   margin: 0;
   transform: translate(-50%, -50%);
 }
-html[data-theme="aqua"] .modal-header .btn-min { left: 2.2rem; }
-html[data-theme="aqua"] .modal-header .btn-max { left: 3.1rem; --btn-close-fg-hover: #0d4a00; }
+html[data-theme="aqua"] .modal-header .btn-min { left: 2.7375rem; }
+html[data-theme="aqua"] .modal-header .btn-max { left: 4.0375rem; --btn-close-fg-hover: #0d4a00; }
 html[data-theme="aqua"] .modal-header .btn-min:is(:hover, :focus-visible) { --btn-min-glyph: "\2212"; }
 html[data-theme="aqua"] .modal-header .btn-max:is(:hover, :focus-visible) { --btn-max-glyph: "+"; }
 html[data-theme="aqua"] .desktop-window .modal-header > .icon { display: none; }
-html[data-theme="aqua"] .desktop-window .window-title { padding-inline-end: 3.1rem; }
 html[data-theme="aqua"] .desktop-window .window-status { justify-content: center; text-align: center; border-color: var(--border); }
 html[data-theme="aqua"] .desktop-window .window-status > * { flex: none; border: 0; }
 html[data-theme="aqua"] .desktop-window > .modal { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }

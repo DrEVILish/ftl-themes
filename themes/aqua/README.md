@@ -45,6 +45,15 @@ tactile, unmistakably pre-flat-design.
   sit over the red, yellow and green ones, clear until hovered.
 - Traffic lights belong to windows only (the app shell, window title
   bars). A panel header is a group box title: bold near-black, no lights.
+  Window title bars carry the full-size set (13-14px on a 21px pitch, as
+  on the app bar); their title is regular-weight 13px `#3c3c3c` with a
+  white engraved shadow, while a sheet header stays bold.
+- Tables are Finder list views: mixed-case regular headers on the light
+  gel strip with `#c8c8c8` column separators, and white / `#edf3fe` pale
+  blue zebra rows. `.stat-label` is mixed-case too.
+- Scrollbars are the Aqua scroller: a 15px blue gel thumb (lit across
+  its width, dark-blue rim) in a pale grey trough (Chromium); Firefox gets
+  a flat `#6aa6e8` thumb.
 - Selections are the source-list gradient (`#3a75c8`→`#2a68c4`→`#1f56b0`
   under a 1px lighter top line, white text at 4.6:1 or better): nav items,
   list items, tree items. Selected table rows use the mid stop `#2a68c4`
@@ -93,6 +102,15 @@ The shell becomes a **Mac window**: 0.75rem desktop margin, a rounded
 brushed-metal title bar, a neutral grey (`#ececec`) window body with white
 kept for fields, tables and list views, and a rounded metal
 status strip, with a 28px blurred shadow under the whole frame.
+
+The app bar is a unified toolbar (10.5+ style): the brand sits beside the
+lights rather than as a centred title over a separate toolbar strip, a
+deliberate choice for an app shell.
+
+On the desktop page the wallpaper is the 10.5/10.6 Aurora (violet and
+magenta over deep purple, a soft white streak lower left), and the Dock is
+the Leopard glass shelf: square-ended grey glass with a bright top line and
+front edge, and a glowing blue-white dot under each running app.
 
 ## v5 layout
 
