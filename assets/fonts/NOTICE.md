@@ -252,7 +252,7 @@ files are vendored unmodified (the Inter subset below is the one modified file, 
   `InterVariable.woff2`), subset with fontTools to Basic Latin, Latin-1
   and common punctuation, the weight axis limited to 400-700, hinting
   dropped
-- **Used by:** `ios-flat` (and the themes that extend it), the open
+- **Used by:** `ios-flat` and `liquid-glass` (and the themes that extend them), the open
   stand-in for SF Pro after `-apple-system` and Helvetica Neue
 
 ## Selawik
