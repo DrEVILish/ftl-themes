@@ -46,9 +46,9 @@
 html[data-theme="westworld"] {
   --motion-leave: iris;
   color-scheme: dark;
-  --bg: #172a31;           /* the tablet's evenly lit slate e-paper (sampled #1e2e33 / #263b43) */
-  --surface: #1e3239;      /* one step up: panels on the sheet */
-  --surface-2: #263c44;
+  --bg: #1a2b30;           /* the tablet's evenly lit grey-slate e-paper (sampled #1e2e33 / #263b43) */
+  --surface: #213238;      /* one step up: panels on the sheet */
+  --surface-2: #283a40;
   --border: #3f6570;
   --hairline: #2d4750;
   --text: #d6e6ea;
@@ -298,6 +298,28 @@ html[data-theme="westworld"] .btn-primary {
   --btn-bg-hover: rgba(72, 185, 204, 0.25);
   --btn-weight: 700;
 }
+/* Danger and success are outlined caps too: their colour as a 1px line
+   over a faint tint of it, never a solid block. */
+html[data-theme="westworld"] .btn-danger {
+  --btn-bg: rgba(255, 90, 79, 0.14);
+  --btn-fg: #ffaba4;       /* a lighter danger ink: >= 4.5:1 on the tint over every surface */
+  --btn-border: var(--danger);
+  --btn-bg-hover: rgba(255, 90, 79, 0.2);
+  --btn-border-hover: var(--danger-text);
+  --btn-shadow-hover: 0 0 0.55rem rgba(255, 90, 79, 0.4);
+}
+html[data-theme="westworld"] .btn-success {
+  --btn-bg: rgba(143, 214, 90, 0.12);
+  --btn-fg: var(--success-text);
+  --btn-border: var(--success);
+  --btn-bg-hover: rgba(143, 214, 90, 0.22);
+  --btn-border-hover: var(--success-text);
+  --btn-shadow-hover: 0 0 0.55rem rgba(143, 214, 90, 0.35);
+}
+/* The stacked bar is cut into squares like every other level. */
+html[data-theme="westworld"] .progress-stack > .progress-bar {
+  mask-image: repeating-linear-gradient(90deg, #000 0 0.5rem, transparent 0.5rem 0.65rem);
+}
 
 /* --- Voice: condensed caps for every label ------------------------------- */
 html[data-theme="westworld"] :is(h1, h2, h3, h4, .btn, .nav-brand, .nav-item, .tab, .segmented > *,
@@ -305,10 +327,34 @@ html[data-theme="westworld"] :is(h1, h2, h3, h4, .btn, .nav-brand, .nav-item, .t
   font-family: var(--ww-label);
 }
 html[data-theme="westworld"] :is(.nav-item, .tab, .segmented > *, .modal-header, .toggle-btn,
-  .list-group-item, nav .list-item:not(:has(.list-item-title)), summary, legend, .scrollspy-link, .menubar li > :is(button, a)) {
+  .list-group-item, nav .list-item:not(:has(.list-item-title)), summary:not(.tree *), legend, .scrollspy-link, .menubar li > :is(button, a)) {
   font-family: var(--ww-label);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+/* Menu items keep the phone menu's mixed case (Contact / Message /
+   Connect) in the condensed face; folder trees are list content. */
+html[data-theme="westworld"] :is(.dropdown-item, .context-menu-item, .context-menu li > :is(button, a),
+  .menubar li li > :is(button, a), .popover > strong:first-child) {
+  font-family: var(--ww-label);
+  font-size: 1.05em;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+html[data-theme="westworld"] .tree summary { text-transform: none; letter-spacing: 0; }
+/* The CODE / HOSTS / SATELLITE row: every chip has its own thin outline;
+   the lit one adds the cyan outline and tint (core's active rules). */
+html[data-theme="westworld"] .nav .nav-item { border: 1px solid transparent; }
+html[data-theme="westworld"] :is(.tabs > .tab, .nav .nav-item):not(.is-active, [aria-current="page"], [aria-selected="true"], :hover) {
+  border-color: rgba(95, 147, 159, 0.5);
+}
+html[data-theme="westworld"] .nav .nav-item:is(.is-active, [aria-current="page"], :hover) { border-color: var(--accent); }
+/* Table status text: 13px semi-condensed caps, like the bracketed values. */
+html[data-theme="westworld"] td .status {
+  font: 700 max(0.8125rem, 0.85em) var(--ww-label);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 /* A window's tab row keeps one line inside the window's fixed width. */
 html[data-theme="westworld"] .modal .tabs > .tab { letter-spacing: 0.03em; padding-inline: 0.65em; }
@@ -487,11 +533,24 @@ html[data-theme="westworld"] .app-bar .nav-brand {
   padding: 0.3em 0.8em;
   font-weight: 700;
   letter-spacing: 0.14em;
+  position: relative;
+}
+/* The plate's second, concentric arc on its right end. */
+html[data-theme="westworld"] .app-bar .nav-brand::after {
+  content: "";
+  position: absolute;
+  inset-block: -2px;
+  inset-inline-end: -6px;
+  width: 0.55em;
+  border: 1px solid currentColor;
+  border-inline-start: 0;
+  border-radius: 0 999px 999px 0;
+  pointer-events: none;
 }
 /* ...and never truncates to an ellipsis: core zeroes the brand's basis on
    touch tiers; the plate keeps its width and the actions wrap instead. */
 @media (max-width: 900px) {
-  html[data-theme="westworld"] .app-bar > .nav-brand { flex: 0 0 auto; min-width: max-content; letter-spacing: 0.1em; padding-inline: 0.65em; }
+  html[data-theme="westworld"] .app-bar > .nav-brand { flex: 0 0 auto; min-width: max-content; overflow: visible; letter-spacing: 0.1em; padding-inline: 0.65em; }
 }
 /* The red cove light: a 2px glowing line, nothing else is red. */
 html[data-theme="westworld"] .app-status {

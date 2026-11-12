@@ -20,8 +20,8 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 ## Core values
 
 1. **Slate e-paper, not black glass.** Surfaces are a desaturated
-   blue-slate, evenly lit like the prop (page `#172a31`, panels
-   `#1e3239`, sampled `#1e2e33` / `#263b43` under set light), and the room
+   grey-slate, evenly lit like the prop (page `#1a2b30`, panels
+   `#213238`, sampled `#1e2e33` / `#263b43` under set light), and the room
    around them is near-black (`#070b0d`). Do not use pure black panels
    and do not use neon on black.
 2. **Cyan is the ink.** One cyan (`#48b9cc`) draws outlines, active
@@ -29,17 +29,20 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    values (the vitals readout's HR 111 and the dial's outer bars), and
    it serves as the second chart series.
 3. **Condensed caps for every label.** Headings, buttons, tabs, nav,
-   menubar and context-menu items, toggle buttons, settings-style nav
+   menubar items, toggle buttons, settings-style nav
    lists, summaries, legends, scrollspy links, table heads, badges and
    panel headers are set in a semi-condensed squared face (Rajdhani),
    uppercase. Headings are weight 700, tracked 0.06em, like SECTOR [17].
-   Small caps (table heads, badges) never drop below 12px. Body copy is a plain sans, because
+   Small caps (table heads, badges, table status text) never drop below
+   12px. Dropdown, context-menu and popover titles use the same face in
+   mixed case, like the phone's Contact / Message / Connect menu; folder
+   trees stay in mixed case, untracked. Body copy is a plain sans, because
    the tablets never set paragraphs.
 4. **Values in brackets.** Badges read `[14]`, `[PAID]` and
    `[LIVE]`, like the matrix's `[14] BULK APPERCEPTION` and the phone's
    `SECTOR [17]`. The brackets sit tight on the value.
 5. **Levels are stacks of squares.** Meters, progress bars and chart bars
-   are segmented ladders, like the attribute sliders, horizontal and
+   (stacked progress included) are segmented ladders, like the attribute sliders, horizontal and
    vertical alike; meters keep the cyan / lime / red level bands inside
    the squares. They are never smooth bars.
 6. **Outlined caps for buttons.** A button has a 1px cyan-slate outline
@@ -47,7 +50,9 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    UPLOAD). The primary button, like HOLD, is a cyan outline over a
    brighter tint with cyan text; active segmented items, toggles, filter
    chips, pagination and selected icons use the same tint, never a solid
-   cyan fill. Hover adds a faint glow, and nothing else glows at rest.
+   cyan fill. Danger and success buttons follow the same rule in their own
+   colour (red-orange or lime outline over a faint tint), never a solid
+   block. Hover adds a faint glow, and nothing else glows at rest.
 7. **Red belongs to the room.** Delos red `#c8102e` appears in exactly
    one place: the control room's cove light, drawn as the status strip's
    top rule. Danger states use the separate corrupted-tablet red-orange
@@ -68,7 +73,8 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
   each ladder (`::after`, `writing-mode: sideways-lr`). It is empty and
   `aria-hidden`.
 - **DELOS pill brand.** The bar's `.nav-brand` is drawn as an outlined
-  pill, like the DELOS wordmark plate on every device. It never
+  pill with a second, concentric arc on its right end, like the DELOS
+  wordmark plate on every device (no lettering is reproduced). It never
   truncates: on touch tiers it keeps its width and the bar's actions
   wrap below it.
 - **Cut corner on panels.** Each panel's outline is chamfered top-right
@@ -80,9 +86,9 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 - **Segmented slider track.** `.slider` draws its track as a row of
   cyan-slate squares (`--ww-line-hi`, 4.4:1 on the page) inside the
   `--tap-min` hit box; on a vertical fader the squares stack as rungs.
-- **Chip tabs.** Tabs and nav items are small rounded chips. The active
-  one gets a cyan outline and a cyan tint, like the phone's
-  CODE / HOSTS / SATELLITE row.
+- **Chip tabs.** Tabs and `.nav` items are small rounded chips, each with
+  its own thin slate outline. The active one gets a cyan outline and a
+  cyan tint, like the phone's CODE / HOSTS / SATELLITE row.
 - **Readouts.** Readouts use Share Tech Mono numerals in cyan with a faint
   glow, like the vitals cluster.
 
@@ -102,19 +108,26 @@ All pairs meet the lint floors. No exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#d6e6ea` on `--surface` `#1e3239` / `--bg` `#172a31` | 10.4 / 11.6 |
-| `--muted` `#9ab6be` on `--surface` / `--surface-2` `#263c44` | 6.2 / 5.4 |
+| `--text` `#d6e6ea` on `--surface` `#213238` / `--bg` `#1a2b30` | 10.4 / 11.4 |
+| `--muted` `#9ab6be` on `--surface` / `--surface-2` `#283a40` | 6.2 / 5.5 |
 | `--muted` on status strip `#070b0d` | 9.2 |
-| `--accent` `#48b9cc` on `--surface` / `--surface-2` | 5.8 / 5.0 |
-| `.badge-accent` text `#66d3e5` on its chip (20% cyan over surface) | 5.0 |
-| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 4.4 / 3.9 |
+| `--accent` `#48b9cc` on `--surface` / `--surface-2` | 5.8 / 5.1 |
+| `.badge-accent` text `#66d3e5` on its chip (20% cyan over surface) | 5.3 |
+| `--ww-line-hi` `#5f939f` (slider track, button outlines) on `--bg` / `--surface` | 4.3 / 3.9 |
+| Danger button text `#ffaba4` / success `#9fe06a` on their tints (worst case, tint over a lit row) | 5.1 / 5.8 |
 | `--on-accent` `#071014` on accent | 9.7 |
 | `--on-danger` on `--danger` `#ff5a4f` | 6.2 |
 | `--on-success` on `--success` `#8fd65a` | 10.9 |
-| `--danger-text` `#ff8f85` / `--warning-text` `#f2b632` on `--surface` | 6.1 / 7.3 |
+| `--danger-text` `#ff8f85` / `--warning-text` `#f2b632` on `--surface` | 6.0 / 7.3 |
 
 `--border` `#3f6570` is 2.1:1 on the surface. It is used as a structural
-line only, never as text.
+line only, never as text. Inactive chip outlines (`--ww-line-hi` at 50%)
+are decoration; the chip's text carries its contrast.
+
+Note on `references/westworld/RESEARCH.md`: its sampled-palette table
+(`#17252b`, `#4fc8dc`, `#3a5c66`) and its mention of Antonio for labels
+record the first draft. The shipped tokens and faces are the ones in this
+README.
 
 Deviations from the reference: the cyan in the stills is photographed off
 an ambient-lit e-paper prop (sampled `#3f96a6` to `#5c9ba4`). It has been
