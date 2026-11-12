@@ -40,7 +40,7 @@ sense that the interface is a physical object you could pick up.
   `rgba(232,248,252,0.7)`): every panel and card has a 3px milky rim
   (`--panel-border`), menus, popovers, toasts, toolbars and grouped
   fieldsets have ice rims too, and the case body (`.app-main`) has 7px
-  frosted side walls plus a 3px ice seam under the bar and over the
+  frosted side walls (4px on phones, where width is scarce) plus a 3px ice seam under the bar and over the
   status foot, so the shell reads as one moulding, like the hardware's
   front bezel.
 - **Every surface is moulded plastic.** Toolbars, context menus,
