@@ -329,6 +329,13 @@ html[data-theme="liquid-glass"] {
   --nav-rail-bg: var(--lg-pickup), var(--lg-clear);
   --nav-rail-rule-width: 0;
   --nav-rail-marker: transparent;
+  /* Window panes sit on the window itself (no grey field slab); the
+     explorer's tree takes the inset sidebar look below. */
+  --window-pane-bg: transparent;
+  --window-pane-border: transparent;
+  /* An announcement bar is a glass strip, with no hairline under it. */
+  --banner-bg: var(--lg-pickup), var(--lg-clear);
+  --banner-border: transparent;
 
   /* The scrollspy nav floats like the tab bar: a capsule, the current
      link a grey lens (drawn as an inset shadow) with a blue label. */
@@ -417,10 +424,10 @@ html[data-theme="liquid-glass"] {
     radial-gradient(160% 120% at 105% -5%, transparent 55%, rgba(255, 255, 255, 0.9) 56.5%, transparent 59%),
     radial-gradient(130% 110% at 110% 0%, transparent 63%, rgba(200, 235, 255, 0.75) 64.5%, transparent 67%),
     radial-gradient(70% 55% at 100% 105%, #0a2fa8 0 35%, transparent 70%),
-    radial-gradient(120% 70% at -15% 110%, #0f5fe6 0 30%, #3f9bff 48%, transparent 66%),
+    radial-gradient(130% 95% at -15% 105%, #0f5fe6 0 30%, #1c97b6 46%, #3f9bff 54%, transparent 74%),
     radial-gradient(60% 45% at 80% 35%, #67c3ff 0 25%, transparent 70%),
-    radial-gradient(70% 55% at 10% 0%, #f7ead8 0 25%, transparent 70%),
-    linear-gradient(155deg, #e8eef6 0%, #a6cbf3 38%, #3e86ec 70%, #1546c4 100%);
+    radial-gradient(40% 35% at 5% 0%, #f7ead8 0 25%, transparent 70%),
+    linear-gradient(155deg, #dce8f6 0%, #7fb4f0 24%, #3e86ec 55%, #1466c5 75%, #1546c4 100%);
   -webkit-font-smoothing: antialiased;
   accent-color: var(--accent-2);
 }
@@ -812,6 +819,20 @@ html[data-theme="liquid-glass"] .nav-rail {
   backdrop-filter: var(--lg-blur);
 }
 html[data-theme="liquid-glass"] .nav-rail > .nav-item { border-inline-start: 0; border-radius: 10px; }
+/* A desktop window's tree pane is the same inset sidebar, concentric with
+   the 28px window (20px = 28px less the 6px inset and a little). */
+html[data-theme="liquid-glass"] .desktop-window .tree.window-pane {
+  --window-pane-bg: var(--lg-pickup), var(--lg-clear);
+  margin: 6px;
+  border-radius: 20px;
+  box-shadow: var(--lg-rim);
+}
+html[data-theme="liquid-glass"] .banner { border-radius: 12px; box-shadow: var(--lg-rim); }
+/* The resize grip draws inside the 28px corner instead of the browser's
+   square grip past the curve. */
+html[data-theme="liquid-glass"] .modal.is-resizable::-webkit-resizer {
+  background: linear-gradient(135deg, transparent 1px, var(--muted) 1px 2.3px, transparent 2.3px 4.3px, var(--muted) 4.3px 5.6px, transparent 5.6px);
+}
 
 /* Group boxes are Apple form sections: no etched frame, the legend is the
    section header and the inset list below is the group. */
@@ -963,6 +984,8 @@ html[data-theme="liquid-glass"] .desktop > .app-bar::before { content: none; }
     box-shadow: var(--lg-rim), var(--lg-lift);
   }
   html[data-theme="liquid-glass"] .app-bar > nav { flex: 0 1 auto; padding-inline: 4px; }
+  /* A breadcrumb trail as the capsule keeps its text off the rounded ends. */
+  html[data-theme="liquid-glass"] .app-bar > nav:not(.nav, :has(> .menubar)) { padding: 0.35rem 0.9rem; }
 }
 /* Glass inside glass: a control already sitting in a blurred bar has
    nothing new behind it to blur, so it skips its own backdrop pass. */
@@ -1036,6 +1059,16 @@ html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .toolbar, .tabs, .tra
   html[data-theme="liquid-glass"] .tabs:not([aria-orientation="vertical"]) > .tab { padding-inline: 0.85em; }
   html[data-theme="liquid-glass"] .app-bar .nav { flex: 1 0 100%; margin-block: 0 -2px; }
 }
+/* Phone: the nav capsule sits in the scroll-edge fog, which already hides
+   what scrolls under it, so it trades its backdrop pass for the denser
+   regular fill (the phone dashboard scrolled at 40ms a frame with it). */
+@media (max-width: 480px) {
+  html[data-theme="liquid-glass"] .app-bar > nav {
+    background-image: var(--lg-pickup), var(--lg-regular);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
 @media (min-width: 481px) and (max-width: 900px) {
   html[data-theme="liquid-glass"] .app-main { padding: 1.25rem 1.25rem 4.8rem; }
 }
@@ -1051,7 +1084,24 @@ html[data-theme="liquid-glass"] :is(.app-bar, .app-status, .toolbar, .tabs, .tra
 @media (max-width: 480px) {
   html[data-theme="liquid-glass"] .app-bar > nav:not(.nav) { order: 10; flex: 1 0 100%; }
   html[data-theme="liquid-glass"] .app-bar > .push { flex: 0 1 auto; flex-wrap: nowrap; min-width: 0; gap: 0.25rem; }
-  html[data-theme="liquid-glass"] .app-bar .push > .select { width: 7.5rem; min-width: 0; }
+  /* The theme picker collapses to a glass circle with its chevron, as
+     iOS 26 pull-down buttons do, so the title keeps its room. */
+  html[data-theme="liquid-glass"] .app-bar .push > .select {
+    width: var(--tap-min);
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    --input-fg: transparent;
+    background-position: calc(50% - 3px) calc(50% - 2px), calc(50% + 3px) calc(50% - 2px);
+  }
+  html[data-theme="liquid-glass"] .app-bar .push > .select > option { color: var(--text); }
+  /* With the picker a circle, the title fits whole beside the actions. */
+  html[data-theme="liquid-glass"] .app-bar { padding-inline: 1rem 0.75rem; }
+  html[data-theme="liquid-glass"] .app-bar .nav-brand { font-size: 1rem; }
+  /* The page nav stays one capsule: four menus fit at 15px with tighter items. */
+  html[data-theme="liquid-glass"] .app-bar > nav:has(> .menubar) { padding-inline: 0.3rem; }
+  html[data-theme="liquid-glass"] .app-bar .menubar { flex-wrap: nowrap; }
+  html[data-theme="liquid-glass"] .app-bar .menubar > li > :is(button, a) { padding-inline: 0.5em; }
   html[data-theme="liquid-glass"] .app-bar .push > .btn:has(> kbd) {
     font-size: 0;
     gap: 0;

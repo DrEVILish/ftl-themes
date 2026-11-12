@@ -117,7 +117,13 @@ touching the edge of the screen.
   is 13px semibold and centred; no window icon and no menu-bar strip.
 - An in-window sidebar (`.nav-rail`) is the Tahoe sidebar: a 20px rounded
   pane of clear glass, no divider, rows as 10px grey lenses with a blue
-  selected label and no edge marker.
+  selected label and no edge marker. A desktop window's tree pane
+  (`.desktop-window .tree.window-pane`) takes the same pane, inset 6px so
+  it stays concentric with the 28px window; other window panes have no
+  fill or border of their own.
+- An announcement `.banner` is a 12px clear-glass strip with the rim and
+  no hairline under it. A resizable window's grip is drawn inside its
+  rounded corner.
 - Segmented controls and toggle groups: a grey capsule track with a lifted
   white lens on the selected item. Labels never wrap; a track too wide for
   the screen scrolls sideways.
@@ -147,8 +153,9 @@ touching the edge of the screen.
 - Numbers (`.stat-value`, `.readout-lg`) are SF Pro bold with tabular
   figures, not the monospace; so are money and time table columns
   (`.table td.mono`). Logs and code keep SF Mono.
-- The page is a CSS sketch of the Tahoe wallpaper: pale sand top-left,
-  deep blue sweeping waves, thin white crest arcs.
+- The page is a CSS sketch of the Tahoe wallpaper: a small pale sand patch
+  top-left, deep blue (`#1466c5` / `#1c97b6`) sweeping up from the lower
+  left past the middle of the frame, thin white crest arcs.
 
 ## Layout
 
@@ -247,7 +254,7 @@ meter, a toast in the ftl-themes sense or a form with validation errors.
 
 ## v5 layout
 
-- **Tiers.** Phones and tablets (up to 900px): no traffic lights, the toolbar stops overlapping the window and loses its own fill (a fading scroll-edge fog instead, no backdrop pass), with the bare brand and the glass actions on line 1 and the nav capsule (which blurs what scrolls under it) on line 2; on phones the theme picker narrows and the search button collapses to a glass circle so the bar stays at two lines. Tray text in the floating tab bar ellipsizes instead of escaping the capsule. The window no longer sets `overflow: visible`, so wide content is clipped by core instead of spilling past the screen. The tab bar blurs at 10px without saturate() on touch tiers, and inline (not top-layer) menus, toasts and dialogs in the pane skip their backdrop pass there. A number field in a narrow table cell keeps a 44px width. The floating bars sit on the `--z-sticky` layer, and the capsule buttons grow to `--tap-min` (44px) on touch tiers instead of holding their 1.85–2.25rem desktop height.
+- **Tiers.** Phones and tablets (up to 900px): no traffic lights, the toolbar stops overlapping the window and loses its own fill (a fading scroll-edge fog instead, no backdrop pass), with the bare brand and the glass actions on line 1 and the nav capsule on line 2 (blurring what scrolls under it on tablets); on phones the theme picker and the search button collapse to glass circles (the picker shows only its chevron) so the whole title fits and the bar stays at two lines, and the demo menubar stays one capsule line with tighter items. On phones the nav capsule sits in the scroll-edge fog and takes the denser regular fill instead of a backdrop pass (scroll cost); on tablets it keeps its 10px blur. Above 900px a breadcrumb capsule keeps 0.9rem of padding off its rounded ends. Tray text in the floating tab bar ellipsizes instead of escaping the capsule. The window no longer sets `overflow: visible`, so wide content is clipped by core instead of spilling past the screen. The tab bar blurs at 10px without saturate() on touch tiers, and inline (not top-layer) menus, toasts and dialogs in the pane skip their backdrop pass there. A number field in a narrow table cell keeps a 44px width. The floating bars sit on the `--z-sticky` layer, and the capsule buttons grow to `--tap-min` (44px) on touch tiers instead of holding their 1.85–2.25rem desktop height.
 - **Nesting.** Glass on glass already steps down through the material tokens; no extra rules.
 - **XL gutter art (1801px+).** Drops of clear glass resting on the wallpaper, soft lenses with brighter rims, white at low alpha so both the day and night wallpapers show through.
 
