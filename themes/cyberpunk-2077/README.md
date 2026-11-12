@@ -1,6 +1,6 @@
 # Cyberpunk 2077
 
-> Night City menus and HUD: coral-red condensed caps on near-black maroon, cyan for whatever is live or selected, yellow tags, angled cut corners, scanlines, glitch offsets, and netrunner breach-grid tables.
+> Night City menus and HUD: coral-red condensed caps on near-black maroon, cyan for whatever is live or under the cursor, solid red plates for the selected row, yellow tags, angled cut corners, scanlines, glitch offsets, and netrunner breach-grid tables.
 
 **Requires: L1** — sets `--app-*` layout properties; recolors correctly at L0 (tokens only) but only reaches its intended layout once the app shell is adopted. See "Adoption" below.
 
@@ -12,7 +12,8 @@ database, crafting and settings screens, the breach-protocol minigame and
 the combat HUD. Each menu is a dark, slightly maroon field lit from the
 top edge, written almost entirely in one coral red: labels, item names,
 descriptions, rules and frames. Cyan marks whatever is live: the active
-tab, the selected setting, ON, values, the cursor. Yellow is rare and loud
+tab, ON, values, the hover cursor; a selected list row or choice is a
+solid red plate. Yellow is rare and loud
 (NEW tags, quest markers, the brand colour). The breach-protocol screen
 switches to yellow-green on dark teal, and this theme borrows it for every
 table.
@@ -24,13 +25,16 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 ## Core values
 
 1. **Red is the ink, not an alarm.** Body text, labels and frames are the
-   menu red (`--text #ff8a82`, rules `#ff5f58`). Danger is a different,
+   menu red (`--text #ff766e`, rules `#ff5f58`). Danger is a different,
    hotter red used as a *fill* (`--danger #ff2a3d`) and a pink-red as text
    (`--danger-text #ff4d7a`). Don't "fix" the theme by making body text
    white.
-2. **Cyan means live.** Active tab, selected row, ON, focus, values,
-   readouts and the hover cursor are cyan `#5ef6ff`. Nothing decorative is
-   cyan except the breach corner brackets.
+2. **Cyan means live; red plates mean selected.** Active tab, ON, focus,
+   values, readouts and the hover cursor are cyan `#5ef6ff`. A selected
+   list row or segmented choice is the game's solid red plate (`#a8343a`,
+   pale `#ffe4e1` text), as in the journal and difficulty screens; only the
+   breach-grid table keeps a cyan selection. Nothing decorative is cyan
+   except the breach corner brackets.
 3. **Angles, never curves.** `--radius: 0`. Panels, cards, modals and
    menus have their bottom-right corner cut on a 45° diagonal with the
    frame line following it; buttons and badges are clipped the same way;
@@ -43,9 +47,10 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
    text, a dark teal matrix with faint grid lines, the steel band under the
    cursor, cyan for selection, cyan corner brackets around a scrolling
    table. This is deliberately a second palette inside the theme.
-6. **Glitch is punctuation.** A static cyan/pink split on `h1`; with full
-   motion, a 0.3s jitter on hover and focus and on arriving danger
-   alerts. Never a constant animation on content.
+6. **Glitch is punctuation.** Titles are flat red caps. With full motion,
+   a 0.3s jitter on hover and focus, and arriving danger alerts glitch once
+   and flicker twice more, then stay still. Never a constant animation on
+   content.
 
 ## Signature details
 
@@ -60,8 +65,16 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 - `kbd` is a cyan outlined key cap, as in the key-hint strip.
 - `.table`: breach-yellow head bar, teal matrix, cyan selected row with a
   cyan marker; inside `.table-wrap`, cyan corner brackets.
-- `.segmented` and `.switch`: the settings OFF/ON pair; red when off, cyan
-  when on. `.slider`: dark track with a red slab thumb.
+- `.switch`: the settings OFF / ON slab pair, 4.5em wide; a red OFF slab
+  on the left or a dim cyan ON slab on the right covers half the navy
+  track. `.segmented`: the active choice is the filled red plate.
+- `.slider`: the value bar, a tall navy track (fills core's `--tap-min`
+  box, less 4px, up to 1.75rem) in a dim red rule, with a full-height red
+  slab thumb whose lower-left corner is cut.
+- `.list`: every row is its own plate, a dim red rule with an 8px cut
+  corner, 4px apart; the selected row is the solid red plate.
+- `.badge-accent` (NEW, unread counts) is the game's solid yellow tag with
+  dark caps; the plain badge stays a red-tint tag.
 - `.hud-bar`: flat fill with a glow in its own colour and an angled end;
   health red, RAM (mana) cyan, stamina yellow; slots glow in the game's
   rarity colours.
@@ -78,6 +91,9 @@ vendors **Rajdhani** Medium and Bold (Indian Type Foundry, SIL OFL 1.1,
 `assets/fonts/Rajdhani-*.woff2`, Latin subset, about 15 KB each), whose
 squared counters and short descenders are the closest open match, and
 reuses the already-vendored **Share Tech Mono** for code and logs.
+Page titles (`h1`) are Bold; section titles (`h2`–`h4`) are Medium with
+0.06em tracking, closer to the game's lighter menu headings (SemiBold is
+not vendored).
 
 ## Contrast honesty
 
@@ -85,7 +101,9 @@ All pairs meet the lint floors; no exemptions are claimed.
 
 | Pair | Ratio |
 |---|---|
-| `--text` `#ff8a82` on `--surface` `#1a1119` | 8.1 |
+| `--text` `#ff766e` on `--surface` `#1a1119` | 7.1 |
+| Selected plate `#ffe4e1` on `#a8343a` | 5.4 |
+| Yellow tag `#0b0a0f` on `#fcee0a` | 16.3 |
 | `--muted` `#e3645d` on `--surface` / `--surface-2` `#110d15` | 5.5 / 5.7 |
 | `--accent` `#5ef6ff` on `--surface` | 14.2 |
 | `--on-accent` / `--on-danger` / `--on-success` `#0b0a0f` on their fills | 15.1 / 5.3 / 10.6 |
@@ -93,7 +111,9 @@ All pairs meet the lint floors; no exemptions are claimed.
 | Breach cells `#cfec58` on `#121f1f` | 12.7 |
 
 The sampled label red (`#d7443d`, anti-aliased) is 4.4:1 on the backdrop,
-so text reds are lifted; the sampled red stays as the rule and fill colour.
+so text reds are lifted (to the 7:1 body floor, keeping the hue
+saturated); the sampled red stays as the rule and fill colour. Lit pads
+and waveform chips (a 30% state tint) take a pale red `#ffd2ce`.
 
 ## Layout
 
@@ -137,10 +157,12 @@ key-hint status strip along the bottom.
 - Rounded corners, pill buttons or soft drop shadows.
 - A wide geometric or humanist sans; the condensed squared caps are the
   biggest cue after the colour.
-- Tables in the same red as everything else (they lose the breach grid),
-  or selection shown as a red fill instead of cyan.
+- Tables in the same red as everything else (they lose the breach grid).
+- A selected list row shown as a cyan or teal tint: in the game it is a
+  solid red plate; cyan is the cursor.
 - Yellow everywhere: the yellow is for tags and quest marks only.
-- Constant flicker or scrolling glitch on text.
+- Constant flicker or scrolling glitch on text, or a permanent RGB split
+  on titles.
 
 ## Print
 
