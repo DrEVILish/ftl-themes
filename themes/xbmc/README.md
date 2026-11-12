@@ -21,7 +21,9 @@ hover glow and the selection underline.
    (`:is(.nav-item, .menubar > li > button).is-active::after`), a slim 2px
    line with a 6px glow so the white label carries the focus. Toggle
    buttons and segmented items select with a lighter glass and a blue edge,
-   not a blue fill.
+   not a blue fill; so do the current page, active filter chips, a range
+   picker's chosen button and selected table/list rows (opaque `#26292d`
+   with the blue edge marker).
 2. **Blue backdrop, neutral chrome.** The page is a blue radial
    (`#065080` → `#033a70` → navy `#001542` at the edges) under a field of
    saturated royal-blue bokeh discs and soft diagonal light rays; surfaces are neutral
@@ -32,17 +34,24 @@ hover glow and the selection underline.
 ## Signature details
 
 - The backdrop: a fixed, viewport-sized `body::before` layer
-  (`contain: strict`, so scrolling never repaints it) holding 15 crisp
-  `radial-gradient` discs of 1.5-10rem — royal blue `rgba(20,80,215,.42)`
-  and `rgba(25,95,225,.32)`, overlapping in a cluster upper right, one small
-  bright cyan `rgba(70,190,240,.5)` — each with a 1px `rgba(90,170,250,.5)`
-  rim, plus two 60° light rays (`rgba(80,170,255,.06-.08)`), over the blue
-  radial. Phones draw six discs instead.
+  (`contain: strict`, so scrolling never repaints it) holding 15
+  out-of-focus `radial-gradient` discs of 1.5-10rem — a dim
+  `rgba(20,80,215,.16)` centre brightening to royal blue
+  `rgba(20,80,215,.42)` / `rgba(25,95,225,.32)` at the edge, overlapping in a
+  cluster upper right, one small bright cyan `rgba(70,190,240,.5)` — each
+  with a 1px `rgba(90,170,250,.5)` rim; a soft white-cyan bloom above centre
+  (`rgba(150,210,255,.16)`, cyan haze around it), three large soft blue
+  blobs and two 60° light rays (`rgba(80,170,255,.06-.08)`), over the blue
+  radial. Phones draw six discs on the radial only (no rays or haze), on a
+  `will-change: transform` layer.
 - The menu strip: a tall 4rem band,
   `--app-bar-bg: linear-gradient(180deg, #232323, #141414 50%, #050505)`
-  with a 1px `rgba(255,255,255,.18)` top hairline; items in large
+  with a bevelled lip (1px `rgba(255,255,255,.28)` top, a fainter bottom
+  hairline, `0 2px 0 #000` and a soft drop shadow under it); items in large
   (up to 1.25rem) uppercase bold `#8a9096` with a `0 1px 0 #000` emboss, in
-  even centred cells `min(9.5rem, 11vw)` wide, split by 1px faint separators.
+  equal cells (up to 12rem) centred across the band, split by 1px faint
+  separators. On phones the strip scrolls sideways and the tools stay on
+  one row, the theme picker shrinking so the account button stays visible.
 - The active item's underline: 2px `--accent`,
   `box-shadow: 0 0 6px 1px rgba(30,144,255,.8)`.
 - The submenu shelf: `.segmented` is a black gradient whose bottom corners
@@ -54,8 +63,12 @@ hover glow and the selection underline.
   top hairline; its icon buttons are framed glass squares (1px `#000`,
   inset top highlight).
 - Flat rectangles: square slider thumb and switch knobs, a grey `#70767e`
-  slider track; icon buttons, badges/chips and avatars take `--radius`
-  (no circles or pills).
+  slider track; icon buttons, badges/chips and avatars take `--radius`;
+  status, carousel, dock and page dots are small squares (no circles or
+  pills).
+- Phone home screen and dock: framed black-glass keys
+  (`linear-gradient(180deg,#2a2d31,#141517)`, `--radius`, white glyphs), as
+  the star and power keys; no coloured squircles, square dock.
 
 ## Tell-tales of an inauthentic result
 
@@ -86,14 +99,14 @@ the 1px glowing-underline accent bar. Colour is always `currentColor`.
 
 ## Typography
 
-`--font` is `"Titillium Web", "Arial Narrow", "Segoe UI", sans-serif`;
-`--font-mono` is `Consolas, monospace`. Titillium Web (OFL, already vendored
-in `assets/fonts/`) stands in for Confluence's bold, slightly condensed
-sans; the skin's own face is not named. Headings are 700. Strip items and
-tabs use a wider bold for Confluence's broad menu caps —
-`Roboto, "Segoe UI", "DejaVu Sans"`, then Titillium — uppercase 700, no
-extra tracking. Segmented items (the submenu shelf) stay Titillium 400 in
-sentence case.
+`--font` is `"DejaVu Sans", Roboto, "Segoe UI", Arial, sans-serif`:
+Confluence draws strip, shelf, search and ticker in one face, Kodi's
+bundled DejaVu-derived sans (shipped as `arial.ttf`). Headings are 700.
+Strip items and tabs are the same face, uppercase 700, no extra tracking;
+segmented items (the submenu shelf) are 400 in sentence case. KPI values
+use the bold sans too (`--readout-font: var(--font)`, tabular numbers), as
+Confluence's clock does. `--font-mono` is
+`Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace`.
 
 ## Contrast honesty
 
