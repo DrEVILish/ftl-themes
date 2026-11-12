@@ -65,20 +65,27 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
   filled purple only while pressed.
 - **Panel headers** with a slanted purple tab at the left and bold italic
   caps; modals and desktop windows carry a straight 3px purple top edge
-  instead, so nothing pokes past the frame corner.
+  instead, so nothing pokes past the frame corner. An app pane's title
+  (settings, the inbox reading pane) carries the same slanted tab.
 - **Rev counter**: `.gauge-dial` with a green working band (yellow on
   `.is-warn`, red on `.is-error`), a red redline sector and a red needle.
 - **Close** is a square black steering-wheel key with a cross; it lights
   soft red on hover. Icon buttons are square 2.25rem keys too, never
-  circles; carousel arrows are square keys and its dots square lamps.
+  circles (a ghost icon key, close included, keeps a hairline box);
+  carousel arrows and pager cells are 2rem square keys (pager arrows hairline-boxed), and the
+  carousel dots square lamps.
   Avatars are square position cells (2px radius), as on the tower.
 - **Toasts and alerts** carry one colour: a 4px leading edge matching the
   variant (yellow warning, red danger, green success, blue info, grey
   default). Never purple.
-- **Bar charts** are grey data; only the highlighted bar is purple.
+- **Bar charts** are grey data; only the highlighted bar is purple. Line and
+  donut series start blue (purple is fifth) and the default sparkline is a
+  neutral grey trace, so purple never decorates.
 - The bar's menubar, the tabs, segmented controls, toggle keys and the
   scrollspy nav share one register: bold tracked caps (0.8125rem, never
-  wrapping). On a phone the search key goes icon-only so the bar keeps two
+  wrapping); inside a desktop window they step down to 0.75rem so a dialog
+  keeps one row, and window field captions take the tracked-caps label
+  register. On a phone the search key goes icon-only so the bar keeps two
   rows, and the menubar stays at 0.75rem.
 - **Sector cells**: in a table, `.status-ok/-warn/-error` is a solid
   green/yellow/red timing cell with dark bold caps; `td.mono` figures stay
@@ -109,7 +116,8 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 - `--flare #2fa8ff` is the blue shift light, used for meter peaks and the
   wet compound.
 - `--chart-series-1..6` are the telemetry trace hues stepped into the
-  dark-mode lightness band and ordered so red never sits beside green; they
+  dark-mode lightness band and ordered blue, green, amber, magenta, purple,
+  red so red never sits beside green and purple is never series 1; they
   pass the dataviz palette validator against `--surface`.
 - The `@font-face` blocks override ascent/descent so Titillium's tall
   default line box doesn't push text onto the edges of chips, readouts and

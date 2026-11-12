@@ -337,7 +337,7 @@ html[data-theme="motorsport-telemetry"] {
   --compass-strip-bg: #0b0c0f;
   --compass-strip-border: #2e333b;
   --compass-lubber: var(--mt-medium);
-  --sparkline-stroke: #c18cff;
+  --sparkline-stroke: #c9ced5;  /* a neutral trace: purple is only "best" */
   --donut-track: #1b1f25;
   --donut-gap-color: var(--surface);
   --heatmap-radius: 1px;
@@ -359,13 +359,15 @@ html[data-theme="motorsport-telemetry"] {
   /* Charts: the data-analysis screen. Recessive grid, thin 2px traces, a
      validated series order (dataviz validate_palette.js, dark mode against
      --surface: lightness band, chroma, adjacent CVD and normal-vision
-     separation all PASS). Purple leads; red is never next to green. */
-  --chart-series-1: #9a5cf5;
-  --chart-series-2: #df4a4a;
-  --chart-series-3: #2b93d9;
-  --chart-series-4: #169e74;
-  --chart-series-5: #b98a00;
-  --chart-series-6: #c95fb0;
+     separation all PASS). Blue leads and purple comes fifth, so a one- or
+     two-series chart is never purple by default; red is never next to green
+     (cyclic CVD dE between neighbours >= 39). */
+  --chart-series-1: #2b93d9;
+  --chart-series-2: #169e74;
+  --chart-series-3: #b98a00;
+  --chart-series-4: #c95fb0;
+  --chart-series-5: #9a5cf5;
+  --chart-series-6: #df4a4a;
   --chart-grid: #1c2025;
   --chart-axis: #3a404a;
   --chart-text: var(--muted);
@@ -707,6 +709,24 @@ html[data-theme="motorsport-telemetry"] .table tr.is-selected td:first-child { b
 /* --- Tabs and nav: the active item gets the purple sector bar ------------- */
 html[data-theme="motorsport-telemetry"] :is(.tab, .nav-item) { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 html[data-theme="motorsport-telemetry"] .tabs > .tab { border-bottom-width: 3px; }
+/* In a window the strip steps down a size so a 29rem dialog keeps one row. */
+html[data-theme="motorsport-telemetry"] .desktop-window .tabs > .tab { font-size: 0.75rem; letter-spacing: 0.03em; padding-inline: 0.625rem; }
+/* Window field captions use the tracked-caps label register. */
+html[data-theme="motorsport-telemetry"] .desktop-window :is(.field > label:not(.check, .switch), fieldset > legend) {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+/* An app pane's title carries the panel header's slanted purple tab. */
+html[data-theme="motorsport-telemetry"] .master-detail-pane h2 {
+  padding-inline-start: 0.6rem;
+  padding-block: 0.15em;
+  background: linear-gradient(100deg, var(--mt-purple) 0 8px, transparent 8px) no-repeat;
+}
+/* Ghost icon keys are boxed keys too (close included), as in the modal. */
+html[data-theme="motorsport-telemetry"] .btn-ghost.btn-icon:not(.app-bar *) { --btn-border: #3a404a; }
 /* Vertical lists (folder rail, settings sections) share one register. */
 html[data-theme="motorsport-telemetry"] :is(.nav-rail > .nav-item, .master-detail-list .list-item) { font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 html[data-theme="motorsport-telemetry"] .app-bar .nav-item:is([aria-current], .is-active) { box-shadow: inset 0 -3px 0 var(--mt-purple); }
@@ -716,13 +736,20 @@ html[data-theme="motorsport-telemetry"] .app-bar .menubar > li > [role="menuitem
 html[data-theme="motorsport-telemetry"] :is(.segmented-item, .toggle-btn, .scrollspy-link) { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
 /* Carousel arrows are square steering-wheel keys; the dots are square lamps. */
 html[data-theme="motorsport-telemetry"] .carousel-nav > a { border-radius: 1px; }
-html[data-theme="motorsport-telemetry"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border-radius: 2px; border: 1px solid #3a404a; }
+html[data-theme="motorsport-telemetry"] .carousel-nav > :is(.carousel-prev, .carousel-next) { border-radius: 2px; border: 1px solid #3a404a; font-size: 1.25rem; }
+/* The arrow keys are 2rem squares off touch (touch keeps core's 44px). */
+@media (min-width: 901px) and (not (any-pointer: coarse)) {
+  html[data-theme="motorsport-telemetry"]:not([data-pointer="touch"]) :is(.carousel, .carousel-nav) { --tap-min: 2rem; }
+}
 @supports selector(::scroll-marker) and selector(::scroll-button(*)) {
   html[data-theme="motorsport-telemetry"] .carousel > .carousel-slide::scroll-marker { border-radius: 1px; }
-  html[data-theme="motorsport-telemetry"] .carousel::scroll-button(*) { border-radius: 2px; border: 1px solid #3a404a; }
+  html[data-theme="motorsport-telemetry"] .carousel::scroll-button(*) { border-radius: 2px; border: 1px solid #3a404a; font-size: 1.25rem; }
 }
 /* A disabled pager arrow stays readable: 0.6, not core's 0.4. */
 html[data-theme="motorsport-telemetry"] .pagination-item.is-disabled { opacity: 0.6; }
+/* Pager cells are 2rem square keys; prev/next are hairline keys with a bigger glyph. */
+html[data-theme="motorsport-telemetry"] .pagination-item { min-width: max(2rem, var(--tap-min)); height: max(2rem, var(--tap-min)); }
+html[data-theme="motorsport-telemetry"] .pagination > a.pagination-item:is(:first-child, :last-child) { font-size: 1rem; padding: 0; line-height: 1; border-color: #3a404a; }
 /* Timing data sits on true black inside the carbon panel chrome. */
 html[data-theme="motorsport-telemetry"] .panel .table {
   --row-alt-bg: #0e1013;
