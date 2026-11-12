@@ -5,7 +5,7 @@
  *
  * Note on fonts: Fallout 4's Pip-Boy sets its lists, stats and headers in
  * Roboto Condensed ($MAIN_Font); it is OFL now, so a Latin subset is vendored.
- * Share Tech Mono (OFL, vendored) stays for code and numeric readouts.
+ * Share Tech Mono (OFL, vendored) stays for code and kbd; numbers use Roboto.
  */
 @font-face {
   font-family: "Roboto Condensed";
@@ -29,8 +29,8 @@ html[data-theme="pipboy"] {
   --motion-leave: power-off;
   color-scheme: dark;
   --bg: #04140a;
-  --surface: #06200f;
-  --surface-2: #0a2e15;
+  --surface: #051a0c;
+  --surface-2: #082511;
   --border: #1f7a3f;
   --hairline: #123d1e;
   --text: #1aff80;   /* Fallout 4 default Pip-Boy colour, RGB 26,255,128 */
@@ -122,20 +122,14 @@ html[data-theme="pipboy"] {
   /* Real Regular and Bold faces only: never a smeared faux weight. */
   font-synthesis-weight: none;
 
-  /* Little boxing: panels and cards are a dim hairline with bright corner
-     brackets, not a full phosphor box. Consumers that color-mix the panel
-     fill get the flat surface instead of the gradient stack. */
+  /* Little boxing: Fallout 4's Pip-Boy content is unboxed. Panels and
+     cards are a flat surface on a dim hairline, with no frame corners;
+     grouped figures (KPI cards, .stat) are the dim stat-row block below. */
   --panel-border: var(--hairline);
-  --panel-bg:
-    linear-gradient(var(--accent) 0 0) left top / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) left top / 2px 12px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right top / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right top / 2px 12px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) left bottom / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) left bottom / 2px 12px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right bottom / 12px 2px no-repeat border-box,
-    linear-gradient(var(--accent) 0 0) right bottom / 2px 12px no-repeat border-box,
-    var(--surface);
+  --panel-bg: var(--surface);
+  /* Numbers read in the label face, as FO4's stat values do; Share Tech
+     Mono stays for code and kbd. */
+  --readout-font: var(--font);
   --list-card-bg: var(--surface);
   /* INV / DATA lists: an unboxed column of rows on faint rules; only the
      cursor bar marks the selection. */
@@ -178,8 +172,7 @@ html[data-theme="pipboy"] .btn-success {
    that breaks under the active tab, whose ends rise as short ticks
    (--tab-bg-active). The rule is drawn per tab plus a filler so it can
    break; tab gaps are closed so it stays continuous. */
-html[data-theme="pipboy"] .tab,
-html[data-theme="pipboy"] .panel-header { text-transform: uppercase; letter-spacing: 0.04em; }
+html[data-theme="pipboy"] :is(.tab, .panel-header, .modal-header, .sheet-header, .window-title, .popover > strong:first-child) { text-transform: uppercase; letter-spacing: 0.04em; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) { gap: 0; border-bottom: 0; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) > .tab:not(.is-active) { border-inline-width: 0; border-bottom: 2px solid var(--accent); }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before,
@@ -213,6 +206,13 @@ html[data-theme="pipboy"] :is(.card-media, .map) > svg { filter: var(--pipboy-ph
 /* Rectangular hardware on the map too. */
 html[data-theme="pipboy"] .map.hud-minimap.is-round { border-radius: 0; }
 html[data-theme="pipboy"] .map-pin::before { border-radius: 0; rotate: 45deg; }
+/* The presence LED: a small square pip outside the avatar's corner, so it
+   never covers the initials. */
+html[data-theme="pipboy"] .avatar[data-status] { --presence-dot-size: 0.45rem; }
+html[data-theme="pipboy"] .avatar[data-status]::after { inset-block-end: -3px; inset-inline-end: -3px; }
+/* Current carousel slide: a double-width lit bar, not just a brighter dot. */
+html[data-theme="pipboy"] .carousel > .carousel-slide::scroll-marker:target-current { inline-size: calc(var(--tap-min) + 0.49em); }
+html[data-theme="pipboy"] .carousel-nav > a[aria-current="true"] { min-width: 1.4em; }
 /* Square LEDs where core hardcodes a circle (no token). */
 html[data-theme="pipboy"] :is(.avatar[data-status], .presence-status)::after,
 html[data-theme="pipboy"] .carousel-nav > a,
@@ -237,6 +237,23 @@ html[data-theme="pipboy"] :is(.checkbox, .radio):not(:checked, :indeterminate) {
   background: transparent;
 }
 html[data-theme="pipboy"] .radio:not(:checked) { border-radius: 50%; }
+
+/* FO4 stat rows: grouped figures sit in dim-filled blocks (22% phosphor)
+   with no frame, the same block as the HP | LEVEL | AP strip. */
+html[data-theme="pipboy"] .card:has(> .stat-value) {
+  --card-bg: color-mix(in srgb, var(--accent) 20%, var(--bg));
+  --card-border: transparent;
+}
+html[data-theme="pipboy"] .stat { padding: 0.4rem 0.6rem; background: color-mix(in srgb, var(--accent) 20%, var(--bg)); }
+/* Labels in the block are full phosphor, as in FO4 (muted fell under 4.5:1). */
+html[data-theme="pipboy"] :is(.stat, .card:has(> .stat-value)) > .stat-label { color: var(--text); }
+html[data-theme="pipboy"] :is(.stat-value, .table .mono) { font-family: var(--font); font-variant-numeric: tabular-nums; }
+/* A checked danger toggle is a lit amber outline, not a solid block: a
+   solid fill means only the cursor bar. */
+html[data-theme="pipboy"] .toggle-btn.is-danger {
+  --toggle-btn-bg-on: color-mix(in srgb, var(--danger) 22%, transparent);
+  --toggle-btn-fg-on: var(--danger);
+}
 
 /* HP | LEVEL | AP: solid dim-green blocks with bright uppercase text,
    under the same 2px phosphor rule as the bar. */
@@ -280,6 +297,8 @@ html[data-theme="pipboy"] :is(.input, .textarea)::placeholder { text-shadow: non
 @media (max-width: 480px), (update: slow), (prefers-reduced-transparency: reduce) {
   html[data-theme="pipboy"] { text-shadow: none; }
   html[data-theme="pipboy"] .app-bar { text-shadow: 0 0 3px color-mix(in srgb, currentColor 35%, transparent); }
+  /* Scanlines only: the vignette layer costs a throttled phone frames. */
+  html[data-theme="pipboy"] .app::after { background-image: repeating-linear-gradient(180deg, rgba(0,0,0,0.2) 0 1px, transparent 1px 3px); }
 }
 
 /* Disabled pager keys: unlit phosphor, still readable through the

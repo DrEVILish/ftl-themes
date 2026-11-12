@@ -22,8 +22,8 @@ the screen.
 3. **Scanlines are decoration, not motion.** A static repeating gradient,
    `pointer-events: none`, never an animated flicker — nothing here should
    fight `prefers-reduced-motion` for a cosmetic effect.
-4. **Uppercase, lightly tracked labels** (0.04em) — headings, tabs, panel
-   headers, buttons and the app bar (brand included) are Pip-Boy headers,
+4. **Uppercase, lightly tracked labels** (0.04em) — headings, tabs, panel,
+   modal, sheet, popover and window title headers, buttons and the app bar (brand included) are Pip-Boy headers,
    not a stylized logo; list rows and body copy stay mixed case.
 5. **Rectangular hardware.** No pills, circles or teardrops: `--radius` is
    0, so fields, buttons, cards and dropdowns are square, as are badges,
@@ -33,8 +33,10 @@ the screen.
    buttons stay round, since the native checked radio is. Line-chart
    points are SVG circles CSS cannot square; they shrink to 2.5-unit
    pips instead.)
-6. **Little boxing.** Panels and cards are a dim hairline with bright
-   corner brackets, not a full phosphor box. Lists (`.list`, so the inbox
+6. **Little boxing.** Fallout 4's Pip-Boy content is unboxed: panels and
+   cards are a flat near-black surface on a dim hairline, with no frame
+   corners. Grouped figures (KPI cards with a `.stat-value`, `.stat`) are
+   FO4 stat rows: a dim-filled block (20% phosphor) with no border. Lists (`.list`, so the inbox
    message list and settings nav) are an unboxed column of rows on faint
    hairline rules, as the INV / DATA lists are; only the cursor bar marks
    the selection.
@@ -42,7 +44,8 @@ the screen.
 ## Signature details
 
 - The phosphor is Fallout 4's default Pip-Boy colour, `#1aff80`
-  (RGB 26, 255, 128), on a green-black `#04140a`. Chart series are
+  (RGB 26, 255, 128), on a green-black `#04140a`; surfaces stay near
+  black (`#051a0c`, `#082511`) so the glyphs and glow carry the green. Chart series are
   brightnesses of that one green; no second hue outside hazard states.
   Meter peak segments (`--meter-mid`) are the bright phosphor
   `--accent-2`; only the clip zone (`--meter-high`) turns amber.
@@ -77,12 +80,20 @@ the screen.
 - Reaction chips go through `--pipboy-phosphor`, so colour emoji render
   green. A picked reaction is a lit 1px outline on the dim block, not the
   solid cursor bar, which would swallow the filtered emoji.
+- A checked danger `.toggle-btn` is a lit amber outline on a 22% amber
+  tint, not a solid block: a solid fill is only the cursor bar.
+- The avatar presence LED is a small square pip (0.45rem) just outside the
+  avatar's corner, so it never covers the initials. The current carousel
+  marker is a double-width lit bar, so it differs by shape, not only
+  brightness.
 - Disabled pager keys are the unlit placeholder green at full opacity
   (about 5:1), not core's 40% opacity.
 - Type is Roboto Condensed (OFL, vendored Regular and Bold, Latin
   subset), Fallout 4's Pip-Boy `$MAIN_Font`, with "Arial Narrow" and
-  "Liberation Sans Narrow" fallbacks. Share Tech Mono (OFL, vendored)
-  stays as `--font-mono` for code and readouts. `font-synthesis-weight:
+  "Liberation Sans Narrow" fallbacks. Numbers (`.readout` via
+  `--readout-font`, `.stat-value`, mono table cells) are set in the same
+  Roboto Condensed with tabular figures, as FO4's stat values are. Share
+  Tech Mono (OFL, vendored) stays as `--font-mono` for code and kbd. `font-synthesis-weight:
   none`, so only the real weights render; headings glow a little more
   (4px at 40%) but stay crisp. At the phone tier tables set at 0.85em,
   badges keep an 11px (0.7rem) floor, and inputs in cells keep a
@@ -95,7 +106,9 @@ the screen.
   black (light enough that ~10px badge text keeps its strokes), plus a soft inset vignette for the curved glass, so they never
   intercept a click and never need JavaScript. The overlay is its own
   layer (`will-change`, `contain: strict`) so scrolling never repaints it. The vignette is a radial
-  gradient in the same layer (no blurred shadow, so no frame cost).
+  gradient in the same layer (no blurred shadow); at the phone tier, and
+  under `update: slow` or reduced transparency, the vignette is dropped and
+  only the scanlines stay, to keep a throttled phone in its frame budget.
 - All body text carries a faint `text-shadow: 0 0 3px` phosphor glow in its
   own colour (`currentColor` at 35%, so dim text glows dim), not
   just headings — the whole screen glows a little, not just the display
