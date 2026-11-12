@@ -23,15 +23,23 @@ is actually wrong.
    (radios stay round); headings, buttons, frame headers, tabs, table
    heads, badges, top-bar menus and KPI numerals in the vendored Antonio
    Bold, a tight condensed bold standing in for NERV's compressed readout
-   sans. Labels are uppercase. Body text stays in a plain Helvetica/Arial
-   stack for legibility.
+   sans. Labels, badges, filter chips, toggle and segmented buttons, nav
+   items and the app brand are uppercase; Antonio is never set mixed-case,
+   and its small readouts (table heads, badges) are floored at 0.8rem and
+   tracked 0.08em wide. Body text stays in a plain Helvetica/Arial stack
+   for legibility, with secondary text in a cool grey (`--muted: #b8b8b8`)
+   so orange stays the marker colour rather than the body tint.
 4. **Thick rules.** 2–3px borders and bars, not hairlines — a bunker's
    markings are painted, not printed.
 
 ## Signature details
 
-- Every panel header carries a black flat-top hexagon before its label,
-  the MAGI hex brought into the shell at every width.
+- Every panel and modal header carries a black flat-top hexagon (1.1em)
+  before its label, the MAGI hex brought into the shell at every width;
+  desktop windows whose title already leads with an app icon skip it.
+  Page titles (`.app-main h1`) take the same hexagon as a bullet.
+- The app bar's 3px orange rule is doubled by a 2px signal-red rule below
+  a black gap: NERV's twin warning rule.
 - Danger buttons alone get a `repeating-linear-gradient(135deg, ...)`
   hazard-stripe fill instead of a flat color, and danger alerts a 6px
   hazard-tape edge — the theme's single decorative flourish, reserved
@@ -39,9 +47,13 @@ is actually wrong.
 - The active-row marker is signal red (`--danger`, about 4:1 on the
   black) even though every other structural accent in the theme is
   orange — the one place danger's color, not orange, gets to mark something.
-- Panel, card and window headers reverse out like the table head: a solid
+- Panel, modal and window headers reverse out like the table head: a solid
   orange strip with black, uppercase condensed text — the NERV warning-box
-  label.
+  label. Caption buttons on that strip are black too. Cards stay plain
+  frames.
+- Carousel dots and arrows are square; the arrows are outlined in 2px
+  orange like the buttons. Toolbars sit on the bunker black over a 2px
+  orange rule.
 - Headings are condensed bold uppercase set tight (`0.04em`), not airy
   wide tracking.
 - Inactive windows dim to an unlit dark strip with an orange label rather
@@ -72,7 +84,7 @@ Antonio Bold (SIL OFL 1.1, already in `assets/fonts/`) for display type.
 
 ## v5 layout
 
-Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a triangle lattice in dim hazard orange (about 1.4:1 against the black, deliberately quiet).
+Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (shell capped at 1800px, centred). No rail. Phone and tablet use the core two-line bar. A panel nested in another box drops to a 1px dim-orange rule, so stacked boxes read as compartments rather than three full-strength frames. On XL the gutters show the MAGI hex field: a tiled honeycomb of flat-top hexagon cells in dim hazard orange (about 1.4:1 against the black, deliberately quiet).
 
 ## Icons
 
@@ -81,6 +93,7 @@ Tiers (core): mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1
 - **Grid and weight.** 24 grid, heavy 2.4px line, square caps, mitred joins, hard corners (radius 0).
 - **Geometry.** Every circle is a flat-top hexagon (the MAGI hex motif); curves are rebuilt as angular runs; silhouettes are solid fills; marker dots are solid squares.
 - **Condensed.** Each glyph is squeezed to 86% width by a wider `viewBox` with `preserveAspectRatio="none"`, like condensed stencil type. This also makes vertical strokes 0.86x the width of horizontal ones, which is not visible at 2.4px.
+- Only the core set is redrawn: extended-set icons (coins, map pins, clocks, circle carets) keep their round core geometry.
 - Generated from one shared 24-grid geometry, so every core-set id (178/178) is drawn; everything uses `currentColor`, so icons follow text, accent and selected states (and every variant) with no hard-coded colour.
 
 ## Adoption
