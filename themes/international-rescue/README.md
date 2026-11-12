@@ -8,7 +8,7 @@
 
 The Tracy Island **control room** as a light, mid-century instrument panel:
 cream and putty housings, stout navy outlines, chunky rounded-rectangle keys,
-big round bezelled lamps, and thick diagonal hazard bands, with the five
+big round bezelled lamps, and a wide diagonal gold sash, with the five
 Thunderbird craft colours doing the work of status semantics. It is the
 opposite of this catalogue's dark neon themes: a **light** theme
 (`color-scheme: light`) whose colour comes from flat blocks, never glow.
@@ -21,7 +21,9 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 
 1. **Cream console, navy outline.** Surfaces are cream (`#f6f1e3`) on a putty
    backdrop (`#d9d3bf`); every raised object wears a 3px IR-navy (`#0a2f6e`)
-   outline. Dark panels are the exception (bar, status strip, panel headers,
+   outline; that includes the instrument family (gauges, compass, compass
+   strip, map, calendar) and the FAB, which also take the hard navy drop.
+   Idle keys are cream (`#fbf6e8`), never optical white. Dark panels are the exception (bar, status strip, panel headers,
    readouts), not the base.
 2. **Flat colour blocks, hard shadows.** No gradients for depth, no blur, no
    glow. Depth is a hard navy offset (`0 4px 0`), like a keycap.
@@ -33,9 +35,12 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
    depresses 5px on `:active`.
 5. **Big round lamps with a bezel.** `.lamp` is a 1.3rem circle inside a navy
    ring; the rail carries five bezelled craft lamps.
-6. **The diagonal band and the sash are the only ornaments.** A gold/navy
-   45-degree stripe (`--ir-band`) under the bar; under `h1` a single wide gold
-   sash with a diagonal end. Built from CSS only.
+6. **The sash is the only ornament.** One wide gold diagonal crosses the
+   bar's left end over a solid gold rule (the uniform sash; phones keep only
+   the rule); under `h1` a single wide gold sash with a diagonal end. Built
+   from CSS only. Solid gold fills are kept for GO, the sash, rules and the
+   fader knob; selection (rows, options, the current folder) is a 30% gold
+   wash with a TB1 tab.
 7. **Rounded-rectangle, never pill, never sharp.** Radius 0.5-1.1rem.
 8. **Headlines are wide squared capitals.** Microgramma/Eurostile Extended
    when installed, else the vendored Michroma; the bar brand and GO key use
@@ -43,12 +48,12 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 
 ## Signature details
 
-- **App shell = control room**: navy bar with hazard band; a 4.5rem putty
+- **App shell = control room**: navy bar with the gold sash and rule; a 4.5rem putty
   instrument rail with five bezelled lamps (blue, green, orange-red, yellow,
   silver-gold) drawn purely with `radial-gradient`; a cream console panel with
   a hard navy drop; navy status strip with a gold rule; a map-room graticule
   shows through the backdrop. On desktop each rail lamp carries its craft
-  number (1-5) in the display face. On phones the rail becomes a horizontal
+  number (1-5) in the display face, large enough to read across the room. On phones the rail becomes a horizontal
   lamp row.
 - **Segmented LED meters** (green to yellow to orange-red bands under a white
   slit mask), and a navy readout window with gold digits.
@@ -99,12 +104,14 @@ guidance only: no logo, insignia artwork, likeness or screenshot is used.
 
 ## Typography (honest)
 
-`--font`: Trebuchet MS, Gill Sans, Segoe UI, Verdana, system-ui.
+`--font`: Univers, Helvetica Neue, Helvetica, Arial, Liberation Sans: the
+1960s signage grotesque (renders as metric-compatible Liberation Sans here).
 Headings and panel headers (`--ir-display`): Eurostile Extended, Microgramma
 D Extended, Microgramma, then **Michroma** (SIL OFL, already vendored in
 `assets/fonts/`, see `assets/fonts/NOTICE.md`), uppercase, upright, weight
-400 with a 0.6px `-webkit-text-stroke` (0.5px on panel captions) so the
-single-weight face holds its own beside 3px outlines; h2/h3 get 0.4em below.
+400 with a 0.6px `-webkit-text-stroke` on h1/h2 only, so the single-weight
+face holds its own beside 3px outlines; h3 and panel captions are unstroked
+(the stroke blurred small sizes) and tracked wider instead. h2/h3 get 0.4em below.
 Microgramma is the reported credits/title-card face; Michroma is an
 open Microgramma-alike, not the original. The bar brand, window titles and
 the GO key use the same face, upright (the earlier heavy italic was an
