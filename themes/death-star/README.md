@@ -18,23 +18,28 @@ push-buttons in red, blue, yellow, white and green.
    `.transport` draw a 3px `#e6e6e6` outline with a small 4px inlay corner;
    a surface nested in another steps down to 2px. Inner padding stays black.
 2. **Red is a band, not a tint.** Top-level panel and modal headers, the
-   bulk-action bar and selected rows are solid `#c81e1e` with white text.
+   bulk-action bar and selected rows are solid brick red `#c4352a` (sampled
+   from the diorama's bands) with white text.
 3. **Everything else is square.** Buttons, inputs, switches, avatars,
-   badges, lamps, alerts and toasts have zero radius; buttons and inputs
+   badges, lamps, alerts, toasts, the slider and fader caps and carousel
+   dots have zero radius (native checkboxes keep the UA shape); buttons and inputs
    have no border and sit one visible step above the panel black.
 4. **True black, not near-black.** `--bg: #000`.
 
 ## Signature details
 
-- **Tile row.** The app bar carries a row of `#d9d9d9` tile segments (3rem,
-  4px black gaps) along its top edge above its 3px red rule.
+- **Tile row.** The app bar carries a 1.25rem-tall row of pale green-grey
+  `#d7e4df` tiles (2.5rem wide, 5px black gaps) above its content and its
+  3px red rule, so the tiles read as blocks, not a dashed line.
 - **Red header bands.** `--panel-header-bg`/`--modal-header-bg` are the
-  accent with white text (5.74:1); muted and success text on the band are
-  re-pointed to `#ffe3e3` and `#c8ffd8`.
+  accent with white text (5.4:1); muted and success text on the band are
+  re-pointed to `#fff0f0` and `#c8ffd8`.
 - **Push-button chips.** Badges are solid square chips: default pale tile
   grey with black text, accent red with white, danger/success/warning solid
   with black. On a red header the accent chip turns black.
-- **GO** label uses `--accent-text` (6.86:1); its 2px frame stays accent.
+- **Focus** is a white outline (`--focus: #fff`): 16:1 on black and 5.4:1
+  on the red bands, bulk bar and selected rows, where red focus vanished.
+- **GO** label uses `--accent-text` (7.47:1); its 2px frame stays accent.
 - **Lamps** are square, borderless and carry a `0 0 10px` glow in their
   own state colour — the only `box-shadow` the theme sets.
 - **Selected rows and options** fill solid red with white text.
@@ -42,8 +47,12 @@ push-buttons in red, blue, yellow, white and green.
   the leading edge, no frame.
 - **Floating menus** (dropdown, popover, context menu) are `#161616` with
   a 2px white outline, so an open menu reads as a raised surface.
-- **Slider track** is `#8a8a8a` linework (5.9:1 on black); core's
-  transparent border and content-box clip keep the 24px/44px hit area.
+- **Slider track** is `#8a8a8a` linework (5.9:1 on black) with a square
+  white cap; core's transparent border and content-box clip keep the
+  24px/44px hit area.
+- **Inactive windows** take a neutral `#1c1c1c` title band with no filter,
+  the own-message bubble is the same neutral step, and chart/sparkline
+  areas carry no fill: red never appears as a muddy tint.
 - **Switches** are square: grey `#5a5a5a` track and pale thumb off, red
   track with white thumb on.
 
@@ -59,8 +68,9 @@ The bar and status strip are black; the bar has the tile row on top and a
 - **Nesting.** A surface inside another draws a 2px outline, and a nested
   panel's header is a slim red block at its left edge instead of a second
   full red band. Fields sit one step above `--surface-2`.
-- **XL gutter art.** More bulkhead: a very faint lattice, a few unlit red
-  control blocks and one cluster of five small push-button squares. Still.
+- **XL gutter art.** More bulkhead: a very faint lattice, a short four-tile
+  row, a few unlit `#1a1a1a` control blocks and one cluster of five small
+  push-button squares (blue matched to the reference paint, `#5281b8`). Still.
 
 ## Tell-tales of an inauthentic result
 
@@ -93,19 +103,20 @@ Headings (h1–h3), panel and modal headers and the nav brand use
 **Michroma** (Vernon Adams, SIL OFL 1.1, already vendored as
 `assets/fonts/Michroma-Regular.woff2`) in uppercase with 0.08em tracking:
 the squared, extended labelling of a 1970s console. Michroma ships one
-weight, so these stay at 400, with line-height 1.15 to tighten its tall ascent. Body text is a neutral sans
+weight, so these stay at 400, with line-height 1.25 and a 0.35em bottom margin so
+the tall caps clear the text below. Body text is a neutral sans
 (`"Helvetica Neue", Arial, sans-serif`) and `--font-mono` is
 `Consolas, monospace`. Code inside a heading keeps its case.
 
 ## Contrast honesty
 
-- **Accent red fails as text.** `--accent` `#c81e1e` is 3.66:1 on black; white on it is 5.74:1, so red is safe only as a fill/lamp/rule. Red as text — links, the brand, the active tab, accent badges, readouts, code keywords and the secondary button — uses `--accent-text` `#ff5a5a` (6.86:1 on black).
-- **Muted lifted:** `#6a6a6a` (3.8:1) to `#777777`, then to `#888888` (5.92:1 on black, 4.81:1 on the `#1c1c1c` current-time schedule row). On the red header block `--muted` is re-pointed to `#ffe3e3` (4.74:1) and `--success-text` to `#c8ffd8` (5.12:1).
+- **Accent red fails as text.** `--accent` `#c4352a` is 3.89:1 on black; white on it is 5.4:1, so red is safe only as a fill/lamp/rule. Red as text — links, the brand, the active tab, accent badges, readouts, code keywords and the secondary button — uses `--accent-text` `#ff6a5c` (7.47:1 on black).
+- **Muted lifted:** `#6a6a6a` (3.8:1) to `#777777`, then to `#888888` (5.92:1 on black, 4.81:1 on the `#1c1c1c` current-time schedule row). On the red header block `--muted` is re-pointed to `#fff0f0` (4.88:1) and `--success-text` to `#c8ffd8` (4.82:1).
 - **Nav items** `#8a8a8a` (6.08:1 on black), a hair above `--muted`.
-- `--text` `#e6e6e6` is 16.83:1. Semantic fills (`#ff3b3b`, `#2fff6f`, `#ffcf2f`) are 5.9–15.7:1 on black with black `--on-*` text.
-- White on the red band and on selected rows is 5.74:1. Buttons (`#1c1c1c`) and menus (`#161616`) are distinct from the `#050505` panel fill.
-- `.pattern-nav a[aria-current="page"]` is forced to `--on-accent`: the page pairs `--accent-text` with the accent fill (1.87:1 here).
-- The reference red has no recorded hex; `#c81e1e` is the theme's.
+- `--text` `#e6e6e6` is 16.83:1. Semantic fills (`#ff3b3b`, muted phosphor green `#5cc872` from the reference readout, `#ffcf2f`) are 5.9–15.7:1 on black with black `--on-*` text.
+- White on the red band and on selected rows is 5.4:1. Buttons (`#1c1c1c`) and menus (`#161616`) are distinct from the `#050505` panel fill.
+- `.pattern-nav a[aria-current="page"]` is forced to `--on-accent`: the page pairs `--accent-text` with the accent fill (1.92:1 here).
+- The red `#c4352a` is sampled from the diorama's bands (`#cf3a2f`, `#c33427`, `#bf352b`).
 
 ## Reference status
 

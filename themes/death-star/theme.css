@@ -22,15 +22,17 @@ html[data-theme="death-star"] {
      the structural colour (buttons, focus, selected rows, table heads),
      with --danger a step brighter so an actual alert still reads as
      distinct from ordinary red chrome. */
-  --accent: #c81e1e;
+  /* Warm brick red, sampled from the diorama's bands (#cf3a2f/#c33427). */
+  --accent: #c4352a;
   --accent-2: #e6e6e6;
   --danger: #ff3b3b;
-  --success: #2fff6f;
+  /* Muted phosphor green, as the reference readout (#68aa70 avg). */
+  --success: #5cc872;
   --warning: #ffcf2f;
   /* Red as TEXT (links, accent badges, code keywords, readouts, the
      secondary button) is lifted to the brand-word red: --accent itself is
      3.66:1 on black and only works as a fill, lamp or rule. */
-  --accent-text: #ff5a5a;
+  --accent-text: #ff6a5c;
   --link: var(--accent-text);
   --readout-fg: var(--accent-text);
   --tab-fg-active: var(--accent-text);
@@ -57,8 +59,8 @@ html[data-theme="death-star"] {
   --transport-border: var(--line);
   --transport-edge-width: 3px;
   --panel-bg: var(--surface-2);
-  /* Red bands: top-level panel and modal headers are solid #c81e1e
-     blocks with white text (5.74:1). */
+  /* Red bands: top-level panel and modal headers are solid #c4352a
+     blocks with white text (5.4:1). */
   --panel-header-bg: var(--accent);
   --panel-header-fg: #ffffff;
   --modal-header-bg: var(--accent);
@@ -85,10 +87,17 @@ html[data-theme="death-star"] {
      was the same black as the panel and vanished entirely. */
   --input-bg: #121212;
   --input-border-width: 0;
-  --focus-ring: 0 0 0 2px var(--accent);
+  /* Focus is white linework: red-on-red was invisible on the header bands,
+     bulk bar and selected rows. White is 16:1 on black, 5.4:1 on the red. */
+  --focus: #ffffff;
+  --focus-ring: 0 0 0 2px #ffffff;
   /* Slider track: core grows the hit area to --tap-min with a transparent
      border and content-box clip; the track itself is the white linework. */
   --slider-bg: #8a8a8a;
+  /* Square slide cap and fader cap: nothing on the console is round. */
+  --slider-thumb-radius: 0;
+  --slider-thumb-bg: #ffffff;
+  --fader-cap-radius: 0;
   --switch-radius: 0;
   --switch-thumb-radius: 0;
   --switch-border-width: 0;
@@ -118,6 +127,17 @@ html[data-theme="death-star"] {
   --app-bar-rule-width: 0;
   --app-status-bg: #000;
   --app-status-fg: #8a8a8a;
+
+  /* Inactive windows: a dark band, not a desaturated muddy red. */
+  --window-header-bg-inactive: #1c1c1c;
+  --window-header-fg-inactive: var(--text);
+  --window-header-filter-inactive: none;
+  /* Own message: one neutral step up, no red tint. */
+  --message-own-bg: #1c1c1c;
+  --message-own-border: var(--border);
+  /* Chart/sparkline areas: no translucent dark-red fill under the line. */
+  --chart-area-opacity: 0;
+  --sparkline-area-opacity: 0;
 }
 
 @font-face {
@@ -134,7 +154,12 @@ html[data-theme="death-star"] :is(h1, h2, h3, .panel-header, .modal-header, .nav
   letter-spacing: 0.08em;
 }
 /* Michroma's tall ascent leaves wrapped headings loosely spaced. */
-html[data-theme="death-star"] :is(h1, h2, h3) { line-height: 1.15; }
+html[data-theme="death-star"] :is(h1, h2, h3) { line-height: 1.25; margin-block-end: 0.35em; }
+/* Badge after a header title: keep a gap from the Michroma caps. */
+html[data-theme="death-star"] :is(.panel-header, .modal-header) > * + .badge { margin-inline-start: 0.5rem; }
+/* Carousel dots and checkboxes: square, like the push-buttons. */
+html[data-theme="death-star"] .carousel-nav > a,
+html[data-theme="death-star"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
 html[data-theme="death-star"] :is(h1, h2, h3) :is(code, kbd) { text-transform: none; letter-spacing: normal; }
 
 html[data-theme="death-star"] .lamp.is-on { box-shadow: 0 0 10px var(--success); }
@@ -161,29 +186,31 @@ html[data-theme="death-star"] :is(.alert, .toast) {
 }
 html[data-theme="death-star"] [data-tooltip]::after { border-width: 0; }
 
-/* App-bar: the console's row of pale grey tiles along its top edge, then
-   the red rule. Inactive nav items #8a8a8a (6.1:1 on black). */
+/* App-bar: the console's row of large pale tiles (green-grey #d7e4df,
+   2.5rem x 1.25rem blocks, 5px black gaps) above the bar content, then the
+   red rule. Inactive nav items #8a8a8a (6.1:1 on black). */
 html[data-theme="death-star"] .app-bar {
   --nav-item-fg: #8a8a8a;
-  --nav-brand-fg: #ff5a5a;
+  --nav-brand-fg: var(--accent-text);
+  --app-bar-padding: calc(1.25rem + 0.6rem) 1rem 0.6rem;
   border-bottom: 3px solid var(--accent);
-  background-image: repeating-linear-gradient(90deg, #d9d9d9 0 3rem, transparent 3rem calc(3rem + 4px));
-  background-size: 100% 0.4rem;
+  background-image: repeating-linear-gradient(90deg, #d7e4df 0 2.5rem, transparent 2.5rem calc(2.5rem + 5px));
+  background-size: 100% 1.25rem;
   background-repeat: no-repeat;
 }
 
 /* Text on the red header band: muted, success and close glyphs re-pointed
-   so they clear 4.5:1 on #c81e1e. */
+   so they clear 4.5:1 on #c4352a. */
 html[data-theme="death-star"] :is(.panel-header, .modal-header) {
   --btn-close-fg: #ffffff;
   --btn-close-fg-hover: #ffffff;
-  --btn-close-bg-hover: #8f1010;
-  --muted: #ffe3e3;
+  --btn-close-bg-hover: #9a2a20;
+  --muted: #fff0f0;
   --success-text: #c8ffd8;
 }
 /* Current page in navigation-patterns: the page's unlayered rule pairs
-   --accent-text with the --accent fill (1.87:1 here); white on the red fill
-   is 5.74:1. !important because theme CSS sits in a layer that loses to the
+   --accent-text with the --accent fill (1.92:1 here); white on the red fill
+   is 5.4:1. !important because theme CSS sits in a layer that loses to the
    page's unlayered style otherwise. */
 html[data-theme="death-star"] .pattern-nav a[aria-current="page"] { color: var(--on-accent) !important; }
 
@@ -209,19 +236,21 @@ html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .pane
  * use core's one-column shell as is. */
 
 /* XL gutters (v5, PLAN.md §3): more bulkhead. The circuit-grid lattice
-   continues, much fainter than inside the shell, with a few unlit red
-   control blocks and one cluster of small multicolour push-buttons set into
+   continues, much fainter than inside the shell, with a few unlit grey
+   control blocks, a short pale tile row and one cluster of small multicolour push-buttons set into
    it. Still. */
 html[data-theme="death-star"] {
   --app-gutter-art:
-    linear-gradient(#c81e1e, #c81e1e) 6rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#3a6fd8, #3a6fd8) 7.25rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#c4352a, #c4352a) 6rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#5281b8, #5281b8) 7.25rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
     linear-gradient(#e0b020, #e0b020) 8.5rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
     linear-gradient(#e6e6e6, #e6e6e6) 9.75rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#2fbf5f, #2fbf5f) 11rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
-    linear-gradient(#2a0505, #2a0505) 5rem 30% / 5rem 2.5rem no-repeat,
-    linear-gradient(#2a0505, #2a0505) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
-    linear-gradient(#2a0505, #2a0505) 10rem 78% / 2.5rem 2.5rem no-repeat,
+    linear-gradient(#5cc872, #5cc872) 11rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#1a1a1a, #1a1a1a) 5rem 30% / 5rem 2.5rem no-repeat,
+    linear-gradient(#1a1a1a, #1a1a1a) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
+    linear-gradient(#1a1a1a, #1a1a1a) 10rem 78% / 2.5rem 2.5rem no-repeat,
+    /* Short tile row echo, then the lattice. */
+    repeating-linear-gradient(90deg, #d7e4df 0 2.5rem, transparent 2.5rem calc(2.5rem + 5px)) 5rem calc(30% - 3rem) / calc(4 * 2.5rem + 15px) 1.25rem no-repeat,
     linear-gradient(rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem,
     linear-gradient(90deg, rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem;
 }
