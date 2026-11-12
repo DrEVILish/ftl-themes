@@ -1,6 +1,6 @@
 /* ftl-themes: Death Star Terminal
  * Theme-Name: Death Star Terminal
- * Description: True #000000 black with glowing solid indicator blocks and zero borders or shadows — a terminal aesthetic distilled to almost nothing.
+ * Description: True #000000 black zones framed by bright white inlay outlines, solid red header bands, a pale tile row and square multicolour indicator blocks — an Imperial control console.
  */
 
 html[data-theme="death-star"] {
@@ -22,174 +22,246 @@ html[data-theme="death-star"] {
      the structural colour (buttons, focus, selected rows, table heads),
      with --danger a step brighter so an actual alert still reads as
      distinct from ordinary red chrome. */
-  --accent: #c81e1e;
+  /* Warm brick red, sampled from the diorama's bands (#cf3a2f/#c33427). */
+  --accent: #c4352a;
   --accent-2: #e6e6e6;
   --danger: #ff3b3b;
-  --success: #2fff6f;
+  /* Muted phosphor green, as the reference readout (#68aa70 avg). */
+  --success: #5cc872;
   --warning: #ffcf2f;
   /* Red as TEXT (links, accent badges, code keywords, readouts, the
      secondary button) is lifted to the brand-word red: --accent itself is
      3.66:1 on black and only works as a fill, lamp or rule. */
-  --accent-text: #ff5a5a;
+  --accent-text: #ff6a5c;
   --link: var(--accent-text);
   --readout-fg: var(--accent-text);
   --tab-fg-active: var(--accent-text);
-  --nav-brand-fg: var(--accent-text);
+  /* Labelling is white, as the diorama's linework; red stays a fill. */
+  --nav-brand-fg: #ffffff;
   --on-accent: #ffffff;
   --on-danger: #000000;
   --on-success: #000000;
   --radius: 0;
-  --font: "Eurostile", "Michroma", sans-serif;
-  --font-mono: Consolas, monospace;
+  --font: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", sans-serif;
+  --font-mono: "Share Tech Mono", Consolas, monospace;
   --flare: #ffcf2f;
 
-  /* No borders, no shadows anywhere: indicators are solid glowing blocks
-     against absolute black, not framed panels. */
-  --btn-bg: var(--surface-2);
+  /* Construction (reference: the console diorama in references/death-star/):
+     black zones, each framed by a bright white inlay outline with small
+     rounded corners; solid red bands across the middle; a row of pale grey
+     tiles along the top; small square push-buttons in five colours. */
+  --line: #e6e6e6;
+  --panel-border-width: 3px;
+  --panel-border: var(--line);
+  --panel-radius: 4px;
+  --card-border-width: 3px;
+  --modal-border: var(--line);
+  --transport-border-width: 3px;
+  --transport-border: var(--line);
+  --transport-edge-width: 3px;
+  --panel-bg: var(--surface-2);
+  /* Red bands: top-level panel and modal headers are solid #c4352a
+     blocks with white text (5.4:1). */
+  --panel-header-bg: var(--accent);
+  --panel-header-fg: #ffffff;
+  --modal-header-bg: var(--accent);
+  --modal-header-fg: #ffffff;
+  --bulk-bar-bg: var(--accent);
+  --bulk-bar-fg: #ffffff;
+  --bulk-bar-border: var(--accent);
+
+  /* Buttons and floating menus sit one visible step above the panel black
+     so they read as surfaces of their own; menus carry the white outline. */
+  --btn-bg: #1c1c1c;
   --btn-fg: var(--text);
   --btn-border-width: 0;
   --btn-radius: 0;
+  --btn-icon-radius: 0;
+  /* GO label as text: the brighter red (6.86:1); the 2px frame stays accent. */
+  --go-fg: #ffffff;
+  --dropdown-bg: #161616;
+  --dropdown-border: var(--line);
+  --dropdown-border-width: 2px;
+  --popover-border-width: 2px;
+  --context-menu-border-width: 2px;
   /* One step above --surface-2: a borderless field on a surface-2 panel
      was the same black as the panel and vanished entirely. */
   --input-bg: #121212;
-  --input-border-width: 0;
-  --focus-ring: 0 0 0 2px var(--accent);
-  --panel-border-width: 0;
-  --panel-bg: var(--surface-2);
+  /* Grey inlay outline (3.7:1 on black): fields read as sub-boxes in a bay. */
+  --input-border-width: 2px;
+  --input-border: #6a6a6a;
+  /* Focus is white linework: red-on-red was invisible on the header bands,
+     bulk bar and selected rows. White is 16:1 on black, 5.4:1 on the red. */
+  --focus: #ffffff;
+  --focus-ring: 0 0 0 2px #ffffff;
+  /* Slider track: core grows the hit area to --tap-min with a transparent
+     border and content-box clip; the track itself is the white linework. */
+  --slider-bg: #8a8a8a;
+  /* Square slide cap and fader cap: nothing on the console is round. */
+  --slider-thumb-radius: 0;
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-size: 1.125rem;
+  --fader-cap-radius: 0;
+  --switch-radius: 0;
+  --switch-thumb-radius: 0;
+  --switch-border-width: 0;
+  --switch-bg: #5a5a5a;
+  --switch-thumb-bg: #e6e6e6;
+  --switch-bg-on: var(--accent);
+  --switch-thumb-bg-on: #ffffff;
+  --avatar-radius: 0;
+  /* Avatars are pale push-button chips, like the plain badges. */
+  --avatar-bg: #d7e4df;
+  --avatar-fg: #000000;
+  --badge-bg: #d9d9d9;
+  --badge-fg: #000000;
+  --alert-radius: 0;
+  --toast-radius: 0;
   --table-head-bg: #000000;
-  --table-head-fg: var(--accent-text);
+  --table-head-fg: var(--text);
   --table-head-rule: var(--accent);
-  --row-selected-bg: #438eff;
-  --row-selected-fg: #000000;
+  --row-selected-bg: var(--accent);
+  --row-selected-fg: #ffffff;
   --nav-bg: #000;
   --nav-rule-width: 0;
   --overlay-bg: rgba(0, 0, 0, 0.9);
   --indicator-fg: var(--accent);
+  /* Square indicator blocks: lamps, connection lamp and status dots. */
+  --lamp-radius: 0;
+  --status-dot-radius: 0;
+  --desktop-icon-glyph: var(--text);
+  /* Edit states: only the leading bar / tick / ring, never a tint. */
+  --row-editing-bg: transparent;
+  --cell-dirty-bg: transparent;
+  --cell-saved-bg: transparent;
+  --cell-saved-flash: transparent;
+  --cell-error-bg: transparent;
+  /* Non-overridden extended icons thin toward the pack's 1px hairline. */
+  --icon-stroke-width: 1.5;
 
   --app-bg: #000;
   --app-bar-bg: #000;
   --app-bar-rule-width: 0;
   --app-status-bg: #000;
   --app-status-fg: #8a8a8a;
+
+  /* Inactive windows: a dark band, not a desaturated muddy red. */
+  --window-header-bg-inactive: #1c1c1c;
+  --window-header-fg-inactive: var(--text);
+  --window-header-filter-inactive: none;
+  /* Own message: one neutral step up, no red tint. */
+  --message-own-bg: #1c1c1c;
+  --message-own-border: var(--border);
+  /* Chart/sparkline areas: no translucent dark-red fill under the line. */
+  --chart-area-opacity: 0;
+  --sparkline-area-opacity: 0;
 }
+
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Michroma";
+  src: url("assets/fonts/Michroma-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+/* Console labelling: squared, extended, uppercase, tracked. Body text stays
+   in the neutral sans. Michroma ships one weight, so no faux bold. */
+html[data-theme="death-star"] :is(h1, h2, h3, .panel-header, .modal-header, .nav-brand) {
+  font-family: "Michroma", "Eurostile", "Bank Gothic", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+/* Michroma's tall ascent leaves wrapped headings loosely spaced. */
+html[data-theme="death-star"] :is(h1, h2, h3) { line-height: 1.25; margin-block-end: 0.35em; }
+/* The console is nearly text-free: the widest heading is tracked tighter. */
+html[data-theme="death-star"] h1 { letter-spacing: 0.03em; }
+/* Badge after a header title: keep a gap from the Michroma caps. */
+html[data-theme="death-star"] :is(.panel-header, .modal-header) > * + .badge { margin-inline-start: 0.5rem; }
+/* Carousel dots and checkboxes: square, like the push-buttons. */
+html[data-theme="death-star"] .carousel-nav > a,
+html[data-theme="death-star"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
+html[data-theme="death-star"] :is(h1, h2, h3) :is(code, kbd) { text-transform: none; letter-spacing: normal; }
 
 html[data-theme="death-star"] .lamp.is-on { box-shadow: 0 0 10px var(--success); }
 html[data-theme="death-star"] .lamp.is-error { box-shadow: 0 0 10px var(--danger); }
-html[data-theme="death-star"] .badge { border-radius: 0; }
-/* "Solid glowing indicator BLOCKS" — core's lamp defaults to a round,
-   1px-bordered dot, which is neither square nor borderless. No width
-   token exists for it (--lamp-border only carries color), so the
-   border is zeroed here directly. */
+html[data-theme="death-star"] :is(.badge, .btn-icon) { border-radius: 0; }
+/* A user colour is a solid chip with black or white caps, never a tint. */
+html[data-theme="death-star"] .avatar[data-color] {
+  --avatar-bg: var(--user-color);
+  --avatar-fg: #000000;
+  --avatar-fg: oklch(from var(--user-color) clamp(0, (0.56 - l) * 1000, 1) 0 0);
+}
+/* Disabled: an unlit grey key, not a dimmed red one. */
+html[data-theme="death-star"] .btn:is(:disabled, [aria-disabled="true"]) {
+  --btn-bg: #1c1c1c;
+  --btn-fg: #777777;
+  --btn-border: #1c1c1c;
+  opacity: 1;
+}
+/* Badges are the console's small square push-buttons: solid chips in the
+   panel colours (pale tile grey, red, green, yellow) with dark or white
+   caps, not tints. On a red header band the red chip turns black. */
+html[data-theme="death-star"] .badge-accent { --badge-bg: var(--accent); --badge-fg: #ffffff; }
+html[data-theme="death-star"] .badge-danger { --badge-bg: var(--danger); --badge-fg: #000000; }
+html[data-theme="death-star"] .badge-success { --badge-bg: var(--success); --badge-fg: #000000; }
+html[data-theme="death-star"] .badge-warning { --badge-bg: var(--warning); --badge-fg: #000000; }
+html[data-theme="death-star"] :is(.panel-header, .modal-header) .badge-accent { --badge-bg: #000000; --badge-fg: #ffffff; }
+/* Square indicator blocks: core's lamp is a round 1px-bordered dot. */
 html[data-theme="death-star"] .lamp {
-  border-width: 0;
-  --lamp-radius: 0;
-}
-
-/* --panel-border-width zeroes .panel/.modal, but .transport
-   and .card are separate core components with their own hardcoded 1px
-   border and no width token of their own — they were still drawing the
-   "framed panel" this theme's own README calls a tell-tale of an
-   inauthentic result. Same for the floating surfaces (dropdown, context
-   menu, popover, tooltip): panels in every way but name. */
-html[data-theme="death-star"] .transport,
-html[data-theme="death-star"] .card,
-html[data-theme="death-star"] .dropdown,
-html[data-theme="death-star"] .context-menu,
-html[data-theme="death-star"] .popover,
-html[data-theme="death-star"] [data-tooltip]::after {
+  --lamp-border-width: 0;
   border-width: 0;
 }
+/* Alerts and toasts: a solid colour block at the leading edge, no frame. */
+html[data-theme="death-star"] :is(.alert, .toast) {
+  border-width: 0;
+  border-inline-start-width: 4px;
+}
+html[data-theme="death-star"] [data-tooltip]::after { border-width: 0; }
 
-/* App-bar nav text. Inactive items one step lighter than --muted (6.1:1 on the
-   black bar) — still recessive next to the active item. */
+/* App-bar: the console's tile row, in bays of four like the diorama's
+   (pale green-grey #d7e4df, 2rem x 2.25rem near-portrait blocks, 5px black
+   seams, whole bays only, inset 1rem from the edges), above the bar
+   content, then the red rule. Inactive nav items #8a8a8a (6.1:1 on black). */
 html[data-theme="death-star"] .app-bar {
   --nav-item-fg: #8a8a8a;
-  /* The root accent (#c81e1e) is only 3.7:1 on the black bar; brand text
-     needs a brighter red to clear the 4.5:1 floor. */
-  --nav-brand-fg: #ff5a5a;
+  --nav-brand-fg: #ffffff;
+  --app-bar-padding: calc(2.25rem + 0.6rem) 1rem 0.6rem;
   border-bottom: 3px solid var(--accent);
+  background-image: linear-gradient(90deg,
+    transparent 0 1rem,
+    #d7e4df 0 3rem, transparent 0 calc(3rem + 5px),
+    #d7e4df 0 calc(5rem + 5px), transparent 0 calc(5rem + 10px),
+    #d7e4df 0 calc(7rem + 10px), transparent 0 calc(7rem + 15px),
+    #d7e4df 0 calc(9rem + 15px), transparent 0);
+  background-size: calc(10rem + 15px) 2.25rem;
+  background-repeat: space no-repeat;
 }
 
-/* The white outline grid: the reference photos' dominant construction is a
-   circuit-board lattice of hairline white segments on black, not a soft
-   panel fill. Painted as a background-image (not a box-model border) so
-   the "zero borders/shadows" component contract still holds — this is
-   texture, not chrome.
-   Two-axis lattice at a much higher opacity than the original 0.12 (a
-   prior "horizontal lines only at low opacity" pass over-corrected for a
-   mid-word-line risk and, in an actual render, was essentially invisible
-   against black — the critic-confirmed failure mode this pass fixes).
-   0.35 alpha, both axes, reads clearly as a circuit-grid wall behind
-   panel/transport content, which is opaque foreground text and controls
-   sitting well above the grid, not text with a line drawn through it. */
-html[data-theme="death-star"] .panel,
-html[data-theme="death-star"] .transport {
-  background-image:
-    linear-gradient(rgba(230,230,230,0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(230,230,230,0.35) 1px, transparent 1px);
-  background-size: 2.5rem 2.5rem;
-  background-position: 0 0;
-}
-/* A Death Star interior is walls-of-grid everywhere, not just individual
-   panels — the same lattice, fainter, spread across the whole app shell
-   so the background and main content well read as gridded bulkhead too.
-   Kept dimmer than panel/card so foreground panels still pop forward. */
-html[data-theme="death-star"] .app,
-html[data-theme="death-star"] .app-main {
-  background-image:
-    linear-gradient(rgba(230,230,230,0.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(230,230,230,0.18) 1px, transparent 1px);
-  background-size: 2.5rem 2.5rem;
-  background-position: 0 0;
-}
-/* .card previously got a plain dark fill while .panel got the
-   white grid: same --surface-2 fill underneath, so the color read as
-   identical, but the missing texture made cards read as a different
-   material next to a gridded panel in the same layout (the panel-style
-   inconsistency flagged against the dashboard). A full repeating grid at
-   panel's 2.5rem pitch isn't safe here — cards hold short, large-type
-   text (stat tiles, feature headings) and a repeating line reliably lands
-   mid-word ("REVENUE", "CONVERSION RATE" both got a line through a
-   letter). So cards get the same hairline construction and color, but as
-   two non-repeating lines pinned to the card's own top and bottom edges
-   instead of a repeating field — inside the padding, never crossing
-   content, while still reading as the same console-grid material as the
-   panel. */
-html[data-theme="death-star"] .card {
-  --card-bg: var(--surface-2);
-  background-image:
-    linear-gradient(rgba(230, 230, 230, 0.35) 1px, transparent 1px),
-    linear-gradient(rgba(230, 230, 230, 0.35) 1px, transparent 1px);
-  background-repeat: no-repeat;
-  background-size: 100% 100%, 100% 100%;
-  background-position: 0 0, 0 100%;
-}
-/* Red is a signal, rule or brand color, not a filled panel. */
-html[data-theme="death-star"] .panel-header,
-html[data-theme="death-star"] .modal-header {
-  background: transparent;
-  color: var(--accent-text);
-  background-image: none;
-  border-inline-start: 3px solid var(--accent);
-  padding-inline-start: 0.65rem;
-  /* Close/min/max glyphs default to --muted, which vanished on the red
-     block; white like the title, with a darker red press state. */
+/* Text on the red header band: muted, success and close glyphs re-pointed
+   so they clear 4.5:1 on #c4352a. */
+html[data-theme="death-star"] :is(.panel-header, .modal-header) {
   --btn-close-fg: #ffffff;
   --btn-close-fg-hover: #ffffff;
-  --btn-close-bg-hover: #8f1010;
-  /* Text on the red block: muted and success re-pointed so hints and
-     status lines still clear 4.5:1 on #c81e1e. */
-  --muted: #ffe3e3;
+  --btn-close-bg-hover: #9a2a20;
+  --muted: #fff0f0;
   --success-text: #c8ffd8;
 }
+/* Current page in navigation-patterns: the page's unlayered rule pairs
+   --accent-text with the --accent fill (1.92:1 here); white on the red fill
+   is 5.4:1. !important because theme CSS sits in a layer that loses to the
+   page's unlayered style otherwise. */
+html[data-theme="death-star"] .pattern-nav a[aria-current="page"] { color: var(--on-accent) !important; }
 
-/* Nesting steps down: a panel inside another surface is a plain
-   dark block (the lattice belongs to the bulkhead, and a second grid
-   inside the first ran lines through labels and fields), and a nested
-   panel's header is a slim red block at its left edge instead of another
-   full red bar under the parent's. */
-html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer, .transport) .panel {
-  background-image: none;
+/* Nesting steps down: a surface inside another draws a thinner 2px
+   outline, and a nested panel's header is a slim red block at its left
+   edge instead of another full red band under the parent's. */
+html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer, .transport) :is(.panel, .card) {
+  --panel-border-width: 2px;
+  --card-border-width: 2px;
 }
 html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .panel-header {
   background: linear-gradient(var(--accent), var(--accent)) left / 0.35rem 100% no-repeat;
@@ -206,24 +278,21 @@ html[data-theme="death-star"] :is(.panel, .card, .modal, .drawer) .panel > .pane
  * use core's one-column shell as is. */
 
 /* XL gutters (v5, PLAN.md §3): more bulkhead. The circuit-grid lattice
-   continues, much fainter than inside the shell, with a few unlit red
-   control blocks set into it. Within ~1.2:1 of black; still. */
+   continues, much fainter than inside the shell, with a few unlit grey
+   control blocks, a short pale tile row and one cluster of small multicolour push-buttons set into
+   it. Still. */
 html[data-theme="death-star"] {
   --app-gutter-art:
-    linear-gradient(#2a0505, #2a0505) 5rem 30% / 5rem 2.5rem no-repeat,
-    linear-gradient(#2a0505, #2a0505) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
-    linear-gradient(#2a0505, #2a0505) 10rem 78% / 2.5rem 2.5rem no-repeat,
+    linear-gradient(#c4352a, #c4352a) 6rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#5281b8, #5281b8) 7.25rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#e0b020, #e0b020) 8.5rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#e6e6e6, #e6e6e6) 9.75rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#5cc872, #5cc872) 11rem calc(30% + 3.5rem) / 0.75rem 0.75rem no-repeat,
+    linear-gradient(#1a1a1a, #1a1a1a) 5rem 30% / 5rem 2.5rem no-repeat,
+    linear-gradient(#1a1a1a, #1a1a1a) calc(100% - 7.5rem) 62% / 7.5rem 2.5rem no-repeat,
+    linear-gradient(#1a1a1a, #1a1a1a) 10rem 78% / 2.5rem 2.5rem no-repeat,
+    /* Short tile row echo, then the lattice. */
+    repeating-linear-gradient(90deg, #d7e4df 0 2rem, transparent 2rem calc(2rem + 5px)) 5rem calc(30% - 4rem) / calc(4 * 2rem + 15px) 2.25rem no-repeat,
     linear-gradient(rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem,
     linear-gradient(90deg, rgba(230, 230, 230, 0.07) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem;
-}
-
-/* --- Print ----------------------------------------------------------------
- * Core's generic component list already zeroes the circuit-grid texture on
- * .panel/.app/.app-main/.card, but .transport is a
- * separate component core's print block doesn't know about, and it carries
- * the same grid background-image here. */
-@media print {
-  html[data-theme="death-star"] .transport {
-    background: none !important;
-  }
 }
