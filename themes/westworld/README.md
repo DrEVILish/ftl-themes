@@ -27,13 +27,19 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 2. **Cyan is the ink.** One steel-cyan (`#5cbbca`, a low-chroma lift of the sampled `#3f96a6`-`#5c9ba4`) draws outlines, active
    states, table heads and panel titles. Lime (`#a5d65a`) is reserved for
    values (the vitals readout's HR 111 and the dial's outer bars), and
-   it serves as the second chart series.
+   it serves as the second chart series. The chart ramp is cyan, lime,
+   node-graph amber, deep teal `#2f8797`, steel grey and dark steel `#6f8c95`, never
+   red; chart ticks are cyan condensed caps and an area under a line is
+   only a 0.1 wash.
 3. **Condensed caps for every label.** Headings, buttons, tabs, nav,
    menubar items, toggle buttons, settings-style nav
    lists, summaries, legends, scrollspy links, table heads, badges and
    panel headers are set in a DIN-class condensed grotesque (DIN Condensed
    where installed, else vendored Barlow Semi Condensed), uppercase.
-   Headings are weight 700, tracked only 0.03em, like SECTOR [17].
+   Headings, panel titles and buttons are the Medium cut (600), tracked
+   only 0.03em, like ATTRIBUTE MATRIX and SECTOR [17]; h1 is 1.7rem.
+   700 is kept for the small 12-13px caps. The status strip, taskbar
+   items included, is tracked caps too.
    Small caps (table heads, badges, table status text) never drop below
    12px. Dropdown, context-menu and popover titles use the same face in
    mixed case, like the phone's Contact / Message / Connect menu; folder
@@ -41,7 +47,9 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
    the tablets never set paragraphs.
 4. **Values in brackets.** Badges read `[14]`, `[PAID]` and
    `[LIVE]`, like the matrix's `[14] BULK APPERCEPTION` and the phone's
-   `SECTOR [17]`. The brackets sit tight on the value.
+   `SECTOR [17]`. The brackets sit tight on the value, and a badge after
+   a panel title sits half a space away from it. Reaction chips and icon
+   badges are controls and carry no brackets.
 5. **Levels are stacks of squares.** Meters, progress bars and chart bars
    (stacked progress included) are segmented ladders, like the attribute sliders, horizontal and
    vertical alike; meters keep the cyan / lime / red level bands inside
@@ -97,7 +105,8 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
   its own thin slate outline. The active one gets a cyan outline and a
   cyan tint, like the phone's CODE / HOSTS / SATELLITE row.
 - **Chevron pills.** Pagination's prev / next are outlined pills with a
-  bold chevron, like the phone's `< FOCUS >` / `< CONTROL ROOM >` column.
+  chevron at text size that the pill hugs, like the phone's `< FOCUS >` /
+  `< CONTROL ROOM >` column; the disabled pill keeps a slate outline.
 - **Readouts.** Readouts use Share Tech Mono numerals in cyan with a faint
   glow, like the vitals cluster (touch tiers drop the glow so scrolling
   stays cheap).
@@ -106,7 +115,7 @@ Delos or HBO logo or artwork is reproduced. Sources are listed in
 
 | Role | Stack | Why |
 |---|---|---|
-| Labels | DIN Condensed, Bahnschrift SemiCondensed, DIN 2014 Narrow, then `Barlow Semi Condensed` (vendored OFL, `assets/fonts`, Medium and Bold), Arial Narrow | The tablets use a tight DIN Condensed-style grotesque with straight-sided rounds and a tall x-height. The real DIN faces come first; Barlow Semi Condensed is the closest free DIN-alike (Rajdhani's wide rounded O/C/S read as a game HUD; Antonio was too tall and narrow and read as LCARS), used at 700 for headings and buttons. |
+| Labels | DIN Condensed, Bahnschrift SemiCondensed, DIN 2014 Narrow, then `Barlow Semi Condensed` (vendored OFL, `assets/fonts`, Medium and Bold), Arial Narrow | The tablets use a tight DIN Condensed-style grotesque with straight-sided rounds and a tall x-height. The real DIN faces come first; Barlow Semi Condensed is the closest free DIN-alike (Rajdhani's wide rounded O/C/S read as a game HUD; Antonio was too tall and narrow and read as LCARS), its Medium cut set at 600 for headings, panel titles and buttons, Bold only for small caps. |
 | Body | `Titillium Web` (vendored OFL), then Helvetica Neue, Helvetica, Inter, Roboto, Noto Sans, Arial, Liberation Sans | A plain technical grotesque that ships with the theme, so no platform falls through to the wide DejaVu Sans. The Delos security panel (an ARG site) sets body text in a plain grotesque sans. |
 | Mono and readouts | `Share Tech Mono` (vendored OFL, shared with prometheus) | It matches the squared numerals of the vitals and code panes. |
 

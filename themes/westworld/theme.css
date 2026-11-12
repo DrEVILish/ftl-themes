@@ -97,7 +97,7 @@ html[data-theme="westworld"] {
   --btn-shadow-hover: 0 0 0.55rem var(--ww-glow);
   --btn-transform: uppercase;
   --btn-tracking: 0.09em;
-  --btn-weight: 700;
+  --btn-weight: 600;
   --btn-radius: 0.3rem;
   --btn-padding: calc(0.4em * var(--density)) calc(1.1em * var(--density));
 
@@ -274,6 +274,19 @@ html[data-theme="westworld"] {
   --bar-chart-radius: 0;
   --bar-chart-axis: var(--accent);
   --bar-chart-axis-width: 1px;
+
+  /* Chart ramp from the tablet palette: cyan, lime, node-graph amber, deep
+     teal, steel grey, dark steel. Red stays out: it means danger only. */
+  --chart-series-1: var(--accent);
+  --chart-series-2: var(--accent-2);
+  --chart-series-3: var(--warning);
+  --chart-series-4: #2f8797;
+  --chart-series-5: var(--muted);
+  --chart-series-6: #6f8c95;
+  /* Data is line-work: condensed cyan ticks, a faint wash under a line. */
+  --chart-text: var(--accent);
+  --chart-font: var(--ww-label);
+  --chart-area-opacity: 0.1;
 }
 
 /* Levels are stacks of squares in both orientations: the low/mid/high bands
@@ -297,7 +310,6 @@ html[data-theme="westworld"] .btn-primary {
   --btn-fg: var(--ww-ink);
   --btn-border: var(--accent);
   --btn-bg-hover: rgba(92, 187, 202, 0.25);
-  --btn-weight: 700;
 }
 /* Danger and success are outlined caps too: their colour as a 1px line
    over a faint tint of it, never a solid block. */
@@ -372,9 +384,11 @@ html[data-theme="westworld"] .pagination-item:is(:first-child, :last-child) {
   --pagination-item-fg: var(--text);
   border-color: var(--ww-line-hi);
   min-block-size: max(2.25rem, var(--tap-min));
-  padding-inline: 1.1em;
-  font: 700 1.35em/1 var(--ww-label);
+  padding-inline: 0.8em;
+  font: 700 1.05em/1 var(--ww-label);
 }
+/* The disabled pill keeps its outline visible at core's 0.4 opacity. */
+html[data-theme="westworld"] .pagination-item.is-disabled:is(:first-child, :last-child) { border-color: var(--border); }
 /* Small caps labels stay at 12px+ (13px on touch tiers). */
 html[data-theme="westworld"] th { font-size: max(0.8rem, 1em); font-weight: 700; }
 @media (pointer: coarse) {
@@ -382,22 +396,25 @@ html[data-theme="westworld"] th { font-size: max(0.8rem, 1em); font-weight: 700;
   /* Phones drop the readout glow: blurred text shadows repaint on every scroll frame. */
   html[data-theme="westworld"] { --readout-glow: none; }
 }
-/* Medium-bold, semi-condensed like the tablets' SECTOR [17] / UPLOAD caps. */
+/* Medium semi-condensed caps like the tablets' ATTRIBUTE MATRIX / SECTOR;
+   700 is kept for the small 12-13px caps (th, badge, status). */
 html[data-theme="westworld"] :is(h1, h2, h3, h4) {
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text);
 }
-html[data-theme="westworld"] h1 { font-size: 1.9rem; }
+html[data-theme="westworld"] h1 { font-size: 1.7rem; }
 html[data-theme="westworld"] h2 { font-size: 1.45rem; }
 html[data-theme="westworld"] h3 { font-size: 1.2rem; }
 html[data-theme="westworld"] .panel-header {
   font-size: 1.05em;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.07em;
   border-bottom-color: var(--hairline);
 }
+/* SECTOR [17]: a badge after the title sits a space away from it. */
+html[data-theme="westworld"] .panel-header > .badge { margin-inline-start: 0.5em; }
 /* A short cyan rule leads each panel title, like the matrix window's tab. */
 html[data-theme="westworld"] .panel-header::before {
   content: "";
@@ -445,6 +462,9 @@ html[data-theme="westworld"] .badge {
 /* Bracketed values: "[14] BULK APPERCEPTION", "SECTOR [17]". */
 html[data-theme="westworld"] .badge::before { content: "["; margin-inline: 0 0.05em; letter-spacing: 0; opacity: 0.75; }
 html[data-theme="westworld"] .badge::after { content: "]"; margin-inline: 0.05em 0; letter-spacing: 0; opacity: 0.75; }
+/* Reaction chips and icon badges are controls, not bracketed values. */
+html[data-theme="westworld"] :is(.message-reactions .badge, .badge:has(> svg, > img))::before,
+html[data-theme="westworld"] :is(.message-reactions .badge, .badge:has(> svg, > img))::after { content: none; }
 html[data-theme="westworld"] :is(.input, .select, .textarea) { font-family: var(--font-mono); }
 /* Fields in a dense table row keep a usable width: a native date picker
    claims ~180px and would squeeze its neighbours below the tap target;
@@ -584,6 +604,16 @@ html[data-theme="westworld"] .app-status {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: 0.85rem;
+}
+/* Taskbar items share the strip's tracked caps. */
+html[data-theme="westworld"] .app-status :is(button, a) {
+  font-family: var(--ww-label);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+/* ...tracked tighter on phones so the tray keeps its edge margin. */
+@media (max-width: 480px) {
+  html[data-theme="westworld"] .app-status :is(button, a) { letter-spacing: 0.01em; }
 }
 
 /* --- v5 layout (PLAN.md §2–§3) -------------------------------------------
