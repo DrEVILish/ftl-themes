@@ -23,10 +23,14 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    toasts, tooltips, the status strip and the brand window. Panels, tables
    and forms stay light. Do not "dark mode" the body.
 2. **Four encoder colours, in order.** Blue, green, white, orange — knobs,
-   tab dots, slider thumbs, fader cap lines and the first chart series
-   follow that order by position (`--te-hue` / `--te-ink`, cycled with
-   zero-specificity `:where()` rules so band classes and app values win).
-   No other saturated colour is decoration; red-orange means record/danger.
+   tab dots, the dot on each slider thumb, fader cap lines and the first
+   chart series follow that order by position (`--te-hue` / `--te-ink`,
+   cycled with zero-specificity `:where()` rules so band classes and app
+   values win). No other saturated colour is decoration; red-orange means
+   record/danger. Generic UI accents (`--accent`) use the deep encoder blue
+   `#0a6ea3` (3.9:1 on the aluminium); the bright cap blue stays on the
+   encoders, charts and gauges. Secondary and tertiary buttons print a dark
+   legend like every key: blue is for links.
 3. **Keys are rounded rectangles with a 2px side.** Buttons, panels,
    cards, the bar and the rail are keys: `0.5-0.75rem` corners, a hairline
    key-edge border and a hard 2px shadow underneath. A page-level
@@ -35,19 +39,24 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
    black note key with a white legend: the hardware has no blue keys.
 4. **Black means selected.** Active nav items, segmented items, pagination,
    active badges, the highlighted menu item and command row, checked toggle
-   buttons, the selected calendar day (its range is pressed keys) and the
+   buttons, the mixer's SEL/monitor key and the selected strip, checked
+   checkboxes and radios, the selected calendar day (its range is pressed keys) and the
    selected desktop icon label are the black of the OP-1's
    note dots with white text, not the accent colour. Selected list, inbox and
    table rows are a pressed (darker) key with a black edge bar. The bulk
    selection bar is a strip of display glass; an accent badge is a white key
-   with a blue dot; an unsaved cell is a white key with an orange edge bar.
+   with a blue dot; an unsaved cell is a white key with an orange edge bar;
+   a playing sound pad stays a light key with a 4px bar in its colour along
+   the bottom, never a tinted face.
 5. **Light grotesque, silkscreen labels.** Headings are regular/medium
    (h1 400, h2-h4 500) with negative tracking, so the display numerals stay
    the loudest type; panel heads, table heads and form labels are tiny tracked caps
    like the printing beside a key. Display numerals (`.readout`,
    `.stat-value`) are thin and wide like the OP-1 screen: a light grotesque
-   (300, tracked 0.05em, tabular) pared down further by a hairline stroke in
-   the glass colour, so they stay thin even where no light cut exists. Code,
+   (300, tracked 0.05em): Helvetica Neue Light or Segoe UI Light where
+   present, else the vendored Selawik Light (SIL OFL), so the thinness comes
+   from the cut and the strokes stay bright white. Page titles followed by
+   a lede get a little air under them. Code,
    the brand window and the status strip use the monospace.
 
 ## Signature details
@@ -57,20 +66,23 @@ mapping are in `references/teenage-engineering/RESEARCH.md`.
   cylinder's side (2px, darker shade of the cap) and its shadow are painted
   on the dial, which doesn't turn, so they stay underneath at any value.
   `.knob-hf/-hmf/-lmf/-lf` are the four encoders. The cap top is a flat
-  matte fill with only a 1px lighter rim, no highlight.
+  matte fill with only a 1px lighter rim, no highlight; the slot is one 2px
+  cut through the centre (70% of the cap), a darker shade of the cap.
 - The rail is a key-face column: the speaker grille (an SVG dot field) on
   top, the four encoder dots under it, then four black round note keys.
 - Every page has a screen: a KPI `.stat-value` sits in a small display
-  window. Every panel and card is a labelled key: its header's first item,
-  or a plain `h2`/`h3` that opens it, carries an encoder colour dot (blue,
-  green, white, orange by position).
+  window, a block of its own so its label always prints on its own line
+  above or below it. Every panel and card is a labelled key: its header's
+  first item, a plain `h2`/`h3` that opens it, or the `h2`/`h3` in a
+  `.cluster` that opens it, carries an encoder colour dot (blue, green,
+  white, orange by position).
 - The page is a flat near-white aluminium (`#d5d9da`); keys read by their
   key-edge seams and 2px side, not by a dark field around them.
 - The bar's brand sits in a tiny display window (black glass, mono, white).
 - The status strip is display glass. On a phone it wraps to two lines
   rather than cutting items to one glyph.
 - The slider is a thin, square-cut black slot (0.3rem) under a small
-  encoder-cap thumb; the hit area stays at core's tap minimum (the content-box
+  light key thumb carrying its encoder's colour dot; the hit area stays at core's tap minimum (the content-box
   clip that keeps it there leaves no room for rounded ends).
 - Level meters (`.visualizer`) and `.trace` are small glass windows with
   white bars and a teal line. A `.bar-chart` on a light key prints its bars
@@ -147,10 +159,9 @@ rest are core fallbacks, drawn at the same 1.5 stroke via
   brand window and the status display strip.
 - Fonts: the manufacturer's grotesque is not free; the system stack
   (Helvetica Neue, Helvetica, Arimo, Arial, Liberation Sans, Nimbus Sans,
-  TeX Gyre Heros, FreeSans) stands in. Nothing is vendored, so a machine
-  with none of these (a bare Linux box) falls back to its default sans,
-  usually DejaVu Sans, which runs wide; the light heading weights keep it
-  calm.
+  TeX Gyre Heros, FreeSans) stands in; Liberation Sans is metric-compatible
+  with Helvetica. Display numerals fall back to Selawik Light (SIL OFL,
+  already in `assets/fonts/`, see `NOTICE.md`), the open thin cut.
 
 ## Reference status
 
