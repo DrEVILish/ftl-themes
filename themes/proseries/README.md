@@ -45,13 +45,19 @@ at arm's length in a dark room.
 - `--btn-*`: grey bevelled buttons; `.btn-primary` is the navy preset key,
   `.btn-secondary` the grey copy/paste key, `.btn-tertiary` a flat grey key
   and `.btn-ghost` a key outline (never bare text on the desk).
-- `--card-bg`: the strip blue (flat #3a62b4), so the console blue shows on
-  every page; muted text in a card lifts to near-white. `--panel-bg` is the
-  sidebar's royal-blue section, flat, under a flat light-lavender
-  `--panel-header-bg` band with dark bold text (muted/status tones in the
-  band go dark to keep 4.5:1). Both are single fills with a
-  hard 1px drop, no blur, to keep scrolling cheap. On touch screens
-  (`pointer: coarse`) the key bevels flatten to one fill plus an inset line.
+- `--card-bg`: a strip block graded #4568b8 to #3157a6 through the strip's
+  #3a62b4 band, with a light top edge and a dark foot line; muted text in a
+  card lifts to near-white. `--panel-bg` is a sidebar section graded
+  #535f9d to #4a5592 (the sampled #6b77aa is lighter, but muted text there
+  falls to 3.4:1), under a flat light-lavender `--panel-header-bg` band with
+  dark bold text (muted/status tones in the band go dark to keep 4.5:1).
+  Both are static two-stop fills with a hard 1px drop, no blur. On touch
+  screens (`pointer: coarse`) cards, panels and key bevels flatten to one
+  fill plus an inset line.
+- `--tab-*`: the patching screen's dark tabs (#0d0f1c, a #3b4782 edge, a
+  bevelled top); the current tab lifts to the panel blue with a light top
+  line and joins the page below. No coloured underline.
+- `.stat-value`: small bold sans (1.3rem), like the console's readouts.
 - `--slider-bg`: the 6px black fader slot with a light lower lip;
   `--slider-thumb-*`: the fader cap on its side (upright on
   `.slider.is-vertical`, which draws a 6px slot in its touch-sized box).
@@ -62,14 +68,17 @@ at arm's length in a dark room.
   tick labels; h1/h2 capped at 1.5rem/1.2rem (the bar title is the largest type).
 - `--btn-close-*`: a white round close disc with a dark glyph (dark red on `.is-danger`);
   window minimise/maximise are square grey soft keys.
-- `--app-*`: black home bar, no rail, a flat navy desk.
+- `--app-*`: black home bar, no rail, a flat navy desk (#3d4778).
+- `--nav-item-bg-active`: flat navy for side and section navs; only the
+  bar's `--menubar-item-bg-active` is the two-tone tab.
 
 ## Signature details
 
 - Knob tick rings drawn with a repeating conic gradient behind the value arc; the console's other
   pointer styles (chicken heads, clock, lobed, sculpted, LED ring, LED dot) are `data-pointer` values.
 - Brushed-metal and leather faceplates are drawn in CSS (`data-finish`), never copied from the console.
-- The home bar: a two-tone "home" tab (light grey cap over navy, white bold text), a round back key, the page title,
+- The home bar: a two-tone "home" tab (a fixed light grey cap band above
+  white bold text that sits wholly on the navy), a round back key, the page title,
   a black scene field in yellow, a status key with a red lamp, tap tempo.
   On every page the bar's current item is the two-tone tab, the brand gets
   the round back key and fields in the bar are the black yellow scene field.
@@ -86,13 +95,14 @@ at arm's length in a dark room.
 ## Layout
 
 Black home bar across the top, no rail, the content on a flat
-navy-violet desk. Panels are royal blue with light headers; cards are strip blue.
+navy-violet desk. Panels are graded lavender-blue sections with light
+headers; cards are graded strip-blue blocks.
 
 ## v5 layout
 
 - **Tiers:** phone and tablet keep the bar. On a phone it is two rows at
-  most: the brand beside a nav that scrolls on one line, then the scene
-  field, search, bell and avatar. The desk scrolls.
+  most: the brand beside a nav that scrolls on one line (fading at its end),
+  then the scene field, search, bell and avatar. The desk scrolls.
 - **Gutter art:** a dark navy field with faint specks, within 1.5:1 of `--bg`.
 - **Nesting:** nested panels keep the same blue with no second bevel.
 

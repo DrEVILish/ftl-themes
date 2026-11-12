@@ -78,20 +78,27 @@ html[data-theme="proseries"] {
   --table-head-tracking: 0;
 
   /* --- Surfaces: royal-blue panels, navy title bars ---------------------- */
-  /* The sidebar's saturated royal-blue section, flat (one fill keeps
-     scroll frames cheap), as light as small bold muted text keeps 4.5:1. */
-  --panel-bg: #4b5ca8;
+  /* A sidebar section: graded from a light top edge to a darker foot,
+     in the reference's greyer lavender-blue. The sampled #6b77aa body is
+     lighter still, but muted text on it drops to 3.4:1, so the panel sits
+     at the lightest value small bold muted text keeps 4.5:1. */
+  --panel-bg: linear-gradient(180deg, #535f9d, #4a5592);
   --panel-border: #1a1f3d;
   --panel-radius: 4px;
-  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 0 rgba(0, 0, 0, 0.5);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.35), 0 1px 0 rgba(0, 0, 0, 0.5);
   /* The effects-page sidebar's light lavender section band, flat. */
   --panel-header-bg: #a4aacb;
   --panel-header-fg: #14193a;
-  /* Cards are the console's blue channel strip, flat at the strip's
-     #3a62b4 band (a gradient here costs scroll frames); muted text in a
+  /* Cards are a blue channel-strip block: graded with a light top edge
+     and a dark foot (flat on touch, see the coarse block); muted text in a
      card lifts to near-white instead of darkening the blue. */
-  --card-bg: #3a62b4;
+  --card-bg: linear-gradient(180deg, #4568b8, #3a62b4 55%, #3157a6);
+  --card-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.35), 0 1px 0 rgba(0, 0, 0, 0.5);
   --card-border: #1d2a5e;
+  /* Tinted list and ranked cards mix a tone into one fill (a gradient
+     cannot be mixed), so they take the strip's flat band. */
+  --list-card-bg: #3a62b4;
+  --ranked-item-bg: #3a62b4;
   --modal-bg: #4a578f;
   --modal-header-bg: linear-gradient(180deg, #4e63b3 0, #2c3d8e 55%, #23327a 100%);
   --modal-header-fg: #ffffff;
@@ -103,13 +110,16 @@ html[data-theme="proseries"] {
   --toast-bg: linear-gradient(180deg, #4e63b3, #2c3d8e);
   --toast-fg: #ffffff;
 
-  /* --- Tabs: the black tab strip of the patching and preset screens ------- */
-  --tab-bg: #050507;
-  --tab-fg: #a8acc0;
-  --tab-bg-active: #050507;
+  /* --- Tabs: the patching screen's dark bevelled tabs; the current one is
+     lifted to the panel blue and joins the page below (no underline). */
+  --tab-bg: #0d0f1c;
+  --tab-fg: #c4c8dc;
+  --tab-bg-hover: #1d2448;
+  --tab-bg-active: #535f9d;
   --tab-fg-active: #ffffff;
-  --tab-underline-active: #f1eb5b;
-  --tab-radius: 0;
+  --tab-border-active: #6b77aa;
+  --tab-underline-active: #535f9d;
+  --tab-radius: 5px 5px 0 0;
 
   /* --- Tables and lists --------------------------------------------------- */
   --table-head-bg: #1d2448;
@@ -281,7 +291,7 @@ html[data-theme="proseries"] {
   --app-bar-rule-width: 2px;
   --app-bg: #191d36;
   /* Flat desk behind the scroller (a radial here repaints on scroll). */
-  --app-main-bg: #39457d;
+  --app-main-bg: #3d4778;
   --app-main-padding: 0.6rem;
   --app-padding: 0;
   --app-gap: 0;
@@ -289,11 +299,13 @@ html[data-theme="proseries"] {
   --app-status-bg: #000000;
   --app-status-fg: #d3d8f3;
   --nav-item-fg: #d3d8f3;
-  /* The current item is the two-tone "home" tab: a light grey cap over a
-     navy lower half, bold white text with a dark outline. */
+  /* The bar's current item is the two-tone "home" tab: a fixed light grey
+     cap band above the label, white bold text wholly on the navy below.
+     Side and section navs light their current item flat navy. */
   --nav-item-fg-active: #ffffff;
-  --nav-item-bg-active: linear-gradient(180deg, #d9dce6 0 42%, #2c3d8e 42%);
-  --menubar-item-bg-active: linear-gradient(180deg, #d9dce6 0 42%, #2c3d8e 42%);
+  --nav-item-bg-active: #2c3d8e;
+  --ps-tab-cap: 0.4rem;
+  --menubar-item-bg-active: linear-gradient(180deg, #d9dce6 0 var(--ps-tab-cap), #2c3d8e var(--ps-tab-cap));
   --menubar-item-fg-active: #ffffff;
   --nav-brand-fg: #ffffff;
   --app-gutter-art:
@@ -405,6 +417,11 @@ html[data-theme="proseries"] .app-bar:not(.ps-bar) .nav-brand::before {
   flex: none;
 }
 /* The current section in the bar is the two-tone grey "home" tab. */
+/* Every bar item leaves room for the cap, so hover and current never
+   put the label across the grey band. */
+html[data-theme="proseries"] .app-bar .menubar > li > :is(button, a) {
+  padding-block: calc(var(--ps-tab-cap) + 0.15em) 0.35rem;
+}
 html[data-theme="proseries"] .app-bar .menubar > li > .is-active {
   background: var(--menubar-item-bg-active);
   color: #ffffff;
@@ -489,6 +506,12 @@ html[data-theme="proseries"] .carousel::scroll-button(*) { border-radius: 2px; b
    page title in the black bar. */
 html[data-theme="proseries"] h1 { font-size: 1.5rem; }
 html[data-theme="proseries"] h2 { font-size: 1.2rem; }
+/* Values are small bold sans like the console's readouts; mono stays for
+   timecode and meter figures. */
+html[data-theme="proseries"] .stat-value { font-family: var(--font); font-size: 1.3rem; }
+/* The current tab's top edge catches the light like a strip block. */
+html[data-theme="proseries"] .tab { border-color: #3b4782; border-block-end-color: transparent; }
+html[data-theme="proseries"] .tab.is-active { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4); }
 
 /* Strips keep their dark dividers and the black send block. */
 html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.25); }
@@ -504,8 +527,12 @@ html[data-theme="proseries"] .strip { border-inline: 1px solid #1a2350; box-shad
   html[data-theme="proseries"] .app-bar { flex-wrap: wrap; row-gap: 0.25rem; }
   html[data-theme="proseries"] .app-bar > nav { flex: 1 1 0; min-inline-size: 0; overflow-x: auto; scrollbar-width: none; }
   html[data-theme="proseries"] .app-bar .menubar { flex-wrap: nowrap; }
+  /* The nav fades at its end so a cut-off item reads as "scroll for more". */
+  html[data-theme="proseries"] .app-bar > nav { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent); }
   html[data-theme="proseries"] .app-bar :is(.select, .input) { font-size: 0.8rem; min-block-size: var(--tap-min); padding-block: 0; max-inline-size: 8.5rem; }
   html[data-theme="proseries"] .app-bar .cluster { flex-wrap: nowrap; gap: 0.35rem; }
+  /* The tools always take row two, so the nav keeps the whole first row. */
+  html[data-theme="proseries"] .app-bar > .cluster.push { flex-basis: 100%; justify-content: flex-end; }
   html[data-theme="proseries"] .app-bar kbd { display: none; }
 }
 
@@ -570,6 +597,9 @@ html[data-theme="proseries"] .badge-danger { --badge-bg: var(--danger); --badge-
     --go-bg: #3faa58;
     --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     --panel-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    --panel-bg: #4f5b98;
+    --card-bg: #3a62b4;
+    --card-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     --modal-header-bg: #2c3d8e;
     --toast-bg: #2c3d8e;
     --app-bar-bg: #000000;
