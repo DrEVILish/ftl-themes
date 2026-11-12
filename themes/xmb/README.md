@@ -36,12 +36,17 @@ which doesn't translate to a general-purpose page background.
 - The wave: royal blue lit from the top right and falling to navy at the
   bottom left (sampled from `xmb-retroarch-main-menu.jpg`: #0056b9 upper
   left, #0398f6 top right, #021059 bottom left), with a translucent white
-  ribbon (a broad 18% band and a fainter 8% one, three thin strokes)
-  sweeping across the lower middle of the first screen (from 38vh). The highlight and ribbon are sized to the viewport,
+  ribbon sweeping across the lower middle of the first screen (from 38vh):
+  two feathered sheets (5% and 3% white, Gaussian-blurred inside the SVG
+  so their edges are soft, as in the captures), two blurred edge strokes,
+  one crisp 12% highlight line and a few tiny sparkle dots (the PS3's
+  particles). The opacities are held low so `--muted` stays at about
+  4.6:1 or better averaged over the band; only the 1.5px highlight line
+  dips to about 4.1:1 where a glyph crosses it. The highlight and ribbon are sized to the viewport,
   so a long page doesn't stretch them; the same ribbon continues in the XL
   gutters.
 - Glass is tinted the wave's own deep blue (`--surface`
-  `rgba(0,22,80,.38)`), not white, so panels read as blue glass rather than
+  `rgba(0,22,80,.38)`; the tinted `.band` a lighter `rgba(0,22,80,.18)`), not white, so panels read as blue glass rather than
   grey blocks; the folder rail and toolbars are transparent and rounded.
   Panels and cards have no box edge to speak of: a 10% hairline
   (`--panel-border`) and a top highlight (`--panel-shadow`
@@ -52,16 +57,30 @@ which doesn't translate to a general-purpose page background.
   free space on both sides. The selected category is the lit one, as the
   XMB's selected icon is twice its neighbours' size: 1.35rem white with a
   white halo against 0.95rem pale-blue neighbours. A category that carries
-  an icon stacks it (1.6em) over its label. On phones the row takes its own
-  line under the brand.
+  an icon stacks it (1.6em) over its label. A 1px line of light (1.5rem,
+  white fading out) falls from the selected category: the cross's vertical
+  arm. On phones the row takes its own line under the brand, and the tools
+  share one row beneath it (the theme picker shrinks).
+- Current sub-items are marked by light alone, as on the XMB: no side
+  stripe (`--row-active-marker`, `--nav-rail-marker` and
+  `--tree-selected-marker` are off), a 10-14% white lift and a 12px glow
+  (`--list-active-marker`). A list inside a `nav` is the sub-column: no
+  box, no rules, 1.1rem rows.
+- System dialogs follow `modalDialog.jpg`: a dark band with thin white
+  rules above and below (no side edges, 0.25rem corners), the title over a
+  35% white rule instead of a header slab, and the footer's secondary
+  choices as plain text beside the bright primary ("Yes  No"). Desktop
+  windows keep their full frame.
 - Every selected state (segmented control, pagination, listbox option,
   calendar day, filter chip, toggle, desktop icon label) is a pale glass
   lift with white text and a blue-white glow (10px). Focus is never a
   coloured fill: `.btn-primary` is a bright white glass lift with navy text
   (the focused "Yes" in `modalDialog.jpg`), and `.btn-danger` is said by
-  its `--danger` text and edge on smoked glass, not a salmon block.
+  its `--danger` text and edge on smoked glass, not a salmon block; the
+  same goes for a danger `.toggle-btn` when on (14% salmon tint, danger
+  edge and a salmon glow).
   `--success` is a pale mint (`#8fe8c0`), not a neon green.
-- Sliders: the track is a 32%-white bar (`--slider-bg`) with a white,
+- Sliders: the track is a 55%-white bar (about 3:1 on the wave) (`--slider-bg`) with a white,
   glowing knob; the vertical fader draws it as a thin centred line.
 - Icon buttons scale up (`transform: scale(1.15)`) on hover/focus — the
   one unmistakable XMB interaction.
@@ -106,7 +125,7 @@ by size) and true circles. The only solids are small dots and badges
 
 ## Typography
 
-`--font` is `"XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is `Consolas, monospace`, kept for code and logs only: KPI values (`.stat-value`) and readouts (`--readout-font`) use the theme sans at weight 300, as the PS3 clock does. h4-h6, panel/modal headers, card and list titles and the brand are capped at 400, so Titillium Bold appears only for inline emphasis. "XMB Titillium" is the library's own `assets/fonts/TitilliumWeb-*.woff2` (OFL, see `assets/fonts/NOTICE.md`): without it Linux fell back to DejaVu Sans, wide and heavy. Body, headings and the category row are weight 300. The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation); the actual PS3 face (SCE Rodin) isn't free, and Titillium is the closest light, open sans the library ships, not a match.
+`--font` is `"XMB Titillium", "Segoe UI", "Helvetica Neue", Arial, sans-serif`; `--font-mono` is "XMB Mono" (the library's own `ShareTechMono-Regular.woff2`, a narrow, light-stroked mono) then `Consolas, monospace`, kept for code and logs only: KPI values (`.stat-value`), prices, readouts (`--readout-font`) and inline numerals (`.mono`: order numbers, totals, timecodes) use the theme sans at weight 300 with tabular figures, as the PS3 clock does. h4-h6, panel/modal headers, card and list titles and the brand are capped at 400, so Titillium Bold appears only for inline emphasis. "XMB Titillium" is the library's own `assets/fonts/TitilliumWeb-*.woff2` (OFL, see `assets/fonts/NOTICE.md`): without it Linux fell back to DejaVu Sans, wide and heavy. Body, headings and the category row are weight 300. The captures show a thin, light sans (both `xmb-ps3-screenshot.jpg` and the RetroArch recreation); the actual PS3 face (SCE Rodin) isn't free, and Titillium is the closest light, open sans the library ships, not a match.
 
 ## Contrast honesty
 
