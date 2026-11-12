@@ -23,10 +23,12 @@ the screen.
    `pointer-events: none`, never an animated flicker — nothing here should
    fight `prefers-reduced-motion` for a cosmetic effect.
 4. **Uppercase, tracked labels** — headings, tabs, panel headers and buttons
-   are terminal readouts, not a stylized logo.
+   and the app bar (brand included) are terminal readouts, not a
+   stylized logo.
 5. **Rectangular hardware.** No pills, circles or teardrops: badges, avatars,
-   switches, slider thumbs, comment pins, status dots, the round minimap,
-   the achievement icon and map pins are square.
+   switches, slider thumbs, comment pins, status dots and lamps, presence
+   dots, carousel dots, the pressed-button LED, the round minimap, the
+   achievement icon and map pins are square.
 6. **Little boxing.** Panels and cards are a dim hairline with bright
    corner brackets, not a full phosphor box.
 
@@ -35,6 +37,8 @@ the screen.
 - The phosphor is Fallout 4's default Pip-Boy colour, `#1aff80`
   (RGB 26, 255, 128), on a green-black `#04140a`. Chart series are
   brightnesses of that one green; no second hue outside hazard states.
+  Meter peak segments (`--meter-mid`) are the bright phosphor
+  `--accent-2`; only the clip zone (`--meter-high`) turns amber.
   HUD rarity tiers (`--rarity-*`) are brightness steps of the same green,
   and the HP bar (`--hud-health`) is green, as in Fallout 4.
 - **Media through the phosphor.** Images, videos, card/map SVGs and the
@@ -48,8 +52,11 @@ the screen.
   the active tab; short ticks rise from the rule at the active tab's ends,
   bracketing the uppercase label (the STAT / INV / DATA strip). The
   `.tab-add` button carries the rule too. The app bar nav is the same
-  header: uppercase (tracked above the phone tier), its active/open item
-  bracketed by the same ticks, over a 2px phosphor bar rule.
+  header: brand and nav uppercase (tracked above the phone tier), its
+  active/open item bracketed by the same ticks, over a 2px phosphor bar
+  rule. The brand keeps its full width; on phones the nav wraps instead.
+  Inside windows and dialogs tab tracking tightens to 0.03em so the
+  header stays on one continuous rule.
 - **The status strip** (`.app-status`, not the taskbar variant) reads as
   the HP | LEVEL | AP bar: solid dim-green blocks (22% phosphor) with
   bright uppercase text, under a 2px phosphor rule.
@@ -64,8 +71,8 @@ the screen.
   the content box, so the hit area stays at `--tap-min`.
 
 - Scanlines are a fixed `::after` overlay on `.app` with
-  `pointer-events: none` — a 1px-on/2px-off repeating gradient at 28%
-  black, plus a soft inset vignette for the curved glass, so they never
+  `pointer-events: none` — a 1px-on/2px-off repeating gradient at 20%
+  black (light enough that ~10px badge text keeps its strokes), plus a soft inset vignette for the curved glass, so they never
   intercept a click and never need JavaScript. The overlay is its own
   layer (`will-change`, `contain: strict`) so scrolling never repaints it. The vignette is a radial
   gradient in the same layer (no blurred shadow, so no frame cost).

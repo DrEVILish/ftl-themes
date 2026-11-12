@@ -70,6 +70,7 @@ html[data-theme="pipboy"] {
   --comment-pin-radius: 0;
   --btn-icon-radius: 0;
   --status-dot-radius: 0;
+  --lamp-radius: 0;
   --presence-radius: 0;
   --fab-radius: 0;
   --steps-marker-radius: 0;
@@ -96,6 +97,8 @@ html[data-theme="pipboy"] {
   --app-bar-rule: var(--accent);
   --app-bar-rule-width: 2px;
   --app-status-rule: var(--accent);
+  /* Peak segments stay in the phosphor (brighter); amber is the clip only. */
+  --meter-mid: var(--accent-2);
 
   /* Native controls (bare checkboxes, radios, ranges) take the phosphor. */
   accent-color: var(--accent);
@@ -163,6 +166,8 @@ html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before,
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::after { content: ""; flex: 1 0 1rem; border-bottom: 2px solid var(--accent); }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"])::before { flex: 0 0 0.75rem; }
 html[data-theme="pipboy"] .tabs:not([aria-orientation="vertical"]) > .tab-add { border-bottom: 2px solid var(--accent); }
+/* Narrow windows and dialogs: tighter tracking keeps the header on one rule. */
+html[data-theme="pipboy"] :is(.window, .modal) .tabs:not([aria-orientation="vertical"]) > .tab { letter-spacing: 0.03em; }
 
 /* The app bar nav is the same header: uppercase tracked labels, the active
    one bracketed by the rising ticks. The solid cursor bar stays for list
@@ -173,10 +178,12 @@ html[data-theme="pipboy"] .app-bar {
   --menubar-item-bg-active: var(--tab-bg-active);
   --menubar-item-fg-active: var(--accent);
 }
-html[data-theme="pipboy"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { text-transform: uppercase; }
+html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { text-transform: uppercase; }
+/* The brand never gives up its width to the nav; the nav wraps instead. */
+html[data-theme="pipboy"] .app-bar > .nav-brand { flex-basis: auto; flex-shrink: 0; }
 /* Tracked only where the bar has room; on phones it would wrap the nav. */
 @media (min-width: 481px) {
-  html[data-theme="pipboy"] .app-bar :is(.nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.08em; }
+  html[data-theme="pipboy"] .app-bar :is(.nav-brand, .nav-item, .menubar > li > :is(button, a)) { letter-spacing: 0.08em; }
 }
 
 /* Media through the phosphor: no second hue sneaks in via photos. */
@@ -186,8 +193,15 @@ html[data-theme="pipboy"] :is(.card-media, .map) > svg { filter: var(--pipboy-ph
 /* Rectangular hardware on the map too. */
 html[data-theme="pipboy"] .map.hud-minimap.is-round { border-radius: 0; }
 html[data-theme="pipboy"] .map-pin::before { border-radius: 0; rotate: 45deg; }
+/* Square LEDs where core hardcodes a circle (no token). */
+html[data-theme="pipboy"] :is(.avatar[data-status], .presence-status)::after,
+html[data-theme="pipboy"] .carousel-nav > a,
+html[data-theme="pipboy"] .carousel > .carousel-slide::scroll-marker,
+html[data-theme="pipboy"] .btn[aria-pressed]::before { border-radius: 0; }
 
-/* HP | LEVEL | AP: solid dim-green blocks with bright uppercase text. */
+/* HP | LEVEL | AP: solid dim-green blocks with bright uppercase text,
+   under the same 2px phosphor rule as the bar. */
+html[data-theme="pipboy"] .app-status:not(.taskbar) { border-top-width: 2px; }
 html[data-theme="pipboy"] .app-status:not(.taskbar) > * {
   padding: 0.3rem 0.6rem;
   border: 1px solid transparent;
@@ -227,7 +241,7 @@ html[data-theme="pipboy"] .app::after {
   /* Scanlines, plus the curved CRT glass: edges fall off a little (a
      gradient, not a blurred inset shadow, which costs a frame budget). */
   background-image:
-    repeating-linear-gradient(180deg, rgba(0,0,0,0.28) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(180deg, rgba(0,0,0,0.2) 0 1px, transparent 1px 3px),
     radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, 0.3));
 }
 
