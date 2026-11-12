@@ -23,14 +23,23 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
    is focused (primary/GO buttons, active segmented, pagination and
    filter badges, thumbs, the knob crown, progress fill, the focus ring).
    Don't swap them.
-2. **Leather is matte and black.** Surfaces are near-black (`#0b0a09` to
-   `#1d1a17`) with a visible pebble grain. No gloss, no brown tint.
+2. **Leather is matte and black.** Surfaces are neutral near-black
+   (`#0b0a09` to `#1e1d1b`, red and blue within 3 of each other) with a
+   visible pebble grain. No gloss, no brown tint; warmth lives only in
+   the gold. A selected row or list item, an edited table cell and the
+   bulk-selection bar are a neutral lift with a thin gold lead rule, not
+   an amber fill.
 3. **Stitching is on the edge, never under text.** The saddle stitch runs
    7px inside the edge of panels, cards, dialogs, drawers and the bar.
-   Small elements (buttons, inputs, badges, transport) are not stitched.
+   Small elements (buttons, inputs, badges, transport, list cards) are
+   not stitched. Content keeps 8px or more clear of it at every tier:
+   `--panel-pad` / `--card-pad` start at the 9.5px stitch strip plus
+   0.75rem / 0.6rem, and desktop windows pad their body inside it.
 4. **Gold foil, not gold paint.** Type on leather is flat gold with a
    deboss shadow (dark above, faint light below), tracked uppercase in a
-   Didone serif. No gradient text, no glow.
+   Didone serif (h1 to h3, brand, titles). The foil is a worn, greyed
+   old-gold (`#cdb47a`), softer than the polished hardware. No gradient
+   text, no glow.
 5. **Polished gold has a horizon.** Mirror gold is a hard gradient with
    a dark band just above the middle. Without that band it reads as
    yellow plastic.
@@ -41,20 +50,38 @@ steampunk brass. Sources are in `references/tokie/RESEARCH.md`.
 
 - Pebble grain is an SVG `feTurbulence` + `feDiffuseLighting` tile
   (200px, data-URI) under a 93%-opaque black wash. There are no bitmaps.
-- The saddle stitch (`--tokie-stitch`) is eight background layers: four
-  dashed champagne threads (5px stitch, 3px hole) over four darker
-  creased grooves. It costs no pseudo-elements, so any surface can wear it.
+- The saddle stitch (`--tokie-stitch`) is twelve background layers: four
+  runs of slanted champagne thread beads (a 60° repeating gradient in a
+  2.5px strip, 6px pitch, each bead followed by about half a pitch of
+  dark channel, like a pricking iron sets them, in a half-strength
+  champagne thread), four corner arcs that turn the stitch on a 5px
+  radius, and four creased grooves (75% black) with a faint lit lip. It
+  costs no pseudo-elements, so any surface can wear it. On phones
+  (≤480px) it drops to the four bead runs, and raised and recessed
+  leather drop the grain tile (the page keeps it), to keep scrolling
+  within the frame budget on a throttled phone.
 - Brushed gold is anisotropic noise (`baseFrequency='0.002 0.9'`),
   stretched into horizontal hairlines over a satin vertical gradient. The
   spine rail uses the same noise rotated so its hairlines run vertically.
 - Panel and dialog titles are foil caps above a double gilt fillet (1px
   gold, 2px gap, 1px darker gold), the way a binder's roll lays a line.
+  It is drawn through `--panel-header-bg` / `--modal-header-bg`.
+- Slider grooves are drawn inside the input's content box (core grows the
+  input to `--tap-min` and hides its border): a gold upper edge, a black
+  channel and a faint lit lower lip; vertical sliders turn it on its side.
+- Switch thumbs are brushed-gold domes when off and polished gold when on.
+  No third metal.
 - Buttons: the default is a leather key with a gold bezel; primary is
   polished gold with engraved dark text; danger and success are enamelled
-  oxblood and bottle-green leather that keep the gold bezel.
+  oxblood and bottle-green leather that keep the gold bezel. Toggle
+  buttons speak the same voice (tracked caps; sentence case up to 900px,
+  where toggle rows are packed tight) and turn polished gold when on; a danger toggle turns oxblood enamel.
 - Readouts are black lacquer dials with applied gold Didone numerals and
   a thin gold chapter ring. Knobs are polished watch crowns with a fluted
   edge.
+- Alerts are debossed into the leather like inputs; alerts and toasts
+  carry a 3px state-coloured lead rule on their leading edge. Folder
+  rails (`.nav-rail`) are a raised leather flap edged in dark gold.
 - The focus ring is 2px polished gold at a 3px offset with a soft gold
   halo. It is visible on every control, on leather and on gold.
 
@@ -78,11 +105,18 @@ Tiers: mobile ≤480px, tablet 481–900px, desktop 901–1800px, XL ≥1801px (
 ## Typography
 
 Nothing is vendored. Display: `Didot, "Bodoni 72", "Bodoni MT",
-"Libre Bodoni", Georgia, serif`, set in tracked uppercase for headings,
-brand, panel titles, stat values and prices. UI: `Optima, Candara,
-"Segoe UI", …, sans-serif`, the engraved-sans of luxury packaging. On
-Linux without these faces you get Georgia and the system sans; the
-tracking and foil colour carry the look.
+"Bodoni Moda", "Libre Bodoni", "Playfair Display", "Libre Caslon
+Display", "Noto Serif Display", "Linux Libertine", "Nimbus Roman",
+Georgia, serif`, set in tracked uppercase for headings, brand, panel
+titles, stat values and prices. UI: `Optima, "Optima nova", "URW
+Classico", "Linux Biolinum", Candara, "Segoe UI", "Noto
+Sans", Lato, "Open Sans", …, sans-serif`, the engraved-sans of luxury
+packaging. On a bare Linux box with none of these you get the system
+serif and sans (DejaVu); the tracking and foil colour carry the look but
+the Didone hairlines are lost. Vendoring an OFL Didone (Bodoni Moda)
+into `assets/fonts/` is the open follow-up; it needs a shared-assets
+change outside this theme folder. Inside desktop windows the tabs drop to sentence case
+so four fit on one row.
 
 ## Contrast honesty
 
@@ -124,6 +158,8 @@ line glyphs, like a binder's fillet laid into leather.
 
 - 24×24 grid, line only, `stroke="currentColor"` (gold foil on leather, dark
   engraved ink on polished gold): 1.4 hairline, round caps and joins.
+  The theme colours icons in the foil on leather; inside controls, gold
+  plates and state-coloured text they keep `currentColor`.
 - True curves and circles. Corners keep small radii.
 - Dots are small solid round stamps. Fills only for carets, play and small
   status marks.
