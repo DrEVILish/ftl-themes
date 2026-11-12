@@ -31,18 +31,21 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
    white. The one white is the section-header band.
 2. **Cyan means live; red plates mean selected.** Active tab, ON, focus,
    values, readouts and the hover cursor are cyan `#5ef6ff`. A selected
-   list row, side-nav row, segmented or toggle-group choice is the game's solid deep-maroon plate (`#8a2a2e`,
+   list row, side-nav row, segmented or toggle-group choice is the game's solid deep-maroon plate (`#7c2527`, sampled from the journal row,
    pale `#ffe4e1` text), as in the journal and difficulty screens; only the
    breach-grid table keeps a cyan selection. Nothing decorative is cyan
    except the breach corner brackets.
 3. **Angles, never curves.** `--radius: 0`. Panels, cards, modals and
    menus have their bottom-right corner cut on a 45° diagonal with the
    frame line following it; buttons and badges are clipped the same way;
-   bars end in an angle. Status dots, avatars and switch thumbs are square;
+   bars end in an angle; alerts and toasts take the same 8px cut, its
+   diagonal in the state colour. Status dots, carousel pips, avatars and
+   switch thumbs are square;
    only genuinely round instruments (gauges, the FAB) stay round.
 4. **Condensed, squared caps.** One squared condensed sans (Rajdhani as
    the stand-in) for everything; titles, buttons, tabs and column heads in
-   tracked uppercase (the app-bar menu too), body in sentence case.
+   lightly tracked uppercase (0.02em, the app-bar menu too, so the caps
+   stay narrow like CONTROLS / GAMEPLAY), body in sentence case.
 5. **Tables are the breach grid.** A solid yellow-green head bar with dark
    text, a dark teal matrix with faint grid lines, the steel band under the
    cursor, cyan for selection, cyan corner brackets just outside every
@@ -81,7 +84,7 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
 - `.list`: every row is its own plate, a dim red rule with an 8px cut
   corner, 4px apart; the selected row is the solid red plate. A
   `.nav-rail`'s current row is the same red plate with a red marker.
-- App-bar menu items are the top tab row: Medium caps at 0.95rem, 0.06em tracking;
+- App-bar menu items are the top tab row: Medium caps at 0.95rem, 0.02em tracking;
   tabs and side-nav items are Medium too.
 - `.field-group-title` is the game's section header band, the only white
   text: `#e8e6ea` sentence case on `#16111f` over a cyan hairline.
@@ -90,11 +93,14 @@ component-by-component mapping are in `references/cyberpunk-2077/RESEARCH.md`.
   (`html::after`) so scrolling composites it instead of repainting.
 - Disabled pagination ends and carousel arrows keep a dim red rule and
   never fade below 0.6, so the control still reads.
-- Field hints, errors, `.status` chips and `.btn-sm` never drop under 13px.
+- Field hints, errors, `.status` chips, `.label` / `.stat-label` caps and
+  `.btn-sm` never drop under 13px; labels take the bright menu red.
 - Figures (`.stat-value`, `.price`, `.table .mono`) are set in the menu
   face with tabular numerals, like the eddies and CODE MATRIX cells;
   Share Tech Mono is only for code, logs and samples.
-- On phones the page layer drops its scanlines to stay in the paint budget.
+- On phones the page layer drops its scanlines to stay in the paint budget,
+  and the app bar's tools (theme picker, search, bell, avatar) share one line.
+- Modal and window scanlines sit on the title strip only, never behind body text.
 - `.badge-accent` (NEW, unread counts) is the game's solid yellow tag with
   dark caps; the plain badge stays a red-tint tag. Badges and table heads
   never drop under 12px.
@@ -120,8 +126,9 @@ vendors **Rajdhani** Medium and Bold (Indian Type Foundry, SIL OFL 1.1,
 `assets/fonts/Rajdhani-*.woff2`, Latin subset, about 15 KB each), whose
 squared counters and short descenders are the closest open match, and
 reuses the already-vendored **Share Tech Mono** for code and logs.
-Page titles (`h1`) are Bold; section titles (`h2`–`h4`), buttons, badges
-and panel / modal titles are Medium with 0.06em tracking, like the game's
+Page titles (`h1`) and section titles (`h2`–`h4`) are Medium with 0.02em
+tracking, like the game's SETTINGS / INVENTORY titles; buttons, badges
+and panel / modal titles are Medium too, like the game's
 DEFAULTS / CONFIRM labels (SemiBold is not vendored). Only the yellow NEW
 tag stays Bold.
 
@@ -133,7 +140,7 @@ All pairs meet the lint floors; no exemptions are claimed.
 |---|---|
 | `--text` `#ff7473` on `--surface` `#1a1119` | 7.0 |
 | Inactive window title `--muted` `#ea5d5f` on its title strip `#361a20` | 4.7 |
-| Selected plate `#ffe4e1` on `#8a2a2e` | 7.1 |
+| Selected plate `#ffe4e1` on `#7c2527` | 8.1 |
 | Yellow tag `#0b0a0f` on `#fcee0a` | 16.3 |
 | `--muted` `#ea5d5f` on `--surface` / `--surface-2` `#110d15` | 5.5 / 5.7 |
 | `--accent` `#5ef6ff` on `--surface` | 14.2 |
@@ -152,7 +159,9 @@ The shell becomes a **menu screen**: a transparent maroon top bar ended by
 one long glowing red rule broken at its centre (the LEVEL / tabs / eddies strip), a 1.5rem data
 rail of tick marks down the left edge, content on the dark field (maroon
 over the top half, cool teal-black below), and a
-key-hint status strip along the bottom.
+key-hint status strip along the bottom: the teal-black field with cyan
+outlined key caps, and a decorative cyan ESC cap at its end when the bar
+carries no `kbd` of its own (not on taskbars or tab bars).
 
 ## v5 layout
 
