@@ -44,7 +44,9 @@ a limitation to soften.
   the row, as on every real header (hidden on phones).
 - `h1` is the section banner: a full-width blue band with the headline
   in yellow at true double height (`transform: scaleY(2)`, the band
-  stretching with it as the hardware row did).
+  stretching with it as the hardware row did). A plain `h2` (no class) in page flow
+  is a strapline: black ink on a full-width green band; `h3` stays cyan
+  ink.
 - Panel titles are full-width colour bands (blue / green / magenta /
   yellow by position, each with the text colour it needs); cards carry a
   thick band of the same colour on top. Nothing draws a white line: table
@@ -61,19 +63,36 @@ a limitation to soften.
   the whole strip, as they spanned the screen: the strip is a size
   container, the cell size follows it (`100cqi / 24.5`, capped at
   1.5rem), each key word starts a quarter (tab stops at `25cqi`, the
-  10-cell columns) and the strapline is centred in its band.
+  10-cell columns) and the strapline is centred in its band. On phones
+  (≤480px) the keys shorten to *News / Sport / Weather / TV* so each sits
+  clear in its quarter.
 - **No tints, no circles.** Badges are black cells with colour ink; the
   bulk bar and skeletons are flat blue blocks; avatars are flat palette
   cells; edited cells, poll rows, invalid inputs and sparklines carry no
   wash. Switches, slider thumbs, icon buttons, avatars, presence dots,
   status dots, lamps, carousel dots, the display-properties monitor and
-  the spinner/indicator rings are square; the rings step round a quarter
-  at a time (`steps(4)`) on a blue track. Inactive desktop windows carry
+  the spinner/indicator rings (including a table cell's inline "saving"
+  ring) are square; the rings step round a quarter at a time
+  (`steps(4)`) on a blue track, and a saving cell keeps full-brightness
+  ink (`--pending-opacity: 1`). Checkboxes and radios are drawn cells
+  (black, cyan edge; checked fills cyan with a black stepped tick, or a
+  black centre for a radio), not the browser's grey dark-scheme box;
+  forced-colours mode keeps the native control.
+- **Charts in flat cells.** The heatmap and its scale legend step through
+  black / blue / green / cyan on hard switches (no oklab ramp), cells
+  square and touching like mosaic blocks; line charts have no area fill,
+  aliased (`crispEdges`) lines with square joins and small aliased points.
+  The donut stays a curved ring: a data-vis exception, in palette
+  colours. Inactive desktop windows carry
   a blue title band (active ones magenta) with no desaturating filter.
   Disabled buttons are black with grey ink and edge, not a dimmed fill.
 - **One cell size:** badges, stat labels and trends, table heads, small
-  buttons and field hints never drop under 0.875rem, so small print sits
-  at most a step under body.
+  buttons, field hints, status labels, list meta and thread times never
+  drop under 0.875rem, so small print sits at most a step under body. At
+  1600px and wider the root steps to 20px, the 20px cell where each
+  Bedstead pixel is exactly two device pixels (chunky 2px stems); below
+  that the 16px base is kept, since 20px wraps the 1280 bar and stat
+  rows, and on phones 16px is the 40-column row.
 - **Colour, not white outlines:** inputs have a cyan edge; menus,
   popovers, lists and logs a blue one. Secondary lines (list meta, stat
   labels) are cyan, as on an index page; nav links are white and form

@@ -168,6 +168,15 @@ html[data-theme="teletext"] {
   --listbox-border: #0000ff;
   --list-border: #0000ff;
   --log-border: #0000ff;
+  /* Charts in flat cells: no area tint, square legend keys, adjacent
+     heatmap blocks like mosaic cells. */
+  --chart-area-opacity: 0;
+  --chart-point-ring: #000000;
+  --legend-swatch-radius: 0;
+  --heatmap-radius: 0;
+  --heatmap-gap: 0;
+  /* A saving cell keeps full-brightness ink, not a 0.8 blend. */
+  --pending-opacity: 1;
 }
 
 /* Headline double-height: real teletext hardware could stretch a text row
@@ -229,6 +238,14 @@ html[data-theme="teletext"] h3 {
   color: var(--accent);
   text-transform: uppercase;
 }
+/* A plain section heading is a strapline: a green band, black ink, as a
+   Ceefax index set its lead lines in a colour block. h3 stays cyan ink,
+   the next step down. */
+html[data-theme="teletext"] :is(main, section, article, .stack) > h2:not([class]) {
+  background: #00ff00;
+  color: #000000;
+  padding: 0.25em 0.5ch;
+}
 
 /* The page-number header: every real teletext page opens with a cyan
    "Pnnn" index in the top-left corner of the frame. */
@@ -266,6 +283,14 @@ html[data-theme="teletext"] .app-bar::after {
 }
 @media (max-width: 480px) {
   html[data-theme="teletext"] .app-bar::after { content: none; }
+}
+
+/* One Bedstead pixel is 1/10 of the cell height: at a 20px cell every
+   stem is exactly two device pixels, the chunky SAA5050 stroke, instead of
+   a 1.6px anti-aliased smear. Only on wide screens: at 1280 the 25% bump
+   wraps the bar and stat rows. Phones keep 16px, the 40-column row. */
+@media (min-width: 1600px) {
+  html[data-theme="teletext"] { font-size: 125%; }
 }
 
 /* --- Layout ------------------------------------------------------------ *
@@ -323,6 +348,12 @@ html[data-theme="teletext"] .app-status::after {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* On a phone the four words get the short labels so each sits in its own
+   quarter column, as on a set with a narrow safe area. */
+@media (max-width: 480px) {
+  html[data-theme="teletext"] .app-status::after { content: "News\9Sport\9Weather\9TV"; }
 }
 
 /* Bedstead's wide cells: a long toggle row wraps rather than overflow. */
@@ -413,8 +444,52 @@ html[data-theme="teletext"] :is(.carousel-nav > a, .indicator, .spinner) { borde
 html[data-theme="teletext"] :is(.avatar[data-status], .presence-status)::after { border-radius: 0; }
 html[data-theme="teletext"] .carousel > .carousel-slide::scroll-marker { border-radius: 0; }
 html[data-theme="teletext"] :is(.indicator, .spinner:not(.is-grow)) { animation-timing-function: steps(4); animation-duration: 0.8s; }
+/* Core draws a table cell's saving ring itself (round, smooth): square it. */
+html[data-theme="teletext"] :is(.table tr > td, .editable):is(.is-saving, .htmx-request)::after { border-radius: 0; animation-timing-function: steps(4); }
 /* One cell size: small print never drops more than a step under body. */
-html[data-theme="teletext"] :is(.badge, .stat-label, .stat-trend, .table th, .btn-sm, .field-hint) { font-size: max(0.875rem, 0.78em); }
+html[data-theme="teletext"] :is(.badge, .stat-label, .stat-trend, .table th, .btn-sm, .field-hint, .status, .list-item-meta, .thread .time) { font-size: max(0.875rem, 0.78em); }
+
+/* Heatmap and its scale legend in palette steps, not an oklab ramp:
+   black (none), then blue, green, cyan, hard-switched on --v. */
+html[data-theme="teletext"] .heatmap:not(.is-diverging) > *,
+html[data-theme="teletext"] :is(.legend, .chart-legend).is-scale > li::before {
+  background: color-mix(in srgb, #00ffff clamp(0%, (var(--v, 0) - 0.66) * 100000%, 100%),
+    color-mix(in srgb, #00ff00 clamp(0%, (var(--v, 0) - 0.33) * 100000%, 100%),
+    color-mix(in srgb, #0000ff clamp(0%, var(--v, 0) * 100000%, 100%), #000000)));
+}
+/* The black "none" key stays visible as a blue-edged cell. */
+html[data-theme="teletext"] :is(.legend, .chart-legend).is-scale > li::before { outline: 1px solid #0000ff; }
+/* Line charts step like a cell grid: aliased edges, square joins. */
+html[data-theme="teletext"] :is(.chart-series, .chart-point) { shape-rendering: crispEdges; stroke-linejoin: miter; stroke-linecap: square; }
+/* Data points shrink to a 2-pixel-radius aliased block on the line. */
+html[data-theme="teletext"] .chart-point { r: 2.5px; stroke-width: 1; }
+
+/* Checkboxes and radios are drawn cells, not the browser's grey dark-scheme
+   box: black with a cyan edge; checked fills cyan (a black tick, or a black
+   centre for a radio). Forced colours keep the native control. */
+@media not (forced-colors: active) {
+  html[data-theme="teletext"] :is(.checkbox, .radio, .check > input:is([type="checkbox"], [type="radio"]), .prose li > input[type="checkbox"]) {
+    appearance: none;
+    border: 2px solid #00ffff;
+    border-radius: 0;
+    background: #000000 no-repeat center / 100% 100%;
+    vertical-align: middle;
+  }
+  :where(html[data-theme="teletext"] :is(.check > input:not(.checkbox, .radio), .prose li > input[type="checkbox"])) { inline-size: 1.1em; block-size: 1.1em; }
+  html[data-theme="teletext"] :is(.checkbox, .check > input[type="checkbox"], .prose li > input[type="checkbox"]):checked {
+    background-color: #00ffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M1 4h2v1h1V3h1V2h1V1h1v2H6v1H5v1H4v2H3V6H2V5H1z'/%3E%3C/svg%3E");
+  }
+  html[data-theme="teletext"] :is(.checkbox, .check > input[type="checkbox"]):indeterminate {
+    background-color: #00ffff;
+    background-image: linear-gradient(#000000, #000000);
+    background-size: 60% 25%;
+  }
+  html[data-theme="teletext"] :is(.radio, .check > input[type="radio"]):checked {
+    background-color: #00ffff;
+    box-shadow: inset 0 0 0 0.2em #000000;
+  }
+}
 /* Core pads a vertical fader with padding-inline, which vertical-lr turns
    vertical; physical side padding keeps the track thin in its tap box. */
 html[data-theme="teletext"] .slider.is-vertical:not(.is-range > .slider) { padding: 0 calc((var(--tap-min) - var(--slider-height, 0.35rem)) / 2); }
@@ -428,4 +503,4 @@ html[data-theme="teletext"] .app-bar .nav-brand::before {
   text-shadow: 0.25em 0.2em 0 #0000ff;
 }
 /* A bare fieldset's UA groove reads as a white box: a blue cell edge. */
-html[data-theme="teletext"] fieldset { border: 2px solid var(--border); }
+html[data-theme="teletext"] fieldset:not(.radio-group) { border: 2px solid var(--border); }
