@@ -1,11 +1,21 @@
 /* ftl-themes: Bloomberg Terminal
  * Theme-Name: Bloomberg Terminal
- * Description: Black-and-amber monospace terminal density — every UI element, not just numbers, set in Consolas, at --density: 0.7.
+ * Description: Black-and-amber monospace terminal density — every UI element, not just numbers, set in a narrow screen mono, at --density: 0.7.
  *
  * An extreme-density stress test as much as a theme: --density is
  * turned down hard, every font (not just --font-mono) is monospace,
  * and the whole palette is functional color-coding, not decoration.
  */
+
+/* Share Tech Mono (SIL OFL, already vendored for other themes) is a
+   narrow screen mono (0.54em advance against DejaVu Sans Mono's 0.60),
+   so dense columns, the bar and table inputs keep their width everywhere,
+   not only where Consolas happens to be installed. */
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("assets/fonts/ShareTechMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
 
 html[data-theme="bloomberg"] {
   --motion-leave: power-off;
@@ -36,8 +46,8 @@ html[data-theme="bloomberg"] {
   --radius: 0;
   /* The whole UI is monospace, not just numeric readouts — a data-grid
      stress test for .table, not a cosmetic choice. */
-  --font: Consolas, "IBM Plex Mono", "Courier New", monospace;
-  --font-mono: Consolas, "IBM Plex Mono", monospace;
+  --font: "Share Tech Mono", Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: "Share Tech Mono", Consolas, "Liberation Mono", monospace;
   --flare: #ffcc00;
 
   /* Extreme density: this is the catalog's tightest theme on purpose, a
@@ -55,7 +65,13 @@ html[data-theme="bloomberg"] {
   --input-bg: #000000;
   --input-border: var(--border);
   --panel-bg: #000000;
-  --panel-border: var(--border);
+  /* Every terminal window has a thin amber outer frame; inputs, cards and
+     hairlines stay grey. */
+  --panel-border: #cc7a00;
+  --modal-border: #cc7a00;
+  --card-border: var(--border);
+  --panel-pad: 0.25rem;
+  --tab-panel-pad: 0.35rem;
   --modal-header-bg: #141414;
   --modal-header-fg: var(--accent);
   --table-head-bg: #141414;
@@ -103,7 +119,9 @@ html[data-theme="bloomberg"] {
      A dim-amber track (3.6:1 on black) and a square yellow block thumb. */
   --slider-bg: #8a5c00;
   --slider-thumb-radius: 0;
-  --slider-thumb-size: 0.75rem;
+  /* A full 1rem block cursor, with a track thick enough to read beside it. */
+  --slider-thumb-size: 1rem;
+  --slider-height: 0.3rem;
 
   /* Lit pads and waveform markers: core's 30% yellow mix put amber text
      at 3.99:1. A lighter lit tint, and marker labels in data white. */
@@ -125,7 +143,7 @@ html[data-theme="bloomberg"] {
   --panel-header-pad: 0.25rem 0.5rem;
   --modal-header-bg: #7a0000;
   --modal-header-fg: #ffffff;
-  --card-pad: 0.5rem;
+  --card-pad: 0.4rem;
   --toolbar-pad: 0.25rem;
   --toggle-btn-padding: 0.25rem 0.45rem;
 
@@ -151,8 +169,22 @@ html[data-theme="bloomberg"] h1 { font-size: 1.3rem; }
 html[data-theme="bloomberg"] h2 { font-size: 1.1rem; }
 html[data-theme="bloomberg"] h3 { font-size: 1rem; }
 
-/* Header cells keep at least 4px around their text at --density 0.7. */
+/* Header cells keep at least 4px around their text at --density 0.7; data
+   rows are as tight as the terminal's grid (touch tiers reach --tap-min
+   through the controls inside the row, not padding). */
 html[data-theme="bloomberg"] .table th { padding-block: 0.3rem; }
+html[data-theme="bloomberg"] .table td { padding-block: 0.25rem; line-height: 1.25; }
+/* A wide fallback face must never squeeze a cell input under the target. */
+html[data-theme="bloomberg"] .table td > :is(.input, .select) { min-inline-size: calc(var(--tap-min) + 1ch); }
+
+/* Dropdowns are the terminal's filled amber key-like fields with black
+   text (the reference's "Standard" select, about 10:1). */
+html[data-theme="bloomberg"] .select {
+  --input-bg: #ff9900;
+  --input-fg: #000000;
+  --input-border: #ff9900;
+  --select-arrow-fg: #000000;
+}
 
 /* Function keys: grouped buttons are filled key caps at rest (green
    navigation keys, the selected one yellow), black text, like the
@@ -185,8 +217,8 @@ html[data-theme="bloomberg"] .btn:hover { color: #000000; }
    every <kbd> here reads as one of those keys, not a generic gray one,
    cycling through the row's actual colors by position. */
 html[data-theme="bloomberg"] kbd {
-  --kbd-radius: 2px;
-  --kbd-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+  --kbd-radius: 0;
+  --kbd-shadow: none;
   color: #000000;
   font-weight: 700;
 }
@@ -206,19 +238,6 @@ html[data-theme="bloomberg"] .table th,
 html[data-theme="bloomberg"] .table td { border-right: 1px solid var(--hairline); }
 html[data-theme="bloomberg"] .table th:last-child,
 html[data-theme="bloomberg"] .table td:last-child { border-right: none; }
-
-/* The function-key row was only ever drawn on <kbd> and the status strip —
-   two surfaces a dense dashboard barely shows. Table headers are the
-   surface a data-wall theme actually spends most of its pixels on, so the
-   same cycling function-key palette (HELP red, MENU yellow, <GO> green,
-   cyan, grey) now bands the head row too, by column position exactly like
-   the <kbd> rule above. */
-html[data-theme="bloomberg"] .table thead th { border-top: 2px solid var(--accent); }
-html[data-theme="bloomberg"] .table thead th:nth-child(5n+1) { border-top-color: #ff4136; }
-html[data-theme="bloomberg"] .table thead th:nth-child(5n+2) { border-top-color: #ffcc00; }
-html[data-theme="bloomberg"] .table thead th:nth-child(5n+3) { border-top-color: #2ecc40; }
-html[data-theme="bloomberg"] .table thead th:nth-child(5n+4) { border-top-color: #00ccff; }
-html[data-theme="bloomberg"] .table thead th:nth-child(5n+5) { border-top-color: #e8e8e8; }
 
 /* --- Layout ------------------------------------------------------------ *
  * A data wall: a thin function-key bar up top, no decorative rail (density
@@ -260,49 +279,30 @@ html[data-theme="bloomberg"] .app-status:not(.taskbar, .desktop-bar)::before {
   );
 }
 
-/* The rail was never given a display or column width, so an app that
-   ships the (aria-hidden, empty) <aside> per the shell contract just
-   collapsed it to a zero-width gutter — dead, unbranded black next to the
-   dashboard's densest content. A data wall has no use for a *navigation*
-   rail, but it can still turn that strip into the same function-key band
-   already used on the status bar, rotated vertical, so the theme's
-   signature motif fills what used to be empty space instead of leaving
-   it. --app-rail-empty-display keeps it visible even though the rail
-   element itself carries no content. */
+/* No rail: no reference shows a vertical key strip, and density wins over
+   chrome. The function-key row lives in the bar instead: nav links are
+   small filled key caps (green, the current one yellow) like the
+   reference's MSG / PgFd / PgBk row. */
 html[data-theme="bloomberg"] {
-  --app-columns: 0.6rem minmax(0, 1fr);
-  --app-rail-display: flex;
-  --app-rail-empty-display: flex;
-  --app-rail-bg: #0a0a0a;
+  --nav-item-bg: #2ecc40;
+  --nav-item-fg: #000000;
+  --nav-item-bg-active: #ffcc00;
+  --nav-item-fg-active: #000000;
+  --desktop-icon-font-size: 0.72rem;
 }
-html[data-theme="bloomberg"] .app-rail {
-  position: relative;
+html[data-theme="bloomberg"] .app-bar .nav-item { padding: 0.25rem 0.45em; }
+/* The bar's menubar items are the same caps at rest; hover, focus and an
+   open menu fall through to core's yellow active key. */
+html[data-theme="bloomberg"] .app-bar .menubar { --menubar-gap: 3px; --menubar-item-fg-active: #000000; }
+html[data-theme="bloomberg"] .app-bar .menubar > li > :is(button, a) { padding: 0.25rem 0.5em; }
+html[data-theme="bloomberg"] .app-bar .menubar > li:not(:hover, :focus-within) > :is(button, a):not([aria-expanded="true"]) {
+  background: #2ecc40;
+  color: #000000;
 }
-html[data-theme="bloomberg"] .app-rail::before {
-  content: "";
-  position: absolute;
-  inset: 0.4rem 0.15rem;
-  background-image: linear-gradient(180deg,
-    #ff4136 0 18%, #0a0a0a 18% 20%,
-    #ffcc00 20% 38%, #0a0a0a 38% 40%,
-    #2ecc40 40% 58%, #0a0a0a 58% 60%,
-    #00ccff 60% 78%, #0a0a0a 78% 80%,
-    #e8e8e8 80% 98%, #0a0a0a 98% 100%
-  );
-}
-
-/* --- v5 tiers --------------------------------------------------------------
- * Phone and tablet drop the vertical function-key band: density over
- * chrome, and the status strip still carries the same key row. The rule
- * (not only --app-rail-display-*) is needed because
- * --app-rail-empty-display keeps an empty rail visible, which would land in
- * an implicit grid column beside the content on core's one-column tiers. */
-html[data-theme="bloomberg"] {
-  --app-rail-display-mobile: none;
-  --app-rail-display-tablet: none;
-}
-@container style(--tier: mobile) or style(--tier: tablet) {
-  html[data-theme="bloomberg"] .app-rail { display: none; }
+/* Phone: tighter bar gaps keep the actions on one line under the brand. */
+@container style(--tier: mobile) {
+  html[data-theme="bloomberg"] :is(.app-bar, .app-bar > .cluster) { gap: 0.35rem; }
+  html[data-theme="bloomberg"] .app-bar > .cluster > .select { inline-size: 8.5rem; }
 }
 
 /* XL gutters (v5, PLAN.md §3): more of the data wall, out of focus. Rows

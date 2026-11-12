@@ -30,12 +30,18 @@ is the catalog's extreme-density stress test as much as a period theme.
    wall rather than a spacious dashboard.
 5. **Zero radius, zero gloss.** Every corner is square, including core's
    round defaults (icon buttons, switches, avatars, status dots, slider
-   thumbs, carousel dots); every fill is flat, and skeletons blink in steps
-   instead of shimmering. This is a data terminal, not a consumer app.
+   thumbs, carousel dots, `<kbd>` caps); every fill is flat, and skeletons
+   blink in steps instead of shimmering. Native checkboxes keep the
+   browser's own slight rounding (squaring them would mean redrawing the
+   control), and line-chart points stay circles (core draws them as SVG
+   `<circle>`). This is a data terminal, not a consumer app.
 6. **Color by role, like the screen.** Labels and names are amber, data
    values (`.stat-value`, `td.mono`) are terminal white `#e8e8e8`, column
    headers sit on a grey `#2a2a2a` bar, and panel/modal headers are the
    dark-red `#7a0000` section bar with white text.
+7. **Amber window frames.** Panels, modals and desktop windows carry the
+   terminal window's thin amber outer frame (`#cc7a00`); inputs, cards and
+   hairlines stay grey `#3a3a3a`.
 
 ## Signature details
 
@@ -51,10 +57,19 @@ is the catalog's extreme-density stress test as much as a period theme.
   green navigation keys with black text, the selected/primary one yellow,
   like the reference's MSG / PgFd / PgBk row.
 - `.btn-go` is the keyboard's filled green `<GO>` key with black text.
+- The app bar's nav and menubar items are the same green key caps with
+  black text (yellow when hovered, focused or current), the reference's
+  MSG / PgFd / PgBk row across the top of the window.
+- Dropdowns (`.select`) are filled amber fields with black text and a
+  black arrow, like the reference's "Standard" select (about 10:1).
+- Data rows are tight (`0.25rem` block padding, the 4px edge floor, line-height 1.25) and
+  panels inset only `0.25rem`, so grids run nearly edge to edge under the
+  red section bar.
 - Screen titles are small and regular weight (h1 1.3rem, h2 1.1rem,
   h3 1rem): the terminal sets titles at about the size of the data.
-- Sliders draw a dim-amber track (`#8a5c00`, 3.6:1 on black) under a
-  square yellow thumb, inside core's full `--tap-min` hit area.
+- Sliders draw a dim-amber `0.3rem` track (`#8a5c00`, 3.6:1 on black)
+  under a square 1rem yellow block-cursor thumb, inside core's full
+  `--tap-min` hit area.
 - Chart series 3 is the function-key purple `#b05cff` (the key at the
   right of the reference's zoomed row), since `--warning` equals
   `--accent` and would repeat series 1.
@@ -62,15 +77,15 @@ is the catalog's extreme-density stress test as much as a period theme.
 ## Layout
 
 The shell becomes a **data wall**: a thin 1.8rem function-key bar, no
-decorative rail at all (density wins over chrome), and a status strip that
+rail at all (density wins over chrome), and a status strip that
 reads as another data row rather than a conventional status bar.
 
 ## v5 layout
 
-- **Tiers.** Desktop and XL keep the vertical function-key band. Phone
-  (≤480px) and tablet (481–900px) drop it: density over chrome, and the
-  status strip still carries the same key row. Brand and actions share the
-  bar's first line and the nav scrolls on the second.
+- **Tiers.** No tier draws a rail (no reference shows a vertical key
+  strip); the function-key row is the bar's key caps and the status
+  strip. On phone the bar's gaps tighten and the bar's select narrows to
+  8.5rem so brand plus nav take one line and the actions one more.
 - **XL gutter art.** More of the data wall, out of focus: rows of dim amber
   readout cells on the terminal's row rules, like neighbouring monitors on
   a trading floor. Still, and within about 1.3:1 of black.
@@ -93,7 +108,7 @@ reads as another data row rather than a conventional status bar.
 
 ## Typography
 
-`--font` is `Consolas, "IBM Plex Mono", "Courier New", monospace` and `--font-mono` is the same stack minus Courier: the whole UI is monospace. **Nothing is vendored** — Consolas ships with Windows and Office, IBM Plex Mono is only used if installed, and Courier New is the last-resort fallback. The real terminal's face is a proprietary bitmap-style monospace that no capture in `references/bloomberg/` lets us name, so Consolas is a stand-in, not a match.
+`--font` is `"Share Tech Mono", Consolas, "Liberation Mono", "Courier New", monospace` and `--font-mono` is the same stack minus Courier: the whole UI is monospace. Share Tech Mono (SIL OFL, already vendored in `assets/fonts/` for other themes, Regular only) is first so every platform gets the same narrow screen face (0.54em advance, against 0.60em for the DejaVu Sans Mono that Linux would otherwise fall to); that width keeps dense columns, the bar and table-cell inputs from overflowing. The real terminal's face is a proprietary screen font that no capture in `references/bloomberg/` lets us name, so this is a stand-in, not a match; the modern screen is partly proportional, which a mono stand-in deliberately does not follow (core value 1).
 
 ## Contrast honesty
 
@@ -110,8 +125,9 @@ reads as another data row rather than a conventional status bar.
 
 ## Icons
 
-`themes/bloomberg/icons.svg` redraws the whole core set (178/178) as blocky
-character-cell glyphs:
+`themes/bloomberg/icons.svg` redraws the 178 core glyphs as blocky
+character-cell glyphs; the extended (Tabler-batch) set inherits core and
+keeps its curves:
 
 - 24×24 grid, line only: no fills, colour from `currentColor`; weight comes
   from the theme's global `--icon-stroke-width: 1.4`, never per symbol.
