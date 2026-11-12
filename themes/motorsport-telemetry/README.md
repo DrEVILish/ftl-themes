@@ -36,8 +36,8 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
    muted, tracked caps. The chrome stays dark so the data is the brightest
    thing on screen.
 4. **Carbon is a material, not a pattern.** The twill is a few percent over
-   black, one cached 6px SVG tile, woven only into the frame (page, bar,
-   rail). Panels and cards are flat carbon gradients, so no checkerboard
+   black, a 6px weave drawn into one cached 48px SVG tile, woven only into
+   the frame (page, bar, rail; on a phone the page is flat). Panels and cards are flat carbon gradients, so no checkerboard
    ever sits behind body text; a table inside a panel sits on true black
    (#07080a, #0e1013 stripes) like the timing screen.
 5. **Thin, hard-edged marks.** 2px traces, 1-2px radii, no gloss, no glow.
@@ -71,12 +71,15 @@ References and credits: `references/motorsport-telemetry/RESEARCH.md`.
 - **Close** is a square black steering-wheel key with a cross; it lights
   soft red on hover. Icon buttons are square 2.25rem keys too, never
   circles; carousel arrows are square keys and its dots square lamps.
+  Avatars are square position cells (2px radius), as on the tower.
 - **Toasts and alerts** carry one colour: a 4px leading edge matching the
   variant (yellow warning, red danger, green success, blue info, grey
   default). Never purple.
 - **Bar charts** are grey data; only the highlighted bar is purple.
-- The bar's menubar and the tabs share one register: bold tracked caps.
-  On a phone the search key goes icon-only so the bar keeps two rows.
+- The bar's menubar, the tabs, segmented controls, toggle keys and the
+  scrollspy nav share one register: bold tracked caps (0.8125rem, never
+  wrapping). On a phone the search key goes icon-only so the bar keeps two
+  rows, and the menubar stays at 0.75rem.
 - **Sector cells**: in a table, `.status-ok/-warn/-error` is a solid
   green/yellow/red timing cell with dark bold caps; `td.mono` figures stay
   in Titillium so the table is one timing face. An unsaved edit shows only
