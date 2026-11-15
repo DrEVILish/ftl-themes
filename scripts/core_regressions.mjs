@@ -12,6 +12,8 @@
 // "<theme>: <message>") is printed as a warning instead.
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
+import { pathToFileURL } from 'url';
 import { ROOT as root, takeEngines, launch, knownIssues } from './_harness.mjs';
 
 const args = process.argv.slice(2), engines = takeEngines(args);
@@ -19,7 +21,7 @@ const themes = args.length ? args
   : JSON.parse(fs.readFileSync(path.join(root, 'dist/themes.json'))).map(t => t.slug);
 
 const page = (slug) => `<!doctype html><html data-theme="${slug}"><head>
-<link rel="stylesheet" href="file://${root}/dist/${slug}.css"></head><body>
+<link rel="stylesheet" href="${pathToFileURL(path.join(root, 'dist', slug + '.css'))}"></head><body>
 <div class="app"><header class="app-bar"><span class="nav-brand">App</span><a class="nav-item" id="barnav" href="#">Home</a>
   <button class="btn btn-secondary" id="barbtn">Log out</button>
   <span class="text-muted" id="barmuted">jo@example.com</span></header>
@@ -38,6 +40,9 @@ const page = (slug) => `<!doctype html><html data-theme="${slug}"><head>
 
 let failures = 0, warnings = 0;
 const ran = [];
+const fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ftl-core-regressions-'));
+const file = path.join(fixtureDir, 'fixture.html');
+process.on('exit', () => fs.rmSync(fixtureDir, { recursive: true, force: true }));
 for (const engine of engines) {
   const browser = await launch(engine);
   if (!browser) continue;
@@ -52,10 +57,9 @@ for (const engine of engines) {
   };
 
   for (const t of themes) {
-    const file = path.join(root, `test/.core-regressions.html`);
     fs.writeFileSync(file, page(t));
     await p.setViewportSize({ width: 1280, height: 900 });
-    await p.goto('file://' + file);
+    await p.goto(pathToFileURL(file).href);
     const r = await p.evaluate(() => {
       const $ = (id) => document.getElementById(id), cs = (id) => getComputedStyle($(id));
       const m = $('m').getBoundingClientRect(), mh = $('mh').getBoundingClientRect(), mc = $('mc').getBoundingClientRect();
@@ -109,6 +113,5 @@ for (const engine of engines) {
   }
   await browser.close();
 }
-fs.rmSync(path.join(root, 'test/.core-regressions.html'), { force: true });
 console.log(`${themes.length} themes x ${ran.join(', ') || 'no engine'}: ${failures} failure(s), ${warnings} known-issue warning(s)`);
 process.exit(failures ? 1 : 0);

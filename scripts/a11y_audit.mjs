@@ -73,7 +73,7 @@ for (const engine of engines) {
         const url = `${base}/${pg}.html?theme=${slug}` + (variant ? `&variant=${variant}` : '') + (pg === 'components' ? '&embed=1' : '');
         const row = { engine, theme: entry, tier, page: pg, counts: {}, violations: [] };
         try {
-          if (!await openThemed(pw, url, slug)) row.warning = 'theme CSS/fonts never fully applied';
+          await openThemed(pw, url, slug);
           await pw.addStyleTag({ content: FREEZE_CSS });
           await pw.addScriptTag({ path: axePath });
           const v = await pw.evaluate(async (tags) => (await window.axe.run(document, { runOnly: { type: 'tag', values: tags }, resultTypes: ['violations'] })).violations
@@ -146,6 +146,6 @@ console.log(`\n${ran.length} runs, ${failed} with serious/critical violations${s
 if (blame) {
   const mine = top.filter(s => (s.impact === 'critical' || s.impact === 'serious') && [...s.themes].some(t => t === blame || t.startsWith(blame + '~')));
   console.log(`${blame}: ${mine.length} serious/critical rule(s) caused by the theme${mine.length ? ': ' + mine.map(s => s.id).join(', ') : ''}`);
-  process.exit(mine.length ? 1 : 0);
+  process.exit(mine.length || results.some(r => r.error) ? 1 : 0);
 }
 process.exit(strict && failed ? 1 : 0);

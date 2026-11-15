@@ -225,14 +225,14 @@ def run_engine(engine: str, args, base_url: str) -> bool:
             if "skipped" in result:
                 print(f"SKIP  {engine}: {result['skipped']}\n")
                 return False
+            if result.get("failures"):
+                print(f"{len(result['failures'])} page(s) failed to load; baseline unchanged -- see stderr above.")
+                return True
             base_dir.mkdir(parents=True, exist_ok=True)
             shutil.copytree(tmp, base_dir, dirs_exist_ok=True)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
         print(f"Wrote {result['shots']} screenshot(s) across {result['themes']} theme(s) x {result['pages']} page(s) to {base_dir}.\n")
-        if result.get("failures"):
-            print(f"{len(result['failures'])} page(s) failed to load -- see stderr above.")
-            return True
         return False
 
     tmp_root = Path(tempfile.mkdtemp(prefix="visual-"))
