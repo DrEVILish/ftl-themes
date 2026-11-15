@@ -33,6 +33,14 @@ variants, and a license name plus notice path. Keep theme rules under
 `html[data-theme="<slug>"]`; assets must be pack-local and declared. Remote
 imports, remote/data URLs, and paths escaping the pack are rejected.
 
+The validator supports literal CSS identifiers and asset paths; CSS escapes
+in identifiers or URLs are rejected. Escapes in ordinary text strings are
+allowed. Use `url()` for assets; `image-set()` is rejected because it also
+accepts string asset paths. Conditional/grouping blocks (`@media`,
+`@supports`, `@layer`, `@container`, `@scope`, `@starting-style`) must contain
+scoped rules. `@font-face` and `@keyframes` blocks are allowed; other block
+at-rules are rejected.
+
 Validate and write an HTML preview beside the pack:
 
 ```sh

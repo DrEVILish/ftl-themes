@@ -50,7 +50,7 @@ for key in ("name", "minimumLibraryVersion"):
     if not isinstance(manifest.get(key), str) or not manifest[key].strip():
         issue("PACK-FIELD", key + " must be a non-empty string")
 slug = manifest.get("slug", "")
-if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", str(slug)):
+if not isinstance(slug, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
     issue("PACK-SLUG", "slug must be lowercase kebab-case")
 if manifest.get("contract") != 4:
     issue("PACK-CONTRACT", "contract must match the supported contract version 4")
@@ -74,11 +74,30 @@ if not isinstance(variants, list) or any(not isinstance(v, dict) or not isinstan
     issue("PACK-VARIANTS", "variants must be objects with string id and label fields")
 css = css_path.read_text(encoding="utf-8") if css_path else ""
 css = cssparse.strip_comments(css)
-if "@import" in css.lower() or re.search(r"url\(\s*['\"]?(?:https?:|//|data:)", css, re.I):
+# Mask strings so examples in content: or font names are not CSS requests.
+strings = re.compile(r"\"(?:\\.|[^\"\\])*\"|'(?:\\.|[^'\\])*'", re.S)
+syntax = strings.sub(lambda m: " " * len(m.group()), css)
+# This small validator does not decode CSS escapes in identifiers or paths.
+if "\\" in syntax:
+    issue("PACK-CSS-ESCAPE", "CSS escapes in identifiers are not supported; use literal names")
+if re.search(r"@import\b", syntax, re.I):
     issue("PACK-REMOTE-CSS", "Remote imports and external/data URLs are not allowed")
+if re.search(r"(?<![\w-])(?:-webkit-)?image-set\(", syntax, re.I):
+    issue("PACK-ASSET", "image-set() is not supported; use url() for pack assets")
 declared = {value for value in assets if isinstance(value, str)}
-for value in re.findall(r'''url\(\s*(["']?)([^)"']+)\1\s*\)''', css, re.I):
-    url = value[1].strip()
+url_pattern = re.compile(r'''url\(\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'|([^)]*))\s*\)''', re.I | re.S)
+for start in re.finditer(r"(?<![\w-])url\(", syntax, re.I):
+    match = url_pattern.match(css, start.start())
+    if not match:
+        issue("PACK-ASSET", "Malformed CSS asset URL")
+        continue
+    url = next(value for value in match.groups() if value is not None).strip()
+    if "\\" in url:
+        issue("PACK-CSS-ESCAPE", "CSS escapes in asset URLs are not supported; use literal paths")
+        continue
+    if re.match(r"(?:[a-z][a-z0-9+.-]*:|//)", url, re.I):
+        issue("PACK-REMOTE-CSS", "Remote imports and external/data URLs are not allowed")
+        continue
     if not url or url.startswith("#") or url.startswith("var("):
         continue
     referenced = (css_path.parent / url).resolve() if css_path else root
@@ -88,6 +107,27 @@ for value in re.findall(r'''url\(\s*(["']?)([^)"']+)\1\s*\)''', css, re.I):
         relative = referenced.relative_to(root).as_posix()
         if relative not in declared:
             issue("PACK-ASSET", "CSS asset is not declared in manifest.assets: " + relative)
+
+
+def check_scope(source):
+    scoped = re.compile(r"^html\[data-theme=([\"'])" + re.escape(str(slug)) + r"\1\](?=$|[\s.#[:>+~])")
+    for prelude, body in cssparse.statements(source):
+        if body is None:
+            continue
+        at_rule = re.match(r"@[-a-z]+", prelude, re.I)
+        name = at_rule.group().lower() if at_rule else ""
+        if name in cssparse.GROUPING or name == "@starting-style":
+            check_scope(body)
+        elif name:
+            if name not in ("@font-face", "@keyframes", "@-webkit-keyframes"):
+                issue("PACK-SCOPE", "Unsupported unscoped CSS block: " + prelude)
+        else:
+            for selector in cssparse.split_top(prelude):
+                if not scoped.match(selector):
+                    issue("PACK-SCOPE", "Selector must start with the theme root: " + selector)
+
+
+check_scope(css)
 tokens = build_manifest.root_tokens(css, slug) if slug else {}
 if slug and not tokens:
     issue("PACK-SCOPE", "CSS must scope theme rules to html[data-theme=\"%s\"]" % slug)
