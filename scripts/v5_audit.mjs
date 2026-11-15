@@ -238,7 +238,7 @@ for (const engine of engines) {
         const row = { engine, theme: entry, device: dname, tier: d.tier, page: pg };
         let checks = [];
         try {
-          if (!await openThemed(pw, url, slug)) row.warning = 'theme CSS/fonts never fully applied';
+          await openThemed(pw, url, slug);
           await pw.addStyleTag({ content: FREEZE_CSS });
           Object.assign(row, await pw.evaluate(measure, { tier: d.tier }));
           checks = [['overflow', row.overflow.px > 0 || row.overflow.elements > 0], ['targets', row.targets.small > 0],

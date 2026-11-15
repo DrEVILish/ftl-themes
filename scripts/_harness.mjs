@@ -112,27 +112,28 @@ export async function serveRoot() {
 
 // True once theme-loader.js has applied the theme's stylesheet and fonts are
 // done. The bundle is one `@layer ui {}` block, so nested rules are counted.
-export async function themeReady(page, slug, timeout = 5000) {
+export async function themeReady(page, slug, timeout = 5000, variant = '') {
   try {
-    await page.waitForFunction((slug) => {
-      if (document.documentElement.dataset.theme !== slug) return false;
+    await page.waitForFunction(({ slug, variant }) => {
+      if (document.documentElement.dataset.theme !== slug || (document.documentElement.dataset.variant || '') !== variant) return false;
       const link = document.getElementById('theme-link');
-      if (!link || !link.sheet) return false;
+      if (!link?.sheet?.href || !new URL(link.sheet.href).pathname.endsWith(`/dist/${slug}.css`)) return false;
       const count = (rules) => Array.from(rules).reduce((n, r) => n + 1 + (r.cssRules ? count(r.cssRules) : 0), 0);
       try { if (count(link.sheet.cssRules) < 3) return false; } catch (e) { return false; }
       return document.fonts.status === 'loaded';
-    }, slug, { timeout, polling: 100 });
+    }, { slug, variant }, { timeout, polling: 100 });
     return true;
   } catch { return false; }
 }
 
-// goto + themeReady, up to three tries. Returns whether the theme applied.
+// goto + themeReady, up to three tries. Never let checks measure an unprepared page.
 export async function openThemed(page, url, slug) {
+  const variant = new URL(url).searchParams.get('variant') || '';
   for (let i = 0; i < 3; i++) {
     await page.goto(url, { waitUntil: 'networkidle' });
-    if (await themeReady(page, slug)) return true;
+    if (await themeReady(page, slug, 5000, variant)) return true;
   }
-  return false;
+  throw new Error(`theme ${slug}${variant ? '~' + variant : ''} CSS/fonts never fully applied after 3 attempts`);
 }
 
 export const FREEZE_CSS = '*{animation:none!important;transition:none!important;caret-color:transparent!important;scroll-behavior:auto!important}';

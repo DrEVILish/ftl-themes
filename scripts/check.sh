@@ -12,3 +12,4 @@ python3 test/feature_extensions.py
 python3 test/feature_edge_cases.py
 node test/feature_bridges.mjs
 node test/feature_extensions_browser.mjs
+node test/harness_browser.mjs

@@ -49,13 +49,12 @@ for (const entry of themes) {
   for (const pageName of variant ? VARIANT_PAGES : EXAMPLE_PAGES) {
     const url = `${base}/${pageName}?theme=${slug}` + (variant ? `&variant=${variant}` : '');
     try {
-      const ready = await openThemed(page, url, slug);
+      await openThemed(page, url, slug);
       await page.addStyleTag({ content: FREEZE_CSS });
       await page.waitForTimeout(30);
       const dest = path.join(dir, pageName.replace(/\.html$/, '') + '.png');
       await page.screenshot({ path: dest });
       shots++;
-      if (!ready) failures.push({ slug, pageName, error: 'theme CSS/fonts never fully applied after 3 attempts' });
     } catch (err) {
       failures.push({ slug, pageName, error: String(err && err.message || err) });
     }
