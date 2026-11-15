@@ -34,7 +34,7 @@ variants, and a license name plus notice path. Keep theme rules under
 imports, remote/data URLs, and paths escaping the pack are rejected.
 
 The validator supports literal CSS identifiers and asset paths; CSS escapes
-in identifiers or URLs are rejected. Escapes in ordinary text strings are
+in identifiers or URLs are rejected, as are control characters in asset URLs. Escapes in ordinary text strings are
 allowed. Use `url()` for assets; `image-set()` is rejected because it also
 accepts string asset paths. Conditional/grouping blocks (`@media`,
 `@supports`, `@layer`, `@container`, `@scope`, `@starting-style`) must contain

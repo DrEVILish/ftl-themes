@@ -92,6 +92,9 @@ for start in re.finditer(r"(?<![\w-])url\(", syntax, re.I):
         issue("PACK-ASSET", "Malformed CSS asset URL")
         continue
     url = next(value for value in match.groups() if value is not None).strip()
+    if re.search(r"[\x00-\x1f\x7f]", url):
+        issue("PACK-ASSET", "Control characters are not allowed in CSS asset URLs")
+        continue
     if "\\" in url:
         issue("PACK-CSS-ESCAPE", "CSS escapes in asset URLs are not supported; use literal paths")
         continue

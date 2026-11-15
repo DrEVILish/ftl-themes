@@ -18,6 +18,7 @@ class ThemePackValidation(unittest.TestCase):
             (pack / 'theme.css').write_text(css)
             (pack / 'LICENSE.txt').write_text('CC0')
             for name in assets:
+                (pack / name).parent.mkdir(parents=True, exist_ok=True)
                 (pack / name).write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
             manifest = dict(formatVersion=1, name='Test', slug='test', contract=4,
                             minimumLibraryVersion='5.1.0', css='theme.css', assets=list(assets),
@@ -69,6 +70,12 @@ html[data-theme="test"] .badge::after { content:"@import url(https://example.inv
 
     def test_image_set_cannot_hide_string_asset_references(self):
         result = self.validate(BASE + 'html[data-theme="test"] { background:image-set("https://example.invalid/image.png" 1x); }')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('PACK-ASSET', result.stderr)
+
+    def test_control_characters_cannot_disguise_a_network_scheme(self):
+        asset = 'ht\ttps:/example.invalid/image.png'
+        result = self.validate(BASE + 'html[data-theme="test"] { background:url("' + asset + '"); }', [asset])
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('PACK-ASSET', result.stderr)
 
