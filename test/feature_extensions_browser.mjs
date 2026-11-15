@@ -96,6 +96,20 @@ try {
   assert(moved[0] > 70 && Math.abs(moved[1] - moved[0] - 33) < 0.2, `region drag keeps its length: ${moved}`);
   await page.locator('button.waveform-marker[data-time="110"]').click();
   assert.equal(await page.locator('.waveform').first().locator(':scope > input').inputValue(), '110');
+  // An omitted step has the native default of one, so regions keep that gap.
+  const defaultStepEdges = await page.evaluate(() => {
+    const waveform = document.createElement('div');
+    waveform.className = 'waveform';
+    waveform.innerHTML = '<div class="waveform-region"><input type="range" min="0" max="10" value="1"><input type="range" min="0" max="10" value="2"></div>';
+    document.body.append(waveform);
+    const start = waveform.querySelector('input');
+    start.value = 3;
+    start.dispatchEvent(new Event('input', { bubbles: true }));
+    const values = Array.from(waveform.querySelectorAll('input'), input => +input.value);
+    waveform.remove();
+    return values;
+  });
+  assert.deepEqual(defaultStepEdges, [1, 2]);
   // Zoom: the window moves, inputs keep their values, out-of-view edges leave the tab order;
   // a fade region's single input sets its end; the app's --gain follows.
   const trim = page.locator('#wf-trim');
@@ -117,6 +131,19 @@ try {
   assert.equal(await page.inputValue('[aria-label="Delay, milliseconds"]'), '50');
   await page.click('[aria-label="Reset delay"]');
   assert.equal(await page.inputValue('#p-delay'), '120');
+  // A committed number edit uses the range's native bounds and step.
+  const delayNumber = page.locator('[aria-label="Delay, milliseconds"]');
+  for (const [typed, expected] of [['999', '500'], ['-1', '0'], ['49.6', '50']]) {
+    await delayNumber.fill(typed);
+    await page.locator('#p-delay').focus();
+    assert.equal(await delayNumber.inputValue(), expected, `committed delay ${typed}`);
+    assert.equal(await page.inputValue('#p-delay'), expected);
+  }
+  const trimNumber = page.locator('[aria-label="Input trim, decibels"]');
+  await trimNumber.fill('-12.5');
+  await page.locator('#p-gain').focus();
+  assert.equal(await trimNumber.inputValue(), '-12.5');
+  assert.equal(await page.inputValue('#p-gain'), '-12.5');
   const balance = page.locator('input.slider.is-bipolar');
   await balance.evaluate(el => { el.value = 3; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.equal(await balance.inputValue(), '0');

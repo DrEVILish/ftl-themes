@@ -94,7 +94,7 @@
     }
     if (!a || !b) return;
     var min = +a.min || 0, max = a.max === "" ? 100 : +a.max, span = max - min || 1;
-    var gap = +region.dataset.minLength || +a.step || 0;
+    var gap = +region.dataset.minLength || +(a.step || 1) || 0;
     if (moved === a && +a.value > +b.value - gap) a.value = Math.max(min, +b.value - gap);
     if (moved === b && +b.value < +a.value + gap) b.value = Math.min(max, +a.value + gap);
     region.style.setProperty("--start", ((a.value - min) / span).toFixed(4));
@@ -294,6 +294,16 @@
     if (!param) return;
     var slider = param.querySelector("input[type=range]"), num = param.querySelector("input[type=number]");
     if (slider && num) (t === slider ? num : slider).value = t.value;
+  });
+  // Preserve partial number edits; reconcile native range bounds/step on commit.
+  document.addEventListener("change", function (e) {
+    var t = e.target, param = t.closest && t.closest(".param");
+    if (!param || !t.matches("input[type=number]")) return;
+    var slider = param.querySelector("input[type=range]");
+    if (!slider) return;
+    slider.value = t.value;
+    t.value = slider.value;
+    slider.dispatchEvent(new Event("input", { bubbles: true }));
   });
   function reset(root) {
     root.querySelectorAll("input[type=range], input[type=number]").forEach(function (i) { set(i, i.defaultValue); });
