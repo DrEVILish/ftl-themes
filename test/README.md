@@ -24,6 +24,8 @@ the newest `chromium_headless_shell-*` or `chromium-*` in
 | `scripts/check.sh` (`check.py`) | Contract lint; optional `--budgets` size report |
 | `scripts/test_cssparse.py` | CSS parser, manifest color, and bundle selector edge cases |
 | `test/feature_edge_cases.py`, `test/feature_bridges.mjs` | Theme inheritance failures and JS bridge edge cases (dependency-free) |
+| `test/theme_pack_validation.py` | Scoped local pack CSS, asset requests, and manifest types |
+| `test/verification_tools.py` | Failed capture preservation, isolated core fixtures, and accessibility errors |
 | `test/harness_browser.mjs` | Theme readiness rejects wrong stylesheets, variants and failed preparation |
 | `test/feature_extensions_browser.mjs` | Rendered feature flows: family themes, reduced motion, feedback drawing (requires Playwright) |
 | `scripts/core_regressions.mjs` | Core layout bugs reported by adopting apps |

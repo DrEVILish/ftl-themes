@@ -10,6 +10,8 @@ python3 scripts/motion_always.py --test
 python3 scripts/build_component_index.py --check
 python3 test/feature_extensions.py
 python3 test/feature_edge_cases.py
+python3 test/theme_pack_validation.py
+python3 test/verification_tools.py
 node test/feature_bridges.mjs
 node test/feature_extensions_browser.mjs
 node test/harness_browser.mjs

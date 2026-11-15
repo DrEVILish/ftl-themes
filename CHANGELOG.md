@@ -226,6 +226,16 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- Rendered checks verify the requested stylesheet and palette variant, and stop before
+  measuring or saving screenshots when theme preparation fails. Accessibility `--blame`
+  also fails on check errors; failed captures leave accepted baselines unchanged.
+- Core regression runs use private temporary fixtures, so parallel checks cannot overwrite
+  or delete each other's pages.
+- Committed audio parameter number edits follow their slider's bounds and step without
+  interrupting partial typing. Waveform edges honor the native default step of one.
+- Local pack validation checks every theme selector and rejects disguised imports and
+  asset requests. Unsupported CSS escapes and `image-set()` are documented in
+  [`docs/theme-packs.md`](docs/theme-packs.md); numeric manifest slugs are rejected.
 - `nesting.html`: the always-open three-level context menu has room below it and opens its
   submenus towards the inside, so on a phone it no longer spills over the status bar's Save button.
 - `.now-playing` docked in `.app` on a phone: the shell holds the screen height and `.app-main`
