@@ -226,6 +226,9 @@ changes are called out explicitly here.
   `build_manifest.contrast` / `resolve_color` and `cssparse.split_top`.
 
 ### Fixed
+- Keep the first digit visible after filling an OTP, align default modal titles
+  with their content, and let maximized native dialogs and popovers fill the
+  viewport (#72).
 - Rendered checks verify the requested stylesheet and palette variant, and stop before
   measuring or saving screenshots when theme preparation fails. Accessibility `--blame`
   also fails on check errors; failed captures leave accepted baselines unchanged.

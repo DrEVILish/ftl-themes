@@ -29,6 +29,38 @@ try {
     assert(look[3] !== look[2] && look[2] === look[1], `${theme}: only the error-rate card is in alert`);
     assert.equal(await page.locator('[data-scenario]:visible').count(), 2, theme);
   }
+  await openThemed(page, `${server.base}/auth.html?theme=blue-future`, 'blue-future');
+  const otp = page.locator('#otp-code');
+  await otp.pressSequentially('123456');
+  assert.equal(await otp.inputValue(), '123456');
+  const otpScroll = await otp.evaluate(input => input.closest('.otp').scrollLeft);
+
+  await openThemed(page, `${server.base}/components-surfaces.html?theme=blue-future`, 'blue-future');
+  const titleOffset = await page.locator('#w1title').evaluate(title => {
+    const content = title.closest('.modal-header').nextElementSibling;
+    return title.getBoundingClientRect().left - content.getBoundingClientRect().left;
+  });
+  const maximizedHeights = await page.evaluate(() => {
+    const heights = [];
+    for (const markup of [
+      '<dialog class="modal is-maximized">Dialog</dialog>',
+      '<input type="checkbox" class="window-max" checked><dialog class="modal">Dialog</dialog>',
+      '<div class="modal is-maximized" popover>Popover</div>',
+    ]) {
+      const fixture = document.createElement('div');
+      fixture.innerHTML = markup;
+      document.body.append(fixture);
+      const modal = fixture.lastElementChild;
+      if (modal instanceof HTMLDialogElement) modal.showModal();
+      else modal.showPopover();
+      heights.push(modal.getBoundingClientRect().height - innerHeight);
+      fixture.remove();
+    }
+    return heights;
+  });
+  assert.deepEqual({ otpScroll, titleOffset, maximizedHeights },
+    { otpScroll: 0, titleOffset: 0, maximizedHeights: [0, 0, 0] });
+
   // ProSeries console: pages switch by radio, the compressor curve bends at
   // its threshold, the PEQ curve moves with a band's gain, linked knobs follow.
   await page.goto(`${server.base}/proseries.html`, { waitUntil: 'networkidle' });
